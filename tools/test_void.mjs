@@ -1082,6 +1082,16 @@ try {
     await P.p.waitForTimeout(1500);
     const t2 = await text();
     check('obituaries: the archive reads the conquered ledger and renders memorials', /Obituaries & Lineage/.test(t2), JSON.stringify({}));
+    // honesty (owner, 2026-10-28: "be sure that our sites are actually better ... in every way"): every memorial carries a status, and one
+    // says "beaten" only when lib/obituary.js lets it; the rest say "in progress" with a match % and keep their Legacy and Tribute text
+    await P.p.waitForSelector('#list .badge', { timeout: 15000 }).catch(() => {});
+    const obit = await P.p.evaluate(() => { const cards = [...document.querySelectorAll('#list .card')]; return { cards: cards.length, badges: cards.filter((c) => c.querySelector('.badge')).length, wip: cards.filter((c) => /In progress: \d+% of its features matched/.test(c.innerText)).length, homage: cards.filter((c) => /The Legacy:/.test(c.innerText) && /Our Tribute:/.test(c.innerText)).length, falseWin: cards.filter((c) => /Beaten in every way/.test(c.querySelector('.badge').textContent) && /Not beaten yet/.test(c.innerText)).length, tally: document.getElementById('tally').textContent }; });
+    check('obituaries: every memorial shows an honest status and keeps its homage text', obit.cards > 0 && obit.badges === obit.cards && obit.homage === obit.cards && obit.wip > 0 && !obit.falseWin && /beaten in every way, \d+ in progress/.test(obit.tally), JSON.stringify(obit));
+    await P.p.fill('#q', 'Google Translate');
+    await P.p.evaluate(() => { const d = document.querySelector('#list details'); if (d) d.open = true; });
+    await P.p.waitForSelector('#list .tl li a[href^="http"]', { timeout: 15000 }).catch(() => {});
+    const tl = await P.p.evaluate(() => { const items = [...document.querySelectorAll('#list .tl li')]; return { items: items.length, cited: items.filter((li) => li.querySelector('a[href^="http"]') || /unknown/.test(li.textContent)).length, gaps: document.querySelectorAll('#list .gaps li').length }; });
+    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', tl.items > 3 && tl.cited === tl.items, JSON.stringify(tl));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     const sib = await siblingCount(P.p);
@@ -2678,6 +2688,114 @@ try {
         /Inicio/.test(web) && /Noticias del mundo/.test(web) && /El tiempo es bueno/.test(web) && /Noticias del día/.test(web) && !scripts && !sideways && !/alert/.test(web), web.slice(0, 300));
       check('the translate page batch threw no page errors', !T.errors.length, T.errors.join(' | '));
     } finally { globalThis.fetch = was; await T.ctx.close(); }
+  }
+  // The translate page's catch-up features (docs/PARITY/google-translate.md): recent languages, searching the languages, the on-screen
+  // keyboard, the handwriting pad (read as a picture), your own correction kept, conversation mode, the bookmarklet. /api/translate is stubbed.
+  if (want('translate page catch-up: recent languages, language search, on-screen keyboard, handwriting, your correction kept, conversation, bookmarklet')) {
+    const T = await fresh({ phone: true }), P = T.p, asks = [];
+    const D = { 'Good night': { fr: 'Bonne nuit', ja: 'おやすみ' }, 'Где': { en: 'Where' }, 'Thank you': { fr: 'Merci' }, 'Merci beaucoup': { en: 'Thank you very much' } };
+    await T.ctx.route(/\/api\/translate$/, async (r) => { const b = JSON.parse(r.request().postData() || '{}'); asks.push(b);
+      if (b.image) return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ read: 'Thank you', text: 'Merci', from: 'en', to: b.to, via: 'model' }) });
+      const t = (D[b.text] || {})[b.to] || ('[' + b.to + '] ' + b.text);
+      return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ text: t, from: b.from || 'en', to: b.to, detected: b.from ? '' : 'en', via: 'model' }) }); });
+    const outText = () => P.$eval('#out', (e) => e.textContent);
+    try {
+      await P.goto(base + 'translate/?q=' + encodeURIComponent('Good night') + '&from=en&to=fr');
+      await until(async () => /Bonne nuit/.test(await outText()), 4000);
+      await P.fill('#langQ', 'japan'); await until(() => P.$eval('#langHits', (h) => h.querySelectorAll('button').length > 0), 2000);
+      const hit = await P.$eval('#langHits button', (b) => b.textContent); await P.press('#langQ', 'Enter');
+      await until(async () => /おやすみ/.test(await outText()), 4000);
+      const to = await P.$eval('#to', (s) => s.value), recent = await P.$$eval('#recentLangs button', (b) => b.map((x) => x.dataset.lang));
+      await P.click('#recentLangs button[data-lang="fr"]'); await until(async () => /Bonne nuit/.test(await outText()), 4000);
+      check('translate page, languages: typing "japan" in the language search offers Japanese, Enter picks it and translates; French then waits as a one-tap recent language and switches back',
+        /Japanese/.test(hit) && to === 'ja' && recent.includes('fr') && await P.$eval('#to', (s) => s.value) === 'fr', JSON.stringify({ hit, to, recent }));
+      await P.selectOption('#from', 'ru'); await P.selectOption('#to', 'en'); await P.fill('#in', '');
+      await P.click('#kbdB'); const keys = await P.$$eval('#kbd .keys button', (b) => b.map((x) => x.textContent));
+      for (const k of ['Г', 'д', 'е']) await P.click(`#kbd .keys button:text-is("${k}")`);
+      await P.click('#kbd button[aria-label="space"]'); await P.click('#kbd button[aria-label="backspace"]');
+      const typed = await P.$eval('#in', (t) => t.value); await P.click('#go'); await until(async () => /Where/.test(await outText()), 4000);
+      check('translate page, on-screen keyboard: with Russian as the typed language it shows Cyrillic keys; tapping Г д е, space and backspace types "Где", which translates to "Where"',
+        keys.includes('ж') && typed === 'Где' && /Where/.test(await outText()), JSON.stringify({ typed, n: keys.length }));
+      await P.selectOption('#from', 'en'); await P.selectOption('#to', 'fr'); await P.fill('#in', '');
+      await P.click('#handB'); const box = await P.$eval('#pad', (c) => { const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+      await P.mouse.move(box.x + 20, box.y + 30); await P.mouse.down(); await P.mouse.move(box.x + box.w / 2, box.y + box.h / 2, { steps: 5 }); await P.mouse.up();
+      await P.click('#handGo'); await until(async () => /Merci/.test(await outText()), 4000);
+      const img = asks.find((a) => a.image);
+      check('translate page, handwriting: a stroke on the pad is sent as a picture, its words ("Thank you") land in the box and come back translated ("Merci")',
+        !!img && /^data:image\/jpeg/.test(img.image) && await P.$eval('#in', (t) => t.value) === 'Thank you' && /Merci/.test(await outText()), JSON.stringify(asks.map((a) => Object.keys(a))));
+      await P.click('#fbB'); await P.fill('#fbT', 'Merci bien'); await P.click('#fbSave');
+      const said = await P.$eval('#status', (s) => s.textContent).catch(() => ''); const n = asks.length;
+      await P.reload(); await P.fill('#in', 'Thank you'); await P.click('#go'); await until(async () => /Merci bien/.test(await outText()), 4000);
+      const after = await outText(); await P.click('#fbUndo'); await until(async () => (await outText()) === 'Merci', 4000);
+      check('translate page, suggest an edit: "Merci bien" replaces the machine\'s "Merci", is kept on this device after a reload (marked as your own) and "Back to the machine\'s" undoes it',
+        /Merci bien/.test(after) && (await outText()) === 'Merci' && n > 0, JSON.stringify({ after, said }));
+      await P.click('#convS'); await P.fill('#convT', 'Merci beaucoup'); await P.click('#convTB');
+      await until(() => P.$eval('#convLog', (l) => /Thank you very much/.test(l.textContent)), 4000);
+      const conv = await P.$eval('#convLog', (l) => l.textContent), names = await P.$eval('#convTB', (b) => b.textContent);
+      const bm = await P.$eval('#bm', (a) => a.getAttribute('href')), sideways = await P.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+      check('translate page, conversation and bookmarklet: a line sent as the French side comes back in English for the other side; the bookmarklet opens this page with the selection or the page address; nothing scrolls sideways at 390 px',
+        /Thank you very much/.test(conv) && /French/.test(names) && /^javascript:/.test(bm) && /translate\/\?/.test(bm) && /url=/.test(bm) && !sideways, JSON.stringify({ conv, names }));
+      check('the translate catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
+  }
+  // Notes catching up with Google Docs (docs/PARITY/google-docs.md): a picture from a file kept through a reload, a comment on selected words with a reply
+  // and Resolve, voice typing (speech recognition stubbed: it hears "hello from my voice").
+  if (want('notes page catch-up: a picture kept through a reload, a comment with a reply resolved, voice typing')) {
+    const T = await fresh(), P = T.p, PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await T.ctx.addInitScript(() => { window.webkitSpeechRecognition = class { start() { setTimeout(() => { const r = [{ 0: { transcript: 'hello from my voice' }, isFinal: true, length: 1 }]; this.onresult && this.onresult({ resultIndex: 0, results: r }); setTimeout(() => this.onend && this.onend(), 30); }, 50); } stop() { this.onend && this.onend(); } }; });
+    const notes = () => P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.v1') || '{"docs":[]}').docs);
+    try {
+      await P.goto(base + 'notes/'); await until(() => P.evaluate(() => !!document.getElementById('related') && document.getElementById('related').children.length > 0), 8000);
+      await P.click('#dtitle'); await P.keyboard.type('Trip photos'); await P.click('#body'); await P.keyboard.type('The view from the hill was lovely.');
+      await P.setInputFiles('#imgF', { name: 'hill.png', mimeType: 'image/png', buffer: Buffer.from(PNG, 'base64') });
+      await until(() => P.$$eval('#body img', (i) => i.length === 1), 4000);
+      await P.reload(); await until(() => P.$$eval('#body img', (i) => i.length === 1), 6000);
+      const img = await P.$eval('#body img', (i) => ({ src: i.src.slice(0, 22), alt: i.alt, w: i.naturalWidth }));
+      check('notes, a picture: Picture puts the chosen PNG into the note as a data picture, named by its file, and it is still there after a reload',
+        img.src === 'data:image/png;base64,' && img.alt === 'hill' && img.w === 1, JSON.stringify(img));
+      await P.evaluate(() => { const b = document.getElementById('body'), t = [...b.querySelectorAll('*'), b].map((e) => [...e.childNodes]).flat().find((n) => n.nodeType === 3 && /hill/.test(n.textContent)); const i = t.textContent.indexOf('hill'), r = document.createRange(); r.setStart(t, i); r.setEnd(t, i + 4); const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+      await P.click('#cmB'); await until(() => P.$eval('#cmNew', (f) => !f.hidden), 2000); await P.fill('#cmT', 'Which hill?'); await P.click('#cmSave');
+      await until(() => P.$eval('#cmts', (c) => !c.hidden), 2000);
+      await P.fill('#cmList input', 'Monsanto'); await P.press('#cmList input', 'Enter');
+      await until(() => P.$eval('#cmList', (l) => /Monsanto/.test(l.textContent)), 2000);
+      const mid = await P.$eval('#body mark.cm', (m) => m.textContent), panel = await P.$eval('#cmList', (l) => l.innerText);
+      let d = (await notes()).find((x) => x.title === 'Trip photos');
+      const stored = d && d.comments && d.comments[0];
+      await P.click('#cmList button'); await until(() => P.$eval('#cmts', (c) => c.hidden), 2000);
+      d = (await notes()).find((x) => x.title === 'Trip photos');
+      check('notes, comments: selecting "hill" and commenting highlights it; the comment and its reply show under the note and are stored; Resolve clears the highlight and keeps the words and the thread',
+        mid === 'hill' && /hill/.test(panel) && /Which hill\?/.test(panel) && /Monsanto/.test(panel) && stored && stored.quote === 'hill' && stored.replies[0].text === 'Monsanto'
+        && !/<mark/.test(d.html) && /hill/.test(d.html) && d.comments[0].done === true, JSON.stringify({ mid, panel, html: d && d.html.slice(0, 200) }));
+      await P.click('#body'); await P.keyboard.press('Control+End'); await P.click('#micB');
+      await until(() => P.$eval('#body', (b) => /hello from my voice/.test(b.textContent)), 3000);
+      await until(() => P.$eval('#micB', (b) => b.getAttribute('aria-pressed') === 'false'), 2000);
+      await P.waitForTimeout(600); d = (await notes()).find((x) => x.title === 'Trip photos');
+      check('notes, voice typing: what is heard goes in at the cursor and is saved; the button shows it is listening and stops',
+        /hello from my voice/.test(d.html) && /lovely\./.test(d.html), d.html.replace(/data:[^"]+/, 'data:…').slice(0, 300));
+      check('the notes catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
+  }
+  if (want('calendar page catch-up: a video call added to an event, joined from its detail, carried by its invite; Print')) {
+    const T = await fresh(), P = T.p;
+    await T.ctx.addInitScript(() => { window.__printed = 0; window.print = () => { window.__printed++; }; });
+    const evs = () => P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []);
+    try {
+      await P.goto(base + 'calendar/'); await until(() => P.evaluate(() => !!document.getElementById('newBtn')), 8000);
+      await P.click('#newBtn'); await P.fill('#eTitle', 'Design review'); await P.click('#eVideoB');
+      const made = await P.inputValue('#eVideo');
+      await P.click('#eSave'); await until(async () => (await evs()).some((e) => e.title === 'Design review'), 3000);
+      const ev = (await evs()).find((e) => e.title === 'Design review');
+      await P.locator('text=Design review').first().click(); await until(() => P.evaluate(() => !document.getElementById('detail').hidden), 3000);
+      const join = await P.$eval('#detVideo', (a) => ({ href: a.href, text: a.textContent, target: a.target })).catch(() => null);
+      const inv = await P.evaluate(async (e) => { const C = await import('/lib/calendar.js'); const i = C.inviteLink(e, location.origin); return { ics: i.ics, back: C.parseIcs(i.ics)[0].video }; }, ev);
+      check('calendar, video call: "Add a video call" fills a private Jitsi Meet room named for the event; saved with it; its detail has Join video call opening a new tab; its .ics invite carries it and reads back',
+        /^https:\/\/meet\.jit\.si\/Verse-DesignReview-[a-z]{12}$/.test(made) && ev.video === made && join && join.href === made && /Join video call/.test(join.text) && join.target === '_blank'
+        && /CONFERENCE;VALUE=URI;FEATURE=VIDEO/.test(inv.ics) && inv.back === made, JSON.stringify({ made, ev, join }).slice(0, 600));
+      await P.click('#printBtn'); const printed = await P.evaluate(() => window.__printed);
+      const hidden = await P.evaluate(() => { const m = [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch (e) { return []; } }).filter((r) => r.media && /print/.test(r.media.mediaText)); return m.length > 0; });
+      check('calendar, Print: the Print button prints the view on screen, with print styles that drop the buttons and forms', printed === 1 && hidden, JSON.stringify({ printed, hidden }));
+      check('the calendar catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
   }
   // Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail + slider, closed shells, mm)
   if (want("Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail ")) { const P = await fresh();
