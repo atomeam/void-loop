@@ -509,6 +509,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:17:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:17:05Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:17:01Z",
    "subject": "Incident: the browser suite failed on 6c3dad22 (void-live-deploy/incidents.json)"
   },
@@ -529,12 +537,24 @@
    "subject": "Photos lane: plain titles and plain-name URLs for four brand-slug pages"
   },
   {
+   "at": "2026-10-28T20:05:34Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:05:03Z",
    "subject": "Tower gate: coin flip measured against their live sites"
   },
   {
    "at": "2026-10-28T20:04:29Z",
    "subject": "Prizes: mark the export button's text as reviewed"
+  },
+  {
+   "at": "2026-10-28T20:03:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:03:14Z",
+   "subject": "Photo resizer: a plain title and lead line, with presets grouped for passports, online forms, social and print"
   },
   {
    "at": "2026-10-28T20:02:55Z",
@@ -567,26 +587,6 @@
   {
    "at": "2026-10-28T19:53:28Z",
    "subject": "Tournaments: optional per-match columns, a gap-to-lead or gap-to-cutoff hint, and a match-point rule"
-  },
-  {
-   "at": "2026-10-28T19:50:53Z",
-   "subject": "Hosting page: a queue and wait-time calculator for any service, with three examples (#1340)"
-  },
-  {
-   "at": "2026-10-28T19:46:16Z",
-   "subject": "Tournaments: a match grid that keeps the roster, merges look-alike names and flags shared places"
-  },
-  {
-   "at": "2026-10-28T19:32:32Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-10-28T19:19:44Z",
-   "subject": "Incident: the browser suite failed on fca8d382 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-28T18:54:18Z",
-   "subject": "Verse fixes its make skill: learn to handle \"make a litle cat\""
   }
  ],
  "builders": {
