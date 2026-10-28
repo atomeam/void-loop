@@ -1027,9 +1027,9 @@
     {
      "name": "calendar",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 14 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "12 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1666,9 +1666,9 @@
     {
      "name": "translate",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 33 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 17 browser-suite mentions, 33 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "source": {
       "sites": [
@@ -2354,9 +2354,9 @@
     {
      "name": "recent",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 10
     },
@@ -3190,9 +3190,9 @@
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 9 browser-suite mentions, 8 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 10 browser-suite mentions, 8 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 10
     },
