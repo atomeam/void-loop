@@ -509,12 +509,40 @@
  },
  "commits": [
   {
-   "at": "2026-10-28T22:33:40Z",
+   "at": "2026-10-28T22:47:49Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-10-28T22:43:04Z",
+   "subject": "TAGTEAM: Grok Bot handoff"
+  },
+  {
+   "at": "2026-10-28T22:34:56Z",
+   "subject": "CSP hashes: a directory shares one rule with the union of its pages' inline scripts, so the rules fit Cloudflare's 100 again (88 to 69…"
+  },
+  {
+   "at": "2026-10-28T22:34:49Z",
+   "subject": "Regenerate the generated files"
+  },
+  {
+   "at": "2026-10-28T22:34:49Z",
    "subject": "seo-audit: no orphans past the baseline (the pages no tool row reaches are listed under More tools), identity's dead /jwt/ link removed"
   },
   {
-   "at": "2026-10-28T22:33:40Z",
+   "at": "2026-10-28T22:34:49Z",
    "subject": "Green checks: regenerate deps, what, seo blocks and preloads; seo common asks for /random/ and /calculators/"
+  },
+  {
+   "at": "2026-10-28T22:34:42Z",
+   "subject": "Green checks: map-coverage, doc-drift, no-ellipsis, untested, overlap, tally"
+  },
+  {
+   "at": "2026-10-28T22:33:11Z",
+   "subject": "lists metrics: keep the file's one-space indent"
+  },
+  {
+   "at": "2026-10-28T22:32:57Z",
+   "subject": "Lists run 8: green first: /books/ links four sibling tools (connected), the autopsy check ignores the card's own art seal; metrics and board"
   },
   {
    "at": "2026-10-28T22:29:18Z",
@@ -559,34 +587,6 @@
   {
    "at": "2026-10-28T21:51:03Z",
    "subject": "Mark the spec-written pattern in the test harness as reviewed"
-  },
-  {
-   "at": "2026-10-28T21:50:53Z",
-   "subject": "Test harness reports what it used to swallow: a failed live proxy answers 502, an unreadable change list checks every route, stub failures…"
-  },
-  {
-   "at": "2026-10-28T21:46:48Z",
-   "subject": "Handoff note: flights picker fix and the dead buttons left for their owners"
-  },
-  {
-   "at": "2026-10-28T21:46:19Z",
-   "subject": "Flights pickers no longer throw on an undeclared name; specs for the calculators and prize wheel pages; generated skill lists refreshed"
-  },
-  {
-   "at": "2026-10-28T21:46:19Z",
-   "subject": "Every page does its real job: a browser test for each route, honest labels where a partner is needed, gate badges on the tower floors, and…"
-  },
-  {
-   "at": "2026-10-28T21:46:08Z",
-   "subject": "handoff: /ledger/ done (PR #1370)"
-  },
-  {
-   "at": "2026-10-28T21:42:10Z",
-   "subject": "ledger: page code in /ledger/app.js (no inline-script CSP rule: _headers stays at 88 of 90), kept offline by sw.js"
-  },
-  {
-   "at": "2026-10-28T21:00:09Z",
-   "subject": "ledger: /ledger/ repo activity ledger (issues and PRs of any public GitHub repo, CSV/JSON, share-by-link, offline, ETag 304) to take over…"
   }
  ],
  "builders": {
@@ -600,6 +600,10 @@
     "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
    },
    {
+    "name": "Lists run 8 (grok, 2026-10-28)",
+    "line": "green foundation first, so red checks only. Fixed \"connected\" (/books/ links /notes/ and /translate/) and \"incident autopsy\" (the card's art seal is not an autopsy picture). Open counts: V01D asks 1 (milestone, blocked on Claude's growth…"
+   },
+   {
     "name": "Who visits (claude, 2026-10-26)",
     "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
    },
@@ -610,10 +614,6 @@
    {
     "name": "Claude (pdf and kanban floors, 2026-10-26)",
     "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
-   },
-   {
-    "name": "Claude (perchance session)",
-    "line": "the random generators floor to perchance parity (main a3a708a9..): /image/ text to image (15 styles, 4 shapes, 1-4 a go, seed, leave out, download, gallery on the device; the Art Forge's painter, its Workers AI share counted with the…"
    }
   ],
   "ladders": [

@@ -224,6 +224,31 @@ export const SPECS = {
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
+// /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
+// the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
+const LEDGER_FIX = [
+  { number: 3, title: 'Merge the tide tables', html_url: 'https://github.com/test-owner/test-repo/pull/3', user: { login: 'ana', type: 'User' }, state: 'closed', created_at: '2026-10-03T10:00:00Z', closed_at: '2026-10-04T10:00:00Z', updated_at: '2026-10-04T10:00:00Z', labels: [{ name: 'feature' }], comments: 2, pull_request: { merged_at: '2026-10-04T10:00:00Z' } },
+  { number: 2, title: 'Login bug on the map page', html_url: 'https://github.com/test-owner/test-repo/issues/2', user: { login: 'bo', type: 'User' }, state: 'open', created_at: '2026-10-02T10:00:00Z', closed_at: null, updated_at: '2026-10-02T10:00:00Z', labels: [{ name: 'bug' }], comments: 1 },
+  { number: 1, title: 'Add a dark theme', html_url: 'https://github.com/test-owner/test-repo/issues/1', user: { login: 'ana', type: 'User' }, state: 'closed', created_at: '2026-10-01T10:00:00Z', closed_at: '2026-10-05T10:00:00Z', updated_at: '2026-10-05T10:00:00Z', labels: [], comments: 0 },
+];
+SPECS['/ledger/'] = async (t) => {
+  await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));
+  await t.p.waitForFunction(() => !document.getElementById('load').disabled, null, { timeout: 20000 }).catch(() => {}); // the default repo's first load finishes first
+  await t.fill('#repo', 'https://github.com/test-owner/test-repo'); await t.click('#load');
+  await t.waitText('#count', /2/, 8000);
+  const issues = await t.p.locator('#rows tr').count();
+  t.ok(issues === 2, 'a github.com link loads the repo: 2 issues listed (' + issues + ')');
+  t.ok(/\(2\)/.test(await t.text('#tab-issue')) && /\(1\)/.test(await t.text('#tab-pr')), 'the tabs count 2 issues and 1 pull request');
+  await t.fill('#q', 'login'); await t.p.waitForTimeout(400);
+  const hit = await t.p.locator('#rows tr').count(), title = await t.text('#rows tr');
+  t.ok(hit === 1 && /Login bug/.test(title), 'searching "login" leaves the one issue that says it (' + hit + ')');
+  await t.click('#tab-pr'); await t.fill('#q', ''); await t.p.waitForTimeout(400);
+  const pr = await t.text('#rows tr');
+  t.ok((await t.p.locator('#rows tr').count()) === 1 && /Merge the tide tables/.test(pr) && /merged/i.test(pr), 'the pull request tab shows the merged pull request: ' + pr.replace(/\s+/g, ' ').slice(0, 80));
+  await t.download('#csv', /^ledger-test-owner-test-repo-pull-requests-.*\.csv$/);
+  await t.copies('#copycsv', 'Merge the tide tables');
+  await t.share('#copylink', async (p) => { await p.waitForFunction(() => document.querySelectorAll('#rows tr').length > 0, null, { timeout: 8000 }).catch(() => {}); return (await p.inputValue('#repo')) === 'test-owner/test-repo' && (await p.getAttribute('#tab-pr', 'aria-selected')) === 'true' && /Merge the tide tables/.test(await p.locator('#rows').innerText()); });
+};
 for (const r of ['/kanban/', '/kanban/simple/', '/kanban/teams/', '/kanban/quick/']) SPECS[r] = kanban(true); SPECS['/kanban/flow/'] = kanban(false);
 for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companies/', '/jobs/europe/', '/jobs/regions/', '/jobs/salary/', '/jobs/tags/']) SPECS[r] = jobs;
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
