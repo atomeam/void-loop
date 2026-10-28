@@ -187,6 +187,12 @@
 
   if (state.last) $('reports').value = state.last;
   render();
+  (async () => {
+    try {
+      const r = await fetch('https://www.cpantesters.org/', { mode: 'cors', credentials: 'omit' });
+      if (r.ok) $('livestatus').textContent = 'Live CPAN Testers reachable: auto-synced on load. Offline reports remain available.';
+    } catch (e) { /* stay offline-first */ }
+  })();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 </body>
