@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Random user generator: fake people for testing · Verse</title>
+<title>Mock profiles, sample rosters &amp; character placeholders: random user generator · Verse</title>
 <meta name="description" content="Made-up people for testing a form, a database or a design: names, emails at example.com, phones in ranges reserved for fiction, addresses, birthdays, usernames and passwords, by country and gender, from a seed. JSON, CSV, YAML, XML or SQL. No ads, nothing sent anywhere.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Random user generator · Verse">
+<meta property="og:title" content="Mock profiles, sample rosters &amp; character placeholders · Verse">
 <meta property="og:description" content="Made-up people for testing: by country and gender, from a seed, as JSON, CSV, YAML, XML or SQL. Emails at example.com; no real faces.">
 <meta property="og:url" content="https://a-to-mind.com/random-user/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -56,7 +56,9 @@
 </head>
 <body>
 <main>
-  <h1>Random user generator</h1>
+  <h1>Mock profiles, sample rosters &amp; character placeholders <small style="font-weight:400">(random user generator)</small></h1>
+  <p class="note" id="lead" style="text-align:center;margin:0 0 8px">Made-up people for testing a form or a database, filling a team list, or naming characters in a story or a game. Nobody real, nothing sent.</p>
+  <div class="row" id="uses" role="group" aria-label="Start from"><button type="button" data-use="profiles">Mock profiles (test data)</button><button type="button" data-use="roster">Sample roster (16 names)</button><button type="button" data-use="characters">Character placeholders</button></div>
   <div class="row">
     <label for="n">How many</label><input id="n" type="number" min="1" max="5000" value="12">
     <label for="gender">Gender</label><select id="gender"><option value="">Either</option><option value="female">Female</option><option value="male">Male</option></select>
@@ -73,6 +75,7 @@
   <div class="row"><button type="button" class="main" id="go">Make them</button><button type="button" id="prev" aria-label="Previous page of people">‹ Previous</button><label for="page">Page</label><input id="page" type="number" min="1" max="9999" value="1" style="width:4em"><button type="button" id="next" aria-label="Next page of people">Next ›</button></div>
   <p class="note" id="phonenote"></p>
   <div class="cards" id="cards" aria-live="polite"></div>
+  <div class="row" id="send" role="group" aria-label="Send these names"><span class="note">Send these names to</span> <button type="button" id="toWheel">Wheel of names</button><button type="button" id="toCup">Tournament standings</button></div>
   <h2>As data</h2>
   <div class="row"><label for="fmt">Format</label><select id="fmt"><option value="json">JSON</option><option value="csv">CSV</option><option value="yaml">YAML</option><option value="xml">XML</option><option value="sql">SQL inserts</option></select>
     <button type="button" id="copy">Copy</button><button type="button" id="dl">Download</button><button type="button" id="link">Copy link</button></div>
@@ -122,7 +125,17 @@
   $('dl').addEventListener('click', () => { const f = $('fmt').value, a = el('a', { href: URL.createObjectURL(new Blob([format(rows, f)], { type: 'text/plain' })), download: 'people.' + f }); document.body.append(a); a.click(); a.remove(); });
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); toast($('link'), 'Copied'); } catch (_) {} });
   make();
-  mountRelated($('related'), '/random-user/', [{ label: 'Spin these names on a wheel', href: () => (names.length ? '/wheel/#' + wheelCode(wheelEntries(names.join('\n'))) : null) }]);
+  const toWheel = () => (names.length ? '/wheel/#' + wheelCode(wheelEntries(names.join('\n'))) : null);
+  // a starting roster for /tournaments/: one row each, placed in list order (edit placings there); names lose the separators its format uses
+  const toCup = () => (names.length ? '/tournaments/?mode=solo&results=' + encodeURIComponent(names.slice(0, 32).map((n, i) => n.replace(/[,:;\n]/g, ' ') + ':' + (i + 1) + ':0').join(',')) : null);
+  $('toWheel').addEventListener('click', () => { const u = toWheel(); if (u) location.href = u; });
+  $('toCup').addEventListener('click', () => { const u = toCup(); if (u) location.href = u; });
+  // three everyday starts: each sets the same controls a person would, so the link, copy and download work as before
+  const USES = { profiles: [12, DEFAULT_FIELDS], roster: [16, ['name', 'country']], characters: [6, ['gender', 'name', 'age', 'city', 'country', 'picture']] };
+  $('uses').addEventListener('click', (e) => { const b = e.target.closest('button[data-use]'); if (!b) return; const [n, want] = USES[b.dataset.use]; $('n').value = n;
+    for (const c of $('fields').querySelectorAll('input[type=checkbox]')) if (c.checked !== want.includes(c.value)) { c.checked = want.includes(c.value); c.dispatchEvent(new Event('change')); }
+    make(); });
+  mountRelated($('related'), '/random-user/', [{ label: 'Spin these names on a wheel', href: toWheel }, { label: 'Use them as a tournament roster', href: toCup }]);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
