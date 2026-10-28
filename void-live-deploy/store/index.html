@@ -31,6 +31,7 @@ aside#cart{position:fixed;right:16px;top:70px;width:min(360px,calc(100vw - 32px)
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px}.controls label{font-size:13px;color:var(--muted)}
 .step{padding:2px 0}.step b{color:var(--accent)}
 .qbtn{padding:2px 9px;font-size:14px}
+#lookup label{font-size:13px;color:var(--muted)}#lookup input{min-height:40px}
 .avail{font-size:12px;color:var(--muted)}
 section.lookup{margin-top:40px;border-top:1px solid var(--line);padding-top:20px}
 input{font:inherit;background:#0b0b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 10px}
@@ -51,7 +52,8 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <body>
 <main>
 <header><a class="logo" href="/">V<b>0</b>1D <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
-<div id="receipt" hidden></div>
+<p class="sub" id="rlead" hidden><b>Your receipt.</b> Your order code, license keys and download links show here. Keep the order code: with your email, it finds this receipt again any time, on any device.</p>
+<div id="receipt" role="status" aria-live="polite" tabindex="-1" hidden></div>
 <h1>Made by Verse. Sold by Verse.</h1>
 <p class="sub">3D models and printable minis you can spin before you buy, plus Verse's tools and the crew's hands-on help. Turn any model with your finger.</p>
 <div class="controls"><label for="q">Search products</label> <input id="q" type="search" style="max-width:260px" placeholder="a name, a kind, words from the blurb" aria-label="Search products"> <label for="kind">Kind</label> <select id="kind" aria-label="Filter by kind"><option value="">All kinds</option></select> <label for="sort">Sort</label> <select id="sort" aria-label="Sort products"><option value="featured">featured</option><option value="price-asc">price, low to high</option><option value="price-desc">price, high to low</option><option value="newest">newest</option></select> <span class="note" id="shown"></span> <a class="note" id="csv" download="verse-store-price-list.csv" href="#">Download price list (CSV)</a></div>
@@ -60,7 +62,7 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <section class="lookup" id="new" hidden><h2 style="font-size:20px;margin:0 0 6px">New from Verse</h2><p class="note">Verse publishes its own products here. Every change, as it happens (<a href="/store/changelog.json">changelog.json</a>):</p><ul id="log" class="note" style="padding-left:18px"></ul></section>
 <section class="lookup"><h2 style="font-size:20px;margin:0 0 6px">Find my order</h2>
 <p class="note">Lost your receipt? Give the email you paid with and the 8-letter order code. (Gumroad orders: your files and keys are in Gumroad's email.)</p>
-<form id="lookup"><input id="le" type="email" placeholder="you@example.com" required> <input id="lc" placeholder="ORDER CODE" maxlength="8" size="10" required> <button>Find it</button></form><p id="lout" class="note"></p></section>
+<form id="lookup"><label for="le">Email you paid with</label> <input id="le" type="email" autocomplete="email" placeholder="you@example.com" required> <label for="lc">Order code</label> <input id="lc" placeholder="8 letters" maxlength="8" size="10" autocapitalize="characters" autocomplete="off" required> <button>Find it</button></form><p id="lout" class="note"></p></section>
 <section class="lookup" id="delivery"><h2 style="font-size:20px;margin:0 0 6px">How a Verse order arrives</h2><p class="note">Everything sold here is digital: <b>nothing ships</b>. Your receipt, found any time by your email and the 8-letter order code, marks each step:</p><ol id="steps" class="note" style="padding-left:18px"></ol><p class="note">Downloads are signed links that last 24 hours — open your receipt any time for fresh ones. The license key is checked on this page, not only in an email.</p></section>
 <footer>Checkout runs on a hosted payment page (<span id="prov">Gumroad</span>): Verse never sees your card. Downloads are signed links that expire after 24 hours; open your receipt any time for fresh ones. Like what Verse makes? <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=store-footer&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip the crew $1</a>. Ask Verse "what can I buy" on the <a href="/">home page</a>. No ads, no trackers, no account: your cart and orders are kept on this device, the cart is shared as a link, and this page works offline after your first visit.</footer>
 </main>
@@ -151,20 +153,26 @@ $('#pay').onclick = async () => {
   $('#paynote').innerHTML = 'Checkout opened on Gumroad: it sends your files and license keys by email. ' + urls.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">link ${i + 1}</a>`).join(' · '); // void-review: ok (every url is escaped)
 };
 function showReceipt(r) {
-  const el = $('#receipt'); el.hidden = false;
-  const marks = deliveryDone(r);
+  const el = $('#receipt'); el.hidden = false; $('#rlead').hidden = false;
   if (!r || !r.items) { el.innerHTML = `<b>Receipt</b><p class="note">${esc((r && r.error) || 'Not found.')}</p>`; return; }
+  const marks = deliveryDone(r);
   el.innerHTML = `<b class="ok">✓ ${r.status === 'free' ? 'Yours, free' : 'Paid, thank you'}</b> <span class="note">order code <code>${esc(r.code)}</code> · links good until ${esc(new Date(r.expires).toLocaleString())}</span><ol class="note" style="padding-left:18px">` +
     DELIVERY_STEPS.map((st) => `<li class="step">${marks[st] ? '<b>✓</b> ' : '<b>·</b> '}${esc(st)}</li>`).join('') + `</ol>` +
-    r.items.map((i) => `<div style="margin-top:10px"><b>${esc(i.name)}</b>${i.share ? `<br><span class="note">You paid ${esc(usd(i.share.paid))} of ${esc(usd(i.share.price))}: ${i.share.got} of ${i.share.of} unlocked.${i.share.upgrade ? ' ' + esc(i.share.upgrade.line) + ` (order code <code>${esc(i.share.upgrade.code)}</code>). <button class="ghost" data-upgrade="${esc(i.id)}" data-code="${esc(i.share.upgrade.code)}">Unlock the rest</button>` : ''}</span>` : ''}<br><span class="note">License key</span> <code>${esc(i.license)}</code>${i.downloads.map((d) => `<br><a class="btn" style="display:inline-block;margin-top:6px" href="${d.url}">Download ${esc(d.name)}</a>`).join('')}</div>`).join('');
-  el.scrollIntoView({ behavior: 'smooth' });
+    r.items.map((i) => `<div style="margin-top:10px"><b>${esc(i.name)}</b>${i.share ? `<br><span class="note">You paid ${esc(usd(i.share.paid))} of ${esc(usd(i.share.price))}: ${i.share.got} of ${i.share.of} unlocked.${i.share.upgrade ? ' ' + esc(i.share.upgrade.line) + ` (order code <code>${esc(i.share.upgrade.code)}</code>). <button class="ghost" data-upgrade="${esc(i.id)}" data-code="${esc(i.share.upgrade.code)}">Unlock the rest</button>` : ''}</span>` : ''}<br><span class="note">License key</span> <code>${esc(i.license)}</code>${i.downloads.map((d) => `<br><a class="btn" style="display:inline-block;margin-top:6px" href="${d.url}">Download ${esc(d.name)}</a>`).join('')}</div>`).join('') +
+    `<p class="row" style="justify-content:flex-start;flex-wrap:wrap"><button type="button" class="ghost" id="rcopy">Copy order code and keys</button> <a class="note" id="rsave" download="verse-receipt-${esc(r.code)}.txt" href="#">Save as a text file</a></p>`;
+  const txt = receiptText(r); $('#rsave').href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(txt);
+  $('#rcopy').onclick = () => navigator.clipboard.writeText(txt).then(() => { $('#rcopy').textContent = 'Copied'; }, () => { $('#rcopy').textContent = 'Copy blocked: use Save'; });
+  el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); el.focus({ preventScroll: true });
 }
+// the receipt as plain text: order code, each item and its key (download links expire, so they are left out)
+function receiptText(r) { return ['Verse receipt', 'Order code: ' + r.code, ...r.items.map((i) => i.name + ' · license key ' + i.license), 'Find it again: ' + location.origin + '/store/receipt/?code=' + r.code].join('\n'); }
 async function receipt() {
   const s = new URLSearchParams(location.search).get('session'); if (!s) return;
-  for (let i = 0; i < 6; i++) { const r = await fetch('/api/store/order?session=' + encodeURIComponent(s)).then((r) => r.json()); if (r.items || !r.pending) { if (r.items) { cart = []; save(); } return showReceipt(r); } $('#receipt').hidden = false; $('#receipt').textContent = 'Confirming your payment…'; await new Promise((ok) => setTimeout(ok, 2000)); }
+  for (let i = 0; i < 6; i++) { const r = await fetch('/api/store/order?session=' + encodeURIComponent(s)).then((r) => r.json()).catch(() => ({ pending: true })); if (r.items || !r.pending) { if (r.items) { cart = []; save(); } return showReceipt(r); } $('#receipt').hidden = false; $('#receipt').textContent = 'Confirming your payment…'; await new Promise((ok) => setTimeout(ok, 2000)); }
   showReceipt({ error: 'Still confirming. Use "Find my order" below in a minute.' });
 }
-$('#lookup').onsubmit = async (e) => { e.preventDefault(); const r = await fetch('/api/store/lookup', { method: 'POST', body: JSON.stringify({ email: $('#le').value, code: $('#lc').value }) }).then((r) => r.json()); if (r.items) showReceipt(r); else $('#lout').textContent = r.error; };
+$('#lookup').onsubmit = async (e) => { e.preventDefault(); const r = await fetch('/api/store/lookup', { method: 'POST', body: JSON.stringify({ email: $('#le').value, code: $('#lc').value.trim().toUpperCase() }) }).then((r) => r.json()).catch(() => ({ error: navigator.onLine ? 'Could not reach the store. Try again in a minute.' : 'You are offline. Connect, then press Find it again.' })); if (r.items) showReceipt(r); else $('#lout').textContent = r.error || 'Not found.'; };
+{ const q = new URLSearchParams(location.search), code = q.get('code'); if (code) { $('#lc').value = code.slice(0, 8); $('#rlead').hidden = false; } if (/\/receipt\//.test(location.pathname) || q.has('session')) $('#rlead').hidden = false; } // a receipt link fills the order code (never the email)
 async function news() {
   const r = await fetch('/store/changelog.json').then((r) => r.json()).catch(() => null), l = (r && r.changelog) || [];
   if (!l.length) return; $('#new').hidden = false;
