@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: castbox.fm (https://castbox.fm/)
-- Verse: /podcasts/?show=verse&ep=ep1 (podcasts: castbox.fm, tower gate 12 of 13)
+- Verse: /podcasts/?show=verse&ep=ep1 (podcasts: castbox.fm, tower gate 12 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Best free podcast app for Apple iOS and Android / Let words move you"
 - History: [docs/HISTORY/castbox.fm.md](../HISTORY/castbox.fm.md)
 

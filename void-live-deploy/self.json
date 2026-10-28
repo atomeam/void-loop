@@ -509,84 +509,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-28T21:48:55Z",
+   "at": "2026-10-28T22:31:04Z",
+   "subject": "Catch-up browser checks wait for the reload to settle and stub the unprefixed speech recognition newer Chrome has"
+  },
+  {
+   "at": "2026-10-28T22:31:04Z",
+   "subject": "The way back from your own translation sits beside it, not inside the edit panel"
+  },
+  {
+   "at": "2026-10-28T22:31:04Z",
+   "subject": "Your own translation correction keeps its panel open, with the way back to the machine's one tap away"
+  },
+  {
+   "at": "2026-10-28T22:31:04Z",
+   "subject": "Keyboard and handwriting pad take turns, one input tool open at a time"
+  },
+  {
+   "at": "2026-10-28T22:31:03Z",
+   "subject": "On-screen keyboard gains a one-letter shift, so capitals can be typed"
+  },
+  {
+   "at": "2026-10-28T22:31:03Z",
+   "subject": "Parity inventories and page data refreshed for the newest floors"
+  },
+  {
+   "at": "2026-10-28T22:31:03Z",
    "subject": "Translate handwriting pad's pointer helper renamed so it no longer clashes with the new practice cards"
   },
   {
-   "at": "2026-10-28T21:48:55Z",
+   "at": "2026-10-28T22:31:03Z",
    "subject": "Regenerated page data after rebase"
   },
   {
-   "at": "2026-10-28T21:48:55Z",
+   "at": "2026-10-28T22:31:03Z",
    "subject": "Memorials stay up while the gate's new wider-use aspect is unmeasured; they read in progress until it is"
   },
   {
-   "at": "2026-10-28T21:48:55Z",
+   "at": "2026-10-28T22:30:59Z",
    "subject": "Regenerated page data"
   },
   {
-   "at": "2026-10-28T21:48:50Z",
+   "at": "2026-10-28T22:30:59Z",
    "subject": "Browser checks for the catch-up pages; parity inventory joins the lap loop docs"
   },
   {
-   "at": "2026-10-28T21:48:50Z",
+   "at": "2026-10-28T22:30:53Z",
    "subject": "Calendar events can carry a video call, and the view prints"
   },
   {
-   "at": "2026-10-28T21:48:50Z",
+   "at": "2026-10-28T22:30:53Z",
    "subject": "Notes keep pictures, take comments with replies, and type by voice"
   },
   {
-   "at": "2026-10-28T21:48:50Z",
+   "at": "2026-10-28T22:30:53Z",
    "subject": "Translate page catches up: recent and searchable languages, keyboard, handwriting, your own fixes, conversation, bookmarklet"
   },
   {
-   "at": "2026-10-28T21:48:50Z",
+   "at": "2026-10-28T22:30:53Z",
    "subject": "Obituaries now earn the word beaten: per-site feature inventories, cited histories, and an honest in-progress state"
   },
   {
-   "at": "2026-10-28T21:46:08Z",
-   "subject": "handoff: /ledger/ done (PR #1370)"
+   "at": "2026-10-28T22:29:18Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-28T21:42:10Z",
-   "subject": "ledger: page code in /ledger/app.js (no inline-script CSP rule: _headers stays at 88 of 90), kept offline by sw.js"
+   "at": "2026-10-28T22:26:39Z",
+   "subject": "Handoff scan: every page's inputs and outputs, unbuilt connections ranked (docs/HANDOFF-GAPS.md), BPM counter <-> metronome, lap item…"
   },
   {
-   "at": "2026-10-28T21:00:09Z",
-   "subject": "ledger: /ledger/ repo activity ledger (issues and PRs of any public GitHub repo, CSV/JSON, share-by-link, offline, ETag 304) to take over…"
+   "at": "2026-10-28T22:18:29Z",
+   "subject": "Formula engine: one definition solved for any variable, with its source; batch 1 of the formula library (172 formulas: money, health…"
   },
   {
-   "at": "2026-10-28T20:58:23Z",
-   "subject": "Tournaments test: the Discord check reads the round-wins column as whatever the scorer counts"
+   "at": "2026-10-28T22:18:28Z",
+   "subject": "Gate honesty: un-beat Amazon and YouTube, scripted journeys with negative controls, false-pass fixtures, no-mock check…"
   },
   {
-   "at": "2026-10-28T20:57:04Z",
-   "subject": "Tournaments test: the claim-form check opens its own link, since the results box now sits folded away"
-  },
-  {
-   "at": "2026-10-28T20:56:32Z",
-   "subject": "Airport codes page used more widely: a plain first line, examples to try, keys, the codes to copy, the list to download, and the search…"
-  },
-  {
-   "at": "2026-10-28T20:55:45Z",
-   "subject": "calculators: mark two words the review read as code (CSV, CODATA) as right"
-  },
-  {
-   "at": "2026-10-28T20:52:22Z",
-   "subject": "Wider use: no score number in the front-page note"
-  },
-  {
-   "at": "2026-10-28T20:52:16Z",
-   "subject": "Wider use: the front-page line is a note, not an owner decision"
-  },
-  {
-   "at": "2026-10-28T20:52:09Z",
-   "subject": "Handoff: the tower-self family test is red on main and holds lane PRs; wider-use decisions written down"
-  },
-  {
-   "at": "2026-10-28T20:51:00Z",
-   "subject": "handoff: /calculators/ just finished (PR #1365)"
+   "at": "2026-10-28T22:18:18Z",
+   "subject": "Verse cards test: the ocean gets its own article, so its card is typed by its kind again"
   }
  ],
  "builders": {
@@ -644,6 +644,14 @@
   ],
   "lessons": [
    {
+    "name": "A new page says what it takes and gives",
+    "line": "add <meta name=\"verse-handoff\" content=\"in: ...; out: ...\"> when it ships (types in tools/handoff-scan.mjs); every lap builds the top connections in docs/HANDOFF-GAPS.md and plays them in tools/handoff-e2e.mjs (standing item in…"
+   },
+   {
+    "name": "The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)",
+    "line": "a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or \"coming soon\"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never…"
+   },
+   {
     "name": "Rumble's page id is not its embed id",
     "line": "rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing."
    },
@@ -658,14 +666,6 @@
    {
     "name": "Set the PR head in code and verify it",
     "line": "#713 merged another agent's unfinished branch because a sed edit of \"head\" silently missed; build the request as data and check the reply names your branch."
-   },
-   {
-    "name": "Wrangler only uploads functions/ from the current directory",
-    "line": "a deploy from a copied folder dropped every Function; deploy from inside void-live-deploy."
-   },
-   {
-    "name": "Never write a whole file through an API to change part of it",
-    "line": "a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout so the diff shows what changed."
    }
   ]
  },
