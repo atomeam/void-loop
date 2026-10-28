@@ -29,6 +29,7 @@
   input, select, textarea { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:34px; }
   input[type=number] { width:5.4em; }
   textarea { width:100%; min-height:88px; resize:vertical; line-height:1.4; }
+  #discordout { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; min-height:9em; white-space:pre; overflow-x:auto; margin-top:8px; }
   input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
   button { font:inherit; font-size:14px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:7px 14px; min-height:34px; cursor:pointer; }
   button:hover { border-color:#3b3b4d; }
@@ -164,9 +165,11 @@
       <button type="button" id="add">Add a match</button>
       <button type="button" id="share">Copy share link</button>
       <button type="button" id="export">Export CSV</button>
+      <button type="button" id="discord">Copy for Discord</button>
       <button type="button" id="clear">Clear</button>
     </div>
     <p class="say" id="say" aria-live="polite"></p>
+    <textarea id="discordout" hidden readonly spellcheck="false" aria-label="The standings as a Discord message"></textarea>
   </section>
 
   <section class="card" aria-labelledby="h-standings">
@@ -243,7 +246,7 @@
   </footer>
 </main>
 <script type="module">
-  import { parseRounds, serializeRounds, setRoundEntry, scorer, rank, gapsFor, matchPointFor, heatList, roster, mergeNames, duplicatePlaces, duplicateText, cleanName, parseEntry, parseTiers, serializeTiers, tierLabel, tierSentence, legacyTiers, parseSpots, spotGroups, spotLine, unclaimed, claimSpot, KINDS, kindOf } from '/lib/scrim.js';
+  import { parseRounds, serializeRounds, setRoundEntry, scorer, rank, gapsFor, matchPointFor, heatList, roster, mergeNames, duplicatePlaces, duplicateText, cleanName, parseEntry, parseTiers, serializeTiers, tierLabel, tierSentence, legacyTiers, parseSpots, spotGroups, spotLine, unclaimed, claimSpot, discordText, KINDS, kindOf } from '/lib/scrim.js';
   const $ = (id) => document.getElementById(id);
   const KEY = 'a2m.void.tournaments.v1';
   // one worked example per kind; a bare /tournaments/ opens on the game night, and one click swaps to the battle-royale one
@@ -589,6 +592,14 @@
     const href = link();
     try { await navigator.clipboard.writeText(href); say('Share link copied: it carries the results, the point system, the heats and the starting spots.'); }
     catch (_) { $('link').focus(); say('The link is in the Share link line below; select it to copy.'); }
+  };
+
+  const discord = () => { const t = table(); return discordText(t.rows, sc(), { title: 'Standings · ' + KINDS[state.kind].name, rounds: t.matches.length }); };
+  $('discord').onclick = async () => {
+    const text = discord();
+    $('discordout').value = text; $('discordout').hidden = false;
+    try { await navigator.clipboard.writeText(text); say('Copied the standings as a Discord message: paste it into any channel and the columns line up.'); }
+    catch (_) { $('discordout').select(); say('The Discord message is in the box below the buttons; select it to copy.'); }
   };
 
   $('export').onclick = () => {

@@ -148,3 +148,20 @@ test('starting spots snap by key and word prefix, group by spot and say who is c
   assert.equal(claimSpot('Alpha:Old Mill', 'bravo', 'old mi', ['Alpha', 'Bravo']), 'Alpha:Old Mill\nBravo:Old Mill');
   assert.equal(claimSpot('Alpha:Old Mill\nBravo:Harbor', 'Alpha', '', ['Alpha', 'Bravo']), 'Bravo:Harbor', 'an empty spot frees the team');
 });
+
+import { discordText } from '../void-live-deploy/lib/scrim.js';
+test('Copy for Discord writes a bold title and a monospace block whose columns line up, and a name cannot break the block', () => {
+  const sc = scorer('racing', { tiers: parseTiers('1:10,2:6,3:3'), elim: 1 });
+  const { rows, matches } = rank(parseRounds('Red:1:0,Blue `x`:2:2,A very long team name here:3:1'), sc);
+  const text = discordText(rows, sc, { title: 'Cup **night**', rounds: matches.length });
+  const lines = text.split('\n');
+  assert.equal(lines[0], '**Cup night** · after 1 race');
+  assert.equal(lines[1], '```text');
+  assert.equal(lines[lines.length - 1], '```');
+  assert.equal((text.match(/```/g) || []).length, 2, 'a backtick in a name cannot close the block');
+  assert.match(lines[2], /^#  Team\s+Points  Wins  Bonus  Avg place  Best$/);
+  assert.match(text, /A very long team …/);
+  const body = lines.slice(2, -1), at = body[0].indexOf('Points') + 'Points'.length;
+  for (const l of body.slice(1)) assert.match(l.slice(at - 2, at), /\d/, 'points end in the same column: ' + l);
+  assert.match(discordText(rows, scorer('gamenight'), { rounds: 3 }), /^\*\*Standings\*\* · after 3 rounds\n/);
+});

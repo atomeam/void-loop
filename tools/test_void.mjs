@@ -868,6 +868,15 @@ try {
     check('tournament: a ?roster= link opens on the native Game night preset with every team on 0, and after one score the share link still carries the whole roster',
       r0.preset === 'gamenight' && r0.rows.join('|') === 'Ann 0|Bob 0|Cat 0' && r0.grid.join('|') === 'Ann|Bob|Cat' && r1.rows.join('|') === 'Bob 7|Ann 0|Cat 0'
         && r1.q.kind === 'gamenight' && r1.q.results === 'Bob:7' && r1.q.roster === 'Bob\nAnn\nCat' && r1.q.preset === 'gamenight', JSON.stringify({ r0, r1 }));
+    // Copy for Discord: the standings as a monospace Markdown block (shown in a box too, for when the clipboard is refused), and it fits a phone
+    await P.p.click('#discord'); await P.p.waitForTimeout(150);
+    const dc = await P.p.evaluate(() => ({ text: document.getElementById('discordout').value, shown: !document.getElementById('discordout').hidden, say: document.getElementById('say').textContent }));
+    const dl = dc.text.split('\n');
+    check('tournament: Copy for Discord writes a bold title and a lined-up monospace block of the standings',
+      dc.shown && dl[0] === '**Standings · Game night / Trivia** · after 1 round' && dl[1] === '```text' && /^#  Team\s+Points  Round wins  Rounds  Best round$/.test(dl[2]) && /^1  Bob\s+7\s+1\s+1\s+7$/.test(dl[3]) && dl[dl.length - 1] === '```' && /Discord/.test(dc.say), JSON.stringify(dc));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const dw = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth, b = document.getElementById('discord').getBoundingClientRect(), t = document.getElementById('discordout').getBoundingClientRect(); return { page: document.documentElement.scrollWidth - vw, button: b.right <= vw + 1, box: t.right <= vw + 1 }; });
+    check('tournament: at phone width (360 px) the Discord button and its message box fit without sideways scrolling', dw.page <= 0 && dw.button && dw.box, JSON.stringify(dw));
     await P.ctx.close();
   }
   // the prize wheel floor (2026-10-28): wheelofgold.com's spin-to-win, fought from /prizes/ - every slice's real chance and expected value,

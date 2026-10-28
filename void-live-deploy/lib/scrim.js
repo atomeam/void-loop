@@ -373,3 +373,18 @@ export function claimSpot(text, team, spot, teams = []) {
   if (s) out.push({ team: t, spot: s });
   return out.map((c) => c.team + ':' + c.spot).join('\n');
 }
+
+// ---- Copy for Discord: the standings as a monospace Markdown block, so the columns line up in a chat message.
+
+/** The standings as a Discord message: a bold title line, then a ```text block with the rank, team and the kind's own columns,
+ * padded so they line up (numbers right-aligned). Backticks in names become ' so a name cannot close the block early; a long name
+ * is cut to 18 characters with an ellipsis. */
+export function discordText(rows, sc, { title = 'Standings', rounds = 0 } = {}) {
+  const word = sc.word || 'match', clip = (s) => { s = String(s).replace(/`/g, "'"); return s.length > 18 ? s.slice(0, 17) + '…' : s; };
+  const head = ['#', 'Team'].concat(sc.cols.map(([h]) => h));
+  const body = rows.map((r, i) => [String(i + 1), clip(r.name)].concat(sc.cols.map(([, f]) => String(f(r)))));
+  const width = head.map((h, c) => Math.max(h.length, ...body.map((b) => b[c].length)));
+  const line = (cells) => cells.map((x, c) => (c === 1 ? x.padEnd(width[c]) : x.padStart(width[c]))).join('  ').trimEnd();
+  const after = rounds ? ' · after ' + rounds + ' ' + word + (rounds === 1 ? '' : (word === 'match' ? 'es' : 's')) : '';
+  return '**' + String(title).replace(/[*`]/g, '') + '**' + after + '\n```text\n' + [line(head)].concat(body.map(line)).join('\n') + '\n```';
+}
