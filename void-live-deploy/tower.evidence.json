@@ -170,10 +170,10 @@
   "coin flip": {
    "speed": {
     "verdict": "worse",
-    "verse": 245,
-    "best": 217,
-    "evidence": "Verse (/flip/) 245 ms to the load event (median of 3, phone width) vs justflipacoin.com 217 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:00:02.358Z",
+    "verse": 601,
+    "best": 198,
+    "evidence": "Verse (/flip/) 601 ms to the load event (median of 3, phone width) vs justflipacoin.com 198 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T16:49:18.779Z",
     "was": "equal-and-better"
    },
    "mobile": {
@@ -181,57 +181,57 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:00:02.358Z"
+    "at": "2026-10-28T16:49:18.779Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-28T13:00:02.358Z"
+    "at": "2026-10-28T16:49:18.779Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:00:02.358Z"
+    "at": "2026-10-28T16:49:18.779Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:00:02.358Z"
+    "at": "2026-10-28T16:49:18.779Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:00:02.358Z"
+    "at": "2026-10-28T16:49:18.779Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 7,
     "best": 4,
     "evidence": "Verse (/flip/) 7 of 7 things a full answer shows vs justflipacoin.com 4 of 7 things a full answer shows (Verse lacks: none; site lacks: a running count, Flip counter, Flip sound)",
-    "at": "2026-10-28T13:00:02.358Z",
+    "at": "2026-10-28T16:49:18.779Z",
     "of": 7
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
-    "best": 12,
-    "evidence": "Verse (/flip/) 4 design defects vs justflipacoin.com 12 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.24), justflipacoin.com (3 low-contrast texts, 9 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:00:02.358Z"
+    "best": 11,
+    "evidence": "Verse (/flip/) 4 design defects vs justflipacoin.com 11 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.24), justflipacoin.com (2 low-contrast texts, 9 small tap targets, layout shift 0.00)",
+    "at": "2026-10-28T16:49:18.779Z"
    },
    "flip history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 0 of 1 shown (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-28T13:00:02.358Z",
+    "at": "2026-10-28T16:49:18.779Z",
     "of": 1,
     "part": true
    },
@@ -240,7 +240,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 right against the worked-out answer; judged against the standard, not justflipacoin.com (the site is not asked)",
-    "at": "2026-10-28T13:00:02.358Z",
+    "at": "2026-10-28T16:49:18.779Z",
     "of": 3
    },
    "flip animation": {
@@ -248,7 +248,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-28T13:00:02.358Z",
+    "at": "2026-10-28T16:49:18.779Z",
     "of": 1,
     "part": true
    }
