@@ -206,9 +206,18 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - 2026-10-22 run 5 · site tester (issues labelled site-test): 12 open on GitHub, 5 still to fix (3 fixed this run and 4 already handled, waiting to be closed)
 - 2026-10-22 run 5 · frontier (domains/void.frontier.md): 21 open (unchanged since run 2; not touched this run)
 - 2026-10-22 run 5 · metrics: 8 closed, 11.1% blocked (top reason: the answer model is in Claude's lib/models.js; nothing waits on Adam), duplicate rate 17%, median 4.0 days from queue to built
+- 2026-10-28 run 6 · V01D asks (void.asks.json): 2 open (value-drift waits on Adam's privacy call, community milestone waits on Claude's gumroad.js); 17 closed
+- 2026-10-28 run 6 · handoff Up for grabs: 25 open
+- 2026-10-28 run 6 · store queue (store.queue.jsonl): 0 open
+- 2026-10-28 run 6 · wishlist (docs/wishlist.md): 14 rows; #2 now says Verse's side is done (0 KV writes, guarded) and the namespace move is dropped (the limit is per account)
+- 2026-10-28 run 6 · convergence (docs/convergence.md): steps 2 to 10 open; nightsky joined the time family (0 moved over 5,457 asks)
+- 2026-10-28 run 6 · site tester (label site-test): 0 open, all 80 closed (newly zero)
+- 2026-10-28 run 6 · frontier (domains/void.frontier.md): 21 open
+- 2026-10-28 run 6 · metrics: closed 6 of 8 touched, 25% blocked (top: value-drift needs Adam's privacy call), duplicate rate 0.88 of asks, median 0.8 days queue to built
 
 ## Ladders
 
+- 2026-10-28 (Grok Bot): the box lost its Node 22 links in /usr/local/bin, so every lists run from 10-22 to 10-28 died at startup. Fix: `sudo ln -sf ~/.local/node22/bin/{node,npm,npx,corepack} /usr/local/bin/` then `npm ci`; check `node -v` first when a routine fails instantly.
 - **A page for every lane site from one table (Claude, 2026-10-26)**: add a row to `lib/tool-sites.js` (path, card ask, tools or features, asks), add the lane site to `LANE_PAGES` in `lib/tower.js`, run `node tools/tool-site-pages.mjs && node tools/seo-pages.mjs && node tools/preload.mjs && node tools/sitemap.mjs`; TOOLS, RELATED, the SEO row, the card link and the service worker's list need the path too (sw.js TOOLS is a literal). `node tools/heavy.mjs node tools/pdf-kanban-e2e.mjs --shots <dir>` plays both families at 390 px.
 - **Parallel builders, one ship (Claude, 2026-10-15)**: builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (`node tools/skills-index.mjs --write`, `node tools/families.mjs`, `node tools/mcp-skills.mjs`); then `node tools/merge-main.mjs` before merging the branch in (it keeps the append-only ledger whole). A worktree outside the repo needs node_modules linked in for the browser suite.
 

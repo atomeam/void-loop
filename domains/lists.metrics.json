@@ -279,6 +279,73 @@
      ]
     }
    ]
+  },
+  {
+   "at": "2026-10-28T16:45:00Z",
+   "run": 6,
+   "closed": 6,
+   "touched": 8,
+   "pct_blocked": 25.0,
+   "top_block": "value-drift tracker: visitor appraisals are never stored by design, so tracking their drift needs the owner's go-ahead on a privacy rule; workaround proposed: track drift of Verse's own published store prices, which are already public",
+   "dup_rate": 0.88,
+   "dup_basis": "15 of 17 closed asks were rewordings of an item already built or decided",
+   "median_days": 0.8,
+   "asks_open_start": 19,
+   "asks_open_end": 2,
+   "note": "every run from 2026-10-22 to 2026-10-28 failed before starting because the box lost its Node 22 links; fixed this run",
+   "items": [
+    {
+     "what": "weather page never stays busy: every fetch gives up after 12 s and aria-busy clears in finally; tools/weather-busy.test.mjs",
+     "list": "V01D asks (5 wordings)",
+     "status": "built"
+    },
+    {
+     "what": "zero KV writes kept by tools/kv-writes.test.mjs (Verse's only KV binding is read-only, counters use caches.default)",
+     "list": "V01D asks (3 wordings), wishlist #2",
+     "status": "built"
+    },
+    {
+     "what": "Words and the world 28 of 28 proven",
+     "list": "V01D asks (3 wordings)",
+     "status": "duplicate",
+     "link": "tools/words-family.test.mjs (lists run 5)"
+    },
+    {
+     "what": "churn cap",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "void.growth.json 2026-10-18T16:51:30Z"
+    },
+    {
+     "what": "move non-Verse workers off the shared KV namespace",
+     "list": "V01D asks (6 wordings), wishlist #2",
+     "status": "declined",
+     "why": "the free KV write limit is per account, so a namespace move cuts nothing; the rest is the owner's call on his own non-Verse workers"
+    },
+    {
+     "what": "nightsky joins the time family",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "value-drift tracker",
+     "list": "V01D asks",
+     "status": "blocked",
+     "reason": "appraisals are never stored, so drift tracking breaks the privacy rule as worded",
+     "unblock": "owner decides whether drift of Verse's own public store prices is enough",
+     "who": "Adam",
+     "tried": "topic-level counts only; public store-price drift (proposed, not built)"
+    },
+    {
+     "what": "community milestone on the stage",
+     "list": "V01D asks",
+     "status": "blocked",
+     "reason": "needs a join total from functions/api/gumroad.js, which is Claude's",
+     "unblock": "Claude exposes a total-only join count (no per-person data)",
+     "who": "Claude",
+     "tried": "total-count milestone from the store's own public product count"
+    }
+   ]
   }
  ]
 }

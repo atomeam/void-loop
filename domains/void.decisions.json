@@ -232,6 +232,18 @@
     "ask-20261021-2133-3": {
       "decision": "built",
       "why": "built in lists run 2 (2026-10-21): the fuzzy and privacy-guard fast checks are green on main"
+    },
+    "ask-20261027-2205-1": {
+      "decision": "built",
+      "why": "built in lists run 6 (2026-10-28): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs fails if one returns"
+    },
+    "ask-20261027-2205-2": {
+      "decision": "built",
+      "why": "built in lists run 6 (2026-10-28): every fetch on the weather page times out after 12 s and aria-busy clears in finally (tools/weather-busy.test.mjs)"
+    },
+    "ask-20261027-2205-3": {
+      "decision": "declined",
+      "why": "lists run 6 (2026-10-28): the free KV write limit is per Cloudflare account, so moving workers to another namespace cuts nothing; Verse's own writes are zero and guarded (tools/kv-writes.test.mjs); the non-Verse workers' writes are the owner's call, and wishlist #2 says so"
     }
   },
   "ask-20261013-1850-1": {
