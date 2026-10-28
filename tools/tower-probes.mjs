@@ -436,24 +436,24 @@ export const PROBES = Object.freeze({
   // yunite.xyz (owner, 2026-10-27): the scrim scorer a Fortnite lobby passes around. Its scores arrive through an account and its bot
   // reads screenshots; Verse's /tournaments/ takes results typed in and shows the arithmetic - placement pays the highest matching threshold
   // (a win is not a win plus the top-five), the tiebreakers are points, wins, eliminations then average placement, heats are dealt in snake
-  // order and two teams on one drop spot are flagged contested. The seeded ask is a three-team match, worked out by hand below.
+  // order and two teams on one starting spot are flagged contested. The seeded ask is a three-team match, worked out by hand below.
   tournaments: {
     site: 'https://yunite.xyz/', verse: '/tournaments/',
-    ask: { verse: '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Tilted%20Towers,Bravo:Pleasant%20Park,Charlie:Tilted%20Towers&elim=2&win=10&top5=5' },
+    ask: { verse: '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor,Charlie:Old%20Mill&elim=2&win=10&top5=5' },
     truth: [['the first seeded team', /Alpha/], ['its points, worked out: 1st is 10 plus 6 x 2 (22)', /Alpha\s+22\s+1\s+6/],
       ['the second seeded team', /Bravo/], ['its points, worked out: 2nd is 5 plus 7 x 2 (19)', /Bravo\s+19\s+0\s+7/],
       ['the third seeded team', /Charlie/], ['its points, worked out: 6th is 0 plus 3 x 2 (6)', /Charlie\s+6\s+0\s+3/],
       ['the total teams', /3 teams/], ['the total eliminations, worked out (16)', /16 eliminations/], ['the total points, worked out (47)', /47 points/],
       ['the leader, named', /leader Alpha/], ['the threshold rule, said on the page', /highest matching threshold/],
       ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/],
-      ['the contested drop spot', /Tilted Towers[\s\S]*?contested/], ['the snake heat split', /snake order/]],
+      ['the contested starting spot', /Old Mill[\s\S]*?contested/], ['the snake heat split', /snake order/]],
     facts: [
       ['tournament standings', /tournament standings/i], ['a point system', /point system/i], ['preset systems', /Finals-style/i],
       ['team sizes', /(?:solo|duos|trios|squads)/i], ['points per elimination', /per elimination/i],
       ['the threshold rule, said', /highest matching threshold/], ['the standings table', /standings after every match entered/i],
       ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/], ['wins counted', /wins/i],
       ['average placement', /average placement/i], ['one match per line', /one match per line/i],
-      ['snake heats', /snake order/i], ['drop spots', /drop spots/i], ['contested spots flagged', /contested/i],
+      ['snake heats', /snake order/i], ['starting spots', /starting spots/i], ['contested spots flagged', /contested/i],
       ['CSV in', /Import CSV/], ['CSV out', /Export CSV/], ['a share link', /Copy share link/],
       ['the share link carries the state', /Share link: \/tournaments\/\?results=/],
       ['nothing sent', /nothing is sent anywhere/i], ['no account', /no account/i], ['works offline', /works offline/i],
@@ -466,7 +466,7 @@ export const PROBES = Object.freeze({
       'point system presets': [['a finals-style preset', /Finals-style/], ['a cash-cup-style preset', /Cash-cup-style/], ['a scrim preset', /Scrim/], ['a custom choice', /Custom/]],
       'multi-match standings': [['one match per line', /one match per line/i], ['standings after every match', /standings after every match entered/i], ['average placement named', /average placement/i], ['the counts for the set', /\d+ teams? · \d+ match/]],
       'heat split': [['snake order', /snake order/i], ['the heats numbered', /Heat 1/], ['a second heat', /Heat 2/], ['seeded by standing rank', /seeded by standing rank/i]],
-      'drop spots': [['drop spots', /drop spots/i], ['contested flagged', /contested/i], ['a claimed place', /Tilted Towers/], ['clear ones too', /\bclear\b/]],
+      'drop spots': [['starting spots', /starting spots \(drops/i], ['contested flagged', /contested/i], ['a claimed place', /Old Mill/], ['who is contesting, ranked', /#1 Alpha \(22 pts\) vs #3 Charlie \(6 pts\)/], ['clear ones too', /\bclear\b/]],
       'CSV in and out': [['import', /Import CSV/], ['export', /Export CSV/], ['the columns named', /team, place, eliminations/i], ['the heading', /CSV in and out/]],
     },
   },

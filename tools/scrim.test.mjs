@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { nameKey, parseMatches, roster, mergeNames, duplicatePlaces, duplicateText, serialize, setEntry, renameTeam, standings, legacyPoints, heatList, ordinal, matchCell, catchUp, gaps, matchPoint } from '../void-live-deploy/lib/scrim.js';
+import { snapName, parseSpots, spotGroups, spotLine, unclaimed, claimSpot } from '../void-live-deploy/lib/scrim.js';
 
 const RULES = { elim: 2, win: 10, top5: 5, top10: 0, top15: 0, top25: 0 };
 const pts = (p) => legacyPoints(RULES, p);
@@ -129,4 +130,21 @@ test('racing pays a graded 10/6/3 plus a bonus point each, and the gap speaks in
   const { rows } = rank(parseRounds('Red:1:0,Blue:2:2,Green:3:1,Grey:4:0'), sc);
   assert.deepEqual(rows.map((r) => [r.name, r.points]), [['Red', 10], ['Blue', 8], ['Green', 4], ['Grey', 0]]);
   assert.equal(gapsFor(rows, sc)[1].hint, '-2 pts · needs 3 bonus points or a Top 3 to lead');
+});
+
+test('starting spots snap by key and word prefix, group by spot and say who is contesting with rank and points', () => {
+  assert.equal(snapName('old m', ['Old Mill', 'Harbor']), 'Old Mill');
+  assert.equal(snapName('HARB', ['Old Mill', 'Harbor']), 'Harbor');
+  assert.equal(snapName('h', ['Harbor', 'Hill']), 'h', 'two prefix hits stay as typed');
+  assert.equal(snapName('Old', ['Old Mill']), 'Old', 'a different word count is a different spot');
+  const rows = [{ name: 'Alpha', points: 22 }, { name: 'Bravo', points: 19 }, { name: 'Charlie', points: 6 }];
+  const claims = parseSpots('alpha:Old Mill\nBravo:Harbor\n charlie : old mill\nDelta:harb', rows.map((r) => r.name));
+  assert.deepEqual(claims, [{ team: 'Alpha', spot: 'Old Mill' }, { team: 'Bravo', spot: 'Harbor' }, { team: 'Charlie', spot: 'Old Mill' }, { team: 'Delta', spot: 'Harbor' }]);
+  const g = spotGroups(claims, rows);
+  assert.deepEqual(g.map((x) => [x.spot, x.contested, spotLine(x)]), [['Old Mill', true, '#1 Alpha (22 pts) vs #3 Charlie (6 pts)'], ['Harbor', true, '#2 Bravo (19 pts) vs Delta']]);
+  assert.deepEqual(unclaimed(claims.slice(0, 2), rows), ['Charlie']);
+  assert.equal(parseSpots('Alpha:Harbor\nAlpha:Old Mill').length, 1, 'a team keeps its last claim');
+  assert.equal(claimSpot('Alpha:Old Mill', 'bravo', 'old', ['Alpha', 'Bravo']), 'Alpha:Old Mill\nBravo:old');
+  assert.equal(claimSpot('Alpha:Old Mill', 'bravo', 'old mi', ['Alpha', 'Bravo']), 'Alpha:Old Mill\nBravo:Old Mill');
+  assert.equal(claimSpot('Alpha:Old Mill\nBravo:Harbor', 'Alpha', '', ['Alpha', 'Bravo']), 'Bravo:Harbor', 'an empty spot frees the team');
 });
