@@ -2,6 +2,34 @@
 
 One page per thing Verse replaced, with what the old tool did, what Verse does instead, and the gaps, said plainly. Newest first.
 
+## calculator.net's sitemap, Other → /calculators/ (2026-10-28)
+
+**Before.** tools/rival-inventory.mjs read calculator.net/sitemap.html and found 19 calculators in its Other section that Verse did not have.
+
+**Now.** 15 of them work on https://a-to-mind.com/calculators/ as 17 calculators, with known-answer tests in tools/calc-other.test.mjs (the NWS wind-chill and heat-index charts, the calendar, the ENERGY STAR room table, sums worked by hand). This change only adds; nothing was removed.
+
+| calculator.net tool | On Verse | Where |
+| --- | --- | --- |
+| Wind chill | added | `?calc=wind-chill` (NWS 2001; says when it is outside the formula's range) |
+| Heat index | added | `?calc=heat-index` (NWS Rothfusz with its adjustments, and the caution level) |
+| Dew point | added | `?calc=dew-point` (Magnus) |
+| Day of the week | added | `?calc=day-of-week` (and day of the year, ISO week, leap year) |
+| Roman numeral converter | added | `?calc=roman-numerals` (both ways, 1 to 3999) |
+| URL encode / decode | added | `?calc=url-encode` (RFC 3986) |
+| Bandwidth | added | `?calc=download-time` (KB/MB and KiB/MiB, overhead) |
+| Sleep | added | `?calc=sleep-cycles` (90-minute cycles, either way) |
+| GDP | added | `?calc=gdp` (C + I + G + X − M, real by the deflator) |
+| Horsepower | added | `?calc=horsepower` (torque × rpm) |
+| Engine horsepower | added | `?calc=engine-horsepower` (from quarter-mile time or trap speed) |
+| Golf handicap | added | `?calc=handicap-index` (the 3-to-20-score table) and `?calc=golf-differential` (and course handicap) |
+| Time card | added | `?calc=time-card` (overtime past 40 hours) |
+| Dice roller | added | `?calc=dice-roller` (crypto random; marked random) |
+| Height | added | `?calc=adult-height` (mid-parental height and its ±8.5 cm range) |
+| BTU | added | `?calc=room-ac-btu` (ENERGY STAR room air conditioner table) |
+| Bra size | missing | sizing conventions differ by country and brand; not built rather than guessed |
+| Shoe size conversion | missing | the size tables differ by brand; not built rather than guessed |
+| Love | missing, on purpose | it is not a real calculation |
+
 ## calculator.net's sitemap, Maths → /calculators/ (2026-10-28)
 
 **Before.** tools/rival-inventory.mjs read calculator.net/sitemap.html and found 16 Maths calculators that Verse did not have.

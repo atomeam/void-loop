@@ -656,6 +656,109 @@ CALCULATORS.push(
       return { p, sig05: p < 0.05 ? 'yes (p < 0.05)' : 'no (p ≥ 0.05)', sig01: p < 0.01 ? 'yes (p < 0.01)' : 'no (p ≥ 0.01)' }; }, { src: 'https://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm' }),
 );
 
+// ---------------- calculator.net's full sitemap, Other (tools/rival-inventory.mjs finds the gaps; docs/PARITY.md lists them): the gaps, filled
+const toF = (k) => ((k - 273.15) * 9) / 5 + 32, fromF = (f) => ((f - 32) * 5) / 9 + 273.15, toC = (k) => k - 273.15;
+/** the NWS heat index in °F from °F and relative humidity in %: Steadman's simple form, else the Rothfusz regression with the NWS adjustments. Pure. */
+export function heatIndexF(T, RH) {
+  const simple = 0.5 * (T + 61 + (T - 68) * 1.2 + RH * 0.094); if ((simple + T) / 2 < 80) return simple;
+  let hi = -42.379 + 2.04901523 * T + 10.14333127 * RH - 0.22475541 * T * RH - 0.00683783 * T * T - 0.05481717 * RH * RH + 0.00122874 * T * T * RH + 0.00085282 * T * RH * RH - 0.00000199 * T * T * RH * RH;
+  if (RH < 13 && T >= 80 && T <= 112) hi -= ((13 - RH) / 4) * Math.sqrt((17 - Math.abs(T - 95)) / 17);
+  else if (RH > 85 && T >= 80 && T <= 87) hi += ((RH - 85) / 10) * ((87 - T) / 5);
+  return hi;
+}
+const clock12 = (min) => { min = ((Math.round(min) % 1440) + 1440) % 1440; const h = Math.floor(min / 60), m = min % 60; return ((h + 11) % 12) + 1 + ':' + String(m).padStart(2, '0') + (h < 12 ? ' am' : ' pm'); };
+const ROMAN = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+export const toRoman = (n) => { need(Number.isInteger(n) && n >= 1 && n <= 3999, 'Roman numerals here run from 1 to 3999'); let s = ''; for (const [v, r] of ROMAN) while (n >= v) { s += r; n -= v; } return s; };
+export function fromRoman(s) {
+  const t = String(s).trim().toUpperCase(); need(t && /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/.test(t), '"' + s + '" is not a Roman numeral written the standard way (such as MCMXCIV)');
+  let n = 0, i = 0; for (const [v, r] of ROMAN) while (t.startsWith(r, i)) { n += v; i += r.length; } return n;
+}
+/** the handicap index from score differentials (the newest last), by the 2020 worldwide rules' table for 3 to 20 scores. Pure. */
+export function handicapIndex(diffs) {
+  const d = diffs.slice(-20), n = d.length; need(n >= 3, 'a handicap index needs at least 3 scores');
+  const [use, adj] = n === 3 ? [1, -2] : n === 4 ? [1, -1] : n === 5 ? [1, 0] : n === 6 ? [2, -1] : n <= 8 ? [2, 0] : n <= 11 ? [3, 0] : n <= 14 ? [4, 0] : n <= 16 ? [5, 0] : n <= 18 ? [6, 0] : n === 19 ? [7, 0] : [8, 0];
+  const low = [...d].sort((a, b) => a - b).slice(0, use); return { index: Math.min(54, Math.round((sum(low) / use + adj) * 10) / 10), used: use, of: n, adj };
+}
+const SIZE = { k: 'su', label: 'Size unit', kind: 'choice', opts: [['1e3', 'KB (1,000 bytes)'], ['1e6', 'MB'], ['1e9', 'GB'], ['1e12', 'TB'], ['1024', 'KiB (1,024 bytes)'], ['1048576', 'MiB'], ['1073741824', 'GiB'], ['1099511627776', 'TiB']], v: '1e9' };
+const RATE = { k: 'ru', label: 'Speed unit', kind: 'choice', opts: [['1e3', 'kbit/s'], ['1e6', 'Mbit/s'], ['1e9', 'Gbit/s'], ['8e6', 'MB/s (megabytes)']], v: '1e6' };
+const dlText = (s) => { if (s < 60) return fmt(s, 4) + ' s'; const t = Math.round(s), d = Math.floor(t / 86400), h = Math.floor((t % 86400) / 3600), m = Math.floor((t % 3600) / 60), r = t % 60; return [d && d + ' d', (d || h) && h + ' h', m + ' min', r + ' s'].filter(Boolean).join(' '); };
+CALCULATORS.push(
+  make('wind-chill', 'Wind chill', 'Everyday', 'WC (°F) = 35.74 + 0.6215T − 35.75V^0.16 + 0.4275T·V^0.16, T in °F and V in mph at 10 m (NWS, 2001); defined for T ≤ 50 °F and V ≥ 3 mph',
+    ['T|Air temperature|temperature|°F|0', 'V|Wind speed|speed|mph|15'], ['wc|Feels like|temperature|°F', 'note|Note|text'],
+    (x) => { const T = toF(x.T), V = x.V / 0.44704; need(V >= 0, 'wind speed cannot be negative'); const ok = T <= 50 && V >= 3, p = V ** 0.16;
+      return { wc: ok ? fromF(35.74 + 0.6215 * T - 35.75 * p + 0.4275 * T * p) : x.T, note: ok ? 'within the formula’s range' : 'outside the formula’s range (it needs 50 °F or colder and wind of 3 mph or more), so this is the air temperature' }; },
+    { src: 'https://www.weather.gov/media/epz/wxcalc/windChill.pdf' }),
+  make('heat-index', 'Heat index', 'Everyday', 'NWS: HI = −42.379 + 2.04901523T + 10.14333127RH − 0.22475541T·RH − 0.00683783T² − 0.05481717RH² + 0.00122874T²RH + 0.00085282T·RH² − 0.00000199T²RH² (Rothfusz), with its low- and high-humidity adjustments, and Steadman’s simple form below 80 °F',
+    ['T|Air temperature|temperature|°F|90', 'RH|Relative humidity|ratio|%|70'], ['hi|Feels like|temperature|°F', 'risk|NWS caution level|text'],
+    (x) => { need(x.RH >= 0 && x.RH <= 1, 'humidity is from 0% to 100%'); const hi = heatIndexF(toF(x.T), x.RH * 100);
+      return { hi: fromF(hi), risk: hi >= 125 ? 'extreme danger (125 °F or more)' : hi >= 103 ? 'danger (103–124 °F)' : hi >= 90 ? 'extreme caution (90–102 °F)' : hi >= 80 ? 'caution (80–89 °F)' : 'below the caution level (under 80 °F)' }; },
+    { src: 'https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml' }),
+  make('dew-point', 'Dew point', 'Everyday', 'γ = ln(RH) + bT ÷ (c + T); Td = cγ ÷ (b − γ), T in °C, b = 17.625, c = 243.04 °C (Magnus form, Alduchov and Eskridge 1996)',
+    ['T|Air temperature|temperature|°C|25', 'RH|Relative humidity|ratio|%|60'], ['td|Dew point|temperature|°C', 'spread|Temperature minus dew point|tempdiff|°C'],
+    (x) => { need(x.RH > 0 && x.RH <= 1, 'humidity is more than 0% and at most 100%'); const T = toC(x.T), g = Math.log(x.RH) + (17.625 * T) / (243.04 + T), td = (243.04 * g) / (17.625 - g); return { td: td + 273.15, spread: T - td }; },
+    { src: 'https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2' }),
+  make('day-of-week', 'Day of the week for a date', 'Everyday', 'the weekday, the day of the year and the ISO 8601 week (weeks start on Monday; week 1 holds the year’s first Thursday)', ['d|Date|date||2026-10-28'],
+    ['wd|Day of the week|text', 'doy|Day of the year|number', 'iso|ISO week|text', 'left|Days left in the year|number', 'leap|Leap year?|text'],
+    (x) => { const iso = isoDay(x.d), t = new Date(iso + 'T00:00:00Z'), y = t.getUTCFullYear(), jan1 = Date.UTC(y, 0, 1), doy = Math.round((t - jan1) / 864e5) + 1, leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+      const dow = (t.getUTCDay() + 6) % 7, th = new Date(t.getTime() + (3 - dow) * 864e5), wy = th.getUTCFullYear(), week = Math.floor(Math.round((th - Date.UTC(wy, 0, 1)) / 864e5) / 7) + 1;
+      return { wd: weekday(iso), doy, iso: wy + '-W' + String(week).padStart(2, '0'), left: (leap ? 366 : 365) - doy, leap: leap ? 'yes' : 'no' }; }),
+  make('roman-numerals', 'Roman numeral converter', 'Everyday', 'M 1000, CM 900, D 500, CD 400, C 100, XC 90, L 50, XL 40, X 10, IX 9, V 5, IV 4, I 1, biggest first; 1 to 3999', ['v|A number or a Roman numeral|text||1994'],
+    ['out|Converted|text', 'n|As a number|number'],
+    (x) => { const t = String(x.v).trim(); if (/^\d+$/.test(t)) { const n = Number(t); return { out: toRoman(n), n }; } const n = fromRoman(t); return { out: String(n), n }; }),
+  make('url-encode', 'URL encode and decode', 'Everyday', 'percent-encoding (RFC 3986): each byte of the UTF-8 text outside the unreserved set A–Z a–z 0–9 - _ . ~ becomes %XX',
+    ['s|Text|text||a b&c=d/é', { k: 'how', label: 'Do', kind: 'choice', opts: [['part', 'encode a part (a query value or path piece)'], ['url', 'encode a whole address (keeps : / ? & = #)'], ['dec', 'decode']], v: 'part' }],
+    ['out|Result|text', 'len|Length|number|characters'],
+    (x) => { const s = String(x.s ?? ''); let out; if (x.how === 'dec') { try { out = decodeURIComponent(s.replace(/\+/g, ' ')); } catch { need(false, 'that has a % not followed by two hex digits of valid UTF-8'); } }
+      else out = x.how === 'url' ? encodeURI(s) : encodeURIComponent(s).replace(/[!'()*]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase()); return { out, len: out.length }; },
+    { src: 'https://www.rfc-editor.org/rfc/rfc3986#section-2.1' }),
+  make('download-time', 'Download time (bandwidth)', 'Everyday', 'time = size × 8 bits ÷ (speed × (1 − overhead)); KB, MB, GB are powers of 1,000 and KiB, MiB, GiB powers of 1,024 (IEC 80000-13)',
+    ['size|File size|number||1', SIZE, 'rate|Connection speed|number||100', RATE, 'ovh|Lost to protocol overhead|ratio|%|0'], ['t|Time|time|s', 'text|That is|text', 'per|Data an hour|number|GB'],
+    (x) => { pos(x.size, 'File size'); pos(x.rate, 'Connection speed'); need(x.ovh >= 0 && x.ovh < 1, 'overhead is from 0% to under 100%'); const bits = x.size * Number(x.su) * 8, bps = x.rate * Number(x.ru) * (1 - x.ovh), t = bits / bps;
+      return { t, text: dlText(t), per: (bps * 3600) / 8 / 1e9 }; }),
+  make('sleep-cycles', 'Sleep time by 90-minute cycles', 'Health', 'bedtime = wake time − time to fall asleep − n × 90 min (or wake time = bedtime + time to fall asleep + n × 90 min), for 3 to 6 cycles',
+    [{ k: 'mode', label: 'I know', kind: 'choice', opts: [['wake', 'when I need to wake up'], ['bed', 'when I am going to bed']], v: 'wake' }, 't|Time|text||7:00 am', 'fall|Time to fall asleep|time|min|15'],
+    ['six|6 cycles (9 h)|text', 'five|5 cycles (7 h 30 min)|text', 'four|4 cycles (6 h)|text', 'three|3 cycles (4 h 30 min)|text'],
+    (x) => { const t = clockOf(x.t, 'Time'), f = x.fall / 60; need(f >= 0 && f <= 180, 'time to fall asleep is 0 to 180 minutes'); const at = (n) => clock12(x.mode === 'bed' ? t + f + n * 90 : t - f - n * 90);
+      return { six: at(6), five: at(5), four: at(4), three: at(3) }; }, { src: 'https://www.sleepfoundation.org/how-sleep-works/stages-of-sleep' }),
+  make('gdp', 'GDP by expenditure', 'Money', 'GDP = C + I + G + (X − M); real GDP = nominal GDP ÷ deflator × 100', ['C|Consumer spending (C)|money|$|15000', 'I|Investment (I)|money|$|4000', 'G|Government spending (G)|money|$|4500', 'X|Exports (X)|money|$|2500', 'M|Imports (M)|money|$|3200', 'def|GDP deflator (base year 100)|number||100'],
+    ['gdp|GDP (nominal)|money|$', 'nx|Net exports (X − M)|money|$', 'real|Real GDP|money|$', 'cshare|Consumer spending share|ratio|%'],
+    (x) => { pos(x.def, 'The deflator'); const gdp = x.C + x.I + x.G + x.X - x.M; return { gdp, nx: x.X - x.M, real: (gdp / x.def) * 100, cshare: gdp ? x.C / gdp : null }; }, { src: 'https://www.bea.gov/resources/methodologies/nipa-handbook' }),
+  make('horsepower', 'Horsepower from torque and rpm', 'Engineering', 'P = τω = τ × 2π × rpm ÷ 60; in pound-feet, hp = lb·ft × rpm ÷ 5252', ['tq|Torque|torque|lbf·ft|300', 'rpm|Engine speed|number|rpm|5252'],
+    ['p|Power|power|hp', 'kw|Power|power|kW'], (x) => { need(x.rpm >= 0, 'rpm cannot be negative'); const p = (x.tq * 2 * PI * x.rpm) / 60; return { p, kw: p }; }),
+  make('engine-horsepower', 'Engine horsepower from a quarter-mile run', 'Auto', 'rules of thumb: hp = weight (lb) ÷ (ET ÷ 5.825)³ from elapsed time; hp = weight (lb) × (trap speed in mph ÷ 234)³ from trap speed',
+    ['w|Weight with the driver|mass|lb|3000', 'et|Quarter-mile time (ET)|time|s|12', 'v|Trap speed|speed|mph|115'], ['byet|From the time|power|hp', 'bytrap|From the trap speed|power|hp', 'note|Note|text'],
+    (x) => { pos(x.w, 'Weight'); const lb = x.w / 0.45359237, HP = 745.6998715822702; const byet = x.et > 0 ? (lb / (x.et / 5.825) ** 3) * HP : null, bytrap = x.v > 0 ? lb * (x.v / 0.44704 / 234) ** 3 * HP : null;
+      need(byet !== null || bytrap !== null, 'give the time, the trap speed or both'); return { byet, bytrap, note: 'an estimate of power at the wheels, from the run alone; traction and gearing move it' }; }),
+  make('golf-differential', 'Golf score differential', 'Sports', 'differential = 113 ÷ slope rating × (adjusted gross score − course rating − playing conditions adjustment), to one decimal; course handicap = index × slope ÷ 113 + (course rating − par)',
+    ['score|Adjusted gross score|number||90', 'rating|Course rating|number||72.0', 'slope|Slope rating|number||130', 'pcc|Playing conditions adjustment|number||0', 'index|Handicap index (for the course handicap)|number||15', 'par|Par|number||72'],
+    ['diff|Score differential|number', 'ch|Course handicap|number'],
+    (x) => { need(x.slope >= 55 && x.slope <= 155, 'slope ratings run from 55 to 155'); return { diff: Math.round(((113 / x.slope) * (x.score - x.rating - x.pcc)) * 10) / 10, ch: Math.round((x.index * x.slope) / 113 + (x.rating - x.par)) }; },
+    { src: 'https://www.randa.org/en/rog/the-rules-of-handicapping' }),
+  make('handicap-index', 'Golf handicap index', 'Sports', 'the average of the lowest differentials among the most recent 20 (the lowest 8 of 20; fewer scores use fewer, with −2.0 for 3 scores, −1.0 for 4 and 6), to one decimal, at most 54.0',
+    ['d|Score differentials, oldest first|list:number||15.6, 12.1, 18.4, 14.0, 16.2, 13.5, 19.0, 11.8, 17.3, 14.9, 15.5, 12.9, 20.1, 16.8, 13.2, 14.4, 18.0, 15.1, 12.5, 16.0'],
+    ['index|Handicap index|number', 'used|Differentials averaged|text'],
+    (x) => { const h = handicapIndex(x.d); return { index: h.index, used: 'lowest ' + h.used + ' of ' + h.of + (h.adj ? ', then ' + fmt(h.adj) : '') }; }, { src: 'https://www.randa.org/en/rog/the-rules-of-handicapping' }),
+  make('time-card', 'Weekly time card and overtime', 'Money', 'regular = min(hours, 40); overtime = hours over 40 at 1.5 × pay (US federal rule for non-exempt workers); pay = regular × rate + overtime × rate × multiplier',
+    ['h|Hours each day|list:number||8, 9, 10, 8, 9', 'rate|Hourly pay|money|$|20', 'at|Overtime after (hours a week)|number|h|40', 'mult|Overtime multiplier|number|×|1.5'],
+    ['total|Hours|number|h', 'reg|Regular hours|number|h', 'ot|Overtime hours|number|h', 'pay|Gross pay|money|$'],
+    (x) => { need(x.h.length && x.h.every((v) => v >= 0 && v <= 24), 'each day is 0 to 24 hours'); need(x.at >= 0 && x.mult >= 1, 'check the overtime rule'); const total = sum(x.h), reg = Math.min(total, x.at), ot = total - reg;
+      return { total, reg, ot, pay: reg * x.rate + ot * x.rate * x.mult }; }, { src: 'https://www.dol.gov/agencies/whd/overtime' }),
+  make('dice-roller', 'Dice roller', 'Everyday', 'each die lands 1 to sides, each as likely (crypto.getRandomValues); expected total = dice × (sides + 1) ÷ 2 + modifier', ['n|Dice|number||2', 'sides|Sides on each|number||6', 'k|Add to the total|number||0'],
+    ['total|Total|number', 'rolls|Each die|text', 'lo|Lowest total possible|number', 'hi|Highest total possible|number', 'avg|Average total|number'],
+    (x) => { need(Number.isInteger(x.n) && x.n >= 1 && x.n <= 1000, 'roll 1 to 1000 dice'); need(Number.isInteger(x.sides) && x.sides >= 2 && x.sides <= 1e6, 'a die has 2 or more whole sides'); const r = Array.from({ length: x.n }, () => 1 + Math.floor(RNG.next() * x.sides));
+      return { total: sum(r) + x.k, rolls: r.join(', '), lo: x.n + x.k, hi: x.n * x.sides + x.k, avg: (x.n * (x.sides + 1)) / 2 + x.k }; }, { random: true }),
+  make('room-ac-btu', 'Air conditioner size for a room (BTU)', 'Construction', 'ENERGY STAR room sizing table (100–150 ft² → 5,000 BTU/h … 2,000–2,500 ft² → 34,000), then −10% for a heavily shaded room, +10% for a very sunny one, +600 BTU/h for each person past two, +4,000 BTU/h in a kitchen',
+    ['a|Room floor area|area|ft²|400', { k: 'sun', label: 'Sun', kind: 'choice', opts: [['0', 'ordinary'], ['-0.1', 'heavily shaded'], ['0.1', 'very sunny']], v: '0' }, 'people|People who usually use the room|number||2', { k: 'kit', label: 'Kitchen?', kind: 'choice', opts: [['0', 'no'], ['1', 'yes']], v: '0' }],
+    ['btu|Cooling capacity|number|BTU/h', 'w|Cooling capacity|power|kW', 'band|Table row|text'],
+    (x) => { const ft = x.a / 0.09290304; need(ft >= 100 && ft <= 2500, 'the ENERGY STAR table covers 100 to 2,500 ft²'); need(Number.isInteger(x.people) && x.people >= 0, 'people is a whole number');
+      const T = [[150, 5000], [250, 6000], [300, 7000], [350, 8000], [400, 9000], [450, 10000], [550, 12000], [700, 14000], [1000, 18000], [1200, 21000], [1400, 23000], [1500, 24000], [2000, 30000], [2500, 34000]];
+      const i = T.findIndex(([hi]) => ft <= hi), base = T[i][1], lo = i ? T[i - 1][0] : 100; const btu = Math.round(base * (1 + Number(x.sun)) + Math.max(0, x.people - 2) * 600 + (x.kit === '1' ? 4000 : 0));
+      return { btu, w: btu * 0.29307107017, band: lo + ' to ' + T[i][0] + ' ft²: ' + base.toLocaleString('en-US') + ' BTU/h' }; }, { src: 'https://www.energystar.gov/products/room_air_conditioners' }),
+  make('adult-height', 'Child’s adult height from the parents’ heights', 'Health', 'mid-parental height: boys (father + mother + 13 cm) ÷ 2, girls (father + mother − 13 cm) ÷ 2; about 95% land within ±8.5 cm (Tanner)',
+    [{ k: 'sex', label: 'Child', kind: 'choice', opts: [['b', 'boy'], ['g', 'girl']], v: 'b' }, 'f|Father’s height|length|cm|180', 'm|Mother’s height|length|cm|165'], ['h|Expected adult height|length|cm', 'lo|Low end|length|cm', 'hi|High end|length|cm'],
+    (x) => { pos(x.f, 'Father’s height'); pos(x.m, 'Mother’s height'); const h = (x.f + x.m + (x.sex === 'g' ? -0.13 : 0.13)) / 2; return { h, lo: h - 0.085, hi: h + 0.085 }; }, { src: 'https://doi.org/10.1136/adc.45.244.755' }),
+);
+
 export const FORMULA_COUNT = { before: CALCULATORS.length };
 {
   const have = new Set(CALCULATORS.map((c) => c.id));

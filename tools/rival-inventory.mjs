@@ -115,6 +115,8 @@ export const ALIASES = {
   'voltage drop': '/calculators/?calc=wire-resistance', 'half life': '/calculators/?calc=half-life', 'z score': '/calculators/?calc=z-score', 'healthy weight': '/calculators/?calc=ideal-weight',
   'mass': '/calculators/?calc=mass-from-density', 'molecular weight': '/calculators/?calc=molar-mass', 'square footage': '/calculators/?calc=rectangle-area',
   'roofing': '/calculators/?calc=roof-area-pitch', 'tire size': '/calculators/?calc=tire-diameter',
+  'surface area': '/calculators/?calc=solid-shapes', 'height': '/calculators/?calc=adult-height', 'btu': '/calculators/?calc=room-ac-btu', 'bandwidth': '/calculators/?calc=download-time',
+  'golf handicap': '/calculators/?calc=handicap-index', 'sleep': '/calculators/?calc=sleep-cycles', 'roman numeral converter': '/calculators/?calc=roman-numerals',
 };
 /** Verse's catalogue: [{ name, href, words }] from the calculators library, the tower floors' pages and the site's own folders. */
 export async function verseCatalogue() {
