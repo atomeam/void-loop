@@ -466,6 +466,7 @@ for (const [name, file] of [
   ['remediation-velocity', 'remediation-velocity.test.mjs'],
   ['backlog-digest', 'backlog-digest.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
+  ['scrim', 'scrim.test.mjs'],
   ['merge-rules', 'merge-rules.test.mjs'],
   ['merge-route', 'merge-route.test.mjs'],
   ['card-art-route', 'card-art-route.test.mjs'],
