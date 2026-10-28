@@ -25,7 +25,7 @@ test('an item is better only when a fact rose and none fell; plans get no extern
 });
 test('lap 1 is an overhaul, most used first', () => {
   const ids = ['skill:zz', 'surface:book', 'surface:home', 'skill:chess'], r = nextStep(null, ids, overhaulWeights(ids));
-  assert.equal(r.step.skill, 'surface:home'); assert.match(candidateOf(r.step).title, /^Overhaul surface:home: persona playtest/);
+  assert.equal(r.step.skill, 'surface:home'); assert.match(candidateOf(r.step).title, /^Overhaul surface:home: persona playtest/); assert.match(candidateOf(r.step).title, /wider use/, 'every overhaul asks for wider use (docs/WIDER-USE.md)');
 });
 test('the only-site line is counts only', () => {
   assert.equal(onlySiteLine({ replaced: 1, partial: 2, missing: 3, categories: 6 }), 'Only site you need: 1 replaced, 2 partial, 3 missing of 6 categories');

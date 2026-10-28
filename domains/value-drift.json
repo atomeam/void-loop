@@ -1,0 +1,260 @@
+{
+  "note": "How Verse's own appraisals (its store prices) moved over time, grouped by kind (tools/value-drift.mjs; asked by Verse, lists run 7). reappraise marks a kind whose prices moved apart by more than the bar (percent).",
+  "versions": 6,
+  "from": "2026-10-15T06:13:23Z",
+  "to": "2026-10-26T18:36:40Z",
+  "bar": 25,
+  "groups": [
+    {
+      "kind": "download",
+      "products": 6,
+      "moved": 1,
+      "spread": 100,
+      "reappraise": true
+    },
+    {
+      "kind": "license",
+      "products": 1,
+      "moved": 0,
+      "spread": 0,
+      "reappraise": false
+    },
+    {
+      "kind": "membership",
+      "products": 2,
+      "moved": 0,
+      "spread": 0,
+      "reappraise": false
+    },
+    {
+      "kind": "service",
+      "products": 4,
+      "moved": 0,
+      "spread": 0,
+      "reappraise": false
+    },
+    {
+      "kind": "support",
+      "products": 1,
+      "moved": 0,
+      "spread": 0,
+      "reappraise": false
+    }
+  ],
+  "products": [
+    {
+      "id": "chess-set-glb",
+      "name": "Verse Wooden Chess Set (GLB)",
+      "kind": "download",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 0
+        }
+      ],
+      "first": 0,
+      "latest": 0,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "remix-kit",
+      "name": "Verse Remix Kit",
+      "kind": "download",
+      "history": [
+        {
+          "at": "2026-10-21T22:35:04Z",
+          "cents": 0
+        }
+      ],
+      "first": 0,
+      "latest": 0,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "site-tester",
+      "name": "Verse Site Tester",
+      "kind": "download",
+      "history": [
+        {
+          "at": "2026-10-15T06:34:38Z",
+          "cents": 2400
+        },
+        {
+          "at": "2026-10-21T22:35:04Z",
+          "cents": 0
+        }
+      ],
+      "first": 2400,
+      "latest": 0,
+      "changes": 1,
+      "change": -100
+    },
+    {
+      "id": "v01d-clips-pack",
+      "name": "Verse Clips Pack (10 shorts)",
+      "kind": "download",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 0
+        }
+      ],
+      "first": 0,
+      "latest": 0,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "v01d-forge-printables",
+      "name": "VERSE Forge Printables (10 STLs)",
+      "kind": "download",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 0
+        }
+      ],
+      "first": 0,
+      "latest": 0,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "voidquest-minis",
+      "name": "VoidQuest Miniatures Pack (STL + 3MF)",
+      "kind": "download",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 900
+        }
+      ],
+      "first": 900,
+      "latest": 900,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "code-review-pro",
+      "name": "Verse Code Review Pro",
+      "kind": "license",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 1000
+        }
+      ],
+      "first": 1000,
+      "latest": 1000,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "big-board",
+      "name": "The Big Board",
+      "kind": "membership",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 2500
+        }
+      ],
+      "first": 2500,
+      "latest": 2500,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "void-monthly",
+      "name": "Verse Monthly",
+      "kind": "membership",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 4900
+        }
+      ],
+      "first": 4900,
+      "latest": 4900,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "first-automation-setup",
+      "name": "First Automation Setup",
+      "kind": "service",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 10000
+        }
+      ],
+      "first": 10000,
+      "latest": 10000,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "full-stack-audit",
+      "name": "Full Stack Audit",
+      "kind": "service",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 30000
+        }
+      ],
+      "first": 30000,
+      "latest": 30000,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "keep-it-running",
+      "name": "Keep-It-Running Plan",
+      "kind": "service",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 4900
+        }
+      ],
+      "first": 4900,
+      "latest": 4900,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "one-time-fix",
+      "name": "Automation Cleanup (One-Time Fix)",
+      "kind": "service",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 2500
+        }
+      ],
+      "first": 2500,
+      "latest": 2500,
+      "changes": 0,
+      "change": 0
+    },
+    {
+      "id": "join-the-team",
+      "name": "Join the Team",
+      "kind": "support",
+      "history": [
+        {
+          "at": "2026-10-15T06:13:23Z",
+          "cents": 100
+        }
+      ],
+      "first": 100,
+      "latest": 100,
+      "changes": 0,
+      "change": 0
+    }
+  ]
+}

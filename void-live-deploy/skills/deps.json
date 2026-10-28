@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 903,
+ "counted": 907,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -171,6 +171,13 @@
    "tests": 2
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 10,
+   "direct": 10,
+   "dependants": 10,
+   "tests": 1
+  },
+  {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
@@ -224,13 +231,6 @@
    "skills": 9,
    "direct": 3,
    "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 9,
-   "direct": 9,
-   "dependants": 9,
    "tests": 1
   },
   {
@@ -773,6 +773,55 @@
    "tests": 1
   },
   {
+   "file": "lib/pay-share.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 26,
+   "tests": 1
+  },
+  {
+   "file": "lib/alt-pay.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 25,
+   "tests": 1
+  },
+  {
+   "file": "lib/store-products.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 25,
+   "tests": 0
+  },
+  {
+   "file": "lib/store.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 6
+  },
+  {
+   "file": "lib/gumroad.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 20,
+   "tests": 4
+  },
+  {
+   "file": "lib/store-db.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 17,
+   "tests": 1
+  },
+  {
+   "file": "lib/products.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 3
+  },
+  {
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
@@ -899,13 +948,6 @@
    "tests": 1
   },
   {
-   "file": "lib/pay-share.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 25,
-   "tests": 1
-  },
-  {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
@@ -913,32 +955,11 @@
    "tests": 2
   },
   {
-   "file": "lib/alt-pay.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 24,
-   "tests": 1
-  },
-  {
-   "file": "lib/store-products.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 24,
-   "tests": 0
-  },
-  {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
    "dependants": 23,
    "tests": 2
-  },
-  {
-   "file": "lib/store.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 23,
-   "tests": 6
   },
   {
    "file": "lib/actions.js",
@@ -953,27 +974,6 @@
    "direct": 1,
    "dependants": 21,
    "tests": 1
-  },
-  {
-   "file": "lib/gumroad.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 19,
-   "tests": 4
-  },
-  {
-   "file": "lib/store-db.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 16,
-   "tests": 1
-  },
-  {
-   "file": "lib/products.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 3
   },
   {
    "file": "lib/automations.js",
@@ -1107,6 +1107,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/wheel.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
   },
   {
    "file": "lib/a11y-modes.js",
@@ -1558,13 +1565,6 @@
   },
   {
    "file": "lib/web4.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/wheel.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2082,6 +2082,13 @@
    "tests": 1
   },
   {
+   "file": "lib/prizes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 3
+  },
+  {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
@@ -2313,6 +2320,13 @@
    "tests": 1
   },
   {
+   "file": "lib/handoff.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/jobs-ui.js",
    "skills": 0,
    "direct": 0,
@@ -2426,6 +2440,13 @@
   },
   {
    "file": "lib/rule-propose.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/scrim.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3405,6 +3426,7 @@
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
+    "skills/shop.js",
     "skills/store.js"
    ]
   },
@@ -5451,8 +5473,16 @@
     "functions/api/support.js",
     "functions/films/rss.js",
     "lib/paid-access.js",
-    "lib/products.js"
+    "lib/products.js",
+    "skills/shop.js"
    ]
+  },
+  "lib/handoff.js": {
+   "imports": [
+    "lib/wheel.js",
+    "lib/prizes.js"
+   ],
+   "importedBy": []
   },
   "lib/health-habits.js": {
    "imports": [],
@@ -6705,6 +6735,7 @@
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
+    "skills/shop.js",
     "skills/store.js"
    ]
   },
@@ -6941,6 +6972,12 @@
     "skills/work.js"
    ]
   },
+  "lib/prizes.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/handoff.js"
+   ]
+  },
   "lib/probe-asks.js": {
    "imports": [
     "lib/persona.js",
@@ -7022,7 +7059,8 @@
     "functions/api/handoff.js",
     "functions/api/mcp.js",
     "functions/api/support.js",
-    "functions/films/rss.js"
+    "functions/films/rss.js",
+    "skills/shop.js"
    ]
   },
   "lib/progress-chart.js": {
@@ -7574,6 +7612,10 @@
     "skills/scores.js"
    ]
   },
+  "lib/scrim.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/self-blocks.js": {
    "imports": [
     "lib/spark.js"
@@ -7803,6 +7845,7 @@
     "skills/list-starters.js",
     "skills/mind-field.js",
     "skills/rooms.js",
+    "skills/shop.js",
     "skills/stage-out.js",
     "skills/tilt-arena.js",
     "skills/time.js"
@@ -8252,7 +8295,8 @@
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/sale-jobs.js",
-    "skills/services.js"
+    "skills/services.js",
+    "skills/shop.js"
    ]
   },
   "lib/store-products.js": {
@@ -8283,6 +8327,7 @@
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
+    "skills/shop.js",
     "skills/store.js"
    ]
   },
@@ -8317,7 +8362,8 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "skills/shop.js"
    ]
   },
   "lib/story.js": {
@@ -8950,6 +8996,7 @@
   "lib/wheel.js": {
    "imports": [],
    "importedBy": [
+    "lib/handoff.js",
     "skills/wheel.js"
    ]
   },
@@ -11771,7 +11818,9 @@
     "lib/products.js",
     "lib/gumroad.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/shop.js"
+   ]
   },
   "skills/sfx.js": {
    "imports": [],
@@ -11822,6 +11871,14 @@
    "imports": [
     "lib/stage-pack.js",
     "lib/stage-math.js"
+   ],
+   "importedBy": []
+  },
+  "skills/shop.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/store.js",
+    "skills/services.js"
    ],
    "importedBy": []
   },
@@ -12172,7 +12229,9 @@
    "imports": [
     "lib/store.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/shop.js"
+   ]
   },
   "skills/study-cards.js": {
    "imports": [
