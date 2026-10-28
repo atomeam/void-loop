@@ -509,6 +509,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:27:15Z",
+   "subject": "Snippet / Note: the gist page with a plain name, a lead and templates"
+  },
+  {
+   "at": "2026-10-28T20:19:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:17:35Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -579,14 +587,6 @@
   {
    "at": "2026-10-28T19:54:00Z",
    "subject": "Boards: a plain lead line, general starter boards, and plain labels with the board terms kept"
-  },
-  {
-   "at": "2026-10-28T19:53:28Z",
-   "subject": "Tournaments: optional per-match columns, a gap-to-lead or gap-to-cutoff hint, and a match-point rule"
-  },
-  {
-   "at": "2026-10-28T19:50:53Z",
-   "subject": "Hosting page: a queue and wait-time calculator for any service, with three examples (#1340)"
   }
  ],
  "builders": {
