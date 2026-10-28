@@ -49,6 +49,9 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
+// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites)\.js)(\?|$)/;
+const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
@@ -779,7 +782,7 @@ try {
     const rows = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
     const demo = await P.p.$eval('#demo', (e) => !e.hidden);
     check('tournament: the seeded ask lands as three teams, 16 eliminations and 47 points, a win pays 10 and not 10 plus the top-five, and every item the probe reads is on the page',
-      /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1' && rows[1] === '2 Bravo 19 0 7 2.0 2' && rows[2] === '3 Charlie 6 0 3 6.0 6' && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
+      /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1 leads by 3 pts' && rows[1] === '2 Bravo 19 0 7 2.0 2 -3 pts · needs 2 elims or a Top 5 to lead' && /^3 Charlie 6 0 3 6\.0 6 -16 pts/.test(rows[2]) && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
     const heats = await P.p.$eval('#heatout', (e) => e.innerText);
     const drops = await P.p.$eval('#droptable', (e) => e.innerText);
     check('tournament: the lobby splits into snake-seeded heats, and the shared drop spot is flagged contested while the unique one stays clear',
@@ -794,8 +797,30 @@ try {
     await P.p.fill('#csv', 'Delta, 3, 4\nEcho, 7, 1'); await P.p.click('#import'); await P.p.waitForTimeout(200);
     const after = await P.p.$eval('#stat', (e) => e.textContent);
     check('tournament: the FNCS preset sets its own placement ladder, and two CSV rows become the next match', /1st 10/.test(tiers) && /6th-10th 3/.test(tiers) && /5 teams/.test(after) && /2 matches/.test(after), JSON.stringify({ tiers, after }));
+    // the match grid (owner, 2026-10-28): the roster carries over, the host tabs through place and elims, a shared place is flagged
+    await P.p.click('#add'); await P.p.waitForTimeout(100);
+    const gridNames = await P.p.$$eval('#grid tbody td.team', (tds) => tds.map((t) => t.textContent));
+    await P.p.keyboard.type('2'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('3'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('2');
+    await P.p.waitForTimeout(150);
+    const dupe = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    await P.p.keyboard.press('Backspace'); await P.p.keyboard.type('1'); await P.p.waitForTimeout(150);
+    const dupeAfter = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    const gridResults = await P.p.evaluate(() => new URLSearchParams(location.search).get('results'));
+    check('tournament: the match grid keeps the roster from match 1, tabs place then elims, flags two teams on one place and writes the URL format back',
+      gridNames.join('|') === 'Alpha|Bravo|Charlie|Delta|Echo' && /Alpha and Bravo are both 2nd/.test(dupe) && !dupeAfter && /;Alpha:2:3,Bravo:1:0$/.test(gridResults || ''), JSON.stringify({ gridNames, dupe, dupeAfter, gridResults }));
+    // per-match columns, the cutoff gap and the match-point rule (owner, 2026-10-28)
+    await P.p.check('#percols'); await P.p.fill('#cut', '2'); await P.p.fill('#mp', '20'); await P.p.waitForTimeout(150);
+    const heads = await P.p.$$eval('#standings thead th', (t) => t.map((x) => x.textContent).join('|'));
+    const firstRow = await P.p.$eval('#standings tbody tr', (tr) => tr.innerText.replace(/\t/g, ' '));
+    const mpNote = await P.p.$eval('#mpnote', (e) => (e.hidden ? '' : e.textContent));
+    const colSearch = await P.p.evaluate(() => location.search);
+    check('tournament: each match gets its own column (points, place/elims), the gap names the cutoff, and match point names who is on it',
+      /\|M1\|M2\|M3\|Gap$/.test(heads) && /22 \(1\/6\)/.test(firstRow) && /On match point/.test(mpNote) && /cols=1/.test(colSearch) && /cut=2/.test(colSearch) && /mp=20/.test(colSearch), JSON.stringify({ heads, firstRow, mpNote, colSearch }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth; const over = [...document.querySelectorAll('main *')].filter((e) => e.offsetParent && !e.closest('.scroll') && (e.getBoundingClientRect().right > vw + 1 || (e.scrollWidth > e.clientWidth + 1 && getComputedStyle(e).overflowX !== 'visible' && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName)))).map((e) => e.tagName + '#' + e.id + '.' + e.className); return { page: document.documentElement.scrollWidth - vw, over: over.slice(0, 6) }; });
+    check('tournament: at phone width (360 px) the page never scrolls sideways and nothing outside a scroll box is cut off', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
     const stageLink = await P.p.$eval('a[href*="ask=tournament"]', (a) => a.getAttribute('href')).catch(() => '');
     check('tournament: the footer links to at least four sibling Verse tools and hands the page to the stage', (await siblingCount(P.p)) >= 4 && stageLink === '/?ask=tournament%20scorer', JSON.stringify({ siblings: await siblingCount(P.p), stageLink }));
     await P.ctx.close();
@@ -839,6 +864,11 @@ try {
     const stageLink = await P.p.$eval('a[href*="ask=web"]', (a) => a.getAttribute('href')).catch(() => '');
     const sib = await siblingCount(P.p);
     check('hosting: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=web%20hosting%20sizing', JSON.stringify({ siblings: sib, stageLink }));
+    // the queue card (docs/WIDER-USE.md): the support desk example is 120 calls an hour of 6 minutes, 14 agents; Erlang C says 15 keep the wait under a minute
+    await P.p.click('[data-qp="desk"]'); await P.p.waitForTimeout(150);
+    const qout = await P.p.$eval('#qout', (e) => e.textContent), qurl = P.p.url();
+    check('hosting: the support desk example works out 12 busy at once, 86% busy with 14 agents, and 15 for waits under a minute, kept in the link',
+      /12 are being served at once/.test(qout) && /86% busy/.test(qout) && /you need 15 open/.test(qout) && /qn=14/.test(qurl) && /rps=50/.test(qurl), JSON.stringify({ qout, qurl }));
     await P.ctx.close();
   }
   // the identity floor (owner, 2026-10-27): anycolorid.com's SSO portal, fought from /identity/ - a sovereign, on-device profile identity studio
@@ -1030,7 +1060,7 @@ try {
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
     const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
     check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
-      loaded <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+      ownLoads(reqs, loaded) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
       && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
       JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
     const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
@@ -1060,7 +1090,7 @@ try {
     await pg.fill('#b2', '12'); await pg.waitForTimeout(150); const bad = await pg.evaluate(() => ({ note: document.getElementById('note').textContent, cls: document.getElementById('b2').className }));
     const typed = reqs.length - loaded; await pg.fill('#b10', '255'); await pg.waitForTimeout(150); const cleared = await pg.evaluate(() => [...document.querySelectorAll('input.bad')].length); if (process.env.VOID_SHOTS) { await pg.waitForTimeout(150); await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'base-converter.png') }).catch(() => {}); }
     check('base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request',
-      loaded <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
+      ownLoads(reqs, loaded) <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
       && /not a base 2 number/.test(bad.note) && /bad/.test(bad.cls) && cleared === 0 && typed === 0 && !B.errors.length, JSON.stringify({ loaded, reqs, fromHex, huge, bad, cleared, typed, errors: B.errors }));
     const K = await fresh(); await K.ask('ff hex to binary', 900); const card = await until(async () => K.p.$eval('.vpage.on .bc-out', (e) => e.textContent).catch(() => ''), 8000);
     const rows = await K.p.$$eval('.vpage.on .bc-all td', (t) => t.map((x) => x.textContent)).catch(() => []); const link = await K.p.$eval('.vpage.on .bc-open', (a) => a.getAttribute('href')).catch(() => '');
@@ -1102,7 +1132,7 @@ try {
     await pg.fill('#kb', '1'); await pg.waitForTimeout(600); const tight = await pg.evaluate(() => ({ cls: document.getElementById('line').className, note: document.getElementById('note').textContent }));
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'resize-image.png') }).catch(() => {});
     check('photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page',
-      loaded <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
+      ownLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
       JSON.stringify({ loaded, out, jlen: jb.length, jsz, pdf: pb.slice(0, 5).toString(), tight, reqs: reqs.length, errors: R.errors }));
     const K = await fresh(); await K.ask('resize a photo to 3.5 x 2.5 cm under 50 kb', 900); const href = await until(async () => K.p.$eval('.vpage.on .ir-open', (a) => a.getAttribute('href')).catch(() => ''), 8000);
     const pg2 = await K.ctx.newPage(); await pg2.goto(origin + href); await pg2.waitForSelector('#w'); const filled = await pg2.evaluate(() => [w.value, h.value, u.value, kb.value].join('|'));

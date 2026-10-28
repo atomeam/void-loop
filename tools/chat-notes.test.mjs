@@ -16,7 +16,7 @@ test('sentences are read', () => {
     'rename my trip note to Lisbon 2027': 'rename', 'pin my shopping list': 'pin', 'tag my trip note as travel': 'tag', 'merge trip and packing': 'merge', 'split my trip note': 'split',
     'start a meeting note': 'template', 'under hotel in my Lisbon note add check-in 3pm': 'under', 'delete my old ideas note': 'delete',
     'neue Notiz: Milch kaufen': 'create', 'füge Eier zu meiner Einkaufsliste hinzu': 'append', 'hake Milch ab': 'tick', 'was habe ich über Lissabon geschrieben': 'find', 'fasse meine Reise zusammen': 'summary',
-    'undo my last note change': 'undo', 'what is the weather': null, 'add dentist tomorrow to my calendar': null };
+    'undo my last note change': 'undo', 'what is the weather': null, 'add dentist tomorrow to my calendar': null, 'put the notes in folder errands': null };
   for (const [t, op] of Object.entries(ops)) assert.equal((C.parseIntent(t) || {}).op || null, op, t);
 });
 test('a note from one sentence: headed sections, a checklist for the list', () => {

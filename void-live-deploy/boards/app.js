@@ -151,6 +151,9 @@
       const box = f.querySelector('.bot'), bot = botFor(box), note = f.querySelector('.note'), send = f.querySelector('button[type=submit]');
       if (t) f.querySelector('.sub-f').hidden = true; if (board.textOnly) f.querySelectorAll('.file-f').forEach((n) => (n.hidden = true));
       f.elements.name.value = me.name || '';
+      const sg = f.elements.sage, op = f.elements.options, hasSage = () => /(^|\s)sage(\s|$)/i.test(op.value); // the plain box and the typed options stay in step
+      sg.addEventListener('change', () => { const rest = op.value.replace(/(^|\s)sage(?=\s|$)/ig, ' ').trim(); op.value = sg.checked ? (rest ? rest + ' sage' : 'sage') : rest; });
+      op.addEventListener('input', () => { sg.checked = hasSage(); });
       f.querySelector('.x').addEventListener('click', () => { host.replaceChildren(); if (t) $('replyBar').hidden = false; });
       f.querySelector('.pv').addEventListener('click', () => { const pv = f.querySelector('.preview'); pv.replaceChildren(postEl({ no: 0, thread: t, at: Date.now(), name: B.parseName(f.elements.name.value).name, sub: t ? '' : f.elements.sub.value, body: B.cleanText(f.elements.body.value, B.LIMITS.body) }, b, board, { preview: true })); });
       f.addEventListener('submit', async (e) => {
@@ -198,11 +201,15 @@
       $('sort').onchange = () => go('sort', $('sort').value); $('sfw').onchange = () => go('sfw', $('sfw').checked ? '1' : '');
       $('first').onclick = () => { $('new').open = true; $('nCode').focus(); };
       if (q.get('new') === '1' || location.hash === '#new') { $('new').open = true; }
+      const pre = q.get('code') && document.querySelector('#starters a[data-code="' + CSS.escape(q.get('code')) + '"]'); // a starter link fills the form, so the link restores it
+      if (pre && $('new').open) { $('nCode').value = pre.dataset.code; $('nTitle').value = q.get('title') || pre.dataset.title; $('nAbout').value = pre.dataset.about; }
       const r = await api(''); const list = (r.boards || []).filter((x) => !$('sfw').checked || !x.nsfw);
       const by = { active: (a, b) => b.last - a.last, new: (a, b) => b.created - a.created, posts: (a, b) => b.posts - a.posts, code: (a, b) => a.code.localeCompare(b.code) }[sort] || ((a, b) => b.last - a.last);
       list.sort(by); const ul = $('boards'); ul.replaceChildren();
       $('none').hidden = !!list.length; $('boardsH').textContent = list.length ? 'The boards (' + list.length + ')' : 'The boards';
       if (!r.ok && r.status) { $('none').hidden = false; $('none').querySelector('p').textContent = r.say || 'The boards could not be read just now.'; }
+      const have = new Map((r.boards || []).map((x) => [x.code, x])); // a general board that exists opens; one that does not yet opens the form, filled in
+      for (const a of document.querySelectorAll('#starters a')) if (have.has(a.dataset.code)) a.href = link(a.dataset.code);
       for (const x of list) { const li = el('li'), m = el('div', 'main'), a = el('a', 'title', '/' + x.code + '/ · ' + x.title); a.href = link(x.code);
         if (x.nsfw) a.append(el('span', 'badge adult', '18+')); if (x.textOnly) a.append(el('span', 'badge', 'text')); if (x.locked) a.append(el('span', 'badge', 'locked'));
         m.append(a); if (x.about) m.append(el('small', '', x.about)); m.append(el('small', '', x.posts + ' posts · last ' + ago(x.last))); li.append(m); ul.append(li); }
