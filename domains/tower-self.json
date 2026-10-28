@@ -453,6 +453,14 @@
    "queued": 0,
    "fixed": [],
    "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-28T22:47:55Z",
+   "line": "Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com",
+   "built": 0,
+   "queued": 2,
+   "fixed": [],
+   "pages_per_day": 0
   }
  ]
 }
