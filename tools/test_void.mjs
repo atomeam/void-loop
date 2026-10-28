@@ -878,6 +878,19 @@ try {
     check('cpan: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=cpan%20testers', JSON.stringify({ siblings: sib, stageLink }));
     await P.ctx.close();
   }
+  // the obituaries floor: a respectful archive of surpassed tools, starting with ColorZilla's lineage card.
+  if (want("obituaries: the ColorZilla tribute and lineage chain")) {
+    const P = await fresh({ base: base + 'obituaries/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    check('obituaries: the ColorZilla tribute names its legacy, passing and lineage', /ColorZilla/.test(t) && /iosart labs/.test(t) && /Lineage/.test(t) && /Verse color studio/.test(t), JSON.stringify({}));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const sib = await siblingCount(P.p);
+    check('obituaries: the footer links to at least two sibling Verse tools', sib >= 2, JSON.stringify({ siblings: sib }));
+    await P.ctx.close();
+  }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
   // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
   // that says what it is not. The count is real: the tap copies the character and adds one.
