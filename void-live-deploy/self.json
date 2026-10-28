@@ -509,12 +509,68 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T23:02:30Z",
+   "subject": "Versus card: the easiest-first plan from docs/NEXT.md, with the gate's own numbers"
+  },
+  {
+   "at": "2026-10-28T23:01:47Z",
+   "subject": "Verse loop: the lock's catches let only a missing file pass (Verse's review)"
+  },
+  {
+   "at": "2026-10-28T23:01:46Z",
+   "subject": "Board: the parity branch's edits across agents' files, under the owner's any-agent rule"
+  },
+  {
+   "at": "2026-10-28T23:00:02Z",
+   "subject": "MAP names rival-inventory.mjs (main's map check was red on it)"
+  },
+  {
+   "at": "2026-10-28T22:59:32Z",
+   "subject": "Verse loop: item 0 and --task read right in the prompt and the title"
+  },
+  {
+   "at": "2026-10-28T22:55:08Z",
+   "subject": "Fast checks run the Verse loop's tests"
+  },
+  {
+   "at": "2026-10-28T22:54:56Z",
+   "subject": "Verse loop: one lap from a terminal or a timer, over the pieces that exist"
+  },
+  {
+   "at": "2026-10-28T22:54:49Z",
+   "subject": "Verse fixes its baseconv skill: learn to handle \"256 to hex\""
+  },
+  {
+   "at": "2026-10-28T22:53:37Z",
+   "subject": "Tools: rival-inventory reads each rival's robots.txt and sitemap and writes the gaps to PARITY.md and the build feed"
+  },
+  {
+   "at": "2026-10-28T22:52:23Z",
+   "subject": "Green main: tower-self PARTIAL floors, /ledger/ real-pages spec, podcasts fyyd fallback with a visible note and 503 not 502, regenerated…"
+  },
+  {
+   "at": "2026-10-28T22:52:09Z",
+   "subject": "Calculators: every calculator on calculator.net's home page (21 added) plus a scientific keypad"
+  },
+  {
+   "at": "2026-10-28T22:50:28Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site; next randomarea.com"
+  },
+  {
+   "at": "2026-10-28T22:47:55Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com"
+  },
+  {
    "at": "2026-10-28T22:47:49Z",
    "subject": "Versus by itself: no page built, the sites read recorded"
   },
   {
    "at": "2026-10-28T22:43:04Z",
    "subject": "TAGTEAM: Grok Bot handoff"
+  },
+  {
+   "at": "2026-10-28T22:38:21Z",
+   "subject": "Regenerated the generated files after merging main"
   },
   {
    "at": "2026-10-28T22:34:56Z",
@@ -531,62 +587,6 @@
   {
    "at": "2026-10-28T22:34:49Z",
    "subject": "Green checks: regenerate deps, what, seo blocks and preloads; seo common asks for /random/ and /calculators/"
-  },
-  {
-   "at": "2026-10-28T22:34:42Z",
-   "subject": "Green checks: map-coverage, doc-drift, no-ellipsis, untested, overlap, tally"
-  },
-  {
-   "at": "2026-10-28T22:33:11Z",
-   "subject": "lists metrics: keep the file's one-space indent"
-  },
-  {
-   "at": "2026-10-28T22:32:57Z",
-   "subject": "Lists run 8: green first: /books/ links four sibling tools (connected), the autopsy check ignores the card's own art seal; metrics and board"
-  },
-  {
-   "at": "2026-10-28T22:29:18Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-10-28T22:26:39Z",
-   "subject": "Handoff scan: every page's inputs and outputs, unbuilt connections ranked (docs/HANDOFF-GAPS.md), BPM counter <-> metronome, lap item…"
-  },
-  {
-   "at": "2026-10-28T22:18:29Z",
-   "subject": "Formula engine: one definition solved for any variable, with its source; batch 1 of the formula library (172 formulas: money, health…"
-  },
-  {
-   "at": "2026-10-28T22:18:28Z",
-   "subject": "Gate honesty: un-beat Amazon and YouTube, scripted journeys with negative controls, false-pass fixtures, no-mock check…"
-  },
-  {
-   "at": "2026-10-28T22:18:18Z",
-   "subject": "Verse cards test: the ocean gets its own article, so its card is typed by its kind again"
-  },
-  {
-   "at": "2026-10-28T22:02:20Z",
-   "subject": "Tip and savings: the 3D piece is the card's picture, so the art plate steps aside and the piece draws in view"
-  },
-  {
-   "at": "2026-10-28T22:00:54Z",
-   "subject": "tower gate: never open vcalc.com (robots.txt); judge the formula calculators floor on internal metrics, not beaten with the library-size…"
-  },
-  {
-   "at": "2026-10-28T21:59:47Z",
-   "subject": "Watchdog runs the full suite in three shards, like verify, so it fits the suite budget and can close its issue"
-  },
-  {
-   "at": "2026-10-28T21:53:58Z",
-   "subject": "Incident: the browser suite failed on fa0caa75 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-28T21:52:30Z",
-   "subject": "Dead-button fixes: Claim and spot pills answer on the tournaments page, gist Raw opens a real tab and empty task adds explain themselves…"
-  },
-  {
-   "at": "2026-10-28T21:51:03Z",
-   "subject": "Mark the spec-written pattern in the test harness as reviewed"
   }
  ],
  "builders": {
