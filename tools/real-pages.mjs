@@ -46,6 +46,17 @@ const article = (minWords = 120) => async (t) => {
 };
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
+  '/calculators/': async (t) => {
+    await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
+    await t.p.locator('#hits a, #hits button').first().click({ timeout: 5000 }); const big = await t.waitText('#big', /\d/, 5000); t.ok(/\d/.test(big), 'the calculator it opens works out a number: ' + big.slice(0, 30));
+    await t.share('#share');
+  },
+  '/prizes/': async (t) => {
+    t.ok(/\d+(\.\d+)?\s?%/.test(await t.text('#odds')), 'every slice shows its odds as a percentage');
+    await t.click('#spin'); const r = await t.waitText('#result', /\S/, 8000); t.ok(r.trim().length > 0, 'a spin lands on a slice: ' + r.slice(0, 50));
+    await t.click('#sim'); const s = await t.waitText('#simsay', /\d/, 8000); t.ok(/\d/.test(s), 'the 1,000-spin check reports counts: ' + s.slice(0, 50));
+    await t.share('#share');
+  },
   '/compare/': async (t) => {
     const hint = await t.waitText('#who', /floor=\S+/, 10000); const id = ((hint.match(/floor=(.+)$/) || [])[1] || '').trim();
     t.ok(!!id, 'with no floor it says how to name one (' + hint.slice(0, 60) + ')');
