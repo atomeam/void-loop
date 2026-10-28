@@ -839,6 +839,11 @@ try {
     const stageLink = await P.p.$eval('a[href*="ask=web"]', (a) => a.getAttribute('href')).catch(() => '');
     const sib = await siblingCount(P.p);
     check('hosting: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=web%20hosting%20sizing', JSON.stringify({ siblings: sib, stageLink }));
+    // the queue card (docs/WIDER-USE.md): the support desk example is 120 calls an hour of 6 minutes, 14 agents; Erlang C says 15 keep the wait under a minute
+    await P.p.click('[data-qp="desk"]'); await P.p.waitForTimeout(150);
+    const qout = await P.p.$eval('#qout', (e) => e.textContent), qurl = P.p.url();
+    check('hosting: the support desk example works out 12 busy at once, 86% busy with 14 agents, and 15 for waits under a minute, kept in the link',
+      /12 are being served at once/.test(qout) && /86% busy/.test(qout) && /you need 15 open/.test(qout) && /qn=14/.test(qurl) && /rps=50/.test(qurl), JSON.stringify({ qout, qurl }));
     await P.ctx.close();
   }
   // the identity floor (owner, 2026-10-27): anycolorid.com's SSO portal, fought from /identity/ - a sovereign, on-device profile identity studio
