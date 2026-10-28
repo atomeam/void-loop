@@ -1,10 +1,10 @@
 /**
- * palette skill — a random color palette generated locally (no API, no key)
+ * palette skill — a random color palette on the stage
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "give me a palette", "random colors", "color scheme".
+ * "show me a palette", "random palette", "color palette".
  */
 export function isPalette(text) {
-  return /^(?:please\s+)?(?:give\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:color\s+)?palette|(?:another|a|random)\s+(?:color\s+)?palette|palette(?:\s+please)?|random\s+colors|color\s+scheme|generate\s+(?:a\s+)?palette)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:show|give|generate|make)\s+(?:me\s+)?(?:a\s+)?(?:random\s+)?(?:color\s+)?palette|random\s+palette|color\s+palette|palette)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function randomHex() {
@@ -14,22 +14,20 @@ function randomHex() {
 async function run(text, api) {
   const { showPage, esc } = api;
   const colors = Array.from({ length: 5 }, randomHex);
-  const swatches = colors.map((c) => `<div style="display:inline-block;width:60px;height:60px;background:${c};margin:4px;border-radius:8px;border:1px solid rgba(255,255,255,0.2)" title="${esc(c)}"></div>`).join('');
-  const hexes = colors.map((c) => `<code style="margin:0 6px">${esc(c)}</code>`).join('');
-  showPage((p) => {
-    p.innerHTML = '<h2>A palette</h2><div style="margin:12px 0">' + swatches + '</div><p>' + hexes + '</p><div class="sub">say “another palette” for one more</div>';
-  });
+  const swatches = colors.map((c) => `<div style="width:60px;height:60px;background:${c};border-radius:8px;display:inline-block;margin:4px" title="${c}"></div>`).join('');
+  const el = showPage((p) => { p.innerHTML = '<h2>Palette</h2><div class="sub">…</div>'; });
+  el.innerHTML = '<h2>Palette</h2><div>' + swatches + '</div><div class="sub">' + esc(colors.join(' ')) + '</div><div class="sub">say “another palette” for one more</div>';
   return 'palette';
 }
 
 export default {
   name: 'palette',
-  examples: ['give me a palette', 'random colors', 'color scheme', 'another palette'],
-  nearMisses: ['what is a palette', 'color theory', 'paint palette'],
+  examples: ['show me a palette', 'random palette', 'color palette', 'generate a palette'],
+  nearMisses: ['what is a palette', 'paint palette', 'color theory'],
   match(lower, text) { return isPalette(text); },
   run,
   suite() {
-    const ok = isPalette('give me a palette') && isPalette('random colors') && !isPalette('what is a palette');
+    const ok = isPalette('show me a palette') && isPalette('random palette') && !isPalette('what is a palette');
     return { ok, got: 'match works' };
   }
 };
