@@ -8,8 +8,12 @@
 import { KINDS, unitOf, findUnit, toSI, fromSI } from './calc-units.js';
 import { payment } from './fincalc.js';
 import { daysBetween, addDays, businessDaysBetween, ageParts, isDay, DAY_NAMES } from './date-math.js';
+import { compileAll, compile } from './formula-engine.js';
+import { FORMULA_BATCHES } from './formulas.js';
 
-export const CATEGORIES = ['Everyday', 'Money', 'Health', 'Conversions', 'Geometry', 'Maths', 'Statistics', 'Physics', 'Chemistry', 'Electrical', 'Engineering'];
+export const CATEGORIES = ['Everyday', 'Money', 'Health', 'Conversions', 'Geometry', 'Maths', 'Statistics', 'Physics', 'Chemistry', 'Electrical', 'Engineering',
+  // the formula library's domains (lib/formulas-*.js), each formula defined once and worked for any of its variables
+  'Construction', 'Cooking', 'Auto', 'Astronomy', 'Biology', 'Fluids', 'Thermodynamics', 'Optics', 'Earth science', 'Sports'];
 const PI = Math.PI, G0 = 9.80665, GRAV = 6.6743e-11, C = 299792458, H = 6.62607015e-34, R_GAS = 8.314462618, NA = 6.02214076e23, SIGMA = 5.670374419e-8;
 
 // 'k|Label|kind|unit|default' for a quantity; kind 'date', 'text', 'list:<kind>' and { k, label, kind:'choice', opts:[[v, label]], v } too
@@ -279,7 +283,22 @@ CALCULATORS.push(
 );
 
 /** id -> calculator */
+// the formula library: every batch's definitions compiled (each is checked for its units, source and worked example as it loads)
+export const FORMULA_COUNT = { before: CALCULATORS.length };
+{
+  const have = new Set(CALCULATORS.map((c) => c.id));
+  for (const defs of FORMULA_BATCHES) for (const c of compileAll(defs)) { if (have.has(c.id)) throw new Error('formula ' + c.id + ' repeats a calculator id'); have.add(c.id); CALCULATORS.push(c); }
+  FORMULA_COUNT.formulas = CALCULATORS.length - FORMULA_COUNT.before;
+}
 export const BY_ID = new Map(CALCULATORS.map((c) => [c.id, c]));
+const SOLVED = new Map();
+/** a formula-library calculator worked for another of its variables (the same calculator when it has no such variable). Pure. */
+export function solvedFor(calc, target) {
+  if (!calc || !calc.def || !target || target === calc.target || !calc.def.solve.includes(target)) return calc;
+  const key = calc.id + '\u0000' + target;
+  if (!SOLVED.has(key)) SOLVED.set(key, compile(calc.def, target));
+  return SOLVED.get(key);
+}
 const SUPN = (s) => String(s).replace(/[-0-9]/g, (c) => ({ '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' })[c]);
 /** a number for people: sig significant figures, thousands grouped, a true minus, × 10ⁿ when very big or very small; '—' for no number. Pure. */
 export function fmt(v, sig = 6) {
@@ -347,6 +366,7 @@ export function run(calcOrId, given = {}, outUnits = {}, opts = {}) {
   let calc = typeof calcOrId === 'string' ? BY_ID.get(calcOrId) : calcOrId;
   if (!calc) return { calc: null, inputs: [], outputs: [], error: 'no calculator called "' + calcOrId + '"' };
   if (calc.convert) calc = converter(opts.kind || given.kind || 'length', given, outUnits);
+  if (calc.def) calc = solvedFor(calc, opts.solve || given.solve);
   const sig = opts.pro ? 12 : 6, x = {}, inputs = [];
   let error = '';
   for (const inp of calc.inputs) {
@@ -376,7 +396,7 @@ export function allUnits(kind, si, sig = 6) {
 
 // --- links: ?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft (an output's unit is out.k.u); &kind= for the converter, &formula= for a
 // custom formula, &find= for a search, &pro=1 for pro mode
-export const RESERVED = ['calc', 'formula', 'find', 'pro', 'kind'];
+export const RESERVED = ['calc', 'formula', 'find', 'pro', 'kind', 'solve'];
 /** a query string read into { calc, given, outUnits, kind, formula, find, pro }. Pure. */
 export function readQuery(search) {
   const q = new URLSearchParams(String(search ?? '').replace(/^\?/, '')), given = {}, outUnits = {};
@@ -387,9 +407,9 @@ export function readQuery(search) {
   }
   const calc = q.get('calc') || '';
   // an output unit given as k.u where k is an output and not an input of that calculator
-  const c = BY_ID.get(calc);
+  const c = solvedFor(BY_ID.get(calc), q.get('solve'));
   if (c) for (const o of c.outputs) if (!c.inputs.some((i) => i.k === o.k) && given[o.k + '.u'] !== undefined && outUnits[o.k] === undefined) { outUnits[o.k] = given[o.k + '.u']; delete given[o.k + '.u']; }
-  return { calc, given, outUnits, kind: q.get('kind') || '', formula: q.get('formula') || '', find: q.get('find') || '', pro: q.get('pro') === '1' };
+  return { calc, given, outUnits, kind: q.get('kind') || '', formula: q.get('formula') || '', find: q.get('find') || '', pro: q.get('pro') === '1', solve: q.get('solve') || '' };
 }
 const keep = (s) => encodeURIComponent(s).replace(/%(C2%B2|C2%B3|C2%B5|C2%B0|CE%A9|2F|C2%B7|24|25)/g, (m) => decodeURIComponent(m));
 /** { calc, given, outUnits, kind, formula, find, pro } written as a query string (readable: ft², µF, °C and $/kWh stay as they are). Pure. */
@@ -397,7 +417,8 @@ export function writeQuery(state = {}) {
   const parts = [], put = (k, v) => parts.push(keep(k) + '=' + keep(String(v)));
   if (state.calc) put('calc', state.calc);
   if (state.kind) put('kind', state.kind);
-  const c = BY_ID.get(state.calc);
+  const c = solvedFor(BY_ID.get(state.calc), state.solve);
+  if (c && c.def && state.solve && c.target === state.solve && state.solve !== c.def.lhs) put('solve', state.solve);
   for (const [k, v] of Object.entries(state.given || {})) if (v !== undefined && v !== '' && !RESERVED.includes(k)) put(k, v);
   for (const [k, v] of Object.entries(state.outUnits || {})) if (v !== undefined) put(c && !c.inputs.some((i) => i.k === k) ? k + '.u' : 'out.' + k + '.u', v);
   if (state.formula) put('formula', state.formula);
@@ -428,7 +449,7 @@ export function toCSV(r) {
 }
 /** a worked result as JSON. Pure. */
 export function toJSON(r) {
-  return JSON.stringify({ calculator: r.calc && r.calc.id, name: r.calc && r.calc.name, formula: r.calc && r.calc.formula, error: r.error || null,
+  return JSON.stringify({ calculator: r.calc && r.calc.id, name: r.calc && r.calc.name, formula: r.calc && r.calc.formula, ...(r.calc && r.calc.src ? { source: r.calc.src } : {}), error: r.error || null,
     inputs: r.inputs.map((i) => ({ key: i.k, label: i.label, raw: i.raw, unit: i.unit || null, si: i.value })),
     outputs: r.outputs.map((o) => ({ key: o.k, label: o.label, value: o.value, unit: o.kind === 'money' ? '$' : o.unit || o.sfx || null, text: o.text, si: o.si })) }, null, 2);
 }

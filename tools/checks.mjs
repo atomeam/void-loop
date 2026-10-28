@@ -530,6 +530,8 @@ for (const [name, file] of [
   ['tools pack 3', 'tools-pack3.test.mjs'],
   ['convert-math', 'convert-math.test.mjs'],
   ['calculators', 'calculators.test.mjs'],
+  ['formula engine', 'formula-engine.test.mjs'],
+  ['formula library', 'formulas.test.mjs'],
 ]) {
   addScript(name, file);
 }
