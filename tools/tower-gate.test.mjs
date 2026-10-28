@@ -61,9 +61,9 @@ test('design polish counts what a design review fails first, lower is better and
   assert.equal(verdict(0, 0, MEASURES['design polish'].hi, MEASURES['design polish'].ideal), 'equal-and-better'); assert.equal(verdict(0, 2, false, 0), 'better'); assert.equal(verdict(1, 0, false, 0), 'worse');
   const { createRequire } = await import('node:module'), req = createRequire(import.meta.url); let pw = null; for (const n of ['playwright-core', 'playwright']) { try { pw = req(n); break; } catch (_) { /* next */ } }
   if (!pw) return; // the in-page part needs a browser
-  // CHROME_PATH, else a machine's pre-installed Chromium (the session containers keep one at /opt/pw-browsers/chromium, a build the repo's
+  // CHROME_PATH or VOID_TEST_BROWSER (the suite's own), else a machine's pre-installed Chromium (the session containers keep one at /opt/pw-browsers/chromium, a build the repo's
   // playwright-core may not ship), else the library's own
-  const exe = process.env.CHROME_PATH || ((await import('node:fs')).existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : '');
+  const exe = process.env.CHROME_PATH || process.env.VOID_TEST_BROWSER || ((await import('node:fs')).existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : '');
   const b = await pw.chromium.launch(exe ? { executablePath: exe } : {});
   try {
     const p = await b.newPage({ viewport: { width: 390, height: 800 } });
