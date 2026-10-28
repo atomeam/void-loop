@@ -2711,10 +2711,10 @@ try {
         /Japanese/.test(hit) && to === 'ja' && recent.includes('fr') && await P.$eval('#to', (s) => s.value) === 'fr', JSON.stringify({ hit, to, recent }));
       await P.selectOption('#from', 'ru'); await P.selectOption('#to', 'en'); await P.fill('#in', '');
       await P.click('#kbdB'); const keys = await P.$$eval('#kbd .keys button', (b) => b.map((x) => x.textContent));
-      for (const k of ['Г', 'д', 'е']) await P.click(`#kbd .keys button:text-is("${k}")`);
+      await P.click('#kbd button[aria-label="shift"]'); for (const k of ['Г', 'д', 'е']) await P.click(`#kbd .keys button:text-is("${k}")`);
       await P.click('#kbd button[aria-label="space"]'); await P.click('#kbd button[aria-label="backspace"]');
       const typed = await P.$eval('#in', (t) => t.value); await P.click('#go'); await until(async () => /Where/.test(await outText()), 4000);
-      check('translate page, on-screen keyboard: with Russian as the typed language it shows Cyrillic keys; tapping Г д е, space and backspace types "Где", which translates to "Where"',
+      check('translate page, on-screen keyboard: with Russian as the typed language it shows Cyrillic keys; tapping shift, Г д е (shift lasts one letter), space and backspace types "Где", which translates to "Where"',
         keys.includes('ж') && typed === 'Где' && /Where/.test(await outText()), JSON.stringify({ typed, n: keys.length }));
       await P.selectOption('#from', 'en'); await P.selectOption('#to', 'fr'); await P.fill('#in', '');
       await P.click('#handB'); const box = await P.$eval('#pad', (c) => { const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });

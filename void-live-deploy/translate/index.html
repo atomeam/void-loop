@@ -381,15 +381,22 @@
     $('langFor').addEventListener('change', langHits);
     $('langQ').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); const b = $('langHits').querySelector('button'); if (b) b.click(); } });
     // the on-screen keyboard: the letters of the language you type in (or one you pick), put in at the caret
-    let kbdLang = '';
+    let kbdLang = '', kbdShift = false;
     function kbd() {
       const box = $('kbd'), code = kbdLang || (X.keyboardFor(srcLang()) ? srcLang() : X.keyboardFor(state.to) ? state.to : 'ru');
       const pick = el('select', { id: 'kbdLang' }); pick.setAttribute('aria-label', de ? 'Tastatur für' : 'Keyboard for');
       for (const c of X.KEYBOARD_LANGS.slice().sort((a, b) => L.nameOf(a).localeCompare(L.nameOf(b)))) pick.append(el('option', { value: c, textContent: L.nameOf(c), selected: c === code }));
       pick.addEventListener('change', () => { kbdLang = pick.value; kbd(); });
-      const rows = (X.keyboardFor(code) || []).concat([['␣', '⌫']]).map((r) => {
+      const rows = (X.keyboardFor(code) || []).concat([['⇧', '␣', '⌫']]).map((r) => {
         const d = el('div', { className: 'keys' });
-        for (const k of r) { const b = el('button', { type: 'button', textContent: k }); b.setAttribute('aria-label', k === '␣' ? 'space' : k === '⌫' ? 'backspace' : k); b.addEventListener('mousedown', (e) => e.preventDefault()); b.addEventListener('click', () => press(k)); d.append(b); }
+        for (const k0 of r) {
+          const k = kbdShift && k0.length === 1 ? k0.toLocaleUpperCase(code) : k0;
+          const b = el('button', { type: 'button', textContent: k }); b.setAttribute('aria-label', k === '␣' ? 'space' : k === '⌫' ? 'backspace' : k === '⇧' ? 'shift' : k);
+          if (k === '⇧') b.setAttribute('aria-pressed', String(kbdShift));
+          b.addEventListener('mousedown', (e) => e.preventDefault());
+          b.addEventListener('click', () => { if (k === '⇧') { kbdShift = !kbdShift; return kbd(); } press(k); if (kbdShift && k !== '␣' && k !== '⌫') { kbdShift = false; kbd(); } });
+          d.append(b);
+        }
         return d;
       });
       box.replaceChildren(pick, ...rows); box.lang = code; box.dir = RTL.test(code) ? 'rtl' : 'ltr';
