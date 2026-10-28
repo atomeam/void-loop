@@ -405,7 +405,7 @@
       const t = $('in'), r = X.typeKey(t.value, t.selectionStart, t.selectionEnd, k);
       t.value = r.value.slice(0, L.MAX_CHARS); t.setSelectionRange(r.caret, r.caret); t.dispatchEvent(new Event('input'));
     }
-    $('kbdB').addEventListener('click', () => { const open = $('kbd').hidden; $('kbd').hidden = !open; $('kbdB').setAttribute('aria-expanded', String(open)); $('kbdB').setAttribute('aria-pressed', String(open)); if (open) kbd(); });
+    $('kbdB').addEventListener('click', () => { const open = $('kbd').hidden; if (open && !$('hand').hidden) $('handB').click(); $('kbd').hidden = !open; $('kbdB').setAttribute('aria-expanded', String(open)); $('kbdB').setAttribute('aria-pressed', String(open)); if (open) kbd(); });
     $('from').addEventListener('change', () => { if (!$('kbd').hidden && !kbdLang) kbd(); });
     // handwriting: draw on the pad, Verse reads the picture (the same reader as Camera or photo) and translates it
     const pad = $('pad'), pen = pad.getContext('2d'); let drawing = false, inked = false;
@@ -415,7 +415,7 @@
     pad.addEventListener('pointerdown', (e) => { drawing = true; inked = true; pad.setPointerCapture(e.pointerId); const [x, y] = padAt(e); pen.beginPath(); pen.moveTo(x, y); pen.lineTo(x + 0.1, y + 0.1); pen.stroke(); });
     pad.addEventListener('pointermove', (e) => { if (!drawing) return; const [x, y] = padAt(e); pen.lineTo(x, y); pen.stroke(); });
     addEventListener('pointerup', () => { drawing = false; });
-    $('handB').addEventListener('click', () => { const open = $('hand').hidden; $('hand').hidden = !open; $('handB').setAttribute('aria-expanded', String(open)); $('handB').setAttribute('aria-pressed', String(open)); });
+    $('handB').addEventListener('click', () => { const open = $('hand').hidden; if (open && !$('kbd').hidden) $('kbdB').click(); $('hand').hidden = !open; $('handB').setAttribute('aria-expanded', String(open)); $('handB').setAttribute('aria-pressed', String(open)); });
     $('handClear').addEventListener('click', blank);
     $('handGo').addEventListener('click', async () => {
       if (!inked) return say(de ? 'Schreiben Sie zuerst etwas auf die Fläche' : 'Write something on the pad first', true);

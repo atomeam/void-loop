@@ -2717,12 +2717,12 @@ try {
       check('translate page, on-screen keyboard: with Russian as the typed language it shows Cyrillic keys; tapping shift, Г д е (shift lasts one letter), space and backspace types "Где", which translates to "Where"',
         keys.includes('ж') && typed === 'Где' && /Where/.test(await outText()), JSON.stringify({ typed, n: keys.length }));
       await P.selectOption('#from', 'en'); await P.selectOption('#to', 'fr'); await P.fill('#in', '');
-      await P.click('#handB'); const box = await P.$eval('#pad', (c) => { const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+      await P.click('#handB'); const kbdShut = await P.$eval('#kbd', (k) => k.hidden); await P.$eval('#pad', (c) => c.scrollIntoView({ block: 'center' })); const box = await P.$eval('#pad', (c) => { const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
       await P.mouse.move(box.x + 20, box.y + 30); await P.mouse.down(); await P.mouse.move(box.x + box.w / 2, box.y + box.h / 2, { steps: 5 }); await P.mouse.up();
       await P.click('#handGo'); await until(async () => /Merci/.test(await outText()), 4000);
       const img = asks.find((a) => a.image);
-      check('translate page, handwriting: a stroke on the pad is sent as a picture, its words ("Thank you") land in the box and come back translated ("Merci")',
-        !!img && /^data:image\/jpeg/.test(img.image) && await P.$eval('#in', (t) => t.value) === 'Thank you' && /Merci/.test(await outText()), JSON.stringify(asks.map((a) => Object.keys(a))));
+      check('translate page, handwriting: opening the pad shuts the keyboard (one input tool at a time); a stroke on the pad is sent as a picture, its words ("Thank you") land in the box and come back translated ("Merci")',
+        kbdShut && !!img && /^data:image\/jpeg/.test(img.image) && await P.$eval('#in', (t) => t.value) === 'Thank you' && /Merci/.test(await outText()), JSON.stringify(asks.map((a) => Object.keys(a))));
       await P.click('#fbB'); await P.fill('#fbT', 'Merci bien'); await P.click('#fbSave');
       const said = await P.$eval('#status', (s) => s.textContent).catch(() => ''); const n = asks.length;
       await P.reload(); await P.fill('#in', 'Thank you'); await P.click('#go'); await until(async () => /Merci bien/.test(await outText()), 4000);
