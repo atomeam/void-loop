@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- grok-bot (box, calculators) · box/calc-gate, then box/calc-engine and box/calc-batch-N · the vcalc.com floor: the gate never opens vcalc.com (robots.txt) and judges it on internal metrics, not beaten with the library-size gap shown; then a solve-for-any-variable formula engine and formula batches, each with a source and an exact-value test · 2026-10-28 18:30 EDT
 - Claude (tower-self session) · main · Versus by itself: .github/workflows/tower-self.yml + tools/tower-self.mjs, the tower cycle (pick, research, data-row page, gate, fix, report) on Verse's free model with no Claude; audit in docs/autonomy.md · 2026-10-26
 - Claude (markets run) · main · the finance floor (Yahoo Finance): /markets/ page, /api/markets quotes, probe and lane · 2026-10-26
 - Claude (podcasts session) · main · the podcasts floor (podcasts.apple.com): /podcasts/ (lib/podcasts.js, /api/podcasts SSRF-safe feed fetch, iTunes search and charts, player with speed/sleep/chapters/transcripts/queue/follows/OPML/offline), its probe and lane in tower-probes.mjs and lib/tower.js · 2026-10-26
