@@ -170,10 +170,10 @@
   "coin flip": {
    "speed": {
     "verdict": "worse",
-    "verse": 601,
-    "best": 198,
-    "evidence": "Verse (/flip/) 601 ms to the load event (median of 3, phone width) vs justflipacoin.com 198 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T16:49:18.779Z",
+    "verse": 261,
+    "best": 223,
+    "evidence": "Verse (/flip/) 261 ms to the load event (median of 3, phone width) vs justflipacoin.com 223 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T18:23:49.399Z",
     "was": "equal-and-better"
    },
    "mobile": {
@@ -181,42 +181,42 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T16:49:18.779Z"
+    "at": "2026-10-28T18:23:49.399Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-28T16:49:18.779Z"
+    "at": "2026-10-28T18:23:49.399Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-28T16:49:18.779Z"
+    "at": "2026-10-28T18:23:49.399Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T16:49:18.779Z"
+    "at": "2026-10-28T18:23:49.399Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T16:49:18.779Z"
+    "at": "2026-10-28T18:23:49.399Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 7,
     "best": 4,
     "evidence": "Verse (/flip/) 7 of 7 things a full answer shows vs justflipacoin.com 4 of 7 things a full answer shows (Verse lacks: none; site lacks: a running count, Flip counter, Flip sound)",
-    "at": "2026-10-28T16:49:18.779Z",
+    "at": "2026-10-28T18:23:49.399Z",
     "of": 7
    },
    "design polish": {
@@ -224,14 +224,14 @@
     "verse": 4,
     "best": 11,
     "evidence": "Verse (/flip/) 4 design defects vs justflipacoin.com 11 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.24), justflipacoin.com (2 low-contrast texts, 9 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T16:49:18.779Z"
+    "at": "2026-10-28T18:23:49.399Z"
    },
    "flip history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 0 of 1 shown (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-28T16:49:18.779Z",
+    "at": "2026-10-28T18:23:49.399Z",
     "of": 1,
     "part": true
    },
@@ -240,7 +240,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 right against the worked-out answer; judged against the standard, not justflipacoin.com (the site is not asked)",
-    "at": "2026-10-28T16:49:18.779Z",
+    "at": "2026-10-28T18:23:49.399Z",
     "of": 3
    },
    "flip animation": {
@@ -248,7 +248,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-28T16:49:18.779Z",
+    "at": "2026-10-28T18:23:49.399Z",
     "of": 1,
     "part": true
    }
@@ -18804,45 +18804,45 @@
   "identity": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 108,
-    "best": 211,
-    "evidence": "Verse (/identity/) 108 ms to the load event (median of 3, phone width) vs anycolorid.com 211 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:19:58.608Z"
+    "verse": 146,
+    "best": 304,
+    "evidence": "Verse (/identity/) 146 ms to the load event (median of 3, phone width) vs anycolorid.com 304 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T18:24:41.399Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 loads answered vs anycolorid.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:19:58.608Z"
+    "at": "2026-10-28T18:24:41.399Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/identity/) 0 px sideways overflow at 390 px vs anycolorid.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:19:58.608Z"
+    "at": "2026-10-28T18:24:41.399Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/identity/) 0 unnamed controls or images vs anycolorid.com 1 unnamed controls or images",
-    "at": "2026-10-28T13:19:58.608Z"
+    "at": "2026-10-28T18:24:41.399Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/identity/) 1 (1: the page shows itself again with the network cut) vs anycolorid.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:19:58.608Z"
+    "at": "2026-10-28T18:24:41.399Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:58.608Z",
+    "at": "2026-10-28T18:24:41.399Z",
     "of": 3,
     "part": true
    },
@@ -18851,7 +18851,7 @@
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/identity/) 8 of 8 right against the worked-out answer; judged against the standard, not anycolorid.com (the site is not asked)",
-    "at": "2026-10-28T13:19:58.608Z",
+    "at": "2026-10-28T18:24:41.399Z",
     "of": 8
    },
    "design polish": {
@@ -18859,14 +18859,14 @@
     "verse": 0,
     "best": 9,
     "evidence": "Verse (/identity/) 0 design defects vs anycolorid.com 9 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), anycolorid.com (4 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-    "at": "2026-10-28T13:19:58.608Z"
+    "at": "2026-10-28T18:24:41.399Z"
    },
    "change history": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:58.608Z",
+    "at": "2026-10-28T18:24:41.399Z",
     "of": 3,
     "part": true
    },
@@ -18875,7 +18875,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:58.608Z",
+    "at": "2026-10-28T18:24:41.399Z",
     "of": 4,
     "part": true
    },
@@ -18884,7 +18884,7 @@
     "verse": 22,
     "best": 0,
     "evidence": "Verse (/identity/) 22 of 22 things a full answer shows vs anycolorid.com 0 of 22 things a full answer shows (Verse lacks: none; site lacks: profile, name, email, account ID, region, change history, on this device, JWT, claims, SSO, service portal, Official Website, Fan Club, Official Store, Community Hub, share link, export JSON, copy card, no account, works offline, no ads, back to Verse)",
-    "at": "2026-10-28T13:19:58.608Z",
+    "at": "2026-10-28T18:24:41.399Z",
     "of": 22
    },
    "profile editing": {
@@ -18910,7 +18910,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:58.608Z",
+    "at": "2026-10-28T18:24:41.399Z",
     "of": 4,
     "part": true
    },
@@ -18919,7 +18919,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:58.608Z",
+    "at": "2026-10-28T18:24:41.399Z",
     "of": 3,
     "part": true
    }
