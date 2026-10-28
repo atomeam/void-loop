@@ -794,8 +794,22 @@ try {
     await P.p.fill('#csv', 'Delta, 3, 4\nEcho, 7, 1'); await P.p.click('#import'); await P.p.waitForTimeout(200);
     const after = await P.p.$eval('#stat', (e) => e.textContent);
     check('tournament: the FNCS preset sets its own placement ladder, and two CSV rows become the next match', /1st 10/.test(tiers) && /6th-10th 3/.test(tiers) && /5 teams/.test(after) && /2 matches/.test(after), JSON.stringify({ tiers, after }));
+    // the match grid (owner, 2026-10-28): the roster carries over, the host tabs through place and elims, a shared place is flagged
+    await P.p.click('#add'); await P.p.waitForTimeout(100);
+    const gridNames = await P.p.$$eval('#grid tbody td.team', (tds) => tds.map((t) => t.textContent));
+    await P.p.keyboard.type('2'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('3'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('2');
+    await P.p.waitForTimeout(150);
+    const dupe = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    await P.p.keyboard.press('Backspace'); await P.p.keyboard.type('1'); await P.p.waitForTimeout(150);
+    const dupeAfter = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    const gridResults = await P.p.evaluate(() => new URLSearchParams(location.search).get('results'));
+    check('tournament: the match grid keeps the roster from match 1, tabs place then elims, flags two teams on one place and writes the URL format back',
+      gridNames.join('|') === 'Alpha|Bravo|Charlie|Delta|Echo' && /Alpha and Bravo are both 2nd/.test(dupe) && !dupeAfter && /;Alpha:2:3,Bravo:1:0$/.test(gridResults || ''), JSON.stringify({ gridNames, dupe, dupeAfter, gridResults }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth; const over = [...document.querySelectorAll('main *')].filter((e) => e.offsetParent && !e.closest('.scroll') && (e.getBoundingClientRect().right > vw + 1 || (e.scrollWidth > e.clientWidth + 1 && getComputedStyle(e).overflowX !== 'visible' && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName)))).map((e) => e.tagName + '#' + e.id + '.' + e.className); return { page: document.documentElement.scrollWidth - vw, over: over.slice(0, 6) }; });
+    check('tournament: at phone width (360 px) the page never scrolls sideways and nothing outside a scroll box is cut off', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
     const stageLink = await P.p.$eval('a[href*="ask=tournament"]', (a) => a.getAttribute('href')).catch(() => '');
     check('tournament: the footer links to at least four sibling Verse tools and hands the page to the stage', (await siblingCount(P.p)) >= 4 && stageLink === '/?ask=tournament%20scorer', JSON.stringify({ siblings: await siblingCount(P.p), stageLink }));
     await P.ctx.close();
