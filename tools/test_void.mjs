@@ -771,7 +771,7 @@ try {
   // spots, with no account and nothing sent. The seeded ask is the three-team match the probe works out by hand (Alpha 22, Bravo 19, Charlie 6).
   if (want("tournament: seeded standings, the threshold rule, tiebreakers, snake heats, contested drops, CSV in and out and a share link")) {
     const { PROBES } = await import('./tower-probes.mjs');
-    const ask = '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Tilted%20Towers,Bravo:Pleasant%20Park,Charlie:Tilted%20Towers&elim=2&win=10&top5=5';
+    const ask = '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor,Charlie:Old%20Mill&elim=2&win=10&top5=5';
     const P = await fresh({ base: base + ask.slice(1) });
     await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
     const text = () => P.p.evaluate(() => document.body.innerText);
@@ -785,8 +785,8 @@ try {
       /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1 leads by 3 pts' && rows[1] === '2 Bravo 19 0 7 2.0 2 -3 pts · needs 2 elims or a Top 5 to lead' && /^3 Charlie 6 0 3 6\.0 6 -16 pts/.test(rows[2]) && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
     const heats = await P.p.$eval('#heatout', (e) => e.innerText);
     const drops = await P.p.$eval('#droptable', (e) => e.innerText);
-    check('tournament: the lobby splits into snake-seeded heats, and the shared drop spot is flagged contested while the unique one stays clear',
-      /Heat 1 Alpha/.test(heats) && /Heat 2 Bravo, Charlie/.test(heats) && /Tilted Towers\s+contested/.test(drops) && /Pleasant Park\s+clear/.test(drops), JSON.stringify({ heats, drops }));
+    check('tournament: the lobby splits into snake-seeded heats, and the shared starting spot is flagged contested with who holds it while the unique one stays clear',
+      /Heat 1 Alpha/.test(heats) && /Heat 2 Bravo, Charlie/.test(heats) && /Old Mill\s+contested\s+#1 Alpha \(22 pts\) vs #3 Charlie \(6 pts\)/.test(drops) && /Harbor\s+clear\s+#2 Bravo \(19 pts\)/.test(drops), JSON.stringify({ heats, drops }));
     await P.p.click('#share'); await P.p.waitForTimeout(250);
     const search = await P.p.evaluate(() => location.search);
     await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
@@ -822,6 +822,15 @@ try {
     const tierUrl = await P.p.evaluate(() => new URLSearchParams(location.search).get('tiers'));
     check('tournament: the tier chips remove and add ranges, an overlapped tier is replaced, and the link carries the ladder',
       chips === '1st: 10|2nd-5th: 5|6th-10th: 3|11th-30th: 1' && tierUrl === '1:10,2-5:5,6-10:3,11-30:1', JSON.stringify({ chips, tierUrl }));
+    // the claim form (owner, 2026-10-28): a typed team and a half-typed spot snap to the roster and the spot already claimed, the pill says
+    // how many hold it, and the note names a team with no spot yet
+    await P.p.goto(base + 'tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor&elim=2&win=10&top5=5'); await P.p.waitForSelector('#droptable tbody tr', { timeout: 15000 });
+    const note0 = await P.p.$eval('#spotnote', (e) => e.textContent);
+    await P.p.fill('#spteam', 'charlie'); await P.p.fill('#spspot', 'harb'); await P.p.click('#spadd'); await P.p.waitForTimeout(150);
+    const sp = await P.p.evaluate(() => ({ drops: document.getElementById('drops').value, rows: [...document.querySelectorAll('#droptable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pills: [...document.querySelectorAll('#pills .chip')].map((b) => b.textContent), note: document.getElementById('spotnote').textContent, q: new URLSearchParams(location.search).get('drops') }));
+    check('tournament: the claim form snaps "charlie" and "harb" to Charlie and Harbor, groups the table by spot with ranks and points, and the note names who has no spot',
+      /no spot yet: Charlie/.test(note0) && sp.drops === 'Alpha:Old Mill\nBravo:Harbor\nCharlie:Harbor' && sp.rows[1] === 'Harbor contested #2 Bravo (19 pts) vs #3 Charlie (6 pts)' && sp.rows[0] === 'Old Mill clear #1 Alpha (22 pts)'
+        && sp.pills.join('|') === 'Old Mill · 1|Harbor · 2' && /1 contested spot · every team has a spot/.test(sp.note) && sp.q === 'Alpha:Old Mill,Bravo:Harbor,Charlie:Harbor', JSON.stringify(sp));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);

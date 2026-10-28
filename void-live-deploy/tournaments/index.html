@@ -72,6 +72,7 @@
   .warn { color:#ffd0d0; background:#2a1717; border:1px solid #6d3535; border-radius:8px; padding:6px 10px; font-size:13px; margin:8px 0 0; overflow-wrap:anywhere; }
   .chips { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
   .chip { display:inline-flex; align-items:center; gap:4px; font-size:13px; border:1px solid var(--line); border-radius:999px; padding:2px 4px 2px 10px; background:#191827; }
+  .chip.bad { color:#ffd0d0; border-color:#6d3535; }
   .chip button { min-height:26px; padding:0 8px; border:0; background:transparent; color:var(--quiet); }
   #demo button { margin-left:4px; }
   details.adv { margin:10px 0 0; }
@@ -197,16 +198,24 @@
   </section>
 
   <section class="card" aria-labelledby="h-drops">
-    <h2 id="h-drops">Drop spots</h2>
-    <p class="note">One per line: <code>Team:Place</code>. Two teams on the same place are flagged contested.</p>
-    <textarea id="drops" spellcheck="false" aria-label="Drop spots, one Team:Place per line"></textarea>
+    <h2 id="h-drops">Starting spots (drops, courts, tables)</h2>
+    <p class="note">A conflict checker: claim a spot for each team, or type one per line as <code>Team:Spot</code>. Team names snap to the roster and a spot typed again snaps to the spelling it was first claimed under (<code>old m</code> is Old Mill). Two teams on one spot are flagged contested, with each team's rank and points.</p>
+    <div class="row" id="claimrow">
+      <label>Team <input id="spteam" list="teamlist" autocomplete="off" size="12"></label>
+      <label>Spot <input id="spspot" list="spotlist" autocomplete="off" size="14"></label>
+      <button type="button" id="spadd">Claim</button>
+    </div>
+    <datalist id="teamlist"></datalist><datalist id="spotlist"></datalist>
+    <div class="chips" id="pills" role="list" aria-label="Spots claimed so far"></div>
+    <textarea id="drops" spellcheck="false" aria-label="Starting spots, one Team:Spot per line"></textarea>
     <div class="scroll">
       <table id="droptable">
-        <caption>Claimed drop spots and whether they are contested</caption>
-        <thead><tr><th scope="col">Team</th><th scope="col">Drop</th><th scope="col">Claim</th></tr></thead>
+        <caption>Claimed starting spots, grouped by spot, and whether each is contested</caption>
+        <thead><tr><th scope="col">Spot</th><th scope="col">Claim</th><th scope="col">Teams</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
+    <p class="note" id="spotnote" aria-live="polite"></p>
   </section>
 
   <section class="card" aria-labelledby="h-csv">
@@ -222,7 +231,7 @@
   <footer>
     <p>Everything on this page is worked out on this device from the results you type: no account, no ads, nothing is sent anywhere, and it works offline with the numbers it last had. Placement points go to the highest matching threshold; the tiebreakers are points, wins, eliminations, then average placement.</p>
     <nav class="siblings" aria-label="Use together with">
-      <a href="/flip/">Coin flip for the drop order</a>
+      <a href="/flip/">Coin flip for the pick order</a>
       <a href="/g/?text=Scrim%20rules%3A%20points%2C%20wins%2C%20eliminations%2C%20average%20placement&amp;name=rules.txt">Share the rules in a gist</a>
       <a href="/word-count/">Word count</a>
       <a href="/paint/">Paint</a>
@@ -234,7 +243,7 @@
   </footer>
 </main>
 <script type="module">
-  import { parseRounds, serializeRounds, setRoundEntry, scorer, rank, gapsFor, matchPointFor, heatList, roster, mergeNames, duplicatePlaces, duplicateText, cleanName, parseEntry, parseTiers, serializeTiers, tierLabel, tierSentence, legacyTiers, KINDS, kindOf } from '/lib/scrim.js';
+  import { parseRounds, serializeRounds, setRoundEntry, scorer, rank, gapsFor, matchPointFor, heatList, roster, mergeNames, duplicatePlaces, duplicateText, cleanName, parseEntry, parseTiers, serializeTiers, tierLabel, tierSentence, legacyTiers, parseSpots, spotGroups, spotLine, unclaimed, claimSpot, KINDS, kindOf } from '/lib/scrim.js';
   const $ = (id) => document.getElementById(id);
   const KEY = 'a2m.void.tournaments.v1';
   // one worked example per kind; a bare /tournaments/ opens on the game night, and one click swaps to the battle-royale one
@@ -400,32 +409,34 @@
       heatOut.append(p);
     });
 
-    const claims = new Map();
-    const drops = state.drops.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).map((line) => {
-      const at = line.indexOf(':');
-      const team = at < 0 ? line : line.slice(0, at).trim();
-      const spot = at < 0 ? 'unclaimed' : line.slice(at + 1).trim() || 'unclaimed';
-      const key = spot.toLowerCase();
-      claims.set(key, (claims.get(key) || 0) + 1);
-      return { team, spot };
-    });
+    const names = rows.map((r) => r.name), claims = parseSpots(state.drops, names), groups = spotGroups(claims, rows);
     const dropBody = $('droptable').tBodies[0];
     dropBody.replaceChildren();
-    drops.forEach(({ team, spot }) => {
+    groups.forEach((g) => {
       const tr = document.createElement('tr');
-      const tdTeam = document.createElement('td');
-      tdTeam.textContent = team;
       const tdSpot = document.createElement('td');
-      tdSpot.textContent = spot;
+      tdSpot.textContent = g.spot;
       const tdClaim = document.createElement('td');
       const tag = document.createElement('span');
-      const contested = (claims.get(spot.toLowerCase()) || 0) > 1;
-      tag.className = contested ? 'tag bad' : 'tag';
-      tag.textContent = contested ? 'contested' : 'clear';
+      tag.className = g.contested ? 'tag bad' : 'tag';
+      tag.textContent = g.contested ? 'contested' : 'clear';
       tdClaim.append(tag);
-      tr.append(tdTeam, tdSpot, tdClaim);
+      const tdTeams = document.createElement('td');
+      tdTeams.textContent = spotLine(g);
+      tr.append(tdSpot, tdClaim, tdTeams);
       dropBody.append(tr);
     });
+    $('teamlist').replaceChildren(...names.map((n) => Object.assign(document.createElement('option'), { value: n })));
+    $('spotlist').replaceChildren(...groups.map((g) => Object.assign(document.createElement('option'), { value: g.spot })));
+    $('pills').replaceChildren(...groups.map((g) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip' + (g.contested ? ' bad' : ''); b.setAttribute('role', 'listitem');
+      b.textContent = g.spot + ' · ' + g.teams.length; b.setAttribute('aria-label', 'Use ' + g.spot + ' (' + g.teams.length + ' claimed)');
+      b.onclick = () => { $('spspot').value = g.spot; $('spteam').focus(); };
+      return b;
+    }));
+    const open = unclaimed(claims, rows), clash = groups.filter((g) => g.contested).length;
+    $('spotnote').textContent = !claims.length ? 'No spots claimed yet.' : (clash ? clash + ' contested ' + (clash === 1 ? 'spot' : 'spots') : 'No conflicts') + (open.length ? ' · no spot yet: ' + open.join(', ') : ' · every team has a spot') + '.';
 
     const href = link();
     $('link').href = href;
@@ -536,6 +547,13 @@
   $('addteam').onclick = addTeam;
   $('newteam').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addTeam(); } });
   $('drops').addEventListener('input', (e) => { state.drops = e.target.value; commit(); });
+  const claim = () => {
+    const team = $('spteam').value.trim(); if (!team) { $('spteam').focus(); return; }
+    state.drops = claimSpot(state.drops, team, $('spspot').value, table().rows.map((r) => r.name)); $('drops').value = state.drops;
+    $('spteam').value = ''; $('spspot').value = ''; $('spteam').focus(); commit();
+  };
+  $('spadd').onclick = claim;
+  $('spspot').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); claim(); } });
   $('heats').addEventListener('input', (e) => { state.heats = Math.min(8, Math.max(1, parseInt(e.target.value, 10) || 1)); commit(); });
   $('mode').addEventListener('change', (e) => { state.mode = e.target.value; commit(); });
   $('elim').addEventListener('input', (e) => { state.elim = Math.max(0, parseInt(e.target.value, 10) || 0); state.preset = ''; $('preset').value = ''; commit(); });
