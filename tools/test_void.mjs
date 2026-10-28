@@ -792,11 +792,11 @@ try {
     await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
     const back = await P.p.$eval('#stat', (e) => e.textContent);
     check("tournament: the share link is the page's own state, and opening it again gives the same standings", /results=/.test(search) && /47 points/.test(back) && /leader Alpha/.test(back), JSON.stringify({ search: search.slice(0, 140), back }));
-    await P.p.selectOption('#preset', 'fncs'); await P.p.waitForTimeout(150);
+    await P.p.selectOption('#preset', 'finals'); await P.p.waitForTimeout(150);
     const tiers = await P.p.$eval('#tiers', (e) => e.textContent);
     await P.p.fill('#csv', 'Delta, 3, 4\nEcho, 7, 1'); await P.p.click('#import'); await P.p.waitForTimeout(200);
     const after = await P.p.$eval('#stat', (e) => e.textContent);
-    check('tournament: the FNCS preset sets its own placement ladder, and two CSV rows become the next match', /1st 10/.test(tiers) && /6th-10th 3/.test(tiers) && /5 teams/.test(after) && /2 matches/.test(after), JSON.stringify({ tiers, after }));
+    check('tournament: the finals-style preset sets its own placement ladder, and two CSV rows become the next match', /1st 10/.test(tiers) && /6th-10th 3/.test(tiers) && /5 teams/.test(after) && /2 matches/.test(after), JSON.stringify({ tiers, after }));
     // the match grid (owner, 2026-10-28): the roster carries over, the host tabs through place and elims, a shared place is flagged
     await P.p.click('#add'); await P.p.waitForTimeout(100);
     const gridNames = await P.p.$$eval('#grid tbody td.team', (tds) => tds.map((t) => t.textContent));
@@ -816,6 +816,12 @@ try {
     const colSearch = await P.p.evaluate(() => location.search);
     check('tournament: each match gets its own column (points, place/elims), the gap names the cutoff, and match point names who is on it',
       /\|M1\|M2\|M3\|Gap$/.test(heads) && /22 \(1\/6\)/.test(firstRow) && /On match point/.test(mpNote) && /cols=1/.test(colSearch) && /cut=2/.test(colSearch) && /mp=20/.test(colSearch), JSON.stringify({ heads, firstRow, mpNote, colSearch }));
+    // the tier chips (owner, 2026-10-28): remove a tier with its x, add a range, and the link carries tiers=
+    await P.p.click('#chips button[aria-label="Remove the 16th-25th tier"]'); await P.p.fill('#tfrom', '11'); await P.p.fill('#tto', '30'); await P.p.fill('#tpts', '1'); await P.p.click('#tadd'); await P.p.waitForTimeout(150);
+    const chips = await P.p.$$eval('#chips .chip', (c) => c.map((x) => x.firstChild.textContent).join('|'));
+    const tierUrl = await P.p.evaluate(() => new URLSearchParams(location.search).get('tiers'));
+    check('tournament: the tier chips remove and add ranges, an overlapped tier is replaced, and the link carries the ladder',
+      chips === '1st: 10|2nd-5th: 5|6th-10th: 3|11th-30th: 1' && tierUrl === '1:10,2-5:5,6-10:3,11-30:1', JSON.stringify({ chips, tierUrl }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
@@ -823,6 +829,36 @@ try {
     check('tournament: at phone width (360 px) the page never scrolls sideways and nothing outside a scroll box is cut off', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
     const stageLink = await P.p.$eval('a[href*="ask=tournament"]', (a) => a.getAttribute('href')).catch(() => '');
     check('tournament: the footer links to at least four sibling Verse tools and hands the page to the stage', (await siblingCount(P.p)) >= 4 && stageLink === '/?ask=tournament%20scorer', JSON.stringify({ siblings: await siblingCount(P.p), stageLink }));
+    await P.ctx.close();
+  }
+  // everyone's tournaments (owner, 2026-10-28): a bare page opens on a game night, one click swaps to the battle-royale example, a league
+  // scores 3/1/0 with goal difference, and a link made before the presets were renamed (preset=fncs, win/top5) still scores the same
+  if (want("tournament: a bare page opens on a game night, the battle-royale swap, a league and old links")) {
+    const P = await fresh({ base: base + 'tournaments/' });
+    await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const gn = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, heads: [...document.querySelectorAll('#grid thead th')].filter((t) => !t.hidden).map((t) => t.textContent).join('|'), demo: !document.getElementById('demo').hidden, body: document.body.innerText }));
+    check('tournament: a bare /tournaments/ opens on an everyday game night, scores added straight on, no placement or elims, no trademarked names',
+      /3 teams · 3 rounds · 68 points · leader Owls/.test(gn.stat) && gn.preset === 'gamenight' && gn.heads === 'Team|Score' && gn.demo && !/Fortnite|FNCS|Tilted|Pleasant Park/.test(gn.body), JSON.stringify({ stat: gn.stat, preset: gn.preset, heads: gn.heads, demo: gn.demo }));
+    await P.p.click('#swapdemo'); await P.p.waitForTimeout(150);
+    const br = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, search: location.search }));
+    check('tournament: one click swaps the game night for the battle-royale example on the finals-style ladder',
+      br.preset === 'finals' && /3 teams · 1 match · 16 eliminations/.test(br.stat) && /leader Alpha/.test(br.stat) && !/kind=/.test(br.search), JSON.stringify(br));
+    await P.p.goto(base + 'tournaments/?kind=league&results=Reds:2:1,Blues:1:2,Greens:0:0,Golds:0:0;Reds:0:3,Blues:3:0,Greens:4:1,Golds:1:4'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const lg = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
+    check('tournament: a league scores win 3, draw 1, loss 0 and breaks the tie on goal difference', /^1 Greens 4 1 1 0 \+3 4 /.test(lg[0]) && /^2 Blues 3 1 0 1 \+2 4 /.test(lg[1]) && /^3 Reds 3 1 0 1 -2 2 /.test(lg[2]), JSON.stringify(lg));
+    await P.p.goto(base + 'tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&mode=duos&elim=2&win=10&top5=5&top10=3&top15=2&top25=1&preset=fncs'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const old = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, tiers: document.getElementById('tiers').textContent }));
+    check('tournament: an old link (preset=fncs with win, top5 ... top25) still opens as the same battle royale on the renamed preset',
+      old.preset === 'finals' && /16 eliminations · 50 points/.test(old.stat) && /1st 10, 2nd-5th 5, 6th-10th 3, 11th-15th 2, 16th-25th 1/.test(old.tiers), JSON.stringify(old));
+    // a roster sent from /wheel/ or /prizes/ (?roster=...&preset=gamenight): Game night is the scorer's own preset, the teams sit on 0 in its
+    // standings and grid, a score typed for one keeps the others, and the share link carries the whole roster
+    await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const r0 = await P.p.evaluate(() => ({ preset: document.getElementById('preset').value, rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), grid: [...document.querySelectorAll('#grid tbody td.team')].map((t) => t.textContent) }));
+    await P.p.fill('#grid input[data-team="Bob"]', '7'); await P.p.waitForTimeout(150);
+    const r1 = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), q: Object.fromEntries(new URLSearchParams(document.getElementById('link').getAttribute('href').split('?')[1])) }));
+    check('tournament: a ?roster= link opens on the native Game night preset with every team on 0, and after one score the share link still carries the whole roster',
+      r0.preset === 'gamenight' && r0.rows.join('|') === 'Ann 0|Bob 0|Cat 0' && r0.grid.join('|') === 'Ann|Bob|Cat' && r1.rows.join('|') === 'Bob 7|Ann 0|Cat 0'
+        && r1.q.kind === 'gamenight' && r1.q.results === 'Bob:7' && r1.q.roster === 'Bob\nAnn\nCat' && r1.q.preset === 'gamenight', JSON.stringify({ r0, r1 }));
     await P.ctx.close();
   }
   // the prize wheel floor (2026-10-28): wheelofgold.com's spin-to-win, fought from /prizes/ - every slice's real chance and expected value,

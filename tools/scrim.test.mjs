@@ -82,3 +82,51 @@ test('match point: reaching the threshold makes a team eligible, and its next wi
   assert.deepEqual(matchPoint(parseMatches('A:1:5'), pts, 2, 15), { champion: '', match: 0, eligible: ['A'] });
   assert.equal(matchPoint(m, pts, 2, 0).champion, '');
 });
+
+// ---- tiers and kinds (stage 3) ----
+import { parseTiers, tierPoints, serializeTiers, tierLabel, tierSentence, legacyTiers, parseRounds, serializeRounds, setRoundEntry, scorer, rank, gapsFor, matchPointFor } from '../void-live-deploy/lib/scrim.js';
+
+test('tier text reads ordinals, ranges and dashes, and a place scores the first tier that holds it', () => {
+  const t = parseTiers('1st:10, 2-5:5, 6th–10th: 3; 11-25:1, junk, 30:0');
+  assert.deepEqual(t.map((x) => [x.from, x.to, x.pts]), [[1, 1, 10], [2, 5, 5], [6, 10, 3], [11, 25, 1], [30, 30, 0]]);
+  assert.deepEqual([1, 2, 5, 6, 10, 11, 25, 26, 30].map((p) => tierPoints(t, p)), [10, 5, 5, 3, 3, 1, 1, 0, 0]);
+  assert.equal(serializeTiers(t), '1:10,2-5:5,6-10:3,11-25:1,30:0');
+  assert.equal(tierLabel(t[1]), '2nd-5th');
+  assert.equal(tierSentence(t), 'Placement points by the highest matching threshold: 1st 10, 2nd-5th 5, 6th-10th 3, 11th-25th 1; everyone else 0.');
+});
+
+test('old links keep scoring the same: win and top5 become tiers, and the 22/19/6 match still adds up', () => {
+  const t = legacyTiers({ win: 10, top5: 5, top10: 0, top15: 0, top25: 0 });
+  assert.equal(serializeTiers(t), '1:10,2-5:5');
+  const { rows } = rank(parseRounds('Alpha:1:6,Bravo:2:7,Charlie:6:3'), scorer('br', { tiers: t, elim: 2 }));
+  assert.deepEqual(rows.map((r) => [r.name, r.points]), [['Alpha', 22], ['Bravo', 19], ['Charlie', 6]]);
+  assert.deepEqual(serializeTiers(legacyTiers({ win: 10, top5: 5, top10: 3, top15: 2, top25: 1 })), '1:10,2-5:5,6-10:3,11-15:2,16-25:1');
+});
+
+test('a game night adds scores straight on, allows 0 and negatives, and the top score wins the round', () => {
+  const sc = scorer('gamenight');
+  const m = parseRounds('Owls:8,Foxes:6,Otters:9;Owls:7,Foxes:9,Otters:5;Owls:10,Foxes:7,Otters:7;Owls:0,Foxes:-2', 'gamenight');
+  const { rows } = rank(m, sc);
+  assert.deepEqual(rows.map((r) => [r.name, r.points, r.wins]), [['Owls', 25, 2], ['Otters', 21, 1], ['Foxes', 20, 1]]);
+  assert.equal(serializeRounds(m, 'gamenight'), 'Owls:8,Foxes:6,Otters:9;Owls:7,Foxes:9,Otters:5;Owls:10,Foxes:7,Otters:7;Owls:0,Foxes:-2');
+  assert.equal(gapsFor(rows, sc)[1].hint, '-4 pts · needs 5 pts to lead');
+  const set = setRoundEntry(m, 0, 'owls', '0', '', 'gamenight');
+  assert.equal(set[0][0].place, 0, 'a score of 0 stays in the round');
+  assert.equal(setRoundEntry(m, 0, 'Owls', '', '', 'gamenight')[0].length, 2, 'a blank score takes the team out');
+});
+
+test('a league scores 3/1/0 from goals for and against and breaks ties on goal difference, then goals scored', () => {
+  const sc = scorer('league');
+  const { rows } = rank(parseRounds('Reds:2:1,Blues:1:2,Greens:0:0,Golds:0:0;Reds:0:3,Blues:3:0,Greens:4:1,Golds:1:4', 'league'), sc);
+  assert.deepEqual(rows.map((r) => [r.name, r.points, r.wins, r.draws, r.losses, r.diff]), [['Greens', 4, 1, 1, 0, 3], ['Blues', 3, 1, 0, 1, 2], ['Reds', 3, 1, 0, 1, -2], ['Golds', 1, 0, 1, 1, -3]]);
+  assert.equal(sc.cell(rows[0].per[1]), '3 (4-1)');
+  assert.deepEqual(gapsFor(rows, sc).map((g) => g.hint), ['leads by 1 pts', '-1 pts · needs a win to lead', '-1 pts · needs a win to lead', '-3 pts · needs more than one game to lead']);
+  assert.equal(matchPointFor(parseRounds('A:1:0,B:0:1;A:2:0,B:0:2', 'league'), sc, 3).champion, 'A');
+});
+
+test('racing pays a graded 10/6/3 plus a bonus point each, and the gap speaks in bonus points', () => {
+  const sc = scorer('racing', { tiers: parseTiers('1:10,2:6,3:3'), elim: 1 });
+  const { rows } = rank(parseRounds('Red:1:0,Blue:2:2,Green:3:1,Grey:4:0'), sc);
+  assert.deepEqual(rows.map((r) => [r.name, r.points]), [['Red', 10], ['Blue', 8], ['Green', 4], ['Grey', 0]]);
+  assert.equal(gapsFor(rows, sc)[1].hint, '-2 pts · needs 3 bonus points or a Top 3 to lead');
+});

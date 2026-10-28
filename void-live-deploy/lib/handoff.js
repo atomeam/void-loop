@@ -102,7 +102,10 @@ export function hookTournaments(search, doc = globalThis.document) {
     card = doc.createElement('section'); card.className = 'card'; card.id = 'roster'; card.setAttribute('aria-labelledby', 'h-roster');
     const h = doc.createElement('h2'); h.id = 'h-roster'; h.textContent = 'Roster · ' + GAME_NIGHT.name;
     const note = doc.createElement('p'); note.className = 'note';
-    note.textContent = roster.length + (roster.length === 1 ? ' team' : ' teams') + ' brought here, every one on 0 points until a result is typed. ' + GAME_NIGHT.name + ' points: ' + GAME_NIGHT.win + ' for a win, ' + GAME_NIGHT.top5 + ' for 2nd to 5th.';
+    const sel = doc.getElementById('preset'), native = !!(sel && [...sel.options].some((o) => o.value === 'gamenight')); // the scorer's own Game night preset
+    note.textContent = roster.length + (roster.length === 1 ? ' team' : ' teams') + ' brought here, every one on 0 points until a result is typed. ' + (native
+      ? GAME_NIGHT.name + ': each round\'s score is added straight on, and the top score takes the round. The teams are in the scorer\'s grid and its share link.'
+      : GAME_NIGHT.name + ' points: ' + GAME_NIGHT.win + ' for a win, ' + GAME_NIGHT.top5 + ' for 2nd to 5th.');
     const wrap = doc.createElement('div'); wrap.className = 'scroll';
     const t = doc.createElement('table'); t.id = 'rostertable';
     const cap = doc.createElement('caption'); cap.textContent = 'The roster, before any match';
@@ -114,6 +117,7 @@ export function hookTournaments(search, doc = globalThis.document) {
     const row = doc.createElement('div'); row.className = 'row';
     const use = doc.createElement('button'); use.type = 'button'; use.id = 'gamenight'; use.textContent = 'Score with ' + GAME_NIGHT.name + ' points';
     use.addEventListener('click', () => {
+      if (native) { sel.value = 'gamenight'; sel.dispatchEvent(new Event('change', { bubbles: true })); return; }
       for (const [id, v] of [['win', GAME_NIGHT.win], ['top5', GAME_NIGHT.top5], ['elim', GAME_NIGHT.elim]]) { const el = doc.getElementById(id); if (el) { el.value = String(v); el.dispatchEvent(new Event('input', { bubbles: true })); } }
       const say = doc.getElementById('say'); if (say) say.textContent = GAME_NIGHT.name + ' points set: ' + GAME_NIGHT.win + ' for a win, ' + GAME_NIGHT.top5 + ' for 2nd to 5th, ' + GAME_NIGHT.elim + ' per elimination.';
     });
