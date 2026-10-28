@@ -841,6 +841,24 @@ try {
     check('hosting: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=web%20hosting%20sizing', JSON.stringify({ siblings: sib, stageLink }));
     await P.ctx.close();
   }
+  // the identity floor (owner, 2026-10-27): anycolorid.com's SSO portal, fought from /identity/ - a sovereign, on-device profile identity studio
+  // with editable profile metadata, a local change history ledger, a JWT claims inspector, a mock service portal and a shareable profile link.
+  if (want("identity: the profile edits, the change history, the token inspector, the service portal and the share link")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'identity/' });
+    await P.p.waitForSelector('#profileout', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.identity;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('identity: the profile shows the seeded name, email, account ID and region, with a change history ledger', /Atom Bomb/.test(t) && /atomicmoonbeam88@gmail.com/.test(t) && /AC-0001/.test(t) && /Change history/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('identity: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=identity"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('identity: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=identity%20sso%20profile', JSON.stringify({ siblings: sib, stageLink }));
+    await P.ctx.close();
+  }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
   // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
   // that says what it is not. The count is real: the tap copies the character and adds one.
