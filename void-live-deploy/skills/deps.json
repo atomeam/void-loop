@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 901,
+ "counted": 903,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1023,6 +1023,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/emoji.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 0
   },
   {
    "file": "lib/jobs-core.js",
@@ -4843,6 +4850,16 @@
     "functions/api/approval.js"
    ]
   },
+  "lib/emoji.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tally.js"
+   ],
+   "reachedBy": [
+    "functions/api/tally.js",
+    "skills/coin.js"
+   ]
+  },
   "lib/empty-state.js": {
    "imports": [],
    "importedBy": []
@@ -8412,7 +8429,8 @@
   },
   "lib/tally.js": {
    "imports": [
-    "lib/reactions.js"
+    "lib/reactions.js",
+    "lib/emoji.js"
    ],
    "importedBy": [
     "functions/api/tally.js",
@@ -10308,6 +10326,10 @@
    ],
    "importedBy": []
   },
+  "skills/hosting.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/howto.js": {
    "imports": [],
    "importedBy": [
@@ -11141,7 +11163,8 @@
     "lib/sky-math.js"
    ],
    "importedBy": [
-    "skills/sky-card.js"
+    "skills/sky-card.js",
+    "skills/time.js"
    ]
   },
   "skills/note-tools.js": {
@@ -12360,6 +12383,7 @@
     "skills/timer.js",
     "skills/clock.js",
     "skills/sky.js",
+    "skills/night-sky.js",
     "skills/moontonight.js",
     "skills/aurora-tonight.js",
     "skills/eclipse.js",

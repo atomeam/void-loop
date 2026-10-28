@@ -195,6 +195,10 @@ export default {
     ]
    },
    {
+    "name": "nightsky",
+    "examples": []
+   },
+   {
     "name": "moontonight",
     "examples": [
      "moon tonight",
@@ -578,7 +582,8 @@ export default {
      "tilt arena",
      "genome arena",
      "tilt game",
-     "agent arena"
+     "agent arena",
+     "show me a 45deg tilt"
     ]
    },
    {
