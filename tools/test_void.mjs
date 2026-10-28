@@ -859,6 +859,25 @@ try {
     check('identity: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=identity%20sso%20profile', JSON.stringify({ siblings: sib, stageLink }));
     await P.ctx.close();
   }
+  // the cpan floor (owner, 2026-10-28): cpantesters.org's tester network, fought from /cpan/ - an offline-first Perl test report and
+  // module ingestion studio with distribution health, a test matrix, module search and export. The seeded ask ingests report lines and
+  // summarizes them on this device.
+  if (want("cpan: the seeded reports ingest, summarize health, build a matrix and export")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'cpan/' });
+    await P.p.waitForSelector('#summary', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.cpan;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('cpan: the page ingests reports, shows distribution health, a test matrix and export controls', /Ingest reports/.test(t) && /Distribution health/.test(t) && /CPAN test matrix/.test(t) && /Export JSON/.test(t) && /Export CSV/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('cpan: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=cpan"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('cpan: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=cpan%20testers', JSON.stringify({ siblings: sib, stageLink }));
+    await P.ctx.close();
+  }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
   // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
   // that says what it is not. The count is real: the tap copies the character and adds one.
