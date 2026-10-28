@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Grok Bot (box, easy floors) · box/paint-rebuild, then box/tower-plan · /paint/ rebuilt against the colour-by-number leaders (library with categories, zoom and pan, number highlight, hints, autosave, completion reveal, photo import, phone layout), then the easiest-10 queue at the head of docs/NEXT.md and the Versus card generated from it · 2026-10-28 23:10 UTC
 - Grok Bot (prodpolish) · box/prodpolish · gate honesty: Amazon and YouTube un-beaten (far-future floors with gaps and plans), scripted journeys with negative controls (lib/tower-controls.js, lib/tower-journeys.js, tools/tower-journeys.mjs), the false-pass fixtures (tools/tower-falsepass.test.mjs), tools/no-mock.mjs, docs/GATE-STANDARDS.md; next /paint/ and the handoff scan · 2026-10-28 22:18
 - grok-bot (box, calculators) · box/calc-gate, then box/calc-engine and box/calc-batch-N · the vcalc.com floor: the gate never opens vcalc.com (robots.txt) and judges it on internal metrics, not beaten with the library-size gap shown; then a solve-for-any-variable formula engine and formula batches, each with a source and an exact-value test · 2026-10-28 18:30 EDT
 - Claude (tower-self session) · main · Versus by itself: .github/workflows/tower-self.yml + tools/tower-self.mjs, the tower cycle (pick, research, data-row page, gate, fix, report) on Verse's free model with no Claude; audit in docs/autonomy.md · 2026-10-26
