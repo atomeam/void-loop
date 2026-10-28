@@ -5895,5 +5895,6 @@
   {"at": "2026-10-28T17:33:00Z", "by": "verse", "kind": "fix", "what": "Verse fixes its photo-tools skill: learn to handle \"edit lighting on this photo\"", "try": "edit lighting on this photo"},
   {"at": "2026-10-28T18:23:19Z", "by": "verse", "kind": "fix", "what": "Verse fixes its photo-tools skill: learn to handle \"fix lighting on this\"", "try": "fix lighting on this"},
   {"at": "2026-10-28T18:43:37Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"render a sphere with pink to blue\"", "try": "render a sphere with pink to blue"},
-  {"at": "2026-10-28T18:53:57Z", "by": "verse", "kind": "fix", "what": "Verse fixes its make skill: learn to handle \"make a litle cat\"", "try": "make a litle cat"}
+  {"at": "2026-10-28T18:53:57Z", "by": "verse", "kind": "fix", "what": "Verse fixes its make skill: learn to handle \"make a litle cat\"", "try": "make a litle cat"},
+  {"at": "2026-10-28T19:32:31Z", "by": "rides-live", "kind": "finding", "what": "rides tested against a live service, occasion 14: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 1251 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-28T1932.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-28T1932.json"}
 ]
