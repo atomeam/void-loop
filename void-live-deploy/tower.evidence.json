@@ -254,54 +254,53 @@
   },
   "random number": {
    "speed": {
-    "verdict": "worse",
-    "verse": 449,
-    "best": 217,
-    "evidence": "Verse (/random/?min=1&max=100) 449 ms to the load event (median of 3, phone width) vs random.org 217 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:16:45.687Z",
-    "was": "equal-and-better"
+    "verdict": "equal-and-better",
+    "verse": 194,
+    "best": 206,
+    "evidence": "Verse (/random/?min=1&max=100) 194 ms to the load event (median of 3, phone width) vs random.org 206 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T03:06:13.655Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-27T12:16:45.687Z"
+    "at": "2026-10-28T03:06:13.655Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:16:45.687Z"
+    "at": "2026-10-28T03:06:13.655Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-27T12:16:45.687Z"
+    "at": "2026-10-28T03:06:13.655Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 1 (1: the page shows itself again with the network cut) vs random.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:16:45.687Z"
+    "at": "2026-10-28T03:06:13.655Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs random.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:16:45.687Z"
+    "at": "2026-10-28T03:06:13.655Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 11,
     "best": 4,
     "evidence": "Verse (/random/?min=1&max=100) 11 of 15 things a full answer shows vs random.org 4 of 15 things a full answer shows (Verse lacks: Integer generator: count, min, max, Repeatable randomisation (persistent identifier / date), List randomizer, Decimal fractions; site lacks: how many, no repeats, sorted, pick from a list, a link that keeps the setting, number base, Integer generator: count, min, max, Base 2 / 8 / 10 / 16, Repeatable randomisation (persistent identifier / date), List randomizer, Decimal fractions)",
-    "at": "2026-10-27T12:16:45.687Z",
+    "at": "2026-10-28T03:06:13.655Z",
     "of": 15
    },
    "design polish": {
@@ -309,14 +308,14 @@
     "verse": 1,
     "best": 29,
     "evidence": "Verse (/random/?min=1&max=100) 1 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.10), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
-    "at": "2026-10-27T12:16:45.687Z"
+    "at": "2026-10-28T03:06:13.655Z"
    },
    "range choice": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 shown vs random.org 1 of 3 shown (Verse lacks: none; site lacks: how many, no repeats)",
-    "at": "2026-10-27T12:16:45.687Z",
+    "at": "2026-10-28T03:06:13.655Z",
     "of": 3,
     "part": true
    },
@@ -325,7 +324,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 1 of 1 right against the worked-out answer; judged against the standard, not random.org (the site is not asked)",
-    "at": "2026-10-27T12:16:45.687Z",
+    "at": "2026-10-28T03:06:13.655Z",
     "of": 1
    },
    "true randomness": {
@@ -333,7 +332,7 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 2 of 2 shown vs random.org 1 of 2 shown (Verse lacks: none; site lacks: a draw others can check)",
-    "at": "2026-10-27T12:16:45.687Z",
+    "at": "2026-10-28T03:06:13.655Z",
     "of": 2,
     "part": true
    }
