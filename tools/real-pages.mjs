@@ -231,6 +231,7 @@ for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = art
 // honest text a page is allowed to show (audited): store items that say they are not out yet
 const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;
+const FAKE_ALL = new RegExp(FAKE.source, 'gi'); // every match, built once from the constant above, never from input (void-review: ok)
 // buttons never clicked by the dead-button sweep: they write, send, spend, ask for a device, or clear the input
 const SKIP = /send|post|publish|delete|clear|reset|remove|submit|report|buy|cart|checkout|pay|sign|log ?in|microphone|camera|notif|save to gallery|print|import|upload|record|listen|speak|read aloud|follow|vote|track|save|download|export|share|copy/i;
 
@@ -246,12 +247,12 @@ function PDF(n) {
 const INIT = () => {
   const a = (window.__act = { mut: 0, copy: [], share: [], open: [], sound: 0 });
   new MutationObserver((m) => { a.mut += m.length; }).observe(document, { subtree: true, childList: true, characterData: true, attributes: true });
-  try { const cw = navigator.clipboard && navigator.clipboard.writeText; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (s) => { a.copy.push(String(s)); }, readText: async () => a.copy[a.copy.length - 1] || '', write: async () => { a.copy.push('[blob]'); } }, configurable: true }); void cw; } catch {}
+  try { const cw = navigator.clipboard && navigator.clipboard.writeText; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (s) => { a.copy.push(String(s)); }, readText: async () => a.copy[a.copy.length - 1] || '', write: async () => { a.copy.push('[blob]'); } }, configurable: true }); void cw; } catch (err) { console.warn('real-pages: could not stub the clipboard, copy checks will miss:', String(err)); }
   const ec = document.execCommand.bind(document); document.execCommand = (c, ...r) => { if (c === 'copy') a.copy.push(String(getSelection() || (document.activeElement && document.activeElement.value) || '')); return ec(c, ...r) || c === 'copy'; };
   navigator.share = async (d) => { a.share.push(d && (d.url || d.text || d.title) || ''); }; navigator.canShare = () => true;
   const wo = window.open; window.open = (u, ...r) => { a.open.push(String(u)); return null; }; void wo;
   for (const K of ['AudioContext', 'webkitAudioContext']) { const C = window[K]; if (!C) continue; const o = C.prototype.createOscillator, b = C.prototype.createBufferSource; C.prototype.createOscillator = function () { a.sound++; return o.call(this); }; C.prototype.createBufferSource = function () { a.sound++; return b.call(this); }; }
-  if (window.speechSynthesis) { const sp = speechSynthesis.speak.bind(speechSynthesis); speechSynthesis.speak = (u) => { a.sound++; try { sp(u); } catch {} }; }
+  if (window.speechSynthesis) { const sp = speechSynthesis.speak.bind(speechSynthesis); speechSynthesis.speak = (u) => { a.sound++; try { sp(u); } catch (err) { console.warn('real-pages: speech failed:', String(err)); } }; }
   const pl = HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play = function () { a.sound++; return pl.call(this).catch(() => {}); };
 };
 
@@ -266,7 +267,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
       if (!u.pathname.endsWith('/') && !path.extname(u.pathname) && fs.existsSync(path.join(root, 'functions', u.pathname + '.js'))) { try { const r = await fetch(LIVE + u.pathname + u.search); res.writeHead(r.status, { 'content-type': r.headers.get('content-type') || 'text/plain' }); return res.end(Buffer.from(await r.arrayBuffer())); } catch { res.writeHead(502); return res.end(); } }
       let p = decodeURIComponent(u.pathname); if (p.endsWith('/')) p += 'index.html'; const f = path.join(root, p);
       if (!f.startsWith(root)) { res.writeHead(403); return res.end(); }
-      fs.readFile(f, async (e, d) => { if (e) { const seg = u.pathname.split('/')[1]; if (seg && fs.existsSync(path.join(root, 'functions', seg))) { try { const x = await fetch(LIVE + u.pathname + u.search); res.writeHead(x.status, { 'content-type': x.headers.get('content-type') || 'text/html' }); return res.end(Buffer.from(await x.arrayBuffer())); } catch {} } res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(d); });
+      fs.readFile(f, async (e, d) => { if (e) { const seg = u.pathname.split('/')[1]; if (seg && fs.existsSync(path.join(root, 'functions', seg))) { try { const x = await fetch(LIVE + u.pathname + u.search); res.writeHead(x.status, { 'content-type': x.headers.get('content-type') || 'text/html' }); return res.end(Buffer.from(await x.arrayBuffer())); } catch { res.writeHead(502); return res.end(); } } res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(d); });
     }).listen(0); await new Promise((r) => server.once('listening', r)); origin = 'http://127.0.0.1:' + server.address().port;
   } else if (base === 'live') origin = LIVE;
   const exe = [process.env.VOID_TEST_BROWSER, process.env.CHROME_PATH, '/usr/bin/google-chrome'].find((x) => x && fs.existsSync(x));
@@ -299,7 +300,8 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
       clickText: (s) => p.getByRole('button', { name: s }).first().click({ timeout: 5000 }),
       text: (s) => loc(s).innerText({ timeout: 5000 }).catch(() => ''),
       val: (s) => loc(s).inputValue({ timeout: 5000 }).catch(() => ''),
-      waitText: (s, re, ms) => p.waitForFunction(([s, src]) => { const e = document.querySelector(s); return e && new RegExp(src).test(e.innerText || e.value || ''); }, [s, re.source], { timeout: ms }).catch(() => {}).then(() => p.locator(s).first().evaluate((e) => e.innerText || e.value || '').catch(() => '')),
+      // re is a RegExp written in the specs below, never page or user input; it crosses into the page as source and flags
+      waitText: (s, re, ms) => p.waitForFunction(([s, src, fl]) => { const e = document.querySelector(s); return e && new RegExp(src, fl).test(e.innerText || e.value || ''); }, [s, re.source, re.flags.replace('g', '')], { timeout: ms }).catch(() => {}).then(() => p.locator(s).first().evaluate((e) => e.innerText || e.value || '').catch(() => '')),
       copies: async (s, want) => { const n = (await act()).copy.length; await loc(s).click({ timeout: 5000 }); await p.waitForTimeout(300); const c = (await act()).copy.slice(n); ok(c.length > 0 && (!want || c.some((x) => x.includes(want))), 'copy puts ' + (want ? '"' + want + '"' : 'the result') + ' on the clipboard'); },
       download: async (s, re) => { try { const [d] = await Promise.all([p.waitForEvent('download', { timeout: 6000 }), loc(s).click({ timeout: 5000 })]); ok(!re || re.test(d.suggestedFilename()), 'export downloads ' + d.suggestedFilename()); } catch { ok(false, 'export downloads a file'); } },
       share: async (s, check) => {
@@ -326,7 +328,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
       else { try { await spec(t); } catch (e) { ok(false, 'spec ran: ' + String(e.message || e).split('\n')[0].slice(0, 140)); } }
       // fake words outside [data-honest]
       const shown = await p.evaluate(() => { const c = document.body.cloneNode(true); c.querySelectorAll('[data-honest],script,style,noscript,[hidden]').forEach((e) => e.remove()); return c.innerText || c.textContent || ''; }).catch(() => '');
-      const fk = (shown.match(new RegExp(FAKE.source, 'gi')) || []).filter((w) => !(HONEST[r] && HONEST[r].test(w)) && !/mock draft/i.test(w));
+      const fk = (shown.match(FAKE_ALL) || []).filter((w) => !(HONEST[r] && HONEST[r].test(w)) && !/mock draft/i.test(w));
       ok(fk.length === 0, 'no pretend text shown as working' + (fk.length ? ': ' + [...new Set(fk)].join(', ') : ''));
       // dead buttons
       if (!ARTICLES.includes(r) && !r.startsWith('/fix/')) {
@@ -345,7 +347,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
         ok(dead.length === 0, 'every visible button does something' + (dead.length ? ' (dead: ' + dead.join(' | ') + ')' : ''));
         // the scan again, after every button was pressed: a pretend answer a script draws only on a click is caught too
         const after = await p.evaluate(() => { const c = document.body.cloneNode(true); c.querySelectorAll('[data-honest],script,style,noscript,[hidden]').forEach((e) => e.remove()); return c.innerText || c.textContent || ''; }).catch(() => '');
-        const fk2 = (after.match(new RegExp(FAKE.source, 'gi')) || []).filter((w) => !(HONEST[r] && HONEST[r].test(w)) && !/mock draft/i.test(w));
+        const fk2 = (after.match(FAKE_ALL) || []).filter((w) => !(HONEST[r] && HONEST[r].test(w)) && !/mock draft/i.test(w));
         ok(fk2.length === 0, 'no pretend text after pressing every button' + (fk2.length ? ': ' + [...new Set(fk2)].join(', ') : ''));
       }
       ok(bad5.length === 0, 'its live data answers' + (bad5.length ? ' (' + [...new Set(bad5)].slice(0, 3).join('; ') + ')' : ''));
@@ -368,9 +370,9 @@ if (process.argv[1] && process.argv[1].endsWith('real-pages.mjs')) {
   if (argv.includes('--list')) { console.log(rs.length + ' routes, ' + (rs.length - missing.length) + ' with a spec'); if (missing.length) { console.log('FAIL no spec for: ' + missing.join(' ')); process.exit(1); } process.exit(0); }
   let only = arg('--routes') ? arg('--routes').split(',') : null;
   if (argv.includes('--changed')) {
-    let ch = ''; try { ch = execSync('git diff --name-only origin/main...HEAD; git diff --name-only; git diff --name-only --cached', { cwd: repo, encoding: 'utf8' }); } catch {}
-    only = [...new Set(ch.split('\n').filter((f) => /^void-live-deploy\/.*index\.html$/.test(f)).map((f) => f.replace(/^void-live-deploy/, '').replace(/index\.html$/, '')))];
-    if (!only.length) { console.log('ok   no page changed'); process.exit(0); }
+    let ch = ''; try { ch = execSync('git diff --name-only origin/main...HEAD; git diff --name-only; git diff --name-only --cached', { cwd: repo, encoding: 'utf8' }); } catch (err) { console.warn('real-pages: could not list changed files (' + String(err.message || err).split('\n')[0] + '), checking every route'); ch = null; }
+    if (ch !== null) only = [...new Set(ch.split('\n').filter((f) => /^void-live-deploy\/.*index\.html$/.test(f)).map((f) => f.replace(/^void-live-deploy/, '').replace(/index\.html$/, '')))];
+    if (only && !only.length) { console.log('ok   no page changed'); process.exit(0); }
   }
   const base = arg('--base', 'local');
   if (rs.length > 0 && (!only || only.length > 3)) { const { acquire } = await import('./heavy.mjs'); await acquire('every page real (real-pages.mjs)'); }

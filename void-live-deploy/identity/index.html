@@ -237,7 +237,7 @@
   };
 
   // the service links: each tile shows the person's own address for it, or that none is set
-  const openLink = (k, label, url) => { const a = document.createElement('a'); a.id = 'svc-' + k; a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open'; a.setAttribute('aria-label', 'Open ' + label); return a; };
+  const openLink = (k, label, url) => { const a = document.createElement('a'); a.id = 'svc-' + k; a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'Open'; a.setAttribute('aria-label', 'Open ' + label); return a; };
   const renderSvcs = () => {
     const box = $('svcs'); box.replaceChildren();
     for (const [k, label] of SVCS) {
