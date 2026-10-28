@@ -46,7 +46,16 @@ export function normalize(e) {
   const rrule = e.rrule && typeof e.rrule === 'object' && FREQS.includes(String(e.rrule.freq || '').toUpperCase()) ? normalizeRule(e.rrule) : null;
   const reminders = [...new Set((Array.isArray(e.reminders) ? e.reminders : []).map((m) => Math.round(+m)).filter((m) => Number.isFinite(m) && m >= 0 && m <= 4 * 7 * 1440))].sort((a, b) => a - b).slice(0, 5);
   const invitees = [...new Set((Array.isArray(e.invitees) ? e.invitees : String(e.invitees || '').split(/[,;\s]+/)).map((s) => String(s || '').trim()).filter((s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)))].slice(0, 50);
-  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] , ...(e.cal && String(e.cal) !== 'main' ? { cal: String(e.cal).replace(/[^\w-]/g, '').slice(0, 40) } : {}), ...(String(e.location || '').trim() ? { location: String(e.location).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 300) } : {}), ...(!allDay && isTz(e.tz) ? { tz: String(e.tz) } : {}), ...(!allDay && Math.round(+e.travel) > 0 ? { travel: Math.min(300, Math.round(+e.travel)) } : {}), ...(e.ro ? { ro: true } : {}), ...(rsvpOk(e.rsvp) ? { rsvp: { id: e.rsvp.id, owner: e.rsvp.owner, reply: e.rsvp.reply } } : {}) };
+  return { id: String(e.id || newId()).slice(0, 40), title, start: allDay ? dayKey(st) : fmtLocal(st), end: allDay ? dayKey(en) : fmtLocal(en), allDay, rrule, reminders, notes: String(e.notes || '').slice(0, 5000), invitees, exdates: Array.isArray(e.exdates) ? e.exdates.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x)).slice(0, 500) : [] , ...(e.cal && String(e.cal) !== 'main' ? { cal: String(e.cal).replace(/[^\w-]/g, '').slice(0, 40) } : {}), ...(String(e.location || '').trim() ? { location: String(e.location).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 300) } : {}), ...(!allDay && isTz(e.tz) ? { tz: String(e.tz) } : {}), ...(!allDay && Math.round(+e.travel) > 0 ? { travel: Math.min(300, Math.round(+e.travel)) } : {}), ...(videoOk(e.video) ? { video: String(e.video).trim() } : {}), ...(e.ro ? { ro: true } : {}), ...(rsvpOk(e.rsvp) ? { rsvp: { id: e.rsvp.id, owner: e.rsvp.owner, reply: e.rsvp.reply } } : {}) };
+}
+// a video call on an event (as Google Calendar adds a Meet link): any https address; Verse makes a free Jitsi Meet room, no account
+const videoOk = (u) => /^https:\/\/[^\s<>"'\\]{4,300}$/.test(String(u || '').trim());
+export const VIDEO_HOST = 'https://meet.jit.si/';
+/** a fresh video call address for an event: a Jitsi Meet room named for the event plus 12 random letters, so nobody guesses it. Pure (given rand). */
+export function videoLink(title, rand = Math.random) {
+  const slug = String(title || '').normalize('NFKD').replace(/[^\w\s-]/g, '').trim().split(/\s+/).filter(Boolean).slice(0, 4).map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).join('').replace(/[^A-Za-z0-9]/g, '').slice(0, 30);
+  const abc = 'abcdefghijkmnpqrstuvwxyz'; let tail = ''; for (let i = 0; i < 12; i++) tail += abc[Math.floor(rand() * abc.length) % abc.length];
+  return VIDEO_HOST + 'Verse' + (slug ? '-' + slug : '') + '-' + tail;
 }
 // an invite's replies (lib/rsvp.js, /api/rsvp): the organizer keeps the owner key; the link carries only the reply key
 const rsvpOk = (r) => !!r && /^[A-Za-z0-9_-]{11}$/.test(String(r.id || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.owner || '')) && /^[A-Za-z0-9_-]{22}$/.test(String(r.reply || ''));
@@ -151,7 +160,7 @@ export function icsOf(events, now = new Date()) {
   for (const raw of events || []) { const e = normalize(raw); if (!e) continue; const st = parseLocal(e.start), en = parseLocal(e.end);
     L.push('BEGIN:VEVENT', 'UID:' + e.id + '@a-to-mind.com', 'DTSTAMP:' + now.toISOString().replace(/[-:]|\.\d{3}/g, ''));
     if (e.allDay) L.push('DTSTART;VALUE=DATE:' + e.start.replace(/-/g, ''), 'DTEND;VALUE=DATE:' + dayKey(addDays(en, 1)).replace(/-/g, '')); else if (e.tz) L.push('DTSTART;TZID=' + e.tz + ':' + stamp(st), 'DTEND;TZID=' + e.tz + ':' + stamp(en)); else L.push('DTSTART:' + stamp(st), 'DTEND:' + stamp(en));
-    L.push('SUMMARY:' + esc(e.title)); if (e.notes) L.push('DESCRIPTION:' + esc(e.notes)); if (e.location) L.push('LOCATION:' + esc(e.location)); if (e.travel) L.push('X-APPLE-TRAVEL-DURATION;VALUE=DURATION:PT' + e.travel + 'M'); if (e.rrule) L.push('RRULE:' + rruleText(e.rrule));
+    L.push('SUMMARY:' + esc(e.title)); if (e.notes) L.push('DESCRIPTION:' + esc(e.notes)); if (e.location) L.push('LOCATION:' + esc(e.location)); if (e.video) L.push('URL:' + e.video, 'CONFERENCE;VALUE=URI;FEATURE=VIDEO;LABEL=Video call:' + e.video); if (e.travel) L.push('X-APPLE-TRAVEL-DURATION;VALUE=DURATION:PT' + e.travel + 'M'); if (e.rrule) L.push('RRULE:' + rruleText(e.rrule));
     for (const x of e.exdates) L.push('EXDATE' + (e.allDay ? ';VALUE=DATE:' + x.replace(/-/g, '') : e.tz ? ';TZID=' + e.tz + ':' + x.replace(/-/g, '') + 'T' + pad(st.getHours()) + pad(st.getMinutes()) + '00' : ':' + x.replace(/-/g, '') + 'T' + pad(st.getHours()) + pad(st.getMinutes()) + '00'));
     for (const a of e.invitees) L.push('ATTENDEE;CN=' + esc(a.split('@')[0]) + ';RSVP=TRUE:mailto:' + a);
     for (const m of e.reminders) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(e.title), 'TRIGGER:' + trigger(m), 'END:VALARM');
@@ -176,7 +185,7 @@ export function parseIcs(text) {
     const i = line.indexOf(':'); if (i < 0) continue; const head = line.slice(0, i), val = line.slice(i + 1), name = head.split(';')[0].toUpperCase(), params = head.slice(name.length);
     if (alarm) { if (name === 'TRIGGER' && !/RELATED=END/i.test(params)) { const m = minutesOf(val); if (m != null) alarm.minutes = m; } continue; }
     if (name === 'UID') e.id = val.replace(/@.*$/, '').replace(/[^\w.-]/g, '').slice(0, 40) || undefined;
-    else if (name === 'SUMMARY') e.title = unesc(val); else if (name === 'DESCRIPTION') e.notes = unesc(val); else if (name === 'LOCATION') e.location = unesc(val); else if (name === 'X-APPLE-TRAVEL-DURATION') { const m = minutesOf(val); if (m > 0) e.travel = m; }
+    else if (name === 'SUMMARY') e.title = unesc(val); else if (name === 'DESCRIPTION') e.notes = unesc(val); else if (name === 'LOCATION') e.location = unesc(val); else if (name === 'CONFERENCE' || name === 'X-GOOGLE-CONFERENCE' || (name === 'URL' && !e.video && /meet\.|zoom\.|teams\.|jit\.si|whereby\./i.test(val))) { if (videoOk(val)) e.video = val.trim(); } else if (name === 'X-APPLE-TRAVEL-DURATION') { const m = minutesOf(val); if (m > 0) e.travel = m; }
     else if (name === 'DTSTART') { const d = icsDate(val, params); if (d instanceof Date) { e.start = fmtLocal(d); e.allDay = false; } else if (d) { e.start = d.allDay ? dayKey(d.d) : fmtLocal(d.d); e.allDay = d.allDay; const z = /TZID=([^;:]+)/i.exec(params); if (z && !d.allDay && isTz(z[1])) e.tz = z[1]; } }
     else if (name === 'DTEND') { const d = icsDate(val, params); if (d instanceof Date) e.end = fmtLocal(d); else if (d) e.end = d.allDay ? dayKey(addDays(d.d, -1)) : fmtLocal(d.d); }
     else if (name === 'DURATION' && !e.end) { const m = minutesOf(val); if (m != null && e.start) { const s = parseLocal(e.start); e.end = fmtLocal(new Date(s.getTime() + m * 60000)); } }
@@ -198,7 +207,7 @@ export function inviteLink(ev, origin = '') {
   // the replies ride after # (never sent to a server): who opens the link can say yes, maybe or no and see who is coming, never the organizer's key
   const url = String(origin || '').replace(/\/$/, '') + '/calendar/?e=' + b64url(JSON.stringify(carried)) + (rsvp ? '#rsvp=' + rsvp.id + '.' + rsvp.reply : '');
   const ics = icsOf([e]), st = parseLocal(e.start), when = e.allDay ? e.start : e.start.replace('T', ' ');
-  const body = e.title + '\n' + when + (e.notes ? '\n' + e.notes : '') + '\n\n' + url + '\n\n' + ics;
+  const body = e.title + '\n' + when + (e.notes ? '\n' + e.notes : '') + (e.video ? '\nVideo call: ' + e.video : '') + '\n\n' + url + '\n\n' + ics;
   return { url, mailto: 'mailto:' + e.invitees.join(',') + '?subject=' + encodeURIComponent('Invitation: ' + e.title + ' (' + when + ')') + '&body=' + encodeURIComponent(body), ics, when: st };
 }
 /** the event an ?e= link carries, or null. Pure. */
