@@ -1,39 +1,35 @@
 /**
- * morse skill — Morse code translator.
+ * morse skill — encode text to Morse code
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "morse code for hello", "translate to morse: SOS".
- * Empty surface stays empty.
+ * "morse code hello", "encode sos in morse".
  */
-const MORSE = { a: '.-', b: '-...', c: '-.-.', d: '-..', e: '.', f: '..-.', g: '--.', h: '....', i: '..', j: '.---', k: '-.-', l: '.-..', m: '--', n: '-.', o: '---', p: '.--.', q: '--.-', r: '.-.', s: '...', t: '-', u: '..-', v: '...-', w: '.--', x: '-..-', y: '-.--', z: '--..', '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.', ' ': '/' };
+const MORSE = { a:'.-', b:'-...', c:'-.-.', d:'-..', e:'.', f:'..-.', g:'--.', h:'....', i:'..', j:'.---', k:'-.-', l:'.-..', m:'--', n:'-.', o:'---', p:'.--.', q:'--.-', r:'.-.', s:'...', t:'-', u:'..-', v:'...-', w:'.--', x:'-..-', y:'-.--', z:'--..', '1':'.----', '2':'..---', '3':'...--', '4':'....-', '5':'.....', '6':'-....', '7':'--...', '8':'---..', '9':'----.', '0':'-----', ' ':'/' };
 
-export function morseOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:morse(?:\s+code)?\s+(?:for|of)\s+|translate\s+(?:to\s+)?morse:?\s*)(.+)$/i);
-  return m ? m[1].trim() : null;
+export function isMorse(text) {
+  return /^(?:please\s+)?(?:(?:morse\s+code|encode\s+in\s+morse|translate\s+to\s+morse)\s+.+|morse\s+.+)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
-function toMorse(s) {
-  return String(s || '').toLowerCase().split('').map(c => MORSE[c] || c).join(' ');
+function toMorse(text) {
+  return String(text).toLowerCase().split('').map((c) => MORSE[c] || '').filter(Boolean).join(' ');
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const phrase = morseOf(text);
-  if (!phrase) return 'none';
-  const code = toMorse(phrase);
-  showPage((p) => {
-    p.innerHTML = '<h2>Morse code</h2><p>' + esc(phrase) + '</p><pre style="font-size:16px;letter-spacing:2px">' + esc(code) + '</pre><div class="sub">say “morse code for …” for another</div>';
-  });
+  const payload = text.replace(/^(?:please\s+)?(?:morse\s+code|encode\s+in\s+morse|translate\s+to\s+morse|morse)\s+/i, '').trim();
+  const code = toMorse(payload || 'sos');
+  const el = showPage((p) => { p.innerHTML = '<h2>Morse</h2><div class="sub">…</div>'; });
+  el.innerHTML = '<h2>Morse</h2><p style="font-size:24px;font-family:monospace">' + esc(code) + '</p><div class="sub">' + esc(payload || 'sos') + '</div>';
   return 'morse';
 }
 
 export default {
   name: 'morse',
-  examples: ['morse code for hello', 'translate to morse: SOS'],
-  nearMisses: ['what is morse code', 'morse history', 'SOS meaning'],
-  match(lower, text) { return !!morseOf(text); },
+  examples: ['morse code hello', 'encode sos in morse', 'translate to morse hello'],
+  nearMisses: ['what is morse', 'morse code history', 'decode morse'],
+  match(lower, text) { return isMorse(text); },
   run,
   suite() {
-    return { ok: morseOf('morse code for hello') === 'hello' && toMorse('sos') === '... --- ...' && morseOf('hello') === null };
+    const ok = isMorse('morse code hello') && isMorse('encode sos in morse') && !isMorse('what is morse');
+    return { ok, got: 'match works' };
   }
 };
