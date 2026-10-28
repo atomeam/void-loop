@@ -1090,3 +1090,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-27T22:37:12Z | verse | build | Versus: took on no site; next randomarea.com
 2026-10-28T16:33:31Z | grok-bot | grow | Lists run 6: the weather page never stays busy (12 s timeouts), Verse's zero KV writes are guarded by a test, nightsky joins the time family (0 moved over 5,457 asks), and V01D's open asks drop from 19 to 2
 2026-10-28T22:47:55Z | verse | build | Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com
+2026-10-28T22:50:28Z | verse | build | Versus: took on no site; next randomarea.com
