@@ -63,6 +63,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Lists run 7 (grok, 2026-10-28)**: store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's "email sam that…" reaches it too; the page strips friendly openers ("yo …", "can we play X", "? pls"); a value-drift tracker over Verse's own store prices (tools/value-drift.mjs); Common asks links on /calculator/ and /random/; the ?ask= hand-off now in all three copies of the page; families.mjs names night-sky and drops hosting. The community milestone waits on Claude (gumroad.js, earnings.js, skills/growth.js).
 - **Who visits (claude, 2026-10-26)**: no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only, people/ours/bots, daily-salted uniques), tools/traffic.mjs + traffic.yml daily into domains/traffic.json, "People this week" on the growth card. Every sitemap page now loads /visit.js (tools/beacon-pages.mjs, check "beacon"). Up for grabs: a Zone Analytics: Read token makes traffic.mjs use Cloudflare's counts by itself (docs/playbooks/traffic.md).
 - **IndexNow on every deploy (claude)**: tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main.
 - **Claude (pdf and kanban floors, 2026-10-26)**: the `pdf` floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the `kanban` floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for every site (owner rule: lib/tower.js LANE_PAGES; the gate measures a lane site against its own page): /pdf/ (+ /merge/ /organize/ /toolbox/ /editor/ /suite/ /studio/, engine lib/pdf-tools.js over vendored pdf-lib, UI lib/pdf-ui.js) and /kanban/ (+ /simple/ /quick/ /teams/ /flow/, lib/kanban.js + lib/kanban-ui.js, EN+DE); one table lib/tool-sites.js, pages written by tools/tool-site-pages.mjs, feature maps domains/features/pdf.json and kanban.json, probes in tools/tower-probes.mjs. Not built (listed in the maps with why): Office conversion, OCR, encryption, redaction, sign, edit, kanban calendar/timeline views and automation.
@@ -214,6 +215,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - 2026-10-28 run 6 · site tester (label site-test): 0 open, all 80 closed (newly zero)
 - 2026-10-28 run 6 · frontier (domains/void.frontier.md): 21 open
 - 2026-10-28 run 6 · metrics: closed 6 of 8 touched, 25% blocked (top: value-drift needs Adam's privacy call), duplicate rate 0.88 of asks, median 0.8 days queue to built
+- 2026-10-28 run 7 · V01D asks (void.asks.json): 1 open (community milestone waits on Claude's gumroad.js and growth skill); the mail card built, gemma a duplicate of 630e666fb, value drift built on Verse's own prices
+- 2026-10-28 run 7 · handoff Up for grabs: 25 open (the seven fringe pages titled "Void" are the next small batch)
+- 2026-10-28 run 7 · store queue (store.queue.jsonl): 0 open
+- 2026-10-28 run 7 · wishlist (docs/wishlist.md): 14 rows, unchanged
+- 2026-10-28 run 7 · convergence (docs/convergence.md): steps 2 to 10 open; store and services became the shop family (0 moved over 5,461 asks)
+- 2026-10-28 run 7 · site tester (label site-test): 0 open issues; teach items 0 (newly zero: 7 taught)
+- 2026-10-28 run 7 · frontier (domains/void.frontier.md): 21 open
+- 2026-10-28 run 7 · metrics: closed 7 of 8 touched, 12.5% blocked (top: a file owned by Claude), duplicate rate 0.29, median 5.2 days queue to built
 
 ## Ladders
 

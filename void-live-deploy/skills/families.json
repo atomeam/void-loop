@@ -2059,9 +2059,9 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 13 live findings, 2026-10-27",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 14 live findings, 2026-10-28",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "a live call",
      "success_rate": 1,
      "streak": 10
     },
