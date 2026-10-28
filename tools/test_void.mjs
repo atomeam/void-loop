@@ -6333,6 +6333,22 @@ try {
       && /100 J/.test(fromLink) && !Z.errors.length, JSON.stringify({ linked, m2, link, lm, inline, bad, pro, working, proLink, loan, molar, temp, b1, b2, b3, ke, saved, fromLink, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the formula library on /calculators/: one definition worked for any of its variables (Solve for), its source shown, its link reopening the
+  // same direction, and a long category showing its first 24 with a button for the rest
+  if (want("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click")) {
+    const Z = await fresh(); const big = () => Z.p.$eval('#big', (e) => e.textContent);
+    await Z.p.goto(base + 'calculators/?calc=braking-distance'); const fwd = await big(), src = await Z.p.$eval('#csource', (e) => e.textContent);
+    await Z.p.selectOption('#in-solve', 'v'); const back = await big(), what = await Z.p.$eval('#what', (e) => e.textContent);
+    await Z.p.fill('#in-d', '25'); const v25 = await big(), link = Z.p.url();
+    await Z.p.goto(link); const reopened = [await big(), await Z.p.$eval('#in-solve', (e) => e.value)];
+    const money = '#lib button[aria-controls="cat-money-list"]', hidden0 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length);
+    await Z.p.click(money); const hidden1 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length), gone = !(await Z.p.$(money));
+    check("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click",
+      fwd === '56.2013 m' && /Wikipedia: Braking distance/.test(src) && back === '100 km/h' && /Speed/.test(what) && v25 === '66.6956 km/h' && /solve=v/.test(link) && /d=25/.test(link)
+      && reopened[0] === '66.6956 km/h' && reopened[1] === 'v' && hidden0 > 0 && hidden1 === 0 && gone && !Z.errors.length,
+      JSON.stringify({ fwd, src, back, what, v25, link, reopened, hidden0, hidden1, gone, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of timeanddate.com on /time/: the next clock change for the city, and on each clock in the world clock; a zone with none says so
   if (want("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change")) {
     const Z = await fresh(); await Z.p.goto(base + 'time/?c=London'); await Z.p.waitForTimeout(300);

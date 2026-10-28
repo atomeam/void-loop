@@ -71,6 +71,9 @@
 <link rel="modulepreload" href="/lib/calc-units.js">
 <link rel="modulepreload" href="/lib/fincalc.js">
 <link rel="modulepreload" href="/lib/date-math.js">
+<link rel="modulepreload" href="/lib/formula-engine.js">
+<link rel="modulepreload" href="/lib/formulas.js">
+<link rel="modulepreload" href="/lib/formulas-1.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -94,6 +97,7 @@
   <section id="calc" class="card" aria-labelledby="cname" style="min-height:420px">
     <h2 id="cname" tabindex="-1">Percent of a number</h2>
     <p class="formula" id="cformula">result = p × x</p>
+    <p class="note" id="csource" hidden></p>
     <div id="cform" class="form"></div>
     <div class="answer">
       <p class="what" id="what">Result</p>
@@ -153,7 +157,7 @@
   const say = (t) => { $('said').textContent = t; clearTimeout(say.t); say.t = setTimeout(() => { $('said').textContent = ''; }, 4000); };
 
   const q0 = readQuery(location.search);
-  const state = { calc: BY_ID.has(q0.calc) ? q0.calc : DEFAULT_CALC, given: q0.given, outUnits: q0.outUnits, kind: q0.kind, pro: q0.pro || store.get(PRO_KEY, false) === true };
+  const state = { calc: BY_ID.has(q0.calc) ? q0.calc : DEFAULT_CALC, given: q0.given, outUnits: q0.outUnits, kind: q0.kind, solve: q0.solve, pro: q0.pro || store.get(PRO_KEY, false) === true };
   let last = null, shaped = null;
 
   // ---------- one calculator: its form, then its answer
@@ -182,10 +186,17 @@
   }
   function renderForm() {
     const calc = BY_ID.get(state.calc);
-    shaped = run(calc, state.given, state.outUnits, { pro: state.pro, kind: state.kind }).calc;
+    shaped = run(calc, state.given, state.outUnits, { pro: state.pro, kind: state.kind, solve: state.solve }).calc;
     $('cname').textContent = shaped.name;
     $('cformula').textContent = shaped.cat + ' · ' + shaped.formula;
+    // a library formula says where it comes from
+    const src = $('csource'); src.replaceChildren(); src.hidden = !shaped.src;
+    if (shaped.src) src.append('Source: ', /^https?:/.test(shaped.src) ? h('a', { href: shaped.src, rel: 'noopener', text: shaped.src.replace(/^https?:\/\/(www\.)?/, '').replace(/^en\.wikipedia\.org\/wiki\//, 'Wikipedia: ').replace(/_/g, ' ') }) : shaped.src);
     const form = $('cform'); form.replaceChildren();
+    // a library formula works for any of its variables: pick the one to find, and the rest become the boxes
+    if (shaped.solveFor && shaped.solveFor.length > 1) {
+      form.append(h('div', { class: 'field' }, h('label', { for: 'in-solve', text: 'Solve for' }), h('select', { id: 'in-solve', oninput: (e) => { state.solve = e.target.value === shaped.def.lhs ? '' : e.target.value; renderForm(); } }, shaped.solveFor.map(([k, label]) => h('option', { value: k, text: label + ' (' + k + ')', selected: k === shaped.target })))));
+    }
     if (calc.convert) {
       const kinds = Object.entries(KINDS).filter(([id, k]) => id !== 'number' && k.units.length > 1);
       form.append(h('div', { class: 'field' }, h('label', { for: 'in-kind', text: 'Quantity' }), h('select', { id: 'in-kind', oninput: (e) => { state.kind = e.target.value; delete state.given['v.u']; delete state.outUnits.r; renderForm(); } }, kinds.map(([id, k]) => h('option', { value: id, text: k.name, selected: id === shaped.kind })))));
@@ -195,9 +206,9 @@
     for (const a of document.querySelectorAll('#lib a[data-id="' + state.calc + '"]')) a.setAttribute('aria-current', 'page');
     compute();
   }
-  function urlState() { return { calc: state.calc === DEFAULT_CALC && !Object.keys(state.given).length && !Object.keys(state.outUnits).length ? '' : state.calc, kind: BY_ID.get(state.calc).convert ? state.kind || shaped.kind : '', given: state.given, outUnits: state.outUnits, pro: state.pro }; }
+  function urlState() { return { calc: state.calc === DEFAULT_CALC && !Object.keys(state.given).length && !Object.keys(state.outUnits).length ? '' : state.calc, solve: state.solve, kind: BY_ID.get(state.calc).convert ? state.kind || shaped.kind : '', given: state.given, outUnits: state.outUnits, pro: state.pro }; }
   function compute() {
-    const r = run(BY_ID.get(state.calc), state.given, state.outUnits, { pro: state.pro, kind: state.kind || (shaped && shaped.kind) }); last = r;
+    const r = run(BY_ID.get(state.calc), state.given, state.outUnits, { pro: state.pro, kind: state.kind || (shaped && shaped.kind), solve: state.solve }); last = r;
     const big = $('big'), first = r.outputs[0];
     big.classList.toggle('err', !!r.error);
     $('what').textContent = r.error ? 'Check this box' : first ? first.label : '';
@@ -228,7 +239,7 @@
   }
   function openCalc(id, push = true) {
     if (!BY_ID.has(id)) return;
-    state.calc = id; state.given = {}; state.outUnits = {}; state.kind = '';
+    state.calc = id; state.given = {}; state.outUnits = {}; state.kind = ''; state.solve = '';
     if (push) history.pushState(null, '', location.pathname + writeQuery(urlState()));
     renderForm();
     $('calc').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
@@ -241,13 +252,19 @@
   $('lname').textContent = 'All calculators (' + CALCULATORS.length + ')';
   for (const cat of CATEGORIES) {
     const list = CALCULATORS.filter((c) => c.cat === cat); if (!list.length) continue;
-    lib.append(h('h3', { id: 'cat-' + cat.toLowerCase(), text: cat + ' (' + list.length + ')' }), h('ul', { 'aria-labelledby': 'cat-' + cat.toLowerCase() }, list.map(chip)));
+    // a long category shows its first 24 and a button for the rest (every hand-built calculator always shows; search finds them all)
+    const cid = 'cat-' + cat.toLowerCase().replace(/\s+/g, '-');
+    let room = Math.max(0, 24 - list.filter((c) => !c.def).length), more = 0;
+    const items = list.map((c) => { const li = chip(c); if (c.def && room-- <= 0) { li.hidden = true; more++; } return li; });
+    const ul = h('ul', { id: cid + '-list', 'aria-labelledby': cid }, items);
+    lib.append(h('h3', { id: cid, text: cat + ' (' + list.length + ')' }), ul);
+    if (more) { const b = h('button', { type: 'button', class: 'more', 'aria-controls': cid + '-list', 'aria-expanded': 'false', text: 'Show all ' + list.length + ' in ' + cat }); b.addEventListener('click', () => { for (const li of ul.children) li.hidden = false; b.remove(); }); lib.append(b); }
   }
   const find = $('find');
   find.addEventListener('input', () => { const t = find.value.trim(); $('hits').replaceChildren(...(t ? search(t).slice(0, 12).map(chip) : [])); if (t && !$('hits').children.length) $('hits').append(h('li', { class: 'note', text: 'No calculator matches "' + t + '". Build it below with your own formula.' })); });
   find.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const a = $('hits').querySelector('a[data-id]'); if (a) { e.preventDefault(); openCalc(a.dataset.id); } } });
   if (q0.find) { find.value = q0.find; find.dispatchEvent(new Event('input')); }
-  addEventListener('popstate', () => { const q = readQuery(location.search); state.calc = BY_ID.has(q.calc) ? q.calc : DEFAULT_CALC; state.given = q.given; state.outUnits = q.outUnits; state.kind = q.kind; renderForm(); });
+  addEventListener('popstate', () => { const q = readQuery(location.search); state.calc = BY_ID.has(q.calc) ? q.calc : DEFAULT_CALC; state.given = q.given; state.outUnits = q.outUnits; state.kind = q.kind; state.solve = q.solve; renderForm(); });
   // ---------- the toolbar: pro mode, share, copy, export
   const proBtn = $('pro');
   const setPro = (on) => { state.pro = on; proBtn.setAttribute('aria-pressed', String(on)); store.set(PRO_KEY, on); document.body.classList.toggle('pro', on); };
