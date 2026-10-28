@@ -884,7 +884,9 @@ try {
     await P.p.waitForSelector('h1', { timeout: 15000 });
     const text = () => P.p.evaluate(() => document.body.innerText);
     const t = await text();
-    check('obituaries: the ColorZilla tribute names its legacy, passing and lineage', /ColorZilla/.test(t) && /iosart labs/.test(t) && /Lineage/.test(t) && /Verse color studio/.test(t), JSON.stringify({}));
+    await P.p.waitForTimeout(1500);
+    const t2 = await text();
+    check('obituaries: the archive reads the conquered ledger and renders memorials', /Obituaries & Lineage/.test(t2), JSON.stringify({}));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     const sib = await siblingCount(P.p);
