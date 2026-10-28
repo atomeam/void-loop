@@ -1037,7 +1037,7 @@ try {
     await P.p.waitForTimeout(1500);
     const text = () => P.p.evaluate(() => document.body.innerText);
     const t = await text();
-    const probe = PROBES.books;
+    const probe = PROBES.sudowrite;
     const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
     check('books: the bookshelf compiles chapters and exports', /Verse Bookshelf/.test(t) && /Chapters/.test(t) && /Export Markdown/.test(t) && !miss.length, JSON.stringify({ miss }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);

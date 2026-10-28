@@ -47,12 +47,20 @@
   footer a, .siblings a { color:#cfc6ff; }
   #shareline { overflow-wrap:anywhere; min-height:2em; }
   [hidden] { display:none !important; }
+  .lead { max-width: 60ch; }
 </style>
 <script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
-  <h1>CPAN Testers studio</h1>
+  <h1>Check if a code library passes its tests (CPAN Testers studio)</h1>
+  <p class="lead" id="lead"><strong>See which computers a code library works on</strong>: paste test reports for Perl modules and get pass and fail counts per system, a table you can search, and an export. Or try a sample:</p>
+  <div class="row tries" id="tries" role="group" aria-label="Load sample reports">
+    <button type="button" data-sample="Text::CSV 2.04 PASS Linux&#10;Text::CSV 2.04 PASS Windows&#10;Text::CSV 2.04 FAIL Darwin">Read a spreadsheet file</button>
+    <button type="button" data-sample="Email::Sender 2.600 PASS Linux&#10;Email::Sender 2.600 FAIL Windows&#10;Email::Sender 2.600 PASS FreeBSD">Send an email</button>
+    <button type="button" data-sample="DateTime 1.65 PASS Linux&#10;DateTime 1.65 PASS Darwin&#10;DateTime 1.65 PASS Windows">Work with dates</button>
+  </div>
+  <p class="note">Samples are made-up reports, not live results.</p>
   <p class="sub">An offline-first Perl test report and module ingestion studio: ingest CPAN Tester reports, view distribution health, search a test matrix, and export summaries. No account, no ads, works offline.</p>
 
   <section class="card" aria-labelledby="h-ingest">
@@ -192,6 +200,7 @@
   render();
   if (navigator.onLine) syncLive();
   window.addEventListener('online', syncLive);
+  for (const b of document.querySelectorAll('#tries [data-sample]')) b.addEventListener('click', () => { $('reports').value = b.dataset.sample; $('ingest').click(); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 </body>

@@ -7,7 +7,7 @@
 <meta name="description" content="A free online metronome from 20 to 400 BPM with tap tempo, every time signature, accents on each beat, subdivisions, nine sounds, a visual beat, a practice timer, a speed trainer and setlists. No account; it works offline.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Metronome · Verse">
+<meta property="og:title" content="Metronome: a steady click to keep time · Verse">
 <meta property="og:description" content="A free online metronome from 20 to 400 BPM with tap tempo, every time signature, accents on each beat, subdivisions, nine sounds, a visual beat, a practice timer, a speed trainer and setlists. No account; it works offline.">
 <meta property="og:url" content="https://a-to-mind.com/metronome/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -33,6 +33,7 @@
   button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
   button:disabled { opacity: .5; cursor: default; }
   .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  #tries a { padding: 8px 4px; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
   .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 130px; min-width: 0; }
   .row > label select, .row > label input { width: 100%; }
@@ -94,7 +95,9 @@
 </head>
 <body>
 <main id="app">
-  <h1>Metronome</h1>
+  <h1>Metronome: a steady click to keep time</h1>
+  <p class="sub" id="lead"><strong>For practising an instrument, a workout, a dance or a speech.</strong> Press Start, or open a ready tempo:</p>
+  <nav class="row" id="tries" aria-label="Ready tempos"><a href="?bpm=80&amp;sig=4%2F4">Piano practice 80</a> <a href="?bpm=170&amp;sig=2%2F4">Running 170 steps a minute</a> <a href="?bpm=60&amp;sig=4%2F4">A slow speech 60</a> <a href="?bpm=100&amp;sig=3%2F4">A waltz 100</a></nav>
   <p class="sub" id="lede">A free online metronome: 20 to 400 BPM, tap tempo, any time signature, accents, subdivisions, nine sounds, a visual beat, a practice timer and setlists. Nothing leaves your device; it works offline.</p>
   <nav id="mnav" aria-label="Music tools"><a href="/metronome/" aria-current="page">Metronome</a><a href="/piano/">Piano</a><a href="/tuner/">Tuner</a><a href="/bpm/">BPM counter</a><a href="/chords/">Chords and scales</a><a href="/music/">Setlists and catalogue</a><a href="/?q=make%20me%20a%20song">Make me a song</a></nav>
   <section class="pane flash" id="stage" aria-label="Metronome">
@@ -113,7 +116,7 @@
     <div class="row"><label>Volume<input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></label><label>Beats per minute<input type="number" id="bpmIn" min="20" max="400" value="120" inputmode="numeric" aria-label="Type the tempo"></label></div>
     <div class="row"><label class="chk"><input type="checkbox" id="voice"> Voice count (says 1 2 3 4)</label><label class="chk"><input type="checkbox" id="vis" checked> Visual beat (flash)</label><label class="chk"><input type="checkbox" id="stress" checked> Accent the first beat</label></div>
     <h2>Tempo presets</h2>
-    <div class="row" id="presets"><button type="button" data-bpm="50">Largo 50</button><button type="button" data-bpm="70">Adagio 70</button><button type="button" data-bpm="92">Andante 92</button><button type="button" data-bpm="114">Moderato 114</button><button type="button" data-bpm="132">Allegro 132</button><button type="button" data-bpm="180">Presto 180</button></div>
+    <div class="row" id="presets"><button type="button" data-bpm="60">Slow speech 60</button><button type="button" data-bpm="80">Piano practice 80</button><button type="button" data-bpm="170">Running 170</button><button type="button" data-bpm="50">Largo 50</button><button type="button" data-bpm="70">Adagio 70</button><button type="button" data-bpm="92">Andante 92</button><button type="button" data-bpm="114">Moderato 114</button><button type="button" data-bpm="132">Allegro 132</button><button type="button" data-bpm="180">Presto 180</button></div>
   </section>
   <section class="pane" aria-label="Practice tools">
     <h2>Practice timer, speed trainer and silent bars</h2>

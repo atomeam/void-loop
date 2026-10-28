@@ -607,7 +607,7 @@ export const PROBES = Object.freeze({
       ['eyedropper', /Pick a colour from the screen/i], ['copy CSS', /Copy CSS/],
     ],
   },
-  books: {
+  sudowrite: {
     site: 'https://www.sudowrite.com/', verse: '/books/',
     ask: { verse: '/books/' },
     truth: [
@@ -1085,7 +1085,7 @@ const LANE_PROBES = Object.freeze({
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 // a second floor standing on the same page reads it the same way (owner, 2026-10-26: tildegit is /g/ like codebase): the questions and the
 // lists come from the page, and only the site it is compared with changes — said once here, never copied into a second probe that can drift
-const SAME_PAGE = { tildegit: 'codebase', sudowrite: 'books', squibler: 'books', inkfluence: 'books', novelcrafter: 'books' };
+const SAME_PAGE = { tildegit: 'codebase', squibler: 'sudowrite', inkfluence: 'sudowrite', novelcrafter: 'sudowrite' };
 
 export function probeFor(id) {
   // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site
