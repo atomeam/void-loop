@@ -1,40 +1,35 @@
 /**
- * palette skill - generate a color palette from a mood or theme.
+ * palette skill — a random color palette generated locally (no API, no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Invented for growth (2026-10-20).
+ * "give me a palette", "random colors", "color scheme".
  */
-const WHEN = /^(?:make|create|generate|give me)?\s*(?:a\s+)?(?:color\s+)?palette\s+(?:for|from|of)\s+(.+)$/i;
-
-function colorsFor(mood) {
-  const m = String(mood || '').toLowerCase();
-  if (/calm|peace|relax/.test(m)) return ['#A8D5E5', '#7EBDC2', '#F2E9E4', '#E6E6FA', '#B8E0D2'];
-  if (/energy|energetic|vibrant|joy|happy/.test(m)) return ['#FF6B6B', '#FFE66D', '#4ECDC4', '#45B7D1', '#FFA07A'];
-  if (/sunset|dusk|evening|warm/.test(m)) return ['#FF7E5F', '#FEB47B', '#FF6B6B', '#C06C84', '#6C5B7B'];
-  return ['#6C5CE7', '#A29BFE', '#FD79A8', '#E17055', '#00B894']; // default
+export function isPalette(text) {
+  return /^(?:please\s+)?(?:give\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:color\s+)?palette|(?:another|a|random)\s+(?:color\s+)?palette|palette(?:\s+please)?|random\s+colors|color\s+scheme|generate\s+(?:a\s+)?palette)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
-function run(text, api) {
+function randomHex() {
+  return '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+}
+
+async function run(text, api) {
   const { showPage, esc } = api;
-  const m = String(text).match(WHEN);
-  const mood = m ? m[1].trim() : 'calm';
-  const cols = colorsFor(mood);
-  showPage((el) => {
-    el.innerHTML = '<h2>Color palette for ' + esc(mood) + '</h2>'
-      + '<div style="display:flex;gap:8px;margin:12px 0">' + cols.map(c => '<div style="width:48px;height:48px;background:' + c + ';border-radius:8px" title="' + c + '"></div>').join('') + '</div>'
-      + '<p>' + cols.map(c => esc(c)).join(' · ') + '</p>'
-      + '<div class="src">Generated in this browser · no external source</div>';
+  const colors = Array.from({ length: 5 }, randomHex);
+  const swatches = colors.map((c) => `<div style="display:inline-block;width:60px;height:60px;background:${c};margin:4px;border-radius:8px;border:1px solid rgba(255,255,255,0.2)" title="${esc(c)}"></div>`).join('');
+  const hexes = colors.map((c) => `<code style="margin:0 6px">${esc(c)}</code>`).join('');
+  showPage((p) => {
+    p.innerHTML = '<h2>A palette</h2><div style="margin:12px 0">' + swatches + '</div><p>' + hexes + '</p><div class="sub">say “another palette” for one more</div>';
   });
   return 'palette';
 }
 
 export default {
   name: 'palette',
-  examples: ['make a color palette for calm', 'palette for sunset', 'color palette from joy'],
-  nearMisses: ['what is a palette', 'paint palette', 'palette knife'],
-  match(lower) { return WHEN.test(String(lower || '').trim()); },
+  examples: ['give me a palette', 'random colors', 'color scheme', 'another palette'],
+  nearMisses: ['what is a palette', 'color theory', 'paint palette'],
+  match(lower, text) { return isPalette(text); },
   run,
   suite() {
-    const ok = WHEN.test('make a color palette for calm') && colorsFor('calm').length === 5 && colorsFor('sunset')[0] === '#FF7E5F' && !WHEN.test('what is a palette');
-    return { ok };
-  },
+    const ok = isPalette('give me a palette') && isPalette('random colors') && !isPalette('what is a palette');
+    return { ok, got: 'match works' };
+  }
 };
