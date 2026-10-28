@@ -18587,67 +18587,67 @@
   "tournaments": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 121,
-    "best": 292,
-    "evidence": "Verse (/tournaments/) 121 ms to the load event (median of 3, phone width) vs yunite.xyz 292 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T02:46:53.715Z"
+    "verse": 112,
+    "best": 305,
+    "evidence": "Verse (/tournaments/) 112 ms to the load event (median of 3, phone width) vs yunite.xyz 305 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T02:47:43.926Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/tournaments/) 3 of 3 loads answered vs yunite.xyz 3 of 3 loads answered",
-    "at": "2026-10-28T02:46:53.715Z"
+    "at": "2026-10-28T02:47:43.926Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/tournaments/) 0 px sideways overflow at 390 px vs yunite.xyz 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T02:46:53.715Z"
+    "at": "2026-10-28T02:47:43.926Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/tournaments/) 0 unnamed controls or images vs yunite.xyz 2 unnamed controls or images",
-    "at": "2026-10-28T02:46:53.715Z"
+    "at": "2026-10-28T02:47:43.926Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/tournaments/) 1 (1: the page shows itself again with the network cut) vs yunite.xyz 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T02:46:53.715Z"
+    "at": "2026-10-28T02:47:43.926Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/tournaments/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs yunite.xyz 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T02:46:53.715Z"
+    "at": "2026-10-28T02:47:43.926Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 14,
     "best": 14,
     "evidence": "Verse (/tournaments/) 14 of 14 right against the worked-out answer; judged against the standard, not yunite.xyz (the site is not asked)",
-    "at": "2026-10-28T02:46:53.715Z",
+    "at": "2026-10-28T02:47:43.926Z",
     "of": 14
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/tournaments/) 0 design defects vs yunite.xyz 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), yunite.xyz (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T02:46:53.715Z"
+    "evidence": "Verse (/tournaments/) 0 design defects vs yunite.xyz 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), yunite.xyz (0 low-contrast texts, 0 small tap targets, layout shift 0.03)",
+    "at": "2026-10-28T02:47:43.926Z"
    },
    "completeness": {
     "verdict": "better",
     "verse": 26,
     "best": 0,
     "evidence": "Verse (/tournaments/) 26 of 26 things a full answer shows vs yunite.xyz 0 of 26 things a full answer shows (Verse lacks: none; site lacks: tournament standings, a point system, preset systems, team sizes, points per elimination, the threshold rule, said, the standings table, the tiebreakers, in order, wins counted, average placement, one match per line, snake heats, drop spots, contested spots flagged, CSV in, CSV out, a share link, the share link carries the state, nothing sent, no account, works offline, stays on this device, the worked example, marked as one, back to Verse, the stage bridge, Tournaments)",
-    "at": "2026-10-28T02:46:53.715Z",
+    "at": "2026-10-28T02:47:43.926Z",
     "of": 26
    },
    "point system presets": {
@@ -18655,7 +18655,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T02:46:53.715Z",
+    "at": "2026-10-28T02:47:43.926Z",
     "of": 4,
     "part": true
    },
@@ -18664,7 +18664,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T02:46:53.715Z",
+    "at": "2026-10-28T02:47:43.926Z",
     "of": 4,
     "part": true
    },
@@ -18673,7 +18673,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T02:46:53.715Z",
+    "at": "2026-10-28T02:47:43.926Z",
     "of": 4,
     "part": true
    },
@@ -18682,7 +18682,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T02:46:53.715Z",
+    "at": "2026-10-28T02:47:43.926Z",
     "of": 4,
     "part": true
    },
@@ -18691,7 +18691,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/tournaments/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T02:46:53.715Z",
+    "at": "2026-10-28T02:47:43.926Z",
     "of": 4,
     "part": true
    }
