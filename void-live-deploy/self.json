@@ -509,6 +509,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:27:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:27:15Z",
    "subject": "Snippet / Note: the gist page with a plain name, a lead and templates"
   },
@@ -553,6 +557,10 @@
    "subject": "Photos lane: plain titles and plain-name URLs for four brand-slug pages"
   },
   {
+   "at": "2026-10-28T20:11:33Z",
+   "subject": "Wider use: Verse versions must serve more people than the original"
+  },
+  {
    "at": "2026-10-28T20:05:03Z",
    "subject": "Tower gate: coin flip measured against their live sites"
   },
@@ -579,14 +587,6 @@
   {
    "at": "2026-10-28T19:54:57Z",
    "subject": "Tower gate: coin flip,nameunit,hosting measured against their live sites"
-  },
-  {
-   "at": "2026-10-28T19:54:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T19:54:00Z",
-   "subject": "Boards: a plain lead line, general starter boards, and plain labels with the board terms kept"
   }
  ],
  "builders": {
