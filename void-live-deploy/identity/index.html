@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Identity studio · Verse</title>
+<meta name="description" content="A sovereign, on-device SSO and profile identity studio: edit profile metadata, keep a local change history, inspect JWT claims, link mock services, and share the whole profile as a link. No account, no ads, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Identity studio · Verse">
+<meta property="og:description" content="Manage a profile, its change history and its SSO claims entirely on this device. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/identity/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/identity/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#8b7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  h2 { font-size:16px; margin:0 0 8px; }
+  .sub { color:var(--quiet); margin:0 0 14px; font-size:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
+  label { display:block; color:var(--quiet); font-size:12px; }
+  label span { display:block; margin-bottom:3px; }
+  input, select, textarea { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:34px; }
+  input[type=text], input[type=email] { width:16em; }
+  textarea { width:100%; min-height:90px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; }
+  input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible, pre:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  button { font:inherit; font-size:14px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:7px 14px; min-height:34px; cursor:pointer; }
+  button:hover { border-color:#3b3b4d; }
+  .note { color:var(--quiet); font-size:13px; margin:8px 0 0; }
+  .out { color:#cfcbe6; font-size:14px; font-variant-numeric:tabular-nums; margin:6px 0 0; min-height:2em; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#dcd8f4; background:#1c1b28; border-radius:4px; padding:1px 4px; }
+  .say { color:var(--quiet); font-size:13px; min-height:1.5em; margin:6px 0 0; }
+  .scroll { width:100%; max-width:100%; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; min-width:420px; font-size:14px; }
+  caption { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  th, td { text-align:left; padding:7px 8px; border-bottom:1px solid #23222f; font-variant-numeric:tabular-nums; }
+  th { color:var(--quiet); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  tr.on td { color:#fff; font-weight:600; background:#191828; }
+  pre { margin:8px 0; padding:10px 12px; background:#0d0c14; border:1px solid var(--line); border-radius:10px; font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:#dcd8f4; overflow-x:auto; min-height:120px; }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:6px 0; }
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:8px 0; }
+  .tile { background:#191827; border:1px solid var(--line); border-radius:12px; padding:12px; min-height:60px; }
+  .tile h3 { margin:0 0 4px; font-size:14px; }
+  .tile p { margin:0; color:var(--quiet); font-size:12px; }
+  .ledger { max-height:220px; overflow:auto; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  footer a, .siblings a { color:#cfc6ff; }
+  #shareline { overflow-wrap:anywhere; min-height:2em; }
+  [hidden] { display:none !important; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Identity studio</h1>
+  <p class="sub">A sovereign, on-device SSO and profile identity studio: edit profile metadata, keep a local change history, inspect JWT claims, link mock services, and share the whole profile as a link. No account, no ads, works offline.</p>
+
+  <section class="card" aria-labelledby="h-profile">
+    <h2 id="h-profile">Profile</h2>
+    <div class="row">
+      <label><span>Name</span><input id="name" type="text" aria-label="Profile name" value="Atom Bomb"></label>
+      <label><span>Email</span><input id="email" type="email" aria-label="Profile email" value="atomicmoonbeam88@gmail.com"></label>
+    </div>
+    <div class="row">
+      <label><span>Account ID</span><input id="aid" type="text" aria-label="Account ID" value="AC-0001"></label>
+      <label><span>Region / language</span>
+        <select id="region" aria-label="Region and language">
+          <option value="jp">JP - Japanese</option>
+          <option value="en">EN - English</option>
+        </select>
+      </label>
+    </div>
+    <p class="out" id="profileout"></p>
+    <p class="say" id="say" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-history">
+    <h2 id="h-history">Change history</h2>
+    <p class="note">Every edit is recorded on this device. Nothing is sent anywhere.</p>
+    <div class="ledger scroll">
+      <table id="history">
+        <caption>Account change history ledger</caption>
+        <thead><tr><th scope="col">When</th><th scope="col">Field</th><th scope="col">Value</th></tr></thead>
+        <tbody id="historybody"></tbody>
+      </table>
+    </div>
+    <div class="row">
+      <button type="button" id="clearhistory" aria-label="Clear change history">Clear history</button>
+      <button type="button" id="exportjson" aria-label="Export profile as JSON">Export JSON</button>
+      <button type="button" id="copycard" aria-label="Copy profile card">Copy card</button>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-jwt">
+    <h2 id="h-jwt">SSO token / JWT claims inspector</h2>
+    <p class="note">Paste a bearer token. It is decoded locally with SubtleCrypto; nothing leaves this device.</p>
+    <textarea id="token" aria-label="Bearer token input" placeholder="eyJ..."></textarea>
+    <div class="row">
+      <button type="button" id="decode" aria-label="Decode token">Decode</button>
+    </div>
+    <pre id="claims" aria-label="Decoded JWT claims"></pre>
+    <p class="say" id="jwtmsg"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-services">
+    <h2 id="h-services">Service portal</h2>
+    <p class="note">Mock services an account like this would link to. Deep links are generated on this device.</p>
+    <div class="tiles">
+      <div class="tile"><h3>Official Website</h3><p>Status: linked</p><a id="svc-web" href="#" aria-label="Open official website">Open</a></div>
+      <div class="tile"><h3>Fan Club</h3><p>Status: linked</p><a id="svc-fan" href="#" aria-label="Open fan club">Open</a></div>
+      <div class="tile"><h3>Official Store</h3><p>Status: linked</p><a id="svc-store" href="#" aria-label="Open official store">Open</a></div>
+      <div class="tile"><h3>Community Hub</h3><p>Status: linked</p><a id="svc-comm" href="#" aria-label="Open community hub">Open</a></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-share">
+    <h2 id="h-share">Sharing</h2>
+    <div class="row">
+      <button type="button" id="share" aria-label="Copy share link">Copy share link</button>
+      <button type="button" id="download" aria-label="Download profile JSON">Download</button>
+    </div>
+    <p class="note" id="shareline">Share link: <a id="link" href="/identity/">/identity/</a></p>
+  </section>
+
+  <p class="note" id="demo">This is a worked example: a mock profile, its change history and its SSO claims, all on this device. Change a field and it becomes yours.</p>
+  <p class="note">Everything on this page is worked out on this device: no account, no ads, nothing is sent anywhere, and it works offline with the profile it last had.</p>
+
+  <nav class="siblings" aria-label="Use together with">
+    <a href="/jwt/">JWT decoder</a>
+    <a href="/base64/">Base64 encoder</a>
+    <a href="/g/">Gist creator</a>
+    <a href="/word-count/">Word counter</a>
+    <a href="/?ask=identity%20sso%20profile">See it as a card on the stage</a>
+    <a href="/">Back to Verse</a>
+  </nav>
+</main>
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const KEY = 'a2m.void.identity.v1';
+  const SEED = { name: 'Atom Bomb', email: 'atomicmoonbeam88@gmail.com', aid: 'AC-0001', region: 'jp' };
+  const params = new URLSearchParams(location.hash.replace(/^#/, '') || location.search);
+  const state = { name: SEED.name, email: SEED.email, aid: SEED.aid, region: SEED.region, history: [] };
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') Object.assign(state, saved); } catch (_) {}
+  if (params.has('name')) state.name = params.get('name');
+  if (params.has('email')) state.email = params.get('email');
+  if (params.has('aid')) state.aid = params.get('aid');
+  if (params.has('region')) state.region = params.get('region');
+
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) {} };
+  const say = (t) => { $('say').textContent = t; };
+
+  const renderProfile = () => {
+    $('profileout').textContent = 'Profile: ' + state.name + ' · ' + state.email + ' · ' + state.aid + ' · ' + state.region.toUpperCase();
+    $('name').value = state.name; $('email').value = state.email; $('aid').value = state.aid; $('region').value = state.region;
+  };
+
+  const addHistory = (field, value) => {
+    state.history.unshift({ when: new Date().toISOString().slice(0,19).replace('T',' '), field, value });
+    if (state.history.length > 50) state.history.length = 50;
+    renderHistory();
+  };
+
+  const renderHistory = () => {
+    const body = $('historybody');
+    while (body.firstChild) body.removeChild(body.firstChild);
+    for (const h of state.history) {
+      const tr = document.createElement('tr');
+      for (const v of [h.when, h.field, h.value]) { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }
+      body.appendChild(tr);
+    }
+  };
+
+  const linkFor = () => {
+    const q = new URLSearchParams();
+    q.set('name', state.name); q.set('email', state.email); q.set('aid', state.aid); q.set('region', state.region);
+    return location.origin + '/identity/#' + q.toString();
+  };
+
+  const commit = (field, value, msg) => {
+    if (field) { state[field] = value; addHistory(field === 'name' ? 'Name' : field === 'email' ? 'Email' : field === 'aid' ? 'Account ID' : 'Region', value); }
+    renderProfile();
+    save();
+    const href = linkFor();
+    $('link').href = href; $('link').textContent = href.replace(location.origin, '');
+    try { history.replaceState(null, '', href); } catch (_) {}
+    if (msg) say(msg);
+  };
+
+  $('name').addEventListener('change', (e) => commit('name', e.target.value, 'Name updated.'));
+  $('email').addEventListener('change', (e) => commit('email', e.target.value, 'Email updated.'));
+  $('aid').addEventListener('change', (e) => commit('aid', e.target.value, 'Account ID updated.'));
+  $('region').addEventListener('change', (e) => commit('region', e.target.value, 'Region updated.'));
+
+  $('clearhistory').onclick = () => { state.history = []; renderHistory(); save(); say('Change history cleared on this device.'); };
+  $('exportjson').onclick = async () => {
+    const cfg = JSON.stringify({ name: state.name, email: state.email, aid: state.aid, region: state.region, history: state.history }, null, 2);
+    try { await navigator.clipboard.writeText(cfg); say('Profile JSON copied.'); } catch (_) { say('JSON is in the box below.'); }
+    $('claims').textContent = cfg;
+  };
+  $('copycard').onclick = async () => {
+    const card = state.name + ' <' + state.email + '> · ' + state.aid + ' · ' + state.region.toUpperCase();
+    try { await navigator.clipboard.writeText(card); say('Profile card copied: ' + card); } catch (_) { say(card); }
+  };
+
+  const b64u = (s) => { try { return atob(s.replace(/-/g,'+').replace(/_/g,'/')); } catch (_) { return null; } };
+  $('decode').onclick = () => {
+    const raw = $('token').value.trim();
+    const parts = raw.split('.');
+    if (parts.length < 2) { $('claims').textContent = ''; $('jwtmsg').textContent = 'Not a JWT: expected header.payload.signature.'; return; }
+    const header = b64u(parts[0]); const payload = b64u(parts[1]);
+    let h, p; try { h = JSON.parse(header); } catch (_) { h = null; } try { p = JSON.parse(payload); } catch (_) { p = null; }
+    $('claims').textContent = JSON.stringify({ header: h, payload: p }, null, 2);
+    $('jwtmsg').textContent = p ? 'Claims decoded locally. No network, no account.' : 'Could not decode payload.';
+  };
+
+  const svc = (id, url) => { const a = $(id); a.href = url; };
+  svc('svc-web', 'https://example.com/portal');
+  svc('svc-fan', 'https://example.com/fanclub');
+  svc('svc-store', 'https://example.com/store');
+  svc('svc-comm', 'https://example.com/community');
+
+  $('share').onclick = async () => {
+    const href = linkFor();
+    try { await navigator.clipboard.writeText(href); say('Share link copied: it carries the profile, the account ID and the region.'); }
+    catch (_) { $('link').focus(); say('The link is below.'); }
+  };
+  $('download').onclick = () => {
+    const cfg = JSON.stringify({ name: state.name, email: state.email, aid: state.aid, region: state.region, history: state.history }, null, 2);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([cfg], { type: 'application/json' }));
+    a.download = 'profile.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    say('Downloaded profile.json.');
+  };
+
+  renderProfile();
+  renderHistory();
+  const href = linkFor();
+  $('link').href = href; $('link').textContent = href.replace(location.origin, '');
+  try { history.replaceState(null, '', href); } catch (_) {}
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>
