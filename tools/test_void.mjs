@@ -851,7 +851,7 @@ try {
     const t = await text();
     const probe = PROBES.identity;
     const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
-    check('identity: the profile shows the seeded name, email, account ID and region, with a change history ledger', /Atom Bomb/.test(t) && /atomicmoonbeam88@gmail.com/.test(t) && /AC-0001/.test(t) && /Change history/.test(t) && !miss.length, JSON.stringify({ miss }));
+    check('identity: the profile shows the seeded name, email, account ID and region, with a change history ledger', /Sky Rivera/.test(t) && /sky@example\.com/.test(t) && /AC-0001/.test(t) && /Change history/.test(t) && !miss.length, JSON.stringify({ miss }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('identity: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     const stageLink = await P.p.$eval('a[href*="ask=identity"]', (a) => a.getAttribute('href')).catch(() => '');

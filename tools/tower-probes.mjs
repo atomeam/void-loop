@@ -509,10 +509,10 @@ export const PROBES = Object.freeze({
   },
   identity: {
     site: 'https://anycolorid.com/', verse: '/identity/',
-    ask: { verse: '/identity/#name=Atom%20Bomb&email=atomicmoonbeam88%40gmail.com&aid=AC-0001&region=jp' },
+    ask: { verse: '/identity/#name=Sky%20Rivera&email=sky%40example.com&aid=AC-0001&region=jp' },
     truth: [
-      ['the profile name, edited (Atom Bomb)', /Atom Bomb/],
-      ['the profile email, edited', /atomicmoonbeam88@gmail.com/],
+      ['the profile name, edited (Sky Rivera)', /Sky Rivera/],
+      ['the profile email, edited', /sky@example.com/],
       ['the account ID (AC-0001)', /AC-0001/],
       ['the region (JP)', /\bJP\b/],
       ['a change history ledger', /Change history/],

@@ -47,3 +47,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped (packaged) | 2026-10-21 | Verse Remix Kit | store-publish: templates, 6 files, free; next: a minis-stl pack (none in the store yet) |
 | building | 2026-10-22 | fun fact skill: random interesting facts from a public API | new idea by growth agent |
 | building | 2026-10-22 | random quote skill: inspirational quotes from a public API | new idea by growth agent |
+| open | 2026-10-28 | act skill: owner asks like "my email" route to the act skill instead of no answer (`POST /api/answer` "my email" is noAnswer, near act 0.637 < 0.7) | asked by Verse (docs/void-voice.md, 2026-10-28) |
+| shipped | 2026-10-28 | identity studio opens with a neutral example profile (no real name or email in the seed) | asked by Verse (docs/void-voice.md, 2026-10-28, "minimal identity seed") |

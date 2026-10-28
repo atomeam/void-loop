@@ -66,8 +66,8 @@
   <section class="card" aria-labelledby="h-profile">
     <h2 id="h-profile">Profile metadata</h2>
     <div class="row">
-      <label><span>Name</span><input id="name" type="text" aria-label="Profile name" value="Atom Bomb"></label>
-      <label><span>Email</span><input id="email" type="email" aria-label="Profile email" value="atomicmoonbeam88@gmail.com"></label>
+      <label><span>Name</span><input id="name" type="text" aria-label="Profile name" value="Sky Rivera"></label>
+      <label><span>Email</span><input id="email" type="email" aria-label="Profile email" value="sky@example.com"></label>
     </div>
     <div class="row">
       <label><span>Account ID</span><input id="aid" type="text" aria-label="Account ID" value="AC-0001"></label>
@@ -149,7 +149,7 @@
 <script type="module">
   const $ = (id) => document.getElementById(id);
   const KEY = 'a2m.void.identity.v1';
-  const SEED = { name: 'Atom Bomb', email: 'atomicmoonbeam88@gmail.com', aid: 'AC-0001', region: 'jp' };
+  const SEED = { name: 'Sky Rivera', email: 'sky@example.com', aid: 'AC-0001', region: 'jp' };
   const params = new URLSearchParams(location.hash.replace(/^#/, '') || location.search);
   const state = { name: SEED.name, email: SEED.email, aid: SEED.aid, region: SEED.region, history: [] };
   try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') Object.assign(state, saved); } catch (_) {}
