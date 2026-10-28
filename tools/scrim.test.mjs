@@ -160,7 +160,7 @@ test('Copy for Discord writes a bold title and a monospace block whose columns l
   assert.equal(lines[lines.length - 1], '```');
   assert.equal((text.match(/```/g) || []).length, 2, 'a backtick in a name cannot close the block');
   assert.match(lines[2], /^#  Team\s+Points  Wins  Bonus  Avg place  Best$/);
-  assert.match(text, /A very long team …/);
+  assert.match(text, /A very long team name here/, 'a long name is kept whole');
   const body = lines.slice(2, -1), at = body[0].indexOf('Points') + 'Points'.length;
   for (const l of body.slice(1)) assert.match(l.slice(at - 2, at), /\d/, 'points end in the same column: ' + l);
   assert.match(discordText(rows, scorer('gamenight'), { rounds: 3 }), /^\*\*Standings\*\* · after 3 rounds\n/);

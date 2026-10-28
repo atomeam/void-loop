@@ -537,6 +537,10 @@ for (const [name, file] of [
   ['calculators', 'calculators.test.mjs'],
   ['formula engine', 'formula-engine.test.mjs'],
   ['formula library', 'formulas.test.mjs'],
+  ['shape skill', 'shape-skill.test.mjs'],
+  ['battleship skill', 'battleship-skill.test.mjs'],
+  ['parody data', 'parody-data.test.mjs'],
+  ['music-de', 'music-de.test.mjs'],
 ]) {
   addScript(name, file);
 }
