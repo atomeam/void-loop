@@ -2724,11 +2724,13 @@ try {
       check('translate page, handwriting: opening the pad shuts the keyboard (one input tool at a time); a stroke on the pad is sent as a picture, its words ("Thank you") land in the box and come back translated ("Merci")',
         kbdShut && !!img && /^data:image\/jpeg/.test(img.image) && await P.$eval('#in', (t) => t.value) === 'Thank you' && /Merci/.test(await outText()), JSON.stringify(asks.map((a) => Object.keys(a))));
       await P.click('#fbB'); await P.fill('#fbT', 'Merci bien'); await P.click('#fbSave');
-      const said = await P.$eval('#status', (s) => s.textContent).catch(() => ''); const n = asks.length;
-      await P.reload(); await P.fill('#in', 'Thank you'); await P.click('#go'); await until(async () => /Merci bien/.test(await outText()), 4000);
-      const after = await outText(); await until(() => P.$eval('#fbUndo', (b) => !b.hidden), 4000); await P.click('#fbUndo'); await until(async () => (await outText()) === 'Merci', 4000);
+      const said = await P.$eval('#note', (s) => s.textContent).catch(() => ''); const n = asks.length;
+      await P.reload(); await until(async () => /Bonne nuit/.test(await outText()), 4000); await P.fill('#in', 'Thank you'); await P.click('#go'); await until(async () => /Merci bien/.test(await outText()), 4000);
+      const after = await outText(), undo = await until(() => P.$eval('#fbUndo', (b) => !b.hidden), 4000), note = await P.$eval('#note', (n) => n.textContent);
+      const kept = await P.evaluate(() => Object.keys(localStorage).filter((k) => /translate/.test(k)).map((k) => k + '=' + localStorage.getItem(k).slice(0, 300)).join(' ; '));
+      if (undo) { await P.click('#fbUndo'); await until(async () => (await outText()) === 'Merci', 4000); }
       check('translate page, suggest an edit: "Merci bien" replaces the machine\'s "Merci", is kept on this device after a reload (marked as your own) and "Back to the machine\'s" undoes it',
-        /Merci bien/.test(after) && (await outText()) === 'Merci' && n > 0, JSON.stringify({ after, said }));
+        /Merci bien/.test(after) && undo && (await outText()) === 'Merci' && n > 0, JSON.stringify({ after, said, undo, note, kept }));
       await P.click('#convS'); await P.fill('#convT', 'Merci beaucoup'); await P.click('#convTB');
       await until(() => P.$eval('#convLog', (l) => /Thank you very much/.test(l.textContent)), 4000);
       const conv = await P.$eval('#convLog', (l) => l.textContent), names = await P.$eval('#convTB', (b) => b.textContent);
@@ -2742,7 +2744,7 @@ try {
   // and Resolve, voice typing (speech recognition stubbed: it hears "hello from my voice").
   if (want('notes page catch-up: a picture kept through a reload, a comment with a reply resolved, voice typing')) {
     const T = await fresh(), P = T.p, PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-    await T.ctx.addInitScript(() => { window.webkitSpeechRecognition = class { start() { setTimeout(() => { const r = [{ 0: { transcript: 'hello from my voice' }, isFinal: true, length: 1 }]; this.onresult && this.onresult({ resultIndex: 0, results: r }); setTimeout(() => this.onend && this.onend(), 30); }, 50); } stop() { this.onend && this.onend(); } }; });
+    await T.ctx.addInitScript(() => { window.SpeechRecognition = window.webkitSpeechRecognition = class { start() { setTimeout(() => { const r = [{ 0: { transcript: 'hello from my voice' }, isFinal: true, length: 1 }]; this.onresult && this.onresult({ resultIndex: 0, results: r }); setTimeout(() => this.onend && this.onend(), 30); }, 50); } stop() { this.onend && this.onend(); } }; }); // newer Chrome has the unprefixed one too
     const notes = () => P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.v1') || '{"docs":[]}').docs);
     try {
       await P.goto(base + 'notes/'); await until(() => P.evaluate(() => !!document.getElementById('related') && document.getElementById('related').children.length > 0), 8000);
