@@ -509,8 +509,40 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T23:11:10Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T23:11:08Z",
+   "subject": "verse-loop: run with the workflow token, no extra secret needed (Actions may open PRs now)"
+  },
+  {
+   "at": "2026-10-28T23:11:05Z",
+   "subject": "Notes: the render line says why its HTML is safe"
+  },
+  {
+   "at": "2026-10-28T23:10:39Z",
+   "subject": "Notes clean a note's HTML when they show it; the review's false alarms marked with why"
+  },
+  {
+   "at": "2026-10-28T23:09:17Z",
+   "subject": "Paint by number rebuilt: a picture library with categories, smooth zoom and pan, hints, highlighting, saved progress, a reveal, your own…"
+  },
+  {
+   "at": "2026-10-28T23:06:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T23:06:46Z",
    "subject": "wip paint"
+  },
+  {
+   "at": "2026-10-28T23:05:53Z",
+   "subject": "Regenerated the generated files after merging main again"
+  },
+  {
+   "at": "2026-10-28T23:05:22Z",
+   "subject": "Calculators: the 16 Maths gaps from calculator.net's sitemap, with known-answer tests"
   },
   {
    "at": "2026-10-28T23:02:30Z",
@@ -519,6 +551,10 @@
   {
    "at": "2026-10-28T23:01:47Z",
    "subject": "Verse loop: the lock's catches let only a missing file pass (Verse's review)"
+  },
+  {
+   "at": "2026-10-28T23:01:46Z",
+   "subject": "Board: the parity branch's edits across agents' files, under the owner's any-agent rule"
   },
   {
    "at": "2026-10-28T23:00:02Z",
@@ -551,42 +587,6 @@
   {
    "at": "2026-10-28T22:52:09Z",
    "subject": "Calculators: every calculator on calculator.net's home page (21 added) plus a scientific keypad"
-  },
-  {
-   "at": "2026-10-28T22:50:28Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next randomarea.com"
-  },
-  {
-   "at": "2026-10-28T22:47:55Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com"
-  },
-  {
-   "at": "2026-10-28T22:47:49Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-28T22:43:04Z",
-   "subject": "TAGTEAM: Grok Bot handoff"
-  },
-  {
-   "at": "2026-10-28T22:34:56Z",
-   "subject": "CSP hashes: a directory shares one rule with the union of its pages' inline scripts, so the rules fit Cloudflare's 100 again (88 to 69…"
-  },
-  {
-   "at": "2026-10-28T22:34:49Z",
-   "subject": "Regenerate the generated files"
-  },
-  {
-   "at": "2026-10-28T22:34:49Z",
-   "subject": "seo-audit: no orphans past the baseline (the pages no tool row reaches are listed under More tools), identity's dead /jwt/ link removed"
-  },
-  {
-   "at": "2026-10-28T22:34:49Z",
-   "subject": "Green checks: regenerate deps, what, seo blocks and preloads; seo common asks for /random/ and /calculators/"
-  },
-  {
-   "at": "2026-10-28T22:34:42Z",
-   "subject": "Green checks: map-coverage, doc-drift, no-ellipsis, untested, overlap, tally"
   }
  ],
  "builders": {
