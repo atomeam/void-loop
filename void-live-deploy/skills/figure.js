@@ -10,7 +10,7 @@
 import { cleanLower } from '../lib/ask-text.js';
 const CLEAN = cleanLower; // shared: lib/ask-text.js
 
-const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden|low poly)\s+)*(chair|cup|mug|book|lamp|wolf|fox)(?:\s+(?:on|to)\s+the\s+stage)?$/;
+const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden|low poly)\s+)*(chair|cup|mug|book|lamp|wolf|fox|dog)(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is|sculpt)\s+)?(?:motelet|(?:a|the|one)\s+(?:figure|bust))(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure|book|lamp))(?:\s+(?:around|round))?$/;
 // a figure that sits: "a figure that sits on the chair", "motelet sitting on the chair", "seat the figure" (miss board)
