@@ -209,6 +209,7 @@
       <button type="button" id="spadd">Claim</button>
     </div>
     <datalist id="teamlist"></datalist><datalist id="spotlist"></datalist>
+    <p class="say" id="spsay" aria-live="polite"></p>
     <div class="chips" id="pills" role="list" aria-label="Spots claimed so far"></div>
     <textarea id="drops" spellcheck="false" aria-label="Starting spots, one Team:Spot per line"></textarea>
     <div class="scroll">
@@ -246,7 +247,7 @@
   </footer>
 </main>
 <script type="module">
-  import { parseRounds, serializeRounds, setRoundEntry, scorer, rank, gapsFor, matchPointFor, heatList, roster, mergeNames, duplicatePlaces, duplicateText, cleanName, parseEntry, parseTiers, serializeTiers, tierLabel, tierSentence, legacyTiers, parseSpots, spotGroups, spotLine, unclaimed, claimSpot, discordText, KINDS, kindOf } from '/lib/scrim.js';
+  import { parseRounds, serializeRounds, setRoundEntry, scorer, rank, gapsFor, matchPointFor, heatList, roster, mergeNames, duplicatePlaces, duplicateText, cleanName, parseEntry, parseTiers, serializeTiers, tierLabel, tierSentence, legacyTiers, parseSpots, spotGroups, spotLine, unclaimed, claimSpot, snapName, nameKey, discordText, KINDS, kindOf } from '/lib/scrim.js';
   const $ = (id) => document.getElementById(id);
   const KEY = 'a2m.void.tournaments.v1';
   // one worked example per kind; a bare /tournaments/ opens on the game night, and one click swaps to the battle-royale one
@@ -435,7 +436,10 @@
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'chip' + (g.contested ? ' bad' : ''); b.setAttribute('role', 'listitem');
       b.textContent = g.spot + ' · ' + g.teams.length; b.setAttribute('aria-label', 'Use ' + g.spot + ' (' + g.teams.length + ' claimed)');
-      b.onclick = () => { $('spspot').value = g.spot; $('spteam').focus(); };
+      b.onclick = () => {
+        $('spspot').value = g.spot; $('spteam').focus();
+        $('spsay').textContent = g.spot + ' is in the Spot box (held by ' + g.teams.map((x) => x.name).join(', ') + '). Type a team and press Claim to add it there.';
+      };
       return b;
     }));
     const open = unclaimed(claims, rows), clash = groups.filter((g) => g.contested).length;
@@ -551,8 +555,14 @@
   $('newteam').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addTeam(); } });
   $('drops').addEventListener('input', (e) => { state.drops = e.target.value; commit(); });
   const claim = () => {
-    const team = $('spteam').value.trim(); if (!team) { $('spteam').focus(); return; }
-    state.drops = claimSpot(state.drops, team, $('spspot').value, table().rows.map((r) => r.name)); $('drops').value = state.drops;
+    const team = $('spteam').value.trim(), spot = $('spspot').value.trim(), names = table().rows.map((r) => r.name);
+    if (!team) { $('spteam').focus(); $('spsay').textContent = 'Type a team first' + (spot ? ', then press Claim to put it on ' + spot : ' and a spot, then press Claim') + '.'; return; }
+    const who = snapName(team, names);
+    if (!who) { $('spteam').focus(); $('spsay').textContent = 'No team called ' + team + ' yet. Pick one from the list' + (names.length ? ' (' + names.slice(0, 4).join(', ') + (names.length > 4 ? ', ...' : '') + ')' : '') + ', or add it to the results first.'; return; }
+    state.drops = claimSpot(state.drops, team, spot, names); $('drops').value = state.drops;
+    const claims = parseSpots(state.drops, names), mine = claims.find((c) => nameKey(c.team) === nameKey(who));
+    const held = mine ? claims.filter((c) => nameKey(c.spot) === nameKey(mine.spot)).length : 0;
+    $('spsay').textContent = mine ? who + ' claimed ' + mine.spot + (held > 1 ? ': contested, ' + held + ' teams there.' : '.') : who + ' has no spot now.';
     $('spteam').value = ''; $('spspot').value = ''; $('spteam').focus(); commit();
   };
   $('spadd').onclick = claim;

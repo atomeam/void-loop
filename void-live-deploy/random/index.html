@@ -113,7 +113,7 @@
   // a public, checkable draw (lib/beacon.js): the numbers come from a drand round, and the link carries the round so anyone re-derives them
   let wantRound = 0, busy = false;
   async function beaconDraw(a, b, n, uniq) {
-    if (busy) return; busy = true; $('proof').textContent = 'Asking the public beacon for its newest round…';
+    if (busy) { $('proof').textContent = 'Still waiting for the public beacon\'s newest round: the numbers appear as soon as it answers.'; return null; } busy = true; $('proof').textContent = 'Asking the public beacon for its newest round…';
     try {
       const B = await import('/lib/beacon.js'), r = await B.fetchRound(wantRound); wantRound = 0;
       const vals = await B.numbers(r.randomness, a, b, n, uniq); busy = false; return { vals, r, url: B.roundUrl(r.round) };
