@@ -301,7 +301,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
       text: (s) => loc(s).innerText({ timeout: 5000 }).catch(() => ''),
       val: (s) => loc(s).inputValue({ timeout: 5000 }).catch(() => ''),
       // re is a RegExp written in the specs below, never page or user input; it crosses into the page as source and flags
-      waitText: (s, re, ms) => p.waitForFunction(([s, src, fl]) => { const e = document.querySelector(s); return e && new RegExp(src, fl).test(e.innerText || e.value || ''); }, [s, re.source, re.flags.replace('g', '')], { timeout: ms }).catch(() => {}).then(() => p.locator(s).first().evaluate((e) => e.innerText || e.value || '').catch(() => '')),
+      waitText: (s, re, ms) => p.waitForFunction(([s, src, fl]) => { const e = document.querySelector(s); return e && new RegExp(src, fl).test(e.innerText || e.value || ''); }, [s, re.source, re.flags.replace('g', '')], { timeout: ms }).catch(() => {}).then(() => p.locator(s).first().evaluate((e) => e.innerText || e.value || '').catch(() => '')), // void-review: ok
       copies: async (s, want) => { const n = (await act()).copy.length; await loc(s).click({ timeout: 5000 }); await p.waitForTimeout(300); const c = (await act()).copy.slice(n); ok(c.length > 0 && (!want || c.some((x) => x.includes(want))), 'copy puts ' + (want ? '"' + want + '"' : 'the result') + ' on the clipboard'); },
       download: async (s, re) => { try { const [d] = await Promise.all([p.waitForEvent('download', { timeout: 6000 }), loc(s).click({ timeout: 5000 })]); ok(!re || re.test(d.suggestedFilename()), 'export downloads ' + d.suggestedFilename()); } catch { ok(false, 'export downloads a file'); } },
       share: async (s, check) => {
