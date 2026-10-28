@@ -2,16 +2,25 @@
 
 `tools/verse-loop.mjs` (also `npx verse-loop`) is a thin terminal wrapper over pieces this repo already has. One lap does this:
 
-1. It takes a lock (`.git/verse-loop.lock`), skips if the tree has local changes, fetches and detaches at `origin/main`.
+**No human in the loop, ever** (owner rule, 2026-10-28): nothing a lap does waits for a person. Its guards are all automatic: the key scan, no new red, no test weakening (verse-coder's guard and propose-fix's gates), plain pushes only.
+
+1. It takes a lock (`.git/verse-loop.lock`). If the loop is paused (the back-off, below) it stops here. It settles PRs earlier laps opened (merged or closed), skips if the tree has local changes, and fetches.
+   - **Self-heal first:** if an open `loop/*` PR has a failed check, the lap reads the failure log (`gh run view --log-failed`), checks out that branch, has the brain fix it, gates it like any lap, pushes a plain fast-forward to the same branch and starts `verify.yml` there. That is the whole lap: no new branch, no new PR. A branch gets 3 heal tries; after that it counts toward the back-off.
+   - Otherwise it detaches at `origin/main`.
 2. It runs the fast checks (`tools/verse-loop.checks.json`: `guard-source.mjs`, `growth-suites.mjs`; add lines to add checks).
 3. It picks **one** item:
    - something is red: the brain fixes the **first red check**, never by weakening a test. With the default `verse` brain that is Verse's own coding agent, `tools/verse-coder.mjs` (below).
    - all green, `verse`, and `VOID_OWNER_TOKEN` set with no `--task`: the oldest open `probe:` job, through `tools/propose-fix.mjs` and its four gates. When there is none (exit 3), the same lap goes on to `docs/NEXT.md` with `verse-coder`.
-   - all green otherwise: `--task`, or the top open item of `docs/NEXT.md`, with a prompt built from `docs/TAGTEAM.md`, `docs/GATE-STANDARDS.md` and the task.
+   - all green otherwise: `--task`, or the top of **Verse's queue** in `docs/NEXT.md`, with a prompt built from `docs/TAGTEAM.md`, `docs/GATE-STANDARDS.md` and the task.
 4. It scans the diff's added lines for keys (and refuses any `.env`), then runs the checks again. Only **no new red** (and, on a fix lap, the target green; `--strict` wants all green) goes on.
-5. It commits to `loop/<time>` with one line appended to `docs/TAGTEAM.md`, pushes with a plain `git push` (never forced), and opens a PR with `gh` labelled `automerge` (a free-brain patch under 0.8 confidence is labelled `waits for owner`, the same gate as propose-fix.yml).
+   - a probe patch under 0.8 confidence is tried again, up to 2 more times. Still under the bar, it is **dropped** and logged to `.git/verse-loop.dropped.jsonl` (time, skill, each try's confidence); the lap ends `dropped`. Nothing is left waiting for a person.
+5. It commits to `loop/<time>` with one line appended to `docs/TAGTEAM.md`, pushes with a plain `git push` (never forced), opens a PR with `gh` labelled `automerge`, and starts `gh workflow run verify.yml --ref <branch>` so the branch is verified at once.
 
-Anything else stops the lap and leaves the tree for a look: `rejected` (new red), `refused` (a possible key, or a patch outside its skill), `no-change`, `idle`, `skipped`. Each lap prints one JSON line.
+**Grooming.** Every lap re-ranks the open work into one block at the top of `docs/NEXT.md` (between `<!-- verse-groom -->` markers, before the hand-written list, which stays as it is): red checks, the open `NEXT.md` items, and the assimilation gaps (`**Still missing…**` / `**Gaps.**` lines in `docs/PARITY.md`), **easiest first**: red checks, then items with an open PR to land, then gaps, then the rest by size; blocked, far-future and partner items last. The ranking is plain code, so the same input gives the same text. On a green lap, when the queue changed and no groom PR is open, the lap ships just that (`Verse loop: groom docs/NEXT.md`); otherwise it takes the top of the queue.
+
+**The back-off, which resumes by itself.** A lap that ends `error`, `rejected`, `refused`, `no-change`, `pushed` or `dropped`, or a loop PR closed without merging, adds one to a streak; a merged PR or a healed branch resets it (`idle`, `skipped` and open PRs count neither way). At 3 in a row the loop pauses for 6 hours and opens an issue titled `Verse loop paused` with the last three reasons. Laps skip while paused; the first lap after 6 hours closes the issue itself (comment "Resumed by itself after 6 hours") and starts a fresh streak. The pause also reads the open issue's age, so a fresh Actions runner obeys it. State lives in `VERSE_LOOP_STATE` (default `.git/verse-loop.state.json`; Actions keeps it in the cache). A dry run never writes state or touches issues.
+
+Other outcomes: `healed`, `paused`, `dropped`, `rejected` (new red), `refused` (a possible key, or a patch outside its skill), `no-change`, `idle`, `skipped`. Each lap prints one JSON line.
 
 ```
 node tools/verse-loop.mjs --once [--dry-run] [--agent verse|opencode|aider|cmd] [--every <minutes>] [--task "..."] [--strict]
