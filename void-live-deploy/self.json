@@ -196,7 +196,19 @@
   {
    "state": "shipped",
    "date": "2026-10-28",
+   "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
    "ask": "identity studio opens with a neutral example profile (no real name or email in the seed)",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
    "from": "asked by Verse"
   }
  ],
@@ -497,8 +509,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:05:03Z",
+   "subject": "Tower gate: coin flip measured against their live sites"
+  },
+  {
+   "at": "2026-10-28T20:03:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:03:14Z",
    "subject": "Photo resizer: a plain title and lead line, with presets grouped for passports, online forms, social and print"
+  },
+  {
+   "at": "2026-10-28T20:02:55Z",
+   "subject": "Lists run 7: handoff lines, metrics, MAP entry for value drift"
+  },
+  {
+   "at": "2026-10-28T20:02:55Z",
+   "subject": "Lists run 7: shop family (store + services), a mail card for email asks, friendly openers, value drift, common asks on calculator and random"
   },
   {
    "at": "2026-10-28T20:01:09Z",
@@ -559,26 +587,14 @@
   {
    "at": "2026-10-28T18:25:08Z",
    "subject": "Tower gate: coin flip,identity measured against their live sites"
-  },
-  {
-   "at": "2026-10-28T18:23:40Z",
-   "subject": "Verse fixes its photo-tools skill: learn to handle \"fix lighting on this\""
-  },
-  {
-   "at": "2026-10-28T18:21:09Z",
-   "subject": "Verse's voice 2026-10-28: identity studio seeds a neutral example profile instead of a real name and email; act-skill 'my email' ask queued"
-  },
-  {
-   "at": "2026-10-28T17:45:14Z",
-   "subject": "Incident: the browser suite failed on b60840bd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-28T17:33:19Z",
-   "subject": "Verse fixes its photo-tools skill: learn to handle \"edit lighting on this photo\""
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists run 7 (grok, 2026-10-28)",
+    "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
+   },
    {
     "name": "Who visits (claude, 2026-10-26)",
     "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
@@ -598,10 +614,6 @@
    {
     "name": "Claude (feature scan, 2026-10-25)",
     "line": "Verse researches every Versus site's features by itself: tools/feature-scan.mjs reads each floor's sites at their own address, writes domains/features/<floor>.json (under…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 07:45)",
-    "line": "the weather floor (weather.gov) surpassed, 12 of 12 (a4b5043). What closed it: /api/weather (functions/api/weather.js), the place and its Open-Meteo forecast in one round trip kept on the edge ten minutes per place, so /weather/ draws at…"
    }
   ],
   "ladders": [
