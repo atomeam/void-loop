@@ -42,6 +42,7 @@ only when it answers live), `tools/reflect.mjs` (Verse's own asks), `tools/grow-
 | Meta search over agent designs | ADAS | missing | out of scope while the loop is model-free in CI |
 | Agent-computer interface: lint/test on every edit | SWE-agent, OpenHands | have | `tools/checks.mjs`, verify.yml browser suite |
 | Sandboxed execution | OpenHands | have | build job has no token and no network; write job only moves allowlisted files |
+| Parity inventory of every site before calling it beaten | owner 2026-10-28 | **built** | `tools/parity.mjs` + `tools/parity-catalog.mjs` write `docs/PARITY/<slug>.md`; `tools/site-history.mjs` writes cited `docs/HISTORY/<slug>.md`; `lib/obituary.js` keeps "beaten" for 0 gaps and 9 of 9 |
 | Study the leader before building a parity feature | STRATEGY.md, REA | **built** | `tools/loop-study.mjs` files a passive REA study for parity picks (private memory only); `loop-library --studies` retrieves them on the owner's machine |
 | Prompt/program optimisation against a metric | DSPy/MIPRO | missing | Verse's prompts are hand-edited; no metric-driven search |
 | Eval-driven development (benchmark gates merges) | eval practice | have | `bench.json`, `bench.best.json`, bench floors |
