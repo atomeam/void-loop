@@ -8,7 +8,7 @@
  * skill:<member>.
  * nightsky (the sky world behind the stage, "show the night sky" / "hide the sky") joined on lists run 6, 2026-10-28: sky and nightsky both took
  * "show me the sky" and "sky tonight" (tools/skill-overlap.mjs), sky first as before, so the sky card keeps them and the world keeps the rest.
- * parts: ['timer', 'clock', 'sky', 'nightsky', 'moontonight', 'aurora-tonight', 'eclipse', 'meteors', 'constellation', 'weather', 'air', 'uv', 'quake', 'pollen', 'worldtime', 'suntimes', 'remind']
+ * parts: ['timer', 'clock', 'sky', 'night-sky', 'moontonight', 'aurora-tonight', 'eclipse', 'meteors', 'constellation', 'weather', 'air', 'uv', 'quake', 'pollen', 'worldtime', 'suntimes', 'remind']
  */
 import { family } from '../lib/skill-family.js';
 import timer from './timer.js';
