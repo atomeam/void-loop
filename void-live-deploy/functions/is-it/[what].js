@@ -22,21 +22,33 @@ export const langsOf = (h) => String(h || '').split(',').map((x) => x.trim().spl
 // a full-width character (Chinese, Japanese, Korean) is about 1 em wide against about 0.8 for a Latin capital, so it counts 1.3
 export const WIDE = /[\u1100-\u115f\u2e80-\ua4cf\uac00-\ud7a3\uf900-\ufaff\uff00-\uff60]/;
 export const letters = (word) => Math.max(1, Array.from(String(word || '')).reduce((n, c) => n + (WIDE.test(c) ? 1.3 : 1), 0));
+// a holiday and event countdown for any date (docs/WIDER-USE.md, owner 2026-10-28): days to go for this day, other days one tap away, any date
+// handed to /time/ (a live countdown across time zones) and the day opened in /calendar/; works with scripts off (the form is a plain GET)
+export const OTHER_DAYS = [['halloween', 'Halloween'], ['new-years-day', 'New Year'], ['valentines-day', 'Valentine’s'], ['easter', 'Easter'], ['thanksgiving', 'Thanksgiving'], ['friday', 'Friday'], ['the-weekend', 'The weekend']];
+export function countdown(a) {
+  const iso = a.at ? new Date(a.at).toISOString().slice(0, 10) : '', days = a.at ? Math.max(0, Math.round((a.at - Date.now()) / 864e5)) : null;
+  return '<section id="any" aria-label="Holiday and event countdown"><p><b>Holiday &amp; event countdown</b>' + (days ? ' · ' + days + (days === 1 ? ' day' : ' days') + ' to ' + esc(a.what) : '') + '</p>'
+    + '<form id="anyf" action="/time/" method="get"><label>Any date <input type="date" name="at" value="' + esc(iso) + '"></label> <button type="submit">Count down</button></form>'
+    + '<p>' + OTHER_DAYS.map(([s, n]) => '<a href="/is-it/' + s + '">' + esc(n) + '</a>').join(' · ') + '</p>'
+    + (iso ? '<p><a href="/calendar/?d=' + iso + '&amp;view=day">Open ' + esc(iso) + ' in the calendar</a> · <a href="/time/?at=' + iso + 'T00:00">Countdown across time zones</a></p>' : '') + '</section>';
+}
 export function page(slug, a, w, zone, origin = 'https://a-to-mind.com') {
   const url = origin + '/is-it/' + slug, said = w.word + ': ' + a.note;
   return '<!doctype html><html lang="' + esc(w.lang) + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<title>Is it ' + esc(a.what) + '?</title><link rel="alternate" type="application/rss+xml" href="/is-it/' + esc(slug) + '.rss"><link rel="modulepreload" href="/skills/is-it.js">'
+    + '<title>Is it ' + esc(a.what) + '? Holiday &amp; event countdown</title><link rel="alternate" type="application/rss+xml" href="/is-it/' + esc(slug) + '.rss"><link rel="modulepreload" href="/skills/is-it.js">'
     + '<meta name="description" content="' + esc(said) + '"><meta property="og:type" content="website"><meta property="og:site_name" content="Verse"><meta property="og:title" content="Is it ' + esc(a.what) + '? ' + esc(w.word) + '">'
     + '<meta property="og:description" content="' + esc(said) + '"><meta property="og:url" content="' + esc(url) + '"><meta property="og:image" content="' + esc(origin) + '/og.png"><meta name="twitter:card" content="summary_large_image">'
     + '<style>html,body{margin:0;height:100%;background:#fff;color:#000;font-family:system-ui,-apple-system,sans-serif}main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box}'
-    + 'h1{font-size:min(260px,calc(84vw / (var(--n) * .8)));line-height:1;margin:0;font-weight:900;white-space:nowrap}button{font:inherit;font-size:14px;color:inherit;background:none;border:1px solid #999;border-radius:999px;padding:4px 14px;cursor:pointer;margin-top:10px}p{margin:.4em 0;font-size:18px}small,a{color:#555}@media (prefers-color-scheme:dark){html,body{background:#000;color:#fff}small,a{color:#aaa}}</style><script src="/visit.js" defer></script></head>'
+    + 'h1{font-size:min(260px,calc(84vw / (var(--n) * .8)));line-height:1;margin:0;font-weight:900;white-space:nowrap}button{font:inherit;font-size:14px;color:inherit;background:none;border:1px solid #999;border-radius:999px;padding:4px 14px;cursor:pointer;margin-top:10px}p{margin:.4em 0;font-size:18px}small,a{color:#555}@media (prefers-color-scheme:dark){html,body{background:#000;color:#fff}small,a{color:#aaa}}#any{margin-top:28px;font-size:14px;color:#555;max-width:36em}#any p{margin:8px 0}#any input{font:inherit;padding:2px 4px}@media (prefers-color-scheme:dark){#any{color:#aaa}}</style><script src="/visit.js" defer></script></head>'
     + '<body><main><h1 id="w" style="--n:' + letters(w.word) + '">' + esc(w.word) + '</h1><p id="n">' + esc(a.note) + '</p><p id="t">' + esc(a.today) + '</p>'
     + '<small id="z">By the clock in ' + esc(zone) + '. <a href="/is-it/' + esc(slug) + '.rss">RSS</a> · <a href="/is-it/' + esc(slug) + '.rss?only=yes">RSS, on the day only</a> · <a href="/is-it/' + esc(slug) + '.json">JSON</a> · <a href="/">Ask Verse anything</a></small><button type="button" id="s">Share</button></main>'
+    + countdown(a)
     + '<script type="module">import{isIt,wordFor}from"/skills/is-it.js";const a=isIt(' + JSON.stringify('is it ' + slug.replace(/-/g, ' ')) + ');if(a){const w=wordFor(a.yes,navigator.languages);'
     + 'const h=document.getElementById("w");h.textContent=w.word;h.style.setProperty("--n",Array.from(w.word).reduce((n,c)=>n+(/[\\u1100-\\u115f\\u2e80-\\ua4cf\\uac00-\\ud7a3\\uf900-\\ufaff\\uff00-\\uff60]/.test(c)?1.3:1),0));document.getElementById("n").textContent=a.note;document.getElementById("t").textContent=a.today;'
     + 'document.getElementById("z").firstChild.textContent="By this device\\u2019s clock ("+(Intl.DateTimeFormat().resolvedOptions().timeZone||"local time")+"). ";}'
     // Share: the phone's own share sheet, or the link copied; and the page opens offline after one visit (sw.js keeps /is-it/ pages)
     + 'document.getElementById("s").onclick=async()=>{const d={title:document.title,text:document.getElementById("w").textContent+": "+document.getElementById("n").textContent,url:location.href};try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(d.url);document.getElementById("s").textContent="Link copied";}}catch(_){}};'
+    + 'const f=document.getElementById("anyf");f.onsubmit=(e)=>{const d=f.elements.at.value;if(!d)return;e.preventDefault();location.href="/time/?at="+d+"T00:00";};'
     + 'if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});</script></body></html>';
 }
 /** the answer for each of the last `n` days, newest first: [{ day: 'YYYY-MM-DD', a }] (isitchristmas.com's feed carries the last 10). Pure. */
