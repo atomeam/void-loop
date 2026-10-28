@@ -132,3 +132,21 @@ test('the page is registered everywhere a tool page is, and keeps its promises i
   assert.ok(!/innerHTML\s*=/.test(html), 'every feed word goes in as text, never as markup');
   const lim = fs.readFileSync(path.join(root, 'lib', 'guard.js'), 'utf8'); assert.match(lim, /podcasts: \{ rpm: \d+/);
 });
+test('Apple away: search and charts fall back to fyyd with a note naming it, the ask names itself, and a failure is a 503 with JSON', async () => {
+  const fy = { data: [{ id: 7, title: 'Second Directory', author: 'Them', xmlURL: 'https://feeds.example.com/f.xml', imgURL: 'http://i.example.org/a.jpg', episode_count: 12 }, { title: 'No feed' }, { title: 'Private', xmlURL: 'http://127.0.0.1/x' }] };
+  assert.deepEqual(P.fromFyyd(fy), [{ id: '', title: 'Second Directory', author: 'Them', image: 'https://i.example.org/a.jpg', feed: 'https://feeds.example.com/f.xml', genre: '', count: 12 }]);
+  assert.deepEqual(P.fromFyyd(null), []);
+  const agents = []; const appleDown = async (url, init) => { agents.push((init && init.headers && init.headers['user-agent']) || '');
+    if (url.startsWith('https://api.fyyd.de/0.2/search/podcast') || url.startsWith('https://api.fyyd.de/0.2/feature/podcast/hot')) return Response.json(fy);
+    return new Response('down', { status: 503 }); };
+  const q = await look({ kind: 'q', value: 'history' }, { fetchFn: appleDown });
+  assert.equal(q.ok, true); assert.equal(q.source, 'fyyd'); assert.match(q.note, /fyyd/); assert.equal(q.shows[0].title, 'Second Directory');
+  const top = await look({ kind: 'top', value: 'us', genre: '0' }, { fetchFn: appleDown });
+  assert.equal(top.source, 'fyyd'); assert.match(top.note, /not a chart of one country/); assert.equal(top.shows.length, 1);
+  assert.ok(agents.length && agents.every((a) => /^VerseBot\//.test(a)), 'every directory ask carries the VerseBot user agent');
+  const allDown = async () => new Response('down', { status: 500 });
+  const res = await onRequestGet({ request: new Request('https://a-to-mind.com/api/podcasts?q=nothing'), env: {}, fetchFn: allDown });
+  assert.equal(res.status, 503, 'not 502: Cloudflare would cover a 502 with its own page'); const j = await res.json(); assert.equal(j.ok, false); assert.equal(j.kind, 'away');
+  const page = fs.readFileSync(path.join(import.meta.dirname, '../void-live-deploy/podcasts/index.html'), 'utf8');
+  assert.match(page, /function srcNote\(/); assert.doesNotMatch(page, /r\.status !== 502/);
+});

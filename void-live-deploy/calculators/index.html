@@ -59,6 +59,14 @@
   [hidden] { display: none !important; }
   footer { font-size: 13px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
   @media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .row .expr { grid-column: 1 / -1; } }
+  .tablewrap { max-height: 420px; overflow: auto; margin-top: 6px; border: 1px solid var(--line); border-radius: 10px; }
+  .tablewrap table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .tablewrap th, .tablewrap td { padding: 4px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .tablewrap th { position: sticky; top: 0; background: var(--card); }
+  #kshow { display: block; font: 600 28px/1.3 ui-monospace, Menlo, Consolas, monospace; text-align: right; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; overflow-wrap: anywhere; min-height: 1.3em; }
+  .keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
+  .keys button { justify-content: center; border-radius: 10px; padding: 4px 6px; }
+  .keys button.op { background: var(--chip); } .keys button.eq { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/calculators/">
@@ -74,6 +82,7 @@
 <link rel="modulepreload" href="/lib/formula-engine.js">
 <link rel="modulepreload" href="/lib/formulas.js">
 <link rel="modulepreload" href="/lib/formulas-1.js">
+<link rel="modulepreload" href="/lib/keypad.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -106,7 +115,15 @@
       <ul class="outs" id="outs"></ul>
       <details class="other" id="otherbox" hidden open><summary>In other units</summary><ul id="other"></ul></details>
       <details id="workbox"><summary>Working</summary><div class="working" id="working"></div></details>
+      <details id="tablebox" hidden open><summary id="tablesum">Schedule</summary><div class="tablewrap" tabindex="0" role="region" aria-labelledby="tablesum"><table id="ctable"></table></div></details>
     </div>
+  </section>
+  <section id="keypad" class="card" aria-labelledby="kname" style="margin-top:16px">
+    <h2 id="kname">Scientific calculator</h2>
+    <p class="note">Tap the keys, or click here and type: digits, + − * /, ^, ( ), Enter for =, Backspace for Back, Escape for AC. Deg is on until you press it; Ans is the last answer, M+ M− MR MC use the memory, RND writes a random number from 0 to 1, EXP is times ten to a power.</p>
+    <output id="kshow" aria-live="polite">0</output>
+    <p class="note" id="kinfo">Deg · memory 0</p>
+    <div class="keys" id="keys" role="group" aria-label="Calculator keys"></div>
   </section>
   <section id="build" class="card" aria-labelledby="bname" style="margin-top:16px">
     <h2 id="bname">Build your own formula</h2>
@@ -145,8 +162,9 @@
   <footer><p>Worked out on your device; nothing you type is sent anywhere. Physical constants are CODATA 2018 exact or recommended values, atomic weights IUPAC abridged. <a href="/calculator/">Scientific calculator</a> · <a href="/convert/">Unit converter</a> · <a href="/">Ask Verse anything</a></p></footer> <!-- void-review: ok (CODATA and IUPAC are words in the footer, not code) -->
 </main>
 <script type="module">
-  import { CATEGORIES, CALCULATORS, BY_ID, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt } from '/lib/calculators.js';
+  import { CATEGORIES, CALCULATORS, BY_ID, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt, fmtMoney } from '/lib/calculators.js';
   import { KINDS, findUnit, parseSpec, runSpec } from '/lib/calc-units.js';
+  import { KEYS, start as keyStart, press as keyPress } from '/lib/keypad.js';
   const $ = (id) => document.getElementById(id);
   const h = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (v === undefined || v === null || v === false) continue; if (k === 'text') e.textContent = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v); } for (const c of kids.flat()) if (c !== null && c !== undefined) e.append(c); return e; };
   const store = { get: (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} } };
@@ -232,6 +250,14 @@
     lines.push('');
     for (const o of r.outputs) lines.push(o.label + ' = ' + o.text + (KINDS[o.kind] && Number.isFinite(o.si) && o.kind !== 'money' && o.unit !== siUnit(o.kind) ? '  (' + fmt(o.si, 12) + (siUnit(o.kind) ? ' ' + siUnit(o.kind) : '') + ' in SI)' : ''));
     $('working').textContent = lines.join('\n');
+    // a table when the answer has one (an amortization schedule, a year-by-year balance, tax by bracket)
+    const tb = $('tablebox'), tt = $('ctable'); tt.replaceChildren(); tb.hidden = !r.table;
+    if (r.table) {
+      const money = new Set(r.table.money || []), cell = (v, i) => (money.has(i) && typeof v === 'number' ? fmtMoney(v) : typeof v === 'number' ? fmt(v, 12) : String(v));
+      tt.append(h('thead', {}, h('tr', {}, ...r.table.head.map((x) => h('th', { scope: 'col', text: x })))));
+      const body = h('tbody'); for (const row of r.table.rows) body.append(h('tr', {}, ...row.map((v, i) => h('td', { text: cell(v, i) })))); tt.append(body);
+      $('tablesum').textContent = r.table.head[0] === 'Month' ? 'Schedule, month by month (' + r.table.rows.length + ' rows)' : r.table.head[0] === 'Year' ? 'Year by year' : 'By bracket';
+    }
     $('workbox').open = state.pro || $('workbox').open;
     history.replaceState(null, '', location.pathname + writeQuery(urlState()) + location.hash);
     $('link').value = location.href;
@@ -362,6 +388,17 @@
   $('rawtext').value = text; setMode(mode); buildRun(); renderSaved();
   if (q0.formula) $('build').scrollIntoView({ block: 'start' });
   import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculators/')).catch(() => {});
+  // the scientific keypad (lib/keypad.js): the same press() the tests drive
+  {
+    let ks = keyStart(); const box = $('keys'), CLS = { '=': 'eq', '+': 'op', '−': 'op', '×': 'op', '÷': 'op', AC: 'op', Back: 'op' };
+    const LABEL = { 'xʸ': 'xʸ', '√': '√', Deg: 'Deg' };
+    const paint = () => { $('kshow').textContent = ks.error ? 'Error: ' + ks.error : ks.shown; $('kinfo').textContent = (ks.deg ? 'Deg' : 'Rad') + ' · memory ' + fmt(ks.mem, 12) + (ks.ans ? ' · Ans ' + fmt(ks.ans, 12) : ''); const d = box.querySelector('[data-k=Deg]'); if (d) d.textContent = ks.deg ? 'Deg' : 'Rad'; };
+    const go = (k) => { ks = keyPress(ks, k); paint(); };
+    for (const k of KEYS) box.append(h('button', { type: 'button', class: CLS[k] || '', 'data-k': k, 'aria-label': k === 'Deg' ? 'Degrees or radians' : k === '−' ? 'minus' : k === '±' ? 'change sign' : k === 'M−' ? 'memory minus' : k, text: LABEL[k] || k, onclick: () => go(k) }));
+    const TYPED = { '*': '×', '/': '÷', '-': '−', '+': '+', '^': 'xʸ', '(': '(', ')': ')', '.': '.', '%': '%', '!': 'n!', Enter: '=', '=': '=', Backspace: 'Back', Escape: 'AC' };
+    $('keypad').addEventListener('keydown', (e) => { if (e.ctrlKey || e.metaKey || e.altKey) return; const k = /^[0-9]$/.test(e.key) ? e.key : TYPED[e.key]; if (!k) return; e.preventDefault(); go(k); });
+    $('kshow').tabIndex = 0; paint();
+  }
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

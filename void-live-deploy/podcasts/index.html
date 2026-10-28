@@ -159,7 +159,7 @@
     // ---- the server (and Apple's directory straight, when Verse's edge does not answer a search) ----
     async function api(qs) {
       if (!navigator.onLine) return { ok: false, kind: 'offline', say: 'You are offline.' };
-      try { const r = await fetch('/api/podcasts?' + qs); const j = await r.json().catch(() => null); if (j && (j.ok || r.status !== 502)) return j || { ok: false, kind: 'away' }; } catch (_) {}
+      try { const r = await fetch('/api/podcasts?' + qs); const j = await r.json().catch(() => null); if (j && (j.ok || j.kind !== 'away')) return j; } catch (_) {}
       if (/^q=/.test(qs)) { try { const r = await fetch('https://itunes.apple.com/search?media=podcast&entity=podcast&limit=25&term=' + qs.slice(2)); const j = await r.json(); return { ok: true, shows: (j.results || []).map(P.fromItunes).filter(Boolean) }; } catch (_) {} }
       return { ok: false, kind: 'away', say: 'The directory did not answer just now.' };
     }
@@ -183,9 +183,12 @@
     for (const [v, t] of P.COUNTRIES) ccSel.append(h('option', { value: v }, t)); ccSel.firstElementChild.remove();
     for (const [v, t] of P.GENRES) genSel.append(h('option', { value: String(v) }, t)); genSel.firstElementChild.remove();
     ccSel.value = S.cc || ((navigator.language || '').split('-')[1] || 'us').toLowerCase(); if (!ccSel.value) ccSel.value = 'us';
+    // says where a list came from when it was not straight from Apple's directory
+    function srcNote(list, r) { const was = list.previousElementSibling; if (was && was.classList.contains('srcnote')) was.remove(); if (r && r.ok && r.note) list.before(h('p', { class: 'note srcnote', role: 'status' }, r.note)); }
     async function chart() {
       const list = $('chart'); list.replaceChildren(h('li', { class: 'empty' }, 'Loading the charts…'));
       const r = await api('top=' + ccSel.value + '&genre=' + genSel.value);
+      srcNote(list, r);
       list.replaceChildren(...(r.ok && r.shows.length ? r.shows.map(showRow) : [h('li', { class: 'empty' }, r.kind === 'offline' ? 'Charts need a connection. Your follows, queue and saved episodes work offline.' : 'The charts did not load. Search for a show above, or paste an RSS link.')]));
     }
     ccSel.addEventListener('change', () => { S.cc = ccSel.value; save(); chart(); }); genSel.addEventListener('change', chart);
@@ -198,6 +201,7 @@
     async function searchView(q) {
       shown = null; view.replaceChildren(h('h2', { id: 'resH' }, 'Results for "' + q + '"'), h('ul', { class: 'list', id: 'results' }, h('li', { class: 'empty' }, 'Searching…')));
       const r = await api('q=' + encodeURIComponent(q)); const ul = $('results'); if (!ul) return;
+      srcNote(ul, r);
       ul.replaceChildren(...(r.ok && r.shows.length ? r.shows.map((s) => showRow(s)) : [h('li', { class: 'empty' }, r.ok ? 'No show matched. Try other words, or paste the show\'s RSS link.' : (r.say || 'The search did not answer.'))]));
     }
     const isFollowed = (show) => S.follows.find((f) => f.feed === show.feed);
