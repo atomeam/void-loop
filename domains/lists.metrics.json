@@ -346,6 +346,70 @@
      "tried": "total-count milestone from the store's own public product count"
     }
    ]
+  },
+  {
+   "at": "2026-10-28T20:05:00Z",
+   "run": 7,
+   "closed": 7,
+   "touched": 8,
+   "pct_blocked": 12.5,
+   "top_block": "file owned by Claude: the community milestone needs a public join count from functions/api/gumroad.js and /api/earnings (owner-only) and a card in skills/growth.js",
+   "dup_rate": 0.29,
+   "dup_basis": "2 of 7 closed items were already built (gemma answers since 630e666fb; /cheat-codes/ og tags since 1831ef1b9)",
+   "median_days": 5.2,
+   "median_basis": "built items with a known queue date: mail card 0.05, calculator and random links 3.5, site-tester teach items 6.8, value drift 13.0",
+   "asks_open_start": 4,
+   "asks_open_end": 1,
+   "note": "main was already red on 17 checks before this run (copies, deps, guide, seo-audit, doc-drift, untested and others); this run cleared copies (index.html carried the ?ask= hand-off alone, now in all three pages) and the families.mjs stale names (nightsky, hosting)",
+   "items": [
+    {
+     "what": "a mail card for email asks: 'my email', 'open gmail', 'email sam that…' open the person's own mail app or Gmail, Outlook, Yahoo, Proton, iCloud; Verse never reads or sends mail; tools/mail-handoff.test.mjs",
+     "list": "V01D asks (ask-20261028-1856-1)",
+     "status": "built"
+    },
+    {
+     "what": "migrate answers to gemma",
+     "list": "V01D asks (ask-20261028-1846-1)",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/commit/630e666fb (gemma first, gpt-oss-120b second; a fresh live ask answered 2026-10-28)"
+    },
+    {
+     "what": "7 site-tester teach items: friendly openers and closers ('yo …', 'can we play X', '? pls') stripped on the page, 'start despacito' taught to video-play; tools/friendly-openers.test.mjs",
+     "list": "site tester (teach)",
+     "status": "built"
+    },
+    {
+     "what": "value-drift tracker over Verse's own store prices (tools/value-drift.mjs, domains/value-drift.json)",
+     "list": "V01D asks",
+     "status": "built",
+     "tried": "visitor photo appraisals are never kept, so the free legal path is Verse's own published prices"
+    },
+    {
+     "what": "community milestone card on join",
+     "list": "V01D asks",
+     "status": "blocked",
+     "reason": "joins are Gumroad sales seen only through owner-only /api/earnings and functions/api/gumroad.js, and the card belongs in skills/growth.js; all are Claude's files",
+     "unblock": "a total-only public join count and a milestone card in the growth skill",
+     "who": "Claude (Adam only if he wants sales totals shown publicly)",
+     "tried": "a milestone from domains/traffic.json visitor counts (the display still lives in Claude's growth card); the store card (it carries no public join count)"
+    },
+    {
+     "what": "store and services into one shop family (rank 1035), 0 moved, 0 new misses over 5,461 asks; tools/shop-family.test.mjs",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "Common asks links on /calculator/ and /random/ (each checked in Chrome to open the right answer)",
+     "list": "handoff (seo run note)",
+     "status": "built"
+    },
+    {
+     "what": "/cheat-codes/ og tags",
+     "list": "handoff (seo run note)",
+     "status": "duplicate",
+     "link": "commit 1831ef1b9 (Claude, 2026-10-26)"
+    }
+   ]
   }
  ]
 }

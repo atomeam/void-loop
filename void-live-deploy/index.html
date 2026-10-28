@@ -4902,6 +4902,9 @@ say('nothing selected to remove');
       if (!ask) return false;
       if (ask.toolName === 'proposal.send' && attach && typeof attach.body === 'string') ask.args.body = String(attach.body).slice(0, 8000);
       const nothing = core.NOTHING[core.GATED[ask.toolName].kind];
+      // without the owner's key, an email ask opens the mail card instead (skills/rides.js mailAsk, lists run 7): the draft fills in and
+      // the person sends it from their own mail app; Verse sends nothing
+      if (!ownerToken() && ask.toolName === 'email.send') return false;
       if (!ownerToken()) { say('That one is for the person at the screen, asked by hand.'); return true; }
       const fp = await core.fingerprint(ask.toolName, ask.args);
       let res = null;
@@ -5343,7 +5346,7 @@ say('nothing selected to remove');
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
       if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
-      const svc = learnedSkills.find((sk) => sk && sk.name === 'services');
+      const svc = learnedSkills.flatMap((sk) => (sk && sk.family ? sk.members || [] : [sk])).find((sk) => sk && sk.name === 'services'); // services sits in the shop family (skills/shop.js)
       if (!svc) return;
       try {
         const src = await svc.run(text, { showPage, esc, say: () => {}, _pageStill: (el) => vpageEl === el });
@@ -5589,6 +5592,9 @@ say('nothing selected to remove');
     const UNIT_WORDS = 'mph|kph|km/h|kmh|fahrenheit|celsius|f|c|kg|kgs|kilos?|kilograms?|lbs?|pounds?|grams?|g|oz|ounces?|stones?|cm|centimet(?:er|re)s?|mm|millimet(?:er|re)s?|m|met(?:er|re)s?|km|kilomet(?:er|re)s?|inches|inch|in|ft|feet|foot|yards?|miles?|ml|millilit(?:er|re)s?|l|lit(?:er|re)s?|gallons?|quarts?|pints?|cups?|tablespoons?|tbsp|teaspoons?|tsp|usd|eur|gbp|jpy|cad|aud';
     function shortForms(t) {
       if (/^[\d\s.,+\-*/x×÷^()%]+=\s*$/i.test(t)) return t.replace(/\s*=\s*$/, '');
+      // the friendly openers and closers (site tester teach items, lists run 7): "yo what does ephemeral mean", "can we play despacito",
+      // "what did this video teach? pls" read as the ask inside them
+      t = t.replace(/^yo+\s*[,!.]?\s+(?=\S)/i, '').replace(/^(?:can|could|shall)\s+(?:we|us)\s+(play|watch)\s+(?!a\s+game\b|games?\b)(.+?)\s*\??$/i, '$1 $2').replace(/\?\s*(?:pls|plz|please)\s*$/i, '?');
       return t.replace(/^([a-z]{3,})\s+(?:meaning|definition)\s*[?.!]*$/i, 'define $1')
         .replace(/^(synonyms?|antonyms?|rhymes?)\s+(?!for\b|of\b|with\b)([a-z]+)\s*[?.!]*$/i, '$1 for $2')
         .replace(/^tip\s+(\d+(?:\.\d+)?)\s*%\s+(?:on\s+)?\$?(\d+(?:\.\d+)?)\s*$/i, '$1% tip on $2')

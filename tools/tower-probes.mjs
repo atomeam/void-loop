@@ -507,6 +507,27 @@ export const PROBES = Object.freeze({
       ['Share link', /Share link/], ['on this device', /on this device/], ['works offline', /works offline/i], ['no account', /no account/i],
     ],
   },
+  prizes: {
+    site: 'https://wheelofgold.com/', verse: '/prizes/',
+    // the reward faucet audit preset, worked out by hand: slices $1 x1, $0.10 x9, $0.01 x90, $0.001 x900 (1,000 tickets), so the EV is
+    // (1 + 0.9 + 0.9 + 0.9) / 1000 = $0.0037 a spin; the top prize is 1 in 1,000, P(at least once in 1,000) = 1 - 0.999^1000 = 63.2%;
+    // even odds take 693 spins; one spin an hour to a $5 cashout is ceil(5 / 0.0037) = 1,352 spins, 1,352 hours, 56.3 days
+    ask: { verse: '/prizes/?preset=faucet' },
+    truth: [
+      ['the expected value per spin ($0.0037)', /Expected value per spin\s*\$0\.0037\b/],
+      ['the top prize chance (0.1%, 1 in 1,000)', /0\.1% a spin, 1 in 1,000/],
+      ['P(top prize at least once in 1,000 spins) (63.2%)', /P\(top prize ≥1 in 1,000\)\s*63\.2%/],
+      ['the spins for even odds (693)', /even odds of the top prize\s*693\b/],
+      ['the drip to a $5 cashout (1,352 spins, 1,352 hours, 56.3 days)', /1,352 spins · 1,352 hours · 56\.3 days to reach \$5/]],
+    askParts: {
+      'odds table': [['a chance column', /\bchance\b/i], ['every slice listed', /Top prize[\s\S]*Big[\s\S]*Small[\s\S]*Dust/]],
+      'expected value': [['EV per spin', /EV per spin/i], ['net of the cost', /Net per spin/i]],
+      'drip calculator': [['a cooldown', /cooldown/i], ['a minimum cashout', /minimum cashout/i], ['a referral share', /referral/i]],
+    },
+    facts: [
+      ['a spin', /\bSpin\b/], ['a 1,000-spin check', /1,000 spins/], ['weights', /\bweight\b/i], ['a share link', /share link/i], ['CSV export', /Export CSV/],
+      ['says it never pays or collects', /never pays out/i], ['secure random numbers', /secure random numbers/i]],
+  },
   identity: {
     site: 'https://anycolorid.com/', verse: '/identity/',
     ask: { verse: '/identity/#name=Sky%20Rivera&email=sky%40example.com&aid=AC-0001&region=jp' },

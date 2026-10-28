@@ -16,7 +16,7 @@ const words = (s) => String(s || '').toLowerCase().replace(/[^\p{L}\p{N}\s'-]/gu
 const STOP = new Set(['my', 'the', 'a', 'an', 'our', 'meine', 'meiner', 'meinem', 'meinen', 'die', 'der', 'das', 'dem', 'note', 'notes', 'notiz', 'notizen']);
 const keyWords = (s) => words(s).filter((w) => !STOP.has(w));
 const LISTY = /\b(?:lists?|todos?|to-do|shopping|groceries|packing|checklist|tasks?|errands|liste|einkauf\w*|aufgaben)\b/i;
-const NOT_NOTE_TARGET = /\b(?:calendar|kalender|verse|void|notepad|cart|playlist|queue|favou?rites|stage|wheel|agenda|schedule|recipes?|rezepte?|generators?)\b/i;
+const NOT_NOTE_TARGET = /\b(?:calendar|kalender|verse|void|notepad|cart|playlist|queue|favou?rites|stage|wheel|agenda|schedule|recipes?|rezepte?|generators?|folders?)\b/i;
 
 // ---------------------------------------------------------------- reading the sentence
 const lead = (t) => t.replace(/^(?:hey\s+)?(?:verse[,:]?\s+)?(?:please|bitte|can you|could you|would you|kannst du|könntest du)\s+/i, '').replace(/\s+(?:please|bitte)$/i, '');

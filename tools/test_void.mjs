@@ -49,6 +49,9 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
+// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites)\.js)(\?|$)/;
+const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
@@ -856,6 +859,63 @@ try {
     const old = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, tiers: document.getElementById('tiers').textContent }));
     check('tournament: an old link (preset=fncs with win, top5 ... top25) still opens as the same battle royale on the renamed preset',
       old.preset === 'finals' && /16 eliminations · 50 points/.test(old.stat) && /1st 10, 2nd-5th 5, 6th-10th 3, 11th-15th 2, 16th-25th 1/.test(old.tiers), JSON.stringify(old));
+    // a roster sent from /wheel/ or /prizes/ (?roster=...&preset=gamenight): Game night is the scorer's own preset, the teams sit on 0 in its
+    // standings and grid, a score typed for one keeps the others, and the share link carries the whole roster
+    await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const r0 = await P.p.evaluate(() => ({ preset: document.getElementById('preset').value, rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), grid: [...document.querySelectorAll('#grid tbody td.team')].map((t) => t.textContent) }));
+    await P.p.fill('#grid input[data-team="Bob"]', '7'); await P.p.waitForTimeout(150);
+    const r1 = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), q: Object.fromEntries(new URLSearchParams(document.getElementById('link').getAttribute('href').split('?')[1])) }));
+    check('tournament: a ?roster= link opens on the native Game night preset with every team on 0, and after one score the share link still carries the whole roster',
+      r0.preset === 'gamenight' && r0.rows.join('|') === 'Ann 0|Bob 0|Cat 0' && r0.grid.join('|') === 'Ann|Bob|Cat' && r1.rows.join('|') === 'Bob 7|Ann 0|Cat 0'
+        && r1.q.kind === 'gamenight' && r1.q.results === 'Bob:7' && r1.q.roster === 'Bob\nAnn\nCat' && r1.q.preset === 'gamenight', JSON.stringify({ r0, r1 }));
+    await P.ctx.close();
+  }
+  // the prize wheel floor (2026-10-28): wheelofgold.com's spin-to-win, fought from /prizes/ - every slice's real chance and expected value,
+  // the top prize in N spins, a seeded 1,000-spin check, the drip to a cashout, and the list carried between /wheel/, /prizes/ and /tournaments/
+  if (want("prizes: the faucet audit's odds and drip, a seeded 1,000-spin check, never-reaches at EV 0, and the wheel, prizes and tournaments handoff")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const PZ = await import('../void-live-deploy/lib/prizes.js');
+    const P = await fresh({ base: base + 'prizes/?preset=faucet' });
+    await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.prizes;
+    const miss = [...(probe.truth || []), ...(probe.facts || []), ...Object.values(probe.askParts || {}).flat()].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('prizes: the lead line, and the faucet audit works out $0.0037 a spin, 63.2% for the top prize in 1,000 spins and 1,352 spins (56.3 days) to a $5 cashout; every item the probe reads is on the page',
+      t.includes('Spin a weighted prize wheel, check the real odds and expected value of every slice, and see how long a reward drip takes to pay out.') && !miss.length, JSON.stringify({ miss }));
+    await P.p.goto(base + 'prizes/?preset=loot&seed=42'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    await P.p.click('#sim'); await P.p.waitForTimeout(150);
+    const counts = await P.p.$eval('#simtable', (e) => e.dataset.counts);
+    const want42 = PZ.simulate(PZ.parseSlices(PZ.PRESETS.loot.slices), 1000, PZ.seeded('42'));
+    const simsay = await P.p.$eval('#simsay', (e) => e.textContent);
+    check('prizes: ?seed=42 makes the 1,000-spin run the same every time, it matches the odds (chi-square under the 0.1% line) and the page says the Spin button stays on secure randoms',
+      counts === want42.counts.join(',') && want42.chi2 < 16.27 && counts.split(',').reduce((a, b) => a + +b, 0) === 1000 && /Seeded with "42"/.test(simsay) && /secure random/.test(simsay), JSON.stringify({ counts, want: want42.counts, simsay }));
+    await P.p.click('#spin'); await P.p.waitForFunction(() => /worth/.test(document.getElementById('result').textContent), null, { timeout: 8000 });
+    const won = await P.p.$eval('#result', (e) => e.textContent);
+    check('prizes: a live spin lands on one of the slices and says what it is worth', /^(Legendary|Epic|Rare|Common) · worth /.test(won), JSON.stringify({ won }));
+    await P.p.goto(base + 'prizes/?s=' + encodeURIComponent('Alice\nBob') + '&cd=0'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const plain = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#odds tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), drip: document.getElementById('drip').textContent, body: document.body.innerText }));
+    await P.p.goto(base + 'prizes/?s=' + encodeURIComponent('a:0:1\nb:0:3')); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const zero = await P.p.$eval('#drip', (e) => e.textContent);
+    check('prizes: plain names from the wheel count as value 1, weight 1 (no NaN), and EV 0 or a 0 cooldown says it never reaches the cashout instead of Infinity',
+      plain.rows[0] === 'Alice 1 1 50% $0.5 100%' && plain.drip === 'Never reaches cashout ($0 expected value per spin)' && zero === 'Never reaches cashout ($0 expected value per spin)' && !/NaN|Infinity/.test(plain.body), JSON.stringify({ rows: plain.rows, drip: plain.drip, zero }));
+    // the handoff: prizes -> wheel (suffixes off, one copy kept on the click), the paste pill there, and a roster on 0 points under Game night
+    await P.p.goto(base + 'prizes/?preset=raffle'); await P.p.waitForSelector('#sendrow a', { timeout: 15000 });
+    await P.p.click('text=Spin them on the name wheel'); await P.p.waitForSelector('#entries', { timeout: 15000 }); await P.p.waitForTimeout(200);
+    const onWheel = await P.p.evaluate(() => ({ path: location.pathname, entries: document.getElementById('entries').value, kept: JSON.parse(localStorage.getItem('verse_handoff') || 'null'), strip: !!document.querySelector('.vh-strip a[href="/prizes/"]') }));
+    check('prizes: "Spin them on the name wheel" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill',
+      onWheel.path === '/wheel/' && onWheel.entries === 'Grand prize\nGift card\nTote bag\nThanks for entering' && onWheel.kept && onWheel.kept.fromPage === '/prizes/' && onWheel.kept.type === 'list' && onWheel.kept.data.length === 4 && onWheel.strip, JSON.stringify(onWheel));
+    await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#rostertable tbody tr', { timeout: 15000 });
+    const roster = await P.p.evaluate(() => ({ head: document.getElementById('h-roster').textContent, rows: [...document.querySelectorAll('#rostertable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pill: (document.querySelector('.vh-pill button') || {}).textContent || '', standings: document.querySelectorAll('#standings tbody tr').length }));
+    check('prizes: names sent to /tournaments/ become a roster on 0 points under Game night, beside the scorer\'s own standings, with the paste pill from /prizes/',
+      roster.head === 'Roster · Game night' && roster.rows.join('|') === '1 Ann 0|2 Bob 0|3 Cat 0' && /^Paste from \/prizes\//.test(roster.pill) && roster.standings > 0, JSON.stringify(roster));
+    await P.p.goto(base + 'prizes/'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')))).length);
+    check('prizes: every control is named and the pages threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth; return { page: document.documentElement.scrollWidth - vw, over: [...document.querySelectorAll('main *')].filter((e) => e.offsetParent && !e.closest('.scroll') && e.getBoundingClientRect().right > vw + 1).map((e) => e.tagName + '#' + e.id).slice(0, 5) }; });
+    check('prizes: at phone width (360 px) the page never scrolls sideways', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
+    check('prizes: the footer links to at least four sibling Verse tools', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
     await P.ctx.close();
   }
   // the hosting floor (owner, 2026-10-27): thunit.com's 70-word brochure, fought from /hosting/ - the two claims it makes (exclusive vs
@@ -1093,7 +1153,7 @@ try {
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
     const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
     check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
-      loaded <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+      ownLoads(reqs, loaded) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
       && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
       JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
     const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
@@ -1123,7 +1183,7 @@ try {
     await pg.fill('#b2', '12'); await pg.waitForTimeout(150); const bad = await pg.evaluate(() => ({ note: document.getElementById('note').textContent, cls: document.getElementById('b2').className }));
     const typed = reqs.length - loaded; await pg.fill('#b10', '255'); await pg.waitForTimeout(150); const cleared = await pg.evaluate(() => [...document.querySelectorAll('input.bad')].length); if (process.env.VOID_SHOTS) { await pg.waitForTimeout(150); await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'base-converter.png') }).catch(() => {}); }
     check('base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request',
-      loaded <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
+      ownLoads(reqs, loaded) <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
       && /not a base 2 number/.test(bad.note) && /bad/.test(bad.cls) && cleared === 0 && typed === 0 && !B.errors.length, JSON.stringify({ loaded, reqs, fromHex, huge, bad, cleared, typed, errors: B.errors }));
     const K = await fresh(); await K.ask('ff hex to binary', 900); const card = await until(async () => K.p.$eval('.vpage.on .bc-out', (e) => e.textContent).catch(() => ''), 8000);
     const rows = await K.p.$$eval('.vpage.on .bc-all td', (t) => t.map((x) => x.textContent)).catch(() => []); const link = await K.p.$eval('.vpage.on .bc-open', (a) => a.getAttribute('href')).catch(() => '');
@@ -1165,7 +1225,7 @@ try {
     await pg.fill('#kb', '1'); await pg.waitForTimeout(600); const tight = await pg.evaluate(() => ({ cls: document.getElementById('line').className, note: document.getElementById('note').textContent }));
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'resize-image.png') }).catch(() => {});
     check('photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page',
-      loaded <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
+      ownLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
       JSON.stringify({ loaded, out, jlen: jb.length, jsz, pdf: pb.slice(0, 5).toString(), tight, reqs: reqs.length, errors: R.errors }));
     const K = await fresh(); await K.ask('resize a photo to 3.5 x 2.5 cm under 50 kb', 900); const href = await until(async () => K.p.$eval('.vpage.on .ir-open', (a) => a.getAttribute('href')).catch(() => ''), 8000);
     const pg2 = await K.ctx.newPage(); await pg2.goto(origin + href); await pg2.waitForSelector('#w'); const filled = await pg2.evaluate(() => [w.value, h.value, u.value, kb.value].join('|'));
@@ -1366,7 +1426,7 @@ try {
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
     const P = await fresh(); let hits = 0, beaten = false;
-    const all = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'history', 'unit and scientific modes'];
+    const all = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use', 'history', 'unit and scientific modes'];
     await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: Object.fromEntries(all.map((a) => [a, { verdict: 'better', evidence: 'stub' }])) } : {} }) }); });
     await P.p.evaluate(() => { window.__towerPollMs = 400; });
     await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
