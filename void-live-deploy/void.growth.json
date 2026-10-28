@@ -5913,5 +5913,6 @@
   {"at": "2026-10-28T20:03:14Z", "by": "box", "kind": "build", "what": "the photo resizer opens as a passport, ID and exam photo sizer with grouped presets for passports, online forms, social and print", "show": "Grouped presets: passport, online form, social, print at any dpi", "try": "/resize-image/?w=2&h=2&u=in&dpi=300"},
   {"at": "2026-10-28T22:47:55Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com"},
   {"at": "2026-10-28T22:50:28Z", "by": "verse", "kind": "build", "what": "Versus: took on no site; next randomarea.com"},
-  {"at": "2026-10-28T22:54:21Z", "by": "verse", "kind": "fix", "what": "Verse fixes its baseconv skill: learn to handle \"256 to hex\"", "try": "256 to hex"}
+  {"at": "2026-10-28T22:54:21Z", "by": "verse", "kind": "fix", "what": "Verse fixes its baseconv skill: learn to handle \"256 to hex\"", "try": "256 to hex"},
+  {"at": "2026-10-28T23:24:00Z", "by": "verse", "kind": "fix", "what": "Verse fixes its toolkit skill: learn to handle \"how many rolls of tape for 200ft\"", "try": "how many rolls of tape for 200ft"}
 ]
