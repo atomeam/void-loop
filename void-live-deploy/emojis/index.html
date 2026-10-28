@@ -423,7 +423,8 @@
   const seedQ = params.get('q') || '', seedPick = params.get('pick') || '';
   if (seedQ) { state.q = seedQ; $('q').value = seedQ; }
   if (seedPick && EM.has(seedPick)) state.pick = seedPick;
-  if (!state.pick) { const exact = EMOJI.find((e) => e.c === seedQ.trim() || e.n === seedQ.trim().toLowerCase()); state.pick = (exact && exact.c) || '🔥'; }
+  // the handoff starts on the seeded emoji, else the top of the wall; the inspector itself opens only when one is picked
+  if (!state.pick) { const exact = EMOJI.find((e) => e.c === seedQ.trim() || e.n === seedQ.trim().toLowerCase()), top = document.querySelector('#wall button[data-c]'); const c = (exact && exact.c) || (top && top.dataset.c) || '🔥'; handoff(c, (EM.get(c) || { n: 'fire' }).n); }
   try { const m = JSON.parse(localStorage.getItem('void-emoji-mine') || 'null'); if (m && typeof m === 'object') state.mine = m; } catch (_) {}
 
   // refresh while the page is open and visible; nothing polls in a background tab
