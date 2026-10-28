@@ -85,7 +85,7 @@ test('the judge: offline and sharing have templates, every other lost or unmeasu
 });
 
 test('the page guard flags a frontier site at the front of the queue with no page, and nothing else', () => {
-  const ev = Object.fromEntries(FLOORS.map((f) => [f.id, Object.fromEntries(['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', ...(f.extra || [])].map((a) => [a, { verdict: 'better', evidence: 'e' }]))]));
+  const ev = Object.fromEntries(FLOORS.map((f) => [f.id, Object.fromEntries(['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use', ...(f.extra || [])].map((a) => [a, { verdict: 'better', evidence: 'e' }]))]));
   assert.deepEqual(guardOf(ev, { sites: [{ site: 'easy.test', hardness: 1 }] }), ['easy.test'], 'every floor beaten: the frontier site is at the front and has no page');
   const real = JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy/tower.evidence.json'), 'utf8')).floors;
   assert.deepEqual(guardOf(real, { sites: [{ site: 'easy.test', hardness: 99 }] }, 1), [], 'the current fight is a floor');

@@ -52,9 +52,9 @@ export function upgradeAsk(id) {
   if (g === 'doc') return 'make the ' + name + ' doc more accurate and complete';
   if (g === 'tool') return 'make the ' + name + ' tool better tested or more useful';
   if (g === 'surface') return 'upgrade the ' + name + ' surface as a whole';
-  if (g === 'site') return 'move the ' + name + ' category up (missing to partial, partial to replaced): what a visitor would otherwise leave Verse for';
+  if (g === 'site') return 'move the ' + name + ' category up (missing to partial, partial to replaced): what a visitor would otherwise leave Verse for, usable by more people than the original';
   if (g === 'loop') return 'upgrade the loop itself';
-  return 'upgrade the ' + name + ' skill: fix its gaps, add missing basics and apply every discovered rule';
+  return 'upgrade the ' + name + ' skill: fix its gaps, add missing basics, make it usable by more people (docs/WIDER-USE.md) and apply every discovered rule';
 }
 /** before and after one item, counts only: better when a fact rose and none fell. Pure. */
 export function compare(before, after) {
@@ -79,6 +79,6 @@ export function candidateOf(step, nextUpgrade = {}, facts = null) {
 // the void look, mobile, no cut-off text). The most used go first: the home page, the ask flow, cards, the book, then the games.
 export const MOST_USED = ['surface:home', 'surface:ask', 'surface:cards', 'surface:book', 'surface:games'];
 export const overhaulWeights = (ids) => { const w = {}; MOST_USED.forEach((id, i) => { w[id] = 1000 - i; }); (ids || []).filter((id) => /^site:/.test(id)).forEach((id, i) => { w[id] = 500 - i; }); for (const id of ids || []) if (/^skill:/.test(id) && !(id in w)) w[id] = /game|rally|duel|chess|monopoly|card|book/.test(id) ? 10 : 0; return w; };
-export const overhaulAsk = (id) => 'Overhaul ' + id + ': persona playtest and best-site comparison, then rebuild what is weak (layout, completeness, clarity, speed, beauty, phone, no cut-off text)';
+export const overhaulAsk = (id) => 'Overhaul ' + id + ': persona playtest, best-site check, rebuild what is weak (wider use per docs/WIDER-USE.md, layout, completeness, speed, beauty, no cut-off)';
 /** the "only site you need" line, counts only: "Only site you need: 9 replaced, 11 partial, 4 missing of 24 categories". Pure. */
 export const onlySiteLine = (c) => c ? 'Only site you need: ' + c.replaced + ' replaced, ' + c.partial + ' partial, ' + c.missing + ' missing of ' + c.categories + ' categories' : '';
