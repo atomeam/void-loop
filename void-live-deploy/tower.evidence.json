@@ -594,60 +594,61 @@
   },
   "password": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 135,
+    "verdict": "worse",
+    "verse": 236,
     "best": 200,
-    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 135 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-27T12:17:31.334Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 236 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T03:08:31.622Z",
+    "was": "equal-and-better"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 px sideways overflow at 390 px vs the bar (passwordsgenerator.net unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-27T12:17:31.334Z"
+    "at": "2026-10-28T03:08:31.622Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 unnamed controls or images vs the bar (passwordsgenerator.net unreachable) 0 unnamed controls or images",
-    "at": "2026-10-27T12:17:31.334Z"
+    "at": "2026-10-28T03:08:31.622Z"
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 3 of 3 loads answered vs passwordsgenerator.net 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-27T12:17:31.334Z"
+    "at": "2026-10-28T03:08:31.622Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 1 (1: the page shows itself again with the network cut) vs the bar (passwordsgenerator.net unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-27T12:17:31.334Z"
+    "at": "2026-10-28T03:08:31.622Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (passwordsgenerator.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-27T12:17:31.334Z"
+    "at": "2026-10-28T03:08:31.622Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 design defects vs the bar (passwordsgenerator.net unreachable) 0 design defects",
-    "at": "2026-10-27T12:17:31.334Z"
+    "at": "2026-10-28T03:08:31.622Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 2 of 2 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-27T12:17:31.334Z",
+    "at": "2026-10-28T03:08:31.622Z",
     "of": 2
    },
    "completeness": {
@@ -655,7 +656,7 @@
     "verse": 22,
     "best": 24,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 22 of 24 things a full answer shows vs the bar (passwordsgenerator.net unreachable) 24 of 24 things a full answer shows (Verse lacks: Character classes, Save my preference)",
-    "at": "2026-10-27T12:17:31.334Z",
+    "at": "2026-10-28T03:08:31.622Z",
     "was": "equal-and-better",
     "of": 24
    },
@@ -664,7 +665,7 @@
     "verse": 11,
     "best": 11,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 11 of 11 shown vs the bar (passwordsgenerator.net unreachable) 11 of 11 shown (Verse lacks: none)",
-    "at": "2026-10-27T12:17:31.334Z",
+    "at": "2026-10-28T03:08:31.622Z",
     "of": 11,
     "part": true
    },
@@ -673,7 +674,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 3 of 3 shown vs the bar (passwordsgenerator.net unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-27T12:17:31.334Z",
+    "at": "2026-10-28T03:08:31.622Z",
     "of": 3,
     "part": true
    }
@@ -18698,67 +18699,67 @@
   "hosting": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 120,
-    "best": 680,
-    "evidence": "Verse (/hosting/) 120 ms to the load event (median of 3, phone width) vs thunit.com 680 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T03:07:58.807Z"
+    "verse": 117,
+    "best": 534,
+    "evidence": "Verse (/hosting/) 117 ms to the load event (median of 3, phone width) vs thunit.com 534 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T03:10:15.113Z"
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 loads answered vs thunit.com 3 of 3 loads answered",
-    "at": "2026-10-28T03:07:58.807Z"
+    "at": "2026-10-28T03:10:15.113Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/hosting/) 0 px sideways overflow at 390 px vs thunit.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T03:07:58.807Z"
+    "at": "2026-10-28T03:10:15.113Z"
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/hosting/) 0 unnamed controls or images vs thunit.com 8 unnamed controls or images",
-    "at": "2026-10-28T03:07:58.807Z"
+    "at": "2026-10-28T03:10:15.113Z"
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/hosting/) 1 (1: the page shows itself again with the network cut) vs thunit.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T03:07:58.807Z"
+    "at": "2026-10-28T03:10:15.113Z"
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/hosting/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs thunit.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T03:07:58.807Z"
+    "at": "2026-10-28T03:10:15.113Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 14,
     "best": 14,
     "evidence": "Verse (/hosting/) 14 of 14 right against the worked-out answer; judged against the standard, not thunit.com (the site is not asked)",
-    "at": "2026-10-28T03:07:58.807Z",
+    "at": "2026-10-28T03:10:15.113Z",
     "of": 14
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
-    "evidence": "Verse (/hosting/) 0 design defects vs thunit.com 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), thunit.com (8 low-contrast texts, 0 small tap targets, layout shift 0.01)",
-    "at": "2026-10-28T03:07:58.807Z"
+    "evidence": "Verse (/hosting/) 0 design defects vs thunit.com 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), thunit.com (8 low-contrast texts, 0 small tap targets, layout shift 0.01)",
+    "at": "2026-10-28T03:10:15.113Z"
    },
    "capacity sizing": {
     "verdict": "equal-and-better",
     "verse": 6,
     "best": 6,
     "evidence": "Verse (/hosting/) 6 of 6 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T03:07:58.807Z",
+    "at": "2026-10-28T03:10:15.113Z",
     "of": 6,
     "part": true
    },
@@ -18767,7 +18768,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T03:07:58.807Z",
+    "at": "2026-10-28T03:10:15.113Z",
     "of": 4,
     "part": true
    },
@@ -18776,7 +18777,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/hosting/) 5 of 5 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T03:07:58.807Z",
+    "at": "2026-10-28T03:10:15.113Z",
     "of": 5,
     "part": true
    },
@@ -18785,7 +18786,7 @@
     "verse": 6,
     "best": 6,
     "evidence": "Verse (/hosting/) 6 of 6 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T03:07:58.807Z",
+    "at": "2026-10-28T03:10:15.113Z",
     "of": 6,
     "part": true
    },
@@ -18794,8 +18795,95 @@
     "verse": 24,
     "best": 0,
     "evidence": "Verse (/hosting/) 24 of 24 things a full answer shows vs thunit.com 0 of 24 things a full answer shows (Verse lacks: none; site lacks: requests per second, bandwidth, megabits, monthly transfer, virtual cores, memory, concurrent workers, shared vs exclusive, uptime, an SLA of 99.9%, allowed downtime, NGINX, Caddy, TLS 1.3, Strict-Transport-Security, Content-Security-Policy, X-Content-Type-Options, a rate limit, Copy, Download, Share link, on this device, works offline, no account)",
-    "at": "2026-10-28T03:07:58.807Z",
+    "at": "2026-10-28T03:10:15.113Z",
     "of": 24
+   }
+  },
+  "identity": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 129,
+    "best": 191,
+    "evidence": "Verse (/identity/) 129 ms to the load event (median of 3, phone width) vs anycolorid.com 191 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T03:38:10.363Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/identity/) 3 of 3 loads answered vs anycolorid.com 3 of 3 loads answered",
+    "at": "2026-10-28T03:38:10.363Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/identity/) 0 px sideways overflow at 390 px vs anycolorid.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-28T03:38:10.363Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/identity/) 0 unnamed controls or images vs anycolorid.com 1 unnamed controls or images",
+    "at": "2026-10-28T03:38:10.363Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/identity/) 1 (1: the page shows itself again with the network cut) vs anycolorid.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-28T03:38:10.363Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T03:38:10.363Z",
+    "of": 3,
+    "part": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 8,
+    "best": 8,
+    "evidence": "Verse (/identity/) 8 of 8 right against the worked-out answer; judged against the standard, not anycolorid.com (the site is not asked)",
+    "at": "2026-10-28T03:38:10.363Z",
+    "of": 8
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 9,
+    "evidence": "Verse (/identity/) 4 design defects vs anycolorid.com 9 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), anycolorid.com (4 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+    "at": "2026-10-28T03:38:10.363Z"
+   },
+   "change history": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T03:38:10.363Z",
+    "of": 3,
+    "part": true
+   },
+   "service portal": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T03:38:10.363Z",
+    "of": 4,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 22,
+    "best": 0,
+    "evidence": "Verse (/identity/) 22 of 22 things a full answer shows vs anycolorid.com 0 of 22 things a full answer shows (Verse lacks: none; site lacks: profile, name, email, account ID, region, change history, on this device, JWT, claims, SSO, service portal, Official Website, Fan Club, Official Store, Community Hub, share link, export JSON, copy card, no account, works offline, no ads, back to Verse)",
+    "at": "2026-10-28T03:38:10.363Z",
+    "of": 22
    }
   }
  },
@@ -18979,6 +19067,7 @@
   "remotive.com": "tower.icons/remotive.com.png",
   "heycolor.com": "tower.icons/heycolor.com.png",
   "emojitracker.com": "tower.icons/emojitracker.com.png",
-  "yunite.xyz": "tower.icons/yunite.xyz.ico"
+  "yunite.xyz": "tower.icons/yunite.xyz.ico",
+  "anycolorid.com": "tower.icons/anycolorid.com.png"
  }
 }
