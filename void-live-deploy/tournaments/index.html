@@ -54,11 +54,37 @@
   .bridge a, footer a, #shareline a { color:#cfc6ff; }
   #shareline { overflow-wrap:anywhere; }
   footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  .tabs { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+  .tabs button[aria-pressed=true] { border-color:var(--accent); background:#221f3a; color:#fff; }
+  table.grid { min-width:0; }
+  table.grid td, table.grid th { text-align:left; }
+  table.grid td.team { overflow-wrap:anywhere; }
+  table.grid input { width:4.6em; }
+  table.grid input[aria-invalid=true] { border-color:#c25b5b; background:#2a1717; }
+  .grow { flex:1 1 12em; min-width:0; }
+  .grow input { width:100%; }
+  .check { display:flex; align-items:center; gap:6px; font-size:14px; color:var(--ink); min-height:34px; }
+  .check input { min-height:0; width:18px; height:18px; margin:0; }
+  td.gap { text-align:left; color:var(--quiet); font-size:12px; min-width:11em; white-space:normal; }
+  td.mcol, th.mcol { white-space:nowrap; color:#cfcbe6; }
+  .tag.mp { color:#fff3c4; border-color:#7a6726; background:#2a2412; }
+  .tag.champ { color:#d9ffe0; border-color:#2f7a45; background:#132a19; }
+  .warn { color:#ffd0d0; background:#2a1717; border:1px solid #6d3535; border-radius:8px; padding:6px 10px; font-size:13px; margin:8px 0 0; overflow-wrap:anywhere; }
+  details.adv { margin:10px 0 0; }
+  details.adv summary { cursor:pointer; color:var(--quiet); font-size:13px; padding:4px 0; }
   [hidden] { display:none !important; }
 </style>
 <script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/prizes.js">
+<link rel="modulepreload" href="/lib/scrim.js">
+<!-- /modulepreload -->
 </head>
 <body>
+<script type="module">import { hookTournaments } from '/lib/handoff.js'; hookTournaments(location.search); // the prize and wheel handoff (lib/handoff.js): runs before the scorer rewrites the address</script>
 <main>
   <h1>Tournament standings</h1>
   <p class="sub">Score a Fortnite-style scrim in the browser. Type a result or paste a CSV and the page works out points, standings and the official tiebreakers. Placement pays the highest matching threshold, so a win is worth the win points rather than the win plus the top-five points. Split the lobby into heats, claim drop spots, and share the whole set as a link.</p>
@@ -91,8 +117,25 @@
 
   <section class="card" aria-labelledby="h-results">
     <h2 id="h-results">Results</h2>
-    <p class="note">One match per line: <code>Team:place:eliminations</code>, comma-separated, or separate matches with <code>;</code>. A line is the whole match.</p>
-    <textarea id="results" spellcheck="false" aria-label="Results, one match per line"></textarea>
+    <p class="note">Pick a match, then tab through each team's place and eliminations. Teams carry over from match to match, and "alpha" or " Alpha " is the same team as "Alpha". Leave a place blank when a team sat a match out.</p>
+    <div class="tabs" id="tabs" role="group" aria-label="Which match to enter"></div>
+    <div class="scroll">
+      <table id="grid" class="grid">
+        <caption>Place and eliminations for every team in the chosen match</caption>
+        <thead><tr><th scope="col">Team</th><th scope="col">Place</th><th scope="col">Elims</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row">
+      <label class="grow"><span>New team</span><input id="newteam" type="text" maxlength="40" autocomplete="off" aria-label="New team name"></label>
+      <button type="button" id="addteam">Add team</button>
+    </div>
+    <p class="warn" id="dupes" role="status" hidden></p>
+    <details class="adv" id="adv">
+      <summary>Advanced: type the raw results, one match per line</summary>
+      <p class="note">One match per line: <code>Team:place:eliminations</code>, comma-separated, or separate matches with <code>;</code>. A line is the whole match. This is the same text the share link carries.</p>
+      <textarea id="results" spellcheck="false" aria-label="Results, one match per line"></textarea>
+    </details>
     <div class="row">
       <button type="button" id="add">Add a match</button>
       <button type="button" id="share">Copy share link</button>
@@ -105,14 +148,20 @@
   <section class="card" aria-labelledby="h-standings">
     <h2 id="h-standings">Standings</h2>
     <p id="stat"></p>
+    <div class="row">
+      <label class="check"><input id="percols" type="checkbox" aria-label="Show a column for each match"> <span>Show each match</span></label>
+      <label><span>Qualify top</span><input id="cut" type="number" min="0" max="100" step="1" inputmode="numeric" aria-label="How many teams qualify (0 for no cutoff)"></label>
+      <label><span>Match point at</span><input id="mp" type="number" min="0" max="999" step="1" inputmode="numeric" aria-label="Match point threshold in points (0 for off)"></label>
+    </div>
+    <p class="note" id="mpnote" hidden></p>
     <div class="scroll">
       <table id="standings">
         <caption>Standings after every match entered</caption>
-        <thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">Points</th><th scope="col">Wins</th><th scope="col">Elims</th><th scope="col">Avg place</th><th scope="col">Best</th></tr></thead>
+        <thead><tr></tr></thead>
         <tbody></tbody>
       </table>
     </div>
-    <p class="note">Tiebreakers, in this order: points, then wins, then eliminations, then average placement.</p>
+    <p class="note">Tiebreakers, in this order: points, then wins, then eliminations, then average placement. Each match column reads points (place/elims). The gap column says how far a team is behind 1st, or behind the last team that qualifies when a cutoff is set, and what one match needs to pass. With match point on, a team that reaches that many points must then win a match to take the tournament.</p>
   </section>
 
   <section class="card" aria-labelledby="h-heats">
@@ -162,6 +211,7 @@
   </footer>
 </main>
 <script type="module">
+  import { parseMatches, standings, heatList, roster, mergeNames, duplicatePlaces, duplicateText, serialize, setEntry, legacyPoints, cleanName, matchCell, gaps, matchPoint } from '/lib/scrim.js';
   const $ = (id) => document.getElementById(id);
   const KEY = 'a2m.void.tournaments.v1';
   const DEMO = { results: 'Alpha:1:6,Bravo:2:7,Charlie:6:3', drops: 'Alpha:Tilted Towers\nBravo:Pleasant Park\nCharlie:Tilted Towers' };
@@ -174,6 +224,7 @@
     elim: int('elim', 2, 0, 20), win: int('win', 10, 0, 30), top5: int('top5', 5, 0, 30),
     top10: int('top10', 0, 0, 30), top15: int('top15', 0, 0, 30), top25: int('top25', 0, 0, 30),
     results: params.get('results') || '', drops: params.get('drops') || '', heats: int('heats', 2, 1, 8),
+    cols: params.get('cols') === '1', cut: int('cut', 0, 0, 100), mp: int('mp', 0, 0, 999),
   };
   if (!params.has('results') && !params.has('drops')) {
     try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object' && typeof saved.results === 'string') Object.assign(state, saved); } catch (_) {}
@@ -183,7 +234,7 @@
   const say = (text) => { $('say').textContent = text; };
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) {} };
 
-  const points = (place) => place <= 1 ? state.win : place <= 5 ? state.top5 : place <= 10 ? state.top10 : place <= 15 ? state.top15 : place <= 25 ? state.top25 : 0;
+  const points = (place) => legacyPoints(state, place);
 
   const tierText = () => {
     const rows = [[1, '1st'], [5, '2nd-5th'], [10, '6th-10th'], [15, '11th-15th'], [25, '16th-25th']];
@@ -192,35 +243,8 @@
     return shown.length ? 'Placement points by the highest matching threshold: ' + shown.join(', ') + '; everyone else 0.' : 'Placement points are off; only eliminations score.';
   };
 
-  const parseTeam = (text) => {
-    const bits = String(text).split(':').map((x) => x.trim());
-    if (!bits[0]) return null;
-    return { name: bits[0], place: Math.max(1, parseInt(bits[1], 10) || 1), elims: Math.max(0, parseInt(bits[2], 10) || 0) };
-  };
-  const parseMatches = (text) => String(text).split(/[;\n]/).map((group) => group.split(',').map(parseTeam).filter(Boolean)).filter((g) => g.length);
-
-  const table = () => {
-    const matches = parseMatches(state.results);
-    const by = new Map();
-    for (const match of matches) for (const t of match) {
-      const r = by.get(t.name) || { name: t.name, points: 0, wins: 0, elims: 0, places: [], matches: 0 };
-      r.points += points(t.place) + t.elims * state.elim;
-      r.wins += t.place === 1 ? 1 : 0;
-      r.elims += t.elims;
-      r.places.push(t.place);
-      r.matches += 1;
-      by.set(t.name, r);
-    }
-    const rows = [...by.values()].map((r) => ({ ...r, avg: r.places.reduce((a, b) => a + b, 0) / r.places.length, best: Math.min(...r.places) }));
-    rows.sort((a, b) => b.points - a.points || b.wins - a.wins || b.elims - a.elims || a.avg - b.avg || a.name.localeCompare(b.name));
-    return { rows, matches };
-  };
-
-  const heatList = (rows, n) => {
-    const buckets = Array.from({ length: n }, () => []);
-    rows.forEach((r, i) => { const round = Math.floor(i / n), pos = i % n; buckets[round % 2 === 0 ? pos : n - 1 - pos].push(r.name); });
-    return buckets;
-  };
+  const table = () => standings(parseMatches(state.results), points, state.elim);
+  let cur = 0; // the match the grid is showing (0-based); one past the last is a new, empty match
 
   const link = () => {
     const q = new URLSearchParams();
@@ -231,6 +255,9 @@
     for (const k of ['top10', 'top15', 'top25']) if (state[k]) q.set(k, state[k]);
     if (state.preset) q.set('preset', state.preset);
     if (state.heats !== 2) q.set('heats', state.heats);
+    if (state.cols) q.set('cols', '1');
+    if (state.cut) q.set('cut', state.cut);
+    if (state.mp) q.set('mp', state.mp);
     return location.origin + '/tournaments/?' + q.toString();
   };
 
@@ -239,20 +266,45 @@
     const totalPoints = rows.reduce((a, r) => a + r.points, 0);
     const totalElims = rows.reduce((a, r) => a + r.elims, 0);
     $('tiers').textContent = tierText();
+    const dups = duplicatePlaces(matches);
+    $('dupes').hidden = !dups.length;
+    $('dupes').textContent = dups.length ? 'Two teams share a place. ' + duplicateText(dups) : '';
+    const bad = new Set(dups.filter((d) => d.match === cur + 1).flatMap((d) => d.teams.map((t) => t.toLowerCase())));
+    for (const inp of document.querySelectorAll('#grid input[data-k=place]')) inp.setAttribute('aria-invalid', bad.has(inp.dataset.team.toLowerCase()) ? 'true' : 'false');
     $('stat').textContent = rows.length
       ? rows.length + (rows.length === 1 ? ' team' : ' teams') + ' · ' + matches.length + (matches.length === 1 ? ' match' : ' matches') + ' · ' + totalElims + ' eliminations · ' + totalPoints + ' points · leader ' + rows[0].name
       : 'No results yet. Type one line per match: Team:place:eliminations.';
 
+    const mp = matchPoint(matches, points, state.elim, state.mp);
+    $('mpnote').hidden = !state.mp;
+    $('mpnote').textContent = !state.mp ? '' : mp.champion ? mp.champion + ' wins the tournament: on match point, it won match ' + mp.match + '.' : mp.eligible.length ? 'On match point (a win takes it): ' + mp.eligible.join(', ') + '.' : 'Nobody has reached ' + state.mp + ' points yet.';
+    const head = $('standings').tHead.rows[0];
+    head.replaceChildren();
+    const heads = ['#', 'Team', 'Points', 'Wins', 'Elims', 'Avg place', 'Best'].concat(state.cols ? matches.map((_, i) => 'M' + (i + 1)) : [], ['Gap']);
+    heads.forEach((h) => { const th = document.createElement('th'); th.scope = 'col'; th.textContent = h; if (/^M\d+$/.test(h)) { th.className = 'mcol'; th.title = 'Match ' + h.slice(1) + ': points (place/elims)'; } head.append(th); });
+    const gap = gaps(rows, points, state.elim, { cutoff: state.cut });
     const body = $('standings').tBodies[0];
     body.replaceChildren();
     rows.forEach((r, i) => {
       const tr = document.createElement('tr');
-      [i + 1, r.name, r.points, r.wins, r.elims, r.avg.toFixed(1), r.best].forEach((value, cell) => {
+      const cells = [i + 1, r.name, r.points, r.wins, r.elims, r.avg.toFixed(1), r.best].concat(state.cols ? r.per.map(matchCell) : []);
+      cells.forEach((value, cell) => {
         const td = document.createElement('td');
         td.textContent = String(value);
         if (cell === 1) td.className = 'team';
+        if (cell > 6) td.className = 'mcol';
         tr.append(td);
       });
+      const tdGap = document.createElement('td');
+      tdGap.className = 'gap';
+      tdGap.textContent = gap[i].hint;
+      if (state.mp && (mp.champion === r.name || (!mp.champion && mp.eligible.includes(r.name)))) {
+        const tag = document.createElement('span');
+        tag.className = mp.champion === r.name ? 'tag champ' : 'tag mp';
+        tag.textContent = mp.champion === r.name ? 'champion' : 'match point';
+        tdGap.prepend(tag, document.createTextNode(' '));
+      }
+      tr.append(tdGap);
       body.append(tr);
     });
 
@@ -303,6 +355,66 @@
     $('demo').hidden = !(state.results.trim() === DEMO.results && norm(state.drops) === norm(DEMO.drops));
   }
 
+  // the match grid: every team on the roster, one row each, for the chosen match; typing writes the results text (and the URL) back
+  function renderGrid() {
+    const matches = mergeNames(parseMatches(state.results));
+    if (cur > matches.length) cur = matches.length;
+    const tabs = $('tabs');
+    tabs.replaceChildren();
+    const count = Math.max(1, matches.length);
+    for (let i = 0; i <= count; i++) {
+      if (i === count && matches.length === 0) break;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = i < matches.length ? 'Match ' + (i + 1) : (matches.length ? '+ Match ' + (i + 1) : 'Match 1');
+      if (i === matches.length && matches.length) b.setAttribute('aria-label', 'Start match ' + (i + 1));
+      b.setAttribute('aria-pressed', String(i === cur));
+      b.onclick = () => { cur = i; renderGrid(); render(); const first = document.querySelector('#grid input'); if (first) first.focus(); };
+      tabs.append(b);
+    }
+    const body = $('grid').tBodies[0];
+    body.replaceChildren();
+    const m = matches[cur] || [];
+    for (const { name } of roster(matches)) {
+      const e = m.find((t) => t.name === name);
+      const tr = document.createElement('tr');
+      const td = document.createElement('td'); td.className = 'team'; td.textContent = name;
+      tr.append(td);
+      for (const [k, label, min] of [['place', 'Place', 1], ['elims', 'Eliminations', 0]]) {
+        const cell = document.createElement('td');
+        const inp = document.createElement('input');
+        inp.type = 'number'; inp.min = String(min); inp.max = '100'; inp.step = '1'; inp.inputMode = 'numeric';
+        inp.dataset.k = k; inp.dataset.team = name;
+        inp.setAttribute('aria-label', label + ' for ' + name + ' in match ' + (cur + 1));
+        inp.value = e ? String(e[k]) : '';
+        inp.addEventListener('input', () => writeCell(name, tr));
+        cell.append(inp); tr.append(cell);
+      }
+      body.append(tr);
+    }
+  }
+  function writeCell(name, tr) {
+    const place = tr.querySelector('input[data-k=place]').value, elims = tr.querySelector('input[data-k=elims]').value;
+    state.results = serialize(setEntry(mergeNames(parseMatches(state.results)), cur, name, place, elims));
+    $('results').value = state.results;
+    commit();
+    if (cur >= parseMatches(state.results).length - 1) { const pressed = document.querySelector('#tabs [aria-pressed=true]'); if (pressed && /^\+/.test(pressed.textContent)) { const keep = document.activeElement && document.activeElement.getAttribute('aria-label'); renderGrid(); render(); const again = keep && [...document.querySelectorAll('#grid input')].find((x) => x.getAttribute('aria-label') === keep); if (again) again.focus(); } }
+  }
+  function addTeam() {
+    const name = cleanName($('newteam').value);
+    if (!name) { say('Type a team name first.'); $('newteam').focus(); return; }
+    const matches = mergeNames(parseMatches(state.results));
+    if (roster(matches).some((r) => r.key === name.toLowerCase())) { say(name + ' is already on the roster.'); return; }
+    const m = matches[cur] || [];
+    const next = m.reduce((a, t) => Math.max(a, t.place), 0) + 1;
+    state.results = serialize(setEntry(matches, cur, name, next, 0));
+    $('results').value = state.results;
+    $('newteam').value = '';
+    renderGrid(); commit(name + ' joins the roster, placed ' + next + ' in match ' + (cur + 1) + ' for now; change it in the grid.');
+    const inp = [...document.querySelectorAll('#grid input[data-k=place]')].find((x) => x.dataset.team === name);
+    if (inp) inp.focus();
+  }
+
   const commit = (message) => { render(); save(); if (message) say(message); };
 
   $('results').value = state.results;
@@ -313,8 +425,16 @@
   $('win').value = state.win;
   $('top5').value = state.top5;
   $('heats').value = state.heats;
+  $('percols').checked = state.cols;
+  $('cut').value = state.cut;
+  $('mp').value = state.mp;
+  $('percols').addEventListener('change', (e) => { state.cols = e.target.checked; commit(); });
+  $('cut').addEventListener('input', (e) => { state.cut = Math.min(100, Math.max(0, parseInt(e.target.value, 10) || 0)); commit(); });
+  $('mp').addEventListener('input', (e) => { state.mp = Math.min(999, Math.max(0, parseInt(e.target.value, 10) || 0)); commit(); });
 
-  $('results').addEventListener('input', (e) => { state.results = e.target.value; commit(); });
+  $('results').addEventListener('input', (e) => { state.results = e.target.value; renderGrid(); commit(); });
+  $('addteam').onclick = addTeam;
+  $('newteam').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addTeam(); } });
   $('drops').addEventListener('input', (e) => { state.drops = e.target.value; commit(); });
   $('heats').addEventListener('input', (e) => { state.heats = Math.min(8, Math.max(1, parseInt(e.target.value, 10) || 1)); commit(); });
   $('mode').addEventListener('change', (e) => { state.mode = e.target.value; commit(); });
@@ -333,14 +453,14 @@
   });
 
   $('add').onclick = () => {
-    const text = state.results.trim();
-    state.results = (text ? text.replace(/;$/, '') + ';' : '') + ' ';
-    $('results').value = state.results;
-    $('results').focus();
-    commit('A new match is ready: type Team:place:eliminations, comma-separated.');
+    cur = parseMatches(state.results).length;
+    renderGrid(); render();
+    const first = document.querySelector('#grid input');
+    if (first) first.focus();
+    say('Match ' + (cur + 1) + ' is ready: tab through each team\'s place and eliminations.');
   };
 
-  $('clear').onclick = () => { state.results = ''; state.drops = ''; state.preset = ''; $('preset').value = ''; $('results').value = ''; $('drops').value = ''; commit('Cleared. Nothing is scored until you type a result.'); };
+  $('clear').onclick = () => { cur = 0; state.results = ''; state.drops = ''; state.preset = ''; $('preset').value = ''; $('results').value = ''; $('drops').value = ''; renderGrid(); commit('Cleared. Add a team to start match 1.'); };
 
   $('share').onclick = async () => {
     const href = link();
@@ -375,9 +495,11 @@
     state.results = (existing ? existing + ';' : '') + rows.join(',');
     $('results').value = state.results;
     $('csv').value = '';
+    renderGrid();
     commit('Imported ' + rows.length + ' rows as match ' + parseMatches(state.results).length + '.');
   };
 
+  renderGrid();
   render();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
