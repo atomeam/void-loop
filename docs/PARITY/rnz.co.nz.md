@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: rnz.co.nz (https://www.rnz.co.nz/)
-- Verse: /news/ (news: rnz.co.nz, tower gate 12 of 12, gate passed)
+- Verse: /news/ (news: rnz.co.nz, tower gate 12 of 13)
 - Live scan: 2026-10-28, HTTP 200, page title "RNZ / New Zealand news, culture, radio, podcasts and more"
 - History: [docs/HISTORY/rnz.co.nz.md](../HISTORY/rnz.co.nz.md)
 

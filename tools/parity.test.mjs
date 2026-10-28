@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { obituaryStatus, siteSlug, GATE_MIN } from '../void-live-deploy/lib/obituary.js';
+import { obituaryStatus, siteSlug, GATE_MIN, hasMemorial } from '../void-live-deploy/lib/obituary.js';
 import { root, floorsBySite, inventory, codeOnly } from './parity.mjs';
 import { slugOf } from './site-history.mjs';
 import { CATALOG, GENERIC } from './parity-catalog.mjs';
@@ -44,7 +44,7 @@ test('the page and the tools name a site by the same slug', async () => {
 });
 
 test('every obituary site has a feature inventory and a cited history', async () => {
-  const sites = (await floorsBySite()).filter((s) => s.floors.some((f) => f.beaten));
+  const sites = (await floorsBySite()).filter((s) => s.floors.some((f) => hasMemorial(f)));
   assert.ok(sites.length > 50, 'the tower has its obituaries: ' + sites.length);
   const noParity = sites.filter((s) => !fs.existsSync(path.join(root, 'docs/PARITY', s.slug + '.md')) || !parity[s.slug]);
   assert.deepEqual(noParity.map((s) => s.slug), [], 'run node tools/parity.mjs --write');
@@ -53,7 +53,7 @@ test('every obituary site has a feature inventory and a cited history', async ()
 });
 
 test('no obituary reads beaten while its inventory has a gap', async () => {
-  for (const s of await floorsBySite()) for (const f of s.floors.filter((x) => x.beaten)) {
+  for (const s of await floorsBySite()) for (const f of s.floors.filter((x) => hasMemorial(x))) {
     const r = parity[s.slug], st = obituaryStatus(f, r);
     if (st.beaten) { assert.equal(r.missing + r.partial + r.unreviewed, 0, s.slug); assert.equal(r.have, r.total, s.slug); assert.ok(f.n === f.m && f.m >= 9, s.slug); }
     else assert.ok(st.why.length, s.slug);
@@ -104,4 +104,15 @@ test('the probes read code, not titles or comments', () => {
 test('the inventories and timelines are current (node tools/parity.mjs --write)', () => {
   const r = spawnSync(process.execPath, [path.join(root, 'tools/parity.mjs'), '--check'], { cwd: root, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+
+test('a memorial stays up when the gate adds an aspect it has not measured yet, and reads in progress until it does', () => {
+  const clean = { pct: 100, have: 10, partial: 0, missing: 0, unreviewed: 0, total: 10, gaps: [] };
+  const won = (a) => ({ verdict: 'better', evidence: a });
+  const f = { beaten: false, measured: true, n: 12, m: 13, lost: [], left: ['wider use'], ev: { speed: won('x') } };
+  assert.equal(hasMemorial(f), true);
+  const st = obituaryStatus(f, clean); assert.equal(st.beaten, false); assert.match(st.why[0], /has not measured wider use yet \(12 of 13/);
+  assert.equal(hasMemorial({ ...f, ev: { 'wider use': { verdict: 'worse' } } }), false, 'measured and lost: no memorial');
+  assert.equal(hasMemorial({ ...f, lost: ['speed'] }), false); assert.equal(hasMemorial({ ...f, n: 5 }), false); assert.equal(hasMemorial({ ...f, measured: false }), false);
+  assert.equal(hasMemorial({ beaten: true, n: 13, m: 13 }), true);
 });

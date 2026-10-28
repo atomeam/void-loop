@@ -171,7 +171,7 @@ export async function build(liveAll) {
   return files;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
   fs.mkdirSync(PDIR, { recursive: true });
   const liveAll = readJson(LIVE, {});

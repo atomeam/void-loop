@@ -7,11 +7,22 @@
 
 export const GATE_MIN = 9;
 
+/** whether a floor has a memorial at all: the gate passed it, or it won every aspect measured so far and the only ones left are new aspects
+ *  the gate has not measured yet (2026-10-28: "wider use" joined every floor, and a memorial is never taken down for an unmeasured aspect;
+ *  it reads "in progress" until the gate measures it). Pure. */
+export function hasMemorial(floor) {
+  const f = floor || {}, left = f.left || [], ev = f.ev || {};
+  if (f.beaten) return true;
+  return !!f.measured && !(f.lost || []).length && left.length > 0 && left.every((a) => !ev[a]) && f.n >= GATE_MIN;
+}
+
 /** `floor` is a lib/tower.js floor, `row` the site's /parity.json row ({ pct, have, partial, missing, unreviewed, total, gaps }) or null */
 export function obituaryStatus(floor, row) {
   const why = [];
   const f = floor || {};
-  if (!f.beaten || !(f.m >= GATE_MIN) || f.n !== f.m) why.push('the tower gate is ' + (f.n || 0) + ' of ' + (f.m || 0) + ' aspects, not all of at least ' + GATE_MIN);
+  const unmeasured = !f.beaten && hasMemorial(f) ? f.left : [];
+  if (unmeasured.length) why.push('the tower gate has not measured ' + unmeasured.join(', ') + ' yet (' + f.n + ' of ' + f.m + ' aspects passed)');
+  else if (!f.beaten || !(f.m >= GATE_MIN) || f.n !== f.m) why.push('the tower gate is ' + (f.n || 0) + ' of ' + (f.m || 0) + ' aspects, not all of at least ' + GATE_MIN);
   if (!row) why.push('no feature inventory yet (docs/PARITY)');
   else {
     if (row.missing) why.push(row.missing + ' missing feature' + (row.missing === 1 ? '' : 's'));

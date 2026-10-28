@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: recipetineats.com (https://www.recipetineats.com/)
-- Verse: /recipes/?q=pancakes (recipes: recipetineats.com, tower gate 12 of 12, gate passed)
+- Verse: /recipes/?q=pancakes (recipes: recipetineats.com, tower gate 12 of 13)
 - Live scan: 2026-10-28, HTTP 200, page title "RecipeTin Eats - A Food Blog Serving Up Quick &amp; Easy Dinner Recipes"
 - History: [docs/HISTORY/recipetineats.com.md](../HISTORY/recipetineats.com.md)
 

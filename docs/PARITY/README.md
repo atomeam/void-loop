@@ -60,9 +60,8 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |
 | 1 | /flights/trip/ | A price calendar and graph | missing | tripwaffle.com |
 | 1 | /flights/time/ | A price calendar and graph | missing | clock7.com |
-| 1 | /pdf/editor/ | A public API | missing | sejda.com |
-| 1 | /pdf/studio/ | A public API | missing | smallpdf.com |
 | 1 | /kanban/quick/ | A public API | missing | abacktools.com |
+| 1 | /kanban/teams/ | A public API | missing | wekan.fi |
 | 1 | /kanban/flow/ | A public API | missing | kanbanflow.com |
 | 1 | /photos/tinypng/ | A public API | missing | tinypng.com |
 | 1 | /photos/photopea/ | A public API | missing | photopea.com |
@@ -73,16 +72,17 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /g/ | A public API | missing | codebasehq.com |
 | 1 | /tournaments/ | A public API | missing | yunite.xyz |
 | 1 | /hosting/ | A public API | missing | thunit.com |
+| 1 | /pdf/editor/ | A public API | missing | sejda.com |
+| 1 | /pdf/studio/ | A public API | missing | smallpdf.com |
 | 1 | /pdf/ | A public API | missing | ilovepdf.com |
-| 1 | /kanban/teams/ | A public API | missing | wekan.fi |
 | 1 | /markets/caps/ | A quote page for any stock | missing | companiesmarketcap.com |
 | 1 | /markets/screener/ | A quote page for any stock | missing | finviz.com |
 | 1 | /markets/caps/ | A watchlist | missing | companiesmarketcap.com |
 | 1 | /markets/screener/ | A watchlist | missing | finviz.com |
 | 1 | /pdf/organize/ | Add text, images and shapes | missing | 10015.io |
 | 1 | /pdf/toolbox/ | Add text, images and shapes | missing | pdfcandy.com |
-| 1 | /pdf/studio/ | Add text, images and shapes | missing | smallpdf.com |
 | 1 | /pdf/suite/ | Add text, images and shapes | missing | tools.pdf24.org |
+| 1 | /pdf/studio/ | Add text, images and shapes | missing | smallpdf.com |
 | 1 | /pdf/ | Add text, images and shapes | missing | ilovepdf.com |
 | 1 | /kanban/simple/ | Add-ons and integrations | missing | jasperbernaers.com |
 | 1 | /kanban/flow/ | Add-ons and integrations | missing | kanbanflow.com |
@@ -91,10 +91,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /calculator/ | An account that keeps your things on every device | partial | calculator.net |
 | 1 | /stopwatch/ | An account that keeps your things on every device | partial | online-stopwatch.com |
 | 1 | /random-user/ | An account that keeps your things on every device | missing | randomuser.me |
-| 1 | /pdf/organize/ | An account that keeps your things on every device | missing | 10015.io |
-| 1 | /pdf/toolbox/ | An account that keeps your things on every device | missing | pdfcandy.com |
-| 1 | /pdf/editor/ | An account that keeps your things on every device | missing | sejda.com |
-| 1 | /pdf/studio/ | An account that keeps your things on every device | missing | smallpdf.com |
 | 1 | /kanban/quick/ | An account that keeps your things on every device | partial | abacktools.com |
 | 1 | /kanban/flow/ | An account that keeps your things on every device | partial | kanbanflow.com |
 | 1 | /sports/ | An account that keeps your things on every device | partial | thesportsdb.com |
@@ -107,10 +103,14 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /jobs/tags/ | An account that keeps your things on every device | partial | remoteok.com |
 | 1 | /g/ | An account that keeps your things on every device | partial | codebasehq.com |
 | 1 | /prizes/ | An account that keeps your things on every device | partial | wheelofgold.com |
+| 1 | /pdf/organize/ | An account that keeps your things on every device | missing | 10015.io |
+| 1 | /pdf/toolbox/ | An account that keeps your things on every device | missing | pdfcandy.com |
+| 1 | /pdf/editor/ | An account that keeps your things on every device | missing | sejda.com |
+| 1 | /pdf/studio/ | An account that keeps your things on every device | missing | smallpdf.com |
 | 1 | /pdf/ | An account that keeps your things on every device | missing | ilovepdf.com |
 | 1 | /sports/ | Anyone can add and correct data | missing | thesportsdb.com |
-| 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
+| 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
 | 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
 | 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |

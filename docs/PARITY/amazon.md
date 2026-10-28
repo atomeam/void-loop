@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: Amazon (https://www.amazon.com/)
-- Verse: /store/ (shopping, tower gate 11 of 12)
+- Verse: /store/ (shopping, tower gate 11 of 13)
 - Live scan: 2026-10-28, HTTP 202
 - History: [docs/HISTORY/amazon.md](../HISTORY/amazon.md)
 

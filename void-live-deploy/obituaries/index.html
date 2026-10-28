@@ -82,7 +82,7 @@
 </main>
 <script type="module">
   import { tower } from '/lib/tower.js';
-  import { obituaryStatus, siteSlug } from '/lib/obituary.js';
+  import { obituaryStatus, siteSlug, hasMemorial } from '/lib/obituary.js';
   const $ = (id) => document.getElementById(id);
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
@@ -91,7 +91,7 @@
     const [inv, ev, par] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/parity.json')]);
     const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, null);
     parity = (par && par.sites) || {};
-    all = (t.floors || []).filter((f) => f.beaten).map((f) => { const slug = siteSlug(f.site); return Object.assign(f, { slug, status: obituaryStatus(f, parity[slug] || null) }); });
+    all = (t.floors || []).filter((f) => hasMemorial(f)).map((f) => { const slug = siteSlug(f.site); return Object.assign(f, { slug, status: obituaryStatus(f, parity[slug] || null) }); });
     const won = all.filter((f) => f.status.beaten).length;
     $('tally').textContent = all.length + ' memorials: ' + won + ' beaten in every way, ' + (all.length - won) + ' in progress.';
     render();

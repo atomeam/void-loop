@@ -182,14 +182,14 @@ export function write(f, floors, date) {
   return file;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const { tower } = await import(pathToFileURL(path.join(root, 'void-live-deploy/lib/tower.js')).href);
   const inv = JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy/lap.items.json'), 'utf8'));
   const ev = JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy/tower.evidence.json'), 'utf8'));
   const floors = tower(inv.onlySite || [], ev.floors || {}, null).floors;
   const bySlug = new Map();
   for (const f of floors) { const s = slugOf(f.site); if (!bySlug.has(s)) bySlug.set(s, []); bySlug.get(s).push(f); }
-  let list = [...bySlug.entries()].sort((a, b) => (+b[1].some((f) => f.beaten)) - (+a[1].some((f) => f.beaten)));
+  let list = [...bySlug.entries()].sort((a, b) => (+b[1].some((f) => f.beaten || (f.n >= 9 && !(f.lost || []).length))) - (+a[1].some((f) => f.beaten || (f.n >= 9 && !(f.lost || []).length))));
   const args = process.argv.slice(2);
   const only = args.filter((a) => !a.startsWith('--')).map(slugOf);
   if (only.length) list = list.filter(([s]) => only.includes(s));

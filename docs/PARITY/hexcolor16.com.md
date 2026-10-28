@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: hexcolor16.com (https://hexcolor16.com/ff5733)
-- Verse: /color/?c=ff5733 (colour codes, tower gate 11 of 11, gate passed)
+- Verse: /color/?c=ff5733 (colour codes, tower gate 11 of 12)
 - Live scan: 2026-10-28, HTTP 200, page title "#ff5733 Hex Color Code &mdash; HexColor16"
 - History: [docs/HISTORY/hexcolor16.com.md](../HISTORY/hexcolor16.com.md)
 
@@ -14,9 +14,9 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | All about a colour: codes and conversions | Colour | have | its live page (2026-10-28): "#ff5733 Hex Color Code &mdash; HexColor16 #ff5733 Hex Color Code &mdash; HexColor16 HexColor16 #ff5733 &ndash" | void-live-deploy/color/index.html:72 `ia-label="A colour: hex, rgb, hsl or a name" placeholder="#ff5733, rgb(255 87 51), tomato"` |
 | Shades, tints and harmonies | Colour | have | its live page (2026-10-28): "opposite of CMY (CMYK). CMY colors are complementary to RGB colors. R = 255 G = 87 B = 51 100.00% 34.12% 20.0" | void-live-deploy/color/index.html:70 `<h1>Colour codes, shades and schemes</h1>` |
 | A colour picker | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:72 `" autofocus><input id="wheel" type="color" aria-label="Pick a colour" value="#6d4aff"></di` |
-| Palettes | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:84 `<h2>Palettes made from it</h2>` |
+| Palettes | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:73 `#palh" data-for="brand">Brand palette</a> <a href="?c=00a19a&amp;for=print#modt" data-for=` |
 | Colour names | Colour | have | its live page (2026-10-28): "u? Share your experience with #ff5733 ! Name (optional) Name... Email (optional) Email... Message Message... S" | void-live-deploy/color/index.html:71 `ery colour model, the nearest name, WCAG contrast, tints, shades and schemes, worked out o` |
-| Share a link to what you made or found | Sharing | have | its live page (2026-10-28): "} Was this information useful for you? Share your experience with #ff5733 ! Name (optional) Name... Email (op" | void-live-deploy/color/index.html:98 `utton type="button" id="link">Copy link</button></div>` |
+| Share a link to what you made or found | Sharing | have | its live page (2026-10-28): "} Was this information useful for you? Share your experience with #ff5733 ! Name (optional) Name... Email (op" | void-live-deploy/color/index.html:100 `utton type="button" id="link">Copy link</button></div>` |
 | #ff6633 | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Tomato | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Portland Orange | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

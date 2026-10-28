@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: jasperbernaers.com (https://jasperbernaers.com/kanban-board/)
-- Verse: /kanban/simple/ (kanban: jasperbernaers.com, tower gate 13 of 13, gate passed); /tuner/ (music: jasperbernaers.com, tower gate 13 of 13, gate passed)
+- Verse: /kanban/simple/ (kanban: jasperbernaers.com, tower gate 13 of 14); /tuner/ (music: jasperbernaers.com, tower gate 13 of 14)
 - Live scan: 2026-10-28, HTTP 200, page title "Free Kanban Board Online — Board, List, Calendar &amp; Flow Charts, No Signup / JasperBernaers.com"
 - History: [docs/HISTORY/jasperbernaers.com.md](../HISTORY/jasperbernaers.com.md)
 
@@ -26,11 +26,11 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Add-ons and integrations | Power | missing | its live page (2026-10-28): "l-time collaboration, notifications and integrations, and their free plans often cap users, boards or storage." | no sign of it in the source of /kanban/simple/ |
 | Works offline | Apps | have | its live page (2026-10-28): "ates, a calendar and flow charts, free, offline-capable and private. It is ideal for personal work, a freelanc" | void-live-deploy/kanban/simple/index.html:63 `anywhere) and the page works offline after one visit. Export a board as JSON to keep a co` |
 | Share a link to what you made or found | Sharing | have | its live page (2026-10-28): ". WIP limits · checklists · due dates · share links. Saved on this device, no account, no ads. Kanban board Bo" | void-live-deploy/lib/kanban-ui.js:13 `share: 'Share link', archive: 'Archive', archived: 'Archived cards', restore: 'Restore` |
-| Tune with the microphone | Tuning | have | every site of this kind offers it | void-live-deploy/tuner/index.html:102 `live="polite">–<small id="hz">Turn the microphone on and play a note</small></div>` |
-| A needle that shows flat or sharp | Tuning | have | its live page (2026-10-28): "ans work is piling up in that column. A flat done band means nothing is being finished. Choose 14, 30, 60 or 9" | void-live-deploy/tuner/index.html:104 `meter" role="img" aria-label="How flat or sharp the note is"><b></b><i id="needle"></i></d` |
-| Instruments and alternate tunings | Tuning | have | every site of this kind offers it | void-live-deploy/tuner/index.html:101 `><option value="guitar-dropd">Guitar, drop D</option><option value="guitar-dadgad">Guitar,` |
-| Reference tones to tune by ear | Tuning | have | its live page (2026-10-28): "ly throughput over those four weeks and plays out 2,000 imagined futures, each time drawing a random day from" | void-live-deploy/tuner/index.html:113 `0 auto" aria-pressed="false">Play the note</button></div>` |
-| Change the reference pitch (A = 440) | Settings | have | every site of this kind offers it | void-live-deploy/tuner/index.html:101 `4" min="410" max="470" value="440" step="1" inputmode="numeric"></label></div>` |
+| Tune with the microphone | Tuning | have | every site of this kind offers it | void-live-deploy/tuner/index.html:103 `live="polite">–<small id="hz">Turn the microphone on and play a note</small></div>` |
+| A needle that shows flat or sharp | Tuning | have | its live page (2026-10-28): "ans work is piling up in that column. A flat done band means nothing is being finished. Choose 14, 30, 60 or 9" | void-live-deploy/tuner/index.html:105 `meter" role="img" aria-label="How flat or sharp the note is"><b></b><i id="needle"></i></d` |
+| Instruments and alternate tunings | Tuning | have | every site of this kind offers it | void-live-deploy/tuner/index.html:102 `><option value="guitar-dropd">Guitar, drop D</option><option value="guitar-dadgad">Guitar,` |
+| Reference tones to tune by ear | Tuning | have | its live page (2026-10-28): "ly throughput over those four weeks and plays out 2,000 imagined futures, each time drawing a random day from" | void-live-deploy/tuner/index.html:114 `0 auto" aria-pressed="false">Play the note</button></div>` |
+| Change the reference pitch (A = 440) | Settings | have | every site of this kind offers it | void-live-deploy/tuner/index.html:102 `4" min="410" max="470" value="440" step="1" inputmode="numeric"></label></div>` |
 | JasperBernaers.com | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | deep work | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | &#9749; Support me | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
