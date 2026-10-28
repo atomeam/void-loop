@@ -2726,7 +2726,7 @@ try {
       await P.click('#fbB'); await P.fill('#fbT', 'Merci bien'); await P.click('#fbSave');
       const said = await P.$eval('#status', (s) => s.textContent).catch(() => ''); const n = asks.length;
       await P.reload(); await P.fill('#in', 'Thank you'); await P.click('#go'); await until(async () => /Merci bien/.test(await outText()), 4000);
-      const after = await outText(); await P.click('#fbUndo'); await until(async () => (await outText()) === 'Merci', 4000);
+      const after = await outText(); await until(() => P.$eval('#fbUndo', (b) => !b.hidden), 4000); await P.click('#fbUndo'); await until(async () => (await outText()) === 'Merci', 4000);
       check('translate page, suggest an edit: "Merci bien" replaces the machine\'s "Merci", is kept on this device after a reload (marked as your own) and "Back to the machine\'s" undoes it',
         /Merci bien/.test(after) && (await outText()) === 'Merci' && n > 0, JSON.stringify({ after, said }));
       await P.click('#convS'); await P.fill('#convT', 'Merci beaucoup'); await P.click('#convTB');

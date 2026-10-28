@@ -141,10 +141,11 @@
           <button type="button" id="dictB" title="The dictionary for a single word: meanings, other translations and how common each is, examples">Dictionary</button>
           <button type="button" id="backB" title="Translate the result back, to check it">Back-translate</button>
           <button type="button" id="fbB" aria-expanded="false" aria-controls="fb" title="Suggest a better translation: yours is kept on this device and comes back whenever you translate the same words">Suggest an edit</button>
+          <button type="button" id="fbUndo" hidden title="Drop your own correction and show the machine's translation again">Back to the machine's</button>
           <label class="tone" id="toneL">Tone <select id="tone" disabled><option value="">Default</option></select></label>
         </div>
         <div id="fb" hidden><label class="vh" for="fbT">Your translation</label><textarea id="fbT" rows="2"></textarea>
-          <div class="row"><button type="button" class="go" id="fbSave">Use mine</button><button type="button" id="fbUndo">Back to the machine's</button></div></div>
+          <div class="row"><button type="button" class="go" id="fbSave">Use mine</button></div></div>
         <div class="pop" id="pop" role="dialog" aria-labelledby="popW" hidden></div>
       </div>
     </div>
@@ -280,8 +281,8 @@
       if (note) parts.push(note);
       say(parts.join(' · '));
       for (const id of ['listen', 'copy', 'share', 'save', 'backB', 'fbB']) $(id).disabled = !out;
-      const own = via === 'yours' && !!out; // your own correction on screen: its panel stays open, so "Back to the machine's" is one tap away
-      $('fb').hidden = !own; $('fbB').setAttribute('aria-expanded', String(own)); if (own) $('fbT').value = out;
+      $('fb').hidden = true; $('fbB').setAttribute('aria-expanded', 'false');
+      $('fbUndo').hidden = !(via === 'yours' && out); // your own correction on screen: the way back to the machine's sits beside it
       $('dictB').disabled = !wordy($('in').value);
     }
     const wordy = (t) => { const s = String(t || '').trim(); return !!s && s.length <= 60 && s.split(/\s+/).length <= 3 && !/[.!?。]\s/.test(s); };
