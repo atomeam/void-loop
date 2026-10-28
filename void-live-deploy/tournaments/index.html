@@ -63,6 +63,12 @@
   table.grid input[aria-invalid=true] { border-color:#c25b5b; background:#2a1717; }
   .grow { flex:1 1 12em; min-width:0; }
   .grow input { width:100%; }
+  .check { display:flex; align-items:center; gap:6px; font-size:14px; color:var(--ink); min-height:34px; }
+  .check input { min-height:0; width:18px; height:18px; margin:0; }
+  td.gap { text-align:left; color:var(--quiet); font-size:12px; min-width:11em; white-space:normal; }
+  td.mcol, th.mcol { white-space:nowrap; color:#cfcbe6; }
+  .tag.mp { color:#fff3c4; border-color:#7a6726; background:#2a2412; }
+  .tag.champ { color:#d9ffe0; border-color:#2f7a45; background:#132a19; }
   .warn { color:#ffd0d0; background:#2a1717; border:1px solid #6d3535; border-radius:8px; padding:6px 10px; font-size:13px; margin:8px 0 0; overflow-wrap:anywhere; }
   details.adv { margin:10px 0 0; }
   details.adv summary { cursor:pointer; color:var(--quiet); font-size:13px; padding:4px 0; }
@@ -138,14 +144,20 @@
   <section class="card" aria-labelledby="h-standings">
     <h2 id="h-standings">Standings</h2>
     <p id="stat"></p>
+    <div class="row">
+      <label class="check"><input id="percols" type="checkbox" aria-label="Show a column for each match"> <span>Show each match</span></label>
+      <label><span>Qualify top</span><input id="cut" type="number" min="0" max="100" step="1" inputmode="numeric" aria-label="How many teams qualify (0 for no cutoff)"></label>
+      <label><span>Match point at</span><input id="mp" type="number" min="0" max="999" step="1" inputmode="numeric" aria-label="Match point threshold in points (0 for off)"></label>
+    </div>
+    <p class="note" id="mpnote" hidden></p>
     <div class="scroll">
       <table id="standings">
         <caption>Standings after every match entered</caption>
-        <thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">Points</th><th scope="col">Wins</th><th scope="col">Elims</th><th scope="col">Avg place</th><th scope="col">Best</th></tr></thead>
+        <thead><tr></tr></thead>
         <tbody></tbody>
       </table>
     </div>
-    <p class="note">Tiebreakers, in this order: points, then wins, then eliminations, then average placement.</p>
+    <p class="note">Tiebreakers, in this order: points, then wins, then eliminations, then average placement. Each match column reads points (place/elims). The gap column says how far a team is behind 1st, or behind the last team that qualifies when a cutoff is set, and what one match needs to pass. With match point on, a team that reaches that many points must then win a match to take the tournament.</p>
   </section>
 
   <section class="card" aria-labelledby="h-heats">
@@ -195,7 +207,7 @@
   </footer>
 </main>
 <script type="module">
-  import { parseMatches, standings, heatList, roster, mergeNames, duplicatePlaces, duplicateText, serialize, setEntry, legacyPoints, cleanName } from '/lib/scrim.js';
+  import { parseMatches, standings, heatList, roster, mergeNames, duplicatePlaces, duplicateText, serialize, setEntry, legacyPoints, cleanName, matchCell, gaps, matchPoint } from '/lib/scrim.js';
   const $ = (id) => document.getElementById(id);
   const KEY = 'a2m.void.tournaments.v1';
   const DEMO = { results: 'Alpha:1:6,Bravo:2:7,Charlie:6:3', drops: 'Alpha:Tilted Towers\nBravo:Pleasant Park\nCharlie:Tilted Towers' };
@@ -208,6 +220,7 @@
     elim: int('elim', 2, 0, 20), win: int('win', 10, 0, 30), top5: int('top5', 5, 0, 30),
     top10: int('top10', 0, 0, 30), top15: int('top15', 0, 0, 30), top25: int('top25', 0, 0, 30),
     results: params.get('results') || '', drops: params.get('drops') || '', heats: int('heats', 2, 1, 8),
+    cols: params.get('cols') === '1', cut: int('cut', 0, 0, 100), mp: int('mp', 0, 0, 999),
   };
   if (!params.has('results') && !params.has('drops')) {
     try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object' && typeof saved.results === 'string') Object.assign(state, saved); } catch (_) {}
@@ -238,6 +251,9 @@
     for (const k of ['top10', 'top15', 'top25']) if (state[k]) q.set(k, state[k]);
     if (state.preset) q.set('preset', state.preset);
     if (state.heats !== 2) q.set('heats', state.heats);
+    if (state.cols) q.set('cols', '1');
+    if (state.cut) q.set('cut', state.cut);
+    if (state.mp) q.set('mp', state.mp);
     return location.origin + '/tournaments/?' + q.toString();
   };
 
@@ -255,16 +271,36 @@
       ? rows.length + (rows.length === 1 ? ' team' : ' teams') + ' · ' + matches.length + (matches.length === 1 ? ' match' : ' matches') + ' · ' + totalElims + ' eliminations · ' + totalPoints + ' points · leader ' + rows[0].name
       : 'No results yet. Type one line per match: Team:place:eliminations.';
 
+    const mp = matchPoint(matches, points, state.elim, state.mp);
+    $('mpnote').hidden = !state.mp;
+    $('mpnote').textContent = !state.mp ? '' : mp.champion ? mp.champion + ' wins the tournament: on match point, it won match ' + mp.match + '.' : mp.eligible.length ? 'On match point (a win takes it): ' + mp.eligible.join(', ') + '.' : 'Nobody has reached ' + state.mp + ' points yet.';
+    const head = $('standings').tHead.rows[0];
+    head.replaceChildren();
+    const heads = ['#', 'Team', 'Points', 'Wins', 'Elims', 'Avg place', 'Best'].concat(state.cols ? matches.map((_, i) => 'M' + (i + 1)) : [], ['Gap']);
+    heads.forEach((h) => { const th = document.createElement('th'); th.scope = 'col'; th.textContent = h; if (/^M\d+$/.test(h)) { th.className = 'mcol'; th.title = 'Match ' + h.slice(1) + ': points (place/elims)'; } head.append(th); });
+    const gap = gaps(rows, points, state.elim, { cutoff: state.cut });
     const body = $('standings').tBodies[0];
     body.replaceChildren();
     rows.forEach((r, i) => {
       const tr = document.createElement('tr');
-      [i + 1, r.name, r.points, r.wins, r.elims, r.avg.toFixed(1), r.best].forEach((value, cell) => {
+      const cells = [i + 1, r.name, r.points, r.wins, r.elims, r.avg.toFixed(1), r.best].concat(state.cols ? r.per.map(matchCell) : []);
+      cells.forEach((value, cell) => {
         const td = document.createElement('td');
         td.textContent = String(value);
         if (cell === 1) td.className = 'team';
+        if (cell > 6) td.className = 'mcol';
         tr.append(td);
       });
+      const tdGap = document.createElement('td');
+      tdGap.className = 'gap';
+      tdGap.textContent = gap[i].hint;
+      if (state.mp && (mp.champion === r.name || (!mp.champion && mp.eligible.includes(r.name)))) {
+        const tag = document.createElement('span');
+        tag.className = mp.champion === r.name ? 'tag champ' : 'tag mp';
+        tag.textContent = mp.champion === r.name ? 'champion' : 'match point';
+        tdGap.prepend(tag, document.createTextNode(' '));
+      }
+      tr.append(tdGap);
       body.append(tr);
     });
 
@@ -385,6 +421,12 @@
   $('win').value = state.win;
   $('top5').value = state.top5;
   $('heats').value = state.heats;
+  $('percols').checked = state.cols;
+  $('cut').value = state.cut;
+  $('mp').value = state.mp;
+  $('percols').addEventListener('change', (e) => { state.cols = e.target.checked; commit(); });
+  $('cut').addEventListener('input', (e) => { state.cut = Math.min(100, Math.max(0, parseInt(e.target.value, 10) || 0)); commit(); });
+  $('mp').addEventListener('input', (e) => { state.mp = Math.min(999, Math.max(0, parseInt(e.target.value, 10) || 0)); commit(); });
 
   $('results').addEventListener('input', (e) => { state.results = e.target.value; renderGrid(); commit(); });
   $('addteam').onclick = addTeam;
