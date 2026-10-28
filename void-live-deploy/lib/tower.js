@@ -13,6 +13,7 @@
 // stay private; this public side names generic aspects only and counts. Pure.
 
 import { SELF_SITES } from './self-sites.js';
+import { badgeOf, buildable } from './gate-badge.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -291,7 +292,7 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); return { ...f, order: i, ...g, ev, icon, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); return { ...f, order: i, ...g, ev, icon, badge, coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);
@@ -301,7 +302,10 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // place in the queue but stand behind every small site, so the fight on the stage is always the easiest one left. The flag is read off the floor
   // itself, never off key(), so a deferred leader's lane still climbs from its bottom; the giant comes back to the front once the small sites are done.
   const waiting = (f) => (f.defer ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return waiting(a) - waiting(b) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  // the gate badge (lib/gate-badge.js): the build queue picks only Code work, or stage 1 on a regulated floor; a floor that needs a partner or a licence
+  // keeps its place in the line but never stands as the current fight, so nothing past what is real gets built or claimed
+  const gated = (f) => (buildable(f.badge) ? 0 : 1);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || waiting(a) - waiting(b) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }

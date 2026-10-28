@@ -102,7 +102,7 @@
     <div class="row">
       <button type="button" id="connectlive" aria-label="Connect live CPAN Testers feed">Connect Live Feed</button>
     </div>
-    <p class="note" id="livestatus">Offline-first: local reports in use. Toggle to fetch live data when online.</p>
+    <p class="note" id="livestatus">Offline-first: local reports in use. Connect Live Feed reads the searched module's real CPAN Testers totals from MetaCPAN.</p>
   </section>
 
   <section class="card" aria-labelledby="h-export">
@@ -173,18 +173,25 @@
     const rows = w ? state.reports.filter((r) => r.module.toLowerCase().includes(w)) : state.reports;
     $('searchout').textContent = rows.length + ' matching reports for "' + w + '".';
   };
-  const syncLive = async () => {
+  // the live feed: a distribution's real CPAN Testers totals for its latest release, read from MetaCPAN's public API (it allows this page to
+  // ask). The module is the one searched for, else the first one ingested; nothing is sent but the module's name.
+  const distOf = (m) => String(m || '').trim().replace(/::/g, '-').replace(/[^A-Za-z0-9_.-]/g, '');
+  const syncLive = async (fromClick) => {
+    const dist = distOf($('q').value) || distOf(state.reports[0] && state.reports[0].module);
     if (!navigator.onLine) { $('livestatus').textContent = 'Offline-first: using local reports.'; return; }
-    $('livestatus').textContent = 'Auto-syncing live CPAN Testers feed…';
+    if (!dist) { if (fromClick === true) $('livestatus').textContent = 'Offline-first: search for a module (Moo, or Test::More) and press Connect Live Feed to read its live CPAN Testers totals.'; return; }
+    $('livestatus').textContent = 'Reading the live CPAN Testers totals for ' + dist + ' from MetaCPAN…';
     try {
-      const r = await fetch('https://www.cpantesters.org/', { mode: 'cors', credentials: 'omit' });
+      const r = await fetch('https://fastapi.metacpan.org/v1/release/' + encodeURIComponent(dist), { mode: 'cors', credentials: 'omit', headers: { accept: 'application/json' } });
+      if (r.status === 404) { $('livestatus').textContent = 'MetaCPAN has no distribution called ' + dist + '. Offline-first: local reports in use.'; return; }
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      $('livestatus').textContent = 'Live CPAN Testers auto-synced ' + new Date().toLocaleTimeString() + '. Offline reports remain available.';
+      const j = await r.json(), t = (j && j.tests) || {}, n = (k) => Number(t[k] || 0).toLocaleString('en-US');
+      $('livestatus').textContent = 'Live: ' + j.distribution + ' ' + j.version + (j.date ? ' (released ' + String(j.date).slice(0, 10) + ')' : '') + ': CPAN Testers ' + n('pass') + ' pass, ' + n('fail') + ' fail, ' + n('na') + ' n/a, ' + n('unknown') + ' unknown, read from MetaCPAN at ' + new Date().toLocaleTimeString() + '. Offline reports remain available.';
     } catch (e) {
-      $('livestatus').textContent = 'Offline-first: using local reports.';
+      $('livestatus').textContent = 'MetaCPAN did not answer. Offline-first: using local reports.';
     }
   };
-  $('connectlive').onclick = syncLive;
+  $('connectlive').onclick = () => syncLive(true);
   $('exportjson').onclick = () => {
     const cfg = JSON.stringify({ reports: state.reports, pass: state.reports.filter((r) => r.status === 'PASS').length, fail: state.reports.filter((r) => r.status === 'FAIL').length }, null, 2);
     $('exportbox').textContent = cfg;

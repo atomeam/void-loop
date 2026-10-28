@@ -6,7 +6,10 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-54';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-55';
+import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
+// each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
+const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 import { bySize, sizeOf, rankLabel, words } from '../lib/tower-rank.js';
 
@@ -106,7 +109,7 @@ export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' +
 export function sizeListHtml(t, esc, lang = 'en') {
   const rk = t.rank || {}, w = words(lang), ranks = rk.ranks || {}, order = rk.order || {};
   return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
-    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + pageLink(f, esc) + '<a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
+    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + gateTag(f, esc) + pageLink(f, esc) + '<a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
 }
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
@@ -116,7 +119,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   // a surpassed site's row is a div, not a button, so a copied or saved card keeps it (lib/card-share.js leaves buttons out; owner, 2026-10-25: "theres no way to see the 24 surpassed")
   const row = (f) => (f.state === 'beaten' ? '<div class="tower-floor" role="button" tabindex="0" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="beaten">' : '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">')
     + (f.state === 'beaten' ? '<span class="tw-face">' + siteFace(f, 24) + '</span>' : '')
-    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + sizeTag(f)
+    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + sizeTag(f) + gateTag(f, esc)
     + (f.state === 'current' ? rowsHtml(f, esc, now) : '') + (f.state === 'beaten' ? '</div>' : '</button>');
   // the site and Verse's own page side by side (owner, 2026-10-25: "its ok for Verse to have links to the site its going against as well as links to its
   // own version for easy side by side compare"): one line under each floor, the site in a new tab, Verse's page in this one
