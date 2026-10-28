@@ -4,8 +4,7 @@ For Claude and the daily routines. Each line: status · open PRs · exact next s
 
 <!-- tower-plan: tools/tower-plan.mjs reads this block and writes void-live-deploy/tower.plan.json, which the Versus card shows (now, next, far). Edit the ids here, never the JSON. -->
 **Tower queue, easiest first (owner, 2026-10-28: "meanwhile we can move backwards to easier sites").** Tiny single-purpose sites whose robots.txt lets us read them (checked 2026-10-28), worked in this order. Each one: a full feature inventory of the rival, parity plus more, the floor's journeys scripted in `tools/tower-journeys.mjs` with negative controls, then `tools/tower-gate.mjs` for wider use; a floor is marked beaten only on that evidence (blocked or unscripted is INCOMPLETE).
-- now: `paint` — heycolor.com, colour by number (/paint/ rebuilt: library in categories, zoom and pan, highlight, hints, saved progress, reveal, photo import)
-- next: `is it` — isitchristmas.com, one answer a day (robots: allowed)
+- now: `is it` — isitchristmas.com, one answer a day (robots: allowed). Before it, `paint` (heycolor.com) was surpassed on 2026-10-28: all 16 aspects, its six journeys scripted with negative controls (tower.evidence.json)
 - next: `coin flip` — justflipacoin.com (robots: allowed except /flips)
 - next: `password strength` — howsecureismypassword.net (no robots.txt: allowed)
 - next: `word count` — wordcounter.net (robots: allowed)
