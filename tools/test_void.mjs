@@ -1457,8 +1457,8 @@ try {
   // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
   // the evidence is stubbed so three sites are conquered and the fourth is 4 aspects in
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
-    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
-    const rows = (f, n) => Object.fromEntries([...aspectsOf(f), ...(f.extra || [])].slice(0, n).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
     const floors = { [FLOORS[0].id]: rows(FLOORS[0], 99), [FLOORS[1].id]: rows(FLOORS[1], 99), [FLOORS[2].id]: rows(FLOORS[2], 99), [FLOORS[3].id]: rows(FLOORS[3], 4) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);
@@ -1479,8 +1479,8 @@ try {
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
-    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
-    const all = (f) => Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
+    const all = (f) => passingRows(f, { evidence: 'stub' });
     const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);

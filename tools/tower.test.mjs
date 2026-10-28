@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { tower, gate, FLOORS, aspectsOf, towerLine } from '../void-live-deploy/lib/tower.js';
+import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows } from '../void-live-deploy/lib/tower.js';
 import { towerHtml } from '../void-live-deploy/skills/tower.js';
 import { verdict, record } from './tower-gate.mjs';
-const all = (f, v = 'better') => Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: v, evidence: 'x' }]));
+// every aspect passing; journey rows carry their steps and negative controls (the gate's standards, 2026-10-28)
+const all = (f) => passingRows(f);
 test('a floor is beaten only when every aspect passes with evidence', () => {
   const f = FLOORS[0]; assert.equal(gate(f, all(f)).beaten, true);
   const e = all(f); delete e.speed; assert.equal(gate(f, e).beaten, false); assert.deepEqual(gate(f, e).left, ['speed']);
@@ -61,7 +62,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
 });
 test('the live card tells what moved between two polls', async () => {
   const sk = (await import('../void-live-deploy/skills/tower.js')).default;
-  const a = tower([], {}), first = a.floors[0], ev = { [first.id]: Object.fromEntries(aspectsOf(first).map((x) => [x, { verdict: 'better', evidence: 'e' }])) }, b = tower([], ev);
+  const a = tower([], {}), first = a.floors[0], ev = { [first.id]: passingRows(first, { evidence: 'e' }) }, b = tower([], ev);
   assert.deepEqual(sk.changes(a, a), []);
   const said = sk.changes(a, b).join(' ');
   assert.ok(said.includes(first.site + ' is surpassed.'), said); // beating the site at the front moves the marker
@@ -128,8 +129,9 @@ test('every surpassed site is on the card, visible and copyable, with a taught-m
   const { tower, learnedOf, FLOORS } = await import('../void-live-deploy/lib/tower.js');
   const { towerHtml, verseTake } = await import('../void-live-deploy/skills/tower.js');
   const good = (a) => ({ verdict: 'better', evidence: 'x' }), ev = {};
-  const lane = FLOORS.find((f) => f.lane === 'translate'), aspects = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'].concat(lane.extra);
-  ev[lane.id] = Object.fromEntries(aspects.map((a) => [a, good(a)]));
+  const { passingRows } = await import('../void-live-deploy/lib/tower.js');
+  const lane = FLOORS.find((f) => f.lane === 'translate');
+  ev[lane.id] = passingRows(lane);
   ev[lane.id].speed = { verdict: 'equal-and-better', verse: 101, best: 712, evidence: 'Verse 101 ms vs 712 ms' };
   ev[lane.id].completeness = { verdict: 'better', verse: 10, best: 3, of: 10, evidence: 'Verse 10 of 10 things a full answer shows vs 3 of 10 (Verse lacks: none; site lacks: listen, speak, camera)' };
   ev[lane.id]['camera text'] = { verdict: 'better', verse: 2, best: 0, evidence: 'Verse 2 of 2 shown vs 0 of 2 (Verse lacks: none; site lacks: camera)' };
