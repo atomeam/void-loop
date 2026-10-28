@@ -77,6 +77,9 @@ test('the stage card: a calculator asked by name, the library by "formula calcul
   assert.equal(pick('pipe surface area calculator').id, 'pipe-surface-area'); assert.equal(pick('calculator for molar mass').id, 'molar-mass');
   assert.ok(isLibrary('formula calculators')); for (const a of formulas.nearMisses) assert.ok(!formulas.match(a.toLowerCase(), a), a);
   for (const a of formulas.examples) assert.ok(formulas.match(a.toLowerCase(), a), a);
+  for (const a of ['age calculator', 'bmi calculator', 'calorie calculator', 'savings calculator', 'paint calculator', 'flooring calculator', 'wallpaper calculator', 'calculator for drywall'])
+    assert.ok(!formulas.match(a.toLowerCase(), a), 'left to its own skill: ' + a);
+  assert.ok(formulas.match('bmr calculator', 'bmr calculator'), 'a calculator no other skill answers is still taken');
   let html = '', page = ''; const api = { esc: (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]), showPage: (f) => { const el = { dataset: {} }; f(el); html = el.innerHTML; page = el.dataset.page; return el; } };
   return formulas.run('pipe surface area calculator', api).then((name) => {
     assert.equal(name, 'formulas'); assert.equal(page, '/calculators/'); assert.match(html, /5\.23599 ft²/); assert.match(html, /href="\/calculators\/\?calc=pipe-surface-area"/);
