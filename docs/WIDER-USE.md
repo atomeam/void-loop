@@ -28,7 +28,8 @@ Owner rule, 2026-10-28 (paraphrased): when a Verse page is a version of an exist
 - A tie passes: a Verse page that scores the same as its rival, including 11 against 11, passes the gate.
 - The photo editor page keeps the name "Photo editor".
 - When no visitor data is there, the pages to audit first are the top 40 in sitemap order.
-- The front page (/) is one quiet input on purpose. Most of the score's text checks find nothing on an empty stage, so a low score there is about the design, not a bug. Changing it needs the owner.
+
+Note (box): the front page (/) is one quiet input on purpose. Most of the score's text checks find nothing on an empty stage, so its 3.5 comes from that design, not from a bug. Raising it means showing more on the empty stage, and that is the owner's call.
 
 ## First audit, 2026-10-28 (live site, 98 pages scored), worst first
 
