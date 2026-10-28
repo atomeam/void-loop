@@ -5893,5 +5893,6 @@
   {"at": "2026-10-28T16:39:48Z", "by": "grok-bot", "kind": "fix", "what": "The hosting card left the routing order: its match was a bare regex, so the router threw on every ask that reached it and every skills PR failed review; it goes back when rebuilt to the skill shape. Family members whose file name differs from their name (night-sky.js) now count as listed", "try": "weather in Boston"},
   {"at": "2026-10-28T17:23:25Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"fix the gradient on this\"", "try": "fix the gradient on this"},
   {"at": "2026-10-28T17:33:00Z", "by": "verse", "kind": "fix", "what": "Verse fixes its photo-tools skill: learn to handle \"edit lighting on this photo\"", "try": "edit lighting on this photo"},
-  {"at": "2026-10-28T18:23:19Z", "by": "verse", "kind": "fix", "what": "Verse fixes its photo-tools skill: learn to handle \"fix lighting on this\"", "try": "fix lighting on this"}
+  {"at": "2026-10-28T18:23:19Z", "by": "verse", "kind": "fix", "what": "Verse fixes its photo-tools skill: learn to handle \"fix lighting on this\"", "try": "fix lighting on this"},
+  {"at": "2026-10-28T18:43:37Z", "by": "verse", "kind": "fix", "what": "Verse fixes its gradient skill: learn to handle \"render a sphere with pink to blue\"", "try": "render a sphere with pink to blue"}
 ]
