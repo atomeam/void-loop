@@ -46,6 +46,8 @@ const ONLY_WHEN = {
   // (<span class="gl ...">: skills/films.js and skills/is-it.js today, any file that gains one tomorrow); the styles are the page's
   // every page doing its own job in a real browser (tools/real-pages.mjs): only the pages this branch changed, so a page edit is tested there
   'real-pages.mjs': /(?:^|\/)index\.html$|real-pages/,
+  // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
+  'handoff-e2e.mjs': /void-live-deploy\/(?:bpm|metronome)\/|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
 const readText = (f) => { try { return readFileSync(resolve(here, '..', f), 'utf8'); } catch (_) { return ''; } }; // a deleted file is no title
@@ -60,7 +62,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -77,6 +79,8 @@ const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipW
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
+  ['handoff-scan', 'handoff-scan.test.mjs'],
+  ['handoff-e2e', 'handoff-e2e.mjs'],
   ['backdrop', 'backdrop.test.mjs'],
   ['fringe', 'fringe.mjs'],
   ['telemetry-route', 'telemetry-route.test.mjs'],

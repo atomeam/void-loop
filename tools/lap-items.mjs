@@ -5,6 +5,7 @@
 // and can prove the item got measurably better. Writes void-live-deploy/lap.items.json (served publicly: names and counts, nothing private).
 //   node tools/lap-items.mjs           print the counts by group
 //   node tools/lap-items.mjs --write   write the file
+import { scan as handoffScan } from './handoff-scan.mjs';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rd = (p) => { try { return fs.readFileSync(path.join(root, p), 'utf8'); } catch (_) { return ''; } };
@@ -55,6 +56,10 @@ export function inventory() {
   // every page does its own job (tools/real-pages.mjs; owner, 2026-10-28: pages are real, never pretend): the pages it covers, the
   // pages that say honestly on the page what needs a partner ([data-honest]), and the size of its specs. A lap raises the specs' depth.
   { const pages = walk('void-live-deploy').filter((f) => /(^|\/)index\.html$/.test(f) && !/node_modules/.test(f)); items.push({ id: 'loop:real-pages', group: 'loop', facts: { pages: pages.length, honestLabels: pages.filter((f) => /data-honest/.test(rd(f))).length, specLines: lines(rd('tools/real-pages.mjs')), inChecks: /real-pages\.mjs/.test(rd('tools/checks.mjs')) ? 1 : 0 } }); }
+  // page-to-page connections (owner, 2026-10-28: keep finding connections we haven't considered): every page's inputs and outputs,
+  // the connections not built yet ranked by usefulness (docs/HANDOFF-GAPS.md, tools/handoff-scan.mjs). A lap builds the top few and plays
+  // each end to end (tools/handoff-e2e.mjs). Facts that only rise: connections built, pages with their own tag, journeys played.
+  { const s = handoffScan(); items.push({ id: 'loop:handoffs', group: 'loop', facts: { built: s.built.length, declared: s.pages.filter((p) => p.declared).length, journeys: (rd('tools/handoff-e2e.mjs').match(/^  '[^']+': async/gm) || []).length } }); }
   items.push({ id: 'loop:meta', group: 'loop', facts: { lapTests: tests.includes('lap.test.mjs') ? 1 : 0, checks: (rd('tools/checks.mjs').match(/name:/g) || []).length } });
   return items;
 }

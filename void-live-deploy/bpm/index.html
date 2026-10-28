@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BPM counter: tap the beat to find the tempo · Verse</title>
+<meta name="verse-handoff" content="in: number; out: number">
 <meta name="description" content="A free BPM counter: tap any key or the button along with a song to find its tempo, with half and double, the average of your taps, note lengths in milliseconds and Hz, and the tempo of an audio file worked out on your device. No account, nothing uploaded.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
@@ -107,6 +108,7 @@
     <div class="row c"><button type="button" id="half">Half time (÷2)</button><button type="button" id="dbl">Double time (×2)</button><button type="button" id="rst">Reset</button><button type="button" id="click" aria-pressed="false">Click on each tap</button></div>
     <div class="row"><label>Average the last (taps)<select id="keep"><option>4</option><option>8</option><option selected>12</option><option>24</option></select></label><label>Start over after a pause of (s)<select id="gap"><option>1.5</option><option selected>2.5</option><option>4</option></select></label><label class="chk"><input type="checkbox" id="whole"> Round to whole BPM</label></div>
     <p class="note" id="tempoWord" style="text-align:center">10 to 15 taps give the most reliable tempo.</p>
+    <p class="note" style="text-align:center"><a id="toMetro" href="/metronome/" hidden>Play this tempo on the metronome</a></p>
   </section>
   <section class="pane" aria-label="Note lengths">
     <h2>Note lengths at this tempo</h2>

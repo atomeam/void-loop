@@ -262,6 +262,7 @@ Tools and notes left for each other.
 
 ## Lessons
 
+- **A new page says what it takes and gives**: add `<meta name="verse-handoff" content="in: ...; out: ...">` when it ships (types in `tools/handoff-scan.mjs`); every lap builds the top connections in `docs/HANDOFF-GAPS.md` and plays them in `tools/handoff-e2e.mjs` (standing item in docs/NEXT.md).
 - **Rumble's page id is not its embed id**: rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing.
 - **A skill file is imported in Node too**: tools/skills-check.mjs imports every skill, so a top-level addEventListener or document call must be guarded with typeof.
 - **"your videos" is Verse's films**: a video skill ranked early took "show me your videos" from the films skill; skills-check caught it.

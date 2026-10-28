@@ -11,6 +11,8 @@ const whole = () => $('whole').checked;
 function show(v) {
   bpm = v == null ? null : (whole() ? Math.round(v) : Math.round(v * 10) / 10);
   $('bpmOut').textContent = bpm == null ? '–' : bpm; if (bpm != null) $('tempoWord').textContent = tempoName(bpm) + ' · ' + Math.round(60000 / bpm) + ' ms ' + t('per beat'); lens(); length();
+  // the tempo handed on (docs/HANDOFF-GAPS.md): the metronome opens at it, since it reads ?bpm=
+  const go = $('toMetro'); if (go) { go.hidden = bpm == null; if (bpm != null) go.href = '/metronome/?bpm=' + bpm; }
 }
 function lens() {
   const tb = $('lens').tBodies[0]; tb.textContent = ''; $('lensFor').textContent = bpm == null ? t('At 120 BPM until you tap a tempo (ms per note; Hz is how often it falls each second):') : t('At') + ' ' + bpm + ' BPM (ms ' + t('per note') + '; Hz ' + t('is how often it falls each second') + '):';
