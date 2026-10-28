@@ -77,6 +77,15 @@
   .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; } .srcs a { color: inherit; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; margin: 6px 0 0; font-size: 12px; color: var(--soft); }
+  .chips button { min-height: 32px; padding: 3px 10px; font-size: 13px; }
+  .lsearch input { font: inherit; font-size: 14px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; min-height: 34px; width: 13em; }
+  .kbd { display: flex; flex-direction: column; gap: 4px; margin: 8px 0 0; }
+  .kbd .keys { display: flex; flex-wrap: wrap; gap: 4px; }
+  .kbd .keys button { min-width: 36px; min-height: 36px; padding: 2px 6px; border-radius: 8px; font-size: 17px; }
+  .pad { width: 100%; max-width: 600px; height: 180px; background: #fff; border-radius: 10px; touch-action: none; display: block; margin: 8px 0 0; }
+  #fb textarea, #convT { width: 100%; }
+  .conv li b { display: block; } .conv li span { color: var(--soft); font-size: 13px; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/translate/">
@@ -97,6 +106,8 @@
       <label class="vh" for="to" id="toL">To</label>
       <select id="to" aria-labelledby="toL"><option value="af">Afrikaans</option><option value="sq">Albanian · Shqip</option><option value="am">Amharic · አማርኛ</option><option value="ar">Arabic · العربية</option><option value="hy">Armenian · Հայերեն</option><option value="ast">Asturian · Asturianu</option><option value="az">Azerbaijani · Azərbaycan</option><option value="ba">Bashkir · Башҡорт</option><option value="be">Belarusian · Беларуская</option><option value="bn">Bengali · বাংলা</option><option value="bs">Bosnian · Bosanski</option><option value="br">Breton · Brezhoneg</option><option value="bg">Bulgarian · Български</option><option value="my">Burmese · မြန်မာ</option><option value="ca">Catalan · Català</option><option value="ceb">Cebuano</option><option value="zh">Chinese · 中文</option><option value="hr">Croatian · Hrvatski</option><option value="cs">Czech · Čeština</option><option value="da">Danish · Dansk</option><option value="nl">Dutch · Nederlands</option><option value="en">English</option><option value="et">Estonian · Eesti</option><option value="tl">Filipino</option><option value="fi">Finnish · Suomi</option><option value="fr">French · Français</option><option value="fy">Frisian · Frysk</option><option value="ff">Fulah · Fulfulde</option><option value="gl">Galician · Galego</option><option value="lg">Ganda · Luganda</option><option value="ka">Georgian · ქართული</option><option value="de">German · Deutsch</option><option value="el">Greek · Ελληνικά</option><option value="gu">Gujarati · ગુજરાતી</option><option value="ht">Haitian Creole · Kreyòl ayisyen</option><option value="ha">Hausa</option><option value="he">Hebrew · עברית</option><option value="hi">Hindi · हिन्दी</option><option value="hu">Hungarian · Magyar</option><option value="is">Icelandic · Íslenska</option><option value="ig">Igbo</option><option value="ilo">Ilocano · Ilokano</option><option value="id">Indonesian · Bahasa Indonesia</option><option value="ga">Irish · Gaeilge</option><option value="it">Italian · Italiano</option><option value="ja">Japanese · 日本語</option><option value="jv">Javanese · Basa Jawa</option><option value="kn">Kannada · ಕನ್ನಡ</option><option value="kk">Kazakh · Қазақ</option><option value="km">Khmer · ខ្មែរ</option><option value="ko">Korean · 한국어</option><option value="lo">Lao · ລາວ</option><option value="lv">Latvian · Latviešu</option><option value="ln">Lingala · Lingála</option><option value="lt">Lithuanian · Lietuvių</option><option value="lb">Luxembourgish · Lëtzebuergesch</option><option value="mk">Macedonian · Македонски</option><option value="mg">Malagasy</option><option value="ms">Malay · Bahasa Melayu</option><option value="ml">Malayalam · മലയാളം</option><option value="mr">Marathi · मराठी</option><option value="mn">Mongolian · Монгол</option><option value="ne">Nepali · नेपाली</option><option value="ns">Northern Sotho · Sesotho sa Leboa</option><option value="no">Norwegian · Norsk</option><option value="oc">Occitan</option><option value="or">Odia · ଓଡ଼ିଆ</option><option value="ps">Pashto · پښتو</option><option value="fa">Persian · فارسی</option><option value="pl">Polish · Polski</option><option value="pt">Portuguese · Português</option><option value="pa">Punjabi · ਪੰਜਾਬੀ</option><option value="ro">Romanian · Română</option><option value="ru">Russian · Русский</option><option value="gd">Scottish Gaelic · Gàidhlig</option><option value="sr">Serbian · Српски</option><option value="sd">Sindhi · سنڌي</option><option value="si">Sinhala · සිංහල</option><option value="sk">Slovak · Slovenčina</option><option value="sl">Slovenian · Slovenščina</option><option value="so">Somali · Soomaali</option><option value="es" selected>Spanish · Español</option><option value="su">Sundanese · Basa Sunda</option><option value="sw">Swahili · Kiswahili</option><option value="ss">Swati · siSwati</option><option value="sv">Swedish · Svenska</option><option value="ta">Tamil · தமிழ்</option><option value="th">Thai · ไทย</option><option value="tn">Tswana · Setswana</option><option value="tr">Turkish · Türkçe</option><option value="uk">Ukrainian · Українська</option><option value="ur">Urdu · اردو</option><option value="uz">Uzbek · Oʻzbek</option><option value="vi">Vietnamese · Tiếng Việt</option><option value="cy">Welsh · Cymraeg</option><option value="wo">Wolof</option><option value="xh">Xhosa · isiXhosa</option><option value="yi">Yiddish · ייִדיש</option><option value="yo">Yoruba · Yorùbá</option><option value="zu">Zulu · isiZulu</option></select>
     </div>
+    <div class="chips" id="recentRow" hidden><span id="recentL">Recent languages:</span> <span class="chips" id="recentLangs" role="group" aria-labelledby="recentL"></span></div>
+    <div class="chips lsearch"><label class="vh" for="langQ">Search the languages</label><input type="search" id="langQ" placeholder="Search languages" autocomplete="off" enterkeyhint="go"><label class="vh" for="langFor">Set it as</label><select id="langFor"><option value="to">as the language to translate into</option><option value="from">as the language typed</option></select><span class="chips" id="langHits" aria-live="polite"></span></div>
     <div class="panes">
       <div class="pane">
         <label class="vh" for="in">Text to translate</label>
@@ -109,9 +120,14 @@
           <input type="file" id="pic" accept="image/*" capture="environment" hidden>
           <button type="button" id="file" title="Translate a Word, PowerPoint, Excel or PDF document, or a text, subtitle (SRT, VTT) or JSON file: its layout, timings and keys kept">Document</button>
           <input type="file" id="doc" accept=".docx,.pptx,.xlsx,.pdf,.txt,.srt,.vtt,.json,.md,text/plain,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+          <button type="button" id="kbdB" aria-expanded="false" aria-controls="kbd" title="An on-screen keyboard for the language you type in">Keyboard</button>
+          <button type="button" id="handB" aria-expanded="false" aria-controls="hand" title="Write with a finger, pen or mouse; Verse reads it">Handwriting</button>
           <button type="button" id="clear">Clear</button>
           <span class="count" id="count">0 / 5000 characters</span>
         </div>
+        <div class="kbd" id="kbd" role="group" aria-label="On-screen keyboard" hidden></div>
+        <div id="hand" hidden><canvas class="pad" id="pad" width="600" height="180" aria-label="Handwriting pad: write here with a finger, pen or mouse"></canvas>
+          <div class="row"><button type="button" class="go" id="handGo">Read my handwriting</button><button type="button" id="handClear">Clear the pad</button></div></div>
       </div>
       <div class="pane" id="outPane">
         <output class="big" id="out" aria-live="polite" for="in"></output>
@@ -124,8 +140,11 @@
           <button type="button" id="save" title="Keep it in your saved phrases">Save</button>
           <button type="button" id="dictB" title="The dictionary for a single word: meanings, other translations and how common each is, examples">Dictionary</button>
           <button type="button" id="backB" title="Translate the result back, to check it">Back-translate</button>
+          <button type="button" id="fbB" aria-expanded="false" aria-controls="fb" title="Suggest a better translation: yours is kept on this device and comes back whenever you translate the same words">Suggest an edit</button>
           <label class="tone" id="toneL">Tone <select id="tone" disabled><option value="">Default</option></select></label>
         </div>
+        <div id="fb" hidden><label class="vh" for="fbT">Your translation</label><textarea id="fbT" rows="2"></textarea>
+          <div class="row"><button type="button" class="go" id="fbSave">Use mine</button><button type="button" id="fbUndo">Back to the machine's</button></div></div>
         <div class="pop" id="pop" role="dialog" aria-labelledby="popW" hidden></div>
       </div>
     </div>
@@ -151,6 +170,18 @@
     <textarea id="gloss" placeholder="Verse = Verse&#10;checkout = caja"></textarea>
   </details>
 
+  <details class="more" id="convD"><summary id="convS">Conversation</summary>
+    <p class="hint">Two people, two languages, one device: each taps their side and speaks (or types); Verse translates it and reads it aloud for the other.</p>
+    <div class="row"><button type="button" class="go" id="convA">Speak</button><button type="button" class="go" id="convB">Speak</button></div>
+    <label class="vh" for="convT">Or type a line</label><input type="text" id="convT" placeholder="Or type a line, then send it as either side">
+    <div class="row"><button type="button" id="convTA">Send</button><button type="button" id="convTB">Send</button><button type="button" id="convClear">Clear the conversation</button></div>
+    <ul class="list conv" id="convLog" aria-live="polite"></ul>
+  </details>
+  <details class="more" id="bmD"><summary>Translate any page you visit</summary>
+    <p class="hint">Drag this bookmarklet to your bookmarks bar. On any page, click it: your selected words open here translated, or with nothing selected, the whole page.</p>
+    <p><a id="bm" href="javascript:(function(){var s=String(getSelection()).trim();location.href='https://a-to-mind.com/translate/?'+(s?'q='+encodeURIComponent(s.slice(0,5000)):'url='+encodeURIComponent(location.href));})()">Verse Translate</a></p>
+  </details>
+
   <div class="hrow"><h2 id="savedH">Saved phrases</h2><button type="button" id="practice" title="Flashcards from your saved phrases">Practice</button></div>
   <div class="card" id="card" hidden></div>
   <ul class="list" id="saved"><li class="empty" id="savedEmpty">Nothing saved yet: Save keeps a translation here, on this device.</li></ul>
@@ -160,7 +191,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/translate/?q=hello&amp;to=es">hello in Spanish</a><a href="/translate/?q=thank%20you&amp;to=ja">thank you in Japanese</a><a href="/translate/?q=good%20morning&amp;to=fr">good morning in French</a><a href="/translate/?from=es&amp;to=en">Spanish to English</a><a href="/translate/?from=de&amp;to=en">German to English</a><a href="/translate/?from=en&amp;to=zh">English to Chinese</a></nav>
 <!-- /asks -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/time/">Time zones</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/time/">Time zones</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 
   <p class="srcs" id="srcs">Translations come from Meta's many-to-many model (100 languages) on Verse's own compute, with MyMemory's free translation memory as the stand-in; tone, glossary, other words and examples from Verse's free model; meanings from Wiktionary. Only the text goes to Verse; nothing is stored. Documents are opened and put back together on this device. Listening and speaking use the voices and microphone of this device.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
@@ -168,7 +199,7 @@
 <script type="module">
   // everything after the first paint: the page shows its boxes and its words at once, the modules land after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, L] = await Promise.all([import('/lib/toolkit.js'), import('/lib/translate-langs.js')]);
+    const [{ mountRelated }, L, X] = await Promise.all([import('/lib/toolkit.js'), import('/lib/translate-langs.js'), import('/lib/translate-extras.js')]);
     const docs = () => import('/lib/translate-docs.js'); // only when a document is translated
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.translate.v1', MAX_HIST = 30, RTL = /^(?:ar|fa|he|ur|ps|sd|yi)$/;
     const W = L.wordsFor(navigator.language);
@@ -187,8 +218,8 @@
     }
     const q = new URLSearchParams(location.search);
     const state = { from: 'auto', to: 'es', text: '', out: '', detected: '', via: '' };
-    let store = { hist: [], saved: [], to: '', tones: {}, gloss: {} };
-    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; store.tones = store.tones || {}; store.gloss = store.gloss || {}; } catch (_) {}
+    let store = { hist: [], saved: [], to: '', tones: {}, gloss: {}, recentTo: [], recentFrom: [], fix: {} };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; store.tones = store.tones || {}; store.gloss = store.gloss || {}; store.fix = store.fix || {}; store.recentTo = store.recentTo || []; store.recentFrom = store.recentFrom || []; } catch (_) {}
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
     // where to: the link, then the last choice, then the browser's own language unless that is what is typed in
     const own = L.codeOf(navigator.language) || 'en';
@@ -244,10 +275,12 @@
       const parts = [];
       if (detected && state.from === 'auto') parts.push(W.detected + ': ' + L.nameOf(detected));
       if (via === 'mymemory') parts.push(de ? 'über MyMemory' : 'via MyMemory'); if (via === 'offline') parts.push(de ? 'aus dem Verlauf (offline)' : 'from your history (offline)');
+      if (via === 'yours') parts.push(de ? 'Ihre eigene Korrektur, auf diesem Gerät' : 'Your own correction, kept on this device');
       if (via === 'same') parts.push(de ? 'Gleiche Sprache: nichts zu übersetzen' : 'Same language on both sides: nothing to translate');
       if (note) parts.push(note);
       say(parts.join(' · '));
-      for (const id of ['listen', 'copy', 'share', 'save', 'backB']) $(id).disabled = !out;
+      for (const id of ['listen', 'copy', 'share', 'save', 'backB', 'fbB']) $(id).disabled = !out;
+      $('fb').hidden = true; $('fbB').setAttribute('aria-expanded', 'false');
       $('dictB').disabled = !wordy($('in').value);
     }
     const wordy = (t) => { const s = String(t || '').trim(); return !!s && s.length <= 60 && s.split(/\s+/).length <= 3 && !/[.!?。]\s/.test(s); };
@@ -259,11 +292,13 @@
       if (key === last && !force) return; last = key;
       const my = ++seq, had = store.hist.find((h) => h.q === text && h.to === state.to && (h.from || 'auto') === state.from && (h.tone || '') === (ex.tone || ''));
       if (!navigator.onLine && had) return show(had.out, had.from, had.detected, 'offline');
+      const mine = X.correctionFor(store.fix, text, state.from, state.to);
+      if (mine) { state.machine = ''; return show(mine, state.from, '', 'yours'); }
       $('out').className = 'big wait'; $('out').textContent = W.working + '…';
       try {
         const { ok, j } = await post({ text, from: state.from === 'auto' ? '' : state.from, to: state.to, ...ex }); if (my !== seq) return;
         if (!ok || !j.text) throw new Error(j.error || 'no answer');
-        show(j.text, j.from, j.detected, j.via, j.note);
+        show(j.text, j.from, j.detected, j.via, j.note); state.machine = j.text; used();
         const it = { q: text, out: j.text, from: state.from === 'auto' ? '' : state.from, detected: j.detected || '', to: state.to, at: Date.now(), ...(j.tone ? { tone: j.tone } : {}) };
         store.hist = [it].concat(store.hist.filter((h) => !(h.q === text && h.to === state.to))).slice(0, MAX_HIST); store.to = state.to; keep(); lists();
         if (acted && wordy(text)) dictionary(text, j.from || srcLang(), state.to); else if (!wordy(text)) $('dict').hidden = true;
@@ -321,6 +356,111 @@
       rec.onend = () => { rec = null; $('speak').setAttribute('aria-pressed', 'false'); };
       try { rec.start(); } catch (_) { rec = null; }
     });
+    // ---- catching up with the original (docs/PARITY/google-translate.md): recent languages, language search, keyboard, handwriting,
+    // your own corrections, conversation. The rules are in lib/translate-extras.js (tools/translate-extras.test.mjs) ----
+    const chip = (code, label, fn) => { const b = el('button', { type: 'button', textContent: label || L.nameOf(code) }); b.dataset.lang = code; b.addEventListener('click', fn); return b; };
+    const setTo = (c) => { if (!L.LANGS[c]) return; $('to').value = c; $('to').dispatchEvent(new Event('change')); };
+    const setFrom = (c) => { if (!L.LANGS[c]) return; $('from').value = c; $('from').dispatchEvent(new Event('change')); };
+    function recentShow() {
+      const to = store.recentTo.filter((c) => c !== state.to), from = store.recentFrom.filter((c) => c !== state.from);
+      $('recentLangs').replaceChildren(...to.map((c) => chip(c, '→ ' + L.nameOf(c), () => setTo(c))), ...from.map((c) => chip(c, L.nameOf(c) + ' →', () => setFrom(c))));
+      $('recentRow').hidden = !to.length && !from.length;
+    }
+    function used() {
+      store.recentTo = X.recentLangs(store.recentTo, state.to);
+      if (state.from !== 'auto') store.recentFrom = X.recentLangs(store.recentFrom, state.from);
+      keep(); recentShow(); convNames();
+    }
+    recentShow();
+    function langHits() {
+      const hits = X.matchLangs($('langQ').value, 8), side = $('langFor').value;
+      $('langHits').replaceChildren(...hits.map((c) => chip(c, L.LANGS[c][0] + (L.LANGS[c][1] !== L.LANGS[c][0] ? ' · ' + L.LANGS[c][1] : ''), () => { (side === 'from' ? setFrom : setTo)(c); $('langQ').value = ''; langHits(); })));
+      if ($('langQ').value.trim() && !hits.length) $('langHits').textContent = de ? 'Keine Sprache gefunden' : 'No language by that name';
+    }
+    $('langQ').addEventListener('input', langHits);
+    $('langFor').addEventListener('change', langHits);
+    $('langQ').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); const b = $('langHits').querySelector('button'); if (b) b.click(); } });
+    // the on-screen keyboard: the letters of the language you type in (or one you pick), put in at the caret
+    let kbdLang = '';
+    function kbd() {
+      const box = $('kbd'), code = kbdLang || (X.keyboardFor(srcLang()) ? srcLang() : X.keyboardFor(state.to) ? state.to : 'ru');
+      const pick = el('select', { id: 'kbdLang' }); pick.setAttribute('aria-label', de ? 'Tastatur für' : 'Keyboard for');
+      for (const c of X.KEYBOARD_LANGS.slice().sort((a, b) => L.nameOf(a).localeCompare(L.nameOf(b)))) pick.append(el('option', { value: c, textContent: L.nameOf(c), selected: c === code }));
+      pick.addEventListener('change', () => { kbdLang = pick.value; kbd(); });
+      const rows = (X.keyboardFor(code) || []).concat([['␣', '⌫']]).map((r) => {
+        const d = el('div', { className: 'keys' });
+        for (const k of r) { const b = el('button', { type: 'button', textContent: k }); b.setAttribute('aria-label', k === '␣' ? 'space' : k === '⌫' ? 'backspace' : k); b.addEventListener('mousedown', (e) => e.preventDefault()); b.addEventListener('click', () => press(k)); d.append(b); }
+        return d;
+      });
+      box.replaceChildren(pick, ...rows); box.lang = code; box.dir = RTL.test(code) ? 'rtl' : 'ltr';
+    }
+    function press(k) {
+      const t = $('in'), r = X.typeKey(t.value, t.selectionStart, t.selectionEnd, k);
+      t.value = r.value.slice(0, L.MAX_CHARS); t.setSelectionRange(r.caret, r.caret); t.dispatchEvent(new Event('input'));
+    }
+    $('kbdB').addEventListener('click', () => { const open = $('kbd').hidden; $('kbd').hidden = !open; $('kbdB').setAttribute('aria-expanded', String(open)); $('kbdB').setAttribute('aria-pressed', String(open)); if (open) kbd(); });
+    $('from').addEventListener('change', () => { if (!$('kbd').hidden && !kbdLang) kbd(); });
+    // handwriting: draw on the pad, Verse reads the picture (the same reader as Camera or photo) and translates it
+    const pad = $('pad'), pen = pad.getContext('2d'); let drawing = false, inked = false;
+    const blank = () => { pen.fillStyle = '#fff'; pen.fillRect(0, 0, pad.width, pad.height); pen.lineWidth = 5; pen.lineCap = 'round'; pen.lineJoin = 'round'; pen.strokeStyle = '#111'; inked = false; };
+    blank();
+    const at = (e) => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
+    pad.addEventListener('pointerdown', (e) => { drawing = true; inked = true; pad.setPointerCapture(e.pointerId); const [x, y] = at(e); pen.beginPath(); pen.moveTo(x, y); pen.lineTo(x + 0.1, y + 0.1); pen.stroke(); });
+    pad.addEventListener('pointermove', (e) => { if (!drawing) return; const [x, y] = at(e); pen.lineTo(x, y); pen.stroke(); });
+    addEventListener('pointerup', () => { drawing = false; });
+    $('handB').addEventListener('click', () => { const open = $('hand').hidden; $('hand').hidden = !open; $('handB').setAttribute('aria-expanded', String(open)); $('handB').setAttribute('aria-pressed', String(open)); });
+    $('handClear').addEventListener('click', blank);
+    $('handGo').addEventListener('click', async () => {
+      if (!inked) return say(de ? 'Schreiben Sie zuerst etwas auf die Fläche' : 'Write something on the pad first', true);
+      say(W.reading + '…');
+      try {
+        const { ok, j } = await post({ image: pad.toDataURL('image/jpeg', .9), from: state.from === 'auto' ? '' : state.from, to: state.to, ...extras() }); if (!ok || !j.text) throw new Error(j.error || 'no');
+        const t = $('in'), r = X.typeKey(t.value, t.selectionStart, t.selectionEnd, (t.value && !/\s$/.test(t.value) ? ' ' : '') + String(j.read || '').trim());
+        t.value = r.value.slice(0, L.MAX_CHARS); count(); blank(); acted = true; go(true);
+      } catch (e) { say(/no text/i.test(String(e.message)) ? W.nothingRead : W.none, true); }
+    });
+    // suggest an edit: your better translation, kept on this device, comes back whenever the same words are translated
+    $('fbB').addEventListener('click', () => { const open = $('fb').hidden; $('fb').hidden = !open; $('fbB').setAttribute('aria-expanded', String(open)); if (open) { $('fbT').value = state.out; $('fbT').focus(); } });
+    $('fbSave').addEventListener('click', () => {
+      const text = $('in').value.trim(), mine = $('fbT').value.trim(); if (!text) return;
+      store.fix = X.withCorrection(store.fix, text, state.from, state.to, mine, state.machine || ''); keep();
+      if (mine) { show(mine, state.from, state.detected, 'yours'); const h = store.hist.find((x) => x.q === text && x.to === state.to); if (h) { h.out = mine; keep(); lists(); } }
+    });
+    $('fbUndo').addEventListener('click', () => { const text = $('in').value.trim(); store.fix = X.withCorrection(store.fix, text, state.from, state.to, '', ''); store.fix = X.withCorrection(store.fix, text, 'auto', state.to, '', ''); keep(); last = ''; go(true); });
+    // conversation: each side speaks (or types) in their language; Verse translates it into the other's and reads it aloud
+    const convLangs = () => [srcLang(), state.to];
+    function convNames() {
+      const [a, b] = convLangs();
+      $('convA').textContent = (de ? 'Sprechen: ' : 'Speak ') + L.nameOf(a); $('convB').textContent = (de ? 'Sprechen: ' : 'Speak ') + L.nameOf(b);
+      $('convTA').textContent = (de ? 'Senden als ' : 'Send as ') + L.nameOf(a); $('convTB').textContent = (de ? 'Senden als ' : 'Send as ') + L.nameOf(b);
+    }
+    convNames(); $('to').addEventListener('change', convNames); $('from').addEventListener('change', convNames);
+    async function convSay(side, text) {
+      const [a, b] = convLangs(), t = X.turn(side, a, b), line = String(text || '').trim().slice(0, L.MAX_CHARS); if (!line) return;
+      const li = el('li', {}, el('b', { textContent: '…', lang: t.to }), el('span', { textContent: L.nameOf(t.from) + ': ' + line, lang: t.from }));
+      li.style.textAlign = t.side === 'b' ? 'right' : 'left'; $('convLog').append(li);
+      const mine = X.correctionFor(store.fix, line, t.from, t.to);
+      const { ok, j } = mine ? { ok: true, j: { text: mine } } : await post({ text: line, from: t.from, to: t.to }).catch(() => ({ ok: false, j: {} }));
+      li.firstChild.textContent = ok && j.text ? j.text : W.none; li.firstChild.dir = RTL.test(t.to) ? 'rtl' : 'ltr';
+      if (ok && j.text) speak(j.text, t.to);
+    }
+    let convRec = null;
+    function convListen(side) {
+      if (!SR) return say($('speak').title, true);
+      if (convRec) { convRec.stop(); return; }
+      const t = X.turn(side, ...convLangs()), b = $(side === 'b' ? 'convB' : 'convA');
+      convRec = new SR(); convRec.lang = t.from; convRec.interimResults = false; convRec.continuous = false; b.setAttribute('aria-pressed', 'true');
+      convRec.onresult = (e) => { let s2 = ''; for (const r of e.results) s2 += r[0].transcript; convSay(side, s2); };
+      convRec.onerror = (e) => say((de ? 'Mikrofon: ' : 'Microphone: ') + (e.error || 'no'), true);
+      convRec.onend = () => { convRec = null; b.setAttribute('aria-pressed', 'false'); };
+      try { convRec.start(); } catch (_) { convRec = null; b.setAttribute('aria-pressed', 'false'); }
+    }
+    $('convA').addEventListener('click', () => convListen('a')); $('convB').addEventListener('click', () => convListen('b'));
+    $('convTA').addEventListener('click', () => { convSay('a', $('convT').value); $('convT').value = ''; });
+    $('convTB').addEventListener('click', () => { convSay('b', $('convT').value); $('convT').value = ''; });
+    $('convT').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('convTA').click(); } });
+    $('convClear').addEventListener('click', () => $('convLog').replaceChildren());
+
     // camera or photo: a picture downsized on the device, read by Verse, then translated
     $('camera').addEventListener('click', () => $('pic').click());
     $('pic').addEventListener('change', async () => {
