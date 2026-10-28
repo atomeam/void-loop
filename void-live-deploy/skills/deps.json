@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 905,
+ "counted": 907,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1109,6 +1109,13 @@
    "tests": 1
   },
   {
+   "file": "lib/wheel.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
    "file": "lib/a11y-modes.js",
    "skills": 1,
    "direct": 1,
@@ -1558,13 +1565,6 @@
   },
   {
    "file": "lib/web4.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/wheel.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2082,6 +2082,13 @@
    "tests": 1
   },
   {
+   "file": "lib/prizes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 3
+  },
+  {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
@@ -2307,6 +2314,13 @@
   },
   {
    "file": "lib/ground.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/handoff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5463,6 +5477,13 @@
     "skills/shop.js"
    ]
   },
+  "lib/handoff.js": {
+   "imports": [
+    "lib/wheel.js",
+    "lib/prizes.js"
+   ],
+   "importedBy": []
+  },
   "lib/health-habits.js": {
    "imports": [],
    "importedBy": [
@@ -6949,6 +6970,12 @@
     "lib/bench-asks.js",
     "lib/jobs-ui.js",
     "skills/work.js"
+   ]
+  },
+  "lib/prizes.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/handoff.js"
    ]
   },
   "lib/probe-asks.js": {
@@ -8969,6 +8996,7 @@
   "lib/wheel.js": {
    "imports": [],
    "importedBy": [
+    "lib/handoff.js",
     "skills/wheel.js"
    ]
   },

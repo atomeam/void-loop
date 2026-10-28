@@ -509,16 +509,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:14:04Z",
+   "subject": "Random number: everyday draws first, proof kept"
+  },
+  {
+   "at": "2026-10-28T20:13:09Z",
+   "subject": "Photos lane: plain titles and plain-name URLs for four brand-slug pages"
+  },
+  {
    "at": "2026-10-28T20:05:03Z",
    "subject": "Tower gate: coin flip measured against their live sites"
   },
   {
-   "at": "2026-10-28T20:03:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:03:14Z",
-   "subject": "Photo resizer: a plain title and lead line, with presets grouped for passports, online forms, social and print"
+   "at": "2026-10-28T20:04:29Z",
+   "subject": "Prizes: mark the export button's text as reviewed"
   },
   {
    "at": "2026-10-28T20:02:55Z",
@@ -527,6 +531,10 @@
   {
    "at": "2026-10-28T20:02:55Z",
    "subject": "Lists run 7: shop family (store + services), a mail card for email asks, friendly openers, value drift, common asks on calculator and random"
+  },
+  {
+   "at": "2026-10-28T20:01:49Z",
+   "subject": "Prizes: a weighted prize wheel with real odds, EV, a seedable 1,000-spin check and a reward drip calculator; a list handoff between wheel…"
   },
   {
    "at": "2026-10-28T20:01:09Z",
@@ -579,14 +587,6 @@
   {
    "at": "2026-10-28T18:37:20Z",
    "subject": "Tower gate: coin flip measured against their live sites"
-  },
-  {
-   "at": "2026-10-28T18:33:32Z",
-   "subject": "Forethinkers 2026-10-28 14:15: CBASS heat assay bounded by field checks; heat table to 27 Oct; coral heat-test growth row (#1338)"
-  },
-  {
-   "at": "2026-10-28T18:25:08Z",
-   "subject": "Tower gate: coin flip,identity measured against their live sites"
   }
  ],
  "builders": {

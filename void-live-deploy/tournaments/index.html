@@ -77,10 +77,14 @@
 <script src="/visit.js" defer></script>
 
 <!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/prizes.js">
 <link rel="modulepreload" href="/lib/scrim.js">
 <!-- /modulepreload -->
 </head>
 <body>
+<script type="module">import { hookTournaments } from '/lib/handoff.js'; hookTournaments(location.search); // the prize and wheel handoff (lib/handoff.js): runs before the scorer rewrites the address</script>
 <main>
   <h1>Tournament standings</h1>
   <p class="sub">Score a Fortnite-style scrim in the browser. Type a result or paste a CSV and the page works out points, standings and the official tiebreakers. Placement pays the highest matching threshold, so a win is worth the win points rather than the win plus the top-five points. Split the lobby into heats, claim drop spots, and share the whole set as a link.</p>

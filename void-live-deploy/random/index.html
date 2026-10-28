@@ -53,11 +53,15 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/prizes.js">
 <!-- /modulepreload -->
 </head>
 <body>
 <main>
   <h1 id="what">Random number</h1>
+  <p class="lead" id="lead" style="font-size:14px;color:var(--soft);text-align:center;margin:0 0 8px">Roll dice, flip a coin, draw raffle winners, shuffle cards or pick any number, fair and on this device.</p>
+  <div class="row" id="presets" role="group" aria-label="Everyday draws"><button type="button" class="quiet" data-q="dice">Dice</button><button type="button" class="quiet" data-q="coin">Coin</button><button type="button" class="quiet" data-q="raffle">Raffle draw</button><button type="button" class="quiet" data-q="deck">Shuffled deck</button><button type="button" class="quiet" data-q="beacon" title="Numbers from a public randomness beacon: anyone with the link can check them">Verifiable beacon draw</button></div>
   <div id="out" aria-live="polite"></div>
   <div id="note"></div>
   <form id="f" autocomplete="off">
@@ -159,6 +163,14 @@
   if ([...$('dec').options].some((o) => o.value === p.get('dec'))) $('dec').value = p.get('dec');
   if (['2', '8', '16'].includes(p.get('base'))) $('base').value = p.get('base'); if (/^(?:[1-68]|10)$/.test(p.get('cols') || '')) $('cols').value = p.get('cols');
   draw();
+  // everyday presets (docs/WIDER-USE.md): each sets the same controls a person would, so the link, the copy and the proof work as before
+  const setRange = (a, b, n, u) => { $('min').value = a; $('max').value = b; $('n').value = n; $('uniq').checked = u; $('dec').value = '0'; $('base').value = '10'; };
+  $('presets').addEventListener('click', (e) => { const q = e.target.closest('button[data-q]'); if (!q) return; out.style.whiteSpace = '';
+    if (q.dataset.q === 'dice') { $('beacon').checked = false; setRange(1, 6, 1, false); draw(); }
+    else if (q.dataset.q === 'coin') { $('list').value = 'Heads\nTails'; $('listbox').open = true; $('pick').click(); $('what').textContent = 'Coin flip'; }
+    else if (q.dataset.q === 'raffle') { $('beacon').checked = false; setRange(1, 500, 3, true); draw(); $('note').textContent = 'Raffle: 3 winning tickets from 1 to 500, no repeats. Change the numbers above, or list names under "Pick from a list".'; }
+    else if (q.dataset.q === 'deck') { $('cardbox').open = true; newDeck(); $('cardbox').scrollIntoView({ block: 'nearest' }); }
+    else if (q.dataset.q === 'beacon') { $('beacon').checked = true; setRange(1, 100, 1, false); draw(); } });
   // playing cards (random.org's card shuffler): whole decks shuffled with the same unbiased secure draws, dealt round the table or turned one by one
   const SUITS = [['♠', 0], ['♥', 1], ['♦', 1], ['♣', 0]], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
   let deck = [];
@@ -192,11 +204,14 @@
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
   import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
+  import { mountStrip, prizesLink } from '/lib/handoff.js';
   const list = () => document.getElementById('list').value.split('\n').map((s) => s.trim()).filter(Boolean);
   mountRelated(document.getElementById('related'), '/random/', [
     { label: 'Spin your list on a wheel', href: () => (list().length ? '/wheel/#' + wheelCode(wheelEntries(list().join('\n'))) : null) },
+    { label: 'Prize odds for your list', href: () => (list().length ? prizesLink(list().join('\n')) : null) },
     { label: 'This number in other bases', href: () => { const v = document.getElementById('out').textContent.trim(); return /^-?\d+$/.test(v) ? '/base-converter/?v=' + v + '&b=10' : null; } },
   ]);
+  mountStrip(document.getElementById('related'), '/random/');
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

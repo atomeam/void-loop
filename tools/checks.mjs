@@ -504,6 +504,8 @@ for (const [name, file] of [
   ['site-icons', 'site-icons.test.mjs'],
   ['gradient', 'gradient.test.mjs'],
   ['wheel', 'wheel.test.mjs'],
+  ['prizes', 'prizes.test.mjs'],
+  ['handoff', 'handoff.test.mjs'],
   ['fakeuser', 'fakeuser.test.mjs'],
   ['beacon', 'beacon.test.mjs'],
   ['wordcount', 'wordcount.test.mjs'],
