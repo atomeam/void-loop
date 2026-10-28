@@ -509,7 +509,19 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T20:19:39Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:19:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:17:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:17:05Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -545,12 +557,24 @@
    "subject": "Photos lane: plain titles and plain-name URLs for four brand-slug pages"
   },
   {
+   "at": "2026-10-28T20:05:34Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-28T20:05:03Z",
    "subject": "Tower gate: coin flip measured against their live sites"
   },
   {
    "at": "2026-10-28T20:04:29Z",
    "subject": "Prizes: mark the export button's text as reviewed"
+  },
+  {
+   "at": "2026-10-28T20:03:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T20:03:14Z",
+   "subject": "Photo resizer: a plain title and lead line, with presets grouped for passports, online forms, social and print"
   },
   {
    "at": "2026-10-28T20:02:55Z",
@@ -563,30 +587,6 @@
   {
    "at": "2026-10-28T20:01:49Z",
    "subject": "Prizes: a weighted prize wheel with real odds, EV, a seedable 1,000-spin check and a reward drip calculator; a list handoff between wheel…"
-  },
-  {
-   "at": "2026-10-28T20:01:09Z",
-   "subject": "Builder: five red browser checks on main back to green (folder, figures together, three tool-page budgets) (#1343)"
-  },
-  {
-   "at": "2026-10-28T19:54:57Z",
-   "subject": "Tower gate: coin flip,nameunit,hosting measured against their live sites"
-  },
-  {
-   "at": "2026-10-28T19:54:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T19:54:00Z",
-   "subject": "Boards: a plain lead line, general starter boards, and plain labels with the board terms kept"
-  },
-  {
-   "at": "2026-10-28T19:53:28Z",
-   "subject": "Tournaments: optional per-match columns, a gap-to-lead or gap-to-cutoff hint, and a match-point rule"
-  },
-  {
-   "at": "2026-10-28T19:50:53Z",
-   "subject": "Hosting page: a queue and wait-time calculator for any service, with three examples (#1340)"
   }
  ],
  "builders": {
