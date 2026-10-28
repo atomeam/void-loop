@@ -28,6 +28,7 @@ const CSS = `
   button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
   button:disabled { opacity: .5; cursor: default; }
   .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  #tries a { padding: 8px 4px; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
   .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 130px; min-width: 0; }
   .row > label select, .row > label input { width: 100%; }
@@ -81,7 +82,8 @@ const TUNINGS = [['guitar-standard', 'Guitar, standard (E A D G B E)'], ['guitar
 const TEMPOS = [['Largo', 50], ['Adagio', 70], ['Andante', 92], ['Moderato', 114], ['Allegro', 132], ['Presto', 180]];
 
 const PAGES = {
-  metronome: { path: '/metronome/', title: 'Metronome online: tap tempo, accents, subdivisions · Verse', h1: 'Metronome', desc: 'A free online metronome from 20 to 400 BPM with tap tempo, every time signature, accents on each beat, subdivisions, nine sounds, a visual beat, a practice timer, a speed trainer and setlists. No account; it works offline.',
+  metronome: { path: '/metronome/', title: 'Metronome online: tap tempo, accents, subdivisions · Verse', h1: 'Metronome: a steady click to keep time', desc: 'A free online metronome from 20 to 400 BPM with tap tempo, every time signature, accents on each beat, subdivisions, nine sounds, a visual beat, a practice timer, a speed trainer and setlists. No account; it works offline.',
+    lead: '<strong>For practising an instrument, a workout, a dance or a speech.</strong> Press Start, or open a ready tempo:', tries: [['Piano practice 80', '?bpm=80&amp;sig=4%2F4'], ['Running 170 steps a minute', '?bpm=170&amp;sig=2%2F4'], ['A slow speech 60', '?bpm=60&amp;sig=4%2F4'], ['A waltz 100', '?bpm=100&amp;sig=3%2F4']],
     sub: 'A free online metronome: 20 to 400 BPM, tap tempo, any time signature, accents, subdivisions, nine sounds, a visual beat, a practice timer and setlists. Nothing leaves your device; it works offline.',
     body: `
   <section class="pane flash" id="stage" aria-label="Metronome">
@@ -100,7 +102,7 @@ const PAGES = {
     <div class="row"><label>Volume<input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></label><label>Beats per minute<input type="number" id="bpmIn" min="20" max="400" value="120" inputmode="numeric" aria-label="Type the tempo"></label></div>
     <div class="row"><label class="chk"><input type="checkbox" id="voice"> Voice count (says 1 2 3 4)</label><label class="chk"><input type="checkbox" id="vis" checked> Visual beat (flash)</label><label class="chk"><input type="checkbox" id="stress" checked> Accent the first beat</label></div>
     <h2>Tempo presets</h2>
-    <div class="row" id="presets">${TEMPOS.map(([n, b]) => `<button type="button" data-bpm="${b}">${n} ${b}</button>`).join('')}</div>
+    <div class="row" id="presets">${[['Slow speech', 60], ['Piano practice', 80], ['Running', 170]].concat(TEMPOS).map(([n, b]) => `<button type="button" data-bpm="${b}">${n} ${b}</button>`).join('')}</div>
   </section>
   <section class="pane" aria-label="Practice tools">
     <h2>Practice timer, speed trainer and silent bars</h2>
@@ -160,7 +162,8 @@ const PAGES = {
     <p class="note">The usual reference is A4 = 440 Hz; change it above for other pitch standards. Press a string to hear its note and tune to it by ear. The tuner picks the nearest string by itself and shows how far off you are; within 5 cents is in tune.</p>
   </section>` },
 
-  bpm: { path: '/bpm/', title: 'BPM counter: tap the beat to find the tempo · Verse', h1: 'BPM counter', desc: 'A free BPM counter: tap any key or the button along with a song to find its tempo, with half and double, the average of your taps, note lengths in milliseconds and Hz, and the tempo of an audio file worked out on your device. No account, nothing uploaded.',
+  bpm: { path: '/bpm/', title: 'BPM counter: tap the beat to find the tempo · Verse', h1: 'Find how fast a song is: beats per minute (BPM counter)', desc: 'A free BPM counter: tap any key or the button along with a song to find its tempo, with half and double, the average of your taps, note lengths in milliseconds and Hz, and the tempo of an audio file worked out on your device. No account, nothing uploaded.',
+    lead: '<strong>Tap along for a workout, a dance class, a DJ set or a rehearsal.</strong> <a href="#tap">Tap a song</a>, or see a ready tempo:', tries: [['A running pace 170', '?bpm=170'], ['A resting heartbeat 70', '?bpm=70'], ['A dance class 128', '?bpm=128'], ['A walk 90', '?bpm=90']],
     sub: 'A free BPM counter: tap along with a song to find its tempo, fix half or double time, see the length of every note value, or find the BPM of an audio file on your device. Nothing is uploaded.',
     body: `
   <section class="pane" aria-label="BPM counter">
@@ -282,7 +285,7 @@ export function pageHtml(key) {
 <body>
 <main id="app">
   <h1>${p.h1}</h1>
-  <p class="sub" id="lede">${p.sub}</p>
+${p.lead ? '  <p class="sub" id="lead">' + p.lead + '</p>\n  <nav class="row" id="tries" aria-label="Ready tempos">' + p.tries.map(([n, u]) => '<a href="' + u + '">' + n + '</a>').join(' ') + '</nav>\n' : ''}  <p class="sub" id="lede">${p.sub}</p>
   ${hubNav(dir)}${p.body}
   ${key === 'music' ? '' : '<!-- asks -->\n  <!-- /asks -->\n  '}<nav id="related" aria-label="Related tools"><!-- related --><!-- /related --></nav>
   <p class="note" id="trust" style="text-align:center;min-height:40px">Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.</p>
