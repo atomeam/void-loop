@@ -7583,7 +7583,7 @@ try {
     const card = await until(async () => F.p.$eval('.vpage', (p) => {
       if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
       return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
-        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
+        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: [...p.querySelectorAll('img')].filter((i) => !i.closest('.vc-art')).length /* the card's own art seal is on every card; the autopsy body itself shows no pictures */, wide: p.scrollWidth > p.clientWidth + 1 };
     }).catch(() => null), 15000); // a loaded runner took longer than 8 s to draw it
     const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
     check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',

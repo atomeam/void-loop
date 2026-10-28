@@ -509,64 +509,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "Catch-up browser checks wait for the reload to settle and stub the unprefixed speech recognition newer Chrome has"
+   "at": "2026-10-28T22:33:40Z",
+   "subject": "seo-audit: no orphans past the baseline (the pages no tool row reaches are listed under More tools), identity's dead /jwt/ link removed"
   },
   {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "The way back from your own translation sits beside it, not inside the edit panel"
-  },
-  {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "Your own translation correction keeps its panel open, with the way back to the machine's one tap away"
-  },
-  {
-   "at": "2026-10-28T22:31:04Z",
-   "subject": "Keyboard and handwriting pad take turns, one input tool open at a time"
-  },
-  {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "On-screen keyboard gains a one-letter shift, so capitals can be typed"
-  },
-  {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Parity inventories and page data refreshed for the newest floors"
-  },
-  {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Translate handwriting pad's pointer helper renamed so it no longer clashes with the new practice cards"
-  },
-  {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Regenerated page data after rebase"
-  },
-  {
-   "at": "2026-10-28T22:31:03Z",
-   "subject": "Memorials stay up while the gate's new wider-use aspect is unmeasured; they read in progress until it is"
-  },
-  {
-   "at": "2026-10-28T22:30:59Z",
-   "subject": "Regenerated page data"
-  },
-  {
-   "at": "2026-10-28T22:30:59Z",
-   "subject": "Browser checks for the catch-up pages; parity inventory joins the lap loop docs"
-  },
-  {
-   "at": "2026-10-28T22:30:53Z",
-   "subject": "Calendar events can carry a video call, and the view prints"
-  },
-  {
-   "at": "2026-10-28T22:30:53Z",
-   "subject": "Notes keep pictures, take comments with replies, and type by voice"
-  },
-  {
-   "at": "2026-10-28T22:30:53Z",
-   "subject": "Translate page catches up: recent and searchable languages, keyboard, handwriting, your own fixes, conversation, bookmarklet"
-  },
-  {
-   "at": "2026-10-28T22:30:53Z",
-   "subject": "Obituaries now earn the word beaten: per-site feature inventories, cited histories, and an honest in-progress state"
+   "at": "2026-10-28T22:33:40Z",
+   "subject": "Green checks: regenerate deps, what, seo blocks and preloads; seo common asks for /random/ and /calculators/"
   },
   {
    "at": "2026-10-28T22:29:18Z",
@@ -587,6 +535,58 @@
   {
    "at": "2026-10-28T22:18:18Z",
    "subject": "Verse cards test: the ocean gets its own article, so its card is typed by its kind again"
+  },
+  {
+   "at": "2026-10-28T22:02:20Z",
+   "subject": "Tip and savings: the 3D piece is the card's picture, so the art plate steps aside and the piece draws in view"
+  },
+  {
+   "at": "2026-10-28T22:00:54Z",
+   "subject": "tower gate: never open vcalc.com (robots.txt); judge the formula calculators floor on internal metrics, not beaten with the library-size…"
+  },
+  {
+   "at": "2026-10-28T21:59:47Z",
+   "subject": "Watchdog runs the full suite in three shards, like verify, so it fits the suite budget and can close its issue"
+  },
+  {
+   "at": "2026-10-28T21:53:58Z",
+   "subject": "Incident: the browser suite failed on fa0caa75 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-28T21:52:30Z",
+   "subject": "Dead-button fixes: Claim and spot pills answer on the tournaments page, gist Raw opens a real tab and empty task adds explain themselves…"
+  },
+  {
+   "at": "2026-10-28T21:51:03Z",
+   "subject": "Mark the spec-written pattern in the test harness as reviewed"
+  },
+  {
+   "at": "2026-10-28T21:50:53Z",
+   "subject": "Test harness reports what it used to swallow: a failed live proxy answers 502, an unreadable change list checks every route, stub failures…"
+  },
+  {
+   "at": "2026-10-28T21:46:48Z",
+   "subject": "Handoff note: flights picker fix and the dead buttons left for their owners"
+  },
+  {
+   "at": "2026-10-28T21:46:19Z",
+   "subject": "Flights pickers no longer throw on an undeclared name; specs for the calculators and prize wheel pages; generated skill lists refreshed"
+  },
+  {
+   "at": "2026-10-28T21:46:19Z",
+   "subject": "Every page does its real job: a browser test for each route, honest labels where a partner is needed, gate badges on the tower floors, and…"
+  },
+  {
+   "at": "2026-10-28T21:46:08Z",
+   "subject": "handoff: /ledger/ done (PR #1370)"
+  },
+  {
+   "at": "2026-10-28T21:42:10Z",
+   "subject": "ledger: page code in /ledger/app.js (no inline-script CSP rule: _headers stays at 88 of 90), kept offline by sw.js"
+  },
+  {
+   "at": "2026-10-28T21:00:09Z",
+   "subject": "ledger: /ledger/ repo activity ledger (issues and PRs of any public GitHub repo, CSV/JSON, share-by-link, offline, ETag 304) to take over…"
   }
  ],
  "builders": {
