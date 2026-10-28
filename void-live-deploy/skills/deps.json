@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 911,
+ "counted": 915,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1032,6 +1032,13 @@
    "tests": 2
   },
   {
+   "file": "lib/calc-units.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/emoji.js",
    "skills": 1,
    "direct": 0,
@@ -1044,6 +1051,13 @@
    "direct": 0,
    "dependants": 3,
    "tests": 1
+  },
+  {
+   "file": "lib/formulas-1.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 0
   },
   {
    "file": "lib/jobs-core.js",
@@ -1081,13 +1095,6 @@
    "tests": 1
   },
   {
-   "file": "lib/calc-units.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/compose.js",
    "skills": 1,
    "direct": 1,
@@ -1098,6 +1105,20 @@
    "file": "lib/film-discovery.js",
    "skills": 1,
    "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/formula-engine.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/formulas.js",
+   "skills": 1,
+   "direct": 0,
    "dependants": 2,
    "tests": 1
   },
@@ -1197,7 +1218,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 3
   },
   {
    "file": "lib/chat-generators.js",
@@ -2107,7 +2128,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/probe-asks.js",
@@ -2363,6 +2384,13 @@
   },
   {
    "file": "lib/kitchen.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/ledger.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4024,7 +4052,8 @@
   "lib/calc-units.js": {
    "imports": [],
    "importedBy": [
-    "lib/calculators.js"
+    "lib/calculators.js",
+    "lib/formula-engine.js"
    ],
    "reachedBy": [
     "skills/formulas.js"
@@ -4040,7 +4069,9 @@
    "imports": [
     "lib/calc-units.js",
     "lib/fincalc.js",
-    "lib/date-math.js"
+    "lib/date-math.js",
+    "lib/formula-engine.js",
+    "lib/formulas.js"
    ],
    "importedBy": [
     "skills/formulas.js"
@@ -5256,6 +5287,38 @@
     "skills/forge.js"
    ]
   },
+  "lib/formula-engine.js": {
+   "imports": [
+    "lib/calc-units.js"
+   ],
+   "importedBy": [
+    "lib/calculators.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
+  },
+  "lib/formulas-1.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/formulas.js"
+   ],
+   "reachedBy": [
+    "lib/calculators.js",
+    "skills/formulas.js"
+   ]
+  },
+  "lib/formulas.js": {
+   "imports": [
+    "lib/formulas-1.js"
+   ],
+   "importedBy": [
+    "lib/calculators.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
+  },
   "lib/free-pics.js": {
    "imports": [],
    "importedBy": [
@@ -5896,6 +5959,10 @@
     "lib/refusal.js",
     "skills/miss-jobs.js"
    ]
+  },
+  "lib/ledger.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/lineage.js": {
    "imports": [],

@@ -14,6 +14,8 @@
 
 import { SELF_SITES } from './self-sites.js';
 import { badgeOf, buildable } from './gate-badge.js';
+import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
+import { journeyAspects } from './tower-journeys.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -81,9 +83,16 @@ const HAND_FLOORS = [
   { id: 'podcasts', site: 'Apple Podcasts', url: 'https://podcasts.apple.com/', ask: 'play the podcast', page: '/podcasts/?show=verse&ep=ep1', label: 'Podcasts', glyph: '◉', extra: ['catalogue', 'subscriptions', 'playback controls'] },
   { id: 'travel', site: 'Google Flights', url: 'https://www.google.com/travel/flights', ask: 'flights to paris', page: '/flights/', label: 'Travel', glyph: '✈', extra: ['search across providers', 'price tracking', 'itineraries'] },
   { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', page: '/jobs/', label: 'Jobs', glyph: '⚒', defer: true, extra: ['listing breadth', 'alerts', 'applications'] },
-  { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', page: '/store/', label: 'Shopping', glyph: '⊡', defer: true, extra: ['catalogue', 'checkout', 'delivery tracking'] },
+  // far future (owner, 2026-10-28: Amazon and YouTube are not beaten, and not now; Verse works through the small single-purpose sites first).
+  // /store/ is Verse's own small shop, not a catalogue: the gate's earlier 11 of 13 came from keyword parts judged on Verse alone and from
+  // reading Amazon as "0 of 23" behind a bot wall. `gaps` and `plan` are the honest account the card shows.
+  { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', page: '/store/', label: 'Shopping', glyph: '⊡', defer: true, farFuture: true, extra: ['catalogue', 'checkout', 'delivery tracking'],
+    gaps: ['no product catalogue beyond Verse\'s own few items (no search across millions of products, no sellers)', 'no cart quantities, saved addresses or payment of its own (checkout hands off to the shop partner)', 'no order history, delivery tracking or returns', 'no reviews, ratings or questions from buyers', 'design polish measured worse (31 defects vs 2)'],
+    plan: 'after the small single-purpose sites: first a real product search over open catalogues with price and stock shown, then a cart and order history kept in the browser, then tracking for orders placed elsewhere (carrier numbers), then reviews; each step ships only when its journey passes' },
   { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', defer: true, extra: ['groups', 'media', 'calls'] },
-  { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', defer: true, extra: ['catalogue', 'streaming quality', 'recommendations'] },
+  { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', defer: true, farFuture: true, extra: ['catalogue', 'streaming quality', 'recommendations'],
+    gaps: ['no Verse video page at all: the floor has nothing to measure', 'no catalogue, search or channels', 'no player with seek, quality and captions', 'no uploads, comments, playlists or recommendations', 'no adaptive streaming, live video or watch-later offline; the old speed and design rows measured a page that plays nothing'],
+    plan: 'after the small single-purpose sites: first a player page for open-licence video (seek, speed, captions, chapters) with search over an open archive, then playlists and history kept in the browser, then recommendations from what was watched; uploads and comments only with a partner, and each step ships only when its journey passes' },
   { id: 'social', site: 'Reddit', url: 'https://www.reddit.com/', ask: 'social', label: 'Social', glyph: '⁂', defer: true, extra: ['feed', 'following', 'posting and replies'] },
   { id: 'email', site: 'Gmail', url: 'https://mail.google.com/', ask: 'my email', label: 'Email', glyph: '✉', defer: true, extra: ['sending and receiving', 'spam filtering', 'search'] },
   { id: 'search', site: 'Google Search', url: 'https://www.google.com/', ask: 'who wrote hamlet', label: 'Search', glyph: '⌕', defer: true, extra: ['web coverage', 'freshness', 'answer quality'] },
@@ -252,7 +261,9 @@ export function learnedOf(f) {
   const won = f.m ? 'beaten on ' + f.n + ' of ' + f.m + ' aspects: ' : '';
   return won + bits.join('; ');
 }
-export const aspectsOf = (f) => COMMON_ASPECTS.concat(f.extra || []);
+// the journeys (owner's standards, 2026-10-28; lib/tower-journeys.js) are on every floor's checklist: a floor is beaten only when its scripted
+// end-to-end journeys pass, never by aspects alone
+export const aspectsOf = (f) => COMMON_ASPECTS.concat(f.extra || [], journeyAspects(f));
 // a floor's checklist plus anything its evidence names beyond it: a site that gains a feature Verse lacks (tools/tower-verdict.mjs --lost)
 // adds that aspect, and the floor is not beaten until Verse has it too
 const checklist = (f, ev) => { const all = aspectsOf(f); for (const k of Object.keys(ev || {})) if (!all.includes(k)) all.push(k); return all; };
@@ -262,11 +273,22 @@ const OK = new Set(['better', 'equal-and-better']);
 // a row Verse awarded itself because one of its skills answered (the old gate, taken back 2026-10-24: "this whole card is fake") never counts,
 // whoever writes it into the file
 export const selfCalled = (r) => !!(r && r.called && /^called beaten by verse\b/.test(String(r.evidence || '')));
+// The standards (owner, 2026-10-28, after Amazon read 11 of 13 and YouTube read "replaced"): a journey passes only with its recorded steps and
+// negative controls (lib/tower-controls.js journeyPasses); a row that was blocked, skipped or not loaded is INCOMPLETE, never a pass; a
+// comparison won only because the rival could not be read (zeroRivalUnread: "0 of 3 ... turned the gate away", "0 of 23 things") is INCOMPLETE.
+// `incomplete` lists them so the card says so instead of counting them.
+// a journey row passes when the runner took it with its controls, or when a person signed the floor beaten (tools/tower-verdict.mjs --beaten:
+// the owner or the scout took the journeys by hand; a call Verse made itself never counts)
+export const passes = (a, r) => (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
 export function gate(floor, ev = {}) {
-  const all = checklist(floor, ev), passed = all.filter((a) => ev[a] && OK.has(ev[a].verdict) && ev[a].evidence && !selfCalled(ev[a]));
+  const all = checklist(floor, ev), passed = all.filter((a) => passes(a, ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
-  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed };
+  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || isJourney(a)) : isJourney(a)));
+  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
 }
+/** evidence rows that pass a floor's whole checklist the way the gate demands (journeys with steps and negative controls): for tests and
+ *  fixtures only, never written to tower.evidence.json. Pure. */
+export const passingRows = (f, extra = {}) => Object.fromEntries(aspectsOf(f).map((a) => [a, isJourney(a) ? { verdict: 'pass', steps: ['fixture step'], negatives: ['no stub text'], evidence: 'fixture', ...extra } : { verdict: 'better', evidence: 'x', ...extra }]));
 
 const HOST_RE = /^(?=.{3,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
 /** a host from what a list names ("Example.com", "https://www.example.com/x"), or '' when it is not one. Pure. */
@@ -313,7 +335,11 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // the gate badge (lib/gate-badge.js): the build queue picks only Code work, or stage 1 on a regulated floor; a floor that needs a partner or a licence
   // keeps its place in the line but never stands as the current fight, so nothing past what is real gets built or claimed
   const gated = (f) => (buildable(f.badge) ? 0 : 1);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || waiting(a) - waiting(b) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  // far future (owner, 2026-10-28: Amazon and YouTube): behind every other site, deferred giants included; and before the hand floors' own
+  // order, small single-purpose sites first (owner: "work through millions of small sites, easiest first"): a site with at most two aspects of
+  // its own (a frontier tool site has none) stands before a broad, many-feature one
+  const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }

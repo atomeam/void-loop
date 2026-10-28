@@ -1457,8 +1457,8 @@ try {
   // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
   // the evidence is stubbed so three sites are conquered and the fourth is 4 aspects in
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
-    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
-    const rows = (f, n) => Object.fromEntries([...aspectsOf(f), ...(f.extra || [])].slice(0, n).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
     const floors = { [FLOORS[0].id]: rows(FLOORS[0], 99), [FLOORS[1].id]: rows(FLOORS[1], 99), [FLOORS[2].id]: rows(FLOORS[2], 99), [FLOORS[3].id]: rows(FLOORS[3], 4) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);
@@ -1479,8 +1479,8 @@ try {
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
-    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
-    const all = (f) => Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
+    const all = (f) => passingRows(f, { evidence: 'stub' });
     const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);
@@ -6333,6 +6333,22 @@ try {
       && /100 J/.test(fromLink) && !Z.errors.length, JSON.stringify({ linked, m2, link, lm, inline, bad, pro, working, proLink, loan, molar, temp, b1, b2, b3, ke, saved, fromLink, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the formula library on /calculators/: one definition worked for any of its variables (Solve for), its source shown, its link reopening the
+  // same direction, and a long category showing its first 24 with a button for the rest
+  if (want("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click")) {
+    const Z = await fresh(); const big = () => Z.p.$eval('#big', (e) => e.textContent);
+    await Z.p.goto(base + 'calculators/?calc=braking-distance'); const fwd = await big(), src = await Z.p.$eval('#csource', (e) => e.textContent);
+    await Z.p.selectOption('#in-solve', 'v'); const back = await big(), what = await Z.p.$eval('#what', (e) => e.textContent);
+    await Z.p.fill('#in-d', '25'); const v25 = await big(), link = Z.p.url();
+    await Z.p.goto(link); const reopened = [await big(), await Z.p.$eval('#in-solve', (e) => e.value)];
+    const money = '#lib button[aria-controls="cat-money-list"]', hidden0 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length);
+    await Z.p.click(money); const hidden1 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length), gone = !(await Z.p.$(money));
+    check("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click",
+      fwd === '56.2013 m' && /Wikipedia: Braking distance/.test(src) && back === '100 km/h' && /Speed/.test(what) && v25 === '66.6956 km/h' && /solve=v/.test(link) && /d=25/.test(link)
+      && reopened[0] === '66.6956 km/h' && reopened[1] === 'v' && hidden0 > 0 && hidden1 === 0 && gone && !Z.errors.length,
+      JSON.stringify({ fwd, src, back, what, v25, link, reopened, hidden0, hidden1, gone, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of timeanddate.com on /time/: the next clock change for the city, and on each clock in the world clock; a zone with none says so
   if (want("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change")) {
     const Z = await fresh(); await Z.p.goto(base + 'time/?c=London'); await Z.p.waitForTimeout(300);
@@ -8003,6 +8019,8 @@ try {
     const down = await until(async () => { const f = await forged(D); return f && f.title === 'Pizza Singularity' ? f : null; }, 8000); await new Promise((ok) => setTimeout(ok, 600)); const down2 = await forged(D);
     check('Verse art forge: with the route down the card keeps its plate, with no button and no page errors', !!down && !!down2 && down2.plate && !down2.img && !down2.btn && !D.errors.length, JSON.stringify({ down2, errors: D.errors })); await D.ctx.close(); }
   if (want("Verse cards: no evolved note on a skill card, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Verse
+    // the ocean has its own article here: the shared fixture answers every lookup with "Black hole", and since a name whose article does not match goes to the answer route (lib/no-answer.js), the ocean would get an untyped answer card instead of its kind's layout
+    await E.ctx.route(/wikipedia\.org\/(?:w\/api\.php|api\/rest_v1\/page\/summary\/)/, (r) => { const u = r.request().url(); if (!/ocean/i.test(decodeURIComponent(u))) return r.fallback(); const body = u.includes('/page/summary/') ? { title: 'Ocean', description: 'Body of salt water covering most of Earth', extract: 'The ocean is the body of salt water that covers about 71% of Earth.', timestamp: '2026-09-20T10:00:00Z' } : { query: { search: [{ title: 'Ocean' }] } }; return r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) }); });
     await E.ask('20% tip on 45', 1600);
     const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
     const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on[data-evolved]'), stored: localStorage.getItem('a2m.void.tiers.v1') }));

@@ -464,6 +464,7 @@ for (const [name, file] of [
   ['tower-self', 'tower-self.test.mjs'],
   ['gate-badge', 'gate-badge.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],
+  ['tower-falsepass', 'tower-falsepass.test.mjs'],
   ['avatar', 'avatar.test.mjs'],
   ['tower-verdict', 'tower-verdict.test.mjs'],
   ['site-scout', 'site-scout.test.mjs'],
@@ -534,6 +535,8 @@ for (const [name, file] of [
   ['tools pack 3', 'tools-pack3.test.mjs'],
   ['convert-math', 'convert-math.test.mjs'],
   ['calculators', 'calculators.test.mjs'],
+  ['formula engine', 'formula-engine.test.mjs'],
+  ['formula library', 'formulas.test.mjs'],
 ]) {
   addScript(name, file);
 }
