@@ -7,7 +7,7 @@
 //   scope     'core' = every original site of this page has it; an array = the named sites have it (studied by hand); empty = only the sites
 //             whose pages show it (liveRe)
 // Sites are named in plain text only. A row whose Verse status is wrong is fixed here, never in the generated docs.
-const T = (s) => new RegExp(s, 'i');
+const T = (s) => new RegExp(s, 'i'); // every pattern is a constant string in this file, never input (void-review: ok)
 const ACCOUNT = ['account', 'Accounts', 'An account that keeps your things on every device', T('sign ?in|log ?in|create (an |your )?account'), T('\\bsync(ed|s|ing)?\\b|on every device|\\bsign in\\b'), T('localStorage'), []];
 const APPS = ['apps', 'Apps', 'Phone apps (iOS or Android)', T('app store|google play|play\\.google|apps\\.apple|download (the|our) app'), T('manifest\\.webmanifest|install (it|verse|this) as an app|serviceWorker'), null, []];
 const OFFLINE = ['offline', 'Apps', 'Works offline', T('offline'), T('offline|serviceWorker'), null, []];

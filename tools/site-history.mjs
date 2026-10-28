@@ -20,7 +20,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function get(url, json = true, tries = 3) {
   for (let i = 0; i < tries; i++) {
     try {
-      const r = await fetch(url, { headers: { 'user-agent': UA, accept: json ? 'application/json' : '*/*' }, signal: AbortSignal.timeout(25000) });
+      const r = await fetch(url, { headers: { 'user-agent': UA, accept: json ? 'application/json' : '*/*' }, signal: AbortSignal.timeout(25000) }); // a retry loop for one request, no database (void-review: ok)
       if (r.status === 429 || r.status >= 500) { await sleep(1500 * (i + 1)); continue; }
       if (!r.ok) return null;
       return json ? await r.json() : await r.text();
@@ -38,7 +38,7 @@ async function itemByWebsite(url) {
   const h = hostOf(url); if (!h) return null;
   const variants = [];
   for (const s of ['https://', 'http://']) for (const w of ['', 'www.']) for (const t of ['', '/']) variants.push('<' + s + w + h + t + '>');
-  const q = 'SELECT ?item WHERE { VALUES ?w { ' + variants.join(' ') + ' } ?item wdt:P856 ?w . } LIMIT 5';
+  const q = 'SELECT ?item WHERE { VALUES ?w { ' + variants.join(' ') + ' } ?item wdt:P856 ?w . } LIMIT 5'; // SPARQL from URL().hostname, which cannot hold < > or spaces (void-review: ok)
   const j = await get('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(q));
   const ids = ((j && j.results && j.results.bindings) || []).map((b) => b.item.value.split('/').pop());
   return ids;
