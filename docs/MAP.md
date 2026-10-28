@@ -25,6 +25,7 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 | **Models** | `model-bench.mjs`, `model-bench-worker/`, `model-switch.mjs` | `model-bench.yml` |
 | **Accounts and continuity** | `cf-scope.mjs`, `mirror.mjs`, `traffic.mjs` | `cf-scope.yml`, `mirror.yml`, `traffic.yml`, `void-tick.yml` |
 | **Ouroboros and the disk** | `ouroboros.py`, `ouroboros_smoke.py`, `build_ouroboros_pack.py`, `void_lens.py` | `ouroboros.yml` |
+| **The Verse loop** | `verse-loop.mjs` (`npx verse-loop`: one lap from a terminal or a timer, pull main, run the checks in `verse-loop.checks.json`, fix the first red or take one item, ship only with no new red, a PR labelled automerge; `docs/VERSE-LOOP.md`, test `verse-loop.test.mjs`) | `verse-loop.yml` (hourly, off until `vars.VERSE_LOOP_ENABLED`) |
 | **Agent skills** | `.claude/skills/`: `void-run`, `steward` (a cloud session reads it before acting on a PR's CI or review), `learn-from-video`, `paid-media` (big files for people who pay: R2, signed links, owner-only uploads) | |
 | **Helpers** | `opencode-autoreply.ps1` (the Windows helpers' prompts), `indexnow_submit.py` (salvage: `tools/indexnow.mjs` replaced it), `next-growth.mjs` (an alias of `next.mjs` now) | |
 
