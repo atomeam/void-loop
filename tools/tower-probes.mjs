@@ -448,7 +448,7 @@ export const PROBES = Object.freeze({
       ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/],
       ['the contested drop spot', /Tilted Towers[\s\S]*?contested/], ['the snake heat split', /snake order/]],
     facts: [
-      ['tournament standings', /tournament standings/i], ['a point system', /point system/i], ['preset systems', /FNCS finals/i],
+      ['tournament standings', /tournament standings/i], ['a point system', /point system/i], ['preset systems', /Finals-style/i],
       ['team sizes', /(?:solo|duos|trios|squads)/i], ['points per elimination', /per elimination/i],
       ['the threshold rule, said', /highest matching threshold/], ['the standings table', /standings after every match entered/i],
       ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/], ['wins counted', /wins/i],
@@ -463,7 +463,7 @@ export const PROBES = Object.freeze({
     // the five rows this floor is fought on (its extra aspects): each is read off the same seeded answer, so a page that shows all of
     // them is the most any page can show - judged on Verse alone, like the codebase rows (commit f108005d)
     askParts: {
-      'point system presets': [['FNCS finals', /FNCS finals/], ['a cash cup preset', /Cash cup/], ['a scrim preset', /Scrim/], ['a custom choice', /Custom/]],
+      'point system presets': [['a finals-style preset', /Finals-style/], ['a cash-cup-style preset', /Cash-cup-style/], ['a scrim preset', /Scrim/], ['a custom choice', /Custom/]],
       'multi-match standings': [['one match per line', /one match per line/i], ['standings after every match', /standings after every match entered/i], ['average placement named', /average placement/i], ['the counts for the set', /\d+ teams? · \d+ match/]],
       'heat split': [['snake order', /snake order/i], ['the heats numbered', /Heat 1/], ['a second heat', /Heat 2/], ['seeded by standing rank', /seeded by standing rank/i]],
       'drop spots': [['drop spots', /drop spots/i], ['contested flagged', /contested/i], ['a claimed place', /Tilted Towers/], ['clear ones too', /\bclear\b/]],

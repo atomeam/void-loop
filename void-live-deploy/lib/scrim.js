@@ -150,3 +150,160 @@ export function matchPoint(matches, placePoints, elim, threshold) {
   }
   return { champion: '', match: 0, eligible: [...total].filter(([, p]) => p >= threshold).map(([n]) => n) };
 }
+
+// ---- placement tiers: "1st:10, 2-5:5, 6-10:3, 11-25:1" (the chip editor's text and the tiers= URL value) ----
+
+/** Tiers from text: comma, ';' or line separated "from-to:points" (ordinals and en dashes allowed). [{ from, to, pts }], sorted by from. */
+export function parseTiers(text) {
+  const out = [];
+  for (const bit of String(text == null ? '' : text).split(/[,;\n]+/)) {
+    const m = bit.trim().match(/^(\d+)(?:st|nd|rd|th)?\s*(?:[-–—]|to)?\s*(\d+)?(?:st|nd|rd|th)?\s*[:=]\s*(-?\d+)$/i);
+    if (!m) continue;
+    const from = Math.min(100, Math.max(1, +m[1])), to = Math.min(100, Math.max(from, m[2] ? +m[2] : from));
+    out.push({ from, to, pts: Math.max(-99, Math.min(99, +m[3])) });
+  }
+  return out.sort((a, b) => a.from - b.from || a.to - b.to);
+}
+/** Placement points for a place: the first tier whose range holds it, 0 when none does. */
+export const tierPoints = (tiers, place) => { const t = tiers.find((x) => place >= x.from && place <= x.to); return t ? t.pts : 0; };
+/** The URL form: "1:10,2-5:5". */
+export const serializeTiers = (tiers) => tiers.map((t) => (t.from === t.to ? t.from : t.from + '-' + t.to) + ':' + t.pts).join(',');
+/** A tier's label as a chip shows it: "1st", "2nd-5th". */
+export const tierLabel = (t) => (t.from === t.to ? ordinal(t.from) : ordinal(t.from) + '-' + ordinal(t.to));
+/** The sentence under the point system: "1st 10, 2nd-5th 5; everyone else 0." */
+export const tierSentence = (tiers) => {
+  const shown = tiers.filter((t) => t.pts !== 0).map((t) => tierLabel(t) + ' ' + t.pts);
+  return shown.length ? 'Placement points by the highest matching threshold: ' + shown.join(', ') + '; everyone else 0.' : 'Placement points are off; only the second column scores.';
+};
+/** Tiers from the old URL fields (win, top5, top10, top15, top25), so links made before tiers= still score the same. */
+export function legacyTiers(rules) {
+  const bands = [[1, 1, rules.win], [2, 5, rules.top5], [6, 10, rules.top10], [11, 15, rules.top15], [16, 25, rules.top25]];
+  return bands.filter(([, , pts]) => pts > 0).map(([from, to, pts]) => ({ from, to, pts }));
+}
+
+// ---- kinds of event: every entry is still Team:a:b in the URL, read by the kind ----
+
+/** What a and b mean, what the columns are called, and how a round is won, for each kind of event. */
+export const KINDS = {
+  br: { name: 'Battle royale', a: 'Place', b: 'Elims', bLong: 'Eliminations', unit: 'elims', per: 'Per elimination', word: 'match', placeBased: true, tiers: true },
+  racing: { name: 'Racing / Tabletop', a: 'Place', b: 'Bonus', bLong: 'Bonus', unit: 'bonus points', per: 'Per bonus point', word: 'race', placeBased: true, tiers: true },
+  league: { name: 'Sports league', a: 'Goals', b: 'Against', bLong: 'Goals against', unit: '', per: '', word: 'round', placeBased: false, tiers: false },
+  gamenight: { name: 'Game night / Trivia', a: 'Score', b: '', bLong: '', unit: '', per: '', word: 'round', placeBased: false, tiers: false },
+};
+export const kindOf = (k) => (KINDS[k] ? k : 'br');
+
+/** One entry read by kind: place-based kinds keep place >= 1 and b >= 0; a league keeps both goal counts >= 0; a game night's score may be 0 or negative. */
+export function parseEntry(text, kind = 'br') {
+  if (KINDS[kindOf(kind)].placeBased) return parseTeam(text);
+  const bits = String(text).split(':').map((x) => x.trim());
+  const name = cleanName(bits[0]);
+  if (!name) return null;
+  const a = parseInt(bits[1], 10) || 0, b = parseInt(bits[2], 10) || 0;
+  return kind === 'league' ? { name, place: Math.max(0, a), elims: Math.max(0, b) } : { name, place: Math.max(-999, Math.min(9999, a)), elims: 0 };
+}
+/** parseMatches for any kind. */
+export const parseRounds = (text, kind = 'br') => String(text == null ? '' : text).split(/[;\n]/).map((g) => g.split(',').map((t) => parseEntry(t, kind)).filter(Boolean)).filter((g) => g.length);
+/** serialize for any kind: a game night writes Team:score. */
+export const serializeRounds = (matches, kind = 'br') => (kind === 'gamenight' ? matches.filter((m) => m.length).map((m) => m.map((t) => cleanName(t.name) + ':' + t.place).join(',')).join(';') : serialize(matches));
+
+/** setEntry for any kind: a blank first cell takes the team out of the round; for place-based kinds so does a place below 1. */
+export function setRoundEntry(matches, matchIndex, name, a, b, kind = 'br') {
+  if (KINDS[kindOf(kind)].placeBased) return setEntry(matches, matchIndex, name, a, b);
+  const out = matches.map((m) => m.map((t) => ({ ...t })));
+  while (out.length <= matchIndex) out.push([]);
+  const m = out[matchIndex], k = nameKey(name), at = m.findIndex((t) => nameKey(t.name) === k);
+  const n = parseInt(a, 10);
+  if (String(a).trim() === '' || !Number.isFinite(n)) { if (at >= 0) m.splice(at, 1); return out; }
+  const e = kind === 'league' ? Math.max(0, parseInt(b, 10) || 0) : 0;
+  const entry = { name: at >= 0 ? m[at].name : cleanName(name), place: kind === 'league' ? Math.max(0, n) : n, elims: e };
+  if (at >= 0) m[at] = entry; else m.push(entry);
+  return out;
+}
+
+/** The scoring rules for a kind: { kind, pts(entry), won(entry, match), drew(entry), sort, cols, cell, reach, tiebreak }.
+ * rules: { tiers, elim } (league and game night ignore both). */
+export function scorer(kind, rules = {}) {
+  kind = kindOf(kind);
+  const tiers = rules.tiers || [], elim = rules.elim || 0, place = (p) => tierPoints(tiers, p);
+  const K = KINDS[kind];
+  if (kind === 'league') return {
+    kind, word: K.word, placePoints: () => 0,
+    pts: (t) => (t.place > t.elims ? 3 : t.place === t.elims ? 1 : 0),
+    won: (t) => t.place > t.elims, drew: (t) => t.place === t.elims,
+    sort: (a, b) => b.points - a.points || b.diff - a.diff || b.gf - a.gf || b.wins - a.wins || a.name.localeCompare(b.name),
+    cols: [['Pts', (r) => r.points], ['W', (r) => r.wins], ['D', (r) => r.draws], ['L', (r) => r.losses], ['GD', (r) => (r.diff > 0 ? '+' : '') + r.diff], ['GF', (r) => r.gf]],
+    cell: (e) => (e ? e.pts + ' (' + e.place + '-' + e.elims + ')' : '–'),
+    reach: (need) => (need <= 1 ? 'a draw' : need <= 3 ? 'a win' : 'more than one game'),
+    tiebreak: 'Win 3, draw 1, loss 0. Tiebreakers, in this order: points, then goal difference, then goals scored, then wins.',
+  };
+  if (kind === 'gamenight') return {
+    kind, word: K.word, placePoints: () => 0,
+    pts: (t) => t.place,
+    won: (t, m) => m.length > 1 && t.place === Math.max(...m.map((x) => x.place)), drew: () => false,
+    sort: (a, b) => b.points - a.points || b.wins - a.wins || b.top - a.top || a.name.localeCompare(b.name),
+    cols: [['Points', (r) => r.points], ['Round wins', (r) => r.wins], ['Rounds', (r) => r.matches], ['Best round', (r) => r.top]],
+    cell: (e) => (e ? String(e.pts) : '–'),
+    reach: (need) => need + ' pts',
+    tiebreak: 'Each round\'s score is added straight on; the top score in a round counts as a round win. Tiebreakers, in this order: points, then round wins, then the best single round.',
+  };
+  const brLike = {
+    kind, word: K.word, placePoints: place,
+    pts: (t) => place(t.place) + t.elims * elim,
+    won: (t) => t.place === 1, drew: () => false,
+    cell: (e) => (e ? e.pts + ' (' + e.place + '/' + e.elims + ')' : '–'),
+    reach: (need) => catchUp(need, place, elim, K.unit),
+  };
+  if (kind === 'racing') return { ...brLike,
+    sort: (a, b) => b.points - a.points || b.wins - a.wins || a.avg - b.avg || b.elims - a.elims || a.name.localeCompare(b.name),
+    cols: [['Points', (r) => r.points], ['Wins', (r) => r.wins], ['Bonus', (r) => r.elims], ['Avg place', (r) => r.avg.toFixed(1)], ['Best', (r) => r.best]],
+    tiebreak: 'Tiebreakers, in this order: points, then wins, then average placement, then bonus.',
+  };
+  return { ...brLike,
+    sort: (a, b) => b.points - a.points || b.wins - a.wins || b.elims - a.elims || a.avg - b.avg || a.name.localeCompare(b.name),
+    cols: [['Points', (r) => r.points], ['Wins', (r) => r.wins], ['Elims', (r) => r.elims], ['Avg place', (r) => r.avg.toFixed(1)], ['Best', (r) => r.best]],
+    tiebreak: 'Tiebreakers, in this order: points, then wins, then eliminations, then average placement.',
+  };
+}
+
+/** Standings for any kind: rows sorted by the kind's tiebreakers, each with points, wins, draws, losses, elims (the b column summed),
+ * gf/ga/diff (a league's goals), places, avg, best, top (best single round) and per-round entries. */
+export function rank(matches, sc) {
+  const merged = mergeNames(matches), by = new Map();
+  merged.forEach((m, mi) => {
+    for (const t of m) {
+      const r = by.get(t.name) || { name: t.name, points: 0, wins: 0, draws: 0, losses: 0, elims: 0, gf: 0, ga: 0, places: [], matches: 0, top: -Infinity, per: new Array(merged.length).fill(null) };
+      const pts = sc.pts(t, m), won = sc.won(t, m), drew = sc.drew(t, m);
+      r.points += pts; r.wins += won ? 1 : 0; r.draws += drew ? 1 : 0; r.losses += !won && !drew ? 1 : 0;
+      r.elims += t.elims; r.gf += t.place; r.ga += t.elims; r.places.push(t.place); r.matches += 1; r.top = Math.max(r.top, pts);
+      r.per[mi] = { pts, place: t.place, elims: t.elims, won };
+      by.set(t.name, r);
+    }
+  });
+  const rows = [...by.values()].map((r) => ({ ...r, diff: r.gf - r.ga, avg: r.places.reduce((a, b) => a + b, 0) / r.places.length, best: Math.min(...r.places) }));
+  rows.sort(sc.sort);
+  return { rows, matches: merged };
+}
+
+/** matchPoint for any kind: the first team at or over the threshold to then win a round takes it. */
+export function matchPointFor(matches, sc, threshold) {
+  const total = new Map(), merged = mergeNames(matches);
+  if (!(threshold > 0)) return { champion: '', match: 0, eligible: [] };
+  for (let i = 0; i < merged.length; i++) {
+    const eligible = new Set([...total].filter(([, p]) => p >= threshold).map(([n]) => n));
+    const winner = merged[i].find((t) => sc.won(t, merged[i]) && eligible.has(t.name));
+    if (winner) return { champion: winner.name, match: i + 1, eligible: [...eligible] };
+    for (const t of merged[i]) total.set(t.name, (total.get(t.name) || 0) + sc.pts(t, merged[i]));
+  }
+  return { champion: '', match: 0, eligible: [...total].filter(([, p]) => p >= threshold).map(([n]) => n) };
+}
+
+/** gaps for any kind, with the kind's own "what one round needs". */
+export function gapsFor(rows, sc, { cutoff = 0 } = {}) {
+  return rows.map((r, i) => {
+    if (i === 0) { const lead = rows.length > 1 ? r.points - rows[1].points : 0; return { gap: 0, target: 'lead', hint: rows.length > 1 ? 'leads by ' + lead + ' pts' : 'leads' }; }
+    const out = cutoff > 0 && i >= cutoff, t = out ? rows[cutoff - 1] : rows[0];
+    const gap = t.points - r.points, how = sc.reach(gap + 1);
+    const goal = out ? 'to make the top ' + cutoff : 'to lead';
+    return { gap, target: out ? 'cutoff' : 'first', hint: '-' + gap + ' pts' + (how ? ' · needs ' + how + ' ' + goal : ' ' + goal) };
+  });
+}
