@@ -509,6 +509,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T22:33:40Z",
+   "subject": "seo-audit: no orphans past the baseline (the pages no tool row reaches are listed under More tools), identity's dead /jwt/ link removed"
+  },
+  {
+   "at": "2026-10-28T22:33:40Z",
+   "subject": "Green checks: regenerate deps, what, seo blocks and preloads; seo common asks for /random/ and /calculators/"
+  },
+  {
+   "at": "2026-10-28T22:29:18Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-10-28T22:26:39Z",
+   "subject": "Handoff scan: every page's inputs and outputs, unbuilt connections ranked (docs/HANDOFF-GAPS.md), BPM counter <-> metronome, lap item…"
+  },
+  {
    "at": "2026-10-28T22:18:29Z",
    "subject": "Formula engine: one definition solved for any variable, with its source; batch 1 of the formula library (172 formulas: money, health…"
   },
@@ -571,22 +587,6 @@
   {
    "at": "2026-10-28T21:00:09Z",
    "subject": "ledger: /ledger/ repo activity ledger (issues and PRs of any public GitHub repo, CSV/JSON, share-by-link, offline, ETag 304) to take over…"
-  },
-  {
-   "at": "2026-10-28T20:58:23Z",
-   "subject": "Tournaments test: the Discord check reads the round-wins column as whatever the scorer counts"
-  },
-  {
-   "at": "2026-10-28T20:57:04Z",
-   "subject": "Tournaments test: the claim-form check opens its own link, since the results box now sits folded away"
-  },
-  {
-   "at": "2026-10-28T20:56:32Z",
-   "subject": "Airport codes page used more widely: a plain first line, examples to try, keys, the codes to copy, the list to download, and the search…"
-  },
-  {
-   "at": "2026-10-28T20:55:45Z",
-   "subject": "calculators: mark two words the review read as code (CSV, CODATA) as right"
   }
  ],
  "builders": {
@@ -644,6 +644,10 @@
   ],
   "lessons": [
    {
+    "name": "A new page says what it takes and gives",
+    "line": "add <meta name=\"verse-handoff\" content=\"in: ...; out: ...\"> when it ships (types in tools/handoff-scan.mjs); every lap builds the top connections in docs/HANDOFF-GAPS.md and plays them in tools/handoff-e2e.mjs (standing item in…"
+   },
+   {
     "name": "The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)",
     "line": "a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or \"coming soon\"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never…"
    },
@@ -662,10 +666,6 @@
    {
     "name": "Set the PR head in code and verify it",
     "line": "#713 merged another agent's unfinished branch because a sed edit of \"head\" silently missed; build the request as data and check the reply names your branch."
-   },
-   {
-    "name": "Wrangler only uploads functions/ from the current directory",
-    "line": "a deploy from a copied folder dropped every Function; deploy from inside void-live-deploy."
    }
   ]
  },
