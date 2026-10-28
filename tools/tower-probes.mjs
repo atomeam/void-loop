@@ -470,6 +470,43 @@ export const PROBES = Object.freeze({
       'CSV in and out': [['import', /Import CSV/], ['export', /Export CSV/], ['the columns named', /team, place, eliminations/i], ['the heading', /CSV in and out/]],
     },
   },
+  // thunit.com (owner, 2026-10-27): a 70-word brochure for "exclusive" hosting on a stock site, with six unnamed icon links and no tool of
+  // any kind. Verse's /hosting/ answers the two claims it makes in numbers: a crowded shared host splits its cores, an exclusive one keeps
+  // them; and the uptime an SLA actually buys, as downtime per year, month, week and day. The ask is traffic (50 requests/s of 200 KB at
+  // 40 ms a worker) and a 99.9% SLA; the arithmetic is worked out by hand below (bandwidth, transfer, Little's law, memory, downtime).
+  hosting: {
+    site: 'https://thunit.com/', verse: '/hosting/',
+    ask: { verse: '/hosting/?rps=50&kb=200&ms=40&ram=128&sla=99.9' },
+    truth: [
+      ['the sustained bandwidth, worked out (10,000 KB/s)', /10,000 KB\/s/],
+      ['the same in MB/s (10 MB/s)', /10 MB\/s/],
+      ['the same in Mbps (80 Mbps)', /80 Mbps/],
+      ['requests per month, worked out (129,600,000)', /129,600,000 requests\/month/],
+      ['the monthly transfer, worked out (25,920 GB)', /25,920 GB\/month/],
+      ["the concurrent workers, by Little's law (2)", /2 active workers/],
+      ['the vCPUs at 50% headroom (4)', /4 vCPUs/],
+      ['the memory, worked out (1,024 MB)', /1,024 MB/],
+      ['the RAM minimum (1 GB)', /1 GB RAM/],
+      ['the RAM with cache headroom (2 GB)', /2 GB RAM/],
+      ['the 99.9% downtime per year (8h 45m 36s)', /8h 45m 36s/],
+      ['the 99.9% downtime per month (43m 48s)', /43m 48s/],
+      ['the 99.9% downtime per week (10m 5s)', /10m 5s/],
+      ['the 99.9% downtime per day (1m 26s)', /1m 26s/]],
+    askParts: {
+      'capacity sizing': [['requests per second', /requests\/s/i], ['a reply size', /KB replies/], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/], ['shared vs exclusive', /shared vs exclusive/i]],
+      'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/], ['an SLA of 99.99%', /99\.99%/]],
+      'server config': [['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/], ['TLS 1.3', /TLS 1\.3/], ['a copy control', /\bCopy\b/], ['a download control', /\bDownload\b/]],
+      'security headers': [['HSTS', /Strict-Transport-Security/], ['CSP', /Content-Security-Policy/], ['nosniff', /X-Content-Type-Options/], ['a referrer policy', /Referrer-Policy/], ['a permissions policy', /Permissions-Policy/], ['a rate limit', /rate limit/i]],
+    },
+    facts: [
+      ['requests per second', /requests\/s/i], ['bandwidth', /bandwidth/i], ['megabits', /\bMbps\b/], ['monthly transfer', /GB\/month/],
+      ['virtual cores', /\bvCPUs?\b/], ['memory', /\bRAM\b/], ['concurrent workers', /concurrent/i], ['shared vs exclusive', /shared vs exclusive/i],
+      ['uptime', /uptime/i], ['an SLA of 99.9%', /99\.9%/], ['allowed downtime', /downtime/i], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],
+      ['TLS 1.3', /TLS 1\.3/], ['Strict-Transport-Security', /Strict-Transport-Security/], ['Content-Security-Policy', /Content-Security-Policy/],
+      ['X-Content-Type-Options', /X-Content-Type-Options/], ['a rate limit', /rate limit/i], ['Copy', /\bCopy\b/], ['Download', /\bDownload\b/],
+      ['Share link', /Share link/], ['on this device', /on this device/], ['works offline', /works offline/i], ['no account', /no account/i],
+    ],
+  },
   emojis: {
     site: 'https://emojitracker.com/', verse: '/emojis/',
     ask: { verse: '/emojis/?pick=🔥' },

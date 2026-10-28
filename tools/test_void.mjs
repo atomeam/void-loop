@@ -800,6 +800,47 @@ try {
     check('tournament: the footer links to at least four sibling Verse tools and hands the page to the stage', (await siblingCount(P.p)) >= 4 && stageLink === '/?ask=tournament%20scorer', JSON.stringify({ siblings: await siblingCount(P.p), stageLink }));
     await P.ctx.close();
   }
+  // the hosting floor (owner, 2026-10-27): thunit.com's 70-word brochure, fought from /hosting/ - the two claims it makes (exclusive vs
+  // crowded shared servers, and security) turned into numbers: bandwidth, transfer, workers, memory and the downtime each SLA allows, with a
+  // hardened NGINX or Caddy config. The seeded ask is 50 requests/s of 200 KB at 40 ms, 128 MB a worker and a 99.9% SLA, worked out by hand.
+  if (want("hosting: the seeded traffic works out bandwidth, transfer, workers, memory and downtime, and the config carries the headers")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const ask = '/hosting/?rps=50&kb=200&ms=40&ram=128&sla=99.9';
+    const P = await fresh({ base: base + ask.slice(1) });
+    await P.p.waitForSelector('#config', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.hosting;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const out = await P.p.evaluate(() => ['bw', 'monthly', 'workers', 'memory'].map((id) => document.getElementById(id).textContent).join('\n'));
+    check('hosting: 50 requests/s of 200 KB at 40 ms works out 10 MB/s (80 Mbps), 129,600,000 requests and 25,920 GB a month, 2 workers, 4 vCPUs and 1,024 MB',
+      /10,000 KB\/s/.test(out) && /10 MB\/s/.test(out) && /80 Mbps/.test(out) && /129,600,000 requests\/month/.test(out) && /25,920 GB\/month/.test(out) && /2 active workers/.test(out) && /4 vCPUs/.test(out) && /1,024 MB/.test(out) && !miss.length, JSON.stringify({ out, miss }));
+    const sla = await P.p.$eval('#slatable tr.on', (e) => e.innerText.replace(/\t/g, ' '));
+    check('hosting: the 99.9% row allows 8h 45m 36s a year, 43m 48s a month, 10m 5s a week and 1m 26s a day',
+      /99\.9%/.test(sla) && /8h 45m 36s/.test(sla) && /43m 48s/.test(sla) && /10m 5s/.test(sla) && /1m 26s/.test(sla), JSON.stringify({ sla }));
+    const shared = await P.p.$eval('#shared-say', (e) => e.textContent);
+    const exclusive = await P.p.$eval('#exclusive-say', (e) => e.textContent);
+    check('hosting: shared and exclusive are the same traffic in numbers - four tenants leave one core, so it queues; an exclusive server has headroom',
+      /2\.0× over capacity/.test(shared) && /50% headroom/.test(exclusive), JSON.stringify({ shared, exclusive }));
+    const nginx = await P.p.$eval('#config', (e) => e.textContent);
+    await P.p.selectOption('#server', 'caddy'); await P.p.waitForTimeout(150);
+    const caddy = await P.p.$eval('#config', (e) => e.textContent);
+    check('hosting: the NGINX and Caddy configs both carry TLS 1.3, HSTS, a content security policy, nosniff and a rate limit sized to the traffic',
+      /TLS 1\.3/.test(nginx) && /TLS 1\.3/.test(caddy) && /ssl_protocols TLSv1\.3/.test(nginx) && /protocols tls1\.3/.test(caddy) && /limit_req_zone/.test(nginx) && /rate_limit/.test(caddy) && /Strict-Transport-Security/.test(caddy), JSON.stringify({ nginx: nginx.slice(0, 60), caddy: caddy.slice(0, 60) }));
+    const gist = await P.p.$eval('#gist', (a) => a.getAttribute('href'));
+    check('hosting: the config hands off to a gist, Base64 and the word count, encoded with the numbers on the page', /^\/g\/\?text=/.test(gist) && /name=Caddyfile/.test(gist), JSON.stringify({ gist: gist.slice(0, 60) }));
+    await P.p.click('#share'); await P.p.waitForTimeout(200);
+    const search = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#config', { timeout: 15000 });
+    const back = await P.p.$eval('#bw', (e) => e.textContent);
+    check("hosting: the share link is the page's own numbers, and opening it again gives the same sizing", /rps=50/.test(search) && /10 MB\/s/.test(back), JSON.stringify({ search, back }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('hosting: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=web"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('hosting: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=web%20hosting%20sizing', JSON.stringify({ siblings: sib, stageLink }));
+    await P.ctx.close();
+  }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
   // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
   // that says what it is not. The count is real: the tap copies the character and adds one.

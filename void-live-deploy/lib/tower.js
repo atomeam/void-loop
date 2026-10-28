@@ -102,6 +102,12 @@ const HAND_FLOORS = [
   // not a win plus the top-five), the tiebreakers are points, wins, eliminations then average placement, and the lobby splits into
   // snake-seeded heats with contested drop spots - all from results typed in, with nothing sent anywhere and no account
   { id: 'tournaments', learned: "a scrim score is arithmetic people must be able to check: placement pays the highest matching threshold, the tiebreakers are points then wins then eliminations then average placement, and the lobby splits into snake-seeded heats, all from the results typed in", site: 'yunite.xyz', url: 'https://yunite.xyz/', ask: 'fortnite tournament scoring', page: '/tournaments/', label: 'Tournament scoring', glyph: '▣', fatality: 'standings with the official tiebreakers, snake heats and contested drop spots worked out from results typed in, with no account, no screenshot and nothing sent', extra: ['point system presets', 'multi-match standings', 'heat split', 'drop spots', 'CSV in and out'] },
+
+  // thunit.com (owner, 2026-10-27): the next target after yunite, a 70-word brochure for "exclusive" hosting on a stock site, with six
+  // unnamed icon links and no tool of any kind. Verse's /hosting/ answers the two claims it makes in numbers: a crowded shared host splits
+  // its cores and an exclusive one keeps them, and an SLA is downtime per year, month, week and day. The ask is traffic (50 requests/s of
+  // 200 KB at 40 ms a worker) and a 99.9% SLA, with the arithmetic, the NGINX or Caddy config and the header set worked out in the page.
+  { id: 'hosting', learned: "hosting is arithmetic people must be able to check: sustained bandwidth, monthly transfer, concurrent workers by Little's law, the vCPUs and RAM they need, and the downtime each SLA allows, with a hardened config worked out from the same numbers", site: 'thunit.com', url: 'https://thunit.com/', ask: 'web hosting sizing calculator', page: '/hosting/', label: 'Hosting sizer', glyph: '▤', fatality: 'bandwidth, transfer, workers, vCPUs and RAM worked out from the traffic typed in, the downtime each SLA allows, and a hardened NGINX or Caddy config with TLS 1.3, security headers and a rate limit - no account, nothing sent', extra: ['capacity sizing', 'uptime and SLA', 'server config', 'security headers'] },
 ];
 
 // Lanes (owner, 2026-10-25: "defeat every single translate site one by one before we move on . its ok to punch down we can just confirm we
