@@ -23,6 +23,13 @@ Owner rule, 2026-10-28 (paraphrased): when a Verse page is a version of an exist
 - **Tower gate:** `wider use` is a required aspect in `lib/tower.js` COMMON_ASPECTS and `tools/tower-gate.mjs` MEASURES (higher is better, ideal 11). A floor beats its rival on it only when Verse scores at least the rival; if the rival cannot be read, the bar is 11.
 - **Lap loop:** `lib/lap.js` puts wider use first in every overhaul ask, and every upgrade ask says to make the page usable by more people than the original.
 
+## Decisions (owner, 2026-10-28)
+
+- A tie passes: a Verse page that scores the same as its rival, including 11 against 11, passes the gate.
+- The photo editor page keeps the name "Photo editor".
+- When no visitor data is there, the pages to audit first are the top 40 in sitemap order.
+- The front page (/) is one quiet input on purpose. Most of the score's text checks find nothing on an empty stage, so a low score there is about the design, not a bug. Changing it needs the owner.
+
 ## First audit, 2026-10-28 (live site, 98 pages scored), worst first
 
 There is no visitor-usage data, so the top pages are the tower floors, their lanes and the most linked pages. 10 pages lost their browser to box load twice and are not scored yet: /notes/, /boards/, /sports/, /scores/, /markets/, /markets/caps/, /markets/screener/, /news/, /photos/exifeditor/, /photos/exif/.
