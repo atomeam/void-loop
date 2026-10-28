@@ -445,6 +445,217 @@ CALCULATORS.push(
     ['network|Network|text', 'first|First usable host|text', 'last|Last usable host|text', 'broadcast|Broadcast|text', 'mask|Subnet mask|text', 'wildcard|Wildcard mask|text', 'hosts|Usable hosts|number', 'total|Addresses in the block|number', 'cls|Class|text', 'kind|Kind|text'], (x) => subnet(x.ip)),
 );
 
+// ---------------- calculator.net's full sitemap, Maths (tools/rival-inventory.mjs finds the gaps; docs/PARITY.md lists them): the gaps, filled
+// exact decimals: ±D × 10^s with D a BigInt, so 1.005 rounds to 1.01 and 0.1 + 0.2 stays 0.3
+export function decOf(text) {
+  const t = String(text ?? '').trim().replace(/[\s,_]/g, '').replace(/[−–]/g, '-').replace(/×10\^?/i, 'e');
+  const m = /^([+-]?)(\d*)(?:\.(\d*))?(?:e([+-]?\d+))?$/i.exec(t); need(m && (m[2] || m[3]), 'type a number such as 1234.5678 or 6.02e23');
+  const frac = m[3] || '', e = Number(m[4] || 0); need(Math.abs(e) <= 100000, 'that exponent is too big');
+  return { neg: m[1] === '-' && /[1-9]/.test(m[2] + frac), D: BigInt((m[2] + frac).replace(/^0+(?=\d)/, '') || '0'), s: e - frac.length };
+}
+const TEN = (n) => 10n ** BigInt(n);
+/** round ±D × 10^s to 10^-p (p may be negative: −1 rounds to tens) by mode: half (half away from zero), even (half to even), up (toward +∞), down (toward −∞), trunc (toward zero). Pure. */
+export function roundDec(d, p, mode = 'half') {
+  if (d.s >= -p) return { ...d };
+  const q = TEN(-p - d.s); let k = d.D / q; const r = d.D % q, twice = 2n * r;
+  const bump = mode === 'trunc' ? false : mode === 'up' ? r > 0n && !d.neg : mode === 'down' ? r > 0n && d.neg : twice > q || (twice === q && (mode === 'half' || k % 2n === 1n));
+  if (bump) k += 1n; return { neg: d.neg && k !== 0n, D: k, s: -p };
+}
+/** ±D × 10^s written out in full: '-1234.57', '1200', '0.000123'. Pure. */
+export function decText(d) {
+  let s = d.D.toString(), out;
+  if (d.s >= 0) out = d.D === 0n ? '0' : s + '0'.repeat(d.s);
+  else { const n = -d.s; s = s.padStart(n + 1, '0'); out = s.slice(0, -n) + '.' + s.slice(-n); }
+  return (d.neg ? '-' : '') + out;
+}
+const exp10 = (d) => (d.D === 0n ? 0 : d.D.toString().length - 1 + d.s);
+/** a × 10ⁿ: { mant, e } with the mantissa's digits trimmed, to sig significant figures (0 keeps them all). Pure. */
+export function sciOf(d, sig = 0, step = 1) {
+  if (sig > 0 && d.D !== 0n) d = roundDec(d, sig - 1 - exp10(d));
+  let digits = d.D.toString(), e = exp10(d);
+  if (d.D === 0n) return { mant: '0', e: 0 };
+  let lead = 1; const shift = ((e % step) + step) % step; e -= shift; lead += shift;
+  digits = sig ? digits.padEnd(sig, '0').slice(0, Math.max(sig, lead)) : digits; digits = digits.padEnd(lead, '0');
+  let tail = digits.slice(lead); if (!sig) tail = tail.replace(/0+$/, '');
+  return { mant: (d.neg ? '-' : '') + digits.slice(0, lead) + (tail ? '.' + tail : ''), e };
+}
+const SUP = (n) => String(n).replace(/[-0-9]/g, (c) => ({ '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' })[c]);
+// whole numbers in any base 2 to 36, of any size
+const DIGITS36 = '0123456789abcdefghijklmnopqrstuvwxyz';
+export function bigOf(text, base, what = 'a number') {
+  let t = String(text ?? '').trim().toLowerCase().replace(/[\s_,]/g, '').replace(/[−–]/g, '-'); const neg = t.startsWith('-'); if (neg || t.startsWith('+')) t = t.slice(1);
+  const pre = { 2: '0b', 8: '0o', 16: '0x' }[base]; if (pre && t.startsWith(pre)) t = t.slice(2);
+  need(t.length, 'type ' + what); const B = BigInt(base); let v = 0n;
+  for (const ch of t) { const i = DIGITS36.indexOf(ch); need(i >= 0 && i < base, '"' + ch + '" is not a base-' + base + ' digit (in ' + what + ')'); v = v * B + BigInt(i); }
+  return neg ? -v : v;
+}
+export const bigTo = (v, base) => (v < 0n ? '-' + (-v).toString(base) : v.toString(base)).toUpperCase();
+// p-values: the Lanczos log-gamma (g = 7, nine terms), the regularized incomplete beta and gamma (Numerical Recipes 3rd ed. §6.1, §6.2, §6.4)
+const LANCZOS = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+export function lnGamma(z) {
+  if (z < 0.5) return Math.log(PI / Math.abs(Math.sin(PI * z))) - lnGamma(1 - z);
+  z -= 1; let a = LANCZOS[0]; const t = z + 7.5; for (let i = 1; i < 9; i++) a += LANCZOS[i] / (z + i);
+  return 0.5 * Math.log(2 * PI) + (z + 0.5) * Math.log(t) - t + Math.log(a);
+}
+function betaCf(a, b, x) {
+  const TINY = 1e-300; let c = 1, d = 1 - ((a + b) * x) / (a + 1); if (Math.abs(d) < TINY) d = TINY; d = 1 / d; let h = d;
+  for (let m = 1; m <= 300; m++) {
+    const m2 = 2 * m; let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < TINY) d = TINY; c = 1 + aa / c; if (Math.abs(c) < TINY) c = TINY; d = 1 / d; h *= d * c;
+    aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
+    d = 1 + aa * d; if (Math.abs(d) < TINY) d = TINY; c = 1 + aa / c; if (Math.abs(c) < TINY) c = TINY; d = 1 / d; const del = d * c; h *= del;
+    if (Math.abs(del - 1) < 1e-15) break;
+  }
+  return h;
+}
+/** the regularized incomplete beta I_x(a, b). Pure. */
+export function betaInc(x, a, b) {
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  const bt = Math.exp(lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+  return x < (a + 1) / (a + b + 2) ? (bt * betaCf(a, b, x)) / a : 1 - (bt * betaCf(b, a, 1 - x)) / b;
+}
+/** the regularized upper incomplete gamma Q(a, x). Pure. */
+export function gammaQ(a, x) {
+  if (x <= 0) return 1; const lg = lnGamma(a);
+  if (x < a + 1) { let sum = 1 / a, del = sum, ap = a; for (let n = 0; n < 1000; n++) { ap += 1; del *= x / ap; sum += del; if (Math.abs(del) < Math.abs(sum) * 1e-16) break; } return 1 - sum * Math.exp(-x + a * Math.log(x) - lg); }
+  const TINY = 1e-300; let b = x + 1 - a, c = 1 / TINY, d = 1 / b, h = d;
+  for (let i = 1; i <= 1000; i++) { const an = -i * (i - a); b += 2; d = an * d + b; if (Math.abs(d) < TINY) d = TINY; c = b + an / c; if (Math.abs(c) < TINY) c = TINY; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 1e-16) break; }
+  return Math.exp(-x + a * Math.log(x) - lg) * h;
+}
+/** P(T ≤ t) for Student's t with df degrees of freedom. Pure. */
+export const tCdf = (t, df) => { const tail = 0.5 * betaInc(df / (df + t * t), df / 2, 0.5); return t > 0 ? 1 - tail : tail; };
+// matrices typed as rows: '1 2; 3 4' or one row a line
+export function matrixOf(text, what = 'the matrix') {
+  const rows = String(text ?? '').trim().split(/\s*[;\n]\s*/).filter(Boolean).map((r) => r.replace(/[[\]]/g, '').trim().split(/[\s,]+/).filter(Boolean).map((v) => Number(v.replace(/[−–]/g, '-'))));
+  need(rows.length && rows[0].length, 'type ' + what + ' as rows, such as 1 2; 3 4');
+  need(rows.every((r) => r.length === rows[0].length), 'every row of ' + what + ' needs the same number of entries');
+  need(rows.every((r) => r.every(Number.isFinite)), what + ' has an entry that is not a number');
+  return rows;
+}
+/** the determinant and the inverse (null when singular) by Gauss–Jordan elimination with partial pivoting. Pure. */
+export function gaussJordan(A) {
+  const n = A.length; need(A.every((r) => r.length === n), 'that needs a square matrix');
+  const M = A.map((r, i) => [...r, ...r.map((_, j) => (i === j ? 1 : 0))]); let det = 1;
+  for (let c = 0; c < n; c++) {
+    let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+    if (Math.abs(M[p][c]) < 1e-12) return { det: 0, inv: null };
+    if (p !== c) { [M[p], M[c]] = [M[c], M[p]]; det = -det; }
+    const v = M[c][c]; det *= v; for (let j = 0; j < 2 * n; j++) M[c][j] /= v;
+    for (let r = 0; r < n; r++) if (r !== c && M[r][c]) { const f = M[r][c]; for (let j = 0; j < 2 * n; j++) M[r][j] -= f * M[c][j]; }
+  }
+  return { det, inv: M.map((r) => r.slice(n)) };
+}
+const tidy = (v) => { const r = Number(v.toPrecision(12)); return Object.is(r, -0) ? '0' : String(r); };
+const matText = (M) => M.map((r) => r.map(tidy).join(' ')).join('; ');
+const matTable = (M) => ({ head: ['', ...M[0].map((_, j) => 'Column ' + (j + 1))], rows: M.map((r, i) => ['Row ' + (i + 1), ...r.map(tidy)]) });
+const SOLID = { k: 'shape', label: 'Shape', kind: 'choice', opts: [['cube', 'cube (side a)'], ['box', 'box (length a, width b, height h)'], ['sphere', 'sphere (radius a)'], ['hemisphere', 'hemisphere with its base (radius a)'], ['cylinder', 'cylinder (radius a, height h)'], ['cone', 'cone (radius a, height h)'], ['pyramid', 'square pyramid (base side a, height h)'], ['capsule', 'capsule (radius a, straight part h)']], v: 'cube' };
+const BASE_OP = { k: 'op', label: 'Do', kind: 'choice', opts: [['+', 'add (+)'], ['-', 'subtract (−)'], ['*', 'multiply (×)'], ['/', 'divide (÷): whole part and remainder'], ['&', 'AND'], ['|', 'OR'], ['^', 'XOR']], v: '+' };
+const baseMath = (base, what) => (x) => {
+  const a = bigOf(x.a, base, 'the first ' + what), b = bigOf(x.b, base, 'the second ' + what); let r, rem = null;
+  if (x.op === '+') r = a + b; else if (x.op === '-') r = a - b; else if (x.op === '*') r = a * b;
+  else if (x.op === '/') { need(b !== 0n, 'cannot divide by zero'); r = a / b; rem = a % b; }
+  else { need(a >= 0n && b >= 0n, 'AND, OR and XOR take numbers of 0 or more'); r = x.op === '&' ? a & b : x.op === '|' ? a | b : a ^ b; }
+  return { res: bigTo(r, base), rem: rem === null ? '—' : bigTo(rem, base), dec: r.toString(), bin: bigTo(r, 2), hex: bigTo(r, 16) };
+};
+const wholeOf = (v, what, max = 1e15) => { need(Number.isInteger(v) && v >= 1 && v <= max, what + ' must be a whole number from 1 to ' + fmt(max)); return v; };
+const factorsOf = (n) => { const lo = [], hi = []; for (let i = 1; i * i <= n; i++) if (n % i === 0) { lo.push(i); if (i !== n / i) hi.unshift(n / i); } return [...lo, ...hi]; };
+const primesOf = (n) => { const out = []; for (const p of [2, 3]) while (n % p === 0) { out.push(p); n /= p; } for (let i = 5; i * i <= n; i += 6) for (const p of [i, i + 2]) while (n % p === 0) { out.push(p); n /= p; } if (n > 1) out.push(n); return out; };
+const powers = (ps) => { const m = new Map(); for (const p of ps) m.set(p, (m.get(p) || 0) + 1); return [...m]; };
+const ROUND = { k: 'mode', label: 'Rule', kind: 'choice', opts: [['half', 'nearest, halves away from zero (2.5 → 3)'], ['even', 'nearest, halves to even (2.5 → 2)'], ['up', 'up, toward +∞ (ceiling)'], ['down', 'down, toward −∞ (floor)'], ['trunc', 'toward zero (cut off)']], v: 'half' };
+CALCULATORS.push(
+  make('solid-shapes', 'Volume and surface area of solids', 'Geometry', 'cube a³, 6a²; box abh, 2(ab + ah + bh); sphere 4/3 πa³, 4πa²; cylinder πa²h, 2πa(a + h); cone πa²h ÷ 3, πa(a + √(a² + h²)); square pyramid a²h ÷ 3, a² + 2a√((a/2)² + h²); capsule πa²(4a/3 + h), 2πa(2a + h)',
+    [SOLID, 'a|a (side, length or radius)|length|cm|10', 'b|b (width, box only)|length|cm|5', 'h|h (height)|length|cm|4'], ['v|Volume|volume|cm³', 'area|Surface area|area|cm²'],
+    (x) => { const { a, b, h } = x; pos(a, 'a'); const S = x.shape; if (S === 'box') { pos(b, 'b'); pos(h, 'h'); } if (['cylinder', 'cone', 'pyramid'].includes(S)) pos(h, 'h'); if (S === 'capsule') need(h >= 0, 'h cannot be negative');
+      const r = { cube: [a ** 3, 6 * a * a], box: [a * b * h, 2 * (a * b + a * h + b * h)], sphere: [(4 / 3) * PI * a ** 3, 4 * PI * a * a], hemisphere: [(2 / 3) * PI * a ** 3, 3 * PI * a * a],
+        cylinder: [PI * a * a * h, 2 * PI * a * (a + h)], cone: [(PI * a * a * h) / 3, PI * a * (a + Math.hypot(a, h))], pyramid: [(a * a * h) / 3, a * a + 2 * a * Math.hypot(a / 2, h)], capsule: [PI * a * a * ((4 * a) / 3 + h), 2 * PI * a * (2 * a + h)] }[S];
+      need(r, 'pick a shape'); return { v: r[0], area: r[1] }; }),
+  make('number-sequence', 'Number sequence (arithmetic, geometric, Fibonacci)', 'Maths', 'arithmetic aₙ = a₁ + (n − 1)d, Sₙ = n(a₁ + aₙ) ÷ 2; geometric aₙ = a₁rⁿ⁻¹, Sₙ = a₁(1 − rⁿ) ÷ (1 − r); Fibonacci Fₙ = Fₙ₋₁ + Fₙ₋₂ from 1, 1',
+    [{ k: 'type', label: 'Sequence', kind: 'choice', opts: [['arith', 'arithmetic (add d each time)'], ['geom', 'geometric (multiply by r each time)'], ['fib', 'Fibonacci (1, 1, 2, 3, 5, …)']], v: 'arith' }, 'a1|First term a₁|number||2', 'd|Step d, or ratio r|number||3', 'n|Term number n|number||10'],
+    ['an|nth term|number', 'sn|Sum of the first n terms|number', 'first|The first terms|text'],
+    (x) => { const n = x.n; need(Number.isInteger(n) && n >= 1 && n <= 10000, 'n must be a whole number from 1 to 10,000'); let term, an, sn;
+      if (x.type === 'fib') { const f = [1, 1]; while (f.length < Math.min(n, 1476)) f.push(f.at(-1) + f.at(-2)); an = n <= 2 ? 1 : n <= 1476 ? f[n - 1] : Infinity; term = (i) => f[i - 1]; let s = 0; for (let i = 0; i < Math.min(n, f.length); i++) s += f[i]; sn = n <= 1476 ? s : Infinity; }
+      else if (x.type === 'geom') { term = (i) => x.a1 * x.d ** (i - 1); an = term(n); sn = x.d === 1 ? n * x.a1 : (x.a1 * (1 - x.d ** n)) / (1 - x.d); }
+      else { term = (i) => x.a1 + (i - 1) * x.d; an = term(n); sn = (n * (x.a1 + an)) / 2; }
+      const k = Math.min(n, 10), shown = []; for (let i = 1; i <= k; i++) shown.push(fmt(term(i), 12)); need(Number.isFinite(an), 'the nth term is too big to write'); return { an, sn, first: shown.join(', ') + (n > k ? ', …' : '') }; }),
+  make('binary-math', 'Binary arithmetic', 'Maths', 'the numbers in base 2: + − × ÷ (whole part and remainder), AND, OR, XOR, of any size', ['a|First number (binary)|text||1011', BASE_OP, 'b|Second number (binary)|text||110'],
+    ['res|Answer (binary)|text', 'rem|Remainder (binary)|text', 'dec|Answer (decimal)|text', 'hex|Answer (hexadecimal)|text'], baseMath(2, 'binary number')),
+  make('hex-math', 'Hexadecimal arithmetic', 'Maths', 'the numbers in base 16 (digits 0–9 and A–F): + − × ÷ (whole part and remainder), AND, OR, XOR, of any size', ['a|First number (hex)|text||1F4', BASE_OP, 'b|Second number (hex)|text||A'],
+    ['res|Answer (hex)|text', 'rem|Remainder (hex)|text', 'dec|Answer (decimal)|text', 'bin|Answer (binary)|text'], baseMath(16, 'hex number')),
+  make('base-convert', 'Number base converter', 'Maths', 'value = Σ digitᵢ × baseⁱ; written again by repeated division by the new base', ['n|Number|text||255', 'from|From base (2 to 36)|number||10', 'to|To base (2 to 36)|number||2'],
+    ['res|In the new base|text', 'dec|Decimal|text', 'bin|Binary|text', 'oct|Octal|text', 'hex|Hexadecimal|text'],
+    (x) => { for (const k of ['from', 'to']) need(Number.isInteger(x[k]) && x[k] >= 2 && x[k] <= 36, 'a base is a whole number from 2 to 36'); const v = bigOf(x.n, x.from, 'the number');
+      return { res: bigTo(v, x.to), dec: v.toString(), bin: bigTo(v, 2), oct: bigTo(v, 8), hex: bigTo(v, 16) }; }),
+  make('probability-two', 'Probability of two independent events', 'Statistics', 'P(A and B) = P(A)P(B); P(A or B) = P(A) + P(B) − P(A)P(B); P(exactly one) = P(A) + P(B) − 2P(A)P(B); P(neither) = (1 − P(A))(1 − P(B))',
+    ['pa|P(A)|ratio|%|50', 'pb|P(B)|ratio|%|40'], ['and|Both A and B|ratio|%', 'or|A or B or both|ratio|%', 'one|Exactly one of them|ratio|%', 'neither|Neither|ratio|%', 'nota|Not A|ratio|%', 'notb|Not B|ratio|%'],
+    (x) => { for (const k of ['pa', 'pb']) need(x[k] >= 0 && x[k] <= 1, 'a probability is from 0% to 100%'); const { pa, pb } = x;
+      return { and: pa * pb, or: pa + pb - pa * pb, one: pa + pb - 2 * pa * pb, neither: (1 - pa) * (1 - pb), nota: 1 - pa, notb: 1 - pb }; }),
+  make('ratio', 'Ratio: simplify, and scale A : B = C : D', 'Maths', 'D = B × C ÷ A; A : B in lowest terms divides both by their greatest common divisor', ['a|A|number||2', 'b|B|number||3', 'c|C|number||10'],
+    ['d|D|number', 'simple|A : B in lowest terms|text', 'dec|A ÷ B|number'],
+    (x) => { need(x.a !== 0 && x.b !== 0, 'A and B cannot be zero'); const places = Math.max(...[x.a, x.b].map((v) => (String(v).split('.')[1] || '').length)); need(places <= 9, 'use at most 9 decimal places');
+      const s = 10 ** places, p = Math.round(x.a * s), q = Math.round(x.b * s), g = gcd(p, q) || 1; return { d: (x.b * x.c) / x.a, simple: p / g + ' : ' + q / g, dec: x.a / x.b }; }),
+  make('factors', 'Factors of a number', 'Maths', 'every whole d with n ÷ d whole, found in pairs d × (n ÷ d) up to √n', ['n|Number|number||60'],
+    ['list|Factors|text', 'count|How many|number', 'sum|Their sum|number', 'pairs|Factor pairs|text', 'prime|Prime?|text'],
+    (x) => { const n = wholeOf(x.n, 'the number', 1e13), f = factorsOf(n), half = f.slice(0, Math.ceil(f.length / 2));
+      return { list: f.join(', '), count: f.length, sum: sum(f), pairs: half.map((d) => d + ' × ' + n / d).join(', '), prime: f.length === 2 ? 'yes' : 'no' }; }),
+  make('prime-factorization', 'Prime factorization', 'Maths', 'n = p₁^e₁ × p₂^e₂ × …, by trial division up to √n', ['n|Number|number||360'],
+    ['form|Prime factors|text', 'flat|Written out|text', 'distinct|Different primes|number', 'prime|Prime?|text'],
+    (x) => { const n = wholeOf(x.n, 'the number'); need(n >= 2, 'a number from 2 up has prime factors'); const ps = primesOf(n), pw = powers(ps);
+      return { form: pw.map(([p, e]) => p + (e > 1 ? SUP(e) : '')).join(' × '), flat: ps.join(' × '), distinct: pw.length, prime: ps.length === 1 ? 'yes' : 'no' }; }),
+  make('common-factors', 'Common factors and greatest common factor of a list', 'Maths', 'GCF = gcd(a, gcd(b, …)); the common factors are the factors of the GCF; LCM = lcm(a, lcm(b, …))', ['data|Whole numbers (commas or spaces)|list:number||12, 18, 30'],
+    ['gcf|Greatest common factor|number', 'common|Common factors|text', 'lcm|Least common multiple|number'],
+    (x) => { const a = x.data; need(a.length >= 2, 'type two or more numbers'); for (const v of a) wholeOf(v, 'each number', 1e13); const g = a.reduce((p, q) => gcd(p, q)), l = a.reduce((p, q) => (p / gcd(p, q)) * q);
+      return { gcf: g, common: factorsOf(g).join(', '), lcm: l }; }),
+  make('rounding', 'Rounding', 'Maths', 'keep p decimal places (−1 for tens, −2 for hundreds) by the rule chosen, worked on the exact decimal digits', ['v|Number|text||1234.5678', 'p|Decimal places|number||2', ROUND],
+    ['r|Rounded|text', 'sci|In scientific notation|text'],
+    (x) => { need(Number.isInteger(x.p) && Math.abs(x.p) <= 100, 'decimal places must be a whole number from −100 to 100'); const d = roundDec(decOf(x.v), x.p, x.mode), s = sciOf(d);
+      return { r: decText(d), sci: s.mant + ' × 10' + SUP(s.e) }; }, { src: 'https://standards.ieee.org/ieee/754/6210/' }),
+  make('matrix', 'Matrix calculator', 'Maths', 'det and inverse by Gauss–Jordan elimination; (AB)ᵢⱼ = Σₖ AᵢₖBₖⱼ; (Aᵀ)ᵢⱼ = Aⱼᵢ', ['A|Matrix A (rows split by ;)|text||1 2; 3 4',
+      { k: 'op', label: 'Do', kind: 'choice', opts: [['det', 'determinant of A'], ['inv', 'inverse of A'], ['T', 'transpose of A'], ['mul', 'A × B'], ['add', 'A + B'], ['sub', 'A − B'], ['scale', 'k × A']], v: 'inv' }, 'B|Matrix B|text||5 6; 7 8', 'k|k|number||2'],
+    ['res|Answer|text', 'det|Determinant of A|number', 'size|Size of the answer|text'],
+    (x) => { const A = matrixOf(x.A, 'matrix A'), n = A.length, m = A[0].length; let R = null, det = null;
+      if (n === m) det = gaussJordan(A).det;
+      if (x.op === 'det') { need(n === m, 'only a square matrix has a determinant'); R = [[det]]; }
+      else if (x.op === 'inv') { need(n === m, 'only a square matrix has an inverse'); const g = gaussJordan(A); need(g.inv, 'A has no inverse: its determinant is 0'); R = g.inv; }
+      else if (x.op === 'T') R = A[0].map((_, j) => A.map((r) => r[j]));
+      else if (x.op === 'scale') R = A.map((r) => r.map((v) => x.k * v));
+      else { const B = matrixOf(x.B, 'matrix B');
+        if (x.op === 'mul') { need(B.length === m, 'A × B needs as many rows in B as columns in A'); R = A.map((r) => B[0].map((_, j) => r.reduce((s, v, i) => s + v * B[i][j], 0))); }
+        else { need(B.length === n && B[0].length === m, 'A and B must be the same size'); R = A.map((r, i) => r.map((v, j) => (x.op === 'add' ? v + B[i][j] : v - B[i][j]))); } }
+      return { res: matText(R), det, size: R.length + ' × ' + R[0].length, table: matTable(R) }; }),
+  make('scientific-notation', 'Scientific notation', 'Maths', 'x = a × 10ⁿ with 1 ≤ |a| < 10; engineering notation keeps n a multiple of 3', ['v|Number|text||0.000123456', 'sig|Significant figures (0 keeps them all)|number||0'],
+    ['sci|Scientific notation|text', 'e|E notation|text', 'eng|Engineering notation|text', 'dec|Written out|text'],
+    (x) => { need(Number.isInteger(x.sig) && x.sig >= 0 && x.sig <= 1000, 'significant figures must be a whole number, 0 or more'); const d = decOf(x.v), s = sciOf(d, x.sig), g = sciOf(d, x.sig, 3);
+      const shown = x.sig ? roundDec(d, x.sig - 1 - exp10(d)) : d; need(Math.abs(exp10(d)) <= 400, 'that number is too big or small to write out');
+      return { sci: s.mant + ' × 10' + SUP(s.e), e: s.mant + 'e' + s.e, eng: g.mant + ' × 10' + SUP(g.e), dec: decText(shown) }; }),
+  make('big-number', 'Big number arithmetic', 'Maths', 'exact whole-number arithmetic of any size: + − × ÷ (whole part and remainder), powers, gcd', ['a|First whole number|text||2',
+      { k: 'op', label: 'Do', kind: 'choice', opts: [['+', 'add (+)'], ['-', 'subtract (−)'], ['*', 'multiply (×)'], ['/', 'divide (÷): whole part and remainder'], ['pow', 'power (first ^ second)'], ['gcd', 'greatest common divisor']], v: 'pow' }, 'b|Second whole number|text||100'],
+    ['res|Answer|text', 'rem|Remainder|text', 'digits|Digits in the answer|number', 'sci|About|text'],
+    (x) => { const a = bigOf(x.a, 10, 'the first number'), b = bigOf(x.b, 10, 'the second number'); let r, rem = '—';
+      if (x.op === '+') r = a + b; else if (x.op === '-') r = a - b; else if (x.op === '*') r = a * b;
+      else if (x.op === '/') { need(b !== 0n, 'cannot divide by zero'); r = a / b; rem = (a % b).toString(); }
+      else if (x.op === 'pow') { need(b >= 0n, 'the power must be 0 or more'); const digits = Number(b) * (a < 0n ? -a : a).toString().length; need(a === 0n || a === 1n || a === -1n || digits <= 100000, 'the answer would have more than 100,000 digits'); r = a ** b; }
+      else { let p = a < 0n ? -a : a, q = b < 0n ? -b : b; while (q) [p, q] = [q, p % q]; r = p; }
+      const s = sciOf(decOf(r.toString()), 10); return { res: r.toString(), rem, digits: (r < 0n ? -r : r).toString().length, sci: s.mant + ' × 10' + SUP(s.e) }; }),
+  make('long-division', 'Long division', 'Maths', 'dividend = divisor × quotient + remainder; the decimal repeats once a remainder comes back', ['n|Dividend|number||1234', 'd|Divisor|number||7'],
+    ['q|Quotient (whole part)|number', 'r|Remainder|number', 'dec|Decimal (repeating digits in brackets)|text', 'mixed|As a mixed number|text'],
+    (x) => { need(Number.isInteger(x.n) && x.n >= 0 && x.n <= 1e15, 'the dividend must be a whole number from 0 to 10¹⁵'); const d = wholeOf(x.d, 'the divisor', 1e9);
+      const q = Math.floor(x.n / d), r = x.n - q * d, rows = []; let cur = 0, i = 0;
+      for (const ch of String(x.n)) { cur = cur * 10 + Number(ch); const qd = Math.floor(cur / d); rows.push([++i, cur + ' ÷ ' + d, qd, qd * d, cur - qd * d]); cur -= qd * d; }
+      let rem = r, digits = ''; const seen = new Map(); while (rem && !seen.has(rem) && digits.length < 2000) { seen.set(rem, digits.length); rem *= 10; digits += Math.floor(rem / d); rem %= d; }
+      const frac = !rem ? digits : seen.has(rem) ? digits.slice(0, seen.get(rem)) + '(' + digits.slice(seen.get(rem)) + ')' : digits + '…';
+      const g = gcd(r, d) || 1;
+      return { q, r, dec: q + (frac ? '.' + frac : ''), mixed: r ? (q ? q + ' ' : '') + r / g + '/' + d / g : String(q), table: { head: ['Step', 'Divide', 'Quotient digit', 'Take away', 'Remainder'], rows } }; }),
+  make('p-value', 'P-value from a z, t or chi-square statistic', 'Statistics', 'z: p from the normal curve; t: P(T ≤ t) = 1 − ½ I_{ν/(ν+t²)}(ν/2, ½); χ²: P(X ≥ x) = Q(k/2, x/2)', ['stat|Test statistic|number||1.96',
+      { k: 'dist', label: 'Distribution', kind: 'choice', opts: [['z', 'z (normal)'], ['t', 't (Student)'], ['chi', 'chi-square']], v: 'z' }, 'df|Degrees of freedom (t and chi-square)|number||10',
+      { k: 'tail', label: 'Test', kind: 'choice', opts: [['two', 'two-tailed'], ['right', 'right-tailed (greater than)'], ['left', 'left-tailed (less than)']], v: 'two' }],
+    ['p|P-value|number', 'sig05|Significant at 5%?|text', 'sig01|Significant at 1%?|text'],
+    (x) => { if (x.dist !== 'z') pos(x.df, 'Degrees of freedom'); let cdf;
+      if (x.dist === 'z') cdf = normalCdf(x.stat); else if (x.dist === 't') cdf = tCdf(x.stat, x.df); else { need(x.stat >= 0, 'a chi-square statistic is 0 or more'); cdf = 1 - gammaQ(x.df / 2, x.stat / 2); }
+      const right = x.dist === 'chi' ? gammaQ(x.df / 2, x.stat / 2) : 1 - cdf;
+      const p = x.tail === 'right' ? right : x.tail === 'left' ? cdf : Math.min(1, 2 * Math.min(cdf, right));
+      return { p, sig05: p < 0.05 ? 'yes (p < 0.05)' : 'no (p ≥ 0.05)', sig01: p < 0.01 ? 'yes (p < 0.01)' : 'no (p ≥ 0.01)' }; }, { src: 'https://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm' }),
+);
+
 export const FORMULA_COUNT = { before: CALCULATORS.length };
 {
   const have = new Set(CALCULATORS.map((c) => c.id));

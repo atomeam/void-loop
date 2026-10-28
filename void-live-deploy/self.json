@@ -509,16 +509,16 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T23:06:46Z",
+   "subject": "wip paint"
+  },
+  {
    "at": "2026-10-28T23:02:30Z",
    "subject": "Versus card: the easiest-first plan from docs/NEXT.md, with the gate's own numbers"
   },
   {
    "at": "2026-10-28T23:01:47Z",
    "subject": "Verse loop: the lock's catches let only a missing file pass (Verse's review)"
-  },
-  {
-   "at": "2026-10-28T23:01:46Z",
-   "subject": "Board: the parity branch's edits across agents' files, under the owner's any-agent rule"
   },
   {
    "at": "2026-10-28T23:00:02Z",
@@ -569,10 +569,6 @@
    "subject": "TAGTEAM: Grok Bot handoff"
   },
   {
-   "at": "2026-10-28T22:38:21Z",
-   "subject": "Regenerated the generated files after merging main"
-  },
-  {
    "at": "2026-10-28T22:34:56Z",
    "subject": "CSP hashes: a directory shares one rule with the union of its pages' inline scripts, so the rules fit Cloudflare's 100 again (88 to 69…"
   },
@@ -587,6 +583,10 @@
   {
    "at": "2026-10-28T22:34:49Z",
    "subject": "Green checks: regenerate deps, what, seo blocks and preloads; seo common asks for /random/ and /calculators/"
+  },
+  {
+   "at": "2026-10-28T22:34:42Z",
+   "subject": "Green checks: map-coverage, doc-drift, no-ellipsis, untested, overlap, tally"
   }
  ],
  "builders": {
