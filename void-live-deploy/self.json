@@ -509,6 +509,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-28T23:11:10Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T23:11:08Z",
+   "subject": "verse-loop: run with the workflow token, no extra secret needed (Actions may open PRs now)"
+  },
+  {
+   "at": "2026-10-28T23:11:05Z",
+   "subject": "Notes: the render line says why its HTML is safe"
+  },
+  {
+   "at": "2026-10-28T23:10:39Z",
+   "subject": "Notes clean a note's HTML when they show it; the review's false alarms marked with why"
+  },
+  {
    "at": "2026-10-28T23:09:17Z",
    "subject": "Paint by number rebuilt: a picture library with categories, smooth zoom and pan, hints, highlighting, saved progress, a reveal, your own…"
   },
@@ -571,22 +587,6 @@
   {
    "at": "2026-10-28T22:52:09Z",
    "subject": "Calculators: every calculator on calculator.net's home page (21 added) plus a scientific keypad"
-  },
-  {
-   "at": "2026-10-28T22:50:28Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next randomarea.com"
-  },
-  {
-   "at": "2026-10-28T22:47:55Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com"
-  },
-  {
-   "at": "2026-10-28T22:47:49Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-28T22:43:04Z",
-   "subject": "TAGTEAM: Grok Bot handoff"
   }
  ],
  "builders": {
