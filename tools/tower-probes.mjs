@@ -521,9 +521,9 @@ export const PROBES = Object.freeze({
       ['no account required', /no account/i],
     ],
     askParts: {
-      'profile editing': [['a name field', /Name/], ['an email field', /Email/], ['an account ID', /Account ID/], ['a region selector', /Region/]],
+      'profile metadata': [['a name field', /Name/], ['an email field', /Email/], ['an account ID', /Account ID/], ['a region selector', /Region/]],
       'change history': [['a ledger', /Change history/], ['a clear control', /Clear history/], ['kept on this device', /on this device/]],
-      'token inspection': [['a bearer token input', /Bearer token/], ['a decode control', /Decode/], ['decoded claims', /claims/i]],
+      'SSO claims': [['a bearer token input', /Bearer token/], ['a decode control', /Decode/], ['decoded claims', /claims/i]],
       'service portal': [['Official Website', /Official Website/], ['Fan Club', /Fan Club/], ['Official Store', /Official Store/], ['Community Hub', /Community Hub/]],
       'sharing': [['a share link', /Share link/], ['an export', /Export JSON/], ['a copy card', /Copy card/]],
     },
