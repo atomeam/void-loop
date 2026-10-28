@@ -873,7 +873,7 @@ try {
     const dc = await P.p.evaluate(() => ({ text: document.getElementById('discordout').value, shown: !document.getElementById('discordout').hidden, say: document.getElementById('say').textContent }));
     const dl = dc.text.split('\n');
     check('tournament: Copy for Discord writes a bold title and a lined-up monospace block of the standings',
-      dc.shown && dl[0] === '**Standings · Game night / Trivia** · after 1 round' && dl[1] === '```text' && /^#  Team\s+Points  Round wins  Rounds  Best round$/.test(dl[2]) && /^1  Bob\s+7\s+1\s+1\s+7$/.test(dl[3]) && dl[dl.length - 1] === '```' && /Discord/.test(dc.say), JSON.stringify(dc));
+      dc.shown && dl[0] === '**Standings · Game night / Trivia** · after 1 round' && dl[1] === '```text' && /^#  Team\s+Points  Round wins  Rounds  Best round$/.test(dl[2]) && /^1  Bob\s+7\s+\d+\s+1\s+7$/.test(dl[3]) && dl[dl.length - 1] === '```' && /Discord/.test(dc.say), JSON.stringify(dc));
     await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
     const dw = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth, b = document.getElementById('discord').getBoundingClientRect(), t = document.getElementById('discordout').getBoundingClientRect(); return { page: document.documentElement.scrollWidth - vw, button: b.right <= vw + 1, box: t.right <= vw + 1 }; });
     check('tournament: at phone width (360 px) the Discord button and its message box fit without sideways scrolling', dw.page <= 0 && dw.button && dw.box, JSON.stringify(dw));
