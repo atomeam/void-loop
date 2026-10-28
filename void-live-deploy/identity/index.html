@@ -203,8 +203,9 @@
   $('aid').addEventListener('change', (e) => commit('aid', e.target.value, 'Account ID updated.'));
   $('region').addEventListener('change', (e) => commit('region', e.target.value, 'Region updated.'));
 
-  $('connectlive').onclick = async () => {
-    $('livestatus').textContent = 'Connecting to live Anycolor ID endpoint…';
+  const syncLive = async () => {
+    if (!navigator.onLine) { $('livestatus').textContent = 'Offline: using local profile.'; return; }
+    $('livestatus').textContent = 'Auto-syncing live Anycolor ID profile…';
     try {
       const r = await fetch('https://anycolorid.com/user', { mode: 'cors', credentials: 'omit' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -214,14 +215,17 @@
         if (j.email) commit('email', String(j.email), 'Live email synced.');
         if (j.id) commit('aid', String(j.id), 'Live account ID synced.');
         if (j.region) commit('region', String(j.region).toLowerCase().startsWith('jp') ? 'jp' : 'en', 'Live region synced.');
-        $('livestatus').textContent = 'Live profile synced from Anycolor ID. Offline fallback still available.';
+        $('livestatus').textContent = 'Live profile auto-synced ' + new Date().toLocaleTimeString() + '. Offline fallback available.';
       } else {
-        $('livestatus').textContent = 'Live endpoint answered, but no profile fields found; keeping local profile.';
+        $('livestatus').textContent = 'Live endpoint answered; keeping local profile.';
       }
     } catch (e) {
-      $('livestatus').textContent = 'Live connect unavailable (offline or blocked); staying on the local profile.';
+      $('livestatus').textContent = 'Offline or blocked: using local profile.';
     }
   };
+  $('connectlive').onclick = syncLive;
+  if (navigator.onLine) syncLive();
+  window.addEventListener('online', syncLive);
   $('clearhistory').onclick = () => { state.history = []; renderHistory(); save(); say('Change history cleared on this device.'); };
   $('exportjson').onclick = async () => {
     const cfg = JSON.stringify({ name: state.name, email: state.email, aid: state.aid, region: state.region, history: state.history }, null, 2);
