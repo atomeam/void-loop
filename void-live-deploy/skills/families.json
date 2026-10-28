@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 10,
-  "tested": 26,
+  "tested": 27,
   "checked": 18,
   "proven": 297
  },
@@ -51,9 +51,9 @@
     {
      "name": "gradient",
      "tier": "proven",
-     "why": "4 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "6 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 3
     },
@@ -2059,7 +2059,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 12 live findings, 2026-10-26",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 13 live findings, 2026-10-27",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3035,7 +3035,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 2,
     "proven": 44
    },
@@ -3465,6 +3465,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 4
+    },
+    {
+     "name": "hosting",
+     "tier": "tested",
+     "why": "9 browser-suite mentions",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests"
     }
    ]
   },
