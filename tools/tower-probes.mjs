@@ -883,6 +883,27 @@ export const PROBES = Object.freeze({
       ['memory', /\bM\+[\s\S]{0,60}\bMR\b|\bMR\b[\s\S]{0,60}\bM\+|\bmemory\b/i], ['last answer', /\bAns\b/], ['exponent entry', /\bEXP\b|×\s*10/], ['change sign', /±|\+\/[-−]/],
       ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
   },
+  'formula calculators': {
+    site: 'https://www.vcalc.com/', verse: '/calculators/',
+    // vcalc.com's robots.txt asks robots not to read it, so accuracy is Verse against the worked-out answer: the outside area of a pipe 2 inches
+    // across and 10 feet long, pi x d x l = pi x (2/12 ft) x 10 ft = 5.235988 ft², and the same area in square metres (0.4864390 m²) and square
+    // inches (753.9822 in²), the units a page that is unit-aware shows beside it
+    ask: { verse: '/calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
+    truth: [['5.23599 ft²', /(?<![\d.])5\.2359\d*\s*ft²/], ['0.486439 m²', /(?<![\d.])0\.48643\d*\s*m²/], ['753.982 in²', /(?<![\d.])753\.98\d*\s*in²/]],
+    askParts: {
+      // the library: each kind of calculator the best formula sites keep, named as a section of the page
+      'formula library': [['everyday', /\bEveryday\b/i], ['maths', /\bMath(?:s|ematics)?\b/i], ['geometry', /\bGeometry\b/i], ['statistics', /\bStatistics\b/i], ['physics', /\bPhysics\b/i],
+        ['chemistry', /\bChemistry\b/i], ['electrical', /\bElectrical\b|\bElectricity\b/i], ['health', /\bHealth\b/i], ['dates', /\bDays between two dates\b/i], ['more than 100 calculators', /\bAll calculators \((?:[1-9]\d{2,})\)/i]],
+      // unit-aware: every input offers the units of its kind, the answer in any unit, the same answer in every other unit, the formula and its working
+      'unit-aware inputs': [['each input takes a unit of its kind', /Diameter of pipe\s*\n\s*m \(metres\)[\s\S]*?in \(inches\)[\s\S]*?ft \(feet\)/], ['the answer in any unit', /\bShow in\b/], ['every other unit', /\bIn other units\b/], ['the formula in its symbols, with the working', /A = π × d × l[\s\S]*\bWorking\b/], ['square metres beside square feet', /\bm²[\s\S]*\bft²|\bft²[\s\S]*\bm²/]],
+      // a formula of your own: guided rows or the raw text, with units, kept on the device and shared by a link
+      'custom formulas': [['build your own formula', /\bBuild your own formula\b/i], ['a guided mode', /\bGuided\b/], ['a raw mode', /\bRaw\b/], ['saved on the device', /\bSave on this device\b/i], ['shared by a link', /\bShare formula link\b/i]],
+    },
+    // what a full formula library offers: the everyday sums, the sciences, units, the working, and a way out (share, export) and in (your own)
+    facts: [['percent', /\bpercent/i], ['tip', /\btip\b/i], ['loan', /\bloan\b/i], ['BMI', /\bBMI\b/], ['date maths', /\bdays between\b|\bdate\b/i], ['unit conversion', /\bconver/i], ['area', /\barea\b/i],
+      ['physics', /\bPhysics\b/i], ['chemistry', /\bChemistry\b/i], ['electrical', /\bOhm/], ['geometry', /\bGeometry\b/i], ['statistics', /\bStatistics\b/i], ['the formula shown', /\b\w+ = [^\n]*[×÷+−^√π]/],
+      ['a share link', /\bShare link\b/i], ['copy the answer', /\bCopy answer\b/i], ['export', /\bExport\b/i], ['a custom formula', /\bBuild your own formula\b/i], ['works offline', /\boffline\b/i]],
+  },
   password: {
     // both pages make a password as they open (passwordsgenerator.net's default is 16 characters of every class; Verse's link asks for the same);
     // a random password has no right answer, but a right SHAPE: a 16-character word with an uppercase, a lowercase, a digit and a symbol among the

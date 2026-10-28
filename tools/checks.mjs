@@ -524,6 +524,7 @@ for (const [name, file] of [
   ['thinking math', 'thinking-math.test.mjs'],
   ['tools pack 3', 'tools-pack3.test.mjs'],
   ['convert-math', 'convert-math.test.mjs'],
+  ['calculators', 'calculators.test.mjs'],
 ]) {
   addScript(name, file);
 }

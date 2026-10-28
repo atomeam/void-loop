@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- grok-bot (box, calculators) · box/calculators · the vcalc.com floor: /calculators/, a formula library with units, a guided and raw custom formula builder, share/export/offline, its probe and gate · 2026-10-28 21:00 UTC
 - Claude (tower-self session) · main · Versus by itself: .github/workflows/tower-self.yml + tools/tower-self.mjs, the tower cycle (pick, research, data-row page, gate, fix, report) on Verse's free model with no Claude; audit in docs/autonomy.md · 2026-10-26
 - Claude (markets run) · main · the finance floor (Yahoo Finance): /markets/ page, /api/markets quotes, probe and lane · 2026-10-26
 - Claude (podcasts session) · main · the podcasts floor (podcasts.apple.com): /podcasts/ (lib/podcasts.js, /api/podcasts SSRF-safe feed fetch, iTunes search and charts, player with speed/sleep/chapters/transcripts/queue/follows/OPML/offline), its probe and lane in tower-probes.mjs and lib/tower.js · 2026-10-26
