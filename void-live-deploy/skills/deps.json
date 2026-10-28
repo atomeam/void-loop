@@ -707,7 +707,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 21
+   "tests": 22
   },
   {
    "file": "lib/chat-calendar.js",

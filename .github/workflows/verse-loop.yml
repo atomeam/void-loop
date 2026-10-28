@@ -1,0 +1,85 @@
+# The Verse loop in Actions (docs/VERSE-LOOP.md): once an hour, one lap of tools/verse-loop.mjs --once. A lap pulls main, runs the
+# fast checks (tools/verse-loop.checks.json), and with the default brain lets Verse's own free model (Workers AI, through
+# tools/propose-fix.mjs) fix one probe miss; a coding agent (opencode or aider, by hand) fixes the first red check or takes the top of
+# docs/NEXT.md. Only a change with no new red after the checks is committed to loop/<time>, pushed (never forced) and opened as a PR
+# labelled automerge (or "waits for owner" under propose-fix's confidence gate); verify.yml reverts it if main's suite goes red.
+# Off until the repo variable VERSE_LOOP_ENABLED is 'true'. Keys come from repo secrets by name, never from a file:
+# VOID_OWNER_TOKEN (the free brain), VERSE_LOOP_TOKEN (a token that may open PRs: the workflow token cannot, and its pushes start no
+# checks), and for a coding agent OPENROUTER_API_KEY / GROQ_API_KEY / GEMINI_API_KEY / CEREBRAS_API_KEY with vars.VERSE_LOOP_MODEL.
+name: Verse loop
+
+on:
+  schedule:
+    - cron: '41 * * * *' # hourly, off the hour; propose-fix.yml keeps its own every-2-hours run
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: "the brain: verse (free, Workers AI), opencode or aider (a free-tier model from the secrets)"
+        type: choice
+        options: [verse, opencode, aider]
+        default: verse
+      dry:
+        description: "run the checks and the brain, commit and open nothing"
+        type: boolean
+        default: false
+
+concurrency:
+  group: verse-loop
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  lap:
+    if: vars.VERSE_LOOP_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Who commits
+        run: |
+          git config user.name "verse-loop"
+          git config user.email "verse-loop@users.noreply.github.com"
+      - name: Install Chromium (the free brain's benchmark gate)
+        if: (inputs.agent || 'verse') == 'verse'
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+          git update-index --assume-unchanged void-live-deploy/index.html void-live-deploy/void.html
+      - name: Install opencode
+        if: inputs.agent == 'opencode'
+        run: npm i -g opencode-ai
+      - name: Install aider
+        if: inputs.agent == 'aider'
+        run: python3 -m pip install --quiet aider-chat
+      - name: One lap
+        env:
+          VERSE_LOOP_AGENT: ${{ inputs.agent || 'verse' }}
+          DRY: ${{ inputs.dry && '--dry-run' || '' }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN }}
+          VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+        run: |
+          if [ -z "$GH_TOKEN" ] && [ -z "$DRY" ]; then
+            echo "::warning title=Verse loop runs dry::Repo secret VERSE_LOOP_TOKEN is not set, and the workflow token cannot open pull requests."
+            DRY=--dry-run
+          fi
+          node tools/verse-loop.mjs --once $DRY | tee lap.txt
+          { echo '### Verse loop'; echo; echo '```'; tail -n 20 lap.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
