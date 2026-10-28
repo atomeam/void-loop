@@ -13,7 +13,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | --- | --- | --- | --- | --- |
 | A full feature study of this site (not written yet) | Study | unreviewed | every site of this kind offers it | not studied yet |
 | An account that keeps your things on every device | Accounts | missing | its live page (2026-10-28): "s See everything you can create Pricing Sign In Explore the App Sign In Open menu Menu Inkfluence AI Close men" | no sign of it in the source of /books/ |
-| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "mazon KDP Etsy Gumroad Apple Books Kobo Google Play Books From the community Real books, made this way. A few" | void-live-deploy/books/index.html:95 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
+| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "mazon KDP Etsy Gumroad Apple Books Kobo Google Play Books From the community Real books, made this way. A few" | void-live-deploy/books/index.html:97 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
 | Share a link to what you made or found | Sharing | missing | its live page (2026-10-28): "s encrypted, stored securely, and never shared or used to train AI models. One sentence. That's the whole firs" | no sign of it in the source of /books/ |
 | Features Explore our powerful tools | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | iOS App Create on iPhone & iPad | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

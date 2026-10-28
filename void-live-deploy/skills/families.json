@@ -278,12 +278,12 @@
     {
      "name": "shape",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 4 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
      "failing": [
       "draw a circle"
      ],
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 0.75,
      "streak": 10
     },
