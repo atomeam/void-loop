@@ -19033,6 +19033,111 @@
     "at": "2026-10-28T05:17:31.710Z",
     "of": 16
    }
+  },
+  "colorzilla": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 339,
+    "best": 110,
+    "evidence": "Verse (/gradient/) 339 ms to the load event (median of 3, phone width) vs colorzilla.com 110 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-28T05:31:41.881Z"
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/gradient/) 3 of 3 loads answered vs colorzilla.com 3 of 3 loads answered",
+    "at": "2026-10-28T05:31:41.881Z"
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/gradient/) 0 px sideways overflow at 390 px vs colorzilla.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-28T05:31:41.881Z"
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 5,
+    "evidence": "Verse (/gradient/) 0 unnamed controls or images vs colorzilla.com 5 unnamed controls or images",
+    "at": "2026-10-28T05:31:41.881Z"
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/gradient/) 1 (1: the page shows itself again with the network cut) vs colorzilla.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-28T05:31:41.881Z"
+   },
+   "sharing": {
+    "verdict": "equal-and-better",
+    "verse": 1,
+    "best": 1,
+    "evidence": "Verse (/gradient/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:31:41.881Z",
+    "of": 1,
+    "part": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 5,
+    "best": 5,
+    "evidence": "Verse (/gradient/) 5 of 5 right against the worked-out answer; judged against the standard, not colorzilla.com (the site is not asked)",
+    "at": "2026-10-28T05:31:41.881Z",
+    "of": 5
+   },
+   "design polish": {
+    "verdict": "worse",
+    "verse": 9,
+    "best": 1,
+    "evidence": "Verse (/gradient/) 9 design defects vs colorzilla.com 1 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.00), colorzilla.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+    "at": "2026-10-28T05:31:41.881Z"
+   },
+   "gradient editor": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/gradient/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:31:41.881Z",
+    "of": 3,
+    "part": true
+   },
+   "eyedropper": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/gradient/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:31:41.881Z",
+    "of": 2,
+    "part": true
+   },
+   "color picker": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/gradient/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:31:41.881Z",
+    "of": 2,
+    "part": true
+   },
+   "css output": {
+    "verdict": "equal-and-better",
+    "verse": 2,
+    "best": 2,
+    "evidence": "Verse (/gradient/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-28T05:31:41.881Z",
+    "of": 2,
+    "part": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 7,
+    "best": 2,
+    "evidence": "Verse (/gradient/) 7 of 7 things a full answer shows vs colorzilla.com 2 of 7 things a full answer shows (Verse lacks: none; site lacks: linear, radial, conic, eyedropper, copy CSS)",
+    "at": "2026-10-28T05:31:41.881Z",
+    "of": 7
+   }
   }
  },
  "icons": {
