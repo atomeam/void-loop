@@ -44,9 +44,10 @@
   tr.on td { color:#fff; font-weight:600; background:#191828; }
   pre { margin:8px 0; padding:10px 12px; background:#0d0c14; border:1px solid var(--line); border-radius:10px; font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:#dcd8f4; overflow-x:auto; min-height:120px; }
   .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
-  .siblings a { display:inline-block; padding:6px 0; }
+  .siblings a { display:inline-block; padding:8px 4px; min-height:24px; min-width:24px; }
   .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:8px 0; }
   .tile { background:#191827; border:1px solid var(--line); border-radius:12px; padding:12px; min-height:60px; }
+  .tile a { display:inline-block; min-height:24px; min-width:24px; padding:4px 0; }
   .tile h3 { margin:0 0 4px; font-size:14px; }
   .tile p { margin:0; color:var(--quiet); font-size:12px; }
   .ledger { max-height:220px; overflow:auto; }
@@ -78,6 +79,10 @@
       </label>
     </div>
     <p class="out" id="profileout"></p>
+    <div class="row">
+      <button type="button" id="connectlive" aria-label="Connect live Anycolor ID account">Connect Live Account</button>
+      <span class="note" id="livestatus">Offline-first: mock profile in use. Toggle to fetch live data when online.</span>
+    </div>
     <p class="say" id="say" aria-live="polite"></p>
   </section>
 
@@ -198,6 +203,25 @@
   $('aid').addEventListener('change', (e) => commit('aid', e.target.value, 'Account ID updated.'));
   $('region').addEventListener('change', (e) => commit('region', e.target.value, 'Region updated.'));
 
+  $('connectlive').onclick = async () => {
+    $('livestatus').textContent = 'Connecting to live Anycolor ID endpoint…';
+    try {
+      const r = await fetch('https://anycolorid.com/user', { mode: 'cors', credentials: 'omit' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json().catch(() => null);
+      if (j && (j.name || j.email || j.id)) {
+        if (j.name) commit('name', String(j.name), 'Live name synced.');
+        if (j.email) commit('email', String(j.email), 'Live email synced.');
+        if (j.id) commit('aid', String(j.id), 'Live account ID synced.');
+        if (j.region) commit('region', String(j.region).toLowerCase().startsWith('jp') ? 'jp' : 'en', 'Live region synced.');
+        $('livestatus').textContent = 'Live profile synced from Anycolor ID. Offline fallback still available.';
+      } else {
+        $('livestatus').textContent = 'Live endpoint answered, but no profile fields found; keeping local profile.';
+      }
+    } catch (e) {
+      $('livestatus').textContent = 'Live connect unavailable (offline or blocked); staying on the local profile.';
+    }
+  };
   $('clearhistory').onclick = () => { state.history = []; renderHistory(); save(); say('Change history cleared on this device.'); };
   $('exportjson').onclick = async () => {
     const cfg = JSON.stringify({ name: state.name, email: state.email, aid: state.aid, region: state.region, history: state.history }, null, 2);
