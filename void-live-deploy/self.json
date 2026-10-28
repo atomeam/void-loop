@@ -192,6 +192,12 @@
    "date": "2026-10-21",
    "ask": "Verse Remix Kit",
    "from": "store-publish: templates, 6 files, free; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "identity studio opens with a neutral example profile (no real name or email in the seed)",
+   "from": "asked by Verse"
   }
  ],
  "open": [
@@ -475,7 +481,7 @@
   },
   {
    "name": "Planet restoration",
-   "last": "2026-10-14"
+   "last": "2026-10-28"
   },
   {
    "name": "Verse stage handoff",
@@ -491,84 +497,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-28T16:34:10Z",
-   "subject": "Lists run 6: weather never stuck busy, KV writes guarded, nightsky joins time"
+   "at": "2026-10-28T19:54:00Z",
+   "subject": "Boards: a plain lead line, general starter boards, and plain labels with the board terms kept"
   },
   {
-   "at": "2026-10-28T14:20:21Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+   "at": "2026-10-28T19:50:53Z",
+   "subject": "Hosting page: a queue and wait-time calculator for any service, with three examples (#1340)"
   },
   {
-   "at": "2026-10-28T13:35:45Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+   "at": "2026-10-28T19:46:16Z",
+   "subject": "Tournaments: a match grid that keeps the roster, merges look-alike names and flags shared places"
   },
   {
-   "at": "2026-10-28T13:35:05Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
+   "at": "2026-10-28T19:32:32Z",
+   "subject": "Finding: rides asked a live routing service (findings/rides)"
   },
   {
-   "at": "2026-10-28T13:33:52Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-10-28T19:19:44Z",
+   "subject": "Incident: the browser suite failed on fca8d382 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-28T13:31:03Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
+   "at": "2026-10-28T18:54:18Z",
+   "subject": "Verse fixes its make skill: learn to handle \"make a litle cat\""
   },
   {
-   "at": "2026-10-28T13:23:09Z",
-   "subject": "Tower gate: every floor measured against its live site (6 slices)"
+   "at": "2026-10-28T18:50:59Z",
+   "subject": "Incident: the browser suite failed on 15e9ea68 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-28T13:16:42Z",
-   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
+   "at": "2026-10-28T18:43:50Z",
+   "subject": "Verse fixes its gradient skill: learn to handle \"render a sphere with pink to blue\""
   },
   {
-   "at": "2026-10-28T11:44:31Z",
-   "subject": "Subject eval: 54 of 54 live"
+   "at": "2026-10-28T18:37:20Z",
+   "subject": "Tower gate: coin flip measured against their live sites"
   },
   {
-   "at": "2026-10-28T11:38:12Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
+   "at": "2026-10-28T18:33:32Z",
+   "subject": "Forethinkers 2026-10-28 14:15: CBASS heat assay bounded by field checks; heat table to 27 Oct; coral heat-test growth row (#1338)"
   },
   {
-   "at": "2026-10-28T11:22:30Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
+   "at": "2026-10-28T18:25:08Z",
+   "subject": "Tower gate: coin flip,identity measured against their live sites"
   },
   {
-   "at": "2026-10-28T06:57:41Z",
-   "subject": "Incident: the browser suite failed on ed55bcc2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-28T18:23:40Z",
+   "subject": "Verse fixes its photo-tools skill: learn to handle \"fix lighting on this\""
   },
   {
-   "at": "2026-10-28T06:34:50Z",
-   "subject": "Incident: the browser suite failed on d59a7acf (void-live-deploy/incidents.json)"
+   "at": "2026-10-28T18:21:09Z",
+   "subject": "Verse's voice 2026-10-28: identity studio seeds a neutral example profile instead of a real name and email; act-skill 'my email' ask queued"
   },
   {
-   "at": "2026-10-28T06:11:49Z",
-   "subject": "Incident: the browser suite failed on 42854946 (void-live-deploy/incidents.json)"
+   "at": "2026-10-28T17:45:14Z",
+   "subject": "Incident: the browser suite failed on b60840bd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-28T06:08:42Z",
-   "subject": "Tower gate: identity measured against their live sites"
+   "at": "2026-10-28T17:33:19Z",
+   "subject": "Verse fixes its photo-tools skill: learn to handle \"edit lighting on this photo\""
   },
   {
-   "at": "2026-10-28T06:01:25Z",
-   "subject": "Tower gate: sudowrite,squibler,inkfluence measured against their live sites"
+   "at": "2026-10-28T17:23:45Z",
+   "subject": "Verse fixes its gradient skill: learn to handle \"fix the gradient on this\""
   },
   {
-   "at": "2026-10-28T06:01:03Z",
-   "subject": "Map nameunit.com to /hosting/ with domain search and tiered plans"
+   "at": "2026-10-28T17:23:25Z",
+   "subject": "reinvest: today's plan for Verse's money"
   },
   {
-   "at": "2026-10-28T05:59:12Z",
-   "subject": "Feature scan: inkfluence,novelcrafter,squibler,sudowrite researched by Verse"
+   "at": "2026-10-28T17:15:20Z",
+   "subject": "Incident: the browser suite failed on b60840bd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-28T05:57:56Z",
-   "subject": "Expand obituaries archive (#1334)"
+   "at": "2026-10-28T16:50:11Z",
+   "subject": "Tower gate: coin flip measured against their live sites"
   },
   {
-   "at": "2026-10-28T05:57:20Z",
-   "subject": "Tower gate: identity,cpan measured against their live sites"
+   "at": "2026-10-28T16:48:47Z",
+   "subject": "Tower gate: music,weather measured against their live sites"
   }
  ],
  "builders": {
