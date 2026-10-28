@@ -6228,6 +6228,30 @@ try {
       linked === '40.8' && typed === '0.3' && keyed === '1,024' && rad === '-1' && kept.hist === 4 && kept.mem === 'M = 1,024' && kept.angle === 'Radians' && !Z.errors.length, JSON.stringify({ linked, typed, keyed, rad, kept, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the tower's vcalc.com floor: /calculators/ works a formula from its link, takes each input in any unit (or a unit typed in the box),
+  // shows the answer in any other with the SI working in pro mode, opens any of the library, and builds your own formula guided or raw
+  if (want("formula calculators: /calculators/ works a linked formula in any units, pro shows the working, the library and search open one, and your own formula works guided, raw and from its link")) {
+    const Z = await fresh(); const big = () => Z.p.$eval('#big', (e) => e.textContent), bouts = () => Z.p.$eval('#bouts', (e) => e.innerText);
+    await Z.p.goto(base + 'calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft'); const linked = await big();
+    await Z.p.selectOption('[aria-label="Show Surface area in"]', 'm²'); const m2 = await big(), link = Z.p.url();
+    await Z.p.selectOption('[aria-label="Unit for Length of pipe"]', 'm'); const lm = await big();
+    await Z.p.fill('#in-d', '5 cm'); const inline = await big(); await Z.p.fill('#in-d', 'abc'); const bad = await big();
+    await Z.p.click('#pro'); await Z.p.fill('#in-d', '2'); const pro = await big(), working = await Z.p.$eval('#working', (e) => e.textContent), proLink = Z.p.url(); await Z.p.click('#pro');
+    await Z.p.click('#lib a[data-id="loan-payment"]'); const loan = [await big(), await Z.p.$eval('#outs', (e) => e.innerText)];
+    await Z.p.fill('#find', 'molar mass'); await Z.p.press('#find', 'Enter'); const molar = await big();
+    await Z.p.click('#lib a[data-id="convert"]'); await Z.p.selectOption('#in-kind', 'temperature'); await Z.p.fill('#in-v', '100'); const temp = await big();
+    await Z.p.goto(base + 'calculators/?calc=pipe-surface-area'); const b1 = await bouts();
+    await Z.p.fill('[aria-label="Result 1 unit"]', 'cm²'); const b2 = await bouts(); await Z.p.fill('[aria-label="Result 1 formula"]', 'pi*d + l'); const b3 = await bouts();
+    await Z.p.click('#traw'); await Z.p.fill('#rawtext', '# Kinetic energy\nE [J] = 0.5*m*v^2\nm [kg] = 2\nv [km/h] = 36'); const ke = await bouts();
+    await Z.p.click('#bsave'); const saved = await Z.p.$$eval('#saved button', (x) => x.map((y) => y.textContent));
+    await Z.p.goto(base + 'calculators/?formula=' + encodeURIComponent('# Kinetic energy\nE [J] = 0.5*m*v^2\nm [kg] = 2\nv [km/h] = 36')); const fromLink = await bouts();
+    check("formula calculators: /calculators/ works a linked formula in any units, pro shows the working, the library and search open one, and your own formula works guided, raw and from its link",
+      linked === '5.23599 ft²' && m2 === '0.486439 m²' && /a\.u=m%C2%B2/.test(link) && lm === '1.59593 m²' && inline === '1.5708 m²' && /"abc" is not a number/.test(bad)
+      && pro === '1.59592906802 m²' && /Diameter of pipe = 2 in\s+→\s+0\.0508 m/.test(working) && /&pro=1/.test(proLink) && loan[0] === '$483.32' && /\$3,999\.20/.test(loan[1])
+      && molar === '180.156 g/mol' && temp === '−173.15 °C' && /5\.23599 ft²/.test(b1) && /4,864\.39 cm²/.test(b2) && /not area/.test(b3) && /100 J/.test(ke) && saved.includes('Kinetic energy')
+      && /100 J/.test(fromLink) && !Z.errors.length, JSON.stringify({ linked, m2, link, lm, inline, bad, pro, working, proLink, loan, molar, temp, b1, b2, b3, ke, saved, fromLink, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of timeanddate.com on /time/: the next clock change for the city, and on each clock in the world clock; a zone with none says so
   if (want("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change")) {
     const Z = await fresh(); await Z.p.goto(base + 'time/?c=London'); await Z.p.waitForTimeout(300);

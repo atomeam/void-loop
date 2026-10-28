@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 907,
+ "counted": 910,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -612,6 +612,13 @@
    "tests": 1
   },
   {
+   "file": "lib/date-math.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/share.js",
    "skills": 3,
    "direct": 0,
@@ -679,7 +686,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4,
-   "tests": 17
+   "tests": 18
   },
   {
    "file": "lib/chat-calendar.js",
@@ -826,13 +833,6 @@
    "skills": 2,
    "direct": 1,
    "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/date-math.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 5,
    "tests": 1
   },
   {
@@ -1032,6 +1032,13 @@
    "tests": 0
   },
   {
+   "file": "lib/fincalc.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/jobs-core.js",
    "skills": 1,
    "direct": 1,
@@ -1064,6 +1071,13 @@
    "skills": 1,
    "direct": 1,
    "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/calc-units.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
    "tests": 1
   },
   {
@@ -1166,6 +1180,13 @@
   },
   {
    "file": "lib/calc-more.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/calculators.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1985,13 +2006,6 @@
   },
   {
    "file": "lib/email-send.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/fincalc.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -4000,11 +4014,30 @@
    ],
    "importedBy": []
   },
+  "lib/calc-units.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/calculators.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
+  },
   "lib/calculator.js": {
    "imports": [
     "skills/calc.js"
    ],
    "importedBy": []
+  },
+  "lib/calculators.js": {
+   "imports": [
+    "lib/calc-units.js",
+    "lib/fincalc.js",
+    "lib/date-math.js"
+   ],
+   "importedBy": [
+    "skills/formulas.js"
+   ]
   },
   "lib/calendar.js": {
    "imports": [],
@@ -4721,13 +4754,15 @@
   "lib/date-math.js": {
    "imports": [],
    "importedBy": [
+    "lib/calculators.js",
     "lib/date-ask.js",
     "lib/zones.js",
     "skills/date-grid.js"
    ],
    "reachedBy": [
     "lib/sun-day.js",
-    "skills/date-calc.js"
+    "skills/date-calc.js",
+    "skills/formulas.js"
    ]
   },
   "lib/date-words.js": {
@@ -5139,7 +5174,11 @@
   "lib/fincalc.js": {
    "imports": [],
    "importedBy": [
-    "lib/calc-panels.js"
+    "lib/calc-panels.js",
+    "lib/calculators.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
    ]
   },
   "lib/fix-audit.js": {
@@ -9998,6 +10037,12 @@
     "skills/forge-rules.js",
     "lib/prints.js",
     "lib/forge-makes.js"
+   ],
+   "importedBy": []
+  },
+  "skills/formulas.js": {
+   "imports": [
+    "lib/calculators.js"
    ],
    "importedBy": []
   },
