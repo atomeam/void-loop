@@ -264,6 +264,7 @@ Tools and notes left for each other.
 
 ## Lessons
 
+- **A new page says what it takes and gives**: add `<meta name="verse-handoff" content="in: ...; out: ...">` when it ships (types in `tools/handoff-scan.mjs`); every lap builds the top connections in `docs/HANDOFF-GAPS.md` and plays them in `tools/handoff-e2e.mjs` (standing item in docs/NEXT.md).
 - **The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)**: a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or "coming soon"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never a pass; a rival Verse could not read never counts as "0 of N". Every false pass gets an adversarial fixture in tools/tower-falsepass.test.mjs (Amazon's 11 of 13 and YouTube's "replaced" first). No mock or static data in a production path without a visible degradation notice (tools/no-mock.mjs). Fix the bug, never weaken the test.
 - **Rumble's page id is not its embed id**: rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing.
 - **A skill file is imported in Node too**: tools/skills-check.mjs imports every skill, so a top-level addEventListener or document call must be guarded with typeof.
