@@ -779,7 +779,7 @@ try {
     const rows = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
     const demo = await P.p.$eval('#demo', (e) => !e.hidden);
     check('tournament: the seeded ask lands as three teams, 16 eliminations and 47 points, a win pays 10 and not 10 plus the top-five, and every item the probe reads is on the page',
-      /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1' && rows[1] === '2 Bravo 19 0 7 2.0 2' && rows[2] === '3 Charlie 6 0 3 6.0 6' && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
+      /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1 leads by 3 pts' && rows[1] === '2 Bravo 19 0 7 2.0 2 -3 pts · needs 2 elims or a Top 5 to lead' && /^3 Charlie 6 0 3 6\.0 6 -16 pts/.test(rows[2]) && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
     const heats = await P.p.$eval('#heatout', (e) => e.innerText);
     const drops = await P.p.$eval('#droptable', (e) => e.innerText);
     check('tournament: the lobby splits into snake-seeded heats, and the shared drop spot is flagged contested while the unique one stays clear',
@@ -805,6 +805,14 @@ try {
     const gridResults = await P.p.evaluate(() => new URLSearchParams(location.search).get('results'));
     check('tournament: the match grid keeps the roster from match 1, tabs place then elims, flags two teams on one place and writes the URL format back',
       gridNames.join('|') === 'Alpha|Bravo|Charlie|Delta|Echo' && /Alpha and Bravo are both 2nd/.test(dupe) && !dupeAfter && /;Alpha:2:3,Bravo:1:0$/.test(gridResults || ''), JSON.stringify({ gridNames, dupe, dupeAfter, gridResults }));
+    // per-match columns, the cutoff gap and the match-point rule (owner, 2026-10-28)
+    await P.p.check('#percols'); await P.p.fill('#cut', '2'); await P.p.fill('#mp', '20'); await P.p.waitForTimeout(150);
+    const heads = await P.p.$$eval('#standings thead th', (t) => t.map((x) => x.textContent).join('|'));
+    const firstRow = await P.p.$eval('#standings tbody tr', (tr) => tr.innerText.replace(/\t/g, ' '));
+    const mpNote = await P.p.$eval('#mpnote', (e) => (e.hidden ? '' : e.textContent));
+    const colSearch = await P.p.evaluate(() => location.search);
+    check('tournament: each match gets its own column (points, place/elims), the gap names the cutoff, and match point names who is on it',
+      /\|M1\|M2\|M3\|Gap$/.test(heads) && /22 \(1\/6\)/.test(firstRow) && /On match point/.test(mpNote) && /cols=1/.test(colSearch) && /cut=2/.test(colSearch) && /mp=20/.test(colSearch), JSON.stringify({ heads, firstRow, mpNote, colSearch }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);

@@ -108,3 +108,45 @@ export function heatList(rows, n) {
   rows.forEach((r, i) => { const round = Math.floor(i / n), pos = i % n; buckets[round % 2 === 0 ? pos : n - 1 - pos].push(r.name); });
   return buckets;
 }
+
+/** One cell of a per-match column: "22 (1/6)" is 22 points from 1st place and 6 eliminations; "–" when the team sat it out. */
+export const matchCell = (e) => (e ? e.pts + ' (' + e.place + '/' + e.elims + ')' : '–');
+
+/** What a single match can still be worth: the smallest win that closes a gap of `need` points, said plainly.
+ * Returns "2 elims or a Top 5", "a win", "a win plus 3 elims" ... unit names what elims are called (elims, bonus points). */
+export function catchUp(need, placePoints, elim, unit = 'elims') {
+  const bits = [];
+  if (elim > 0) { const n = Math.ceil(need / elim); bits.push(n + ' ' + (n === 1 ? unit.replace(/s$/, '') : unit)); }
+  let best = 0;
+  for (let p = 1; p <= 100; p++) if (placePoints(p) >= need) best = p;
+  if (best) bits.push(best === 1 ? 'a win' : 'a Top ' + best);
+  else if (placePoints(1) > 0 && elim > 0) { const n = Math.ceil((need - placePoints(1)) / elim); bits.push('a win plus ' + n + ' ' + (n === 1 ? unit.replace(/s$/, '') : unit)); }
+  return bits.join(' or ');
+}
+
+/** The gap on each row: to 1st, or for a team outside a qualifying cutoff (top `cutoff` qualify) to the last place that qualifies.
+ * [{ gap, target, hint }]: the leader's hint says by how much it leads; everyone else's says the points behind and what one match
+ * needs to pass (a tie goes to the tiebreakers, so passing is the gap plus one). */
+export function gaps(rows, placePoints, elim, { cutoff = 0, unit = 'elims' } = {}) {
+  return rows.map((r, i) => {
+    if (i === 0) { const lead = rows.length > 1 ? r.points - rows[1].points : 0; return { gap: 0, target: 'lead', hint: rows.length > 1 ? 'leads by ' + lead + ' pts' : 'leads' }; }
+    const out = cutoff > 0 && i >= cutoff, t = out ? rows[cutoff - 1] : rows[0];
+    const gap = t.points - r.points, need = gap + 1, how = catchUp(need, placePoints, elim, unit);
+    const goal = out ? 'to make the top ' + cutoff : 'to lead';
+    return { gap, target: out ? 'cutoff' : 'first', hint: '-' + gap + ' pts' + (how ? ' · needs ' + how + ' ' + goal : ' ' + goal) };
+  });
+}
+
+/** The match-point rule: a team that has reached `threshold` points becomes eligible, and the first eligible team to then win a match
+ * takes the tournament. Returns { champion, match (1-based) or 0, eligible: [names] } worked out over the matches in order. */
+export function matchPoint(matches, placePoints, elim, threshold) {
+  const total = new Map(), merged = mergeNames(matches);
+  if (!(threshold > 0)) return { champion: '', match: 0, eligible: [] };
+  for (let i = 0; i < merged.length; i++) {
+    const eligible = new Set([...total].filter(([, p]) => p >= threshold).map(([n]) => n));
+    const winner = merged[i].find((t) => t.place === 1 && eligible.has(t.name));
+    if (winner) return { champion: winner.name, match: i + 1, eligible: [...eligible] };
+    for (const t of merged[i]) total.set(t.name, (total.get(t.name) || 0) + placePoints(t.place) + t.elims * elim);
+  }
+  return { champion: '', match: 0, eligible: [...total].filter(([, p]) => p >= threshold).map(([n]) => n) };
+}
