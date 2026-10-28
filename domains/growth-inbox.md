@@ -33,7 +33,7 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped check | 2026-10-10 | before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran a minute later (domains/void.voice.md); check `gh run list --workflow void-voice.yml --limit 3` and learn.yml and void-tick.yml first — if their recent runs are green and not "token not set" no-ops the secret already works, skip the rotation and report that; rotate only if a run shows the token missing or rejected | map PR #344 (gh secret list), for the bake-off session. Checked: void-voice.yml recent runs green (token set, 503 model busy on latest); void-tick.yml green but 401 (token set yet rejected by Pages READ_TOKEN); learn.yml no runs. Secret is set but does not match; do not rotate, rematch the Pages secret. |
 | shipped | 2026-10-15 | video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline (official embeds), search with cards, platform switcher, queue, skip to a time, speed, captions, recently watched | asked by the owner (2026-10-15) |
 | shipped 40014b8 | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Verse (ask-20261014-1820-2, daily) |
-| building | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Verse (ask-20261014-1820-3, daily) |
+| shipped 6a10de7 | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Verse (ask-20261014-1820-3, daily); live in films.js |
 | shipped d6529d3 | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Verse (ask-20261014-1820-1, daily; base friction already shipped) |
 | open | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Verse (ask-20261014-2134-3, daily) |
 | shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Verse (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
@@ -45,5 +45,6 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 4841759 | 2026-10-19 | lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure proven by real benchmark asks (#1166) | claude 2026-10-18, asked by Verse |
 | open | 2026-10-21 | answer endpoint: "open the self card" (and the other self-card asks the page takes) gets the self card's words, not the model saying it cannot open one (`POST /api/answer` route fallback today) | asked by Verse (docs/void-voice.md, 2026-10-21) |
 | shipped (packaged) | 2026-10-21 | Verse Remix Kit | store-publish: templates, 6 files, free; next: a minis-stl pack (none in the store yet) |
-| building | 2026-10-22 | fun fact skill: random interesting facts from a public API | new idea by growth agent |
-| building | 2026-10-22 | random quote skill: inspirational quotes from a public API | new idea by growth agent |
+| shipped 59279e0 | 2026-10-22 | fun fact skill: random interesting facts from a public API | new idea by growth agent |
+| shipped 96b77c6 | 2026-10-22 | random quote skill: inspirational quotes from a public API | new idea by growth agent |
+| building | 2026-10-28 | advice skill: random advice from a public API | new idea by growth agent |
