@@ -39,7 +39,29 @@
   #wall .bar { grid-column:3 / -1; height:3px; border-radius:99px; background:#1c1b28; overflow:hidden; margin-top:4px; }
   #wall .bar i { display:block; height:100%; background:linear-gradient(90deg,#8b7bff,#5ad1ff); }
   #empty { color:var(--soft); padding:14px 2px; }
+  .pick[hidden] { display:none; }
+  .pick { display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start; margin:12px 0; padding:12px 14px; background:#12111c; border:1px solid #3b3b4d; border-radius:12px; }
+  .pick .pglyph { font-size:40px; line-height:1; }
+  .pick .pname { margin:0 0 6px; font-size:16px; }
+  .pick .pfacts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:4px 14px; margin:0; }
+  .pick .pfacts div { display:flex; justify-content:space-between; gap:8px; border-bottom:1px solid #23222f; padding:2px 0; }
+  .pick dt { color:#b9b9c8; font-size:12px; }
+  .pick dd { margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#ecebf5; font-variant-numeric:tabular-nums; }
+  .pick .pcopy, .pick .plink { margin:6px 0 0; font-size:13px; color:#b9b9c8; }
+  .pick .pcopy code { color:#ecebf5; font-size:15px; }
+  .pick .plink a, .bridge a { color:#cfc6ff; }
+  .fmt { display:inline-flex; align-items:center; gap:8px; color:#b9b9c8; font-size:13px; }
+  .fmt select { font:inherit; font-size:14px; color:#ecebf5; background:#171624; border:1px solid #2a2a35; border-radius:999px; padding:6px 10px; }
+  .bridge { margin:10px 0 0; }
   .say { color:var(--soft); font-size:14px; min-height:1.4em; }
+  .handoff { margin:10px 0 4px; padding:10px 12px; background:#12111c; border:1px solid #3b3b4d; border-radius:12px; }
+  .handoff h2 { font-size:14px; margin:0 0 7px; color:#b9b9c8; font-weight:600; }
+  .handoff h2 span { color:#ecebf5; }
+  .handoff-links { display:flex; flex-wrap:wrap; gap:8px; }
+  .handoff-links a { display:inline-block; font-size:13px; color:#cfc6ff; background:#171624; border:1px solid #2a2a35; border-radius:999px; padding:7px 12px; min-height:34px; text-decoration:none; }
+  .handoff-links a:hover { border-color:var(--accent); }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:6px 6px; min-width:24px; }
   footer { margin-top:24px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
   footer a { color:inherit; }
 </style>
@@ -50,12 +72,50 @@
   <h1>Emoji counts</h1>
   <p class="sub">A ranked wall of emoji, counted as they are copied here. Tap one to copy it and its count goes up. Ranked today or all time, searched by name, and the counts refresh while this page is open.</p>
 
+  <section class="handoff" aria-labelledby="handoff-h">
+    <h2 id="handoff-h">Send <span id="handoff-name">fire</span> to</h2>
+    <div class="handoff-links">
+      <a id="send-count" href="/word-count/?t=%F0%9F%94%A5">Count its characters</a>
+      <a id="send-translate" href="/translate/?q=fire&amp;to=es">Translate its name</a>
+      <a id="send-base64" href="/base64/?t=%F0%9F%94%A5">Encode it in Base64</a>
+      <a id="send-gist" href="/g/?text=%F0%9F%94%A5%20fire&amp;name=emoji.txt">Save it in a gist</a>
+      <a id="send-stage" href="/?ask=emoji%20fire">See it on the stage</a>
+    </div>
+    <p class="note">These follow the emoji you picked: tap another on the wall and every link here changes with it.</p>
+  </section>
+
   <div class="row">
     <div class="search"><input id="q" type="search" placeholder="Search the wall by name" aria-label="Search the wall by name" autocomplete="off"></div>
     <button type="button" id="today" aria-pressed="true">Today</button>
     <button type="button" id="all" aria-pressed="false">All time</button>
   </div>
-  <p id="stat">Loading the counts…</p>
+  <section id="pick" class="pick" hidden aria-live="polite" aria-label="The emoji you picked">
+    <div class="pglyph" id="pick-glyph" aria-hidden="true"></div>
+    <div class="pbody">
+      <p class="pname"><strong id="pick-name"></strong></p>
+      <dl class="pfacts">
+        <div><dt>Unicode</dt><dd id="pick-cp"></dd></div>
+        <div><dt>UTF-8 bytes</dt><dd id="pick-bytes"></dd></div>
+        <div><dt>HTML entity</dt><dd id="pick-ent"></dd></div>
+        <div><dt>Copied on this device</dt><dd id="pick-device"></dd></div>
+        <div><dt>Everyone today</dt><dd id="pick-today"></dd></div>
+        <div><dt>All time</dt><dd id="pick-all"></dd></div>
+      </dl>
+      <p class="pcopy">A tap copies <code id="pick-short"></code></p>
+      <p class="plink"><a id="pick-link" href="/emojis/">Share this emoji</a></p>
+    </div>
+  </section>
+
+  <div class="row">
+    <label class="fmt"><span>Copy as</span>
+      <select id="fmt" aria-label="What a tap copies">
+        <option value="char">the emoji</option>
+        <option value="code">the U+ codepoint</option>
+        <option value="html">the HTML entity</option>
+      </select>
+    </label>
+  </div>
+  <p id="stat">Loading the counts.</p>
   <p class="say" id="say" aria-live="polite"></p>
   <ul id="wall" aria-label="Emoji, ranked">
     <!-- rows: tools/emoji-wall.mjs writes them here, so the wall is on the page before any script runs -->
@@ -198,7 +258,20 @@
   <p id="empty" hidden></p>
 
   <footer>
-    <p>This is not a feed of anyone's messages. It counts copies of these emoji made on this page, when someone taps one; nothing else is sent, and there is no text to send. No account, no ads, and it works offline with the counts it last saw. The list of emoji is a closed list in the code, so only those can ever be counted. <a href="/">Back to Verse</a></p>
+    <p>This is not a feed of anyone's messages. It counts copies of these emoji made on this page, when someone taps one; nothing else is sent, and there is no text to send. No account, no ads, and it works offline with the counts it last saw. The list of emoji is a closed list in the code, so only those can ever be counted.</p>
+    <p>Counted here as emojis are copied — your copies on this device plus everyone today and all time on Verse. No account, nothing personal stored, works offline.</p>
+    <nav class="siblings" aria-label="Use together with">
+      <a href="/word-count/?t=%F0%9F%94%A5">Word count</a>
+      <a href="/translate/?q=fire&amp;to=es">Translate</a>
+      <a href="/base64/?t=%F0%9F%94%A5">Base64</a>
+      <a href="/g/?text=%F0%9F%94%A5%20fire&amp;name=emoji.txt">Gist</a>
+      <a href="/flip/">Coin flip</a>
+      <a href="/paint/">Paint</a>
+      <a href="/tournaments/">Tournaments</a>
+      <a href="/tools/">All tools</a>
+      <a href="/?ask=emoji%20counts">See it as a card on the stage</a>
+      <a href="/">Back to Verse</a>
+    </nav>
   </footer>
 </main>
 <script type="module">
@@ -206,11 +279,48 @@
 
   const $ = (id) => document.getElementById(id);
   const wall = $('wall'), say = $('say'), stat = $('stat');
-  const state = { counts: { all: {}, today: {} }, mode: 'today', q: '', seen: null, online: true, busy: false };
+  const state = { counts: { all: {}, today: {} }, mode: 'today', q: '', seen: null, online: true, busy: false, pick: '', fmt: 'char', mine: {} };
 
+  const EM = new Map(EMOJI.map((e) => [e.c, e]));
   const fmt = (n) => Number(n || 0).toLocaleString('en');
   const total = (mode) => EMOJI.reduce((a, e) => a + (state.counts[mode][e.c] || 0), 0);
   const rowOf = (e) => ({ e, n: state.counts[state.mode][e.c] || 0 });
+
+  // the facts a copy is usually made for: the character, its Unicode, its UTF-8 bytes and an HTML entity
+  const codepoint = (c) => Array.from(c).map((ch) => 'U+' + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')).join(' ');
+  const bytes = (c) => Array.from(new TextEncoder().encode(c)).map((b) => b.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+  const entity = (c) => Array.from(c).map((ch) => '&#' + ch.codePointAt(0) + ';').join('');
+  const asText = (c) => state.fmt === 'code' ? codepoint(c) : state.fmt === 'html' ? entity(c) : c;
+
+  // the handoff (owner, 2026-10-27): the emoji picked on the wall is carried to the tools that can use it, in the link itself
+  function handoff(c, name) {
+    const enc = encodeURIComponent(c), nm = encodeURIComponent(name);
+    $('handoff-name').textContent = name;
+    $('send-count').href = '/word-count/?t=' + enc;
+    $('send-translate').href = '/translate/?q=' + nm + '&to=es';
+    $('send-base64').href = '/base64/?t=' + enc;
+    $('send-gist').href = '/g/?text=' + encodeURIComponent(c + ' ' + name) + '&name=emoji.txt';
+    $('send-stage').href = '/?ask=emoji%20' + nm;
+  }
+
+  function showPick() {
+    const box = $('pick'), c = state.pick, e = EM.get(c);
+    if (!c || !e) { box.hidden = true; return; }
+    box.hidden = false;
+    $('pick-glyph').textContent = c;
+    $('pick-name').textContent = e.n;
+    $('pick-cp').textContent = codepoint(c);
+    $('pick-bytes').textContent = bytes(c);
+    $('pick-ent').textContent = entity(c);
+    $('pick-device').textContent = fmt(state.mine[c] || 0);
+    $('pick-today').textContent = fmt(state.counts.today[c] || 0);
+    $('pick-all').textContent = fmt(state.counts.all[c] || 0);
+    $('pick-short').textContent = asText(c);
+    const u = new URL(location.href); u.search = '?pick=' + encodeURIComponent(c);
+    $('pick-link').href = u.pathname + u.search;
+    $('pick-link').textContent = 'Share this emoji: ' + u.pathname + u.search;
+    handoff(c, e.n);
+  }
 
   function render() {
     const q = state.q.trim().toLowerCase();
@@ -237,10 +347,11 @@
     $('empty').textContent = shown ? '' : 'Nothing on the wall matches "' + state.q + '".';
     const t = total(state.mode);
     stat.textContent = t
-      ? fmt(t) + ' copies counted ' + (state.mode === 'today' ? 'today' : 'in all') + ' · ' + fmt(total('all')) + ' in all · refreshed ' + when()
-      : 'Nothing counted ' + (state.mode === 'today' ? 'today yet' : 'yet') + ' — tap an emoji to copy it and start the count.';
+      ? fmt(t) + ' copies counted ' + (state.mode === 'today' ? 'today' : 'in all') + ' — ' + fmt(total('all')) + ' in all — refreshed ' + when()
+      : 'Nothing counted ' + (state.mode === 'today' ? 'today yet' : 'yet') + ' - tap an emoji to copy it and start the count.';
     $('today').setAttribute('aria-pressed', String(state.mode === 'today'));
     $('all').setAttribute('aria-pressed', String(state.mode === 'all'));
+    showPick();
   }
 
   const when = () => (state.seen ? new Date(state.seen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'never');
@@ -274,17 +385,27 @@
     return ok;
   }
 
+  function setPick(c) {
+    state.pick = c;
+    const u = new URL(location.href); u.search = '?pick=' + encodeURIComponent(c);
+    try { history.replaceState(null, '', u.pathname + u.search); } catch (_) {}
+    showPick();
+  }
+
   wall.addEventListener('click', async (ev) => {
     const b = ev.target.closest('button[data-c]');
     if (!b || state.busy) return;
-    const c = b.dataset.c, name = (EMOJI.find((e) => e.c === c) || { n: 'that emoji' }).n;
+    const c = b.dataset.c, name = (EM.get(c) || { n: 'that emoji' }).n;
     state.busy = true;
-    const copied = await copy(c);
+    setPick(c);
+    const copied = await copy(asText(c));
+    state.mine[c] = (state.mine[c] || 0) + 1;
+    try { localStorage.setItem('void-emoji-mine', JSON.stringify(state.mine)); } catch (_) {}
     // the count follows the copy: +1 for this copy, then the server's own numbers are read back
     state.counts.today[c] = (state.counts.today[c] || 0) + 1;
     state.counts.all[c] = (state.counts.all[c] || 0) + 1;
     render();
-    say.textContent = copied ? 'Copied ' + name + ' — its count is one higher.' : 'That emoji is on the clipboard if your browser allowed it; its count is one higher here.';
+    say.textContent = copied ? 'Copied ' + name + ' - its count is one higher.' : 'That emoji is on the clipboard if your browser allowed it; its count is one higher here.';
     try {
       await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'emoji', v: c, n: 1 }) });
     } catch (_) { /* counted on this device and sent next time is a lie; the line below says so */ }
@@ -295,6 +416,15 @@
   $('q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
   $('today').onclick = () => { state.mode = 'today'; render(); };
   $('all').onclick = () => { state.mode = 'all'; render(); };
+  $('fmt').addEventListener('change', (e) => { state.fmt = e.target.value; showPick(); });
+
+  // a seeded ask: /emojis/?q=heart searches, /emojis/?pick=🔥 opens that emoji's record
+  const params = new URLSearchParams(location.search);
+  const seedQ = params.get('q') || '', seedPick = params.get('pick') || '';
+  if (seedQ) { state.q = seedQ; $('q').value = seedQ; }
+  if (seedPick && EM.has(seedPick)) state.pick = seedPick;
+  if (!state.pick) { const exact = EMOJI.find((e) => e.c === seedQ.trim() || e.n === seedQ.trim().toLowerCase()); state.pick = (exact && exact.c) || '🔥'; }
+  try { const m = JSON.parse(localStorage.getItem('void-emoji-mine') || 'null'); if (m && typeof m === 'object') state.mine = m; } catch (_) {}
 
   // refresh while the page is open and visible; nothing polls in a background tab
   let timer = setInterval(() => { if (document.visibilityState === 'visible') read(); }, 20000);

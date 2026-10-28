@@ -432,15 +432,47 @@ export const PROBES = Object.freeze({
   // copied from Emojipedia; the Twitter stream its old page was built on is, by its own account, inactive. Verse's /emojis/ counts copies
   // of a closed list of emoji made on the page itself and says so, so the "realtime" is real and local and no global feed is pretended.
   // Judged on Verse alone (their page is a paragraph of history and a link to the source, not a tool).
+  // yunite.xyz (owner, 2026-10-27): the scrim scorer a Fortnite lobby passes around. Its scores arrive through an account and its bot
+  // reads screenshots; Verse's /tournaments/ takes results typed in and shows the arithmetic - placement pays the highest matching threshold
+  // (a win is not a win plus the top-five), the tiebreakers are points, wins, eliminations then average placement, heats are dealt in snake
+  // order and two teams on one drop spot are flagged contested. The seeded ask is a three-team match, worked out by hand below.
+  tournaments: {
+    site: 'https://yunite.xyz/', verse: '/tournaments/',
+    ask: { verse: '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Tilted%20Towers,Bravo:Pleasant%20Park,Charlie:Tilted%20Towers&elim=2&win=10&top5=5' },
+    truth: [['the first seeded team', /Alpha/], ['its points, worked out: 1st is 10 plus 6 x 2 (22)', /Alpha\s+22\s+1\s+6/],
+      ['the second seeded team', /Bravo/], ['its points, worked out: 2nd is 5 plus 7 x 2 (19)', /Bravo\s+19\s+0\s+7/],
+      ['the third seeded team', /Charlie/], ['its points, worked out: 6th is 0 plus 3 x 2 (6)', /Charlie\s+6\s+0\s+3/],
+      ['the total teams', /3 teams/], ['the total eliminations, worked out (16)', /16 eliminations/], ['the total points, worked out (47)', /47 points/],
+      ['the leader, named', /leader Alpha/], ['the threshold rule, said on the page', /highest matching threshold/],
+      ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/],
+      ['the contested drop spot', /Tilted Towers[\s\S]*?contested/], ['the snake heat split', /snake order/]],
+    facts: [
+      ['tournament standings', /tournament standings/i], ['a point system', /point system/i], ['preset systems', /FNCS finals/i],
+      ['team sizes', /(?:solo|duos|trios|squads)/i], ['points per elimination', /per elimination/i],
+      ['the threshold rule, said', /highest matching threshold/], ['the standings table', /standings after every match entered/i],
+      ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/], ['wins counted', /wins/i],
+      ['average placement', /average placement/i], ['one match per line', /one match per line/i],
+      ['snake heats', /snake order/i], ['drop spots', /drop spots/i], ['contested spots flagged', /contested/i],
+      ['CSV in', /Import CSV/], ['CSV out', /Export CSV/], ['a share link', /Copy share link/],
+      ['the share link carries the state', /Share link: \/tournaments\/\?results=/],
+      ['nothing sent', /nothing is sent anywhere/i], ['no account', /no account/i], ['works offline', /works offline/i],
+      ['stays on this device', /on this device/i], ['the worked example, marked as one', /worked example/i],
+      ['back to Verse', /Back to Verse/], ['the stage bridge', /See it as a card on the stage/],
+    ],
+  },
   emojis: {
     site: 'https://emojitracker.com/', verse: '/emojis/',
-    ask: { verse: '/emojis/' },
+    ask: { verse: '/emojis/?pick=🔥' },
     truth: [['a known emoji on the wall', /rocket/], ['another (a heart)', /red heart/], ['the ranking it shows', /ranked today or all time/i],
-      ['the search, said on the page', /searched by name/i], ['the honest line: not a feed', /not a feed of anyone's messages/i]],
+      ['the search, said on the page', /searched by name/i], ['the honest line: not a feed', /not a feed of anyone's messages/i],
+      ['the fire the link picked', /\bfire\b/i], ['its Unicode, worked out', /U\+1F525/], ['its UTF-8 bytes, worked out', /F0 9F 94 A5/], ['its HTML entity, worked out', /&#128293;/]],
     facts: [
       ['emoji counts', /emoji counts/i], ['a ranked wall', /ranked wall/i], ['tap to copy', /tap one to copy/i], ['today', /\bToday\b/], ['all time', /All time/],
       ['a search', /searched by name/i], ['refreshed while open', /refresh/i], ['a closed list', /closed list/i], ['no text to send', /no text to send/i],
       ['works offline', /works offline/i], ['no account', /no account/i], ['no ads', /no ads/i], ['back to Verse', /Back to Verse/],
+      ['the picked emoji, named', /\bfire\b/i], ['its Unicode', /U\+1F525/], ['its UTF-8 bytes', /F0 9F 94 A5/], ['its HTML entity', /&#128293;/],
+      ['copied on this device', /Copied on this device/i], ['everyone today', /Everyone today/i], ['a share link for it', /Share this emoji/i],
+      ['the stage bridge', /See it as a card on the stage/i], ['the copy format picker', /Copy as/],
     ],
   },
   // codebase (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): Codebase is a code host with project management

@@ -60,6 +60,7 @@ if (process.argv.includes('--list')) {
 const releaseHeavy = await acquireHeavy('browser suite (tools/test_void.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const results = [];
+const siblingCount = (p) => p.evaluate(() => new Set([...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => h && h.startsWith('/') && !h.startsWith('//')).map((h) => h.split('?')[0]).filter((h) => h !== location.pathname && h !== '/')).size);
 const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's browser can do decides a few checks (skip below)
 // A hang fails loudly (owner, 2026-10-09, frontier build order step 1, suite split (4)): a per-check timeout and a
 // whole-suite budget. Either one ends the run red within seconds of being passed, prints every result so far, and names
@@ -759,6 +760,44 @@ try {
     check('paint: undo takes the last area back', /\b0 of 104 areas/.test(afterUndo), JSON.stringify({ afterUndo: (afterUndo.match(/\d+ of \d+ areas/) || []) }));
     const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share, #undo, #mode, #bar').length);
     check('paint: the upload, the ten colours, the PNG export, the brush toggle and the share control are all there', inputs >= 14, JSON.stringify({ inputs }));
+    check('paint: the footer links to at least four sibling Verse tools, so the page is not a dead end', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.ctx.close();
+  }
+  // the tournament floor (owner, 2026-10-27): yunite.xyz's scrim scorer, fought from /tournaments/ — results typed in instead of a bot
+  // reading screenshots, placement on the highest matching threshold, the official tiebreakers, snake-seeded heats and contested drop
+  // spots, with no account and nothing sent. The seeded ask is the three-team match the probe works out by hand (Alpha 22, Bravo 19, Charlie 6).
+  if (want("tournament: seeded standings, the threshold rule, tiebreakers, snake heats, contested drops, CSV in and out and a share link")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const ask = '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Tilted%20Towers,Bravo:Pleasant%20Park,Charlie:Tilted%20Towers&elim=2&win=10&top5=5';
+    const P = await fresh({ base: base + ask.slice(1) });
+    await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.tournaments;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const stat = await P.p.$eval('#stat', (e) => e.textContent);
+    const rows = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
+    const demo = await P.p.$eval('#demo', (e) => !e.hidden);
+    check('tournament: the seeded ask lands as three teams, 16 eliminations and 47 points, a win pays 10 and not 10 plus the top-five, and every item the probe reads is on the page',
+      /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1' && rows[1] === '2 Bravo 19 0 7 2.0 2' && rows[2] === '3 Charlie 6 0 3 6.0 6' && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
+    const heats = await P.p.$eval('#heatout', (e) => e.innerText);
+    const drops = await P.p.$eval('#droptable', (e) => e.innerText);
+    check('tournament: the lobby splits into snake-seeded heats, and the shared drop spot is flagged contested while the unique one stays clear',
+      /Heat 1 Alpha/.test(heats) && /Heat 2 Bravo, Charlie/.test(heats) && /Tilted Towers\s+contested/.test(drops) && /Pleasant Park\s+clear/.test(drops), JSON.stringify({ heats, drops }));
+    await P.p.click('#share'); await P.p.waitForTimeout(250);
+    const search = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const back = await P.p.$eval('#stat', (e) => e.textContent);
+    check("tournament: the share link is the page's own state, and opening it again gives the same standings", /results=/.test(search) && /47 points/.test(back) && /leader Alpha/.test(back), JSON.stringify({ search: search.slice(0, 140), back }));
+    await P.p.selectOption('#preset', 'fncs'); await P.p.waitForTimeout(150);
+    const tiers = await P.p.$eval('#tiers', (e) => e.textContent);
+    await P.p.fill('#csv', 'Delta, 3, 4\nEcho, 7, 1'); await P.p.click('#import'); await P.p.waitForTimeout(200);
+    const after = await P.p.$eval('#stat', (e) => e.textContent);
+    check('tournament: the FNCS preset sets its own placement ladder, and two CSV rows become the next match', /1st 10/.test(tiers) && /6th-10th 3/.test(tiers) && /5 teams/.test(after) && /2 matches/.test(after), JSON.stringify({ tiers, after }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=tournament"]', (a) => a.getAttribute('href')).catch(() => '');
+    check('tournament: the footer links to at least four sibling Verse tools and hands the page to the stage', (await siblingCount(P.p)) >= 4 && stageLink === '/?ask=tournament%20scorer', JSON.stringify({ siblings: await siblingCount(P.p), stageLink }));
     await P.ctx.close();
   }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
@@ -766,8 +805,10 @@ try {
   // that says what it is not. The count is real: the tap copies the character and adds one.
   if (want("emoji counts: a ranked wall of a closed list, a tap copies the emoji and its count rises, a search, today and all time, and every item the emojis probe reads")) {
     const { PROBES } = await import('./tower-probes.mjs');
-    const P = await fresh({ base: base + 'emojis/' });
+    const P = await fresh({ base: base + 'emojis/?pick=' + encodeURIComponent('🔥') });
     await P.p.waitForSelector('#wall button', { timeout: 15000 });
+    await P.p.waitForSelector('#pick:not([hidden])', { timeout: 15000 });
+    const seed = await P.p.evaluate(() => ({ cp: document.getElementById('pick-cp').textContent, bytes: document.getElementById('pick-bytes').textContent, ent: document.getElementById('pick-ent').textContent, name: document.getElementById('pick-name').textContent, link: document.getElementById('pick-link').getAttribute('href'), hidden: document.getElementById('pick').hidden, search: location.search }));
     const text = () => P.p.evaluate(() => document.body.innerText);
     const t = await text();
     const probe = PROBES.emojis;
@@ -793,6 +834,22 @@ try {
     check('emoji: all time is a mode of its own and the line says what the number counts', allOn === 'true' && todayOff === 'false' && /in all/.test(allText), JSON.stringify({ allOn, todayOff }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title)).length);
     check('emoji: every control on the wall is named', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    // the seeded ask: ?pick= opens that emoji's record with its Unicode, its UTF-8 bytes, an HTML entity and a share link
+    const tapped = await P.p.evaluate(() => new Promise((r) => { document.querySelector('#wall button[data-c="\u{1F525}"]').click(); setTimeout(() => r({ say: document.getElementById('say').textContent, href: document.getElementById('pick-link').getAttribute('href') }), 300); }));
+    check('emoji: ?pick= opens the emoji with its Unicode, its bytes, its entity and a share link, and a tap keeps it there', !seed.hidden && seed.name === 'fire' && seed.cp === 'U+1F525' && seed.bytes === 'F0 9F 94 A5' && seed.ent === '&#128293;' && /pick=%F0%9F%94%A5/.test(seed.link) && /pick=%F0%9F%94%A5/.test(seed.search) && /pick=%F0%9F%94%A5/.test(tapped.href) && /Copied/.test(tapped.say), JSON.stringify({ seed, tapped }));
+    await P.p.fill('#q', 'heart'); await P.p.waitForTimeout(200);
+    const heartRows = await P.p.evaluate(() => [...document.querySelectorAll('#wall button')].filter((b) => b.offsetParent !== null).map((b) => b.querySelector('.name').textContent));
+    check('emoji: ?q= narrows the wall the same way the box does', heartRows.length >= 1 && heartRows.every((n) => /heart/.test(n)), JSON.stringify({ heartRows }));
+    // the handoff (owner, 2026-10-27): the picked emoji rides in the strip above the wall, and changes when another is tapped
+    const handoff = await P.p.evaluate(() => ['send-count', 'send-translate', 'send-base64', 'send-gist', 'send-stage'].map((id) => document.getElementById(id).getAttribute('href')));
+    await P.p.fill('#q', ''); await P.p.waitForTimeout(150);
+    await P.p.evaluate(() => document.querySelector('#wall button[data-c="🚀"]').click());
+    await P.p.waitForTimeout(400);
+    const rocket = await P.p.evaluate(() => ({ name: document.getElementById('handoff-name').textContent, hrefs: ['send-count', 'send-translate', 'send-base64', 'send-gist', 'send-stage'].map((id) => document.getElementById(id).getAttribute('href')) }));
+    check('emoji: the picked emoji rides in the handoff strip (characters, translation, Base64, gist, stage) and changes when another is tapped',
+      handoff[0] === '/word-count/?t=%F0%9F%94%A5' && handoff[1] === '/translate/?q=fire&to=es' && handoff[2] === '/base64/?t=%F0%9F%94%A5' && /%F0%9F%94%A5%20fire/.test(handoff[3]) && handoff[4] === '/?ask=emoji%20fire' &&
+      rocket.name === 'rocket' && rocket.hrefs[1] === '/translate/?q=rocket&to=es' && rocket.hrefs[4] === '/?ask=emoji%20rocket' && [0, 2, 3].every((i) => rocket.hrefs[i].includes('%F0%9F%9A%80')), JSON.stringify({ handoff, rocket }));
+    check('emoji: the footer links to at least four sibling Verse tools, so the page is not a dead end', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
     await P.ctx.close();
   }
   // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the
@@ -11204,6 +11261,32 @@ try {
     const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
       await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true, ...(a[0] && typeof a[0] === 'object' && 'phone' in a[0] ? a.shift() : {}) }, ...a), want: (l) => all3d || want(l) }); }
+  // connected floors (owner, 2026-10-27): a floor page is not a dead end. Every floor page must link to at least four sibling Verse
+  // tools, so a new floor cannot ship with only "Back to Verse". Pages that predate the rule are named once here; the list only shrinks
+  // (emojis, paint and tournaments are checked in the browser above too). A page file that does not exist is skipped, never passed.
+  if (want("connected: every floor page links to at least four sibling Verse tools")) {
+    const { FLOORS } = await import('../void-live-deploy/lib/tower.js');
+    const legacy = new Set(['finance: companiesmarketcap.com', 'finance: finviz.com', 'photos: exifeditor.io', 'photos: exif.tools', 'photos: tinypng.com', 'photos: squoosh.app', 'photos: photopea.com', 'photos: iloveimg.com']);
+    const dead = []; let pages = 0;
+    for (const f of FLOORS) {
+      if (!f.page || legacy.has(f.id)) continue;
+      const file = f.page.split('?')[0].replace(/\/$/, '/index.html').replace(/^\//, '');
+      const full = path.join(root, file);
+      if (!fs.existsSync(full)) continue;
+      const self = '/' + file.replace(/index\.html$/, '');
+      const links = new Set();
+      for (const m of fs.readFileSync(full, 'utf8').matchAll(/href="([^"]+)"/g)) {
+        const h = m[1];
+        if (!h.startsWith('/') || h.startsWith('//')) continue;
+        const base = h.split('?')[0].split('#')[0];
+        if (base === self || base === '/') continue;
+        links.add(base);
+      }
+      pages++;
+      if (links.size < 4) dead.push(f.id + ' (' + links.size + ')');
+    }
+    check('connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end', pages > 150 && !dead.length, JSON.stringify({ pages, dead: dead.slice(0, 10), more: dead.length }));
+  }
 } catch (e) {
   // always, --only included: a section that throws is a failure, never "0/0 passed" (finish.mjs's first shot runs --only)
   check('suite ran to the end', false, String(e && e.message));

@@ -4608,7 +4608,7 @@ say('nothing selected to remove');
     document.addEventListener('void:share-join', (e) => shareJoin(e && e.detail));
     // For the owner only (owner's choice, 2026-10-13; Verse asked for it five times): when the newest checks or deploy on main failed,
     // the status card opens by itself (skills/status.js autoOpen). Visitors keep the blank stage; an ask in the address bar goes first.
-    if (ownerToken() && !PAGE && !new URLSearchParams(location.search).get('q')) skillsReady.then(() => import('/skills/status.js')).then((m) => m.autoOpen(() => runLearnedSkills('void status', 'void status'))).catch(() => {});
+    if (ownerToken() && !PAGE && !new URLSearchParams(location.search).get('q') && !new URLSearchParams(location.search).get('ask')) skillsReady.then(() => import('/skills/status.js')).then((m) => m.autoOpen(() => runLearnedSkills('void status', 'void status'))).catch(() => {});
     { const r = new URLSearchParams(location.search).get('with'); if (r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) && !PAGE) skillsReady.then(() => shareJoin(r)); }
 
     // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
@@ -5467,7 +5467,7 @@ say('nothing selected to remove');
     const reviewReady = lazyLib('/lib/code-review.js');
     const warmLibs = () => { approvalReady(); storeReady(); fixReady(); reviewReady(); for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
     for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.addEventListener(ev, warmLibs, { capture: true, passive: true });
-    if (new URLSearchParams(location.search).get('q')) warmLibs(); else skillsReady.then(warmLibs);
+    { const sp = new URLSearchParams(location.search); if (sp.get('q') || sp.get('ask')) warmLibs(); else skillsReady.then(warmLibs); }
     let pendingReview = null;
     const REVIEW_KIND = { bug: ['bug', '#ff8a8a'], risk: ['risk', '#ffc46b'], style: ['style', '#8ab4ff'], note: ['note', '#9a9a9a'] };
     async function showReview(ask, code, cr) {
@@ -6025,7 +6025,7 @@ say('nothing selected to remove');
     // A link (?q=) runs its ask, except a send, booking or spend: that one is only typed into the box for the person to ask.
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
-    { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
+    { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q') || sp0.get('ask'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
       if (q0) { history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ skillsReady.then(async () => { const core = await approvalReady(); if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
         if (!ctx0) { handle(q0); return; }
         let done = false;

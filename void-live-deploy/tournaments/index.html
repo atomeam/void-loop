@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tournament standings · Verse</title>
+<meta name="description" content="Score a Fortnite-style scrim in the browser: placement points on the highest matching threshold, standings with the official tiebreakers, a snake heat split and drop-spot claims, from results you type or paste. No account, no ads, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Tournament standings · Verse">
+<meta property="og:description" content="Type or paste results and get standings with the official tiebreakers, a snake heat split and contested drop spots. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/tournaments/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/tournaments/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#8b7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  h2 { font-size:16px; margin:0 0 8px; }
+  .sub { color:var(--quiet); margin:0 0 14px; font-size:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
+  label { display:block; color:var(--quiet); font-size:12px; }
+  label span { display:block; margin-bottom:3px; }
+  input, select, textarea { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:34px; }
+  input[type=number] { width:5.4em; }
+  textarea { width:100%; min-height:88px; resize:vertical; line-height:1.4; }
+  input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  button { font:inherit; font-size:14px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:7px 14px; min-height:34px; cursor:pointer; }
+  button:hover { border-color:#3b3b4d; }
+  .note { color:var(--quiet); font-size:13px; margin:8px 0 0; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#dcd8f4; background:#1c1b28; border-radius:4px; padding:1px 4px; }
+  .say { color:var(--quiet); font-size:13px; min-height:1.5em; margin:6px 0 0; }
+  #stat { color:#cfcbe6; font-size:14px; font-variant-numeric:tabular-nums; margin:4px 0 8px; }
+  .scroll { width:100%; max-width:100%; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; min-width:540px; font-size:14px; }
+  caption { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  th, td { text-align:right; padding:7px 8px; border-bottom:1px solid #23222f; font-variant-numeric:tabular-nums; }
+  th { color:var(--quiet); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  th:nth-child(2), td:nth-child(2) { text-align:left; }
+  tbody tr:first-child td { color:#fff; font-weight:600; }
+  td.team { font-weight:500; }
+  .heat { margin:4px 0; font-size:14px; color:var(--ink); }
+  .heat b { color:var(--quiet); font-weight:600; margin-right:6px; }
+  .tag { display:inline-block; font-size:11px; padding:1px 7px; border-radius:999px; border:1px solid var(--line); color:var(--quiet); }
+  .tag.bad { color:#ffd0d0; border-color:#6d3535; background:#2a1717; }
+  .bridge { margin:10px 0 0; }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:6px 0; }
+  .bridge a, footer a, #shareline a { color:#cfc6ff; }
+  #shareline { overflow-wrap:anywhere; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  [hidden] { display:none !important; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Tournament standings</h1>
+  <p class="sub">Score a Fortnite-style scrim in the browser. Type a result or paste a CSV and the page works out points, standings and the official tiebreakers. Placement pays the highest matching threshold, so a win is worth the win points rather than the win plus the top-five points. Split the lobby into heats, claim drop spots, and share the whole set as a link.</p>
+
+  <section class="card" aria-labelledby="h-points">
+    <h2 id="h-points">Point system</h2>
+    <div class="row">
+      <label><span>Preset</span>
+        <select id="preset" aria-label="Point system preset">
+          <option value="">Custom</option>
+          <option value="fncs">FNCS finals</option>
+          <option value="cash">Cash cup</option>
+          <option value="scrim">Scrim</option>
+        </select>
+      </label>
+      <label><span>Teams</span>
+        <select id="mode" aria-label="Team size">
+          <option value="solo">Solo</option>
+          <option value="duos">Duos</option>
+          <option value="trios">Trios</option>
+          <option value="squads">Squads</option>
+        </select>
+      </label>
+      <label><span>Per elimination</span><input id="elim" type="number" min="0" max="20" step="1" inputmode="numeric" aria-label="Points per elimination"></label>
+      <label><span>Win</span><input id="win" type="number" min="0" max="30" step="1" inputmode="numeric" aria-label="Points for first place"></label>
+      <label><span>Top 5</span><input id="top5" type="number" min="0" max="30" step="1" inputmode="numeric" aria-label="Points for places two to five"></label>
+    </div>
+    <p class="note" id="tiers"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-results">
+    <h2 id="h-results">Results</h2>
+    <p class="note">One match per line: <code>Team:place:eliminations</code>, comma-separated, or separate matches with <code>;</code>. A line is the whole match.</p>
+    <textarea id="results" spellcheck="false" aria-label="Results, one match per line"></textarea>
+    <div class="row">
+      <button type="button" id="add">Add a match</button>
+      <button type="button" id="share">Copy share link</button>
+      <button type="button" id="export">Export CSV</button>
+      <button type="button" id="clear">Clear</button>
+    </div>
+    <p class="say" id="say" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-standings">
+    <h2 id="h-standings">Standings</h2>
+    <p id="stat"></p>
+    <div class="scroll">
+      <table id="standings">
+        <caption>Standings after every match entered</caption>
+        <thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">Points</th><th scope="col">Wins</th><th scope="col">Elims</th><th scope="col">Avg place</th><th scope="col">Best</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="note">Tiebreakers, in this order: points, then wins, then eliminations, then average placement.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-heats">
+    <h2 id="h-heats">Heats</h2>
+    <div class="row">
+      <label><span>Heats</span><input id="heats" type="number" min="1" max="8" step="1" inputmode="numeric" aria-label="How many heats"></label>
+    </div>
+    <p class="note">Teams are seeded by standing rank and dealt in snake order, so the top team opens the first heat and the last heat gets the next best.</p>
+    <div id="heatout"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-drops">
+    <h2 id="h-drops">Drop spots</h2>
+    <p class="note">One per line: <code>Team:Place</code>. Two teams on the same place are flagged contested.</p>
+    <textarea id="drops" spellcheck="false" aria-label="Drop spots, one Team:Place per line"></textarea>
+    <div class="scroll">
+      <table id="droptable">
+        <caption>Claimed drop spots and whether they are contested</caption>
+        <thead><tr><th scope="col">Team</th><th scope="col">Drop</th><th scope="col">Claim</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-csv">
+    <h2 id="h-csv">CSV in and out</h2>
+    <p class="note">Paste rows of <code>team, place, eliminations</code> and press Import: the rows become the next match. Export writes the standings, not the raw results.</p>
+    <textarea id="csv" spellcheck="false" aria-label="CSV rows to import" placeholder="team,place,eliminations"></textarea>
+    <div class="row"><button type="button" id="import">Import CSV</button></div>
+  </section>
+
+  <p class="note" id="demo">This is a worked example: three teams, one match, the numbers the seeded ask carries. Change a number or a result and it becomes yours, and it stays on this device.</p>
+  <p class="note" id="shareline">Share link: <a id="link" href="/tournaments/">/tournaments/</a></p>
+
+  <footer>
+    <p>Everything on this page is worked out on this device from the results you type: no account, no ads, nothing is sent anywhere, and it works offline with the numbers it last had. Placement points go to the highest matching threshold; the tiebreakers are points, wins, eliminations, then average placement.</p>
+    <nav class="siblings" aria-label="Use together with">
+      <a href="/flip/">Coin flip for the drop order</a>
+      <a href="/g/?text=Scrim%20rules%3A%20points%2C%20wins%2C%20eliminations%2C%20average%20placement&amp;name=rules.txt">Share the rules in a gist</a>
+      <a href="/word-count/">Word count</a>
+      <a href="/paint/">Paint</a>
+      <a href="/emojis/">Emoji counts</a>
+      <a href="/tools/">All tools</a>
+      <a href="/?ask=tournament%20scorer">See it as a card on the stage</a>
+      <a href="/">Back to Verse</a>
+    </nav>
+  </footer>
+</main>
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const KEY = 'a2m.void.tournaments.v1';
+  const DEMO = { results: 'Alpha:1:6,Bravo:2:7,Charlie:6:3', drops: 'Alpha:Tilted Towers\nBravo:Pleasant Park\nCharlie:Tilted Towers' };
+  const PRESETS = { fncs: { win: 10, top5: 5, top10: 3, top15: 2, top25: 1 }, cash: { win: 8, top5: 5, top10: 3, top15: 1, top25: 0 }, scrim: { win: 6, top5: 3, top10: 1, top15: 0, top25: 0 } };
+  const params = new URLSearchParams(location.search);
+  const int = (key, fallback, lo, hi) => { const v = parseInt(params.get(key), 10); return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : fallback; };
+  const state = {
+    preset: PRESETS[params.get('preset')] ? params.get('preset') : '',
+    mode: ['solo', 'duos', 'trios', 'squads'].includes(params.get('mode')) ? params.get('mode') : 'duos',
+    elim: int('elim', 2, 0, 20), win: int('win', 10, 0, 30), top5: int('top5', 5, 0, 30),
+    top10: int('top10', 0, 0, 30), top15: int('top15', 0, 0, 30), top25: int('top25', 0, 0, 30),
+    results: params.get('results') || '', drops: params.get('drops') || '', heats: int('heats', 2, 1, 8),
+  };
+  if (!params.has('results') && !params.has('drops')) {
+    try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object' && typeof saved.results === 'string') Object.assign(state, saved); } catch (_) {}
+  }
+  if (!state.results) { state.results = DEMO.results; state.drops = DEMO.drops; }
+
+  const say = (text) => { $('say').textContent = text; };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) {} };
+
+  const points = (place) => place <= 1 ? state.win : place <= 5 ? state.top5 : place <= 10 ? state.top10 : place <= 15 ? state.top15 : place <= 25 ? state.top25 : 0;
+
+  const tierText = () => {
+    const rows = [[1, '1st'], [5, '2nd-5th'], [10, '6th-10th'], [15, '11th-15th'], [25, '16th-25th']];
+    const nums = [state.win, state.top5, state.top10, state.top15, state.top25];
+    const shown = rows.map(([upto, label], i) => nums[i] > 0 ? label + ' ' + nums[i] : '').filter(Boolean);
+    return shown.length ? 'Placement points by the highest matching threshold: ' + shown.join(', ') + '; everyone else 0.' : 'Placement points are off; only eliminations score.';
+  };
+
+  const parseTeam = (text) => {
+    const bits = String(text).split(':').map((x) => x.trim());
+    if (!bits[0]) return null;
+    return { name: bits[0], place: Math.max(1, parseInt(bits[1], 10) || 1), elims: Math.max(0, parseInt(bits[2], 10) || 0) };
+  };
+  const parseMatches = (text) => String(text).split(/[;\n]/).map((group) => group.split(',').map(parseTeam).filter(Boolean)).filter((g) => g.length);
+
+  const table = () => {
+    const matches = parseMatches(state.results);
+    const by = new Map();
+    for (const match of matches) for (const t of match) {
+      const r = by.get(t.name) || { name: t.name, points: 0, wins: 0, elims: 0, places: [], matches: 0 };
+      r.points += points(t.place) + t.elims * state.elim;
+      r.wins += t.place === 1 ? 1 : 0;
+      r.elims += t.elims;
+      r.places.push(t.place);
+      r.matches += 1;
+      by.set(t.name, r);
+    }
+    const rows = [...by.values()].map((r) => ({ ...r, avg: r.places.reduce((a, b) => a + b, 0) / r.places.length, best: Math.min(...r.places) }));
+    rows.sort((a, b) => b.points - a.points || b.wins - a.wins || b.elims - a.elims || a.avg - b.avg || a.name.localeCompare(b.name));
+    return { rows, matches };
+  };
+
+  const heatList = (rows, n) => {
+    const buckets = Array.from({ length: n }, () => []);
+    rows.forEach((r, i) => { const round = Math.floor(i / n), pos = i % n; buckets[round % 2 === 0 ? pos : n - 1 - pos].push(r.name); });
+    return buckets;
+  };
+
+  const link = () => {
+    const q = new URLSearchParams();
+    q.set('results', state.results.trim());
+    const drops = state.drops.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).join(',');
+    if (drops) q.set('drops', drops);
+    q.set('mode', state.mode); q.set('elim', state.elim); q.set('win', state.win); q.set('top5', state.top5);
+    for (const k of ['top10', 'top15', 'top25']) if (state[k]) q.set(k, state[k]);
+    if (state.preset) q.set('preset', state.preset);
+    if (state.heats !== 2) q.set('heats', state.heats);
+    return location.origin + '/tournaments/?' + q.toString();
+  };
+
+  function render() {
+    const { rows, matches } = table();
+    const totalPoints = rows.reduce((a, r) => a + r.points, 0);
+    const totalElims = rows.reduce((a, r) => a + r.elims, 0);
+    $('tiers').textContent = tierText();
+    $('stat').textContent = rows.length
+      ? rows.length + (rows.length === 1 ? ' team' : ' teams') + ' · ' + matches.length + (matches.length === 1 ? ' match' : ' matches') + ' · ' + totalElims + ' eliminations · ' + totalPoints + ' points · leader ' + rows[0].name
+      : 'No results yet. Type one line per match: Team:place:eliminations.';
+
+    const body = $('standings').tBodies[0];
+    body.replaceChildren();
+    rows.forEach((r, i) => {
+      const tr = document.createElement('tr');
+      [i + 1, r.name, r.points, r.wins, r.elims, r.avg.toFixed(1), r.best].forEach((value, cell) => {
+        const td = document.createElement('td');
+        td.textContent = String(value);
+        if (cell === 1) td.className = 'team';
+        tr.append(td);
+      });
+      body.append(tr);
+    });
+
+    const heats = heatList(rows, state.heats);
+    const heatOut = $('heatout');
+    heatOut.replaceChildren();
+    heats.forEach((names, i) => {
+      const p = document.createElement('p');
+      p.className = 'heat';
+      const b = document.createElement('b');
+      b.textContent = 'Heat ' + (i + 1);
+      p.append(b, document.createTextNode(names.length ? ' ' + names.join(', ') : ' empty'));
+      heatOut.append(p);
+    });
+
+    const claims = new Map();
+    const drops = state.drops.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).map((line) => {
+      const at = line.indexOf(':');
+      const team = at < 0 ? line : line.slice(0, at).trim();
+      const spot = at < 0 ? 'unclaimed' : line.slice(at + 1).trim() || 'unclaimed';
+      const key = spot.toLowerCase();
+      claims.set(key, (claims.get(key) || 0) + 1);
+      return { team, spot };
+    });
+    const dropBody = $('droptable').tBodies[0];
+    dropBody.replaceChildren();
+    drops.forEach(({ team, spot }) => {
+      const tr = document.createElement('tr');
+      const tdTeam = document.createElement('td');
+      tdTeam.textContent = team;
+      const tdSpot = document.createElement('td');
+      tdSpot.textContent = spot;
+      const tdClaim = document.createElement('td');
+      const tag = document.createElement('span');
+      const contested = (claims.get(spot.toLowerCase()) || 0) > 1;
+      tag.className = contested ? 'tag bad' : 'tag';
+      tag.textContent = contested ? 'contested' : 'clear';
+      tdClaim.append(tag);
+      tr.append(tdTeam, tdSpot, tdClaim);
+      dropBody.append(tr);
+    });
+
+    const href = link();
+    $('link').href = href;
+    $('link').textContent = href.replace(location.origin, '');
+    try { history.replaceState(null, '', href); } catch (_) {}
+    const norm = (text) => text.split(/[\n,]+/).map((x) => x.trim()).filter(Boolean).join('|');
+    $('demo').hidden = !(state.results.trim() === DEMO.results && norm(state.drops) === norm(DEMO.drops));
+  }
+
+  const commit = (message) => { render(); save(); if (message) say(message); };
+
+  $('results').value = state.results;
+  $('drops').value = state.drops;
+  $('preset').value = state.preset;
+  $('mode').value = state.mode;
+  $('elim').value = state.elim;
+  $('win').value = state.win;
+  $('top5').value = state.top5;
+  $('heats').value = state.heats;
+
+  $('results').addEventListener('input', (e) => { state.results = e.target.value; commit(); });
+  $('drops').addEventListener('input', (e) => { state.drops = e.target.value; commit(); });
+  $('heats').addEventListener('input', (e) => { state.heats = Math.min(8, Math.max(1, parseInt(e.target.value, 10) || 1)); commit(); });
+  $('mode').addEventListener('change', (e) => { state.mode = e.target.value; commit(); });
+  for (const key of ['elim', 'win', 'top5']) {
+    $(key).addEventListener('input', (e) => { state[key] = Math.max(0, parseInt(e.target.value, 10) || 0); state.preset = ''; $('preset').value = ''; commit(); });
+  }
+  $('preset').addEventListener('change', (e) => {
+    const preset = PRESETS[e.target.value];
+    state.preset = preset ? e.target.value : '';
+    if (preset) {
+      Object.assign(state, preset);
+      for (const key of ['win', 'top5', 'top10', 'top15', 'top25']) if ($(key)) $(key).value = state[key];
+      $('win').value = state.win; $('top5').value = state.top5;
+    }
+    commit(preset ? 'Preset applied. The numbers are still yours to change.' : 'Custom numbers.');
+  });
+
+  $('add').onclick = () => {
+    const text = state.results.trim();
+    state.results = (text ? text.replace(/;$/, '') + ';' : '') + ' ';
+    $('results').value = state.results;
+    $('results').focus();
+    commit('A new match is ready: type Team:place:eliminations, comma-separated.');
+  };
+
+  $('clear').onclick = () => { state.results = ''; state.drops = ''; state.preset = ''; $('preset').value = ''; $('results').value = ''; $('drops').value = ''; commit('Cleared. Nothing is scored until you type a result.'); };
+
+  $('share').onclick = async () => {
+    const href = link();
+    try { await navigator.clipboard.writeText(href); say('Share link copied: it carries the results, the point numbers, the heats and the drop spots.'); }
+    catch (_) { $('link').focus(); say('The link is in the Share link line below; select it to copy.'); }
+  };
+
+  $('export').onclick = () => {
+    const { rows } = table();
+    const csv = ['rank,team,points,wins,eliminations,average_place,best_place,matches'].concat(rows.map((r, i) => [i + 1, r.name, r.points, r.wins, r.elims, r.avg.toFixed(1), r.best, r.matches].join(','))).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'standings.csv';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    say('Exported the standings as standings.csv.');
+  };
+
+  $('import').onclick = () => {
+    const lines = $('csv').value.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+    const rows = [];
+    for (const line of lines) {
+      const cells = line.split(',').map((s) => s.trim());
+      if (rows.length === 0 && /^team$/i.test(cells[0] || '')) continue;
+      if (rows.length === 0 && /place/i.test(line)) continue;
+      const name = (cells[0] || '').replace(/[:;,]/g, ' ').trim();
+      if (!name) continue;
+      rows.push(name + ':' + Math.max(1, parseInt(cells[1], 10) || 1) + ':' + Math.max(0, parseInt(cells[2], 10) || 0));
+    }
+    if (!rows.length) { say('Nothing to import. Use team, place, eliminations, one team per line.'); return; }
+    const existing = state.results.trim().replace(/;$/, '');
+    state.results = (existing ? existing + ';' : '') + rows.join(',');
+    $('results').value = state.results;
+    $('csv').value = '';
+    commit('Imported ' + rows.length + ' rows as match ' + parseMatches(state.results).length + '.');
+  };
+
+  render();
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>
