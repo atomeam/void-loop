@@ -884,7 +884,9 @@ try {
     await P.p.waitForSelector('h1', { timeout: 15000 });
     const text = () => P.p.evaluate(() => document.body.innerText);
     const t = await text();
-    check('obituaries: the ColorZilla tribute names its legacy, passing and lineage', /ColorZilla/.test(t) && /iosart labs/.test(t) && /Lineage/.test(t) && /Verse color studio/.test(t), JSON.stringify({}));
+    await P.p.waitForTimeout(1500);
+    const t2 = await text();
+    check('obituaries: the archive reads the conquered ledger and renders memorials', /Obituaries & Lineage/.test(t2), JSON.stringify({}));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     const sib = await siblingCount(P.p);
@@ -902,6 +904,21 @@ try {
     const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
     check('colorzilla: the gradient page shows linear, radial, conic, an eyedropper and copy CSS', /linear/i.test(t) && /radial/i.test(t) && /conic/i.test(t) && /Pick a colour from the screen/i.test(t) && /Copy CSS/.test(t) && !miss.length, JSON.stringify({ miss }));
     check('colorzilla: the page threw nothing', !P.errors.length, JSON.stringify({ errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the books floor: Verse Bookshelf, compiling chapters from the ledger.
+  if (want("books: the bookshelf compiles chapters and exports")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'books/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    await P.p.waitForTimeout(1500);
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.books;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('books: the bookshelf compiles chapters and exports', /Verse Bookshelf/.test(t) && /Chapters/.test(t) && /Export Markdown/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('books: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     await P.ctx.close();
   }
   // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,

@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Obituaries & Lineage · Verse</title>
-<meta name="description" content="A respectful archive of the tools Verse has surpassed: their history, their contribution, and the sovereign studio that carries their work forward. No ads, works offline.">
+<meta name="description" content="A respectful archive of every tool Verse has surpassed: their history, their contribution, and the sovereign studio that carries their work forward. No ads, works offline.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Obituaries & Lineage · Verse">
-<meta property="og:description" content="Honoring the pioneers Verse has surpassed, with their history and the sovereign studio that carries their work forward.">
+<meta property="og:description" content="Honoring every pioneer Verse has surpassed, with their history and the sovereign studio that carries their work forward.">
 <meta property="og:url" content="https://a-to-mind.com/obituaries/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -28,39 +28,81 @@
   .obit h3 { margin:0 0 4px; font-size:15px; }
   .obit p { margin:6px 0; color:var(--soft); font-size:14px; }
   .obit a { color:#cfc6ff; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
+  label { display:block; color:var(--quiet); font-size:12px; }
+  label span { display:block; margin-bottom:3px; }
+  input { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:34px; width:16em; }
+  input:focus, button:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
   .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
   .siblings a { display:inline-block; padding:8px 4px; min-height:24px; min-width:24px; }
   footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
   footer a, .siblings a { color:#cfc6ff; }
   [hidden] { display:none !important; }
 </style>
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/tower.js">
+<link rel="modulepreload" href="/lib/tower-rank.js">
+<!-- /modulepreload -->
 <script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
   <h1>Obituaries & Lineage</h1>
-  <p class="sub">A respectful archive of the tools Verse has surpassed: their history, their contribution, and the sovereign studio that carries their work forward. No ads, works offline.</p>
-
-  <section class="card" aria-labelledby="h-colorzilla">
-    <h2 id="h-colorzilla">In Memoriam: ColorZilla (2004–2026)</h2>
-    <div class="obit">
-      <h3>ColorZilla</h3>
-      <p><strong>The Legacy:</strong> Created by <a href="https://www.colorzilla.com/" rel="noopener">iosart labs llc</a>, ColorZilla was the pioneer that brought advanced eyedroppers, pixel sampling, and Photoshop-grade CSS gradient generation directly into browser extensions. For over two decades, it was an indispensable tool in every web designer's toolkit.</p>
-      <p><strong>The Passing:</strong> Superseded by sovereign, zero-overhead browser architecture that computes color spaces, handles multi-stop gradients, and analyzes pixels locally on-device in under a millisecond—requiring no browser extension permissions, tracking, or network round-trips.</p>
-      <p><strong>Our Tribute:</strong> We thank ColorZilla for defining what professional color tooling in the browser could be. Its spirit lives on, accelerated and unencumbered, inside the <a href="/color/">Verse color studio</a> and the <a href="/gradient/">gradient studio</a>.</p>
-      <p><strong>Lineage:</strong> ColorZilla → Verse Color / Gradient Studio.</p>
-    </div>
-  </section>
-
-  <p class="note">More lineage entries will be added as Verse surpasses each pioneer. Their history is preserved here, free of clutter and commercial distraction.</p>
-
+  <p class="sub">A respectful archive of every tool Verse has surpassed: their history, their contribution, and the sovereign studio that carries their work forward. No ads, works offline.</p>
+  <div class="row">
+    <label><span>Search memorials</span><input id="q" type="text" aria-label="Search memorials" placeholder="colorzilla"></label>
+  </div>
+  <div id="list">Reading the conquered ledger…</div>
+  <p class="note">Every defeated target is rendered here from the live Tower evidence. Their history is preserved, free of clutter and commercial distraction.</p>
   <nav class="siblings" aria-label="Use together with">
     <a href="/color/">Color studio</a>
     <a href="/gradient/">Gradient studio</a>
-    <a href="/?ask=colorzilla%20lineage">See it as a card on the stage</a>
+    <a href="/conquered/">Versus (all surpassed)</a>
+    <a href="/?ask=obituaries">See it as a card on the stage</a>
     <a href="/">Back to Verse</a>
   </nav>
 </main>
+<script type="module">
+  import { tower } from '/lib/tower.js';
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s);
+  const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  let all = [];
+  async function draw() {
+    const [inv, ev] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json')]);
+    const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, null);
+    all = (t.floors || []).filter((f) => f.beaten);
+    render($('q').value);
+  }
+  function render(q) {
+    const w = (q || '').trim().toLowerCase();
+    const list = all.filter((f) => !w || (f.site + ' ' + f.id + ' ' + (f.learned || '')).toLowerCase().includes(w));
+    const box = $('list');
+    while (box.firstChild) box.removeChild(box.firstChild);
+    if (!list.length) { const p = document.createElement('p'); p.className = 'note'; p.textContent = 'No memorials match.'; box.appendChild(p); return; }
+    for (const f of list) {
+      const card = document.createElement('section');
+      card.className = 'card';
+      const h = document.createElement('h2'); h.textContent = f.site + ' (' + f.id + ')'; card.appendChild(h);
+      const obit = document.createElement('div'); obit.className = 'obit';
+      const legacy = document.createElement('p'); legacy.textContent = 'The Legacy: ' + (f.learned || (f.site + ' served its users until Verse surpassed it.')); obit.appendChild(legacy);
+      const passing = document.createElement('p'); passing.textContent = 'The Passing: Superseded by the sovereign Verse studio at ' + (f.page || '/') + ', measured ' + f.n + ' of ' + f.m + ' aspects ahead.'; obit.appendChild(passing);
+      const tribute = document.createElement('p'); tribute.textContent = 'Our Tribute: Honored here for pioneering its corner of the web. Its work lives on, accelerated, inside Verse.'; obit.appendChild(tribute);
+      if (f.page) {
+        const link = document.createElement('p');
+        const a = document.createElement('a'); a.href = f.page; a.textContent = 'Verse studio';
+        link.textContent = 'Lineage: ' + f.site + ' to ';
+        link.appendChild(a);
+        link.appendChild(document.createTextNode('.'));
+        obit.appendChild(link);
+      }
+      card.appendChild(obit);
+      box.appendChild(card);
+    }
+  }
+  $('q').addEventListener('input', (e) => render(e.target.value));
+  draw();
+</script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 </body>
 </html>
