@@ -111,6 +111,19 @@ function standIn(cdp, e, handler) {
   cdp.send('Fetch.fulfillRequest', { requestId: e.requestId, responseCode: res.status, responseHeaders: res.headers, body: Buffer.from(res.body).toString('base64') }).catch(() => {});
 }
 const pace = { load: 0, answer: 0, full: 0, early: 0, task: 0, script: 0, layout: 0, style: 0 }; // where the time goes, for the pace line below
+// One tab for each slot, for the whole run (2026-10-29). A new tab for each ask started a new renderer process each time, and the runner spent
+// about 5.5 s of CPU on an ask: 2.4 s in the renderers, 2.2 s in Chrome's other processes. In the same tab Verse is loaded afresh for each ask
+// (a new document: no script state is kept), its storage and cookies are cleared first as before, and its files come from the same renderer's
+// memory. The stand-ins answer for the ask in progress (ctx.handlers). A tab that crashes is replaced.
+async function tabOf(ctx) {
+  if (ctx.tab && !ctx.tab.p.isClosed() && !ctx.tab.crashed) return ctx.tab;
+  const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p), tab = { p, cdp, crashed: false, metrics: {} };
+  p.on('crash', () => { tab.crashed = true; });
+  cdp.on('Fetch.requestPaused', (e) => standIn(cdp, e, /^http:\/\/127\.0\.0\.1:\d+\/api\//.test(e.request.url) ? ctx.handlers.api : ctx.handlers.external));
+  await cdp.send('Fetch.enable', { patterns: [{ urlPattern: 'https://*' }, { urlPattern: 'http://127.0.0.1:*/api/*' }] });
+  await cdp.send('Performance.enable').catch(() => {}); // the page's own CPU time, read after each ask, for the pace line
+  return (ctx.tab = tab);
+}
 async function one(ctx, { ask: a, want, says, before }) {
   const tOpen = Date.now(); const miss = [];
   // the stand-ins: outside services, then Verse's own /api (served through the page's DevTools session, see standIn)
@@ -154,10 +167,8 @@ async function one(ctx, { ask: a, want, says, before }) {
     if (/\/api\/answer$/.test(u) && /"mode":"plan"/.test(r.request().postData() || '')) return r.fulfill(json({ steps: ['Pick a first small step', 'Do it for a week', 'Review and adjust'] }));
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); };
-  const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p);
-  cdp.on('Fetch.requestPaused', (e) => standIn(cdp, e, /^http:\/\/127\.0\.0\.1:\d+\/api\//.test(e.request.url) ? api : external));
-  await cdp.send('Fetch.enable', { patterns: [{ urlPattern: 'https://*' }, { urlPattern: 'http://127.0.0.1:*/api/*' }] });
-  await cdp.send('Performance.enable').catch(() => {}); // the page's own CPU time, read back before it closes, for the pace line
+  ctx.handlers = { api, external }; const tab = await tabOf(ctx), { p, cdp } = tab;
+  for (const q of ctx.pages()) if (q !== p) await q.close().catch(() => {}); // a window an earlier ask opened
   // the ask starts as on a first visit: the earlier ask's cookies and storage go, on an empty page of the same origin, before Verse loads
   await ctx.clearCookies(); await p.goto(base + '__blank'); await p.evaluate(CLEAR_STORAGE);
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
@@ -197,10 +208,10 @@ async function one(ctx, { ask: a, want, says, before }) {
       const g = grounded(a, said + '\n' + card, triggersOf.get(skill)); if (g.subject.length) ground = { skill, ok: g.ok, missing: g.missing }; } }
   const valueOk = !says || new RegExp(says, 'i').test(shown);
   const right = routed && valueOk;
-  // the CPU this page used, by kind (seconds, from the browser): where an ask's time goes when the machine is the limit
+  // the CPU this page used, by kind (seconds, from the browser, counted up across the tab's asks): where an ask's time goes when the machine is the limit
   const m = await cdp.send('Performance.getMetrics').then((r) => Object.fromEntries(r.metrics.map((x) => [x.name, x.value]))).catch(() => ({}));
-  pace.task += (m.TaskDuration || 0) * 1000; pace.script += (m.ScriptDuration || 0) * 1000; pace.layout += (m.LayoutDuration || 0) * 1000; pace.style += (m.RecalcStyleDuration || 0) * 1000;
-  await p.close();
+  const grew = (k) => { const now = m[k] || 0, was = tab.metrics[k] || 0; tab.metrics[k] = now; return 1000 * (now >= was ? now - was : now); };
+  pace.task += grew('TaskDuration'); pace.script += grew('ScriptDuration'); pace.layout += grew('LayoutDuration'); pace.style += grew('RecalcStyleDuration');
   return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms, ...(ground ? { ground } : {}) };
 }
 // default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
