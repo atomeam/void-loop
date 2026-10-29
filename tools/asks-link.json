@@ -2,6 +2,11 @@
   "note": "Curated by a builder reading the growth ledger (2026-10-16, tools/asks-link.mjs): each rule names the ledger entry that built every open ask of V01D's whose words match. Matched by a regular expression over the ask's words; the ledger entry's own text is quoted in the link's why. Add a rule only when the entry really built the ask.",
   "rules": [
     {
+      "match": "(migrat|mov|switch)\\w*.{0,40}answer.{0,60}gemma|gemma.{0,40}answer",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done"
+    },
+    {
       "match": "value.?drift",
       "ledgerAt": "2026-10-28T19:43:51Z",
       "why": "tools/value-drift.mjs reads Verse's own store prices across the history of the store and flags any kind of product whose prices spread past a quarter (domains/value-drift.json, tools/value-drift.test.mjs)"

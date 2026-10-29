@@ -6,6 +6,7 @@
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
 import { knowsFacts, voiceFacts, keptFacts } from './voice.js';
 import { PERSONA } from './persona.js';
+import { models, ANSWER_FALLBACK } from './models.js';
 const SELF_NOUN = /\b(wish\s*list|improvement budget|growth[- ]inbox|outcome cards?|scouting[- ]reports?|your (will|wants|skills|board|plans?|roadmap|growth|inbox|features?|backlog|priorit(y|ies))|about yourself)\b/i;
 // "Verse" (once "Verse") the product, capitalised, or a-to-mind; never C's void pointer / void function
 const NAMED = /\bVoid\b|\bVerse\b|\ba-to-mind\b/;
@@ -65,6 +66,7 @@ export function selfFacts({ self, skills, will, voice, replies } = {}) {
   if (wants.length) parts.push('What I want next (my will' + (will.at ? ', ' + String(will.at).slice(0, 10) : '') + '): ' + wants.map((w) => `${w.i_want || w.title}${w.because ? ' Because: ' + w.because : ''}`).join(' | '));
   const b = builderFacts(self);
   if (b) parts.push(b);
+  parts.push(modelFacts());
   const wl = wishlistFacts(self);
   if (wl) parts.push(wl);
   const knows = knowsFacts(self), said = voiceFacts(voice);
@@ -86,6 +88,13 @@ export function builderFacts(self) {
   if (b.ladders && b.ladders.length) parts.push('Tools my builders left each other: ' + list(b.ladders.slice(0, 4)));
   parts.push('Where these are written: only in domains/handoff.md, my builders\' shared board. I never say they are codified or recorded in any other file.');
   return parts.join('\n');
+}
+
+// the models I really run on, read from lib/models.js, so I never ask for a move that is already done (asked by Verse 7 times,
+// 2026-10-24 to 10-28: "migrate answer generation from gpt-oss-120b to gemma", built 2026-10-25 in 630e666fb, still wanted because no fact said so)
+const modelName = (m) => String(m).split('/').pop();
+export function modelFacts() {
+  return 'The models I run on (lib/models.js): my answers come from ' + modelName(models('answer')) + ', and ' + modelName(ANSWER_FALLBACK) + ' is only the second try when it cannot answer; my code review reads with ' + modelName(models('review')) + '. Moving my answers from gpt-oss-120b to gemma is done (2026-10-25), so it is not a want any more.';
 }
 
 // my wishlist (self.json 'wishlist', from docs/wishlist.md): my improvement budget, ranked; a plan, nothing bought. Free paths come first.
