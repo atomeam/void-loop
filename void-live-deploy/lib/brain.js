@@ -138,6 +138,9 @@ export function ask(b, text) {
 /** Verse's own priorities (the parsed /self.json) as standing ideas the visitor's are compared with. Returns how many. */
 export function knowVerse(b, self) { b.mind.semantic = Mind.semanticFrom(self); return b.mind.semantic.length; }
 export const knowledgeOf = Mind.knowledgeOf, loadKnowledge = Mind.loadKnowledge;
+/** Verse's own asks (the ask box, every page): the brain learns what the visitor asks next, guesses it before it comes and counts its hits
+ *  (lib/brain-mind.js heardAsk), and ranks the ask box's suggestions by that and by its goals (suggestAsks). */
+export const heardAsk = Mind.heardAsk, suggestAsks = Mind.suggestAsks, askScore = Mind.askScore, habitOf = Mind.habitOf, nextAfter = Mind.nextAfter, isQuestion = Mind.isQuestion;
 
 // ---- the working memory across a reload ------------------------------------------------------------------------------------------------
 // knowledgeOf keeps what the brain learned (slow); this keeps what it is thinking now: the whole workspace (layers, rhythm, nodes with the
