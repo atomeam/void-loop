@@ -550,6 +550,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T18:36:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T18:36:28Z",
+   "subject": "verse brain current check: wait for the lives count, and accept \"1 life\""
+  },
+  {
+   "at": "2026-10-29T18:34:15Z",
+   "subject": "Drag the creature to the corner across from the focus in its brain test"
+  },
+  {
+   "at": "2026-10-29T18:25:34Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T18:23:48Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-29T17:45:32Z",
    "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-29T17:40:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T17:39:54Z",
-   "subject": "void_ask: keep waiting while the answer body still ends in an ellipsis"
-  },
-  {
-   "at": "2026-10-29T17:36:19Z",
-   "subject": "Versus size job: count a built page when its load event times out, and let a run re-read named sites"
-  },
-  {
-   "at": "2026-10-29T17:31:53Z",
-   "subject": "reinvest: today's plan for Verse's money"
   }
  ],
  "builders": {
