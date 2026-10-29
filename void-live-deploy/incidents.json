@@ -2,6 +2,31 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-29T02:38:25.025Z",
+   "sha": "7e681ad7200b1140036f6b1983035d17c6e9f540",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40803639605",
+   "suite": "browser suite on main",
+   "checks": [
+    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
+    "suite ran to the end",
+    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end"
+   ],
+   "touched": [
+    "void-live-deploy/tower.evidence.json",
+    ".github/workflows/verse-job.yml",
+    ".github/workflows/verse-loop.yml",
+    "docs/MAP.md",
+    "domains/verse-loop.pause",
+    "tools/checks.mjs",
+    "tools/conductor-core.mjs",
+    "tools/conductor.mjs",
+    "tools/conductor.test.mjs",
+    "tools/verse-job.mjs",
+    "tools/verse-job.test.mjs",
+    "void-live-deploy/self.json"
+   ]
+  },
+  {
    "at": "2026-10-29T02:22:19.449Z",
    "sha": "65e4a8c9395b431c1b2570a5e09fbf58638b1c76",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40803056940",
@@ -937,35 +962,6 @@
    ],
    "touched": [
     "domains/handoff.md"
-   ]
-  },
-  {
-   "at": "2026-10-25T20:16:40.193Z",
-   "sha": "a53b1f178de9be59124451b0e39a902fd8acb4a0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40223799545",
-   "suite": "browser suite on main",
-   "checks": [
-    "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
-   ],
-   "touched": [
-    "domains/features/weather.json",
-    "tools/fixtures/outside.mjs",
-    "tools/test_void.mjs",
-    "tools/weather-match.test.mjs",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/weather.js"
    ]
   }
  ]
