@@ -1,0 +1,346 @@
+# Verse's own coding agent (owner, 2026-10-26: "build verse so that it can"; tools/verse-agent.mjs, docs/playbooks/verse-agent.md, docs/brains.md).
+# A task in words, or a queue job the conductor claimed (tools/conductor.mjs: input `job`, the void_queue id, already 'building'), becomes a change
+# on main with no person in the loop: free models (Workers AI) plan, edit, test and repair on a branch in the runner (verse/builder-<run id>), and
+# the patch reaches main only when the gate passes (scope, secret scan, Verse's review, checks.mjs --changed, the named browser sections, the tree
+# unchanged while they ran). Otherwise it is discarded with the reason, and the queue is always told: 'done' (landed), 'failed' (gave up or the gate
+# refused, with why) or 'queued' with "tries N · why" (could not start, or out of budget), so the conductor retries with backoff.
+# Four jobs keep the model's code away from every write key:
+#   pick   (owner key, no model) the task, or the claimed job read by id (never claimed again), with a heal job's failing log
+#   agent  runs what the model wrote (the tests run it), so it holds no write token and no owner key: its brain is the site's own Workers AI
+#          binding (/api/agent-brain) through a ticket minted in a step of its own (one route, three hours at most), handed over as a file the agent
+#          reads once and deletes, and root is taken away before the loop. It starts only when the account's real Workers AI use today (the
+#          analytics token, read-only) leaves room past a reserve kept for the site's visitors.
+#   land   checks out main afresh and only moves bytes: main's copy of the scope check, git apply, the growth-ledger line, one commit with the
+#          Verse-Agent-Run trailer, push, then starts the deploy and the full suite (a push by this token starts no workflow by itself)
+#   report (owner key, no model) PATCHes the job, or files a new agent: job when a hand-given task did not land
+# Other loops call it: `uses: ./.github/workflows/verse-agent.yml` with a task (or a job id), or file a queue job for the conductor.
+name: Verse agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "the queue job id the conductor claimed (it stays claimed; the run reports done, failed or queued)"
+        type: string
+        default: ''
+      task:
+        description: "or: what to change, in words (a hand run)"
+        type: string
+        default: ''
+      tests:
+        description: "tests the gate runs too, comma separated: browser-suite section words, unit:<name> or checks"
+        type: string
+        default: ''
+      dry:
+        description: "run the loop and the gate, land nothing"
+        type: boolean
+        default: false
+      max_steps:
+        description: "step cap"
+        type: string
+        default: '30'
+      max_neurons:
+        description: "neuron cap for this run (the free 10,000 a day are shared with the site)"
+        type: string
+        default: '2500'
+      local:
+        description: "also run a local open model on the runner (free, slow): the brain of last resort"
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      job: { type: string, default: '' }
+      task: { type: string, default: '' }
+      tests: { type: string, default: '' }
+      dry: { type: boolean, default: false }
+      max_steps: { type: string, default: '30' }
+      max_neurons: { type: string, default: '2500' }
+      local: { type: boolean, default: false }
+    outputs:
+      landed:
+        description: "1 when the change is on main"
+        value: ${{ jobs.land.outputs.landed }}
+      sha:
+        description: "the commit on main"
+        value: ${{ jobs.land.outputs.sha }}
+
+concurrency:
+  group: verse-agent
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  DAY_CAP: '3000'           # the agent's own day cap when the account's use cannot be read
+  VERSE_SITE_RESERVE: '4000' # neurons of the free 10,000 always left for the site's visitors
+  LOCAL_MODEL: 'qwen2.5-coder:7b'
+
+jobs:
+  pick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: read
+      actions: read # a heal job's failing run log
+    outputs:
+      task: ${{ steps.pick.outputs.task }}
+      job: ${{ steps.pick.outputs.job }}
+      tries: ${{ steps.pick.outputs.tries }}
+      missing: ${{ steps.pick.outputs.missing }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: The task, or the job the conductor claimed
+        id: pick
+        env:
+          JOB: ${{ inputs.job }}
+          TASK: ${{ inputs.task }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/verse-agent.mjs --pick
+
+  agent:
+    needs: pick
+    if: needs.pick.outputs.task != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    outputs:
+      passed: ${{ steps.run.outputs.passed }}
+      neurons: ${{ steps.run.outputs.neurons }}
+      budget_skip: ${{ steps.budget.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 200
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Today's date
+        id: day
+        run: echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/verse-day
+          key: verse-agent-day-${{ steps.day.outputs.date }}-${{ github.run_id }}
+          restore-keys: verse-agent-day-${{ steps.day.outputs.date }}-
+      - name: May it spend today (the account's real Workers AI use, read-only)
+        id: budget
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ANALYTICS_TOKEN: ${{ secrets.CLOUDFLARE_ANALYTICS_TOKEN }}
+          LOCAL: ${{ inputs.local }}
+        run: |
+          node tools/verse-agent.mjs --budget "$RUNNER_TEMP/verse-day/day.json"
+          left=$(grep '^left=' "$GITHUB_OUTPUT" | tail -1 | cut -d= -f2)
+          if [ "${left:-0}" -lt 600 ] && [ "$LOCAL" != "true" ]; then
+            echo "skip=${left:-0} neurons left today, under the 600 a run needs" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Not today::${left:-0} neurons left of the free allocation after the site's reserve"
+          fi
+      - run: npm ci --no-audit --no-fund
+        if: steps.budget.outputs.skip == ''
+      - name: Playwright version
+        if: steps.budget.outputs.skip == ''
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        if: steps.budget.outputs.skip == ''
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        if: steps.budget.outputs.skip == ''
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Sync void.html copies
+        if: steps.budget.outputs.skip == ''
+        run: |
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+      # the keys go into files here, in a step of its own that runs no model code, so the agent's process (and every test it runs) never has them in its
+      # environment: an agent ticket (lib/agent-ticket.js: the site's own Workers AI binding, one route, three hours at most) minted from the owner key,
+      # which never leaves this step, and a Workers AI token for the REST API (the repo's token answered 401 there on 2026-10-26; kept as a fallback)
+      - name: The keys, as files the agent reads once and deletes
+        if: steps.budget.outputs.skip == ''
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          AI_TOKEN: ${{ secrets.CLOUDFLARE_AI_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          umask 077
+          node tools/verse-agent.mjs --ticket "$RUNNER_TEMP/ticket-check"
+          node tools/verse-agent.mjs --ticket "$RUNNER_TEMP/ticket-run"
+          printf '%s' "$AI_TOKEN" > "$RUNNER_TEMP/ai-token-check"
+          printf '%s' "$AI_TOKEN" > "$RUNNER_TEMP/ai-token-run"
+      - name: Which brains answer
+        if: steps.budget.outputs.skip == ''
+        id: brains
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          VERSE_AI_TOKEN_FILE: ${{ runner.temp }}/ai-token-check
+          VERSE_TICKET_FILE: ${{ runner.temp }}/ticket-check
+        run: node tools/verse-agent.mjs --check || true
+      - name: A local open model on the runner (asked for, or no cloud brain answered)
+        if: steps.budget.outputs.skip == '' && (inputs.local || steps.brains.outputs.cloud != '1')
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama pull "$LOCAL_MODEL"
+          echo "VERSE_LOCAL_MODEL=$LOCAL_MODEL" >> "$GITHUB_ENV"
+      # the model's code runs from here on (the tests run it): no root, no docker, and no reading another process's memory, so the keys this job's
+      # agent process holds stay out of its reach (anything that needs sudo, the browser's system packages and the local model, is installed above)
+      - name: Root away before the model's code runs
+        if: steps.budget.outputs.skip == ''
+        run: |
+          sudo sysctl -q -w kernel.yama.ptrace_scope=2 || echo "::warning::ptrace is not limited"
+          sudo systemctl stop docker.socket docker.service containerd.service 2>/dev/null || true
+          sudo sh -c 'rm -f /etc/sudoers.d/*; sed -i "/NOPASSWD/d" /etc/sudoers' || true
+          if sudo -n true 2>/dev/null; then echo "::warning title=sudo still works::the model's code could read process memory"; else echo "sudo is off for the rest of this job"; fi
+      - name: Verse builds it (branch verse/builder-${{ github.run_id }})
+        if: steps.budget.outputs.skip == ''
+        id: run
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          VERSE_AI_TOKEN_FILE: ${{ runner.temp }}/ai-token-run
+          VERSE_TICKET_FILE: ${{ runner.temp }}/ticket-run
+          TASK: ${{ needs.pick.outputs.task }}
+          TESTS: ${{ inputs.tests }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+          MAX_STEPS: ${{ inputs.max_steps }}
+          MAX_NEURONS: ${{ inputs.max_neurons }}
+          LEFT: ${{ steps.budget.outputs.left }}
+        run: |
+          git config user.name "Verse"; git config user.email "void@a-to-mind.com"
+          git switch -c "verse/builder-${{ github.run_id }}"
+          own=$(node -p "try { require(process.argv[1]).used || 0 } catch (_) { 0 }" "$RUNNER_TEMP/verse-day/day.json")
+          args=(--task "$TASK" --out "$RUNNER_TEMP/agent" --max-steps "${MAX_STEPS:-30}" --max-neurons "${MAX_NEURONS:-2500}" --day-used 0 --day-cap "${LEFT:-0}" --minutes 45)
+          [ -n "$DRY" ] && args+=(--dry)
+          IFS=',' read -ra ts <<< "$TESTS"; for t in "${ts[@]}"; do t="$(echo "$t" | xargs)"; [ -n "$t" ] && args+=(--test "$t"); done
+          code=0; node tools/verse-agent.mjs "${args[@]}" > "$RUNNER_TEMP/agent.log" 2>&1 || code=$?
+          tail -n 60 "$RUNNER_TEMP/agent.log"
+          [ -f "$RUNNER_TEMP/agent/summary.md" ] && cat "$RUNNER_TEMP/agent/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          n=$(node -p "try { require(process.argv[1]).neurons || 0 } catch (_) { 0 }" "$RUNNER_TEMP/agent/result.json")
+          mkdir -p "$RUNNER_TEMP/verse-day"; echo "{\"used\": $((own + n))}" > "$RUNNER_TEMP/verse-day/day.json"
+          [ $code -eq 3 ] && echo "::warning title=No brain answered::see Which brains answer"
+          exit 0
+      - uses: actions/cache/save@v4
+        if: always() && steps.budget.outputs.skip == ''
+        with:
+          path: ${{ runner.temp }}/verse-day
+          key: verse-agent-day-${{ steps.day.outputs.date }}-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.budget.outputs.skip == ''
+        with:
+          name: verse-agent
+          path: |
+            ${{ runner.temp }}/agent/
+            ${{ runner.temp }}/agent.log
+          retention-days: 14
+
+  land:
+    needs: agent
+    if: needs.agent.outputs.passed == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+      actions: write # start the deploy and the full suite (a push by this token starts no workflow)
+    outputs:
+      landed: ${{ steps.land.outputs.landed }}
+      sha: ${{ steps.land.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 200
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: verse-agent
+          path: ${{ runner.temp }}/in
+      - name: Onto main (bytes only; main's own scope check first)
+        id: land
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          echo "landed=0" >> "$GITHUB_OUTPUT"
+          dir="$RUNNER_TEMP/in/agent"; [ -d "$dir" ] || dir="$RUNNER_TEMP/in"
+          patch="$dir/agent.patch"; r="$dir/result.json"
+          node tools/verse-agent.mjs --scope "$patch" || { echo "::error title=Not landed::the patch reaches past the agent's paths"; exit 1; }
+          git apply --check "$patch" || { echo "::error title=Not landed::main moved and the patch no longer applies"; exit 1; }
+          git apply "$patch"
+          title=$(node -p "'Verse agent: ' + String(require(process.argv[1]).task).split('\n')[0].replace(/[^\w ,.'():\/-]/g, '').slice(0, 72)" "$r")
+          body=$(node -p "const r = require(process.argv[1]); [String((r.end && r.end.summary) || '').slice(0, 900), '', 'Built by Verse\'s own agent on free models (' + r.models.join(', ') + '): ' + r.steps + ' steps, ' + r.neurons + ' neurons. Gate: ' + (r.gate || []).map((g) => g.step).join(', ') + '. Run: ' + process.env.RUN_URL].join('\n')" "$r")
+          node tools/grow.mjs build "$title" --by verse
+          node tools/verse-agent.mjs --incidents --write
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "$title" -m "$body" -m "Verse-Agent-Run: ${{ github.run_id }}"
+          for i in 1 2 3 4; do
+            git push -q origin HEAD:main && break
+            [ $i = 4 ] && { echo "::error title=Not landed::the push did not go through"; exit 1; }
+            sleep $((2 ** i)); git pull -q --rebase origin main || { echo "::error title=Not landed::main moved and the change no longer applies"; exit 1; }
+          done
+          sha=$(git rev-parse HEAD)
+          echo "landed=1" >> "$GITHUB_OUTPUT"; echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "### Verse's change is on main: https://github.com/${{ github.repository }}/commit/$sha" >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the next merge carries it"
+          gh workflow run verify.yml --repo "${{ github.repository }}" --ref main || echo "::warning title=Suite not started::the next merge runs it"
+
+  report:
+    needs: [pick, agent, land]
+    if: always() && (needs.pick.outputs.job != '' || (needs.pick.outputs.task != '' && !inputs.dry))
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: verse-agent
+          path: ${{ runner.temp }}/in
+      - name: The queue is told what came of it
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          JOB: ${{ needs.pick.outputs.job }}
+          MISSING: ${{ needs.pick.outputs.missing }}
+          TASK: ${{ needs.pick.outputs.task }}
+          TRIES: ${{ needs.pick.outputs.tries }}
+          LANDED: ${{ needs.land.outputs.landed }}
+          SHA: ${{ needs.land.outputs.sha }}
+          AGENT_RESULT: ${{ needs.agent.result }}
+          BUDGET_SKIP: ${{ needs.agent.outputs.budget_skip }}
+          DRY: ${{ inputs.dry }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          [ -n "$VOID_OWNER_TOKEN" ] || { echo "no VOID_OWNER_TOKEN: the queue is not told"; exit 0; }
+          r="$RUNNER_TEMP/in/agent/result.json"; [ -f "$r" ] || r="$RUNNER_TEMP/in/result.json"
+          [ -n "$MISSING" ] && [ -z "$TASK" ] && AGENT_RESULT="had no task: the job was not found in the queue"
+          out=$(AGENT_RESULT="$AGENT_RESULT" node tools/verse-agent.mjs --outcome "$r"); echo "$out"
+          OUT="$out" node -e "
+            const o = JSON.parse(process.env.OUT), H = { authorization: 'Bearer ' + process.env.VOID_OWNER_TOKEN, 'content-type': 'application/json', 'user-agent': 'a2m-verse-agent/1.0' };
+            const go = (method, body) => fetch('https://a-to-mind.com/api/queue', { method, headers: H, body: JSON.stringify(body) }).then(async (x) => { console.log(method + ' ' + x.status); return x.json().catch(() => ({})); });
+            (async () => {
+              if (process.env.JOB) return go('PATCH', { id: process.env.JOB, state: o.state, note: o.note });
+              if (o.state === 'done') return;
+              const slug = String(process.env.TASK).split('\n')[0].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+\$/g, '').slice(0, 40);
+              const j = await go('POST', { ask: String(process.env.TASK).split('\n')[0].slice(0, 500), target: 'agent:' + slug });
+              if (j.item && j.item.id) await go('PATCH', { id: j.item.id, state: o.state, note: o.note });
+            })().catch((e) => console.log('the queue was not told: ' + e.message));"

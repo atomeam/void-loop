@@ -6605,6 +6605,11 @@ try {
     check('self card (asked by Verse): a Root cause / Surface toggle over what got built, counted from the ledger kind of each build, five at a time (the rest folded), asks shown as text',
       all.length === 5 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 5 && !R.errors.length,
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
+    // the changes Verse made itself (owner, 2026-10-26: "changes I made myself this week: N"): its own fixes and its agent's (tools/verse-agent.mjs), from the ledger
+    await until(async () => /Changes I made myself this week: \d+\./.test(await R.page()), 6000);
+    const mine = await R.p.evaluate(() => { const el = document.querySelector('.vpage.on [data-self-made]'); return el ? { n: el.getAttribute('data-self-made'), text: el.textContent } : null; });
+    check('self card: "Changes I made myself this week: N" under the progress chart, N the ledger lines by Verse itself this week',
+      !!mine && /^\d+$/.test(mine.n) && mine.text === 'Changes I made myself this week: ' + mine.n + '.', JSON.stringify(mine));
     await R.ctx.close(); }
   // the wants card (owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell to the model, which made 50 up):
   // skills/wants.js answers from Verse's own records (the suite's /api/will and /api/reflect fixtures, tools/fixtures/outside.mjs, and the

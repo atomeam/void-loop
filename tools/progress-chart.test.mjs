@@ -8,6 +8,10 @@ assert.equal(r.length, 4); assert.equal(r[3].built, 2); assert.equal(r[3].skills
 const h = progressHtml(r); assert.match(h, /<polyline/); assert.match(h, /2 this week\.</); assert.ok(!/\u2026/.test(h));
 const real = weekly(JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8')), now);
 assert.ok(real[11].total > 100);
+{ // the self card's line (owner, 2026-10-26: "changes I made myself this week: N"): ledger lines by Verse itself, this week only
+  const w = weekly([{ at: '2026-10-21T00:00:00Z', by: 'verse', what: 'a' }, { at: '2026-10-20T00:00:00Z', by: 'claude', what: 'b' }, { at: '2026-10-01T00:00:00Z', by: 'verse', what: 'c' }], now, 4);
+  assert.equal(w[3].mine, 1); assert.match(progressHtml(w), /Changes I made myself this week: 1\./);
+}
 console.log('progress-chart: ok');
 import { testerHtml } from '../void-live-deploy/lib/progress-chart.js';
 import { weeklyOf } from './tester-log.mjs';

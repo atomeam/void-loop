@@ -1,0 +1,4 @@
+{
+ "note": "Agent commits that verify.yml or live-revert reverted (tools/verse-agent.mjs --incidents --write); each run reads the last five.",
+ "incidents": []
+}

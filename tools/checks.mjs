@@ -355,6 +355,8 @@ for (const [name, file] of [
   ['advance', 'advance.test.mjs'],
   ['gaps', 'gaps.test.mjs'],
   ['propose-fix', 'propose-fix.test.mjs'],
+  ['verse-agent', 'verse-agent.test.mjs'],
+  ['agent-brain', 'agent-brain.test.mjs'], // the agent's brain route on the site's binding and its ticket: a stranger runs nothing, a ticket one capped free model // Verse's own coding agent: its paths, its tools, its loop against a scripted brain (docs/playbooks/verse-agent.md)
   ['claude-brain', 'claude-brain.test.mjs'],
   ['probe-asks', 'probe-asks.test.mjs'],
   ['drive', 'drive.test.mjs'],

@@ -4,16 +4,17 @@
 const DAY = 864e5;
 export function weekly(ledger, now = Date.now(), weeks = 12) {
   const es = Array.isArray(ledger) ? ledger : Object.values(ledger || {});
-  const start = now - weeks * 7 * DAY, rows = Array.from({ length: weeks }, (_, i) => ({ from: start + i * 7 * DAY, built: 0, skills: new Set() }));
+  const start = now - weeks * 7 * DAY, rows = Array.from({ length: weeks }, (_, i) => ({ from: start + i * 7 * DAY, built: 0, mine: 0, skills: new Set() }));
   let before = 0;
   for (const e of es) {
     const t = Date.parse((e && e.at) || ''); if (!Number.isFinite(t) || t > now) continue;
     if (t < start) { before++; continue; }
     const r = rows[Math.min(weeks - 1, Math.floor((t - start) / (7 * DAY)))];
-    r.built++; const m = /^([a-z0-9][a-z0-9-]+)[,:]/.exec(String(e.what || '')); if (m) r.skills.add(m[1]);
+    r.built++; if (e.by === 'verse') r.mine++; // made by Verse itself: its own fixes and its agent's changes (tools/verse-agent.mjs), no builder in the loop
+    const m = /^([a-z0-9][a-z0-9-]+)[,:]/.exec(String(e.what || '')); if (m) r.skills.add(m[1]);
   }
   let total = before;
-  return rows.map((r) => ({ from: r.from, built: r.built, skills: r.skills.size, total: (total += r.built) }));
+  return rows.map((r) => ({ from: r.from, built: r.built, mine: r.mine, skills: r.skills.size, total: (total += r.built) }));
 }
 export function progressHtml(rows, esc = (s) => String(s)) {
   if (!rows.length) return '';
@@ -25,7 +26,8 @@ export function progressHtml(rows, esc = (s) => String(s)) {
   const last = rows[rows.length - 1];
   return '<section data-sec="progress"><h3>My progress, week by week</h3>'
     + `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(`ledger entries over ${rows.length} weeks: ${last.total} in total, ${last.built} this week`)}" style="max-width:420px;fill:currentColor"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="2"/>${bars}</svg>`
-    + `<p>${esc(`The line is every build and improvement in my ledger so far (${last.total}). The bars are each week's new ones: ${last.built} this week.`)}</p></section>`;
+    + `<p>${esc(`The line is every build and improvement in my ledger so far (${last.total}). The bars are each week's new ones: ${last.built} this week.`)}</p>`
+    + `<p data-self-made="${esc(String(last.mine || 0))}">${esc(`Changes I made myself this week: ${last.mine || 0}.`)}</p></section>`;
 }
 
 /** miss rate and page speed per week from /tester-log.json's weekly counts (the site tester's own checks; no visitor words). Pure. */

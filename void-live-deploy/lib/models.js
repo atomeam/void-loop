@@ -18,6 +18,22 @@ export const ANSWER_FALLBACK = '@cf/openai/gpt-oss-120b';
 export const PATH_MODELS = { answer: FREE_MODEL, merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL, translate: TRANSLATE_MODEL };
 export const PATHS = Object.keys(PATH_MODELS);
 
+// Verse's own coding agent (tools/verse-agent.mjs, docs/brains.md; owner, 2026-10-26: "build verse so that it can"): only models the Workers Free
+// plan serves (checked 2026-10-26 against the model pages and the 2026-07-28 changelog, which moved kimi-k2.6/k2.7-code and glm-5.2 to Workers
+// Paid; glm-5.3-flash and the deepseek-v4 models are paid too). `fast` takes the small steps (find a path, read, one-hunk edit), `strong` the
+// plan and every repair after a failed test; each list is tried in order, the next on an error. Neurons per million tokens [input, output]
+// from the pricing page (2026-10-20), so the agent stops before it spends past its cap. Paid models wait for STANDING.md's earnings budget.
+export const AGENT_MODELS = {
+  fast: ['@cf/zai-org/glm-4.7-flash', '@cf/qwen/qwen3-30b-a3b-fp8', '@cf/openai/gpt-oss-120b'],
+  strong: ['@cf/openai/gpt-oss-120b', '@cf/nvidia/nemotron-3-120b-a12b', '@cf/zai-org/glm-4.7-flash'],
+};
+export const AGENT_NEURONS = {
+  '@cf/zai-org/glm-4.7-flash': [5500, 36400],
+  '@cf/qwen/qwen3-30b-a3b-fp8': [4625, 30475],
+  '@cf/openai/gpt-oss-120b': [31818, 68182],
+  '@cf/nvidia/nemotron-3-120b-a12b': [45455, 136364],
+};
+
 export function models(path) {
   if (!PATHS.includes(path)) throw new Error('unknown model path: ' + path);
   return PATH_MODELS[path] || FREE_MODEL;
