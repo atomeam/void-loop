@@ -4,86 +4,104 @@
   "calculator": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 115,
-    "best": 104,
-    "evidence": "Verse (/calculator/) 115 ms to the load event (median of 3, phone width) vs calculator.net 104 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-28T12:59:58.777Z"
+    "verse": 140,
+    "best": 118,
+    "evidence": "Verse (/calculator/) 140 ms to the load event (median of 3, phone width) vs calculator.net 118 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calculator/) 3 of 3 loads answered vs calculator.net 3 of 3 loads answered",
-    "at": "2026-10-28T12:59:58.777Z"
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calculator/) 0 px sideways overflow at 390 px vs calculator.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T12:59:58.777Z"
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/calculator/) 0 unnamed controls or images vs calculator.net 2 unnamed controls or images",
-    "at": "2026-10-28T12:59:58.777Z"
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calculator/) 1 (1: the page shows itself again with the network cut) vs calculator.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T12:59:58.777Z"
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/calculator/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calculator.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T12:59:58.777Z"
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 46,
     "evidence": "Verse (/calculator/) 0 design defects vs calculator.net 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), calculator.net (0 low-contrast texts, 46 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T12:59:58.777Z"
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    },
    "history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calculator/) 1 of 1 shown vs calculator.net 0 of 1 shown (Verse lacks: none; site lacks: a history of results)",
-    "at": "2026-10-28T12:59:58.777Z",
+    "at": "2026-10-29T01:55:34.807Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "unit and scientific modes": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/calculator/) 3 of 3 shown vs calculator.net 1 of 3 shown (Verse lacks: none; site lacks: scientific functions, unit conversion)",
-    "at": "2026-10-28T12:59:58.777Z",
+    "at": "2026-10-29T01:55:34.807Z",
     "of": 3,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 21,
     "best": 9,
     "evidence": "Verse (/calculator/) 21 of 22 things a full answer shows vs calculator.net 9 of 22 things a full answer shows (Verse lacks: Memory M+ M- MR; site lacks: brackets, powers, roots, sin, cos and tan, inverse trig, logarithms, pi, factorial, percent, history of results, keyboard input, Memory M+ M- MR, Ans key)",
-    "at": "2026-10-28T12:59:58.777Z",
-    "of": 22
+    "at": "2026-10-29T01:55:34.807Z",
+    "of": 22,
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/calculator/) 1 of 1 right against the worked-out answer; judged against the standard, not calculator.net (the site is not asked)",
-    "at": "2026-10-28T12:59:58.777Z",
+    "at": "2026-10-29T01:55:34.807Z",
     "of": 1
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 3.5,
+    "evidence": "Verse (/calculator/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs calculator.net 3.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T01:55:34.807Z",
+    "siteRead": true
    }
   },
   "is it": {
@@ -17752,171 +17770,207 @@
   "unit converter: convertlive.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 112,
-    "best": 889,
-    "evidence": "Verse (/convert/unit-converter/) 112 ms to the load event (median of 3, phone width) vs convertlive.com 889 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:00:08.525Z"
+    "verse": 146,
+    "best": 833,
+    "evidence": "Verse (/convert/unit-converter/) 146 ms to the load event (median of 3, phone width) vs convertlive.com 833 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/convert/unit-converter/) 3 of 3 loads answered vs convertlive.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:00:08.525Z"
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 0 px sideways overflow at 390 px vs convertlive.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:00:08.525Z"
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 0 unnamed controls or images vs convertlive.com 0 unnamed controls or images",
-    "at": "2026-10-28T13:00:08.525Z"
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 1 (1: the page shows itself again with the network cut) vs convertlive.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:00:08.525Z"
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/convert/unit-converter/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs convertlive.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:00:08.525Z"
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/convert/unit-converter/) 1 of 1 right against the worked-out answer; judged against the standard, not convertlive.com (the site is not asked)",
-    "at": "2026-10-28T13:00:08.525Z",
+    "at": "2026-10-29T01:56:19.411Z",
     "of": 1
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 180,
-    "evidence": "Verse (/convert/unit-converter/) 0 design defects vs convertlive.com 180 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertlive.com (142 low-contrast texts, 38 small tap targets, layout shift 0.09)",
-    "at": "2026-10-28T13:00:08.525Z"
+    "evidence": "Verse (/convert/unit-converter/) 0 design defects vs convertlive.com 180 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertlive.com (142 low-contrast texts, 38 small tap targets, layout shift 0.08)",
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    },
    "unit breadth": {
     "verdict": "better",
     "verse": 21,
     "best": 13,
     "evidence": "Verse (/convert/unit-converter/) 21 of 21 shown vs convertlive.com 13 of 21 shown (Verse lacks: none; site lacks: temperature, fuel consumption, frequency, heat, light, electricity, magnetism, radiology)",
-    "at": "2026-10-28T13:00:08.525Z",
+    "at": "2026-10-29T01:56:19.411Z",
     "of": 21,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "both directions": {
     "verdict": "better",
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 2 of 2 shown vs convertlive.com 0 of 2 shown (Verse lacks: none; site lacks: swap, from and to)",
-    "at": "2026-10-28T13:00:08.525Z",
+    "at": "2026-10-29T01:56:19.411Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 31,
     "best": 15,
     "evidence": "Verse (/convert/unit-converter/) 31 of 31 things a full answer shows vs convertlive.com 15 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, temperature, fuel consumption, frequency, engineering, heat, light, electricity, magnetism, radiology, a swap or reverse control, the formula, precision, Many units per kind, Engineering converters, Heat converters)",
-    "at": "2026-10-28T13:00:08.525Z",
-    "of": 31
+    "at": "2026-10-29T01:56:19.411Z",
+    "of": 31,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 5.5,
+    "evidence": "Verse (/convert/unit-converter/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs convertlive.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T01:56:19.411Z",
+    "siteRead": true
    }
   },
   "unit converter: convertunits.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 117,
-    "best": 909,
-    "evidence": "Verse (/convert/unit-converter-2/) 117 ms to the load event (median of 3, phone width) vs convertunits.com 909 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:00:52.784Z"
+    "verse": 120,
+    "best": 1366,
+    "evidence": "Verse (/convert/unit-converter-2/) 120 ms to the load event (median of 3, phone width) vs convertunits.com 1366 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/convert/unit-converter-2/) 3 of 3 loads answered vs convertunits.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:00:52.784Z"
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter-2/) 0 px sideways overflow at 390 px vs convertunits.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:00:52.784Z"
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter-2/) 0 unnamed controls or images vs convertunits.com 0 unnamed controls or images",
-    "at": "2026-10-28T13:00:52.784Z"
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter-2/) 1 (1: the page shows itself again with the network cut) vs convertunits.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:00:52.784Z"
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/convert/unit-converter-2/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs convertunits.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:00:52.784Z"
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/convert/unit-converter-2/) 1 of 1 right against the worked-out answer; judged against the standard, not convertunits.com (the site is not asked)",
-    "at": "2026-10-28T13:00:52.784Z",
+    "at": "2026-10-29T01:57:21.503Z",
     "of": 1
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 169,
-    "evidence": "Verse (/convert/unit-converter-2/) 0 design defects vs convertunits.com 169 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertunits.com (94 low-contrast texts, 75 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:00:52.784Z"
+    "best": 171,
+    "evidence": "Verse (/convert/unit-converter-2/) 0 design defects vs convertunits.com 171 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertunits.com (95 low-contrast texts, 76 small tap targets, layout shift 0.00)",
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    },
    "unit breadth": {
     "verdict": "better",
     "verse": 21,
-    "best": 17,
-    "evidence": "Verse (/convert/unit-converter-2/) 21 of 21 shown vs convertunits.com 17 of 21 shown (Verse lacks: none; site lacks: heat, light, magnetism, radiology)",
-    "at": "2026-10-28T13:00:52.784Z",
+    "best": 16,
+    "evidence": "Verse (/convert/unit-converter-2/) 21 of 21 shown vs convertunits.com 16 of 21 shown (Verse lacks: none; site lacks: fuel consumption, heat, light, magnetism, radiology)",
+    "at": "2026-10-29T01:57:21.503Z",
     "of": 21,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "both directions": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/convert/unit-converter-2/) 2 of 2 shown vs convertunits.com 1 of 2 shown (Verse lacks: none; site lacks: swap)",
-    "at": "2026-10-28T13:00:52.784Z",
+    "at": "2026-10-29T01:57:21.503Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 31,
-    "best": 20,
-    "evidence": "Verse (/convert/unit-converter-2/) 31 of 31 things a full answer shows vs convertunits.com 20 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, engineering, heat, light, magnetism, radiology, a swap or reverse control, the formula, precision, Engineering converters, Heat converters)",
-    "at": "2026-10-28T13:00:52.784Z",
-    "of": 31
+    "best": 19,
+    "evidence": "Verse (/convert/unit-converter-2/) 31 of 31 things a full answer shows vs convertunits.com 19 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, fuel consumption, engineering, heat, light, magnetism, radiology, a swap or reverse control, the formula, precision, Engineering converters, Heat converters)",
+    "at": "2026-10-29T01:57:21.503Z",
+    "of": 31,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 5.5,
+    "evidence": "Verse (/convert/unit-converter-2/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs convertunits.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T01:57:21.503Z",
+    "siteRead": true
    }
   },
   "jobs: remotive.com": {
