@@ -15,6 +15,7 @@ import { clamp } from './field-kit.js';
 import { createWorkspace, snapshot, restore, measure, ownership, regionMeans, regionCenter, deposit, nodesOf, sealSlice, GW, GH, CELLS, KIND, REGIONS_X } from './brain-workspace.js';
 import { ORGANS, ORGAN_IDS, STARTER, fixGenome, makeReservoir, makeGestures, makeMemory, makeConcepts, makeWill, makeArena, seedSwarm, seedMembrane, addPhrase, related, applyAction, ACTIONS, gestureName, LETTERS } from './brain-organs.js';
 import { sealSync } from './field-kit.js';
+import * as Mind from './brain-mind.js';
 
 export const VERSION = 1;
 export const STARVE = 120; // ticks of waiting that add a whole 1 to an organ's want
@@ -37,7 +38,7 @@ export function createBrain(seed = 1, opts = {}) {
     reservoir: makeReservoir(seed), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
     focus: { x: 0.5, y: 0.5, px: 0.5, py: 0.5, region: 5, held: 0 }, surprise: 0, utility: 0, metrics: measure(ws),
     runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
-    board: { drive: 'rest', gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0 };
+    board: { drive: 'rest', gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
   seedSwarm(b); seedMembrane(b);
   b.swarmIds = nodesOf(ws, [0, 1, 2]); b.membraneIds = nodesOf(ws, [KIND.membrane]);
   // a few seeds so the tissue has somewhere to start
@@ -45,6 +46,8 @@ export function createBrain(seed = 1, opts = {}) {
   b.utility = utilityOf(ws, b.focus);
   return b;
 }
+/** the brain's preference for its state (lib/brain-mind.js valenceOf): coherence, goals met, approval, alignment with Verse. Pure on b. */
+export const valence = (b) => Mind.valenceOf(b, utilityOf(b.ws, b.focus));
 
 // ---- 3. attention --------------------------------------------------------------------------------------------------------------------
 /** move the spotlight: the region with the most surprise and input (memory's expectation counts a little), held a while so it does not
@@ -64,7 +67,7 @@ export function updateFocus(b) {
 /** which organs run this tick: senses always; then the budget goes to the highest want plus starvation (ticks since it last ran / STARVE).
  *  Returns the ids, in the order they run (the order of ORGANS: senses before the predictor, tissue before the rhythm). Pure. */
 export function scheduleTick(b) {
-  const scored = ORGANS.filter((o) => o.id !== 'senses').map((o) => ({ id: o.id, p: clamp(o.want(b), 0, 1) + Math.min(1, (b.ticks - b.lastRun[o.id]) / STARVE) }));
+  const scored = ORGANS.filter((o) => o.id !== 'senses').map((o) => ({ id: o.id, p: clamp(o.want(b) - (b.mind.throttle[o.id] || 0), 0, 1) + Math.min(1, (b.ticks - b.lastRun[o.id]) / STARVE) })); // the monitor slows an organ that disagrees with another over a region
   scored.sort((p, q) => q.p - p.p);
   const pick = new Set(['senses', ...scored.slice(0, b.budget).filter((x) => x.p > 0.05).map((x) => x.id)]);
   return ORGANS.filter((o) => pick.has(o.id)).map((o) => o.id);
@@ -77,7 +80,9 @@ export function stepBrain(b, input = {}) {
   const ids = scheduleTick(b);
   for (const id of ids) { const o = ORGANS.find((x) => x.id === id); o.run(b, input, imagine); b.runs[id]++; b.lastRun[id] = b.ticks; }
   b.granted = ids;
-  if ((b.ticks & 7) === 0) { b.metrics = measure(ws); b.utility = utilityOf(ws, b.focus); }
+  Mind.stepGoals(b, deposit); Mind.stepValence(b); Mind.stepMonitor(b, ORGANS);
+  if ((b.ticks & 7) === 0) { b.metrics = measure(ws); b.utility = valence(b); }
+  Mind.stepHistory(b);
   return ids;
 }
 
@@ -94,9 +99,9 @@ export function imagine(b, { action = null, genome = null, steps = 24 } = {}) {
   b.imagining++;
   try {
     for (let t = 0; t < steps; t++) { b.ws.tick++; if (action != null) applyAction(b, action); for (const o of sub) o.run(b, still); }
-    return utilityOf(b.ws, b.focus);
+    return valence(b);
   } finally {
-    restore(b.ws, snap); b.genome = keep.genome; b.board = keep.board; b.focus = keep.focus; b.surprise = keep.surprise; b.senses = keep.senses; b.ws.rand = keep.rand;
+    const aligned = b.mind.aligned; restore(b.ws, snap); b.mind.aligned = aligned; b.genome = keep.genome; b.board = keep.board; b.focus = keep.focus; b.surprise = keep.surprise; b.senses = keep.senses; b.ws.rand = keep.rand;
     b.concepts.node.forEach((i, k) => { b.ws.nodes.act[i] = conceptAct[k]; });
     b.imagining--; b.imagined++;
   }
@@ -111,7 +116,16 @@ export function tell(b, text) {
 /** the concepts nearest a word (spelling and use), rounded: [{ word, sim, linked }]. */
 export function relatedOf(b, word, top = 3) { return related(b.concepts, word, top).map((r) => ({ word: r.word, sim: Math.round(r.sim * 100) / 100, linked: r.linked })); }
 /** "good": a reward for whatever the brain did last. */
-export function reward(b, amt = 1) { b.will.good += amt; return b.will.good; }
+export function reward(b, amt = 1) { b.will.good += amt; Mind.approve(b, 0.5 * amt, b.will.action); return b.will.good; }
+/** an ask (from the stage or the card): its words become ideas and goals that pull (lib/brain-mind.js askGoal). A question about itself
+ *  ("why did that form?", "what just happened?", "what are you doing?") is answered from its state instead: { answer: [sentences] }. */
+export function ask(b, text) {
+  if (Mind.isQuestion(text)) return { answer: Mind.explain(b, text, Object.fromEntries(ORGANS.map((o) => [o.id, o.name.toLowerCase()]))) };
+  return Mind.askGoal(b, text, tell);
+}
+/** Verse's own priorities (the parsed /self.json) as standing ideas the visitor's are compared with. Returns how many. */
+export function knowVerse(b, self) { b.mind.semantic = Mind.semanticFrom(self); return b.mind.semantic.length; }
+export const knowledgeOf = Mind.knowledgeOf, loadKnowledge = Mind.loadKnowledge;
 /** a drag of an embodied thing to (x, y): a concept moves; anything else deposits there as 'you'. */
 export function dragTo(b, ref, x, y) {
   const N = b.ws.nodes;
@@ -141,13 +155,20 @@ export function selfOf(b) {
   return { goals: GOALS, utility: Math.round(b.utility * 1000) / 1000, use, starved, owner: { top, share: Math.round(tv * 100) / 100, all: own },
     genome: { gen: b.arena.gen, seal: seal.short, fitness: b.arena.last ? b.arena.last.fitness : null }, imagined: b.imagined,
     surpriseBudget: Math.round(clamp(1 - b.reservoir.errAvg * 2, 0, 1) * 100) / 100, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length,
-    q: b.will.chosen, action: b.board.action ? b.board.action.name : 'rest' };
+    q: b.will.chosen, action: b.board.action ? b.board.action.name : 'rest',
+    wants: b.mind.goals.map((g) => ({ word: g.word, strength: Math.round(g.strength * 100) / 100 })), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length,
+    conflicts: b.mind.conflicts, aligned: b.mind.aligned || null, approval: Math.round(b.mind.approval * 100) / 100, recent: Mind.recent(b) };
 }
 /** plain sentences from the self, for the card and for "what is your brain doing". Pure. */
 export function selfSays(b) {
   const s = selfOf(b), out = [];
   out.push('Focus: region ' + (b.focus.region + 1) + ' of 12' + (b.board.thinking ? ', thinking about "' + b.board.thinking + '"' : '') + '.');
   if (b.board.action) out.push('Will: ' + b.board.action.name + (b.board.action.imagined && b.board.action.imagined.length > 1 ? ' (imagined ' + b.board.action.imagined.map((x) => x.action + ' ' + x.utility).join(' vs ') + ')' : '') + '.');
+  if (s.wants.length) out.push('Asked for: ' + s.wants.slice(0, 3).map((g) => g.word).join(', ') + '.');
+  if (s.conflicts.length) { const c = s.conflicts[0]; out.push(c.organs.join(' and ') + ' disagree in region ' + (c.region + 1) + (c.slowed ? '; ' + c.slowed + ' slowed' : '') + '.'); }
+  if (s.aligned) out.push('"' + s.aligned.word + '" is near "' + s.aligned.near + '" (' + s.aligned.from + ').');
+  if (b.senses.felt) out.push('Feels ' + b.senses.felt + ' memor' + (b.senses.felt === 1 ? 'y' : 'ies') + ' from other cards in the shared field.');
+  out.push('Remembers ' + s.episodes + ' moment' + (s.episodes === 1 ? '' : 's') + ' and ' + s.procedures + ' winning genome' + (s.procedures === 1 ? '' : 's') + '.');
   if (s.starved) out.push('Under-used: ' + s.starved + '.');
   if (s.owner.top) out.push('Most of the workspace was last written by ' + s.owner.top + ' (' + Math.round(s.owner.share * 100) + '%).');
   out.push('Genome ' + s.genome.seal + ', generation ' + s.genome.gen + '.');
@@ -155,5 +176,5 @@ export function selfSays(b) {
 }
 
 /** the card's settings and numbers for a seal (numbers only, never the visitor's path or words). */
-export function params(b) { return { v: VERSION, genome: Object.fromEntries(Object.entries(b.genome).map(([k, v]) => [k, Math.round(v * 10000) / 10000])), gen: b.arena.gen, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length, q: Array.from(b.will.q, (v) => Math.round(v * 100) / 100) }; }
+export function params(b) { return { v: VERSION, genome: Object.fromEntries(Object.entries(b.genome).map(([k, v]) => [k, Math.round(v * 10000) / 10000])), gen: b.arena.gen, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length, q: Array.from(b.will.q, (v) => Math.round(v * 100) / 100), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length, pref: Array.from(b.mind.pref, (v) => Math.round(v * 100) / 100) }; }
 export { ACTIONS, LETTERS, gestureName, sealSlice, GW, GH, ORGANS, ORGAN_IDS };

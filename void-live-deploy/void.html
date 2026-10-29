@@ -5876,6 +5876,7 @@ say('nothing selected to remove');
       // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
       { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
+      if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
       if (await handlePublishAsk(lower0)) return;

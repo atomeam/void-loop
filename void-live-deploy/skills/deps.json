@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 940,
+ "counted": 946,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 54,
+   "dependants": 56,
    "tests": 4
   },
   {
@@ -507,6 +507,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-resonance.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
@@ -524,13 +531,6 @@
    "file": "lib/card-sections.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-resonance.js",
-   "skills": 4,
-   "direct": 1,
    "dependants": 6,
    "tests": 1
   },
@@ -966,7 +966,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/photo-ask.js",
@@ -974,6 +974,13 @@
    "direct": 2,
    "dependants": 2,
    "tests": 0
+  },
+  {
+   "file": "lib/shared-field.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/template-list.js",
@@ -1032,6 +1039,13 @@
    "tests": 0
   },
   {
+   "file": "lib/brain-workspace.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/scores.js",
    "skills": 1,
    "direct": 1,
@@ -1060,6 +1074,20 @@
    "tests": 2
   },
   {
+   "file": "lib/brain-mind.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-organs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
@@ -1079,13 +1107,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/brain-workspace.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/emoji.js",
@@ -1141,13 +1162,6 @@
    "skills": 1,
    "direct": 1,
    "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-organs.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 2,
    "tests": 1
   },
   {
@@ -1270,11 +1284,25 @@
    "tests": 1
   },
   {
-   "file": "lib/brain.js",
+   "file": "lib/brain-field.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/brain-store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/calc-more.js",
@@ -1707,15 +1735,15 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 67,
-   "tests": 25
+   "dependants": 68,
+   "tests": 26
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 49,
-   "tests": 9
+   "dependants": 50,
+   "tests": 10
   },
   {
    "file": "lib/pages.js",
@@ -1770,7 +1798,7 @@
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 0
   },
   {
@@ -1810,6 +1838,13 @@
   },
   {
    "file": "lib/cite.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 21,
+   "tests": 1
+  },
+  {
+   "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
    "dependants": 21,
@@ -1856,13 +1891,6 @@
    "direct": 0,
    "dependants": 20,
    "tests": 2
-  },
-  {
-   "file": "lib/daily-cap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 20,
-   "tests": 1
   },
   {
    "file": "lib/draft.js",
@@ -2848,6 +2876,15 @@
     "lib/guard.js",
     "lib/gumroad.js",
     "lib/store-db.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/coder.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/models.js",
+    "lib/daily-cap.js",
+    "lib/shortfall.js"
    ],
    "importedBy": []
   },
@@ -4157,16 +4194,48 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-field.js": {
+   "imports": [
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-mind.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js",
+    "lib/brain-organs.js"
+   ],
+   "importedBy": [
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-mind.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-organs.js": {
    "imports": [
+    "lib/brain-mind.js",
     "lib/field-kit.js",
     "lib/field-resonance.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
+    "lib/brain-mind.js",
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-organs.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-store.js": {
+   "imports": [],
+   "importedBy": [
     "skills/verse-brain.js"
    ]
   },
@@ -4175,6 +4244,8 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
+    "lib/brain-field.js",
+    "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain.js",
     "skills/verse-brain.js"
@@ -4184,7 +4255,8 @@
    "imports": [
     "lib/field-kit.js",
     "lib/brain-workspace.js",
-    "lib/brain-organs.js"
+    "lib/brain-organs.js",
+    "lib/brain-mind.js"
    ],
    "importedBy": [
     "skills/verse-brain.js"
@@ -4926,6 +4998,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/coder.js",
     "functions/api/daily-art.js",
     "functions/api/report.js"
    ],
@@ -5225,6 +5298,7 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain-workspace.js",
     "lib/brain.js",
@@ -5248,6 +5322,7 @@
     "skills/feud.js"
    ],
    "reachedBy": [
+    "lib/brain-field.js",
     "lib/field-vector-worker.js",
     "lib/orb-field.js",
     "lib/tilt-arena-idea.js",
@@ -5304,6 +5379,7 @@
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-mind.js",
     "lib/brain.js",
     "skills/mind-field-mode.js",
     "skills/mind-field.js",
@@ -5660,6 +5736,7 @@
     "functions/api/boards/[[path]].js",
     "functions/api/calshare.js",
     "functions/api/catalog.js",
+    "functions/api/coder.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
     "functions/api/earnings.js",
@@ -6544,6 +6621,7 @@
     "functions/api/appraise.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/coder.js",
     "functions/api/digest.js",
     "functions/api/figurescript.js",
     "functions/api/image.js",
@@ -8094,6 +8172,13 @@
     "skills/translate.js"
    ]
   },
+  "lib/shared-field.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/field.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/shared-routines.js": {
    "imports": [
     "lib/automation-fix.js"
@@ -8108,6 +8193,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/coder.js",
     "functions/api/earnings.js",
     "functions/api/mcp.js",
     "functions/api/probe-asks.js",
@@ -10300,6 +10386,12 @@
   "skills/feud.js": {
    "imports": [
     "lib/field-kit.js"
+   ],
+   "importedBy": []
+  },
+  "skills/field.js": {
+   "imports": [
+    "lib/shared-field.js"
    ],
    "importedBy": []
   },
@@ -13058,7 +13150,10 @@
     "lib/field-stage.js",
     "lib/brain.js",
     "lib/brain-workspace.js",
-    "lib/brain-bridge.js"
+    "lib/brain-bridge.js",
+    "lib/brain-store.js",
+    "lib/shared-field.js",
+    "lib/brain-field.js"
    ],
    "importedBy": []
   },

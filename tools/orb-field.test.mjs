@@ -3,6 +3,10 @@
 // Run: node --test tools/orb-field.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, dirname } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as B from '../void-live-deploy/lib/orb-field.js';
 import * as F from '../void-live-deploy/lib/field-fluid-orbs.js';
 
@@ -23,9 +27,7 @@ function fakeField(N = 16, D = 8, { async = false, size = 'init' } = {}) {
 }
 const withOrbs = (seed = 3) => { const s = F.create(seed); s.d.fill(0); F.splat(s, 12, 18, 0, 0, 3, 2); F.splat(s, 36, 18, 0, 0, 3, 2); F.spawnOrbs(s); return s; }; // two peaks, two orbs
 
-test('no field: the real loader finds no skills/field.js and answers null, and the orbs seal and recall exactly as before', async () => {
-  assert.equal(await B.connectField(), null, 'skills/field.js is not in the repo yet');
-  assert.equal(await B.fieldLink(), null); assert.equal(await B.fieldLink(), null, 'the page asks once and keeps the answer');
+test('no field: a missing or broken field answers null, and the orbs seal and recall exactly as before', async () => {
   assert.equal(await B.connectField({ load: () => Promise.reject(new Error('404')) }), null);
   assert.equal(await B.connectField({ load: () => ({ init() {}, readRegion() {} }) }), null, 'a module without the whole API is not a field');
   assert.equal(await B.connectField({ load: () => ({ ...fakeField(), init: () => { throw new Error('no GPU, no fallback'); } }) }), null, 'a field that fails to start');
@@ -64,4 +66,32 @@ test('a full field: an orb with no free slot stays on the card only, and seal an
   const f = fakeField(2, 4); f.buf.fill(5, f.L.prov, f.L.prov + 2);
   const a = await B.connectField({ load: () => f }), s = withOrbs();
   await a.sync(s); assert.equal(a.held, 0); assert.equal(await a.seal(s, s.orbs[0]), null);
+});
+
+test('the bridge turns itself on: once skills/field.js serves the API, the default loader finds it, with no change here', async () => {
+  const lib = join(dirname(fileURLToPath(import.meta.url)), '../void-live-deploy/lib'), root = mkdtempSync(join(tmpdir(), 'orb-field-'));
+  try {
+    mkdirSync(join(root, 'lib')); mkdirSync(join(root, 'skills'));
+    for (const f of ['orb-field.js', 'field-fluid-orbs.js', 'field-kit.js']) copyFileSync(join(lib, f), join(root, 'lib', f)); // this file as it ships
+    writeFileSync(join(root, 'skills', 'field.js'), [ // a field.js with the API as specified, where the Verse Brain will put the real one
+      'const N = 8, D = 4, buf = new Float32Array(6 * N + N * D + 2 * N);',
+      'export const init = () => ({ N, D });',
+      'export const readRegion = (start, count) => buf.slice(start, start + count);',
+      'export const writeRegion = (start, count, data) => { for (let k = 0; k < count; k++) buf[start + k] = data[k]; };',
+      'export const step = () => {}; export const sealSlice = (start, count) => \'g\' + start + \':\' + count;'].join('\n'));
+    const C = await import(pathToFileURL(join(root, 'lib', 'orb-field.js')).href);
+    const a = await C.connectField(); assert.ok(a, 'the default loader connects'); assert.deepEqual([a.layout.N, a.layout.D], [8, 4]);
+    const s = withOrbs(); await a.sync(s); assert.equal(a.held, s.orbs.length, 'and the live orbs go into it');
+    assert.ok(await C.fieldLink(), 'the page link connects too');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('the real field: skills/field.js (lib/shared-field.js) is found, the orbs take their own slots in it, and Verse Brain sees them', async () => {
+  const Shared = await import('../void-live-deploy/skills/field.js'); Shared.reset();
+  const a = await B.connectField(); assert.ok(a, 'the real loader finds skills/field.js');
+  const link = await B.fieldLink(); assert.ok(link, 'the page link connects'); assert.equal(await B.fieldLink(), link, 'the page asks once and keeps the answer');
+  const s = withOrbs(); await a.sync(s);
+  assert.equal(a.held, s.orbs.length); assert.equal(Shared.census().held['agent-fluid-memory-orbs'], s.orbs.length, 'the field names the orbs as the writer');
+  const sealed = await a.seal(s, s.orbs[0]); assert.match(sealed.genomeId, /^f[0-9a-f]{8}$/); assert.ok(Shared.sealed(sealed.genomeId), 'the field kept the sealed slice');
+  await a.close(); assert.equal(Shared.slots().length, 0, 'closing frees every slot');
 });

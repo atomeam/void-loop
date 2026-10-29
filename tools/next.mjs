@@ -12,6 +12,7 @@ import { readFrontier, openItems, stepsLeft, targets } from './frontier.mjs';
 import { scan as reviewOverrides, summarize as overrideSummary } from './review-overrides.mjs';
 import { load as loadTargets, scoreOf } from './targets.mjs';
 import { asksInLog } from './reflect.mjs';
+import { sameAsk } from '../void-live-deploy/lib/self-blocks.js';
 
 const SNAPSHOT = new URL('../domains/void.misses.json', import.meta.url);
 
@@ -49,28 +50,54 @@ function readJson(rel, pick) { try { return pick(JSON.parse(readFileSync(new URL
 export const voidAsks = () => { let v = ''; try { v = readFileSync(VOICE, 'utf8'); } catch (_) {}
   return repeatedAsks(v, readJson('../void-live-deploy/void.growth.json', (j) => j), readJson('../void-live-deploy/void.asks.json', (j) => j.links || [])); };
 
-export function summary(text) {
-  const steps = stepsLeft(text), open = openItems(text), after = targets(text);
-  return { steps, open, targets: after, take: takeNext({ steps, open, targets: after }) };
+/** The holds and the Versus target (owner, 2026-10-29: every site ever made, smallest first; an ask that does not help beat the
+ *  current target waits). held: void.asks.json `held` ({ words, until, why, frontier? }); target: tower.target.json's id. A frontier
+ *  item or an ask is held while an entry whose `until` is still the target names it, by its frontier title or its words. Pure. */
+export function isHeld(title, held, target) {
+  const k = normAsk(title);
+  return !!k && !!target && (Array.isArray(held) ? held : []).some((h) => h && String(h.until || '') === String(target)
+    && ((h.frontier && normAsk(h.frontier) === k) || (h.words && (normAsk(h.words) === k || sameAsk(h.words, title)))));
+}
+/** the Versus target's next aspect, from its domains/targets file: { site, next } or null when there is none or it is beaten. Pure. */
+export function towerTake(target, all) {
+  const t = (Array.isArray(all) ? all : []).find((x) => x && x.site === target);
+  if (!t) return null;
+  const sc = scoreOf(t);
+  return sc.done || !sc.next ? null : { site: sc.site, next: sc.next, beats: sc.beats, total: sc.total };
+}
+
+export function summary(text, { held = [], target = '', tower = null } = {}) {
+  const steps = stepsLeft(text), all = openItems(text), after = targets(text);
+  const open = all.filter((o) => !isHeld(o.title, held, target)), heldOpen = all.filter((o) => isHeld(o.title, held, target));
+  return { steps, open, held: heldOpen, targets: after, tower, take: takeNext({ steps, open, targets: after, tower }) };
 }
 
 /** the one thing a run takes now. There is always one: a run never reports "nothing to do" (the owner, 2026-10-12: "no open
  *  items or anything similar is absolute bullshit and I dont ever want to see that again"). Pure. */
-export function takeNext({ steps = [], open = [], targets: after = [] }) {
+export function takeNext({ steps = [], open = [], targets: after = [], tower = null }) {
   if (steps.length) return 'cleanup step ' + steps[0].n + ': ' + steps[0].title;
+  // the Versus target stays first until it is beaten (tower.target.json; owner, 2026-10-29)
+  if (tower && tower.site && tower.next) return tower.site + ': ' + tower.next.id + ' (the Versus target, ' + tower.beats + ' of ' + tower.total + ' beaten; it stays first until it is beaten)';
   if (open.length) return open[0].title + ' (the first open item nobody has claimed; check open PRs and the agent log)';
   if (after.length) return after[0].title + ' (the first target after the cleanup)';
   return "Verse's top ask in domains/void.voice.md, then write the next targets on the frontier";
 }
 
+const holdsNow = () => { const held = readJson('../void-live-deploy/void.asks.json', (j) => j.held || []);
+  let target = ''; try { target = String(JSON.parse(readFileSync(new URL('../void-live-deploy/tower.target.json', import.meta.url), 'utf8')).id || ''); } catch (_) {}
+  let tower = null; try { tower = towerTake(target, loadTargets()); } catch (_) {}
+  return { held: Array.isArray(held) ? held : [], target, tower }; };
+
 function main(argv) {
-  const s = summary(readFrontier());
-  if (argv.includes('--json')) { console.log(JSON.stringify({ ...s, voidAsks: voidAsks().slice(0, 10) }, null, 1)); return 0; }
+  const h = holdsNow(), s = summary(readFrontier(), h);
+  const va = voidAsks().filter((a) => !isHeld(a.ask, h.held, h.target));
+  if (argv.includes('--json')) { console.log(JSON.stringify({ ...s, voidAsks: va.slice(0, 10) }, null, 1)); return 0; }
   console.log(s.steps.length ? 'Cleanup steps left (take the first unclaimed one before anything else):' : 'Cleanup: all steps done.');
   for (const st of s.steps) console.log(`  ${st.n}. ${st.title}`);
   console.log('Take next: ' + s.take);
   if (s.open.length) console.log(`\nOpen on the frontier (${s.open.length}):`);
   for (const o of s.open) console.log(`  - ${o.title}${o.from ? '  [' + o.from + ']' : ''}`);
+  if (s.held.length) console.log(`\nHeld until ${h.target} is beaten (void.asks.json held; not to be taken now):\n` + s.held.map((o) => '  - ' + o.title).join('\n'));
   if (s.targets.length) console.log(`\nTargets after the cleanup (${s.targets.length}):`);
   for (const t of s.targets) console.log('  - ' + t.title);
   try { // the site Verse has set its sights on, and the next feature to build one notch past it (tools/targets.mjs)
@@ -92,7 +119,6 @@ function main(argv) {
     let snap = null; try { snap = JSON.parse(readFileSync(SNAPSHOT, 'utf8')); } catch (_) {}
     console.log('\n' + snapshotLines(snap).join('\n') + '\n(the live board, grouped into skills: VOID_MISSES_TOKEN and node tools/next-skill.mjs)');
   } else console.log('\nThe miss board needs VOID_MISSES_TOKEN (node tools/next-skill.mjs); the public snapshot domains/void.misses.json is not written yet (misses-snapshot.yml, daily).');
-  const va = voidAsks();
   if (va.length) console.log(`\nVerse asks for, most repeated first (${va.length} not built yet; build the top one and pass --asked to finish.mjs):\n` + va.slice(0, 8).map((a) => `  - ${a.times}× ${a.ask}${a.small ? ' (small)' : ''}`).join('\n'));
   else console.log("Verse's own asks: the top of domains/void.voice.md.");
   return 0;

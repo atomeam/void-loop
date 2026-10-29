@@ -5478,7 +5478,8 @@ try {
       const card = '.ff-agent-fluid-memory-orbs', box = await (await F.p.$(card + ' canvas')).boundingBox();
       const read = () => F.p.$eval(card, (e) => ({ orbs: +(e.dataset.orbs || 0), els: e.querySelectorAll('.fo-orb').length, gen: +(e.dataset.gen || 0), mind: e.dataset.mind, status: e.querySelector('.ff-hud').textContent,
         hue: e.style.getPropertyValue('--fo-hue'), filter: e.style.filter, page: getComputedStyle(document.body).filter, seal: e.dataset.orbSeal || '', recalled: e.dataset.recalled || '', same: e.dataset.recallSame || '',
-        sealed: e.querySelector('.ff-sealed').textContent, mode: (e.querySelector('select.mf-mode') || {}).value || '', field: e.dataset.field || '' }));
+        sealed: e.querySelector('.ff-sealed').textContent, mode: (e.querySelector('select.mf-mode') || {}).value || '', field: e.dataset.field || '',
+        hand: e.dataset.handColor || '', toColor: (e.querySelector('a.fo-color') || {}).getAttribute ? e.querySelector('a.fo-color').getAttribute('href') : '' }));
       await F.p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await F.p.mouse.down(); // pour energy in: press and circle
       for (let i = 0; i < 30; i++) { const a = i / 5; await F.p.mouse.move(box.x + box.width / 2 + Math.cos(a) * box.width / 5, box.y + box.height / 2 + Math.sin(a) * box.height / 5); }
       await F.p.mouse.up();
@@ -5492,8 +5493,9 @@ try {
     }
     const good = (o) => o.a.orbs > 0 && o.a.els === o.a.orbs && /^[0-9a-f]{12}$/.test(o.b.seal) && o.b.recalled === o.b.seal && o.b.same === 'true' && o.b.gen > 0
       && /^F-321 · gen \d+ · fitness [\d.]+ · \d+ orbs? · swirl [\d.]+ · entropy [\d.]+ · thinking/.test(o.b.status) && o.b.hue !== '' && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.mode === 'agent-fluid-memory-orbs' && !o.errors.length
-      && o.b.field === 'off' && !/shared field/.test(o.b.status + o.b.sealed); // no skills/field.js yet: the orbs keep their own state (lib/orb-field.js answers null)
-    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own',
+      && o.b.field === 'off' && !/shared field/.test(o.b.status + o.b.sealed) // no skills/field.js yet: the orbs keep their own state (lib/orb-field.js answers null)
+      && /^#[0-9a-f]{6}$/.test(o.b.hand) && o.b.toColor === '/color/?c=' + o.b.hand.slice(1); // the hand-off: an orb's colour opens on the colour page
+    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page',
       out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
   }
   if (want("mind field: the seven field minds are one skill with a Mode switcher, Draw mode guesses the next stroke, orbs drag and feed back, every old ask still opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
@@ -5643,7 +5645,27 @@ try {
     const sealed = await F.p.$eval(card, (e) => e.dataset.seal || '');
     const rows = await F.p.evaluate(() => new Promise((res) => { const done = setTimeout(() => res(''), 8000);
       try { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { try { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { clearTimeout(done); q.result.close(); res(JSON.stringify(g.result)); }; g.onerror = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }; q.onerror = q.onblocked = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }));
+    // the mind layers: a question is answered from its state, a stage ask becomes a goal, and what it learned survives a reload on this device
+    await F.p.fill(card + ' .vb-word', 'what just happened'); await F.p.press(card + ' .vb-word', 'Enter');
+    const answer = await F.p.$eval(card + ' .vb-said', (e) => e.textContent);
+    await F.ask('tell me about knights', 700); const fromStage = await F.p.$eval(card, (e) => ({ said: e.querySelector('.vb-said').textContent, wants: +(e.dataset.wants || 0) })).catch(() => null);
+    await until(async () => (await read()).chosen >= 3, 8000).catch(() => {});
+    await F.p.click(card + ' .vb-good'); await until(async () => (await F.p.$eval(card, (e) => e.dataset.saved).catch(() => '')) === 'true', 4000).catch(() => {});
+    const mind = await F.p.$eval(card, (e) => ({ episodes: +(e.dataset.episodes || 0), procedures: +(e.dataset.procedures || 0), saved: e.dataset.saved, semantic: +(e.dataset.semantic || 0) }));
+    await F.p.reload(); await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+    await until(async () => (await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none')) !== 'none', 6000).catch(() => {});
+    const keptAfter = await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none');
+    // the shared field: a slot written at skills/field.js (where the memory orbs write) is felt by the brain, which publishes its own ideas there
+    await F.p.evaluate(async () => { const Fd = await import('/skills/field.js'); Fd.init(); const L = Fd.layout, who = 'agent-fluid-memory-orbs', c = Fd.provenanceOf(who);
+      Fd.writeRegion(L.pos + 3 * 200, 3, [0.3, 0.4, 0], who); Fd.writeRegion(L.act + 200, 1, [0.9], who); Fd.writeRegion(L.prov + 200, 1, [c], who); }).catch(() => {});
+    await until(async () => +(await F.p.$eval(card, (e) => e.dataset.felt).catch(() => 0)) >= 1, 6000).catch(() => {});
+    const shared = await F.p.$eval(card, (e) => ({ felt: +(e.dataset.felt || 0), owners: e.dataset.fieldOwners || '', says: e.querySelector('[role=status]') ? e.querySelector('[role=status]').textContent : '' })).catch(() => null);
+    check('verse brain shared field: an orb\'s slot in skills/field.js is felt by the brain on the same page, and the brain\'s ideas are in the field under its own name',
+      !!shared && shared.felt >= 1 && /agent-fluid-memory-orbs/.test(shared.owners), JSON.stringify(shared));
     const errors = F.errors.slice(); await F.ctx.close();
+    check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
+      /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
+      JSON.stringify({ answer, fromStage, mind, keptAfter }));
     check('verse brain: "show me your brain" opens one card (no figure), its eleven organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
       a.organs === 11 && a.rows === 11 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures

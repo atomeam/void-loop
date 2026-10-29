@@ -6,6 +6,7 @@
 // The attention scheduler (lib/brain-attention.js) decides which organs run each tick; the rollouts (lib/brain-imagine.js) run only the
 // organs marked imagine, because the learners must never learn from what the brain only imagined.
 // Pure: no DOM, no clock, no Math.random. The visitor's pointer path is kept only as a short ring in memory, never sealed or saved.
+import { episodicPrior, recordEpisode, keyOf, recordProcedure, bestProcedure } from './brain-mind.js';
 import { clamp, laplacian4, idx, mutate, randomGenome, rng } from './field-kit.js';
 import { kuramoto } from './field-resonance.js';
 import { GW, GH, CELLS, RG, RH, EMB, KIND, REGIONS_X, REGIONS_Y, deposit, writeCell, readRegion, regionMeans, regionCenter, regionOf, addNode, nodesOf, cellOf } from './brain-workspace.js';
@@ -40,6 +41,8 @@ const senses = {
     S.over = over; S.speed = Math.hypot(f[2], f[3]);
     if (over) deposit(ws, 'input', px, py, input.down ? 0.5 : 0.18, input.down ? 3 : 2, 'you');
     if (f[6] > 0.05) deposit(ws, 'input', b.focus.x, b.focus.y, f[6] * 0.35, 3, 'senses'); // sound lands where the brain is attending
+    S.felt = Array.isArray(input.field) ? input.field.length : 0;
+    if (Array.isArray(input.field)) for (const s of input.field) deposit(ws, 'memory', clamp(+s.x || 0, 0, 1), clamp(+s.y || 0, 0, 1), clamp(+s.act || 0, 0, 1) * 0.06, 2, 'senses'); // other skills' slots in the shared field (lib/brain-field.js)
     if (S.trail.length >= 24) S.trail.shift(); if (over) S.trail.push([px, py, f[6]]);
     return 1;
   }
@@ -190,7 +193,8 @@ export function ppmLearn(P, text) {
   for (let i = 0; i < t.length; i++) for (let o = 0; o <= 3 && o <= i; o++) { const ctx = t.slice(i - o, i); let c = P.counts.get(ctx); if (!c) { c = new Map(); P.counts.set(ctx, c); } c.set(t[i], (c.get(t[i]) || 0) + 1); c.set('', (c.get('') || 0) + 1); }
   P.seen += t.length; return P;
 }
-export const cleanWords = (text) => String(text || '').toLowerCase().replace(/[^a-z0-9' -]+/g, ' ').split(/\s+/).map((w) => w.replace(/^'+|'+$/g, '')).filter((w) => w.length > 1 && w.length < 24).slice(0, 8);
+export const STOP = new Set('and the an of to in on at is are was it its for with me my you your we our us this that these those be or but so if as by from show tell give let what how why who when where do does did can will would just about please some any'.split(' '));
+export const cleanWords = (text) => String(text || '').toLowerCase().replace(/[^a-z0-9' -]+/g, ' ').split(/\s+/).map((w) => w.replace(/^'+|'+$/g, '')).filter((w) => w.length > 1 && w.length < 24 && !STOP.has(w)).slice(0, 8); // little words carry no idea of their own
 export const makeConcepts = () => ({ words: [], hv: [], node: [], edges: new Map(), ppm: makePpm(), pending: [], lastBits: 0 });
 const eKey = (a, b) => (a < b ? a + ':' + b : b + ':' + a);
 /** add a phrase's words: new words become nodes placed near the brain's focus; words typed together are linked. Returns the words. */
@@ -363,12 +367,15 @@ const will = {
     const r = (util - W.util0) * 6 + W.good * 0.6 + (b.senses.over ? 0.05 : 0); W.reward = Math.round(r * 100) / 100; W.good = 0;
     qUpdate(W, W.state, W.action, r, s2);
     // choose: the two best by Q (or one at random now and then), each imagined forward; the better imagined future wins
-    const row = Array.from({ length: ACTIONS.length }, (_, k) => [k, W.q[s2 * ACTIONS.length + k]]).sort((p, q) => q[1] - p[1]);
+    // what each action did in states like this one (episodic memory) and what the visitor approved of (preference) join the Q-values
+    const prior = b.mind ? episodicPrior(b, keyOf(b)) : null; W.prior = prior ? Array.from(prior.gain, (v) => Math.round(v * 1000) / 1000) : null;
+    const row = Array.from({ length: ACTIONS.length }, (_, k) => [k, W.q[s2 * ACTIONS.length + k] + (prior ? prior.gain[k] * 3 : 0) + (b.mind ? b.mind.pref[k] * 0.3 : 0)]).sort((p, q) => q[1] - p[1]);
     const explore = b.ws.rand() < 0.2 ? Math.floor(b.ws.rand() * ACTIONS.length) : row[1][0], cands = [...new Set([row[0][0], explore])];
     const futures = cands.map((a) => ({ a, u: imagineFn(b, { action: a, steps: 24 }) }));
     futures.sort((p, q) => q.u - p.u);
     W.imagined = futures.map((x) => ({ action: ACTIONS[x.a], utility: Math.round(x.u * 1000) / 1000 }));
     W.state = s2; W.action = futures[0].a; W.util0 = util; W.since = 0; W.chosen++;
+    if (b.mind) recordEpisode(b, W.action, util);
     b.board.action = { name: ACTIONS[W.action], imagined: W.imagined, reward: W.reward };
     return 1;
   }
@@ -389,7 +396,10 @@ const arena = {
     for (const i of idxs) A.fit[i] = imagineFn(b, { genome: fixGenome(A.pop[i]), steps: 36 });
     let best = 0, worst = 0; for (let i = 0; i < POP; i++) { if ((A.fit[i] ?? -1) > (A.fit[best] ?? -1)) best = i; if ((A.fit[i] ?? -1) < (A.fit[worst] ?? -1)) worst = i; }
     const prev = A.champ; A.champ = best;
-    if (worst !== best) { A.pop[worst] = mutate({ ...A.pop[best] }, GENOME_SPEC, A.r, 0.4, 0.15); A.fit[worst] = null; }
+    // the worst is replaced by a child of the best, or, every third generation, by the genome that last won in this context (procedural memory)
+    const kept = b.mind && A.gen % 3 === 0 ? bestProcedure(b) : null;
+    if (worst !== best) { A.pop[worst] = kept ? fixGenome(kept.genome) : mutate({ ...A.pop[best] }, GENOME_SPEC, A.r, 0.4, 0.15); A.fit[worst] = null; A.fromMemory = !!kept; }
+    if (b.mind && A.fit[best] != null) recordProcedure(b, fixGenome(A.pop[best]), A.fit[best]);
     b.genome = fixGenome(A.pop[A.champ]);
     A.last = { gen: A.gen, champ: A.champ, changed: prev !== A.champ, fitness: Math.round((A.fit[A.champ] ?? 0) * 1000) / 1000 };
     b.board.genome = A.last;

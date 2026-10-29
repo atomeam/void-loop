@@ -545,83 +545,83 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T05:46:45Z",
+   "at": "2026-10-29T06:10:53Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T05:45:17Z",
-   "subject": "Feed the churn caps to the will: churn.json from the deploy, sweep commits skipped"
+   "at": "2026-10-29T06:10:26Z",
+   "subject": "shared-field: reset clears the writer names and the ready flag"
   },
   {
-   "at": "2026-10-29T05:44:12Z",
-   "subject": "Watchdog runs the browser suite in four shards too: shard 1 ran out of the same 28-minute budget"
-  },
-  {
-   "at": "2026-10-29T05:44:02Z",
-   "subject": "Fix three shard 1 browser checks: tower poll stub, poster art, sticky on a phone"
-  },
-  {
-   "at": "2026-10-29T05:44:02Z",
-   "subject": "The browser suite in four shards: shard 1 outgrew the 28-minute budget once it ran to its end"
-  },
-  {
-   "at": "2026-10-29T05:44:02Z",
-   "subject": "Shard 1's hidden reds: the growth card's friction line stays right under the velocity, and two stale checks follow the product"
-  },
-  {
-   "at": "2026-10-29T05:43:37Z",
-   "subject": "List the magic8 skill so it loads, and fix its match"
-  },
-  {
-   "at": "2026-10-29T05:42:36Z",
+   "at": "2026-10-29T06:08:58Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T05:41:47Z",
+   "at": "2026-10-29T06:08:49Z",
+   "subject": "Memory orbs: hand an orb's colour to the colour page"
+  },
+  {
+   "at": "2026-10-29T06:07:44Z",
+   "subject": "Coder: think on Verse's own model (/api/coder), so queued jobs ship again"
+  },
+  {
+   "at": "2026-10-29T06:06:52Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T05:40:56Z",
-   "subject": "List the color skill so it loads, and fix its match"
-  },
-  {
-   "at": "2026-10-29T05:39:11Z",
+   "at": "2026-10-29T06:04:16Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T05:37:26Z",
-   "subject": "Escape the lorem text on its page, as the review asks"
+   "at": "2026-10-29T06:04:03Z",
+   "subject": "Verse shared field"
   },
   {
-   "at": "2026-10-29T05:37:01Z",
-   "subject": "List the lorem skill so it loads, and leave util's asks to util"
+   "at": "2026-10-29T06:03:54Z",
+   "subject": "Verse's shared field: skills/field.js, the memory orbs write into it, Verse Brain feels their slots and publishes its ideas as numbers"
   },
   {
-   "at": "2026-10-29T05:35:18Z",
-   "subject": "Hook /fanfic/ into the other Verse pages and the Versus card"
+   "at": "2026-10-29T05:59:55Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
   },
   {
-   "at": "2026-10-29T05:35:03Z",
+   "at": "2026-10-29T05:57:29Z",
+   "subject": "Tower gate: measure frontier floors that have a Verse page"
+  },
+  {
+   "at": "2026-10-29T05:56:37Z",
+   "subject": "Churn list skips generated files and the tower gate's evidence"
+  },
+  {
+   "at": "2026-10-29T05:55:58Z",
+   "subject": "Next task: the Versus target first, held asks stay held"
+  },
+  {
+   "at": "2026-10-29T05:55:30Z",
+   "subject": "Regenerate churn.json"
+  },
+  {
+   "at": "2026-10-29T05:53:53Z",
+   "subject": "Regenerate deps.json after the merge"
+  },
+  {
+   "at": "2026-10-29T05:53:14Z",
+   "subject": "Churn cap never starves the will; only the will reads it"
+  },
+  {
+   "at": "2026-10-29T05:50:15Z",
+   "subject": "Memory orbs: look up the shared field when asked, so a missing file is not a broken import"
+  },
+  {
+   "at": "2026-10-29T05:48:43Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T05:34:24Z",
+   "at": "2026-10-29T05:48:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T05:33:03Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:32:21Z",
-   "subject": "List the leet skill so it loads, and narrow its match"
-  },
-  {
-   "at": "2026-10-29T05:30:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:30:32Z",
+   "at": "2026-10-29T05:48:04Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
