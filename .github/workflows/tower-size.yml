@@ -49,7 +49,7 @@ jobs:
           MAX: ${{ inputs.max || '120' }}
         run: |
           case "$MAX" in ''|*[!0-9]*) MAX=120 ;; esac
-          node tools/tower-size.mjs --max "$MAX"
+          node tools/tower-size.mjs --max "$MAX" --minutes 35
           node tools/tower-target.mjs
       - name: Commit the weights
         env:

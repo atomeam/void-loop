@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { measure, weightOf, weightBand, bytesLabel, controlsOf, trustedControls } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
-import { planSizes, usable, isTool, renderedControls, openBrowser } from './tower-size.mjs';
+import { planSizes, usable, isTool, renderedControls, openBrowser, within } from './tower-size.mjs';
 
 test('a page is weighed by its bytes, scripts, elements and routes', () => {
   const html = '<html><head><script src="/a.js"></script><link rel="stylesheet" href="/s.css"></head><body><a href="/one">1</a><a href="/two">2</a><a href="https://x.com/o">o</a><p>hi</p></body></html>';
@@ -120,4 +120,9 @@ test('the target stands first and the card says it is the target, not the easies
   const h1 = sk.towerHtml(held, (s) => String(s)); assert.match(h1, /now assimilating: /); assert.doesNotMatch(h1, /easiest site left: calculator/);
   assert.match(h1, /the target until Verse surpasses it/);
   assert.equal(held.floors.find((f) => f.id === 'is it').pinned, false);
+});
+
+test('a site that takes too long gives null and frees its worker; a quick one gives its row', async () => {
+  assert.equal(await within(new Promise(() => {}), 20), null);
+  assert.deepEqual(await within(Promise.resolve({ controls: 4 }), 1000), { controls: 4 });
 });
