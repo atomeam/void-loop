@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,0.7); padding: 10px 14px; border-radius: 8px; font-size: 13px; z-index: 10; }
+  button { margin: 4px; padding: 6px 12px; background: #2a2a4a; color: #fff; border: 1px solid #4a4a7a; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  .portal { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, rgba(80,120,255,0.4), rgba(40,40,80,0.1)); border: 2px solid rgba(120,160,255,0.6); pointer-events: none; display: flex; align-items: center; justify-content: center; font-size: 11px; text-align: center; transition: all 0.1s; z-index: 5; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU SPH Vortex Mind with Orbiting Portals · Verse lab</title>
+<meta name="description" content="Simplified SPH-inspired particle fluid (Canvas2D primary; WebGPU compute path noted for neighbor forces and density) where particles interact via pressure,">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU SPH Vortex Mind with Orbiting Portals · Verse lab">
+<meta property="og:description" content="Simplified SPH-inspired particle fluid (Canvas2D primary; WebGPU compute path noted for neighbor forces and density) where particles interact via pressure,">
+<meta property="og:url" content="https://a-to-mind.com/lab/f184-webgpu-sph-vortex-portals/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f184-webgpu-sph-vortex-portals/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <div>F-184 SPH Vortex Mind</div>
+  <div>Particles: <span id="n">120</span> | Gen: <span id="gen">0</span> | Vorticity: <span id="vort">0.00</span></div>
+  <div>Visc: <span id="visc">0.02</span> | Press: <span id="press">0.5</span></div>
+  <button id="evolve">Evolve</button>
+  <button id="seal">Seal</button>
+  <div style="font-size:11px;margin-top:6px;">Drag in circles to seed vortices. Portals orbit emergent clusters.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU SPH Vortex Mind with Orbiting Portals</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

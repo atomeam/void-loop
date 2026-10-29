@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,20,0.75); padding: 12px; border-radius: 8px; max-width: 280px; }
+  button, label { display: block; margin: 6px 0; }
+  button { background: #2a2a5a; color: white; border: 1px solid #5a5a9a; padding: 6px 10px; cursor: pointer; }
+  button:hover { background: #3a3a7a; }
+  .status { font-size: 12px; opacity: 0.8; margin-top: 8px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Force Injection into WebGPU Cloth Kernel · Verse lab</title>
+<meta name="description" content="True WebXR hand-tracking (palm and index-tip joints) injects localized forces directly into a WebGPU compute mass-spring cloth simulation.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Force Injection into WebGPU Cloth Kernel · Verse lab">
+<meta property="og:description" content="True WebXR hand-tracking (palm and index-tip joints) injects localized forces directly into a WebGPU compute mass-spring cloth simulation.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f192-webxr-hand-force-cloth-kernel/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f192-webxr-hand-force-cloth-kernel/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <h3>F192 Cloth Kernel</h3>
+  <button id="xr">Enter WebXR Hand</button>
+  <button id="reset">Reset Cloth</button>
+  <button id="save">Save Snapshot</button>
+  <button id="load">Load Snapshot</button>
+  <label>Stiffness <input type="range" id="stiff" min="0.1" max="2" step="0.05" value="0.6"></label>
+  <label>Damping <input type="range" id="damp" min="0.9" max="0.999" step="0.001" value="0.98"></label>
+  <div class="status" id="status">Initializing…</div>
+  <div class="status">Hand/pointer injects force. Tilt for wind.</div>
+</div>
+<script type="module" src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Force Injection into WebGPU Cloth Kernel</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

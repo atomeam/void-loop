@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; overflow: hidden; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; }
+  #field { position: relative; width: 100vw; height: 100vh; }
+  .agent {
+    position: absolute; width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: bold; color: #000;
+    pointer-events: none; will-change: transform;
+    box-shadow: 0 0 8px currentColor;
+  }
+  #hud { position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 13px; z-index: 10; max-width: 320px; }
+  button { margin: 4px; padding: 4px 8px; background: #222; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-Causal MLP DOM Agents · Verse lab</title>
+<meta name="description" content="Pure DeviceOrientation as causal input driving tiny local JS MLPs that control hybrid DOM physical agents.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-Causal MLP DOM Agents · Verse lab">
+<meta property="og:description" content="Pure DeviceOrientation as causal input driving tiny local JS MLPs that control hybrid DOM physical agents.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f180-orientation-causal-mlp-dom-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f180-orientation-causal-mlp-dom-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <div>F180: Orientation → MLP → DOM Agents</div>
+  <div id="status">Tilt device or click to seed. Permission needed for sensors.</div>
+  <button id="perm">Request Orientation</button>
+  <button id="seed">Seed Agent</button>
+  <button id="save">Seal & Persist</button>
+  <div id="stats">Agents: 0 | Energy: 0</div>
+</div>
+<div id="field"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-Causal MLP DOM Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

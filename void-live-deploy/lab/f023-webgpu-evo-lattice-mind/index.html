@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --hue: 200;
+    --fitness: 0.4;
+    --radius: 12px;
+  }
+  body {
+    margin: 0; background: #07070a; color: #e8e4dc;
+    font-family: system-ui, sans-serif; overflow: hidden;
+    transition: background 0.6s;
+  }
+  canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+  #hud {
+    position: absolute; top: 1rem; left: 1rem; pointer-events: none;
+    max-width: 28rem;
+  }
+  #status {
+    display: inline-block; padding: 0.45rem 0.9rem;
+    border: 3px solid hsl(var(--hue), 70%, 55%);
+    border-radius: var(--radius);
+    font-size: 0.9rem; transition: all 0.4s;
+    background: rgba(0,0,0,0.35);
+  }
+  #info { margin-top: 0.4rem; font-size: 0.75rem; opacity: 0.75; line-height: 1.4; }
+  #card {
+    position: absolute; bottom: 1.5rem; right: 1.5rem;
+    width: 14rem; padding: 0.8rem 1rem;
+    background: rgba(20,18,28,0.75);
+    border: 2px solid hsl(var(--hue), 60%, 50%);
+    border-radius: var(--radius);
+    backdrop-filter: blur(8px);
+    transform: scale(1) rotate(0deg);
+    transition: transform 0.5s, border-color 0.4s;
+    font-size: 0.8rem;
+  }
+  button {
+    margin-top: 0.4rem; margin-right: 0.3rem;
+    background: hsl(var(--hue), 50%, 30%); color: #fff; border: none;
+    padding: 0.35rem 0.7rem; border-radius: 6px; cursor: pointer;
+  }
+  #seals { font-size: 0.7rem; opacity: 0.7; margin-top: 0.3rem; max-height: 4rem; overflow: auto; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU/Canvas Evolutionary Lattice Mind · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: a continuous lattice (grid) substrate simulated on Canvas2D (WebGPU compute path noted for scaling), where each cell evolves">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU/Canvas Evolutionary Lattice Mind · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: a continuous lattice (grid) substrate simulated on Canvas2D (WebGPU compute path noted for scaling), where each cell evolves">
+<meta property="og:url" content="https://a-to-mind.com/lab/f023-webgpu-evo-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f023-webgpu-evo-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div id="status">void · evolving</div>
+  <div id="info">F-023 Evolutionary Lattice · drag to seed · tilt device (if allowed) · click Seal to remember rule</div>
+</div>
+<div id="card">
+  <strong>Assimilation Mind</strong><br>
+  gen <span id="gen">0</span> · fitness <span id="fit">0.00</span><br>
+  <button id="clear">Clear</button>
+  <button id="seal">Seal</button>
+  <div id="seals"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU/Canvas Evolutionary Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

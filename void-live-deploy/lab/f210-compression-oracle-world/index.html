@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{--hue:250;--ink:#dfe6ff}
+html,body{margin:0;height:100%;background:#000;color:var(--ink);font:13px/1.4 ui-monospace,Menlo,monospace;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+#hud{position:fixed;left:14px;top:14px;max-width:340px;pointer-events:none}
+#hud h1{font-size:13px;letter-spacing:.3em;margin:0 0 6px;opacity:.8}
+#beliefs{position:fixed;right:14px;top:14px;width:250px;display:flex;flex-direction:column;gap:6px}
+.card{padding:8px 10px;border:1px solid hsla(var(--h),80%,70%,.5);background:hsla(var(--h),60%,12%,.55);border-radius:6px;backdrop-filter:blur(4px)}
+.card b{color:hsl(var(--h),90%,75%)} .bar{height:3px;background:hsl(var(--h),90%,65%);margin-top:4px;transition:width .3s}
+#log{position:fixed;left:14px;bottom:14px;max-width:520px;opacity:.75;white-space:pre-wrap}
+small{opacity:.6}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Compression Oracle World · Verse lab</title>
+<meta name="description" content="Open index.html directly (no build, no network). Chrome/Edge with WebGPU gets a 12,000-particle compute world;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Compression Oracle World · Verse lab">
+<meta property="og:description" content="Open index.html directly (no build, no network). Chrome/Edge with WebGPU gets a 12,000-particle compute world;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f210-compression-oracle-world/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f210-compression-oracle-world/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="c"></canvas>
+<div id="hud"><h1>COMPRESSION ORACLE</h1>
+<div>Move pointer, press keys, or use a gamepad. The oracle thinks by <i>compressing</i>: a gesture it can squeeze against a known concept is understood; one that won't compress is surprise, and surprise births a new attractor in the world.</div>
+<div id="stat"><small>booting…</small></div></div>
+<div id="beliefs"></div>
+<div id="log"></div>
+<script type="module" src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

@@ -18,6 +18,12 @@
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors *; upgrade-insecure-requests
 
+# the lab (/lab/*, tools/lab-import.mjs): small experiments that read the device's tilt and motion (deviceorientation, devicemotion); the site policy
+# blocks those sensors, so here, and only here, the page itself may use them. Nothing else in the policy changes.
+/lab/*
+  ! Permissions-Policy
+  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(self), gyroscope=(self), magnetometer=(self), browsing-topics=()
+
 /sw.js
   Cache-Control: no-cache
   Service-Worker-Allowed: /

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --hue: 220;
+  --scale: 1;
+  --blur: 8px;
+  --cx: 50vw;
+  --cy: 42vh;
+}
+body {
+  margin: 0;
+  background: #0a0a16;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+}
+#hud {
+  position: fixed;
+  left: var(--cx);
+  top: var(--cy);
+  transform: translate(-50%, -50%) scale(var(--scale));
+  z-index: 10;
+  background: rgba(12,12,32,0.8);
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid hsla(var(--hue), 80%, 68%, 0.7);
+  backdrop-filter: blur(var(--blur));
+  transition: left 0.5s, top 0.5s, transform 0.4s, border-color 0.3s, filter 0.4s;
+  max-width: 300px;
+  filter: hue-rotate(0deg);
+}
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+  background: radial-gradient(circle at 50% 50%, #12122a, #050510);
+}
+button {
+  background: #2a2a5a;
+  color: #fff;
+  border: 1px solid #6a6aaa;
+  padding: 7px 14px;
+  border-radius: 8px;
+  margin: 4px 4px 0 0;
+  cursor: pointer;
+}
+button:hover { background: #3a3a70; }
+#status { font-size: 0.85rem; opacity: 0.9; margin-top: 10px; }
+.note { font-size: 0.7rem; margin-top: 8px; opacity: 0.6; line-height: 1.35; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Resonant Spatial Attention Graph Mind · Verse lab</title>
+<meta name="description" content="Spatial graph of 42 nodes (positions, velocities, energy, phase, feature vectors) whose pairwise interactions are governed by a local Transformer-style">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Resonant Spatial Attention Graph Mind · Verse lab">
+<meta property="og:description" content="Spatial graph of 42 nodes (positions, velocities, energy, phase, feature vectors) whose pairwise interactions are governed by a local Transformer-style">
+<meta property="og:url" content="https://a-to-mind.com/lab/f031-resonant-attention-graph-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f031-resonant-attention-graph-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <strong>F-031 Resonant Attention Graph</strong>
+  <div id="status">Mind initializing…</div>
+  <button id="seal">Seal Attention</button>
+  <button id="reset">Reset Graph</button>
+  <div class="note">
+    Nodes form a spatial graph. Local Transformer-style attention (evolved in Worker) weights edges, applies forces, and morphs the HUD by focus/entropy. Pointer seeds energy; orientation biases phase. Audio resonates on dominant attention pairs.
+  </div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Resonant Spatial Attention Graph Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

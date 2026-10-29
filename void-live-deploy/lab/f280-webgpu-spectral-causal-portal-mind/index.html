@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<style>
+body { margin: 0; overflow: hidden; background: #0a0a12; color: #ccc; font-family: system-ui, sans-serif; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+#hud { position: fixed; top: 12px; left: 12px; font-size: 13px; pointer-events: none; z-index: 10; }
+.portal {
+  position: absolute; width: 80px; height: 80px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(100,200,255,0.4), transparent 70%);
+  border: 1px solid rgba(100,200,255,0.6);
+  backdrop-filter: blur(4px);
+  cursor: grab; user-select: none; transform-style: preserve-3d;
+  transition: transform 0.1s linear, filter 0.1s linear;
+  z-index: 5;
+}
+.portal:active { cursor: grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Spectral Causal Portal Mind · Verse lab</title>
+<meta name="description" content="Novel combination of a spectral (frequency-bin) wave lattice, a local Worker causal residual predictor, and active morphing DOM portals that feed impulses back into">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Spectral Causal Portal Mind · Verse lab">
+<meta property="og:description" content="Novel combination of a spectral (frequency-bin) wave lattice, a local Worker causal residual predictor, and active morphing DOM portals that feed impulses back into">
+<meta property="og:url" content="https://a-to-mind.com/lab/f280-webgpu-spectral-causal-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f280-webgpu-spectral-causal-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">F280 Spectral Causal Portal Mind — tilt / drag portals to inject</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Spectral Causal Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

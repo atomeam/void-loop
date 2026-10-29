@@ -229,6 +229,7 @@ for (const [name, file] of [
   ['showcase', 'showcase.test.mjs'],
   ['fix-pages', 'fix-pages.test.mjs'],
   ['sitemap', 'sitemap.test.mjs'],
+  ['lab-import', 'lab-import.test.mjs'],
   ['beacon', 'beacon-pages.test.mjs'],
   ['traffic', 'traffic.test.mjs'],
   ['indexnow', 'indexnow.test.mjs'],
