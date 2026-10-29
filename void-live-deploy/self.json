@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T14:53:49Z",
+   "subject": "Unkeepable check: read the card's fade once its arrival has finished"
+  },
+  {
+   "at": "2026-10-29T14:49:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T14:48:43Z",
    "subject": "Open card check: read the sticky's spot once it has settled, and after the close once it is back"
   },
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T14:13:31Z",
    "subject": "Notebook: a note's [[links]] reach the stage"
-  },
-  {
-   "at": "2026-10-29T14:09:16Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:07:20Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
