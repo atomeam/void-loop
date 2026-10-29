@@ -133,6 +133,25 @@ export const SCRIPTS = {
       await J.open('/rap/'); await J.open(u); await J.expect((x) => /Slice of the Night/.test(x) && /18 of 20 bars end on a rhyme/.test(x), 'the same rap back from its link, 18 of 20 bars rhyming');
     },
   },
+  // onlineconverter.com (/converter/, 2026-10-29): a real JPG chosen as a person chooses a file, made into a PNG on the device, and the file
+  // checked by its own first bytes; then a tool found by typing, shared, and its link opened in a fresh page, where the same tool opens
+  'onlineconverter.com': {
+    'convert a file and download the result': async (J) => {
+      await J.open('/converter/?t=image-png'); await J.expect(/Image to PNG|To PNG/, 'the PNG tool open');
+      try { await J.page.setInputFiles('#files', path.join(root, 'void-live-deploy', 'podcast', 'cover-256.jpg')); } catch (e) { throw new Failed('choose a file: the file control is not there'); }
+      await J.page.waitForTimeout(300); await J.click('#go', 'press Convert');
+      await J.expect(/1 file made on this device[\s\S]*Download cover-256\.png/, 'one PNG made on the device, offered as cover-256.png');
+      const head = await J.page.evaluate(async () => { const a = document.querySelector('#out a.dl'); const b = new Uint8Array(await (await fetch(a.href)).arrayBuffer()); return { n: b.length, sig: [...b.slice(0, 8)].join(',') }; });
+      if (head.sig !== '137,80,78,71,13,10,26,10' || head.n < 1000) throw new Failed('the download is not a PNG file: ' + JSON.stringify(head));
+    },
+    'find a tool and share it, then reopen it from the link': async (J) => {
+      await J.open('/converter/'); await J.fill('#q', 'cut mp3', 'type cut mp3'); await J.click('#find button[type=submit]', 'press Find');
+      await J.expect(/Cut MP3[\s\S]*In part/, 'Cut MP3 found, and marked in part');
+      const u = await J.shareLink('#share'); if (!/[?&](t|q)=/.test(u)) throw new Failed('the share link does not carry the tool: ' + u);
+      await J.open('/word-count/'); await J.open(u);
+      await J.expect((t) => /\n\s*Cut MP3\s*\n/.test(t) && /mp3/i.test(t), 'the same tool back from its link');
+    },
+  },
   // paint (/paint/, rebuilt 2026-10-28 against the colour-by-number sites): every step is a tap, a key or a file a person would use
   paint: {
     'choose a picture from the library': async (J) => { await J.open('/paint/'); await J.click('#cats button >> text="Animals"', 'choose the Animals category'); await J.expect((t) => /Sleepy cat/.test(t) && !/The Starry Night/.test(t.slice(0, t.indexOf('Upload your own image'))), 'only the animal pictures listed'); await J.click('#templates .card[data-id="cat"]', 'tap the Sleepy cat picture'); await J.expect(/Sleepy cat[\s\S]*0 of [\d,]+ pixels painted · 0 of \d+ areas/, 'the cat open with nothing painted yet'); },

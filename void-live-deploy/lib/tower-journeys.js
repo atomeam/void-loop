@@ -21,6 +21,7 @@ export const JOURNEYS = Object.freeze({
   'wheelroot.com': ['draw a drill and see its score', 'share the drawing and reopen it from the link'],
   // neuralframes.com's rap lyrics generator (/rap/, 2026-10-29): its visitors set a topic and a style, get verses and a hook, and take them away
   'music: neuralframes.com': ['write a rap for a topic and see verses and a hook', 'perform a rap over its beat', 'share the rap and reopen it from the link'],
+  'onlineconverter.com': ['convert a file and download the result', 'find a tool and share it, then reopen it from the link'],
   nameunit: ['search a name and see each ending free or taken', 'share the result and reopen it from the link'],
   paint: ['choose a picture from the library', 'zoom in and fill a numbered area', 'use a hint for the selected colour', 'leave and come back to the saved picture', 'finish and watch the reveal', 'colour your own photo'],
 });

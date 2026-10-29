@@ -11,7 +11,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| How long a password would take to crack | Strength | have | every site of this kind offers it | void-live-deploy/password-strength/index.html:59 `ng, how long it would take to crack from a stolen list and at a login, why, the tips that` |
-| Why it is weak and how to fix it | Strength | have | every site of this kind offers it | void-live-deploy/password-strength/index.html:59 `list and at a login, why, the tips that fix it, and whether it has leaked.</p>` |
-| Nothing is sent anywhere | Privacy | have | every site of this kind offers it | void-live-deploy/password-strength/index.html:68 `this device; the password is never sent anywhere, stored, or put in the address. It is an` |
+| How long a password would take to crack | Strength | have | every site of this kind offers it | void-live-deploy/password-strength/index.html:60 `ng, how long it would take to crack from a stolen list and at a login, why, the tips that` |
+| Why it is weak and how to fix it | Strength | have | every site of this kind offers it | void-live-deploy/password-strength/index.html:60 `list and at a login, why, the tips that fix it, and whether it has leaked.</p>` |
+| Nothing is sent anywhere | Privacy | have | every site of this kind offers it | void-live-deploy/password-strength/index.html:69 `this device; the password is never sent anywhere, stored, or put in the address. It is an` |
 | Security.org | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 0,
   "tested": 18,
-  "checked": 32,
+  "checked": 33,
   "proven": 322
  },
  "families": [
@@ -26,7 +26,7 @@
    "count": {
     "experiment": 0,
     "tested": 5,
-    "checked": 6,
+    "checked": 7,
     "proven": 46
    },
    "skills": [
@@ -48,6 +48,13 @@
      "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 3
+    },
+    {
+     "name": "converter",
+     "tier": "checked",
+     "why": "a self-test, 10 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "sprite-sheet",
