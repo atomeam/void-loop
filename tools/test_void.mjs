@@ -2846,7 +2846,7 @@ try {
   // checks and deploy on main from GitHub's public API. A failed run opens the status card for the owner; a green build, or a
   // visitor, keeps the blank stage. GitHub is stubbed in the page (an init script), so the page's own check at load sees it.
   if (want("the owner's status card opens by itself when the checks or deploy on main failed; visitors keep the blank stage")) {
-    const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
+    const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy|mcp-live)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
     // the filled card, not its "checking…" placeholder (the sources are pinged in parallel; under load that takes a few seconds)
     const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (/own build|Outside sources/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
     const O = await fresh({ content: gh('failure', true) });
@@ -7517,7 +7517,28 @@ try {
     await W.ask('what do you think of yourself', 300); await until(async () => { const t = await W.page(); return /What I think of myself/.test(t) && /asked for/i.test(t); }, 6000);
     const selfCard = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { h2: pg ? pg.querySelector('h2').textContent : '', asked: !!(pg && pg.querySelector('.vs-sec[data-sec=asked]')) }; });
     check('wants card: "what do you think of yourself" still opens the self card, not the wants card', selfCard.h2 === 'What I think of myself' && selfCard.asked && !W.errors.length, JSON.stringify({ selfCard, errors: W.errors }));
-    await W.ctx.close(); }
+    await W.ctx.close();
+    // made plain (owner, 2026-10-29): a definition under each heading, what changed this lap, what is blocked and on what, the next pick
+    // with its evidence, and the inbox in workstreams with counts; the will and reflect fixtures carry a lap, a will job and a held ask
+    const P = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    await P.ctx.route(/\/api\/will$/, (rt) => rt.fulfill(json({ at: '2026-10-29T03:00:00Z', wants: [{ kind: 'people asked', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }], lastRun: { title: 'Overhaul surface:ask', state: 'failed', at: '2026-10-29T05:00:00Z', shipped: false },
+      lap: { lap: 1, upgraded: 2, skills: 712, newThisLap: 0, newPerLap: 100, next: 'surface:cards', recent: ['surface:ask', 'surface:home'], line: 'Lap 1: upgraded 2 of 712 items, 0 of 100 new this lap' } })));
+    await P.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [], asks: [{ ask: 'Give the map card terrain', kind: 'daily', at: '2026-10-08T18:09:00Z' }, { ask: 'Create a utility to check the watertightness of STL print files in the browser', kind: 'daily', at: '2026-10-28T22:29:00Z', held: 'sycophanthex.com' }], follow: { total: 5, built: 2 } })));
+    await P.ask('what do you want built now', 300); await until(async () => /Blocked \(/.test(await P.page()), 6000);
+    const plain = await P.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null; const q = (s) => pg.querySelector(s), t = (s) => (q(s) || {}).textContent || '';
+      return { defs: [...pg.querySelectorAll('.wants-def[data-def]')].map((e) => e.getAttribute('data-def') + ':' + e.textContent), changed: t('[data-changed]'), nChanged: (q('[data-changed]') || { dataset: {} }).dataset.changed, run: t('[data-run]'),
+        blocked: [...pg.querySelectorAll('.wants-sum[data-block=blocked] li')].map((li) => li.textContent), picks: [...pg.querySelectorAll('[data-pick]')].map((li) => li.getAttribute('data-pick') + ':' + li.textContent),
+        streams: t('.wants-streams'), groups: [...pg.querySelectorAll('.wants-group')].map((g) => g.dataset.stream + ':' + g.querySelectorAll('.wants-chip').length), inboxChips: pg.querySelectorAll('.wants-block[data-block=inbox] .wants-chip').length,
+        wide: pg.scrollWidth > pg.clientWidth + 1 }; });
+    const nInbox = (selfJson.open || []).length, nWaits = (selfJson.open || []).filter((o) => o.waits).length;
+    check('wants card: a definition under each heading, what changed this lap from the lap record, what is blocked and on what, the next pick with its evidence, and the growth inbox in workstreams with counts (owner, 2026-10-29)',
+      !!plain && plain.defs.length === 3 && /^wants:A want is something my will chose itself/.test(plain.defs[0]) && /^asks:An ask is something I asked to have built/.test(plain.defs[1]) && /^inbox:An inbox item is an idea or plan item waiting in my growth inbox/.test(plain.defs[2])
+        && plain.nChanged === '2' && /^Lap 1 so far: 2 items sent for upgrade \(newest: surface:ask, surface:home\) · 0 new features$/.test(plain.changed) && /Overhaul surface:ask, failed, not shipped/.test(plain.run)
+        && plain.blocked.some((b) => /watertightness of STL.*held until sycophanthex\.com is beaten/.test(b)) && plain.blocked.length === 1 + nWaits
+        && /^will:My willUpgrade surface:cardsIts turn in lap 1/.test(plain.picks[0]) && /^ask:My buildersGive the map card terrain/.test(plain.picks[1])
+        && plain.inboxChips === nInbox && plain.groups.reduce((a, g) => a + +g.split(':')[1], 0) === nInbox && /^(?:(?:Reliability|Core experience|Platform|Growth|Unsorted \(no rule matched\)) \d+(?: · |$))+$/.test(plain.streams) && !plain.wide && !P.errors.length,
+      JSON.stringify({ plain, nInbox, nWaits, errors: P.errors }));
+    await P.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
     await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));

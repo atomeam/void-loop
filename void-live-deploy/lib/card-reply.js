@@ -22,6 +22,23 @@ export const LINES = {
   owner401: 'Only my owner can talk back here.',
 };
 
+// The family of a card no router skill answered, from the note the page writes to its loop log for that ask (void.html loopLog, domain void.page).
+// The owner, 2026-10-29: "replies from a card must count on the heat map". Only family ids in skills/families.json; a reply placed this way gets
+// a family and never a skill, so the owner's fix paths (the routed skill sent to /api/voice-reply, Suggest fix, hotEntry) do not change.
+export const PAGE_FAMILY = {
+  calc: 'numbers',
+  age: 'time', timenow: 'time', timeuntil: 'time', stopwatch: 'time', today: 'time', holiday: 'time',
+  chance: 'games',
+  article: 'words', 'article fallback': 'words', 'short topic': 'words', answer: 'words',
+  self: 'self', 'self (other language)': 'self', will: 'self', voice: 'self', api: 'self', menu: 'self',
+};
+/** the family id for a loop-log note ('calc', 'article', 'how-to clock', 'speaks fr'), or ''. Pure. */
+export function familyOfNote(note) {
+  const n = String(note || '').trim();
+  if (Object.prototype.hasOwnProperty.call(PAGE_FAMILY, n)) return PAGE_FAMILY[n];
+  return /^(?:how-to|speaks) /.test(n) ? 'self' : '';
+}
+
 /** the card's own words for the reply: the ask (or the title when no ask is known), the title and what it said, clipped. Pure. */
 export function aboutCard({ ask, title, said, routed } = {}) {
   const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
@@ -38,14 +55,15 @@ export function threadOf(replies, ask) {
 }
 
 /**
- * Send one reply. The owner's goes to /api/voice-reply; anyone else's is kept on this device. Never throws.
+ * Send one reply. The owner's goes to /api/voice-reply; anyone else's is kept on this device, under `family` when no skill is known. Never throws.
  * -> { ok, kind: 'owner' | 'device', reply?, line }: `reply` is the kept reply (owner), `line` is what Verse says back.
  */
-export async function sendReply(about, text, { owner = '', storage, fetchFn } = {}) {
+export async function sendReply(about, text, { owner = '', storage, fetchFn, family = '' } = {}) {
   const words = String(text || '').trim().slice(0, REPLY.max);
   if (!words || !about) return { ok: false, kind: owner ? 'owner' : 'device', line: LINES.empty };
   if (!owner) {
-    const r = addCorrection({ ask: about.ask, skill: about.routed && about.routed.skill, text: words }, storage);
+    // `family` (familyOfNote) only places a reply that has no routed skill on the heat map; the owner's request below never carries it
+    const r = addCorrection({ ask: about.ask, skill: about.routed && about.routed.skill, family, text: words }, storage);
     return { ok: r.ok, kind: 'device', line: r.ok ? LINES.kept : LINES.unkept };
   }
   try {
@@ -117,7 +135,8 @@ export function bindReply(el, doc, { owner = '', storage, fetchFn, card } = {}) 
     const text = box ? box.value : '';
     if (!String(text).trim()) { addLine(doc, talk, 'Verse', LINES.empty, 'v-me'); return; }
     send.disabled = true; send.textContent = '…';
-    const r = await sendReply(aboutCard(card ? card() : {}), text, { owner: typeof owner === 'function' ? owner() : owner, storage, fetchFn });
+    const c = card ? card() : {};
+    const r = await sendReply(aboutCard(c), text, { owner: typeof owner === 'function' ? owner() : owner, storage, fetchFn, family: c.family || '' });
     if (r.ok && r.reply) showReply(doc, talk, r.reply);
     else { if (r.ok) addLine(doc, talk, 'You', String(text).trim().slice(0, REPLY.max), 'v-you'); addLine(doc, talk, 'Verse', r.line, 'v-me'); }
     if (r.ok && box) box.value = '';

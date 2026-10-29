@@ -62,7 +62,7 @@ test('cardModel: the three records become three lists (blank items dropped, text
   const c = cardModel({ will, reflect, self });
   assert.deepEqual(c.wants, [{ text: 'I want to answer every question about tides.', because: 'asked 9 times', kind: 'people asked' }, { text: 'one clock', because: '', kind: 'join' }]);
   assert.deepEqual(c.asks, [{ text: 'Give the map card terrain', at: '2026-10-08', small: false, kind: 'daily' }, { text: 'A <b>bold</b> ask', at: '2026-10-17', small: true, kind: 'build' }]);
-  assert.deepEqual(c.inbox, [{ text: 'Absorb and connect every repo', from: 'owner, 2026-10-15' }, { text: 'WebMCP origin trial', from: '' }]);
+  assert.deepEqual(c.inbox, [{ text: 'Absorb and connect every repo', from: 'owner, 2026-10-15', stream: 'platform' }, { text: 'WebMCP origin trial', from: '', stream: 'platform' }]);
   assert.deepEqual(c.counts, { wants: 2, asks: 2, inbox: 2 }); assert.deepEqual(c.missing, { will: false, reflect: false, self: false }); assert.equal(c.at, '2026-10-18');
   assert.equal(countLine(c.counts), '2 wants · 2 asks not built · 2 inbox items');
   assert.equal(countLine({ wants: 1, asks: 1, inbox: 1 }), '1 want · 1 ask not built · 1 inbox item');
@@ -108,11 +108,14 @@ test('the skill: its name, an about line, examples and near misses that do not c
   assert.equal(await skill.run('weather in paris', {}), 'none');
 });
 
-test('cardHtml: the items come before the line that says where a list comes from, so a card cut to fit carries the real wants first (owner, 2026-10-18)', () => {
-  const html = cardHtml(cardModel({ will, reflect, self }), esc), text = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
-  const first = html.indexOf('<span role="button" tabindex="0" class="wants-chip"'), sub = html.indexOf('<p class="wants-sub" data-share-skip="1">');
-  assert.ok(first > 0 && sub > first, 'the first chip is before the first source line');
-  const firstSub = text.indexOf('What I chose to become next'); assert.ok(text.indexOf('answer every question about tides') > 0 && text.indexOf('answer every question about tides') < firstSub, 'the first want is read before any line about where the list comes from'); assert.ok(text.indexOf('Absorb and connect every repo') > 0 && text.indexOf('Give the map card terrain') > 0);
+test('cardHtml: the saved text carries the real wants first: the definitions and the summaries are left out of it (owner, 2026-10-18: a card cut to fit lost its wants)', () => {
+  const html = cardHtml(cardModel({ will, reflect, self }), esc);
+  const kept = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<section class="wants-sum"[\s\S]*?<\/section>/g, '').replace(/<p [^>]*data-share-skip="1"[^>]*>[\s\S]*?<\/p>/g, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+  assert.equal((html.match(/<section class="wants-sum" data-block="(?:next|changed|blocked)" data-share-skip="1">/g) || []).length, 3, 'the three summaries are share-skipped');
+  assert.equal((html.match(/<p class="wants-def" data-def="(?:wants|asks|inbox)" data-share-skip="1">/g) || []).length, 3, 'the three definitions are share-skipped');
+  assert.ok(!/A want is something|Next pick|Changed this lap/.test(kept), 'no definition or summary in the saved text');
+  const at = (t) => kept.indexOf(t);
+  assert.ok(at('answer every question about tides') > 0 && at('answer every question about tides') < at('Give the map card terrain') && at('Give the map card terrain') < at('Absorb and connect every repo'), 'want, ask, inbox item, in that order');
 });
 
 test('the saved text of the card (buttons, source lines and the frame left out, as lib/card-share.js does) carries the real wants (owner, 2026-10-18)', () => {

@@ -198,6 +198,12 @@ export const SPECS = {
   '/markets/screener/': async (t) => { await t.clickText('Screen'); await t.p.waitForTimeout(3000); t.ok((await t.p.locator('main tr, main li').count()) > 3, 'the screener returns rows'); },
   '/metronome/': async (t) => { await t.fill('#bpmIn', '90'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(200); t.ok((await t.text('#bpmOut')).trim() === '90', 'tempo set to 90'); await t.click('#play'); await t.p.waitForTimeout(800); t.ok((await t.act()).sound > 0, 'Start makes a click sound'); await t.click('#play'); await t.share('#shareBtn'); },
   '/news/': async (t) => { await t.waitText('#status', /stories/, 20000); t.ok(/\d+ stories/.test(await t.text('#status')), 'real stories loaded: ' + (await t.text('#status'))); },
+  '/team/': async (t) => {  // a visitor: the workspace's channels, agents and waiting jobs from /api/team, the gate instead of messages, a bad key refused
+    await t.waitText('#wsline', /jobs? waiting/, 15000); t.ok(/jobs? waiting/.test(await t.text('#wsline')), 'the workspace line reads the API: ' + (await t.text('#wsline')));
+    t.ok((await t.p.locator('#chans li').count()) >= 2, '#work and #general are listed'); t.ok(await t.p.locator('#gate').isVisible(), 'a visitor gets the join form, not the messages');
+    await t.fill('#key', 'not-a-key'); await t.clickText('Join'); await t.p.waitForTimeout(300); t.ok(/vt1/.test(await t.text('#joinSay')), 'a malformed key is refused before it is sent');
+    await t.p.evaluate(() => { location.hash = 'c=general'; }); await t.p.waitForTimeout(500); t.ok(/#general/.test(await t.text('#cname')), 'the address picks the channel');
+  },
   '/notes/': async (t) => { await t.click('#newBtn'); await t.p.keyboard.type('Test note'); await t.p.keyboard.press('Enter'); await t.p.keyboard.type('Body text here'); await t.p.waitForTimeout(700); await t.download('#mdBtn', /\.md$/i); await t.share('#shareBtn'); },
   '/obituaries/': async (t) => { await t.p.waitForTimeout(4000); t.ok((await t.p.locator('#list > *').count()) > 0, 'real notices listed'); },
   '/paint/': async (t) => {
