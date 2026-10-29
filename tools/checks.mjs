@@ -429,6 +429,7 @@ for (const [name, file] of [
   ['conductor', 'conductor.test.mjs'],
   ['verse-job', 'verse-job.test.mjs'],
   ['tower-size', 'tower-size.test.mjs'],
+  ['history-coverage', 'history-coverage.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
   ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['sale-e2e', 'sale-e2e.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'], ['email-worker', 'email-worker.test.mjs'], ['rehearsal-route', 'rehearsal-route.test.mjs'], ['email-send', 'email-send.test.mjs'],
   ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],

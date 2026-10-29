@@ -509,6 +509,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T03:04:24Z",
+   "subject": "Served tower files speak as Verse: no owner words in the hold, the weight notes or the card styles"
+  },
+  {
    "at": "2026-10-29T03:03:44Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
@@ -583,10 +587,6 @@
   {
    "at": "2026-10-29T02:50:53Z",
    "subject": "Incident: the browser suite failed on df95fa08 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T02:50:34Z",
-   "subject": "Versus: heycolor.com is held, not beaten (owner: it is not better than the site); a floor can carry the owner's hold, which no gate row…"
   }
  ],
  "builders": {
