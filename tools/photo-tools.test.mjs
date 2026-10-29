@@ -16,6 +16,10 @@ test('examples in, near misses out, and the asks the parser names', () => {
   for (const a of ['photopea', 'compress my photos', 'convert png to jpg', 'jpg to webp converter', 'image compressor', 'crop this picture', 'rotate an image', 'add text to a photo', 'annotate a screenshot', 'photo cropper', 'exif viewer', 'show the gps of my photo', 'fix lighting', 'filter my selfie', 'Please compress an image.']) assert.ok(m(a), a);
   for (const a of ['compress a photo to pdf', 'what is a photo', 'resize my photo to 1080 px', 'remove the gps from my photo', 'crop rotation', 'take a photo']) assert.ok(!m(a), a);
 });
+test('"edit" is a word, not a substring: credit and edited are not edit asks', () => {
+  for (const a of ['credit card photo', 'my credit score image', 'who edited this image', 'credit photo lighting']) assert.ok(!m(a), a);
+  for (const a of ['edit a photo', 'editing a photo', 'image editing', 'photo editor', 'edit lighting on this photo', 'Edit my image']) assert.ok(m(a), a);
+});
 test('which tab or page each ask opens', () => {
   assert.deepEqual(photoAsk('crop a photo'), { slug: '', tab: 'crop' }); assert.equal(photoHref({ slug: '', tab: 'crop' }), '/photos/?tab=crop');
   const want = { 'crop a photo': '/photos/?tab=crop', 'view the exif of a photo': '/photos/exif/?tab=info', squoosh: '/photos/squoosh/', tinypng: '/photos/tinypng/', 'tiny png': '/photos/tinypng/', 'convert png to webp': '/photos/', 'compress an image': '/photos/',

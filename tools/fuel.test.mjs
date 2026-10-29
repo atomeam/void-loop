@@ -44,3 +44,12 @@ test('mixed units and other currencies: km at mpg, € and £', async () => {
 test('an ask it does not read draws nothing', async () => {
   const { r, html } = await card('gas stations near me'); assert.equal(r, 'none'); assert.equal(html, null);
 });
+
+test('the unit next to the price decides per gallon or per litre, not an l anywhere in the ask', async () => {
+  const gal = await card('fuel for 200 miles at 40 mpg £6.50 a gallon'); // 5 gal × £6.50; "fuel" has an l, the price is still a gallon's
+  assert.equal(big(gal.html), '£32.50'); assert.equal(li(gal.html, 'Fuel needed'), '5 gal (18.93 L)'); assert.ok(gal.html.includes('£6.50 / gal'), gal.html);
+  assert.equal(big((await card('petrol for 200 miles at 40 mpg £6.50/gal')).html), '£32.50');
+  assert.equal(big((await card('fuel for 200 miles at 40 mpg £1.45 a litre')).html), '£27.44'); // the litre still read as a litre
+  assert.equal(big((await card('fuel for 200 miles at 40 mpg £1.45')).html), '£27.44'); // a bare £ price is a UK pump price, per litre
+  assert.equal(big((await card('fuel for 400 km at 7 L/100km $5 per gallon')).html), '$36.98'); // 28 L = 7.397 gal × $5
+});

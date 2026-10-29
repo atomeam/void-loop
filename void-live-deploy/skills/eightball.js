@@ -10,9 +10,10 @@
  */
 import { grip } from './side-card.js';
 
-export const ANSWERS = ['It is certain', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes',
+// the classic 20, in their usual order: 10 yes, 5 non-committal, 5 no
+export const ANSWERS = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes',
   'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again',
-  "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful', 'No'];
+  "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
 export const pick = (rnd = Math.random) => ANSWERS[Math.floor(rnd() * ANSWERS.length)];
 const seenShake = new Map(); // ball id -> the shake count already shown, so a re-render after a new ask shakes before it tells
 

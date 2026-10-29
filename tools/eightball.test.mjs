@@ -26,10 +26,12 @@ test('not an ask matcher: no examples, every ask refused, run answers none', asy
   for (const a of [...sk.nearMisses, 'shake the magic 8 ball', 'eightball', 'will it rain? magic 8 ball']) assert.equal(sk.match(a.toLowerCase(), a), false, a);
   assert.equal(await sk.run('magic 8 ball', {}), 'none'); assert.deepEqual(Object.keys(sk.stageKinds), ['eightball']);
 });
-test('the 20 answers, all different, and pick reads them in order', () => {
-  assert.equal(ANSWERS.length, 20); assert.equal(new Set(ANSWERS).size, 20);
-  assert.equal(ANSWERS[0], 'It is certain'); assert.equal(ANSWERS[9], 'Reply hazy, try again'); assert.equal(ANSWERS[14], "Don't count on it"); assert.equal(ANSWERS[19], 'No');
-  assert.equal(pick(() => 0), 'It is certain'); assert.equal(pick(() => 0.5), 'Ask again later'); assert.equal(pick(() => 0.9999), 'No'); assert.equal(pick(() => 0.07), 'Without a doubt');
+test('the classic 20 answers (10 yes, 5 non-committal, 5 no), all different, and pick reads them in order', () => {
+  assert.deepEqual(ANSWERS, ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes',
+    'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again',
+    "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful']);
+  assert.equal(new Set(ANSWERS).size, 20); assert.ok(!ANSWERS.includes('No'), 'a plain "No" is not one of the classic 20');
+  assert.equal(pick(() => 0), 'It is certain'); assert.equal(pick(() => 0.5), 'Reply hazy, try again'); assert.equal(pick(() => 0.9999), 'Very doubtful'); assert.equal(pick(() => 0.07), 'It is decidedly so');
   const seen = new Set(); for (let i = 0; i < 2000; i++) seen.add(pick()); assert.equal(seen.size, 20);
 });
 test('summonBall: one ball in the middle of the screen; asking again reuses it with the new answer', () => {
@@ -55,10 +57,10 @@ test('a tap shakes it: a new answer, a count, the last 20 in history, saved and 
     const th = { id: 'f2', kind: 'eightball', x: 0, y: 0, answer: 'Yes', n: 3, question: 'old?', history: Array.from({ length: 20 }, (_, i) => ({ q: null, a: 'h' + i })) }, { log, api } = stageOf();
     sk.stageKinds.eightball.mount(th, api); const { view, said } = parts(log.shown[0]);
     view.kids[0].click();
-    assert.equal(th.answer, 'Ask again later'); assert.equal(th.n, 4); assert.equal(th.question, null);
-    assert.equal(th.history.length, 20); assert.equal(th.history[0].a, 'h1'); assert.deepEqual({ ...th.history[19], at: 0 }, { q: null, a: 'Ask again later', at: 0, how: 'shaken' }); assert.ok(!isNaN(Date.parse(th.history[19].at)));
+    assert.equal(th.answer, 'Reply hazy, try again'); assert.equal(th.n, 4); assert.equal(th.question, null);
+    assert.equal(th.history.length, 20); assert.equal(th.history[0].a, 'h1'); assert.deepEqual({ ...th.history[19], at: 0 }, { q: null, a: 'Reply hazy, try again', at: 0, how: 'shaken' }); assert.ok(!isNaN(Date.parse(th.history[19].at)));
     assert.equal(log.saves, 1); assert.deepEqual(log.logs, [{ domain: 'void.stage', ask: 'shake the magic 8 ball', score: 'pass', note: 'chance' }]);
-    assert.equal(view.kids.length, 1, 'redrawn, not stacked'); assert.equal(face(view), 'Ask again later'); assert.equal(said.textContent, 'Ask again later', 'no question shown after a tap');
+    assert.equal(view.kids.length, 1, 'redrawn, not stacked'); assert.equal(face(view), 'Reply hazy, try again'); assert.equal(said.textContent, 'Reply hazy, try again', 'no question shown after a tap');
   } finally { rnd.mock.restore(); }
 });
 test('asked again (3D ball): the question shows, it shakes, and tells the answer 1.5 s later; the flat ball tells at once', () => {

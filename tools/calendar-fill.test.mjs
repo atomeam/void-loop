@@ -35,8 +35,17 @@ test('"Zahnarzt morgen 15 Uhr": tomorrow 15:00 to 16:00, said in words, Undo tak
   assert.equal(c.lines()[0], 'Zahnarzt'); assert.match(c.lines()[1], /^Put "Zahnarzt" in your calendar for \w+day, .+, 3:00 PM to 4:00 PM \(1 hour\)\.$/);
   assert.deepEqual(c.links, ['/calendar/']);
   click(c.button('Undo')); assert.equal(events().length, 0); assert.equal(c.lines()[0], 'Undone');
-  // its first example, "Zahnarzt morgen 15 Uhr in den Kalender", lands at the same time, but titled "Zahnarzt in den Kalender" (bug reported): only the time is checked
-  const ex = ask(sk.examples[0]); assert.equal(events()[0].start, ymd(tomorrow) + 'T15:00'); click(ex.button('Undo')); assert.equal(events().length, 0);
+  // its first example, "Zahnarzt morgen 15 Uhr in den Kalender", lands at the same time and is titled "Zahnarzt": the "in den Kalender" is where it goes, not its name
+  const ex = ask(sk.examples[0]); assert.equal(events()[0].start, ymd(tomorrow) + 'T15:00'); assert.equal(events()[0].title, 'Zahnarzt'); assert.equal(ex.lines()[0], 'Zahnarzt');
+  click(ex.button('Undo')); assert.equal(events().length, 0);
+});
+
+test('the "to my calendar" / "in den Kalender" tail is never part of the title, in English or German', async () => {
+  const L = await import('../void-live-deploy/lib/chat-calendar.js'), now = new Date(2026, 9, 29, 10);
+  const title = (t) => L.plan({ events: [] }, L.parseIntent(t), now, 'en').title;
+  for (const t of ['Zahnarzt morgen 15 Uhr in den Kalender', 'Zahnarzt morgen 15 Uhr in meinen Kalender', 'Zahnarzt morgen 15 Uhr im Kalender eintragen']) assert.equal(title(t), 'Zahnarzt', t);
+  for (const t of ['dentist tomorrow 3pm to my calendar', 'dentist tomorrow 3pm in my calendar', 'dentist tomorrow at 3pm on the calendar']) assert.equal(title(t), 'Dentist', t);
+  assert.equal(title('meeting with Sam tomorrow 10am for an hour'), 'Meeting with Sam'); // nothing to strip, nothing stripped
 });
 
 test('Yoga on Friday at 18: added, asked when, moved to Saturday, then to 7pm, keeping its hour', () => {

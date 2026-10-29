@@ -18,11 +18,18 @@ const WX = {
   85: 'Snow showers', 86: 'Snow showers', 95: 'Thunderstorm', 96: 'Thunderstorm, hail', 99: 'Thunderstorm, hail'
 };
 
+// the words of the asks match() takes that name no place ("chance of rain today", "is there a storm coming", "what's the high tonight"): with no
+// "in/at/for/near <place>", what is left after them is the place, and nothing left means here. Every match() pattern's own words are in it.
+const WHEN = "today'?s?|tonight'?s?|tomorrow'?s?|now|right now|this week(?:end)?|outside|here";
+// "high", "low" and "wind" go only as the forecast words ("the high", "low tonight", "wind speed"), so High Point and Wind Gap stay places
+const WX_WORDS = new RegExp("\\b(" + ["(?:the|today'?s|tonight'?s|tomorrow'?s) (?:high|low|wind)|(?:high|low)(?= (?:temp|today|tonight|tomorrow))", WHEN, "what should i wear|what to wear|what'?s|what is|what will be|the|weather|forecast|temp(?:erature)?|like|is it|will it|going to|is there|on the way|coming",
+  "rain(?:ing)?|snow(?:ing)?|showers|(?:thunder)?storms?|stormy|sleet|hail|frost|freez(?:e|ing)|sunny|windy|cloudy|foggy|humid(?:ity)?|hurricane|tornado|blizzard|heat\\s*wave|cold snap",
+  "chance of|dew point|wind chill|heat index|wind speed|how|cold|hot|warm|get|be",
+  "do i|should i|will i|need|bring|take|wear|an?|umbrella|raincoat|rain jacket|jacket|coat|shorts|boots"].join('|') + ")\\b", 'ig');
 export function weatherPlace(text) {
   const m = text.match(/\b(?:in|at|for|near)\s+([^?.!]+)$/i);
-  if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
-  const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside|what should i wear|do i|should i|will i|need|bring|take|an?|umbrella|raincoat|jacket|coat)\b/ig, ' ').trim();
-  return t;
+  if (m) return m[1].replace(new RegExp('\\b(' + WHEN + ')\\b', 'ig'), '').replace(/\s+/g, ' ').trim();
+  return text.replace(/[?.!,]/g, '').replace(WX_WORDS, ' ').replace(/\s+/g, ' ').trim();
 }
 
 const RAIN = (c) => (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95, SNOW = (c) => (c >= 71 && c <= 77) || c === 85 || c === 86;

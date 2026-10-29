@@ -1,5 +1,5 @@
 {
- "at": "2026-10-29T16:31:23.722Z",
+ "at": "2026-10-29T16:38:57.365Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -195,6 +195,14 @@
   {
    "file": "void-live-deploy/translate/index.html",
    "changes": 14
+  },
+  {
+   "file": "docs/PARITY/github.md",
+   "changes": 13
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 13
   },
   {
    "file": "tools/card-art-route.test.mjs",

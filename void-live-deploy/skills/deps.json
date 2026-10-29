@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 982,
+ "counted": 985,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -45,6 +45,27 @@
    "tests": 1
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 21,
+   "direct": 0,
+   "dependants": 70,
+   "tests": 1
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 21,
+   "direct": 1,
+   "dependants": 70,
+   "tests": 1
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 21,
+   "direct": 0,
+   "dependants": 69,
+   "tests": 5
+  },
+  {
    "file": "lib/motion-throttle.js",
    "skills": 21,
    "direct": 1,
@@ -57,27 +78,6 @@
    "direct": 2,
    "dependants": 22,
    "tests": 2
-  },
-  {
-   "file": "lib/keeper.js",
-   "skills": 20,
-   "direct": 0,
-   "dependants": 67,
-   "tests": 1
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 20,
-   "direct": 1,
-   "dependants": 67,
-   "tests": 1
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 20,
-   "direct": 0,
-   "dependants": 66,
-   "tests": 5
   },
   {
    "file": "lib/ladder.js",
@@ -290,6 +290,13 @@
    "tests": 1
   },
   {
+   "file": "lib/where.js",
+   "skills": 9,
+   "direct": 8,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/flight-sites.js",
    "skills": 8,
    "direct": 1,
@@ -321,13 +328,6 @@
    "file": "lib/stage-pack-h.js",
    "skills": 8,
    "direct": 8,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/where.js",
-   "skills": 8,
-   "direct": 7,
    "dependants": 8,
    "tests": 1
   },
@@ -693,7 +693,7 @@
    "skills": 3,
    "direct": 0,
    "dependants": 6,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/tower-weight.js",
@@ -707,7 +707,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 5,
-   "tests": 27
+   "tests": 28
   },
   {
    "file": "lib/arena-say.js",
@@ -763,7 +763,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/field-attention.js",
@@ -855,6 +855,13 @@
    "direct": 0,
    "dependants": 25,
    "tests": 1
+  },
+  {
+   "file": "lib/compose.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 25,
+   "tests": 2
   },
   {
    "file": "lib/store-products.js",
@@ -1046,11 +1053,25 @@
    "tests": 2
   },
   {
+   "file": "lib/story.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
    "file": "lib/actions.js",
    "skills": 1,
    "direct": 0,
    "dependants": 22,
    "tests": 2
+  },
+  {
+   "file": "lib/rap.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 22,
+   "tests": 1
   },
   {
    "file": "lib/repo-look.js",
@@ -1275,13 +1296,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 10
-  },
-  {
-   "file": "lib/compose.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 2
   },
   {
    "file": "lib/fakeuser.js",
@@ -1642,6 +1656,13 @@
   },
   {
    "file": "lib/photo-library.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/rap-stage.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2062,13 +2083,6 @@
   },
   {
    "file": "lib/report-run.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 20,
-   "tests": 1
-  },
-  {
-   "file": "lib/story.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
@@ -2917,6 +2931,7 @@
     "lib/daily-cap.js",
     "lib/news-report.js",
     "lib/story.js",
+    "lib/rap.js",
     "lib/report-run.js",
     "functions/api/markets.js",
     "lib/subject-kinds.js",
@@ -4016,6 +4031,8 @@
     "lib/comments-ui.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-stage.js",
+    "lib/rap.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -4035,6 +4052,7 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/rally.js",
+    "skills/rap.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js",
@@ -5256,7 +5274,32 @@
    "imports": [],
    "importedBy": [
     "lib/arrange.js",
+    "lib/rap-stage.js",
+    "lib/rap.js",
     "skills/music.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js",
+    "skills/rap.js"
    ]
   },
   "lib/context-check.js": {
@@ -6543,6 +6586,8 @@
     "lib/daily-photo.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-stage.js",
+    "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
     "lib/voice.js",
@@ -6564,6 +6609,7 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/rally.js",
+    "skills/rap.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js",
@@ -7036,6 +7082,8 @@
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/image-gen.js",
+    "lib/rap-stage.js",
+    "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
     "lib/voice.js",
@@ -7056,6 +7104,7 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/rally.js",
+    "skills/rap.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js",
@@ -8177,6 +8226,47 @@
   "lib/random-card.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/rap-stage.js": {
+   "imports": [
+    "lib/compose.js",
+    "lib/rap.js"
+   ],
+   "importedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap.js": {
+   "imports": [
+    "lib/story.js",
+    "lib/compose.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js",
+    "lib/rap-stage.js",
+    "skills/rap.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
   },
   "lib/rating-note.js": {
    "imports": [],
@@ -9463,7 +9553,8 @@
     "lib/art-rules.js"
    ],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/rap.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
@@ -9484,7 +9575,9 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/rap-stage.js",
+    "skills/rap.js"
    ]
   },
   "lib/studio-card.js": {
@@ -10176,6 +10269,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/quake.js",
     "skills/sky.js",
     "skills/suntimes.js"
    ],
@@ -12821,7 +12915,9 @@
    "importedBy": []
   },
   "skills/quake.js": {
-   "imports": [],
+   "imports": [
+    "lib/where.js"
+   ],
    "importedBy": [
     "skills/time.js"
    ]
@@ -12878,6 +12974,13 @@
   },
   "skills/random.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/rap.js": {
+   "imports": [
+    "lib/rap.js",
+    "lib/rap-stage.js"
+   ],
    "importedBy": []
   },
   "skills/rebuild-map.js": {

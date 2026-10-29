@@ -90,8 +90,8 @@ test('fault 5: Still open starts with the tower target, then the next smallest s
   const live = tower([], {}, { sites: [{ site: 'sycophanthex.com', rank: 391415, hardness: 46 }] }, null, null, null, 'sycophanthex.com');
   assert.equal(live.floors.find((f) => f.id === 'sycophanthex.com').page, '/fanfic/', 'the tower target is fought by the fan-fiction archive');
   assert.equal(LANE_PAGES['sycophanthex.com'], '/fanfic/');
-  const line = towerFacts(selfJson);
-  assert.ok(line.indexOf('sycophanthex.com') >= 0 && line.indexOf('sycophanthex.com') < line.indexOf(selfJson.tower.next[0]), 'the target comes before the next sites');
+  const line = towerFacts(selfJson), target = selfJson.tower.target; // the record's target, whichever site the owner has it on now (sycophanthex.com until 2026-10-29, then onlineconverter.com)
+  assert.ok(target && line.indexOf(target) >= 0 && line.indexOf(target) < line.indexOf(selfJson.tower.next[0]), 'the target comes before the next sites');
   const facts = selfFacts({ self: selfJson });
   assert.ok(facts.indexOf('my tower target') < facts.indexOf('Growth inbox, still open'), 'the tower comes before the other open work');
 });
@@ -103,9 +103,10 @@ test('card 5: the own-card facts give Fixed and Still open from my records, targ
   assert.ok(c.indexOf('Fixed:') >= 0 && c.indexOf('Fixed:') < c.indexOf('Still open:'), 'Fixed comes before Still open');
   assert.match(fixed, /#1406/); assert.match(fixed, /#1410/); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
   assert.doesNotMatch(open, /#1406/, 'a shipped fix is never listed as open');
-  assert.match(open, /^Still open: 1\. sycophanthex\.com, the site I am assimilating now/);
+  const target = selfJson.tower.target; // the record's target, not a name fixed in the test
+  assert.ok(open.startsWith('Still open: 1. ' + target + ', the site I am assimilating now'), open.slice(0, 120));
   const next = selfJson.tower.next.map((s) => open.indexOf(s));
-  assert.ok(next.every((i, k) => i > open.indexOf('sycophanthex.com') && (k === 0 || i > next[k - 1])), 'the next smallest follow the target, in order');
+  assert.ok(next.every((i, k) => i > open.indexOf(target) && (k === 0 || i > next[k - 1])), 'the next smallest follow the target, in order');
   assert.match(c, /My record dates the gemma move 2026-10-25[^\n]*my record stands: say so, and do not call the date a fault/);
   assert.match(OWN_CARD_RULE, /Own only a fault my records confirm/);
   assert.equal(selfFacts({ self: selfJson }).includes('my records (they are added under your sentences'), false, 'only a note about my own card gets the lists');
@@ -144,7 +145,8 @@ test('the card 5 note, end to end: self route, whole note, my own facts, no clai
   assert.match(all, /smallest-first order behind sycophanthex\.com/, 'the note reached the model whole');
   assert.match(all, /my last card/); assert.match(all, /2026-10-25, commit 630e666fb/); assert.match(all, /my tower target/);
   assert.match(all, /do not copy them/); assert.match(all, /my record stands/);
-  assert.match(res.answer, /\n\nFixed:\n2026-10-29[\s\S]*\n\nStill open:\nsycophanthex\.com/, 'the lists come from my records, under the lead');
+  assert.match(res.answer, /\n\nFixed:\n2026-10-29[\s\S]*\n\nStill open:\n/, 'the lists come from my records, under the lead');
+  assert.ok(res.answer.slice(res.answer.indexOf('\n\nStill open:\n')).startsWith('\n\nStill open:\n' + selfJson.tower.target), 'Still open starts with the tower target from my record');
   assert.equal(res.self, true);
   assert.deepEqual(res.sources, []);
   assert.doesNotMatch(res.answer, /noted this correction|do not have feelings|I am a program/);

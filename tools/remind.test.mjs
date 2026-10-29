@@ -19,7 +19,9 @@ test('the clock: bare 1 to 7 is afternoon, the rest stays as said', () => {
   assert.equal(remindOf('remind me at 7').when, '7pm'); assert.equal(remindOf('remind me at 1').when, '1pm');
   assert.equal(remindOf('remind me at 8').when, '8'); assert.equal(remindOf('remind me at 11').when, '11');
   assert.equal(remindOf('remind me at 5am').when, '5am'); assert.deepEqual(remindOf('remind me at 5 p.m. to call home'), { when: '5pm', what: 'call home' }); assert.equal(remindOf('remind me at 5 pm').when, '5pm');
-  // not asserted: "remind me at 5 p.m." at the end of the ask reads as nothing (the closing dot is trimmed before "p.m." is matched), a bug reported
+  // "p.m." / "a.m." at the very end of the ask, its closing dot trimmed with the sentence's
+  assert.deepEqual(remindOf('remind me at 5 p.m.'), { when: '5pm', what: '' }); assert.equal(remindOf('remind me at 7 a.m.').when, '7am'); assert.equal(remindOf('Remind me at 10:30 p.m.').when, '10:30pm');
+  assert.deepEqual(remindOf('remind me at 5 p.m. to call home.'), { when: '5pm', what: 'call home' });
   assert.equal(remindOf('remind me at 6:30').when, '6:30'); assert.equal(remindOf('remind me at 13:00').when, '13:00');
   assert.equal(remindOf('remind me at 15').when, '15'); assert.equal(remindOf('please remind me at noon').when, 'noon');
   assert.equal(remindOf('remind me to call mom at 6pm'), null);

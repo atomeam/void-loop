@@ -10,6 +10,7 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath }
 import { GATE_FLOORS } from './tower-gate.mjs'; // FLOORS and the frontier sites the gate measures (sycophanthex.com: /fanfic/)
 import { journeysOf } from '../void-live-deploy/lib/tower-journeys.js';
 import { negativesOf, JOURNEY_PREFIX } from '../void-live-deploy/lib/tower-controls.js';
+import { RAP_LINK } from './tower-probes.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json');
 const BASE = process.env.VERSE_BASE || 'https://a-to-mind.com/';
@@ -110,6 +111,26 @@ export const SCRIPTS = {
       const u = await J.shareLink('#share'); if (!/[?&]s=[0-9a-z_]{8,}/.test(u)) throw new Failed('the share link does not carry the strokes: ' + u);
       await J.open('/learn-to-draw/'); await J.open(u);
       await J.expect(new RegExp('Scored again from the link\\. Score: ' + got + ' of 100'), 'the same drawing back from its link, scored again: ' + got);
+    },
+  },
+  // neuralframes.com's rap lyrics generator (/rap/, 2026-10-29): a topic and a style typed and picked as a visitor does, the rap written by the model for
+  // them (one call to the free model, inside the site's daily cap), then a rap carried in a link (RAP_LINK) performed over its beat and shared again
+  'music: neuralframes.com': {
+    'write a rap for a topic and see verses and a hook': async (J) => {
+      await J.open('/rap/'); await J.fill('#topic', 'a dog who loves the beach', 'type the topic'); await J.page.selectOption('#style', 'trap').catch(() => { throw new Failed('the style list is not there'); });
+      await J.click('#write', 'press Write my rap');
+      await J.page.waitForSelector('#out:not([hidden]) .rp-bar', { timeout: 60000 }).catch(() => { throw new Blocked('no rap came back within a minute'); });
+      await J.expect(/Verse 1[\s\S]*Hook[\s\S]*Verse 2/i, 'two verses and a hook'); await J.expect(/Trap · confident · \d+ BPM · \d+ bars in 3 parts · \d+ of \d+ bars end on a rhyme/, 'the meta line: trap, its tempo, bars and rhymes counted');
+    },
+    'perform a rap over its beat': async (J) => {
+      await J.open(RAP_LINK); await J.expect(/Opened from its link/, 'the shared rap opened');
+      await J.click('button.rp-btn:not(.go) >> text="Rap it yourself"', 'press Rap it yourself'); await J.expect(/Your turn: one measure to count in/, 'the beat counting in');
+      await J.page.waitForSelector('.rp-bar.on', { timeout: 8000 }).catch(() => { throw new Failed('no bar lit up on its measure'); }); await J.click('button.rp-btn:not(.go) >> text="Stop"', 'press Stop');
+    },
+    'share the rap and reopen it from the link': async (J) => {
+      await J.open(RAP_LINK); await J.expect(/Slice of the Night/, 'the rap "Slice of the Night"');
+      const u = await J.shareLink('#share'); if (!/[?&]r=/.test(u)) throw new Failed('the share link does not carry the rap: ' + u);
+      await J.open('/rap/'); await J.open(u); await J.expect((x) => /Slice of the Night/.test(x) && /18 of 20 bars end on a rhyme/.test(x), 'the same rap back from its link, 18 of 20 bars rhyming');
     },
   },
   // paint (/paint/, rebuilt 2026-10-28 against the colour-by-number sites): every step is a tap, a key or a file a person would use
