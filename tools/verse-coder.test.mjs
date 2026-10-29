@@ -8,7 +8,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless } from './verse-coder.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW } from './verse-coder.mjs';
 import { scanDiff } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
@@ -92,6 +92,27 @@ test('it stops at the turn cap and at the token cap, and puts back what it chang
   const big = async () => ({ text: call('list'), tokens: 600 });
   r = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, model: big, limits: { tokens: 1000 } });
   assert.equal(r.outcome, 'token-cap'); assert.equal(r.turns, 2);
+  assert.match(r.why, /token cap \(1000\) after 2 turns: list, list$/, 'a stop at a cap says where the turns went');
+});
+
+test('each turn sends the task and the newest results whole, and older results cut short, so the token cap lasts the turns', async () => {
+  const msgs = [{ role: 'system', content: 'sys' }, { role: 'user', content: 'T'.repeat(5000) }];
+  for (let i = 0; i < 40; i++) msgs.push({ role: 'assistant', content: '{"tool":"read","path":"f' + i + '"}' }, { role: 'user', content: String(i).padEnd(16000, 'x') });
+  const w = windowOf(msgs);
+  assert.equal(w.length, 2 + WINDOW.messages); assert.deepEqual(w.slice(0, 2), msgs.slice(0, 2), 'the system and the task stay whole');
+  assert.deepEqual(w.slice(-WINDOW.fresh), msgs.slice(-WINDOW.fresh), 'the newest results stay whole');
+  const old = w.slice(2, -WINDOW.fresh).filter((x) => x.role === 'user');
+  assert.ok(old.length && old.every((x) => x.content.length < WINDOW.keep + 120 && /characters cut from an older result; read it again/.test(x.content)));
+  assert.ok(w.slice(2).filter((x) => x.role === 'assistant').every((x, i) => x.content === msgs.slice(-WINDOW.messages).filter((y) => y.role === 'assistant')[i].content), 'the model\'s own turns stay whole');
+  const size = (m) => m.reduce((n, x) => n + x.content.length, 0);
+  assert.ok(size(w) < size([...msgs.slice(0, 2), ...msgs.slice(-WINDOW.messages)]) / 3, 'the window is a third of the old one or less');
+  assert.deepEqual(windowOf(msgs.slice(0, 6)), msgs.slice(0, 6), 'a short run is sent as it is');
+  assert.equal(trailOf([{ tool: 'read', path: 'a.js', result: '1\tx' }, { tool: 'edit', path: '', result: 'the diff does not apply: error: patch failed\nmore' }, { tool: 'check', path: 'add', result: 'FAIL add\nlog' }]),
+    'read a.js, edit: the diff does not apply: error: patch failed, check add: FAIL add');
+  // the worst case, a full read every turn: the old window ran out of tokens near turn 12; this one lasts 20 turns or more
+  const s = repo(); writeFileSync(join(s.work, 'src/big.mjs'), Array.from({ length: 400 }, (_, i) => '// line ' + i + ' ' + 'y'.repeat(30)).join('\n'));
+  const r = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, model: async () => ({ text: call('read', { path: 'src/big.mjs' }) }), limits: { turns: 30, tokens: 250000 } });
+  assert.ok(r.turns >= 20, 'turns before the token cap: ' + r.turns + ' (' + r.tokens + ' tokens)');
 });
 
 test('Verse\'s review on its own diff sends a risky change back; a created file goes away when it gives up', async () => {
