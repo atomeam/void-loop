@@ -542,6 +542,9 @@
     .vread { position: sticky; top: 0; float: right; z-index: 2; margin: -10px -12px 4px 10px; width: 36px; height: 36px; border-radius: 50%; padding: 0;
       display: grid; place-items: center; cursor: pointer; color: #cfd8ff; background: rgba(20,22,34,.72); border: 1px solid rgba(255,255,255,.14);
       transition: background .2s ease, color .2s ease, transform .15s ease; }
+    /* last on the card, with only the product line after it (lib/card-reply.js placeReply), also on a card that orders its own parts
+       on a small screen (the sky card puts its chips first at 480 px and under): there the DOM order alone left the section above them */
+    .vpage > .vreply { order: 98; } .vpage > .src.vtail { order: 99; }
     .vreply { margin-top: 16px; } .vreply .vreply-h { font-size: var(--fs-s); font-weight: 700; color: var(--ink); margin: 0 0 6px; }
     .vreply .v-talk p { margin: 0 0 6px; } .vreply .v-who { color: var(--ink-3); } .vreply .sub { margin-top: 4px; }
     .vtell-box { margin-top: 10px; } .vtell-box textarea { width: 100%; font: inherit; background: rgba(255,255,255,.06); color: inherit; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 8px 10px; resize: vertical; margin-bottom: 6px; }
