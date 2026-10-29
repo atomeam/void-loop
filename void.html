@@ -2829,6 +2829,9 @@ say('nothing selected to remove');
         const formEl = document.createElement('div'), heatEl = document.createElement('div'), logEl = document.createElement('div'); slot.replaceChildren(formEl, heatEl, logEl);
         let fam = null; try { fam = await fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)); } catch (_) {}
         if (vpageEl !== el) return;
+        // replies kept before cards had a family (#1576) get the family of their card once, when this browser's loop log still holds the ask
+        try { const rl = await import('/lib/card-reply.js'); m.placeUnplacedOnce(localStorage, log, rl.familyOfNote); } catch (_) {}
+        if (vpageEl !== el) return;
         const owner = ownerKey(); // the "Suggest fix" buttons are drawn for the owner only (lib/correction-fix.js); the route checks the key again
         const draw = () => { import('/lib/correction-heat.js').then((h) => { if (vpageEl === el) heatEl.innerHTML = h.heatHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }).catch(() => {}); /* void-review: ok: heatHtml escapes every word with esc */ logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }; // void-review: ok: logHtml escapes every kept word with esc
         draw();
