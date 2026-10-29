@@ -7,7 +7,7 @@
 // A tick never fails the clock: every error is a warning in the summary and the tick ends with exit 0. Playbook: docs/playbooks/conductor.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { plan, probeDue, growDue, lapDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
+import { plan, probeDue, growDue, willDue, lapDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
 const REPO = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
@@ -96,6 +96,9 @@ async function tick() {
   // a proving pass (grow-self.yml) at most every 2 hours: it locks in asks Verse answers right and queues the ones it misses as fixes
   const grow = wf['grow-self.yml'] || {};
   if (growDue({ exists: grow.exists, busy: grow.busy, lastRunMs: grow.last, now }) && await act('grow-self', async () => { start('grow-self.yml'); return true; })) done.grow = true;
+  // Verse's will every hour (will.yml: three fresh wants, the top one to the queue); its own schedule comes hours late
+  const will = wf['will.yml'] || {};
+  if (willDue({ exists: will.exists, busy: will.busy, lastRunMs: will.last, now }) && await act('will', async () => { start('will.yml'); return true; })) done.will = true;
   // nothing for the coder to take from the queue: a lap of the Verse loop (red checks, the top of docs/NEXT.md, grooming) at most hourly
   const lapWf = wf[LAP] || {}, lapRuns = runs[LAP] || [];
   if (lapDue({ exists: lapWf.exists, busy: lapWf.busy || (wf[AGENT] || {}).busy, started: done.started.some((s) => s.wf === AGENT), paused, lastRunMs: lapWf.last, now })
@@ -109,7 +112,7 @@ async function tick() {
 
 function finish(state, now, t) {
   const at = new Date(now).toISOString();
-  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, lap: !!t.done.lap, revived: t.done.revived || [], held: t.held.length, warnings: warnings.length }
+  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, will: !!t.done.will, lap: !!t.done.lap, revived: t.done.revived || [], held: t.held.length, warnings: warnings.length }
     : { at, error: warnings[0] || 'no plan', warnings: warnings.length };
   const ticks = [...(state.ticks || []), tick].filter((x) => now - Date.parse(x.at) < 24 * 3600000).slice(-200);
   const day = { ticks: ticks.length, started: ticks.reduce((n, x) => n + ((x.started || []).length), 0), requeued: ticks.reduce((n, x) => n + (x.requeued || 0), 0),
