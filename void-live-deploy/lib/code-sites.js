@@ -1,0 +1,15 @@
+/**
+ * code-sites: the pages of the code hosting floor of Versus, one table (owner, 2026-10-26: GitHub's floor had no Verse page; "every site gets a page", docs/RULES.md).
+ * The floor's leader gets /code/; each site of its lane gets a page of its own (or a natural shared one), built to have every feature that site has and measured
+ * against it by the gate (lib/tower.js LANE_PAGES). tools/tool-site-pages.mjs writes each page from a row; lib/tool-sites.js adds these rows to SITE_PAGES. A page
+ * picks its panels from lib/code-hub-ui.js. The table names the lane site, in plain text, only here as `lane`. Pure data.
+ */
+export const CODE_SITES = Object.freeze([
+  { path: '/code/', tag: 'Read any public GitHub repository, its issues, pull requests and diffs, and review a diff', card: 'look at atomeam/void-loop', lane: 'code hosting', name: 'Code', h1: 'Code', panels: ['open', 'repo', 'diff', 'gist'], chips: ['File tree', 'Highlighted files', 'README', 'Commits', 'Issues', 'Pull requests', 'Side by side diffs', 'Go to file', 'Code review', 'Offline'],
+    intro: 'Open any public GitHub repository and read it here: the files with colours and line numbers, the README drawn, commits, issues and pull requests with their comments and their changes, side by side or in one column, and “go to file” as you type. Paste a diff, or two texts, and see what changed; Verse’s code review reads the added lines on your device. Read only, no account, no token; what you opened before opens again offline.',
+    does: 'A code page for public GitHub repositories: the file tree, files coloured with line numbers and line links, the README rendered, branches, commits and each commit’s diff, issues and pull requests with comments, changed files unified or side by side, go to file, repository search, and Verse’s code review on any diff, run on your device. Paste a diff or compare two texts. Every answer is kept on your device, so pages open again offline. No account, no token, read only, English and German.',
+    asks: ['browse a github repo', 'look at atomeam/void-loop', 'github repo viewer', 'view a diff', 'diff viewer online', 'review a pull request', 'read github issues', 'compare two texts'],
+    de: { h1: 'Code', intro: 'Öffnen Sie ein beliebiges öffentliches GitHub-Repository und lesen Sie es hier: die Dateien mit Farben und Zeilennummern, die README gezeichnet, Commits, Issues und Pull Requests mit ihren Kommentaren und Änderungen, nebeneinander oder in einer Spalte, und „Gehe zu Datei“ beim Tippen. Fügen Sie einen Diff oder zwei Texte ein und sehen Sie, was sich geändert hat; Verses Code-Review liest die hinzugefügten Zeilen auf Ihrem Gerät. Nur lesen, kein Konto, kein Token; was Sie schon geöffnet haben, öffnet sich offline wieder.' },
+    links: [['atomeam/void-loop', '/code/?r=atomeam/void-loop'], ['Its pull requests', '/code/?r=atomeam/void-loop&v=pulls'], ['Its issues', '/code/?r=atomeam/void-loop&v=issues'], ['Its commits', '/code/?r=atomeam/void-loop&v=commits'], ['Go to file', '/code/?r=atomeam/void-loop&v=find']],
+    action: { template: '/code/?r={repo}', input: 'repo' } },
+]);

@@ -1,0 +1,5 @@
+// /code/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the screen comes after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/code-hub-ui.js').then(({ mountCode }) => mountCode(document.getElementById('app'), {"panels":["open","repo","diff","gist"],"de":{"h1":"Code","intro":"Öffnen Sie ein beliebiges öffentliches GitHub-Repository und lesen Sie es hier: die Dateien mit Farben und Zeilennummern, die README gezeichnet, Commits, Issues und Pull Requests mit ihren Kommentaren und Änderungen, nebeneinander oder in einer Spalte, und „Gehe zu Datei“ beim Tippen. Fügen Sie einen Diff oder zwei Texte ein und sehen Sie, was sich geändert hat; Verses Code-Review liest die hinzugefügten Zeilen auf Ihrem Gerät. Nur lesen, kein Konto, kein Token; was Sie schon geöffnet haben, öffnet sich offline wieder."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/code/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

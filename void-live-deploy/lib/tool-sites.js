@@ -64,7 +64,10 @@ export const KANBAN_SITES = Object.freeze([
 ]);
 import { FLIGHT_SITES } from './flight-sites.js'; // the travel floor's pages (owner, 2026-10-26: "need a flights page")
 export { FLIGHT_SITES };
-export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES]);
+import { VIDEO_SITES } from './video-sites.js'; // the video floor's pages (YouTube's floor, 2026-10-26)
+import { CODE_SITES } from './code-sites.js'; // the code hosting floor's pages (GitHub's floor, 2026-10-26)
+export { VIDEO_SITES, CODE_SITES };
+export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES, ...VIDEO_SITES, ...CODE_SITES]);
 
 // ---- the asks that reach these pages (skills/pdf-tools.js, skills/kanban-board.js and the ask bar in lib/toolkit.js read them) ----
 const T = String.raw`(?:pdfs?|\.pdf)`, THE = String.raw`(?:(?:a|an|my|the|this|these|some|two|several|multiple|a few)\s+)*`;

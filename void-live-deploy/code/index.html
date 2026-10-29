@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Code · Verse</title>
+<meta name="description" content="A code page for public GitHub repositories: the file tree, files coloured with line numbers and line links, the README rendered, branches, commits and each commit’s diff, issues and pull requests with comments, changed files unified or side by side, go to file, repository search, and Verse’s code review on any diff, run on your device. Paste a diff or compare two texts. Every answer is kept on your device, so pages open again offline. No account, no token, read only, English and German.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Code · Verse">
+<meta property="og:description" content="A code page for public GitHub repositories: the file tree, files coloured with line numbers and line links, the README rendered, branches, commits and each commit’s diff, issues and pull requests with comments, changed files unified or side by side, go to file, repository search, and Verse’s code review on any diff, run on your device. Paste a diff or compare two texts. Every answer is kept on your device, so pages open again offline. No account, no token, read only, English and German.">
+<meta property="og:url" content="https://a-to-mind.com/code/">
+<meta property="og:image" content="https://a-to-mind.com/og/code.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Code on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Code · Verse">
+<meta name="twitter:description" content="A code page for public GitHub repositories: the file tree, files coloured with line numbers and line links, the README rendered, branches, commits and each commit’s diff, issues and pull requests with comments, changed files unified or side by side, go to file, repository search, and Verse’s code review on any diff, run on your device. Paste a diff or compare two texts. Every answer is kept on your device, so pages open again offline. No account, no token, read only, English and German.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/code.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 2px; } h3 { margin: 0; font-size: 14px; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 2px 0; }
+  button, select, input, textarea { font: inherit; color: inherit; } button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; } button:focus-visible, .card:focus-visible, .thumb:focus-visible, .drop:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
+  textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go { color: #0b0a10; } }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 80vh; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
+  .sr { position: absolute; left: -9999px; }
+  main #app { min-height: 80vh; } [hidden] { display: none !important; } .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } h3 { margin: 10px 0 4px; font-size: 15px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .row input[type=search], .row input[type=url], .row input[type=text] { flex: 1 1 220px; min-width: 0; } .soft { color: var(--soft); font-size: 13px; } .pick { position: absolute; left: -9999px; }
+  .btn { display: inline-block; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: inherit; min-height: 24px; line-height: 22px; background: var(--card); cursor: pointer; font-size: 15px; } .chip { min-height: 32px; padding: 3px 12px; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; display: inline-flex; align-items: center; color: inherit; text-decoration: none; background: transparent; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; } .tabs button[aria-selected=true] { background: var(--accent); color: #fff; border-color: var(--accent); } @media (prefers-color-scheme: dark) { .tabs button[aria-selected=true] { color: #0b0a10; } }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 2px 4px; align-items: center; font-size: 14px; margin: 6px 0; } .crumbs a, .crumbs button { min-height: 32px; display: inline-flex; align-items: center; padding: 0 6px; }
+  .tree { list-style: none; padding: 0; margin: 6px 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; } .tree li { border-bottom: 1px solid var(--line); } .tree li:last-child { border-bottom: 0; } .tree a { display: flex; gap: 8px; align-items: center; padding: 6px 10px; min-height: 36px; color: inherit; text-decoration: none; overflow-wrap: anywhere; } .tree a:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); } .tree .sz { margin-left: auto; color: var(--soft); font-size: 12px; white-space: nowrap; }
+  .gist-pre { margin: 0; display: flex; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow: auto; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 0; max-height: 75vh; } .gist-pre .ln { color: var(--soft); text-align: right; padding: 0 10px; user-select: none; white-space: pre; border-right: 1px solid var(--line); } .gist-pre code { padding: 0 10px; white-space: pre; } .gist-pre .lit { background: color-mix(in srgb, #f5c400 30%, transparent); display: inline-block; min-width: 100%; }
+  .k { color: #8a2be2; } .s { color: #116329; } .n { color: #0550ae; } .c { color: #59636e; font-style: italic; } @media (prefers-color-scheme: dark) { .k { color: #d2a8ff; } .s { color: #7ee787; } .n { color: #79c0ff; } .c { color: #8b949e; } }
+  .md { overflow-wrap: anywhere; } .md img { max-width: 100%; height: auto; } .md pre { overflow: auto; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; } .md code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; } .md table { border-collapse: collapse; display: block; overflow-x: auto; } .md td, .md th { border: 1px solid var(--line); padding: 4px 8px; } .md a { color: var(--accent); } .md blockquote { margin: 6px 0; padding-left: 10px; border-left: 3px solid var(--line); color: var(--soft); }
+  .items { list-style: none; padding: 0; margin: 6px 0; } .items li { border-bottom: 1px solid var(--line); padding: 8px 2px; } .items a.it { font-weight: 600; color: inherit; display: inline-block; min-height: 24px; } .items .soft { display: block; } .lbl { display: inline-block; font-size: 12px; border-radius: 999px; padding: 0 8px; margin: 2px 4px 0 0; border: 1px solid var(--line); }
+  .st { display: inline-block; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 8px; color: #fff; background: #1a7f37; } .st.closed { background: #8250df; } .st.shut { background: #59636e; }
+  .diff { font: 12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; border: 1px solid var(--line); border-radius: 10px; overflow: auto; margin: 8px 0; background: var(--bg); } .diff .fh { font-weight: 700; padding: 6px 10px; background: var(--card); border-bottom: 1px solid var(--line); position: sticky; left: 0; } .diff table { border-collapse: collapse; min-width: 100%; }
+  .diff td { padding: 0 8px; white-space: pre; vertical-align: top; } .diff td.n { color: var(--soft); text-align: right; user-select: none; width: 1%; } .diff tr.add td { background: color-mix(in srgb, #2da44e 18%, transparent); } .diff tr.del td { background: color-mix(in srgb, #cf222e 16%, transparent); } .diff tr.hunk td { color: var(--soft); background: color-mix(in srgb, var(--accent) 8%, transparent); } .diff tr.find td { background: color-mix(in srgb, #f5c400 28%, transparent); white-space: normal; font-family: system-ui, sans-serif; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--soft); margin: 6px 0; } .stats b { color: var(--ink); } .comment { border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; } .comment .who { font-size: 13px; color: var(--soft); padding: 4px 10px; border-bottom: 1px solid var(--line); background: var(--bg); border-radius: 10px 10px 0 0; } .comment .md { padding: 4px 12px; }
+  textarea { font: 13px/1.45 ui-monospace, Menlo, Consolas, monospace; min-height: 160px; } .rate { font-size: 12px; color: var(--soft); }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/code/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Code","url":"https://a-to-mind.com/code/","description":"A code page for public GitHub repositories: the file tree, files coloured with line numbers and line links, the README rendered, branches, commits and each commit’s diff, issues and pull requests with comments, changed files unified or side by side, go to file, repository search, and Verse’s code review on any diff, run on your device. Paste a diff or compare two texts. Every answer is kept on your device, so pages open again offline. No account, no token, read only, English and German.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"browse a github repo, look at atomeam/void-loop, github repo viewer, view a diff, diff viewer online, review a pull request, read github issues, compare two texts","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/code/?r={repo}"},"repo-input":"required name=repo"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Code","item":"https://a-to-mind.com/code/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Code</h1>
+  <p class="intro">Open any public GitHub repository and read it here: the files with colours and line numbers, the README drawn, commits, issues and pull requests with their comments and their changes, side by side or in one column, and “go to file” as you type. Paste a diff, or two texts, and see what changed; Verse’s code review reads the added lines on your device. Read only, no account, no token; what you opened before opens again offline.</p>
+  <div id="app"></div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/code/?r=atomeam/void-loop">atomeam/void-loop</a><a href="/code/?r=atomeam/void-loop&amp;v=pulls">Its pull requests</a><a href="/code/?r=atomeam/void-loop&amp;v=issues">Its issues</a><a href="/code/?r=atomeam/void-loop&amp;v=commits">Its commits</a><a href="/code/?r=atomeam/void-loop&amp;v=find">Go to file</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"></nav>
+  <footer>Repositories are read from GitHub’s public API by your own browser (60 requests an hour for each visitor, kept on this device so a second look costs nothing) and files from GitHub’s public raw addresses. Read only: nothing is written to GitHub, no token is asked for, and nothing you open is stored by Verse. A pasted diff is reviewed by Verse’s free code review. There is no account and there are no ads.</footer>
+</main>
+<script type="module" src="/code/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

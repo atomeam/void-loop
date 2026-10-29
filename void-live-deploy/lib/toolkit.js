@@ -65,6 +65,9 @@ export const RELATED = Object.freeze({
   '/bpm/': ['/metronome/', '/stopwatch/', '/piano/'],
   '/chords/': ['/piano/', '/tuner/', '/metronome/'],
   // the flights pages (owner, 2026-10-26): the hub reaches each tool; each tool its closest sisters, the weather and the clocks
+  // the video and code pages (2026-10-26): the hubs reach the tools that go with them
+  '/video/': ['/podcasts/', '/music/', '/news/'],
+  '/code/': ['/base64/', '/word-count/', '/notes/'],
   '/flights/': ['/flights/time/', '/flights/trip/', '/flights/co2/', '/weather/', '/time/'],
   '/flights/trip/': ['/flights/', '/calendar/', '/flights/time/', '/time/'],
   '/flights/airports/': ['/flights/', '/flights/distance/', '/flights/routes/', '/time/'],

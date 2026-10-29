@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Video · Verse</title>
+<meta name="description" content="A video page: search open films on Wikimedia Commons and the Internet Archive (licence and credit shown for each), Verse’s own films, and YouTube, PeerTube, Dailymotion and Odysee through their official embeds. A player with speed from 0.25× to 3×, quality, captions (yours too), chapters, keyboard shortcuts and picture-in-picture; playlists you can share by link, watch later, history, continue watching and recommendations worked out on your device; save open films for offline. No account, no ads, English and German.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Video · Verse">
+<meta property="og:description" content="A video page: search open films on Wikimedia Commons and the Internet Archive (licence and credit shown for each), Verse’s own films, and YouTube, PeerTube, Dailymotion and Odysee through their official embeds. A player with speed from 0.25× to 3×, quality, captions (yours too), chapters, keyboard shortcuts and picture-in-picture; playlists you can share by link, watch later, history, continue watching and recommendations worked out on your device; save open films for offline. No account, no ads, English and German.">
+<meta property="og:url" content="https://a-to-mind.com/video/">
+<meta property="og:image" content="https://a-to-mind.com/og/video.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Video on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Video · Verse">
+<meta name="twitter:description" content="A video page: search open films on Wikimedia Commons and the Internet Archive (licence and credit shown for each), Verse’s own films, and YouTube, PeerTube, Dailymotion and Odysee through their official embeds. A player with speed from 0.25× to 3×, quality, captions (yours too), chapters, keyboard shortcuts and picture-in-picture; playlists you can share by link, watch later, history, continue watching and recommendations worked out on your device; save open films for offline. No account, no ads, English and German.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/video.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 2px; } h3 { margin: 0; font-size: 14px; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 2px 0; }
+  button, select, input, textarea { font: inherit; color: inherit; } button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; } button:focus-visible, .card:focus-visible, .thumb:focus-visible, .drop:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
+  textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go { color: #0b0a10; } }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 80vh; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
+  .sr { position: absolute; left: -9999px; }
+  main #app { min-height: 80vh; } [hidden] { display: none !important; } .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } h3 { margin: 10px 0 4px; font-size: 15px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .row input[type=search], .row input[type=url], .row input[type=text] { flex: 1 1 220px; min-width: 0; } .soft { color: var(--soft); font-size: 13px; } .pick { position: absolute; left: -9999px; }
+  .btn { display: inline-block; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: inherit; min-height: 24px; line-height: 22px; background: var(--card); cursor: pointer; font-size: 15px; } .chip { min-height: 36px; padding: 4px 12px; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; display: inline-flex; align-items: center; color: inherit; text-decoration: none; background: transparent; }
+  .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); } @media (prefers-color-scheme: dark) { .chip.on { color: #0b0a10; } } .chk { display: flex; gap: 8px; align-items: center; min-height: 40px; } .chk input { margin: 0; }
+  .vstage { aspect-ratio: 16 / 9; background: #000; border-radius: 12px; overflow: hidden; } .vstage video, .vstage iframe { width: 100%; height: 100%; border: 0; display: block; background: #000; }
+  .grid { list-style: none; padding: 0; margin: 8px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px 12px; } .vcard { min-width: 0; }
+  .vplay { display: block; width: 100%; text-align: left; border: 0; border-radius: 12px; padding: 0; background: transparent; min-height: 40px; } .thumb { display: block; aspect-ratio: 16 / 9; background: var(--line); border-radius: 10px; overflow: hidden; position: relative; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; } .dur { position: absolute; right: 6px; bottom: 6px; background: #000; color: #fff; font-size: 12px; padding: 1px 6px; border-radius: 6px; }
+  .vt { display: block; font-weight: 600; font-size: 14px; margin-top: 4px; line-height: 1.3; overflow-wrap: anywhere; } .vm { font-size: 12px; color: var(--soft); margin: 2px 0; overflow-wrap: anywhere; } .vm a { color: inherit; display: inline-block; min-height: 24px; }
+  .acts { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; } .acts button { min-height: 32px; min-width: 32px; padding: 2px 10px; font-size: 13px; } .why { margin: 2px 0; }
+  .lab { display: flex; flex-direction: column; font-size: 12px; color: var(--soft); gap: 2px; } .ctl select { min-width: 7em; } .plainl { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .desc { white-space: pre-line; font-size: 14px; color: var(--soft); max-height: 12em; overflow: auto; } .seg { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; margin: 8px 0; } .qi { text-align: left; } .qi.on { border-color: var(--accent); font-weight: 600; }
+  .pl { border-top: 1px solid var(--line); padding: 6px 0; } .pl summary, .keys summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; } .empty { margin: 4px 0; } .out { margin-top: 10px; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/video/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Video","url":"https://a-to-mind.com/video/","description":"A video page: search open films on Wikimedia Commons and the Internet Archive (licence and credit shown for each), Verse’s own films, and YouTube, PeerTube, Dailymotion and Odysee through their official embeds. A player with speed from 0.25× to 3×, quality, captions (yours too), chapters, keyboard shortcuts and picture-in-picture; playlists you can share by link, watch later, history, continue watching and recommendations worked out on your device; save open films for offline. No account, no ads, English and German.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"play a video, watch free movies, public domain movies, video player with speed control, watch later list, make a video playlist, youtube video player no ads, creative commons videos","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/video/?q={query}"},"query-input":"required name=query"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Video","item":"https://a-to-mind.com/video/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Video</h1>
+  <p class="intro">Watch open films from Wikimedia Commons and the Internet Archive, each with its licence and who made it, and Verse’s own films; paste a YouTube, PeerTube, Vimeo or Dailymotion link and it plays in that site’s own player. The player has speed, quality, captions, chapters, keyboard keys and picture-in-picture. Playlists, watch later, history and recommendations stay on your device, and films whose licence allows it can be saved to watch offline. No account, no ads.</p>
+  <div id="app"></div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/video/?v=commons:Big_Buck_Bunny_4K.webm">Big Buck Bunny</a><a href="/video/?v=archive:night_of_the_living_dead">Night of the Living Dead</a><a href="/video/?q=moon+landing">Search: moon landing</a><a href="/video/?q=cats">Search: cats</a><a href="/video/?q=verse&amp;src=verse">Verse films</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"></nav>
+  <footer>Open films come from Wikimedia Commons (each under the free licence its page names, credited here as it asks) and the Internet Archive (only items marked public domain or Creative Commons); Verse’s own films are Verse’s. YouTube and the other platforms play in their own official players, under their own terms. Playlists, history and saved films stay in this browser; there is no account and there are no ads.</footer>
+</main>
+<script type="module" src="/video/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

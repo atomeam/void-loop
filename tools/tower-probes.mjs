@@ -408,6 +408,43 @@ export const PROBES = Object.freeze({
     },
     facts: [['airport search', /City, airport or code|From[\s\S]{0,40}To/i], ['nearby airports', /Nearby airports/i], ['one way or return', /One way[\s\S]{0,40}Return|Return[\s\S]{0,40}One way/i], ['passengers', /\bAdults\b/], ['cabin class', /\bCabin\b/], ['search on several providers', /Search across providers/i], ['distance', /\bDistance\b/], ['flight time', /Typical flight time/i], ['time difference', /Time difference/i], ['CO2', /CO2/], ['price tracking', /Price tracker/i], ['a price target', /Watch a route/i], ['an itinerary', /Trip and layovers/i], ['layover warnings', /layover/i], ['a calendar file', /\.ics/], ['on your device', /on (?:this|your) device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['no ads', /no ads/i], ['a share link', /Share link/i]],
   },
+  // video (2026-10-26: YouTube's floor gets /video/): the question is an open film opened from a link. A page that works resolves it at Wikimedia Commons
+  // and plays it in its own player, with the licence and the source named (Big Buck Bunny, Blender Foundation 2008, is CC BY 3.0 on Commons: worked out
+  // from the film's own release terms, not from Verse). The catalogue, the quality choice and the recommendations are read at addresses of their own;
+  // judged on Verse alone (the site is not asked)
+  video: {
+    site: 'https://www.youtube.com/', verse: '/video/',
+    ask: { verse: '/video/?v=commons:Big_Buck_Bunny_4K.webm' },
+    truth: [['the film', /Big Buck Bunny/], ['its licence', /CC BY 3\.0/], ['its source named', /Wikimedia Commons/], ['its own player\'s speed', /\bSpeed\b/], ['what is playing', /Playing: /]],
+    askParts: { 'streaming quality': [['a quality choice', /\bQuality\b/], ['what is playing now', /Playing: (?:\d{3,4}p|Original|[^\n]*MB)/], ['a choice that fits the screen', /\bAuto\b/]] },
+    pageParts: {
+      catalogue: { verse: '/video/?q=bunny', items: [['open films on Commons and the Archive', /Results for “bunny”/], ['each with its licence', /CC BY|Public domain|CC0/], ['the same search elsewhere', /Also search/], ['YouTube offered', /YouTube/]] },
+      recommendations: { verse: '/video/', items: [['recommended for you', /Recommended for you/], ['continue watching', /Continue watching/], ['watch later', /Watch later/], ['playlists', /Playlists/], ['worked out on the device', /on this device/]] },
+    },
+    // what the best video sites give a viewer: search, a player with speed, quality, captions, chapters, keys, picture-in-picture and full screen, playlists,
+    // watch later, history and continue watching, recommendations, sharing at a moment, saving to watch offline; the best add licences named and no account
+    facts: [['search', /\bSearch\b/], ['speed', /\bSpeed\b/], ['quality', /\bQuality\b/], ['captions', /\bCaptions\b/], ['your own captions', /Load captions/], ['chapters', /\bchapter/i], ['keyboard shortcuts', /Keyboard shortcuts/], ['picture-in-picture', /Picture-in-picture/i],
+      ['playlists', /\bPlaylists\b/], ['watch later', /Watch later/], ['history', /\bHistory\b/], ['continue watching', /Continue watching/], ['recommendations', /Recommended for you/], ['share at a moment', /Share at this moment|Share link/], ['save for offline', /Save for offline|Saved on this device/],
+      ['licences named', /licence/i], ['any video link', /paste a video link/i], ['a file from the device', /from this device/i], ['no account', /no account/i], ['no ads', /no ads/i]],
+  },
+  // code hosting (2026-10-26: GitHub's floor gets /code/): the question is Verse's own repository opened from a link; a page that works shows its name,
+  // its numbers and its real tree (AGENTS.md and void-live-deploy are at its top, as the repository itself shows). Pull requests, issues and Actions are
+  // read at addresses of their own from the same repository; judged on Verse alone
+  'code hosting': {
+    site: 'https://github.com/', verse: '/code/?r=atomeam/void-loop',
+    ask: { verse: '/code/?r=atomeam/void-loop' },
+    truth: [['the repository', /atomeam\/void-loop/], ['its file AGENTS.md', /AGENTS\.md/], ['its folder void-live-deploy', /void-live-deploy/], ['its stars counted', /\bstars\b/], ['its branch', /\bmain\b/]],
+    askParts: { repositories: [['a file tree', /folders, \d+ files/], ['open on GitHub', /Open on GitHub/], ['a clone command', /clone command/i], ['go to file', /Go to file/], ['a branch choice', /\bmain\b/]] },
+    pageParts: {
+      'pull requests and review': { verse: '/code/?r=atomeam/void-loop&v=pulls&s=closed', items: [['pull requests listed', /#\d+ /], ['merged or closed said', /Merged|Closed/], ['who and when', / ago\b/], ['a diff to review', /Read and review a diff/]] },
+      issues: { verse: '/code/?r=atomeam/void-loop&v=issues&s=all', items: [['the issues view', /#\d+ |No issues here/], ['open and closed', /\bOpen\b[\s\S]*\bClosed\b/], ['open on GitHub', /Open on GitHub/]] },
+      'actions and automation': { verse: '/code/?r=atomeam/void-loop&v=actions', items: [['workflow runs with their result', /\b(?:Passed|Failed|Running|Queued|Cancelled|Skipped)\b/], ['the workflows counted', /\d+ workflows/], ['what runs by itself', /runs by itself/], ['a review that runs as an Action', /GitHub Action/]] },
+    },
+    // what the best code hosts show a reader: the tree, files coloured with line numbers and line links, the README, branches, commits and their diffs, issues
+    // and pull requests with comments, a diff unified or side by side, finding a file, search, Actions, clone; the best add a review and offline reading
+    facts: [['a file tree', /folders, \d+ files/], ['the repository\'s numbers', /\bstars\b/], ['commits', /\bCommits\b/], ['issues', /\bIssues\b/], ['pull requests', /Pull requests/], ['actions', /\bActions\b/], ['go to file', /Go to file/], ['repository search', /Search GitHub repositories/],
+      ['a diff', /Read and review a diff/], ['compare two texts', /Compare two texts/], ['a clone command', /clone command/i], ['open on GitHub', /Open on GitHub/], ['pin on the device', /Pin on this device|Pinned/], ['gists', /gist/i], ['the hourly allowance shown', /requests left this hour/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
+  },
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
   // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
   // by hand (60000 / 120 = 500 ms a beat, Allegro is 120 to 156 BPM, standard guitar is E A D G B E, C major is C E G).

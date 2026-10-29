@@ -1,0 +1,17 @@
+/**
+ * video-sites: the pages of the video floor of Versus, one table (owner, 2026-10-26: YouTube's floor had no Verse page; "every site gets a page", docs/RULES.md).
+ * The floor's leader gets /video/; each site of its lane gets a page of its own (or a natural shared one), built to have every feature that site has and measured
+ * against it by the gate (lib/tower.js LANE_PAGES). tools/tool-site-pages.mjs writes each page from a row; lib/tool-sites.js adds these rows to SITE_PAGES, so
+ * lib/toolkit.js (TOOLS) and lib/seo.js (PAGES) read them like every other row. A page picks its panels from lib/video-hub-ui.js. Verse's pages name no other
+ * site in their own words beyond the sources they play from; the table names the lane site, in plain text, only here as `lane`. Pure data.
+ */
+const ALL = ['search', 'player', 'results', 'continue', 'recs', 'later', 'lists', 'history', 'saved'];
+export const VIDEO_SITES = Object.freeze([
+  { path: '/video/', tag: 'Open films with their licences, any video link, your lists kept on your device', card: 'play a video', lane: 'video', name: 'Video', h1: 'Video', panels: ALL, src: 'open', chips: ['Open films', 'Licences shown', 'Speed and quality', 'Captions', 'Chapters', 'Picture-in-picture', 'Playlists', 'Watch later', 'Recommendations', 'Offline'],
+    intro: 'Watch open films from Wikimedia Commons and the Internet Archive, each with its licence and who made it, and Verse’s own films; paste a YouTube, PeerTube, Vimeo or Dailymotion link and it plays in that site’s own player. The player has speed, quality, captions, chapters, keyboard keys and picture-in-picture. Playlists, watch later, history and recommendations stay on your device, and films whose licence allows it can be saved to watch offline. No account, no ads.',
+    does: 'A video page: search open films on Wikimedia Commons and the Internet Archive (licence and credit shown for each), Verse’s own films, and YouTube, PeerTube, Dailymotion and Odysee through their official embeds. A player with speed from 0.25× to 3×, quality, captions (yours too), chapters, keyboard shortcuts and picture-in-picture; playlists you can share by link, watch later, history, continue watching and recommendations worked out on your device; save open films for offline. No account, no ads, English and German.',
+    asks: ['play a video', 'watch free movies', 'public domain movies', 'video player with speed control', 'watch later list', 'make a video playlist', 'youtube video player no ads', 'creative commons videos'],
+    de: { h1: 'Video', intro: 'Sehen Sie offene Filme von Wikimedia Commons und dem Internet Archive, jeden mit seiner Lizenz und wer ihn gemacht hat, und Verses eigene Filme; fügen Sie einen Link von YouTube, PeerTube, Vimeo oder Dailymotion ein, und er läuft im eigenen Player dieser Seite. Der Player hat Geschwindigkeit, Qualität, Untertitel, Kapitel, Tastenkürzel und Bild-im-Bild. Playlists, Später ansehen, Verlauf und Empfehlungen bleiben auf Ihrem Gerät, und Filme, deren Lizenz es erlaubt, lassen sich für offline speichern. Kein Konto, keine Werbung.' },
+    links: [['Big Buck Bunny', '/video/?v=commons:Big_Buck_Bunny_4K.webm'], ['Night of the Living Dead', '/video/?v=archive:night_of_the_living_dead'], ['Search: moon landing', '/video/?q=moon+landing'], ['Search: cats', '/video/?q=cats'], ['Verse films', '/video/?q=verse&src=verse']],
+    action: { template: '/video/?q={query}', input: 'query' } },
+]);

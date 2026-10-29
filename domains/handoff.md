@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (video and code hubs) · main · the video floor (YouTube) and the code hosting floor (GitHub) get pages: /video/ (Verse films, Wikimedia Commons and Internet Archive open video with licences credited, YouTube and other platforms through their official embeds; player with speed, quality, captions, chapters, keys, picture-in-picture; playlists, watch later, history and recommendations kept on the device; save for offline where the licence allows) and /code/ (any public GitHub repo read through its public API from the visitor's browser: tree, highlighted files, README, commits, issues, pull requests, diffs, search; Verse's review on a diff), then each floor's lane · 2026-10-26
 - Claude (markets run) · main · the finance floor (Yahoo Finance): /markets/ page, /api/markets quotes, probe and lane · 2026-10-26
 - Claude (podcasts session) · main · the podcasts floor (podcasts.apple.com): /podcasts/ (lib/podcasts.js, /api/podcasts SSRF-safe feed fetch, iTunes search and charts, player with speed/sleep/chapters/transcripts/queue/follows/OPML/offline), its probe and lane in tower-probes.mjs and lib/tower.js · 2026-10-26
 - Claude (scores session) · main · the sports floor: /scores/ tier 1 shipped (scoreboard, standings, team pages, favourites, offline copy, .ics), probe and lane; tiers 2 to 4 of the owner's list (fantasy-lite, simulators, polls, individual sports) not started · 2026-10-26 02:30 UTC
