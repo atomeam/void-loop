@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:10:26Z",
+   "subject": "shared-field: reset clears the writer names and the ready flag"
+  },
+  {
+   "at": "2026-10-29T06:07:44Z",
+   "subject": "Coder: think on Verse's own model (/api/coder), so queued jobs ship again"
+  },
+  {
+   "at": "2026-10-29T06:06:52Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:04:16Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T05:47:51Z",
    "subject": "Refresh generated files"
-  },
-  {
-   "at": "2026-10-29T05:46:45Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:46:36Z",
-   "subject": "Verse Brain mind layers: asks become goals, episodic and procedural memory, one valence, a monitor of organs that disagree, answers from…"
-  },
-  {
-   "at": "2026-10-29T05:45:17Z",
-   "subject": "Feed the churn caps to the will: churn.json from the deploy, sweep commits skipped"
   }
  ],
  "builders": {
