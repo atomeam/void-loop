@@ -178,6 +178,15 @@ test('the page opens offline: the service worker shells /fanfic/ at install and 
   assert.equal(pageCode('/fanfic/app.js'), true); assert.equal(pageCode('/fanfic/index.html'), false); assert.equal(pageCode('/pdf/merge/app.js'), true, 'the other pages keep theirs');
 });
 
+test('the page asks the server again for every file of its module before it imports it, so a deploy never runs old code under a new page', async () => {
+  const { graphOf } = await import('./preload.mjs');
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8');
+  const list = JSON.parse(html.match(/const CODE = (\[[^\]]*\]);/)[1].replace(/'/g, '"'));
+  assert.deepEqual(list, graphOf('<script type="module">import "/fanfic/app.js";</script>'), 'the list is the module and its static imports, in order');
+  assert.match(html, /CODE\.map\(\(u\) => fetch\(u, \{ cache: 'no-cache' \}\)\.catch\(\(\) => \{\}\)\)\)\.then\(\(\) => import\('\/fanfic\/app\.js'\)\)/, 'the import waits for the fresh copies; an offline fetch error still imports');
+  assert.match(html, /addEventListener\('load', \(\) => \{ Promise\.all\(CODE/, 'after the load event, so the page speed is not touched');
+});
+
 test('the index list: find narrows it by title, fandom and pen name, and the CSV export is safe in a spreadsheet', async () => {
   const list = [{ board: 'ficdw', fandom: 'Doctor Who', title: 'The Café at the End', author: 'Rose', no: 4, replies: 2, bumped: Date.UTC(2026, 9, 29) },
     { board: 'ficx', fandom: 'Adult fandom', title: '=HYPERLINK("x")', author: 'Ann, "Q"', no: 9, nsfw: true, replies: 0, bumped: 0 }];
