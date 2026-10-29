@@ -1,39 +1,42 @@
 /**
- * rps skill — Rock Paper Scissors against Verse (local, fair)
+ * rps skill — play a quick game of rock paper scissors
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "rock paper scissors", "play rps", "scissors".
+ * "rock paper scissors", "play rps", "rps".
  */
 const CHOICES = ['rock', 'paper', 'scissors'];
-const BEATS = { rock: 'scissors', paper: 'rock', scissors: 'paper' };
 
-export function isRps(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '');
-  return /^(?:play\s+)?(?:rock\s*paper\s*scissors|rps|rock\s*paper\s*scissors?)$/.test(t) ||
-    /^(?:i\s+)?(?:choose|pick|throw)\s+(?:rock|paper|scissors)$/.test(t);
+export function isRPS(text) {
+  return /^(?:please\s+)?(?:(?:play|start|open)\s+(?:a\s+)?)?(?:rock\s+paper\s+scissors|rps|rock-paper-scissors)(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const youMatch = /(?:choose|pick|throw)\s+(rock|paper|scissors)/i.exec(text);
-  const you = youMatch ? youMatch[1].toLowerCase() : CHOICES[Math.floor(Math.random() * 3)];
-  const verse = CHOICES[Math.floor(Math.random() * 3)];
-  let result = 'Tie!';
-  if (BEATS[you] === verse) result = 'You win!';
-  else if (BEATS[verse] === you) result = 'Verse wins!';
-  showPage((p) => {
-    p.innerHTML = '<h2>Rock Paper Scissors</h2><p style="font-size:22px;text-align:center">You: ' + esc(you) + '<br>Verse: ' + esc(verse) + '</p><p style="font-size:26px;font-weight:600;text-align:center;margin:16px 0">' + esc(result) + '</p><div class="sub">say “rock paper scissors” or pick one to play again</div>';
-  });
+  const update = (p, user, ai, result) => {
+    p.innerHTML = '<h2>Rock Paper Scissors</h2>' +
+      (result ? '<p style="font-size:24px;text-align:center">You: ' + esc(user) + ' — Verse: ' + esc(ai) + '</p><p style="font-size:28px;text-align:center;color:#4ef0a0">' + esc(result) + '</p>' : '') +
+      '<div style="text-align:center"><button class="g-btn rps" data-c="rock">Rock</button> <button class="g-btn rps" data-c="paper">Paper</button> <button class="g-btn rps" data-c="scissors">Scissors</button></div><div class="sub">say “rps” for a new game</div>';
+    p.querySelectorAll('.rps').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const u = btn.dataset.c;
+        const a = CHOICES[Math.floor(Math.random() * 3)];
+        let res = u === a ? 'Tie!' : (u === 'rock' && a === 'scissors') || (u === 'paper' && a === 'rock') || (u === 'scissors' && a === 'paper') ? 'You win!' : 'Verse wins!';
+        update(p, u, a, res);
+      });
+    });
+  };
+  showPage((p) => update(p));
   return 'rps';
 }
 
 export default {
   name: 'rps',
-  examples: ['rock paper scissors', 'play rps', 'I choose rock', 'scissors'],
-  nearMisses: ['what is rock paper scissors', 'rules of rps'],
-  match(lower, text) { return isRps(text); },
+  examples: ['rock paper scissors', 'play rps', 'rps', 'start rock paper scissors'],
+  nearMisses: ['what is rock paper scissors', 'scissors paper rock rules'],
+  match(lower, text) { return isRPS(text); },
   run,
   suite() {
-    const ok = isRps('rock paper scissors') && isRps('play rps') && !isRps('what is rps');
+    const ok = isRPS('rps') && isRPS('rock paper scissors') && !isRPS('what is rps');
     return { ok, got: 'match works' };
   }
 };
