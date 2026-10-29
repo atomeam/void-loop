@@ -6,7 +6,7 @@
 // The router examples that send "tell void what it got wrong" to the self skill, not look, were already tightened in #988; this is the store behind them.
 // Device-local by design (no unauthenticated endpoint takes a stranger's text). Pure over the storage handed in; the text is untrusted and is
 // stored as plain text (the card shows it with textContent/esc, never as markup).
-export const CORRECTIONS = { family: 'self', key: 'a2m.void.corrections.v1', max: 100, askMax: 160, textMax: 300 };
+export const CORRECTIONS = { family: 'self', key: 'a2m.void.corrections.v1', placedKey: 'a2m.void.corrections.placed.v1', max: 100, askMax: 160, textMax: 300 };
 
 /** plain text: control characters out, spaces collapsed, clipped. Pure. */
 export function clean(t, n) {
@@ -21,7 +21,10 @@ export function makeCorrection(input, now = Date.now()) {
   const i = input || {}, text = clean(i.text, CORRECTIONS.textMax);
   if (!text) return null;
   const at = new Date(Number.isFinite(+now) ? +now : Date.now()).toISOString();
-  return { at, ask: clean(i.ask, CORRECTIONS.askMax), skill: skillName(i.skill), wanted: clean(i.wanted, 60), text };
+  // `family`: the family of the card a reply came from, kept only when no skill is known (a calculator or article card answers without a router
+  // skill). It places the record on the heat map; it is never a skill, so it drafts no fix (hotEntry and Suggest fix read the skill alone).
+  const family = skillName(i.skill) ? '' : skillName(i.family);
+  return { at, ask: clean(i.ask, CORRECTIONS.askMax), skill: skillName(i.skill), wanted: clean(i.wanted, 60), text, ...(family ? { family } : {}) };
 }
 
 const store = (s) => { try { return s || globalThis.localStorage || null; } catch (_) { return null; } };
@@ -42,6 +45,36 @@ export function addCorrection(input, s, now = Date.now()) {
   const list = readCorrections(s).concat(c).slice(-CORRECTIONS.max);
   try { st.setItem(CORRECTIONS.key, JSON.stringify(list)); } catch (_) { return { ok: false, list: readCorrections(s) }; }
   return { ok: true, list };
+}
+
+/**
+ * One-time placing of replies kept before #1576: a reply with no skill and no family is given the family of the card it came from, when this
+ * browser's loop log still holds that ask (the newest void.page entry for the same ask at or before the reply). `familyOf(note)` turns the log's
+ * note into a family id ('' when none). Nothing else changes, and a reply whose card is not in the log stays as it is. Pure.
+ * -> { list, placed }
+ */
+export function placeByLog(list, log, familyOf) {
+  const entries = (Array.isArray(log) ? log : []).filter((e) => e && e.domain === 'void.page' && typeof e.ask === 'string');
+  let placed = 0;
+  const out = (Array.isArray(list) ? list : []).map((c) => {
+    if (!c || c.skill || c.family || !c.ask) return c;
+    const at = Date.parse(c.at), ask = clean(c.ask, CORRECTIONS.askMax).toLowerCase();
+    const hit = entries.filter((e) => clean(e.ask, CORRECTIONS.askMax).toLowerCase() === ask && !(Date.parse(e.t) > at)).pop();
+    const family = hit && typeof familyOf === 'function' ? skillName(familyOf(hit.note)) : '';
+    if (!family) return c;
+    placed++;
+    return { ...c, family };
+  });
+  return { list: out, placed };
+}
+
+/** run placeByLog once on this device (CORRECTIONS.placedKey marks it done) and keep the result. Writes only CORRECTIONS.key and that mark. */
+export function placeUnplacedOnce(s, log, familyOf) {
+  const st = store(s); if (!st) return 0;
+  try { if (st.getItem(CORRECTIONS.placedKey)) return 0; } catch (_) { return 0; }
+  const { list, placed } = placeByLog(readCorrections(st), log, familyOf);
+  try { if (placed) st.setItem(CORRECTIONS.key, JSON.stringify(list)); st.setItem(CORRECTIONS.placedKey, '1'); } catch (_) { return 0; }
+  return placed;
 }
 
 /** the asks a skill answered lately, newest first, one per ask, from the loop log ([{ ask, note: 'skill:x' }]). Pure. */
@@ -106,14 +139,16 @@ export function familyMap(fam) {
 
 /**
  * The correction log: the kept corrections grouped by the family of the skill that answered, biggest group first (ties by name), each group's
- * newest correction first. A correction whose skill is unknown (or not in the families file) goes to the group "unplaced". Counts are counts of
+ * newest correction first. A correction with no skill but a `family` (a reply from a card no router skill answered) goes to that family when the
+ * families file has it. A correction whose skill is unknown (or not in the families file) goes to the group "unplaced". Counts are counts of
  * what is kept; nothing is estimated. Pure.
  */
 export function groupByFamily(list, fam) {
   const map = familyMap(fam), groups = new Map();
+  const fams = new Map(((fam && fam.families) || []).filter((f) => f && f.id).map((f) => [String(f.id), { id: String(f.id), name: String(f.name || f.id) }]));
   for (const c of Array.isArray(list) ? list : []) {
     if (!c || typeof c.text !== 'string' || !c.text) continue;
-    const f = c.skill && map.get(c.skill) || { id: 'unplaced', name: 'Not placed in a family' };
+    const f = c.skill && map.get(c.skill) || !c.skill && c.family && fams.get(c.family) || { id: 'unplaced', name: 'Not placed in a family' };
     if (!groups.has(f.id)) groups.set(f.id, { id: f.id, name: f.name, items: [] });
     groups.get(f.id).items.unshift(c);
   }

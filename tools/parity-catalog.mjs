@@ -100,11 +100,6 @@ export const CATALOG = {
     ['email-events', 'Events', 'Events added from your email', T('email|gmail'), T('from (your )?(e-?mail|inbox)'), null, ['Google Calendar', 'outlook.live.com']],
     ...COMMON,
   ],
-  '/prizes/': [
-    ['spin', 'Games', 'Spin a wheel for prizes', T('spin|wheel'), T('Spin'), null, 'core'],
-    ['rewards', 'Games', 'Crypto rewards and gambling', T('rewards|crypto|gambling'), T('Crypto Rewards'), null, 'core'],
-    ['account', 'Accounts', 'An account that keeps your things on every device', T('sign ?in|log ?in|create (an |your )?account'), T('Blockchain|Crypto Rewards'), T('localStorage'), 'core'],
-  ],
   '/recipes/': [
     ['volume', 'Content', 'As much content as the original (the counts are not compared yet)', null, null, null, 'core', 'unreviewed'],
     ['search', 'Find', 'Search recipes by name', T('search'), T('By name'), null, 'core'],
@@ -564,6 +559,26 @@ export const CATALOG = {
     ['archives', 'Community', 'Several archives by subject under one site', T('archive'), T('>Start a fandom<'), null, ['sycophanthex.com']],
     ['community', 'Community', 'Forums and a help desk', T('forum|help desk'), T('Help desk: questions and answers'), null, ['sycophanthex.com']],
     ['site-pages', 'About', 'Terms, disclaimer, credits and contact pages', T('terms|disclaimer|credits|contact'), T('\\bterms\\b[\\s\\S]{0,200}\\bcredits\\b'), T('>Privacy<|atom@a-to-mind\\.com'), ['sycophanthex.com']],
+    ...COMMON,
+  ],
+  // the file converter (2026-10-29): onlineconverter.com, studied by hand from its home page (read through a fetch; this build network gets a 403
+  // from the site, so no live scan). Its 106 tools are listed one by one in lib/converter.js with Verse's own status; these rows are its groups.
+  // Verse writes no video and no compressed sound, so those rows stay missing or partial until it does: no row is made to pass.
+  '/converter/': [
+    ['video-convert', 'Convert', 'Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV', T('video converter'), T('VideoEncoder|MediaRecorder'), null, ['onlineconverter.com']],
+    ['audio-convert', 'Convert', 'Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA', T('audio converter'), T('lamejs|mp3Encoder'), T('aiff\\(s\\.channels, s\\.rate\\)'), ['onlineconverter.com']],
+    ['image-convert', 'Convert', 'Image converters: JPG, BMP, DNG, GIF, PDF, PNG, TIFF and WEBP', T('image converter'), T('dngOf|writeDng'), T('tiff\\(pixels\\(c\\)\\)'), ['onlineconverter.com']],
+    ['ebook-convert', 'Convert', 'Ebook converters: EPUB, AZW, DOCX, HTML, MOBI, PDF, RTF and TXT', T('ebook converter'), T('mobiOf|azwOf'), T('epubOf\\('), ['onlineconverter.com']],
+    ['document-convert', 'Convert', 'Document converters (PDF, DOCX, HTML, TXT) that keep the layout', T('document converter'), T('keepLayout|layoutOf'), T('docxBytesOf\\('), ['onlineconverter.com']],
+    ['unit-convert', 'Convert', 'Unit converters: weight, length, area, speed, temperature, time zone, time, currency and volume', T('unit converter'), T("UNIT\\('Area'"), null, ['onlineconverter.com']],
+    ['audio-tools', 'Edit', 'Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair', T('cut mp3|merge audio'), T('denoise|noiseReduce'), T('removeSilence\\('), ['onlineconverter.com']],
+    ['video-tools', 'Edit', 'Video tools: cut, merge, resize, rotate, compress, watermark, text, speed and 11 more', T('cut video|merge video'), T('VideoEncoder|MediaRecorder'), null, ['onlineconverter.com']],
+    ['image-tools', 'Edit', 'Image tools: blur, brighten, compress, cut, resize, rotate, watermark, merge, GIF speed, a frame from a video, background removal', T('resize image|merge images'), T('removeBackground'), T("'merge-images'"), ['onlineconverter.com']],
+    ['ebook-tools', 'Edit', 'Ebook tools: change an EPUB cover, compress AZW3, CBZ, CBR and EPUB, merge EPUB', T('epub'), T('epubCover|mergeEpub'), null, ['onlineconverter.com']],
+    ['pdf-tools', 'Edit', 'PDF tools: add an image, compress, merge and split', T('pdf'), T("'pdf-image'"), null, ['onlineconverter.com']],
+    ['free', 'About', 'Free, nothing to download or install', T('free|install'), T('nothing to install'), null, ['onlineconverter.com']],
+    ['devices', 'About', 'On a computer or a phone, anytime', T('cell phone|anywhere'), T('on a computer or a phone'), null, ['onlineconverter.com']],
+    ['no-upload', 'About', 'Your files stay yours (the site uploads them to its server; Verse does the work on the device)', T('uploaded'), T('no file is uploaded'), null, ['onlineconverter.com']],
     ...COMMON,
   ],
 };

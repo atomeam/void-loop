@@ -2235,6 +2235,29 @@
   "totals": {
     "asked": 239,
     "built": 236,
-    "through": "2026-10-28T22:29:00Z"
+    "through": "2026-10-28T22:29:00Z",
+    "open": [
+      {
+        "ask": "Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins.",
+        "at": "2026-10-17T12:33:00Z",
+        "kind": "build",
+        "small": true,
+        "times": 1
+      },
+      {
+        "ask": "Absorb every repository on the account into the core code",
+        "at": "2026-10-28T22:29:00Z",
+        "kind": "daily",
+        "small": false,
+        "times": 6
+      },
+      {
+        "ask": "Create a utility to check the watertightness of STL print files in the browser",
+        "at": "2026-10-28T22:29:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 6
+      }
+    ]
   }
 }

@@ -111,16 +111,16 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
+| 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA | partial | onlineconverter.com |
+| 1 | /converter/ | Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair | partial | onlineconverter.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
 | 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
 | 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
 | 1 | /weather/ | Climate records | missing | weather.gov |
 | 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
-| 1 | /prizes/ | Crypto rewards and gambling | missing | wheelofgold.com |
 | 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
 | 1 | /convert/unit-converter-2/ | Currency | missing | convertunits.com |
 | 1 | /convert/ | Currency | missing | unitconverters.net |
 | 1 | /calendar/ | Dark mode | missing | calendar.online |
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
 | 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
-| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |

@@ -1,7 +1,7 @@
 /**
  * verse-brain skill — Verse Brain, the one entity Grok's frontier drafts became (owner, 2026-10-29: "build all the unique builds as a
  * combination and that can be verse"; "the grok builds combined can be verse brain"; "combine all the builds into one entity"; "all the
- * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, sixteen organs, attention, imagination, the
+ * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, eighteen organs, attention, imagination, the
  * self); lib/brain-drafts.json says which frontier drafts in atomeam/a-to-mind.com each organ is made from, and why the rest were left out.
  * The card shows the workspace live: the tissue tinted by the rhythm's phase, surprise in red, the memory's expectation in violet, the
  * attention spotlight, the swarm, the membrane. The words you type, what the gestures organ named, what the memory expects and what the will
@@ -20,6 +20,7 @@ import { fieldSkill } from '../lib/field-stage.js';
 import * as B from '../lib/brain.js';
 import { GW, GH, RG, RH, KIND, REGIONS_X, REGIONS_Y } from '../lib/brain-workspace.js';
 import { hostBrain } from '../lib/brain-bridge.js';
+import { ensureHost } from '../lib/brain-host.js';
 import { MODES, BRAIN } from '../lib/mind-field-modes.js';
 import { loadKept, keep, forget } from '../lib/brain-store.js';
 import * as Field from '../lib/shared-field.js';
@@ -34,7 +35,13 @@ function paintOffFor(s) { let o = paintOffs.get(s); if (!o) { o = Object.assign(
 function offFor(s) { let o = offs.get(s); if (!o) { o = Object.assign(document.createElement('canvas'), { width: GW, height: GH }); offs.set(s, o); } return o; }
 const SPECIES = ['#7fd8ff', '#ffb36b', '#b99bff'];
 
-function create(seed) { return { b: B.createBrain(seed, { phone: phone() }), level: 0, seed }; }
+// the card shows the page's one brain (lib/brain-host.js): the one that has heard every ask on every Verse page. Opening the card adopts it;
+// Reset while the card is open gives the host a new brain with what this device kept. Without a window (tests) the card has its own.
+const hostOf = () => { try { return typeof window === 'undefined' ? null : ensureHost(); } catch (_) { return null; } };
+function create(seed) {
+  const h = hostOf(); if (!h) return { b: B.createBrain(seed, { phone: phone() }), level: 0, seed };
+  return { b: h.adopted ? h.reset(seed) : h.brain, level: 0, seed, hosted: true };
+}
 // the shared field (lib/shared-field.js, also skills/field.js): one link per page; the brain feels other skills' slots and publishes its ideas
 let link = null; const fieldLink = () => link || (link = linkBrain(Field));
 const felt = new WeakMap(); // what the brain felt last tick, per state, for the drawing
@@ -71,6 +78,12 @@ function drawField(g, s, W, H) {
 function draw(g, s, W, H) {
   const b = s.b, N = b.ws.nodes;
   drawField(g, s, W, H);
+  // the grower's plant (F453): stems from its grammar, bent toward the focus, in green
+  const gr = b.board.grow; if (gr && gr.segs && gr.segs.length) {
+    g.strokeStyle = 'rgba(150,230,120,.7)'; g.lineWidth = 1; g.beginPath();
+    for (let k = 0; k + 3 < gr.segs.length; k += 4) { g.moveTo(gr.segs[k] * W, gr.segs[k + 1] * H); g.lineTo(gr.segs[k + 2] * W, gr.segs[k + 3] * H); }
+    g.stroke();
+  }
   // the attention spotlight
   const fx = b.focus.x * W, fy = b.focus.y * H; g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 1.5; g.setLineDash([4, 4]);
   g.beginPath(); g.arc(fx, fy, 26, 0, 6.2832); g.stroke(); g.setLineDash([]);
@@ -99,7 +112,8 @@ function status(s) { return B.selfSays(s.b).slice(0, 2).join(' '); }
 
 // ---- the card's own parts: orbs, words, Good, Listen, the organ table, the bridge --------------------------------------------------------
 function mount({ el, q, th, cv, tick, redraw, still }) {
-  const S = () => th.state, frame = q('.ff-frame');
+  const S = () => th.state, frame = q('.ff-frame'), host = S().hosted ? hostOf() : null;
+  if (host) host.adopted = true;
   let DRAFTS = { byOrgan: {} }; // the draft map (lib/brain-drafts.json, written by tools/brain-drafts.mjs), fetched only when a card opens
   frame.style.position = 'relative';
   const layer = document.createElement('div'); layer.className = 'vb-orbs'; layer.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden';
@@ -113,10 +127,13 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   // the shared field, said in words on the card: what it feels from the other mind cards, and what it holds there of its own
   const fieldLine = document.createElement('div'); fieldLine.className = 'vb-field'; fieldLine.setAttribute('aria-live', 'polite'); fieldLine.style.cssText = 'font-size:12px;margin-top:4px;color:rgb(255,170,230)';
   said.insertAdjacentElement('afterend', fieldLine);
+  // how well it guesses the visitor's next ask on Verse (the asks layer, lib/brain-mind.js heardAsk): counted on this device, never sent
+  const askLine = document.createElement('div'); askLine.className = 'vb-asks'; askLine.style.cssText = 'font-size:12px;margin-top:4px;color:var(--muted,#8a8a8a)';
+  fieldLine.insertAdjacentElement('afterend', askLine);
   const det = document.createElement('details'); det.className = 'vb-organs'; det.style.cssText = 'font-size:12px;margin-top:6px';
   det.innerHTML = '<summary>Organs: what each does and how much it runs</summary><table style="width:100%;border-collapse:collapse;margin-top:4px"><tbody></tbody></table>'
     + '<div class="vb-made" style="color:var(--muted,#8a8a8a);margin-top:4px"></div>';
-  fieldLine.insertAdjacentElement('afterend', det);
+  askLine.insertAdjacentElement('afterend', det);
   for (const n of [row, det, ...row.querySelectorAll('input,button')]) for (const ev of ['pointerdown', 'keydown']) n.addEventListener(ev, (e) => e.stopPropagation());
   const box = q('.vb-word'), listenBtn = q('.vb-listen'), tuneBtn = q('.vb-tune'), body = det.querySelector('tbody');
   const made = () => {
@@ -167,9 +184,13 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     el.dataset.utility = String(self.utility); el.dataset.gen = String(self.genome.gen); el.dataset.chosen = String(self.q); el.dataset.imagined = String(self.imagined);
     el.dataset.concepts = String(self.concepts); el.dataset.focus = String(b.focus.region); el.dataset.action = self.action; el.dataset.ticks = String(b.ticks);
     el.dataset.organs = String(B.ORGAN_IDS.length); el.dataset.episodes = String(self.episodes); el.dataset.procedures = String(self.procedures); el.dataset.wants = String(self.wants.length); el.dataset.conflicts = String(self.conflicts.length);
-    el.dataset.heard = String(b.ear.notes); el.dataset.guessed = String(b.ear.guessed); el.dataset.hits = String(b.ear.hits); el.dataset.ear = b.board.ear ? b.board.ear.note : ''; el.dataset.paintgen = String(b.painter.gen); // Listen: notes heard, guesses made and right (numbers only)
+    el.dataset.heard = String(b.ear.notes); el.dataset.guessed = String(b.ear.guessed); el.dataset.hits = String(b.ear.hits); el.dataset.ear = b.board.ear ? b.board.ear.note : ''; el.dataset.paintgen = String(b.painter.gen); el.dataset.growgen = String(b.grower.gen); el.dataset.formulagen = String(b.formula.gen); // Listen: notes heard, guesses made and right (numbers only)
     const fc = Field.census(); el.dataset.felt = String((felt.get(S()) || []).length); el.dataset.published = String(link ? link.held : 0); el.dataset.fieldOwners = Object.keys(fc.held).sort().join(',');
     const t = fieldSays(fc, +el.dataset.felt, link ? link.held : 0); if (fieldLine.textContent !== t) fieldLine.textContent = t;
+    const A = b.mind.asks; el.dataset.askGuessed = String(A.guessed); el.dataset.askHits = String(A.hits); el.dataset.askGuess = A.guess || '';
+    const a = A.guessed ? 'It guessed your next ask on Verse right ' + A.hits + ' of ' + A.guessed + ' times (' + Math.round(A.hits / A.guessed * 100) + '%)' + (A.guess ? '; next it expects "' + A.guess + '".' : '.')
+      : A.heard ? 'It has heard ' + A.heard + ' of your asks on Verse; it guesses the next one once it has seen what follows what.' : 'Ask Verse things in the box above: it learns what you ask next and guesses it.';
+    if (askLine.textContent !== a) askLine.textContent = a;
   };
 
   // words, from this card or from any other Verse page (the bridge)
@@ -185,13 +206,16 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     e.preventDefault(); const t = box.value; box.value = ''; ready.then(() => told(t));
   });
   const told = (t) => {
-    if (!el.isConnected) return; const r = B.ask(S().b, t);
+    if (!el.isConnected) return; const r = B.ask(S().b, t); if (host && !r.answer) host.told = true;
     if (r.answer) { said.textContent = r.answer.join(' '); el.dataset.answered = String(+(el.dataset.answered || 0) + 1); return; }
-    paused = false; heard(r, 'card'); if (still()) tick(20); else redraw(); place(); sync(); bridge.publish(true); save();
+    paused = false; heard(r, 'card'); if (still()) tick(20); else redraw(); place(); sync(); publish(true); save();
   };
   // every ask on the stage reaches the brain while its card is open (void.html dispatches 'void:ask' after the owner key is handled)
-  const onAsk = (e) => { const t = e && e.detail && e.detail.text; if (!t || !el.isConnected || B.ask === undefined) return; ready.then(() => { if (!el.isConnected) return; const r = B.ask(S().b, t); if (!r.answer && r.words.length) { paused = false; said.textContent = 'From the stage: ' + r.words.join(', ') + '.'; place(); } }); };
-  document.addEventListener('void:ask', onAsk);
+  // with a host, the host hears every ask (on every page, card open or not) and the card shows what it made of it; without one, the card does
+  const fromStage = (r) => { if (!r.answer && r.words.length) { paused = false; said.textContent = 'From the stage: ' + r.words.join(', ') + '.'; place(); } };
+  const onAsk = (e) => { const t = e && e.detail && e.detail.text; if (!t || !el.isConnected) return; ready.then(() => { if (el.isConnected) fromStage(B.ask(S().b, t)); }); };
+  if (!host) document.addEventListener('void:ask', onAsk);
+  const offHost = host ? host.on((type, d) => { if (!el.isConnected) return; if (type === 'ask') fromStage({ words: d.words }); else if (type === 'words') heard({ words: S().b.concepts.words.slice(-3), related: [], surprise: S().b.concepts.lastBits }, d.from); }) : () => {};
   q('.vb-good').addEventListener('click', () => { const n = B.reward(S().b); const a = S().b.board.action; said.textContent = 'Rewarded ' + (a ? '"' + a.name + '"' : 'what it did last') + '. The will learns from it at its next choice (' + n + ' waiting).'; save(); });
 
   // Listen: the microphone's loudness and the pitch of a hum, as numbers (never recorded, never sent). Pitch is read every 25 ms so a
@@ -244,15 +268,17 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 
   // what it learned, kept on this device: loaded now, put back into a new brain after Reset, saved every 5 seconds and when the page hides
   let kept = null, bound = null, saving = false, paused = false; el.dataset.kept = 'none';
-  const bind = () => { const b = S().b; if (bound === b) return; bound = b; if (kept) el.dataset.kept = B.loadKnowledge(b, kept).join(',') || 'none'; if (verse) B.knowVerse(b, verse); };
+  const bind = () => { const b = S().b; if (bound === b) return; bound = b; if (kept && !S().hosted) el.dataset.kept = B.loadKnowledge(b, kept).join(',') || 'none'; if (verse) B.knowVerse(b, verse); };
   // what it is thinking, held in the shared field: given back after a reload (or when its card opens again) to a brain with nothing of its own
   // yet, never over ideas it already has, and never after Reset. After Forget nothing is kept until it is told something again.
   let restored = false; el.dataset.restored = 'none';
   const release = Field.hold('verse-brain', {
     save: () => (paused || !el.isConnected ? null : B.workingOf(S().b)),
     load: (w) => {
-      if (restored || !B.isCold(S().b)) return false;
+      const here = !!host && host.brain === S().b && host.onlyHere(); // the page's own brain, holding only this page's asks
+      if (restored || !(B.isCold(S().b) || here)) return false;
       const done = B.loadWorking(S().b, w); if (!done.length) return false;
+      if (here) host.warm(S().b);
       restored = true; el.dataset.restored = done.join(',');
       const words = S().b.concepts.words; said.textContent = 'Back from before the reload: ' + (words.length ? words.slice(-6).join(', ') : 'its workspace and its spotlight') + '.';
       place(); sync(); return true;
@@ -265,12 +291,14 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   const onHide = () => { if (document.visibilityState === 'hidden') save(); };
   document.addEventListener('visibilitychange', onHide); addEventListener('pagehide', save);
   loadKept().then((k) => { if (k && k.v === 1) { kept = k; bound = null; bind(); } }).catch(() => {});
+  if (host) host.ready.then(() => { if (host.restored.length && el.dataset.kept === 'none') el.dataset.kept = host.restored.join(','); }).catch(() => {});
   let verse = null; fetch('/self.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) { verse = j; el.dataset.semantic = String(B.knowVerse(S().b, j)); } }).catch(() => {});
   q('.vb-forget').addEventListener('click', async () => {
-    kept = null; paused = true; await forget(); await Field.forgetKept(); const b = S().b; b.mind.episodes = []; b.mind.procedures = []; b.mind.pref.fill(0); el.dataset.kept = 'none'; el.dataset.held = 'false';
-    said.textContent = 'Forgot what it kept on this device: its moments, its winning genomes, its preferences and what it was thinking. A reload starts it fresh, and it keeps nothing new until you tell it something.';
+    kept = null; paused = true; if (host) host.forgot(); await forget(); await Field.forgetKept(); const b = S().b; b.mind.episodes = []; b.mind.procedures = []; b.mind.pref.fill(0); el.dataset.kept = 'none'; el.dataset.held = 'false';
+    said.textContent = 'Forgot what it kept on this device: its moments, its winning genomes, its preferences, your asks and what it was thinking. A reload starts it fresh, and it keeps nothing new until you tell it something.';
   });
-  const bridge = hostBrain(B, () => (el.isConnected ? S().b : null), { onWords: (t, from) => { heard({ words: S().b.concepts.words.slice(-3), related: [], surprise: S().b.concepts.lastBits }, from); place(); } });
+  const bridge = host ? { publish: (f) => host.publish(f), close() {} } : hostBrain(B, () => (el.isConnected ? S().b : null), { onWords: (t, from) => { heard({ words: S().b.concepts.words.slice(-3), related: [], surprise: S().b.concepts.lastBits }, from); place(); } });
+  const publish = (f) => bridge.publish(f);
   let n = 0;
   const every = setInterval(() => {
     if (!el.isConnected) { clearInterval(every); bridge.close(); stopMic(); end(); return; }
@@ -278,12 +306,12 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   }, 100);
   place(); table(); sync(); bridge.publish(true); ready = Field.recall().catch(() => []);
   fetch(new URL('../lib/brain-drafts.json', import.meta.url)).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && j.drafts) { DRAFTS = j; made(); } }).catch(() => {});
-  function end() { release(); document.removeEventListener('void:ask', onAsk); document.removeEventListener('visibilitychange', onHide); removeEventListener('pagehide', save); }
+  function end() { release(); offHost(); if (host && host.brain === S().b) host.adopted = false; document.removeEventListener('void:ask', onAsk); document.removeEventListener('visibilitychange', onHide); removeEventListener('pagehide', save); }
   return { dispose() { save().finally(end); clearInterval(every); bridge.close(); stopMic(); } };
 }
 
 const idea = {
-  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · sixteen organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
+  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · eighteen organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
   // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
   modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
@@ -291,11 +319,24 @@ const idea = {
   how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. With Listen on, hum to it: it hears the notes and guesses your next one. With no microphone, Play a tune plays it Frere Jacques to hear instead. Every action is imagined before it is taken, and checked against moments it remembers.'
 };
 
-export default fieldSkill({
+export { idea }; // the card's own parts, for tools/brain-host.test.mjs
+const skill = fieldSkill({
   name: 'verse-brain',
   words: "verse brain|verse'?s brain|your brain|your mind|brain of verse|how (?:do )?you think|what are you thinking(?: about)?|(?:verse'?s\\s+)?shared field|the shared field|working memory",
   examples: ['verse brain', 'show me your brain', 'your brain', 'how do you think', 'what are you thinking about', 'show the shared field'],
   nearMisses: ['add a brain', 'summon a zombie and a brain', 'brain teaser', 'mind field', 'what do you think of this song'],
   idea,
-  say: "My brain, live: one workspace that sixteen organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
+  say: "My brain, live: one workspace that eighteen organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
 });
+// "what are you thinking (about)?" opens the card and is answered in words by the brain itself, from the state it is in after hearing the
+// visitor's asks (lib/brain-host.js answer): what it attends to, what it chose and its goals. Any other ask opens the card as before.
+export default {
+  ...skill,
+  async run(text, api) {
+    let said = null; const quiet = Object.create(api); quiet.say = (t) => { said = t; };
+    const r = await skill.run(text, quiet); if (r === 'none') return r;
+    const h = hostOf(), a = h && /^what (?:are you|is your brain) (?:thinking|doing)/i.test(String(text || '').trim()) ? h.answer(String(text).trim().replace(/\s+about$/i, '').replace(/[?!.]*$/, '?')) : null;
+    if (a) api.say(a); else if (said != null) api.say(said);
+    return r;
+  }
+};

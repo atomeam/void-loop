@@ -92,6 +92,8 @@ const LIBRARY_GAP = 'at least ' + RIVAL_N.toLocaleString('en-US') + ' calculator
 // the Writing Room's share link for a draft (lib/fanfic.js shareHash): base64url of the UTF-8 JSON { t: title, x: text }, after #room=
 const roomHash = (t, x) => 'room=' + Buffer.from(JSON.stringify({ t, x })).toString('base64url');
 const FIC_TITLE = 'The gate counts a draft', FIC_TEXT = WC_TEXT + '\n\n' + "Hermione's half-blood friend didn't wait.";
+// a rap carried whole in a /rap/ link (the music: neuralframes.com probe and journeys): written for the gate, so the page opens it with no model call
+export const RAP_LINK = "/rap/?t=pizza&s=boom+bap&m=confident&f=steady&v=first&r=Title%3A+Slice+of+the+Night%0A%5BVerse+1%5D%0AI+fold+a+slice+in+half+and+let+the+cheese+hang+low%0AThe+oven+running+hot%2C+the+street+is+full+of+snow%0APepperoni+circles+stacked+like+records+on+a+shelf%0AI+never+share+the+crust%2C+I+keep+it+for+myself%0AThe+box+is+on+my+knees%2C+the+steam+is+in+the+air%0AThe+radio+is+loud%2C+I+do+not+have+a+care%0AA+little+extra+garlic%2C+basil+on+the+side%0AI+take+a+bite+of+summer+on+a+winter+ride%0A%5BHook%5D%0APizza+in+the+night%2C+pizza+in+the+light%0AEvery+single+slice%2C+I+hold+it+tight%0APizza+on+the+go%2C+pizza+on+the+low%0AEvery+time+I+eat%2C+I+steal+the+show%0A%5BVerse+2%5D%0AThe+dough+is+spinning+round+like+vinyl+on+a+deck%0AThe+chef+is+throwing+flour+like+confetti+at+a+check%0AI+order+one+large%2C+then+I+order+one+more%0AThe+driver+knows+my+name+and+waves+from+the+door%0AMozzarella+melting+like+the+stars+across+the+sky%0AI+count+a+dozen+toppings+and+I+never+ask+why%0AThe+last+piece+on+the+plate+is+a+trophy+in+my+hand%0APizza+is+the+only+crown+that+every+kid+can+stand";
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -655,7 +657,7 @@ export const PROBES = Object.freeze({
       ['no account', /no account/i],
     ],
     askParts: {
-      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['a real registry check (RDAP)', /asks the registry itself \(RDAP/], ['the result line', /whether it is registered/]],
+      'domain search': [['domain input', /Domain search/], ['search control', /\bSearch\b/], ['a real registry check (RDAP)', /asks the registry of every ending[\s\S]{0,120}\bRDAP\b/], ['the result line', /whether it is registered/]],
       'tiered plans': [['Small plan', /Small/], ['Medium plan', /Medium/], ['Large plan', /Large/], ['Norwegian servers', /Servere i Norge/]],
       'capacity sizing': [['requests per second', /requests\/s/i], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/]],
       'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/]],
@@ -668,6 +670,54 @@ export const PROBES = Object.freeze({
       ['memory', /\bRAM\b/], ['SLA', /SLA/], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],
       ['TLS 1.3', /TLS 1\.3/], ['no account', /no account/i], ['works offline', /works offline/i],
       ['back to Verse', /Back to Verse/],
+    ],
+  },
+  // wheelroot.com (2026-10-29): "Drawing Fundamentals" (line, shape, proportion, shading; daily exercises; see like an artist; progress you can see),
+  // a course page whose "Begin the course" button goes nowhere. The ask opens a shared drawing: a straight line laid dot to dot, which is 100.
+  'wheelroot.com': {
+    site: 'https://wheelroot.com/', verse: '/learn-to-draw/',
+    ask: { verse: '/learn-to-draw/?d=line&s=14461e461o461y4628462i462s4632463c463m463w4646464g464q4650465a465k465u4664466e466o466y467846' },
+    truth: [
+      ['a straight line laid dot to dot scores 100', /Score: 100 of 100/],
+      ['its distance from the line, measured (0.0 px)', /0\.0 px from the line on average/],
+      ['how much of the way it covers, measured (100%)', /100% of the way covered/],
+      ['the shared drawing scored again on open', /Scored again from the link/],
+    ],
+    askParts: {
+      'the four fundamentals': [['line', /\bLine\b/], ['shape', /\bShape\b/], ['proportion', /\bProportion\b/], ['shading', /\bShading\b/]],
+      'daily exercises': [['a drill of the day', /Today's drill/], ['a streak', /Streak: \d+/], ['short drills', /8 short drills/]],
+      'see like an artist': [['draw from memory', /Draw it from memory/], ['judge by eye', /Find the middle/], ['a circle by eye', /A circle by eye/]],
+      'progress you can see': [['first try and best', /first try and best/i], ['a score for each drill', /of 100/], ['how each drill is scored', /How each drill is scored/]],
+    },
+    facts: [
+      ['a course to begin', /Begin the course/], ['line', /\bLine\b/], ['shape', /\bShape\b/], ['proportion', /\bProportion\b/], ['shading', /\bShading\b/],
+      ['daily exercises', /Today's drill/], ['observation (drawing from memory)', /Draw it from memory/], ['progress you can see', /first try and best/i],
+      ['absolute beginners', /absolute beginners/i], ['no talent required', /No talent needed/i], ['a few minutes a day', /a few minutes a day/i],
+      ['no account', /No account/], ['no cookies', /no cookies/i], ['works offline', /works offline/i], ['back to Verse', /Back to Verse/],
+    ],
+  },
+  // onlineconverter.com (the tower target since 2026-10-29), against /converter/. The site turns this network away (403), so nothing here is
+  // read from it now: the facts are its own features as its home page showed them on 2026-10-29 (domains/targets/onlineconverter.json). A
+  // group Verse cannot do counts only when Verse does some of it: a group whose header says every tool is 'not on Verse yet' is not a match,
+  // so the video group (27 of 27 not on Verse) never counts for Verse. The ask: 'epub to txt' finds the tool, opens it, and says it is on the page.
+  'onlineconverter.com': {
+    site: 'https://www.onlineconverter.com/', verse: '/converter/',
+    ask: { verse: '/converter/?q=epub%20to%20txt' },
+    truth: [
+      ['the tool found for the ask', /EPUB to TXT/],
+      ['the tool opened, ready for a file', /Ebook to TXT/],
+      ['it says the tool is on the page', /TXT \(ebook\)\s*\n\s*On this page/],
+      ['every tool counted, worked out from the list (106)', /106 tools: \d+ on this page, \d+ on another Verse page, \d+ in part, \d+ not on Verse yet/],
+    ],
+    askParts: {
+      'the six groups': ['Video', 'Audio', 'Image', 'Ebook', 'Document', 'Unit'].map((g) => [g.toLowerCase() + ' tools Verse does', { test: (t) => new RegExp('\\b' + g + '\\b', 'i').test(t) && !new RegExp('\\b' + g + ' \\((\\d+)\\)\\s*\\n+\\s*\\1 not on Verse yet\\.').test(t) }]),
+    },
+    facts: [
+      ['a video converter', { test: (t) => /\bvideo\b/i.test(t) && !/\bVideo \((\d+)\)\s*\n+\s*\1 not on Verse yet\./.test(t) }],
+      ['an audio converter', /\baudio\b|\bsound\b/i], ['an image converter', /\bimage\b|\bpictures?\b/i], ['an ebook converter', /\bebooks?\b|\bEPUB\b/i],
+      ['a document converter', /\bdocuments?\b|\bDOCX\b|\bPDF\b/], ['a unit converter', /\bunits?\b/i],
+      ['free', /\bfree\b|\bno account\b/i], ['nothing to install', /nothing to install|no (?:software|app) to install/i],
+      ['on a computer or a phone', /computer or (?:a )?(?:cell )?phone|any device/i], ['encrypted files named as not supported', /encrypted/i],
     ],
   },
   emojis: {
@@ -809,6 +859,23 @@ export const PROBES = Object.freeze({
     truth: [['C major is C E G', /\bC E G\b/], ['C major scale C D E F G A B', /C D E F G A B/], ['the open C chord shape x 3 2 0 1 0', /x 3 2 0 1 0/], ['Am (vi) among the chords of C major', /\bvi\b[\s\S]{0,12}\bAm\b/]],
     askParts: { 'chord finder': [['a chord finder', /chord finder/i], ['inversions', /inversion/i], ['naming a chord from notes', /which chord is this/i]], 'scale finder': [['a scale finder', /scale finder/i], ['Dorian', /\bdorian\b/i], ['the notes of the scale', /C D E F G A B/]], 'guitar and piano shapes': [['guitar fingerings', /guitar fingerings/i], ['an open shape', /x 3 2 0 1 0/], ['a piano keyboard', /piano keyboard/i]], 'chords in a key': [['roman numerals', /\bvii°/], ['the circle of fifths', /circle of fifths/i], ['progressions', /progressions/i]] },
     facts: [['chord finder', /chord finder/i], ['scale finder', /scale finder/i], ['guitar fingerings', /guitar fingerings/i], ['a piano keyboard', /piano keyboard/i], ['inversions', /inversion/i], ['a chord named from notes', /which chord is this/i], ['chords in a key', /chords in this key/i], ['seventh chords', /seventh chords/i], ['progressions', /progressions/i], ['the circle of fifths', /circle of fifths/i], ['a transposer', /transpose/i], ['plays the chord', /play the chord/i]],
+  },
+  // neuralframes.com's rap lyrics generator (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is"): topic,
+  // style, flow, mood, perspective and words to include, then two verses and a hook. The ask opens a rap carried whole in its link (RAP_LINK, written for
+  // this probe, never shown as the page's own), so no model is called and the truths are counted by Verse alone: 20 bars in 3 parts, 18 ending on a
+  // rhyme, boom bap at 90 BPM (lib/rap.js, checked in tools/rap.test.mjs).
+  'music: neuralframes.com': {
+    site: 'https://www.neuralframes.com/tools/rap-lyrics-generator', verse: '/rap/',
+    ask: { verse: RAP_LINK },
+    truth: [['the rap opened from its link', /Opened from its link, exactly as it was written/], ['20 bars in 3 parts', /20 bars in 3 parts/], ['18 of 20 bars rhyme at the end', /18 of 20 bars end on a rhyme/], ['boom bap at 90 BPM', /Boom bap · confident · 90 BPM/]],
+    askParts: {
+      'rap styles': [['boom bap', /Boom bap/i], ['trap', /\bTrap\b/i], ['drill', /\bDrill\b/i], ['melodic', /\bMelodic\b/i], ['conscious', /\bConscious\b/i]],
+      'mood and flow': [['moods', /Confident[\s\S]*Hungry[\s\S]*Reflective[\s\S]*Party[\s\S]*Gritty/], ['flows', /Double time/], ['perspective', /First person/], ['words to work in', /Words or ad-libs to work in/]],
+      'verses and hook': [['a first verse', /Verse 1/i], ['a hook', /\bHook\b/i], ['a second verse', /Verse 2/i], ['the rhyme scheme', /end on a rhyme/]],
+      'perform it': [['perform over a beat', /Perform it/], ['rap it yourself', /Rap it yourself/], ['save the beat', /Save the beat/], ['copy the lyrics', /Copy the lyrics/]],
+    },
+    facts: [['a topic', /What should the rap be about/], ['styles', /Boom bap/], ['moods', /Confident/], ['flows', /Laid back/], ['perspective', /Perspective/], ['words to include', /Words or ad-libs/], ['write', /Write my rap/],
+      ['verses and a hook', /\bHook\b/i], ['copy the lyrics', /Copy the lyrics/], ['another take', /Another take/], ['share the whole rap', /Share this rap/], ['perform it', /Perform it/], ['save the beat', /Save the beat/], ['no account', /no account/i], ['back to Verse', /Back to Verse/]],
   },
   podcasts: {
     site: 'https://podcasts.apple.com/', verse: '/podcasts/?show=verse&ep=ep1',

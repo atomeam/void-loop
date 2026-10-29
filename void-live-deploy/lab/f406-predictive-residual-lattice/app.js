@@ -1,0 +1,163 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const hudRes = document.getElementById('res');
+const hudConf = document.getElementById('conf');
+const hudGen = document.getElementById('gen');
+const portalsEl = document.getElementById('portals');
+
+let W, H, gridW=80, gridH=50, cellW, cellH;
+const field = new Float32Array(gridW*gridH);
+const next = new Float32Array(gridW*gridH);
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  cellW = W / gridW;
+  cellH = H / gridH;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Pointer history for prediction
+const hist = [];
+let px=W/2, py=H/2, vx=0, vy=0;
+canvas.addEventListener('pointermove', e => {
+  const dx = e.clientX - px, dy = e.clientY - py;
+  vx = vx*0.7 + dx*0.3; vy = vy*0.7 + dy*0.3;
+  px = e.clientX; py = e.clientY;
+  hist.push({x:px, y:py, t:performance.now()});
+  if (hist.length > 12) hist.shift();
+  // seed energy
+  const gx = Math.floor(px / cellW), gy = Math.floor(py / cellH);
+  if (gx>=0 && gx<gridW && gy>=0 && gy<gridH) field[gy*gridW+gx] = Math.min(1, field[gy*gridW+gx]+0.4);
+});
+
+// Worker for evolutionary predictor
+const workerCode = `
+let pop = [];
+const POP=6, GENES=5; // bias, vx, vy, ax, ay weights
+function randGene(){ return Array.from({length:GENES},()=>Math.random()*2-1); }
+function init(){ for(let i=0;i<POP;i++) pop.push({g:randGene(), fit:0}); }
+function predict(g, state){ // state: [vx,vy,ax,ay]
+  return [g[0]+g[1]*state[0]+g[2]*state[1]+g[3]*state[2]+g[4]*state[3],
+          g[0]*0.1 + g[1]*state[1] + g[2]*state[0] + g[3]*state[3] + g[4]*state[2]];
+}
+function evolve(residual, conf){
+  // fitness: low residual + some diversity
+  pop.forEach(p => p.fit = 1/(1+residual) + Math.random()*0.05);
+  pop.sort((a,b)=>b.fit-a.fit);
+  const best = pop[0].g.slice();
+  // mutate bottom half from best
+  for(let i=POP/2;i<POP;i++){
+    pop[i].g = best.map(v => v + (Math.random()-0.5)*0.3);
+  }
+  return {best, gen: Math.floor(Math.random()*1000)};
+}
+self.onmessage = e => {
+  if(e.data.cmd==='init'){ init(); self.postMessage({best:pop[0].g}); }
+  if(e.data.cmd==='step'){
+    const res = evolve(e.data.residual, e.data.conf);
+    self.postMessage(res);
+  }
+};
+`;
+const blob = new Blob([workerCode], {type:'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let bestGenes = [0,0.8,0,0.2,0];
+let gen = 0;
+worker.onmessage = e => {
+  bestGenes = e.data.best;
+  gen = e.data.gen || gen+1;
+  hudGen.textContent = gen;
+};
+worker.postMessage({cmd:'init'});
+
+// Simple residual predictor on main for demo
+function predictNext(vx,vy){
+  const ax = 0, ay=0; // crude
+  const px = bestGenes[0] + bestGenes[1]*vx + bestGenes[2]*vy + bestGenes[3]*ax + bestGenes[4]*ay;
+  const py = bestGenes[0]*0.1 + bestGenes[1]*vy + bestGenes[2]*vx + bestGenes[3]*ay + bestGenes[4]*ax;
+  return [px, py];
+}
+
+let residual = 0.5, conf = 0.3;
+setInterval(() => {
+  // compute residual from recent hist
+  if (hist.length > 3) {
+    const last = hist[hist.length-1];
+    const prev = hist[hist.length-3];
+    const pred = predictNext(vx, vy);
+    const dx = (last.x - prev.x) - pred[0]*20;
+    const dy = (last.y - prev.y) - pred[1]*20;
+    residual = Math.min(1, Math.hypot(dx,dy)/100);
+    conf = Math.max(0, 1 - residual);
+  }
+  worker.postMessage({cmd:'step', residual, conf});
+  hudRes.textContent = residual.toFixed(2);
+  hudConf.textContent = conf.toFixed(2);
+}, 800);
+
+// Portals
+const portals = [];
+function spawnPortal(){
+  if (portals.length > 4) portals.shift().el.remove();
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'pred';
+  portalsEl.appendChild(el);
+  const p = {el, x:px, y:py, life:1};
+  portals.push(p);
+  el.onclick = () => { residual = Math.max(0, residual-0.2); conf=Math.min(1,conf+0.15); el.remove(); };
+}
+setInterval(spawnPortal, 2200);
+
+function stepField(){
+  const diff = 0.18 + residual*0.15;
+  const react = 0.05 + conf*0.08;
+  for(let y=1;y<gridH-1;y++) for(let x=1;x<gridW-1;x++){
+    const i = y*gridW+x;
+    const n = (field[i-1]+field[i+1]+field[i-gridW]+field[i+gridW])*0.25;
+    let v = field[i] + diff*(n - field[i]) + react*field[i]*(1-field[i]);
+    next[i] = Math.max(0, Math.min(1, v));
+  }
+  field.set(next);
+}
+
+function draw(){
+  stepField();
+  // draw field
+  const img = ctx.createImageData(gridW, gridH);
+  for(let i=0;i<field.length;i++){
+    const v = field[i];
+    const hue = 200 + residual*60;
+    const r = v*40, g = v*120 + conf*80, b = v*180;
+    img.data[i*4]=r; img.data[i*4+1]=g; img.data[i*4+2]=b; img.data[i*4+3]=255*v*0.8;
+  }
+  ctx.putImageData(img, 0, 0);
+  ctx.drawImage(canvas, 0, 0, gridW, gridH, 0, 0, W, H);
+
+  // update portals
+  portals.forEach((p,idx) => {
+    const pred = predictNext(vx,vy);
+    p.x += pred[0]*2 + (Math.random()-0.5)*4;
+    p.y += pred[1]*2 + (Math.random()-0.5)*4;
+    p.life *= 0.98;
+    p.el.style.left = p.x+'px';
+    p.el.style.top = p.y+'px';
+    p.el.style.transform = `scale(${0.6 + conf*0.8})`;
+    p.el.style.opacity = p.life * conf;
+    p.el.style.borderColor = `hsl(${200+residual*80},80%,60%)`;
+  });
+
+  // morph page a bit
+  document.body.style.filter = `hue-rotate(${residual*40}deg)`;
+  requestAnimationFrame(draw);
+}
+draw();
+
+document.getElementById('seal').onclick = () => {
+  const data = {genes:bestGenes, residual, conf, ts:Date.now()};
+  const hash = btoa(JSON.stringify(data)).slice(0,16);
+  localStorage.setItem('f043-seal', JSON.stringify({...data, hash}));
+  alert('Sealed: '+hash);
+};

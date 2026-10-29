@@ -89,7 +89,7 @@ test('it is an organ of the brain: hummed frames become notes in the one workspa
   assert.ok(B.selfSays(b).some((s) => /^Hearing: 21 hummed notes; it guessed the next one right \d+% of the time \([\d.]+ bits a note, [\d.]+ with no context\)\.$/.test(s)));
   assert.ok(B.embodiment(b).some((o) => o.key === 'ear' && o.organ === 'hearing'), 'the ear is an orb on the field');
   const own = Object.keys(B.selfOf(b).owner.all); assert.ok(own.includes('hearing'), 'it wrote into the workspace as hearing');
-  assert.ok(B.ORGAN_IDS.includes('hearing') && B.ORGAN_IDS.length === 16);
+  assert.ok(B.ORGAN_IDS.includes('hearing') && B.ORGAN_IDS.length === 18);
 });
 
 test('its counts are kept between visits as numbers only, and a wrong record is refused', () => {

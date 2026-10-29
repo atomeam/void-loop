@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --void-bg: #07070f;
+    --accent: #6cf;
+    --error: 0.4;
+    --energy: 0.3;
+  }
+  body {
+    margin: 0;
+    background: var(--void-bg);
+    color: #dce;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    filter: hue-rotate(calc(var(--error) * 40deg));
+    transition: filter 0.6s;
+  }
+  #canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  #hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(8,8,20,0.75);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #357;
+    max-width: 300px;
+    z-index: 20;
+    backdrop-filter: blur(6px);
+    font-size: 0.85rem;
+  }
+  #hud h1 { margin: 0 0 6px; font-size: 1.05rem; }
+  #status { line-height: 1.35; min-height: 2.6em; }
+  button {
+    background: #123;
+    color: #acf;
+    border: 1px solid #46a;
+    padding: 5px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 4px 4px 0 0;
+    font-size: 0.8rem;
+  }
+  button:hover { background: #234; }
+  #portals {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .portal {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: auto;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.4) translate(-50%, -50%);
+    transition: opacity 0.35s, transform 0.35s, border-color 0.3s;
+    background: radial-gradient(circle, rgba(102,204,255,0.35), transparent 65%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 0 4px #000;
+  }
+  .portal.active {
+    opacity: calc(0.4 + var(--energy) * 0.6);
+    transform: scale(calc(0.7 + var(--energy) * 0.5)) translate(-50%, -50%);
+  }
+  #chrome {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    padding: 8px 12px;
+    background: rgba(20,20,40,0.65);
+    border-radius: 6px;
+    font-size: 0.78rem;
+    transform: scale(calc(1 + var(--energy) * 0.2));
+    filter: blur(calc(var(--error) * 1.2px));
+    transition: transform 0.5s, filter 0.5s;
+    z-index: 15;
+    max-width: 240px;
+  }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Predictive Temporal Echo Mind · Verse lab</title>
+<meta name="description" content="Novel combination of a spatial particle field (pointer + optional DeviceOrientation), decaying temporal echo maps written by agent trajectories, and a local Web">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Predictive Temporal Echo Mind · Verse lab">
+<meta property="og:description" content="Novel combination of a spatial particle field (pointer + optional DeviceOrientation), decaying temporal echo maps written by agent trajectories, and a local Web">
+<meta property="og:url" content="https://a-to-mind.com/lab/f410-predictive-temporal-echo-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f410-predictive-temporal-echo-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <h1>Predictive Temporal Echo</h1>
+  <div id="status">Booting local mind…</div>
+  <button id="seed">Seed Field</button>
+  <button id="seal">Seal Mind</button>
+</div>
+<div id="portals"></div>
+<div id="chrome">Portals form at predicted density. Click to train the local mind.</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

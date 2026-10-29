@@ -7,6 +7,7 @@
 import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
+import { sameAsk as sameAskCard } from './self-blocks.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
@@ -84,7 +85,8 @@ export function holdAsks(asks, held, target) {
   const H = (Array.isArray(held) ? held : []).filter((h) => h && typeof h.words === 'string' && h.words.trim() && h.until && String(h.until) === String(target || ''));
   const hold = (a) => H.find((h) => h.words.toLowerCase() === String(a && a.ask).toLowerCase() || sameAsk(h.words, a && a.ask));
   const now = [], later = [];
-  for (const a of asks || []) { const h = hold(a); if (h) later.push({ ...a, held: String(h.until) }); else now.push(a); }
+  // a hold that names its frontier line (void.asks.json `frontier`) carries it, so the wants card marks that growth inbox item held too
+  for (const a of asks || []) { const h = hold(a); if (h) later.push({ ...a, held: String(h.until), ...(typeof h.frontier === 'string' && h.frontier.trim() ? { heldFrontier: h.frontier.trim() } : {}) }); else now.push(a); }
   return now.concat(later);
 }
 /** The site Versus is fighting, as a fact for the reflection (owner's card, 2026-10-29: the asks named an STL checker and "absorb every
@@ -152,6 +154,41 @@ export function followThrough(entries, ledger, links = []) {
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };
 }
+/** The one record of Verse's asks, for the self card, the wants card and its own facts alike, so its counts agree with each other
+ *  (asked by Verse, 2026-10-29; the self card said "3 waiting" beside "237 of 244 asks": 7 not built). The all-time totals
+ *  (void.asks.json `totals`, written at deploy from the whole voice log by tools/asks-link.mjs) carry the asks still open as of
+ *  `through`; an ask asked again online is matched to that list, never counted as a new one, and an old open ask the ledger
+ *  answers since moves to built. So waiting is exactly every ask not built: total = built + open.length, always. Without
+ *  `totals.open` (a file from before) it falls back to the window. answered: void.asks.json. Pure. */
+export function askRecord(entries, ledger, answered) {
+  const f = followThrough(entries, ledger, answered && answered.links);
+  const same = (a, b) => String(a || '').toLowerCase() === String(b || '').toLowerCase() || sameAsk(a, b) || sameAskCard(a, b);
+  // each window ask's newest mention: when and where it was asked, whether it was called small, the why it gave
+  const byId = new Map(); for (const e of entries || []) for (const [i, a] of (e.asks || []).entries()) if (a && a.ask) { const id = askId(e.at, i); if (!byId.has(id) || String(byId.get(id).at) < String(e.at)) byId.set(id, { e, a, id }); }
+  const item = (g) => { const m = g.ids.map((id) => byId.get(id)).filter(Boolean).sort((x, y) => String(y.e.at).localeCompare(String(x.e.at)))[0];
+    return { ...(m ? { id: m.id } : {}), ask: untag(g.ask), ...(m && m.a.why ? { why: untag(m.a.why) } : {}), small: !!(m && m.a.small), kind: m ? m.e.kind : (g.kind || ''), at: m ? m.e.at : (g.last || g.at || ''), times: g.times || 1 }; };
+  const T = answered && answered.totals && +answered.totals.asked > 0 && answered.totals.through ? answered.totals : null;
+  const order = (xs) => xs.sort((a, b) => String(b.at).localeCompare(String(a.at)) || b.times - a.times);
+  if (!T || !Array.isArray(T.open)) {
+    const newer = (g) => T && String(g.first || '') > String(T.through);
+    const open = order(f.open.map(item));
+    const total = T ? +T.asked + f.built.concat(f.open).filter(newer).length : f.total, built = T ? +T.built + f.built.filter(newer).length : f.built.length;
+    return { f, total, built, open };
+  }
+  const known = (g) => T.open.some((t) => t && same(t.ask, g.ask));
+  let builtSince = 0; const open = [];
+  for (const t of T.open) {
+    if (!t || !t.ask) continue;
+    if (f.built.some((g) => same(t.ask, g.ask))) { builtSince++; continue; } // answered by a ledger line since the log was read
+    const w = f.open.find((g) => same(t.ask, g.ask));
+    if (open.some((o) => same(o.ask, t.ask))) continue;
+    open.push(w ? item(w) : { ask: untag(t.ask), small: !!t.small, kind: t.kind || '', at: t.at || '', times: +t.times || 1 });
+  }
+  const after = (g) => String(g.first || '') > String(T.through) && !known(g); // first asked after the log, and not one it already holds
+  for (const g of f.open.filter(after)) if (!open.some((o) => same(o.ask, g.ask))) open.push(item(g));
+  const built = +T.built + builtSince + f.built.filter(after).length;
+  return { f, total: built + open.length, built, open: order(open) };
+}
 // its skill families and how far each skill is checked (tools/families.mjs, Verse's own ask of 2026-10-12: "skill-families ...
 // and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
 export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
@@ -169,11 +206,13 @@ export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
 // the decay timer (tools/families.mjs staleExperiments, asked by Verse): experiments left untested over 14 days, flagged for review only
 const staleLine = (fam, now) => { const t = Date.parse(now + 'T00:00:00Z'); const st = (fam.families || []).flatMap((f) => (f.skills || []).filter((s) => s.tier === 'experiment' && s.since && (t - Date.parse(s.since + 'T00:00:00Z')) / 864e5 > 14).map((s) => s.name)); return st.length ? ' Stale experiments flagged for review (untested over 14 days): ' + st.slice(0, 6).join(', ') + '.' : ''; };
 // the line Verse reads before it reflects: what its asks led to, so it builds on them instead of repeating them
-export function followFacts(f) {
+export function followFacts(f, rec) {
   if (!f || !f.total) return '';
+  // with the one record (askRecord) the numbers are the self card's own, so what Verse reads and what it shows agree
+  if (rec && Number.isFinite(+rec.total) && Array.isArray(rec.open)) f = { ...f, total: rec.total, open: rec.open, builtCount: rec.built };
   const b = f.built.slice(-4).map((x) => '"' + clean(x.ask, 90) + '" (' + (x.builtAt && x.first && String(x.builtAt) < String(x.first) ? 'already there since ' : 'built ') + String(x.builtAt || '').slice(0, 10) + ')').join('; ');
   const o = f.open.slice(0, 4).map((x) => '"' + clean(x.ask, 90) + '"' + (x.times > 1 ? ' (asked ' + x.times + ' times)' : '')).join('; ');
-  return 'What became of what I asked for: ' + f.built.length + ' of my ' + f.total + ' asks were built.' + (b ? ' Built: ' + b + '.' : '') + (o ? ' Still open: ' + o + '.' : '')
+  return 'What became of what I asked for: ' + (Number.isFinite(f.builtCount) ? f.builtCount : f.built.length) + ' of my ' + f.total + ' asks were built.' + (b ? ' Built: ' + b + '.' : '') + (o ? ' Still open: ' + o + '.' : '')
     + ' I do not ask again for what was built; I follow up on what is open, or say why I would drop it.';
 }
 

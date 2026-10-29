@@ -16,7 +16,7 @@ import { SELF_SITES } from './self-sites.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
-import { bytesLabel, weightBand, weightOf } from './tower-weight.js';
+import { bytesLabel, trustedControls, weightBand, weightOf } from './tower-weight.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -93,6 +93,10 @@ const HAND_FLOORS = [
   { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', page: '/store/', label: 'Shopping', glyph: '⊡', defer: true, farFuture: true, extra: ['catalogue', 'checkout', 'delivery tracking'],
     gaps: ['no product catalogue beyond Verse\'s own few items (no search across millions of products, no sellers)', 'no cart quantities, saved addresses or payment of its own (checkout hands off to the shop partner)', 'no order history, delivery tracking or returns', 'no reviews, ratings or questions from buyers', 'design polish measured worse (31 defects vs 2)'],
     plan: 'after the small single-purpose sites: first a real product search over open catalogues with price and stock shown, then a cart and order history kept in the browser, then tracking for orders placed elsewhere (carrier numbers), then reviews; each step ships only when its journey passes' },
+  // team chat (owner, 2026-10-29: "verse should reverse engineer and create its own version of slack", "so it can bring in lots of agents and
+  // constantly keep all of them busy itself"): /team/, channels, threads, mentions, reactions, search and presence with agents as members and
+  // Verse handing each idle agent its next job. A giant, so deferred behind the small sites like the other leaders; the gate measures the page.
+  { id: 'team chat', site: 'Slack', url: 'https://slack.com/', ask: 'team chat', page: '/team/', label: 'Team chat', glyph: '#', defer: true, extra: ['channels and threads', 'agents as members', 'search and mentions'] },
   { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', defer: true, extra: ['groups', 'media', 'calls'] },
   { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', defer: true, farFuture: true, extra: ['catalogue', 'streaming quality', 'recommendations'],
     gaps: ['no Verse video page at all: the floor has nothing to measure', 'no catalogue, search or channels', 'no player with seek, quality and captions', 'no uploads, comments, playlists or recommendations', 'no adaptive streaming, live video or watch-later offline; the old speed and design rows measured a page that plays nothing'],
@@ -180,7 +184,7 @@ const HAND_LANES = Object.freeze({
   // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): small music tools, smallest first, Spotify (the floor itself) last. metronomeonline.com and virtualpiano.net are the owner's; the others were found by search as live, real, no-sign-in pages (a tuner, a BPM counter, a chord finder). Each has a page of its own (LANE_PAGES) and aspects named for what that site does (LANE_EXTRAS)
-  music: ['https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/', 'https://anotherproducer.com/online-tools-for-musicians/bpm-counter/', 'https://chordchord.com/chord-finder', 'https://metronomeonline.com/', 'https://virtualpiano.net/'],
+  music: ['https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/', 'https://anotherproducer.com/online-tools-for-musicians/bpm-counter/', 'https://chordchord.com/chord-finder', 'https://metronomeonline.com/', 'https://virtualpiano.net/', 'https://www.neuralframes.com/tools/rap-lyrics-generator'],
   // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // travel (owner, 2026-10-26: "need a flights page"): the small flight and trip tools, smallest first, Google Flights (the floor itself) last; each found alive by a web search on 2026-10-26 (a fetch from the builder's network is closed). tripwaffle.com asks for an account to keep a trip (its public side is a page about forwarding booking emails); the others are open pages. Each gets a page of its own (LANE_PAGES)
@@ -209,12 +213,18 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'sports: thesportsdb.com': '/sports/',
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
+  // neuralframes.com's rap lyrics generator (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is") is assimilated by /rap/ (domains/targets/neuralframes.json)
+  'music: neuralframes.com': '/rap/',
   'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
   'jobs: jobicy.com': '/jobs/regions/', 'jobs: workingnomads.com': '/jobs/alerts/', 'jobs: arbeitnow.com': '/jobs/europe/', 'jobs: himalayas.app': '/jobs/salary/', 'jobs: remotive.com': '/jobs/categories/', 'jobs: remoteok.com': '/jobs/tags/', 'jobs: weworkremotely.com': '/jobs/companies/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
   // a frontier site's own page, by its host: sycophanthex.com, the tower target since 2026-10-29 (a fan-fiction archive), is assimilated by /fanfic/, the
   // archive built to its catalog (domains/targets/sycophanthex.json)
   'sycophanthex.com': '/fanfic/',
+  // wheelroot.com ("Drawing Fundamentals", a course page whose button leads nowhere) is assimilated by /learn-to-draw/, the course itself (domains/targets/wheelroot.json)
+  'wheelroot.com': '/learn-to-draw/',
+  // onlineconverter.com (106 file and unit tools, each an upload to its server) is assimilated by /converter/, the same 106 tools listed with what Verse does on the device (domains/targets/onlineconverter.json)
+  'onlineconverter.com': '/converter/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores
@@ -223,6 +233,7 @@ export const LANE_EXTRAS = Object.freeze({
   'music: anotherproducer.com': ['tap tempo counter', 'half and double time', 'note lengths', 'tempo of a file'],
   'music: chordchord.com': ['chord finder', 'scale finder', 'guitar and piano shapes', 'chords in a key'],
   'music: metronomeonline.com': ['tap tempo', 'accents', 'subdivisions', 'practice timer', 'light and dark mode', 'sounds'],
+  'music: neuralframes.com': ['rap styles', 'mood and flow', 'verses and hook', 'perform it'],
   'music: virtualpiano.net': ['computer keyboard play', 'touch and mouse play', 'sustain', 'instruments', 'sheet music', 'MIDI input'],
   'travel: tripwaffle.com': ['paste a confirmation', 'day by day timeline', 'layover warnings', 'calendar export', 'share a trip', 'works offline'],
   'travel: aruljohn.com': ['code lookup', 'search by city or country', 'airport details', 'nearby airports'],
@@ -291,11 +302,15 @@ export const selfCalled = (r) => !!(r && r.called && /^called beaten by verse\b/
 // `incomplete` lists them so the card says so instead of counting them.
 // a journey row passes when the runner took it with its controls, or when a person signed the floor beaten (tools/tower-verdict.mjs --beaten:
 // the owner or the scout took the journeys by hand; a call Verse made itself never counts)
-export const passes = (a, r) => (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
+// a row the gate scored against its default bar because the site turned the gate away (tools/tower-gate.mjs "vs the bar (<site> unreachable)")
+// measured Verse, not the site (owner's card, 2026-10-29: "those numbers are not its own"): it is not measured against the site, so it is never a
+// lead and never part of a surpass. It stays a loss when Verse is short of the bar, since that gap is Verse's own.
+export const barRow = (r) => !!r && / vs the bar \(/.test(String(r.evidence || ''));
+export const passes = (a, r) => !barRow(r) && (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
 export function gate(floor, ev = {}) {
   const all = checklist(floor, ev), passed = all.filter((a) => passes(a, ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
-  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || isJourney(a)) : isJourney(a)));
+  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || barRow(ev[a]) || isJourney(a)) : isJourney(a)));
   return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
 }
 /** evidence rows that pass a floor's whole checklist the way the gate demands (journeys with steps and negative controls): for tests and
@@ -309,16 +324,18 @@ export function hostOf(s) {
   return HOST_RE.test(h) ? h : '';
 }
 /** the frontier's sites (tower.frontier.json, the real tool sites ranked from the top million by easiest-sites.mjs --tools) as one list: one per
- *  host, never a site that is already in FLOORS, easiest first (the scan's hardness, then the least visited), the rest in the order they came. Pure. */
+ *  host, never a site that is already in FLOORS, smallest first: a site the scan counted the controls and bytes of first, by the fewest controls, then the
+ *  fewer bytes (owner, 2026-10-29); then the scan's hardness, then the least visited, the rest in the order they came. Pure. */
 export function frontierOf(frontier, floors = FLOORS) {
   const list = Array.isArray(frontier) ? frontier : frontier && Array.isArray(frontier.sites) ? frontier.sites : [];
   const taken = new Set(floors.map((f) => hostOf(f.url) || hostOf(f.site)).filter(Boolean)), seen = new Set(), out = [];
   for (const x of list) {
     const host = hostOf(x && (x.site || x.host)); if (!host || taken.has(host) || seen.has(host)) continue;
-    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: Number.isFinite(+x.hardness) ? +x.hardness : null, ...(x.blocked ? { blocked: String(x.blocked) } : {}) });
+    const num = (v) => (v !== null && v !== '' && Number.isFinite(+v) ? +v : null);
+    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: num(x.hardness), controls: num(x.controls), bytes: num(x.bytes), ...(x.blocked ? { blocked: String(x.blocked) } : {}) });
   }
-  const h = (x) => (x.hardness === null ? 1e9 : x.hardness);
-  return out.map((x, i) => [x, i]).sort((a, b) => h(a[0]) - h(b[0]) || (b[0].rank || 0) - (a[0].rank || 0) || a[1] - b[1]).map((p) => p[0]);
+  const h = (x) => (x.hardness === null ? 1e9 : x.hardness), sized = (x) => (x.controls !== null && x.bytes !== null ? 0 : 1), c = (x) => (sized(x) ? 0 : x.controls), by = (x) => (sized(x) ? 0 : x.bytes);
+  return out.map((x, i) => [x, i]).sort((a, b) => sized(a[0]) - sized(b[0]) || c(a[0]) - c(b[0]) || by(a[0]) - by(b[0]) || h(a[0]) - h(b[0]) || (b[0].rank || 0) - (a[0].rank || 0) || a[1] - b[1]).map((p) => p[0]);
 }
 
 /** the whole tower: each site's gate, coverage (replaced, partial, missing from lap.items.json) and skills; the conquered sites first, then the
@@ -336,9 +353,11 @@ export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant'])
 export function easeLine(f) {
   if (f.held) return 'held, not beaten: ' + f.held;
   const left = Math.max(0, (f.m || 0) - (f.n || 0)), sc = f.size ? f.size.scripts : 0;
-  const how = f.weight !== null && f.size ? 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
+  const tc = trustedControls(f.size), ctl = tc !== null ? 'has ' + tc + ' controls on its home page and ' : '';
+  const how = f.weight !== null && f.size ? ctl + 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
     : 'not weighed yet' + (f.rank ? ' (ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited)' : '');
-  return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
+  const bar = (f.barred || []).length;
+  return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (bar ? ' (' + bar + ' of them not measured: the site turned the gate away, so only the default bar was scored)' : '') + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
 }
 /** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */
 export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null) {
@@ -348,10 +367,12 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(LANE_PAGES[x.host] ? { page: LANE_PAGES[x.host] } : {}), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
-  const hard = (f) => (f.lost.length ? 1 : 0);
+  // the queue ranks on measured rows only (2026-10-29): a loss against the default bar (the site turned the gate away, barRow) stays a loss on the
+  // card, but it says nothing about the site, so it never moves the site back in the queue
+  const hard = (f) => (f.rankLost.length ? 1 : 0);
   // a lane site stands where its leader would and just in front of it, so the climb goes up the lane from its bottom and the leader is its last fight
   const lead = new Map(all.map((f) => [f.id, f])), key = (f) => (f.lane && lead.get(f.lane) && !lead.get(f.lane).beaten ? lead.get(f.lane) : f);
     // a mega-site floor waits (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"): the giants keep their
@@ -365,17 +386,23 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // order, small single-purpose sites first (owner: "work through millions of small sites, easiest first"): a site with at most two aspects of
   // its own (a frontier tool site has none) stands before a broad, many-feature one
   const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
-  // with the size data (the card, the plan) the queue is easiest first by size, then by work left: gate, far future, a waiting giant, the size tier, what Verse
-  // loses on, aspects still to pass, a site with a page before one without, then the order they came. Without it the old order stands.
-  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the fight in progress stays first until it is won
-  const tierOf = (f) => (rank ? (f.weight !== null ? 0 : 1 + f.tier) : 0), lightOf = (f) => (f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
-  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
+  // with the size data (the card, the plan) the queue is smallest first, then by work left: gate, far future, a waiting giant, then size (owner,
+  // 2026-10-29: "all sites ever made smallest first", smallest being the fewest interactive elements on the home page, the lighter page on a tie):
+  // a site counted by tools/tower-size.mjs (controls and bytes) by its controls, then its bytes; then a site only weighed, by its weight; then an
+  // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
+  // came. Without it the old order stands.
+  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
+  const counted = (f) => !!f.size && trustedControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2) is not counted
+  const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
+  const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  // pinned: the target (tower.target.json) stands first because it is the target, not because it is the smallest, so the card says which
+  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
 // a held site says why it is not surpassed, so "16 of 16 aspects ahead, 0 surpassed" explains itself (owner's card, 2026-10-29)
-export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (Verse ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
 /** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
  *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
  *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */

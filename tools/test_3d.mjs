@@ -22,6 +22,11 @@ export async function miniContract(fresh, { kind, a, b, settledWhen = 'flipping'
     const m = await import('/skills/scene3d.js');
     const wait = async (fn, ms) => { const end = performance.now() + ms; for (;;) { const v = fn(); if (v) return v; if (performance.now() > end) return false; await new Promise((r) => setTimeout(r, 100)); } };
     const key = 'contract:' + kind + (reduce ? ':still' : '');
+    // the studio light (scene3d's studioHdri) replaces the room light a moment after the engine starts and redraws every live
+    // miniature once; on a loaded runner that redraw fell inside the idle window (swatch under reduced motion: idleDraws 1 on
+    // 27ae12e9). Mount once it has landed, as a visitor's later cards do; where the studio light never loads, mount at once
+    const E = await m.engine(), x = E.renderer.extensions;
+    if (x.has('EXT_color_buffer_half_float') || x.has('EXT_color_buffer_float')) await wait(() => E.studio, 15000);
     const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:16px;top:16px;width:260px;height:210px;z-index:9';
     document.body.appendChild(host);
     const me = () => m.liveMiniatures().find((x) => x.key === key);
@@ -838,6 +843,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       } else await F.p.waitForTimeout(250);
     }
     const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 20000);
+    // when the 3D board never drew, say so and why: the loop above never runs then, and the card's empty log ("Earlier moves (-1)")
+    // read as "no move in 90 s" (verify on 0f1dc25d: the board was not up after 90 s on a loaded shard; it passed on its rerun alone)
+    const why = key ? null : await F.p.evaluate(() => { let s = null; try { s = { off: sessionStorage.getItem('void.3d.off'), crash: sessionStorage.getItem('void.3d.crash') }; } catch (_) {}
+      return { minis: window.__voidMini ? window.__voidMini.list() : null, wraps: [...document.querySelectorAll('.connect4-view .void-mini')].map((w) => w.dataset.rendered + (w.isConnected ? '' : ' (off the page)')), flat: !!document.querySelector('.lift3d-off'), ...s }; }).catch((e) => String(e));
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
       const v = r('.connect4-view'), c = r('.connect4-side'), a = r('#input'), latest = document.querySelector('.c4-latest'), sum = document.querySelector('.c4-earlier summary');
       return { fits: !!v && v.right <= innerWidth && v.left >= 0, apart: !!v && !!c && (c.top >= v.bottom || c.left >= v.right), above: !!c && !!a && c.bottom <= a.top + 1,
@@ -847,7 +856,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     });
     check('Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)',
       !!won && won.dim === won.discs - 4 && lay.fits && lay.apart && lay.above && /because/.test(lay.latest || '') && /^Earlier moves \(\d+\)$/.test(lay.earlier || '') && !F.errors.length,
-      JSON.stringify({ won, lay, e: F.errors }));
+      JSON.stringify({ won, why, lay, e: F.errors }));
     await F.ctx.close();
   }
   // ---- the Verse Book is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a

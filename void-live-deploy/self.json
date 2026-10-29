@@ -265,7 +265,8 @@
    "state": "open",
    "date": "",
    "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5"
+   "from": "void.plan.md Now #5",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -277,13 +278,15 @@
    "state": "open",
    "date": "",
    "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13"
+   "from": "void.plan.md Next #13",
+   "waits": "the miss board"
   },
   {
    "state": "open",
    "date": "",
    "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
+   "from": "void.plan.md Next #12",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -325,7 +328,8 @@
    "state": "open",
    "date": "",
    "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan"
+   "from": "owner, 2026-10-11, pit crew plan",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -337,7 +341,8 @@
    "state": "open",
    "date": "",
    "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -537,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-29T14:29:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,84 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T14:16:45Z",
-   "subject": "test: the Verse self page check brings the body into view before the tap"
+   "at": "2026-10-29T15:19:41Z",
+   "subject": "STL checker: keep the ask held, design and test plan, check fixes"
   },
   {
-   "at": "2026-10-29T14:13:31Z",
-   "subject": "Notebook: a note's [[links]] reach the stage"
+   "at": "2026-10-29T15:06:03Z",
+   "subject": "STL checker at /stl/, asked by Verse"
   },
   {
-   "at": "2026-10-29T14:09:16Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:07:20Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T14:06:35Z",
-   "subject": "Keep main's volatile files and parity pages as they are"
-  },
-  {
-   "at": "2026-10-29T14:06:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:05:49Z",
-   "subject": "Regenerate deps.json (main was behind node tools/deps.mjs)"
-  },
-  {
-   "at": "2026-10-29T14:05:13Z",
-   "subject": "The will's lap want names where its item lives, so the coder reads instead of searching"
-  },
-  {
-   "at": "2026-10-29T14:03:59Z",
-   "subject": "fanfic: the hidden featured link has no address until it has a title"
-  },
-  {
-   "at": "2026-10-29T14:00:37Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T13:54:54Z",
-   "subject": "fanfic: a featured story on the archive home, with why it was picked"
-  },
-  {
-   "at": "2026-10-29T13:51:28Z",
-   "subject": "Regenerate the parity pages: main's were behind the tower gate (the parity test fails on main without this)"
-  },
-  {
-   "at": "2026-10-29T13:50:56Z",
-   "subject": "Keep the parity pages of other sites as main has them"
-  },
-  {
-   "at": "2026-10-29T13:50:34Z",
-   "subject": "fanfic: site news and a dated news archive, pinned first and linked from the footer"
-  },
-  {
-   "at": "2026-10-29T13:46:53Z",
-   "subject": "Tower gate: every floor measured against its live site (3 slices)"
-  },
-  {
-   "at": "2026-10-29T13:46:39Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-29T13:46:27Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-29T13:44:54Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-29T13:43:53Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-10-29T13:43:27Z",
-   "subject": "fanfic: terms of use, disclaimer and credits pages, opened from the footer"
+   "at": "2026-10-29T14:29:35Z",
+   "subject": "Tower gate: nameunit measured against their live sites"
   }
  ],
  "builders": {
@@ -858,14 +795,14 @@
   "source": "verse"
  },
  "tower": {
-  "target": "sycophanthex.com",
+  "target": "onlineconverter.com",
   "since": "2026-10-29",
   "next": [
-   "nameunit.com",
-   "wheelroot.com",
-   "onlineconverter.com"
+   "serverdiscounter.com",
+   "howsecureismypassword.net",
+   "wheeloutlet.com"
   ],
   "beaten": 0,
-  "total": 1266
+  "total": 1269
  }
 }

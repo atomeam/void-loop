@@ -1091,11 +1091,15 @@ try {
     await P.p.waitForSelector('#list .badge', { timeout: 15000 }).catch(() => {});
     const obit = await P.p.evaluate(() => { const cards = [...document.querySelectorAll('#list .card')]; return { cards: cards.length, badges: cards.filter((c) => c.querySelector('.badge')).length, wip: cards.filter((c) => /In progress: \d+% of its features matched/.test(c.innerText)).length, homage: cards.filter((c) => /The Legacy:/.test(c.innerText) && /Our Tribute:/.test(c.innerText)).length, falseWin: cards.filter((c) => /Beaten in every way/.test(c.querySelector('.badge').textContent) && /Not beaten yet/.test(c.innerText)).length, tally: document.getElementById('tally').textContent }; });
     check('obituaries: every memorial shows an honest status and keeps its homage text', obit.cards > 0 && obit.badges === obit.cards && obit.homage === obit.cards && obit.wip > 0 && !obit.falseWin && /beaten in every way, \d+ in progress/.test(obit.tally), JSON.stringify(obit));
-    await P.p.fill('#q', 'Google Translate');
-    await P.p.evaluate(() => { const d = document.querySelector('#list details'); if (d) d.open = true; });
+    // the memorial is the first one with a cited history, not a fixed name: which sites hold a memorial follows the tower gate's own
+    // measures (2026-10-29 13:46, 1099c17b: /translate/ measured 1 small tap target, so Google Translate's memorial came down and
+    // this check, fixed on it, read 0 items); the search still narrows the list to it
+    const site = await P.p.evaluate(() => { const s = [...document.querySelectorAll('#list details summary')].find((x) => /\(\d+ cited events\)/.test(x.textContent)); return s ? s.textContent.replace(/^History of /, '').replace(/ \(\d+ cited events\)$/, '') : ''; });
+    await P.p.fill('#q', site);
+    await P.p.evaluate((site) => { const d = [...document.querySelectorAll('#list details')].find((x) => x.querySelector('summary').textContent.startsWith('History of ' + site + ' (')); if (d) d.open = true; }, site);
     await P.p.waitForSelector('#list .tl li a[href^="http"]', { timeout: 15000 }).catch(() => {});
     const tl = await P.p.evaluate(() => { const items = [...document.querySelectorAll('#list .tl li')]; return { items: items.length, cited: items.filter((li) => li.querySelector('a[href^="http"]') || /unknown/.test(li.textContent)).length, gaps: document.querySelectorAll('#list .gaps li').length }; });
-    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', tl.items > 3 && tl.cited === tl.items, JSON.stringify(tl));
+    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', !!site && tl.items > 3 && tl.cited === tl.items, JSON.stringify({ site, ...tl }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     const sib = await siblingCount(P.p);
@@ -1485,14 +1489,15 @@ try {
         struck: all[1] && getComputedStyle(all[1].querySelector('.tw-name')).textDecorationLine, head: (c.querySelector('.tw-score') || {}).textContent, name: (c.querySelector('.tw-head') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
     // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
+    // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
     check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · easiest site left: ' + tgt.site
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · ' + (tgt.pinned ? 'now assimilating: ' : 'easiest site left: ') + tgt.site
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
     const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
-    check('tower: a saved or copied tower card says the fight (the target: 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice',
-      new RegExp(tgt.site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects ahead\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+    check('tower: a saved or copied tower card says the fight (Verse is ahead of the target on 4 of N aspects, what is still to beat, what is conquered) and no announcement twice',
+      new RegExp('Verse is ahead of ' + tgt.site.replace(/\./g, '\\.') + ' on 4 of \\d+ aspects\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
@@ -2842,7 +2847,7 @@ try {
   // checks and deploy on main from GitHub's public API. A failed run opens the status card for the owner; a green build, or a
   // visitor, keeps the blank stage. GitHub is stubbed in the page (an init script), so the page's own check at load sees it.
   if (want("the owner's status card opens by itself when the checks or deploy on main failed; visitors keep the blank stage")) {
-    const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
+    const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy|mcp-live)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
     // the filled card, not its "checking…" placeholder (the sources are pinged in parallel; under load that takes a few seconds)
     const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (/own build|Outside sources/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
     const O = await fresh({ content: gh('failure', true) });
@@ -4246,6 +4251,7 @@ try {
   // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
   if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
     const r = {};
+    const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3); // the sticky's box breathes by a pixel or two with its tilt (179 against 181 on a slow runner): the spot is what counts
     // the third: a desktop whose CPU is 20x slower while the card opens (CDP throttling), the way a loaded runner left the sticky
     // under the card for good (verify run 38165509211): it measured the card while it was still scaling in, and nothing measured again
     for (const [w, h, slow] of [[1280, 800], [390, 844], [1280, 800, 20]]) {
@@ -4255,7 +4261,10 @@ try {
       const covered = () => P.p.evaluate(() => { const s = document.querySelector('.sticky'), v = document.querySelector('.vpage.on'); if (!s || !v) return -1; const a = s.getBoundingClientRect(), b = v.getBoundingClientRect();
         return Math.round(100 * Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) / (a.width * a.height)); });
       const saved = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.x, t.y]).join(';');
-      const before = await box(), place = await saved();
+      // the sticky can still be growing in when the ask's wait ends (verify on 31a24cf5, slow case: 177 px wide before, 183 after):
+      // read its spot once two reads 150 ms apart agree, as the place it comes back to
+      const settledBox = async () => { let a = await box(); for (let i = 0; i < 20; i++) { await P.p.waitForTimeout(150); const b = await box(); if (b.join() === a.join()) return b; a = b; } return a; };
+      const before = await settledBox(), place = await saved();
       const cdp = slow ? await P.p.context().newCDPSession(P.p) : null;
       if (cdp) await cdp.send('Emulation.setCPUThrottlingRate', { rate: slow });
       await P.ask('how good are you at othello', slow ? 4000 : 600);
@@ -4266,11 +4275,14 @@ try {
       await P.p.waitForTimeout(450);
       const under = await covered(), during = await box(), placeDuring = await saved();
       await P.ask('close', 900);
+      // the glide back (.35 s) can start late on a loaded runner (a local run read it 13 px short, and once not yet moved): wait for it
+      // to arrive, then read; a sticky that never comes back still reads its own spot and fails below
+      await until(async () => (near(await box(), before) ? 'back' : ''), 6000);
+      await P.p.waitForTimeout(300);
       const after = await box();
       r[slow ? 'slow' : w] = { before, under, during, after, same: place === placeDuring && place === await saved(), errors: P.errors.length };
       await P.ctx.close();
     }
-    const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3); // the sticky's box breathes by a pixel or two with its tilt (179 against 181 on a slow runner): the spot is what counts
     const ok = (x) => x.under === 0 && x.same && x.during.join() !== x.before.join() && near(x.after, x.before) && !x.errors;
     check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
       ok(r[1280]) && ok(r[390]) && ok(r.slow), JSON.stringify(r));
@@ -5187,7 +5199,7 @@ try {
   if (want('talk back: the owner replies to Verse')) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const posts = [], AT = '2026-10-08T18:09:00Z';
     await O.ctx.route(/\/api\/voice-reply$/, (r) => {
-      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }] }));
+      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }, { at: '2026-10-09T08:00:00Z', to: null, about: { ask: '5 miles in km', title: 'Converted' }, text: 'Earlier on this card.', answer: 'I kept that.' }] }));
       const b = JSON.parse(r.request().postData() || '{}'); posts.push({ b, auth: r.request().headers().authorization });
       return r.fulfill(json({ at: '2026-10-09T11:00:00Z', to: b.to, text: b.text, answer: 'Heard. I will check the live finding before I call rides untested.', correction: true, remember: 'rides has a live finding' }));
     });
@@ -5198,20 +5210,31 @@ try {
     await O.p.fill('.vpage.on [data-v-reply]', 'Rides is live: <img src=x onerror="window.__x=1"> check the finding');
     await O.p.click('.vpage.on [data-v-send]'); await until(async () => /check the live finding/.test(await O.page()), 4000);
     const after = await O.page(), stillOpen = await O.p.$('.vpage.on [data-v-reply]'), x = await O.p.evaluate(() => window.__x || 0), imgs = await O.p.$$eval('.vpage.on .v-talk img', (l) => l.length);
-    // and about any card: "Tell Verse" under it sends the ask, the card's title and what it said
-    await O.ask('5 miles in km', 300); await until(async () => !!(await O.p.$('.vpage.on a.vtell')), 4000);
-    await O.p.click('.vpage.on a.vtell'); await O.p.fill('.vpage.on .vtell-box textarea', 'Say it to two decimals.');
-    await O.p.click('.vpage.on .vtell-box button'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.page()), 4000);
-    const card = posts[1] && posts[1].b, tellLeft = await O.p.$$eval('.vpage.on a.vtell', (l) => l.length);
-    const S = await fresh(); await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
-    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')); await S.ask('5 miles in km', 300); await S.p.waitForTimeout(500);
-    const strangerTell = await S.p.$$eval('.vpage a.vtell', (l) => l.length); await S.ctx.close();
-    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; "Tell Verse" under any card sends its ask, title and words; a stranger sees neither',
-      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before)
+    const selfReply = await O.p.$$eval('.vpage.on .vreply', (l) => l.length); // the self card keeps its own Talk to me: no second box
+    // and on every other card (owner, 2026-10-29): "Reply to what I said, or correct me" at its end sends the ask, the card's title and what it said,
+    // and shows what was said on this ask before
+    await O.ask('5 miles in km', 300); await until(async () => /Earlier on this card/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const cardBefore = await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '');
+    await O.p.fill('.vpage.on .vreply textarea', 'Say it to two decimals.');
+    await O.p.click('.vpage.on .vreply [data-reply-send]'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const card = posts[1] && posts[1].b, lastIsReply = await O.p.$eval('.vpage.on', (e) => { let n = e.lastElementChild; while (n && n.classList.contains('vtail')) n = n.previousElementSibling; return !!n && n.classList.contains('vreply'); });
+    // a stranger gets the same section; the words stay in this browser's correction log, nothing is sent
+    const S = await fresh(); const strangerPosts = []; await S.ctx.route(/\/api\/voice-reply$/, (r) => { strangerPosts.push(r.request().method()); return r.fulfill(json({ replies: [] })); });
+    await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
+    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')), strangerSelf = await S.p.$$eval('.vpage.on .vreply', (l) => l.length);
+    await S.ask('5 miles in km', 300); await until(async () => !!(await S.p.$('.vpage.on .vreply textarea')), 4000);
+    await S.p.fill('.vpage.on .vreply textarea', 'Kilometres, not km.'); await S.p.click('.vpage.on .vreply [data-reply-send]');
+    await until(async () => /Kept on this device/.test(await S.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const kept = await S.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.corrections.v1') || '[]'); } catch (_) { return []; } });
+    await S.ctx.close();
+    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which shows the earlier replies on its ask and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
+      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before) && !/Earlier on this card/.test(before)
         && posts.length === 2 && posts[0].b.to === AT && /^Rides is live/.test(posts[0].b.text) && posts[0].auth === 'Bearer owner-k'
-        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length
-        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Tell Verse/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && tellLeft === 0 && strangerTell === 0,
-      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), posts, imgs, x, stranger, strangerTell, tellLeft, errors: O.errors }));
+        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length && selfReply === 0
+        && /Reply to what I said, or correct me/.test(cardBefore) && /You: Earlier on this card\./.test(cardBefore) && /Verse: I kept that\./.test(cardBefore) && lastIsReply
+        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Reply to what I said/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && posts[1].auth === 'Bearer owner-k'
+        && strangerSelf === 0 && !strangerPosts.includes('POST') && kept.length === 1 && kept[0].ask === '5 miles in km' && kept[0].text === 'Kilometres, not km.',
+      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), cardBefore, posts, imgs, x, stranger, strangerSelf, strangerPosts, kept, lastIsReply, selfReply, errors: O.errors }));
     await O.ctx.close(); }
   // Verse's fixes, previewed (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"; skills/v01d-fixes.js)
   if (want("Verse's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
@@ -5626,7 +5649,7 @@ try {
       out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
       && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
   }
-  if (want('verse brain: one workspace that sixteen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that eighteen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5697,9 +5720,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its sixteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its eighteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 16 && a.rows === 16 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 18 && a.rows === 18 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
@@ -5913,7 +5936,8 @@ try {
   if (want("\"remember that <fact>\" keeps one line (POST with the bearer), \"forget that <fact>\" removes")) { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
     // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
     await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
-    await T.p.reload(); await T.p.waitForTimeout(700);
+    // wait for the skills to be in after the reload (skillsUp), not a fixed 700 ms: ~300 skill files load before the first ask is routed
+    await T.p.reload(); await skillsUp(T.p);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -7495,7 +7519,28 @@ try {
     await W.ask('what do you think of yourself', 300); await until(async () => { const t = await W.page(); return /What I think of myself/.test(t) && /asked for/i.test(t); }, 6000);
     const selfCard = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { h2: pg ? pg.querySelector('h2').textContent : '', asked: !!(pg && pg.querySelector('.vs-sec[data-sec=asked]')) }; });
     check('wants card: "what do you think of yourself" still opens the self card, not the wants card', selfCard.h2 === 'What I think of myself' && selfCard.asked && !W.errors.length, JSON.stringify({ selfCard, errors: W.errors }));
-    await W.ctx.close(); }
+    await W.ctx.close();
+    // made plain (owner, 2026-10-29): a definition under each heading, what changed this lap, what is blocked and on what, the next pick
+    // with its evidence, and the inbox in workstreams with counts; the will and reflect fixtures carry a lap, a will job and a held ask
+    const P = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    await P.ctx.route(/\/api\/will$/, (rt) => rt.fulfill(json({ at: '2026-10-29T03:00:00Z', wants: [{ kind: 'people asked', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }], lastRun: { title: 'Overhaul surface:ask', state: 'failed', at: '2026-10-29T05:00:00Z', shipped: false },
+      lap: { lap: 1, upgraded: 2, skills: 712, newThisLap: 0, newPerLap: 100, next: 'surface:cards', recent: ['surface:ask', 'surface:home'], line: 'Lap 1: upgraded 2 of 712 items, 0 of 100 new this lap' } })));
+    await P.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [], asks: [{ ask: 'Give the map card terrain', kind: 'daily', at: '2026-10-08T18:09:00Z' }, { ask: 'Create a utility to check the watertightness of STL print files in the browser', kind: 'daily', at: '2026-10-28T22:29:00Z', held: 'sycophanthex.com' }], follow: { total: 5, built: 2 } })));
+    await P.ask('what do you want built now', 300); await until(async () => /Blocked \(/.test(await P.page()), 6000);
+    const plain = await P.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null; const q = (s) => pg.querySelector(s), t = (s) => (q(s) || {}).textContent || '';
+      return { defs: [...pg.querySelectorAll('.wants-def[data-def]')].map((e) => e.getAttribute('data-def') + ':' + e.textContent), changed: t('[data-changed]'), nChanged: (q('[data-changed]') || { dataset: {} }).dataset.changed, run: t('[data-run]'),
+        blocked: [...pg.querySelectorAll('.wants-sum[data-block=blocked] li')].map((li) => li.textContent), picks: [...pg.querySelectorAll('[data-pick]')].map((li) => li.getAttribute('data-pick') + ':' + li.textContent),
+        streams: t('.wants-streams'), groups: [...pg.querySelectorAll('.wants-group')].map((g) => g.dataset.stream + ':' + g.querySelectorAll('.wants-chip').length), inboxChips: pg.querySelectorAll('.wants-block[data-block=inbox] .wants-chip').length,
+        wide: pg.scrollWidth > pg.clientWidth + 1 }; });
+    const nInbox = (selfJson.open || []).length, nWaits = (selfJson.open || []).filter((o) => o.waits).length;
+    check('wants card: a definition under each heading, what changed this lap from the lap record, what is blocked and on what, the next pick with its evidence, and the growth inbox in workstreams with counts (owner, 2026-10-29)',
+      !!plain && plain.defs.length === 3 && /^wants:A want is something my will chose itself/.test(plain.defs[0]) && /^asks:An ask is something I asked to have built/.test(plain.defs[1]) && /^inbox:An inbox item is an idea or plan item waiting in my growth inbox/.test(plain.defs[2])
+        && plain.nChanged === '2' && /^Lap 1 so far: 2 items sent for upgrade \(newest: surface:ask, surface:home\) · 0 new features$/.test(plain.changed) && /Overhaul surface:ask, failed, not shipped/.test(plain.run)
+        && plain.blocked.some((b) => /watertightness of STL.*held until sycophanthex\.com is beaten/.test(b)) && plain.blocked.length === 1 + nWaits
+        && /^will:My willUpgrade surface:cardsIts turn in lap 1/.test(plain.picks[0]) && /^ask:My buildersGive the map card terrain/.test(plain.picks[1])
+        && plain.inboxChips === nInbox && plain.groups.reduce((a, g) => a + +g.split(':')[1], 0) === nInbox && /^(?:(?:Reliability|Core experience|Platform|Growth|Unsorted \(no rule matched\)) \d+(?: · |$))+$/.test(plain.streams) && !plain.wide && !P.errors.length,
+      JSON.stringify({ plain, nInbox, nWaits, errors: P.errors }));
+    await P.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
     await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));
@@ -8192,12 +8237,13 @@ try {
     const m = await until(async () => { const x = await probe(M); return x && x.im && x.im.w > 40 ? x : null; }, 12000) || await probe(M);
     check('poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text', !!m && m.poster === '1' && m.display === 'grid' && m.art.h > m.art.w * 1.3 && Math.abs((m.art.x + m.art.w / 2) - (m.card.x + m.card.w / 2)) < 10 && m.art.w < m.card.w * 0.6 && m.type.y >= m.art.b - 2 && m.ptHits === false && m.numHits === false && !M.errors.length, JSON.stringify(m && { art: m.art, card: m.card, type: m.type, cols: m.cols }));
     await M.ctx.close();
-    // an answer with a long body: one title, and a small painting fills its art window
+    // an answer with a long body: one title, and a small painting fills its art window. The reply section (lib/card-reply.js, #1569) at the end of
+    // every card has its own section heading; it is not a second title, so it is left out of the count like the art window
     const A = await fresh(); const ANS = '## Visa test card\n\nA visa test card is a payment number that never works for real transactions. Merchants use it to rehearse a checkout, so no money moves and nobody is charged. It is safe to publish.';
     await A.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode) return rt.fallback(); return rt.fulfill(json({ answer: ANS, sources: [] })); });
     await A.ctx.route(/\/api\/card-art/, (rt) => rt.fulfill(json({ state: 'art', img: PX })));
     await A.ask('show me a visa test card', 2200); // "the site test card" is Verse's own card now (lib/own-parts.js); a visa test card still goes to the answer path
-    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
+    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art') && !h.closest('.vreply')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
     check('poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half', !!a && a.heads.length === 1 && /show me a visa test card/i.test(a.heads[0]) && a.im[0] >= a.art[0] - 6 && a.im[1] >= a.art[1] - 6 && a.pics === 1 && a.seals === 0 && !A.errors.length, JSON.stringify({ a, e: A.errors }));
     await A.ctx.close();
     // a text-only reply: the seal is the one picture, centred and filling the window
@@ -9286,7 +9332,7 @@ try {
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
   paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
   toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
-  check('WebMCP: a paid Verse ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid Verse (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
+  check('WebMCP: a paid Verse ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^MultiVerse (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
   await t.ctx.close();
 
   // Plan item 12: paid Verse and Atom's store. A fresh visit is the void; a paid ask gets the price and how to buy.
@@ -9299,7 +9345,7 @@ try {
   await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
   const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));
   check('"what can you do" opens the self page, and "menu" opens the book ("close" shuts it)', /Ask, and it appears/.test(selfPg) && menuTome && menuGone, JSON.stringify({ self: selfPg.slice(0, 60), menuTome, menuGone }));
-  const OUT_LINE = 'Paid Verse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
+  const OUT_LINE = 'MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
@@ -9311,7 +9357,7 @@ try {
   for (const a of priceAsks) {
     await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
     await P.ask(a, 0);
-    priceGot.push(await until(async () => { const w = await P.whisper(); return /Paid Verse/.test(w) ? w : ''; }, 6000) || await P.whisper());
+    priceGot.push(await until(async () => { const w = await P.whisper(); return /MultiVerse/.test(w) ? w : ''; }, 6000) || await P.whisper());
     priceGot.push(!!(await until(async () => /What Verse sells/.test((await P.page()) || '') && (await P.page()), 5000)));
     await P.ask('close');
   }
@@ -9523,15 +9569,15 @@ try {
   check('cross-device look works from the passkey alone, on the free tier (no payment)', inB && bBg === '#07020f' && (await lookOf(B)).bg === '#07020f' && tierB.status === 200 && tierB.body.tier === 'free' && db().accounts.size === 0, [inB, bBg, tierB.status, JSON.stringify(tierB.body), db().accounts.size].join(' | '));
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Verse Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
-  const IN_LINK = 'Paid Verse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
+  const IN_LINK = 'MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
   const inAsks = ['upgrade', 'pay', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
-  for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Verse|paid Verse|your Verse is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
+  for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /MultiVerse|your Verse is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
   const aLink = await A.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel })).catch(() => null);
   check('paid: signed in, paid asks give $49 a month, what it adds and the Verse Monthly link with the account id (never opened by itself)', inGot.every((w) => w === IN_LINK) && aLink && aLink.href === GUM + '?void=' + encodeURIComponent(meA.userId) && aLink.target === '_blank' && /noopener/.test(aLink.rel) && !(await A.page()) && A.ctx.pages().length === 1 && db().accounts.size === 0,
     inGot.map((w, i) => inAsks[i] + '=' + w).join(' | ') + ' ' + JSON.stringify(aLink));
   await A.ask('pricing', 0);
-  const inPriceW = await until(async () => { const w = await A.whisper(); return /Paid Verse/.test(w) ? w : ''; }, 6000) || await A.whisper();
+  const inPriceW = await until(async () => { const w = await A.whisper(); return /MultiVerse/.test(w) ? w : ''; }, 6000) || await A.whisper();
   const inPricePg = await until(async () => /What Verse sells/.test((await A.page()) || '') && (await A.page()), 5000);
   check('paid: signed in, "pricing" keeps the membership line and shows the services card with the plan row',
     inPriceW === IN_LINK && /What Verse sells/.test(inPricePg || '') && /Keep-It-Running Plan/.test(inPricePg || ''),
@@ -9572,15 +9618,15 @@ try {
   await D.ask('sign in', 0); await until(async () => /welcome back/.test(await D.whisper()), 10000);
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
-  const dIn = await until(async () => /Paid Verse/.test(await D.whisper()) && (await D.whisper()), 5000);
-  check('paid: with GUMROAD_URL empty, signed-in asks link to the Verse store instead (owner, 2026-10-15; no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Verse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · see the Verse store" && (await D.p.$$eval('#whisper a', (d) => d.map((a) => a.getAttribute('href')).join(','))) === '/store/' && !(await D.page()) && D.ctx.pages().length === 1,
+  const dIn = await until(async () => /MultiVerse/.test(await D.whisper()) && (await D.whisper()), 5000);
+  check('paid: with GUMROAD_URL empty, signed-in asks link to the Verse store instead (owner, 2026-10-15; no checkout, no page)', dUrl === '' && !!meD && dIn === "MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · see the Verse store" && (await D.p.$$eval('#whisper a', (d) => d.map((a) => a.getAttribute('href')).join(','))) === '/store/' && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
   await D.ask('pay', 0); const dPaid = await until(async () => /your Verse is paid/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'gold' });
-  await D.ask('pay', 0); const dOdd = await until(async () => /Paid Verse is/.test(await D.whisper()) && (await D.whisper()), 8000);
+  await D.ask('pay', 0); const dOdd = await until(async () => /MultiVerse is/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'paid' });
-  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your Verse is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid Verse is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
+  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your Verse is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^MultiVerse is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
   const meErrsD = D.errors.slice();
   await D.ctx.close();
   const sessionsBefore = db().sessions.size;

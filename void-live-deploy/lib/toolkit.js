@@ -10,6 +10,7 @@
 import { SITE_PAGES, PDF_SITES, KANBAN_SITES, SELF_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
 import { flightAskOf } from './flight-sites.js';
 import { jobAskOf } from './job-sites.js';
+import { converterAskOf } from './converter-ask.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -18,7 +19,7 @@ export const TOOLS = Object.freeze({
   '/ledger/': 'Repo activity ledger',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team chat', '/learn-to-draw/': 'Learn to draw', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
@@ -61,8 +62,12 @@ const HAND_RELATED = Object.freeze({
   '/base64/': ['/word-count/', '/base-converter/'],
   '/boards/': ['/fanfic/', '/resize-image/', '/translate/', '/notes/'],
   '/fanfic/': ['/generators/', '/word-count/', '/translate/', '/boards/'],
+  '/team/': ['/kanban/', '/notes/', '/ledger/', '/boards/'],
+  '/learn-to-draw/': ['/stopwatch/', '/color/', '/resize-image/', '/notes/'],
+  '/converter/': ['/photos/', '/pdf/', '/convert/', '/resize-image/'],
   '/news/': ['/translate/', '/notes/', '/weather/'],
-  '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/'],
+  '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/rap/'],
+  '/rap/': ['/music/', '/metronome/', '/word-count/', '/translate/'],
   '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/'],
   '/piano/': ['/chords/', '/metronome/', '/tuner/'],
   '/tuner/': ['/piano/', '/chords/', '/metronome/'],
@@ -87,7 +92,7 @@ const HAND_RELATED = Object.freeze({
   '/jobs/tags/': ['/jobs/', '/jobs/categories/', '/jobs/salary/'],
   '/jobs/companies/': ['/jobs/', '/jobs/categories/', '/jobs/alerts/'],
   // the repo activity ledger (owner, 2026-10-28): a Kanban board and notes to plan from what it lists, the calendar for its dates
-  '/ledger/': ['/kanban/', '/notes/', '/calendar/'],
+  '/ledger/': ['/kanban/', '/team/', '/notes/', '/calendar/'],
   // the STL checker (asked by Verse): a part's size in other units, and the arithmetic of a print
   '/stl/': ['/convert/', '/calculator/', '/calculators/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
@@ -103,7 +108,7 @@ const HAND_CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 // a self-built page opens its family's card on the stage
 export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base]).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });
@@ -173,6 +178,11 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // the drawing course (2026-10-29, assimilates wheelroot.com): 'learn to draw', 'drawing course', 'drawing lessons', 'drawing exercises' open /learn-to-draw/
+  // the file converter (2026-10-29, assimilates onlineconverter.com): 'mp4 to mp3', 'epub to txt', 'cut mp3', 'merge audio', 'file converter' open /converter/
+  // with the ask; a picture or PDF ask stays with the photo and PDF tools, a unit with the unit converter (lib/converter-ask.js)
+  [{ exec: (t) => (converterAskOf(t) ? [t] : null) }, (m, t) => converterAskOf(t)],
+  [/\b(?:learn(?:ing)? (?:how )?to draw|drawing (?:course|lessons?|exercises?|drills?|fundamentals|basics|for beginners)|how to draw for beginners)\b/, () => '/learn-to-draw/'],
   // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
   [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
   // jobs (owner, 2026-10-26): 'job search', 'remote jobs', 'job alerts', 'jobs in germany', 'remote companies hiring' open the jobs page that does it (lib/job-sites.js)
@@ -190,6 +200,8 @@ const ROUTES = [
   // fan fiction: 'fan fiction', 'fanfic archive', 'post a story', 'my writing room'
   [/^(?:the |a |open )?(?:fan ?fic(?:tion)?|fanfics?)(?: archive| stories| site)?$|^(?:post|publish|share) (?:a |my )?(?:fan ?fic(?:tion)?|story|chapter)$/i, () => '/fanfic/'],
   [/^(?:my |the |open (?:the |my )?)?writing room$/i, () => '/fanfic/?v=room'],
+  // the team chat: 'team chat', 'open the team chat', 'agent workspace', 'slack alternative', 'my agents'
+  [/^(?:the |a |open (?:the |my )?|my )?(?:team ?chat|team workspace|agents? (?:chat|workspace)|chat (?:for|with) (?:my |the )?agents|slack alternative)$|^(?:my|the) agents$/i, () => '/team/'],
   // boards: 'image boards', 'text boards', 'the chans', '/tech/', 'make a board'
   [/^(?:make|create|start|new) (?:a |an |my own )?(?:image |text )?board$/i, () => '/boards/?new=1'],
   [/^\/([a-z0-9]{1,10})\/$/i, (m) => '/boards/?b=' + m[1].toLowerCase()],

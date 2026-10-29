@@ -10,6 +10,7 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath }
 import { GATE_FLOORS } from './tower-gate.mjs'; // FLOORS and the frontier sites the gate measures (sycophanthex.com: /fanfic/)
 import { journeysOf } from '../void-live-deploy/lib/tower-journeys.js';
 import { negativesOf, JOURNEY_PREFIX } from '../void-live-deploy/lib/tower-controls.js';
+import { RAP_LINK } from './tower-probes.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json');
 const BASE = process.env.VERSE_BASE || 'https://a-to-mind.com/';
@@ -44,6 +45,15 @@ async function openFirstStory(J) {
 
 /** /hosting/'s domain search: the registries answer in their own time, so wait (25 s at most) until no row still reads "Asking..." */
 const settleDomains = (J) => J.page.waitForFunction(() => { const r = document.getElementById('domainrows'); return r && r.children.length && !/Asking\.\.\./.test(r.textContent); }, null, { timeout: 25000 }).catch(() => {}); // void-review: ok (the controls after it read what the page shows)
+
+/** a line drawn with the mouse from the left dot to the right dot of the line drill, in 24 small moves, as a hand draws it */
+async function drawLine(J) {
+  await J.page.locator('#sheet').scrollIntoViewIfNeeded().catch(() => {}); const b = await J.page.locator('#sheet').boundingBox(); if (!b) throw new Failed('the drawing sheet is not there');
+  const at = (x, y) => [b.x + x / 300 * b.width, b.y + y / 300 * b.height];
+  await J.page.mouse.move(...at(40, 150)); await J.page.mouse.down();
+  for (let i = 1; i <= 24; i++) await J.page.mouse.move(...at(40 + 220 * i / 24, 150 + (i % 2 ? 1.5 : -1.5)), { steps: 2 });
+  await J.page.mouse.up(); await J.page.waitForTimeout(200);
+}
 
 /** per floor id, per journey name: the script. A journey with no script here is INCOMPLETE. */
 export const SCRIPTS = {
@@ -85,6 +95,61 @@ export const SCRIPTS = {
       const u = await J.shareLink('#dshare'); if (!/[?&]d=verse\.org(&|$)/.test(u)) throw new Failed('the share link does not carry the domain: ' + u);
       await J.open('/hosting/'); await J.open(u); await settleDomains(J);
       await J.expect((t) => /verse\.org\s+Registered/.test(t) && /verse: \d of 6 endings/.test(t) && /server_name verse\.org;/.test(t), 'the search for verse.org back from its link, and the server config named for it');
+    },
+  },
+  // wheelroot.com (/learn-to-draw/, 2026-10-29): a stroke drawn with the mouse along the line drill, as a person draws it, then scored; the drawing
+  // shared and its link opened in a fresh page, where it is scored again from the strokes in the link alone
+  'wheelroot.com': {
+    'draw a drill and see its score': async (J) => {
+      await J.open('/learn-to-draw/?d=line'); await drawLine(J);
+      await J.click('#done', 'press Done'); await J.expect(/Score: (\d{2}|100) of 100[\s\S]*First try: \d+/, 'a score of 10 or more for the line, and the first try kept');
+      await J.expect(/A straight line · best \d+/, 'the course list showing the best score for the drill');
+    },
+    'share the drawing and reopen it from the link': async (J) => {
+      await J.open('/learn-to-draw/?d=line'); await drawLine(J); await J.click('#done', 'press Done');
+      const got = (await J.expect(/Score: \d+ of 100/, 'the drawing scored')).match(/Score: (\d+) of 100/)[1];
+      const u = await J.shareLink('#share'); if (!/[?&]s=[0-9a-z_]{8,}/.test(u)) throw new Failed('the share link does not carry the strokes: ' + u);
+      await J.open('/learn-to-draw/'); await J.open(u);
+      await J.expect(new RegExp('Scored again from the link\\. Score: ' + got + ' of 100'), 'the same drawing back from its link, scored again: ' + got);
+    },
+  },
+  // neuralframes.com's rap lyrics generator (/rap/, 2026-10-29): a topic and a style typed and picked as a visitor does, the rap written by the model for
+  // them (one call to the free model, inside the site's daily cap), then a rap carried in a link (RAP_LINK) performed over its beat and shared again
+  'music: neuralframes.com': {
+    'write a rap for a topic and see verses and a hook': async (J) => {
+      await J.open('/rap/'); await J.fill('#topic', 'a dog who loves the beach', 'type the topic'); await J.page.selectOption('#style', 'trap').catch(() => { throw new Failed('the style list is not there'); });
+      await J.click('#write', 'press Write my rap');
+      await J.page.waitForSelector('#out:not([hidden]) .rp-bar', { timeout: 60000 }).catch(() => { throw new Blocked('no rap came back within a minute'); });
+      await J.expect(/Verse 1[\s\S]*Hook[\s\S]*Verse 2/i, 'two verses and a hook'); await J.expect(/Trap · confident · \d+ BPM · \d+ bars in 3 parts · \d+ of \d+ bars end on a rhyme/, 'the meta line: trap, its tempo, bars and rhymes counted');
+    },
+    'perform a rap over its beat': async (J) => {
+      await J.open(RAP_LINK); await J.expect(/Opened from its link/, 'the shared rap opened');
+      await J.click('button.rp-btn:not(.go) >> text="Rap it yourself"', 'press Rap it yourself'); await J.expect(/Your turn: one measure to count in/, 'the beat counting in');
+      await J.page.waitForSelector('.rp-bar.on', { timeout: 8000 }).catch(() => { throw new Failed('no bar lit up on its measure'); }); await J.click('button.rp-btn:not(.go) >> text="Stop"', 'press Stop');
+    },
+    'share the rap and reopen it from the link': async (J) => {
+      await J.open(RAP_LINK); await J.expect(/Slice of the Night/, 'the rap "Slice of the Night"');
+      const u = await J.shareLink('#share'); if (!/[?&]r=/.test(u)) throw new Failed('the share link does not carry the rap: ' + u);
+      await J.open('/rap/'); await J.open(u); await J.expect((x) => /Slice of the Night/.test(x) && /18 of 20 bars end on a rhyme/.test(x), 'the same rap back from its link, 18 of 20 bars rhyming');
+    },
+  },
+  // onlineconverter.com (/converter/, 2026-10-29): a real JPG chosen as a person chooses a file, made into a PNG on the device, and the file
+  // checked by its own first bytes; then a tool found by typing, shared, and its link opened in a fresh page, where the same tool opens
+  'onlineconverter.com': {
+    'convert a file and download the result': async (J) => {
+      await J.open('/converter/?t=image-png'); await J.expect(/Image to PNG|To PNG/, 'the PNG tool open');
+      try { await J.page.setInputFiles('#files', path.join(root, 'void-live-deploy', 'podcast', 'cover-256.jpg')); } catch (e) { throw new Failed('choose a file: the file control is not there'); }
+      await J.page.waitForTimeout(300); await J.click('#go', 'press Convert');
+      await J.expect(/1 file made on this device[\s\S]*Download cover-256\.png/, 'one PNG made on the device, offered as cover-256.png');
+      const head = await J.page.evaluate(async () => { const a = document.querySelector('#out a.dl'); const b = new Uint8Array(await (await fetch(a.href)).arrayBuffer()); return { n: b.length, sig: [...b.slice(0, 8)].join(',') }; });
+      if (head.sig !== '137,80,78,71,13,10,26,10' || head.n < 1000) throw new Failed('the download is not a PNG file: ' + JSON.stringify(head));
+    },
+    'find a tool and share it, then reopen it from the link': async (J) => {
+      await J.open('/converter/'); await J.fill('#q', 'cut mp3', 'type cut mp3'); await J.click('#find button[type=submit]', 'press Find');
+      await J.expect(/Cut MP3[\s\S]*In part/, 'Cut MP3 found, and marked in part');
+      const u = await J.shareLink('#share'); if (!/[?&](t|q)=/.test(u)) throw new Failed('the share link does not carry the tool: ' + u);
+      await J.open('/word-count/'); await J.open(u);
+      await J.expect((t) => /\n\s*Cut MP3\s*\n/.test(t) && /mp3/i.test(t), 'the same tool back from its link');
     },
   },
   // paint (/paint/, rebuilt 2026-10-28 against the colour-by-number sites): every step is a tap, a key or a file a person would use

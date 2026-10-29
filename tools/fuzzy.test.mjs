@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { distance, words, allowed, vocabulary, nearest, correct, confirm, sameStem, COMMON, PROTECT_AFTER , sameLetters } from '../void-live-deploy/lib/fuzzy.js';
+import { distance, words, allowed, vocabulary, nearest, correct, confirm, sameStem, COMMON, PROTECT_AFTER , sameLetters, openWords, settled } from '../void-live-deploy/lib/fuzzy.js';
 
 // edit distance: a transposition is one edit, a far word stops early at max + 1
 assert.equal(distance('weather', 'weather'), 0);
@@ -115,4 +115,20 @@ console.log('fuzzy: ok');
   assert.deepEqual(nearest('moive', v), { to: 'movie', d: 1 });
   assert.equal(correct('moive metadata for the matrix', v).text, 'movie metadata for the matrix');
   assert.equal(sameLetters('moive', 'movie'), true); assert.equal(sameLetters('moive', 'move'), false);
+}
+
+// settled (watchdog #110): the page stops waiting for skills still loading once the loaded skills know every word correct() could
+// change. That is exact: a vocabulary of the first skills that says settled gives the same result as the full one, for every ask below.
+{
+  assert.deepEqual(openWords('loan payment on 20000 at 6% for 5 years'), ['payment']); // "years" is a common word, "loan" is too short
+  assert.deepEqual(openWords('weather in "boston" near springfield'), ['weather']); // quoted, short and after-a-place words are never open
+  const asks = ['loan payment on 20000 at 6% for 5 years', 'how much is 5 dollars a day for a year', 'compound interest on 1000 at 5% for 10 years',
+    'what is the gpa of 3.5 and 4.0', 'recipie for pancakes', 'tranlsate hello to spanish', 'distnace from london to paris', 'open a notpad'];
+  for (let n = 0; n <= real.length; n += 10) {
+    const part = vocabulary(real.slice(0, n));
+    for (const a of asks) if (settled(a, part)) assert.deepEqual(correct(a, rv), correct(a, part), a + ' settled with the first ' + n + ' skills');
+  }
+  assert.equal(settled('recipie for pancakes', rv), false, 'a slip is never settled: the wait goes on until the full vocabulary or 2.5 s');
+  assert.equal(settled('loan payment on 20000 at 6% for 5 years', rv), true);
+  assert.equal(settled('anything', null), false);
 }

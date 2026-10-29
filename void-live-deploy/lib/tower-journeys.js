@@ -18,6 +18,10 @@ export const JOURNEYS = Object.freeze({
   'word count': ['type text and see words and characters counted', 'paste a long text and see reading time', 'share the result and reopen it from the link'],
   stopwatch: ['start, lap and stop the stopwatch', 'reset and start again', 'share the result and reopen it from the link'],
   // nameunit.com (/hosting/, 2026-10-29): its visitors type a name and read which endings are free or taken, then send that answer on
+  'wheelroot.com': ['draw a drill and see its score', 'share the drawing and reopen it from the link'],
+  // neuralframes.com's rap lyrics generator (/rap/, 2026-10-29): its visitors set a topic and a style, get verses and a hook, and take them away
+  'music: neuralframes.com': ['write a rap for a topic and see verses and a hook', 'perform a rap over its beat', 'share the rap and reopen it from the link'],
+  'onlineconverter.com': ['convert a file and download the result', 'find a tool and share it, then reopen it from the link'],
   nameunit: ['search a name and see each ending free or taken', 'share the result and reopen it from the link'],
   paint: ['choose a picture from the library', 'zoom in and fill a numbered area', 'use a hint for the selected colour', 'leave and come back to the saved picture', 'finish and watch the reveal', 'colour your own photo'],
 });

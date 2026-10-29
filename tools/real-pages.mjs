@@ -115,6 +115,11 @@ export const SPECS = {
     await t.p.selectOption('#cRoot', 'G'); await t.p.waitForTimeout(200); t.ok(/G/.test(await t.p.locator('main').innerText()), 'picking G names a G chord');
     await t.share(t.p.getByRole('button', { name: /share/i }).first());
   },
+  '/members/': async (t) => { // paid Verse: the perks read from lib/members.js, the join link carries the membership
+    await t.waitText('#perks', /Publish your Verse/, 8000);
+    t.ok((await t.p.locator('#perks li').count()) >= 4, 'the perks are listed');
+    t.ok(/gumroad\.com\/l\/yinmj/.test(await t.p.locator('#buy').getAttribute('href')), 'Join goes to the paid Verse membership');
+  },
   '/code-review/': async (t) => {
     await t.fill('#code', 'function login(user, pass) { eval(user); const q = "SELECT * FROM users WHERE name = \'" + user + "\'"; }'); await t.click('#run'); await t.waitText('#out', /\S/, 15000);
     t.ok(/eval|inject|SQL/i.test(await t.text('#out')), 'the review flags eval or SQL injection');
@@ -127,6 +132,19 @@ export const SPECS = {
     await t.fill('#ask', '5 mi in km'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(400); t.ok(/8\.04672/.test(await t.p.locator('main').innerText()), '5 miles is 8.04672 km');
     await t.fill('#ask', '100 f to c'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(400); t.ok(/37\.7777|37\.78/.test(await t.p.locator('main').innerText()), '100 F is 37.78 C');
     await t.share('#link');
+  },
+  // the file converter (onlineconverter.com assimilated, 2026-10-29): a search opens the tool, a real HTML file becomes plain text on the device,
+  // the text file is checked word for word, and the share link opens the same tool with no file in it
+  '/converter/': async (t) => {
+    t.ok(/106 tools: 21 on this page, \d+ on another Verse page, \d+ in part, \d+ not on Verse yet/.test(await t.text('#counts')), 'all 106 tools counted: ' + (await t.text('#counts')).slice(0, 80));
+    await t.fill('#q', 'epub to txt'); await t.click('#find button[type=submit]'); await t.p.waitForTimeout(300);
+    t.ok(/EPUB to TXT/.test(await t.text('#found')) && /Ebook to TXT/.test(await t.text('#tName')), 'epub to txt finds and opens the tool');
+    await t.p.setInputFiles('#files', t.tmp('note.html', '<html><body><h1>Shop list</h1><p>Two eggs and bread.</p></body></html>')); await t.p.waitForTimeout(300);
+    await t.click('#go'); await t.waitText('#status', /made on this device|could not/, 10000);
+    const got = await t.p.evaluate(async () => { const a = document.querySelector('#out a.dl'); return a ? { name: a.download, text: await (await fetch(a.href)).text() } : null; });
+    t.ok(!!got && got.name === 'note.txt' && /Shop list/.test(got.text) && /Two eggs and bread\./.test(got.text) && !/</.test(got.text), 'the HTML file becomes note.txt with its words and no tags: ' + JSON.stringify(got).slice(0, 90));
+    await t.download('#out a.dl', /^note\.txt$/);
+    await t.share('#share', async (p) => /Ebook to TXT/.test(await p.locator('#tName').innerText()));
   },
   '/cpan/': async (t) => {
     await t.fill('#reports', 'Moo 2.005005 PASS perl-5.38.0 x86_64-linux\nMoo 2.005005 FAIL perl-5.8.9 darwin\nTry::Tiny 0.31 PASS perl-5.36.0 MSWin32'); await t.click('#ingest');
@@ -160,6 +178,23 @@ export const SPECS = {
   '/generators/make/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate rolls the table again'); await t.download('#download', /\.html$/i); await t.share('#share'); },
   '/generators/story/': async (t) => { await t.fill('#idea', 'a lighthouse keeper finds a door in the sea'); await t.click('#write'); await t.waitText('#story', /\w{20,}/, 30000); t.ok((await t.text('#story')).split(/\s+/).length > 40, 'an opening is written'); await t.download('#dl', /\.txt$/i); },
   '/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
+  // Verse raps (2026-10-29): a topic in, a rap written for it by the free answer model (two verses and a hook, the rhymes lettered), performed by
+  // Rap it yourself (beat and lights), copied, and shared with the whole rap in the link
+  '/rap/': async (t) => {
+    await t.fill('#topic', 'a cat who runs the night shift'); await t.click('#write');
+    const got = await t.waitText('#rap', /verse 1[\s\S]*hook[\s\S]*verse 2/i, 60000); t.ok(/verse 1[\s\S]*hook[\s\S]*verse 2/i.test(got), 'a rap with two verses and a hook is written for the topic');
+    t.ok(/\d+ bars in \d parts · \d+ of \d+ bars end on a rhyme/.test(await t.text('#rap')), 'the bars and rhymes are counted');
+    await t.clickText('Rap it yourself'); await t.p.waitForTimeout(3500); t.ok((await t.p.locator('.rp-bar.on').count()) === 1, 'a bar lights up on its measure over the beat'); await t.clickText('Stop');
+    await t.copies('button.rp-btn >> text="Copy the lyrics"', 'Verse 1'); await t.share('#share');
+  },
+  // the scored drawing course (wheelroot.com assimilated, 2026-10-29): begin opens the first drill, a stroke drawn on the sheet is scored 0 to 100 on Done, and the drawing travels in a link
+  '/learn-to-draw/': async (t) => {
+    await t.click('#begin'); await t.p.waitForTimeout(200); t.ok((await t.text('#dName')).trim().length > 0, 'Begin opens a drill: ' + (await t.text('#dName')).trim());
+    const b = await t.p.locator('#sheet').boundingBox(); t.ok(!!b && b.width > 50, 'the sheet is there to draw on');
+    if (b) { await t.p.mouse.move(b.x + b.width * 0.2, b.y + b.height * 0.5); await t.p.mouse.down(); for (let i = 1; i <= 20; i++) await t.p.mouse.move(b.x + b.width * (0.2 + 0.03 * i), b.y + b.height * 0.5); await t.p.mouse.up(); }
+    await t.click('#done'); await t.p.waitForTimeout(200); t.ok(/Score: \d{1,3} of 100/.test(await t.text('#result')), 'Done scores the stroke out of 100: ' + (await t.text('#result')).slice(0, 60));
+    await t.share('#share');
+  },
   '/hosting/': async (t) => {
     t.ok(/3 are being served/.test(await t.text('#qout')), '90 an hour at 2 minutes is 3 served at once');
     // the domain check asks the registry (RDAP): a registered name says who and since when, a made-up one is never called taken, a bad one is refused
@@ -185,6 +220,12 @@ export const SPECS = {
   '/markets/screener/': async (t) => { await t.clickText('Screen'); await t.p.waitForTimeout(3000); t.ok((await t.p.locator('main tr, main li').count()) > 3, 'the screener returns rows'); },
   '/metronome/': async (t) => { await t.fill('#bpmIn', '90'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(200); t.ok((await t.text('#bpmOut')).trim() === '90', 'tempo set to 90'); await t.click('#play'); await t.p.waitForTimeout(800); t.ok((await t.act()).sound > 0, 'Start makes a click sound'); await t.click('#play'); await t.share('#shareBtn'); },
   '/news/': async (t) => { await t.waitText('#status', /stories/, 20000); t.ok(/\d+ stories/.test(await t.text('#status')), 'real stories loaded: ' + (await t.text('#status'))); },
+  '/team/': async (t) => {  // a visitor: the workspace's channels, agents and waiting jobs from /api/team, the gate instead of messages, a bad key refused
+    await t.waitText('#wsline', /jobs? waiting/, 15000); t.ok(/jobs? waiting/.test(await t.text('#wsline')), 'the workspace line reads the API: ' + (await t.text('#wsline')));
+    t.ok((await t.p.locator('#chans li').count()) >= 2, '#work and #general are listed'); t.ok(await t.p.locator('#gate').isVisible(), 'a visitor gets the join form, not the messages');
+    await t.fill('#key', 'not-a-key'); await t.clickText('Join'); await t.p.waitForTimeout(300); t.ok(/vt1/.test(await t.text('#joinSay')), 'a malformed key is refused before it is sent');
+    await t.p.evaluate(() => { location.hash = 'c=general'; }); await t.p.waitForTimeout(500); t.ok(/#general/.test(await t.text('#cname')), 'the address picks the channel');
+  },
   '/notes/': async (t) => { await t.click('#newBtn'); await t.p.keyboard.type('Test note'); await t.p.keyboard.press('Enter'); await t.p.keyboard.type('Body text here'); await t.p.waitForTimeout(700); await t.download('#mdBtn', /\.md$/i); await t.share('#shareBtn'); },
   '/obituaries/': async (t) => { await t.p.waitForTimeout(4000); t.ok((await t.p.locator('#list > *').count()) > 0, 'real notices listed'); },
   '/paint/': async (t) => {

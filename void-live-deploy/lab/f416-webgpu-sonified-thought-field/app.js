@@ -1,0 +1,134 @@
+const canvas = document.getElementById('c');
+const status = document.getElementById('status');
+let W = innerWidth, H = innerHeight;
+canvas.width = W; canvas.height = H;
+
+const GRID = 64;
+let field = new Float32Array(GRID * GRID);
+let next = new Float32Array(GRID * GRID);
+for (let i = 0; i < field.length; i++) field[i] = Math.random() * 0.3;
+
+let genes = { diff: 0.15, decay: 0.98, reward: 0.4, audioBias: 0.1 };
+let fitness = 0;
+let gen = 0;
+
+let audioCtx, analyser, dataArray;
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new AudioContext();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 128;
+  dataArray = new Uint8Array(analyser.frequencyBinCount);
+  const master = audioCtx.createGain();
+  master.gain.value = 0.15;
+  master.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  window.masterGain = master;
+  status.textContent = 'WebGPU: Canvas2D path | Audio: live';
+}
+document.addEventListener('pointerdown', initAudio, { once: true });
+
+const cards = [];
+const lexicon = ['echo', 'trace', 'flux', 'node', 'bias', 'seed', 'peak', 'drift', 'form', 'void', 'mind', 'wave'];
+function spawnCard(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'thought';
+  el.textContent = text;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  cards.push({ el, x, y, life: 1, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5 });
+  if (cards.length > 12) { cards.shift().el.remove(); }
+}
+
+let px = W/2, py = H/2, down = false;
+canvas.addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; if (down) deposit(px, py, 0.6); });
+canvas.addEventListener('pointerdown', e => { down = true; deposit(e.clientX, e.clientY, 1.2); fitness += 0.1; });
+canvas.addEventListener('pointerup', () => down = false);
+function deposit(x, y, amt) {
+  const gx = Math.floor(x / W * GRID), gy = Math.floor(y / H * GRID);
+  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+    const i = (gy+dy)*GRID + (gx+dx);
+    if (i >= 0 && i < field.length) field[i] = Math.min(1, field[i] + amt * Math.exp(-(dx*dx+dy*dy)/4));
+  }
+}
+
+function step() {
+  let audioEnergy = 0;
+  if (analyser) {
+    analyser.getByteFrequencyData(dataArray);
+    audioEnergy = dataArray.reduce((a,b)=>a+b,0) / dataArray.length / 255;
+  }
+  for (let y = 1; y < GRID-1; y++) for (let x = 1; x < GRID-1; x++) {
+    const i = y*GRID + x;
+    const lap = (field[i-1] + field[i+1] + field[i-GRID] + field[i+GRID]) * 0.25 - field[i];
+    next[i] = field[i] * genes.decay + lap * genes.diff + audioEnergy * genes.audioBias * 0.02;
+    next[i] = Math.max(0, Math.min(1, next[i]));
+  }
+  [field, next] = [next, field];
+
+  if (gen++ % 30 === 0) {
+    const trial = { ...genes, diff: genes.diff + (Math.random()-0.5)*0.02, audioBias: genes.audioBias + (Math.random()-0.5)*0.02 };
+    let varSum = 0; for (let v of field) varSum += v*v;
+    fitness = Math.sqrt(varSum / field.length) + fitness * 0.9;
+    if (fitness > 0.2) genes = trial;
+    document.getElementById('info').textContent = `gen ${Math.floor(gen/30)} fit ${fitness.toFixed(2)}`;
+  }
+
+  if (analyser && Math.random() < 0.08 && audioEnergy > 0.05) {
+    const peak = dataArray.indexOf(Math.max(...dataArray));
+    const tx = (peak / dataArray.length) * W;
+    const ty = (0.3 + Math.random()*0.4) * H;
+    spawnCard(tx, ty, lexicon[Math.floor(Math.random()*lexicon.length)]);
+  }
+}
+
+const ctx = canvas.getContext('2d');
+function render() {
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0, 0, W, H);
+  const img = ctx.createImageData(GRID, GRID);
+  for (let i = 0; i < field.length; i++) {
+    const v = field[i];
+    img.data[i*4] = v * 80;
+    img.data[i*4+1] = v * 160;
+    img.data[i*4+2] = 255;
+    img.data[i*4+3] = 255;
+  }
+  const tmp = document.createElement('canvas');
+  tmp.width = GRID; tmp.height = GRID;
+  tmp.getContext('2d').putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(tmp, 0, 0, W, H);
+
+  cards.forEach(c => {
+    c.life -= 0.005;
+    c.x += c.vx; c.y += c.vy;
+    c.el.style.left = c.x + 'px';
+    c.el.style.top = c.y + 'px';
+    c.el.style.opacity = Math.max(0, c.life);
+    c.el.style.transform = `translateZ(${c.life*40}px) rotateX(${(c.x-W/2)*0.02}deg)`;
+  });
+  cards.filter(c => c.life <= 0).forEach(c => c.el.remove());
+  cards.splice(0, cards.length, ...cards.filter(c => c.life > 0));
+}
+
+function loop() {
+  step();
+  render();
+  requestAnimationFrame(loop);
+}
+loop();
+
+document.getElementById('seal').onclick = () => {
+  localStorage.setItem('f197-genes', JSON.stringify(genes));
+  status.textContent += ' | sealed';
+};
+document.getElementById('reset').onclick = () => {
+  for (let i = 0; i < field.length; i++) field[i] = Math.random() * 0.2;
+  genes = { diff: 0.15, decay: 0.98, reward: 0.4, audioBias: 0.1 };
+};
+const saved = localStorage.getItem('f197-genes');
+if (saved) try { genes = JSON.parse(saved); } catch (e) { console.warn('f416-webgpu-sonified-thought-field:', e); }
+
+window.addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
