@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T20:18:28Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,16 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:35:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:34:04Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:33:45Z",
+   "subject": "MultiVerse, with a capital V (owner's spelling); the stage's source void.html carries the rename and both copies match it"
   },
   {
    "at": "2026-10-29T15:33:37Z",
@@ -567,6 +575,10 @@
   {
    "at": "2026-10-29T15:29:59Z",
    "subject": "Put \"Reply to what I said, or correct me\" on every card"
+  },
+  {
+   "at": "2026-10-29T15:29:47Z",
+   "subject": "Name the membership Multiverse: a Verse of your own (owner: something better than Paid Verse)"
   },
   {
    "at": "2026-10-29T15:29:16Z",
@@ -609,20 +621,8 @@
    "subject": "STL checker: design and test plan (page held until sycophanthex.com is assimilated)"
   },
   {
-   "at": "2026-10-29T15:22:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:22:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:21:37Z",
-   "subject": "Merge Verse: the board takes the room above the ask bar, so New game is never under it"
-  },
-  {
-   "at": "2026-10-29T15:21:22Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-29T15:24:29Z",
+   "subject": "Members page: a quiet Paid Verse page, with building one perk among the rest (owner: the $49 plan offers more than build)"
   }
  ],
  "builders": {
