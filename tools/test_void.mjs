@@ -5082,7 +5082,9 @@ try {
     const box = await G.p.$eval('.fig3d[data-pose="sit"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 3 }; }).catch(() => null);
     if (box) { await G.p.mouse.move(box.x, box.y); await G.p.mouse.down(); await G.p.mouse.move(box.x + 30, box.y, { steps: 2 }); await G.p.mouse.move(box.x + 700, box.y, { steps: 2 }); await G.p.mouse.up(); await G.p.waitForTimeout(500); }
     const s2 = await st3d();
-    await G.p.reload(); await G.p.waitForTimeout(1200); const f3 = await figs();
+    // kept stage things are drawn again once every skill file is in (void.html loadLearnedSkills: "figures kept from last time come back"),
+    // which data-skills="ready" marks for the suite; a fixed 1.2 s guess dated from 26 skill files, and ~300 now load before the redraw
+    await G.p.reload(); await skillsUp(G.p, 200); const f3 = await figs();
     check('figure: "a chair" then "summon motelet" sits Motelet on it; a cup is picked up by the next; a third stands; "spin motelet" turns it; "download motelet" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload',
       /sits on the chair/.test(w1) && /picks up the cup/.test(w2) && /looks around/.test(w3)
         && !!chair && !!sitter && !!holder && !!cup && cup.heldBy === holder.id && f1.filter((f) => f.m === 'cup').length === 0
@@ -8292,7 +8294,9 @@ try {
     check('stage pack b: an empty stage says so and makes nothing; with things, "print this stage as a one-page sheet" downloads a PNG (void-stage-sheet.png), shows it and the Print button calls the print dialog',
       /empty/i.test(emptySaid) && !emptyCard && !!d && d.suggestedFilename() === 'void-stage-sheet.png' && png === '89504e470d0a1a0a' && !!preview && preview.src === 'data:image/png;base64,' && /2 things/.test(preview.alt) && printed === 1 && !T.errors.length, JSON.stringify({ emptySaid, emptyCard: !!emptyCard, name: d && d.suggestedFilename(), png, preview, printed, errors: T.errors }));
     const now = Date.now(), iso = (ms) => new Date(now - ms).toISOString(), posts = [], reads = [];
-    const rows = [{ ask: 'draw a mandala', count: 5, first: iso(2 * 864e5), last: iso(3600e3), fallback: 'none:x' }, { ask: 'sing <i>me</i> a song', count: 3, first: iso(2 * 864e5), last: iso(3600e3), fallback: '' }];
+    // 'draw a mandala' fell back to a plain 'none' (nothing was read): still learnable. A 'none:<sources>' miss (every source read, none knew)
+    // is never queued by plan() (lib/learn.js readAndUnknown, 4a63984ea), so the card rightly leaves it out
+    const rows = [{ ask: 'draw a mandala', count: 5, first: iso(2 * 864e5), last: iso(3600e3), fallback: 'none' }, { ask: 'sing <i>me</i> a song', count: 3, first: iso(2 * 864e5), last: iso(3600e3), fallback: '' }];
     await T.ctx.route(/\/api\/(misses|queue)/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push({ auth: q.headers().authorization, body: JSON.parse(q.postData() || '{}') }); return r.fulfill({ status: 200, contentType: 'application/json', body: '{"item":{"id":"q1"}}' }); } reads.push(q.url()); return r.fulfill({ status: 200, contentType: 'application/json', body: /misses/.test(q.url()) ? JSON.stringify(rows) : '{"items":[]}' }); });
     await T.ask('close', 400); await T.ask("turn today's misses into jobs", 900); const dry = await T.page();
     await T.ask('close', 400); await T.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'test-owner-key'));
