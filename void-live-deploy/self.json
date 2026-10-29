@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:47:54Z",
+   "subject": "Verse Brain mind layers"
+  },
+  {
+   "at": "2026-10-29T05:47:51Z",
+   "subject": "Refresh generated files"
+  },
+  {
    "at": "2026-10-29T05:46:36Z",
    "subject": "Verse Brain mind layers: asks become goals, episodic and procedural memory, one valence, a monitor of organs that disagree, answers from…"
   },
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T05:29:07Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:28:35Z",
-   "subject": "List the ascii skill so it loads"
-  },
-  {
-   "at": "2026-10-29T05:26:49Z",
-   "subject": "Approval gate: a yes runs only when the gate clears it"
   }
  ],
  "builders": {
