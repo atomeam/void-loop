@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:01:10Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:00:24Z",
+   "subject": "Versus: count controls on the rendered page, name a pinned target as the target"
+  },
+  {
    "at": "2026-10-29T15:59:03Z",
    "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
   },
@@ -573,12 +581,20 @@
    "subject": "team chat: mark Verse's review false positives with their reasons; drop 'password' from the invite text"
   },
   {
+   "at": "2026-10-29T15:53:27Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:53:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:53:20Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:52:41Z",
+   "subject": "Close an incident when the shards it failed pass on a later commit"
   },
   {
    "at": "2026-10-29T15:52:36Z",
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T15:41:49Z",
    "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
-  },
-  {
-   "at": "2026-10-29T15:40:03Z",
-   "subject": "Put the reply section in void.html, the page the deploy copies"
-  },
-  {
-   "at": "2026-10-29T15:36:15Z",
-   "subject": "Queue ignores a shell control count under 2"
-  },
-  {
-   "at": "2026-10-29T15:35:04Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:34:04Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -858,8 +858,9 @@
   "source": "verse"
  },
  "tower": {
-  "target": "sycophanthex.com",
+  "target": "onlineconverter.com",
   "since": "2026-10-29",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "serverdiscounter.com",
    "howsecureismypassword.net",
