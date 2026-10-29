@@ -26,6 +26,7 @@ import { loadMean } from './brain-creature.js';
 import { countsOf, loadCounts } from './brain-hearing.js';
 import { programsOf, loadPrograms } from './brain-painter.js';
 import { gardenOf, loadGarden } from './brain-gardener.js';
+import { grammarsOf, loadGrammars } from './brain-grower.js';
 
 export const REGIONS = REGIONS_X * REGIONS_Y;
 export const MAX_GOALS = 8, GOAL_DECAY = 0.997, GOAL_FLOOR = 0.05;
@@ -276,7 +277,7 @@ export function loadAsks(b, k) {
 export function knowledgeOf(b) {
   const r2 = (v) => Math.round(v * 1000) / 1000;
   return { v: 1, q: Array.from(b.will.q, r2), hebb: Array.from(b.memory.w, r2), centroids: b.gestures.c.map((c) => c.map(r2)), counts: b.gestures.n.slice(), pref: Array.from(b.mind.pref, r2),
-    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, creature: b.creature ? b.creature.mean.map(r2) : undefined, hearing: b.ear ? countsOf(b.ear) : undefined, painter: b.painter ? programsOf(b.painter) : undefined, garden: b.gardener ? gardenOf(b.gardener) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES), asks: asksOf(b) };
+    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, creature: b.creature ? b.creature.mean.map(r2) : undefined, hearing: b.ear ? countsOf(b.ear) : undefined, painter: b.painter ? programsOf(b.painter) : undefined, garden: b.gardener ? gardenOf(b.gardener) : undefined, grower: b.grower ? grammarsOf(b.grower) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES), asks: asksOf(b) };
 }
 /** put kept knowledge back into a new brain (wrong shapes are ignored, so an old record never breaks a new brain). Returns what was restored. */
 export function loadKnowledge(b, k) {
@@ -292,6 +293,7 @@ export function loadKnowledge(b, k) {
   if (b.ear && loadCounts(b.ear, k.hearing)) done.push('hearing'); // the ear's melody counts, intervals and lengths only (lib/brain-hearing.js)
   if (b.painter && loadPrograms(b.painter, k.painter)) done.push('painter'); // the programs that paint its look, numbers only (lib/brain-painter.js)
   if (b.gardener && loadGarden(b.gardener, k.garden)) done.push('gardener'); // how it tends each patch of tissue, numbers only (lib/brain-gardener.js)
+  if (b.grower && loadGrammars(b.grower, k.grower)) done.push('grower'); // the grammars its plant grows from, numbers only (lib/brain-grower.js)
   if (loadAsks(b, k.asks)) done.push('asks'); // what the visitor asks next, their own asks on their own device
   if (Array.isArray(k.procedures)) { const p = k.procedures.filter((x) => x && typeof x.ctx === 'string' && x.genome && typeof x.genome === 'object' && Number.isFinite(x.fitness)).slice(0, MAX_PROCEDURES); if (p.length || !k.procedures.length) { b.mind.procedures = p; done.push('procedures'); } }
   if (Array.isArray(k.episodes)) { b.mind.episodes = k.episodes.filter((e) => e && Array.isArray(e.key) && e.key.length === REGIONS * 2 + 2 && Number.isInteger(e.action) && e.action >= 0 && e.action < ACTIONS.length && Number.isFinite(e.gain)).slice(-MAX_EPISODES); if (!b.mind.episodes.length && k.episodes.length) b.mind.episodes = []; else done.push('episodes'); }

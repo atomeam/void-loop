@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,24 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T15:27:20Z",
-   "subject": "Stability gauge: say \"at least\" when incidents.json is full, and how many checks failed"
+   "at": "2026-10-29T15:29:59Z",
+   "subject": "Put \"Reply to what I said, or correct me\" on every card"
+  },
+  {
+   "at": "2026-10-29T15:28:08Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T15:27:32Z",
+   "subject": "feat(brain): organ 17, F453's L-system plant grown toward attention"
+  },
+  {
+   "at": "2026-10-29T15:27:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:25:37Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:25:18Z",
@@ -559,6 +575,14 @@
   {
    "at": "2026-10-29T15:22:46Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:22:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:21:37Z",
+   "subject": "Merge Verse: the board takes the room above the ask bar, so New game is never under it"
   },
   {
    "at": "2026-10-29T15:21:22Z",
@@ -598,30 +622,6 @@
   },
   {
    "at": "2026-10-29T15:15:56Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:15:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:14:41Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:14:11Z",
-   "subject": "password skill: take the asks util leaves, crypto with no bias, order file, family, map line, test"
-  },
-  {
-   "at": "2026-10-29T15:14:06Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:13:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:13:28Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
@@ -861,9 +861,9 @@
   "target": "sycophanthex.com",
   "since": "2026-10-29",
   "next": [
-   "nameunit.com",
-   "wheelroot.com",
-   "onlineconverter.com"
+   "jobicy.com",
+   "workingnomads.com",
+   "arbeitnow.com"
   ],
   "beaten": 0,
   "total": 1266

@@ -5198,7 +5198,7 @@ try {
   if (want('talk back: the owner replies to Verse')) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const posts = [], AT = '2026-10-08T18:09:00Z';
     await O.ctx.route(/\/api\/voice-reply$/, (r) => {
-      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }] }));
+      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }, { at: '2026-10-09T08:00:00Z', to: null, about: { ask: '5 miles in km', title: 'Converted' }, text: 'Earlier on this card.', answer: 'I kept that.' }] }));
       const b = JSON.parse(r.request().postData() || '{}'); posts.push({ b, auth: r.request().headers().authorization });
       return r.fulfill(json({ at: '2026-10-09T11:00:00Z', to: b.to, text: b.text, answer: 'Heard. I will check the live finding before I call rides untested.', correction: true, remember: 'rides has a live finding' }));
     });
@@ -5209,20 +5209,31 @@ try {
     await O.p.fill('.vpage.on [data-v-reply]', 'Rides is live: <img src=x onerror="window.__x=1"> check the finding');
     await O.p.click('.vpage.on [data-v-send]'); await until(async () => /check the live finding/.test(await O.page()), 4000);
     const after = await O.page(), stillOpen = await O.p.$('.vpage.on [data-v-reply]'), x = await O.p.evaluate(() => window.__x || 0), imgs = await O.p.$$eval('.vpage.on .v-talk img', (l) => l.length);
-    // and about any card: "Tell Verse" under it sends the ask, the card's title and what it said
-    await O.ask('5 miles in km', 300); await until(async () => !!(await O.p.$('.vpage.on a.vtell')), 4000);
-    await O.p.click('.vpage.on a.vtell'); await O.p.fill('.vpage.on .vtell-box textarea', 'Say it to two decimals.');
-    await O.p.click('.vpage.on .vtell-box button'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.page()), 4000);
-    const card = posts[1] && posts[1].b, tellLeft = await O.p.$$eval('.vpage.on a.vtell', (l) => l.length);
-    const S = await fresh(); await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
-    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')); await S.ask('5 miles in km', 300); await S.p.waitForTimeout(500);
-    const strangerTell = await S.p.$$eval('.vpage a.vtell', (l) => l.length); await S.ctx.close();
-    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; "Tell Verse" under any card sends its ask, title and words; a stranger sees neither',
-      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before)
+    const selfReply = await O.p.$$eval('.vpage.on .vreply', (l) => l.length); // the self card keeps its own Talk to me: no second box
+    // and on every other card (owner, 2026-10-29): "Reply to what I said, or correct me" at its end sends the ask, the card's title and what it said,
+    // and shows what was said on this ask before
+    await O.ask('5 miles in km', 300); await until(async () => /Earlier on this card/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const cardBefore = await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '');
+    await O.p.fill('.vpage.on .vreply textarea', 'Say it to two decimals.');
+    await O.p.click('.vpage.on .vreply [data-reply-send]'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const card = posts[1] && posts[1].b, lastIsReply = await O.p.$eval('.vpage.on', (e) => { let n = e.lastElementChild; while (n && n.classList.contains('vtail')) n = n.previousElementSibling; return !!n && n.classList.contains('vreply'); });
+    // a stranger gets the same section; the words stay in this browser's correction log, nothing is sent
+    const S = await fresh(); const strangerPosts = []; await S.ctx.route(/\/api\/voice-reply$/, (r) => { strangerPosts.push(r.request().method()); return r.fulfill(json({ replies: [] })); });
+    await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
+    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')), strangerSelf = await S.p.$$eval('.vpage.on .vreply', (l) => l.length);
+    await S.ask('5 miles in km', 300); await until(async () => !!(await S.p.$('.vpage.on .vreply textarea')), 4000);
+    await S.p.fill('.vpage.on .vreply textarea', 'Kilometres, not km.'); await S.p.click('.vpage.on .vreply [data-reply-send]');
+    await until(async () => /Kept on this device/.test(await S.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const kept = await S.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.corrections.v1') || '[]'); } catch (_) { return []; } });
+    await S.ctx.close();
+    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which shows the earlier replies on its ask and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
+      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before) && !/Earlier on this card/.test(before)
         && posts.length === 2 && posts[0].b.to === AT && /^Rides is live/.test(posts[0].b.text) && posts[0].auth === 'Bearer owner-k'
-        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length
-        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Tell Verse/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && tellLeft === 0 && strangerTell === 0,
-      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), posts, imgs, x, stranger, strangerTell, tellLeft, errors: O.errors }));
+        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length && selfReply === 0
+        && /Reply to what I said, or correct me/.test(cardBefore) && /You: Earlier on this card\./.test(cardBefore) && /Verse: I kept that\./.test(cardBefore) && lastIsReply
+        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Reply to what I said/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && posts[1].auth === 'Bearer owner-k'
+        && strangerSelf === 0 && !strangerPosts.includes('POST') && kept.length === 1 && kept[0].ask === '5 miles in km' && kept[0].text === 'Kilometres, not km.',
+      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), cardBefore, posts, imgs, x, stranger, strangerSelf, strangerPosts, kept, lastIsReply, selfReply, errors: O.errors }));
     await O.ctx.close(); }
   // Verse's fixes, previewed (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"; skills/v01d-fixes.js)
   if (want("Verse's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
@@ -5637,7 +5648,7 @@ try {
       out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
       && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
   }
-  if (want('verse brain: one workspace that sixteen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that seventeen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5708,9 +5719,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its sixteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its seventeen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 16 && a.rows === 16 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 17 && a.rows === 17 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
