@@ -77,9 +77,11 @@ const triggersOf = new Map();
 if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))) for (const w of String(x.want).split('|')) if (w.startsWith('skill:')) { const k = w.slice(6); if (!by.has(k)) by.set(k, []); by.get(k).push(x.ask); }
   for (const [k, list] of by) triggersOf.set(k, triggersFrom(list)); }
 async function one({ ask: a, want, says, before }) {
-  // a light page: reduced motion (the page stops its idle animations, as it does for a person who asks for that) and no pictures, fonts or media
-  // from Verse's own files. No ask is judged on them, and the daily run on main ran past its 40 min with 3,180 asks (cancelled every day since 2026-10-25)
-  const ctx = await browser.newContext({ reducedMotion: 'reduce' }); const miss = [];
+  // a light page. No service worker: on 127.0.0.1 the page registers /sw.js, and each new context installed it again, which fetches every
+  // tool page the worker keeps offline (sw.js KEPT, since 2026-10-24) while the ask runs. That is the cost that put the daily run on main past its
+  // 40 min (cancelled every day since 2026-10-22, last pass 2026-10-17). No ask is judged on the worker: it is network first, and on a first load it
+  // controls nothing. Also reduced motion (the page stops its idle animations, as for a person who asks for that) and no pictures, fonts or media
+  const ctx = await browser.newContext({ reducedMotion: 'reduce', serviceWorkers: 'block' }); const miss = [];
   await ctx.route(/^http:\/\/127\.0\.0\.1:\d+\/(?!api\/)/, (r) => (/^(image|font|media)$/.test(r.request().resourceType()) ? r.fulfill({ status: 204, body: '' }) : r.fallback()));
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
@@ -163,7 +165,10 @@ async function one({ ask: a, want, says, before }) {
 // of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
 const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
-await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
+// the pace on stderr every 500 asks, so a run cut off by a time limit still shows how far it got and how fast
+let done = 0; const began = Date.now();
+await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]);
+  if (++done % 500 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s'); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
