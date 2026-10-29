@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 42,
+  "tested": 43,
   "checked": 18,
   "proven": 305
  },
@@ -1192,7 +1192,7 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 3,
     "proven": 14
    },
@@ -1378,6 +1378,13 @@
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "streak": 10
+    },
+    {
+     "name": "uuid",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },
