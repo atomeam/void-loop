@@ -1,0 +1,47 @@
+{
+ "floor": "prizes",
+ "verse_page": "/prizes/",
+ "researched": "2026-10-29",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "wheelofgold.com": {
+   "url": "https://wheelofgold.com/",
+   "scanned": "2026-10-29",
+   "leader": true,
+   "pages": [
+    "https://wheelofgold.com/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "1762 Days",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/prizes/ shows \"day\"; not \"1762\""
+    },
+    {
+     "name": "Why Choose Us",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/prizes/ shows none of its words; not \"why\", \"choose\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Why Choose Us",
+   "sites": [
+    "wheelofgold.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-29",
+  "queued": []
+ }
+}
