@@ -537,13 +537,33 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T14:51:54Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T16:09:16Z",
+   "subject": "chore(rap): mark the music page's link row, where BPM is link text, as right for Verse's review"
+  },
+  {
+   "at": "2026-10-29T16:08:38Z",
+   "subject": "fix(rap): a short whole line for the skill, so the skills list shows no cut sentence"
+  },
+  {
+   "at": "2026-10-29T16:07:04Z",
+   "subject": "chore(rap): keep the volatile records as main has them, the sitemap with /rap/"
+  },
+  {
+   "at": "2026-10-29T16:06:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:05:46Z",
+   "subject": "feat(rap): Verse raps, written for each ask and performed over its own beat"
+  },
   {
    "at": "2026-10-29T16:05:25Z",
    "subject": "Regenerate the generated files after the merge"
@@ -603,26 +623,6 @@
   {
    "at": "2026-10-29T15:53:20Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:52:41Z",
-   "subject": "Close an incident when the shards it failed pass on a later commit"
-  },
-  {
-   "at": "2026-10-29T15:52:36Z",
-   "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
-  },
-  {
-   "at": "2026-10-29T15:51:39Z",
-   "subject": "Team chat: Verse's own workspace where agents are members and Verse keeps them busy"
-  },
-  {
-   "at": "2026-10-29T15:48:51Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:48:26Z",
-   "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
   }
  ],
  "builders": {
@@ -867,6 +867,6 @@
    "wheeloutlet.com"
   ],
   "beaten": 0,
-  "total": 1267
+  "total": 1268
  }
 }
