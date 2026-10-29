@@ -48,6 +48,7 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/pwcheck.js">
+<link rel="modulepreload" href="/lib/pw-handover.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -69,6 +70,7 @@
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
   import { check, leakCount } from '/lib/pwcheck.js';
+  import { receive } from '/lib/pw-handover.js';
   const $ = (id) => document.getElementById(id), pw = $('pw');
   const fill = (ul, items) => { ul.textContent = ''; for (const t of items) { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); } };
   const draw = () => {
@@ -79,8 +81,10 @@
     fill($('why'), r.reasons); fill($('tips'), r.tips);
   };
   pw.addEventListener('input', draw);
-  // a password handed over from /password/ rides in the fragment (#p=, which a browser never sends to any server): read once, then wiped from the address
-  { const m = /[#&]p=([^&]*)/.exec(location.hash); if (m) { try { pw.value = decodeURIComponent(m[1]).slice(0, 128); } catch (_) {} history.replaceState(null, '', location.pathname + location.search); draw(); } }
+  // a password from /password/ comes over in memory (postMessage from the page that opened this one), never in the address.
+  // an old link with #p= is wiped from the address unread
+  if (/[#&]p=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
+  receive(window, (v) => { pw.value = v; draw(); });
   $('show').addEventListener('change', (e) => { pw.type = e.target.checked ? 'text' : 'password'; pw.focus(); });
   $('leak').addEventListener('click', async () => {
     const m = $('leakmsg'); if (!pw.value) { m.textContent = 'Type one first.'; return; } m.textContent = 'Asking…'; m.className = '';
