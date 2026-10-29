@@ -1,24 +1,24 @@
 {
- "at": "2026-10-29T16:09:11.960Z",
+ "at": "2026-10-29T16:15:04.253Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/lib/tower.js",
-   "changes": 99
+   "changes": 104
   },
   {
    "file": "tools/tower-probes.mjs",
-   "changes": 86
+   "changes": 87
   },
   {
    "file": "void-live-deploy/sw.js",
-   "changes": 69
+   "changes": 71
   },
   {
    "file": "domains/handoff.md",
-   "changes": 67
+   "changes": 68
   },
   {
    "file": "tools/tower-gate.mjs",
@@ -26,11 +26,11 @@
   },
   {
    "file": "void-live-deploy/skills/tower.js",
-   "changes": 46
+   "changes": 49
   },
   {
    "file": "tools/families.mjs",
-   "changes": 43
+   "changes": 47
   },
   {
    "file": "tools/tower-gate.test.mjs",
@@ -38,30 +38,30 @@
   },
   {
    "file": "void-live-deploy/lib/seo.js",
-   "changes": 40
+   "changes": 43
   },
   {
    "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 39
+   "changes": 41
   },
   {
    "file": "domains/tower-self.json",
-   "changes": 30
+   "changes": 31
   },
   {
    "file": "tools/tower.test.mjs",
-   "changes": 28
+   "changes": 29
   },
   {
    "file": "void-live-deploy/lib/guard.js",
+   "changes": 27
+  },
+  {
+   "file": "tools/openapi-check.mjs",
    "changes": 26
   },
   {
    "file": "tools/bench.json",
-   "changes": 25
-  },
-  {
-   "file": "tools/openapi-check.mjs",
    "changes": 25
   },
   {
@@ -81,6 +81,10 @@
    "changes": 24
   },
   {
+   "file": "void-live-deploy/lib/card-frame.js",
+   "changes": 24
+  },
+  {
    "file": ".github/workflows/tower-gate.yml",
    "changes": 23
   },
@@ -93,8 +97,8 @@
    "changes": 23
   },
   {
-   "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 22
+   "file": "domains/growth-inbox.md",
+   "changes": 21
   },
   {
    "file": "void-live-deploy/lib/art-rules.js",
@@ -113,11 +117,11 @@
    "changes": 19
   },
   {
-   "file": "domains/growth-inbox.md",
-   "changes": 17
+   "file": "void-live-deploy/skills/verse-brain.js",
+   "changes": 18
   },
   {
-   "file": "void-live-deploy/skills/verse-brain.js",
+   "file": "void-live-deploy/lib/similar-index.js",
    "changes": 17
   },
   {
@@ -150,10 +154,6 @@
   },
   {
    "file": "void-live-deploy/lib/fanfic.js",
-   "changes": 16
-  },
-  {
-   "file": "void-live-deploy/lib/similar-index.js",
    "changes": 16
   },
   {
@@ -214,6 +214,14 @@
   },
   {
    "file": "void-live-deploy/time/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/tools/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/tower.size.json",
    "changes": 13
   },
   {

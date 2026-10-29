@@ -562,6 +562,14 @@
    "subject": "test(answer-honesty): read the tower target from the record"
   },
   {
+   "at": "2026-10-29T16:24:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:23:17Z",
+   "subject": "Regenerate the skill tools list after the main merge"
+  },
+  {
    "at": "2026-10-29T16:21:55Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
@@ -580,10 +588,6 @@
   {
    "at": "2026-10-29T16:19:07Z",
    "subject": "chore(rap): self.json as main has it"
-  },
-  {
-   "at": "2026-10-29T16:13:13Z",
-   "subject": "Add riddle skill (new idea) and mark inbox building"
   },
   {
    "at": "2026-10-29T16:12:11Z",
@@ -610,23 +614,19 @@
    "subject": "fix(rap): a short whole line for the skill, so the skills list shows no cut sentence"
   },
   {
+   "at": "2026-10-29T16:08:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:07:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:07:04Z",
    "subject": "chore(rap): keep the volatile records as main has them, the sitemap with /rap/"
   },
   {
    "at": "2026-10-29T16:06:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:05:46Z",
-   "subject": "feat(rap): Verse raps, written for each ask and performed over its own beat"
-  },
-  {
-   "at": "2026-10-29T16:05:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:04:16Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
