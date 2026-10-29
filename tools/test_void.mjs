@@ -576,9 +576,10 @@ try {
     const P = await fresh(); await P.ask('is it christmas?', 1500);
     const read = () => P.p.$eval('.vpage.on', (c) => { const w = c.querySelector('.is-it-word'); if (!w) return null; const r = w.getBoundingClientRect(), cr = c.getBoundingClientRect(), art = c.querySelector('.vc-art'), left = c.querySelector('.is-it-left'); return { word: w.textContent, size: parseFloat(getComputedStyle(w).fontSize), whole: r.bottom <= cr.bottom + 1 && r.top >= cr.top, art: !!art && getComputedStyle(art).display !== 'none', left: left ? left.textContent : '', text: c.innerText }; }).catch(() => null);
     const got = await until(read, 8000); await P.p.waitForTimeout(2200); const later = await read();
+    // countdown() leaves out the parts that are zero, so a read on the minute says "... 21 minutes to go": the seconds show in one of the two reads 2.2 s apart (shard 1, 96ff5182, 2026-10-29)
     const want = new Date().getMonth() === 11 && new Date().getDate() === 25 ? 'YES' : 'NO';
     check('is it: "is it christmas?" shows one giant ' + want + ' (80 px or more), whole on the card with no art panel, says when Christmas is and today\'s date, and its countdown ticks',
-      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && /Today is \w+day, \w+ \d+, \d{4}/.test(got.text) && (want === 'YES' || (/seconds? to go/.test(got.left) && later && later.left !== got.left)) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 200), later: later && later.left }));
+      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && /Today is \w+day, \w+ \d+, \d{4}/.test(got.text) && (want === 'YES' || (later && (/seconds? to go/.test(got.left) || /seconds? to go/.test(later.left)) && later.left !== got.left)) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 200), later: later && later.left }));
     const box = await P.p.$('.vpage.on .is-it-stage'); const bb = box && await box.boundingBox();
     if (bb) { await P.p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); }
     const ripple = await P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0);
