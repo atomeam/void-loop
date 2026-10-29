@@ -265,7 +265,8 @@
    "state": "open",
    "date": "",
    "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5"
+   "from": "void.plan.md Now #5",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -277,13 +278,15 @@
    "state": "open",
    "date": "",
    "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13"
+   "from": "void.plan.md Next #13",
+   "waits": "the miss board"
   },
   {
    "state": "open",
    "date": "",
    "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
+   "from": "void.plan.md Next #12",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -325,7 +328,8 @@
    "state": "open",
    "date": "",
    "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan"
+   "from": "owner, 2026-10-11, pit crew plan",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -337,7 +341,8 @@
    "state": "open",
    "date": "",
    "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -537,13 +542,17 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T14:29:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T15:15:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T15:14:06Z",
    "subject": "Regenerate the generated files after the merge"
@@ -553,12 +562,20 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-29T15:13:06Z",
+   "subject": "Paid members: a pre-launch pilot at /members/?pilot, so a paid account proves the idea path on the live site before go-live"
+  },
+  {
    "at": "2026-10-29T15:12:02Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:11:22Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:10:57Z",
+   "subject": "Paid members: check the idea limit inside the insert, so sends at the same moment cannot pass it"
   },
   {
    "at": "2026-10-29T15:10:31Z",
@@ -611,18 +628,6 @@
   {
    "at": "2026-10-29T15:05:02Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:04:44Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:04:22Z",
-   "subject": "Answer cards for notes about my own card: no denial, no blame for a site's block, each fix's status"
-  },
-  {
-   "at": "2026-10-29T15:02:55Z",
-   "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
   }
  ],
  "builders": {

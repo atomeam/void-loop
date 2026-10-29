@@ -30,3 +30,18 @@ test('lap 1 is an overhaul, most used first', () => {
 test('the only-site line is counts only', () => {
   assert.equal(onlySiteLine({ replaced: 1, partial: 2, missing: 3, categories: 6 }), 'Only site you need: 1 replaced, 2 partial, 3 missing of 6 categories');
 });
+test('a lap keeps when it began (its first step) and the public tracker names the last items taken, for the wants card', () => {
+  let r = nextStep(null, ['a', 'b', 'c', 'd']); let s = advance(r.state, r.step, '2026-10-29T01:00:00Z');
+  assert.equal(s.since, '2026-10-29T01:00:00Z');
+  r = nextStep(s, ['a', 'b', 'c', 'd']); s = advance(r.state, r.step, '2026-10-29T02:00:00Z');
+  assert.equal(s.since, '2026-10-29T01:00:00Z', 'a later step does not move the start');
+  assert.deepEqual(publicLap(s).recent, ['b', 'a']); assert.equal(publicLap(s).since, '2026-10-29T01:00:00Z'); assert.equal(publicLap(s).next, 'c');
+  // a lap already under way when this was added has no start: it never gets one made up from a later step
+  const old = advance({ lap: 1, pos: 2, order: ['a', 'b', 'c'], newThisLap: 0, at: null }, { kind: 'upgrade', skill: 'c' }, '2026-10-29T03:00:00Z');
+  assert.equal(old.since, undefined); assert.equal('since' in publicLap(old), false); assert.deepEqual(publicLap(old).recent, ['c', 'b', 'a']);
+  assert.deepEqual(publicLap(null).recent, []);
+  // the next lap starts its own clock
+  for (let i = 0; i < NEW_PER_LAP; i++) { r = nextStep(s, ['a', 'b']); s = advance(r.state, r.step, '2026-10-30T00:00:00Z'); }
+  while (s.lap === 1) { r = nextStep(s, ['a', 'b']); s = advance(r.state, r.step, '2026-11-01T00:00:00Z'); }
+  assert.equal(s.lap, 2); assert.equal(s.since, '2026-11-01T00:00:00Z');
+});
