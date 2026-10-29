@@ -43,6 +43,23 @@ export function fmt(v) {
   return (+v.toPrecision(7)).toLocaleString('en-US', { maximumFractionDigits: 6 });
 }
 
+/** the converter card's ask for what a page shows ("give me a converter for 5 m to km"), only when the card reads it back to the same
+ *  number in a pair the page agrees with: `answer(word)` is the page's own result for `value` in the unit `word` names (NaN if it
+ *  reads no such unit). With no second unit, the card's everyday partner for the first one is asked. '' otherwise. Pure. */
+export function cardAsk(value, fromWords, toWords, answer) {
+  const n = String(value); if (!Number.isFinite(value) || !/^-?\d+(?:\.\d+)?$/.test(n)) return '';
+  const name = (u) => u[0].replace(/\s*\(.*\)$/, '');
+  for (const a of fromWords) {
+    const tos = toWords || Object.keys(KINDS).flatMap((k) => { const i = unitIndex(k, a), d = DEFAULT[k]; return i < 0 ? [] : [name(KINDS[k].units[i === d[0] ? d[1] : d[0]])]; });
+    for (const b of tos) {
+      const ask = 'give me a converter for ' + n + ' ' + a + ' to ' + b, q = askOf(ask), want = answer(b);
+      if (!q || !Number.isInteger(q.from) || q.value !== value || !Number.isFinite(want)) continue;
+      if (Math.abs(convert(q.kind, q.from, q.to, value) - want) <= 1e-9 * Math.max(1, Math.abs(want))) return ask;
+    }
+  }
+  return '';
+}
+
 /** what an ask wants: { open, kind?, value?, from?, to? } or { close: true }, or null. Pure. */
 export function askOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');

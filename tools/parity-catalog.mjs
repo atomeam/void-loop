@@ -428,7 +428,7 @@ export const CATALOG = {
     ['units', 'Convert', 'Length, weight, volume and more', T('length|weight|volume|temperature'), T('length|mass|weight'), null, 'core'],
     ['many', 'Convert', 'Hundreds of units', T('units'), T('units'), null, 'core'],
     ['table', 'Convert', 'Conversion tables', T('table|chart'), T('table'), null, []],
-    ['currency', 'Convert', 'Currency', T('currenc'), T('currenc'), null, []],
+    ['currency', 'Convert', 'Currency', T('currenc'), T('currency (converter|rates?)|exchange rates?'), null, []], // not the bare word: lib/convert-math.js names currency only to send it elsewhere
     ['search', 'Convert', 'Search for a unit', T('search'), T('search'), null, []],
     ...COMMON,
   ],
