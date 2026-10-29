@@ -75,6 +75,12 @@ test('the will reads /churn.json and passes its hot list to pickWant, with the w
   assert.match(src, /catch \(_\) \{ hot = \[\]; \}/, 'an unreadable list means no cap, never no will');
 });
 
+test('generated cards and the tower gate\'s record are expected churn, never hot', () => {
+  const gen = ['void-live-deploy/skills/what.json', 'void-live-deploy/sitemap.xml', 'void-live-deploy/parity.json', 'void-live-deploy/churn.json', 'void-live-deploy/tower.evidence.json'];
+  const cs = Array.from({ length: MAX_CHANGES + 1 }, (_, i) => commit(i / 10, ...gen, 'void-live-deploy/lib/real.js'));
+  assert.deepEqual(hotFiles(cs, { now: NOW }).map((h) => h.file), ['void-live-deploy/lib/real.js']);
+});
+
 test('the churn cap holds back only the will\'s own wants: only the will, its writer and its log name churn.json or import lib/churn.js', () => {
   const root = new URL('..', import.meta.url).pathname, hits = [];
   const walk = (d) => { for (const n of readdirSync(d)) { if (n === 'node_modules' || n === '.git' || n === 'archive') continue; const p = d + '/' + n, st = statSync(p);

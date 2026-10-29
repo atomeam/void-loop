@@ -6,8 +6,8 @@ export const WINDOW_DAYS = 7;   // ... in this many days is hot
 // a commit that touches more files than this is a sweep (a rename, an archive import, a regenerated tree), not work on each file: it counts for none of them
 export const SWEEP_FILES = 100;
 // files that change on every ship by design (the ledger, the logs, the registers, generated indexes, the sitemap, llms.txt, the skills list,
-// the tower's measured evidence): their churn is the generator or the gate at work, not a file in flux
-export const EXPECTED = /(?:^|\/)(?:void\.growth\.json|void\.agents\.log\.md|incidents\.json|[\w.-]*(?:log|seen|verified)\.json|MAP\.md|void\.frontier\.md|deps\.json|index\.json|families\.json|guide\.json|self\.json|what\.json|tower\.evidence\.json|sitemap\.xml|llms\.txt|test_void\.mjs|checks\.mjs)$|^void-live-deploy\/(?:index|void)\.html$|^void\.html$/;
+// the parity and churn cards, the tower's measured evidence): their churn is the generator or the gate at work, not a file in flux
+export const EXPECTED = /(?:^|\/)(?:void\.growth\.json|void\.agents\.log\.md|incidents\.json|[\w.-]*(?:log|seen|verified)\.json|MAP\.md|void\.frontier\.md|deps\.json|index\.json|families\.json|guide\.json|self\.json|what\.json|parity\.json|churn\.json|tower\.evidence\.json|sitemap\.xml|llms\.txt|test_void\.mjs|checks\.mjs)$|^void-live-deploy\/(?:index|void)\.html$|^void\.html$/;
 
 /** the files changed more than `max` times in the last `days` days, most changed first: [{ file, changes }]. A commit counts once per file; a sweep counts for none. Pure. */
 export function hotFiles(commits, { max = MAX_CHANGES, days = WINDOW_DAYS, now = Date.now(), sweep = SWEEP_FILES } = {}) {
