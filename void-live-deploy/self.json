@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:05:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:04:44Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:02:55Z",
    "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
   },
@@ -555,6 +563,14 @@
   {
    "at": "2026-10-29T14:59:49Z",
    "subject": "fix(tower): never count a default-bar score as a lead"
+  },
+  {
+   "at": "2026-10-29T14:59:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T14:59:18Z",
+   "subject": "Self card: waiting and built add up to the total"
   },
   {
    "at": "2026-10-29T14:58:30Z",
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T14:36:46Z",
    "subject": "/hosting/: ask a busy registry again; nameunit probe reads the page as it is"
-  },
-  {
-   "at": "2026-10-29T14:36:35Z",
-   "subject": "3D contract: mount after the studio light lands, so its one redraw stays out of the idle window"
-  },
-  {
-   "at": "2026-10-29T14:35:48Z",
-   "subject": "Revert #1470: drop the /prizes/ parity rows"
-  },
-  {
-   "at": "2026-10-29T14:35:32Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-10-29T14:29:35Z",
-   "subject": "Tower gate: nameunit measured against their live sites"
   }
  ],
  "builders": {
