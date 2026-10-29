@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 923,
+ "counted": 926,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -25,9 +25,9 @@
   },
   {
    "file": "lib/field-kit.js",
-   "skills": 30,
+   "skills": 31,
    "direct": 2,
-   "dependants": 47,
+   "dependants": 49,
    "tests": 4
   },
   {
@@ -74,23 +74,23 @@
   },
   {
    "file": "lib/motion-throttle.js",
-   "skills": 19,
+   "skills": 20,
    "direct": 1,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/mind-field-modes.js",
-   "skills": 18,
+   "skills": 19,
    "direct": 1,
-   "dependants": 19,
-   "tests": 1
+   "dependants": 20,
+   "tests": 2
   },
   {
    "file": "lib/field-stage.js",
-   "skills": 18,
-   "direct": 14,
-   "dependants": 18,
+   "skills": 19,
+   "direct": 15,
+   "dependants": 19,
    "tests": 0
   },
   {
@@ -234,6 +234,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-worker.js",
+   "skills": 9,
+   "direct": 7,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
@@ -259,13 +266,6 @@
    "skills": 8,
    "direct": 3,
    "dependants": 10,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-worker.js",
-   "skills": 8,
-   "direct": 6,
-   "dependants": 8,
    "tests": 1
   },
   {
@@ -914,6 +914,13 @@
   },
   {
    "file": "lib/eclipses.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-fluid-orbs.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2,
@@ -5120,6 +5127,17 @@
     "skills/flow-canvas.js"
    ]
   },
+  "lib/field-fluid-orbs.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/agent-fluid-memory-orbs.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field.js"
+   ]
+  },
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
@@ -5128,6 +5146,7 @@
     "lib/field-cards.js",
     "lib/field-doodle.js",
     "lib/field-flow.js",
+    "lib/field-fluid-orbs.js",
     "lib/field-nca.js",
     "lib/field-resonance.js",
     "lib/field-stage.js",
@@ -5144,6 +5163,7 @@
    "reachedBy": [
     "lib/field-vector-worker.js",
     "lib/tilt-arena-idea.js",
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -5205,6 +5225,7 @@
     "lib/mind-field-modes.js"
    ],
    "importedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -5261,6 +5282,7 @@
   "lib/field-worker.js": {
    "imports": [],
    "importedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
@@ -6395,6 +6417,7 @@
     "skills/mind-field-mode.js"
    ],
    "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -6483,6 +6506,7 @@
     "skills/zorbleflux.js"
    ],
    "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -9388,6 +9412,16 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/agent-fluid-memory-orbs.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-fluid-orbs.js"
+   ],
+   "importedBy": [
+    "skills/mind-field.js"
+   ]
+  },
   "skills/aggravation.js": {
    "imports": [
     "skills/lift3d.js",
@@ -11111,7 +11145,8 @@
     "skills/attention-field-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
-    "skills/swarm-mind.js"
+    "skills/swarm-mind.js",
+    "skills/agent-fluid-memory-orbs.js"
    ],
    "importedBy": []
   },
