@@ -16,6 +16,7 @@ import { SELF_SITES } from './self-sites.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
+import { bytesLabel, weightBand, weightOf } from './tower-weight.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -322,18 +323,19 @@ export const sizeTier = (rank) => (!Number.isFinite(+rank) || !rank || +rank >= 
 export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant']);
 /** why a site stands where it does in the queue, in words, from its tier, what is left and whether Verse has a page for it. Pure. */
 export function easeLine(f) {
-  const tier = TIER_WORDS[f.tier || 0], left = Math.max(0, (f.m || 0) - (f.n || 0));
-  return (f.rank ? 'ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited' : 'outside the million most visited') + ' (' + tier + ')'
-    + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
+  const left = Math.max(0, (f.m || 0) - (f.n || 0)), sc = f.size ? f.size.scripts : 0;
+  const how = f.weight !== null && f.size ? 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
+    : 'not weighed yet' + (f.rank ? ' (ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited)' : '');
+  return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
 }
-export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null) {
+export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, ev, icon, badge, rank: r, tier: sizeTier(r), coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);
@@ -352,8 +354,8 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
   // with the size data (the card, the plan) the queue is easiest first by size, then by work left: gate, far future, a waiting giant, the size tier, what Verse
   // loses on, aspects still to pass, a site with a page before one without, then the order they came. Without it the old order stands.
-  const tierOf = (f) => (rank ? f.tier : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  const tierOf = (f) => (rank ? (f.weight !== null ? 0 : 1 + f.tier) : 0), lightOf = (f) => (f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }

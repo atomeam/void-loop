@@ -501,13 +501,37 @@
   }
  ],
  "building": {
-  "at": "2026-10-15T00:00:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T02:22:19Z",
+   "subject": "Incident: the browser suite failed on 65e4a8c9 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T02:21:35Z",
+   "subject": "Tower gate: is it,emojis,coin flip measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T02:21:33Z",
+   "subject": "Incident: the browser suite failed on 0c9a6341 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T02:21:15Z",
+   "subject": "Switch Verse's coder on: remove the kill-switch file (the conductor now hands queue jobs to verse-job.yml; put the file back to pause)"
+  },
+  {
+   "at": "2026-10-29T02:16:42Z",
+   "subject": "Feature scan: automation,calculator,formula-calculators,nameunit,prizes,unit-converter researched by Verse"
+  },
+  {
+   "at": "2026-10-29T02:04:06Z",
+   "subject": "Tower gate: calculator,unit converter,time zones measured against their live sites"
+  },
   {
    "at": "2026-10-29T01:59:01Z",
    "subject": "Connect the conductor to Verse's coder: verse-job.yml, kill-switch file, one coder at a time"
@@ -559,34 +583,6 @@
   {
    "at": "2026-10-28T23:18:32Z",
    "subject": "Calculators: 17 for calculator.net's Other gaps (15 of 19), with known-answer tests"
-  },
-  {
-   "at": "2026-10-28T23:18:08Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T23:17:16Z",
-   "subject": "Verse loop: docs and CI step for verse-coder"
-  },
-  {
-   "at": "2026-10-28T23:17:11Z",
-   "subject": "Tower: paint (heycolor.com) surpassed on evidence; the queue moves on to is it"
-  },
-  {
-   "at": "2026-10-28T23:15:40Z",
-   "subject": "verse-coder: Verse's own coding agent on the free model stack, the default verse brain for red checks and NEXT"
-  },
-  {
-   "at": "2026-10-28T23:14:12Z",
-   "subject": "Regenerated the generated files after merging main"
-  },
-  {
-   "at": "2026-10-28T23:11:10Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T23:11:08Z",
-   "subject": "verse-loop: run with the workflow token, no extra secret needed (Actions may open PRs now)"
   }
  ],
  "builders": {
