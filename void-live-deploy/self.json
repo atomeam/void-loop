@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T07:00:47Z",
-   "subject": "Weather stage link follows the forecast before any press"
+   "at": "2026-10-29T06:59:55Z",
+   "subject": "Will's last run: show the whole title and reason, no ellipsis"
+  },
+  {
+   "at": "2026-10-29T06:55:55Z",
+   "subject": "Growth card: the will's last run under today's lines (shipped PR, or why not)"
   },
   {
    "at": "2026-10-29T06:55:47Z",
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T06:40:19Z",
    "subject": "Verse loop tests: clear the owner token in the no-key cases"
-  },
-  {
-   "at": "2026-10-29T06:38:04Z",
-   "subject": "toolkit test: build the skill path so the tower-self scan does not read the skills folder"
   }
  ],
  "builders": {
