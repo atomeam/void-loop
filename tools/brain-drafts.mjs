@@ -12,6 +12,7 @@ const ROOT = dirname(dirname(fileURLToPath(import.meta.url))), OUT = join(ROOT, 
 // draft's own name is its main idea, then the first found in its spec.
 export const TECHNIQUES = [
   ['spiking synapses', /spiking|izhikevich|\bstdp\b|synap/, 'synapses'],
+  ['lenia', /lenia/, 'creature'],
   ['reservoir', /reservoir|echo[ -]state|\besn\b/, 'predictor'],
   ['online k-means', /k-?means/, 'gestures'],
   ['compression oracle', /compression|\bncd\b|kolmogorov/, 'gestures'],
@@ -61,7 +62,6 @@ export const LEFT = {
   'window-spanning-organism': 'needs several windows and a SharedWorker; the bridge shares one brain across pages instead',
   'taste-oracle': 'Gaussian-process preference duels over raymarched sculptures, a separate product',
   'verse-self-mutating-shader-mind': 'a shader source as a genome; the arena evolves numbers, not code, so this is next, not built',
-  'lenia-gait-evolver': 'a Lenia creature on WebGL2 textures; the tissue is Gray-Scott on the CPU, Lenia is next for it',
   'local-ai-portal-lattice-mind': 'its spec is a placeholder and its page holds no working mind',
   'rd-attention-kernel': 'its spec is a placeholder (its idea is in the tissue and attention organs through other drafts)'
 };

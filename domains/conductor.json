@@ -1,28 +1,28 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T07:46:34.050Z",
+ "updated": "2026-10-29T08:38:41.716Z",
  "last24h": {
-  "ticks": 33,
-  "started": 61,
+  "ticks": 39,
+  "started": 71,
   "requeued": 0,
   "setAside": 0,
-  "probes": 4,
+  "probes": 5,
   "errors": 0
  },
  "broken": [
   {
    "wf": "tower-gate.yml",
-   "fails": 5,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/40834599593"
+   "fails": 7,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/40841775560"
   }
  ],
  "held": [],
  "handed": {
-  "mvbl52gd": 1793240307118,
-  "mveb8rsi": 1793240307118,
-  "mva30i2e": 1793240307118,
-  "mveb8svc": 1793240922697,
-  "mva30j4u": 1793240922697,
+  "mvbl52gd": 1793262501611,
+  "mveb8rsi": 1793262501611,
+  "mva30i2e": 1793262501611,
+  "mveb8svc": 1793263121716,
+  "mva30j4u": 1793263121716,
   "mvfu4evy": 1793241541772,
   "mvsw572e": 1793241541772,
   "mvpuq9g6": 1793242157695,
@@ -917,6 +917,173 @@
      "kind": "versus",
      "wf": "verse-job.yml",
      "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T07:47:11.748Z",
+   "open": 108,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T07:57:36.752Z",
+   "open": 108,
+   "started": [
+    {
+     "id": "mvoxrsct",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T08:07:51.202Z",
+   "open": 108,
+   "started": [
+    {
+     "id": "mvoxrsct",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T08:18:05.849Z",
+   "open": 108,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 100
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T08:28:21.611Z",
+   "open": 112,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 115
+    },
+    {
+     "id": "mvpwmhl2",
+     "kind": "will",
+     "wf": "verse-job.yml",
+     "score": 95
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 81
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 67
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T08:38:41.716Z",
+   "open": 112,
+   "started": [
+    {
+     "id": "mvoxrsct",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 81
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 67
     }
    ],
    "requeued": 0,

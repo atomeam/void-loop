@@ -537,13 +537,65 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T08:37:39Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T08:37:11Z",
+   "subject": "Verse Brain grows F304's Lenia creature, which evolves its own physics while it lives"
+  },
+  {
+   "at": "2026-10-29T08:36:31Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T08:33:49Z",
+   "subject": "Refresh the random.org parity evidence lines"
+  },
+  {
+   "at": "2026-10-29T08:31:17Z",
+   "subject": "Random page: preload the card module"
+  },
+  {
+   "at": "2026-10-29T08:30:02Z",
+   "subject": "Better at toolkit, flights, verse brain and 2 more: 14 more ways of asking answered right — new phrases: “what tools do you have” now…"
+  },
+  {
+   "at": "2026-10-29T08:27:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T08:26:59Z",
+   "subject": "Random number page: stage card uses the page's range, and links back"
+  },
+  {
+   "at": "2026-10-29T08:24:25Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T08:22:55Z",
+   "subject": "seo-audit: /fanfic/rss is a function route"
+  },
+  {
+   "at": "2026-10-29T08:19:30Z",
+   "subject": "Fan fiction: a feed of the newest stories at /fanfic/rss"
+  },
+  {
+   "at": "2026-10-29T08:17:57Z",
+   "subject": "Refresh the translate parity evidence for the card import"
+  },
+  {
+   "at": "2026-10-29T08:15:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T08:15:42Z",
    "subject": "Translate card holds the typed text"
@@ -570,58 +622,6 @@
   },
   {
    "at": "2026-10-29T08:10:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:10:26Z",
-   "subject": "Base64 card holds the typed text"
-  },
-  {
-   "at": "2026-10-29T08:08:29Z",
-   "subject": "Regenerate after merging main"
-  },
-  {
-   "at": "2026-10-29T08:08:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:08:03Z",
-   "subject": "Wheel: the hand-off copy is written on the press, not when the link is aimed"
-  },
-  {
-   "at": "2026-10-29T08:01:59Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:59:15Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T07:56:55Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:56:55Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:56:43Z",
-   "subject": "Word counter card counts the typed text on the device"
-  },
-  {
-   "at": "2026-10-29T07:56:23Z",
-   "subject": "Verse Brain grows a spiking eye from F217 that learns by dopamine"
-  },
-  {
-   "at": "2026-10-29T07:55:08Z",
-   "subject": "fanfic: story details, catalog filters, sort and A to Z"
-  },
-  {
-   "at": "2026-10-29T07:46:47Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T07:44:04Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],

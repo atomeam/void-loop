@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-27",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 1,
+  "experiment": 0,
   "tested": 47,
-  "checked": 16,
-  "proven": 300
+  "checked": 13,
+  "proven": 304
  },
  "families": [
   {
@@ -26,8 +26,8 @@
    "count": {
     "experiment": 0,
     "tested": 16,
-    "checked": 3,
-    "proven": 36
+    "checked": 1,
+    "proven": 38
    },
    "skills": [
     {
@@ -175,10 +175,12 @@
     },
     {
      "name": "walker",
-     "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 3
     },
     {
@@ -365,10 +367,12 @@
     },
     {
      "name": "verse-brain",
-     "tier": "checked",
-     "why": "a self-test, 6 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "rts",
@@ -803,16 +807,18 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 2,
-    "proven": 15
+    "checked": 1,
+    "proven": 16
    },
    "skills": [
     {
      "name": "flights",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 2
     },
     {
@@ -1171,8 +1177,8 @@
    "name": "Numbers and money",
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
-    "experiment": 1,
-    "tested": 3,
+    "experiment": 0,
+    "tested": 4,
     "checked": 2,
     "proven": 14
    },
@@ -1188,12 +1194,13 @@
     },
     {
      "name": "toolkit",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "calc",
@@ -3613,17 +3620,19 @@
    "for": "privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 5
+    "proven": 6
    },
    "skills": [
     {
      "name": "advice",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "pwcheck",
