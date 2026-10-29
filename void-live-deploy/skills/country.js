@@ -107,7 +107,8 @@ export function wikidataQuery(name) {
     + ' { ?c rdfs:label ?lab } UNION { ?c skos:altLabel ?lab } ?c wdt:P31 ?t. VALUES ?t { wd:Q6256 wd:Q3624078 } ?c rdfs:label ?nm. FILTER(LANG(?nm) = "en")'
     + ' OPTIONAL { ?c wdt:P1082 ?pop } OPTIONAL { ?c wdt:P2046 ?ar } OPTIONAL { ?c wdt:P297 ?iso2 } OPTIONAL { ?c wdt:P298 ?iso3 } OPTIONAL { ?c wdt:P474 ?cc }'
     + ' OPTIONAL { ?c wdt:P1622 ?side } OPTIONAL { ?c wdt:P36 ?cap } OPTIONAL { ?c wdt:P38 ?cur } OPTIONAL { ?c wdt:P37 ?lang } OPTIONAL { ?c wdt:P30 ?cont } OPTIONAL { ?c wdt:P421 ?tz }'
-    + ' OPTIONAL { ?c wdt:P47 ?bord. ?bord wdt:P31 wd:Q3624078 }'
+    // a neighbour counts when it is a country or a sovereign state, the same test as ?c: Denmark (Q35) and the Netherlands (Q55) are only "country" (Q6256)
+    + ' OPTIONAL { ?c wdt:P47 ?bord. ?bord wdt:P31 ?bt. VALUES ?bt { wd:Q6256 wd:Q3624078 } }'
     + ' SERVICE wikibase:label { bd:serviceParam wikibase:language "en,en-gb,en-ca". ' + ['side', 'cap', 'cur', 'lang', 'cont', 'tz', 'bord'].map((k) => '?' + k + ' rdfs:label ?' + k + 'Label.').join(' ') + ' } } GROUP BY ?c LIMIT 5';
 }
 const flagOf = (cc) => (/^[A-Z]{2}$/.test(cc || '') ? String.fromCodePoint(...[...cc].map((ch) => 0x1f1e6 + ch.charCodeAt(0) - 65)) : '');
