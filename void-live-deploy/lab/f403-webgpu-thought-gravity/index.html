@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root {
+    --entropy: 0.4;
+    --coherence: 0.3;
+    --hue: 200;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: hsl(var(--hue), 30%, 4%);
+    color: #e8e6e3;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    transition: background 0.8s ease;
+  }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #chrome {
+    position: absolute; inset: 0; pointer-events: none;
+    border: 8px solid hsla(var(--hue), 70%, 50%, calc(0.3 + var(--coherence) * 0.5));
+    border-radius: calc(12px + var(--entropy) * 40px);
+    box-shadow: inset 0 0 calc(20px + var(--coherence) * 60px) hsla(var(--hue), 80%, 50%, 0.15);
+    transition: border-radius 0.4s, border-color 0.6s, box-shadow 0.6s;
+  }
+  #hud {
+    position: absolute; top: 1rem; left: 1rem; right: 1rem;
+    display: flex; gap: 0.75rem; align-items: center; pointer-events: auto;
+    z-index: 10;
+  }
+  #input {
+    flex: 1; padding: 0.6rem 1rem; border-radius: 999px;
+    border: 2px solid hsla(var(--hue), 60%, 50%, 0.6);
+    background: rgba(0,0,0,0.4); color: inherit; font-size: 1rem;
+    backdrop-filter: blur(8px);
+  }
+  #seal, #status {
+    padding: 0.5rem 1rem; border-radius: 999px;
+    border: 2px solid hsla(var(--hue), 70%, 50%, 0.8);
+    background: rgba(0,0,0,0.5); cursor: pointer; font-size: 0.85rem;
+  }
+  #status { pointer-events: none; cursor: default; }
+  .portal {
+    position: absolute; pointer-events: none;
+    padding: 0.5rem 0.8rem; border-radius: 1rem;
+    background: hsla(var(--hue), 40%, 10%, 0.7);
+    border: 1px solid hsla(var(--hue), 70%, 60%, 0.5);
+    font-size: 0.75rem; max-width: 12rem;
+    transform: translate(-50%, -50%);
+    transition: left 0.3s, top 0.3s, opacity 0.4s, transform 0.4s;
+    backdrop-filter: blur(4px);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  #info {
+    position: absolute; bottom: 1rem; left: 1rem; font-size: 0.75rem;
+    opacity: 0.6; max-width: 28rem; pointer-events: none;
+  }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Thought Gravity Wells · Verse lab</title>
+<meta name="description" content="Novel combination of local AI reasoning (Worker-based hash-embedding + evolutionary attractors), GPU/Canvas particle flow representing association streams, and">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Thought Gravity Wells · Verse lab">
+<meta property="og:description" content="Novel combination of local AI reasoning (Worker-based hash-embedding + evolutionary attractors), GPU/Canvas particle flow representing association streams, and">
+<meta property="og:url" content="https://a-to-mind.com/lab/f403-webgpu-thought-gravity/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f403-webgpu-thought-gravity/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="chrome"></div>
+<div id="hud">
+  <input id="input" placeholder="seed a thought…" autocomplete="off">
+  <button id="seal">seal</button>
+  <div id="status">void · listening</div>
+</div>
+<div id="portals"></div>
+<div id="info">F-022 Thought Gravity · type to birth a well · particles stream associations · chrome morphs with field entropy</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Thought Gravity Wells</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

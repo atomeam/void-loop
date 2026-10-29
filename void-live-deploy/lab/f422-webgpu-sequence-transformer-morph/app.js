@@ -1,0 +1,196 @@
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let w, h, particles = [];
+function resize() {
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+
+// Simple particle field (WebGPU path would use compute; this is Canvas2D primary for broad runnability)
+for (let i = 0; i < 180; i++) {
+  particles.push({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    vx: 0, vy: 0,
+    life: 1
+  });
+}
+
+let pointer = { x: w/2, y: h/2, vx: 0, vy: 0, energy: 0 };
+let orient = { beta: 0, gamma: 0 };
+let micEnergy = 0;
+let sequence = []; // rolling tokens: [vx, vy, energy, beta, gamma, mic]
+let thought = [0,0,0,0]; // from worker
+let residual = 0;
+
+// Audio
+let audioCtx, osc, gain, panner;
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new AudioContext();
+  osc = audioCtx.createOscillator();
+  gain = audioCtx.createGain();
+  panner = audioCtx.createStereoPanner();
+  osc.connect(gain).connect(panner).connect(audioCtx.destination);
+  osc.type = 'sine';
+  osc.frequency.value = 220;
+  gain.gain.value = 0;
+  osc.start();
+}
+addEventListener('pointerdown', initAudio, { once: true });
+
+// Mic
+navigator.mediaDevices?.getUserMedia({ audio: true }).then(stream => {
+  const a = new AudioContext();
+  const src = a.createMediaStreamSource(stream);
+  const analyser = a.createAnalyser();
+  analyser.fftSize = 256;
+  src.connect(analyser);
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  function tickMic() {
+    analyser.getByteFrequencyData(data);
+    micEnergy = data.reduce((s,v)=>s+v,0) / data.length / 255;
+    requestAnimationFrame(tickMic);
+  }
+  tickMic();
+}).catch(()=>{});
+
+// Orientation
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    orient.beta = (e.beta || 0) / 90;
+    orient.gamma = (e.gamma || 0) / 90;
+  });
+}
+
+// Worker: tiny sequence attention / residual predictor
+const workerCode = `
+let weights = Array.from({length: 16}, () => Math.random()*0.4-0.2);
+let history = [];
+self.onmessage = e => {
+  const token = e.data.token; // [vx,vy,energy,beta,gamma,mic]
+  history.push(token);
+  if (history.length > 12) history.shift();
+  // Simple multi-head-ish: attention over last 6 tokens vs current
+  let attn = [0,0,0,0];
+  if (history.length > 2) {
+    const cur = history[history.length-1];
+    for (let i = Math.max(0, history.length-6); i < history.length-1; i++) {
+      const prev = history[i];
+      let score = 0;
+      for (let d=0; d<6; d++) score += cur[d]*prev[d]*weights[d%16];
+      const a = Math.tanh(score);
+      for (let d=0; d<4; d++) attn[d] += a * prev[d] * weights[(d+4)%16];
+    }
+  }
+  // Residual: predict next vx/vy from last
+  let pred = [0,0];
+  if (history.length > 1) {
+    const last = history[history.length-2];
+    pred[0] = last[0]*weights[8] + last[1]*weights[9];
+    pred[1] = last[0]*weights[10] + last[1]*weights[11];
+  }
+  const res = Math.hypot(token[0]-pred[0], token[1]-pred[1]);
+  // Light mutation
+  if (Math.random() < 0.02) weights[Math.floor(Math.random()*16)] += (Math.random()-0.5)*0.05;
+  self.postMessage({ attn, residual: res, weights });
+};
+`;
+const blob = new Blob([workerCode], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+worker.onmessage = e => {
+  thought = e.data.attn.map(v => Math.tanh(v));
+  residual = e.data.residual;
+};
+
+// Echo cards
+const echoes = [];
+for (let i = 0; i < 4; i++) {
+  const el = document.createElement('div');
+  el.className = 'echo';
+  el.textContent = 'echo ' + (i+1);
+  document.body.appendChild(el);
+  echoes.push({ el, x: w*0.3 + i*80, y: h*0.4, scale: 1 });
+}
+
+function step() {
+  // Update sequence
+  sequence.push([pointer.vx, pointer.vy, pointer.energy, orient.beta, orient.gamma, micEnergy]);
+  if (sequence.length > 16) sequence.shift();
+  if (sequence.length > 0 && Math.random() < 0.3) {
+    worker.postMessage({ token: sequence[sequence.length-1] });
+  }
+
+  // Particles
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fillRect(0,0,w,h);
+  for (const p of particles) {
+    // Forces from pointer + thought
+    const dx = pointer.x - p.x, dy = pointer.y - p.y;
+    const dist = Math.hypot(dx,dy) + 1;
+    const force = (pointer.energy * 0.8 + Math.abs(thought[0])) / dist * 40;
+    p.vx += (dx/dist)*force + thought[1]*0.3 + orient.gamma*0.2;
+    p.vy += (dy/dist)*force + thought[2]*0.3 + orient.beta*0.2;
+    p.vx *= 0.96; p.vy *= 0.96;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > w) p.vx *= -0.8;
+    if (p.y < 0 || p.y > h) p.vy *= -0.8;
+    const hue = (220 + thought[3]*60 + residual*30) % 360;
+    ctx.fillStyle = `hsla(${hue}, 70%, 60%, 0.7)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2 + pointer.energy*2, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Morph chrome
+  document.documentElement.style.setProperty('--hue', 220 + thought[0]*80 + residual*40);
+  document.documentElement.style.setProperty('--contrast', 1 + residual*0.4);
+  document.documentElement.style.setProperty('--blur', Math.abs(thought[1])*2 + 'px');
+  document.documentElement.style.setProperty('--rotate', (thought[2]*8) + 'deg');
+  document.body.style.transform = `perspective(800px) rotateX(${orient.beta*5}deg) rotateY(${orient.gamma*5}deg) scale(${1+Math.abs(thought[3])*0.05})`;
+
+  // Echoes
+  echoes.forEach((ec, i) => {
+    const peak = Math.abs(thought[i % 4]);
+    ec.x += (pointer.x - ec.x) * 0.02 * (1+peak);
+    ec.y += (pointer.y - ec.y) * 0.02 * (1+peak);
+    ec.scale = 0.8 + peak*0.6 + residual*0.2;
+    ec.el.style.left = ec.x + 'px';
+    ec.el.style.top = ec.y + 'px';
+    ec.el.style.setProperty('--card-scale', ec.scale);
+    ec.el.style.setProperty('--card-rot', (thought[i%4]*15) + 'deg');
+    const phrases = ['residual', 'attn peak', 'sequence', 'echo', 'tilt bias', 'spectral'];
+    if (Math.random() < 0.02) {
+      ec.el.textContent = phrases[Math.floor(Math.random()*phrases.length)] + ' ' + residual.toFixed(2);
+    }
+  });
+
+  // Audio
+  if (gain) {
+    gain.gain.value = Math.min(0.15, pointer.energy*0.3 + micEnergy*0.2 + residual*0.1);
+    osc.frequency.value = 180 + Math.abs(thought[0])*200 + residual*100;
+    panner.pan.value = Math.max(-1, Math.min(1, (pointer.x/w - 0.5)*2 + thought[1]));
+  }
+
+  requestAnimationFrame(step);
+}
+step();
+
+// Pointer
+addEventListener('pointermove', e => {
+  const dx = e.clientX - pointer.x, dy = e.clientY - pointer.y;
+  pointer.vx = dx * 0.3; pointer.vy = dy * 0.3;
+  pointer.x = e.clientX; pointer.y = e.clientY;
+  pointer.energy = Math.min(1, Math.hypot(dx,dy)*0.05);
+});
+
+// Seal
+document.getElementById('seal').onclick = async () => {
+  const state = { sequence: sequence.slice(-8), thought, residual, time: Date.now() };
+  try {
+    localStorage.setItem('f206-seal', JSON.stringify(state));
+    alert('Sealed to localStorage');
+  } catch(e) { alert('Seal failed: ' + e.message); }
+};

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --energy: 0.2;
+  --residual: 0;
+  --hue: 220;
+  --contrast: 1;
+  --blur: 0px;
+  --rotate: 0deg;
+  --scale: 1;
+}
+body {
+  margin: 0;
+  background: #050508;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  filter: hue-rotate(calc(var(--hue) * 1deg)) contrast(var(--contrast)) blur(var(--blur));
+  transform: rotate(var(--rotate)) scale(var(--scale));
+  transition: filter 0.4s, transform 0.4s;
+}
+#canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#constellation {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.thought-node {
+  position: absolute;
+  min-width: 80px;
+  padding: 8px 12px;
+  background: rgba(20, 20, 40, 0.7);
+  border: 1px solid hsl(var(--node-hue), 70%, 60%);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 13px;
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+  box-shadow: 0 0 12px hsl(var(--node-hue), 80%, 50% / 0.5);
+  transform: translate(-50%, -50%) scale(var(--node-scale, 1));
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.thought-node:active { cursor: grabbing; }
+.thought-node.affirmed { border-color: #0f0; box-shadow: 0 0 18px #0f08; }
+#ui {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  background: rgba(0,0,0,0.6);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  max-width: 280px;
+}
+button, input {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 4px 8px;
+  margin: 2px;
+  border-radius: 4px;
+}
+#status { opacity: 0.7; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Predictive Spectral Constellation · Verse lab</title>
+<meta name="description" content="Novel combination of a spectral resonance lattice (WebGPU preferred, Canvas2D fallback), a local predictive mind (attention + residual forecast in pure JS /">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Predictive Spectral Constellation · Verse lab">
+<meta property="og:description" content="Novel combination of a spectral resonance lattice (WebGPU preferred, Canvas2D fallback), a local predictive mind (attention + residual forecast in pure JS /">
+<meta property="og:url" content="https://a-to-mind.com/lab/f421-webgpu-predictive-spectral-constellation/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f421-webgpu-predictive-spectral-constellation/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="constellation"></div>
+<div id="ui">
+  <div><strong>F-197 Predictive Spectral Constellation</strong></div>
+  <div id="status">Initializing...</div>
+  <input id="seed" placeholder="seed word" size="12">
+  <button id="inject">Inject Seed</button>
+  <button id="seal">Seal Mind</button>
+  <button id="xr">Enter XR</button>
+  <div>Drag nodes to correct. Click to affirm.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Predictive Spectral Constellation</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

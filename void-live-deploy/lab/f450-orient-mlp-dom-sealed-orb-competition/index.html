@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 100vw; height: 100vh; }
+  .orb { position: absolute; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #000; pointer-events: auto; cursor: grab; transition: transform 0.05s linear; box-shadow: 0 0 12px rgba(255,255,255,0.3); user-select: none; }
+  .orb.winner { box-shadow: 0 0 24px gold; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 10; max-width: 320px; }
+  button { background: #222; color: #eee; border: 1px solid #444; padding: 6px 12px; margin: 4px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #333; }
+  #status { font-size: 12px; opacity: 0.8; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orient-MLP DOM Sealed Orb Competition · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Orient-MLP DOM Sealed Orb Competition.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orient-MLP DOM Sealed Orb Competition · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Orient-MLP DOM Sealed Orb Competition.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f450-orient-mlp-dom-sealed-orb-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f450-orient-mlp-dom-sealed-orb-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">
+  <div><strong>F450 · Orient-MLP DOM Sealed Competition</strong></div>
+  <div>Tilt device → MLP policies push orbs. Orbs compete for energy. Winner seals genome (weights) and transfers.</div>
+  <button id="start">Enable Orientation</button>
+  <button id="spawn">Spawn Orb</button>
+  <button id="reset">Reset All</button>
+  <button id="seal">Seal Best to IDB</button>
+  <div id="status">Offline-capable. IndexedDB persistence. No network.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orient-MLP DOM Sealed Orb Competition</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

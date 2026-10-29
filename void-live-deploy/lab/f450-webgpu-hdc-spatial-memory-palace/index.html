@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:10px; border-radius:8px; }
+input, button { margin:4px; padding:6px; background:#222; color:#fff; border:1px solid #555; }
+.card { position:absolute; background:rgba(20,30,50,0.85); border:1px solid #4af; border-radius:6px; padding:8px; font-size:12px; pointer-events:auto; cursor:grab; min-width:80px; transition:transform 0.1s; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU HDC Spatial Memory Palace · Verse lab</title>
+<meta name="description" content="Novel combination of Hyperdimensional Computing (local algebraic associative memory in pure JS) with WebGPU spatial projection of hypervectors into particle">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU HDC Spatial Memory Palace · Verse lab">
+<meta property="og:description" content="Novel combination of Hyperdimensional Computing (local algebraic associative memory in pure JS) with WebGPU spatial projection of hypervectors into particle">
+<meta property="og:url" content="https://a-to-mind.com/lab/f450-webgpu-hdc-spatial-memory-palace/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f450-webgpu-hdc-spatial-memory-palace/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <input id="concept" placeholder="concept to bind" />
+  <button id="bind">Bind / Query</button>
+  <button id="seal">Seal Memory</button>
+  <button id="load">Load</button>
+  <div id="status">HDC Memory Palace — type to bind associations</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU HDC Spatial Memory Palace</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

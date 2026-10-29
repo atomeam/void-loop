@@ -3,6 +3,10 @@
 Each line is a job for the free coder: the lab draft imported, opened in headless Chromium and failed, so it is NOT published at /lab/ (the catalog marks it broken).
 Fix the draft in the lab repo or in a copy, then run `node tools/lab-sync.mjs --drafts <drafts dir> --only <slug>`; a draft that now runs is published and leaves this list.
 
+- f420-rd-attention-kernel | draft: drafts/F420-rd-attention-kernel/index.html | error: truncated file: a <script> never closes, so the page ends mid-code | try: open it in a browser, read the console, fix the first error
+- f414-webgpu-embedding-lattice-mind | draft: drafts/F414-webgpu-embedding-lattice-mind/index.html | error: pageerror: cemb is not defined | try: a name used and never declared (a helper or constant that was dropped): find the missing declaration and restore it
+- f402-webxr-nca-mindscape | draft: drafts/F402-webxr-nca-mindscape/index.html | error: blank page: nothing was painted after 2 seconds | try: it paints nothing: open it, find why the script draws no canvas or text (a stub file, a missing element id)
+- f401-spatial-graph-mind | draft: drafts/F401-spatial-graph-mind/index.html | error: pageerror: canvas.getContext is not a function | try: the script reads an element or value that is not there: check the element ids and the order the script runs in
 - f311-webrtc-sealed-orientation-mlp-dom-arena | draft: drafts/F311-webrtc-sealed-orientation-mlp-dom-arena/index.html | error: pageerror: a is not defined | try: a name used and never declared (a helper or constant that was dropped): find the missing declaration and restore it
 - f275-webgpu-acoustic-residual-spatial-mind | draft: drafts/F275-webgpu-acoustic-residual-spatial-mind/index.html | error: pageerror: Cannot read properties of undefined (reading '0') | try: the script reads an element or value that is not there: check the element ids and the order the script runs in
 - f270-webgpu-nca-llm-steered-morph | draft: drafts/F270-webgpu-nca-llm-steered-morph/index.html | error: pageerror: Identifier 'e' has already been declared | try: two let or const of one name in one script: rename or merge them

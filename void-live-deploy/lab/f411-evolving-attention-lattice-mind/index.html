@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --entropy: 0.3;
+    --peak: 0.2;
+    --hue: 200;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: #050510;
+    color: #cde;
+    font-family: system-ui, sans-serif;
+    filter: hue-rotate(calc(var(--hue) * 1deg));
+    transition: filter 0.6s;
+  }
+  #stage {
+    position: absolute;
+    inset: 0;
+    transform: scale(calc(1 + var(--entropy) * 0.08)) perspective(800px) rotateX(calc(var(--peak) * 4deg));
+    transition: transform 0.5s;
+  }
+  canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, #0a1020, #050510);
+  }
+  #hud {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(10,10,30,0.75);
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(80,160,255,0.4);
+    max-width: 340px;
+    z-index: 20;
+    backdrop-filter: blur(calc(4px + var(--entropy) * 8px));
+    transform: scale(calc(1 + var(--peak) * 0.1));
+  }
+  #hud h1 { margin: 0 0 6px; font-size: 1.05rem; }
+  #status { font-size: 0.82rem; line-height: 1.45; opacity: 0.9; }
+  button {
+    background: #112244;
+    color: #acf;
+    border: 1px solid #46a;
+    padding: 6px 12px;
+    margin: 6px 4px 0 0;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover { background: #223366; }
+  .portal {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border: 2px solid #6af;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(100,180,255,0.4), transparent 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    text-align: center;
+    pointer-events: auto;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: all 0.35s;
+    z-index: 15;
+  }
+  .portal.on { opacity: 1; transform: scale(1); }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Evolving Local Attention Lattice with Emergent Portals and Morphing Spatial Chrome · Verse lab</title>
+<meta name="description" content="Novel combination of a spatial attention lattice whose parameters are evolved by a local Web Worker, emergent interactive DOM portals at high-attention loci, and a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Evolving Local Attention Lattice with Emergent Portals and Morphing Spatial Chrome · Verse lab">
+<meta property="og:description" content="Novel combination of a spatial attention lattice whose parameters are evolved by a local Web Worker, emergent interactive DOM portals at high-attention loci, and a">
+<meta property="og:url" content="https://a-to-mind.com/lab/f411-evolving-attention-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f411-evolving-attention-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="portals"></div>
+</div>
+<div id="hud">
+  <h1>Verse Attention Lattice</h1>
+  <div id="status">Booting local evolutionary mind…</div>
+  <button id="seed">Seed Attention</button>
+  <button id="seal">Seal Genome</button>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

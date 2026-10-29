@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family: system-ui, sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; width:100vw; height:100vh; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:12px; border-radius:8px; z-index:10; max-width:320px; font-size:13px; }
+#probes { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.probe { position:absolute; width:40px; height:40px; border-radius:50%; background:rgba(100,200,255,0.4); border:2px solid #88f; pointer-events:auto; cursor:pointer; transition:background 0.1s; display:flex; align-items:center; justify-content:center; font-size:10px; }
+.probe.active { background:rgba(255,100,100,0.6); }
+button { background:#224; color:#cef; border:1px solid #46a; padding:4px 8px; margin:2px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-Causal Advection MLP + DOM Probes · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Orientation-Causal Advection MLP + DOM Probes.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-Causal Advection MLP + DOM Probes · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Orientation-Causal Advection MLP + DOM Probes.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f319-webgpu-orient-advection-mlp-probes/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f319-webgpu-orient-advection-mlp-probes/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <h3>F319 Orientation-Advection MLP Probes</h3>
+  <p>Tilt device (or drag mouse) to drive causal advection. MLP adapts velocity scale from history. Click probes to inject density.</p>
+  <div id="status">Initializing WebGPU...</div>
+  <button id="reset">Reset Field</button>
+  <button id="perm">Request Orientation</button>
+</div>
+<div id="probes"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-Causal Advection MLP + DOM Probes</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

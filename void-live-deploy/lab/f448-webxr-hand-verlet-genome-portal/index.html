@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.65); padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 320px; }
+  button { margin: 4px 4px 0 0; padding: 6px 10px; background: #222; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #333; }
+  #labels { position: absolute; inset: 0; pointer-events: none; }
+  .label { position: absolute; background: rgba(40,40,80,.85); color: #adf; padding: 3px 7px; border-radius: 4px; font-size: 11px; pointer-events: auto; cursor: grab; white-space: nowrap; transform: translate(-50%, -50%); }
+  .label:active { cursor: grabbing; }
+  #status { margin-top: 6px; font-size: 11px; opacity: .8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Verlet Genome Portal Mind · Verse lab</title>
+<meta name="description" content="A deformable circular &quot;portal&quot; mesh of particles held by distance constraints (Verlet integration). User hand (mouse/touch proxy;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Verlet Genome Portal Mind · Verse lab">
+<meta property="og:description" content="A deformable circular &quot;portal&quot; mesh of particles held by distance constraints (Verlet integration). User hand (mouse/touch proxy;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f448-webxr-hand-verlet-genome-portal/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f448-webxr-hand-verlet-genome-portal/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="labels"></div>
+<div id="ui">
+  <strong>F448 Verlet Genome Portal</strong><br>
+  Drag to push particles. Tilt device for gravity.<br>
+  <button id="seal">Seal Genome</button>
+  <button id="load">Load Sealed</button>
+  <button id="evolve">Evolve Step</button>
+  <button id="reset">Reset Mesh</button>
+  <div id="status">Ready. Mouse = hand proxy.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Verlet Genome Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

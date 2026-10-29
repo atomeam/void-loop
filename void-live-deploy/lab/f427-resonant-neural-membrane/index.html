@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --entropy: 0.5;
+    --hue: 200;
+    --pulse: 0;
+  }
+  body {
+    margin: 0;
+    background: hsl(calc(var(--hue) + var(--entropy) * 40), 40%, 8%);
+    color: #e0e0e0;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  #canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair;
+  }
+  #hud {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.55);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    pointer-events: none;
+    border: 1px solid hsla(var(--hue), 70%, 60%, 0.4);
+    box-shadow: 0 0 calc(8px + var(--pulse) * 20px) hsla(var(--hue), 80%, 60%, 0.3);
+  }
+  #orbs {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .orb {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle, hsla(var(--hue), 80%, 70%, 0.9), transparent 70%);
+    border: 2px solid hsla(var(--hue), 90%, 80%, 0.6);
+    pointer-events: auto;
+    cursor: grab;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 12px hsla(var(--hue), 80%, 60%, 0.5);
+    transition: width 0.2s, height 0.2s;
+  }
+  .orb:active { cursor: grabbing; }
+  button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    padding: 8px 16px;
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Resonant Neural Membrane · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Resonant Neural Membrane.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Resonant Neural Membrane · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Resonant Neural Membrane.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f427-resonant-neural-membrane/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f427-resonant-neural-membrane/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <div>F-232 Resonant Neural Membrane</div>
+  <div>Entropy: <span id="ent">0.00</span> | Resonance: <span id="res">0.00</span></div>
+  <div>Gen: <span id="gen">0</span> | Best fitness: <span id="fit">0.00</span></div>
+  <div>Drag orbs to inject tones · Click canvas to pluck · Seal genome</div>
+</div>
+<div id="orbs"></div>
+<button id="seal">Seal to IndexedDB</button>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">Resonant Neural Membrane</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

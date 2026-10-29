@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --energy: 0.2;
+  --entropy: 0.4;
+  --residual: 0.1;
+  --hue: 220;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: hsl(var(--hue), 40%, calc(8% + var(--energy)*12%));
+  color: #eee;
+  font-family: system-ui, sans-serif;
+  transition: background 0.3s;
+}
+canvas { display: block; width: 100vw; height: 100vh; }
+#ui {
+  position: fixed; top: 12px; left: 12px; z-index: 10;
+  background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 8px;
+  font-size: 12px; backdrop-filter: blur(4px);
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, hsl(var(--hue), 80%, 60%), transparent 70%);
+  pointer-events: none; mix-blend-mode: screen;
+  transition: all 0.15s;
+  filter: blur(calc(var(--entropy) * 2px));
+}
+#status { font-variant-numeric: tabular-nums; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Acoustic Spatial Attention Lattice with Morphing Probe Orbs · Verse lab</title>
+<meta name="description" content="Renumbered on 2026-10-29: this draft was F233-webgpu-acoustic-attention-orbs (F-233), a number it shared with F233-panel-play. Its number is now F-428;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Acoustic Spatial Attention Lattice with Morphing Probe Orbs · Verse lab">
+<meta property="og:description" content="Renumbered on 2026-10-29: this draft was F233-webgpu-acoustic-attention-orbs (F-233), a number it shared with F233-panel-play. Its number is now F-428;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f428-webgpu-acoustic-attention-orbs/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f428-webgpu-acoustic-attention-orbs/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F-233 Acoustic Spatial Attention Lattice</div>
+  <div id="status">initializing…</div>
+  <div>Mic + orientation bias the attention field. Pointer deposits energy.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Acoustic Spatial Attention Lattice with Morphing Probe Orbs</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#chrome { position:fixed; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; }
+button { margin:4px; }
+.card { position:absolute; width:90px; height:60px; background:rgba(40,60,120,0.8); border:1px solid #88aaff; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:grab; user-select:none; z-index:5; transition:transform 0.05s; }
+.card:active { cursor:grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Softbody Policy DOM Mind · Verse lab</title>
+<meta name="description" content="Mass-spring soft-body simulation (CPU for prototype; WebGPU compute path noted for particle forces and constraint projection) driven by a tiny local linear policy">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Softbody Policy DOM Mind · Verse lab">
+<meta property="og:description" content="Mass-spring soft-body simulation (CPU for prototype; WebGPU compute path noted for particle forces and constraint projection) driven by a tiny local linear policy">
+<meta property="og:url" content="https://a-to-mind.com/lab/f315-webgpu-softbody-policy-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f315-webgpu-softbody-policy-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  <button id="seal">Seal Policy</button>
+  <button id="load">Load</button>
+  <span id="status">init</span>
+</div>
+<canvas id="c"></canvas>
+<div id="cards"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Softbody Policy DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

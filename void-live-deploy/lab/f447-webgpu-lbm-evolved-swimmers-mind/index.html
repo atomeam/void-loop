@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; font-size:13px; max-width:280px; }
+button { margin:4px 4px 0 0; background:#334; color:#fff; border:1px solid #556; padding:4px 8px; border-radius:4px; cursor:pointer; }
+button:hover { background:#445; }
+#status { font-size:11px; opacity:.8; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU LBM Evolved Swimmers Mind · Verse lab</title>
+<meta name="description" content="Novel combination: Lattice Boltzmann Method (LBM) fluid kernel in WebGPU compute (previously unused in Verse;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU LBM Evolved Swimmers Mind · Verse lab">
+<meta property="og:description" content="Novel combination: Lattice Boltzmann Method (LBM) fluid kernel in WebGPU compute (previously unused in Verse;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f447-webgpu-lbm-evolved-swimmers-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f447-webgpu-lbm-evolved-swimmers-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <strong>F200 LBM Evolved Swimmers</strong><br>
+  Drag to inject momentum. Agents evolve to swim high-density zones.<br>
+  <button id="seal">Seal best genome</button>
+  <button id="load">Load sealed</button>
+  <button id="reset">Reset field</button>
+  <div id="status">Initializing…</div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU LBM Evolved Swimmers Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
