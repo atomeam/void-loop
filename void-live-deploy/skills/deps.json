@@ -160,7 +160,7 @@
    "file": "lib/self-sites.js",
    "skills": 10,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 1
   },
   {
@@ -626,6 +626,13 @@
    "tests": 3
   },
   {
+   "file": "lib/tower-controls.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
@@ -633,32 +640,32 @@
    "tests": 1
   },
   {
-   "file": "lib/tower-controls.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
    "file": "lib/gate-badge.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 1
   },
   {
    "file": "lib/tower-journeys.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 1
   },
   {
    "file": "lib/tower-weight.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 1
+  },
+  {
+   "file": "lib/tower.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 5,
+   "tests": 25
   },
   {
    "file": "lib/arena-say.js",
@@ -708,13 +715,6 @@
    "direct": 1,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/tower.js",
-   "skills": 3,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 25
   },
   {
    "file": "lib/chat-calendar.js",
@@ -1658,8 +1658,8 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 48,
-   "tests": 8
+   "dependants": 49,
+   "tests": 9
   },
   {
    "file": "lib/pages.js",
@@ -3165,7 +3165,8 @@
     "lib/models.js",
     "lib/self-context.js",
     "lib/shortfall.js",
-    "lib/voice.js"
+    "lib/voice.js",
+    "lib/tower.js"
    ],
    "importedBy": []
   },
@@ -5437,6 +5438,7 @@
     "skills/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/walker.js"
@@ -6389,7 +6391,8 @@
     "lib/approval-core.js",
     "lib/clef.js",
     "lib/review-api.js",
-    "lib/router.js"
+    "lib/router.js",
+    "lib/self-context.js"
    ],
    "reachedBy": [
     "functions/api/actions.js",
@@ -7803,7 +7806,8 @@
   "lib/self-context.js": {
    "imports": [
     "lib/voice.js",
-    "lib/persona.js"
+    "lib/persona.js",
+    "lib/models.js"
    ],
    "importedBy": [
     "functions/api/answer.js",
@@ -7838,6 +7842,7 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
@@ -8918,6 +8923,7 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/tower.js",
@@ -8932,6 +8938,7 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/tower.js",
@@ -8951,6 +8958,7 @@
     "skills/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/walker.js"
@@ -8968,6 +8976,7 @@
     ", "
    ],
    "importedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/tower.js",
     "skills/walker.js"
