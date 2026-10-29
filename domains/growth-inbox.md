@@ -51,7 +51,6 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped | 2026-10-28 | identity studio opens with a neutral example profile (no real name or email in the seed) | asked by Verse (docs/void-voice.md, 2026-10-28, "minimal identity seed") |
 | shipped (lists run 7) | 2026-10-28 | value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to re-appraise together when its prices move apart (`node tools/value-drift.mjs --write` -> domains/value-drift.json, tools/value-drift.test.mjs); photo appraisals are never kept, so they stay out | asked by Verse (docs/void-voice.md) |
 | building | 2026-10-28 | advice skill: random advice from a public API | new idea by growth agent; helper/advice-new |
-| building | 2026-10-28 | color palette skill: generate random harmonious color palettes on the stage | new idea by growth agent; helper/palette-new |
-| building | 2026-10-28 | proverb skill: a random proverb or saying | new idea by growth agent; helper/proverb-new |
+| open | 2026-10-28 | color palette skill: generate random harmonious color palettes on the stage | new idea by growth agent |
+| open | 2026-10-28 | proverb skill: a random proverb or saying | new idea by growth agent |
 | open | 2026-10-28 | random number skill: roll dice or pick a random number in a range | new idea by growth agent |
-| open | 2026-10-28 | affirmation skill: a positive affirmation | new idea by growth agent |
