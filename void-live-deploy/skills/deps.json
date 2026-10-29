@@ -350,7 +350,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 11,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/card-image.js",
@@ -392,14 +392,14 @@
    "skills": 6,
    "direct": 1,
    "dependants": 7,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/tilt-arena.js",
    "skills": 6,
    "direct": 0,
    "dependants": 7,
-   "tests": 1
+   "tests": 4
   },
   {
    "file": "lib/pack5-ui.js",
@@ -413,7 +413,7 @@
    "skills": 6,
    "direct": 4,
    "dependants": 6,
-   "tests": 1
+   "tests": 5
   },
   {
    "file": "lib/colour.js",
@@ -469,7 +469,7 @@
    "skills": 5,
    "direct": 3,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/observations.js",
@@ -917,7 +917,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/list-goal.js",
@@ -1008,7 +1008,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 2,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/template-list.js",
@@ -1477,7 +1477,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/date-ask.js",
@@ -1729,7 +1729,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/study-cards.js",
@@ -1771,7 +1771,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/terminal.js",
@@ -1799,7 +1799,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 12
+   "tests": 13
   },
   {
    "file": "lib/tower-rank.js",
