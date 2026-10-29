@@ -151,3 +151,15 @@ test('the page shows only real posts, posts only through the boards, and is dark
   const headers = read('_headers'), block = headers.slice(headers.indexOf('/fanfic/*'));
   assert.ok(block.split('\n\n')[0].includes('https://challenges.cloudflare.com'), 'the archive may load the boards\' Turnstile check');
 });
+
+test('the stage card (skills/fanfic.js) answers the page\'s own stage ask, lists only fan-fiction boards and links back to /fanfic/', async () => {
+  const { default: skill, fandomLines } = await import('../void-live-deploy/skills/fanfic.js');
+  const { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js');
+  const { PAGE_PATHS } = await import('../void-live-deploy/lib/card-frame.js');
+  for (const ask of [CARD_ASK['/fanfic/'], 'fanfic archive', 'post a fanfic', 'open the fan fiction archive']) assert.ok(skill.match(ask.toLowerCase(), ask), ask);
+  for (const ask of ['write a story about a dragon', 'image boards', 'fan of the knicks']) assert.ok(!skill.match(ask.toLowerCase(), ask), ask);
+  assert.equal(PAGE_PATHS['/fanfic/'], 'Fan fiction');
+  const lines = fandomLines([{ code: 'g', title: 'Random', last: 9 }, { code: 'ficdw', title: 'Doctor Who', last: 2 }, { code: 'ficx', title: 'Adult fandom', nsfw: true, last: 5 }]);
+  assert.deepEqual(lines, [{ href: '/fanfic/?f=ficx', text: 'Adult fandom (18+)' }, { href: '/fanfic/?f=ficdw', text: 'Doctor Who' }]);
+  assert.deepEqual(fandomLines(null), [], 'nothing posted: no lines, so the card says there are none yet');
+});

@@ -18,6 +18,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const old = rd('tower.target.json') || {}, ev = rd('tower.evidence.json') || {};
   const unlocked = tower((rd('lap.items.json') || {}).onlySite || [], ev.floors || {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json'), null);
   const id = nextTarget({ lock: old.id, floors: unlocked.floors });
-  if (id && id !== old.id) fs.writeFileSync(OUT, JSON.stringify({ about: 'The site Verse is fighting. It stays the target until it is beaten; then the next smallest site takes over (tools/tower-target.mjs).', id, since: new Date().toISOString().slice(0, 10) }, null, 1) + '\n');
+  if (id && id !== old.id) fs.writeFileSync(OUT, JSON.stringify({ about: 'The site Verse is assimilating. It stays the target until it is beaten; then the next smallest site takes over (tools/tower-target.mjs).', id, since: new Date().toISOString().slice(0, 10) }, null, 1) + '\n');
   console.log('target: ' + (id || 'none') + (id === old.id ? ' (kept)' : ' (new)'));
 }

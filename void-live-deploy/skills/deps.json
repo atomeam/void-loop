@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 938,
+ "counted": 939,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -553,7 +553,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 9
+   "tests": 10
   },
   {
    "file": "lib/success-pulse.js",
@@ -1046,6 +1046,13 @@
    "tests": 1
   },
   {
+   "file": "lib/boards.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
@@ -1396,6 +1403,13 @@
    "tests": 1
   },
   {
+   "file": "lib/fanfic.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/field-flow.js",
    "skills": 1,
    "direct": 1,
@@ -1659,7 +1673,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 12
+   "tests": 13
   },
   {
    "file": "lib/tower-rank.js",
@@ -1947,13 +1961,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 1
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/comments.js",
@@ -2377,13 +2384,6 @@
   },
   {
    "file": "lib/empty-state.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/fanfic.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4120,6 +4120,9 @@
     "functions/api/boards/[[path]].js",
     "functions/boards/t/[[path]].js",
     "lib/fanfic.js"
+   ],
+   "reachedBy": [
+    "skills/fanfic.js"
    ]
   },
   "lib/book-face.js": {
@@ -5143,7 +5146,9 @@
    "imports": [
     "lib/boards.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/fanfic.js"
+   ]
   },
   "lib/fantasy.js": {
    "imports": [
@@ -10254,6 +10259,12 @@
     "lib/game-health.js",
     "lib/ladder.js",
     "lib/match-history.js"
+   ],
+   "importedBy": []
+  },
+  "skills/fanfic.js": {
+   "imports": [
+    "lib/fanfic.js"
    ],
    "importedBy": []
   },
