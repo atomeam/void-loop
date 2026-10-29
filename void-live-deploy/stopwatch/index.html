@@ -117,7 +117,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { clock, fresh, act, elapsed, lapRows, parseDuration, timer, tact, remaining, intervalSteps, intervalAt, chess, chessLeft, chessTap, chessPause, chessFlag } from '/lib/stopwatch.js';
+  import { clock, fresh, act, elapsed, lapRows, parseDuration, timer, tact, remaining, intervalSteps, intervalAt, chess, chessLeft, chessTap, chessPause, chessFlag, timerAsk } from '/lib/stopwatch.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.stopwatch.v1';
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) { return null; } };
   const saved = load() || {};
@@ -255,7 +255,7 @@
   if (tab !== 'sw' && q.toString()) $(tab).scrollIntoView();
   setInterval(() => { if (!document.hidden) return; if (cd.endsAt !== null && !rang && !remaining(cd, Date.now())) { cd = tact(cd, 'pause', Date.now()); ring(); } ivFrame(Date.now(), true); ccFrame(Date.now()); }, 1000); // a background tab gets no animation frames: the alarm still rings on time
   requestAnimationFrame(frame);
-  mountRelated(document.getElementById('related'), '/stopwatch/');
+  mountRelated(document.getElementById('related'), '/stopwatch/', [], { card: () => (tab === 'cd' ? timerAsk(cd.total) : '') }); // on the countdown, its stage card is a timer of the same length
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

@@ -56,7 +56,7 @@
    "skills": 21,
    "direct": 2,
    "dependants": 22,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/keeper.js",
@@ -1316,7 +1316,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/brain-store.js",
@@ -1330,7 +1330,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/calc-more.js",
@@ -1400,7 +1400,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/council-law.js",
@@ -2429,7 +2429,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/comments-ui.js",
@@ -2702,7 +2702,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/sun-day.js",
@@ -2730,7 +2730,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/wordcount.js",

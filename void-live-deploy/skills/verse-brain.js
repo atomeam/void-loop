@@ -10,7 +10,9 @@
  * The mind layers (lib/brain-mind.js): every ask on the stage (the page's 'void:ask' event) and every word typed here becomes ideas and
  * goals that pull; a question ("why did that form?", "what just happened?", "what are you doing?") is answered from its own state; its
  * choices are remembered as moments the will reads before choosing, its winning genomes by context; where two organs disagree over a
- * region the card outlines it. What it learned is kept on this device (lib/brain-store.js, Forget clears it) and Verse's own priorities
+ * region the card outlines it. What it learned is kept on this device (lib/brain-store.js, Forget clears it), and what it is thinking (its
+ * workspace, ideas, spotlight and goals) is a part it holds in the shared field, kept on this device and given back after a reload (lib/shared-field.js
+ * hold, persist, recall); Forget deletes that too. Verse's own priorities
  * (/self.json) are standing ideas it compares yours with. Nothing is sent anywhere; a seal is numbers only (lib/brain.js params).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }, made with lib/field-stage.js fieldSkill.
  */
@@ -163,13 +165,18 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     said.textContent = (from === 'page' ? 'Another Verse page told it: ' : 'Holding: ') + r.words.join(', ') + '.' + (rel.length ? ' Nearest ideas: ' + rel.join(', ') + '.' : '')
       + (r.surprise != null ? ' Surprise ' + (+r.surprise).toFixed(1) + ' bits a letter.' : '');
   };
+  // what it kept from before a reload comes back first (lib/shared-field.js recall, one read a page), so a word told meanwhile is added to it
+  let ready = Promise.resolve();
   q('.vb-form').addEventListener('submit', (e) => {
-    e.preventDefault(); const t = box.value; box.value = ''; const r = B.ask(S().b, t);
-    if (r.answer) { said.textContent = r.answer.join(' '); el.dataset.answered = String(+(el.dataset.answered || 0) + 1); return; }
-    heard(r, 'card'); if (still()) tick(20); else redraw(); place(); sync(); bridge.publish(true);
+    e.preventDefault(); const t = box.value; box.value = ''; ready.then(() => told(t));
   });
+  const told = (t) => {
+    if (!el.isConnected) return; const r = B.ask(S().b, t);
+    if (r.answer) { said.textContent = r.answer.join(' '); el.dataset.answered = String(+(el.dataset.answered || 0) + 1); return; }
+    paused = false; heard(r, 'card'); if (still()) tick(20); else redraw(); place(); sync(); bridge.publish(true); save();
+  };
   // every ask on the stage reaches the brain while its card is open (void.html dispatches 'void:ask' after the owner key is handled)
-  const onAsk = (e) => { const t = e && e.detail && e.detail.text; if (!t || !el.isConnected || B.ask === undefined) return; const r = B.ask(S().b, t); if (!r.answer && r.words.length) { said.textContent = 'From the stage: ' + r.words.join(', ') + '.'; place(); } };
+  const onAsk = (e) => { const t = e && e.detail && e.detail.text; if (!t || !el.isConnected || B.ask === undefined) return; ready.then(() => { if (!el.isConnected) return; const r = B.ask(S().b, t); if (!r.answer && r.words.length) { paused = false; said.textContent = 'From the stage: ' + r.words.join(', ') + '.'; place(); } }); };
   document.addEventListener('void:ask', onAsk);
   q('.vb-good').addEventListener('click', () => { const n = B.reward(S().b); const a = S().b.board.action; said.textContent = 'Rewarded ' + (a ? '"' + a.name + '"' : 'what it did last') + '. The will learns from it at its next choice (' + n + ' waiting).'; save(); });
 
@@ -187,25 +194,44 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   });
   const hear = () => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); let s = 0; for (const v of mic.buf) s += v * v; S().level = Math.min(1, Math.sqrt(s / mic.buf.length) * 6); };
 
-  // what it learned, kept on this device: loaded now, put back into a new brain after Reset, saved every 20 seconds and when the page hides
-  let kept = null, bound = null, saving = false; el.dataset.kept = 'none';
+  // what it learned, kept on this device: loaded now, put back into a new brain after Reset, saved every 5 seconds and when the page hides
+  let kept = null, bound = null, saving = false, paused = false; el.dataset.kept = 'none';
   const bind = () => { const b = S().b; if (bound === b) return; bound = b; if (kept) el.dataset.kept = B.loadKnowledge(b, kept).join(',') || 'none'; if (verse) B.knowVerse(b, verse); };
-  const save = async () => { if (saving || !el.isConnected) return; saving = true; try { kept = JSON.parse(JSON.stringify(B.knowledgeOf(S().b))); el.dataset.saved = String(await keep(kept)); } finally { saving = false; } };
+  // what it is thinking, held in the shared field: given back after a reload (or when its card opens again) to a brain with nothing of its own
+  // yet, never over ideas it already has, and never after Reset. After Forget nothing is kept until it is told something again.
+  let restored = false; el.dataset.restored = 'none';
+  const release = Field.hold('verse-brain', {
+    save: () => (paused || !el.isConnected ? null : B.workingOf(S().b)),
+    load: (w) => {
+      if (restored || !B.isCold(S().b)) return false;
+      const done = B.loadWorking(S().b, w); if (!done.length) return false;
+      restored = true; el.dataset.restored = done.join(',');
+      const words = S().b.concepts.words; said.textContent = 'Back from before the reload: ' + (words.length ? words.slice(-6).join(', ') : 'its workspace and its spotlight') + '.';
+      place(); sync(); return true;
+    }
+  });
+  const save = async () => {
+    if (saving || !el.isConnected) return; saving = true;
+    try { kept = JSON.parse(JSON.stringify(B.knowledgeOf(S().b))); el.dataset.saved = String(await keep(kept)); if (!paused) el.dataset.held = String(await Field.persist()); } finally { saving = false; }
+  };
   const onHide = () => { if (document.visibilityState === 'hidden') save(); };
   document.addEventListener('visibilitychange', onHide); addEventListener('pagehide', save);
   loadKept().then((k) => { if (k && k.v === 1) { kept = k; bound = null; bind(); } }).catch(() => {});
   let verse = null; fetch('/self.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) { verse = j; el.dataset.semantic = String(B.knowVerse(S().b, j)); } }).catch(() => {});
-  q('.vb-forget').addEventListener('click', async () => { kept = null; await forget(); const b = S().b; b.mind.episodes = []; b.mind.procedures = []; b.mind.pref.fill(0); el.dataset.kept = 'none'; said.textContent = 'Forgot what it kept on this device: its moments, its winning genomes and its preferences. It starts learning again now.'; });
+  q('.vb-forget').addEventListener('click', async () => {
+    kept = null; paused = true; await forget(); await Field.forgetKept(); const b = S().b; b.mind.episodes = []; b.mind.procedures = []; b.mind.pref.fill(0); el.dataset.kept = 'none'; el.dataset.held = 'false';
+    said.textContent = 'Forgot what it kept on this device: its moments, its winning genomes, its preferences and what it was thinking. A reload starts it fresh, and it keeps nothing new until you tell it something.';
+  });
   const bridge = hostBrain(B, () => (el.isConnected ? S().b : null), { onWords: (t, from) => { heard({ words: S().b.concepts.words.slice(-3), related: [], surprise: S().b.concepts.lastBits }, from); place(); } });
   let n = 0;
   const every = setInterval(() => {
     if (!el.isConnected) { clearInterval(every); bridge.close(); stopMic(); end(); return; }
-    bind(); hear(); place(); bridge.publish(); if ((n++ & 3) === 0) { table(); sync(); } if (n % 200 === 0) save();
+    bind(); hear(); place(); bridge.publish(); if ((n++ & 3) === 0) { table(); sync(); } if (n % 50 === 0) save();
   }, 100);
-  place(); table(); sync(); bridge.publish(true);
+  place(); table(); sync(); bridge.publish(true); ready = Field.recall().catch(() => []);
   fetch(new URL('../lib/brain-drafts.json', import.meta.url)).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && j.drafts) { DRAFTS = j; made(); } }).catch(() => {});
-  function end() { document.removeEventListener('void:ask', onAsk); document.removeEventListener('visibilitychange', onHide); removeEventListener('pagehide', save); }
-  return { dispose() { save(); clearInterval(every); bridge.close(); stopMic(); end(); } };
+  function end() { release(); document.removeEventListener('void:ask', onAsk); document.removeEventListener('visibilitychange', onHide); removeEventListener('pagehide', save); }
+  return { dispose() { save().finally(end); clearInterval(every); bridge.close(); stopMic(); } };
 }
 
 const idea = {
