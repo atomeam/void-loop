@@ -77,7 +77,10 @@ const triggersOf = new Map();
 if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))) for (const w of String(x.want).split('|')) if (w.startsWith('skill:')) { const k = w.slice(6); if (!by.has(k)) by.set(k, []); by.get(k).push(x.ask); }
   for (const [k, list] of by) triggersOf.set(k, triggersFrom(list)); }
 async function one({ ask: a, want, says, before }) {
-  const ctx = await browser.newContext(); const miss = [];
+  // a light page: reduced motion (the page stops its idle animations, as it does for a person who asks for that) and no pictures, fonts or media
+  // from Verse's own files. No ask is judged on them, and the daily run on main ran past its 40 min with 3,180 asks (cancelled every day since 2026-10-25)
+  const ctx = await browser.newContext({ reducedMotion: 'reduce' }); const miss = [];
+  await ctx.route(/^http:\/\/127\.0\.0\.1:\d+\/(?!api\/)/, (r) => (/^(image|font|media)$/.test(r.request().resourceType()) ? r.fulfill({ status: 204, body: '' }) : r.fallback()));
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Topic', extract: 'An extract.' }));

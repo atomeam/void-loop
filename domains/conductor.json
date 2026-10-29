@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T17:11:57.800Z",
+ "updated": "2026-10-29T18:13:30.758Z",
  "last24h": {
-  "ticks": 90,
-  "started": 108,
+  "ticks": 96,
+  "started": 109,
   "requeued": 1,
   "setAside": 0,
-  "probes": 12,
+  "probes": 13,
   "errors": 0
  },
  "broken": [],
@@ -152,7 +152,8 @@
   "mvtr4y9y": 1793292067638,
   "mvtr4z0i": 1793292684921,
   "mvtr4zrr": 1793293301015,
-  "mvtruzch": 1793293917800
+  "mvtruzch": 1793293917800,
+  "mvttbday": 1793295151663
  },
  "ticks": [
   {
@@ -2265,6 +2266,103 @@
    "lap": false,
    "revived": [],
    "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T17:22:15.755Z",
+   "open": 106,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T17:32:31.663Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mvttbday",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T17:42:48.305Z",
+   "open": 109,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 108,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T17:53:02.059Z",
+   "open": 109,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": true,
+   "revived": [],
+   "held": 108,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T18:03:16.877Z",
+   "open": 109,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 108,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T18:13:30.758Z",
+   "open": 109,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 108,
    "warnings": 0
   }
  ]
