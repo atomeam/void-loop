@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 963,
+ "counted": 965,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,8 +20,8 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 60,
-   "tests": 5
+   "dependants": 61,
+   "tests": 6
   },
   {
    "file": "lib/ask-text.js",
@@ -1070,8 +1070,15 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
+  },
+  {
+   "file": "lib/boards.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
   },
   {
    "file": "lib/noise.js",
@@ -1079,13 +1086,6 @@
    "direct": 0,
    "dependants": 6,
    "tests": 0
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 2
   },
   {
    "file": "lib/scores.js",
@@ -1110,6 +1110,13 @@
   },
   {
    "file": "lib/brain-creature.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-gardener.js",
    "skills": 1,
    "direct": 0,
    "dependants": 4,
@@ -1179,6 +1186,13 @@
    "tests": 1
   },
   {
+   "file": "lib/fanfic.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/fincalc.js",
    "skills": 1,
    "direct": 0,
@@ -1240,13 +1254,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
-  },
-  {
-   "file": "lib/fanfic.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/film-discovery.js",
@@ -1379,7 +1386,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/calc-more.js",
@@ -1806,7 +1813,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 69,
-   "tests": 26
+   "tests": 27
   },
   {
    "file": "lib/models.js",
@@ -2499,7 +2506,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/fantasy.js",
@@ -3034,6 +3041,12 @@
     "lib/store-db.js",
     "lib/earnings.js",
     "lib/shortfall.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/fanfic-hits.js": {
+   "imports": [
+    "lib/fanfic.js"
    ],
    "importedBy": []
   },
@@ -4281,6 +4294,7 @@
     "lib/fanfic.js"
    ],
    "reachedBy": [
+    "functions/api/fanfic-hits.js",
     "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
@@ -4333,6 +4347,20 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-gardener.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-hearing.js": {
    "imports": [
     "lib/field-kit.js",
@@ -4352,7 +4380,8 @@
     "lib/brain-organs.js",
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
-    "lib/brain-painter.js"
+    "lib/brain-painter.js",
+    "lib/brain-gardener.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
@@ -4372,6 +4401,7 @@
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
+    "lib/brain-gardener.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -4422,6 +4452,7 @@
    "importedBy": [
     "lib/brain-creature.js",
     "lib/brain-field.js",
+    "lib/brain-gardener.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -4440,7 +4471,8 @@
     "lib/brain-synapses.js",
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
-    "lib/brain-painter.js"
+    "lib/brain-painter.js",
+    "lib/brain-gardener.js"
    ],
    "importedBy": [
     "skills/verse-brain.js"
@@ -5416,6 +5448,7 @@
     "lib/boards.js"
    ],
    "importedBy": [
+    "functions/api/fanfic-hits.js",
     "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
@@ -5489,6 +5522,7 @@
    "imports": [],
    "importedBy": [
     "lib/brain-creature.js",
+    "lib/brain-gardener.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
