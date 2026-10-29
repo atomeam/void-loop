@@ -537,13 +537,29 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T14:29:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T16:10:54Z",
+   "subject": "Promotion record: 44 skills meet the proven standard, 22 stay with their reasons"
+  },
+  {
+   "at": "2026-10-29T16:07:45Z",
+   "subject": "Bench: 19 more asks that reach the right skill, from a second browser probe"
+  },
+  {
+   "at": "2026-10-29T16:07:45Z",
+   "subject": "Regenerate families and deps after the main merge"
+  },
+  {
+   "at": "2026-10-29T16:04:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T16:03:50Z",
    "subject": "Card replies count on the heat map by the card's family"
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T15:48:26Z",
    "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
-  },
-  {
-   "at": "2026-10-29T15:44:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:43:09Z",
-   "subject": "Versus job mvoxd09y: a tower-self reason is cut at a whole word (clipWords), so \"niche professional servic)\" cannot come back; main merged…"
-  },
-  {
-   "at": "2026-10-29T15:41:49Z",
-   "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
-  },
-  {
-   "at": "2026-10-29T15:40:03Z",
-   "subject": "Put the reply section in void.html, the page the deploy copies"
   }
  ],
  "builders": {
