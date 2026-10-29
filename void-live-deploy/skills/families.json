@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-27",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 3,
-  "tested": 44,
-  "checked": 18,
-  "proven": 298
+  "experiment": 1,
+  "tested": 46,
+  "checked": 16,
+  "proven": 300
  },
  "families": [
   {
@@ -24,8 +24,8 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 1,
-    "tested": 14,
+    "experiment": 0,
+    "tested": 15,
     "checked": 3,
     "proven": 36
    },
@@ -76,12 +76,13 @@
     },
     {
      "name": "textgen",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "forge",
@@ -1466,8 +1467,8 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 1,
-    "tested": 11,
+    "experiment": 0,
+    "tested": 12,
     "checked": 1,
     "proven": 29
    },
@@ -1940,12 +1941,13 @@
     },
     {
      "name": "sports-browse",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "fantasy",
@@ -2129,8 +2131,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 1,
-    "proven": 4
+    "checked": 0,
+    "proven": 5
    },
    "skills": [
     {
@@ -2153,10 +2155,12 @@
     },
     {
      "name": "boards",
-     "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 4 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 2
     },
     {
@@ -2193,8 +2197,8 @@
    "count": {
     "experiment": 0,
     "tested": 7,
-    "checked": 7,
-    "proven": 88
+    "checked": 6,
+    "proven": 89
    },
    "skills": [
     {
@@ -3103,10 +3107,12 @@
     },
     {
      "name": "backdrop",
-     "tier": "checked",
-     "why": "a self-test, 7 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 7 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 3
     }
    ]
