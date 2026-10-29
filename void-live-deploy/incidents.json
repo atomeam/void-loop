@@ -34,8 +34,13 @@
    ],
    "passed": [
     1,
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 123
   },
   {
    "at": "2026-10-29T13:05:55.568Z",
@@ -66,9 +71,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 351
   },
   {
    "at": "2026-10-29T10:48:24.159Z",
@@ -90,9 +100,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 488
   },
   {
    "at": "2026-10-29T10:20:59.516Z",
@@ -123,9 +138,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 516
   },
   {
    "at": "2026-10-29T09:57:59.260Z",
@@ -145,9 +165,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 539
   },
   {
    "at": "2026-10-29T05:00:37.748Z",
@@ -192,9 +217,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 836
   },
   {
    "at": "2026-10-29T04:47:44.038Z",
@@ -213,9 +243,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 849
   },
   {
    "at": "2026-10-29T03:47:37.470Z",
@@ -249,9 +284,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 909
   },
   {
    "at": "2026-10-29T03:12:00.329Z",
@@ -279,9 +319,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 945
   },
   {
    "at": "2026-10-29T03:00:57.820Z",
@@ -309,9 +354,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 956
   },
   {
    "at": "2026-10-29T02:51:44.116Z",
@@ -345,9 +395,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 965
   },
   {
    "at": "2026-10-29T02:50:53.571Z",
@@ -366,9 +421,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 966
   },
   {
    "at": "2026-10-29T02:45:34.486Z",
@@ -398,9 +458,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 971
   },
   {
    "at": "2026-10-29T02:38:25.025Z",
@@ -428,9 +493,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 978
   },
   {
    "at": "2026-10-29T02:22:19.449Z",
@@ -470,9 +540,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 994
   },
   {
    "at": "2026-10-29T02:21:33.551Z",
@@ -497,9 +572,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 995
   },
   {
    "at": "2026-10-29T01:19:06.114Z",
@@ -532,9 +612,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1058
   },
   {
    "at": "2026-10-29T00:22:17.969Z",
@@ -572,9 +657,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1114
   },
   {
    "at": "2026-10-28T21:53:58.480Z",
@@ -622,9 +712,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1263
   },
   {
    "at": "2026-10-28T20:17:01.690Z",
@@ -662,9 +757,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1360
   },
   {
    "at": "2026-10-28T19:19:43.828Z",
@@ -703,9 +803,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1417
   },
   {
    "at": "2026-10-28T18:50:59.431Z",
@@ -743,9 +848,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1446
   },
   {
    "at": "2026-10-28T17:45:14.601Z",
@@ -793,9 +903,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1511
   },
   {
    "at": "2026-10-28T06:57:41.812Z",
@@ -834,9 +949,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 2159
   },
   {
    "at": "2026-10-28T06:34:50.756Z",
@@ -880,9 +1000,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 2182
   },
   {
    "at": "2026-10-28T06:11:49.758Z",
@@ -918,9 +1043,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 2205
   },
   {
    "at": "2026-10-28T05:11:04.901Z",
@@ -959,9 +1089,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 2266
   },
   {
    "at": "2026-10-28T04:44:21.587Z",
@@ -996,9 +1131,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 2292
   },
   {
    "at": "2026-10-28T04:18:06.336Z",
@@ -1036,9 +1176,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 2319
   },
   {
    "at": "2026-10-28T03:52:28.826Z",
@@ -1067,9 +1212,14 @@
    ],
    "passed": [
     1,
+    2,
     3,
     4
-   ]
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 2344
   }
  ]
 }
