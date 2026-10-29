@@ -46,7 +46,7 @@ else if (k !== 'workflow run' && k !== 'issue close' && k !== 'run view') consol
 }
 const ghCalls = (s) => (existsSync(join(s.dir, 'gh-calls.jsonl')) ? readFileSync(join(s.dir, 'gh-calls.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)) : []);
 const setGh = (s, fixtures) => writeFileSync(join(s.dir, 'gh.json'), JSON.stringify(fixtures));
-const NO_KEYS = { CLOUDFLARE_API_TOKEN: '', OPENROUTER_API_KEY: '', GROQ_API_KEY: '', GEMINI_API_KEY: '', CEREBRAS_API_KEY: '', VERSE_CODER_SCRIPT: '' };
+const NO_KEYS = { CLOUDFLARE_API_TOKEN: '', OPENROUTER_API_KEY: '', GROQ_API_KEY: '', GEMINI_API_KEY: '', CEREBRAS_API_KEY: '', VERSE_CODER_SCRIPT: '', VOID_OWNER_TOKEN: '' }; // the automerge job carries the real owner token: no test reads it
 const env = (s, agentCmd) => ({ ...process.env, VERSE_LOOP_GH: s.gh, VERSE_LOOP_AGENT_CMD: agentCmd, GIT_TERMINAL_PROMPT: '0' });
 
 test('flags', () => {
