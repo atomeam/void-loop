@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-64';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-66';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
