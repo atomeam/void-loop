@@ -29,7 +29,7 @@ Claude and Grok Bot agreed (2026-10-15) that every job has one engine, and every
 | **Learner** | `lib/learn.js` | `tools/learn*.mjs`, review-learn, grow, gaps, misses snapshot, the reflection loop | either |
 | **Card / stage** | `showPage` + `.vpage` shell, `.thing` on the stage | `skills/side-card.js`, `skills/lift3d.js`, the 5 copies of `el()`, the per-skill inline card styles | Grok Bot (design phase 2) |
 | **3D** | `skills/scene3d.js` (one WebGL renderer, three r180) | `figures3d.js`'s second context, `draw.js`'s XR renderer, `void-ring.js` and `splat.js` raw WebGL, `calendar3d.js` CSS 3D, `sky3d.js` (already shared) | Grok Bot |
-| **Data** | D1 via one `lib/db.js` (new) | `ensureTables` in `store-db.js` and `void-me.js`, the `TABLE` strings in functions, localStorage keys spread across `void.html` | after store merges |
+| **Data** | D1 via one lib/db.js (planned) | `ensureTables` in `store-db.js` and `void-me.js`, the `TABLE` strings in functions, localStorage keys spread across `void.html` | after store merges |
 | **Media** | `lib/video.js` (parse + embed) | `skills/video.js`, `video-play.js`, `films.js`, `film-metadata.js`, `functions/api/{video,films,film-review}.js`, `tools/{clips,record,film-post,youtube}.mjs` | after the Films/Verse Tube and video-learning tracks land |
 | **Ask text** | `lib/ask-text.js` (**shipped, step 1**) | 30 copies of `CLEAN` | done for 23 |
 
@@ -40,20 +40,20 @@ Found by hashing every top-level function body (whitespace stripped) across skil
 | What | Copies | Files | Merge into |
 | --- | --- | --- | --- |
 | The ask tidier `CLEAN` (trim, drop trailing ?!., collapse spaces, maybe lower-case) | 30 (3 identical forms in 23 files, 7 variants) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral; variants in worldtime, releasenotes, calendar, growth, showcase, different, feelings | `lib/ask-text.js` (**done for 23**; the 7 variants next, with an `apostrophes` option) |
-| Owner token from localStorage | 6 | actions, memory, proposal, automations, watch, status (`ownerKey`) | `lib/owner-client.js` |
+| Owner token from localStorage | 6 | actions, memory, proposal, automations, watch, status (`ownerKey`) | lib/owner-client.js (planned) |
 | `el(tag, attrs, kids)` DOM helper | 5 | actions, memory, proposal, automations, watch | the card system |
-| `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` sibling `lib/when.js` |
-| `json(body, status)` response | 3 | functions/api/bench, share/[room], share/index | `lib/http.js` |
+| `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` sibling lib/when.js (planned) |
+| `json(body, status)` response | 3 | functions/api/bench, share/[room], share/index | lib/http.js (planned) |
 | `modelsOn(env)` | 3 | functions/api/answer, review, figurescript | `lib/models.js` (Claude) |
 | `hex` / `b64u` | 3 + 2 | lib/guard, automations-run, review-api; functions/api/films | `lib/guard.js` (Claude) |
 | `pick` | 2 + 2 | api/reflect + answer; api/figurescript + will | `lib/models.js` |
 | `save3mf` | 2 | print-download, print-file | one print module |
-| `ensureTables` | 2 | lib/store-db, lib/void-me | `lib/db.js` |
-| `short`, `add` (cycle date maths) | 3 + 3 | period, ovulation, pregnancy | `lib/cycle.js` |
+| `ensureTables` | 2 | lib/store-db, lib/void-me | lib/db.js (planned) |
+| `short`, `add` (cycle date maths) | 3 + 3 | period, ovulation, pregnancy | lib/cycle.js (planned) |
 | `slug` | 2 | api/reflect, api/will | `lib/ask-text.js` |
 | `seatsFor` | 2 | sorry-rules, aggravation | the board-game rules base |
 | `urlOf` | 2 | image, link | `lib/ask-text.js` |
-| `ready` (D1 table guard) | 2 | lib/film-reviews, api/support | `lib/db.js` |
+| `ready` (D1 table guard) | 2 | lib/film-reviews, api/support | lib/db.js (planned) |
 | WebGL contexts | 5 kinds | scene3d, figures3d, draw (XR), void-ring, splat | `scene3d.js` |
 | Card shells | 4 | `.vpage` (showPage), `.thing` stage cards, side-card, lift3d | one stage system |
 | Video/film pieces | 13 files | see Media row | `lib/video.js` + one media route |
@@ -76,8 +76,8 @@ Rules for every merge: one PR per row; a snapshot test proves the callers behave
 
 1. **Ask text** (shipped): `lib/ask-text.js`, 23 skills. Smallest, most copied, zero risk.
 2. **Ask text, the 7 variants** (apostrophe and comma forms) + `slug`, `urlOf`, `asOf`: same file family, same proof.
-3. **Small server helpers**: `lib/http.js` (`json`), `lib/db.js` (`ensureTables`, `ready`). Wait for the store track to land first.
-4. **Owner client + `el()`**: one `lib/owner-client.js` and a card helper; five skills.
+3. **Small server helpers**: lib/http.js (planned) (`json`), lib/db.js (planned) (`ensureTables`, `ready`). Wait for the store track to land first.
+4. **Owner client + `el()`**: one lib/owner-client.js (planned) and a card helper; five skills.
 5. **Router**: Claude folds `modelsOn`/`pick` into `lib/models.js` and the inline matchers left in `void.html` into skills behind the router.
 6. **Budget**: Claude folds `hex`/`b64u` and rate limits into `lib/guard.js`.
 7. **One card shell** (design phase 2): `.vpage` and `.thing` share one component; side-card and lift3d become its "beside a 3D object" layout.

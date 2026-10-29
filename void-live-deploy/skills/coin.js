@@ -18,7 +18,7 @@ const STYLE_WORDS = { gold: 'gold', golden: 'gold', silver: 'silver', quarter: '
 /** what a coin ask wants: { n, p, style, for } or null. p is the chance of heads. Pure. */
 export function coinOf(text) {
   const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/,?\s+please$/, '').replace(/^(?:can|could) you\s+|^please\s+/g, '').replace(/\s+/g, ' ').trim();
-  if (/^heads or tails$|^coin toss$|^coin (?:flip|toss)$|^(?:a )?coin (?:flip|toss)$|^toss up$|^heads or tails$/.test(t)) return { n: 1, p: 0.5, style: 'gold', for: '' };
+  if (/^heads or tails$|^coin toss$|^coin (?:flip|toss)$|^(?:a )?coin (?:flip|toss)$|^toss up$/.test(t)) return { n: 1, p: 0.5, style: 'gold', for: '' };
   const m = /^(?:flip|toss)\s+(?:me\s+)?(a|an|one|two|three|four|five|six|seven|eight|nine|ten|\d{1,2})?\s*(?:(gold|golden|silver|quarter|dime|nickel|penny|euro|bitcoin|btc)\s+)?(coins?|quarters?|dimes?|nickels?|pennies|penny|euros?|bitcoins?)(?:\s+(?:that(?:'s| is)\s+)?(\d{1,2})\s*%\s*heads|\s+weighted\s+(\d{1,2})\s*%?\s*(?:heads)?)?(?:\s+for\s+(.{1,60}))?(?:\s+heads or tails)?$/.exec(t)
     || /^(?:flip|toss)\s+(?:a\s+)?(weighted)\s+(coin)\s+(\d{1,2})\s*%\s*heads(?:\s+for\s+(.{1,60}))?$/.exec(t);
   if (!m) return null;

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Metronome online: tap tempo, accents, subdivisions · Verse</title>
+<meta name="verse-handoff" content="in: number; out: number">
 <meta name="description" content="A free online metronome from 20 to 400 BPM with tap tempo, every time signature, accents on each beat, subdivisions, nine sounds, a visual beat, a practice timer, a speed trainer and setlists. No account; it works offline.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
@@ -104,6 +105,7 @@
     <div class="dots" id="dots" role="group" aria-label="Beats of the bar, press one to change its accent"><button class="dot" type="button" data-lv="3" aria-label="Beat 1, strong">1</button><button class="dot" type="button" data-lv="1" aria-label="Beat 2, soft">2</button><button class="dot" type="button" data-lv="1" aria-label="Beat 3, soft">3</button><button class="dot" type="button" data-lv="1" aria-label="Beat 4, soft">4</button></div>
     <div class="big"><output id="bpmOut" for="bpm">120</output> <small>BPM</small></div>
     <p class="note" id="tempoWord" style="text-align:center">Allegro · 500 ms per beat</p>
+    <p class="note" style="text-align:center"><a id="toBpm" href="/bpm/?bpm=120">Note lengths at this tempo</a></p>
     <div class="pend" id="pend" aria-hidden="true"><i id="rod"></i></div>
     <div class="row"><button type="button" id="m10" aria-label="10 slower">−10</button><button type="button" id="m1" aria-label="1 slower">−</button><input type="range" id="bpm" min="20" max="400" value="120" step="1" aria-label="Beats per minute" style="flex:1 1 120px"><button type="button" id="p1" aria-label="1 faster">+</button><button type="button" id="p10" aria-label="10 faster">+10</button></div>
     <div class="row"><button type="button" id="play" class="go" style="flex:1 1 140px" aria-pressed="false">Start</button><button type="button" id="tap" style="flex:1 1 140px">Tap tempo</button></div>

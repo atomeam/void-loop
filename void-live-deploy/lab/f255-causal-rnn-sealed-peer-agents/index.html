@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root { --bg: #0a0a12; --card: #1a1a28; --accent: #6cf; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: #eee; font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+#canvas { position: absolute; inset: 0; z-index: 0; }
+.agent {
+  position: absolute; width: 90px; height: 70px; background: var(--card); border: 2px solid var(--accent);
+  border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none; transition: transform 0.05s; z-index: 1; font-size: 12px; text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.agent:hover { filter: brightness(1.2); }
+.agent .id { font-weight: bold; color: var(--accent); }
+.agent .fit { font-size: 10px; opacity: 0.8; }
+#ui {
+  position: fixed; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px;
+  font-size: 13px; max-width: 280px;
+}
+button { background: #333; color: #fff; border: 1px solid #555; padding: 6px 12px; margin: 4px 0; border-radius: 4px; cursor: pointer; }
+button:hover { background: #444; }
+#status { margin-top: 6px; font-size: 11px; opacity: 0.9; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>causal-rnn-sealed-peer-agents · Verse lab</title>
+<meta name="description" content="Novel combination that deliberately leaves the recent WebGPU-physics / residual-density / causal-lattice / NCA-spatial-audio / orientation-sealed-arena / hand-MLP">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="causal-rnn-sealed-peer-agents · Verse lab">
+<meta property="og:description" content="Novel combination that deliberately leaves the recent WebGPU-physics / residual-density / causal-lattice / NCA-spatial-audio / orientation-sealed-arena / hand-MLP">
+<meta property="og:url" content="https://a-to-mind.com/lab/f255-causal-rnn-sealed-peer-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f255-causal-rnn-sealed-peer-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div>F255 · Causal RNN Sealed Peer Agents</div>
+  <div>Tilt device or move pointer. Click cards to reward.</div>
+  <button id="seal">Seal Champion</button>
+  <button id="reset">Reset Population</button>
+  <div id="status">Loading...</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">causal-rnn-sealed-peer-agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

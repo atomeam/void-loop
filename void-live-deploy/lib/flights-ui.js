@@ -48,7 +48,7 @@ function picker(label, key, id) {
   const choose = (a) => { state[key] = a.iata; show(); close(); emit(); update(); };
   function suggest() {
     if (!idx) return; const res = C.searchAirports(idx, input.value, 7); list.textContent = '';
-    first = res[0] || null; for (const a of res) { const li = document.createElement('li'); li.setAttribute('role', 'option'); const b = document.createElement('button'); b.type = 'button'; b.innerHTML = '<b>' + esc(a.iata) + '</b> ' + esc(a.city) + ' <span class="soft">' + esc(a.name) + ' · ' + esc(a.country) + '</span>'; b.addEventListener('mousedown', (e) => e.preventDefault()); b.addEventListener('click', () => choose(a)); li.append(b); list.append(li); }
+    for (const a of res) { const li = document.createElement('li'); li.setAttribute('role', 'option'); const b = document.createElement('button'); b.type = 'button'; b.innerHTML = '<b>' + esc(a.iata) + '</b> ' + esc(a.city) + ' <span class="soft">' + esc(a.name) + ' · ' + esc(a.country) + '</span>'; b.addEventListener('mousedown', (e) => e.preventDefault()); b.addEventListener('click', () => choose(a)); li.append(b); list.append(li); }
     list.hidden = !res.length; input.setAttribute('aria-expanded', String(!!res.length));
   }
   input.addEventListener('input', () => { suggest(); const v = input.value.trim().toUpperCase(); if (/^[A-Z]{3}$/.test(v) && ap(v)) { state[key] = v; emit(); update(); } });

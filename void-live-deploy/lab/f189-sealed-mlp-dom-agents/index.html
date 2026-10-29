@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg: #0a0a12; --card: #1a1a28; --accent: #7ee0ff; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: #e0e0f0; font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+#field { position: relative; width: 100vw; height: 100vh; }
+.agent {
+  position: absolute; width: 72px; height: 72px; border-radius: 12px;
+  background: var(--card); border: 2px solid var(--accent);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 10px; text-align: center; cursor: pointer; user-select: none;
+  transition: transform 0.15s ease-out, border-color 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.agent.selected { border-color: #ffaa44; transform: scale(1.1); }
+.agent .fitness { font-weight: bold; color: var(--accent); }
+#controls {
+  position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 10;
+  background: rgba(20,20,30,0.85); padding: 8px; border-radius: 8px;
+  display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px;
+}
+button, input { background: #2a2a3a; color: white; border: 1px solid #444; padding: 6px 10px; border-radius: 4px; }
+button:hover { background: #3a3a4a; }
+#status { position: fixed; top: 8px; left: 8px; font-size: 11px; opacity: 0.8; max-width: 40%; }
+#paste { width: 180px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sealed MLP DOM Agents (Persistent WebRTC Field) · Verse lab</title>
+<meta name="description" content="Local tiny MLPs (pure JS, no WebGPU) control physical DOM agent cards. DeviceOrientation (or mouse proxy) is causal input to the networks.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sealed MLP DOM Agents (Persistent WebRTC Field) · Verse lab">
+<meta property="og:description" content="Local tiny MLPs (pure JS, no WebGPU) control physical DOM agent cards. DeviceOrientation (or mouse proxy) is causal input to the networks.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f189-sealed-mlp-dom-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f189-sealed-mlp-dom-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">Tilt or move mouse · Click agent to select · Seal to IndexedDB</div>
+<div id="field"></div>
+<div id="controls">
+  <button id="add">+ Agent</button>
+  <button id="breed">Breed selected</button>
+  <button id="seal">Seal field</button>
+  <button id="share">Export sealed genome</button>
+  <input id="paste" placeholder="Paste genome hash+data" />
+  <button id="import">Import</button>
+  <button id="clear">Clear IDB</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Sealed MLP DOM Agents (Persistent WebRTC Field)</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

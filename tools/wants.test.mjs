@@ -165,3 +165,16 @@ test('"what is on your wishlist?" shows the ranked wishlist from self.json, not 
   assert.ok(h.includes('My wishlist') && h.includes('Free path: move answers') && h.includes('Why this rank: free') && !h.includes('$5'));
   assert.ok(w.wishlistHtml(null, String).includes('could not read my wishlist'));
 });
+
+test('an ask with its own why shows that why, not the shared reflection text (owner card, 2026-10-29)', async () => {
+  const { traceOf: TRACE } = await import('../void-live-deploy/skills/wants.js');
+  const e = { at: '2026-10-29T04:00:00Z', kind: 'daily', thoughts: 'Shared thoughts [S1]', better: 'Shared better', asks: [{ ask: 'Build a story catalog', why: 'The target sorts stories by category [S1]' }, { ask: 'Add author pages' }] };
+  assert.deepEqual(TRACE({ ask: 'Build a story catalog' }, [e]), ['Prompted by: my daily reflection.', 'Why: The target sorts stories by category.']);
+  assert.deepEqual(TRACE({ ask: 'Add author pages' }, [e]), ['Prompted by: my daily reflection.', 'What I noticed: Shared thoughts', 'What I said should change: Shared better']);
+});
+
+test('a held ask says what it waits for on the card', () => {
+  const m = cardModel({ reflect: { asks: [{ ask: 'Absorb every repository', at: '2026-10-29T04:00:00Z', kind: 'daily', held: 'sycophanthex.com' }] } });
+  assert.equal(m.asks[0].held, 'sycophanthex.com');
+  assert.match(cardHtml(m, (s) => String(s)), /held until sycophanthex\.com is beaten/);
+});

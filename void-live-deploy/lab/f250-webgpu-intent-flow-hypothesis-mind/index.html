@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --hue: 200; --blur: 0px; --contrast: 1; }
+body { margin: 0; overflow: hidden; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif;
+  filter: blur(var(--blur)) contrast(var(--contrast)); }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.orb { position: absolute; width: 48px; height: 48px; border-radius: 50%; background: hsla(var(--hue), 70%, 55%, 0.85);
+  border: 2px solid rgba(255,255,255,0.3); cursor: grab; user-select: none; transition: transform 0.1s, box-shadow 0.2s;
+  display: flex; align-items: center; justify-content: center; font-size: 11px; text-align: center; line-height: 1.1;
+  backdrop-filter: blur(2px); }
+.orb.selected { box-shadow: 0 0 16px gold; border-color: gold; }
+.orb:active { cursor: grabbing; }
+#ui { position: fixed; top: 8px; left: 8px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 12px; }
+button { margin: 2px; }
+#status { margin-top: 4px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Intent-Flow Hypothesis Mind · Verse lab</title>
+<meta name="description" content="Novel combination branching from residual-density portals (F-248), recurrent constraint arena (F-249), acoustic softbody, and causal token swarms:">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Intent-Flow Hypothesis Mind · Verse lab">
+<meta property="og:description" content="Novel combination branching from residual-density portals (F-248), recurrent constraint arena (F-249), acoustic softbody, and causal token swarms:">
+<meta property="og:url" content="https://a-to-mind.com/lab/f250-webgpu-intent-flow-hypothesis-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f250-webgpu-intent-flow-hypothesis-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="orient">Enable Orientation</button>
+  <button id="mic">Enable Mic</button>
+  <button id="xr">Enter XR</button>
+  <button id="seal">Force Seal</button>
+  <div id="status">Intent flow · residual: 0.00 · orbs: 5</div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Intent-Flow Hypothesis Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

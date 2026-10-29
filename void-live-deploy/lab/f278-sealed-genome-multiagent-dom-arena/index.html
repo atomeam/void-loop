@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --bg: #0a0a0f;
+  --fg: #e0e0e8;
+  --accent: #7cf;
+  --card-bg: rgba(20,20,30,0.85);
+  --border: #333;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: system-ui, sans-serif; overflow: hidden;
+  height: 100vh; display: flex; flex-direction: column;
+}
+#hud {
+  padding: 8px 12px; background: #111; border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap; z-index: 10;
+}
+button, input {
+  background: #222; color: var(--fg); border: 1px solid var(--border);
+  padding: 6px 10px; border-radius: 4px; cursor: pointer;
+}
+button:hover { background: #333; }
+#canvas-wrap { flex: 1; position: relative; overflow: hidden; }
+canvas { display: block; width: 100%; height: 100%; background: #050508; }
+.agent-card {
+  position: absolute; background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 8px; font-size: 11px; pointer-events: auto;
+  cursor: grab; min-width: 90px; backdrop-filter: blur(4px);
+  transition: transform 0.05s linear;
+  z-index: 5;
+}
+.agent-card:active { cursor: grabbing; }
+.agent-card .hash { color: var(--accent); font-family: monospace; }
+.agent-card .fit { opacity: 0.7; }
+#status { font-size: 12px; opacity: 0.8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sealed Genome Multi-Agent DOM Arena · Verse lab</title>
+<meta name="description" content="Novel combination: a competitive multi-agent particle arena (Canvas2D) where each agent carries a sealed genome (tiny float vector of behavior weights).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sealed Genome Multi-Agent DOM Arena · Verse lab">
+<meta property="og:description" content="Novel combination: a competitive multi-agent particle arena (Canvas2D) where each agent carries a sealed genome (tiny float vector of behavior weights).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f278-sealed-genome-multiagent-dom-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f278-sealed-genome-multiagent-dom-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <button id="spawn">Spawn Agent</button>
+  <button id="seal">Seal Population</button>
+  <button id="load">Load Sealed</button>
+  <button id="reset">Reset</button>
+  <span id="status">Agents: 0 | Captures: 0 | Resource energy</span>
+</div>
+<div id="canvas-wrap">
+  <canvas id="c"></canvas>
+</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">Sealed Genome Multi-Agent DOM Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

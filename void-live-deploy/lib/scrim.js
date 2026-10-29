@@ -378,9 +378,9 @@ export function claimSpot(text, team, spot, teams = []) {
 
 /** The standings as a Discord message: a bold title line, then a ```text block with the rank, team and the kind's own columns,
  * padded so they line up (numbers right-aligned). Backticks in names become ' so a name cannot close the block early; a long name
- * is cut to 18 characters with an ellipsis. */
+ * is kept whole and the column widens to it (no sentence cut with an ellipsis, tools/no-ellipsis.mjs). */
 export function discordText(rows, sc, { title = 'Standings', rounds = 0 } = {}) {
-  const word = sc.word || 'match', clip = (s) => { s = String(s).replace(/`/g, "'"); return s.length > 18 ? s.slice(0, 17) + '…' : s; };
+  const word = sc.word || 'match', clip = (s) => String(s).replace(/`/g, "'");
   const head = ['#', 'Team'].concat(sc.cols.map(([h]) => h));
   const body = rows.map((r, i) => [String(i + 1), clip(r.name)].concat(sc.cols.map(([, f]) => String(f(r)))));
   const width = head.map((h, c) => Math.max(h.length, ...body.map((b) => b[c].length)));

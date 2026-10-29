@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+#canvas { display: block; width: 100vw; height: 100vh; }
+.badge { position: absolute; background: rgba(20,20,40,0.8); border: 1px solid #4af; border-radius: 8px; padding: 4px 8px; font-size: 11px; pointer-events: none; transform: translate(-50%, -50%); white-space: nowrap; }
+#ui { position: absolute; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 8px; }
+button { margin: 2px; padding: 6px 10px; background: #224; color: #fff; border: 1px solid #4af; border-radius: 4px; cursor: pointer; }
+button:hover { background: #336; }
+#status { margin-top: 8px; font-size: 12px; max-width: 300px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Multi-Agent MLP Physics Arena with WebRTC Sealed Genome Transfer · Verse lab</title>
+<meta name="description" content="Novel combination: WebGPU compute shader runs parallel tiny MLPs (per-agent weights) that emit forces for a multi-agent soft-particle physics arena.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Multi-Agent MLP Physics Arena with WebRTC Sealed Genome Transfer · Verse lab">
+<meta property="og:description" content="Novel combination: WebGPU compute shader runs parallel tiny MLPs (per-agent weights) that emit forces for a multi-agent soft-particle physics arena.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f264-webgpu-mlp-physics-webrtc-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f264-webgpu-mlp-physics-webrtc-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <button id="seal">Seal Champion</button>
+  <button id="load">Load Sealed</button>
+  <button id="send">Send Genome (WebRTC)</button>
+  <button id="orient">Enable Orientation</button>
+  <div id="status">Loading...</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Multi-Agent MLP Physics Arena with WebRTC Sealed Genome Transfer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

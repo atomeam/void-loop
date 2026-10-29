@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin:0; overflow:hidden; background:#0a0a12; color:#ddd; font-family:system-ui,sans-serif; }
+  canvas { display:block; width:100vw; height:100vh; }
+  #ui { position:absolute; top:10px; left:10px; background:rgba(0,0,0,.6); padding:8px; border-radius:6px; font-size:12px; z-index:10; }
+  .card { position:absolute; width:120px; padding:8px; background:rgba(20,20,40,.85); border:1px solid #4af; border-radius:8px; cursor:grab; user-select:none; z-index:5; transition:transform .1s; }
+  .card:active { cursor:grabbing; }
+  .card h4 { margin:0 0 4px; font-size:13px; }
+  .card small { color:#aaa; }
+  #seal { position:absolute; bottom:10px; right:10px; padding:6px 12px; background:#1a3; color:#fff; border:none; border-radius:4px; cursor:pointer; z-index:10; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Evolving Particle-Life Mind · Verse lab</title>
+<meta name="description" content="Novel combination: Canvas2D particle-life simulation (multi-species attraction/repulsion forces) whose interaction matrix is continuously evolved by a local Web">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Evolving Particle-Life Mind · Verse lab">
+<meta property="og:description" content="Novel combination: Canvas2D particle-life simulation (multi-species attraction/repulsion forces) whose interaction matrix is continuously evolved by a local Web">
+<meta property="og:url" content="https://a-to-mind.com/lab/048-evolving-particle-life-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/048-evolving-particle-life-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>Species: <span id="sp">4</span> | Particles: <span id="np">400</span></div>
+  <div>Fitness: <span id="fit">0.00</span> | Gen: <span id="gen">0</span></div>
+  <div>Energy: <span id="en">0</span> | Conf: <span id="cf">0.00</span></div>
+</div>
+<button id="seal">Seal Genes</button>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Evolving Particle-Life Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

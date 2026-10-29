@@ -1,0 +1,216 @@
+(function() {
+  'use strict';
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+
+  // Device orientation as causal input
+  let orient = { beta: 0, gamma: 0 };
+  if (window.DeviceOrientationEvent) {
+    addEventListener('deviceorientation', e => {
+      orient.beta = Math.max(-1, Math.min(1, (e.beta || 0) / 45));
+      orient.gamma = Math.max(-1, Math.min(1, (e.gamma || 0) / 45));
+      document.getElementById('beta').textContent = orient.beta.toFixed(2);
+      document.getElementById('gamma').textContent = orient.gamma.toFixed(2);
+    });
+  }
+
+  let pointer = { x: W/2, y: H/2, energy: 0 };
+  addEventListener('pointermove', e => {
+    pointer.x = e.clientX; pointer.y = e.clientY;
+    pointer.energy = Math.min(1, pointer.energy + 0.05);
+  });
+  addEventListener('pointerdown', () => pointer.energy = Math.min(1, pointer.energy + 0.3));
+
+  // Tiny MLP genome: 4 inputs (dx, dy, orient.b, orient.g) -> 2 outputs (fx, fy) + color bias
+  function randomGenome() {
+    return {
+      w1: Array.from({length: 4*6}, () => (Math.random()-0.5)*1.2), // 4->6
+      w2: Array.from({length: 6*3}, () => (Math.random()-0.5)*1.0), // 6->3 (fx,fy,hue)
+      bias: Array.from({length: 9}, () => (Math.random()-0.5)*0.4)
+    };
+  }
+  function mlp(genome, inputs) {
+    const h = [];
+    for (let i = 0; i < 6; i++) {
+      let s = genome.bias[i];
+      for (let j = 0; j < 4; j++) s += inputs[j] * genome.w1[i*4 + j];
+      h[i] = Math.tanh(s);
+    }
+    const out = [];
+    for (let i = 0; i < 3; i++) {
+      let s = genome.bias[6+i];
+      for (let j = 0; j < 6; j++) s += h[j] * genome.w2[i*6 + j];
+      out[i] = Math.tanh(s);
+    }
+    return out; // [fx, fy, hueBias]
+  }
+  function mutate(g, rate = 0.15) {
+    const ng = JSON.parse(JSON.stringify(g));
+    const mutateArr = arr => arr.forEach((v,i) => { if (Math.random() < rate) arr[i] += (Math.random()-0.5)*0.4; });
+    mutateArr(ng.w1); mutateArr(ng.w2); mutateArr(ng.bias);
+    return ng;
+  }
+
+  // Agents
+  const agents = [];
+  const cards = [];
+  function spawnAgent(genome, x, y) {
+    const id = agents.length;
+    const a = {
+      id, genome: genome || randomGenome(),
+      x: x || Math.random()*W, y: y || Math.random()*H,
+      vx: 0, vy: 0, energy: 0.5, fitness: 0,
+      hue: Math.random()*360, age: 0
+    };
+    agents.push(a);
+    const card = document.createElement('div');
+    card.className = 'agent-card';
+    card.innerHTML = `<div class="id">A${id}</div><div class="fit">fit 0</div>`;
+    document.body.appendChild(card);
+    cards.push(card);
+    return a;
+  }
+  for (let i = 0; i < 6; i++) spawnAgent();
+
+  // IndexedDB seal
+  let db;
+  const req = indexedDB.open('F208-genomes', 1);
+  req.onupgradeneeded = e => e.target.result.createObjectStore('seals', { keyPath: 'id', autoIncrement: true });
+  req.onsuccess = e => { db = e.target.result; loadSealCount(); };
+  function sealLeader() {
+    if (!db || agents.length === 0) return;
+    const leader = agents.reduce((a,b) => a.fitness > b.fitness ? a : b);
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').add({ genome: leader.genome, fitness: leader.fitness, at: Date.now() });
+    tx.oncomplete = loadSealCount;
+    document.getElementById('status').textContent = `Sealed leader A${leader.id} (fit ${leader.fitness.toFixed(1)})`;
+  }
+  function loadSealCount() {
+    if (!db) return;
+    db.transaction('seals').objectStore('seals').count().onsuccess = e => {
+      document.getElementById('nSeals').textContent = e.target.result;
+    };
+  }
+  function injectSealed() {
+    if (!db) return;
+    db.transaction('seals').objectStore('seals').getAll().onsuccess = e => {
+      const seals = e.target.result;
+      if (seals.length) {
+        const s = seals[Math.floor(Math.random()*seals.length)];
+        spawnAgent(mutate(s.genome, 0.05));
+        document.getElementById('status').textContent = 'Injected sealed genome';
+      }
+    };
+  }
+
+  // BroadcastChannel for multi-tab genome transfer (simulates WebRTC-like shared field)
+  const bc = new BroadcastChannel('f208-genome-transfer');
+  bc.onmessage = e => {
+    if (e.data.type === 'genome' && e.data.genome) {
+      spawnAgent(e.data.genome, pointer.x, pointer.y);
+      document.getElementById('status').textContent = 'Received genome via Broadcast';
+    }
+  };
+  function transferLeader() {
+    if (agents.length === 0) return;
+    const leader = agents.reduce((a,b) => a.fitness > b.fitness ? a : b);
+    bc.postMessage({ type: 'genome', genome: leader.genome });
+    document.getElementById('status').textContent = 'Broadcast leader genome (open another tab)';
+  }
+
+  // Simulation
+  function step() {
+    ctx.fillStyle = 'rgba(10,12,18,0.25)';
+    ctx.fillRect(0,0,W,H);
+
+    // Global energy decay + pointer inject
+    pointer.energy *= 0.98;
+    document.documentElement.style.setProperty('--energy', pointer.energy.toFixed(2));
+
+    agents.forEach(a => {
+      a.age++;
+      // Local inputs relative to pointer + orient
+      const dx = (pointer.x - a.x) / W * 2;
+      const dy = (pointer.y - a.y) / H * 2;
+      const inputs = [dx, dy, orient.beta, orient.gamma];
+      const out = mlp(a.genome, inputs);
+      // Forces: policy + competition (repel others) + orient bias
+      let fx = out[0] * 0.8 + orient.gamma * 0.3;
+      let fy = out[1] * 0.8 + orient.beta * 0.3;
+      // Soft repulsion
+      agents.forEach(o => {
+        if (o === a) return;
+        const ddx = a.x - o.x, ddy = a.y - o.y;
+        const d = Math.hypot(ddx, ddy) + 8;
+        if (d < 80) { fx += ddx/d * 0.4; fy += ddy/d * 0.4; }
+      });
+      // Attract to pointer energy
+      if (pointer.energy > 0.2) {
+        fx += dx * pointer.energy * 0.5;
+        fy += dy * pointer.energy * 0.5;
+      }
+      a.vx = (a.vx + fx) * 0.92;
+      a.vy = (a.vy + fy) * 0.92;
+      a.x += a.vx; a.y += a.vy;
+      if (a.x < 20) a.x = 20; if (a.x > W-20) a.x = W-20;
+      if (a.y < 20) a.y = 20; if (a.y > H-20) a.y = H-20;
+
+      // Fitness: energy capture + survival
+      const distP = Math.hypot(pointer.x - a.x, pointer.y - a.y);
+      a.energy = Math.max(0, a.energy * 0.995 + (distP < 60 ? pointer.energy * 0.1 : 0));
+      a.fitness = a.energy * 20 + Math.min(100, a.age * 0.05);
+      a.hue = (200 + out[2] * 80 + a.id * 30) % 360;
+
+      // Draw particle body
+      ctx.fillStyle = `hsla(${a.hue}, 70%, 60%, 0.8)`;
+      ctx.beginPath();
+      ctx.arc(a.x, a.y, 4 + a.energy * 6, 0, Math.PI*2);
+      ctx.fill();
+      // Trail
+      ctx.strokeStyle = `hsla(${a.hue}, 60%, 50%, 0.3)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(a.x - a.vx*3, a.y - a.vy*3);
+      ctx.lineTo(a.x, a.y);
+      ctx.stroke();
+    });
+
+    // Update DOM cards (hybrid embodiments)
+    let maxFit = 0, leaderIdx = 0;
+    agents.forEach((a, i) => {
+      const card = cards[i];
+      if (!card) return;
+      card.style.left = a.x + 'px';
+      card.style.top = a.y + 'px';
+      card.querySelector('.fit').textContent = 'fit ' + a.fitness.toFixed(1);
+      if (a.fitness > maxFit) { maxFit = a.fitness; leaderIdx = i; }
+    });
+    cards.forEach((c, i) => c.classList.toggle('leader', i === leaderIdx));
+    document.getElementById('nAgents').textContent = agents.length;
+    document.getElementById('leadFit').textContent = maxFit.toFixed(1);
+
+    // Occasional evolution: cull weakest, mutate leader
+    if (agents.length > 3 && Math.random() < 0.008) {
+      const weakest = agents.reduce((a,b) => a.fitness < b.fitness ? a : b);
+      const idx = agents.indexOf(weakest);
+      if (idx >= 0 && cards[idx]) {
+        cards[idx].remove();
+        agents.splice(idx, 1);
+        cards.splice(idx, 1);
+      }
+      const leader = agents.reduce((a,b) => a.fitness > b.fitness ? a : b);
+      spawnAgent(mutate(leader.genome), leader.x + 20, leader.y + 20);
+    }
+
+    requestAnimationFrame(step);
+  }
+  step();
+
+  document.getElementById('seal').onclick = sealLeader;
+  document.getElementById('transfer').onclick = transferLeader;
+  document.getElementById('reset').onclick = () => { agents.length = 0; cards.forEach(c => c.remove()); cards.length = 0; for(let i=0;i<6;i++) spawnAgent(); };
+  setTimeout(injectSealed, 1500); // try load sealed on start
+})();

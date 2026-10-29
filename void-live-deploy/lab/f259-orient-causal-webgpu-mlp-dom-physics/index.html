@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+canvas { display: block; width: 100vw; height: 100vh; }
+#overlay { position: absolute; top: 10px; left: 10px; z-index: 10; pointer-events: none; }
+#overlay div { pointer-events: auto; background: rgba(20,20,40,0.7); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 13px; }
+.phys-ui { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: rgba(100,180,255,0.6); border: 2px solid #fff; cursor: grab; user-select: none; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.phys-ui:active { cursor: grabbing; }
+#status { color: #8f8; }
+button { margin: 2px; padding: 4px 8px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-Causal WebGPU MLP Softbody DOM Physics · Verse lab</title>
+<meta name="description" content="DeviceOrientation (or keyboard fallback) injects causal gravitational/wind forces into a softbody particle system.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-Causal WebGPU MLP Softbody DOM Physics · Verse lab">
+<meta property="og:description" content="DeviceOrientation (or keyboard fallback) injects causal gravitational/wind forces into a softbody particle system.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f259-orient-causal-webgpu-mlp-dom-physics/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f259-orient-causal-webgpu-mlp-dom-physics/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="overlay">
+  <div>F259 Orientation-Causal WebGPU MLP Softbody</div>
+  <div id="status">Initializing...</div>
+  <div>Tilt device or use mouse to inject forces. Drag DOM orbs.</div>
+  <div><button id="reset">Reset</button> <button id="save">Save to IDB</button> <button id="load">Load IDB</button></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-Causal WebGPU MLP Softbody DOM Physics</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

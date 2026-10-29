@@ -1,0 +1,176 @@
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+const agents = [];
+const orbs = [];
+let pointer = { x: innerWidth/2, y: innerHeight/2 };
+let orientation = { beta: 0, gamma: 0 };
+let sealed = null;
+let db = null;
+
+const NUM_AGENTS = 4;
+const CHAIN_LEN = 5;
+
+function randn() { return (Math.random() - 0.5) * 2; }
+
+class MLP {
+  constructor(weights) {
+    this.w = weights || Array.from({length: 16}, () => randn() * 0.5);
+  }
+  forward(x) {
+    const h = [];
+    for (let i = 0; i < 2; i++) {
+      let s = this.w[8 + i];
+      for (let j = 0; j < 4; j++) s += x[j] * this.w[j*2 + i];
+      h.push(Math.tanh(s));
+    }
+    const o = [];
+    for (let i = 0; i < 2; i++) {
+      let s = this.w[14 + i];
+      for (let j = 0; j < 2; j++) s += h[j] * this.w[10 + j*2 + i];
+      o.push(Math.tanh(s) * 0.4);
+    }
+    return o;
+  }
+  hash() {
+    let h = 2166136261;
+    for (const v of this.w) { h ^= Math.floor(v * 1000); h = Math.imul(h, 16777619); }
+    return (h >>> 0).toString(16).slice(0, 6);
+  }
+}
+
+class Agent {
+  constructor(id) {
+    this.id = id;
+    this.mlp = new MLP();
+    this.chain = [];
+    this.energy = 10;
+    this.score = 0;
+    this.color = `hsl(${id * 90}, 70%, 55%)`;
+    const cx = 100 + id * 150;
+    const cy = innerHeight / 2;
+    for (let i = 0; i < CHAIN_LEN; i++) {
+      const el = document.createElement('div');
+      el.className = 'chain-card';
+      el.style.background = this.color;
+      el.textContent = i === 0 ? id : '';
+      document.body.appendChild(el);
+      this.chain.push({ x: cx, y: cy + i * 30, vx: 0, vy: 0, el });
+    }
+  }
+  update(dt) {
+    const head = this.chain[0];
+    const dx = pointer.x - head.x;
+    const dy = pointer.y - head.y;
+    let nearest = 999;
+    for (const o of orbs) nearest = Math.min(nearest, Math.hypot(o.x - head.x, o.y - head.y));
+    const inp = [dx / innerWidth, dy / innerHeight, nearest / 300, this.energy / 20];
+    const force = this.mlp.forward(inp);
+    head.vx += force[0] * 80 * dt;
+    head.vy += force[1] * 80 * dt;
+    head.vx += (orientation.gamma / 90) * 20 * dt;
+    head.vy += (orientation.beta / 90) * 20 * dt;
+    for (let i = 0; i < this.chain.length - 1; i++) {
+      const a = this.chain[i], b = this.chain[i+1];
+      const dxs = b.x - a.x, dys = b.y - a.y;
+      const d = Math.hypot(dxs, dys) || 1;
+      const rest = 35;
+      const f = (d - rest) * 0.15;
+      const fx = (dxs / d) * f, fy = (dys / d) * f;
+      a.vx += fx; a.vy += fy;
+      b.vx -= fx; b.vy -= fy;
+    }
+    for (const p of this.chain) {
+      p.vx *= 0.92; p.vy *= 0.92;
+      p.x += p.vx * dt * 60;
+      p.y += p.vy * dt * 60;
+      p.x = Math.max(20, Math.min(innerWidth - 20, p.x));
+      p.y = Math.max(20, Math.min(innerHeight - 20, p.y));
+      p.el.style.transform = `translate(${p.x - 20}px, ${p.y - 20}px)`;
+    }
+    for (let i = orbs.length - 1; i >= 0; i--) {
+      const o = orbs[i];
+      if (Math.hypot(o.x - head.x, o.y - head.y) < 25) {
+        this.energy += 5; this.score += 1;
+        o.el.remove(); orbs.splice(i, 1);
+      }
+    }
+    this.energy = Math.max(0, this.energy - 0.01);
+  }
+  destroy() { this.chain.forEach(p => p.el.remove()); }
+}
+
+function spawnAgents() {
+  agents.forEach(a => a.destroy());
+  agents.length = 0;
+  for (let i = 0; i < NUM_AGENTS; i++) agents.push(new Agent(i));
+}
+spawnAgents();
+
+function placeOrb(x, y) {
+  const el = document.createElement('div');
+  el.className = 'orb';
+  document.body.appendChild(el);
+  orbs.push({ x, y, el });
+  el.style.transform = `translate(${x - 9}px, ${y - 9}px)`;
+}
+
+canvas.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; });
+canvas.addEventListener('pointerdown', e => { placeOrb(e.clientX, e.clientY); });
+
+window.addEventListener('deviceorientation', e => {
+  orientation.beta = e.beta || 0;
+  orientation.gamma = e.gamma || 0;
+});
+
+document.getElementById('startXR').onclick = async () => {
+  if (!navigator.xr) { document.getElementById('status').textContent = 'WebXR not available — pointer mode'; return; }
+  try {
+    const session = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['hand-tracking'] });
+    document.getElementById('status').textContent = 'WebXR session started (hand tracking if available)';
+    session.addEventListener('end', () => document.getElementById('status').textContent = 'Pointer mode');
+  } catch (err) {
+    document.getElementById('status').textContent = 'XR failed: ' + err.message;
+  }
+};
+
+document.getElementById('seal').onclick = () => {
+  const winner = agents.reduce((a, b) => a.score > b.score ? a : b);
+  sealed = { hash: winner.mlp.hash(), weights: [...winner.mlp.w], score: winner.score };
+  document.getElementById('sealInfo').textContent = `Sealed #${winner.id} ${sealed.hash}`;
+  if (db) {
+    const tx = db.transaction('genomes', 'readwrite');
+    tx.objectStore('genomes').put({ id: sealed.hash, ...sealed });
+  }
+};
+
+document.getElementById('inject').onclick = () => {
+  if (!sealed) return;
+  const target = agents[Math.floor(Math.random() * agents.length)];
+  target.mlp.w = sealed.weights.map(w => w + randn() * 0.1);
+  document.getElementById('sealInfo').textContent = `Injected into #${target.id}`;
+};
+
+document.getElementById('reset').onclick = () => {
+  orbs.forEach(o => o.el.remove()); orbs.length = 0;
+  spawnAgents();
+  sealed = null;
+  document.getElementById('sealInfo').textContent = '';
+};
+
+const req = indexedDB.open('f202-genomes', 1);
+req.onupgradeneeded = e => e.target.result.createObjectStore('genomes', { keyPath: 'id' });
+req.onsuccess = e => { db = e.target.result; document.getElementById('status').textContent += ' · IDB ready'; };
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  agents.forEach(a => a.update(dt));
+  const scores = agents.map(a => `#${a.id}:${a.score}`).join(' ');
+  document.getElementById('scores').textContent = scores;
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
