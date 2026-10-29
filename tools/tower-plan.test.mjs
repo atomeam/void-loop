@@ -28,7 +28,7 @@ test('the card names the easiest site left as its target, says why, and lists th
   const plan = parsePlan(md), t = tower(); t.plan = plan;
   const cur = t.floors.find((f) => f.state === 'current'), html = towerHtml(t, esc, { now: 0 });
   assert.ok(html.includes('>' + t.beaten + ' surpassed · easiest site left: ' + esc(cur.site)));
-  assert.match(html, /Why this one: /); assert.match(html, /class="tw-next"[^>]*><b>Next easiest<\/b>/); assert.doesNotMatch(html, /tw-plan/);
+  assert.match(html, /Why this one: /); assert.match(html, /class="tw-next"[^>]*><b[^>]*>Up next<\/b>/); assert.doesNotMatch(html, /tw-plan/);
   const f = FLOORS.find((x) => x.id === plan.next[0].id), t2 = tower([], { [f.id]: passingRows(f) });
   assert.equal(t2.floors.find((x) => x.id === f.id).state, 'beaten');
 });

@@ -656,7 +656,7 @@
   {
    "file": "lib/tower-weight.js",
    "skills": 3,
-   "direct": 0,
+   "direct": 1,
    "dependants": 5,
    "tests": 1
   },
@@ -8947,12 +8947,12 @@
   "lib/tower-weight.js": {
    "imports": [],
    "importedBy": [
-    "lib/tower.js"
+    "lib/tower.js",
+    "skills/tower.js"
    ],
    "reachedBy": [
     "functions/api/will.js",
     "skills/cartoon.js",
-    "skills/tower.js",
     "skills/walker.js"
    ]
   },
@@ -12737,7 +12737,8 @@
     "lib/tower.js",
     "lib/gate-badge.js",
     "lib/avatar.js",
-    "lib/tower-rank.js"
+    "lib/tower-rank.js",
+    "lib/tower-weight.js"
    ],
    "importedBy": []
   },

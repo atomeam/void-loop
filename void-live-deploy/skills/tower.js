@@ -6,12 +6,13 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-58';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-59';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 import { bySize, sizeOf, rankLabel, words } from '../lib/tower-rank.js';
+import { bytesLabel, weightBand } from '../lib/tower-weight.js';
 
 // Versus (owner, 2026-10-25: "the tower rename is easy its versus"): "versus", "verse versus", "the versus", "show me versus" open it, and every
 // ask that said "tower" still does
@@ -85,7 +86,7 @@ export function vsHtml(f, esc, { enter = true } = {}) {
     + '<div class="tw-side tw-s">' + siteFace(f, 56) + '<span class="tw-who">' + esc(f.site) + '</span>' + bar('s', lost) + '<span class="tw-bar-n">' + lost + ' of ' + m + '</span></div></div>';
 }
 /** the awareness rows: one per aspect (the verdict in a word, the measured numbers), then when it was measured and what is next. Pure. */
-const rowsHtml = (f, esc, now) => '<ul class="tw-aspects">' + matchRows(f).map((r) => '<li data-v="' + r.v + '"><span>' + MARK[r.v] + ' ' + esc(r.a) + '<span class="tw-say">' + esc(r.say) + '</span></span>' + (r.nums ? '<span class="tw-num">' + esc(r.nums) + '</span>' : '') + '</li>').join('') + '</ul>'
+const rowsHtml = (f, esc, now) => '<ul class="tw-aspects">' + matchRows(f).map((r) => '<li data-v="' + r.v + '"><span>' + MARK[r.v] + ' ' + esc(r.a) + '<span class="tw-say' + (r.say === 'not measured yet' ? ' tw-nm' : '') + '">' + esc(r.say) + '</span></span>' + (r.nums ? '<span class="tw-num">' + esc(r.nums) + '</span>' : '') + '</li>').join('') + '</ul>'
   + '<div class="tw-meta">' + esc(metaLine(f, now)) + '</div>';
 /** the whole matchup on its own, for a page outside the card (/compare/): the splash, the rows and the awareness line, with the styles. Pure. */
 export const matchupHtml = (f, esc, { enter = true, now = Date.now() } = {}) => TW_CSS + '<div class="tw">' + vsHtml(f, esc, { enter }) + rowsHtml(f, esc, now) + '</div>';
@@ -95,7 +96,7 @@ export function centerOnYou(root) { const stack = root && root.querySelector('.t
 export const miniFloors = (t) => t.floors.map((f) => ({ id: f.id, site: f.site, state: f.state, n: f.n, m: f.m, page: f.page ? f.page.replace(/\?.*$/, '') : '' }));
 // Versus by size (owner, 2026-10-26): each row says how big the site is (its place among the million most visited, tools/tower-rank.mjs), and
 // "By size" lists every site smallest first (unranked, then the biggest rank number down to the leaders), the order a builder should take them in
-const SIZE_CSS = '<style>.tw-sort{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 6px;min-height:44px}.tw-sortbtn{min-height:44px;padding:0 14px;border:1px solid #3a3550;border-radius:6px;background:#14121b;color:#eee;font:inherit;cursor:pointer}.tw-sortbtn[aria-pressed=true]{border-color:#c9b6ff;background:#2a1a4a}'
+const SIZE_CSS = '<style>.tw-stack .tower-floor[data-state=current]>.tw-size{display:none}.tw-sort{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 6px;min-height:44px}.tw-sortbtn{min-height:44px;padding:0 14px;border:1px solid #3a3550;border-radius:6px;background:#14121b;color:#eee;font:inherit;cursor:pointer}.tw-sortbtn[aria-pressed=true]{border-color:#c9b6ff;background:#2a1a4a}'
   + '.tw-sortnote{font-size:12px;opacity:.7;flex:1 1 200px}.tw-sizelist .tw-size,.tw-sizelist .tw-count{margin-left:0;white-space:nowrap}.tw-size{font-size:12px;opacity:.85;margin-left:6px;font-variant-numeric:tabular-nums;white-space:nowrap}.tw-sizelist{list-style:none;margin:0;padding:0}.tw-sizelist li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:6px 8px;border-bottom:1px solid #221e30;overflow-wrap:anywhere}.tw-sizelist li[data-state=beaten] .tw-name{text-decoration:line-through;opacity:.75}.tw-sizelist li[data-state=current]{border-left:3px solid #c9b6ff}.tw-sizelist .tw-sidebyside,.tw-sizelist .tw-page{margin-left:8px;font-size:12px}</style>';
 const prefStore = () => { try { return typeof localStorage !== 'undefined' ? localStorage : null; } catch (_) { return null; } };
 const SORT_KEY = 'a2m.void.tower.bysize';
@@ -133,10 +134,44 @@ export function planHtml(p, esc) {
     + (p.skipped.length ? '<p class="tw-plan-skip" style="margin:4px 0 0;font-size:12px;opacity:.75">Skipped: ' + p.skipped.map((x) => esc(x.site) + (x.why ? ' (' + esc(x.why) + ')' : '')).join('; ') + '</p>' : '')
     + '<p style="margin:4px 0 0;font-size:11px;opacity:.65">The order comes from docs/NEXT.md; the counts come from the gate. A floor is surpassed only on scripted journeys with negative controls.</p></div>';
 }
+// the card's layout (owner, 2026-10-29: "the whole card sucks make a good card"): the target first and big, its weight as chips, the fight, the aspects as a
+// compact grid of won / lost / open, three actions, what is up next, the honest surpassed count, and the long takes folded away
+const GOOD_CSS = '<style>.tw-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:2px 0 2px}.tw-top .tw-head{margin:0;text-align:left;font-size:20px}'
+  + '.tw-pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:#2a2340;border:1px solid #4a3f6b;color:#d9ccff;white-space:nowrap}'
+  + '.tw-hero{margin:8px 0;padding:12px;border:1px solid #5b4a8a;border-radius:12px;background:linear-gradient(160deg,#1d1730,#14121b)}.tw-hero-k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin-bottom:6px}'
+  + '.tw-hero-row{display:flex;align-items:center;gap:10px;min-width:0}.tw-hero-name{font-size:20px;font-weight:800;overflow-wrap:anywhere;line-height:1.15}.tw-hero-name a{color:inherit;text-decoration:none;border-bottom:1px dotted #8a7cc0}'
+  + '.tw-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}.tw-chip{font-size:12px;padding:3px 9px;border-radius:999px;background:#241f35;border:1px solid #3a3550;font-variant-numeric:tabular-nums}.tw-chip b{font-weight:800}.tw-chip[data-band="0"]{background:#1d3a2a;border-color:#3f7a58;color:#a6f0c0}.tw-chip[data-band="3"]{background:#3a1d1d;border-color:#7a3f3f;color:#ffb3b3}'
+  + '.tw-why{margin:8px 0 0;font-size:12px;line-height:1.4;opacity:.78}'
+  + '.tw-stack .tower-floor[data-state=current]{background:transparent;border:0;padding:0;margin:6px 0 0}.tw-stack .tower-floor[data-state=current]>.tw-name,.tw-stack .tower-floor[data-state=current]>.tw-count,.tw-stack .tower-floor[data-state=current]>.tw-gate{display:none}'
+  + '.tw-stack .tower-floor[data-state=current] .tw-aspects{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin:0}.tw-stack .tower-floor[data-state=current] .tw-aspects li{display:block;border:1px solid #2e2942;border-radius:8px;padding:6px 8px;background:#15121f;line-height:1.3;word-break:break-word}'
+  + '.tw-stack .tower-floor[data-state=current] .tw-aspects li[data-v=won]{border-color:#2f6b49;background:#12241b}.tw-stack .tower-floor[data-state=current] .tw-aspects li[data-v=lost]{border-color:#7a3f3f;background:#2a1414}'
+  + '.tw-stack .tower-floor[data-state=current] .tw-aspects .tw-say{display:block;margin:2px 0 0}.tw-stack .tower-floor[data-state=current] .tw-aspects .tw-num{display:block;margin-top:1px;font-size:11px;white-space:normal}.tw-stack .tower-floor[data-state=current] .tw-meta{margin-top:8px;text-align:center}'
+  + '.tw-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.tw-act{flex:1 1 120px;min-height:44px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 12px;border-radius:10px;border:1px solid #5b4a8a;background:#241f3b;color:#eee;text-decoration:none;font-size:14px;font-weight:600}.tw-act[data-main]{background:#5b3fd0;border-color:#7d63f0}.tw-act[aria-disabled=true]{opacity:.5}'
+  + '.tw-next{margin:6px 0 8px}.tw-next ol{list-style:none;margin:4px 0 0;padding:0}.tw-next li{display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-bottom:1px solid #221e30;font-size:13px}.tw-next li span:last-child{opacity:.7;white-space:nowrap;font-variant-numeric:tabular-nums}'
+  + '.tw-empty{margin:6px 0;padding:10px;border:1px dashed #3a3550;border-radius:8px;font-size:13px;opacity:.8}.tw-fold{margin:8px 0;border:1px solid #2e2942;border-radius:8px;padding:2px 10px}.tw-fold>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;font-size:14px}.tw-fold[open]>summary{border-bottom:1px solid #2e2942;margin-bottom:6px}'
+  + '.tw-stack .tower-floor[data-state=current] .tw-aspects li[data-v=open]{padding:7px 8px}.tw-stack .tower-floor[data-state=current] .tw-aspects .tw-nm{display:none}'
+  + '</style>';
+const bandOf = (f) => (f.weight === null || f.weight === undefined ? null : weightBand(f.weight));
+/** the target's weight as chips: size, scripts, elements, routes; "not weighed yet" when nothing measured it. Pure. */
+export function chipsHtml(f, esc) {
+  if (!f.size || f.weight === null || f.weight === undefined) return '<div class="tw-chips"><span class="tw-chip">not weighed yet</span></div>';
+  const b = bandOf(f), band = ['1 KB club', 'light', 'medium', 'heavy'][b], plural = (n, w) => '<b>' + n + '</b> ' + w + (n === 1 ? '' : 's');
+  return '<div class="tw-chips" title="' + esc('weight = bytes + 2000 per script + 10 per element + 500 per route (lib/tower-weight.js)') + '"><span class="tw-chip" data-band="' + b + '"><b>' + esc(bytesLabel(f.size.bytes)) + '</b> · ' + band + '</span><span class="tw-chip">' + plural(f.size.scripts, 'script') + '</span><span class="tw-chip">' + plural(f.size.nodes, 'element') + '</span><span class="tw-chip">' + plural(f.size.routes, 'route') + '</span></div>';
+}
+/** the target at the top: its logo and name (a link to the site), its weight, and why it is the one. Pure. */
+export function heroHtml(f, esc) {
+  return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">Now fighting · the easiest site left</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
+    + chipsHtml(f, esc) + '<p class="tw-why">' + esc('Why this one: ' + easeLine(f) + '.') + '</p></div>';
+}
+/** three actions for the target: Verse's page (or that it has none yet), side by side, the site itself. Pure. */
+export function actionsHtml(f, esc) {
+  return '<div class="tw-actions" data-share-skip>' + (f.page ? '<a class="tw-act" data-main href="' + esc(f.page) + '">Open Verse\'s page</a>' : '<span class="tw-act" aria-disabled="true">No Verse page yet</span>')
+    + '<a class="tw-act" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">Side by side</a>' + (f.url ? '<a class="tw-act" href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">Visit ↗</a>' : '') + '</div>';
+}
 /** the next easiest sites after the target, from the same order that picks the target (lib/tower.js: size tier, then work left, then a page first). Pure. */
-export function nextHtml(t, esc, n = 5) {
+export function nextHtml(t, esc, n = 3) {
   const rows = t.floors.filter((f) => f.state === 'ahead' && !f.defer && !f.farFuture).slice(0, n);
-  return rows.length ? '<div class="tw-next" data-share-skip style="margin:0 0 8px;font-size:12px"><b>Next easiest</b><ol style="margin:2px 0 0;padding-left:20px">' + rows.map((f) => '<li data-id="' + esc(f.id) + '"><span class="tw-name">' + esc(f.site) + '</span> <span style="opacity:.75">' + esc(f.n + ' of ' + f.m + ' ahead' + (f.page ? '' : ', no page yet')) + '</span></li>').join('') + '</ol></div>' : '';
+  return rows.length ? '<div class="tw-next" data-share-skip><b style="font-size:13px">Up next</b><ol>' + rows.map((f) => '<li data-id="' + esc(f.id) + '"><span class="tw-name">' + esc(f.site) + '</span><span>' + esc(f.weight !== null && f.size ? bytesLabel(f.size.bytes) + ' · ' : 'not weighed · ') + esc(f.n + ' of ' + f.m + (f.page ? '' : ' · no page')) + '</span></li>').join('') + '</ol></div>' : '';
 }
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
@@ -160,13 +195,17 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   // hidden from sight and from screen readers, who have the list itself
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
-  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · easiest site left: ' + cur.site : '')) + '</div>' + (cur ? '<p class="tw-why" style="margin:0 0 8px;font-size:12px;opacity:.8;text-align:center">' + esc('Why this one: ' + easeLine(cur) + '.') + '</p>' : '') + (on ? '' : nextHtml(t, esc))
-    + sortBar + (cur ? vsHtml(cur, esc, { enter }) : '')
+  const lastRow = '<div class="tw-sortrow" data-share-skip style="display:flex;justify-content:space-between;align-items:center;gap:8px">' + (rk ? '<button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') : '') + '</div>';
+  const empty = '<div class="tw-empty">Nothing surpassed yet. A site counts only when Verse is better than it on every aspect, checked head to head and by scripted journeys.</div>';
+  return TW_CSS + GOOD_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-top"><div class="tw-head">Versus</div><span class="tw-pill">' + esc(t.beaten + ' surpassed') + '</span></div>'
+    + '<div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · easiest site left: ' + cur.site : '')) + '</div>'
+    + (cur && !on ? heroHtml(cur, esc) : '') + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
-    + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) + links(cur) : '') + (!on && won.length ? '<p class="tw-wonhead" style="margin:8px 0 2px;font-size:13px"><b>Surpassed (' + won.length + ')</b></p>' : '') + (on ? '' : won.map((f) => row(f) + links(f)).join('')) + '</div>'
-    // the host of Versus in 3D (owner, 2026-10-25: "some things are missing, like a 3d tower"): the card mounts skills/mini/tower.js into it after each draw
- + takeHtml(t, esc)
+    + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) : '') + '</div>'
+    + (on || !cur ? '' : actionsHtml(cur, esc)) + (on ? '' : nextHtml(t, esc))
+    + (on ? '' : '<div class="tw-won"><p class="tw-wonhead" style="margin:8px 0 2px;font-size:13px"><b>Surpassed (' + won.length + ')</b></p>' + (won.length ? won.map((f) => row(f) + links(f)).join('') : empty) + '</div>')
+    + takeHtml(t, esc) + lastRow
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
 /** Verse's take, from what is measured and what was built, never invented (owner, 2026-10-24: a take on the current opponent, and "include its
@@ -185,8 +224,8 @@ export function verseTake(t) {
   return { now, learned: won.map((f) => ({ site: f.site, text: learnedOf(f) || 'Verse\'s edge: ' + fatalityOf(f) })) };
 }
 const takeHtml = (t, esc) => { const k = verseTake(t); if (!k.now && !k.learned.length) return '';
-  return '<div class="tw-take" style="margin-top:8px;font-size:13px;line-height:1.45"><b>Verse\'s take</b>' + (k.now ? '<p style="margin:4px 0">' + esc(k.now) + '</p>' : '')
-    + (k.learned.length ? '<p style="margin:6px 0 2px"><b>What each site taught me</b></p><ul style="margin:0;padding-left:18px">' + k.learned.map((x) => '<li><i>' + esc(x.site) + '</i>: ' + esc(x.text) + '</li>').join('') + '</ul>' : '') + '</div>'; };
+  return (k.now ? '<details class="tw-fold tw-take"><summary>Verse\'s take</summary><p style="margin:4px 0 8px;font-size:13px;line-height:1.45">' + esc(k.now) + '</p></details>' : '')
+    + (k.learned.length ? '<details class="tw-fold tw-learned"><summary>What each site taught me (' + k.learned.length + ')</summary><ul style="margin:0 0 8px;padding-left:18px;font-size:13px;line-height:1.45">' + k.learned.map((x) => '<li><i>' + esc(x.site) + '</i>: ' + esc(x.text) + '</li>').join('') + '</ul></details>' : ''); };
 export function detailText(f) {
   // only what is true and measured: the beaten count, Verse's own page for the job, what it loses on, and what nobody has measured yet
   const open = f.left.filter((a) => !f.lost.includes(a));

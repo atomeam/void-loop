@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows, sizeTier, easeLine } from '../void-live-deploy/lib/tower.js';
-import { towerHtml } from '../void-live-deploy/skills/tower.js';
+import { towerHtml, heroHtml, chipsHtml, actionsHtml } from '../void-live-deploy/skills/tower.js';
 import { verdict, record } from './tower-gate.mjs';
 // every aspect passing; journey rows carry their steps and negative controls (the gate's standards, 2026-10-28)
 const all = (f) => passingRows(f);
@@ -203,4 +203,14 @@ test('with the size data the target is the easiest site: a small one before a gi
 test('a floor the owner holds is never beaten, whatever the gate rows say (owner, 2026-10-29: heycolor.com "its not better than the site so its not beaten")', () => {
   const f = FLOORS.find((x) => x.id === 'paint'), t = tower([], { paint: passingRows(f) }), p = t.floors.find((x) => x.id === 'paint');
   assert.equal(p.n, p.m, 'every row reads a win'); assert.equal(p.beaten, false); assert.notEqual(p.state, 'beaten'); assert.match(easeLine(p), /^held, not beaten: owner, 2026-10-29/);
+});
+test('the card leads with the target: hero with logo, name and weight chips, three actions, up next, an honest empty surpassed, the long takes folded (owner, 2026-10-29)', () => {
+  const size = { sites: { 'isitchristmas.com': { bytes: 700, scripts: 0, nodes: 20, routes: 1 } } };
+  const t = tower([], {}, null, null, { ranks: {}, order: {}, list: {} }, size), cur = t.floors.find((f) => f.state === 'current'), esc = (s) => String(s);
+  const h = towerHtml(t, esc, { enter: false });
+  assert.ok(h.indexOf('tw-hero') < h.indexOf('tw-vs') && h.indexOf('tw-vs') < h.indexOf('tower-stack') && h.indexOf('tower-stack') < h.indexOf('tw-actions') && h.indexOf('tw-actions') < h.indexOf('tw-next'), 'the order: hero, fight, aspects, actions, up next');
+  assert.match(heroHtml(cur, esc), /Now fighting[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
+  assert.match(chipsHtml({ size: { bytes: 700, scripts: 0, nodes: 20, routes: 1 }, weight: 900 }, esc), /700 B<\/b> · 1 KB club[\s\S]*<b>0<\/b> scripts[\s\S]*<b>20<\/b> elements[\s\S]*<b>1<\/b> route</);
+  assert.match(chipsHtml({ size: null, weight: null }, esc), /not weighed yet/);
+  assert.match(actionsHtml({ id: 'x', page: '/x/', url: 'https://x.com/' }, esc), /Open Verse's page[\s\S]*Side by side[\s\S]*Visit/); assert.match(actionsHtml({ id: 'x' }, esc), /No Verse page yet/);
 });
