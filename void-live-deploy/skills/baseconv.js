@@ -27,7 +27,7 @@ function run(text, api) {
 
 export default {
   name: 'baseconv',
-  examples: ['ff hex to binary', '1010 binary to decimal', '255 in hex', 'convert ff from hex to binary', '0xff in decimal', '256 to hex'],
+  examples: ['ff hex to binary', '1010 binary to decimal', '255 in hex', 'convert ff from hex to binary', '0xff in decimal', '256 to hex', 'what is 1010 in decimal'],
   nearMisses: ['100 c to f', 'translate hello to spanish', 'hello world to binary', 'what time is it in tokyo', 'how many cups in 3 liters'],
   match(lower, text) { return !!parseAsk(text || lower); },
   run
