@@ -35,6 +35,7 @@ export async function onRequestPost({ request, env }) {
     const u = await usage(env, me.userId);
     if (u.left <= 0) return bad(429, u.day >= DAILY ? 'that is ' + DAILY + ' ideas today; send more tomorrow' : 'that is ' + MONTHLY + ' ideas this month');
     const q = await queueIdea(env, me.userId, c.text);
+    if (!q) return bad(429, 'that is ' + DAILY + ' ideas today; send more tomorrow'); // another send took the last one first
     return good({ ok: true, id: q.id, left: u.left - 1 });
   } catch (_) { return bad(503, 'your idea was not sent; try again'); }
 }
