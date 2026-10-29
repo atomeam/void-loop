@@ -134,8 +134,10 @@ async function decided(env, b) {
   const event = { type: EVENT_DECISION, approvalId: rec.approvalId, correlateKey: rec.approvalId, decision, actor: String(b.actor).slice(0, 64), reason, decidedAt, argsFingerprint: String(b.argsFingerprint || '') };
   // a yes still has to clear the gate before anything runs: no repeat of the same request within a day, the cooldown after the
   // same tool ran, and the owner's co-sign by a second person above medium risk (the requester is rec.requestedBy, the yes is event.actor)
+  // A changed request is not the one the person said yes to: it fails hard (409, 'failed') in resumeOnDecision, before the gate is asked,
+  // so a tampered or mismatched yes is never reported as merely held by a repeat or the cooldown.
   let held = null;
-  if (decision === 'approve') {
+  if (decision === 'approve' && event.argsFingerprint === rec.argsFingerprint && (await fingerprint(rec.toolName, rec.argsSnapshot)) === rec.argsFingerprint) {
     const now = Date.now(), v = gate({ tool: rec.toolName, args: rec.argsSnapshot, fp: rec.argsFingerprint, actor: rec.requestedBy || 'owner', cosigner: event.actor },
       await executedSince(env, new Date(now - REPEAT_MS).toISOString()), now, { owner: env.OWNER_ID || 'owner' });
     if (!v.ok) held = { need: v.need, risk: v.risk, why: v.why, ...(v.waitMs ? { waitMs: v.waitMs } : {}), rollback: v.rollback };

@@ -537,13 +537,29 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T06:22:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:21:20Z",
+   "subject": "Shard 3 server checks: the confirm line, the router and the ?q= link pass again"
+  },
+  {
+   "at": "2026-10-29T06:21:13Z",
+   "subject": "Versus card: say \"default bar\" where the site turned the gate away; /fanfic/ opens offline, loads faster, 0 design defects"
+  },
+  {
+   "at": "2026-10-29T06:19:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T06:19:12Z",
    "subject": "Colour page: its stage card opens the colour you have open"
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T05:55:58Z",
    "subject": "Next task: the Versus target first, held asks stay held"
-  },
-  {
-   "at": "2026-10-29T05:55:30Z",
-   "subject": "Regenerate churn.json"
-  },
-  {
-   "at": "2026-10-29T05:53:53Z",
-   "subject": "Regenerate deps.json after the merge"
-  },
-  {
-   "at": "2026-10-29T05:53:14Z",
-   "subject": "Churn cap never starves the will; only the will reads it"
-  },
-  {
-   "at": "2026-10-29T05:50:15Z",
-   "subject": "Memory orbs: look up the shared field when asked, so a missing file is not a broken import"
   }
  ],
  "builders": {
