@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 954,
+ "counted": 955,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1074,6 +1074,13 @@
    "tests": 0
   },
   {
+   "file": "lib/boards.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
    "file": "lib/scores.js",
    "skills": 1,
    "direct": 1,
@@ -1093,13 +1100,6 @@
    "direct": 1,
    "dependants": 4,
    "tests": 1
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 2
   },
   {
    "file": "lib/brain-mind.js",
@@ -1205,6 +1205,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
+  },
+  {
+   "file": "lib/fanfic.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/film-discovery.js",
@@ -1467,13 +1474,6 @@
   },
   {
    "file": "lib/fakeuser.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/fanfic.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1777,7 +1777,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 69,
    "tests": 26
   },
   {
@@ -2891,7 +2891,9 @@
     "lib/guard.js",
     "lib/boards.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/fanfic/rss.js"
+   ]
   },
   "functions/api/calshare.js": {
    "imports": [
@@ -3548,6 +3550,13 @@
   "functions/c/[clip].js": {
    "imports": [
     "lib/guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/fanfic/rss.js": {
+   "imports": [
+    "functions/api/boards/[[path]].js",
+    "lib/fanfic.js"
    ],
    "importedBy": []
   },
@@ -4216,6 +4225,7 @@
     "lib/fanfic.js"
    ],
    "reachedBy": [
+    "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
   },
@@ -5299,6 +5309,7 @@
     "lib/boards.js"
    ],
    "importedBy": [
+    "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
   },
@@ -5871,6 +5882,7 @@
     "functions/api/scores.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
+    "functions/fanfic/rss.js",
     "functions/films/rss.js",
     "lib/bench-asks.js"
    ]
