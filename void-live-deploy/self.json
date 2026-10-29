@@ -545,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T14:59:49Z",
+   "subject": "fix(tower): never count a default-bar score as a lead"
+  },
+  {
    "at": "2026-10-29T14:42:21Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T13:54:54Z",
    "subject": "fanfic: a featured story on the archive home, with why it was picked"
-  },
-  {
-   "at": "2026-10-29T13:51:28Z",
-   "subject": "Regenerate the parity pages: main's were behind the tower gate (the parity test fails on main without this)"
   }
  ],
  "builders": {

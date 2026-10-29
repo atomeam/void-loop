@@ -14,8 +14,8 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 44,
-  "checked": 16,
+  "tested": 42,
+  "checked": 18,
   "proven": 305
  },
  "families": [
@@ -1499,8 +1499,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 12,
-    "checked": 1,
+    "tested": 10,
+    "checked": 3,
     "proven": 29
    },
    "sources": {
@@ -2136,18 +2136,22 @@
     },
     {
      "name": "leet",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 1
     },
     {
      "name": "lorem",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 1
     },
     {

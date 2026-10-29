@@ -1,12 +1,12 @@
 {
- "at": "2026-10-29T14:52:31.265Z",
+ "at": "2026-10-29T15:00:03.542Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/lib/tower.js",
-   "changes": 94
+   "changes": 95
   },
   {
    "file": "tools/tower-probes.mjs",
@@ -42,7 +42,7 @@
   },
   {
    "file": "void-live-deploy/skills/tower.js",
-   "changes": 38
+   "changes": 39
   },
   {
    "file": "domains/tower-self.json",
@@ -77,6 +77,10 @@
    "changes": 23
   },
   {
+   "file": "tools/tower.test.mjs",
+   "changes": 23
+  },
+  {
    "file": "void-live-deploy/fanfic/app.js",
    "changes": 23
   },
@@ -86,10 +90,6 @@
   },
   {
    "file": "tools/grow-self.state.json",
-   "changes": 22
-  },
-  {
-   "file": "tools/tower.test.mjs",
    "changes": 22
   },
   {
