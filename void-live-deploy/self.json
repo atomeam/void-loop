@@ -537,13 +537,17 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T16:03:50Z",
+   "subject": "Card replies count on the heat map by the card's family"
+  },
   {
    "at": "2026-10-29T16:01:10Z",
    "subject": "Regenerate the generated files after the merge"
@@ -615,10 +619,6 @@
   {
    "at": "2026-10-29T15:41:49Z",
    "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
-  },
-  {
-   "at": "2026-10-29T15:40:34Z",
-   "subject": "8 ball chance line: the classic 20 answers in the page too, matching the skill"
   },
   {
    "at": "2026-10-29T15:40:03Z",
