@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { canon as toolCanon, chainOf as toolChain, proofOf } from './ledger-proof.mjs';
-import { canon, chainOf, todayCheck, todayHtml, TODAY_LIMIT, PROOF_URL } from '../void-live-deploy/lib/ledger-today.js';
+import { canon, chainOf, todayCheck, todayHtml, tryLinkOf, TODAY_LIMIT, PROOF_URL } from '../void-live-deploy/lib/ledger-today.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const E = (day, n, extra = {}) => ({ at: '2026-10-' + day + 'T0' + (n % 10) + ':00:00Z', kind: 'grow', what: 'entry ' + day + '-' + n, by: 'verse', ...extra });
@@ -54,6 +54,24 @@ test('the block escapes every entry, shows short hashes with the full one on hov
   const broken = todayHtml(esc, await todayCheck([{ ...list[0], what: 'changed' }], proofOf(list), NOW));
   assert.match(broken, /data-ledger-ok="0"/); assert.match(broken, /line 1 \(2026-10-29\) does not match/);
   assert.equal(todayHtml(esc, null), ''); assert.equal(todayHtml(esc, await todayCheck([], proofOf([]), NOW)), '');
+});
+
+test('a line with a try phrase links it to the stage, so the claim can be run (glassbox: proof of work, not words); the head counts them', async () => {
+  const list = [E(29, 1, { try: 'fantasy name generator' }), E(29, 2), E(29, 3, { try: '<b>x</b> & "y"' }), E(28, 4, { try: 'not today' })];
+  const r = await todayCheck(list, proofOf(list), NOW);
+  assert.equal(r.tryable, 2, 'only the day\'s lines count');
+  assert.deepEqual(r.rows.map((x) => x.tryIt), ['/?q=%3Cb%3Ex%3C%2Fb%3E%20%26%20%22y%22', '', '/?q=fantasy%20name%20generator']);
+  const html = todayHtml(esc, r);
+  assert.match(html, /<a href="\/\?q=fantasy%20name%20generator" data-try-line="1">try it<\/a>/);
+  assert.equal((html.match(/data-try-line=/g) || []).length, 2, 'no link on a line without a phrase');
+  assert.ok(!/<b>x/.test(html), html);
+  assert.match(html, /data-tryable="2"/); assert.match(html, /2 of 3 lines have a phrase you can try on the stage yourself\./);
+  assert.match(todayHtml(esc, await todayCheck([E(29, 1, { try: 'coin toss' })], proofOf([E(29, 1, { try: 'coin toss' })]), NOW)), /1 of 1 line has a phrase/);
+  assert.equal(tryLinkOf({ try: '   ' }), ''); assert.equal(tryLinkOf({ try: 'x'.repeat(301) }), ''); assert.equal(tryLinkOf({ try: 7 }), ''); assert.equal(tryLinkOf(null), '');
+  // the real ledger: every day's tryable count is the lines that carry a phrase
+  const ledger = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8')), last = ledger[ledger.length - 1];
+  const real = await todayCheck(ledger, proofOf(ledger), new Date(last.at));
+  assert.equal(real.tryable, ledger.filter((e) => e.at.slice(0, 10) === real.day && tryLinkOf(e)).length);
 });
 
 test('the growth card reads the proof and fills its today slot', () => {
