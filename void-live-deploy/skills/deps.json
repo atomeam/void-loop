@@ -1914,6 +1914,13 @@
    "tests": 1
   },
   {
+   "file": "lib/boards.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/comments.js",
    "skills": 0,
    "direct": 0,
@@ -1961,13 +1968,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 9
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/calshare.js",
@@ -2342,6 +2342,13 @@
   },
   {
    "file": "lib/empty-state.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/fanfic.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4072,7 +4079,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/boards/[[path]].js",
-    "functions/boards/t/[[path]].js"
+    "functions/boards/t/[[path]].js",
+    "lib/fanfic.js"
    ]
   },
   "lib/book-face.js": {
@@ -5052,6 +5060,12 @@
    "importedBy": [
     "skills/fakeuser.js"
    ]
+  },
+  "lib/fanfic.js": {
+   "imports": [
+    "lib/boards.js"
+   ],
+   "importedBy": []
   },
   "lib/fantasy.js": {
    "imports": [
