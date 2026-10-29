@@ -537,13 +537,33 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T07:13:43Z",
+   "subject": "Hand-off links read their place before a press"
+  },
+  {
+   "at": "2026-10-29T07:09:58Z",
+   "subject": "Live cards keep running when another card opens on the stage"
+  },
+  {
+   "at": "2026-10-29T07:07:48Z",
+   "subject": "Growth card today view: a try it link on each ledger line that has a try phrase (glassbox proof of work)"
+  },
+  {
+   "at": "2026-10-29T07:07:17Z",
+   "subject": "Verse fixes its toolkit skill: learn to handle \"what tools do you have\""
+  },
+  {
+   "at": "2026-10-29T07:06:06Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T07:00:57Z",
    "subject": "Regenerate the generated files after the merge"
@@ -603,26 +623,6 @@
   {
    "at": "2026-10-29T06:49:35Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:49:25Z",
-   "subject": "Weather, time and base converter stage cards follow the page"
-  },
-  {
-   "at": "2026-10-29T06:48:23Z",
-   "subject": "Money/GPA asks the page's calc can answer no longer wait for all 309 skills (watchdog #110)"
-  },
-  {
-   "at": "2026-10-29T06:47:46Z",
-   "subject": "Verse Brain: every Mind Field mode joins it through the shared field"
-  },
-  {
-   "at": "2026-10-29T06:46:27Z",
-   "subject": "Verse fixes its textgen skill: learn to handle \"fantasy name generator\""
-  },
-  {
-   "at": "2026-10-29T06:42:01Z",
-   "subject": "Suite: the who-is-X stub answers 404 for a title with no page"
   }
  ],
  "builders": {
