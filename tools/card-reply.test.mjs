@@ -71,3 +71,58 @@ test('the section stays out of a shared card and its picture, and the page and i
   assert.match(a, /import\('\/lib\/card-reply\.js'\)/);
   assert.ok(!/tellV01D|a\.vtell'/.test(a), 'the old owner-only link is gone');
 });
+
+// A reply from a card no router skill answered counts on the heat map by the card's family (owner, 2026-10-29), and touches no fix path.
+import { PAGE_FAMILY, familyOfNote } from '../void-live-deploy/lib/card-reply.js';
+import { groupByFamily } from '../void-live-deploy/lib/corrections.js';
+import { heatRows, hotEntry } from '../void-live-deploy/lib/correction-heat.js';
+const FAMS = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8'));
+
+test('a page note names a real family: calculator, article, time and Verse\'s own cards; anything else is no family', () => {
+  const ids = new Set(FAMS.families.map((f) => f.id));
+  for (const [note, id] of Object.entries(PAGE_FAMILY)) assert.ok(ids.has(id), note + ' -> ' + id + ' is a family in skills/families.json');
+  assert.deepEqual(['calc', 'article', 'timenow', 'how-to clock', 'speaks fr', 'said', 'skill:clock', ''].map(familyOfNote), ['numbers', 'words', 'time', 'self', 'self', '', '', '']);
+});
+
+test('a guest reply on the Calculated card lands in Numbers and money on the heat map, and drafts no fix', async () => {
+  const st = mem();
+  const r = await sendReply(aboutCard({ ask: '5 miles in km', title: 'Calculated' }), 'Show two decimals please.', { owner: '', storage: st, fetchFn: async () => ({ ok: true }), family: familyOfNote('calc') });
+  assert.equal(r.ok, true);
+  const kept = readCorrections(st);
+  assert.deepEqual(kept.map((c) => [c.skill, c.family]), [['', 'numbers']]);
+  assert.deepEqual(groupByFamily(kept, FAMS).map((g) => g.id), ['numbers']);
+  const h = heatRows(kept, FAMS);
+  assert.deepEqual([h.rows.find((x) => x.id === 'numbers').errors, h.unplaced], [1, 0]);
+  assert.equal(hotEntry(kept, FAMS, 'numbers'), null, 'a family alone names no skill, so the heat map drafts no fix for it');
+});
+
+test('a routed skill still decides the family; a family name not in the file stays unplaced', async () => {
+  const st = mem();
+  await sendReply(aboutCard({ ask: 'clock', routed: { skill: 'skill:clock' } }), 'x', { owner: '', storage: st, family: 'numbers' });
+  await sendReply(aboutCard({ ask: 'q' }), 'y', { owner: '', storage: st, family: 'not-a-family' });
+  const kept = readCorrections(st);
+  assert.deepEqual(kept.map((c) => [c.skill, c.family]), [['clock', undefined], ['', 'not-a-family']]);
+  assert.deepEqual(groupByFamily(kept, FAMS).map((g) => g.id).sort(), ['time', 'unplaced']);
+});
+
+test('the owner\'s reply is sent exactly as before: the family never reaches /api/voice-reply', async () => {
+  const calls = [], fetchFn = async (u, o) => { calls.push(o); return { ok: true, status: 200, json: async () => ({ text: 't', answer: 'a' }) }; };
+  const about = aboutCard({ ask: '5 miles in km', title: 'Calculated', said: '8.05 km' });
+  await sendReply(about, 'Two decimals.', { owner: 'k', fetchFn, storage: mem(), family: 'numbers' });
+  assert.deepEqual(JSON.parse(calls[0].body), { about, text: 'Two decimals.' });
+});
+
+test('the page reads the family on its own: routeOfCard, which feeds the misroute queue, is unchanged', () => {
+  const a = readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+  assert.match(a, /family: replyLib\.familyOfNote\(noteOfCard\(el\)\)/);
+  const route = a.slice(a.indexOf('    function routeOfCard(el) {'), a.indexOf('    function keepRead(el) {'));
+  assert.equal(route, [
+    '    function routeOfCard(el) {',
+    "      let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}",
+    '      const since = (el._at || 0) - 3000, hit = log.filter((x) => x && Date.parse(x.t) >= since).pop();',
+    '      if (!hit) return null;',
+    "      if (hit.domain === 'void.fix') return { skill: 'automation-fix', via: 'void.fix' };",
+    "      const m = /^skill:([a-z][a-z0-9-]{1,40})$/.exec(String(hit.note || ''));",
+    "      return m ? { skill: m[1], via: 'skill' } : null;",
+    '    }', ''].join('\n'));
+});

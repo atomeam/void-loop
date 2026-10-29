@@ -20,7 +20,8 @@ export function parseIncidents(j) {
   const list = Array.isArray(j) ? j : j && Array.isArray(j.incidents) ? j.incidents : [];
   return list.filter((i) => i && /^[0-9a-f]{7,40}$/i.test(String(i.sha || '')) && Array.isArray(i.checks) && Number.isFinite(Date.parse(i.at)))
     .map((i) => ({ at: String(i.at), sha: String(i.sha).toLowerCase(), suite: String(i.suite || '').slice(0, 80), checks: i.checks.map((c) => String(c == null ? '' : c).slice(0, 400)).filter(Boolean),
-      touched: (Array.isArray(i.touched) ? i.touched : []).map((x) => String(x == null ? '' : x)).filter((x) => /^[\w./@-]{1,120}$/.test(x)).slice(0, 15) }));
+      touched: (Array.isArray(i.touched) ? i.touched : []).map((x) => String(x == null ? '' : x)).filter((x) => /^[\w./@-]{1,120}$/.test(x)).slice(0, 15),
+      ...(Number.isFinite(Date.parse(i.closedAt)) ? { closedAt: String(i.closedAt) } : {}) })); // closed: a later green run fixed it (tools/incident-log.mjs)
 }
 
 /** the skill a changed path is (void-live-deploy/skills/<name>.js, not a helper under skills/order or a test), or null. Pure. */
@@ -164,19 +165,22 @@ export const INCIDENTS_KEPT = 30;
 export const failingChecksOf = (incidents) => new Set(incidents.flatMap((i) => i.checks.filter((c) => !isSuiteMeta(c)))).size;
 /**
  * the stability gauge (Status card, asked by Verse): how often the browser suite went red on main in the last 7 days, from incidents.json.
- * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. Every red suite still counts: `checks` says how many
- * different checks failed in them, and `capped` says the file was full, so the week held at least `week` red suites, not exactly that. Pure.
+ * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. A red suite that a later green run fixed (closedAt,
+ * written when the shards it failed passed on a later commit) no longer counts: `fixed` says how many of the week's those were. `checks`
+ * says how many different checks failed in the ones that count, and `capped` says the file was full, so the week held at least `week`
+ * red suites, not exactly that. Pure.
  */
 export function stabilityOf(incidentsJson, now = Date.now()) {
-  const week = 7 * 864e5, inc = parseIncidents(incidentsJson), recent = inc.filter((i) => { const t = Date.parse(i.at); return t <= now + 6e4 && now - t < week; });
+  const week = 7 * 864e5, inc = parseIncidents(incidentsJson), inWeek = inc.filter((i) => { const t = Date.parse(i.at); return t <= now + 6e4 && now - t < week; });
+  const recent = inWeek.filter((i) => !i.closedAt), fixed = inWeek.length - recent.length;
   const day = recent.filter((i) => now - Date.parse(i.at) < 864e5).length;
   // each red suite costs 12 and the cost halves every 12 hours, so a main that stays green climbs back in a day or two instead of sitting at
   // 0/100 for the whole week after a bad morning (owner, 2026-10-24: old incidents "lock the live health dial at 0/100 for a week")
   const cost = recent.reduce((a, i) => a + 12 * Math.pow(0.5, Math.max(0, now - Date.parse(i.at)) / (12 * 36e5)), 0);
   const score = Math.max(0, Math.round(100 - cost));
   const last = recent.length ? Math.max(0, Math.round((now - Math.max(...recent.map((i) => Date.parse(i.at)))) / 36e5)) : null; // hours since the newest red
-  const capped = inc.length >= INCIDENTS_KEPT && recent.length === inc.length; // the oldest one kept is still inside the week
-  return { score, label: score >= 95 ? 'steady' : score >= 60 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length, last, checks: failingChecksOf(recent), capped };
+  const capped = inc.length >= INCIDENTS_KEPT && inWeek.length === inc.length; // the oldest one kept is still inside the week
+  return { score, label: score >= 95 ? 'steady' : score >= 60 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length, last, checks: failingChecksOf(recent), capped, fixed };
 }
 /** the gauge as markup: a bar and one sentence. Pure. */
 export function stabilityHtml(g, esc = escHtml) {
@@ -185,7 +189,9 @@ export function stabilityHtml(g, esc = escHtml) {
   return '<div class="status-stability" data-stability="' + esc(g.label) + '" style="margin:6px 0"><b>Stability: ' + esc(g.label) + '</b> <span style="font-variant-numeric:tabular-nums">' + esc(g.score) + '/100</span>'
     + '<div style="height:6px;border-radius:3px;background:rgba(128,128,128,.25);margin:4px 0"><div style="height:6px;border-radius:3px;width:' + esc(g.score) + '%;background:' + col + '"></div></div>'
     + '<span class="sub">' + (g.capped ? 'At least ' : '') + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day)'
-    + (g.week && g.checks ? ', with ' + esc(g.checks) + ' different check' + (g.checks === 1 ? '' : 's') + ' failing' : '') + ', from <code>incidents.json</code>'
+    + (g.fixed ? ' not yet fixed by a later green run' : '')
+    + (g.week && g.checks ? ', with ' + esc(g.checks) + ' different check' + (g.checks === 1 ? '' : 's') + ' failing' : '')
+    + (g.fixed ? '; ' + esc(g.fixed) + ' more that a later green run fixed no longer count' : '') + ', from <code>incidents.json</code>'
     + (g.capped ? ', which keeps only the newest ' + esc(INCIDENTS_KEPT) : '') + '.</span></div>';
 }
 /** the "changed in this commit" line of one incident: the skill files it changed, the likely ones first; says plainly when none was a skill file or the paths were never recorded. Pure. */

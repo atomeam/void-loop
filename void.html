@@ -2374,13 +2374,21 @@ say('nothing selected to remove');
     import('/lib/card-reply.js').then((m) => { replyLib = m; if (vpageEl) keepTell(vpageEl); }).catch(() => {});
     function keepTell(el) {
       if (!el || !replyLib) return;
-      const card = () => { const title = ((el.querySelector('h2') || {}).textContent || '').trim(); return { ask: el._ask || '', title, said: cardWords(el).replace(title, '').trim(), routed: routeOfCard(el) }; };
+      const card = () => { const title = ((el.querySelector('h2') || {}).textContent || '').trim(); return { ask: el._ask || '', title, said: cardWords(el).replace(title, '').trim(), routed: routeOfCard(el), family: replyLib.familyOfNote(noteOfCard(el)) }; };
       const net = (u, o) => fetch(u, o);
       replyLib.bindReply(el, document, { owner: ownerKey, storage: localStorage, fetchFn: net, card });
       if (!replyLib.mountReply(el, document, { owner: ownerKey(), fetchFn: net, card })) replyLib.placeReply(el);
     }
     // which route answered this card, from the page's own loop log (LOOP_KEY, this browser only; nothing new is kept): a skill file
     // ('skill:<name>'), the automation fix ('void.fix'), or the page's own reply kinds. A correction then says which skill took it.
+    // the loop-log note of the ask that opened this card ('calc', 'article'), for the heat-map family of a reply (lib/card-reply.js familyOfNote).
+    // Read on its own: routeOfCard, which feeds the owner's misroute queue, is left as it is.
+    function noteOfCard(el) {
+      let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
+      const since = (el._at || 0) - 3000, near = log.filter((x) => x && x.domain === 'void.page' && Date.parse(x.t) >= since);
+      const hit = near.find((x) => el._ask && x.ask === el._ask) || near[0];
+      return hit && typeof hit.note === 'string' ? hit.note : '';
+    }
     function routeOfCard(el) {
       let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
       const since = (el._at || 0) - 3000, hit = log.filter((x) => x && Date.parse(x.t) >= since).pop();
