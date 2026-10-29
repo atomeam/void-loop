@@ -35,6 +35,17 @@ export const SKILL_TOOLS = [
   ]
  },
  {
+  "skill": "distance",
+  "tool": "skill_distance",
+  "family": "sky",
+  "familyName": "Sky and earth",
+  "examples": [
+   "distance from london to paris",
+   "how far is paris from berlin",
+   "how far is new york from boston"
+  ]
+ },
+ {
   "skill": "eclipse",
   "tool": "skill_eclipse",
   "family": "sky",
@@ -43,17 +54,6 @@ export const SKILL_TOOLS = [
    "next eclipse",
    "next lunar eclipse",
    "upcoming eclipses"
-  ]
- },
- {
-  "skill": "film-metadata",
-  "tool": "skill_film_metadata",
-  "family": "words",
-  "familyName": "Words and the world",
-  "examples": [
-   "find me a sci-fi film from the 80s",
-   "films by Kurosawa",
-   "movies directed by Hitchcock"
   ]
  },
  {

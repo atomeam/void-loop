@@ -550,8 +550,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:26:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:25:27Z",
+   "subject": "Place replies kept before cards had a family, once, from the loop log"
+  },
+  {
    "at": "2026-10-29T16:24:24Z",
    "subject": "test(answer-honesty): read the tower target from the record"
+  },
+  {
+   "at": "2026-10-29T16:24:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:23:17Z",
+   "subject": "Regenerate the skill tools list after the main merge"
   },
   {
    "at": "2026-10-29T16:21:55Z",
@@ -598,35 +614,19 @@
    "subject": "fix(rap): a short whole line for the skill, so the skills list shows no cut sentence"
   },
   {
+   "at": "2026-10-29T16:08:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:07:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:07:04Z",
    "subject": "chore(rap): keep the volatile records as main has them, the sitemap with /rap/"
   },
   {
    "at": "2026-10-29T16:06:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:05:46Z",
-   "subject": "feat(rap): Verse raps, written for each ask and performed over its own beat"
-  },
-  {
-   "at": "2026-10-29T16:05:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:04:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:04:10Z",
-   "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
-  },
-  {
-   "at": "2026-10-29T16:03:50Z",
-   "subject": "Card replies count on the heat map by the card's family"
-  },
-  {
-   "at": "2026-10-29T16:01:10Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],

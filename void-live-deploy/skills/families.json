@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 47,
-  "checked": 20,
-  "proven": 305
+  "tested": 18,
+  "checked": 32,
+  "proven": 322
  },
  "families": [
   {
@@ -25,9 +25,9 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 16,
-    "checked": 2,
-    "proven": 39
+    "tested": 5,
+    "checked": 6,
+    "proven": 46
    },
    "skills": [
     {
@@ -41,8 +41,8 @@
     },
     {
      "name": "photo-tools",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -88,8 +88,8 @@
     },
     {
      "name": "textgen",
-     "tier": "tested",
-     "why": "1 real ask in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -132,8 +132,8 @@
     },
     {
      "name": "music-tools",
-     "tier": "tested",
-     "why": "1 real ask in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -437,11 +437,12 @@
     },
     {
      "name": "echo-field",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "resonant-membrane",
@@ -461,69 +462,77 @@
     },
     {
      "name": "tilt-arena-mode",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
-     "success_rate": 1
-    },
-    {
-     "name": "tilt-mode",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
-     "success_rate": 1
-    },
-    {
-     "name": "gaze-chase",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
-     "success_rate": 1
-    },
-    {
-     "name": "gpu-swarm",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
-     "success_rate": 1
-    },
-    {
-     "name": "hand-arena",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
-     "success_rate": 1
-    },
-    {
-     "name": "veto-council",
-     "tier": "checked",
-     "why": "2 browser-suite mentions, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29"
+    },
+    {
+     "name": "tilt-mode",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
+    },
+    {
+     "name": "gaze-chase",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
+    },
+    {
+     "name": "gpu-swarm",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
+    },
+    {
+     "name": "hand-arena",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
+    },
+    {
+     "name": "veto-council",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 10
     },
     {
      "name": "stigmergy-board",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 10
     },
     {
      "name": "term-orbits",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 10
     },
     {
@@ -541,8 +550,8 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 1,
+    "tested": 2,
+    "checked": 2,
     "proven": 31
    },
    "skills": [
@@ -696,10 +705,11 @@
     },
     {
      "name": "eightball",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "promoted": "2026-10-29"
     },
     {
      "name": "ringer",
@@ -848,9 +858,9 @@
    "for": "weather, the sky tonight, places and time zones",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 0,
     "checked": 1,
-    "proven": 16
+    "proven": 19
    },
    "skills": [
     {
@@ -937,11 +947,12 @@
     },
     {
      "name": "quake",
-     "tier": "tested",
-     "why": "4 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "pollen",
@@ -986,11 +997,12 @@
     },
     {
      "name": "place",
-     "tier": "tested",
-     "why": "4 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {
@@ -1003,11 +1015,12 @@
     },
     {
      "name": "distance",
-     "tier": "tested",
-     "why": "26 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 26 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {
@@ -1027,9 +1040,9 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 0,
     "checked": 0,
-    "proven": 18
+    "proven": 20
    },
    "skills": [
     {
@@ -1123,11 +1136,12 @@
     },
     {
      "name": "remind",
-     "tier": "tested",
-     "why": "5 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "holidays",
@@ -1142,11 +1156,12 @@
     },
     {
      "name": "work",
-     "tier": "tested",
-     "why": "4 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {
@@ -1220,9 +1235,9 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 4,
+    "tested": 2,
     "checked": 4,
-    "proven": 14
+    "proven": 16
    },
    "skills": [
     {
@@ -1286,11 +1301,12 @@
     },
     {
      "name": "fuel",
-     "tier": "tested",
-     "why": "10 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 10 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {
@@ -1304,11 +1320,12 @@
     },
     {
      "name": "crypto",
-     "tier": "tested",
-     "why": "7 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 7 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {
@@ -1541,8 +1558,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 10,
-    "checked": 3,
+    "tested": 6,
+    "checked": 7,
     "proven": 29
    },
    "sources": {
@@ -2016,8 +2033,8 @@
     },
     {
      "name": "sports-browse",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2026,8 +2043,8 @@
     },
     {
      "name": "fantasy",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2045,8 +2062,8 @@
     },
     {
      "name": "pdf-tools",
-     "tier": "tested",
-     "why": "1 real ask in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2055,8 +2072,8 @@
     },
     {
      "name": "kanban-board",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2282,9 +2299,9 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 0,
-    "tested": 7,
-    "checked": 6,
-    "proven": 89
+    "tested": 1,
+    "checked": 9,
+    "proven": 92
    },
    "skills": [
     {
@@ -2333,26 +2350,28 @@
     },
     {
      "name": "notes-fill",
-     "tier": "tested",
-     "why": "4 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 3
     },
     {
      "name": "calendar-fill",
-     "tier": "tested",
-     "why": "5 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 3
     },
     {
      "name": "recipes-fill",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2361,8 +2380,8 @@
     },
     {
      "name": "generators-fill",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2389,11 +2408,12 @@
     },
     {
      "name": "pulse",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {
@@ -2451,10 +2471,11 @@
     },
     {
      "name": "tab",
-     "tier": "tested",
-     "why": "3 browser-suite mentions",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {

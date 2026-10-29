@@ -11,6 +11,8 @@ const DAYW = String.raw`today|tonight|tomorrow|tmrw|heute|morgen|übermorgen|mon
 const HAS_DAY = new RegExp('\\b(?:' + DAYW + ')\\b', 'i'), HAS_TIME = /\b(?:\d{1,2}(?::\d{2})?\s*(?:am|pm|uhr)|\d{1,2}:\d{2}|at \d{1,2}\b|um \d{1,2}\b|noon|midnight|mittag|mitternacht)\b/i;
 const EVENTY = /^(?:meeting|meet|call|lunch|dinner|breakfast|brunch|appointment|dentist|doctor|party|birthday|flight|class|lesson|interview|coffee|date|haircut|gym|workout|standup|stand-up|review|session|visit|trip|exam|deadline|concert|game|match|training|therapy|checkup|check-up|massage|webinar|dance|run|swim|termin|besprechung|zahnarzt|arzt|treffen|essen|friseur)\b/i;
 const NOT_CAL = /\b(?:task|priority|mpg|miles|fuel|chain|deadline|review this|risk|pace|budget|invoice|\$)\b|[:$(){}=<>]\s*\S*\d|\d\s*[/]\s*[a-z]/i;
+// the "in den Kalender" / "to my calendar" a sentence ends on is where the event goes, not part of its title ("Zahnarzt morgen 15 Uhr in den Kalender" is "Zahnarzt")
+const CAL_TAIL = /\s+(?:(?:to|on|in|into|onto)\s+(?:my|the|our)\s+(?:calendar|calender|agenda)|(?:in|im|ins|in den|in meinen|in meinem|zum|zu meinem)\s+(?:den\s+|das\s+|meinen\s+|meinem\s+)?kalender(?:\s+(?:ein|eintragen|einfügen|hinzufügen|setzen|aufnehmen))?)$/i;
 const TIMER = /\bin\s+(?:\d+(?:\.\d+)?|a|an|one|two|three|four|five|ten|fifteen|twenty|thirty)\s*(?:min(?:ute)?s?|hours?|hrs?|seconds?|secs?)\b/i;
 
 /** { op, ... } for a calendar sentence, or null. Syntax only. Pure. */
@@ -52,7 +54,7 @@ export function plan(store, it, now = new Date(), lang = 'en') {
   const pickOne = (hits, mk, question) => hits.length === 1 ? null : { kind: 'ask', question, options: hits.slice(0, 6).map((e) => ({ label: e.title + ' (' + describe(e, lang, now) + ')', intent: mk(e.id) })) };
   switch (it.op) {
     case 'add': {
-      let text = it.text.replace(/^(?:to |an |a )/i, '').replace(/\bfor (?:an|a|one) hour\b/i, 'for 1 hour').replace(/\bfor (?:half an hour|a half hour|half hour)\b/i, 'for 30 minutes').replace(/\bfor (?:two|2) hours\b/i, 'for 2 hours'); const e = C.quickAdd(text, now); if (!e) return { kind: 'none' };
+      let text = it.text.replace(CAL_TAIL, '').replace(/^(?:to |an |a )/i, '').replace(/\bfor (?:an|a|one) hour\b/i, 'for 1 hour').replace(/\bfor (?:half an hour|a half hour|half hour)\b/i, 'for 30 minutes').replace(/\bfor (?:two|2) hours\b/i, 'for 2 hours'); const e = C.quickAdd(text, now); if (!e) return { kind: 'none' };
       if (it.remind && !e.reminders.length) e.reminders = [0];
       const hasDay = HAS_DAY.test(text), hasTime = HAS_TIME.test(text), dup = S.events.find((x) => same(x, e)), line = describe(e, lang, now);
       if (dup) return { kind: 'show', title: dup.title, lines: ['Already in your calendar: ' + dup.title + ', ' + describe(dup, lang, now) + '. Nothing changed.'], openId: dup.id };
