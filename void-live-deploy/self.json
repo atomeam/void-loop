@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:07:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:06:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:06:24Z",
+   "subject": "Refresh generated files after the main merge: families, guide, self, hand-off gaps"
+  },
+  {
    "at": "2026-10-29T16:05:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T15:52:36Z",
    "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
-  },
-  {
-   "at": "2026-10-29T15:51:39Z",
-   "subject": "Team chat: Verse's own workspace where agents are members and Verse keeps them busy"
-  },
-  {
-   "at": "2026-10-29T15:48:51Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:48:26Z",
-   "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
   }
  ],
  "builders": {
