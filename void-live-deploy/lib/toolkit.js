@@ -47,7 +47,7 @@ const HAND_RELATED = Object.freeze({
   '/calculators/': ['/calculator/', '/convert/', '/base-converter/'],
   '/time/': ['/stopwatch/', '/weather/'],
   '/weather/': ['/time/', '/stopwatch/'],
-  '/translate/': ['/word-count/', '/time/'],
+  '/translate/': ['/word-count/', '/time/', '/notes/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/scores/': ['/sports/', '/time/', '/calendar/'],
   '/sports/': ['/scores/', '/calendar/', '/time/'],
