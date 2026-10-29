@@ -21,7 +21,9 @@ export const DICT = {
   'Copy link': 'Link kopieren', 'Export list (.csv)': 'Liste exportieren (.csv)', 'Link copied.': 'Link kopiert.', 'No stories to export yet.': 'Noch keine Geschichten zum Exportieren.',
   'The link could not be copied. Copy it from the address bar.': 'Der Link konnte nicht kopiert werden. Kopiere ihn aus der Adresszeile.',
   'How to format chapters': 'So formatierst du Kapitel', 'Announcement by Verse': 'Ankündigung von Verse', Pinned: 'Angeheftet',
-  'Report spam or abuse here': 'Spam oder Missbrauch hier melden', 'Writing rules & guidelines': 'Schreibregeln und Richtlinien',
+  'Report spam or abuse here': 'Spam oder Missbrauch hier melden', 'Reviews and stars: how they work': 'Rezensionen und Sterne: so funktionieren sie',
+  'Anyone can review a story on its page. A review can give the story 1 to 5 stars, or none.': 'Alle können eine Geschichte auf ihrer Seite rezensieren. Eine Rezension kann der Geschichte 1 bis 5 Sterne geben, oder keine.',
+  "The story page shows how many reviews it has and the average of the stars readers gave. Stars from the story's own writer do not count.": 'Die Seite der Geschichte zeigt, wie viele Rezensionen sie hat, und den Durchschnitt der Sterne der Lesenden. Sterne von der Person, die sie geschrieben hat, zählen nicht.', 'Writing rules & guidelines': 'Schreibregeln und Richtlinien',
   'No stories yet. The first one posted shows here.': 'Noch keine Geschichten. Die erste veröffentlichte erscheint hier.',
   'No stories yet. Open a fandom and post the first one.': 'Noch keine Geschichten. Öffne ein Fandom und veröffentliche die erste.',
   'Nothing was posted today. Choose All topics to see every story.': 'Heute wurde nichts veröffentlicht. Wähle Alle Themen, um jede Geschichte zu sehen.',
@@ -80,6 +82,8 @@ export const DICT = {
     'Geschichten für Erwachsene gehören nur in Fandoms mit 18+. Sexuelle Inhalte mit Personen unter 18 sind nie erlaubt, in keinem Fandom, egal was der Kanon sagt.',
   'Post your own writing. Credit a co-writer, a beta reader or a prompt you answered.': 'Veröffentliche eigene Texte. Nenne Mitautor:innen, Betaleser:innen oder den Prompt, auf den du antwortest.',
   'Be kind in reviews. Critique the story, never the writer.': 'Sei freundlich in Rezensionen. Kritisiere die Geschichte, nie die Person.',
+  'A review can give the story 1 to 5 stars. The story page shows the average of those stars.': 'Eine Rezension kann der Geschichte 1 bis 5 Sterne geben. Die Seite der Geschichte zeigt den Durchschnitt dieser Sterne.',
+  Stars: 'Sterne', 'No stars': 'Keine Sterne', 'Optional. The story shows the average of the stars its reviews give.': 'Optional. Die Geschichte zeigt den Durchschnitt der Sterne aus ihren Rezensionen.',
   'This fandom is for adults': 'Dieses Fandom ist für Erwachsene', 'Its stories are for readers 18 and older.': 'Seine Geschichten sind für Lesende ab 18.', 'I am 18 or older': 'Ich bin 18 oder älter',
   'Back to the index': 'Zurück zur Übersicht', 'That story is not here': 'Diese Geschichte ist nicht hier', 'It may have been removed, or the link is not complete.': 'Sie wurde vielleicht entfernt, oder der Link ist unvollständig.',
   'Common asks': 'Häufige Anliegen', 'Most recent stories': 'Neueste Geschichten', 'Use with': 'Zusammen nutzen mit',
@@ -127,7 +131,7 @@ export const DICT = {
 // text made from numbers and names: the English shape on the left, the German on the right
 const PATTERNS = [
   [/^Chapter (\d+)$/, 'Kapitel $1'], [/^Chapter (\d+) of (\d+)$/, 'Kapitel $1 von $2'], [/^Chapter (\d+): /, 'Kapitel $1: '], [/^Page (\d+) of (\d+)$/, 'Seite $1 von $2'],
-  [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
+  [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^★ (\d(?:\.\d)?) of 5 from (\d+) ratings?$/, '★ $1 von 5 aus $2 Bewertung(en)'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
   [/^(\d[\d,.]*) words?$/, '$1 Wörter'], [/^(\d+) min read$/, '$1 Min. Lesezeit'], [/^No story matches "(.*)"\.$/, 'Keine Geschichte passt zu „$1“.'],
   [/^Exported (\d+) stor(?:y|ies)\.$/, '$1 Geschichte(n) exportiert.'], [/^(\d[\d,.]*) authors? ha(?:s|ve) posted here\.$/, '$1 Autor:innen haben hier veröffentlicht.'], [/^No stories in (.*) yet\. Post the first one\.$/, 'Noch keine Geschichten in $1. Veröffentliche die erste.'],
 ];
