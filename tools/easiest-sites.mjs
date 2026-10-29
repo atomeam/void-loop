@@ -1,10 +1,11 @@
 // Which real sites are the easiest to beat (owner, 2026-10-24: "find the real life actual easiest site, this is findable"). No guessing: the Tranco list
 // (tranco-list.eu, the research ranking of the most visited sites) gives the real sites, in the order people really visit them; each home page is
 // loaded once and measured for how much it does: the controls on it (inputs, buttons, menus), the words, the links, the scripts and the bytes. A site
-// that is a tool (something to type into or press) with the least on it is the easiest. The order comes from these numbers, so it only changes when
-// the numbers do. Passive: one plain GET of each home page, no sign-in, no forms, a visible User-Agent, a small number at a time.
+// that is a tool (something to type into or press) with the least on it is the easiest: smallest first, the fewest controls (links, inputs, buttons,
+// selects) and then the fewest bytes (owner, 2026-10-29). The order comes from these numbers, so it only changes when the numbers do. Passive: one plain GET of each home page, no sign-in, no forms, a visible User-Agent, a small number at a time.
 //   node tools/easiest-sites.mjs [how many of the top of the list] [out.json]      (.github/workflows/easiest-sites.yml runs it where the network is open)
 import fs from 'node:fs'; import { execFileSync } from 'node:child_process'; import path from 'node:path'; import os from 'node:os';
+import { controlsOf } from '../void-live-deploy/lib/tower-weight.js';
 
 const TRANCO = 'https://tranco-list.eu/top-1m.csv.zip';
 const strip = (h) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->|<noscript[\s\S]*?<\/noscript>/gi, ' ');
@@ -14,7 +15,7 @@ const count = (h, re) => (h.match(re) || []).length;
 export function features(html, bytes = html.length) {
   const body = strip(html), text = body.replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
   const inputs = count(body, /<input\b(?![^>]*type=["']?(?:hidden|submit|image)\b)/gi) + count(body, /<textarea\b/gi), selects = count(body, /<select\b/gi), buttons = count(body, /<button\b|<input\b[^>]*type=["']?(?:submit|button)\b|role=["']button/gi);
-  return { bytes, scripts: count(html, /<script\b/gi), links: count(body, /<a\s[^>]*href=/gi), inputs, selects, buttons, words: text ? text.split(' ').length : 0,
+  return { bytes, controls: controlsOf(html).total, scripts: count(html, /<script\b/gi), links: count(body, /<a\s[^>]*href=/gi), inputs, selects, buttons, words: text ? text.split(' ').length : 0,
     password: /<input\b[^>]*type=["']?password/i.test(body), title: ((/<title[^>]*>([\s\S]*?)<\/title>/i.exec(html) || [])[1] || '').replace(/\s+/g, ' ').trim().slice(0, 90),
     login: /\b(?:sign in|log in|login|create an account|sign up)\b/i.test(text), search: /<input\b[^>]*type=["']?search|\bname=["']?q["'\s>]/i.test(body) };
 }
@@ -24,6 +25,10 @@ export function hardness(f) {
   if (!controls || f.password || f.words < 3) return null;                  // nothing to use, or an account wall: not a one-tool site
   return Math.round(controls * 10 + f.words / 25 + f.links / 4 + f.scripts + f.bytes / 20000);
 }
+
+/** smallest first (owner, 2026-10-29: "all sites ever made smallest first"): the fewest interactive elements on the home page (controls: links,
+ *  inputs, buttons, selects, lib/tower-weight.js controlsOf), the fewer bytes on a tie, then the least visited. Pure. */
+export const smallestFirst = (a, b) => a.controls - b.controls || a.bytes - b.bytes || b.rank - a.rank;
 
 // the sites that are one tool (owner, 2026-10-24: back to the easy sites): the first scan read the top of the list and found DNS services, parked
 // domains, adult sites and login walls, because most of the top is not a tool. A one-tool site says what it is in its name, so the scan takes
@@ -71,14 +76,14 @@ if (process.argv[1] === new URL(import.meta.url).pathname && process.argv[2] ===
   const out = []; let i = 0, done = 0;
   await Promise.all(Array.from({ length: 40 }, async () => { while (i < rows.length) { const row = rows[i++], page = await get(row.host); done++; if (done % 500 === 0) console.error('scanned ' + done + ' of ' + rows.length); if (!page) continue;
     const f = features(page.html, page.bytes), h = hardness(f); if (h !== null && !junk(f)) out.push({ ...row, final: page.final, hardness: h, ...f }); } }));
-  out.sort((a, b) => a.hardness - b.hardness || a.rank - b.rank);
+  out.sort(smallestFirst);
   fs.writeFileSync('easiest-sites.json', JSON.stringify({ source: TRANCO, mode: 'tool-named hosts', scanned: rows.length, at: new Date().toISOString(), easiest: out.slice(0, 300) }, null, 1) + '\n');
   // the tower's frontier (owner, 2026-10-24: the tower has no top, every site is on it): every real tool found, easiest first, minus the floors
   // already on the tower; the tower card counts them as the climb still ahead and grows as the scan grows
   if (process.env.FRONTIER) { const { FLOORS } = await import('../void-live-deploy/lib/tower.js'), on = new Set(FLOORS.map((f) => f.site.toLowerCase().replace(/^www\./, '')));
-    fs.writeFileSync(process.env.FRONTIER, JSON.stringify({ about: 'The tower has no top: every site is on it. These are the real one-tool sites ranked so far from the top million (Tranco), easiest first, not yet floors; the scan (easiest-sites.mjs --tools) adds more.', source: TRANCO, scanned: rows.length, of: 1000000, at: new Date().toISOString().slice(0, 10), sites: out.filter((x) => !on.has(x.host.replace(/^www\./, ''))).map((x) => ({ site: x.host, rank: x.rank, hardness: x.hardness, title: String(x.title || '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) })) }, null, 1) + '\n'); }
-  console.log('scanned ' + rows.length + ', ' + out.length + ' real tools; the 70 easiest (hardness, Tranco rank, host, controls, words, links, title):');
-  for (const s of out.slice(0, 70)) console.log(String(s.hardness).padStart(4), String(s.rank).padStart(7), s.host.padEnd(30), (s.inputs + s.selects + s.buttons) + 'c', s.words + 'w', s.links + 'l', '|', s.title);
+    fs.writeFileSync(process.env.FRONTIER, JSON.stringify({ about: 'The tower has no top: every site is on it. These are the real one-tool sites ranked so far from the top million (Tranco), smallest first (the fewest controls on the home page, then the fewest bytes), not yet floors; the scan (easiest-sites.mjs --tools) adds more.', source: TRANCO, scanned: rows.length, of: 1000000, at: new Date().toISOString().slice(0, 10), sites: out.filter((x) => !on.has(x.host.replace(/^www\./, ''))).map((x) => ({ site: x.host, rank: x.rank, controls: x.controls, bytes: x.bytes, hardness: x.hardness, title: String(x.title || '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) })) }, null, 1) + '\n'); }
+  console.log('scanned ' + rows.length + ', ' + out.length + ' real tools; the 70 smallest (controls, bytes, Tranco rank, host, words, links, title):');
+  for (const s of out.slice(0, 70)) console.log(String(s.controls).padStart(4) + 'c', String(s.bytes).padStart(8) + 'B', String(s.rank).padStart(7), s.host.padEnd(30), s.words + 'w', s.links + 'l', '|', s.title);
   process.exit(0);
 }
 if (process.argv[1] === new URL(import.meta.url).pathname) {
@@ -95,8 +100,8 @@ if (process.argv[1] === new URL(import.meta.url).pathname) {
       if (h !== null) out.push({ ...row, final: page.final, hardness: h, ...f });
     }
   }));
-  out.sort((a, b) => a.hardness - b.hardness || a.rank - b.rank);
+  out.sort(smallestFirst);
   fs.writeFileSync(outFile, JSON.stringify({ source: TRANCO, scanned: rows.length, at: new Date().toISOString(), easiest: out.slice(0, 300) }, null, 1) + '\n');
-  console.log('scanned ' + rows.length + ', ' + out.length + ' with something to use; the 60 easiest (hardness, Tranco rank, host, controls, words, links, title):');
-  for (const s of out.slice(0, 60)) console.log(String(s.hardness).padStart(4), String(s.rank).padStart(6), s.host.padEnd(28), (s.inputs + s.selects + s.buttons) + 'c', s.words + 'w', s.links + 'l', '|', s.title);
+  console.log('scanned ' + rows.length + ', ' + out.length + ' with something to use; the 60 smallest (controls, bytes, Tranco rank, host, words, links, title):');
+  for (const s of out.slice(0, 60)) console.log(String(s.controls).padStart(4) + 'c', String(s.bytes).padStart(8) + 'B', String(s.rank).padStart(6), s.host.padEnd(28), s.words + 'w', s.links + 'l', '|', s.title);
 }

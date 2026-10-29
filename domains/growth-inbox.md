@@ -65,3 +65,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-28 | magic 8-ball skill: classic answers to yes/no questions | new idea by growth agent; helper/8ball-skill |
 | building | 2026-10-29 | yes or no skill: simple yes or no answers | new idea by growth agent; helper/yesno |
 | building | 2026-10-29 | uuid skill: generate a random UUID | new idea by growth agent; helper/growth-uuid |
+| building | 2026-10-29 | password skill: generate a random secure password | new idea by growth agent; helper/growth-password |

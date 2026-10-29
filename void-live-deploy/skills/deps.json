@@ -241,6 +241,13 @@
    "tests": 1
   },
   {
+   "file": "lib/card-mini.js",
+   "skills": 9,
+   "direct": 5,
+   "dependants": 15,
+   "tests": 0
+  },
+  {
    "file": "lib/game-kit.js",
    "skills": 9,
    "direct": 1,
@@ -281,13 +288,6 @@
    "direct": 8,
    "dependants": 9,
    "tests": 1
-  },
-  {
-   "file": "lib/card-mini.js",
-   "skills": 8,
-   "direct": 5,
-   "dependants": 14,
-   "tests": 0
   },
   {
    "file": "lib/flight-sites.js",
@@ -416,11 +416,25 @@
    "tests": 1
   },
   {
+   "file": "lib/colour.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
    "file": "lib/calendar.js",
    "skills": 5,
    "direct": 1,
    "dependants": 11,
    "tests": 2
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 11,
+   "tests": 1
   },
   {
    "file": "lib/card-forge.js",
@@ -521,25 +535,11 @@
    "tests": 1
   },
   {
-   "file": "lib/colour.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
    "file": "lib/movies.js",
    "skills": 4,
    "direct": 2,
    "dependants": 10,
    "tests": 0
-  },
-  {
-   "file": "lib/pwcheck.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 10,
-   "tests": 1
   },
   {
    "file": "lib/field-resonance.js",
@@ -2688,7 +2688,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/pdf-ui.js",
@@ -4847,6 +4847,7 @@
     "lib/writing-aids.js",
     "skills/languages.js",
     "skills/lorem.js",
+    "skills/password.js",
     "skills/writing-aids.js"
    ]
   },
@@ -5141,6 +5142,7 @@
     "lib/writing-aids.js",
     "skills/gradient.js",
     "skills/lorem.js",
+    "skills/password.js",
     "skills/writing-aids.js"
    ]
   },
@@ -8033,6 +8035,7 @@
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/lorem.js",
+    "skills/password.js",
     "skills/writing-aids.js"
    ]
   },
@@ -12517,6 +12520,12 @@
    ],
    "importedBy": []
   },
+  "skills/password.js": {
+   "imports": [
+    "skills/util.js"
+   ],
+   "importedBy": []
+  },
   "skills/pdf-card.js": {
    "imports": [
     "lib/pdf-qa.js"
@@ -13732,7 +13741,8 @@
    "importedBy": [
     "lib/wordcount.js",
     "lib/writing-aids.js",
-    "skills/lorem.js"
+    "skills/lorem.js",
+    "skills/password.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
