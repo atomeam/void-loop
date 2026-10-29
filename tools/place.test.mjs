@@ -18,7 +18,9 @@ test('examples taken, and the asks it should and should not take', () => {
   for (const n of place.nearMisses || []) assert.ok(!place.match(n.toLowerCase(), n), n); // place.js lists no nearMisses of its own; the hand-written ones follow
   for (const a of ['show me a street map of Porto', 'where are the Azores', 'neighbourhood around Shibuya', 'take me to Lisbon', 'how can i get to the airport']) assert.ok(place.match(a.toLowerCase(), a), a);
   for (const a of ['area of a circle with radius 5', 'area of a 10 by 12 room', 'dependency map', 'where is my phone', 'where are you', 'directions to work', 'how do i get to sleep']) assert.ok(!place.match(a.toLowerCase(), a), a);
-  // not asserted: "what is a map" is taken as a street map of "what is a" (the "<x> map" pattern), a bug reported, not fixed here
+  // a question about maps is not a place: "what is a map" is no street map of "what is a"
+  for (const a of ['what is a map', "what's a map", 'How to read a map?', 'why is the map wrong', 'which map', 'is it a map', 'map of what is that']) assert.ok(!place.match(a.toLowerCase(), a), a);
+  for (const a of ['Whitby map', 'map of Howth', 'where is Isfahan', 'Canterbury map']) assert.ok(place.match(a.toLowerCase(), a), a); // a place that only starts with the same letters still is one
 });
 
 test('run "where is Kyoto": the biggest Kyoto, zoomed for a city of a million, the small one offered, no directions', async () => {

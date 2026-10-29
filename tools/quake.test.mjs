@@ -15,6 +15,7 @@ const withFetch = async (usgs, fn, fail) => {
 };
 const apiOf = () => { const pages = []; return { pages, esc, showPage: (fn) => { const el = { innerHTML: '' }; fn(el); pages.push(el); return el; }, _pageStill: () => true }; };
 const weekAgo = () => new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+const hoursBack = (u) => (Date.now() - Date.parse(new URL(u).searchParams.get('starttime') + (/T/.test(new URL(u).searchParams.get('starttime')) ? 'Z' : 'T00:00:00Z'))) / 3600e3;
 
 test('examples taken, near misses refused, and a few more asks', () => {
   for (const e of quake.examples) assert.ok(quake.match(e.toLowerCase(), e), e);
@@ -28,13 +29,15 @@ test('run near a place: geocodes it, asks USGS within 500 km from M2.5, lists ea
   await withFetch(usgs, async (urls) => {
     const api = apiOf(); assert.equal(await quake.run('earthquakes near Tokyo today', api), 'quake');
     assert.equal(urls.length, 2); assert.ok(urls[0].includes('name=Tokyo') && !urls[0].includes('today'), urls[0]); // "today" is not part of the place
-    assert.ok(urls[1].startsWith('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=' + weekAgo() + '&orderby=time&limit=8'), urls[1]);
+    assert.ok(urls[1].startsWith('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime='), urls[1]);
+    assert.ok(Math.abs(hoursBack(urls[1]) - 24) < 0.1, urls[1]); assert.ok(urls[1].includes('&orderby=time&limit=8'), urls[1]); // "today" is the last 24 hours
     assert.ok(urls[1].endsWith('&latitude=35.6895&longitude=139.69171&maxradiuskm=500&minmagnitude=2.5'), urls[1]);
     const h = api.pages[0].innerHTML;
     assert.ok(h.includes('<h2>Near Tokyo, Japan</h2>'), h); // admin1 equal to the name is not repeated
     assert.ok(h.includes('<b>M6.2</b> · Major — 20 km E of Tokyo'), h); assert.ok(h.includes('2 hours ago · 42 km deep · <a href="https://earthquake.usgs.gov/earthquakes/eventpage/us1"'), h);
     assert.ok(h.includes('<b>M3.1</b> · Light — off the coast'), h); assert.ok(h.includes('1 day ago · 10 km deep</div>'), h); // no link without a url
     assert.ok(h.includes('Serious shaking. Follow official emergency guidance if nearby.'), h); // the tip of the first (latest) quake
+    assert.ok(h.includes('Tokyo, Japan · last 24 hours'), h);
   });
 });
 
@@ -55,5 +58,33 @@ test('run: none this week, a place it cannot find, a dead service', async () => 
   await withFetch({ features: [] }, async () => { const api = apiOf(); assert.equal(await quake.run('quakes around Tokyo', api), 'quake'); assert.ok(api.pages[0].innerHTML.includes('No matching quakes in the last week within about 500 km.'), api.pages[0].innerHTML); });
   await withFetch({ features: [] }, async (urls) => { const api = apiOf(); assert.equal(await quake.run('earthquakes in Atlantis', api), 'none'); assert.equal(urls.length, 1); assert.ok(api.pages[0].innerHTML.includes('couldn\'t find "Atlantis"')); });
   await withFetch(null, async () => { const api = apiOf(); assert.equal(await quake.run('recent earthquakes', api), 'none'); assert.ok(api.pages[0].innerHTML.includes("didn't answer just now")); }, true);
-  // not asserted: "earthquakes in the last week", "... in the past 24 hours" and "earthquakes near me" geocode "the last week" / "me" as a place (bug reported)
+});
+
+test('a time phrase sets the window and is never a place; "near me" is where the visitor is, or worldwide with a line saying so', async () => {
+  await withFetch({ features: [feat(5, 'x', 1, 10)] }, async (urls) => {
+    let api = apiOf(); assert.equal(await quake.run('earthquakes in the last week', api), 'quake');
+    assert.equal(urls.length, 1); assert.ok(urls[0].includes('starttime=' + weekAgo() + '&') && urls[0].endsWith('&minmagnitude=4.5'), urls[0]); // no geocoding of "the last week"
+    assert.ok(api.pages[0].innerHTML.includes('worldwide (M4.5+) · last week'), api.pages[0].innerHTML);
+    api = apiOf(); await quake.run('earthquakes in the past 24 hours', api);
+    assert.equal(urls.length, 2); assert.ok(!urls[1].includes('geocoding') && Math.abs(hoursBack(urls[1]) - 24) < 0.1, urls[1]);
+    assert.ok(api.pages[0].innerHTML.includes('last 24 hours'), api.pages[0].innerHTML);
+    api = apiOf(); await quake.run('quakes near Tokyo over the past 3 days', api);
+    assert.ok(urls[2].includes('name=Tokyo&') || urls[2].endsWith('name=Tokyo'), urls[2]); assert.ok(Math.abs(hoursBack(urls[3]) / 24 - 3) < 1, urls[3]);
+    assert.ok(api.pages[0].innerHTML.includes('Tokyo, Japan · last 3 days'), api.pages[0].innerHTML);
+  });
+  // near me, the place unknown (no saved place, no device permission, /api/where and the time zone give nothing): worldwide, said plainly
+  await withFetch({ features: [feat(5, 'x', 1, 10)] }, async (urls) => {
+    const api = apiOf(); assert.equal(await quake.run('earthquakes near me', api), 'quake');
+    assert.ok(!urls.some((u) => u.includes('name=me')), urls.join(' ')); // "me" is never geocoded
+    const usgs = urls.filter((u) => u.includes('earthquake.usgs.gov')); assert.equal(usgs.length, 1); assert.ok(usgs[0].endsWith('&minmagnitude=4.5'), usgs[0]);
+    assert.ok(api.pages[0].innerHTML.includes('I don&#39;t know where you are') || api.pages[0].innerHTML.includes("I don't know where you are"), api.pages[0].innerHTML);
+  });
+  // near me, the connection's city known (/api/where): within 500 km of it
+  const real = globalThis.fetch, urls = [];
+  globalThis.fetch = async (u) => { urls.push(String(u)); if (String(u) === '/api/where') return { ok: true, json: async () => ({ ok: true, lat: 35.7, lon: 139.7, city: 'Tokyo', country: 'JP' }) }; return { json: async () => ({ features: [feat(4.2, 'near Tokyo', 3, 30)] }) }; };
+  try {
+    const api = apiOf(); assert.equal(await quake.run('any earthquakes near me today', api), 'quake');
+    const usgs = urls.find((u) => u.includes('earthquake.usgs.gov')); assert.ok(usgs.endsWith('&latitude=35.7&longitude=139.7&maxradiuskm=500&minmagnitude=2.5'), usgs);
+    assert.ok(api.pages[0].innerHTML.includes('<h2>Near Tokyo, JP</h2>'), api.pages[0].innerHTML);
+  } finally { globalThis.fetch = real; }
 });

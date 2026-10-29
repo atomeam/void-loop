@@ -4,11 +4,29 @@
  * "earthquakes near Tokyo", "recent earthquakes", "was there an earthquake in California",
  * "biggest quake today", "quakes around Lisbon".
  * Shows magnitude, place, time, depth, and a USGS map link. Safety note when strong nearby.
+ * "in the last 24 hours" / "past 3 days" / "today" set the window (7 days otherwise); "near me" is where the visitor is (lib/where.js, the
+ * place they chose, the device if already allowed, else the connection's city), and the worldwide list with a line saying so when that is unknown.
  */
+import { whereAmI } from '../lib/where.js';
+
 const TYPES = /\b(earth\s*quakes?|quakes?|tremors?|seismic\s+(?:activity|event|events))\b/;
 
+// "in the last week", "over the past 24 hours", "past 3 days", "today": how far back to look, in days, and how to say it; null when not said
+const N = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, ten: 10, thirty: 30 };
+const SPAN = /\b(?:(?:in|over|during|from|for|within)\s+)?(?:the\s+)?(?:last|past)\s+(?:(\d+|an?|one|two|three|four|five|six|seven|ten|thirty)\s+)?(hours?|days?|weeks?|months?|years?)\b/i;
+function spanOf(text) {
+  const t = String(text || '').toLowerCase(), m = t.match(SPAN);
+  if (!m) return /\b(?:today|tonight)\b/.test(t) ? { days: 1, label: 'last 24 hours' } : null;
+  const n = m[1] ? (N[m[1]] || parseInt(m[1], 10)) : 1, unit = m[2].replace(/s$/, '');
+  const days = Math.min(365, Math.max(1 / 24, n * { hour: 1 / 24, day: 1, week: 7, month: 30, year: 365 }[unit]));
+  return { days, label: 'last ' + (n === 1 ? (unit === 'day' ? '24 hours' : unit) : n + ' ' + unit + 's') };
+}
+// "near me", "around here", "nearby", "in my area": where the visitor is, not a place to look up
+const HERE = /\b(?:(?:near|around|close\s+to)\s+(?:me|us|here|my\s+(?:location|area|house|home))|nearby|around\s+here|in\s+my\s+area|where\s+i\s+am|my\s+location)\b/i;
+
 function placeOf(text) {
-  const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' ');
+  const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' ').replace(new RegExp(SPAN.source, 'ig'), ' ').replace(/\s+/g, ' ').trim();
+  if (HERE.test(t)) return '';
   const m = t.match(/\b(?:near|around|by|in|at|for|close\s+to)\s+(.+)$/i);
   if (!m) return '';
   return m[1]
@@ -71,12 +89,17 @@ function rowHtml(f, esc) {
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const place = placeOf(text);
-  const title = place ? 'Earthquakes near ' + place : 'Recent earthquakes';
+  const place = placeOf(text), here = HERE.test(String(text || '')), span = spanOf(text) || { days: 7, label: 'last 7 days' };
+  const title = place ? 'Earthquakes near ' + place : here ? 'Earthquakes near you' : 'Recent earthquakes';
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">.</div>'; });
   try {
-    let loc = null;
-    if (place) {
+    let loc = null, note = '';
+    if (here) {
+      const w = await whereAmI();
+      if (!api._pageStill(el)) return 'quake';
+      if (w) loc = { latitude: w.lat, longitude: w.lon, name: w.name }; // "where you are" from the device, else the city it is known by
+      else note = 'I don\'t know where you are, so these are the strongest worldwide. Ask "earthquakes near" a city for a nearby list.';
+    } else if (place) {
       loc = await geo(place);
       if (!api._pageStill(el)) return 'quake';
       if (!loc) {
@@ -84,7 +107,7 @@ async function run(text, api) {
         return 'none';
       }
     }
-    const start = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+    const start = new Date(Date.now() - span.days * 864e5).toISOString().slice(0, span.days < 2 ? 19 : 10);
     let url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=' + start
       + '&orderby=time&limit=8';
     if (loc) {
@@ -98,7 +121,8 @@ async function run(text, api) {
     const where = loc ? loc.name : 'worldwide (M4.5+)';
     if (!feats.length) {
       el.innerHTML = '<h2>' + esc(loc ? 'Near ' + loc.name : 'Recent earthquakes') + '</h2>'
-        + '<p>No matching quakes in the last week' + (loc ? ' within about 500 km' : '') + '.</p>'
+        + (note ? '<p>' + esc(note) + '</p>' : '')
+        + '<p>No matching quakes in the ' + esc(span.days === 7 ? 'last week' : span.label) + (loc ? ' within about 500 km' : '') + '.</p>'
         + '<div class="src">Source: <a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener">USGS</a></div>';
       return 'quake';
     }
@@ -106,7 +130,8 @@ async function run(text, api) {
     const topMag = top.properties && top.properties.mag;
     const tip = band(topMag).tip;
     el.innerHTML = '<h2>' + esc(loc ? 'Near ' + loc.name : 'Recent earthquakes') + '</h2>'
-      + '<div class="sub">' + esc(where) + ' · last 7 days</div>'
+      + '<div class="sub">' + esc(where) + ' · ' + esc(span.label) + '</div>'
+      + (note ? '<p>' + esc(note) + '</p>' : '')
       + '<ul style="list-style:none;padding:0;margin:8px 0">' + feats.map((f) => rowHtml(f, esc)).join('') + '</ul>'
       + (tip ? '<p style="color:#8a8a8a">' + esc(tip) + '</p>' : '')
       + '<p style="color:#8a8a8a">For alerts and safety steps, use your local emergency service. This is a public USGS feed, not a warning system.</p>'
