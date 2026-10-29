@@ -533,6 +533,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:32:21Z",
+   "subject": "List the leet skill so it loads, and narrow its match"
+  },
+  {
+   "at": "2026-10-29T05:30:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:30:32Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:29:44Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:29:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T05:28:35Z",
    "subject": "List the ascii skill so it loads"
   },
@@ -543,6 +563,14 @@
   {
    "at": "2026-10-29T05:26:47Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:26:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:25:34Z",
+   "subject": "Verse Brain: the frontier drafts as one mind on one shared field"
   },
   {
    "at": "2026-10-29T05:25:14Z",
@@ -582,34 +610,6 @@
   },
   {
    "at": "2026-10-29T05:13:36Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:13:05Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T05:12:43Z",
-   "subject": "Tower: sycophanthex.com is fought by /fanfic/"
-  },
-  {
-   "at": "2026-10-29T05:10:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:10:00Z",
-   "subject": "List the proverb skill so it loads"
-  },
-  {
-   "at": "2026-10-29T05:09:35Z",
-   "subject": "Own-card lists: end a cut row at its last whole clause"
-  },
-  {
-   "at": "2026-10-29T05:05:44Z",
-   "subject": "Memory orbs: generated cards after bringing main in (node tools/refresh.mjs)"
-  },
-  {
-   "at": "2026-10-29T05:05:41Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],

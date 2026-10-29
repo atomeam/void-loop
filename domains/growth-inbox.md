@@ -60,4 +60,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped | 2026-10-29 | a note about my own card gets my own voice, with Fixed and Still open lists from my records | PR #1410, owner card notes 1-5 |
 | building | 2026-10-28 | morse code | new idea by growth agent; helper/morse |
 | building | 2026-10-28 | ascii skill: show ASCII codes for text | new idea by growth agent; helper/ascii |
+| building | 2026-10-28 | leet skill: convert text to 1337 speak | new idea by growth agent; helper/leet |
 | building | 2026-10-28 | lorem skill: generate lorem ipsum placeholder text | new idea by growth agent; helper/lorem |
