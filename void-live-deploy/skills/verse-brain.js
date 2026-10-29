@@ -25,9 +25,12 @@ import { loadKept, keep, forget } from '../lib/brain-store.js';
 import * as Field from '../lib/shared-field.js';
 import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
 import { detectPitch } from '../lib/brain-hearing.js';
+import { PX, PY } from '../lib/brain-painter.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
 const offs = new WeakMap(); // an offscreen GW x GH canvas per state, kept off the state (the stage saves its things)
+const paintOffs = new WeakMap();
+function paintOffFor(s) { let o = paintOffs.get(s); if (!o) { o = Object.assign(document.createElement('canvas'), { width: PX, height: PY }); paintOffs.set(s, o); } return o; }
 function offFor(s) { let o = offs.get(s); if (!o) { o = Object.assign(document.createElement('canvas'), { width: GW, height: GH }); offs.set(s, o); } return o; }
 const SPECIES = ['#7fd8ff', '#ffb36b', '#b99bff'];
 
@@ -58,6 +61,12 @@ function drawField(g, s, W, H) {
     d[i * 4 + 3] = 255;
   }
   og.putImageData(img, 0, 0); g.imageSmoothingEnabled = true; g.drawImage(off, 0, 0, W, H);
+  // the painter's look: the hues its current program paints, laid lightly over the tissue
+  const pt = s.b.board.paint; if (!pt) return;
+  const po = paintOffFor(s), pg = po.getContext('2d'); if (!pg) return;
+  const pimg = pg.createImageData(PX, PY), pd = pimg.data;
+  for (let c = 0; c < PX * PY; c++) { const h = pt.hues[c] * 6.2832; pd[c * 4] = 128 + 110 * Math.cos(h); pd[c * 4 + 1] = 128 + 110 * Math.cos(h - 2.1); pd[c * 4 + 2] = 128 + 110 * Math.cos(h + 2.1); pd[c * 4 + 3] = 255; }
+  pg.putImageData(pimg, 0, 0); g.save(); g.globalAlpha = 0.22; g.globalCompositeOperation = 'screen'; g.drawImage(po, 0, 0, W, H); g.restore();
 }
 function draw(g, s, W, H) {
   const b = s.b, N = b.ws.nodes;
@@ -158,7 +167,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     el.dataset.utility = String(self.utility); el.dataset.gen = String(self.genome.gen); el.dataset.chosen = String(self.q); el.dataset.imagined = String(self.imagined);
     el.dataset.concepts = String(self.concepts); el.dataset.focus = String(b.focus.region); el.dataset.action = self.action; el.dataset.ticks = String(b.ticks);
     el.dataset.organs = String(B.ORGAN_IDS.length); el.dataset.episodes = String(self.episodes); el.dataset.procedures = String(self.procedures); el.dataset.wants = String(self.wants.length); el.dataset.conflicts = String(self.conflicts.length);
-    el.dataset.heard = String(b.ear.notes); el.dataset.guessed = String(b.ear.guessed); el.dataset.hits = String(b.ear.hits); el.dataset.ear = b.board.ear ? b.board.ear.note : ''; // Listen: notes heard, guesses made and right (numbers only)
+    el.dataset.heard = String(b.ear.notes); el.dataset.guessed = String(b.ear.guessed); el.dataset.hits = String(b.ear.hits); el.dataset.ear = b.board.ear ? b.board.ear.note : ''; el.dataset.paintgen = String(b.painter.gen); // Listen: notes heard, guesses made and right (numbers only)
     const fc = Field.census(); el.dataset.felt = String((felt.get(S()) || []).length); el.dataset.published = String(link ? link.held : 0); el.dataset.fieldOwners = Object.keys(fc.held).sort().join(',');
     const t = fieldSays(fc, +el.dataset.felt, link ? link.held : 0); if (fieldLine.textContent !== t) fieldLine.textContent = t;
   };

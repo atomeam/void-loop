@@ -14,6 +14,7 @@ export const TECHNIQUES = [
   ['spiking synapses', /spiking|izhikevich|\bstdp\b|synap/, 'synapses'],
   ['lenia', /lenia/, 'creature'],
   ['hummed melody', /hum[ -]crystal|pitch[ -]detect|\byin\b|music[ -]box/, 'hearing'],
+  ['self-mutating program', /self[ -]mutating|shader[ -]mind|genetic programming/, 'painter'],
   ['reservoir', /reservoir|echo[ -]state|\besn\b/, 'predictor'],
   ['online k-means', /k-?means/, 'gestures'],
   ['compression oracle', /compression|\bncd\b|kolmogorov/, 'gestures'],
@@ -61,7 +62,6 @@ export const LEFT = {
   'screen-grazing-lichen': 'needs the visitor to share their screen (getDisplayMedia)',
   'window-spanning-organism': 'needs several windows and a SharedWorker; the bridge shares one brain across pages instead',
   'taste-oracle': 'Gaussian-process preference duels; measured as a taste term in the arena on 20 seeds it gave no reliable gain (0.29 without, 0.25 to 0.33 with) and on its own benchmark it did no better than a hill climb',
-  'verse-self-mutating-shader-mind': 'a shader source as a genome; the arena evolves numbers, not code, so this is next, not built',
   'local-ai-portal-lattice-mind': 'its spec is a placeholder and its page holds no working mind',
   'rd-attention-kernel': 'its spec is a placeholder (its idea is in the tissue and attention organs through other drafts)'
 };
