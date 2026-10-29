@@ -133,6 +133,19 @@ export const SPECS = {
     await t.fill('#ask', '100 f to c'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(400); t.ok(/37\.7777|37\.78/.test(await t.p.locator('main').innerText()), '100 F is 37.78 C');
     await t.share('#link');
   },
+  // the file converter (onlineconverter.com assimilated, 2026-10-29): a search opens the tool, a real HTML file becomes plain text on the device,
+  // the text file is checked word for word, and the share link opens the same tool with no file in it
+  '/converter/': async (t) => {
+    t.ok(/106 tools: 21 on this page, \d+ on another Verse page, \d+ in part, \d+ not on Verse yet/.test(await t.text('#counts')), 'all 106 tools counted: ' + (await t.text('#counts')).slice(0, 80));
+    await t.fill('#q', 'epub to txt'); await t.click('#find button[type=submit]'); await t.p.waitForTimeout(300);
+    t.ok(/EPUB to TXT/.test(await t.text('#found')) && /Ebook to TXT/.test(await t.text('#tName')), 'epub to txt finds and opens the tool');
+    await t.p.setInputFiles('#files', t.tmp('note.html', '<html><body><h1>Shop list</h1><p>Two eggs and bread.</p></body></html>')); await t.p.waitForTimeout(300);
+    await t.click('#go'); await t.waitText('#status', /made on this device|could not/, 10000);
+    const got = await t.p.evaluate(async () => { const a = document.querySelector('#out a.dl'); return a ? { name: a.download, text: await (await fetch(a.href)).text() } : null; });
+    t.ok(!!got && got.name === 'note.txt' && /Shop list/.test(got.text) && /Two eggs and bread\./.test(got.text) && !/</.test(got.text), 'the HTML file becomes note.txt with its words and no tags: ' + JSON.stringify(got).slice(0, 90));
+    await t.download('#out a.dl', /^note\.txt$/);
+    await t.share('#share', async (p) => /Ebook to TXT/.test(await p.locator('#tName').innerText()));
+  },
   '/cpan/': async (t) => {
     await t.fill('#reports', 'Moo 2.005005 PASS perl-5.38.0 x86_64-linux\nMoo 2.005005 FAIL perl-5.8.9 darwin\nTry::Tiny 0.31 PASS perl-5.36.0 MSWin32'); await t.click('#ingest');
     await t.fill('#q', 'Moo'); await t.click('#search'); t.ok(/2 matching/.test(await t.text('#searchout')), 'two Moo reports found');

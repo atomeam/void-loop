@@ -12,10 +12,10 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Many generators (names, places, ideas) | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:75 `<h1 id="title">Random generators</h1>` |
-| Generate again with one press | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:85 `button" class="go" id="regen">Regenerate</button>` |
-| Keep favourites | Generators | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:94 `<h2 id="favH">Kept</h2>` |
-| Make your own generator | Making | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:99 `<summary id="ownH">Make your own generator</summary>` |
-| Generators made by other people | Making | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:107 `<h2 id="hubH">People's generators</h2>` |
-| Image generators | Generators | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:109 `publish your own</a><a href="/image/" id="hubImage" style="font-size:14px;color:inherit;di` |
+| Many generators (names, places, ideas) | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:76 `<h1 id="title">Random generators</h1>` |
+| Generate again with one press | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:86 `button" class="go" id="regen">Regenerate</button>` |
+| Keep favourites | Generators | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:95 `<h2 id="favH">Kept</h2>` |
+| Make your own generator | Making | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:100 `<summary id="ownH">Make your own generator</summary>` |
+| Generators made by other people | Making | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:108 `<h2 id="hubH">People's generators</h2>` |
+| Image generators | Generators | have | studied by hand: perchance.org offers this (https://perchance.org/) | void-live-deploy/generators/index.html:110 `publish your own</a><a href="/image/" id="hubImage" style="font-size:14px;color:inherit;di` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://perchance.org/ | not compared yet |

@@ -1,0 +1,21 @@
+{
+ "site": "onlineconverter.com (Online Converter, 106 file and unit tools)",
+ "kind": "file converter: one page of links to 106 tools, each an upload to its server",
+ "chosen": "2026-10-29",
+ "why": "next in the smallest-first ranking of all sites (fewest controls on the home page, ties to the lighter page): 22 controls, 187 nodes, 11,437 bytes (tower.size.json)",
+ "source": ["the site's home page and tool list, read 2026-10-29 (this build network gets a 403 from the site, so it was read through a fetch service, and nothing is scanned live)", "https://www.onlineconverter.com/"],
+ "rule": "Verse assimilates the site: every feature it has, plus one notch, on one page wired into the rest of Verse. A tool Verse cannot do is listed as not on Verse yet, never as done. A default-bar line (no account, works offline) is not counted as an advantage.",
+ "features": [
+  { "id": "video", "theirs": "27 video tools: to MP4, 3GP, AVI, FLV, MKV, MOV, WEBM, WMV, and cut, merge, compress, rotate, add audio, text or images to a video", "plus_one": "the same tools in the browser with no upload", "void": "none", "progress": "2026-10-29: Verse writes no video file. All 27 are listed as not on Verse yet. Taking a frame or the sound out of a video is in the Image and Audio rows." },
+  { "id": "audio", "theirs": "25 audio tools: to MP3, WAV, AAC, FLAC, OGG and more, and cut, merge, mix, speed, volume, remove silence", "plus_one": "the same tools on the device, with a crossfade length and the sound played back before download", "void": "none", "progress": "2026-10-29: 8 on the page (WAV, AIFF, cut, merge, mix, speed, volume, remove silence), 2 in part, 15 not on Verse yet (Verse writes no MP3, AAC, OGG or FLAC)." },
+  { "id": "image", "theirs": "22 image tools: to JPG, PNG, GIF, BMP, TIFF, WEBP, PDF and more, and resize, crop, merge, change a GIF's speed", "plus_one": "the same tools on the device, with a preview of each result", "void": "none", "progress": "2026-10-29: 10 on the page, 6 on other Verse pages (/photos/, /resize-image/), 1 in part, 5 not on Verse yet (camera raw, background removal and others)." },
+  { "id": "ebook", "theirs": "13 ebook tools: to EPUB, MOBI, AZW3, FB2, LIT, PDB, TXT and more", "plus_one": "the words of an ebook to any text format on the device", "void": "none", "progress": "2026-10-29: 1 on the page, 5 in part (the words carry over, the layout and pictures do not), 7 not on Verse yet (Kindle and other formats)." },
+  { "id": "document", "theirs": "10 document tools: PDF to Word and back, and to TXT, HTML, RTF, and add an image to a PDF", "plus_one": "the same tools on the device, with the pages counted and what was lost named", "void": "none", "progress": "2026-10-29: 2 on the page, 3 on /pdf/, 3 in part, 2 not on Verse yet." },
+  { "id": "unit", "theirs": "9 unit converters: length, area, weight, volume, temperature, time, speed, data and more", "plus_one": "the same units, with a link to the answer", "void": "matches", "progress": "2026-10-29: all 9 on other Verse pages (7 on /convert/, currency on /markets/, time zones on /time/), each row linking there. Not compared unit by unit against the site." },
+  { "id": "find", "theirs": "no search: a list of links to read through", "plus_one": "type 'mp4 to mp3' or 'cut mp3' and the tool opens, with what Verse does for it", "void": "beats" },
+  { "id": "share", "theirs": "none", "plus_one": "a link that opens the same tool or search, with no file in it", "void": "beats" },
+  { "id": "free", "theirs": "'Free' and 'Safe: nothing to install'", "plus_one": "free, nothing to install, and no file uploaded", "void": "matches", "progress": "2026-10-29: the no-upload line is Verse's default bar, so it is not counted as an advantage." },
+  { "id": "devices", "theirs": "'Convenience: on a computer or a cell phone'", "plus_one": "the page works at phone width", "void": "matches" },
+  { "id": "encrypted", "theirs": "says it does not support encrypted files", "plus_one": "says so too, and names a PDF's password as the reason when it meets one", "void": "matches" }
+ ]
+}

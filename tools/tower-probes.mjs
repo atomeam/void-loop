@@ -696,6 +696,30 @@ export const PROBES = Object.freeze({
       ['no account', /No account/], ['no cookies', /no cookies/i], ['works offline', /works offline/i], ['back to Verse', /Back to Verse/],
     ],
   },
+  // onlineconverter.com (the tower target since 2026-10-29), against /converter/. The site turns this network away (403), so nothing here is
+  // read from it now: the facts are its own features as its home page showed them on 2026-10-29 (domains/targets/onlineconverter.json). A
+  // group Verse cannot do counts only when Verse does some of it: a group whose header says every tool is 'not on Verse yet' is not a match,
+  // so the video group (27 of 27 not on Verse) never counts for Verse. The ask: 'epub to txt' finds the tool, opens it, and says it is on the page.
+  'onlineconverter.com': {
+    site: 'https://www.onlineconverter.com/', verse: '/converter/',
+    ask: { verse: '/converter/?q=epub%20to%20txt' },
+    truth: [
+      ['the tool found for the ask', /EPUB to TXT/],
+      ['the tool opened, ready for a file', /Ebook to TXT/],
+      ['it says the tool is on the page', /TXT \(ebook\)\s*\n\s*On this page/],
+      ['every tool counted, worked out from the list (106)', /106 tools: \d+ on this page, \d+ on another Verse page, \d+ in part, \d+ not on Verse yet/],
+    ],
+    askParts: {
+      'the six groups': ['Video', 'Audio', 'Image', 'Ebook', 'Document', 'Unit'].map((g) => [g.toLowerCase() + ' tools Verse does', { test: (t) => new RegExp('\\b' + g + '\\b', 'i').test(t) && !new RegExp('\\b' + g + ' \\((\\d+)\\)\\s*\\n+\\s*\\1 not on Verse yet\\.').test(t) }]),
+    },
+    facts: [
+      ['a video converter', { test: (t) => /\bvideo\b/i.test(t) && !/\bVideo \((\d+)\)\s*\n+\s*\1 not on Verse yet\./.test(t) }],
+      ['an audio converter', /\baudio\b|\bsound\b/i], ['an image converter', /\bimage\b|\bpictures?\b/i], ['an ebook converter', /\bebooks?\b|\bEPUB\b/i],
+      ['a document converter', /\bdocuments?\b|\bDOCX\b|\bPDF\b/], ['a unit converter', /\bunits?\b/i],
+      ['free', /\bfree\b|\bno account\b/i], ['nothing to install', /nothing to install|no (?:software|app) to install/i],
+      ['on a computer or a phone', /computer or (?:a )?(?:cell )?phone|any device/i], ['encrypted files named as not supported', /encrypted/i],
+    ],
+  },
   emojis: {
     site: 'https://emojitracker.com/', verse: '/emojis/',
     ask: { verse: '/emojis/?pick=🔥' },
