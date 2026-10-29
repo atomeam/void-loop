@@ -5,13 +5,14 @@
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
 import { probeHtml } from '../lib/probe-log.js';
+import { PROOF_URL, todayCheck, todayHtml } from '../lib/ledger-today.js'; // today's lines with their hashes, checked here against /growth.proof.json
 import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
 import { betterHtml, familySnapshot } from '../lib/better.js';
 import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Verse)
 import { confidenceOf } from '../lib/skill-confidence.js';
 import { sparkSvg } from '../lib/spark.js';
 import { autopsy, incidentCases } from '../lib/autopsy.js'; // test cases from recent red runs on main (the Site Test card) // weathered: untested for WEATHER_DAYS (the Site Test heat map)
-import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
+import { timeline, weekSummary, publicWhat, plainly } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
 export const LEDGER_URL = '/void.growth.json';
 export const KIND_LABEL = { grow: 'new', build: 'better', fix: 'fixed', retire: 'retired', idea: 'idea', finding: 'finding' };
@@ -247,7 +248,13 @@ async function run(text, api) {
   catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How Verse has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
-  el.innerHTML = growthHead(esc, list) + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Verse: the arcade ladder)
+  el.innerHTML = growthHead(esc, list) + '<div data-today></div>' + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Verse: the arcade ladder)
+  // the verifiable ledger's "today" view (lib/ledger-today.js; the frontier's growth ledger): today's lines (UTC) with their line hashes, and the
+  // whole chain recomputed in this browser against the proof the deploy wrote; with no proof served, no block
+  fetch(PROOF_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((proof) => (proof ? todayCheck(list, proof) : null)).then((res) => {
+    const slot = el.querySelector('[data-today]'), html = todayHtml(esc, res, { label: KIND_LABEL, color: KIND_COLOR, text: plainly });
+    if (slot && html && el.isConnected) slot.innerHTML = html; // void-review: ok: todayHtml escapes every value (lib/ledger-today.js, tested with markup in an entry)
+  }).catch(() => {});
   // Verse's probes (lib/probe-log.js, asked by Verse): how many of the asks it wrote for itself it missed, how many fixes it proposed
   // and passed, and its proposals most certain first; nothing shows until the ledger has a record
   fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
