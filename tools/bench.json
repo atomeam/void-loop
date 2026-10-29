@@ -6910,5 +6910,9 @@
   {"ask": "3d8", "want": "skill:random"},
   {"ask": "memory orbs", "want": "skill:agent-fluid-memory-orbs"},
   {"ask": "fluid memory orbs", "want": "skill:agent-fluid-memory-orbs"},
-  {"ask": "what is the ascii of A", "want": "skill:ascii"}
+  {"ask": "what is the ascii of A", "want": "skill:ascii"},
+  {"ask": "random password", "want": "skill:password"},
+  {"ask": "another password", "want": "skill:password"},
+  {"ask": "another emoji", "want": "skill:emoji"},
+  {"ask": "8 ball", "want": "skill:magic8"}
 ]
