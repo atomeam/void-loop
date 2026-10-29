@@ -61,10 +61,10 @@ export function dist(E, hist) {
   const out = new Map(); let mass = 1;
   for (let o = Math.min(MAXO, hist.length); o >= 0; o--) {
     const m = E.t[o][hist.slice(hist.length - o).join('|')]; if (!m) continue;
-    let tot = 0, dis = 0; for (const k in m) if (!out.has(k)) { tot += m[k]; dis++; }
+    const ks = Object.keys(m).filter((k) => !out.has(k)); let tot = 0; for (const k of ks) tot += m[k];
     if (!tot) continue;
-    for (const k in m) if (!out.has(k)) out.set(k, (mass * m[k]) / (tot + dis));
-    mass *= dis / (tot + dis);
+    for (const k of ks) out.set(k, (mass * m[k]) / (tot + ks.length));
+    mass *= ks.length / (tot + ks.length);
   }
   const un = ALL.filter((k) => !out.has(k)); for (const k of un) out.set(k, mass / un.length);
   return out;
