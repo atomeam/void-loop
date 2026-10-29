@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 932,
+ "counted": 928,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -17,18 +17,18 @@
    "tests": 4
   },
   {
-   "file": "lib/field-kit.js",
-   "skills": 32,
-   "direct": 2,
-   "dependants": 53,
-   "tests": 4
-  },
-  {
    "file": "lib/ask-text.js",
    "skills": 32,
    "direct": 23,
    "dependants": 34,
    "tests": 2
+  },
+  {
+   "file": "lib/field-kit.js",
+   "skills": 31,
+   "direct": 2,
+   "dependants": 49,
+   "tests": 4
   },
   {
    "file": "lib/placement.js",
@@ -42,13 +42,6 @@
    "skills": 24,
    "direct": 1,
    "dependants": 25,
-   "tests": 1
-  },
-  {
-   "file": "lib/motion-throttle.js",
-   "skills": 21,
-   "direct": 1,
-   "dependants": 22,
    "tests": 1
   },
   {
@@ -80,17 +73,24 @@
    "tests": 2
   },
   {
-   "file": "lib/mind-field-modes.js",
+   "file": "lib/motion-throttle.js",
    "skills": 20,
    "direct": 1,
    "dependants": 21,
+   "tests": 1
+  },
+  {
+   "file": "lib/mind-field-modes.js",
+   "skills": 19,
+   "direct": 1,
+   "dependants": 20,
    "tests": 2
   },
   {
    "file": "lib/field-stage.js",
-   "skills": 20,
-   "direct": 16,
-   "dependants": 20,
+   "skills": 19,
+   "direct": 15,
+   "dependants": 19,
    "tests": 0
   },
   {
@@ -514,13 +514,6 @@
    "tests": 1
   },
   {
-   "file": "lib/field-resonance.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
    "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
@@ -739,6 +732,13 @@
   },
   {
    "file": "lib/field-nca.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-resonance.js",
    "skills": 3,
    "direct": 1,
    "dependants": 3,
@@ -1067,13 +1067,6 @@
    "tests": 2
   },
   {
-   "file": "lib/brain-workspace.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/emoji.js",
    "skills": 1,
    "direct": 0,
@@ -1127,13 +1120,6 @@
    "skills": 1,
    "direct": 1,
    "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-organs.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 2,
    "tests": 1
   },
   {
@@ -1243,20 +1229,6 @@
   },
   {
    "file": "lib/baseconv.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-bridge.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -4137,45 +4109,6 @@
     "skills/own-parts.js"
    ]
   },
-  "lib/brain-bridge.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/verse-brain.js"
-   ]
-  },
-  "lib/brain-organs.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/field-resonance.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "skills/verse-brain.js"
-   ]
-  },
-  "lib/brain-workspace.js": {
-   "imports": [
-    "lib/field-kit.js"
-   ],
-   "importedBy": [
-    "lib/brain-organs.js",
-    "lib/brain.js",
-    "skills/verse-brain.js"
-   ]
-  },
-  "lib/brain.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/brain-workspace.js",
-    "lib/brain-organs.js"
-   ],
-   "importedBy": [
-    "skills/verse-brain.js"
-   ]
-  },
   "lib/bridges.js": {
    "imports": [],
    "importedBy": [
@@ -5208,9 +5141,6 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
-    "lib/brain-organs.js",
-    "lib/brain-workspace.js",
-    "lib/brain.js",
     "lib/council-law.js",
     "lib/field-attention.js",
     "lib/field-cards.js",
@@ -5260,7 +5190,6 @@
     "skills/tilt-arena.js",
     "skills/tilt-mode.js",
     "skills/vector-field-mind.js",
-    "skills/verse-brain.js",
     "skills/veto-council.js",
     "skills/zorbleflux.js"
    ]
@@ -5282,14 +5211,11 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
-    "lib/brain-organs.js",
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
-    "lib/brain.js",
     "skills/mind-field-mode.js",
-    "skills/mind-field.js",
-    "skills/verse-brain.js"
+    "skills/mind-field.js"
    ]
   },
   "lib/field-stage.js": {
@@ -5313,8 +5239,7 @@
     "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-mode.js",
-    "skills/vector-field-mind.js",
-    "skills/verse-brain.js"
+    "skills/vector-field-mind.js"
    ],
    "reachedBy": [
     "skills/mind-field-mode.js",
@@ -6509,8 +6434,7 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
     "skills/tilt-mode.js",
-    "skills/vector-field-mind.js",
-    "skills/verse-brain.js"
+    "skills/vector-field-mind.js"
    ]
   },
   "lib/misskey.js": {
@@ -6600,8 +6524,7 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
     "skills/tilt-mode.js",
-    "skills/vector-field-mind.js",
-    "skills/verse-brain.js"
+    "skills/vector-field-mind.js"
    ]
   },
   "lib/movies.js": {
@@ -11545,6 +11468,10 @@
     "skills/time.js"
    ]
   },
+  "skills/morse.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/motorbody.js": {
    "imports": [
     "skills/print-file.js",
@@ -12988,15 +12915,6 @@
     "skills/mind-field-mode.js",
     "skills/mind-field.js"
    ]
-  },
-  "skills/verse-brain.js": {
-   "imports": [
-    "lib/field-stage.js",
-    "lib/brain.js",
-    "lib/brain-workspace.js",
-    "lib/brain-bridge.js"
-   ],
-   "importedBy": []
   },
   "skills/veto-council.js": {
    "imports": [

@@ -4949,6 +4949,7 @@ say('nothing selected to remove');
       else if (decision !== 'approve') msg = reason === 'asked something else' ? '' : 'ok, ' + nothing;
       else if (!d) msg = 'no reply, check before asking again';
       else if (d.ran) msg = core.DONE[pc.kind];
+      else if (d.held && d.held.why) msg = d.held.why + ', ' + nothing;
       else if (d.note === 'not connected') { msg = core.GATED[pc.toolName].service + " isn't connected yet, " + nothing; reportMiss(core.GATED[pc.toolName].board, 'not-connected'); }
       else msg = "couldn't, " + nothing;
       loopLog({ domain: 'void.confirm', ask: pc.text, score: d && d.ran ? 'pass' : 'fail', note: (d && d.decision || decision) + (d && d.ran ? ' ran' : ' not run') });
