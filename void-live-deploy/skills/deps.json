@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 4
   },
   {
@@ -1070,7 +1070,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 1
   },
   {
@@ -1112,6 +1112,13 @@
    "file": "lib/brain-creature.js",
    "skills": 1,
    "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-hearing.js",
+   "skills": 1,
+   "direct": 1,
    "dependants": 4,
    "tests": 1
   },
@@ -1365,7 +1372,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/calc-more.js",
@@ -4319,12 +4326,25 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-hearing.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-mind.js": {
    "imports": [
     "lib/field-kit.js",
     "lib/brain-workspace.js",
     "lib/brain-organs.js",
-    "lib/brain-creature.js"
+    "lib/brain-creature.js",
+    "lib/brain-hearing.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
@@ -4342,6 +4362,7 @@
     "lib/field-resonance.js",
     "lib/brain-synapses.js",
     "lib/brain-creature.js",
+    "lib/brain-hearing.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -4380,6 +4401,7 @@
    "importedBy": [
     "lib/brain-creature.js",
     "lib/brain-field.js",
+    "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain-synapses.js",
@@ -4394,7 +4416,8 @@
     "lib/brain-organs.js",
     "lib/brain-mind.js",
     "lib/brain-synapses.js",
-    "lib/brain-creature.js"
+    "lib/brain-creature.js",
+    "lib/brain-hearing.js"
    ],
    "importedBy": [
     "skills/verse-brain.js"
@@ -5443,6 +5466,7 @@
    "imports": [],
    "importedBy": [
     "lib/brain-creature.js",
+    "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain-synapses.js",
@@ -13515,7 +13539,8 @@
     "lib/mind-field-modes.js",
     "lib/brain-store.js",
     "lib/shared-field.js",
-    "lib/brain-field.js"
+    "lib/brain-field.js",
+    "lib/brain-hearing.js"
    ],
    "importedBy": []
   },

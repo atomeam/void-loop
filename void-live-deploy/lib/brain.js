@@ -2,7 +2,7 @@
 // builds combined can be verse brain"). Five layers, each a real part that runs, not a picture of one:
 //   1. one working memory      lib/brain-workspace.js: layers, rhythm phases and one node table, with who wrote each cell and when
 //   2. organs                  lib/brain-organs.js: senses, predictor, gestures, memory, concepts, tissue, rhythm, synapses (F217's spiking eye), creature
-//                              (F304's Lenia creature), swarm, membrane, will, arena
+//                              (F304's Lenia creature), hearing (F299's hummed notes), swarm, membrane, will, arena
 //   3. attention               scheduleTick() here: each tick a budget of organ runs goes to the organs that want it most, the starved
 //                              ones catch up, and one spotlight (the focus layer) shows what the brain is thinking about
 //   4. imagination             imagine() here: freeze the workspace, try an action or a genome for a few dozen ticks on the substrate
@@ -20,6 +20,7 @@ import { sealSync } from './field-kit.js';
 import * as Mind from './brain-mind.js';
 import { makeSynapses, wiring as eyeWiring } from './brain-synapses.js';
 import { makeCreature, dropCreature, progress as creatureProgress } from './brain-creature.js';
+import { makeEar, hearFrame, earOf } from './brain-hearing.js';
 
 export const VERSION = 1;
 export const STARVE = 120; // ticks of waiting that add a whole 1 to an organ's want
@@ -39,10 +40,10 @@ export function createBrain(seed = 1, opts = {}) {
   const ws = createWorkspace(seed, ORGAN_IDS.concat(['attention']));
   const b = { v: VERSION, seed, ws, genome: fixGenome(opts.genome || STARTER), budget: opts.phone ? BUDGET_PHONE : BUDGET,
     senses: { feat: new Float32Array(8), px: 0.5, py: 0.5, has: false, over: false, speed: 0, trail: [] },
-    reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
+    reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), ear: makeEar(), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
     focus: { x: 0.5, y: 0.5, px: 0.5, py: 0.5, region: 5, held: 0 }, surprise: 0, utility: 0, metrics: measure(ws),
     runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
-    board: { drive: 'rest', eye: null, creature: null, gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
+    board: { drive: 'rest', eye: null, creature: null, ear: null, gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
   seedSwarm(b); seedMembrane(b);
   b.swarmIds = nodesOf(ws, [0, 1, 2]); b.membraneIds = nodesOf(ws, [KIND.membrane]);
   // a few seeds so the tissue has somewhere to start
@@ -77,9 +78,10 @@ export function scheduleTick(b) {
   return ORGANS.filter((o) => pick.has(o.id)).map((o) => o.id);
 }
 
-/** one tick of the whole brain. input: { x, y, over, down, tiltX, tiltY, sound }. Returns the organs that ran. */
+/** one tick of the whole brain. input: { x, y, over, down, tiltX, tiltY, sound, pitches: [[Hz, seconds], ...] }. Returns the organs that ran. */
 export function stepBrain(b, input = {}) {
   const ws = b.ws; ws.tick++; b.ticks++; b.will.since++; b.arena.since++;
+  if (Array.isArray(input.pitches)) for (const p of input.pitches.slice(-64)) if (Array.isArray(p)) hearFrame(b.ear, +p[0], +p[1]); // every pitch frame, run or not: the hearing organ learns the notes when it runs
   updateFocus(b);
   const ids = scheduleTick(b);
   for (const id of ids) { const o = ORGANS.find((x) => x.id === id); o.run(b, input, imagine); b.runs[id]++; b.lastRun[id] = b.ticks; }
@@ -204,6 +206,7 @@ export function embodiment(b) {
   if (b.board.gesture && b.senses.over) out.push({ key: 'gesture', organ: 'gestures', x: b.senses.px, y: b.senses.py, label: b.board.gesture + (b.board.motif && b.board.motif.seen > 1 ? ' x' + b.board.motif.seen : ''), size: 0.4, hue: 40 });
   if (b.board.expect) { const c = regionCenter(b.board.expect.region); out.push({ key: 'expect', organ: 'memory', x: c.x, y: c.y, label: 'expects here', size: b.board.expect.strength, hue: 280 }); }
   if (b.board.eye) out.push({ key: 'eye', organ: 'synapses', x: b.board.eye.x, y: b.board.eye.y, label: 'eye', size: 0.3, hue: 330 });
+  if (b.board.ear && b.ticks - b.board.ear.tick < 600) out.push({ key: 'ear', organ: 'hearing', x: b.board.ear.x, y: b.board.ear.y, label: b.board.ear.note + (b.board.ear.next ? ', next ' + b.board.ear.next + '?' : ''), size: 0.3, hue: 50 });
   if (b.board.creature) out.push({ key: 'creature', organ: 'creature', x: b.board.creature.x, y: b.board.creature.y, label: 'creature', size: 0.35, hue: 20 });
   if (b.board.action && b.board.action.name !== 'rest') out.push({ key: 'will', organ: 'will', x: b.focus.x, y: clamp(b.focus.y - 0.12, 0.04, 0.96), label: b.board.action.name, size: 0.5, hue: 140 });
   return out;
@@ -223,7 +226,7 @@ export function selfOf(b) {
     q: b.will.chosen, action: b.board.action ? b.board.action.name : 'rest',
     wants: b.mind.goals.map((g) => ({ word: g.word, strength: Math.round(g.strength * 100) / 100 })), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length,
     eye: { wiring: Math.round(eyeWiring(b.synapses.W) * 100) / 100, seen: Math.round(b.synapses.seenAvg * 1000) / 1000, spikes: b.synapses.spikes },
-    creature: { generations: b.creature.gens, trials: b.creature.trials, deaths: b.creature.deaths, reverts: b.creature.reverts, progress: creatureProgress(b.creature) },
+    creature: { generations: b.creature.gens, trials: b.creature.trials, deaths: b.creature.deaths, reverts: b.creature.reverts, progress: creatureProgress(b.creature) }, hearing: earOf(b.ear),
     conflicts: b.mind.conflicts, aligned: b.mind.aligned || null, approval: Math.round(b.mind.approval * 100) / 100, recent: Mind.recent(b) };
 }
 /** plain sentences from the self, for the card and for "what is your brain doing". Pure. */
@@ -236,6 +239,8 @@ export function selfSays(b) {
   if (s.aligned) out.push('"' + s.aligned.word + '" is near "' + s.aligned.near + '" (' + s.aligned.from + ').');
   if (!b.creature.trials) out.push('Creature: generation 0, its first trial is under way (' + b.creature.steps + ' steps lived; it walks when the focus moves away).');
   else { const c = s.creature, p = c.progress; out.push('Creature: generation ' + c.generations + ', ' + c.trials + ' trial' + (c.trials === 1 ? '' : 's') + ' and ' + c.deaths + ' death' + (c.deaths === 1 ? '' : 's') + (p ? '; its generations scored ' + p.early + ' earlier and ' + p.late + ' lately (cells toward the focus per 10 steps, a death is -1)' : '') + '.'); }
+  if (b.ear.guessed) { const h = s.hearing; out.push('Hearing: ' + h.notes + ' hummed note' + (h.notes === 1 ? '' : 's') + '; it guessed the next one right ' + Math.round(h.hit * 100) + '% of the time (' + h.bits + ' bits a note, ' + h.bits0 + ' with no context).'); }
+  else if (b.ear.notes) out.push('Hearing: ' + b.ear.notes + ' hummed note' + (b.ear.notes === 1 ? '' : 's') + ' so far; it guesses from the second one on.');
   if (b.synapses.spikes) out.push('Eye: ' + s.eye.spikes + ' spikes; its same-side wiring is ' + Math.round(s.eye.wiring * 100) + '% (it starts at 0 and grows as dopamine finds living tissue).');
   if (b.senses.felt) out.push('Feels ' + b.senses.felt + ' memor' + (b.senses.felt === 1 ? 'y' : 'ies') + ' from other cards in the shared field.');
   out.push('Remembers ' + s.episodes + ' moment' + (s.episodes === 1 ? '' : 's') + ' and ' + s.procedures + ' winning genome' + (s.procedures === 1 ? '' : 's') + '.');
