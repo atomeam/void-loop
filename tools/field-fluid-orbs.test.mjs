@@ -44,6 +44,14 @@ test('a density peak spawns an orb where it is, one per peak, none near an orb a
   const many = run(3, 200); assert.ok(many.orbs.length >= 1 && many.orbs.length <= F.MAX_ORBS, 'a live field keeps between one and ' + F.MAX_ORBS + ' orbs: ' + many.orbs.length);
 });
 
+test('left alone, the agents pool the fluid themselves: orbs are born with no pointer, and an orb outlives its peak long enough to tap', () => {
+  for (let seed = 1; seed <= 6; seed++) { const s = F.create(seed); let first = -1; for (let i = 0; i < 1800 && first < 0; i++) { F.step(s, 1 / 60, {}); if (s.orbs.length) first = i; } assert.ok(first >= 0, 'seed ' + seed + ': an orb within 30 s untouched'); }
+  let o = F.evolveOrbs({ seed: 5 }); for (let g = 0; g < 6; g++) o = F.evolveOrbs({ pop: o.pop, seed: 5, gen: o.gen });
+  const s = F.create(3, o.best); let n = 0; for (let i = 0; i < 2400; i++) { F.step(s, 1 / 60, {}); if (i >= 600) n += s.orbs.length; }
+  assert.ok(n / 1800 >= 2, 'an evolved mind keeps orbs going untouched: ' + (n / 1800).toFixed(1));
+  assert.ok(F.ORB_LIFE / 60 >= 2.5, 'an orb lingers about 3 s after its peak goes, time enough to tap it');
+});
+
 test('seal then load gives the same SHA-256: the snapshot stamps back into a fresh field and seals to the same hash', async () => {
   const s = run(3, 200), o = s.orbs[0]; assert.ok(o, 'an orb to seal');
   const a = F.sealOrbSync(s, o); assert.match(a.hash, /^[0-9a-f]{64}$/); assert.equal(a.snap.bytes.length, 64);

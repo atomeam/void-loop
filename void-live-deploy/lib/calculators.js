@@ -642,7 +642,7 @@ CALCULATORS.push(
       const q = Math.floor(x.n / d), r = x.n - q * d, rows = []; let cur = 0, i = 0;
       for (const ch of String(x.n)) { cur = cur * 10 + Number(ch); const qd = Math.floor(cur / d); rows.push([++i, cur + ' ÷ ' + d, qd, qd * d, cur - qd * d]); cur -= qd * d; }
       let rem = r, digits = ''; const seen = new Map(); while (rem && !seen.has(rem) && digits.length < 2000) { seen.set(rem, digits.length); rem *= 10; digits += Math.floor(rem / d); rem %= d; }
-      const frac = !rem ? digits : seen.has(rem) ? digits.slice(0, seen.get(rem)) + '(' + digits.slice(seen.get(rem)) + ')' : digits + '…';
+      const frac = !rem ? digits : seen.has(rem) ? digits.slice(0, seen.get(rem)) + '(' + digits.slice(seen.get(rem)) + ')' : digits + '…'; // ellipsis-ok: a decimal that has not repeated within 2000 digits goes on, so the dots are the true value, not a cut sentence
       const g = gcd(r, d) || 1;
       return { q, r, dec: q + (frac ? '.' + frac : ''), mixed: r ? (q ? q + ' ' : '') + r / g + '/' + d / g : String(q), table: { head: ['Step', 'Divide', 'Quotient digit', 'Take away', 'Remainder'], rows } }; }),
   make('p-value', 'P-value from a z, t or chi-square statistic', 'Statistics', 'z: p from the normal curve; t: P(T ≤ t) = 1 − ½ I_{ν/(ν+t²)}(ν/2, ½); χ²: P(X ≥ x) = Q(k/2, x/2)', ['stat|Test statistic|number||1.96',

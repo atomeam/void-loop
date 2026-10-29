@@ -11,7 +11,7 @@ const fold = (s) => String(s || '').toLowerCase().normalize('NFKD').replace(/[\u
 const FILLER = new Set(['a', 'an', 'the', 'for', 'of', 'online', 'free', 'my', 'me', 'open', 'show', 'calculator', 'calculators', 'calc', 'with', 'units', 'unit']);
 // asks a skill earlier in the order answers with its own card (time-math the age calculator, nutrition bmi and calories, savings,
 // home paint and flooring, walls wallpaper and drywall): formulas does not claim them, so the two never overlap (tools/skill-overlap.mjs)
-const OWNED = new Set(['age', 'bmi', 'calorie', 'calories', 'savings', 'paint', 'flooring', 'wallpaper', 'drywall']);
+const OWNED = new Set(['age', 'bmi', 'calorie', 'calories', 'savings', 'paint', 'flooring', 'wallpaper', 'drywall', 'gpa', 'due date', 'sleep']); // gpa: grades, due date: pregnancy, sleep: sleep (tools/skill-overlap.mjs)
 const LIBRARY = /^(?:open (?:the )?)?(?:formula|engineering|science|physics|chemistry) calculators?(?: with units)?$/;
 
 /** the calculator an ask names: "<name> calculator" or "calculator for <name>", every word in its name; null otherwise. Pure. */
