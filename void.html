@@ -4428,6 +4428,10 @@ say('nothing selected to remove');
     const SKILLS_INDEX_URL = '/skills/index.json';
     let learnedSkills = [], skillsLoaded = false, skillSlots = null;
     const SKILL_LANES = 24; // modules requested at once: enough to fill a fast link, few enough that the top-ranked skills arrive first
+    // set at the first sign of an ask (warmLibs below): no lane starts another skill file until the four libs every ask waits on are in, at most
+    // 1.5 s. Asked for after the lanes were full, they queued behind every skill file requested meanwhile (watchdog #110, 2026-10-29: on the
+    // slow-link check all four money asks logged after 4 s, the three calc ones about 1.5 s after the calc's own 2.5 s wait)
+    let askLibsHold = null;
     async function loadLearnedSkills() {
       let index = null;
       try {
@@ -4462,7 +4466,7 @@ say('nothing selected to remove');
       // edge copy of its code can never outlive that: a plain reload brings the current card (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card")
       const LIVE_SKILLS = new Set(['tower']);
       let nextIdx = 0;
-      const lane = async () => { while (nextIdx < index.length) { const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js' + (LIVE_SKILLS.has(index[i]) ? '?live=' + Math.floor(Date.now() / 300000) : '')).catch(() => null)); } };
+      const lane = async () => { while (nextIdx < index.length) { if (askLibsHold) await askLibsHold; if (nextIdx >= index.length) break; const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js' + (LIVE_SKILLS.has(index[i]) ? '?live=' + Math.floor(Date.now() / 300000) : '')).catch(() => null)); } };
       await Promise.all(Array.from({ length: SKILL_LANES }, lane));
       // once all are in, everything is registered in index order, exactly as when they loaded all at once
       for (const slot of skillSlots) {
@@ -5251,7 +5255,7 @@ say('nothing selected to remove');
       say('publishing');
       let r = null; try { r = await meFetch('/api/publish', 'POST', { handle, look: voidLook, cards }); } catch (_) {}
       if (!r) { say("couldn't reach the server, nothing published"); return; }
-      if (r.status === 402) { say('publishing is part of a paid Verse'); return; }
+      if (r.status === 402) { say('publishing is part of MultiVerse'); return; }
       if (r.status === 401) { say('say “sign in” first, then publish'); return; }
       if (r.status === 409) { say('@' + handle + ' is taken, try another name'); return; }
       if (r.status !== 200) { say(r.body && r.body.error ? r.body.error : "couldn't publish"); return; }
@@ -5346,7 +5350,7 @@ say('nothing selected to remove');
     }
     async function paidLine() { // what paid Verse costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
-      return vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
+      return vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
     }
     async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
@@ -5357,7 +5361,7 @@ say('nothing selected to remove');
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Verse, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
-      const line = vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
+      const line = vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
       if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the Verse store</a>'; }
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
@@ -5495,7 +5499,15 @@ say('nothing selected to remove');
     // (bugs, security holes, risky habits, with line numbers), then the model's closer read is added under them. Without code yet,
     // Verse asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
     const reviewReady = lazyLib('/lib/code-review.js');
-    const warmLibs = () => { approvalReady(); storeReady(); fixReady(); reviewReady(); for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
+    // the four libs and every module they import, all asked for at once: imported level by level, each level queued behind the skill files
+    // the lanes had in flight (approval-core -> keep-going -> automations -> watch; on a busy page the gated check waited 3.3 s for the fourth level)
+    // ask-libs: tools/preload.mjs /lib/approval-core.js /lib/gumroad.js /lib/automation-fix.js /lib/code-review.js
+    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/code-review.js'];
+    const warmLibs = () => {
+      for (const p of ASK_LIB_GRAPH) import(p).catch(() => null);
+      const libs = Promise.allSettled([approvalReady(), storeReady(), fixReady(), reviewReady()]);
+      if (!skillsLoaded && !askLibsHold) askLibsHold = Promise.race([libs, new Promise((r) => setTimeout(r, 1500))]).then(() => { askLibsHold = null; });
+      for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
     for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.addEventListener(ev, warmLibs, { capture: true, passive: true });
     { const sp = new URLSearchParams(location.search); if (sp.get('q') || sp.get('ask')) warmLibs(); else skillsReady.then(warmLibs); }
     let pendingReview = null;
@@ -5982,6 +5994,18 @@ say('nothing selected to remove');
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
       'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'menu', 'undo', 'what do you want to be', 'what do you think of yourself', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
     let hintList = [], hintSel = -1;
+    // Verse Brain thinks for the ask box (lib/brain-host.js): one brain for the page, started in idle time so it never slows the first
+    // paint. It hears every ask (the asks before it was ready are queued here), learns what you ask next, and ranks the suggestions.
+    const earlyAsks = [], queueAsk = (e) => { const t = e && e.detail && e.detail.text; if (t && earlyAsks.length < 24) earlyAsks.push({ text: t, at: Date.now() }); };
+    document.addEventListener('void:ask', queueAsk);
+    let brainHost = null;
+    (window.requestIdleCallback || ((f) => setTimeout(f, 1200)))(() => {
+      import('/lib/brain-host.js').then((m) => {
+        brainHost = m.ensureHost({ early: earlyAsks.splice(0), self: fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null) });
+        document.removeEventListener('void:ask', queueAsk);
+      }).catch(() => { document.removeEventListener('void:ask', queueAsk); });
+    }, { timeout: 4000 });
+    const brainRank = (h) => { try { return brainHost ? brainHost.rank(h) : 0; } catch (_) { return 0; } };
     function allHints() {
       const out = CORE_HINTS.slice();
       if (ownerToken()) out.push('show the board', 'update yourself'); // owner-only lines show only to the owner
@@ -6027,12 +6051,12 @@ say('nothing selected to remove');
       hintSel = -1;
       if (!q) {
         if (!askBoxTouched || document.activeElement !== input) { hintList = []; hintsEl.classList.remove('on'); hintsEl.innerHTML = ''; return; }
-        hintList = recentAsks();
+        hintList = brainHost ? (() => { try { return brainHost.suggest(recentAsks(12), 5); } catch (_) { return recentAsks(); } })() : recentAsks(); // the asks the brain expects next first, then the newest
         hintsEl.innerHTML = hintList.map((h, i) => '<div role="option" data-i="' + i + '">' + esc(h) + '</div>').join('');
         hintsEl.classList.toggle('on', hintList.length > 0);
         return;
       }
-      hintList = allHints().map((h) => [h, scoreHint(h, q)]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 5).map((x) => x[0]);
+      hintList = allHints().map((h) => [h, scoreHint(h, q)]).filter((x) => x[1] > 0).map((x) => x.concat(x[1] ? brainRank(x[0]) : 0)).sort((a, b) => b[1] - a[1] || b[2] - a[2]).slice(0, 5).map((x) => x[0]); // equal matches: the brain's order (habit, then its goals)
       hintsEl.innerHTML = hintList.map((h, i) => {
         const at = h.toLowerCase().indexOf(q);
         const body = at >= 0 ? esc(h.slice(0, at)) + '<b>' + esc(h.slice(at, at + q.length)) + '</b>' + esc(h.slice(at + q.length)) : esc(h);

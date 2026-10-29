@@ -13,6 +13,10 @@ const ROOT = dirname(dirname(fileURLToPath(import.meta.url))), OUT = join(ROOT, 
 export const TECHNIQUES = [
   ['spiking synapses', /spiking|izhikevich|\bstdp\b|synap/, 'synapses'],
   ['lenia', /lenia/, 'creature'],
+  ['hummed melody', /hum[ -]crystal|pitch[ -]detect|\byin\b|music[ -]box/, 'hearing'],
+  ['self-mutating program', /self[ -]mutating|shader[ -]mind|genetic programming/, 'painter'],
+  ['codec retina', /codec[ -]retina/, 'gardener'],
+  ['l-system grammar', /l[ -]system (?:spatial|generative|expansion|grammar)|lindenmayer/, 'grower'], // "branches away from ... L-systems" in other specs is not the idea
   ['reservoir', /reservoir|echo[ -]state|\besn\b/, 'predictor'],
   ['online k-means', /k-?means/, 'gestures'],
   ['compression oracle', /compression|\bncd\b|kolmogorov/, 'gestures'],
@@ -54,14 +58,11 @@ export const LEFT = {
   'loop-grid': 'a music loop grid, its own product',
   'forge-duel': 'a card duel game, its own product',
   'scene-blocker': 'a film blocking tool, its own product',
-  'hum-crystal-music-box': 'a humming music box, its own product (its PPM idea is in the concepts organ through F225)',
   'spoken-sdf-program-synthesis': 'program synthesis of 3D shapes from speech, a 3D tool rather than a mind part',
   'lbm-wing-forge': 'a lattice-Boltzmann wind tunnel, a physics toy for a different job',
-  'codec-retina-gardener': 'uses WebCodecs video encoders as an eye; needs a secure context and an encoder per patch',
   'screen-grazing-lichen': 'needs the visitor to share their screen (getDisplayMedia)',
   'window-spanning-organism': 'needs several windows and a SharedWorker; the bridge shares one brain across pages instead',
-  'taste-oracle': 'Gaussian-process preference duels over raymarched sculptures, a separate product',
-  'verse-self-mutating-shader-mind': 'a shader source as a genome; the arena evolves numbers, not code, so this is next, not built',
+  'taste-oracle': 'Gaussian-process preference duels; measured as a taste term in the arena on 20 seeds it gave no reliable gain (0.29 without, 0.25 to 0.33 with) and on its own benchmark it did no better than a hill climb',
   'local-ai-portal-lattice-mind': 'its spec is a placeholder and its page holds no working mind',
   'rd-attention-kernel': 'its spec is a placeholder (its idea is in the tissue and attention organs through other drafts)'
 };

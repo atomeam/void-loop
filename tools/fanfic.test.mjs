@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import * as F from '../void-live-deploy/lib/fanfic.js';
 import { LIMITS, cleanText, excerpt } from '../void-live-deploy/lib/boards.js';
+import zlib from 'node:zlib';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy');
 const DAY = 864e5;
@@ -124,6 +125,9 @@ test('a story is its signed chapters; every other reply, a forged chapter too, i
   assert.deepEqual(s.chapters.map((c) => [c.n, c.title, c.text, c.nos]), [[1, '', 'One two three.', [1]], [2, 'Bridge', 'Four five.\n\nSix.', [2, 3]], [3, 'End', 'Seven.', [7]]]);
   assert.deepEqual(s.reviews.map((p) => p.no), [4, 5], 'a chapter line under another mark is a review');
   assert.equal(s.words, 7); assert.equal(s.published, 100); assert.equal(s.updated, 300);
+  assert.deepEqual(F.rowFigures(s), ['3 chapters', '7 words', '2 reviews'], 'a catalog row counts the whole story, not the opening post');
+  const starred = F.storyOf(op, [{ no: 8, at: 310, name: 'Reader', trip: '', body: F.reviewBody('Good.', 4) }, { no: 9, at: 320, name: 'Ink', trip: '!AAAAAAAAAA', body: F.reviewBody('Mine.', 1) }]);
+  assert.deepEqual(F.rowFigures(starred), ['1 chapter', '3 words', '2 reviews', '★ 4'], 'the writer\'s own stars do not count');
   const plain = F.storyOf({ ...op, trip: '' }, [{ no: 2, at: 200, name: 'Ink', trip: '', body: F.chapterHead(2) + 'x' }]);
   assert.equal(plain.chapters.length, 1, 'an unsigned story has chapter 1 only'); assert.equal(plain.reviews.length, 1);
   const row = F.topicOf({ ...op, replies: 6 }, { code: 'ficink', title: 'Ink', nsfw: false });
@@ -135,8 +139,8 @@ test('the page shows only real posts, posts only through the boards, and is dark
   const read = (...p) => fs.readFileSync(path.join(root, ...p), 'utf8');
   const html = read('fanfic', 'index.html'), js = read('fanfic', 'app.js'), lib = read('lib', 'fanfic.js');
   const calls = [...js.matchAll(/fetch\(([^,)]+)/g)].map((m) => m[1].trim());
-  assert.deepEqual([...new Set(calls)], ['API + qs'], 'one fetch, to the boards API');
-  assert.match(js, /API = '\/api\/boards'/);
+  assert.deepEqual([...new Set(calls.map((c) => c.split(' ')[0]))], ['API', 'HITS'], 'stories through the boards API, read counts through the hits API, nothing else');
+  assert.match(js, /API = '\/api\/boards'/); assert.match(js, /HITS = '\/api\/fanfic-hits'/);
   assert.ok(!fs.existsSync(path.join(root, 'functions', 'api', 'fanfic.js')), 'no endpoint of its own');
   // the one function under /fanfic/ is the read-only feed: it reads the boards' own GET handler and takes no post
   assert.deepEqual(fs.readdirSync(path.join(root, 'functions', 'fanfic')), ['rss.js']);
@@ -175,6 +179,15 @@ test('the page opens offline: the service worker shells /fanfic/ at install and 
   assert.equal(pageCode('/fanfic/app.js'), true); assert.equal(pageCode('/fanfic/index.html'), false); assert.equal(pageCode('/pdf/merge/app.js'), true, 'the other pages keep theirs');
 });
 
+test('the page asks the server again for every file of its module before it imports it, so a deploy never runs old code under a new page', async () => {
+  const { graphOf } = await import('./preload.mjs');
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8');
+  const list = JSON.parse(html.match(/const CODE = (\[[^\]]*\]);/)[1].replace(/'/g, '"'));
+  assert.deepEqual(list, graphOf('<script type="module">import "/fanfic/app.js";</script>'), 'the list is the module and its static imports, in order');
+  assert.match(html, /CODE\.map\(\(u\) => fetch\(u, \{ cache: 'no-cache' \}\)\.catch\(\(\) => \{\}\)\)\)\.then\(\(\) => import\('\/fanfic\/app\.js'\)\)/, 'the import waits for the fresh copies; an offline fetch error still imports');
+  assert.match(html, /addEventListener\('load', \(\) => \{ Promise\.all\(CODE/, 'after the load event, so the page speed is not touched');
+});
+
 test('the index list: find narrows it by title, fandom and pen name, and the CSV export is safe in a spreadsheet', async () => {
   const list = [{ board: 'ficdw', fandom: 'Doctor Who', title: 'The Café at the End', author: 'Rose', no: 4, replies: 2, bumped: Date.UTC(2026, 9, 29) },
     { board: 'ficx', fandom: 'Adult fandom', title: '=HYPERLINK("x")', author: 'Ann, "Q"', no: 9, nsfw: true, replies: 0, bumped: 0 }];
@@ -194,6 +207,7 @@ test('German: the archive\'s own words change, what readers wrote never does', a
   const DE = await import('../void-live-deploy/lib/fanfic-de.js');
   assert.equal(DE.de('Mark all read'), 'Alle als gelesen markieren'); assert.equal(DE.de('  Post story '), '  Geschichte veröffentlichen ', 'spaces kept');
   assert.equal(DE.de('Chapter 3 of 7'), 'Kapitel 3 von 7'); assert.equal(DE.de('Page 2 of 5'), 'Seite 2 von 5'); assert.equal(DE.de('Reviews (4)'), 'Rezensionen (4)');
+  assert.equal(DE.de('3 chapters'), '3 Kapitel'); assert.equal(DE.de('1,204 words'), '1,204 Wörter'); assert.equal(DE.de('1 review'), '1 Rezension(en)');
   assert.equal(DE.de('A line nobody wrote here'), 'A line nobody wrote here', 'unknown text stays as it is');
   assert.equal(DE.deTitle('Writing Room · Fan fiction · Verse'), 'Schreibzimmer · Fanfiction · Verse');
   assert.equal(DE.langOf('?lang=de', 'en', 'en-US'), 'de'); assert.equal(DE.langOf('', 'en', 'de-DE'), 'en', 'the device\'s pick over the browser');
@@ -217,7 +231,7 @@ test('story details: a known rating, at most 3 known genres, at most 6 character
   assert.deepEqual(d.warnings, ['Violence']); assert.equal(F.cleanDetails({ rating: 'Explicit' }).rating, '', 'an unknown rating is none');
   const body = F.withSummary('About it.', 'The story.', { rating: 'Mature', genres: ['Angst'], characters: 'Ana', warnings: ['Dark themes'] });
   assert.equal(body, 'Warnings: Dark themes\nGenres: Angst\nCharacters: Ana\nRated: Mature\nSummary: About it.\n\nThe story.', 'the rating last, so names end at a label');
-  assert.deepEqual(F.readSummary(body), { summary: 'About it.', text: 'The story.', details: { rating: 'Mature', genres: ['Angst'], characters: ['Ana'], warnings: ['Dark themes'], status: '' } });
+  assert.deepEqual(F.readSummary(body), { summary: 'About it.', text: 'The story.', details: { rating: 'Mature', genres: ['Angst'], characters: ['Ana'], warnings: ['Dark themes'], status: '', series: '', part: 0 } });
   assert.deepEqual(F.readSummary(F.withSummary('', 'Just text.', { rating: 'General' })), { summary: '', text: 'Just text.', details: { ...F.cleanDetails({}), rating: 'General' } });
   assert.equal(F.withSummary('About it.', 'The story.', {}), F.withSummary('About it.', 'The story.'), 'no details, the body is as before');
   const posts = F.chapterPosts(1, '', Array.from({ length: 14 }, (_, i) => 'Para ' + i + ' ' + 'word '.repeat(150).trim()).join('\n\n'), 'S.', { rating: 'Teen', genres: ['Drama'], characters: 'Ana', warnings: ['Violence'] });
@@ -283,6 +297,52 @@ test('the archive has Authors, Help and Random story, with the help desk as a pi
   for (const s of ['Random story', 'Help desk: questions and answers', 'Show every author', 'Authors A to Z']) assert.ok(de.includes("'" + s + "'"), 'German for ' + s);
 });
 
+test('the archive home features one story with why, never an 18+ or locked one, and shows nothing with no story', async () => {
+  const { featuredOf } = await import('../void-live-deploy/lib/fanfic.js');
+  assert.equal(featuredOf([]), null);
+  assert.equal(featuredOf([{ no: 1, nsfw: true, replies: 9 }, { no: 2, locked: true, replies: 9 }]), null, 'no 18+ or locked story is featured');
+  const a = { no: 1, replies: 3, bumped: 5 }, b = { no: 2, replies: 7, bumped: 1 }, c = { no: 3, replies: 1, bumped: 9, status: 'Complete' }, x = { no: 4, replies: 99, nsfw: true };
+  assert.deepEqual(featuredOf([a, b, x]), { t: b, why: 'The story with the most replies.' });
+  assert.deepEqual(featuredOf([a, b, c, x]), { t: c, why: 'The complete story with the most replies.' }, 'a complete story comes first');
+  assert.equal(featuredOf([{ no: 5, replies: 0, bumped: 1 }, { no: 6, replies: 0, bumped: 2 }]).t.no, 6, 'with no replies, the newest');
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8');
+  assert.match(html, /<div class="glass feat" id="featured" aria-labelledby="featH" hidden>/, 'the panel starts hidden: an empty archive shows no empty panel');
+  // the story link gets its address with its title (app.js drawFeatured): a link with an address and no name is an unnamed control to a screen
+  // reader and to the tower gate's wider-use look (2026-10-29: the gate read 10.5 of 11 while it had one)
+  assert.match(html, /<a class="t" id="featLink" data-go translate="no"><\/a>/, 'the empty featured link has no address');
+  const DE = await import('../void-live-deploy/lib/fanfic-de.js');
+  for (const s of ['Featured story', 'Why it is featured:', 'The story with the most replies.', 'The complete story with the most replies (none have replies yet, so the newest).']) assert.notEqual(DE.de(s), s, 'German for ' + s);
+});
+
+test('the archive has site news, pinned first on the story lists, with a dated news archive in English and German', async () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  assert.match(app, /const NOTICES = \[\['news', 'Site news and the news archive'\],/, 'site news is the first pinned notice');
+  assert.ok(html.includes('href="/fanfic/?notice=news" data-go>News</a>'), 'the footer links the news');
+  const art = /<article class="notice" id="n-news" hidden>([\s\S]*?)<\/article>/.exec(html);
+  assert.ok(art, 'the news page');
+  assert.match(art[1], />News archive</, 'the news archive heading');
+  for (const m of art[1].matchAll(/<time datetime="([^"]+)">/g)) assert.match(m[1], /^\d{4}-\d{2}-\d{2}$/, 'each day carries its date');
+  const DE = await import('../void-live-deploy/lib/fanfic-de.js');
+  // every text the news page shows, cut at its tags, has German
+  const texts = art[1].replace(/<[^>]+>/g, '\n').split('\n').map((x) => x.trim()).filter((x) => /[A-Za-z]{3}/.test(x) && x !== 'RSS');
+  assert.ok(texts.length > 10);
+  for (const x of texts) assert.notEqual(DE.de(x), x, 'German for ' + x);
+});
+
+test('the archive has terms, disclaimer and credits pages, linked from the footer and not pinned on the story lists', async () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  for (const id of ['terms', 'disclaimer', 'credits']) {
+    assert.match(html, new RegExp('<article class="notice" id="n-' + id + '" hidden>'), id + ' page');
+    assert.ok(html.includes('href="/fanfic/?notice=' + id + '" data-go>'), id + ' footer link');
+  }
+  assert.match(app, /const SITE_PAGES = \[\['terms', 'Terms of use'\], \['disclaimer', 'Disclaimer'\], \['credits', 'Credits'\]\];/);
+  assert.match(app, /rows\.replaceChildren\(\.\.\.NOTICES\.map\(noticeRow\)\)/, 'only the notices are pinned');
+  assert.match(app, /NOTICES\.concat\(SITE_PAGES\)/, 'the router opens the site pages');
+  assert.ok(html.includes('href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> with the link to the post'), 'takedowns go to the address the board rules give');
+  const DE = await import('../void-live-deploy/lib/fanfic-de.js');
+  for (const s of ['Terms of use', 'Disclaimer', 'Credits', 'Terms', 'Verse charges nothing to read or to post.']) assert.notEqual(DE.de(s), s, 'German for ' + s);
+});
+
 test('the feed lists the newest stories first, links each story, escapes what readers wrote and leaves adult fandoms out', async () => {
   const t = (no, bumped, extra = {}) => ({ board: 'ficx', fandom: 'X & Y', no, title: 'T' + no, author: 'a', summary: 's', bumped, at: bumped, ...extra });
   const rss = F.storiesRss([t(1, 1e12), t(2, 2e12, { title: '<b>"Q"</b>', author: 'P&Q' }), t(3, 3e12, { nsfw: true })], 'https://x.test');
@@ -321,11 +381,176 @@ test('a story is in progress or complete: said on chapter 1, or by a later chapt
   const most = { status: 'In progress', rating: 'Mature', genres: ['Hurt/Comfort', 'Friendship', 'Adventure'], warnings: F.WARNINGS, characters: ['a', 'b', 'c', 'd', 'e'].map((x) => x.repeat(40)).join(',') };
   const lines = F.detailLines(most).trim(); assert.ok(lines.length <= 300, 'the longest details fit the catalog excerpt: ' + lines.length);
   assert.equal(F.topicOf({ no: 1, body: (lines + '\n\nSummary: s\n\nText').replace(/\s+/g, ' ').slice(0, 300), name: 'n' }, { code: 'ficx', title: 'X' }).rating, 'Mature');
-  const list = [{ ...flat }, { ...flat, no: 2, status: 'Complete' }, { ...flat, no: 3, status: '' }];
+  const list = [{ ...flat }, { ...flat, no: 2, status: 'Complete' }, { ...flat, no: 3, status: '', series: '', part: 0 }];
   assert.deepEqual(F.filterStories(list, { status: 'Complete' }).map((t) => t.no), [2]);
   assert.deepEqual(F.filterStories(list, { status: 'In progress' }).map((t) => t.no), [1]);
   const hits = [{ board: 'ficx', thread: 1, trip: 'aa', body: last[0] }, { board: 'ficx', thread: 3, trip: 'bb', body: last[0] }, { board: 'ficx', thread: 1, trip: 'aa', body: 'Status: Complete' }, { board: 'ficx', thread: 3, trip: 'aa', body: 'Chapter 2, continued Status: Complete' }];
   assert.deepEqual(F.finishedLater(list, hits).map((t) => t.status), ['Complete', 'Complete', ''], 'only a chapter signed with the story\'s mark finishes it');
   const flatHit = [{ board: 'ficx', thread: 3, trip: 'aa', body: 'Chapter 2: The End Status: Complete Two.' }];
   assert.deepEqual(F.finishedLater(list, flatHit).map((t) => t.status), ['In progress', 'Complete', 'Complete'], 'a search excerpt (one line) counts too');
+});
+
+test('a review can give 1 to 5 stars: the story averages them, the writer\'s own and none-given leave the average alone, and stars never make a chapter', () => {
+  assert.equal(F.reviewBody('Loved it.', 4), 'Stars: 4 of 5\n\nLoved it.');
+  assert.equal(F.reviewBody('Loved it.', '0'), 'Loved it.'); assert.equal(F.reviewBody('x', 9), 'x'); assert.equal(F.reviewBody('x', 'abc'), 'x');
+  assert.deepEqual(F.readReview('Stars: 4 of 5\n\nLoved it.'), { stars: 4, text: 'Loved it.' });
+  assert.deepEqual(F.readReview('Stars: 4 of 5 Loved it.'), { stars: 0, text: 'Stars: 4 of 5 Loved it.' }, 'only the line the form writes counts');
+  assert.deepEqual(F.readReview('Plain words.'), { stars: 0, text: 'Plain words.' });
+  assert.deepEqual(F.starsOf([]), { avg: 0, n: 0 });
+  const op = { no: 1, at: 1, sub: 'S', name: 'Ink', trip: 'aa', body: 'One.' };
+  const posts = [{ no: 2, at: 2, trip: '', body: F.reviewBody('Good.', 5) }, { no: 3, at: 3, trip: '', body: F.reviewBody('Fine.', 4) }, { no: 4, at: 4, trip: '', body: 'No stars here.' },
+    { no: 5, at: 5, trip: 'aa', body: F.reviewBody('My own.', 1) }, { no: 6, at: 6, trip: 'zz', body: F.reviewBody(F.chapterHead(2) + 'Fake.', 2) }];
+  const s = F.storyOf(op, posts);
+  assert.equal(s.chapters.length, 1, 'a review with stars is never a chapter');
+  assert.equal(s.reviews.length, 5);
+  assert.deepEqual(s.stars, { avg: 3.7, n: 3 }, 'the writer\'s own stars do not count; (5 + 4 + 2) / 3 = 3.7');
+});
+
+test('a series: a name and a part on chapter 1, read back from the post and from the catalog excerpt, listed per writer and read in part order', () => {
+  assert.deepEqual([F.cleanDetails({ series: 'Long Road' }).series, F.cleanDetails({ series: 'Long Road', part: 0 }).part, F.cleanDetails({ series: 'Long Road', part: 1000 }).part, F.cleanDetails({ part: 2 }).part], ['', 0, 0, 0], 'a series needs both a name and a part from 1 to 999');
+  const d = { series: 'The Long, Long Road', part: 2, rating: 'Teen', status: 'In progress', characters: 'Ana, Bo' };
+  const body = F.withSummary('About it.', 'The story.', d);
+  assert.ok(body.startsWith('Series: The Long, Long Road, part 2\nStatus: In progress\n'), body);
+  const back = F.readSummary(body).details; assert.equal(back.series, 'The Long, Long Road'); assert.equal(back.part, 2);
+  const flat = F.topicOf({ no: 1, body: body.replace(/\s+/g, ' ').slice(0, 300), name: 'Ink', trip: 'aa', at: 5 }, { code: 'ficx', title: 'X' });
+  assert.deepEqual([flat.series, flat.part, flat.status, flat.rating, flat.characters], ['The Long, Long Road', 2, 'In progress', 'Teen', ['Ana', 'Bo']], 'the one-line catalog excerpt keeps the series');
+  assert.equal(F.detailsLine(back), 'Part 2 of The Long, Long Road · In progress · Rated Teen · Characters: Ana, Bo');
+  // the longest details, a series too, still fit the catalog's 300 characters: the series takes its room from the character names
+  const most = { series: 'S'.repeat(40), part: 999, status: 'In progress', rating: 'Mature', genres: ['Hurt/Comfort', 'Friendship', 'Adventure'], warnings: F.WARNINGS, characters: ['a', 'b', 'c', 'd', 'e'].map((x) => x.repeat(40)).join(',') };
+  const lines = F.detailLines(most).trim(); assert.ok(lines.length <= 300, 'fits: ' + lines.length);
+  assert.equal(F.topicOf({ no: 1, body: (lines + '\n\nSummary: s\n\nText').replace(/\s+/g, ' ').slice(0, 300), name: 'n' }, { code: 'ficx', title: 'X' }).part, 999);
+  const t = (no, author, trip, series, part, at) => ({ no, author, trip, series, part, at, bumped: at, title: 'T' + no });
+  const list = [t(1, 'Ink', 'aa', 'Long Road', 2, 10), t(2, 'Ink', 'aa', 'long road', 1, 20), t(3, 'Ink', 'zz', 'Long Road', 1, 30), t(4, 'Ink', 'aa', '', 0, 40)];
+  const all = F.seriesOf(list);
+  assert.equal(all.length, 2, 'a namesake writing a series of the same name is a series of its own');
+  assert.deepEqual(all.map((x) => [x.name, x.parts, x.last]), [['Long Road', 2, 20], ['Long Road', 1, 30]]);
+  assert.deepEqual(F.inPartOrder(F.filterStories(list, { series: all[0].key })).map((x) => x.no), [2, 1], 'one series, part 1 first');
+  assert.equal(F.seriesKey(list[3]), '', 'a story in no series has no key');
+});
+
+test('a rec list keeps up to 25 stories once each, in the reader\'s order, and its link holds the whole list', () => {
+  let r = F.recsWith({ name: 'Slow burns' }, 'ficabc', 3); r = F.recsWith(r, 'ficabc', 9); r = F.recsWith(r, 'FICABC', 3);
+  assert.deepEqual(r.items.map((x) => x.s), [3, 9], 'a story already there keeps its place');
+  r.items[0].note = 'The best\nslow burn';
+  const back = F.readRecs('#' + F.recsHash(r));
+  assert.deepEqual(back, { name: 'Slow burns', items: [{ f: 'ficabc', s: 3, note: 'The best slow burn' }, { f: 'ficabc', s: 9, note: '' }] }, 'the link reads back the same list, notes one line');
+  assert.deepEqual(F.recsMoved(r, 0, 1).items.map((x) => x.s), [9, 3]); assert.deepEqual(F.recsMoved(r, 0, -1).items.map((x) => x.s), [3, 9], 'the top stays the top');
+  assert.deepEqual(F.recsWith(r, 'ficabc', 3, true).items.map((x) => x.s), [9], 'taken off');
+  let full = {}; for (let i = 1; i <= 30; i++) full = F.recsWith(full, 'ficx', i);
+  assert.equal(full.items.length, F.RECS_LIMITS.items, 'never more than 25');
+  assert.deepEqual(F.cleanRecs({ items: [{ f: 'fic x', s: 1 }, { f: 'ficx', s: 0 }, { f: 'ficx', s: 'a' }] }).items, [], 'a code or number that cannot be a story is dropped');
+  for (const bad of ['', '#room=abc', '#recs=!!', '#recs=e30', '#recs=' + Buffer.from('not json').toString('base64url')]) assert.equal(F.readRecs(bad), null, bad);
+});
+
+test('a writing challenge: a prompt and a last day, read back whole or from the catalog excerpt; entries are signed by each story\'s writer, winners by the one who set it', () => {
+  const body = F.challengeBody('  Write a ghost story in 500 words.\n\nNo crossovers.  ', '2026-11-30');
+  assert.equal(body, 'Writing challenge\nCloses: 2026-11-30\n\nWrite a ghost story in 500 words.\n\nNo crossovers.');
+  assert.deepEqual(F.readChallenge(body), { closes: '2026-11-30', prompt: 'Write a ghost story in 500 words.\n\nNo crossovers.' });
+  assert.deepEqual(F.readChallenge(body.replace(/\s+/g, ' ')), { closes: '2026-11-30', prompt: 'Write a ghost story in 500 words. No crossovers.' }, 'the one-line catalog excerpt reads the same');
+  assert.deepEqual(F.readChallenge(F.challengeBody('Any length', '2026-02-30')), { closes: '', prompt: 'Any length' }, 'a day that is not on the calendar is no last day');
+  for (const not of ['', 'Summary: Writing challenge', 'Writing challenges are fun', 'Entry: ficx/1']) assert.equal(F.readChallenge(not), null, not);
+  const at = (day) => new Date(day + 'T12:00:00').getTime();
+  assert.ok(F.challengeOpen({ closes: '2026-11-30' }, at('2026-11-30')) && !F.challengeOpen({ closes: '2026-11-30' }, at('2026-12-01')) && F.challengeOpen({ closes: '' }, at('2099-01-01')));
+  const row = F.challengeOf({ no: 7, sub: 'Ghosts', body: body.replace(/\s+/g, ' '), name: 'Host', trip: 'hh', replies: 3, at: 5 }, { code: 'ficx', title: 'X' });
+  assert.deepEqual([row.board, row.no, row.title, row.author, row.trip, row.closes, row.replies], ['ficx', 7, 'Ghosts', 'Host', 'hh', '2026-11-30', 3]);
+  assert.equal(F.challengeOf({ no: 8, body: 'Summary: a story' }, { code: 'ficx', title: 'X' }), null, 'a story is not a challenge');
+
+  const topics = [{ board: 'ficx', no: 1, trip: 'aa', title: 'One' }, { board: 'ficx', no: 2, trip: 'bb', title: 'Two' }, { board: 'ficy', no: 3, trip: '', title: 'Unsigned' }];
+  assert.equal(F.entryBody('ficx', 1), 'Entry: ficx/1'); assert.deepEqual(F.readEntry(' Entry: ficx/1 '), { board: 'ficx', no: 1 }); assert.equal(F.readEntry('Entry: ficx/1 please'), null);
+  const posts = [
+    { body: 'Entry: ficx/1', trip: 'aa', at: at('2026-11-10') },
+    { body: 'Entry: ficx/2', trip: 'aa', at: at('2026-11-11') },    // not the writer of story 2: does not count
+    { body: 'Entry: ficx/1', trip: 'aa', at: at('2026-11-12') },    // the same story twice: once
+    { body: 'Entry: ficy/3', trip: '', at: at('2026-11-12') },      // a story with no mark cannot be entered
+    { body: 'Entry: ficx/9', trip: 'aa', at: at('2026-11-12') },    // no such story
+    { body: 'Entry: ficx/2', trip: 'bb', at: at('2026-11-30') },    // the last day counts
+    { body: 'Entry: ficx/2', trip: 'bb', at: at('2026-12-01'), hidden: true },
+  ];
+  const entries = F.entriesOf(posts, topics, '2026-11-30');
+  assert.deepEqual(entries.map((t) => [t.no, t.entered]), [[1, at('2026-11-10')], [2, at('2026-11-30')]]);
+  assert.deepEqual(F.entriesOf([{ body: 'Entry: ficx/2', trip: 'bb', at: at('2026-12-01') }], topics, '2026-11-30'), [], 'an entry after the last day does not count');
+  assert.deepEqual(F.entriesOf([{ body: 'Entry: ficx/2', trip: 'bb', at: at('2030-01-01') }], topics, '').map((t) => t.no), [2], 'no last day: always open');
+
+  assert.equal(F.winnerBody('ficx', 2), 'Winner: ficx/2');
+  const picks = [
+    { body: 'Winner: ficx/2', trip: 'hh', at: at('2026-11-30') },   // before the challenge closed: does not count
+    { body: 'Winner: ficx/2', trip: 'aa', at: at('2026-12-02') },   // not the one who set it
+    { body: 'Winner: ficx/2', trip: 'hh', at: at('2026-12-02') },
+    { body: 'Winner: ficx/2', trip: 'hh', at: at('2026-12-03') },   // once
+    { body: 'Winner: ficy/3', trip: 'hh', at: at('2026-12-03') },   // not an entry
+    { body: 'Winner: ficx/1', trip: 'hh', at: at('2026-12-03') },
+  ];
+  assert.deepEqual(F.winnersOf(picks, entries, 'hh', '2026-11-30').map((t) => t.no), [2, 1], 'first place first');
+  assert.deepEqual(F.winnersOf(picks, entries, '', '2026-11-30'), [], 'a challenge set with no mark has no winners');
+});
+
+test('a typed fandom name: the one here already in any case, else a new code that is free; blank or codeless names open nothing', () => {
+  const fic = [{ code: 'ficdune', title: 'Dune' }], taken = new Set(['ficdune', 'ficstartre']);
+  assert.deepEqual(F.fandomFor('  DUNE ', fic, taken), { title: 'Dune', code: 'ficdune', existing: true });
+  assert.deepEqual(F.fandomFor('Star Trek', fic, taken), { title: 'Star Trek', code: 'ficstartr2', existing: false }, 'a taken code gets a number');
+  assert.deepEqual(F.fandomFor('Tom #1', fic, new Set()), { title: 'Tom 1', code: 'fictom1', existing: false }, 'one line, no #, as the post form takes names');
+  assert.equal(F.fandomFor('   ', fic, taken), null);
+  const app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  assert.equal((app.match(/F\.fandomFor\(/g) || []).length, 1, 'both forms open a fandom through one helper (openFandom)');
+  assert.equal((app.match(/await openFandom\(form, /g) || []).length, 2, 'Start a fandom and the post form');
+});
+
+// ---- a chapter from a file (the post form's "Open a file") ----
+/** a zip of { name: text } entries, deflated, as Word writes a .docx (central directory and all), for the file tests. */
+function zipOf(entries) {
+  const local = [], central = []; let at = 0;
+  for (const [name, text] of Object.entries(entries)) {
+    const raw = Buffer.from(text), data = zlib.deflateRawSync(raw), nm = Buffer.from(name), crc = zlib.crc32(raw);
+    const h = Buffer.alloc(30); h.writeUInt32LE(0x04034b50, 0); h.writeUInt16LE(20, 4); h.writeUInt16LE(8, 8); h.writeUInt32LE(crc, 14); h.writeUInt32LE(data.length, 18); h.writeUInt32LE(raw.length, 22); h.writeUInt16LE(nm.length, 26);
+    const c = Buffer.alloc(46); c.writeUInt32LE(0x02014b50, 0); c.writeUInt16LE(20, 4); c.writeUInt16LE(20, 6); c.writeUInt16LE(8, 10); c.writeUInt32LE(crc, 16); c.writeUInt32LE(data.length, 20); c.writeUInt32LE(raw.length, 24); c.writeUInt16LE(nm.length, 28); c.writeUInt32LE(at, 42);
+    local.push(h, nm, data); central.push(c, nm); at += 30 + nm.length + data.length;
+  }
+  const cd = Buffer.concat(central), e = Buffer.alloc(22); e.writeUInt32LE(0x06054b50, 0); e.writeUInt16LE(central.length / 2, 8); e.writeUInt16LE(central.length / 2, 10); e.writeUInt32LE(cd.length, 12); e.writeUInt32LE(at, 16);
+  return Buffer.concat([...local, cd, e]);
+}
+const DOCX_XML = '<?xml version="1.0"?><w:document xmlns:w="x"><w:body><w:p><w:r><w:t>The ship left</w:t></w:r><w:r><w:t xml:space="preserve"> the dock &amp; nobody waved.</w:t></w:r></w:p>'
+  + '<w:p><w:r><w:t>Line one</w:t><w:br/><w:t>line two</w:t></w:r></w:p><w:p></w:p><w:p><w:r><w:t>The end.</w:t></w:r></w:p></w:body></w:document>';
+const inflate = (b) => zlib.inflateRawSync(b);
+
+test('a .docx opens as its text: each paragraph a paragraph, a line break a line, entities read, no markup', async () => {
+  const t = await F.fileText('Shore Leave.docx', zipOf({ '[Content_Types].xml': '<Types/>', 'word/document.xml': DOCX_XML }), inflate);
+  assert.equal(t, 'The ship left the dock & nobody waved.\n\nLine one\nline two\n\nThe end.');
+  assert.equal(F.docxText(DOCX_XML), t);
+});
+
+test('a .txt opens as it is (line ends made plain, a byte order mark dropped); .md too', async () => {
+  const enc = (s) => new TextEncoder().encode(s);
+  assert.equal(await F.fileText('a.txt', enc('\ufeffOne.\r\n\r\n\r\n\r\nTwo.   \r\n')), 'One.\n\nTwo.');
+  assert.equal(await F.fileText('a.md', enc('# Title\n\nText.')), '# Title\n\nText.');
+});
+
+test('an .html page opens as text: blocks are paragraphs, scripts and styles gone, entities read, nothing of the markup kept', async () => {
+  const html = '<!doctype html><html><head><title>x</title><style>p{}</style></head><body><script>alert(1)</script><h1>Shore&nbsp;Leave</h1><p>It was <b>late</b>&hellip;</p><p>One<br>two &lt;3 &#8212; &#x2019;</p><!-- note --></body></html>';
+  const t = await F.fileText('story.html', new TextEncoder().encode(html));
+  assert.equal(t, 'Shore Leave\n\nIt was late\u2026\n\nOne\ntwo <3 \u2014 \u2019');
+  assert.doesNotMatch(t, /alert|style|<b>/);
+  assert.equal(F.htmlText('<p>a</p><p>b</p>'), 'a\n\nb');
+});
+
+test('a file with no text this form can read gives nothing: a binary file, a zip that is not a .docx, a broken zip, a file over the limit', async () => {
+  assert.equal(await F.fileText('old.doc', new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 0, 0, 0, 1])), '');
+  assert.equal(await F.fileText('a.zip', zipOf({ 'readme.txt': 'hello' }), inflate), '');
+  assert.equal(await F.fileText('a.docx', new Uint8Array([0x50, 0x4b, 3, 4, 1, 2, 3]), inflate), '');
+  assert.equal(await F.fileText('big.txt', new Uint8Array(F.FILE_MAX + 1).fill(65)), '');
+  assert.equal(await F.zipEntry(zipOf({ 'word/document.xml': 'x' }), 'word/other.xml', inflate), null);
+});
+
+test('a title from a file name: its words, the type and the dashes gone', () => {
+  assert.equal(F.titleOfFile('shore_leave-draft.docx'), 'shore leave draft');
+  assert.equal(F.titleOfFile('Chapter One.txt'), 'Chapter One');
+  assert.equal(F.titleOfFile(''), '');
+});
+
+test('the post form opens a file and shows a preview, both on this device: the file input takes the types fileText reads, Preview draws with the story page\'s own paras()', () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  for (const id of ['stOpen', 'stFile', 'stUndo', 'stPrev', 'stPreview']) assert.match(html, new RegExp('id="' + id + '"'), id);
+  assert.match(app, /file\.accept = F\.FILE_TYPES/);
+  assert.match(app, /paras\(box\.value, prose\)/, 'the preview is drawn as a story page draws a chapter');
+  assert.match(app, /new DecompressionStream\('deflate-raw'\)/);
+  assert.doesNotMatch(app.slice(app.indexOf('function fileAndPreview'), app.indexOf('async function viewPost')), /fetch\(|api\(/, 'opening a file sends nothing');
 });

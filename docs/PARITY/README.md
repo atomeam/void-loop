@@ -52,26 +52,26 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 6 | /jobs/ | See who you know at a company | missing | LinkedIn Jobs |
 | 5 | /recipes/ | An account that keeps your things on every device | partial | skinnytaste.com, epicurious.com, delish.com, cookpad.com, yummly.com |
 | 5 | /markets/ | Technical indicators and drawing | missing | stockq.org, stockanalysis.com, barchart.com, investing.com, tradingview.com |
-| 4 | /books/ | An account that keeps your things on every device | missing | inkfluenceai.com, sudowrite.com, squibler.io, novelcrafter.com |
+| 4 | /books/ | An account that keeps your things on every device | missing | inkfluenceai.com, novelcrafter.com, sudowrite.com, squibler.io |
 | 3 | /scores/ | An account that keeps your things on every device | partial | besoccer.com, onefootball.com, cbssports.com |
-| 3 | /books/ | Share a link to what you made or found | missing | inkfluenceai.com, squibler.io, novelcrafter.com |
+| 3 | /books/ | Share a link to what you made or found | missing | inkfluenceai.com, novelcrafter.com, squibler.io |
 | 2 | /generators/ | Dark mode | missing | rangen.co.uk, behindthename.com |
 | 2 | /notes/ | End-to-end encryption | missing | standardnotes.com, notepad.pw |
 | 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |
 | 1 | /flights/trip/ | A price calendar and graph | missing | tripwaffle.com |
 | 1 | /flights/time/ | A price calendar and graph | missing | clock7.com |
-| 1 | /flights/trip/ | A public API | missing | tripwaffle.com |
-| 1 | /flights/airports/ | A public API | missing | aruljohn.com |
 | 1 | /kanban/quick/ | A public API | missing | abacktools.com |
 | 1 | /kanban/teams/ | A public API | missing | wekan.fi |
 | 1 | /kanban/flow/ | A public API | missing | kanbanflow.com |
 | 1 | /photos/tinypng/ | A public API | missing | tinypng.com |
 | 1 | /photos/photopea/ | A public API | missing | photopea.com |
 | 1 | /photos/iloveimg/ | A public API | missing | iloveimg.com |
+| 1 | /flights/trip/ | A public API | missing | tripwaffle.com |
+| 1 | /flights/airports/ | A public API | missing | aruljohn.com |
 | 1 | /bpm/ | A public API | missing | anotherproducer.com |
 | 1 | /g/ | A public API | missing | codebasehq.com |
-| 1 | /tournaments/ | A public API | missing | yunite.xyz |
 | 1 | /hosting/ | A public API | missing | thunit.com |
+| 1 | /tournaments/ | A public API | missing | yunite.xyz |
 | 1 | /pdf/editor/ | A public API | missing | sejda.com |
 | 1 | /pdf/studio/ | A public API | missing | smallpdf.com |
 | 1 | /pdf/ | A public API | missing | ilovepdf.com |
@@ -90,17 +90,17 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /random/ | An account that keeps your things on every device | partial | random.org |
 | 1 | /word-count/ | An account that keeps your things on every device | partial | wordcounter.net |
 | 1 | /stopwatch/ | An account that keeps your things on every device | partial | online-stopwatch.com |
-| 1 | /random-user/ | An account that keeps your things on every device | missing | randomuser.me |
 | 1 | /kanban/quick/ | An account that keeps your things on every device | partial | abacktools.com |
 | 1 | /kanban/flow/ | An account that keeps your things on every device | partial | kanbanflow.com |
-| 1 | /sports/ | An account that keeps your things on every device | partial | thesportsdb.com |
-| 1 | /markets/caps/ | An account that keeps your things on every device | partial | companiesmarketcap.com |
-| 1 | /markets/screener/ | An account that keeps your things on every device | partial | finviz.com |
 | 1 | /jobs/regions/ | An account that keeps your things on every device | partial | jobicy.com |
 | 1 | /jobs/alerts/ | An account that keeps your things on every device | partial | workingnomads.com |
 | 1 | /jobs/europe/ | An account that keeps your things on every device | partial | arbeitnow.com |
 | 1 | /jobs/categories/ | An account that keeps your things on every device | partial | remotive.com |
 | 1 | /jobs/tags/ | An account that keeps your things on every device | partial | remoteok.com |
+| 1 | /random-user/ | An account that keeps your things on every device | missing | randomuser.me |
+| 1 | /sports/ | An account that keeps your things on every device | partial | thesportsdb.com |
+| 1 | /markets/caps/ | An account that keeps your things on every device | partial | companiesmarketcap.com |
+| 1 | /markets/screener/ | An account that keeps your things on every device | partial | finviz.com |
 | 1 | /g/ | An account that keeps your things on every device | partial | codebasehq.com |
 | 1 | /prizes/ | An account that keeps your things on every device | partial | wheelofgold.com |
 | 1 | /pdf/organize/ | An account that keeps your things on every device | missing | 10015.io |
@@ -116,11 +116,11 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
 | 1 | /weather/ | Climate records | missing | weather.gov |
 | 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
-| 1 | /prizes/ | Crypto rewards and gambling | missing | wheelofgold.com |
 | 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
 | 1 | /convert/unit-converter-2/ | Currency | missing | convertunits.com |
 | 1 | /convert/ | Currency | missing | unitconverters.net |
 | 1 | /calendar/ | Dark mode | missing | calendar.online |
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
+| 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
+| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |
 | 1 | /markets/caps/ | Dark mode | missing | companiesmarketcap.com |
-| 1 | /markets/screener/ | Dark mode | missing | finviz.com |

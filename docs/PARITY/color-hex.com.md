@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: color-hex.com (https://www.color-hex.com/color/ff5733)
-- Verse: /color/?c=ff5733 (colour, tower gate 12 of 15)
+- Verse: /color/?c=ff5733 (colour, tower gate 1 of 15)
 - Live scan: 2026-10-28, HTTP 403, page title "Just a moment..."
 - History: [docs/HISTORY/color-hex.com.md](../HISTORY/color-hex.com.md)
 

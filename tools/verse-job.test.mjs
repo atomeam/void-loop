@@ -5,7 +5,7 @@ import http from 'node:http';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { taskText, lastJson, settle, runJob, GUIDE } from './verse-job.mjs';
+import { taskText, startHere, lastJson, settle, runJob, GUIDE } from './verse-job.mjs';
 import { ROUTES } from './conductor-core.mjs';
 
 const job = (o = {}) => ({ id: 'j1', target: 'feature:dark mode', state: 'building', note: 'claimed by conductor', ask: 'add a dark mode to /notes/', at: '2026-10-20T00:00:00Z', updated: '2026-10-29T01:00:00Z', ...o });
@@ -18,6 +18,23 @@ test('every kind the conductor sends to the coder has guidance, and the task tex
   assert.match(t, /docs\/playbooks\/tower-self\.md/);
   assert.ok(taskText(job({ ask: 'x'.repeat(5000), note: 'y'.repeat(5000) })).length <= 1800);
   assert.match(taskText(job({ target: 'mystery:1' })), /small and tested/);
+});
+
+test('a lap want names where its item lives and the step that counts, so the coder reads instead of searching the repo', () => {
+  // the want that spent 30 turns on "search ." twice (mvpwmhl2, 2026-10-29)
+  const want = job({ target: 'will:overhaul-surface-ask-persona-playtest-an', ask: 'Overhaul surface:ask: persona playtest and best-site comparison, then rebuild what is weak', note: 'tries 2 · no-change: stopped at the turn cap (30) · Verse chose this: its turn in this lap; it must end measurably better than last lap (before: skills 3, tests 0)' });
+  const skills = ['ask-clipboard', 'ask-diff', 'ask-immune', 'calendar', 'home'];
+  const s = startHere(want, skills);
+  assert.match(s, /void-live-deploy\/skills\/ask-clipboard\.js, void-live-deploy\/skills\/ask-diff\.js, void-live-deploy\/skills\/ask-immune\.js\./);
+  assert.doesNotMatch(s, /calendar|home\.js/);
+  assert.match(s, /measured by: skills 3, tests 0/); assert.match(s, /tools\/ask-clipboard\.test\.mjs/);
+  const t = taskText(want, skills); assert.ok(t.includes(s), 'the task carries it'); assert.ok(t.indexOf(s) < t.indexOf('Note:'), 'before the note, so a long note never cuts it');
+  assert.ok(taskText(job({ ask: 'Overhaul surface:ask ' + 'x'.repeat(5000), note: '(before: skills 3, tests 0)' }), skills).includes('Start here'), 'a long ask never cuts it');
+  // a skill, a tool; a tested item gets no test step; other jobs and unknown surfaces get nothing
+  assert.match(startHere(job({ ask: 'Upgrade skill:calendar: more views', note: '(before: lines 90, examples 2, tests 3)' })), /void-live-deploy\/skills\/calendar\.js/);
+  assert.doesNotMatch(startHere(job({ ask: 'Upgrade skill:calendar: more views', note: '(before: lines 90, tests 3)' })), /smallest step/);
+  assert.match(startHere(job({ ask: 'Upgrade tool:verse-job.mjs: tests' })), /tools\/verse-job\.mjs/);
+  assert.equal(startHere(job()), ''); assert.equal(startHere(job({ ask: 'Overhaul surface:nowhere: x' }), skills), '');
 });
 
 test('the lap\'s answer is the last JSON line of its output', () => {

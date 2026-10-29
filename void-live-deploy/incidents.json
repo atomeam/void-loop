@@ -2,6 +2,98 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-29T13:05:55.568Z",
+   "sha": "96ff518205447b3b2ddc02e3b412ac03933ec4a6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40874469214",
+   "suite": "browser suite on main",
+   "checks": [
+    "is it: \"is it christmas?\" shows one giant NO (80 px or more), whole on the card with no art panel, says when Christmas is and today's date, and its countdown ticks",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind"
+   ],
+   "touched": [
+    "tools/brain.test.mjs",
+    "void-live-deploy/lib/brain.js",
+    "void-live-deploy/skills/verse-brain.js",
+    "domains/growth-inbox.md",
+    "tools/checks.mjs",
+    "tools/fanfic-first-writer.test.mjs",
+    "tools/fanfic.test.mjs",
+    "void-live-deploy/fanfic/app.js",
+    "void-live-deploy/fanfic/index.html",
+    "void-live-deploy/lib/fanfic-de.js",
+    "void-live-deploy/lib/fanfic.js",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/yesno.js"
+   ]
+  },
+  {
+   "at": "2026-10-29T10:48:24.159Z",
+   "sha": "8aa556a592f73a4a474673a9279a0a0a73ea87e2",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40855694765",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page",
+    "verse brain: \"show me your brain\" opens one card (no figure), its fourteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
+   ],
+   "touched": [
+    "tools/fanfic.test.mjs",
+    "void-live-deploy/fanfic/app.js",
+    "void-live-deploy/fanfic/index.html",
+    "void-live-deploy/functions/fanfic/rss.js",
+    "void-live-deploy/lib/fanfic-de.js",
+    "void-live-deploy/lib/fanfic.js"
+   ]
+  },
+  {
+   "at": "2026-10-29T10:20:59.516Z",
+   "sha": "fbf2a00844807c184468d9b6412859865876b077",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40851990196",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end",
+    "field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page",
+    "verse brain: \"show me your brain\" opens one card (no figure), its fourteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
+   ],
+   "touched": [
+    "void-live-deploy/fanfic/index.html",
+    "docs/PARITY/github.md",
+    "docs/PARITY/hugging-face.md",
+    "docs/PARITY/lichess.md",
+    "domains/conductor.json",
+    "tools/test_void.mjs",
+    "void-live-deploy/convert/unit-converter-2/index.html",
+    "void-live-deploy/convert/unit-converter/index.html",
+    "void-live-deploy/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/recipe.js",
+    "void-live-deploy/skills/verse-brain.js",
+    "void-live-deploy/tower.evidence.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html"
+   ]
+  },
+  {
+   "at": "2026-10-29T09:57:59.260Z",
+   "sha": "b9dde86ece362c297b5ec410f9a8d41478e696e5",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40848882309",
+   "suite": "browser suite on main",
+   "checks": [
+    "verse brain: \"show me your brain\" opens one card (no figure), its thirteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/fanfic.test.mjs",
+    "void-live-deploy/fanfic/app.js",
+    "void-live-deploy/fanfic/index.html",
+    "void-live-deploy/lib/fanfic-de.js",
+    "void-live-deploy/lib/fanfic.js"
+   ]
+  },
+  {
    "at": "2026-10-29T05:00:37.748Z",
    "sha": "12e44a295bde2d0a596d6d68565eb710a6b84669",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40818422632",
@@ -836,137 +928,6 @@
     "void-live-deploy/sw.js",
     "void-live-deploy/tournaments/index.html",
     "void-live-deploy/translate/index.html"
-   ]
-  },
-  {
-   "at": "2026-10-27T16:37:43.431Z",
-   "sha": "3c1fa2d801d9d483e392265222bc6c4edd851590",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40535793049",
-   "suite": "browser suite on main",
-   "checks": [
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract",
-    "router: it runs while Wikipedia is fetched, so the answer does not wait for it (waited 0-30 ms after the sources)",
-    "suite budget: the whole suite ran past 1680 s"
-   ],
-   "touched": [
-    ".github/workflows/tower-gate.yml",
-    "void-live-deploy/sw.js"
-   ]
-  },
-  {
-   "at": "2026-10-27T16:07:25.087Z",
-   "sha": "7b81fdaf0948ea60a50c4cc73d387e0b4f924851",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40532683365",
-   "suite": "browser suite on main",
-   "checks": [
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract",
-    "router: it runs while Wikipedia is fetched, so the answer does not wait for it (waited 0-30 ms after the sources)",
-    "suite budget: the whole suite ran past 1680 s"
-   ],
-   "touched": [
-    "tools/emoji-wall.mjs",
-    "tools/test_void.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/emojis/index.html",
-    "void-live-deploy/lib/emoji.js",
-    "void-live-deploy/lib/tally.js",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/sw.js"
-   ]
-  },
-  {
-   "at": "2026-10-26T20:25:45.101Z",
-   "sha": "c65aded000d1c243e584428335f2a46a5d485cf9",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40389400700",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested"
-   ],
-   "touched": [
-    "void-live-deploy/paint/index.html"
-   ]
-  },
-  {
-   "at": "2026-10-26T18:44:45.413Z",
-   "sha": "535708ce7322eb16011c82eb55ef8a3301b1ffee",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40375918832",
-   "suite": "browser suite on main",
-   "checks": [
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "gear explainer miniature: draws real pixels, its pair follows the data (16:32",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract",
-    "router: it runs while Wikipedia is fetched, so the answer does not wait for it (waited 0-30 ms after the sources)"
-   ],
-   "touched": [
-    "tools/appraise-photo.test.mjs",
-    "void-live-deploy/functions/api/appraise.js",
-    "void-live-deploy/lib/appraise-photo.js"
    ]
   }
  ]

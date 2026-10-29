@@ -17,6 +17,9 @@ export const JOURNEYS = Object.freeze({
   'random number': ['pick a number in a range', 'change the range and pick again', 'share the result and reopen it from the link'],
   'word count': ['type text and see words and characters counted', 'paste a long text and see reading time', 'share the result and reopen it from the link'],
   stopwatch: ['start, lap and stop the stopwatch', 'reset and start again', 'share the result and reopen it from the link'],
+  // nameunit.com (/hosting/, 2026-10-29): its visitors type a name and read which endings are free or taken, then send that answer on
+  'wheelroot.com': ['draw a drill and see its score', 'share the drawing and reopen it from the link'],
+  nameunit: ['search a name and see each ending free or taken', 'share the result and reopen it from the link'],
   paint: ['choose a picture from the library', 'zoom in and fill a numbered area', 'use a hint for the selected colour', 'leave and come back to the saved picture', 'finish and watch the reveal', 'colour your own photo'],
 });
 

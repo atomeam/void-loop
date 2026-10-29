@@ -33,7 +33,7 @@ test('the ask bar routes an ask to the tool that does it, with the ask in the li
   const to = (a) => routeAsk(a);
   assert.equal(to('100 c to f'), '/convert/?q=100%20c%20to%20f'); assert.equal(to('flip a coin'), '/flip/'); assert.equal(to('weather in boston'), '/weather/?q=boston');
   assert.equal(to('time in tokyo'), '/time/?q=tokyo'); assert.equal(to('is it christmas?'), '/is-it/christmas'); assert.equal(to('a password of 20'), '/password/?len=20');
-  assert.equal(to('how strong is Tr0ub4dor&3'), '/password-strength/#p=Tr0ub4dor%263'); assert.equal(to('decode aGVsbG8='), '/base64/?mode=decode&t=aGVsbG8%3D'); assert.equal(to('encode hello'), '/base64/?t=hello');
+  assert.equal(to('how strong is Tr0ub4dor&3'), '/password-strength/', 'the typed password stays out of the address'); assert.equal(to('decode aGVsbG8='), '/base64/?mode=decode&t=aGVsbG8%3D'); assert.equal(to('encode hello'), '/base64/?t=hello');
   assert.equal(to('255 in hex'), '/base-converter/?v=255&b=16'); assert.equal(to('#ff5733'), '/color/?c=ff5733'); assert.equal(to('17% of 240'), '/calculator/?q=17%25%20of%20240');
   assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random-user/?n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
   assert.equal(to('who is the mayor of boston'), '/?q=who%20is%20the%20mayor%20of%20boston'); assert.equal(to('  '), '');
@@ -193,6 +193,64 @@ test('the password page\'s card makes a password of the length on the page, not 
   assert.ok(page.includes("{ card: () => cardAsk($('lenN').value, mode) }"), 'the page gives the card the length and the mode, nothing else');
   assert.ok(util.includes("q.kind === 'password' ? page + '?len=' + q.n : page"), 'the stage card names the page with its length only');
   assert.deepEqual(pageOfCard('', '/password/?len=33'), ['/password/?len=33', 'Password generator'], 'the card links back to the page on its length');
+});
+
+test('a made or typed password is never in an address, a hash or history: the strength page gets it in memory from the page that opened it, once', async () => {
+  const H = await import('../void-live-deploy/lib/pw-handover.js'), P = await import('../void-live-deploy/lib/password.js');
+  const ORIGIN = 'https://a-to-mind.com', win = (origin) => { const ls = new Set(); return { location: { origin }, addEventListener: (_, f) => ls.add(f), removeEventListener: (_, f) => ls.delete(f), emit: (e) => { for (const f of [...ls]) f(e); }, heard: () => ls.size }; };
+  const pair = () => {
+    const a = win(ORIGIN), b = win(ORIGIN), sent = [];
+    a.open = (url, target) => { b.url = url; b.target = target; b.opener = a; return b; };
+    b.postMessage = (data, to) => { sent.push({ to: 'opened', data, target: to }); b.emit({ data, origin: ORIGIN, source: a }); };
+    a.postMessage = (data, to) => { sent.push({ to: 'opener', data, target: to }); a.emit({ data, origin: ORIGIN, source: b }); };
+    return { a, b, sent };
+  };
+  for (const pw of [...P.generateMany({ length: 24 }, 5), 'Tr0ub4dor&3', 'a b#p=c&d']) {
+    const { a, b, sent } = pair(); let got = null;
+    assert.equal(H.handOver(a, pw), true); assert.equal(b.url, '/password-strength/', 'the tab opens on the plain page'); assert.ok(!b.url.includes(pw) && !b.url.includes(encodeURIComponent(pw)) && !b.url.includes('#'), 'no password and no hash in the address it opens');
+    assert.equal(H.receive(b, (v) => { got = v; }), true); assert.equal(got, pw, 'the strength page gets the password');
+    assert.ok(sent.every((m) => m.target === ORIGIN), 'every message names this origin, never *');
+    assert.equal(a.heard(), 0, 'the opener stops listening and drops it'); assert.equal(b.heard(), 0, 'the strength page stops listening');
+    let again = null; H.receive(b, (v) => { again = v; }, 5); assert.equal(again, null, 'a second ask gets nothing');
+    await new Promise((r) => setTimeout(r, 10));
+  }
+  // a tab that is not the one it opened, or another origin, gets nothing
+  { const { a, b } = pair(); H.handOver(a, 'hunter2hunter2'); const stranger = win(ORIGIN); let leaked = false; stranger.postMessage = () => { leaked = true; };
+    a.emit({ data: { kind: 'a2m-pw-handover', want: true }, origin: ORIGIN, source: stranger }); a.emit({ data: { kind: 'a2m-pw-handover', want: true }, origin: 'https://evil.example', source: b });
+    assert.equal(leaked, false); let got = null; b.postMessage = () => { got = 'sent'; }; a.emit({ data: { kind: 'a2m-pw-handover', want: true }, origin: 'https://evil.example', source: b }); assert.equal(got, null, 'another origin gets nothing');
+    H.receive(b, () => {}, 5); b.postMessage = (data) => b.emit({ data, origin: ORIGIN, source: a }); a.emit({ data: { kind: 'a2m-pw-handover', want: true }, origin: ORIGIN, source: b }); }
+  { const a = win(ORIGIN); a.open = () => null; assert.equal(H.handOver(a, 'x1'), false, 'a blocked tab carries nothing'); assert.equal(a.heard(), 0); }
+  // the ask bar sends a typed password to the plain page
+  for (const ask of ['how strong is Tr0ub4dor&3', 'check password hunter2hunter2', 'how secure is a b c']) { const u = routeAsk(ask); assert.equal(u, '/password-strength/'); }
+  // the pages: no link the password page builds carries a password, and the strength page reads none from the address
+  const page = fs.readFileSync(new URL('../void-live-deploy/password/index.html', import.meta.url), 'utf8'), strength = fs.readFileSync(new URL('../void-live-deploy/password-strength/index.html', import.meta.url), 'utf8');
+  assert.ok(!page.includes('#p=') && !/encodeURIComponent\((?:pw|made)/.test(page), 'the password page builds no address with a password in it');
+  assert.ok(page.includes("handOver(window, pw)") && page.includes("go: () => !handOver(window, made[0])"), 'both checks hand it over in memory');
+  assert.ok(!/pw\.value\s*=\s*decodeURIComponent/.test(strength) && !/(?:session|local)Storage/.test(strength) && !/sessionStorage/.test(page), 'the strength page reads nothing from the address and stores nothing');
+  assert.ok([...page.matchAll(/localStorage\.setItem\(([^;]*)\)/g)].every((m) => !/\bmade\b|\bpw\b/.test(m[1])), 'the password page keeps its settings only, never a password');
+  assert.ok(strength.includes('receive(window, (v) => { pw.value = v; draw(); })') && strength.includes("history.replaceState(null, '', location.pathname + location.search)"), 'it takes it in memory and wipes any old #p= unread');
+});
+
+test('the made-up people page\'s card shows the people on the page: its count, countries, gender and seed, not a fake name generator example', async () => {
+  const C = await import('../void-live-deploy/lib/people-card.js'), F = await import('../void-live-deploy/lib/fakeuser.js'), S = (await import('../void-live-deploy/skills/fakeuser.js')).default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
+  for (const [n, nats, g, seed] of [['12', ['us'], '', 'k3x9ab01'], ['1', ['de', 'jp'], 'female', 'Ab_9'], ['33', ['nz', 'gb'], '', 'q'], ['7', ['ua', 'us', 'fr'], 'male', 'zz-1'], ['250', ['br'], '', 'Verse']]) {
+    const ask = C.cardAsk(n, nats, g, seed); assert.ok(ask, 'an ask for ' + [n, nats, g, seed].join(' '));
+    assert.equal(await firstSkill(ask), 'fakeuser', 'the stage gives it to the made-up people card: ' + ask);
+    assert.deepEqual(F.askFake(ask), { n: +n, nats, gender: g, seed }, 'the card reads back the page\'s settings: ' + ask);
+    const el = { dataset: {}, innerHTML: '' }; assert.equal(S.run(ask, { showPage: (f) => f(el), esc }), 'fakeuser');
+    for (const p of F.people({ seed, n: Math.min(+n, 3), nats, gender: g })) assert.ok(el.innerHTML.includes(esc(p.name)) && el.innerHTML.includes(esc(p.email)), 'the card shows the page\'s person ' + p.name);
+    const want = '/random-user/?' + new URLSearchParams({ n, nat: nats.join(','), ...(g ? { g } : {}), seed });
+    assert.equal(el.dataset.page, want, 'the card\'s page link opens these same people'); assert.deepEqual(pageOfCard('fakeuser', el.dataset.page), [want, 'Made-up people']);
+  }
+  // a seed the ask cannot carry still gives the count, countries and gender; settings it cannot say keep the example
+  assert.deepEqual(F.askFake(C.cardAsk('33', ['nz', 'gb'], '', 'bad seed!')), { n: 33, nats: ['nz', 'gb'], gender: '' });
+  for (const a of [['0'], [''], ['5001'], ['1e2'], ['abc'], ['5000', Object.keys(F.NATS), 'male', 'x']]) assert.equal(C.cardAsk(...a), '', 'the example ask stays: ' + a.join(' '));
+  for (const nat of Object.keys(F.NATS)) assert.deepEqual(F.askFake(C.cardAsk('4', [nat])).nats, [nat], 'each country reads back as itself: ' + nat);
+  // other asks keep what they did: no seed, and the countries in the order asked
+  assert.deepEqual(F.askFake('generate 5 fake german women'), { n: 5, nats: ['de'], gender: 'female' }); assert.deepEqual(F.askFake('20 random users from japan and brazil').nats, ['jp', 'br']);
+  const page = fs.readFileSync(new URL('../void-live-deploy/random-user/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes("{ card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) }"), 'the page gives the card its count, countries, gender and seed');
 });
 
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {

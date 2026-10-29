@@ -6841,5 +6841,12 @@
   {"ask": "walk around", "want": "skill:walker"},
   {"ask": "give me advice", "want": "skill:advice"},
   {"ask": "random advice", "want": "skill:advice"},
-  {"ask": "tell me something wise", "want": "skill:advice"}
+  {"ask": "tell me something wise", "want": "skill:advice"},
+  {"ask": "give me a color", "want": "skill:color"},
+  {"ask": "fan fiction", "want": "skill:fanfic"},
+  {"ask": "fan fiction archive", "want": "skill:fanfic"},
+  {"ask": "calculator for molar mass", "want": "skill:formulas"},
+  {"ask": "1337 speak for world", "want": "skill:leet"},
+  {"ask": "lorem", "want": "skill:lorem"},
+  {"ask": "give me some lorem", "want": "skill:lorem"}
 ]

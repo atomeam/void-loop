@@ -1,23 +1,7 @@
 {
-  "at": "2026-10-28T13:35:04.983Z",
+  "at": "2026-10-29T13:46:26.767Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [
-    {
-      "id": "ask-20261027-2205-1",
-      "ask": "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day",
-      "target": "voice:ask-20261027-2205-1"
-    },
-    {
-      "id": "ask-20261027-2205-2",
-      "ask": "Fix the weather page aria-busy state so it clears once the gate returns a result",
-      "target": "voice:ask-20261027-2205-2"
-    },
-    {
-      "id": "ask-20261027-2205-3",
-      "ask": "Move the two non-V01D workers off the shared namespace",
-      "target": "voice:ask-20261027-2205-3"
-    }
-  ],
+  "selected": [],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
