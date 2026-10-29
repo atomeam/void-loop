@@ -1,0 +1,36 @@
+{
+ "at": "2026-10-29T05:37:35.130Z",
+ "max": 12,
+ "days": 7,
+ "sweep": 100,
+ "hot": [
+  {
+   "file": "void-live-deploy/tower.evidence.json",
+   "changes": 62
+  },
+  {
+   "file": "void-live-deploy/lib/tower.js",
+   "changes": 31
+  },
+  {
+   "file": "tools/tower-probes.mjs",
+   "changes": 27
+  },
+  {
+   "file": "domains/tower-self.json",
+   "changes": 22
+  },
+  {
+   "file": "void-live-deploy/sw.js",
+   "changes": 19
+  },
+  {
+   "file": "domains/handoff.md",
+   "changes": 18
+  },
+  {
+   "file": "void-live-deploy/identity/index.html",
+   "changes": 13
+  }
+ ]
+}

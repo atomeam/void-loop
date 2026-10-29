@@ -168,6 +168,7 @@
  "local-inference": "Offline Ollama/DeepSeek gate for D1 ledger commits",
  "lock": "Explainer.pin-lock, frontier #17: a cutaway pin-tumbler lock",
  "lorem": "Generate lorem ipsum placeholder text",
+ "magic8": "A magic 8-ball answer, pure client-side",
  "magnetize": "Handoff card for the post-print magnetize step",
  "make": "Things that materialize: a playable Connect 4, and 3D objects",
  "mancala": "Kalah on the stage, against Verse",
