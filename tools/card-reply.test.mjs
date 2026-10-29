@@ -63,6 +63,7 @@ test('an empty reply sends and keeps nothing', async () => {
 test('the section stays out of a shared card and its picture, and the page and its two deploy copies carry it the same way', () => {
   const src = readFileSync(new URL('../void-live-deploy/lib/card-reply.js', import.meta.url), 'utf8');
   assert.match(src, /setAttribute\('data-share-skip', '1'\)/);
+  assert.match(src, /setAttribute\('data-nospeak', '1'\)/, 'the speaker never reads the reply heading as part of the card');
   assert.match(src, /className: 'vtell-box vreply'/, 'the frame, the forge and cardWords already leave .vtell-box out');
   assert.ok(!/\.innerHTML\b/.test(src), 'every word goes in as text');
   // void.html is the page; the deploy copies it over both files (AGENTS.md), so the section must be in void.html itself
