@@ -125,6 +125,23 @@ function noticeRow([id, title]) {
   rep.dataset.l = 'Replies'; when.dataset.l = '';
   tr.append(ic, main, rep, who, when); return tr;
 }
+// a row's own figures (chapters, words, reviews, stars) come from the whole story: each row reads its thread once, at most 4 at a time, and
+// keeps the answer until the thread is bumped. An empty archive has no rows, so nothing is read and nothing is shown
+const figs = new Map(), figWait = []; let figBusy = 0;
+const slot = () => new Promise((r) => { if (figBusy < 4) { figBusy++; r(); } else figWait.push(r); });
+const free = () => { const r = figWait.shift(); if (r) r(); else figBusy--; };
+function figuresOf(t) {
+  const k = t.board + '/' + t.no, had = figs.get(k);
+  if (had && had.bumped === t.bumped) return had.p;
+  const p = slot().then(() => api('?b=' + encodeURIComponent(t.board) + '&t=' + t.no)).then((r) => (r.ok && r.thread ? F.rowFigures(F.storyOf(r.thread, r.posts || [])) : null)).catch(() => null).finally(free);
+  figs.set(k, { bumped: t.bumped, p }); p.then((x) => { if (!x) figs.delete(k); });
+  return p;
+}
+function figuresLine(t) {
+  const line = el('span', 'in figs');
+  figuresOf(t).then((f) => { if (f) f.forEach((x, i) => { if (i) line.append(' · '); line.append(el('span', '', x)); }); });
+  return line;
+}
 function topicRow(t, { inFandom } = {}) {
   const tr = el('tr'), ic = el('td', 'ic'), main = el('td', 'm'), rep = el('td', 'num hide-s', String(t.replies)), who = el('td', 'who hide-s', t.author), when = el('td', 'when'); who.translate = false;
   ic.append(t.locked ? dot('lock', 'Locked') : F.unread(t, me.read) ? dot('new', 'New posts') : dot('', 'No new posts'));
@@ -134,6 +151,7 @@ function topicRow(t, { inFandom } = {}) {
   if (!inFandom) { const fl = link(t.fandom, href({ f: t.board })); fl.translate = false; by.append(' in ', fl); }
   main.append(by);
   const line = F.detailsLine(t); if (line) { const d = el('span', 'in det', line); d.translate = false; main.append(d); }
+  main.append(figuresLine(t));
   rep.dataset.l = 'Replies'; when.dataset.l = 'Last post'; when.append(timeEl(t.bumped));
   tr.append(ic, main, rep, who, when); return tr;
 }
@@ -376,6 +394,7 @@ async function viewRecs() {
       const by = el('span', 'in'), pen = link(t.author, href({ by: F.authorKey(t) })), fl = link(t.fandom, href({ f: t.board })); pen.translate = false; fl.translate = false;
       by.append('by ', pen, ' in ', fl); main.append(by);
       const line = F.detailsLine(t); if (line) { const d = el('span', 'in det', line); d.translate = false; main.append(d); }
+      main.append(figuresLine(t));
     } else main.append(el('span', 'quiet', 'This story is not on the boards now.'));
     if (shared) { if (x.note) { const w = el('p', 'why', x.note); w.translate = false; main.append(w); } }
     else {
@@ -458,7 +477,7 @@ async function viewChallenge(code, no, r) {
   const row = (t, extra) => { const li = el('li'), main = el('div'), ti = link(t.title, href({ f: t.board, s: t.no }), 't'); ti.translate = false; main.append(ti);
     const line = el('span', 'in'), p = link(t.author, href({ by: F.authorKey(t) })); p.translate = false; line.append('by ', p, ' · ', extra); main.append(line);
     const det = F.detailsLine(t); if (det) { const d = el('span', 'in det', det); d.translate = false; main.append(d); }
-    li.append(main); return li; };
+    main.append(figuresLine(t)); li.append(main); return li; };
   const PLACES = ['First place', 'Second place', 'Third place'];
   $('winnersBox').hidden = !winners.length;
   $('winnerRows').replaceChildren(...winners.map((t, i) => row(t, PLACES[i])));

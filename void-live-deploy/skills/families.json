@@ -14,8 +14,8 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 46,
-  "checked": 13,
+  "tested": 44,
+  "checked": 15,
   "proven": 305
  },
  "families": [
@@ -25,8 +25,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 15,
-    "checked": 1,
+    "tested": 14,
+    "checked": 2,
     "proven": 39
    },
    "skills": [
@@ -67,10 +67,12 @@
     },
     {
      "name": "color",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "fakeuser",
@@ -2145,8 +2147,8 @@
    "for": "food delivery, rides and Waymo, social feeds and dating",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 0,
+    "tested": 0,
+    "checked": 1,
     "proven": 5
    },
    "skills": [
@@ -2180,10 +2182,12 @@
     },
     {
      "name": "fanfic",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "dating",
