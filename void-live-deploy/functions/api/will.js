@@ -1,5 +1,6 @@
 // Verse's will engine: Verse decides what it wants to become next.
 // GET  (public)  -> Verse's current wants, in its own words ("what do you want to be?")
+//                   and lastRun: the newest tried will job, { title, state, at, tries, shipped, pr, why } (lib/will-last.js)
 // POST (owner)   { candidates: [{ kind, title, why, weight, cost_cents?, source? }] } -> Verse chooses, saves its will, queues its top want for the builders.
 // Verse's earnings (plan item 12: every Gumroad sale, net of refunds) are its budget: the will reads them when it ranks, and a
 // candidate whose monthly cost the budget covers weighs more. Money never shows in the public will; real spend needs the confirm line.
@@ -18,6 +19,7 @@ import { tower, towerLine, towerArgs } from '../../lib/tower.js';
 import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLine } from '../../lib/lap.js';
 import { hotOf } from '../../lib/churn.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
+import { WILL_LAST_SQL, lastRun } from '../../lib/will-last.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
@@ -32,6 +34,10 @@ export async function onRequestGet({ request, env }) {
     const [ledger, answered] = await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]);
     if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; }
   } catch (_) { /* the ledger could not be read: the will as it was chosen */ }
+  // the will's last run (lib/will-last.js, for the growth card's today view): the newest tried will job's title, state and the PR or the
+  // reason it did not ship. An open read of one queue row, cut to that public shape (its why redacted); the rest of the queue
+  // stays owner only (functions/api/queue.js). It costs one indexed SELECT per read, behind the same 60-second public cache.
+  try { const last = lastRun(await env.DB.prepare(WILL_LAST_SQL).first(), redact); if (last) will.lastRun = last; } catch (_) { /* no queue table yet */ }
   // the public lap tracker (counts only): ?lap=1, or will.lap on every read
   let only = null; try { const inv = await (await env.ASSETS.fetch(new Request(new URL('/lap.items.json', request.url)))).json(); if (inv && inv.onlySite) only = { counts: inv.onlySiteCounts, line: onlySiteLine(inv.onlySiteCounts), categories: inv.onlySite.map((r) => ({ category: r.category, status: r.status, skills: r.skills })) }; } catch (_) { /* no inventory */ }
   try { const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v'); will.lap = publicLap(raw ? JSON.parse(raw) : null, only); try { const file = async (p) => { try { const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; } catch (_) { return null; } }; const [ev, fr, rk, sz, tg] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json'].map(file)); if (!ev) throw new Error('no tower evidence'); const t = tower(...towerArgs((only && only.categories || []).map((c) => ({ category: c.category, status: c.status, skills: c.skills })), { ev, fr, rk, sz, tg })); will.lap.tower = { line: towerLine(t), floor: t.marker, floors: t.total, beaten: t.beaten }; } catch (_) { /* no tower evidence */ } } catch (_) { /* no lap yet */ }
