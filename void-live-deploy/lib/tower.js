@@ -377,12 +377,13 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // a site counted by tools/tower-size.mjs (controls and bytes) by its controls, then its bytes; then a site only weighed, by its weight; then an
   // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
   // came. Without it the old order stands.
-  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the fight in progress stays first until it is won
+  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
   const counted = (f) => !!f.size && trustedControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2) is not counted
   const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
   const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
   const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
-  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
+  // pinned: the target (tower.target.json) stands first because it is the target, not because it is the smallest, so the card says which
+  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */

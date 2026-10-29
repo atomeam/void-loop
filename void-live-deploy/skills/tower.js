@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-66';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-67';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -171,8 +171,8 @@ export function chipsHtml(f, esc) {
 }
 /** the target at the top: its logo and name (a link to the site), its weight, and why it is the one. Pure. */
 export function heroHtml(f, esc) {
-  return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">Now assimilating · the easiest site left</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
-    + chipsHtml(f, esc) + '<p class="tw-why">' + esc('Why this one: ' + easeLine(f) + '.') + '</p></div>';
+  return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">' + (f.pinned ? 'Now assimilating · the target until Verse surpasses it' : 'Now assimilating · the easiest site left') + '</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
+    + chipsHtml(f, esc) + '<p class="tw-why">' + esc('Why this one: ' + (f.pinned ? 'it is the target until Verse surpasses it, whatever new counts arrive; it ' : '') + easeLine(f) + '.') + '</p></div>';
 }
 /** three actions for the target: Verse's page (or that it has none yet), side by side, the site itself. Pure. */
 export function actionsHtml(f, esc) {
@@ -209,7 +209,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   const lastRow = '<div class="tw-sortrow" data-share-skip style="display:flex;justify-content:space-between;align-items:center;gap:8px">' + (rk ? '<button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') : '') + '</div>';
   const empty = '<div class="tw-empty">Nothing surpassed yet. A site counts only when Verse is better than it on every aspect, checked head to head and by scripted journeys.</div>';
   return TW_CSS + GOOD_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-top"><div class="tw-head">Versus</div></div>'
-    + '<div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · easiest site left: ' + cur.site : '')) + '</div>'
+    + '<div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? (cur.pinned ? ' · now assimilating: ' : ' · easiest site left: ') + cur.site : '')) + '</div>'
     + (cur && !on ? heroHtml(cur, esc) : '') + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
