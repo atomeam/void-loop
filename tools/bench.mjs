@@ -69,7 +69,9 @@ const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
 const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 // no host but this machine resolves: every outside service is a stand-in below, and one that has none (a worker's request, a map in an iframe) fails at once
-const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'];
+// --disable-gl-drawing-for-tests: GL draws give no pixels. A CI runner has no GPU, so the compositor and WebGL run on SwiftShader, a GPU in software,
+// on the same 4 cores the answers need (load average 20, #1626). Every check here reads the page's text and its loop log, never a pixel.
+const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1', '--disable-gl-drawing-for-tests'];
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
@@ -198,11 +200,10 @@ async function one(ctx, { ask: a, want, says, before }) {
   await p.close();
   return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms, ...(ground ? { ground } : {}) };
 }
-// default: one page per core, at most 6 (it was one page fewer than the cores). At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
+// default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
 // of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
-// 2026-10-29: with the HTTP and compiled-code caches on (#1622, #1623) an ask is about 0.6 s to open and 1.8 s to answer on CI, and the answer waits on
-// the skill files every time. One page per core, so a core is not idle while a page waits; the pace line shows the load average to check it.
-const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length));
+// 2026-10-29: one page per core was tried (#1626): the load average went to 20 on 4 cores and an ask took 1.05 s, not 0.89 s, so it is one fewer again.
+const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
 // the pace on stderr every 100 asks, so a run cut off by a time limit still shows how far it got, how fast, and where the time goes
 let done = 0; const began = Date.now();
