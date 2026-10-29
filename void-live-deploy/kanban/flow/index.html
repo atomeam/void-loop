@@ -35,6 +35,7 @@
   input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
   .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
   .sr { position: absolute; left: -9999px; }
+  .lead { font-size: 15px; margin: 2px 0 4px; } .tries { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 10px; font-size: 14px; } .tries a { padding: 6px 0; }
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
   .chead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; } .chead h3 { flex: 1; font-size: 15px; overflow-wrap: anywhere; } .count { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; } .count.over { color: var(--bad); font-weight: 700; }
@@ -56,8 +57,10 @@
 </head>
 <body>
 <main>
-  <h1>Personal kanban with a timer</h1>
+  <h1>Plan and time tasks on a to-do board (personal kanban)</h1>
+  <p class="lead" id="lead">A to-do board that shows where work piles up, for a shop floor, a support queue or a software team.</p>
   <p class="intro">A kanban board that keeps the time you spend: start a timer or a Pomodoro on a card, see the total on it, repeat cards daily, weekly or monthly, limit work in progress, group by label, colour cards, print the board. Kept on this device, no account.</p>
+  <nav class="tries" id="tries" aria-label="Open a ready board"><span class="note">Try a ready board:</span> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJPcmRlcnMiLCJjb2x1bW5zIjpbeyJuYW1lIjoiTmV3Iiwid2lwIjowLCJjYXJkcyI6W3sidGl0bGUiOiJPcmRlciAxMDQxIn0seyJ0aXRsZSI6Ik9yZGVyIDEwNDIifV19LHsibmFtZSI6IlBhY2tpbmciLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6Ik9yZGVyIDEwMzkifV19LHsibmFtZSI6IlNoaXBwZWQiLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6Ik9yZGVyIDEwMzcifV19XX1dfQ">Orders</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJIZWxwIHJlcXVlc3RzIiwiY29sdW1ucyI6W3sibmFtZSI6IldhaXRpbmciLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6IlByaW50ZXIgb2ZmbGluZSJ9LHsidGl0bGUiOiJQYXNzd29yZCBsb2NrZWQifV19LHsibmFtZSI6Ildvcmtpbmcgb24gaXQiLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6IkxhcHRvcCBzbG93In1dfSx7Im5hbWUiOiJTb2x2ZWQiLCJ3aXAiOjAsImNhcmRzIjpbXX1dfV19">Help requests</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJTcHJpbnQiLCJjb2x1bW5zIjpbeyJuYW1lIjoiQmFja2xvZyIsIndpcCI6MCwiY2FyZHMiOlt7InRpdGxlIjoiU2VhcmNoIHBhZ2UifV19LHsibmFtZSI6IkluIHByb2dyZXNzIiwid2lwIjowLCJjYXJkcyI6W3sidGl0bGUiOiJGaXggdGhlIGxvZ2luIGJ1ZyJ9XX0seyJuYW1lIjoiUmV2aWV3Iiwid2lwIjowLCJjYXJkcyI6W119LHsibmFtZSI6IkRvbmUiLCJ3aXAiOjAsImNhcmRzIjpbXX1dfV19">A sprint</a></nav>
   <div id="app"></div>
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/kanban/simple/">Simple kanban board</a> <a href="/kanban/quick/">Quick kanban board</a> <a href="/calendar/">Calendar</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.</footer>

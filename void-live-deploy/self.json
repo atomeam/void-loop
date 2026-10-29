@@ -545,7 +545,19 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:14:06Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:13:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:12:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:11:22Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -581,6 +593,10 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-29T15:06:28Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:06:21Z",
    "subject": "Translate page: language lists show their own spellings after load, so the first layout no longer shapes 30 scripts"
   },
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T15:02:55Z",
    "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
-  },
-  {
-   "at": "2026-10-29T15:01:49Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:59:55Z",
-   "subject": "Verse fixes its spanish skill: learn to handle \"how to say bread in spanish\""
-  },
-  {
-   "at": "2026-10-29T14:59:49Z",
-   "subject": "fix(tower): never count a default-bar score as a lead"
-  },
-  {
-   "at": "2026-10-29T14:59:43Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
