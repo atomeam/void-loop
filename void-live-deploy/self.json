@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:06:24Z",
+   "subject": "Refresh generated files after the main merge: families, guide, self, hand-off gaps"
+  },
+  {
+   "at": "2026-10-29T16:04:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:03:50Z",
    "subject": "Card replies count on the heat map by the card's family"
   },
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T15:43:09Z",
    "subject": "Versus job mvoxd09y: a tower-self reason is cut at a whole word (clipWords), so \"niche professional servic)\" cannot come back; main merged…"
-  },
-  {
-   "at": "2026-10-29T15:41:49Z",
-   "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
-  },
-  {
-   "at": "2026-10-29T15:40:03Z",
-   "subject": "Put the reply section in void.html, the page the deploy copies"
   }
  ],
  "builders": {
