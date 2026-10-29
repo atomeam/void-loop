@@ -340,6 +340,7 @@
  "type-filter": "Hide every card on the stage but one kind",
  "unkeepable": "Something that cannot be kept",
  "util": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text",
+ "uuid": "Generate a random UUID",
  "uv": "Open-Meteo UV index + geocoding, no key",
  "v01d-fixes": "The owner previews the fixes Verse's own model opened",
  "vector-field-mind": "F-033 of Grok's frontier ideas: about 320 particles are carried by an 8x6 grid of control vectors, and a…",

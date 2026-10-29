@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paid Verse · build Verse with us</title>
+<meta name="description" content="Verse is free to use, all of it. Paid Verse members also build it: send an idea, Verse's own agents add it to the site, and nothing is ever taken away.">
+<meta name="robots" content="noindex">
+<meta name="verse-handoff" content="in: text; out: none">
+<link rel="canonical" href="https://a-to-mind.com/members/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<meta property="og:title" content="Paid Verse · build Verse with us">
+<meta property="og:description" content="Everything in Verse is free. Members also build it, and only ever add.">
+<meta property="og:url" content="https://a-to-mind.com/members/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<style>
+  /* deep space dark (owner, 2026-10-29): the void stage's colours, a still star field, no white container */
+  :root { --bg: #07060b; --ink: #ecebf5; --dim: #a9a6c4; --line: #2a2740; --panel: rgba(20, 18, 34, .72); --glow: #8f7bff; --ok: #6fe3b0; --warn: #ffcf70; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; }
+  body { background:
+    radial-gradient(1px 1px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 73% 9%, #fff6 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 41% 63%, #fff7 50%, transparent 51%), radial-gradient(1px 1px at 88% 71%, #fff5 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 84%, #fff6 50%, transparent 51%), radial-gradient(1px 1px at 60% 36%, #fff4 50%, transparent 51%),
+    radial-gradient(900px 600px at 80% -10%, #2a1d5a55, transparent 70%), radial-gradient(700px 500px at -10% 110%, #123a5a44, transparent 70%), var(--bg);
+    background-attachment: fixed; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 56px; }
+  a { color: #c9bfff; }
+  h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin: 8px 0 10px; letter-spacing: -.01em; }
+  h2 { font-size: 20px; margin: 34px 0 12px; }
+  .lead { color: var(--dim); font-size: 18px; margin: 0 0 18px; }
+  .free { border-left: 3px solid var(--ok); padding: 6px 12px; color: var(--ink); background: #6fe3b012; border-radius: 0 8px 8px 0; }
+  .perks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; padding: 0; list-style: none; }
+  .perks li, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; backdrop-filter: blur(4px); }
+  .perks b { display: block; margin-bottom: 4px; }
+  .perks span { color: var(--dim); font-size: 14px; }
+  .buy { display: inline-block; margin: 16px 0 4px; padding: 12px 20px; border-radius: 999px; background: linear-gradient(135deg, #6b55ff, #a06bff); color: #fff; font-weight: 600; text-decoration: none; box-shadow: 0 0 24px #7b61ff55; }
+  .muted { color: var(--dim); font-size: 14px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 120px; background: #0d0b18; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; resize: vertical; }
+  textarea:focus { outline: 2px solid var(--glow); outline-offset: 1px; }
+  button { margin-top: 10px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--glow); background: #1a1630; color: var(--ink); font: inherit; cursor: pointer; }
+  button[disabled] { opacity: .5; cursor: default; }
+  .rules { color: var(--dim); font-size: 14px; margin: 8px 0 0; padding-left: 18px; }
+  .ideas, .wall { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .ideas li, .wall li { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #0d0b18aa; }
+  .st { font-size: 13px; color: var(--warn); }
+  .st.shipped { color: var(--ok); }
+  #say { min-height: 1.5em; margin-top: 8px; }
+  [hidden] { display: none !important; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <p class="muted"><a href="/">Verse</a> · paid Verse</p>
+  <h1>Build Verse with us</h1>
+  <p class="lead">Members send ideas, and Verse's own agents build them into the site. Every change only adds: no page, skill, test or score can be taken away.</p>
+  <p class="free">Everything in Verse stays free for everyone, with no sign-in. Membership is for people who want to help build it.</p>
+
+  <h2>What paid Verse gives you</h2>
+  <ul class="perks" id="perks"></ul>
+  <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj">Join paid Verse<span id="price"></span></a>
+  <p class="muted" id="how">Sign in on Verse with a passkey first, then join from this page, so the membership unlocks your Verse.</p>
+
+  <section id="lab" hidden>
+    <h2>Send an idea</h2>
+    <div class="panel">
+      <label for="idea" class="muted">What should Verse add, and where?</label>
+      <textarea id="idea" maxlength="1200" placeholder="Add a dark star chart to the night sky page that shows which planets are up tonight."></textarea>
+      <button id="send" type="button">Send to Verse</button>
+      <p id="say" aria-live="polite"></p>
+      <ul class="rules">
+        <li>Ideas add to Verse. One that asks to remove, hide or lock something is turned down.</li>
+        <li><span id="left">3</span> ideas left today. No keys, passwords or private details, please.</li>
+        <li>Shipped ideas are listed below with your published Verse name, if you have one.</li>
+      </ul>
+    </div>
+    <h2>Your ideas</h2>
+    <ul class="ideas" id="ideas"><li class="muted">None yet.</li></ul>
+  </section>
+  <p class="panel" id="soon" hidden>Sending ideas opens soon. Your membership already includes everything above.</p>
+
+  <section id="built" hidden>
+    <h2>Built by members</h2>
+    <ul class="wall" id="wall"></ul>
+  </section>
+</main>
+<script type="module" src="/members/members.js"></script>
+</body>
+</html>
