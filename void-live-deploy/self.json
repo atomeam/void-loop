@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:59:55Z",
+   "subject": "Will's last run: show the whole title and reason, no ellipsis"
+  },
+  {
+   "at": "2026-10-29T06:55:55Z",
+   "subject": "Growth card: the will's last run under today's lines (shipped PR, or why not)"
+  },
+  {
+   "at": "2026-10-29T06:55:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:54:56Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T06:40:19Z",
    "subject": "Verse loop tests: clear the owner token in the no-key cases"
-  },
-  {
-   "at": "2026-10-29T06:38:04Z",
-   "subject": "toolkit test: build the skill path so the tower-self scan does not read the skills folder"
-  },
-  {
-   "at": "2026-10-29T06:33:27Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:33:10Z",
-   "subject": "Coder on Verse's own model: the loop tests and the API list catch up with #1439"
   }
  ],
  "builders": {
