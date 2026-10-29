@@ -290,6 +290,13 @@
    "tests": 1
   },
   {
+   "file": "lib/where.js",
+   "skills": 9,
+   "direct": 8,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/flight-sites.js",
    "skills": 8,
    "direct": 1,
@@ -325,13 +332,6 @@
    "tests": 1
   },
   {
-   "file": "lib/where.js",
-   "skills": 8,
-   "direct": 7,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
    "file": "lib/art-source.js",
    "skills": 7,
    "direct": 0,
@@ -350,7 +350,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 11,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/card-image.js",
@@ -392,14 +392,14 @@
    "skills": 6,
    "direct": 1,
    "dependants": 7,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/tilt-arena.js",
    "skills": 6,
    "direct": 0,
    "dependants": 7,
-   "tests": 1
+   "tests": 4
   },
   {
    "file": "lib/pack5-ui.js",
@@ -413,7 +413,7 @@
    "skills": 6,
    "direct": 4,
    "dependants": 6,
-   "tests": 1
+   "tests": 5
   },
   {
    "file": "lib/colour.js",
@@ -469,7 +469,7 @@
    "skills": 5,
    "direct": 3,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/observations.js",
@@ -763,7 +763,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/field-attention.js",
@@ -924,7 +924,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/list-goal.js",
@@ -1015,7 +1015,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 2,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/template-list.js",
@@ -1491,7 +1491,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/date-ask.js",
@@ -1750,7 +1750,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/study-cards.js",
@@ -1792,7 +1792,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/terminal.js",
@@ -10269,6 +10269,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/quake.js",
     "skills/sky.js",
     "skills/suntimes.js"
    ],
@@ -12918,7 +12919,9 @@
    "importedBy": []
   },
   "skills/quake.js": {
-   "imports": [],
+   "imports": [
+    "lib/where.js"
+   ],
    "importedBy": [
     "skills/time.js"
    ]

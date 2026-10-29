@@ -2,7 +2,7 @@
 // to the calculator, the calendar and the kitchen. Run: node --test tools/weather-match.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import weather from '../void-live-deploy/skills/weather.js';
+import weather, { weatherPlace } from '../void-live-deploy/skills/weather.js';
 
 const takes = (a) => weather.match(a.toLowerCase(), a);
 
@@ -48,4 +48,18 @@ test('the weather card: hours from the hour now, visibility as people read it, a
   assert.match(g, /Hour by hour to 7 days/); assert.equal((g.match(/<rect /g) || []).length, 10); assert.equal((g.match(/>(Sun|Mon|Tue|Wed|Thu|Fri|Sat)</g) || []).length, 7);
   assert.equal(g.match(/points="([^"]+)"/)[1].split(' ').length, 168); assert.match(g, />33°</); assert.match(g, />10°</);
   assert.equal(graph({ time: ['x'], temperature_2m: [1] }, 0, false), '', 'one hour is no graph');
+});
+
+// the miss board, 2026-10-29: "chance of rain today" was taken, then answered 'I couldn't find "chance of"' (203 asks): every ask match() takes
+// with no place in it is a forecast for here, and a place named with or without "in" is still the place
+test('weather: an ask it takes names a place only when it has one', () => {
+  for (const a of ['chance of rain today', 'chance of snow this weekend', 'chance of thunderstorms tonight', 'is there a storm coming',
+    'is there a hurricane on the way', "what's the high today", 'the low tonight', "tomorrow's high", 'what is the high temperature today',
+    'dew point today', 'wind chill right now', 'heat index outside', 'what should i wear', 'should i bring a jacket', 'is it going to be foggy',
+    'how cold will it get tonight', 'will it freeze tonight', 'is it going to rain tomorrow', 'weather tomorrow', 'will it snow this week', 'weather here'])
+    assert.equal(weatherPlace(a), '', a);
+  for (const [a, place] of [['chance of rain in London', 'London'], ['do i need an umbrella today in seattle', 'seattle'], ['humidity in Miami', 'Miami'],
+    ['weather in Tokyo', 'Tokyo'], ['Tokyo weather', 'Tokyo'], ['temperature Paris', 'Paris'], ['weather New York City', 'New York City'],
+    ['what is the weather like in Cape Town today', 'Cape Town'], ['High Point weather', 'High Point'], ['Wind Gap forecast', 'Wind Gap'], ['Low Moor weather', 'Low Moor']])
+    assert.equal(weatherPlace(a), place, a);
 });
