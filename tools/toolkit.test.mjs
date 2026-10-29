@@ -227,3 +227,20 @@ test('the calculator\'s card works out the sum in the box (or the sum that gave 
   assert.match(calc, /mountRelated\(document\.getElementById\('related'\), '\/calculator\/', \[\], \{ card: \(\) => boxAsk\(ex\.value, hist, done, \{ deg, ans, mem \}\) \}\)/, 'the page gives its card the box and the sum that gave it');
   assert.match(sw, /mountRelated\(document\.getElementById\('related'\), '\/stopwatch\/', \[\], \{ card: \(\) => \(tab === 'cd' \? timerAsk\(cd\.total\) : ''\) \}\)/, 'the countdown gives its card its length');
 });
+
+test('the word counter\'s card counts the text in the box, exactly as typed, on the device, to the same words and characters as the page; no word in it sends it to another skill', async () => {
+  const W = await import('../void-live-deploy/lib/wordcount.js'), { utilOf } = await import('../void-live-deploy/skills/util.js');
+  const texts = ['Hello world. How are you today?', 'Mr. Smith paid $3.50 on Jan. 5, don\'t you know', 'line one\nline two\n\nline three  ', 'I hate rainy weather, will it rain tomorrow',
+    'tip 20% on 50', 'Zoë’s café: 12 rock-solid ideas! 😀', '"quoted" text', 'word count of the selection', 'qr code for this stage view'];
+  for (const t of texts) {
+    const ask = W.cardAsk(t); assert.match(ask, /^count words #[A-Za-z0-9_-]+$/, t); assert.equal(await firstSkill(ask), 'util', 'the stage counts it on the device: ' + t);
+    const q = utilOf(ask); assert.equal(q.kind, 'count'); assert.equal(q.s, t, 'the card counts this text, as typed');
+    assert.equal((q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, W.count(t).words, 'the same words as the page: ' + t); assert.equal(Array.from(q.s).length, W.count(t).characters);
+  }
+  assert.equal(W.cardAsk(''), '', 'an empty box: the example'); assert.equal(W.cardAsk('   \n '), '');
+  assert.equal(W.cardAsk('word '.repeat(60)), '', 'past 200 characters: the example, so a long draft does not go in a link');
+  assert.equal(W.cardAsk('a - b'), '', 'a lone dash the skill counts as a word: the example');
+  assert.equal(utilOf('count words #blessed'), null, 'a typed tag is not a card code'); assert.equal(utilOf('count words in #blessed').s, '#blessed');
+  const src = fs.readFileSync(new URL('../void-live-deploy/word-count/index.html', import.meta.url), 'utf8');
+  assert.match(src, /card:\s*\(\)\s*=>\s*cardAsk\(box\.value\)/, 'the word counter gives its card the text in the box');
+});
