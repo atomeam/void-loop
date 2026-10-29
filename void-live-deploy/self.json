@@ -545,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:46:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T05:45:17Z",
    "subject": "Feed the churn caps to the will: churn.json from the deploy, sweep commits skipped"
   },
@@ -593,6 +597,10 @@
    "subject": "List the lorem skill so it loads, and leave util's asks to util"
   },
   {
+   "at": "2026-10-29T05:35:18Z",
+   "subject": "Hook /fanfic/ into the other Verse pages and the Versus card"
+  },
+  {
    "at": "2026-10-29T05:35:03Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -614,14 +622,6 @@
   },
   {
    "at": "2026-10-29T05:30:32Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:30:27Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:29:44Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
