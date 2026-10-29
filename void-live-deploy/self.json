@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,28 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T07:38:26Z",
+   "subject": "fix: the sprite card's numbers are whole and in range before they reach its markup"
+  },
+  {
+   "at": "2026-10-29T07:38:03Z",
+   "subject": "feat: sprite sheet cleaner, joined from the sprite tool in the owner's repos"
+  },
+  {
+   "at": "2026-10-29T07:34:35Z",
+   "subject": "Parity: the currency row needs a currency converter, not the bare word"
+  },
+  {
+   "at": "2026-10-29T07:31:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T07:31:36Z",
    "subject": "Stage card links carry the conversion, the sum and the countdown"
+  },
+  {
+   "at": "2026-10-29T07:28:41Z",
+   "subject": "Verse loop: task, Queue job mvoxczpi (versus: wheelofgold.com): Versus: wheelo"
   },
   {
    "at": "2026-10-29T07:25:49Z",
@@ -603,26 +623,6 @@
   {
    "at": "2026-10-29T07:06:06Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:00:57Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:00:47Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:00:47Z",
-   "subject": "Weather stage link follows the forecast before any press"
-  },
-  {
-   "at": "2026-10-29T06:59:55Z",
-   "subject": "Will's last run: show the whole title and reason, no ellipsis"
-  },
-  {
-   "at": "2026-10-29T06:55:55Z",
-   "subject": "Growth card: the will's last run under today's lines (shipped PR, or why not)"
   }
  ],
  "builders": {
