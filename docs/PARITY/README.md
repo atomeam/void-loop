@@ -116,6 +116,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
 | 1 | /weather/ | Climate records | missing | weather.gov |
 | 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
+| 1 | /prizes/ | Crypto rewards and gambling | missing | wheelofgold.com |
 | 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
 | 1 | /convert/unit-converter-2/ | Currency | missing | convertunits.com |
 | 1 | /convert/ | Currency | missing | unitconverters.net |
@@ -123,4 +124,3 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
 | 1 | /markets/caps/ | Dark mode | missing | companiesmarketcap.com |
 | 1 | /markets/screener/ | Dark mode | missing | finviz.com |
-| 1 | /bpm/ | Dark mode | missing | anotherproducer.com |
