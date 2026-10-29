@@ -204,7 +204,11 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     mic.pitch = setInterval(() => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); const p = detectPitch(mic.buf, mic.ctx.sampleRate), q = framesFor(S()); q.push([Math.round(p.f * 10) / 10, mic.ctx.currentTime]); if (q.length > 64) q.shift(); }, 25);
   };
   const idle = () => { listenBtn.setAttribute('aria-pressed', 'false'); listenBtn.textContent = listenBtn.disabled ? 'Listen unavailable' : 'Listen'; tuneBtn.setAttribute('aria-pressed', 'false'); tuneBtn.textContent = 'Play a tune'; };
-  const stopMic = () => { if (!mic) return; framesFor(S()).push([0, mic.ctx.currentTime + 0.05]); clearInterval(mic.pitch); clearTimeout(mic.done); try { mic.stop(); mic.ctx.close(); } catch (_) { /* gone */ } mic = null; S().level = 0; idle(); };
+  // when a tune ends (or is stopped), the card says what the ear did with it: notes heard and guesses right, counted from the tune's start
+  const heardSince = (from) => { const e = S().b.ear, n = e.notes - from.notes, g = e.guessed - from.guessed, h = e.hits - from.hits;
+    said.textContent = 'It heard ' + n + ' of the tune\'s ' + TUNE.length * 2 + ' notes and guessed the next one right ' + h + ' of ' + g + ' times' + (g ? ' (' + Math.round(h / g * 100) + '%).' : '.');
+    el.dataset.tune = [n, g, h].join(','); };
+  const stopMic = () => { if (!mic) return; framesFor(S()).push([0, mic.ctx.currentTime + 0.05]); clearInterval(mic.pitch); clearTimeout(mic.done); try { mic.stop(); mic.ctx.close(); } catch (_) { /* gone */ } const from = mic.from; mic = null; S().level = 0; idle(); if (from) setTimeout(() => { if (el.isConnected) heardSince(from); }, 500); };
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { listenBtn.disabled = true; listenBtn.textContent = 'Listen unavailable'; }
   listenBtn.addEventListener('click', async () => {
     if (mic) { const was = mic.kind; stopMic(); if (was === 'mic') return; }
@@ -232,7 +236,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
       t += 1.7;
     }
     osc.start(); osc.stop(t);
-    ear(ctx, an, 'tune', () => { try { osc.stop(); } catch (_) { /* already stopped */ } });
+    ear(ctx, an, 'tune', () => { try { osc.stop(); } catch (_) { /* already stopped */ } }); const e0 = S().b.ear; mic.from = { notes: e0.notes, guessed: e0.guessed, hits: e0.hits };
     mic.done = setTimeout(stopMic, (t - ctx.currentTime + 0.3) * 1000);
     tuneBtn.setAttribute('aria-pressed', 'true'); tuneBtn.textContent = 'Playing a tune (tap to stop)';
   });

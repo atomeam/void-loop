@@ -3089,13 +3089,13 @@ try {
   // the error garden grown from the incident autopsy (asked by Verse and the owner, 2026-10-18): "plant my test failures" plants incidents.json's failing checks
   if (want("error garden from incidents: plant my test failures plants the failing checks, repeats are weeds, and asking again adds nothing twice")) { const S = await fresh();
     await S.ask('plant my test failures in my error garden', 1500);
-    const one = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    const one = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage + x.dataset.count)); // a weed is a count of 2 or more, and incidents.json repeats a check 10+ times on a red day
     await S.ask('visualize your test failures', 1500);
     const two = await S.p.$$eval('.error-garden .eg-plant', (r) => r.length);
     const inc = await S.p.evaluate(() => fetch('/incidents.json').then((r) => r.json()).catch(() => null));
     const titles = new Set(((inc && inc.incidents) || []).slice(0, 30).flatMap((i) => (i.checks || []).map((c) => String(c).split(':')[0].trim().toLowerCase())));
     check('error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none',
-      one.length >= 1 && one.length <= Math.min(12, titles.size) && one.some((x) => /^weed[2-9]/.test(x)) && two === one.length && !S.errors.length, JSON.stringify({ one, two, titles: titles.size, errors: S.errors }));
+      one.length >= 1 && one.length <= Math.min(12, titles.size) && one.some((x) => /^weed\d+$/.test(x) && Number(x.slice(4)) >= 2) && two === one.length && !S.errors.length, JSON.stringify({ one, two, titles: titles.size, errors: S.errors }));
   }
   // stage pack b (owner, 2026-10-18): the error garden, the idea certificate, noun heat and the hunting question, played the way a person uses them
   if (want("stage pack b: an error garden that turns a repeated mistake into a weed and a ruled one into compost, idea certificates that need a why and a death note, noun heat, a hunting question that returns on a later visit")) { const S = await fresh();
@@ -5745,13 +5745,14 @@ try {
     await F.p.click(card + ' .vb-tune'); await until(async () => /^Playing/.test(await F.p.$eval(card + ' .vb-tune', (e) => e.textContent)), 4000);
     const playing = await F.p.$eval(card + ' .vb-tune', (e) => e.textContent + '|' + e.getAttribute('aria-pressed'));
     await until(async () => (await F.p.$eval(card + ' .vb-tune', (e) => e.textContent)) === 'Play a tune', 30000); // 2 times through and the gap: about 13 s
-    await F.p.waitForTimeout(600);
-    const ear = await F.p.$eval(card, (e) => ({ heard: +(e.dataset.heard || 0), guessed: +(e.dataset.guessed || 0), hits: +(e.dataset.hits || 0), note: e.dataset.ear || '' }));
+    await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.tune || '')), 4000);
+    const ear = await F.p.$eval(card, (e) => ({ heard: +(e.dataset.heard || 0), guessed: +(e.dataset.guessed || 0), hits: +(e.dataset.hits || 0), note: e.dataset.ear || '', tune: e.dataset.tune || '', said: e.querySelector('.vb-said').textContent }));
     const after = await F.p.$eval(card + ' .vb-tune', (e) => e.textContent + '|' + e.getAttribute('aria-pressed')), asked = await F.p.evaluate(() => !!window.__micAsked);
     const self = await F.p.evaluate(() => ((window.verseBrain && window.verseBrain.state().self) || []).find((s) => /^Hearing:/.test(s)) || '');
     const errors = F.errors.slice(); await F.ctx.close();
-    check('verse brain hearing: Play a tune (no microphone asked for) plays Frere Jacques twice into the ear, the brain hears 24 or more of its 28 notes, guesses each next one and gets 8 or more right, the self says so, and the button stops by itself when the tune ends',
+    check('verse brain hearing: Play a tune (no microphone asked for) plays Frere Jacques twice into the ear, the brain hears 24 or more of its 28 notes, guesses each next one and gets 8 or more right, the self says so, the card says the count for the tune itself when it ends, and the button stops by itself when the tune ends',
       playing === 'Playing a tune (tap to stop)|true' && !asked && ear.heard >= 24 && ear.heard <= 30 && ear.guessed >= 20 && ear.hits >= 8 && /^[A-G]#?\d$/.test(ear.note) && /^Hearing: \d+ hummed notes; it guessed the next one right \d+% of the time/.test(self)
+      && ear.tune === [ear.heard, ear.guessed, ear.hits].join(',') && ear.said.startsWith('It heard ' + ear.heard + " of the tune's 28 notes and guessed the next one right " + ear.hits + ' of ' + ear.guessed + ' times')
       && after === 'Play a tune|false' && !errors.length, JSON.stringify({ playing, ear, after, asked, self, errors }));
   }
   if (want("field minds: nca mind runs Grok's lattices on one card, the pointer seeds it, ask words and the Rule picker switch drafts, portals keep a rule, with or without a Worker")) { // asked by Owner, 2026-10-18: F-036, F-039, F-043, F-045
