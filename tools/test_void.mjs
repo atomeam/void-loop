@@ -5612,6 +5612,37 @@ try {
       out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
       && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
   }
+  if (want('verse brain: one workspace that eleven organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+    const F = await fresh(), card = '.ff-verse-brain';
+    await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+    const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
+      rows: e.querySelectorAll('.vb-organs tr').length, orbs: +(e.dataset.orbs || 0), concepts: +(e.dataset.concepts || 0), focus: +(e.dataset.focus || 0), drafts: +(e.dataset.drafts || 0),
+      said: e.querySelector('.vb-said').textContent, status: e.querySelector('.ff-hud').textContent, made: e.querySelector('.vb-made').textContent, figures: document.querySelectorAll('.figure').length }));
+    const box = await (await F.p.$(card + ' canvas')).boundingBox();
+    for (let i = 0; i < 40; i++) await F.p.mouse.move(box.x + box.width * (0.5 + 0.3 * Math.cos(i * 0.4)), box.y + box.height * (0.5 + 0.3 * Math.sin(i * 0.4)));
+    await F.p.fill(card + ' .vb-word', 'romance mystery'); await F.p.press(card + ' .vb-word', 'Enter');
+    await until(async () => { const r = await read(); return r.orbs >= 2 && r.chosen >= 1 && r.drafts > 0; }, 12000).catch(() => {});
+    const a = await read();
+    const orb = await F.p.$(card + ' .vb-orb[data-key="w:romance"]'), ob = orb && await orb.boundingBox();
+    if (ob) { await F.p.mouse.move(ob.x + ob.width / 2, ob.y + ob.height / 2); await F.p.mouse.down(); await F.p.mouse.move(box.x + box.width * 0.1, box.y + box.height * 0.15, { steps: 6 }); await F.p.mouse.up(); }
+    const moved = await F.p.$eval(card + ' .vb-orb[data-key="w:romance"]', (o) => parseFloat(o.style.left)).catch(() => -1);
+    const other = await F.ctx.newPage(); await other.goto(localOrigin + '/privacy/');
+    const heard = await other.evaluate(async () => { const { connectBrain } = await import('/lib/brain-bridge.js'); const c = connectBrain(); c.tell('dragons');
+      return new Promise((res) => { const t = setTimeout(() => res(null), 4000); c.on((m) => { if (m.words.includes('dragons')) { clearTimeout(t); res({ words: m.words, utility: m.utility, self: m.self.length }); } }); }); });
+    await until(async () => (await read()).concepts >= 3, 4000).catch(() => {});
+    const b = await read();
+    const tab = await F.p.evaluate(() => { const s = window.verseBrain && window.verseBrain.state(); return s ? { words: s.words, focus: s.focus.region } : null; });
+    await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal).catch(() => '')), 4000).catch(() => {});
+    const sealed = await F.p.$eval(card, (e) => e.dataset.seal || '');
+    const rows = await F.p.evaluate(() => new Promise((res) => { const done = setTimeout(() => res(''), 8000);
+      try { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { try { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { clearTimeout(done); q.result.close(); res(JSON.stringify(g.result)); }; g.onerror = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }; q.onerror = q.onblocked = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }));
+    const errors = F.errors.slice(); await F.ctx.close();
+    check('verse brain: "show me your brain" opens one card (no figure), its eleven organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+      + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
+      a.organs === 11 && a.rows === 11 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
+      JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
+  }
   if (want("field minds: nca mind runs Grok's lattices on one card, the pointer seeds it, ask words and the Rule picker switch drafts, portals keep a rule, with or without a Worker")) { // asked by Owner, 2026-10-18: F-036, F-039, F-043, F-045
     const out = [];
     for (const noWorker of [false, true]) {

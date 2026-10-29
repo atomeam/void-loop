@@ -1,0 +1,159 @@
+// brain — Verse Brain: one entity made of Grok's frontier drafts (owner, 2026-10-29: "combine all the builds into one entity"; "the grok
+// builds combined can be verse brain"). Five layers, each a real part that runs, not a picture of one:
+//   1. one working memory      lib/brain-workspace.js: layers, rhythm phases and one node table, with who wrote each cell and when
+//   2. organs                  lib/brain-organs.js: senses, predictor, gestures, memory, concepts, tissue, rhythm, swarm, membrane, will, arena
+//   3. attention               scheduleTick() here: each tick a budget of organ runs goes to the organs that want it most, the starved
+//                              ones catch up, and one spotlight (the focus layer) shows what the brain is thinking about
+//   4. imagination             imagine() here: freeze the workspace, try an action or a genome for a few dozen ticks on the substrate
+//                              organs only, score the future, put everything back exactly. The will and the arena decide by it.
+//   5. the self                selfOf() here: goals, which organs are used and which are starved, who owns the workspace, the winning
+//                              genome's seal, the surprise budget; what Verse can say about its own brain.
+// embodiment() lists what becomes DOM (word orbs, the gesture, the expectation, the action); a drag on one writes back as 'you'.
+// Pure: no DOM, no clock, no Math.random (the workspace's seeded rng). The card is skills/verse-brain.js; other pages reach a running
+// brain through lib/brain-bridge.js.
+import { clamp } from './field-kit.js';
+import { createWorkspace, snapshot, restore, measure, ownership, regionMeans, regionCenter, deposit, nodesOf, sealSlice, GW, GH, CELLS, KIND, REGIONS_X } from './brain-workspace.js';
+import { ORGANS, ORGAN_IDS, STARTER, fixGenome, makeReservoir, makeGestures, makeMemory, makeConcepts, makeWill, makeArena, seedSwarm, seedMembrane, addPhrase, related, applyAction, ACTIONS, gestureName, LETTERS } from './brain-organs.js';
+import { sealSync } from './field-kit.js';
+
+export const VERSION = 1;
+export const STARVE = 120; // ticks of waiting that add a whole 1 to an organ's want
+export const BUDGET = 7, BUDGET_PHONE = 5; // organ runs a tick (senses always runs and is not counted)
+export const GOALS = ['keep the tissue alive and varied', 'expect what you will do next', 'stay in step without freezing', 'attend where something new is happening'];
+
+/** the brain's utility of a workspace: varied, alive (not empty, not full), in step but not frozen, and lit where it attends. 0..1. Pure. */
+export function utilityOf(ws, focus) {
+  const m = measure(ws), band = m.activity > 0.05 && m.activity < 0.8 ? 1 - Math.abs(m.activity - 0.35) * 1.4 : 0;
+  const lit = clamp(regionMeans(ws, 'act')[regionIndex(focus)] * 4, 0, 1);
+  return clamp(0.35 * m.entropy + 0.25 * band + 0.2 * (1 - Math.abs(m.order - 0.6) / 0.6) + 0.2 * lit, 0, 1);
+}
+const regionIndex = (f) => Math.min(2, Math.floor(clamp(f.y, 0, 0.999) * 3)) * REGIONS_X + Math.min(REGIONS_X - 1, Math.floor(clamp(f.x, 0, 0.999) * REGIONS_X));
+
+/** a new brain. opts: { phone, genome }. */
+export function createBrain(seed = 1, opts = {}) {
+  const ws = createWorkspace(seed, ORGAN_IDS.concat(['attention']));
+  const b = { v: VERSION, seed, ws, genome: fixGenome(opts.genome || STARTER), budget: opts.phone ? BUDGET_PHONE : BUDGET,
+    senses: { feat: new Float32Array(8), px: 0.5, py: 0.5, has: false, over: false, speed: 0, trail: [] },
+    reservoir: makeReservoir(seed), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
+    focus: { x: 0.5, y: 0.5, px: 0.5, py: 0.5, region: 5, held: 0 }, surprise: 0, utility: 0, metrics: measure(ws),
+    runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
+    board: { drive: 'rest', gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0 };
+  seedSwarm(b); seedMembrane(b);
+  b.swarmIds = nodesOf(ws, [0, 1, 2]); b.membraneIds = nodesOf(ws, [KIND.membrane]);
+  // a few seeds so the tissue has somewhere to start
+  for (let k = 0; k < 5; k++) deposit(ws, 'act', 0.2 + 0.6 * ws.rand(), 0.2 + 0.6 * ws.rand(), 0.6, 3, 'tissue');
+  b.utility = utilityOf(ws, b.focus);
+  return b;
+}
+
+// ---- 3. attention --------------------------------------------------------------------------------------------------------------------
+/** move the spotlight: the region with the most surprise and input (memory's expectation counts a little), held a while so it does not
+ *  flicker; the focus layer gets a soft disc there, written as 'attention'. Pure on b. */
+export function updateFocus(b) {
+  const ws = b.ws, s = regionMeans(ws, 'surprise'), i = regionMeans(ws, 'input'), m = regionMeans(ws, 'memory');
+  let best = b.focus.region, bs = -1; for (let r = 0; r < s.length; r++) { const v = s[r] * 2 + i[r] + m[r] * 0.5; if (v > bs) { bs = v; best = r; } }
+  const cur = s[b.focus.region] * 2 + i[b.focus.region] + m[b.focus.region] * 0.5;
+  if (best !== b.focus.region && (bs > cur * 1.3 + 0.01 || b.focus.held > 240)) { b.focus.region = best; b.focus.held = 0; } else b.focus.held++;
+  const c = regionCenter(b.focus.region); let tx = c.x, ty = c.y;
+  if (b.senses.over && regionIndex({ x: b.senses.px, y: b.senses.py }) === b.focus.region) { tx = b.senses.px; ty = b.senses.py; }
+  b.focus.px = b.focus.x; b.focus.py = b.focus.y; b.focus.x += (tx - b.focus.x) * 0.06; b.focus.y += (ty - b.focus.y) * 0.06;
+  const F = ws.layers.focus; for (let k = 0; k < CELLS; k++) F[k] *= 0.9;
+  deposit(ws, 'focus', b.focus.x, b.focus.y, 0.12, 6, 'attention');
+  return b.focus;
+}
+/** which organs run this tick: senses always; then the budget goes to the highest want plus starvation (ticks since it last ran / STARVE).
+ *  Returns the ids, in the order they run (the order of ORGANS: senses before the predictor, tissue before the rhythm). Pure. */
+export function scheduleTick(b) {
+  const scored = ORGANS.filter((o) => o.id !== 'senses').map((o) => ({ id: o.id, p: clamp(o.want(b), 0, 1) + Math.min(1, (b.ticks - b.lastRun[o.id]) / STARVE) }));
+  scored.sort((p, q) => q.p - p.p);
+  const pick = new Set(['senses', ...scored.slice(0, b.budget).filter((x) => x.p > 0.05).map((x) => x.id)]);
+  return ORGANS.filter((o) => pick.has(o.id)).map((o) => o.id);
+}
+
+/** one tick of the whole brain. input: { x, y, over, down, tiltX, tiltY, sound }. Returns the organs that ran. */
+export function stepBrain(b, input = {}) {
+  const ws = b.ws; ws.tick++; b.ticks++; b.will.since++; b.arena.since++;
+  updateFocus(b);
+  const ids = scheduleTick(b);
+  for (const id of ids) { const o = ORGANS.find((x) => x.id === id); o.run(b, input, imagine); b.runs[id]++; b.lastRun[id] = b.ticks; }
+  b.granted = ids;
+  if ((b.ticks & 7) === 0) { b.metrics = measure(ws); b.utility = utilityOf(ws, b.focus); }
+  return ids;
+}
+
+// ---- 4. imagination ------------------------------------------------------------------------------------------------------------------
+/** imagine a future: from an exact copy of now, apply an action (the will's hand) or a genome, step only the substrate organs (the ones
+ *  marked imagine: senses with a still visitor, concepts, tissue, rhythm, swarm, membrane) for `steps` ticks, and return the utility of
+ *  where it ended. Everything is put back exactly; the learners never see an imagined tick. */
+export function imagine(b, { action = null, genome = null, steps = 24 } = {}) {
+  const snap = snapshot(b.ws), keep = { board: { ...b.board }, genome: b.genome, drive: b.board.drive, focus: { ...b.focus }, surprise: b.surprise, senses: { ...b.senses, feat: b.senses.feat.slice(), trail: b.senses.trail.slice() }, rand: b.ws.rand };
+  const conceptAct = b.concepts.node.map((i) => b.ws.nodes.act[i]);
+  let r = (b.seed * 7919 + b.imagined * 104729) >>> 0 || 1; b.ws.rand = () => { r ^= r << 13; r >>>= 0; r ^= r >>> 17; r ^= r << 5; r >>>= 0; return r / 4294967296; }; // imagined noise never moves the live rng
+  if (genome) b.genome = genome;
+  const sub = ORGANS.filter((o) => o.imagine), still = { x: b.focus.x, y: b.focus.y, over: false };
+  b.imagining++;
+  try {
+    for (let t = 0; t < steps; t++) { b.ws.tick++; if (action != null) applyAction(b, action); for (const o of sub) o.run(b, still); }
+    return utilityOf(b.ws, b.focus);
+  } finally {
+    restore(b.ws, snap); b.genome = keep.genome; b.board = keep.board; b.focus = keep.focus; b.surprise = keep.surprise; b.senses = keep.senses; b.ws.rand = keep.rand;
+    b.concepts.node.forEach((i, k) => { b.ws.nodes.act[i] = conceptAct[k]; });
+    b.imagining--; b.imagined++;
+  }
+}
+
+// ---- what the visitor can do to it ------------------------------------------------------------------------------------------------------
+/** type words to the brain: they become concepts. Returns what it made of them. */
+export function tell(b, text) {
+  const words = addPhrase(b, text), last = words[words.length - 1];
+  return { words, related: last ? related(b.concepts, last) : [], surprise: b.concepts.lastBits };
+}
+/** the concepts nearest a word (spelling and use), rounded: [{ word, sim, linked }]. */
+export function relatedOf(b, word, top = 3) { return related(b.concepts, word, top).map((r) => ({ word: r.word, sim: Math.round(r.sim * 100) / 100, linked: r.linked })); }
+/** "good": a reward for whatever the brain did last. */
+export function reward(b, amt = 1) { b.will.good += amt; return b.will.good; }
+/** a drag of an embodied thing to (x, y): a concept moves; anything else deposits there as 'you'. */
+export function dragTo(b, ref, x, y) {
+  const N = b.ws.nodes;
+  if (ref && ref.node >= 0 && ref.node < N.n) { N.x[ref.node] = clamp(x, 0.02, 0.98); N.y[ref.node] = clamp(y, 0.02, 0.98); N.act[ref.node] = 1; }
+  deposit(b.ws, 'input', x, y, 0.25, 3, 'you');
+}
+
+// ---- embodiment registry -------------------------------------------------------------------------------------------------------------
+/** what becomes DOM this frame: [{ key, organ, x, y, label, size 0..1, hue, node? }]. Each organ that has a body declares it here. */
+export function embodiment(b) {
+  const out = [], N = b.ws.nodes, C = b.concepts;
+  C.node.forEach((i, k) => out.push({ key: 'w:' + C.words[k], organ: 'concepts', x: N.x[i], y: N.y[i], label: C.words[k], size: N.act[i], hue: 190 + N.act[i] * 120, node: i }));
+  if (b.board.gesture && b.senses.over) out.push({ key: 'gesture', organ: 'gestures', x: b.senses.px, y: b.senses.py, label: b.board.gesture + (b.board.motif && b.board.motif.seen > 1 ? ' x' + b.board.motif.seen : ''), size: 0.4, hue: 40 });
+  if (b.board.expect) { const c = regionCenter(b.board.expect.region); out.push({ key: 'expect', organ: 'memory', x: c.x, y: c.y, label: 'expects here', size: b.board.expect.strength, hue: 280 }); }
+  if (b.board.action && b.board.action.name !== 'rest') out.push({ key: 'will', organ: 'will', x: b.focus.x, y: clamp(b.focus.y - 0.12, 0.04, 0.96), label: b.board.action.name, size: 0.5, hue: 140 });
+  return out;
+}
+
+// ---- 5. the self -------------------------------------------------------------------------------------------------------------------
+/** what Verse can say about its own brain right now. Pure. */
+export function selfOf(b) {
+  const total = Math.max(1, b.ticks), use = Object.fromEntries(ORGAN_IDS.map((id) => [id, Math.round((b.runs[id] / total) * 100) / 100]));
+  const wants = Object.fromEntries(ORGANS.map((o) => [o.id, clamp(o.want(b), 0, 1)]));
+  let starved = null, gap = 0; for (const o of ORGANS) { if (o.id === 'senses') continue; const d = wants[o.id] - use[o.id]; if (d > gap) { gap = d; starved = o.id; } }
+  const own = ownership(b.ws); let top = null, tv = 0; for (const [k, v] of Object.entries(own)) if (v > tv) { tv = v; top = k; }
+  const seal = sealSync('verse-brain', b.genome, { utility: Math.round(b.utility * 1000) / 1000 });
+  return { goals: GOALS, utility: Math.round(b.utility * 1000) / 1000, use, starved, owner: { top, share: Math.round(tv * 100) / 100, all: own },
+    genome: { gen: b.arena.gen, seal: seal.short, fitness: b.arena.last ? b.arena.last.fitness : null }, imagined: b.imagined,
+    surpriseBudget: Math.round(clamp(1 - b.reservoir.errAvg * 2, 0, 1) * 100) / 100, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length,
+    q: b.will.chosen, action: b.board.action ? b.board.action.name : 'rest' };
+}
+/** plain sentences from the self, for the card and for "what is your brain doing". Pure. */
+export function selfSays(b) {
+  const s = selfOf(b), out = [];
+  out.push('Focus: region ' + (b.focus.region + 1) + ' of 12' + (b.board.thinking ? ', thinking about "' + b.board.thinking + '"' : '') + '.');
+  if (b.board.action) out.push('Will: ' + b.board.action.name + (b.board.action.imagined && b.board.action.imagined.length > 1 ? ' (imagined ' + b.board.action.imagined.map((x) => x.action + ' ' + x.utility).join(' vs ') + ')' : '') + '.');
+  if (s.starved) out.push('Under-used: ' + s.starved + '.');
+  if (s.owner.top) out.push('Most of the workspace was last written by ' + s.owner.top + ' (' + Math.round(s.owner.share * 100) + '%).');
+  out.push('Genome ' + s.genome.seal + ', generation ' + s.genome.gen + '.');
+  return out;
+}
+
+/** the card's settings and numbers for a seal (numbers only, never the visitor's path or words). */
+export function params(b) { return { v: VERSION, genome: Object.fromEntries(Object.entries(b.genome).map(([k, v]) => [k, Math.round(v * 10000) / 10000])), gen: b.arena.gen, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length, q: Array.from(b.will.q, (v) => Math.round(v * 100) / 100) }; }
+export { ACTIONS, LETTERS, gestureName, sealSlice, GW, GH, ORGANS, ORGAN_IDS };
