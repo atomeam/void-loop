@@ -1,15 +1,21 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T06:14:17.421Z",
+ "updated": "2026-10-29T07:15:49.007Z",
  "last24h": {
-  "ticks": 24,
-  "started": 47,
+  "ticks": 30,
+  "started": 58,
   "requeued": 0,
   "setAside": 0,
-  "probes": 3,
+  "probes": 4,
   "errors": 0
  },
- "broken": [],
+ "broken": [
+  {
+   "wf": "tower-gate.yml",
+   "fails": 3,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/40829167642"
+  }
+ ],
  "held": [],
  "handed": {
   "mvbl52gd": 1793240307118,
@@ -35,7 +41,12 @@
   "mvt1g1td": 1793250155707,
   "mvt1g29z": 1793250771153,
   "mvt50uh4": 1793253842150,
-  "mvt50v1v": 1793254457421
+  "mvt50v1v": 1793254457421,
+  "mvt50vmc": 1793255072166,
+  "mvt50w76": 1793255687085,
+  "mvt5tzsb": 1793256302227,
+  "mvt5u0mf": 1793256918555,
+  "mvt5u18m": 1793257533425
  },
  "ticks": [
   {
@@ -675,6 +686,175 @@
    "healed": [],
    "probe": false,
    "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T06:24:32.166Z",
+   "open": 111,
+   "started": [
+    {
+     "id": "mvpwmhl2",
+     "kind": "will",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mvt50vmc",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T06:34:47.085Z",
+   "open": 113,
+   "started": [
+    {
+     "id": "mvb7si6e",
+     "kind": "review",
+     "wf": "verse-job.yml",
+     "score": 95
+    },
+    {
+     "id": "mvt50w76",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T06:45:02.227Z",
+   "open": 113,
+   "started": [
+    {
+     "id": "mvt653u1",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mvt5tzsb",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T06:55:18.555Z",
+   "open": 112,
+   "started": [
+    {
+     "id": "mvt653u1",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mvt5u0mf",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T07:05:33.425Z",
+   "open": 111,
+   "started": [
+    {
+     "id": "mvt653u1",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mvt5u18m",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T07:15:49.007Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mvoxcz3w",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": true,
+   "grow": false,
+   "will": false,
    "lap": false,
    "revived": [],
    "held": 0,
