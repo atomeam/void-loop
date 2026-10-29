@@ -25,4 +25,7 @@ test('void.html lists every module its ask libs reach on one line, from the root
   assert.ok(once.includes('const warm = 1;'), 'the code after the line stays');
   assert.equal(withAskLibs(once, read), once, 'the same graph twice changes nothing');
   assert.equal(withAskLibs('<script>const x = 1;</script>', read), null, 'a page without the marker has no list to write');
+  // a second list (SHARE_LIB_GRAPH, watchdog #110) is written from its own marker, and the first stays as it was
+  const two = withAskLibs(page.replace('const warm = 1;', 'const warm = 1;\n    // share-libs: tools/preload.mjs /lib/b.js\n    const SHARE_LIB_GRAPH = [];'), read);
+  assert.ok(two.includes("const ASK_LIB_GRAPH = ['/lib/a.js', '/lib/k.js', '/lib/w.js', '/lib/b.js'];") && two.includes("const SHARE_LIB_GRAPH = ['/lib/b.js', '/lib/k.js', '/lib/w.js'];"), two);
 });
