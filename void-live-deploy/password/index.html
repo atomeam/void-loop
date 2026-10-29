@@ -58,6 +58,7 @@
 <link rel="modulepreload" href="/lib/flight-sites.js">
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/password-card.js">
 <link rel="modulepreload" href="/lib/password.js">
 <!-- /modulepreload -->
 </head>
@@ -118,6 +119,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
+  import { cardAsk } from '/lib/password-card.js';
   import { normalize, problemOf, bitsOf, generateMany, passphrase, phraseBits, strengthOf, sayable, MAX_COUNT } from '/lib/password.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.password.v1', q = new URLSearchParams(location.search);
   let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
@@ -167,7 +169,7 @@
   make();
   mountRelated($('related'), '/password/', [
     { label: 'Check the first one\'s strength', href: () => (made[0] ? '/password-strength/#p=' + encodeURIComponent(made[0]) : null) },
-  ]);
+  ], { card: () => cardAsk($('lenN').value, mode) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

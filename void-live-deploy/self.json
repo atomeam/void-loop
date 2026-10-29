@@ -545,8 +545,28 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T08:43:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T08:43:02Z",
    "subject": "Fan fiction: a story is complete or in progress"
+  },
+  {
+   "at": "2026-10-29T08:41:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T08:41:44Z",
+   "subject": "Password page: the stage card makes the length on the page, both ways"
+  },
+  {
+   "at": "2026-10-29T08:41:41Z",
+   "subject": "Password page: its stage card makes the length on the page, and the card opens the page on that length"
+  },
+  {
+   "at": "2026-10-29T08:41:36Z",
+   "subject": "Verse loop: task, Queue job mvoxrsct (versus: colorcanon.com): Versus: colorca"
   },
   {
    "at": "2026-10-29T08:38:57Z",
@@ -603,26 +623,6 @@
   {
    "at": "2026-10-29T08:17:57Z",
    "subject": "Refresh the translate parity evidence for the card import"
-  },
-  {
-   "at": "2026-10-29T08:15:54Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:15:42Z",
-   "subject": "Translate card holds the typed text"
-  },
-  {
-   "at": "2026-10-29T08:14:02Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:13:56Z",
-   "subject": "fanfic: Authors list, a writer's stories, Random story and a help desk"
-  },
-  {
-   "at": "2026-10-29T08:12:23Z",
-   "subject": "Regenerate after merging main"
   }
  ],
  "builders": {
