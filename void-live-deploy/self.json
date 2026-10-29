@@ -221,19 +221,19 @@
    "state": "shipped",
    "date": "2026-10-29",
    "ask": "answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase",
-   "from": "PR #PRNUM, owner card notes 1-5"
+   "from": "PR #1410, owner card notes 1-5"
   },
   {
    "state": "shipped",
    "date": "2026-10-29",
    "ask": "answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write",
-   "from": "PR #PRNUM, owner card notes 1-5"
+   "from": "PR #1410, owner card notes 1-5"
   },
   {
    "state": "shipped",
    "date": "2026-10-29",
    "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
-   "from": "PR #PRNUM, owner card notes 1-5"
+   "from": "PR #1410, owner card notes 1-5"
   }
  ],
  "open": [
@@ -533,6 +533,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T04:56:22Z",
+   "subject": "Answer cards: cite only what a source holds, read the whole note, own my card"
+  },
+  {
    "at": "2026-10-29T04:48:05Z",
    "subject": "Each Verse ask gets its own reason; asks serve the Versus target first"
   },
@@ -603,10 +607,6 @@
   {
    "at": "2026-10-29T03:07:40Z",
    "subject": "Every site gets a cited history before it is fought: the history tool covers the whole queue, a daily workflow writes the next ones, and a…"
-  },
-  {
-   "at": "2026-10-29T03:07:32Z",
-   "subject": "Tower gate: nameunit,travel: aruljohn.com,travel: clock7.com measured against their live sites"
   }
  ],
  "builders": {
