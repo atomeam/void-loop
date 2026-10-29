@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 942,
+ "counted": 943,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1721,15 +1721,15 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 67,
-   "tests": 25
+   "dependants": 68,
+   "tests": 26
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 49,
-   "tests": 9
+   "dependants": 50,
+   "tests": 10
   },
   {
    "file": "lib/pages.js",
@@ -1784,7 +1784,7 @@
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 0
   },
   {
@@ -1824,6 +1824,13 @@
   },
   {
    "file": "lib/cite.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 21,
+   "tests": 1
+  },
+  {
+   "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
    "dependants": 21,
@@ -1870,13 +1877,6 @@
    "direct": 0,
    "dependants": 20,
    "tests": 2
-  },
-  {
-   "file": "lib/daily-cap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 20,
-   "tests": 1
   },
   {
    "file": "lib/draft.js",
@@ -2862,6 +2862,15 @@
     "lib/guard.js",
     "lib/gumroad.js",
     "lib/store-db.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/coder.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/models.js",
+    "lib/daily-cap.js",
+    "lib/shortfall.js"
    ],
    "importedBy": []
   },
@@ -4966,6 +4975,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/coder.js",
     "functions/api/daily-art.js",
     "functions/api/report.js"
    ],
@@ -5702,6 +5712,7 @@
     "functions/api/boards/[[path]].js",
     "functions/api/calshare.js",
     "functions/api/catalog.js",
+    "functions/api/coder.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
     "functions/api/earnings.js",
@@ -6586,6 +6597,7 @@
     "functions/api/appraise.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/coder.js",
     "functions/api/digest.js",
     "functions/api/figurescript.js",
     "functions/api/image.js",
@@ -8150,6 +8162,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/coder.js",
     "functions/api/earnings.js",
     "functions/api/mcp.js",
     "functions/api/probe-asks.js",

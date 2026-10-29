@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Verse's own coding agent (owner, 2026-10-28: "make verse a coding agent"). The default "verse" brain of tools/verse-loop.mjs
 // for a red check or the top of docs/NEXT.md, anywhere in the repo; tools/propose-fix.mjs stays the brain for skill probes.
-// A plain agent loop on the free model stack: Workers AI first (CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID), then OpenRouter,
+// A plain agent loop on the free model stack: Verse's own model first (the site's binding, /api/coder, VOID_OWNER_TOKEN), then Workers AI
+// over the REST API (CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID), GitHub Models (GH_MODELS_TOKEN), OpenRouter,
 // Groq, Gemini and Cerebras, whichever keys the environment holds. Keys come from the environment only and never reach a check.
 // The model answers each turn with one JSON tool call: list, read, search, edit (a unified diff), check (one named check), finish.
 // The limits, each enforced here and not left to the model:
@@ -31,10 +32,13 @@ export const EXIT = { done: 0, nothing: 3, 'no-model': 4, 'turn-cap': 5, 'token-
 /** the providers the environment has keys for, in order. Pure: keys stay in the returned objects, never in a log line. */
 export function providersFrom(env = process.env) {
   const out = [];
+  // Verse's own model on the site's binding (functions/api/coder.js, the owner token): needs no Workers AI permission on any API token
+  if (env.VOID_OWNER_TOKEN) out.push({ name: 'verse', model: FREE_MODEL, key: env.VOID_OWNER_TOKEN, url: String(env.VOID_SITE || 'https://a-to-mind.com').replace(/\/+$/, '') + '/api/coder', shape: 'workers' });
   if (env.CLOUDFLARE_API_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: env.CLOUDFLARE_API_TOKEN,
     url: 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + (env.VERSE_CODER_CF_MODEL || FREE_MODEL), shape: 'workers' });
   // GitHub Models (a free pool that needs no key to fetch: the workflow's own token with `models: read`); unverified against GitHub's docs from the sandbox, a refusal shows in the run log
-  if (env.GH_MODELS_TOKEN) out.push({ name: 'github-models', model: env.VERSE_CODER_GHMODELS_MODEL || 'openai/gpt-4.1', key: env.GH_MODELS_TOKEN, url: 'https://models.github.ai/inference/chat/completions', shape: 'openai' });
+  if (env.GH_MODELS_TOKEN) out.push({ name: 'github-models', model: env.VERSE_CODER_GHMODELS_MODEL || 'openai/gpt-4.1', key: env.GH_MODELS_TOKEN, url: 'https://models.github.ai/inference/chat/completions', shape: 'openai',
+    headers: { accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28' } });
   const oa = (name, key, url, model) => { if (env[key]) out.push({ name, model, key: env[key], url, shape: 'openai' }); };
   oa('openrouter', 'OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions', env.VERSE_CODER_OPENROUTER_MODEL || 'qwen/qwen3-coder:free');
   oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'llama-3.3-70b-versatile');
@@ -42,7 +46,7 @@ export function providersFrom(env = process.env) {
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
 }
-export const KEY_NAMES = ['CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'GH_MODELS_TOKEN (the workflow token, permissions: models: read)', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
+export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'GH_MODELS_TOKEN (the workflow token, permissions: models: read)', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
 
 /** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on */
 export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, maxOut = 4096 } = {}) {
@@ -53,9 +57,11 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
       const i = (at + k) % providers.length, p = providers[i];
       try {
         const body = p.shape === 'workers' ? { messages, max_tokens: maxOut, temperature: 0.2 } : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
-        const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+        const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
         if (!r.ok) { errs.push(p.name + ' ' + r.status); continue; }
-        const j = await r.json(), x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
+        // a 2xx that is not JSON says what came back (status and type), never its body: "github-models SyntaxError" told nobody anything
+        let j; try { j = await r.json(); } catch (_) { const t = (r.headers && typeof r.headers.get === 'function' && r.headers.get('content-type')) || 'no type'; errs.push(p.name + ' ' + (r.status || 'ok') + ' not JSON (' + String(t).split(';')[0].slice(0, 40) + ')'); continue; }
+        const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
         const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
         if (!text.trim()) { errs.push(p.name + ' empty'); continue; }
         at = i; fn.last = p.name + ' ' + p.model;
