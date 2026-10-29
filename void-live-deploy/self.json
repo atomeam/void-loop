@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T08:31:17Z",
+   "subject": "Random page: preload the card module"
+  },
+  {
+   "at": "2026-10-29T08:27:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T08:26:59Z",
    "subject": "Random number page: stage card uses the page's range, and links back"
   },
@@ -614,14 +622,6 @@
   },
   {
    "at": "2026-10-29T08:01:59Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:59:15Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T07:56:55Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
