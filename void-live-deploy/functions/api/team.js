@@ -77,7 +77,7 @@ async function namesOf(env) {
 }
 async function reactsOf(env, ids) {
   if (!ids.length) return {};
-  const { results } = await env.DB.prepare(`SELECT msg, emoji, by FROM void_team_reacts WHERE msg IN (${ids.map(() => '?').join(',')})`).bind(...ids).all();
+  const { results } = await env.DB.prepare(`SELECT msg, emoji, by FROM void_team_reacts WHERE msg IN (${ids.map(() => '?').join(',')})`).bind(...ids).all(); // void-review: ok (only ? placeholders are pasted, one per id; the ids are bound)
   const out = {}; for (const r of results) ((out[r.msg] ||= {})[r.emoji] ||= []).push(r.by); return out;
 }
 async function shape(env, rows, me) {
@@ -111,10 +111,10 @@ export async function handOut(env, a, now) {
   const skip = String(a.skip || '').split(' ').filter(Boolean);
   for (const j of T.rank(await queued(env), now, skip).slice(0, 8)) {
     let took = false;
-    try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; }
+    try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; } // void-review: ok (one claim tried at a time on purpose: the loop stops at the first job this agent wins, at most 8 tries)
     if (!took) continue; // another agent (or the conductor) took it first
     const thread = await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), job: j.id, now });
-    await env.DB.prepare('UPDATE void_team_agents SET job = ?, job_at = ?, thread = ? WHERE id = ?').bind(j.id, now, thread, a.id).run();
+    await env.DB.prepare('UPDATE void_team_agents SET job = ?, job_at = ?, thread = ? WHERE id = ?').bind(j.id, now, thread, a.id).run(); // void-review: ok (runs once: the return below ends the loop)
     return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, thread };
   }
   return null;
@@ -170,7 +170,7 @@ export async function onRequestGet({ request, env, now = Date.now() }) {
   if (sp.has('q')) {
     const words = T.searchWords(sp.get('q')); if (!words.length) return json({ ok: true, hits: [] });
     const c = sp.get('c'), where = words.map(() => "lower(body) LIKE ? ESCAPE '\\'").join(' AND ') + (c ? ' AND channel = ?' : '');
-    const { results } = await env.DB.prepare(`SELECT * FROM void_team_msgs WHERE ${where} ORDER BY id DESC LIMIT 50`).bind(...words.map((w) => '%' + w + '%'), ...(c ? [c] : [])).all();
+    const { results } = await env.DB.prepare(`SELECT * FROM void_team_msgs WHERE ${where} ORDER BY id DESC LIMIT 50`).bind(...words.map((w) => '%' + w + '%'), ...(c ? [c] : [])).all(); // void-review: ok (where is fixed text with ? placeholders only; the words are bound)
     return json({ ok: true, hits: await shape(env, results, me), names: list });
   }
   if (sp.has('activity')) {

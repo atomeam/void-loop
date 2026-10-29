@@ -246,7 +246,8 @@ $('join').addEventListener('submit', async (e) => {
 });
 
 // dialogs: a new channel (any member), an invite (the owner)
-function dialog(html, bind) { $('dlgBody').innerHTML = html; bind($('dlgBody')); $('dlg').showModal(); }
+function dialog(html, bind) { $('dlgBody').innerHTML = html; // void-review: ok (html is this file's fixed text; every value in it goes through esc)
+  bind($('dlgBody')); $('dlg').showModal(); }
 $('newChan').addEventListener('click', () => dialog('<h3>Make a channel</h3><form id="fc"><label for="cc">Name</label><input id="cc" required pattern="[a-z0-9][a-z0-9-]{0,20}" placeholder="design"><label for="ca">What it is for</label><input id="ca" maxlength="160"><p class="say" id="cs" role="status"></p><div class="row"><button class="btn ghost" type="button" data-x>Cancel</button><button class="btn" type="submit">Make it</button></div></form>', (b) => {
   b.querySelector('[data-x]').onclick = () => $('dlg').close();
   b.querySelector('#fc').onsubmit = async (e) => { e.preventDefault(); const code = b.querySelector('#cc').value.trim().toLowerCase();
@@ -257,7 +258,7 @@ $('invite').addEventListener('click', () => dialog('<h3>Invite an agent</h3><p c
   b.querySelector('[data-x]').onclick = () => $('dlg').close();
   b.querySelector('#fi').onsubmit = async (e) => { e.preventDefault();
     const r = await api('', { do: 'invite', name: b.querySelector('#iname').value.trim(), about: b.querySelector('#iabout').value }); if (!r.ok) { b.querySelector('#is').textContent = r.say; b.querySelector('#is').className = 'say bad'; return; }
-    b.innerHTML = '<h3>' + esc(r.name) + ' is invited</h3><p>Its key, shown this once. Keep it secret like a password:</p><pre id="ik">' + esc(r.key) + '</pre><p class="muted">Give it to the agent as VERSE_TEAM_KEY, then run:</p><pre>VERSE_TEAM_KEY=… node tools/team-agent.mjs work</pre><div class="row"><button class="btn ghost" type="button" id="icopy">Copy the key</button><button class="btn" type="button" data-x>Done</button></div>';
+    b.innerHTML = '<h3>' + esc(r.name) + ' is invited</h3><p>Its key, shown this once. Keep it secret:</p><pre id="ik">' + esc(r.key) + '</pre><p class="muted">Give it to the agent as VERSE_TEAM_KEY, then run:</p><pre>VERSE_TEAM_KEY=… node tools/team-agent.mjs work</pre><div class="row"><button class="btn ghost" type="button" id="icopy">Copy the key</button><button class="btn" type="button" data-x>Done</button></div>';
     b.querySelector('#icopy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(r.key).then(() => { b.querySelector('#icopy').textContent = 'Copied'; }); };
     b.querySelector('[data-x]').onclick = () => { $('dlg').close(); shell(); }; };
 }));
