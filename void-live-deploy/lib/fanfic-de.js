@@ -169,6 +169,24 @@ export const DICT = {
   'No text found in that file. Open a .docx, .txt, .html or .md file, or paste the chapter.': 'In der Datei ist kein Text. Öffne eine .docx-, .txt-, .html- oder .md-Datei oder füge das Kapitel ein.',
   'The text you had is back.': 'Dein vorheriger Text ist zurück.',
   'There is no fandom yet. Start one first, then set a challenge in it.': 'Es gibt noch kein Fandom. Gründe zuerst eines und schreibe dann darin einen Wettbewerb aus.',
+  // the site's own pages: terms, disclaimer, credits
+  'Terms of use': 'Nutzungsbedingungen', About: 'Über die Seite', Terms: 'Bedingungen', Disclaimer: 'Haftungshinweis', Credits: 'Mitwirkende',
+  'Everything posted here is public. Anyone can read it, link to it and quote it.': 'Alles, was hier veröffentlicht wird, ist öffentlich. Alle können es lesen, verlinken und zitieren.',
+  "Stories, chapters and reviews here are posts on Verse's open boards, so the board rules apply to every post.": 'Geschichten, Kapitel und Rezensionen hier sind Beiträge auf den offenen Boards von Verse, daher gelten die Board-Regeln für jeden Beitrag.',
+  'Post only writing that you have the right to post.': 'Veröffentliche nur Texte, die du veröffentlichen darfst.',
+  "There are no accounts. A pen name is a name, not a login. The mark made on your device tells your stories apart from a namesake's.": 'Es gibt keine Konten. Ein Autorenname ist ein Name, keine Anmeldung. Die Markierung von deinem Gerät unterscheidet deine Geschichten von denen einer Person mit demselben Namen.',
+  'A post that breaks a rule can be hidden or removed. Three reports from different people hide a post until it is looked at.': 'Ein Beitrag, der gegen eine Regel verstößt, kann verborgen oder entfernt werden. Drei Meldungen von verschiedenen Personen verbergen einen Beitrag, bis er geprüft ist.',
+  'To ask for a takedown (your personal information, illegal content or a copyright claim), write to': 'Für eine Löschung (deine persönlichen Daten, illegale Inhalte oder ein Urheberrechtsanspruch) schreib an',
+  'with the link to the post.': 'mit dem Link zum Beitrag.', 'The board rules': 'Die Board-Regeln',
+  'Stories here are fan fiction. Readers write them, not Verse.': 'Die Geschichten hier sind Fanfiction. Leserinnen und Leser schreiben sie, nicht Verse.',
+  'Characters, places and worlds belong to the people and companies that made them. Verse is not connected with them, and no story here is official.': 'Figuren, Orte und Welten gehören den Menschen und Firmen, die sie geschaffen haben. Verse ist nicht mit ihnen verbunden, und keine Geschichte hier ist offiziell.',
+  'A story says what its writer thinks, not what Verse thinks. Each writer picks the rating and the warnings, so read the summary before the story.': 'Eine Geschichte sagt, was die Person denkt, die sie geschrieben hat, nicht was Verse denkt. Jede schreibende Person wählt Altersfreigabe und Warnungen selbst, also lies die Zusammenfassung vor der Geschichte.',
+  'Verse charges nothing to read or to post.': 'Lesen und Veröffentlichen kosten bei Verse nichts.',
+  'Stories, chapters and reviews': 'Geschichten, Kapitel und Rezensionen', 'Their writers, each named by the pen name on the post.': 'Die Menschen, die sie geschrieben haben, jeweils mit dem Autorennamen am Beitrag.',
+  'The archive and its German words': 'Das Archiv und seine deutschen Texte', 'Verse, at a-to-mind.com.': 'Verse, auf a-to-mind.com.', Type: 'Schrift',
+  'The fonts already on your device: Iowan Old Style, Palatino or Georgia for stories. Nothing is downloaded for them.': 'Die Schriften, die schon auf deinem Gerät sind: Iowan Old Style, Palatino oder Georgia für Geschichten. Dafür wird nichts heruntergeladen.',
+  'The person check when you post': 'Die Personenprüfung beim Veröffentlichen',
+  'Cloudflare Turnstile when the site has it set up, or else a short puzzle that your device solves by itself.': 'Cloudflare Turnstile, wenn die Seite es eingerichtet hat, sonst ein kurzes Rätsel, das dein Gerät selbst löst.',
 };
 
 // text made from numbers and names: the English shape on the left, the German on the right
