@@ -545,6 +545,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:04:03Z",
+   "subject": "Verse shared field"
+  },
+  {
+   "at": "2026-10-29T06:03:54Z",
+   "subject": "Verse's shared field: skills/field.js, the memory orbs write into it, Verse Brain feels their slots and publishes its ideas as numbers"
+  },
+  {
+   "at": "2026-10-29T05:59:55Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T05:57:29Z",
+   "subject": "Tower gate: measure frontier floors that have a Verse page"
+  },
+  {
+   "at": "2026-10-29T05:56:37Z",
+   "subject": "Churn list skips generated files and the tower gate's evidence"
+  },
+  {
+   "at": "2026-10-29T05:55:58Z",
+   "subject": "Next task: the Versus target first, held asks stay held"
+  },
+  {
    "at": "2026-10-29T05:55:30Z",
    "subject": "Regenerate churn.json"
   },
@@ -599,30 +623,6 @@
   {
    "at": "2026-10-29T05:44:12Z",
    "subject": "Watchdog runs the browser suite in four shards too: shard 1 ran out of the same 28-minute budget"
-  },
-  {
-   "at": "2026-10-29T05:44:02Z",
-   "subject": "Fix three shard 1 browser checks: tower poll stub, poster art, sticky on a phone"
-  },
-  {
-   "at": "2026-10-29T05:44:02Z",
-   "subject": "The browser suite in four shards: shard 1 outgrew the 28-minute budget once it ran to its end"
-  },
-  {
-   "at": "2026-10-29T05:44:02Z",
-   "subject": "Shard 1's hidden reds: the growth card's friction line stays right under the velocity, and two stale checks follow the product"
-  },
-  {
-   "at": "2026-10-29T05:43:37Z",
-   "subject": "List the magic8 skill so it loads, and fix its match"
-  },
-  {
-   "at": "2026-10-29T05:42:36Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:41:47Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
