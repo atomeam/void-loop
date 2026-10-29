@@ -65,3 +65,9 @@ test('the will reads /churn.json and passes its hot list to pickWant, with the w
   assert.match(src, /pickWant\([^;]*hot\)/);
   assert.match(src, /catch \(_\) \{ hot = \[\]; \}/, 'an unreadable list means no cap, never no will');
 });
+
+test('generated cards and the tower gate\'s record are expected churn, never hot', () => {
+  const gen = ['void-live-deploy/skills/what.json', 'void-live-deploy/sitemap.xml', 'void-live-deploy/parity.json', 'void-live-deploy/churn.json', 'void-live-deploy/tower.evidence.json'];
+  const cs = Array.from({ length: MAX_CHANGES + 1 }, (_, i) => commit(i / 10, ...gen, 'void-live-deploy/lib/real.js'));
+  assert.deepEqual(hotFiles(cs, { now: NOW }).map((h) => h.file), ['void-live-deploy/lib/real.js']);
+});
