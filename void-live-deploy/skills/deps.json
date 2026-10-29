@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 940,
+ "counted": 942,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 54,
+   "dependants": 55,
    "tests": 4
   },
   {
@@ -507,6 +507,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-resonance.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
@@ -524,13 +531,6 @@
    "file": "lib/card-sections.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-resonance.js",
-   "skills": 4,
-   "direct": 1,
    "dependants": 6,
    "tests": 1
   },
@@ -1060,6 +1060,27 @@
    "tests": 2
   },
   {
+   "file": "lib/brain-mind.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-organs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-workspace.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
@@ -1079,13 +1100,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/brain-workspace.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/emoji.js",
@@ -1141,13 +1155,6 @@
    "skills": 1,
    "direct": 1,
    "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-organs.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 2,
    "tests": 1
   },
   {
@@ -1264,6 +1271,13 @@
   },
   {
    "file": "lib/brain-bridge.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-store.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -4157,16 +4171,40 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-mind.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js",
+    "lib/brain-organs.js"
+   ],
+   "importedBy": [
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-mind.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-organs.js": {
    "imports": [
+    "lib/brain-mind.js",
     "lib/field-kit.js",
     "lib/field-resonance.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
+    "lib/brain-mind.js",
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-organs.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-store.js": {
+   "imports": [],
+   "importedBy": [
     "skills/verse-brain.js"
    ]
   },
@@ -4175,6 +4213,7 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
+    "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain.js",
     "skills/verse-brain.js"
@@ -4184,7 +4223,8 @@
    "imports": [
     "lib/field-kit.js",
     "lib/brain-workspace.js",
-    "lib/brain-organs.js"
+    "lib/brain-organs.js",
+    "lib/brain-mind.js"
    ],
    "importedBy": [
     "skills/verse-brain.js"
@@ -5225,6 +5265,7 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain-workspace.js",
     "lib/brain.js",
@@ -5304,6 +5345,7 @@
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-mind.js",
     "lib/brain.js",
     "skills/mind-field-mode.js",
     "skills/mind-field.js",
@@ -13058,7 +13100,8 @@
     "lib/field-stage.js",
     "lib/brain.js",
     "lib/brain-workspace.js",
-    "lib/brain-bridge.js"
+    "lib/brain-bridge.js",
+    "lib/brain-store.js"
    ],
    "importedBy": []
   },
