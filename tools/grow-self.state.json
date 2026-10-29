@@ -1,15 +1,15 @@
 {
-  "status": "closed",
-  "run": "40112643814",
-  "at": "2026-10-24T16:41:47Z",
-  "what": "Verse hardened itself: 1 benchmark ask(s) for baseconv.  Why these: fact (only 1 benchmark ask, evidence tier: checked); tab (no benchmark ask, evidence tier: tested, 30 failed runs name it); coin (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); baseconv (only 1 benchmark ask, evidence tier: checked); echo-disagrees (only 2 benchmark asks, evidence tier: checked). New phrases: “1010 binary to decimal” now opens baseconv. Did not route: fun fact; random fact; put in the page; draft for me.",
-  "try": "1010 binary to decimal",
-  "closedAt": "2026-10-24T19:11:29Z",
-  "proof": "answered live on a-to-mind.com",
+  "status": "open",
+  "run": "40805586687",
+  "at": "2026-10-29T02:19:46Z",
+  "what": "Verse hardened itself: 7 benchmark ask(s) for notes-fill, music-tools, pdf-tools, fantasy, and the card art floors rise to 99 and 74.  Why these: notes-fill (only 1 benchmark ask, evidence tier: tested); tab (no benchmark ask, evidence tier: tested, 28 failed runs name it); coin (no benchmark ask, evidence tier: checked, 17 failed runs name it); music-tools (no benchmark ask, evidence tier: experiment); pdf-tools (no benchmark ask, evidence tier: experiment); fantasy (no benchmark ask, evidence tier: experiment). New phrases: “add a note: buy milk” now opens notes-fill; “add eggs to my shopping list” now opens notes-fill; “what did I write about Lisbon” now opens notes-fill; “guitar tuner” now opens music-tools; “split a pdf” now opens pdf-tools; “fantasy tools” now opens fantasy; “start or sit” now opens fantasy. Did not route: put in the page; draft for me; heads or tails; coin toss.",
+  "try": "add a note: buy milk",
+  "closedAt": null,
+  "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-24T16:31:42Z",
-    "try": "random user generator",
-    "closedAt": "2026-10-24T16:41:26Z"
+    "at": "2026-10-24T16:41:47Z",
+    "try": "1010 binary to decimal",
+    "closedAt": "2026-10-24T19:11:29Z"
   }
 }
