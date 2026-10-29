@@ -77,7 +77,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /pdf/ | A public API | missing | ilovepdf.com |
 | 1 | /markets/caps/ | A quote page for any stock | missing | companiesmarketcap.com |
 | 1 | /markets/screener/ | A quote page for any stock | missing | finviz.com |
-| 1 | /fanfic/ | A random story and a featured story on the archive home | partial | sycophanthex.com |
 | 1 | /markets/caps/ | A watchlist | missing | companiesmarketcap.com |
 | 1 | /markets/screener/ | A watchlist | missing | finviz.com |
 | 1 | /pdf/organize/ | Add text, images and shapes | missing | 10015.io |
@@ -124,3 +123,4 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /calendar/ | Dark mode | missing | calendar.online |
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
 | 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
+| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |

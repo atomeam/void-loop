@@ -391,6 +391,15 @@ export function seriesOf(topics) {
 /** a series' stories in part order (then oldest first). Pure, and stable. */
 export const inPartOrder = (list) => (list || []).map((t, i) => [t, i]).sort((x, y) => (x[0].part || 0) - (y[0].part || 0) || (x[0].at || 0) - (y[0].at || 0) || x[1] - y[1]).map((x) => x[0]);
 /** one story picked at random from the list, or null for an empty list. rand is Math.random by default, so a test can fix it. Pure apart from rand. */
+/** the archive home's featured story, with why it was picked, from what every catalog row already says (no extra reads): never an 18+ or a
+ *  locked story; a complete story first, then the most replies (the Replies column: its later chapters and its reviews), then the newest post. null with no story. Pure. */
+export function featuredOf(topics) {
+  const ok = (topics || []).filter((t) => t && !t.nsfw && !t.locked);
+  if (!ok.length) return null;
+  const done = ok.filter((t) => t.status === 'Complete'), pool = done.length ? done : ok;
+  const t = pool.reduce((a, b) => ((b.replies || 0) > (a.replies || 0) || ((b.replies || 0) === (a.replies || 0) && (b.bumped || 0) > (a.bumped || 0)) ? b : a));
+  return { t, why: (done.length ? 'The complete story' : 'The story') + ' with the most replies' + (t.replies ? '' : ' (none have replies yet, so the newest)') + '.' };
+}
 export const randomOf = (list, rand = Math.random) => (list && list.length ? list[Math.min(list.length - 1, Math.floor(rand() * list.length))] : null);
 
 // writing challenges (sycophanthex.com runs writing contests): a challenge is a thread in a fandom whose first post opens "Writing challenge", then

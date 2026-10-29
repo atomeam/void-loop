@@ -193,6 +193,7 @@
 
   /* notices, the glossary and search results */
   .notice h3.nd { font-size: 1rem; margin: 18px 0 2px; color: var(--ink); } .notice p.nd { margin: 0 0 10px; font-size: .9rem; }
+  .feat { margin: 0 0 30px; } .feat .t { font-size: 1.15rem; font-weight: 600; } .feat .in { display: block; color: var(--ink-2); margin: 2px 0 8px; } .feat p { margin: 0 0 6px; color: var(--ink-2); } .feat .why { margin: 10px 0 0; font-size: .9rem; color: var(--ink-3); } .feat .why b { color: var(--ink); font-weight: 600; }
   .notice { max-width: 44em; } .notice li, .notice p { color: var(--ink-2); margin-bottom: 8px; } .notice b { color: var(--ink); font-weight: 600; }
   dl.gl { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin: 0; }
   dl.gl dt, dl.gl dd { padding: 13px 20px; border-bottom: 1px solid var(--line); margin: 0; }
@@ -300,6 +301,11 @@
       <a class="btn" href="/fanfic/?v=random" data-go>Random story</a>
       <a class="btn" href="/fanfic/?v=glossary" data-go>Writing Glossary</a>
       <a class="btn" href="/fanfic/?notice=format" data-go>Quick start: how to post</a>
+    </div>
+
+    <div class="glass feat" id="featured" aria-labelledby="featH" hidden>
+      <div class="phead"><h2 class="grow" id="featH">Featured story</h2></div>
+      <div class="pbody"><a class="t" id="featLink" href="/fanfic/" data-go translate="no"></a><span class="in" id="featBy"></span><p id="featSum" translate="no"></p><p class="why"><b>Why it is featured:</b> <span id="featWhy"></span></p></div>
     </div>
 
     <div class="glass loading" id="fandomBox">
