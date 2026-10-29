@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T12:44:33.741Z",
+ "updated": "2026-10-29T13:15:18.403Z",
  "last24h": {
-  "ticks": 63,
-  "started": 91,
+  "ticks": 66,
+  "started": 94,
   "requeued": 1,
   "setAside": 0,
   "probes": 9,
@@ -138,7 +138,10 @@
   "mvtgh8m9": 1793274803375,
   "mvtgh9fy": 1793275417197,
   "mvtiobjx": 1793277259746,
-  "mvtiocad": 1793277873741
+  "mvtiocad": 1793277873741,
+  "mvtioczq": 1793278489355,
+  "mvtiodon": 1793279102630,
+  "mvtj1i7v": 1793279718403
  },
  "ticks": [
   {
@@ -1714,6 +1717,72 @@
    "started": [
     {
      "id": "mvtiocad",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T12:54:49.355Z",
+   "open": 109,
+   "started": [
+    {
+     "id": "mvtioczq",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T13:05:02.630Z",
+   "open": 108,
+   "started": [
+    {
+     "id": "mvtiodon",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T13:15:18.403Z",
+   "open": 107,
+   "started": [
+    {
+     "id": "mvtj1i7v",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
