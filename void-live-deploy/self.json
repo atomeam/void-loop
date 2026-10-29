@@ -545,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:04:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:04:03Z",
    "subject": "Verse shared field"
   },
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T05:45:17Z",
    "subject": "Feed the churn caps to the will: churn.json from the deploy, sweep commits skipped"
-  },
-  {
-   "at": "2026-10-29T05:44:12Z",
-   "subject": "Watchdog runs the browser suite in four shards too: shard 1 ran out of the same 28-minute budget"
   }
  ],
  "builders": {
