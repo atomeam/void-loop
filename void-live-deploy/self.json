@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T08:10:26Z",
-   "subject": "Base64 card holds the typed text"
+   "at": "2026-10-29T08:12:08Z",
+   "subject": "3D miniatures: free materials only after a shader compile in flight settles"
   },
   {
    "at": "2026-10-29T08:08:29Z",
