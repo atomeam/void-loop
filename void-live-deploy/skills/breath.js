@@ -31,6 +31,8 @@ export function breathOf(text) {
 
 /** where the guide is at `ms` into a pattern: { phase, name, left (seconds, rounded up), frac (0-1 through the phase), cycle }. Pure. */
 export function stepAt(pattern, ms) {
+  // the first animation frame can carry a timestamp a little before t0 (performance.now()); before the start is the start, never round -1
+  ms = Math.max(0, Number(ms) || 0);
   const ph = PATTERNS[pattern].phases, total = ph.reduce((s, p) => s + p[1], 0) * 1000;
   const cycle = Math.floor(ms / total); let t = ms - cycle * total;
   for (let i = 0; i < ph.length; i++) {
