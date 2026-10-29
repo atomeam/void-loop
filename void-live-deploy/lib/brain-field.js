@@ -4,7 +4,9 @@
 //   out: the brain's ideas (its concept nodes) are written into slots of their own (position, a still velocity, the node's embedding,
 //        its activation, the brain's provenance), so other skills see the brain in the field. Never the words: labels stay in the brain.
 // A slot is claimed only where provenance is 0 or the brain's own code, the same rule lib/orb-field.js keeps, so no memory is written over.
+// Every open Mind Field mode is felt the same way: its card keeps one slot of its own numbers (lib/mode-field.js).
 import { KIND, EMB, nodesOf } from './brain-workspace.js';
+import { MODES } from './mind-field-modes.js';
 
 export const SKILL = 'verse-brain', MAX_FELT = 64, MAX_OUT = 16;
 
@@ -44,10 +46,10 @@ export function linkBrain(field) {
 
 /** the line the card shows under the brain's words: how many memories it feels from other cards, whose they are, and how many ideas of
  *  its own it holds there. census is shared-field census(); felt is feltFrom(...).length; own is the link's held. Numbers in, words out. */
-const CARD_NAMES = { 'agent-fluid-memory-orbs': 'Memory orbs' };
+const CARD_NAMES = { ...Object.fromEntries(MODES.map((m) => [m.id, m.name])), 'agent-fluid-memory-orbs': 'Memory orbs' }; // each Mind Field mode by its switcher name
 export function fieldSays(census, felt, own) {
   const others = Object.entries(census.held || {}).filter(([who]) => who !== SKILL).map(([who, n]) => (CARD_NAMES[who] || who.replace(/-/g, ' ')) + ' (' + n + ')');
   const mine = own ? ' It holds ' + own + ' of its own idea' + (own === 1 ? '' : 's') + ' there.' : '';
-  if (!felt) return 'Shared field: nothing from other cards yet. Open "memory orbs" and each orb shows here as a pink ring.' + mine;
+  if (!felt) return 'Shared field: nothing from other cards yet. Open a Mind Field mode or "memory orbs" and it shows here as a pink ring.' + mine;
   return 'Shared field: feels ' + felt + ' memor' + (felt === 1 ? 'y' : 'ies') + ' from other cards' + (others.length ? ': ' + others.join(', ') : '') + '.' + mine;
 }
