@@ -673,7 +673,7 @@
   {
    "rank": 1,
    "item": "Stay inside Workers AI's free 10k neurons/day",
-   "free": "move answers from gpt-oss-120b to gemma; cache answers at the edge; on-page skills first",
+   "free": "done 2026-10-25 (commit 630e666fb): answers run on gemma-4-26b-a4b-it, gpt-oss-120b only as the second try. Still to do: cache answers at the edge; on-page skills first",
    "cost": "$0",
    "value": "high: answers stop failing after the cap (125% on Oct 14)",
    "why": "free and fixes a live outage"

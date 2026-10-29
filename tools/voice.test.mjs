@@ -324,3 +324,15 @@ test('an ask keeps none of the prompt\'s fact tags, and the same ask with a tag 
   assert.equal(asks.length, 1); assert.ok(!/\[S\d/.test(asks[0].ask));
   assert.equal(parseVoice('{"thoughts":"I grew today.","asks":[{"ask":"Learn chess openings [S1]","small":true}]}').asks[0].ask, 'Learn chess openings');
 });
+
+// asked by Verse 7 times after it was built: its facts name the models it really runs on, so a done move is not wanted again
+test('Verse knows which model answers it, and that the gemma move is done', async () => {
+  const { modelFacts } = await import('../void-live-deploy/lib/self-context.js');
+  const { models } = await import('../void-live-deploy/lib/models.js');
+  const f = selfFacts({ self: {} });
+  assert.ok(f.includes(modelFacts()));
+  assert.ok(modelFacts().includes(models('answer').split('/').pop()));
+  assert.match(modelFacts(), /gemma is done/);
+  const wish = JSON.parse(readFileSync(new URL('../void-live-deploy/self.json', import.meta.url), 'utf8')).wishlist.find((w) => w.rank === 1);
+  assert.doesNotMatch(wish.free, /^move answers from gpt-oss-120b to gemma/);
+});
