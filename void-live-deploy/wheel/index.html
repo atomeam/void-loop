@@ -217,11 +217,12 @@
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
   $('sound').addEventListener('click', () => { sound = !sound; $('sound').textContent = sound ? 'Sound on' : 'Sound off'; $('sound').setAttribute('aria-pressed', String(sound)); });
   sync(false);
-  // the prize and scoring pages: the entries travel in the link, and the click leaves one copy for the next page's paste pill (lib/handoff.js)
-  const handoff = (href) => () => { if (!entries.length) return null; put('list', 'wheel entries', entries.map((e) => e.label), '/wheel/'); return href(); };
+  // the prize and scoring pages: the entries travel in the link, and the press leaves one copy for the next page's paste pill (lib/handoff.js).
+  // href is read on load and after every change on the page (lib/toolkit.js mountRelated), so it only reads; the copy is written in go, on the press
+  const keepEntries = () => { put('list', 'wheel entries', entries.map((e) => e.label), '/wheel/'); };
   mountRelated($('related'), '/wheel/', [{ label: 'Pick from these on the random page', href: () => (entries.length ? '/random/?list=' + encodeURIComponent(textOf(entries)) : null) },
-    { label: 'Prize odds for these', href: handoff(() => prizesLink(textOf(entries))) },
-    { label: 'Seed a tournament', href: handoff(() => tournamentsLink(entries.map((e) => e.label))) }]
+    { label: 'Prize odds for these', href: () => (entries.length ? prizesLink(textOf(entries)) : null), go: keepEntries },
+    { label: 'Seed a tournament', href: () => (entries.length ? tournamentsLink(entries.map((e) => e.label)) : null), go: keepEntries }]
     .concat(COLORS !== OWN ? [{ label: 'Its own colours again', run: () => { setPalette(null); COLORS = OWN; draw(); return 'Back to its own colours'; } }] : []), { card: () => askOf(entries) });
   mountStrip($('related'), '/wheel/');
   mountPill($('entries'), '/wheel/', (h) => { entries = entriesOf(labelsFrom(textOfHandoff(h)).join('\n')); sync(false); });
