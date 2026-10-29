@@ -254,8 +254,10 @@ function coordsPanel() {
     h('h3', {}, t('Distance between two points')), h('div', { class: 'grid2' }, a, b), d);
 }
 function wherePanel() {
-  const out = h('div', { id: 'm-where', 'aria-live': 'polite' }), rough = h('p', { class: 'soft', id: 'm-rough' }), st = h('p', { class: 'live', 'aria-live': 'polite' });
-  fetch('/api/where').then((r) => r.json()).then((j) => { if (j && j.ok) rough.textContent = t('Roughly, from your connection (city level, without asking):') + ' ' + [j.city, j.country].filter(Boolean).join(', ') + ' · ' + C.fmtLatLon(j.lat, j.lon) + (j.timezone ? ' · ' + j.timezone : ''); }).catch(() => {});
+  const out = h('div', { id: 'm-where', 'aria-live': 'polite' }), rough = h('div', { class: 'soft', id: 'm-rough' }), st = h('p', { class: 'live', 'aria-live': 'polite' });
+  // the coarse place Cloudflare gives the connection (/api/where: city level, rounded to a tenth of a degree), shown at once without asking for permission
+  fetch('/api/where').then((r) => r.json()).then((j) => { if (!j || !j.ok) return; const row = (k, v) => h('div', {}, h('dt', {}, k), h('dd', {}, v));
+    rough.append(t('Roughly, from your connection (city level, without asking):'), h('dl', { class: 'dl' }, row(t('Decimal degrees'), C.fmtLatLon(j.lat, j.lon)), row(t('Degrees, minutes, seconds'), C.toDms(j.lat, j.lon)), row(t('Address'), [j.city, j.country].filter(Boolean).join(', ') || '—'), row(t('Accuracy'), '± 10 km'), j.timezone ? row(t('Time zone'), j.timezone) : null)); }).catch(() => {});
   const find = h('button', { type: 'button', class: 'go', id: 'm-findme', onclick: async () => {
     say(st, t('Loading…')); out.textContent = '';
     let p; try { p = await myPosition(); } catch (_) { return say(st, t('Location is blocked or not available here.'), true); }

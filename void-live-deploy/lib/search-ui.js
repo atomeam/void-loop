@@ -126,7 +126,7 @@ function bangsPanel(full = false) {
     for (const [k, [name, url]] of Object.entries(all).filter(([k, [n]]) => !w || k.includes(w) || n.toLowerCase().includes(w)).slice(0, full ? 400 : 12)) { const r = body.insertRow(); r.insertCell().append(h('code', {}, '!' + k)); r.insertCell().textContent = name; r.insertCell().append(h('span', { class: 'soft' }, url.replace(/^https:\/\//, '').slice(0, 48))); } };
   const drawMine = () => { mine.textContent = ''; for (const [k, [, url]] of Object.entries(C.customBangs())) mine.append(h('li', {}, h('code', {}, '!' + k), ' ', h('span', { class: 'soft' }, url), ' ', h('button', { type: 'button', 'aria-label': t('Remove') + ' !' + k, onclick: () => { C.removeCustomBang(k); drawMine(); rows(); } }, '✕'))); };
   find.addEventListener('input', rows); rows();
-  out.append(h('p', { class: 'note' }, t('Type !g, !w, !yt and the words to go straight to that site\'s search. Bangs run on this device.')), find, h('div', { class: 'tablewrap' }, table));
+  out.append(h('p', { class: 'note' }, t('Type !g, !w, !yt and the words to go straight to that site\'s search. Bangs run on this device.')), h('label', { for: 's-bfind', class: 'soft' }, t('Find a bang')), find, h('div', { class: 'tablewrap' }, table));
   if (full) {
     const w = h('input', { type: 'text', id: 's-bw', placeholder: 'mysite', 'aria-label': t('Bang word') }), u = h('input', { type: 'text', id: 's-bu', placeholder: 'https://example.com/search?q=%s', 'aria-label': t('Address with %s for the words') });
     drawMine();

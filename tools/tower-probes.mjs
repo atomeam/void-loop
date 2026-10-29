@@ -408,6 +408,38 @@ export const PROBES = Object.freeze({
     },
     facts: [['airport search', /City, airport or code|From[\s\S]{0,40}To/i], ['nearby airports', /Nearby airports/i], ['one way or return', /One way[\s\S]{0,40}Return|Return[\s\S]{0,40}One way/i], ['passengers', /\bAdults\b/], ['cabin class', /\bCabin\b/], ['search on several providers', /Search across providers/i], ['distance', /\bDistance\b/], ['flight time', /Typical flight time/i], ['time difference', /Time difference/i], ['CO2', /CO2/], ['price tracking', /Price tracker/i], ['a price target', /Watch a route/i], ['an itinerary', /Trip and layovers/i], ['layover warnings', /layover/i], ['a calendar file', /\.ics/], ['on your device', /on (?:this|your) device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['no ads', /no ads/i], ['a share link', /Share link/i]],
   },
+  // maps (owner, 2026-10-26: every floor gets its page): Google Maps is the floor. The question is a search for Lisbon on /maps/, the floor's own ask. Truth worked out by hand:
+  // Lisbon is in Portugal at about 38.7 N, 9.1 W. Live traffic is a part Verse does not have and says so: its check asks for live traffic itself, so it stays lost
+  // until a free, allowed source exists (never a claimed win). Judged on Verse alone.
+  maps: {
+    site: 'https://www.google.com/maps', verse: '/maps/',
+    ask: { verse: '/maps/?q=Lisbon' },
+    truth: [['Lisbon found', /Lisboa|Lisbon/], ['in Portugal', /Portugal/], ['its latitude, about 38.7', /\b38\.7\d{3}/], ['its longitude, about -9.1', /-9\.1\d{3}/], ['in degrees, minutes and seconds', /38°4\d′[\d.]+″N/]],
+    askParts: {
+      directions: [['directions', /Directions/], ['by car, bike or on foot', /Car[\s\S]{0,40}Bike[\s\S]{0,40}Walk/], ['stops on the way', /Add a stop/], ['from my location', /Use my location/], ['the router named', /OSRM/]],
+      'place search': [['a place search', /Search places/], ['the place found', /Lisboa|Lisbon/], ['what is at a point', /What is here\?/], ['coordinates', /Decimal degrees/]],
+      'live traffic': [['live traffic on the map', /Traffic now: (?:light|moderate|heavy)/i]],
+    },
+    facts: [['place search', /Search places/], ['a real map', /OpenFreeMap|OpenStreetMap/], ['directions', /Get directions/], ['car, bike and walking', /Car[\s\S]{0,40}Bike[\s\S]{0,40}Walk/], ['stops on the way', /Add a stop/], ['my location', /My location/],
+      ['what is here', /What is here\?/], ['saved places', /Saved places/], ['GPX', /GPX/], ['GeoJSON', /GeoJSON/], ['a link to share', /Copy link/], ['open in Google Maps', /Google Maps/], ['open in Apple Maps', /Apple Maps/],
+      ['live traffic said', /Live traffic/], ['works offline', /\boffline\b/i], ['no account', /no account/i], ['German', /Deutsch|lang=de/]],
+  },
+  // search (owner, 2026-10-26: every floor gets its page): Google Search is the floor and its ask, "who wrote hamlet", is the question. Truth: William Shakespeare. Web coverage
+  // asks for a web index of Verse's own, which Verse does not have (it does not crawl, and says so), and freshness asks for results from the last hours: both stay lost
+  // until they are real. Judged on Verse alone.
+  search: {
+    site: 'https://www.google.com/', verse: '/search/',
+    ask: { verse: '/search/?q=who+wrote+hamlet' },
+    truth: [['William Shakespeare', /William Shakespeare|Shakespeare/], ['a source cited', /\[1\]/], ['Wikipedia results', /\d[\d,.]* results/]],
+    askParts: {
+      'web coverage': [['the same search on Google', /Google ↗/], ['on Bing', /Bing ↗/], ['on DuckDuckGo', /DuckDuckGo ↗/], ['on Brave', /Brave Search ↗/], ['a web index of its own', /pages in Verse's own index/i]],
+      freshness: [['when each result was last edited', /edited 20\d\d-\d\d-\d\d/], ['results from the last hours', /\b\d+ (?:minutes?|hours?) ago\b/]],
+      'answer quality': [['a direct answer', /Verse's answer/], ['its sources', /\bSources\b/], ['a numbered citation', /\[1\]/], ['Wikidata', /Wikidata/]],
+    },
+    facts: [['an answer with sources', /Sources/], ['Wikipedia results', /Wikipedia/], ['Wikidata', /Wikidata/], ['Google', /Google ↗/], ['Bing', /Bing ↗/], ['DuckDuckGo', /DuckDuckGo ↗/], ['Brave', /Brave Search ↗/],
+      ['more engines', /More engines/], ['bangs', /\bBangs\b/], ['history on the device', /\bHistory\b/], ['pause history', /Pause history/], ['clear history', /Clear history/], ['a search engine for the browser', /browser's search engine/],
+      ['says it does not crawl', /does not crawl/], ['a link to share', /Copy link/], ['works offline', /\boffline\b/i], ['no tracking', /no tracking/i]],
+  },
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): the hub is Spotify's floor; each small music site has a page of its own (LANE_PAGES) and
   // its own probe and aspects (LANE_EXTRAS in lib/tower.js), because a metronome and a tuner are not judged on a catalogue. Judged on Verse alone; the truths are worked out
   // by hand (60000 / 120 = 500 ms a beat, Allegro is 120 to 156 BPM, standard guitar is E A D G B E, C major is C E G).
@@ -691,6 +723,65 @@ const LANE_PROBES = Object.freeze({
     askParts: { 'where can I go': [['where can I go', /Where can I go/i], ['airports that could be reached', /could reach/i]], 'filter by distance': [['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i]], 'airport finder': [['the origin airport', /\bFrom\b/], ['airport codes in the list', /\b[A-Z]{3}\b/]], 'provider links': [['each opens the route', /\bnearest first\b/i], ['no timetable said', /not a timetable|may be out of date/i]] },
     pageParts: {}, parts: {},
     facts: [['a start airport', /\bFrom\b/], ['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i], ['distance for each', /\bkm\b/], ['flight time for each', /\b\d h \d{2} min/], ['nearest first', /nearest first/i], ['range not a timetable said', /not a timetable|may be out of date/i], ['nonstop routes', /nonstop/i], ['the routes\' date and source', /June 2014[\s\S]{0,200}OpenFlights|OpenFlights[\s\S]{0,200}June 2014/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
+  },
+  // the maps lane (owner, 2026-10-26): each site's page and the question it answers. Truths worked out by hand: the Eiffel Tower at 48.8584, 2.2945 is 48°51′30.2″N 2°17′40.2″E;
+  // a 5 km radius holds 78.5 km²; the coarse place of a connection is shown without asking
+  'maps: gpx.studio': {
+    ask: { verse: '/maps/plan/?pts=45.92370,6.86940;45.93200,6.89500;45.95180,6.91320&mode=foot' },
+    truth: [['three points', /Point 3/], ['a total distance', /Total: [\d.,]+ (?:km|m)/], ['the climb and descent', /Climb \d+ m · Descent \d+ m/]],
+    askParts: { 'route planner': [['points added on the map', /Tap the map to add points/], ['points listed', /Point 1/]], 'follow roads': [['follow roads and paths', /Follow roads/]], 'elevation profile': [['an elevation profile', /Elevation profile/], ['metres', /\d+ m\b/]], 'GPX import and export': [['download GPX', /Download GPX/], ['open a GPX file', /Open a GPX or GeoJSON file/]], 'distance and climb': [['the distance', /Total: /], ['the climb', /Climb /]] },
+    pageParts: {}, parts: {},
+    facts: [['points on the map', /Tap the map to add points/], ['follow roads', /Follow roads/], ['car, bike or walk', /Car[\s\S]{0,30}Bike[\s\S]{0,30}Walk/], ['undo', /Undo/], ['reverse', /Reverse/], ['elevation profile', /Elevation profile/], ['climb', /Climb/], ['GPX out', /Download GPX/], ['GeoJSON out', /Download GeoJSON/], ['GPX in', /Open a GPX/], ['a link', /Copy link/], ['no account', /no account/i]],
+  },
+  'maps: mylocation.org': {
+    ask: { verse: '/maps/where/' },
+    truth: [['where you are, roughly, without asking', /Roughly, from your connection/], ['a latitude and longitude', /-?\d{1,2}\.\d{5}, -?\d{1,3}\.\d{5}/], ['in degrees, minutes and seconds', /\d+°\d\d′[\d.]+″[NS]/]],
+    askParts: { 'my coordinates': [['decimal degrees', /Decimal degrees/], ['degrees, minutes, seconds', /Degrees, minutes, seconds/]], 'address of my location': [['an address', /Address/]], accuracy: [['the accuracy', /Accuracy/]], 'location without asking': [['without asking', /without asking/]], 'share my location': [['find me', /Find me/], ['saved places', /Saved places/]] },
+    pageParts: {}, parts: {},
+    facts: [['find me', /Find me/], ['coordinates', /Decimal degrees/], ['DMS', /Degrees, minutes, seconds/], ['address', /Address/], ['accuracy', /Accuracy/], ['time zone', /Time zone/], ['a map', /OpenStreetMap/], ['saved places', /Saved places/], ['stays on the device', /stays on this device/i], ['no account', /no account/i]],
+  },
+  'maps: latlong.net': {
+    ask: { verse: '/maps/coordinates/?q=48.8584,2.2945' },
+    truth: [['the decimal degrees', /48\.85840, 2\.29450/], ['the degrees, minutes and seconds', /48°51′30\.2″N 2°17′40\.2″E/]],
+    askParts: { 'place to coordinates': [['a place search', /Search places/]], 'coordinates to address': [['the address of coordinates', /Address of these coordinates/]], 'degrees minutes seconds': [['DMS', /Degrees, minutes, seconds/], ['decimal', /Decimal degrees/]], 'distance between coordinates': [['the distance between two points', /Distance between two points/]] },
+    pageParts: {}, parts: {},
+    facts: [['place search', /Search places/], ['coordinates in any form', /in any form/], ['a map link read', /Google Maps, OpenStreetMap or Apple Maps link/], ['decimal degrees', /Decimal degrees/], ['DMS', /Degrees, minutes, seconds/], ['address of coordinates', /Address of these coordinates/], ['distance between two points', /Distance between two points/], ['a map', /OpenStreetMap/], ['saved places', /Saved places/], ['no account', /no account/i]],
+  },
+  'maps: freemaptools.com': {
+    ask: { verse: '/maps/measure/?ll=51.5074,-0.1278&r=5' },
+    truth: [['a 5 km radius', /Radius 5(?:[.,]0+)? km/], ['its area, about 79 km²', /\b79 km²/], ['its centre', /51\.50740, -0\.12780/]],
+    askParts: { 'radius around a point': [['a radius', /\bRadius\b/], ['draw the circle', /Draw the circle/]], 'measure distance': [['a path', /\bPath\b/]], 'area of a shape': [['an area', /\bArea\b/]], 'elevation of a point': [['elevation', /\bElevation\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['radius', /\bRadius\b/], ['circle area', /Circle area/], ['path', /\bPath\b/], ['area', /\bArea\b/], ['elevation', /\bElevation\b/], ['miles too', /\bmi\b/], ['undo', /Undo|Draw the circle/], ['a link', /Copy link/], ['GPX', /GPX/], ['place search', /Search places/], ['no account', /no account/i]],
+  },
+  // the search lane: truths by hand (Italy's Google results named for Italy; Hamlet's article has contents and its licence; !g is Google)
+  'search: isearchfrom.com': {
+    ask: { verse: '/search/from/?q=pizza&cc=IT' },
+    truth: [['Google as from Italy', /Google \(Italy\)/], ['Bing as from Italy', /Bing \(Italy\)/], ['DuckDuckGo as from Italy', /DuckDuckGo \(Italy\)/]],
+    askParts: { 'search as if from a country': [['a country', /\bCountry\b/]], 'search language': [['a language', /\bLanguage\b/]], 'personal results off': [['personal results off', /personal results off/]], 'several engines': [['Google', /Google \(/], ['Bing', /Bing \(/], ['DuckDuckGo', /DuckDuckGo \(/]] },
+    pageParts: {}, parts: {},
+    facts: [['countries', /\bCountry\b/], ['languages', /\bLanguage\b/], ['Google', /Google \(/], ['Bing', /Bing \(/], ['DuckDuckGo', /DuckDuckGo \(/], ['personal results off', /personal results off/], ['captcha said', /captcha/i], ['history', /History/], ['no account', /no account/i]],
+  },
+  'search: dogpile.com': {
+    ask: { verse: '/search/engines/?q=who+wrote+hamlet' },
+    truth: [['William Shakespeare', /Shakespeare/], ['engines to choose', /Engines to search/], ['open them all', /Open all checked/]],
+    askParts: { 'several engines at once': [['open all', /Open all checked/]], 'one box': [['one search box', /\bSearch\b/]], answers: [['an answer', /Verse's answer/], ['its sources', /\bSources\b/]], 'choose engines': [['engines to choose', /Engines to search/], ['Google', /\bGoogle\b/], ['Bing', /\bBing\b/], ['DuckDuckGo', /\bDuckDuckGo\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['engines to choose', /Engines to search/], ['open all', /Open all checked/], ['an answer', /Verse's answer/], ['Wikipedia', /Wikipedia/], ['ten engines', /Wolfram\|Alpha/], ['history', /History/], ['no account', /no account/i]],
+  },
+  'search: wikiwand.com': {
+    ask: { verse: '/search/wiki/?title=Hamlet' },
+    truth: [['the article Hamlet', /Hamlet/], ['its contents', /\bContents\b/], ['its licence', /CC BY-SA/]],
+    askParts: { 'wikipedia search': [['a search', /\bSearch\b/]], 'readable article': [['text size', /Text size/]], 'table of contents': [['contents', /\bContents\b/]], 'other languages': [['other languages', /Other languages/]], 'read aloud': [['read aloud', /Read aloud/]] },
+    pageParts: {}, parts: {},
+    facts: [['search', /\bSearch\b/], ['contents', /\bContents\b/], ['text size', /Text size/], ['read aloud', /Read aloud/], ['other languages', /Other languages/], ['open on Wikipedia', /Open on Wikipedia/], ['the licence', /CC BY-SA/], ['German', /Deutsch|lang=de/], ['no account', /no account/i]],
+  },
+  'search: duckduckgo.com': {
+    ask: { verse: '/search/bangs/' },
+    truth: [['!g is Google', /!g\s+Google/], ['!w is Wikipedia', /!w\s+Wikipedia/], ['!yt is YouTube', /!yt\s+YouTube/]],
+    askParts: { 'bang list': [['all bangs', /All bangs/]], 'find a bang': [['find a bang', /Find a bang/]], 'your own bangs': [['your own bangs', /Your own bangs/]], 'bangs on the device': [['on this device', /run on this device/]] },
+    pageParts: {}, parts: {},
+    facts: [['all bangs', /All bangs/], ['find a bang', /Find a bang/], ['your own bangs', /Your own bangs/], ['Verse pages too', /Verse maps/], ['on the device', /on this device/], ['history', /History/], ['no account', /no account/i]],
   },
   'sports: thesportsdb.com': {
     ask: { verse: '/sports/?q=arsenal' },
