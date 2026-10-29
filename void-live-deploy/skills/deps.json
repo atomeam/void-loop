@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 954,
+ "counted": 955,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1012,6 +1012,13 @@
   },
   {
    "file": "lib/template-list.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-card.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2,
@@ -9460,6 +9467,15 @@
     "skills/cartoon.js"
    ]
   },
+  "lib/translate-card.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/translate.js"
+   ],
+   "reachedBy": [
+    "skills/languages.js"
+   ]
+  },
   "lib/translate-docs.js": {
    "imports": [],
    "importedBy": []
@@ -13336,7 +13352,8 @@
   "skills/translate.js": {
    "imports": [
     "lib/card-mini.js",
-    "skills/is-it.js"
+    "skills/is-it.js",
+    "lib/translate-card.js"
    ],
    "importedBy": [
     "skills/languages.js"
