@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T03:43:50Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,44 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:02:55Z",
+   "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
+  },
+  {
+   "at": "2026-10-29T14:59:55Z",
+   "subject": "Verse fixes its spanish skill: learn to handle \"how to say bread in spanish\""
+  },
+  {
    "at": "2026-10-29T14:59:49Z",
    "subject": "fix(tower): never count a default-bar score as a lead"
+  },
+  {
+   "at": "2026-10-29T14:58:30Z",
+   "subject": "Verse uses its brain on every page: one host hears every ask, ranks the ask box, answers what it is thinking"
+  },
+  {
+   "at": "2026-10-29T14:55:57Z",
+   "subject": "Versus queue and picker rank on measured rows only"
+  },
+  {
+   "at": "2026-10-29T14:52:15Z",
+   "subject": "Paid Verse: members send ideas that only add (dark until go-live)"
+  },
+  {
+   "at": "2026-10-29T14:49:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T14:48:43Z",
+   "subject": "Open card check: read the sticky's spot once it has settled, and after the close once it is back"
+  },
+  {
+   "at": "2026-10-29T14:47:24Z",
+   "subject": "fix(hosting): mark the RDAP retry loop as a sequential retry for the review"
+  },
+  {
+   "at": "2026-10-29T14:45:06Z",
+   "subject": "Refresh the parity and tools pages the refresh check found stale"
   },
   {
    "at": "2026-10-29T14:42:21Z",
@@ -555,6 +591,26 @@
   {
    "at": "2026-10-29T14:41:18Z",
    "subject": "Versus jobs only for ranked sites, never gambling or crypto"
+  },
+  {
+   "at": "2026-10-29T14:40:49Z",
+   "subject": "Better at leet and lorem: 3 more ways of asking answered right — new phrases: “1337 speak for world” now opens leet; “lorem” now opens…"
+  },
+  {
+   "at": "2026-10-29T14:40:11Z",
+   "subject": "Obituaries check: open the first memorial with a cited history, not a fixed name"
+  },
+  {
+   "at": "2026-10-29T14:38:18Z",
+   "subject": "Read a pasted status report back instead of answering it as a broken automation"
+  },
+  {
+   "at": "2026-10-29T14:36:46Z",
+   "subject": "/hosting/: ask a busy registry again; nameunit probe reads the page as it is"
+  },
+  {
+   "at": "2026-10-29T14:36:35Z",
+   "subject": "3D contract: mount after the studio light lands, so its one redraw stays out of the idle window"
   },
   {
    "at": "2026-10-29T14:35:48Z",
@@ -567,62 +623,6 @@
   {
    "at": "2026-10-29T14:29:35Z",
    "subject": "Tower gate: nameunit measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:25:59Z",
-   "subject": "Tower: point the two colour-name floors at /color/, gate the loop on lane-pages"
-  },
-  {
-   "at": "2026-10-29T14:23:14Z",
-   "subject": "nameunit: search a name at every ending, share it, and name the config for it"
-  },
-  {
-   "at": "2026-10-29T14:17:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:16:45Z",
-   "subject": "test: the Verse self page check brings the body into view before the tap"
-  },
-  {
-   "at": "2026-10-29T14:13:31Z",
-   "subject": "Notebook: a note's [[links]] reach the stage"
-  },
-  {
-   "at": "2026-10-29T14:09:16Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:07:20Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T14:06:35Z",
-   "subject": "Keep main's volatile files and parity pages as they are"
-  },
-  {
-   "at": "2026-10-29T14:06:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:05:49Z",
-   "subject": "Regenerate deps.json (main was behind node tools/deps.mjs)"
-  },
-  {
-   "at": "2026-10-29T14:05:13Z",
-   "subject": "The will's lap want names where its item lives, so the coder reads instead of searching"
-  },
-  {
-   "at": "2026-10-29T14:03:59Z",
-   "subject": "fanfic: the hidden featured link has no address until it has a title"
-  },
-  {
-   "at": "2026-10-29T14:00:37Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T13:54:54Z",
-   "subject": "fanfic: a featured story on the archive home, with why it was picked"
   }
  ],
  "builders": {
