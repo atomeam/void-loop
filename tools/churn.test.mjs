@@ -2,9 +2,10 @@
 // Run: node --test tools/churn.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { hotFiles, namedHot, MAX_CHANGES } from '../void-live-deploy/lib/churn.js';
+import { hotFiles, namedHot, hotOf, MAX_CHANGES, SWEEP_FILES, WINDOW_DAYS } from '../void-live-deploy/lib/churn.js';
+import { readFileSync } from 'node:fs';
 import { pickWant, skippedNote } from '../void-live-deploy/lib/will-guard.js';
-import { commitsSince } from './churn.mjs';
+import { commitsSince, churnJson } from './churn.mjs';
 
 const NOW = Date.parse('2026-10-18T12:00:00Z'), day = 864e5;
 const commit = (ago, ...files) => ({ at: new Date(NOW - ago * day).toISOString(), files });
@@ -40,4 +41,27 @@ test('pickWant skips a want that names a hot file and takes the next; the note s
 test('commitsSince reads this repo\'s git without throwing', () => {
   const cs = commitsSince(2);
   assert.ok(Array.isArray(cs) && cs.every((c) => Number.isFinite(Date.parse(c.at)) && Array.isArray(c.files)));
+});
+
+test('a sweep commit (more than SWEEP_FILES files) counts for none of its files', () => {
+  const big = Array.from({ length: SWEEP_FILES + 1 }, (_, i) => 'archive/f' + i + '.md');
+  const cs = Array.from({ length: MAX_CHANGES + 1 }, (_, i) => commit(i / 10, ...big, 'tools/real.mjs'));
+  assert.deepEqual(hotFiles(cs, { now: NOW }), [], 'a 6000-file regeneration is not work on each file');
+  const small = Array.from({ length: MAX_CHANGES + 1 }, (_, i) => commit(i / 10, ...big.slice(0, SWEEP_FILES - 1), 'tools/real.mjs'));
+  assert.equal(hotFiles(small, { now: NOW }).length, SWEEP_FILES, 'at the cap it still counts');
+});
+
+test('hotOf reads churn.json and drops a list older than the window, so a missed deploy never holds a want back for ever', () => {
+  const j = churnJson([{ file: 'lib/a.js', changes: 20 }, { nope: 1 }], new Date(NOW - day).toISOString());
+  assert.deepEqual(hotOf(j, NOW), [{ file: 'lib/a.js', changes: 20 }]);
+  assert.deepEqual(hotOf({ ...j, at: new Date(NOW - (WINDOW_DAYS + 1) * day).toISOString() }, NOW), []);
+  assert.deepEqual(hotOf({ ...j, at: new Date(NOW + day).toISOString() }, NOW), [], 'a time in the future is not trusted');
+  for (const bad of [null, {}, { at: 'x', hot: [] }, { at: j.at, hot: 'no' }]) assert.deepEqual(hotOf(bad, NOW), []);
+});
+
+test('the will reads /churn.json and passes its hot list to pickWant, with the want\'s full reason', () => {
+  const src = readFileSync(new URL('../void-live-deploy/functions/api/will.js', import.meta.url), 'utf8');
+  assert.match(src, /\/churn\.json/);
+  assert.match(src, /pickWant\([^;]*hot\)/);
+  assert.match(src, /catch \(_\) \{ hot = \[\]; \}/, 'an unreadable list means no cap, never no will');
 });
