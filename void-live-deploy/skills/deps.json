@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 929,
+ "counted": 930,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2033,6 +2033,13 @@
    "tests": 0
   },
   {
+   "file": "lib/approval-gate.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/aurora-feed.js",
    "skills": 0,
    "direct": 0,
@@ -2272,13 +2279,6 @@
   },
   {
    "file": "lib/appraise.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/approval-gate.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2735,7 +2735,8 @@
     "lib/email-send.js",
     "lib/keep-going.js",
     "lib/automations-run.js",
-    "lib/approval-core.js"
+    "lib/approval-core.js",
+    "lib/approval-gate.js"
    ],
    "importedBy": []
   },
@@ -3609,7 +3610,9 @@
    "imports": [
     "lib/approval-core.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/approval.js"
+   ]
   },
   "lib/arcade-ghost.js": {
    "imports": [],
@@ -11003,6 +11006,10 @@
     "skills/lock-rules.js",
     "skills/lift3d.js"
    ],
+   "importedBy": []
+  },
+  "skills/lorem.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/magnetize.js": {
