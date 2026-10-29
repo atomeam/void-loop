@@ -391,7 +391,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
       },
       links: async () => {
         const hrefs = [...new Set(await p.locator('main a[href^="/"], article a[href^="/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href').split('#')[0]).filter((h) => h && !h.startsWith('/api/'))))].slice(0, 12);
-        let dead = []; for (const h of hrefs) { const res = await ctx.request.get(origin + h, { timeout: 15000 }).catch(() => null); if (!res || res.status() >= 400) dead.push(h); }
+        let dead = []; for (const h of hrefs) { if (origin !== LIVE && EXTRA.includes(h)) continue; /* a live-only route has no file here */ const res = await ctx.request.get(origin + h, { timeout: 15000 }).catch(() => null); if (!res || res.status() >= 400) dead.push(h); }
         ok(dead.length === 0, hrefs.length + ' same-site links resolve' + (dead.length ? ' (dead: ' + dead.join(', ') + ')' : ''));
       },
     };
