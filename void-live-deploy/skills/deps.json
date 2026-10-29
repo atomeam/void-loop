@@ -665,7 +665,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 5,
-   "tests": 25
+   "tests": 26
   },
   {
    "file": "lib/arena-say.js",

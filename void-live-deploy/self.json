@@ -533,6 +533,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:13:05Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T05:12:43Z",
+   "subject": "Tower: sycophanthex.com is fought by /fanfic/"
+  },
+  {
+   "at": "2026-10-29T05:10:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T05:10:00Z",
    "subject": "List the proverb skill so it loads"
   },
@@ -595,18 +607,6 @@
   {
    "at": "2026-10-29T04:48:05Z",
    "subject": "Each Verse ask gets its own reason; asks serve the Versus target first"
-  },
-  {
-   "at": "2026-10-29T04:47:44Z",
-   "subject": "Incident: the browser suite failed on 0297c5ea (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T04:43:45Z",
-   "subject": "Obituaries: mark the docs/PARITY prose line as right for Verse's review (it is page text, not a constant)"
-  },
-  {
-   "at": "2026-10-29T04:39:17Z",
-   "subject": "Main green: tower checks follow tower.target.json, identity and translate get a fourth sibling, the honest obituaries page is back…"
   }
  ],
  "builders": {
@@ -844,7 +844,6 @@
  "tower": {
   "target": "sycophanthex.com",
   "since": "2026-10-29",
-  "page": "my page for it is not built yet: it still needs its row in lib/tool-sites.js and its LANE_PAGES entry in lib/tower.js",
   "next": [
    "nameunit.com",
    "wheelroot.com",
