@@ -75,4 +75,4 @@ export function census() {
 export function onWrite(fn) { fns.add(fn); return () => fns.delete(fn); }
 
 /** for tests: everything back to empty. */
-export function reset() { buf.fill(0); writes.clear(); seals.clear(); fns.clear(); ticks = 0; }
+export function reset() { buf.fill(0); names.clear(); writes.clear(); seals.clear(); fns.clear(); ticks = 0; ready = false; }
