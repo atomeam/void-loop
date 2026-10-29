@@ -205,6 +205,9 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
   'jobs: jobicy.com': '/jobs/regions/', 'jobs: workingnomads.com': '/jobs/alerts/', 'jobs: arbeitnow.com': '/jobs/europe/', 'jobs: himalayas.app': '/jobs/salary/', 'jobs: remotive.com': '/jobs/categories/', 'jobs: remoteok.com': '/jobs/tags/', 'jobs: weworkremotely.com': '/jobs/companies/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
+  // a frontier site's own page, by its host: sycophanthex.com, the tower target since 2026-10-29 (a fan-fiction archive), is fought by /fanfic/, the
+  // archive built to its catalog (domains/targets/sycophanthex.json)
+  'sycophanthex.com': '/fanfic/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores
@@ -335,7 +338,7 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
-  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
+  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(LANE_PAGES[x.host] ? { page: LANE_PAGES[x.host] } : {}), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
   const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });

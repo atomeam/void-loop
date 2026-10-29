@@ -96,7 +96,7 @@ export function towerOf(floors, target, pages = {}, n = 3) {
   const fl = Array.isArray(floors) ? floors : [], open = fl.filter((f) => f && !f.beaten);
   const id = (target && target.id) || (open[0] && open[0].id); if (!id) return null;
   const t = fl.find((f) => f.id === id) || { id }, name = (f) => clip(f.site || f.id, 60);
-  const page = t.page || pages[t.id] ? '' : 'my page for it is not built yet: it still needs its row in lib/tool-sites.js and its LANE_PAGES entry in lib/tower.js';
+  const page = t.page || pages[t.id] ? '' : 'my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js';
   return { target: name(t), ...(target && target.since ? { since: clip(target.since, 10) } : {}), ...(page ? { page } : {}), next: open.filter((f) => f.id !== id).slice(0, n).map(name), beaten: fl.length - open.length, total: fl.length };
 }
 

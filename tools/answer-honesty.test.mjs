@@ -7,6 +7,7 @@ import { supports, supportedOnly, hasCorrection, dropUnbackedActs, dropFiller, A
 import { isOwnCardNote, OWN_CARD_RULE, modelFacts, towerFacts, selfFacts, cardFacts } from '../void-live-deploy/lib/self-context.js';
 import { SOURCE_LINKS, SOURCE_BOX, cardOf, keywordsOf } from '../void-live-deploy/lib/card-frame.js';
 import { towerOf } from './self-context.mjs';
+import { tower, LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 
 const read = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
 const selfJson = JSON.parse(read('../void-live-deploy/self.json'));
@@ -80,11 +81,15 @@ test('fault 5: the gemma date comes from the record, and #1406 and the card fixe
   assert.match(facts, /cite a source only when its text holds the claim/);
 });
 
-test('fault 5: Still open starts with the tower target, then the next smallest sites, and names the tool-sites row it still needs', () => {
+test('fault 5: Still open starts with the tower target, then the next smallest sites, and names the page it still needs until it has one', () => {
   const floors = [{ id: 'sycophanthex.com' }, { id: 'nameunit.com' }, { id: 'wheelroot.com' }, { id: 'onlineconverter.com' }, { id: 'bigger.example' }];
   const t = towerOf(floors, { id: 'sycophanthex.com', since: '2026-10-29' });
   assert.equal(t.target, 'sycophanthex.com'); assert.deepEqual(t.next, ['nameunit.com', 'wheelroot.com', 'onlineconverter.com']);
-  assert.match(t.page, /lib\/tool-sites\.js/);
+  assert.match(t.page, /LANE_PAGES in lib\/tower\.js/);
+  assert.equal(towerOf(floors, { id: 'sycophanthex.com' }, { 'sycophanthex.com': '/fanfic/' }).page, undefined, 'a target with a page needs no note');
+  const live = tower([], {}, { sites: [{ site: 'sycophanthex.com', rank: 391415, hardness: 46 }] }, null, null, null, 'sycophanthex.com');
+  assert.equal(live.floors.find((f) => f.id === 'sycophanthex.com').page, '/fanfic/', 'the tower target is fought by the fan-fiction archive');
+  assert.equal(LANE_PAGES['sycophanthex.com'], '/fanfic/');
   const line = towerFacts(selfJson);
   assert.ok(line.indexOf('sycophanthex.com') >= 0 && line.indexOf('sycophanthex.com') < line.indexOf(selfJson.tower.next[0]), 'the target comes before the next sites');
   const facts = selfFacts({ self: selfJson });
@@ -98,7 +103,7 @@ test('card 5: the own-card facts give Fixed and Still open from my records, targ
   assert.ok(c.indexOf('Fixed:') >= 0 && c.indexOf('Fixed:') < c.indexOf('Still open:'), 'Fixed comes before Still open');
   assert.match(fixed, /#1406/); assert.match(fixed, /#1410/); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
   assert.doesNotMatch(open, /#1406/, 'a shipped fix is never listed as open');
-  assert.match(open, /^Still open: 1\. sycophanthex\.com, the site I am fighting now \(my page for it is not built yet: it still needs its row in lib\/tool-sites\.js/);
+  assert.match(open, /^Still open: 1\. sycophanthex\.com, the site I am fighting now/);
   const next = selfJson.tower.next.map((s) => open.indexOf(s));
   assert.ok(next.every((i, k) => i > open.indexOf('sycophanthex.com') && (k === 0 || i > next[k - 1])), 'the next smallest follow the target, in order');
   assert.match(c, /My record dates the gemma move 2026-10-25[^\n]*my record stands: say so, and do not call the date a fault/);
