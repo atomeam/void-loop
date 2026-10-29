@@ -391,7 +391,7 @@
     {
      "name": "verse-brain",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 12 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,
