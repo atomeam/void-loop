@@ -205,7 +205,7 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
   'jobs: jobicy.com': '/jobs/regions/', 'jobs: workingnomads.com': '/jobs/alerts/', 'jobs: arbeitnow.com': '/jobs/europe/', 'jobs: himalayas.app': '/jobs/salary/', 'jobs: remotive.com': '/jobs/categories/', 'jobs: remoteok.com': '/jobs/tags/', 'jobs: weworkremotely.com': '/jobs/companies/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
-  // a frontier site's own page, by its host: sycophanthex.com, the tower target since 2026-10-29 (a fan-fiction archive), is fought by /fanfic/, the
+  // a frontier site's own page, by its host: sycophanthex.com, the tower target since 2026-10-29 (a fan-fiction archive), is assimilated by /fanfic/, the
   // archive built to its catalog (domains/targets/sycophanthex.json)
   'sycophanthex.com': '/fanfic/',
 });

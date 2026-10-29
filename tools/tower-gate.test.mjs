@@ -1,7 +1,7 @@
 // tools/tower-gate.mjs and tools/tower-probes.mjs: the scores behind the aspects the gate measures, and the probes' answers worked out by hand
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { verdict, rescore, germanScore, sharingScore, MEASURES, UA } from './tower-gate.mjs';
+import { verdict, rescore, germanScore, sharingScore, MEASURES, UA, GATE_FLOORS } from './tower-gate.mjs';
 import { probeFor, score, PROBES, timesIn, tokyoNow } from './tower-probes.mjs';
 import { FLOORS, aspectsOf } from '../void-live-deploy/lib/tower.js';
 
@@ -30,7 +30,7 @@ test('is it: the right answer depends on the day', () => {
   const dec25 = new Date().getUTCMonth() === 11 && new Date().getUTCDate() === 25; assert.equal(score(dec25 ? 'YES' : 'NO', t).n, 1); assert.equal(score(dec25 ? 'NO' : 'YES', t).n, 0);
 });
 test('a probe exists only for a floor on the tower, and floors with no fair question leave accuracy unverified', () => {
-  for (const id of Object.keys(PROBES)) assert.ok(FLOORS.some((f) => f.id === id), id);
+  for (const id of Object.keys(PROBES)) assert.ok(GATE_FLOORS.some((f) => f.id === id), id); // the gate's floors: the tower's, and a frontier site's own page by its host (sycophanthex.com)
   assert.equal(probeFor('coin flip').ask.presses, 10, 'coin flip: ten flips pressed on both, checked for their shape');
   // the base converter's question is typed into hextobinary.com's box: exact digits pass, a rounded answer does not
   const bc = probeFor('base converter'); assert.equal(bc.ask.type, '123456789abcdef0123456789abcdef'); assert.ok(bc.askParts['huge numbers'].length === 3);

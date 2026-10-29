@@ -303,7 +303,12 @@ async function viewStory(code, no, chap) {
   const acts = el('div', 'acts');
   if (n > 1) acts.append(link('Previous chapter', href({ f: code, s: no, c: n - 1 > 1 ? n - 1 : '' }), 'btn'));
   if (n < s.chapters.length) acts.append(link('Next chapter', href({ f: code, s: no, c: n + 1 }), 'btn go'));
-  const rep = el('a', 'btn', 'Report this'); rep.href = boardLink(code, no, c.nos[0]); acts.append(rep);
+  // the story's own link (this chapter), to send to a reader: the phone's share sheet when there is one, else the clipboard
+  const share = el('button', 'btn', 'Share link'), shareSay = el('span', 'quiet', ''); share.type = 'button'; share.id = 'storyShare'; shareSay.setAttribute('role', 'status');
+  share.onclick = async () => { const u = location.href;
+    if (navigator.share) { try { await navigator.share({ title: s.title, url: u }); return; } catch (_) {} }
+    try { await navigator.clipboard.writeText(u); say(shareSay, 'Link copied.', 'good'); } catch (_) { say(shareSay, 'The link could not be copied. Copy it from the address bar.', 'bad'); } };
+  const rep = el('a', 'btn', 'Report this'); rep.href = boardLink(code, no, c.nos[0]); acts.append(share, rep, shareSay);
   box.append(acts); $('chapters').replaceChildren(box);
   // reviews
   $('reviewsH').textContent = s.reviews.length ? 'Reviews (' + s.reviews.length + ')' : 'Reviews';

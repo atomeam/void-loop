@@ -70,6 +70,8 @@ jobs:
           fi
           echo "measuring: $(paste -sd, floors.txt)"
           while IFS= read -r f; do [ -n "$f" ] && { timeout 480 node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured (or stopped after 8 minutes)"; }; done < floors.txt # a floor that hangs costs 8 minutes, never the run
+          # the floor's scripted journeys on Verse's own page, in the same browser (tools/tower-journeys.mjs; an unscripted floor is skipped)
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 240 node tools/tower-journeys.mjs --scripted "$f" || echo "::warning::$f journeys not run (or stopped after 4 minutes)"; }; done < floors.txt
       - name: Commit the verdicts and deploy
         env:
           GH_TOKEN: ${{ github.token }}

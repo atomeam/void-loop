@@ -7,7 +7,7 @@
 //   node tools/tower-journeys.mjs --dry <floor id>   run and print, write nothing
 // Tests: tools/tower-falsepass.test.mjs (the controls and the gate's use of them).
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS } from '../void-live-deploy/lib/tower.js';
+import { GATE_FLOORS } from './tower-gate.mjs'; // FLOORS and the frontier sites the gate measures (sycophanthex.com: /fanfic/)
 import { journeysOf } from '../void-live-deploy/lib/tower-journeys.js';
 import { negativesOf, JOURNEY_PREFIX } from '../void-live-deploy/lib/tower-controls.js';
 
@@ -33,6 +33,15 @@ function kit(page, steps, negatives) {
   return J;
 }
 
+/** the archive's newest story, opened from its front page as a reader would: its title. No story yet: INCOMPLETE (the archive is never seeded). */
+async function openFirstStory(J) {
+  await J.open('/fanfic/');
+  const sel = '#latest a.t[href*="&s="]', said = await J.page.waitForFunction((q) => document.querySelector(q) ? 'story' : (/No stories yet|did not answer/i.exec(document.body.innerText) || [''])[0], sel, { timeout: 15000 }).then((h) => h.jsonValue()).catch(() => '');
+  if (said !== 'story') throw new Blocked(/did not answer/i.test(said) ? 'the archive did not answer, so no story could be opened' : said ? 'the archive has no stories yet, so there is none to open (it is never seeded)' : 'the story list did not load in 15 s');
+  const title = ((await J.page.locator(sel).first().textContent()) || '').trim(); await J.click(sel + ' >> nth=0', 'open the newest story, "' + title + '"');
+  return title;
+}
+
 /** per floor id, per journey name: the script. A journey with no script here is INCOMPLETE. */
 export const SCRIPTS = {
   'random number': {
@@ -48,6 +57,13 @@ export const SCRIPTS = {
   stopwatch: {
     'start, lap and stop the stopwatch': async (J) => { await J.open('/stopwatch/'); await J.click('#swgo', 'press Start'); await J.page.waitForTimeout(1200); await J.click('#swlap', 'press Lap'); await J.click('#swgo', 'press Stop'); await J.expect(/lap\s*1/i, 'lap 1 listed'); },
     'reset and start again': async (J) => { await J.open('/stopwatch/'); await J.click('#swgo', 'press Start'); await J.page.waitForTimeout(600); await J.click('#swlap', 'press Lap'); await J.click('#swgo', 'press Stop'); await J.click('#swreset', 'press Reset'); await J.expect((t) => !/lap\s*1\b/i.test(t), 'the laps cleared'); await J.click('#swgo', 'press Start again'); await J.click('#swlap', 'press Lap again'); await J.expect(/lap\s*1\b/i, 'a new lap 1 from the fresh run'); },
+  },
+  // sycophanthex.com (/fanfic/, 2026-10-29): its visitors open a story and read it, then send it to someone. Both need a story a person posted.
+  // The archive is never seeded (owner, 2026-10-29: "an empty archive must remain completely clean"), so while it has none both journeys are
+  // INCOMPLETE, never a pass, and the journey posts nothing to make one
+  'sycophanthex.com': {
+    'do the main job and see the result': async (J) => { const t = await openFirstStory(J); await J.expect((x) => x.includes(t) && /\bchapters\b/i.test(x) && /\bwords\b\s*[\d,]+/i.test(x) && /\bby\s+\S/.test(x), 'the story "' + t + '" open, with its author, chapters and words'); },
+    'share the result and reopen it from the link': async (J) => { const t = await openFirstStory(J); const u = await J.shareLink('#storyShare'); await J.open('/fanfic/'); await J.open(u); await J.expect((x) => x.includes(t) && /\bwords\b\s*[\d,]+/i.test(x), 'the same story "' + t + '" back from its link'); },
   },
   // paint (/paint/, rebuilt 2026-10-28 against the colour-by-number sites): every step is a tap, a key or a file a person would use
   paint: {
@@ -79,12 +95,14 @@ export async function runFloor(browser, f, at = new Date().toISOString()) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const argv = process.argv.slice(2), dry = argv.includes('--dry'), ids = argv.filter((a) => !a.startsWith('--'));
+  // --scripted: skip a floor with no script here (the gate's hand runs pass every floor; an unscripted floor keeps the rows it has)
+  const argv = process.argv.slice(2), dry = argv.includes('--dry'), scripted = argv.includes('--scripted'), ids = argv.filter((a) => !a.startsWith('--') && (!scripted || SCRIPTS[a]));
+  if (!ids.length) process.exit(0);
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const data = JSON.parse(fs.readFileSync(FILE, 'utf8'));
   for (const id of ids) {
-    const f = FLOORS.find((x) => x.id === id); if (!f) { console.error('no floor ' + id); continue; }
+    const f = GATE_FLOORS.find((x) => x.id === id); if (!f) { console.error('no floor ' + id); continue; }
     const rows = await runFloor(b, f);
     for (const [k, r] of Object.entries(rows)) console.log(id + ' · ' + k.padEnd(52) + r.verdict.padEnd(11) + r.evidence);
     if (!dry) data.floors[id] = { ...(data.floors[id] || {}), ...rows };
