@@ -6072,7 +6072,8 @@ try {
     await P.p.click('.list-to-note'); await P.p.waitForTimeout(300); const afterEntry = await pad();
     await P.ask('add a sticky that says call mom', 600);
     const sb = await (await P.p.$('.thing.sticky')).boundingBox(), lb = await (await P.p.$('.thing.list-card')).boundingBox();
-    await P.p.mouse.move(sb.x + 4, sb.y + 4); await P.p.mouse.down(); await P.p.mouse.move(lb.x + lb.width / 2, lb.y + lb.height / 2, { steps: 8 }); await P.p.mouse.up(); await P.p.waitForTimeout(400);
+    // grabbed at its middle: a sticky keeps a tilt of up to 2.5 degrees (skills/sticky.js tiltOf), and at 2.5 the corner of its box is stage, not note (shard 1, 2026-10-29)
+    await P.p.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2); await P.p.mouse.down(); await P.p.mouse.move(lb.x + lb.width / 2, lb.y + lb.height / 2, { steps: 8 }); await P.p.mouse.up(); await P.p.waitForTimeout(400);
     const items = ((await P.state()).find((x) => x.kind === 'list') || {}).items || [];
     await P.ask('summon a zombie', 900); await P.ask('bring a dog', 900); await P.ask('what are they doing', 500); const afterFigs = await pad();
     await P.ask('how good are you at connect four', 800);
