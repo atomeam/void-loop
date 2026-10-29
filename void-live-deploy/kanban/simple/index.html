@@ -35,6 +35,7 @@
   input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
   .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
   .sr { position: absolute; left: -9999px; }
+  .lead { font-size: 15px; margin: 2px 0 4px; } .tries { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 10px; font-size: 14px; } .tries a { padding: 6px 0; }
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
   .chead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; } .chead h3 { flex: 1; font-size: 15px; overflow-wrap: anywhere; } .count { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; } .count.over { color: var(--bad); font-weight: 700; }
@@ -56,8 +57,10 @@
 </head>
 <body>
 <main>
-  <h1>Simple kanban board</h1>
+  <h1>Plan tasks on a simple to-do board (kanban)</h1>
+  <p class="lead" id="lead">A plain three-column to-do board: drag tasks from To do to Done.</p>
   <p class="intro">Several boards with columns you name, cards with a title and notes that you drag between columns or move with the keyboard, saved as you go. Share a board as a link, export and import it as JSON. Kept on this device, no account.</p>
+  <nav class="tries" id="tries" aria-label="Open a ready board"><span class="note">Try a ready board:</span> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJDaG9yZXMiLCJjb2x1bW5zIjpbeyJuYW1lIjoiVG8gZG8iLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6IkxhdW5kcnkifSx7InRpdGxlIjoiVmFjdXVtIn1dfSx7Im5hbWUiOiJEb2luZyIsIndpcCI6MCwiY2FyZHMiOlt7InRpdGxlIjoiRGlzaGVzIn1dfSx7Im5hbWUiOiJEb25lIiwid2lwIjowLCJjYXJkcyI6W119XX1dfQ">Chores</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJUcmlwIiwiY29sdW1ucyI6W3sibmFtZSI6IlRvIGRvIiwid2lwIjowLCJjYXJkcyI6W3sidGl0bGUiOiJCb29rIHRoZSB0cmFpbiJ9LHsidGl0bGUiOiJQYWNrIn0seyJ0aXRsZSI6IlByaW50IHRoZSB0aWNrZXRzIn1dfSx7Im5hbWUiOiJEb2luZyIsIndpcCI6MCwiY2FyZHMiOlt7InRpdGxlIjoiRmluZCBhIGhvdGVsIn1dfSx7Im5hbWUiOiJEb25lIiwid2lwIjowLCJjYXJkcyI6W119XX1dfQ">A trip</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJQYXJ0eSIsImNvbHVtbnMiOlt7Im5hbWUiOiJUbyBkbyIsIndpcCI6MCwiY2FyZHMiOlt7InRpdGxlIjoiU2VuZCBpbnZpdGVzIn0seyJ0aXRsZSI6IkJ1eSBzbmFja3MifSx7InRpdGxlIjoiTWFrZSBhIHBsYXlsaXN0In1dfSx7Im5hbWUiOiJEb2luZyIsIndpcCI6MCwiY2FyZHMiOltdfSx7Im5hbWUiOiJEb25lIiwid2lwIjowLCJjYXJkcyI6W3sidGl0bGUiOiJQaWNrIGEgZGF0ZSJ9XX1dfV19">A party</a></nav>
   <div id="app"></div>
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/kanban/quick/">Quick kanban board</a> <a href="/kanban/teams/">Kanban board with WIP limits and swimlanes</a> <a href="/calendar/">Calendar</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.</footer>
