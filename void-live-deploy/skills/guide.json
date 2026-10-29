@@ -14,8 +14,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 14,
+    "experiment": 0,
+    "tested": 15,
     "checked": 3,
     "proven": 36
    },
@@ -98,8 +98,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 11,
+    "experiment": 0,
+    "tested": 12,
     "checked": 1,
     "proven": 29
    },
@@ -114,8 +114,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 1,
-    "proven": 4
+    "checked": 0,
+    "proven": 5
    },
    "from": 213,
    "to": 219
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 7,
-    "checked": 7,
-    "proven": 88
+    "checked": 6,
+    "proven": 89
    },
    "from": 220,
    "to": 322
@@ -438,8 +438,9 @@
     "band name generator",
     "random generators"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "1 real ask in the benchmark",
+   "glow": 100,
    "n": 12
   },
   {
@@ -3728,8 +3729,9 @@
     "browse sports",
     "list of sports"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 197
   },
   {
@@ -4035,8 +4037,10 @@
     "text boards",
     "open the image boards"
    ],
-   "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 4 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Proven 2 times over by those who asked, and kept among the out in the world. Let the stage be the proof.",
+   "glow": 100,
    "n": 216
   },
   {
@@ -5877,8 +5881,10 @@
     "backdrop: a cyberpunk rooftop",
     "stage: an atmospheric study"
    ],
-   "tier": "checked",
-   "why": "a self-test, 7 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 7 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Proven 1 times over by those who asked, and kept among the stage. Let the stage be the proof.",
+   "glow": 100,
    "n": 322
   },
   {

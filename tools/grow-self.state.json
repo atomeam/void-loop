@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40817328073",
-  "at": "2026-10-29T04:23:08Z",
-  "what": "Verse hardened itself: 9 benchmark ask(s) for coin, generators-fill, kanban-board, photo-tools, recipes-fill.  Why these: tab (no benchmark ask, evidence tier: tested, 23 failed runs name it); coin (no benchmark ask, evidence tier: checked, 14 failed runs name it); generators-fill (no benchmark ask, evidence tier: experiment); kanban-board (no benchmark ask, evidence tier: experiment); photo-tools (no benchmark ask, evidence tier: experiment); recipes-fill (no benchmark ask, evidence tier: experiment). New phrases: “coin toss” now opens coin; “make a generator of pirate ship names: Black Pearl, Sea Wolf, Revenge” now opens generators-fill; “keep the name Sea Wolf” now opens generators-fill; “kanban board” now opens kanban-board; “make a kanban board” now opens kanban-board; “photo editor” now opens photo-tools; “compress an image” now opens photo-tools; “save this recipe: Lemon cake, ingredients: 200 g flour, 3 eggs; steps: mix. bake” now opens recipes-fill; “save this recipe: Toast, ingredients: bread, butter; steps: toast it” now opens recipes-fill. Did not route: put in the page; draft for me; heads or tails; free kanban board.",
-  "try": "coin toss",
+  "run": "40829044589",
+  "at": "2026-10-29T06:26:01Z",
+  "what": "Verse hardened itself: 6 benchmark ask(s) for sports-browse, textgen, backdrop, boards.  Why these: tab (no benchmark ask, evidence tier: tested, 22 failed runs name it); sports-browse (no benchmark ask, evidence tier: experiment); textgen (no benchmark ask, evidence tier: experiment); toolkit (no benchmark ask, evidence tier: experiment); backdrop (no benchmark ask, evidence tier: checked); boards (no benchmark ask, evidence tier: checked). New phrases: “browse sports” now opens sports-browse; “list of sports” now opens sports-browse; “random generators” now opens textgen; “backdrop: a cyberpunk rooftop” now opens backdrop; “text boards” now opens boards; “open the image boards” now opens boards. Did not route: put in the page; draft for me; fantasy name generator; band name generator.",
+  "try": "browse sports",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-29T02:19:46Z",
-    "try": "add a note: buy milk",
-    "closedAt": "2026-10-29T04:22:35Z"
+    "at": "2026-10-29T04:23:08Z",
+    "try": "coin toss",
+    "closedAt": "2026-10-29T06:25:25Z"
   }
 }
