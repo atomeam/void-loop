@@ -537,13 +537,37 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T06:49:25Z",
+   "subject": "Weather, time and base converter stage cards follow the page"
+  },
+  {
+   "at": "2026-10-29T06:47:46Z",
+   "subject": "Verse Brain: every Mind Field mode joins it through the shared field"
+  },
+  {
+   "at": "2026-10-29T06:46:27Z",
+   "subject": "Verse fixes its textgen skill: learn to handle \"fantasy name generator\""
+  },
+  {
+   "at": "2026-10-29T06:42:01Z",
+   "subject": "Suite: the who-is-X stub answers 404 for a title with no page"
+  },
+  {
+   "at": "2026-10-29T06:41:51Z",
+   "subject": "Verse Brain: say on the card what it feels in the shared field"
+  },
+  {
+   "at": "2026-10-29T06:41:01Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T06:40:19Z",
    "subject": "Verse loop tests: clear the owner token in the no-key cases"
@@ -599,30 +623,6 @@
   {
    "at": "2026-10-29T06:26:56Z",
    "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T06:26:23Z",
-   "subject": "Better at sports browse, textgen, backdrop and 1 more: 6 more ways of asking answered right — new phrases: “browse sports” now opens…"
-  },
-  {
-   "at": "2026-10-29T06:24:03Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:23:04Z",
-   "subject": "Growth card: today's ledger lines with their hashes, checked in the browser"
-  },
-  {
-   "at": "2026-10-29T06:22:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:21:20Z",
-   "subject": "Shard 3 server checks: the confirm line, the router and the ?q= link pass again"
-  },
-  {
-   "at": "2026-10-29T06:21:13Z",
-   "subject": "Versus card: say \"default bar\" where the site turned the gate away; /fanfic/ opens offline, loads faster, 0 design defects"
   }
  ],
  "builders": {
