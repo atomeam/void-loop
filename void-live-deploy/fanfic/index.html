@@ -199,6 +199,17 @@
   .room .meters { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 0 16px; }
   .room .meters div { padding: 12px 16px; border-right: 1px solid var(--line); } .room .meters div:last-child { border-right: 0; }
   .room .meters b { display: block; font-size: 20px; font-weight: 300; font-variant-numeric: tabular-nums; } .room .meters span { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .recs { list-style: none; margin: 0; padding: 0; counter-reset: rec; }
+  .recs > li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 4px 12px; padding: 14px 20px; border-top: 1px solid var(--line); counter-increment: rec; }
+  .recs > li:first-child { border-top: 0; }
+  .recs > li::before { content: counter(rec) "."; color: var(--ink-3); font-variant-numeric: tabular-nums; padding-top: 3px; }
+  .recs a.t { color: var(--ink); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; display: inline-block; padding: 2px 0; }
+  .recs a.t:hover { text-decoration: underline; text-decoration-color: rgb(var(--key) / .6); }
+  .recs .in { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; } .recs .in a { color: var(--ink-3); } .recs .det { color: var(--ink-2); }
+  .recs .why { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; } .recs .f { margin: 10px 0 0; }
+  .recs .acts { margin-top: 8px; } .recs .acts button { min-height: 36px; font-size: 13px; }
+  .recs .quiet { color: var(--ink-3); }
+  .recs > li.quiet { display: block; } .recs > li.quiet::before { content: none; }
   .banner { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 14px 20px; }
   .banner p { margin: 0; flex: 1 1 260px; color: var(--ink-2); }
 
@@ -259,6 +270,7 @@
       <a href="/fanfic/?v=search" data-go data-v="search" aria-keyshortcuts="/">Search</a>
       <a href="/fanfic/?v=authors" data-go data-v="authors">Authors</a>
       <a href="/fanfic/?v=series" data-go data-v="series">Series</a>
+      <a href="/fanfic/?v=recs" data-go data-v="recs">Rec lists</a>
       <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink" aria-keyshortcuts="w">Writing Room</a>
       <a href="/fanfic/?v=glossary" data-go data-v="glossary">Writing Glossary</a>
       <a href="/fanfic/?notice=rules" data-go data-v="notice">Rules</a>
@@ -388,6 +400,19 @@
         <thead><tr><th>Series</th><th class="hide-s">Writer</th><th class="num">Parts</th><th>Last post</th></tr></thead>
         <tbody id="seriesRows"></tbody>
       </table>
+    </div>
+  </section>
+
+  <!-- rec lists: this device's own list of stories it recommends, and a list someone sent by its link (the list is after the #, never posted) -->
+  <section class="view" id="recs" aria-labelledby="recsH">
+    <h2 id="recsH" class="h1">Rec lists</h2>
+    <p class="lead">Stories you recommend, in your order, each with a line on why. Your list stays on this device. Its link holds the whole list, so whoever opens the link reads the same stories. Nothing is posted.</p>
+    <div class="glass banner" id="recsShared" hidden><p id="recsSharedSay"></p><button class="go" type="button" id="recsKeep">Add them to my rec list</button><button type="button" id="recsMine">Show my rec list</button></div>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="recsListH">My rec list</h2><span class="quiet" id="recsSay"></span></div>
+      <div class="pbody" id="recsNameBox"><label class="f" style="margin:0"><span>List name</span><input type="text" id="recsName" maxlength="60" placeholder="My rec list"></label></div>
+      <ol class="recs" id="recRows" aria-labelledby="recsListH"></ol>
+      <div class="acts pbody" id="recsActs"><button type="button" class="go" id="recsShare">Share link</button><span class="quiet" id="recsShareSay" role="status"></span></div>
     </div>
   </section>
 
@@ -576,7 +601,7 @@
         <dt>How do I post a story?</dt><dd>Choose <a href="/fanfic/?new=story" data-go>Post a story</a>. Pick its fandom and its rating, give it a title and a short summary, and write or paste chapter 1. <a href="/fanfic/?notice=format" data-go>How to format chapters</a> has the details.</dd>
         <dt>How do I add the next chapter?</dt><dd>Open the story and choose <b>Add the next chapter</b>. Only the device that posted the story shows that button.</dd>
         <dt>Do I need an account?</dt><dd>No. Your drafts, what you have read and your 18+ answer are kept on this device. Stories you post carry a mark made on this device, so readers can tell your stories from a writer with the same pen name.</dd>
-        <dt>How do I find a story?</dt><dd>On the index, type in <b>Find a story</b>, use the filters or Titles A to Z, or open <a href="/fanfic/?v=authors" data-go>Authors</a>, <a href="/fanfic/?v=series" data-go>Series</a>, <a href="/fanfic/?v=search" data-go>Search</a> or <a href="/fanfic/?v=random" data-go>Random story</a>.</dd>
+        <dt>How do I find a story?</dt><dd>On the index, type in <b>Find a story</b>, use the filters or Titles A to Z, or open <a href="/fanfic/?v=authors" data-go>Authors</a>, <a href="/fanfic/?v=series" data-go>Series</a>, <a href="/fanfic/?v=recs" data-go>Rec lists</a>, <a href="/fanfic/?v=search" data-go>Search</a> or <a href="/fanfic/?v=random" data-go>Random story</a>.</dd>
         <dt>Something here breaks the rules. What do I do?</dt><dd>Read <a href="/fanfic/?notice=report" data-go>Report spam or abuse here</a>.</dd>
         <dt>Where can I ask something else?</dt><dd>Ask on Verse's <a href="/boards/">open boards</a> (the forums every story here is posted to), or write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</dd>
       </dl></div>

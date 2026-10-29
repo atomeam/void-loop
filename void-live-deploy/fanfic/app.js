@@ -39,7 +39,7 @@ const say = (node, text, tone) => { node.textContent = text || ''; node.classLis
 const words = (n) => n.toLocaleString() + (n === 1 ? ' word' : ' words');
 
 // ---- what this device keeps ----
-let me = load(KEY, { drafts: [], cur: '', days: {}, read: { all: 0, seen: {} }, period: 'all', pen: '', secret: '', pw: '', mine: {} });
+let me = load(KEY, { drafts: [], cur: '', days: {}, read: { all: 0, seen: {} }, period: 'all', pen: '', secret: '', pw: '', mine: {}, recs: { name: '', items: [] } });
 me.read = { all: 0, seen: {}, ...(me.read || {}) }; me.mine = me.mine || {}; me.days = me.days || {}; me.drafts = Array.isArray(me.drafts) ? me.drafts : [];
 if (!me.secret) me.secret = F.newSecret();
 if (!me.pw) me.pw = F.newSecret();
@@ -173,8 +173,8 @@ function setPage(n, push) {
 }
 
 // ---- views ----
-const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'authors', 'series', 'random', 'gate', 'gone'];
-const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice', authors: 'authors', series: 'series', random: 'index' };
+const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'authors', 'series', 'recs', 'random', 'gate', 'gone'];
+const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice', authors: 'authors', series: 'series', recs: 'recs', random: 'index' };
 // what the view on screen hands to the other pages (owner, 2026-10-29: "all the pages are supposed to be able to work together"): the chapter
 // being read, the draft in the Writing Room, or chapter 1 typed in the post form (the stage card's "Post a story" lands there); the index and the lists hand nothing. A link carries at most LINK_MAX encoded characters (a longer
 // address is refused by the edge), so the translator gets the opening of a long chapter (it takes 5,000 characters) and the word counter opens
@@ -338,6 +338,58 @@ async function viewSeries() {
   }));
 }
 
+// Rec lists: this device's list of stories it recommends (put there with Recommend on a story), or a list someone sent by its link. Each story's
+// title, writer and details are read from the boards now; one that is gone or hidden says so and keeps its place, nothing is made up for it
+async function viewRecs() {
+  const shared = F.readRecs(location.hash), list = shared || F.cleanRecs(me.recs);
+  show('recs', shared ? shared.name || 'A rec list' : 'Rec lists');
+  $('recsShared').hidden = !shared; $('recsNameBox').hidden = !!shared; $('recsActs').hidden = !!shared;
+  $('recsListH').textContent = shared ? shared.name || 'A rec list' : 'My rec list'; $('recsListH').translate = !shared || !shared.name;
+  $('recsSay').textContent = list.items.length ? list.items.length + (list.items.length === 1 ? ' story' : ' stories') : '';
+  say($('recsShareSay'), '');
+  if (shared) {
+    $('recsSharedSay').textContent = 'Someone sent you this rec list by its link. It is not posted anywhere.';
+    const clear = () => go(href({ v: 'recs' }), true);
+    $('recsKeep').onclick = () => { let m = F.cleanRecs(me.recs); for (const x of shared.items) { const n = F.recsWith(m, x.f, x.s); if (n.items.length > m.items.length) n.items[n.items.length - 1].note = x.note; m = n; }
+      me.recs = m; keep(); clear(); };
+    $('recsMine').onclick = clear;
+  } else {
+    const name = $('recsName'); name.value = list.name; name.oninput = () => { me.recs = F.cleanRecs({ ...F.cleanRecs(me.recs), name: name.value }); keep(); };
+    $('recsShare').disabled = !list.items.length;
+    $('recsShare').onclick = async () => { const u = location.origin + href({ v: 'recs' }) + '#' + F.recsHash(me.recs), t = F.cleanRecs(me.recs).name || 'My rec list';
+      if (navigator.share) { try { await navigator.share({ title: t, url: u }); return; } catch (_) {} }
+      try { await navigator.clipboard.writeText(u); say($('recsShareSay'), 'Link copied. It holds the whole list.', 'good'); } catch (_) { say($('recsShareSay'), 'The link could not be copied.', 'bad'); } };
+  }
+  const rows = $('recRows');
+  if (!list.items.length) { rows.replaceChildren(el('li', 'quiet', 'Your rec list is empty. Open a story and press Recommend to put it here.')); handing = null; drawRelated(); return; }
+  rows.replaceChildren(el('li', 'quiet', 'Opening the archive…'));
+  let a; try { a = await archive(); } catch (e) { rows.replaceChildren(el('li', 'quiet', e.message)); return; }
+  const byKey = new Map(shown(a.topics).map((t) => [t.board + '/' + t.no, t]));
+  const found = list.items.map((x) => ({ x, t: byKey.get(x.f + '/' + x.s) }));
+  handing = () => found.filter((r) => r.t).map((r) => r.t.title + ' by ' + r.t.author + (r.x.note ? ': ' + r.x.note : '')).join('\n'); drawRelated();
+  const redraw = () => viewRecs();
+  rows.replaceChildren(...found.map(({ x, t }, i) => {
+    const li = el('li'), main = el('div');
+    if (t) {
+      const ti = link(t.title, href({ f: t.board, s: t.no }), 't'); ti.translate = false; main.append(ti);
+      const by = el('span', 'in'), pen = link(t.author, href({ by: F.authorKey(t) })), fl = link(t.fandom, href({ f: t.board })); pen.translate = false; fl.translate = false;
+      by.append('by ', pen, ' in ', fl); main.append(by);
+      const line = F.detailsLine(t); if (line) { const d = el('span', 'in det', line); d.translate = false; main.append(d); }
+    } else main.append(el('span', 'quiet', 'This story is not on the boards now.'));
+    if (shared) { if (x.note) { const w = el('p', 'why', x.note); w.translate = false; main.append(w); } }
+    else {
+      const lab = el('label', 'f'), inp = el('input'); inp.type = 'text'; inp.maxLength = F.RECS_LIMITS.note; inp.value = x.note; inp.placeholder = 'Why you recommend it';
+      lab.append(el('span', 'vh', 'Why you recommend it'), inp);
+      inp.oninput = () => { const m = F.cleanRecs(me.recs); if (m.items[i]) { m.items[i].note = inp.value; me.recs = F.cleanRecs(m); keep(); } };
+      const acts = el('div', 'acts'), b = (text, on, off) => { const n = el('button', '', text); n.type = 'button'; n.disabled = !!off; n.onclick = on; return n; };
+      acts.append(b('Up', () => { me.recs = F.recsMoved(me.recs, i, -1); keep(); redraw(); }, i === 0), b('Down', () => { me.recs = F.recsMoved(me.recs, i, 1); keep(); redraw(); }, i === found.length - 1),
+        b('Take off', () => { me.recs = F.recsWith(me.recs, x.f, x.s, true); keep(); redraw(); }));
+      main.append(lab, acts);
+    }
+    li.append(main); return li;
+  }));
+}
+
 // Random story: one of the stories this device may see, picked at random; the address becomes that story's, so Back returns to where you were
 async function viewRandom() {
   show('random', 'Random story');
@@ -402,7 +454,15 @@ async function viewStory(code, no, chap) {
   share.onclick = async () => { const u = location.href;
     if (navigator.share) { try { await navigator.share({ title: s.title, url: u }); return; } catch (_) {} }
     try { await navigator.clipboard.writeText(u); say(shareSay, 'Link copied.', 'good'); } catch (_) { say(shareSay, 'The link could not be copied. Copy it from the address bar.', 'bad'); } };
-  const rep = el('a', 'btn', 'Report this'); rep.href = boardLink(code, no, c.nos[0]); acts.append(share, rep, shareSay);
+  // Recommend: puts the story on this device's rec list (Rec lists), or takes it off again
+  const rec = el('button', 'btn'), inRecs = () => F.cleanRecs(me.recs).items.some((x) => x.f === code && x.s === +no);
+  rec.type = 'button'; rec.id = 'storyRec';
+  const recDraw = () => { const on = inRecs(); rec.textContent = on ? 'In your rec list' : 'Recommend'; rec.setAttribute('aria-pressed', String(on)); };
+  rec.onclick = () => { const on = inRecs(), next = F.recsWith(me.recs, code, +no, on);
+    if (!on && next.items.length === F.cleanRecs(me.recs).items.length) { say(shareSay, 'Your rec list is full at ' + F.RECS_LIMITS.items + ' stories. Take one off in Rec lists first.', 'bad'); return; }
+    me.recs = next; keep(); recDraw(); say(shareSay, on ? 'Taken off your rec list.' : 'On your rec list. Open Rec lists to add a line on why.', 'good'); };
+  recDraw();
+  const rep = el('a', 'btn', 'Report this'); rep.href = boardLink(code, no, c.nos[0]); acts.append(share, rec, rep, shareSay);
   box.append(acts); $('chapters').replaceChildren(box);
   // reviews
   $('reviewsH').textContent = s.reviews.length ? 'Reviews (' + s.reviews.length + ')' : 'Reviews';
@@ -681,6 +741,7 @@ async function route() {
   if (v === 'recent') return viewRecent();
   if (v === 'authors') return viewAuthors();
   if (v === 'series') return viewSeries();
+  if (v === 'recs' || /^#recs=/.test(location.hash)) return viewRecs();
   if (v === 'random') return viewRandom();
   if (v === 'search') return viewSearch((q.get('q') || '').slice(0, 200));
   if (v === 'room' || /^#room=/.test(location.hash)) return viewRoom();

@@ -367,3 +367,17 @@ test('a series: a name and a part on chapter 1, read back from the post and from
   assert.deepEqual(F.inPartOrder(F.filterStories(list, { series: all[0].key })).map((x) => x.no), [2, 1], 'one series, part 1 first');
   assert.equal(F.seriesKey(list[3]), '', 'a story in no series has no key');
 });
+
+test('a rec list keeps up to 25 stories once each, in the reader\'s order, and its link holds the whole list', () => {
+  let r = F.recsWith({ name: 'Slow burns' }, 'ficabc', 3); r = F.recsWith(r, 'ficabc', 9); r = F.recsWith(r, 'FICABC', 3);
+  assert.deepEqual(r.items.map((x) => x.s), [3, 9], 'a story already there keeps its place');
+  r.items[0].note = 'The best\nslow burn';
+  const back = F.readRecs('#' + F.recsHash(r));
+  assert.deepEqual(back, { name: 'Slow burns', items: [{ f: 'ficabc', s: 3, note: 'The best slow burn' }, { f: 'ficabc', s: 9, note: '' }] }, 'the link reads back the same list, notes one line');
+  assert.deepEqual(F.recsMoved(r, 0, 1).items.map((x) => x.s), [9, 3]); assert.deepEqual(F.recsMoved(r, 0, -1).items.map((x) => x.s), [3, 9], 'the top stays the top');
+  assert.deepEqual(F.recsWith(r, 'ficabc', 3, true).items.map((x) => x.s), [9], 'taken off');
+  let full = {}; for (let i = 1; i <= 30; i++) full = F.recsWith(full, 'ficx', i);
+  assert.equal(full.items.length, F.RECS_LIMITS.items, 'never more than 25');
+  assert.deepEqual(F.cleanRecs({ items: [{ f: 'fic x', s: 1 }, { f: 'ficx', s: 0 }, { f: 'ficx', s: 'a' }] }).items, [], 'a code or number that cannot be a story is dropped');
+  for (const bad of ['', '#room=abc', '#recs=!!', '#recs=e30', '#recs=' + Buffer.from('not json').toString('base64url')]) assert.equal(F.readRecs(bad), null, bad);
+});
