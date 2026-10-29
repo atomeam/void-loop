@@ -509,6 +509,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T02:50:53Z",
+   "subject": "Incident: the browser suite failed on df95fa08 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T02:50:34Z",
+   "subject": "Versus: heycolor.com is held, not beaten (owner: it is not better than the site); a floor can carry the owner's hold, which no gate row…"
+  },
+  {
+   "at": "2026-10-29T02:46:52Z",
+   "subject": "Tower gate: sports: thesportsdb.com,sports: besoccer.com,sports: int.soccerway.com measured against their live sites"
+  },
+  {
    "at": "2026-10-29T02:46:20Z",
    "subject": "Coder: GitHub Models as a second free provider (the workflow token, models: read); Workers AI answered 401 on the first live job"
   },
@@ -571,18 +583,6 @@
   {
    "at": "2026-10-29T01:58:44Z",
    "subject": "Tower gate: calculator,unit converter: convertlive.com,unit converter: convertunits.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T01:52:46Z",
-   "subject": "Adopt the advice skill into a family and regenerate"
-  },
-  {
-   "at": "2026-10-29T01:42:11Z",
-   "subject": "Regenerate the generated files after merging main into the conductor"
-  },
-  {
-   "at": "2026-10-29T01:19:06Z",
-   "subject": "Incident: the browser suite failed on 56c92eef (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

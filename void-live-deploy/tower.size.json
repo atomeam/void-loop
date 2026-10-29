@@ -10,15 +10,6 @@
    "weight": 978530,
    "at": "2026-10-29"
   },
-  "2chan.net": {
-   "bytes": 982,
-   "scripts": 1,
-   "styles": 0,
-   "nodes": 16,
-   "routes": 0,
-   "weight": 3142,
-   "at": "2026-10-29"
-  },
   "365scores.com": {
    "bytes": 71056,
    "scripts": 28,
@@ -701,15 +692,6 @@
    "weight": 631118,
    "at": "2026-10-29"
   },
-  "counterscope.ae": {
-   "bytes": 728,
-   "scripts": 0,
-   "styles": 1,
-   "nodes": 11,
-   "routes": 0,
-   "weight": 838,
-   "at": "2026-10-29"
-  },
   "cozi.com": {
    "bytes": 452051,
    "scripts": 41,
@@ -932,15 +914,6 @@
    "nodes": 432,
    "routes": 651,
    "weight": 556956,
-   "at": "2026-10-29"
-  },
-  "emojicombos.com": {
-   "bytes": 5480,
-   "scripts": 4,
-   "styles": 2,
-   "nodes": 39,
-   "routes": 4,
-   "weight": 15870,
    "at": "2026-10-29"
   },
   "emojigraph.org": {
@@ -1547,15 +1520,6 @@
   },
   "keydifferences.com": {
    "refused": true,
-   "at": "2026-10-29"
-  },
-  "khanacademy.org": {
-   "bytes": 3038,
-   "scripts": 1,
-   "styles": 2,
-   "nodes": 17,
-   "routes": 0,
-   "weight": 5208,
    "at": "2026-10-29"
   },
   "kingdraw.cn": {
@@ -2523,15 +2487,6 @@
    "nodes": 210,
    "routes": 2,
    "weight": 300516,
-   "at": "2026-10-29"
-  },
-  "sushigirl.us": {
-   "bytes": 6393,
-   "scripts": 4,
-   "styles": 1,
-   "nodes": 104,
-   "routes": 0,
-   "weight": 15433,
    "at": "2026-10-29"
   },
   "sycophanthex.com": {

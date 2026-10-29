@@ -32,6 +32,12 @@ test('planSizes reads the unmeasured first, keeps fresh rows, and never opens a 
   assert.equal(planSizes({ sites, file, now, max: 1 }).length, 1);
 });
 
+test('an offline notice, an error page or a page with nothing to use is not weighed (counterscope.ae was 728 bytes of "is offline")', () => {
+  const pad = '<p>' + 'a tool that does a job. '.repeat(16) + '</p>';
+  assert.equal(usable('<html><body><h1>Counterscope is offline.</h1>' + pad + '<script></script></body></html>'), false, 'an offline notice');
+  assert.equal(usable('<html><body>' + pad + '</body></html>'), false, 'text and nothing to use');
+  assert.equal(usable('<html><body>' + pad + '<form><input></form></body></html>'), true, 'a working tool');
+});
 test('an empty reply or a bot wall is not weighed, so it can never stand as the lightest site', () => {
-  assert.equal(usable(''), false); assert.equal(usable('<html></html>'), false); assert.equal(usable('<html><body>' + '<p>x</p>'.repeat(60) + '</body></html>'), true);
+  assert.equal(usable(''), false); assert.equal(usable('<html></html>'), false); assert.equal(usable('<html><body><p>' + 'a real tool page. '.repeat(15) + '</p><button>go</button></body></html>'), true);
 });

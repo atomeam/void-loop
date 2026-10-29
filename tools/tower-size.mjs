@@ -21,8 +21,13 @@ export function planSizes({ sites, file = {}, now = Date.now(), max = 120 }) {
   return sites.filter((s) => s.host && !noRivalUrl('https://' + s.host + '/')).map((s) => ({ s, d: due(s) })).filter((x) => x.d !== null).sort((a, b) => a.d - b.d).slice(0, max).map((x) => x.s);
 }
 const get = async (url, max = 3e6) => { const r = await fetch(url, { headers: { 'user-agent': UA, accept: '*/*' }, redirect: 'follow', signal: AbortSignal.timeout(12000) }); const buf = Buffer.from(await r.arrayBuffer()).subarray(0, max); return { ok: r.ok, status: r.status, buf, type: r.headers.get('content-type') || '', url: r.url }; };
-/** a page worth weighing: real html with a body, not an empty reply or a few bytes of wall. Pure. */
-export const usable = (html) => String(html).length >= 300 && /<(body|div|p|main|h1)\b/i.test(String(html));
+/** a page worth weighing: a working site, not an empty reply, a bot wall, an error, an "offline" or "coming soon" notice or a parked domain. It needs real
+ *  visible text (at least 120 characters) and something to use (a form, input, button, select, canvas or script). Pure. */
+export const STUB_RE = /\b(is offline|currently offline|temporarily unavailable|service unavailable|coming soon|under construction|under maintenance|be right back|domain (?:is )?for sale|buy this domain|parked|default web page|welcome to nginx|it works!|access denied|just a moment|enable javascript|attention required|403 forbidden|404 not found|page not found)\b/i;
+export function usable(html) {
+  const t = String(html), text = t.replace(/<(script|style|noscript)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+  return t.length >= 300 && text.length >= 120 && !STUB_RE.test(text.slice(0, 600)) && /<(form|input|button|select|textarea|canvas|script)\b/i.test(t);
+}
 /** read one site: its home page and what it loads. Returns a row or null (refused, unreachable). */
 export async function readSite(host) {
   const base = 'https://' + host + '/';
