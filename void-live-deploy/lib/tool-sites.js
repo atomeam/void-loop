@@ -68,7 +68,15 @@ import { JOB_SITES } from './job-sites.js'; // the jobs floor's pages (owner, 20
 export { JOB_SITES };
 import { SELF_SITES } from './self-sites.js'; // the pages Verse built by itself for the sites it took on (tools/tower-self.mjs)
 export { SELF_SITES };
-export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES, ...JOB_SITES, ...SELF_SITES]);
+export const CALCULATOR_SITES = Object.freeze([
+  { path: '/calculator/', card: 'calculators', lane: 'calculator', name: 'Online Calculator', h1: 'Online Calculator', tools: ['scientific', 'bmi', 'darts', 'unit'],
+    intro: 'A multi-purpose collection of calculators: scientific, BMI, darts, and unit converters. Everything runs on this device: your files are never uploaded, there is no account, and the tools work offline after one visit.',
+    does: 'Scientific, BMI, darts, and unit calculators. Everything runs on your device: nothing is uploaded, no account, works offline.',
+    asks: ['online calculator', 'scientific calculator', 'bmi calculator', 'darts calculator', 'unit converter'],
+    links: [] },
+]);
+
+export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES, ...JOB_SITES, ...SELF_SITES, ...CALCULATOR_SITES]);
 
 // ---- the asks that reach these pages (skills/pdf-tools.js, skills/kanban-board.js and the ask bar in lib/toolkit.js read them) ----
 const T = String.raw`(?:pdfs?|\.pdf)`, THE = String.raw`(?:(?:a|an|my|the|this|these|some|two|several|multiple|a few)\s+)*`;
