@@ -306,6 +306,63 @@ export const inPartOrder = (list) => (list || []).map((t, i) => [t, i]).sort((x,
 /** one story picked at random from the list, or null for an empty list. rand is Math.random by default, so a test can fix it. Pure apart from rand. */
 export const randomOf = (list, rand = Math.random) => (list && list.length ? list[Math.min(list.length - 1, Math.floor(rand() * list.length))] : null);
 
+// writing challenges (sycophanthex.com runs writing contests): a challenge is a thread in a fandom whose first post opens "Writing challenge", then
+// "Closes: YYYY-MM-DD" when it has a last day, then the prompt. A story answers it with a reply in the challenge's thread, "Entry: <fandom>/<story>",
+// signed with the story's own mark, so only a story's writer can enter it; an entry posted after the last day does not count. A challenge is not
+// a story: the archive keeps challenge threads off its story lists.
+export const CHALLENGE_LIMITS = Object.freeze({ title: 100, prompt: 2000 });
+const CHALLENGE_RE = /^Writing challenge(?:\n|[ ]|$)(?:Closes: (\d{4}-\d{2}-\d{2})(?:\n|[ ]|$))?\n?/;
+const isDay = (s) => /^\d{4}-\d{2}-\d{2}$/.test(String(s || '')) && !isNaN(Date.parse(s + 'T00:00:00Z')) && new Date(s + 'T00:00:00Z').toISOString().slice(0, 10) === s;
+/** a challenge's first post: its marker line, its last day when it has one (a real YYYY-MM-DD), a blank line, the prompt. Pure. */
+export const challengeBody = (prompt, closes = '') => 'Writing challenge\n' + (isDay(closes) ? 'Closes: ' + closes + '\n' : '') + '\n' + String(prompt == null ? '' : prompt).trim().slice(0, CHALLENGE_LIMITS.prompt);
+/** { closes, prompt } from a challenge's first post, whole or as a catalog's one-line excerpt; null for any other post. Pure. */
+export function readChallenge(body) {
+  const b = String(body == null ? '' : body), m = CHALLENGE_RE.exec(b);
+  if (!m) return null;
+  return { closes: m[1] && isDay(m[1]) ? m[1] : '', prompt: b.slice(m[0].length).trim() };
+}
+/** open until the end of its last day on this device's calendar, or always when it has none. Pure apart from now. */
+export const challengeOpen = (c, now = Date.now()) => !c || !c.closes || dayOf(now) <= c.closes;
+/** a challenge row for the archive's list, from a thread in a board's catalog; null when the thread is not a challenge. Pure. */
+export function challengeOf(t, board) {
+  const c = readChallenge(t && t.body); if (!c) return null;
+  return { board: board.code, fandom: board.title, nsfw: !!board.nsfw, no: t.no, title: t.sub || excerpt(c.prompt, 60) || 'Untitled challenge', author: t.name || 'Anonymous',
+    trip: t.trip || '', prompt: excerpt(c.prompt, 160), closes: c.closes, replies: t.replies || 0, at: t.at || 0, bumped: t.bumped || t.at || 0, locked: !!t.locked };
+}
+/** the reply that enters a story in a challenge. Pure. */
+export const entryBody = (board, no) => 'Entry: ' + board + '/' + no;
+const ENTRY_RE = /^Entry: ([a-z0-9]{1,16})\/(\d{1,9})$/;
+/** { board, no } from an entry reply, else null. Pure. */
+export function readEntry(body) { const m = ENTRY_RE.exec(String(body == null ? '' : body).trim()); return m ? { board: m[1], no: +m[2] } : null; }
+/** a challenge's entries: from the replies in its thread, each story once, in the order entered, only when the reply carries the story's own mark
+ *  and went up by the challenge's last day; each is the story's topic with entered (the reply's time). topics are the archive's stories. Pure. */
+export function entriesOf(posts, topics, closes = '') {
+  const by = new Map((topics || []).map((t) => [t.board + '/' + t.no, t])), seen = new Set(), out = [];
+  for (const p of posts || []) {
+    const e = p && !p.hidden && readEntry(p.body); if (!e) continue;
+    const k = e.board + '/' + e.no, t = by.get(k);
+    if (!t || seen.has(k) || !t.trip || p.trip !== t.trip || (closes && dayOf(p.at || 0) > closes)) continue;
+    seen.add(k); out.push({ ...t, entered: p.at || 0 });
+  }
+  return out;
+}
+/** the reply that names a challenge's winner. Pure. */
+export const winnerBody = (board, no) => 'Winner: ' + board + '/' + no;
+const WINNER_RE = /^Winner: ([a-z0-9]{1,16})\/(\d{1,9})$/;
+/** a challenge's winners, first place first: replies that name an entry, signed with the mark of the one who set the challenge (a challenge set
+ *  with no mark has no winners), posted after its last day when it has one; each entry once, at most 3. entries are entriesOf's. Pure. */
+export function winnersOf(posts, entries, setterTrip, closes = '') {
+  if (!setterTrip) return [];
+  const by = new Map((entries || []).map((t) => [t.board + '/' + t.no, t])), out = [];
+  for (const p of posts || []) {
+    const m = p && !p.hidden && p.trip === setterTrip && WINNER_RE.exec(String(p.body || '').trim()); if (!m) continue;
+    const t = by.get(m[1] + '/' + m[2]);
+    if (!t || out.includes(t) || (closes && dayOf(p.at || 0) <= closes)) continue;
+    out.push(t); if (out.length === 3) break;
+  }
+  return out;
+}
+
 /** the stories a later chapter finished, from the boards' search for "status complete" (posts with board, thread, trip, body): a hit counts only
  *  when it is a chapter's first post that says it ends the story, in that story's thread, signed with the story's own mark. Returns the topics
  *  with status 'Complete' where a hit finished them; the rest unchanged. Pure. */

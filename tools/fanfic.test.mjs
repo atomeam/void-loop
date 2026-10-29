@@ -381,3 +381,45 @@ test('a rec list keeps up to 25 stories once each, in the reader\'s order, and i
   assert.deepEqual(F.cleanRecs({ items: [{ f: 'fic x', s: 1 }, { f: 'ficx', s: 0 }, { f: 'ficx', s: 'a' }] }).items, [], 'a code or number that cannot be a story is dropped');
   for (const bad of ['', '#room=abc', '#recs=!!', '#recs=e30', '#recs=' + Buffer.from('not json').toString('base64url')]) assert.equal(F.readRecs(bad), null, bad);
 });
+
+test('a writing challenge: a prompt and a last day, read back whole or from the catalog excerpt; entries are signed by each story\'s writer, winners by the one who set it', () => {
+  const body = F.challengeBody('  Write a ghost story in 500 words.\n\nNo crossovers.  ', '2026-11-30');
+  assert.equal(body, 'Writing challenge\nCloses: 2026-11-30\n\nWrite a ghost story in 500 words.\n\nNo crossovers.');
+  assert.deepEqual(F.readChallenge(body), { closes: '2026-11-30', prompt: 'Write a ghost story in 500 words.\n\nNo crossovers.' });
+  assert.deepEqual(F.readChallenge(body.replace(/\s+/g, ' ')), { closes: '2026-11-30', prompt: 'Write a ghost story in 500 words. No crossovers.' }, 'the one-line catalog excerpt reads the same');
+  assert.deepEqual(F.readChallenge(F.challengeBody('Any length', '2026-02-30')), { closes: '', prompt: 'Any length' }, 'a day that is not on the calendar is no last day');
+  for (const not of ['', 'Summary: Writing challenge', 'Writing challenges are fun', 'Entry: ficx/1']) assert.equal(F.readChallenge(not), null, not);
+  const at = (day) => new Date(day + 'T12:00:00').getTime();
+  assert.ok(F.challengeOpen({ closes: '2026-11-30' }, at('2026-11-30')) && !F.challengeOpen({ closes: '2026-11-30' }, at('2026-12-01')) && F.challengeOpen({ closes: '' }, at('2099-01-01')));
+  const row = F.challengeOf({ no: 7, sub: 'Ghosts', body: body.replace(/\s+/g, ' '), name: 'Host', trip: 'hh', replies: 3, at: 5 }, { code: 'ficx', title: 'X' });
+  assert.deepEqual([row.board, row.no, row.title, row.author, row.trip, row.closes, row.replies], ['ficx', 7, 'Ghosts', 'Host', 'hh', '2026-11-30', 3]);
+  assert.equal(F.challengeOf({ no: 8, body: 'Summary: a story' }, { code: 'ficx', title: 'X' }), null, 'a story is not a challenge');
+
+  const topics = [{ board: 'ficx', no: 1, trip: 'aa', title: 'One' }, { board: 'ficx', no: 2, trip: 'bb', title: 'Two' }, { board: 'ficy', no: 3, trip: '', title: 'Unsigned' }];
+  assert.equal(F.entryBody('ficx', 1), 'Entry: ficx/1'); assert.deepEqual(F.readEntry(' Entry: ficx/1 '), { board: 'ficx', no: 1 }); assert.equal(F.readEntry('Entry: ficx/1 please'), null);
+  const posts = [
+    { body: 'Entry: ficx/1', trip: 'aa', at: at('2026-11-10') },
+    { body: 'Entry: ficx/2', trip: 'aa', at: at('2026-11-11') },    // not the writer of story 2: does not count
+    { body: 'Entry: ficx/1', trip: 'aa', at: at('2026-11-12') },    // the same story twice: once
+    { body: 'Entry: ficy/3', trip: '', at: at('2026-11-12') },      // a story with no mark cannot be entered
+    { body: 'Entry: ficx/9', trip: 'aa', at: at('2026-11-12') },    // no such story
+    { body: 'Entry: ficx/2', trip: 'bb', at: at('2026-11-30') },    // the last day counts
+    { body: 'Entry: ficx/2', trip: 'bb', at: at('2026-12-01'), hidden: true },
+  ];
+  const entries = F.entriesOf(posts, topics, '2026-11-30');
+  assert.deepEqual(entries.map((t) => [t.no, t.entered]), [[1, at('2026-11-10')], [2, at('2026-11-30')]]);
+  assert.deepEqual(F.entriesOf([{ body: 'Entry: ficx/2', trip: 'bb', at: at('2026-12-01') }], topics, '2026-11-30'), [], 'an entry after the last day does not count');
+  assert.deepEqual(F.entriesOf([{ body: 'Entry: ficx/2', trip: 'bb', at: at('2030-01-01') }], topics, '').map((t) => t.no), [2], 'no last day: always open');
+
+  assert.equal(F.winnerBody('ficx', 2), 'Winner: ficx/2');
+  const picks = [
+    { body: 'Winner: ficx/2', trip: 'hh', at: at('2026-11-30') },   // before the challenge closed: does not count
+    { body: 'Winner: ficx/2', trip: 'aa', at: at('2026-12-02') },   // not the one who set it
+    { body: 'Winner: ficx/2', trip: 'hh', at: at('2026-12-02') },
+    { body: 'Winner: ficx/2', trip: 'hh', at: at('2026-12-03') },   // once
+    { body: 'Winner: ficy/3', trip: 'hh', at: at('2026-12-03') },   // not an entry
+    { body: 'Winner: ficx/1', trip: 'hh', at: at('2026-12-03') },
+  ];
+  assert.deepEqual(F.winnersOf(picks, entries, 'hh', '2026-11-30').map((t) => t.no), [2, 1], 'first place first');
+  assert.deepEqual(F.winnersOf(picks, entries, '', '2026-11-30'), [], 'a challenge set with no mark has no winners');
+});
