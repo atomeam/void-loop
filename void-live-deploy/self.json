@@ -537,13 +537,29 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T15:21:37Z",
+   "subject": "Merge Verse: the board takes the room above the ask bar, so New game is never under it"
+  },
+  {
+   "at": "2026-10-29T15:20:39Z",
+   "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
+  },
+  {
+   "at": "2026-10-29T15:19:19Z",
+   "subject": "Versus queue: fewest controls first, then the fewer bytes"
+  },
+  {
+   "at": "2026-10-29T15:18:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T15:17:06Z",
    "subject": "Regenerate the generated files after the merge"
@@ -606,22 +622,6 @@
   },
   {
    "at": "2026-10-29T15:09:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:08:57Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T15:08:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:28Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
