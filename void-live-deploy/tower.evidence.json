@@ -17337,60 +17337,61 @@
   },
   "travel: airmilescalculator.com": {
    "reliability": {
-    "verdict": "better",
+    "verdict": "incomplete",
+    "incomplete": true,
     "verse": 3,
-    "best": 0,
-    "evidence": "Verse (/flights/distance/) 3 of 3 loads answered vs airmilescalculator.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-28T13:16:44.133Z"
+    "best": null,
+    "evidence": "Verse (/flights/distance/) 3 of 3 loads answered; airmilescalculator.com turned the gate away or did not answer, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
+    "at": "2026-10-29T03:09:05.638Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 132,
+    "verse": 175,
     "best": 200,
-    "evidence": "Verse (/flights/distance/) 132 ms to the load event (median of 3, phone width) vs the bar (airmilescalculator.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:16:44.133Z"
+    "evidence": "Verse (/flights/distance/) 175 ms to the load event (median of 3, phone width) vs the bar (airmilescalculator.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:09:05.638Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/distance/) 0 px sideways overflow at 390 px vs the bar (airmilescalculator.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:16:44.133Z"
+    "at": "2026-10-29T03:09:05.638Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/distance/) 0 unnamed controls or images vs the bar (airmilescalculator.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-28T13:16:44.133Z"
+    "at": "2026-10-29T03:09:05.638Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/distance/) 1 (1: the page shows itself again with the network cut) vs the bar (airmilescalculator.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:16:44.133Z"
+    "at": "2026-10-29T03:09:05.638Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/distance/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (airmilescalculator.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:16:44.133Z"
+    "at": "2026-10-29T03:09:05.638Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/distance/) 0 design defects vs the bar (airmilescalculator.com unreachable) 0 design defects",
-    "at": "2026-10-28T13:16:44.133Z"
+    "at": "2026-10-29T03:09:05.638Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/distance/) 4 of 4 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-28T13:16:44.133Z",
+    "at": "2026-10-29T03:09:05.638Z",
     "of": 4
    },
    "completeness": {
@@ -17398,7 +17399,7 @@
     "verse": 13,
     "best": 13,
     "evidence": "Verse (/flights/distance/) 13 of 13 things a full answer shows vs the bar (airmilescalculator.com unreachable) 13 of 13 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-28T13:16:44.133Z",
+    "at": "2026-10-29T03:09:05.638Z",
     "of": 13
    },
    "distance in miles and km": {
@@ -17406,7 +17407,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/distance/) 3 of 3 shown vs the bar (airmilescalculator.com unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:44.133Z",
+    "at": "2026-10-29T03:09:05.638Z",
     "of": 3,
     "part": true
    },
@@ -17415,7 +17416,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/distance/) 1 of 1 shown vs the bar (airmilescalculator.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:44.133Z",
+    "at": "2026-10-29T03:09:05.638Z",
     "of": 1,
     "part": true
    },
@@ -17424,7 +17425,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/distance/) 1 of 1 shown vs the bar (airmilescalculator.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:44.133Z",
+    "at": "2026-10-29T03:09:05.638Z",
     "of": 1,
     "part": true
    },
@@ -17433,7 +17434,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/distance/) 1 of 1 shown vs the bar (airmilescalculator.com unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:44.133Z",
+    "at": "2026-10-29T03:09:05.638Z",
     "of": 1,
     "part": true
    },
@@ -17442,67 +17443,75 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/distance/) 2 of 2 shown vs the bar (airmilescalculator.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:44.133Z",
+    "at": "2026-10-29T03:09:05.638Z",
     "of": 2,
     "part": true
+   },
+   "wider use": {
+    "verdict": "worse",
+    "verse": 8.5,
+    "best": 11,
+    "evidence": "Verse (/flights/distance/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (airmilescalculator.com unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T03:09:05.638Z"
    }
   },
   "travel: gcmap.com": {
    "reliability": {
-    "verdict": "better",
+    "verdict": "incomplete",
+    "incomplete": true,
     "verse": 3,
-    "best": 0,
-    "evidence": "Verse (/flights/map/) 3 of 3 loads answered vs gcmap.com 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-28T13:16:13.256Z"
+    "best": null,
+    "evidence": "Verse (/flights/map/) 3 of 3 loads answered; gcmap.com turned the gate away or did not answer, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
+    "at": "2026-10-29T03:09:49.158Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 140,
+    "verse": 145,
     "best": 200,
-    "evidence": "Verse (/flights/map/) 140 ms to the load event (median of 3, phone width) vs the bar (gcmap.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:16:13.256Z"
+    "evidence": "Verse (/flights/map/) 145 ms to the load event (median of 3, phone width) vs the bar (gcmap.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:09:49.158Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/map/) 0 px sideways overflow at 390 px vs the bar (gcmap.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:16:13.256Z"
+    "at": "2026-10-29T03:09:49.158Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/map/) 0 unnamed controls or images vs the bar (gcmap.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-28T13:16:13.256Z"
+    "at": "2026-10-29T03:09:49.158Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/map/) 1 (1: the page shows itself again with the network cut) vs the bar (gcmap.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:16:13.256Z"
+    "at": "2026-10-29T03:09:49.158Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/map/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (gcmap.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:16:13.256Z"
+    "at": "2026-10-29T03:09:49.158Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/map/) 0 design defects vs the bar (gcmap.com unreachable) 0 design defects",
-    "at": "2026-10-28T13:16:13.256Z"
+    "at": "2026-10-29T03:09:49.158Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/map/) 4 of 4 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-28T13:16:13.256Z",
+    "at": "2026-10-29T03:09:49.158Z",
     "of": 4
    },
    "completeness": {
@@ -17510,7 +17519,7 @@
     "verse": 10,
     "best": 10,
     "evidence": "Verse (/flights/map/) 10 of 10 things a full answer shows vs the bar (gcmap.com unreachable) 10 of 10 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-28T13:16:13.256Z",
+    "at": "2026-10-29T03:09:49.158Z",
     "of": 10
    },
    "route map": {
@@ -17518,7 +17527,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/map/) 2 of 2 shown vs the bar (gcmap.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:13.256Z",
+    "at": "2026-10-29T03:09:49.158Z",
     "of": 2,
     "part": true
    },
@@ -17527,7 +17536,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/map/) 2 of 2 shown vs the bar (gcmap.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:13.256Z",
+    "at": "2026-10-29T03:09:49.158Z",
     "of": 2,
     "part": true
    },
@@ -17536,7 +17545,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/map/) 3 of 3 shown vs the bar (gcmap.com unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:13.256Z",
+    "at": "2026-10-29T03:09:49.158Z",
     "of": 3,
     "part": true
    },
@@ -17545,9 +17554,16 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/map/) 2 of 2 shown vs the bar (gcmap.com unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:16:13.256Z",
+    "at": "2026-10-29T03:09:49.158Z",
     "of": 2,
     "part": true
+   },
+   "wider use": {
+    "verdict": "worse",
+    "verse": 9,
+    "best": 11,
+    "evidence": "Verse (/flights/map/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (gcmap.com unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T03:09:49.158Z"
    }
   },
   "travel: co2.myclimate.org": {
@@ -19820,10 +19836,10 @@
   "nameunit": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 134,
-    "best": 206,
-    "evidence": "Verse (/hosting/) 134 ms to the load event (median of 3, phone width) vs nameunit.com 206 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-29T03:04:37.539Z",
+    "verse": 173,
+    "best": 223,
+    "evidence": "Verse (/hosting/) 173 ms to the load event (median of 3, phone width) vs nameunit.com 223 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    },
    "reliability": {
@@ -19831,7 +19847,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 loads answered vs nameunit.com 3 of 3 loads answered",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    },
    "mobile": {
@@ -19839,7 +19855,7 @@
     "verse": 0,
     "best": 176,
     "evidence": "Verse (/hosting/) 0 px sideways overflow at 390 px vs nameunit.com 176 px sideways overflow at 390 px",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    },
    "accessibility": {
@@ -19847,7 +19863,7 @@
     "verse": 0,
     "best": 43,
     "evidence": "Verse (/hosting/) 0 unnamed controls or images vs nameunit.com 43 unnamed controls or images",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    },
    "offline": {
@@ -19855,7 +19871,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/hosting/) 1 (1: the page shows itself again with the network cut) vs nameunit.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    },
    "sharing": {
@@ -19863,7 +19879,7 @@
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/hosting/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs nameunit.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    },
    "accuracy": {
@@ -19871,7 +19887,7 @@
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/hosting/) 8 of 8 right against the worked-out answer; judged against the standard, not nameunit.com (the site is not asked)",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "of": 8
    },
    "design polish": {
@@ -19879,7 +19895,7 @@
     "verse": 0,
     "best": 18,
     "evidence": "Verse (/hosting/) 0 design defects vs nameunit.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), nameunit.com (0 low-contrast texts, 18 small tap targets, layout shift 0.03)",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    },
    "domain search": {
@@ -19887,7 +19903,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "of": 4,
     "part": true
    },
@@ -19896,7 +19912,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "of": 4,
     "part": true
    },
@@ -19905,7 +19921,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "of": 4,
     "part": true
    },
@@ -19914,7 +19930,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "of": 3,
     "part": true
    },
@@ -19923,7 +19939,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "of": 3,
     "part": true
    },
@@ -19932,7 +19948,7 @@
     "verse": 19,
     "best": 2,
     "evidence": "Verse (/hosting/) 19 of 19 things a full answer shows vs nameunit.com 2 of 19 things a full answer shows (Verse lacks: none; site lacks: domain search, tiered plans, labelled as the rival's, Small, Medium, Large, bandwidth, monthly transfer, vCPUs, memory, SLA, NGINX, Caddy, TLS 1.3, no account, works offline, back to Verse, Name unit - Support / Kundeservice)",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "of": 19,
     "siteRead": true
    },
@@ -19941,7 +19957,7 @@
     "verse": 8,
     "best": 3,
     "evidence": "Verse (/hosting/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs nameunit.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-29T03:04:37.539Z",
+    "at": "2026-10-29T03:08:03.019Z",
     "siteRead": true
    }
   },
