@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T20:18:28Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -555,6 +555,14 @@
   {
    "at": "2026-10-29T15:53:25Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:53:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:52:36Z",
+   "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
   },
   {
    "at": "2026-10-29T15:48:51Z",
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T15:29:47Z",
    "subject": "Name the membership Multiverse: a Verse of your own (owner: something better than Paid Verse)"
-  },
-  {
-   "at": "2026-10-29T15:29:16Z",
-   "subject": "STL design doc: name held files by their branch so doc drift stays clean"
-  },
-  {
-   "at": "2026-10-29T15:28:08Z",
-   "subject": "Tower size: how heavy each Versus site really is"
   }
  ],
  "builders": {
