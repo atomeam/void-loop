@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 6,
-  "checked": 18,
-  "proven": 349
+  "checked": 16,
+  "proven": 351
  },
  "families": [
   {
@@ -434,7 +434,7 @@
     {
      "name": "agent-fluid-memory-orbs",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -566,8 +566,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 3,
-    "proven": 31
+    "checked": 2,
+    "proven": 32
    },
    "skills": [
     {
@@ -853,10 +853,12 @@
     },
     {
      "name": "random",
-     "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 4 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "shuffle",
@@ -1579,8 +1581,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 4,
-    "proven": 37
+    "checked": 3,
+    "proven": 38
    },
    "sources": {
     "read": 24,
@@ -2211,8 +2213,8 @@
     },
     {
      "name": "ascii",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,

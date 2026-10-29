@@ -554,8 +554,8 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T16:43:35Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-29T16:43:02Z",
+   "subject": "Better at random, agent fluid memory orbs and ascii: 6 more ways of asking answered right — new phrases: “2d6” now opens random; “3d8” now…"
   },
   {
    "at": "2026-10-29T16:41:15Z",
@@ -574,10 +574,6 @@
    "subject": "converter: assimilate onlineconverter.com as /converter/"
   },
   {
-   "at": "2026-10-29T16:32:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-29T16:31:30Z",
    "subject": "Keep every proven skill's flavor line unique once the lore runs out; regenerate parity and hand-off gaps"
   },
@@ -587,10 +583,6 @@
   },
   {
    "at": "2026-10-29T16:28:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:27:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -628,6 +620,14 @@
   {
    "at": "2026-10-29T16:19:47Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:19:33Z",
+   "subject": "Keep the reply section last on cards that order their own parts"
+  },
+  {
+   "at": "2026-10-29T16:19:07Z",
+   "subject": "chore(rap): self.json as main has it"
   }
  ],
  "builders": {
