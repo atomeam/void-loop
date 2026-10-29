@@ -200,3 +200,7 @@ test('with the size data the target is the easiest site: a small one before a gi
   assert.deepEqual([sizeTier(null), sizeTier(150000), sizeTier(50000), sizeTier(5000), sizeTier(500)], [0, 0, 1, 2, 3]);
   assert.match(easeLine(cur), /aspects left to pass/);
 });
+test('a floor the owner holds is never beaten, whatever the gate rows say (owner, 2026-10-29: heycolor.com "its not better than the site so its not beaten")', () => {
+  const f = FLOORS.find((x) => x.id === 'paint'), t = tower([], { paint: passingRows(f) }), p = t.floors.find((x) => x.id === 'paint');
+  assert.equal(p.n, p.m, 'every row reads a win'); assert.equal(p.beaten, false); assert.notEqual(p.state, 'beaten'); assert.match(easeLine(p), /^held, not beaten: owner, 2026-10-29/);
+});

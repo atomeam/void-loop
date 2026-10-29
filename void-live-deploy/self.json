@@ -509,6 +509,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T02:46:20Z",
+   "subject": "Coder: GitHub Models as a second free provider (the workflow token, models: read); Workers AI answered 401 on the first live job"
+  },
+  {
+   "at": "2026-10-29T02:45:34Z",
+   "subject": "Incident: the browser suite failed on aacf6223 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T02:45:13Z",
+   "subject": "Tower size: an empty or walled reply is never weighed (it ranked espn.com and amazon.com lightest), and scripts from any origin count"
+  },
+  {
    "at": "2026-10-29T02:42:49Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
@@ -571,18 +583,6 @@
   {
    "at": "2026-10-29T01:19:06Z",
    "subject": "Incident: the browser suite failed on 56c92eef (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T01:04:38Z",
-   "subject": "Verse fixes its baseconv skill: learn to handle \"what is 1010 in decimal\""
-  },
-  {
-   "at": "2026-10-29T00:24:47Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-10-29T00:22:18Z",
-   "subject": "Incident: the browser suite failed on 966dbc1c (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
