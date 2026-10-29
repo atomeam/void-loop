@@ -10,7 +10,7 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, familyFacts, readReplies, replyFacts, askId, targetFacts, holdAsks } from '../../lib/voice.js';
+import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, askRecord, familyFacts, readReplies, replyFacts, askId, targetFacts, holdAsks } from '../../lib/voice.js';
 import { tower, towerArgs } from '../../lib/tower.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
@@ -21,17 +21,15 @@ export async function onRequestGet({ request, env }) {
   // shows are the ones still open (an ask already built is not shown as wanted)
   const asset = async (path) => { try { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? await r.json() : null; } catch (_) { return null; } };
   const [ledger, answered, tg] = request && env.ASSETS ? await Promise.all([asset('/void.growth.json'), asset('/void.asks.json'), asset('/tower.target.json')]) : [null, null, null];
-  const f = ledger ? followThrough(entries, ledger, answered && answered.links) : null;
-  const built = new Set(f ? f.built.flatMap((g) => g.ids) : []);
-  // the all-time count (void.asks.json totals, from the whole voice log at deploy) when it is larger: the online window keeps 60 reflections, so its count shrank as old ones fell out
-  // the voice log's totals run to `through`; asks first made after it are counted on top, from this window
-  const T = f && answered && answered.totals && +answered.totals.asked > 0 && answered.totals.through ? answered.totals : null;
-  const newer = (g) => T && String(g.first || '') > String(T.through);
-  const follow = f ? { total: T ? +T.asked + f.built.concat(f.open || []).filter(newer).length : f.total, built: T ? +T.built + f.built.filter(newer).length : f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 30).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times, depth: g.depth || null })),
+  // one record of its asks (lib/voice.js askRecord): every ask not built is waiting, so "N waiting" and "built of total" always agree
+  const rec = ledger ? askRecord(entries, ledger, answered) : null, f = rec && rec.f;
+  const follow = rec ? { total: rec.total, built: rec.built, open: rec.open.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 30).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times, depth: g.depth || null })),
     // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Verse asked for (Verse's ask:
     // "link the growth card branches to the growth inbox so I can diagnose my own progress")
     asked: f.built.map((g) => ({ ask: g.ask, at: g.builtAt, times: g.times })).slice(0, 200) } : null;
-  return Response.json({ entries: entries.slice(0, 20).map((e, i) => (i < 2 || !e.given ? e : { ...e, given: undefined })), asks: holdAsks(currentAsks(entries, 12).filter((a) => !built.has(a.id)), answered && answered.held, tg && tg.id).slice(0, 6), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
+  // the asks still open, every one (the card folds past the first few); without the ledger, the newest reflections' asks as before
+  const open = rec ? rec.open : currentAsks(entries, 12);
+  return Response.json({ entries: entries.slice(0, 20).map((e, i) => (i < 2 || !e.given ? e : { ...e, given: undefined })), asks: holdAsks(open, answered && answered.held, tg && tg.id).slice(0, 40), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
 }
 
 export async function onRequestPost({ request, env }) {
@@ -51,7 +49,7 @@ export async function onRequestPost({ request, env }) {
   const asset = async (path) => { try { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? await r.json() : null; } catch (_) { return null; } };
   const ledger = await asset('/void.growth.json'), answered = await asset('/void.asks.json');
   if (kind === 'daily') { const week = weekFacts(ledger); if (week) pieces.push(['void.growth.json (the last 7 days)', week]); }
-  const follow = followFacts(followThrough(before, ledger, answered && answered.links)); if (follow) pieces.push(['void.growth.json and void.asks.json (what became of its asks)', follow]);
+  const follow = ledger ? followFacts(followThrough(before, ledger, answered && answered.links), askRecord(before, ledger, answered)) : ''; if (follow) pieces.push(['void.growth.json and void.asks.json (what became of its asks)', follow]);
   // the site Versus is fighting goes first, so the asks serve beating it (lib/voice.js targetFacts); no tower files leave it out
   try { const inv = await asset('/lap.items.json'); const [ev, fr, rk, sz, tg] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json'].map(asset));
     const tf = ev ? targetFacts(tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg })), tg) : '';
