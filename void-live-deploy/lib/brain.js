@@ -167,6 +167,7 @@ export function selfSays(b) {
   if (s.wants.length) out.push('Asked for: ' + s.wants.slice(0, 3).map((g) => g.word).join(', ') + '.');
   if (s.conflicts.length) { const c = s.conflicts[0]; out.push(c.organs.join(' and ') + ' disagree in region ' + (c.region + 1) + (c.slowed ? '; ' + c.slowed + ' slowed' : '') + '.'); }
   if (s.aligned) out.push('"' + s.aligned.word + '" is near "' + s.aligned.near + '" (' + s.aligned.from + ').');
+  if (b.senses.felt) out.push('Feels ' + b.senses.felt + ' memor' + (b.senses.felt === 1 ? 'y' : 'ies') + ' from other cards in the shared field.');
   out.push('Remembers ' + s.episodes + ' moment' + (s.episodes === 1 ? '' : 's') + ' and ' + s.procedures + ' winning genome' + (s.procedures === 1 ? '' : 's') + '.');
   if (s.starved) out.push('Under-used: ' + s.starved + '.');
   if (s.owner.top) out.push('Most of the workspace was last written by ' + s.owner.top + ' (' + Math.round(s.owner.share * 100) + '%).');

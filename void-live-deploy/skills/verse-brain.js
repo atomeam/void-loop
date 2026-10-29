@@ -19,6 +19,8 @@ import * as B from '../lib/brain.js';
 import { GW, GH, RG, RH, KIND, REGIONS_X, REGIONS_Y } from '../lib/brain-workspace.js';
 import { hostBrain } from '../lib/brain-bridge.js';
 import { loadKept, keep, forget } from '../lib/brain-store.js';
+import * as Field from '../lib/shared-field.js';
+import { feltFrom, linkBrain } from '../lib/brain-field.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
 const offs = new WeakMap(); // an offscreen GW x GH canvas per state, kept off the state (the stage saves its things)
@@ -26,8 +28,13 @@ function offFor(s) { let o = offs.get(s); if (!o) { o = Object.assign(document.c
 const SPECIES = ['#7fd8ff', '#ffb36b', '#b99bff'];
 
 function create(seed) { return { b: B.createBrain(seed, { phone: phone() }), level: 0, seed }; }
+// the shared field (lib/shared-field.js, also skills/field.js): one link per page; the brain feels other skills' slots and publishes its ideas
+let link = null; const fieldLink = () => link || (link = linkBrain(Field));
+const felt = new WeakMap(); // what the brain felt last tick, per state, for the drawing
 function step(s, dt, input) {
-  B.stepBrain(s.b, { x: input.x, y: input.y, over: input.over, down: input.down, tiltX: input.tiltX, tiltY: input.tiltY, sound: s.level });
+  const L = fieldLink(), f = feltFrom(Field, L.code); felt.set(s, f);
+  B.stepBrain(s.b, { x: input.x, y: input.y, over: input.over, down: input.down, tiltX: input.tiltX, tiltY: input.tiltY, sound: s.level, field: f });
+  Field.step(dt); if (s.b.ticks % 10 === 0) L.publish(s.b);
 }
 function metrics(s) { const m = s.b.metrics; return { entropy: m.entropy, activity: m.activity, consensus: m.order, cx: s.b.focus.x, cy: s.b.focus.y }; }
 
@@ -51,6 +58,9 @@ function draw(g, s, W, H) {
   // the attention spotlight
   const fx = b.focus.x * W, fy = b.focus.y * H; g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 1.5; g.setLineDash([4, 4]);
   g.beginPath(); g.arc(fx, fy, 26, 0, 6.2832); g.stroke(); g.setLineDash([]);
+  // what it feels from other skills in the shared field (a memory orb on another card, say): a soft ring where each sits
+  g.strokeStyle = 'rgba(255,170,230,.75)'; g.lineWidth = 1.2;
+  for (const p of felt.get(s) || []) { g.beginPath(); g.arc(p.x * W, p.y * H, 3 + 6 * p.act, 0, 6.2832); g.stroke(); }
   // the swarm
   for (const i of b.swarmIds) { g.fillStyle = SPECIES[N.kind[i]] || '#fff'; g.fillRect(N.x[i] * W - 1.2, N.y[i] * H - 1.2, 2.4, 2.4); }
   // the membrane
@@ -138,6 +148,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     el.dataset.utility = String(self.utility); el.dataset.gen = String(self.genome.gen); el.dataset.chosen = String(self.q); el.dataset.imagined = String(self.imagined);
     el.dataset.concepts = String(self.concepts); el.dataset.focus = String(b.focus.region); el.dataset.action = self.action; el.dataset.ticks = String(b.ticks);
     el.dataset.organs = String(B.ORGAN_IDS.length); el.dataset.episodes = String(self.episodes); el.dataset.procedures = String(self.procedures); el.dataset.wants = String(self.wants.length); el.dataset.conflicts = String(self.conflicts.length);
+    const fc = Field.census(); el.dataset.felt = String((felt.get(S()) || []).length); el.dataset.published = String(link ? link.held : 0); el.dataset.fieldOwners = Object.keys(fc.held).sort().join(',');
   };
 
   // words, from this card or from any other Verse page (the bridge)

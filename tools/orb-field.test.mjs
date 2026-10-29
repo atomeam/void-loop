@@ -27,9 +27,7 @@ function fakeField(N = 16, D = 8, { async = false, size = 'init' } = {}) {
 }
 const withOrbs = (seed = 3) => { const s = F.create(seed); s.d.fill(0); F.splat(s, 12, 18, 0, 0, 3, 2); F.splat(s, 36, 18, 0, 0, 3, 2); F.spawnOrbs(s); return s; }; // two peaks, two orbs
 
-test('no field: the real loader finds no skills/field.js and answers null, and the orbs seal and recall exactly as before', async () => {
-  assert.equal(await B.connectField(), null, 'skills/field.js is not in the repo yet');
-  assert.equal(await B.fieldLink(), null); assert.equal(await B.fieldLink(), null, 'the page asks once and keeps the answer');
+test('no field: a missing or broken field answers null, and the orbs seal and recall exactly as before', async () => {
   assert.equal(await B.connectField({ load: () => Promise.reject(new Error('404')) }), null);
   assert.equal(await B.connectField({ load: () => ({ init() {}, readRegion() {} }) }), null, 'a module without the whole API is not a field');
   assert.equal(await B.connectField({ load: () => ({ ...fakeField(), init: () => { throw new Error('no GPU, no fallback'); } }) }), null, 'a field that fails to start');
@@ -86,4 +84,14 @@ test('the bridge turns itself on: once skills/field.js serves the API, the defau
     const s = withOrbs(); await a.sync(s); assert.equal(a.held, s.orbs.length, 'and the live orbs go into it');
     assert.ok(await C.fieldLink(), 'the page link connects too');
   } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('the real field: skills/field.js (lib/shared-field.js) is found, the orbs take their own slots in it, and Verse Brain sees them', async () => {
+  const Shared = await import('../void-live-deploy/skills/field.js'); Shared.reset();
+  const a = await B.connectField(); assert.ok(a, 'the real loader finds skills/field.js');
+  const link = await B.fieldLink(); assert.ok(link, 'the page link connects'); assert.equal(await B.fieldLink(), link, 'the page asks once and keeps the answer');
+  const s = withOrbs(); await a.sync(s);
+  assert.equal(a.held, s.orbs.length); assert.equal(Shared.census().held['agent-fluid-memory-orbs'], s.orbs.length, 'the field names the orbs as the writer');
+  const sealed = await a.seal(s, s.orbs[0]); assert.match(sealed.genomeId, /^f[0-9a-f]{8}$/); assert.ok(Shared.sealed(sealed.genomeId), 'the field kept the sealed slice');
+  await a.close(); assert.equal(Shared.slots().length, 0, 'closing frees every slot');
 });

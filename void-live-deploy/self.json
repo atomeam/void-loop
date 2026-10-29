@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,40 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:10:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:10:26Z",
+   "subject": "shared-field: reset clears the writer names and the ready flag"
+  },
+  {
+   "at": "2026-10-29T06:08:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:08:49Z",
    "subject": "Memory orbs: hand an orb's colour to the colour page"
+  },
+  {
+   "at": "2026-10-29T06:07:44Z",
+   "subject": "Coder: think on Verse's own model (/api/coder), so queued jobs ship again"
+  },
+  {
+   "at": "2026-10-29T06:06:52Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:04:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:04:03Z",
+   "subject": "Verse shared field"
+  },
+  {
+   "at": "2026-10-29T06:03:54Z",
+   "subject": "Verse's shared field: skills/field.js, the memory orbs write into it, Verse Brain feels their slots and publishes its ideas as numbers"
   },
   {
    "at": "2026-10-29T05:59:55Z",
@@ -591,38 +623,6 @@
   {
    "at": "2026-10-29T05:48:04Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:47:55Z",
-   "subject": "Memory orbs: a bridge to the shared field, off until field.js lands"
-  },
-  {
-   "at": "2026-10-29T05:47:54Z",
-   "subject": "Verse Brain mind layers"
-  },
-  {
-   "at": "2026-10-29T05:47:51Z",
-   "subject": "Refresh generated files"
-  },
-  {
-   "at": "2026-10-29T05:46:45Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:46:36Z",
-   "subject": "Verse Brain mind layers: asks become goals, episodic and procedural memory, one valence, a monitor of organs that disagree, answers from…"
-  },
-  {
-   "at": "2026-10-29T05:45:17Z",
-   "subject": "Feed the churn caps to the will: churn.json from the deploy, sweep commits skipped"
-  },
-  {
-   "at": "2026-10-29T05:44:12Z",
-   "subject": "Watchdog runs the browser suite in four shards too: shard 1 ran out of the same 28-minute budget"
-  },
-  {
-   "at": "2026-10-29T05:44:02Z",
-   "subject": "Fix three shard 1 browser checks: tower poll stub, poster art, sticky on a phone"
   }
  ],
  "builders": {
