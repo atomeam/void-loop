@@ -1,0 +1,1 @@
+{"at":"2026-10-29T17:14:09Z","by":"claude","kind":"fix","what":"The Versus size job stops taking new sites after a 35-minute budget and gives each site at most 90 s, so a long run always saves what it measured before the job's 45-minute limit (an 850-site run had hit the limit and saved nothing)"}
