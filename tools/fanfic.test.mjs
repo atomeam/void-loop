@@ -307,6 +307,9 @@ test('the archive home features one story with why, never an 18+ or locked one, 
   assert.equal(featuredOf([{ no: 5, replies: 0, bumped: 1 }, { no: 6, replies: 0, bumped: 2 }]).t.no, 6, 'with no replies, the newest');
   const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8');
   assert.match(html, /<div class="glass feat" id="featured" aria-labelledby="featH" hidden>/, 'the panel starts hidden: an empty archive shows no empty panel');
+  // the story link gets its address with its title (app.js drawFeatured): a link with an address and no name is an unnamed control to a screen
+  // reader and to the tower gate's wider-use look (2026-10-29: the gate read 10.5 of 11 while it had one)
+  assert.match(html, /<a class="t" id="featLink" data-go translate="no"><\/a>/, 'the empty featured link has no address');
   const DE = await import('../void-live-deploy/lib/fanfic-de.js');
   for (const s of ['Featured story', 'Why it is featured:', 'The story with the most replies.', 'The complete story with the most replies (none have replies yet, so the newest).']) assert.notEqual(DE.de(s), s, 'German for ' + s);
 });
