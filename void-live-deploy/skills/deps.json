@@ -3440,6 +3440,7 @@
     "lib/honest.js",
     "lib/tower.js",
     "lib/lap.js",
+    "lib/churn.js",
     "lib/will-guard.js"
    ],
    "importedBy": []
@@ -4650,10 +4651,8 @@
   "lib/churn.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/will.js",
     "lib/will-guard.js"
-   ],
-   "reachedBy": [
-    "functions/api/will.js"
    ]
   },
   "lib/cite.js": {
