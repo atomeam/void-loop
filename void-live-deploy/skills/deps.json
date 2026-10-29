@@ -588,7 +588,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 10
+   "tests": 9
   },
   {
    "file": "lib/success-pulse.js",
@@ -1785,7 +1785,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 13
+   "tests": 12
   },
   {
    "file": "lib/tower-rank.js",
@@ -2506,7 +2506,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/fantasy.js",

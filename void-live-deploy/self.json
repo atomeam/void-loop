@@ -545,8 +545,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T12:58:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T12:57:50Z",
    "subject": "skills: register yesno (order file, Games family, map line) so the fast checks pass on main"
+  },
+  {
+   "at": "2026-10-29T12:57:36Z",
+   "subject": "fanfic: open a .docx, .txt, .html or .md file in the post form, and preview it"
+  },
+  {
+   "at": "2026-10-29T12:51:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T12:50:56Z",
+   "subject": "test: bridges check grabs the sticky at its middle, not its tilted corner"
   },
   {
    "at": "2026-10-29T12:50:13Z",
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T11:50:16Z",
    "subject": "Subject eval: 54 of 54 live"
-  },
-  {
-   "at": "2026-10-29T11:44:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T11:44:43Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
-  },
-  {
-   "at": "2026-10-29T11:44:39Z",
-   "subject": "Error garden check: a weed is any count of 2 or more, not 2-9"
-  },
-  {
-   "at": "2026-10-29T11:43:21Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
