@@ -256,7 +256,12 @@ test('a stopwatch run timed by the gate: Verse\'s own /stopwatch/ shows the real
     assert.equal(score(await answer(b, at(s.ask.verse), null, false, false, s.ask.time), s.truth).n, 2, 'the real length of the run, held once stopped');
     assert.equal(score(await answer(b, at('/fast'), null, false, false, s.ask.time), s.truth).n, 0, 'a clock running twice as fast is wrong');
     assert.equal(await answer(b, at('/canvas'), null, false, false, s.ask.time), null, 'a clock the gate cannot read is not measured, never a loss');
-    assert.equal(score(await answer(b, at('/drawn'), null, false, false, s.ask.time), s.truth).n, 2, 'a clock drawn on a canvas, started by a tap and read off the screen');
+    // the gate's eyes (tools/screen-read.mjs) are Tesseract, an optional dev dependency: where it is not installed the drawn clock cannot be
+    // read here, and that part is skipped by name instead of failing as a wrong reading (CI installs it with npm ci and runs it)
+    const eyes = await import('tesseract.js').then(() => true, () => false);
+    await t.test('a clock drawn on a canvas, started by a tap and read off the screen', { skip: !eyes && 'tesseract.js is not installed here' }, async () => {
+      assert.equal(score(await answer(b, at('/drawn'), null, false, false, s.ask.time), s.truth).n, 2, 'a clock drawn on a canvas, started by a tap and read off the screen');
+    });
   } finally { await (await import('./screen-read.mjs')).closeEyes(); await b.close(); server.close(); }
 });
 

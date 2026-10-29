@@ -6,7 +6,8 @@
  */
 const CLEAN = (s) => s.replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 const PLACE = (s) => CLEAN(s).replace(/^(the\s+)/i, '').replace(/\s+(right\s+)?now$/i, '').replace(/\s+(today|tomorrow)$/i, '').trim();
-const NOT_PLACE = /^(it|this|that|here|there|my\s+\w+|the\s+\w+\s+zone|a\s+\w+|\d+.*)$/i;
+// a place never carries a date: "convert 9am new york to tokyo on 2026-10-20" is date-calc's (the zone rules on that day), not a city called "tokyo on 2026-10-20"
+const NOT_PLACE = /^(it|this|that|here|there|my\s+\w+|the\s+\w+\s+zone|a\s+\w+|\d+.*|on\s+\d.*|.*\s+on\s+\d.*)$/i;
 const TIME = '(\\d{1,2}(?::\\d{2})?\\s*(?:am|pm|a\\.m\\.|p\\.m\\.)|\\d{1,2}:\\d{2}|noon|midnight)';
 
 // One ask -> { kind: 'now' | 'convert' | 'sun', ... } or null. Only asks that name a place (or two) are ours.

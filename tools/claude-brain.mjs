@@ -5,7 +5,6 @@
 // MAX_OUTPUT_TOKENS, so the worst run costs about WORST_RUN_USD. The reply goes through the same gate (parseEdits) and the same
 // checks (tools/propose-fix.mjs) as Verse's own model; nothing it writes runs with a write token.
 //   node tools/propose-fix.mjs --brain claude ...   (the workflow's "brain: claude" input)
-import Anthropic from '@anthropic-ai/sdk';
 import { FIX_SYSTEM, NARROW_SYSTEM, MAX_SOURCE, fixPrompt, parseEdits, evidenceOf } from '../void-live-deploy/lib/propose-fix.js';
 
 export const BRAIN_MODEL = 'claude-opus-5-5';
@@ -36,7 +35,10 @@ export function brainRequest({ ask, skill, source, mode = 'learn', said = '' }) 
 
 /** Claude's proposal, in the shape /api/propose-fix answers ({ edits, why, confidence, evidence, model }) plus usage and cost; throws
  * when Claude declined, ran out of room, or proposed nothing that passes the gate. */
-export async function proposeWithClaude(miss, { client = new Anthropic() } = {}) {
+// the SDK (an optional dev dependency) is loaded only for a real call: with a client handed in (the tests' fake) this module works where the
+// package is not installed, so tools/claude-brain.test.mjs runs there instead of failing on the import
+export async function proposeWithClaude(miss, { client = null } = {}) {
+  if (!client) { const { default: Anthropic } = await import('@anthropic-ai/sdk'); client = new Anthropic(); }
   const r = await client.beta.messages.create(brainRequest(miss));
   const cost = costOf(r.usage);
   if (r.stop_reason === 'refusal') throw new Error('Claude declined (' + ((r.stop_details && r.stop_details.category) || 'no category') + '), $' + cost);

@@ -3,7 +3,7 @@
  * after 2026-03-01", "10 business days from today", "next monday", "end of this quarter", "iso week start", "format 2026-10-03 as us",
  * "do oct 1 to oct 10 and oct 8 to oct 20 overlap", "every 10 days from 2026-10-01 skipping 2026-10-10", "days since 2026-01-01",
  * "next birthday 1990-05-03", "zodiac sign for march 3", "moon phase on 2026-10-18", "time until midnight", "round 47 minutes to 15",
- * "deadline risk 2026-10-20", "snooze until monday", "do 10-11 and 10:30-12 conflict", "convert 9am new york to tokyo",
+ * "deadline risk 2026-10-20", "snooze until monday", "do 10-11 and 10:30-12 conflict", "convert 9am new york to tokyo on 2026-10-20",
  * "meeting 9am new york across london and tokyo", "visa expires 2027-03-01", "subscription renews monthly from 2026-01-31",
  * "warranty 24 months from 2025-11-01", "lease from 2026-01-01 for 12 months", "school term 2026-09-01 to 2026-12-18",
  * "biweekly payday 2026-10-09", "sprint 2 weeks starting 2026-10-05", "fiscal year starting april".
@@ -50,7 +50,7 @@ export default {
     'next birthday 1990-05-03',
     'zodiac sign for march 3',
     'deadline risk 2026-10-20',
-    'convert 9am new york to tokyo',
+    'convert 9am new york to tokyo on 2026-10-20',
     'visa expires 2027-03-01',
     'sprint 2 weeks starting 2026-10-05',
     'fiscal year starting april'

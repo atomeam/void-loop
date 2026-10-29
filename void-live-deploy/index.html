@@ -5295,7 +5295,7 @@ say('nothing selected to remove');
     const PAID_CORE = [
       "upgrade(?: me| my (?:verse|void)| (?:verse|void)| my account| my plan)?(?: to (?:paid|pro|premium)(?: (?:verse|void))?)?",
       "(?:the |your )?(?:pricing|prices?|plans?|price list)",
-      "what (?:does|do) (?:void|it|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|it|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|paid (?:verse|void)|more)",
+      "what (?:does|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|verse|paid (?:verse|void)|more)", // "verse" beside "void": the 2026-10-18 rename left "how much does Verse cost" unpriced
       "pay(?: for (?:void|paid (?:verse|void)|more|it|the paid (?:version|tier|plan)))?(?: you)?",
       "(?:buy|get|try) (?:void )?(?:pro|premium|paid(?: (?:verse|void))?|monthly|the paid (?:version|tier|plan))",
       "subscribe|(?:a |my )?subscription|go pro|(?:void|verse) (?:pro|plus|premium|monthly|yearly|annual)|paid (?:verse|void)|premium|(?:a |the )?paid (?:tier|plan|version)",
@@ -5339,7 +5339,7 @@ say('nothing selected to remove');
     // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
     // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
     // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
-    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|a-to-mind)(?: cost)?)$/;
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|verse|a-to-mind)(?: cost)?)$/;
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
       if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
@@ -6026,7 +6026,7 @@ say('nothing selected to remove');
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ skillsReady.then(async () => { const core = await approvalReady(); if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
+      if (q0) { history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; /* a gated ask is typed into the box at once, before the skills load (it never needed them) */
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
