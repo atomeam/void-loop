@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; pointer-events: none; max-width: 280px; }
+  #seal { position: fixed; bottom: 12px; right: 12px; padding: 8px 14px; background: #1a3a5c; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+  #seal:hover { background: #2a5a8c; }
+  .morph { transition: filter 0.4s, transform 0.4s, border-radius 0.4s; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Kuramoto Phase-Lock Mind · Verse lab</title>
+<meta name="description" content="Coupled phase oscillators (Kuramoto) whose coupling parameters are evolved by a local evolutionary mind to maximize phase order while entraining to user pointer">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Kuramoto Phase-Lock Mind · Verse lab">
+<meta property="og:description" content="Coupled phase oscillators (Kuramoto) whose coupling parameters are evolved by a local evolutionary mind to maximize phase order while entraining to user pointer">
+<meta property="og:url" content="https://a-to-mind.com/lab/f442-kuramoto-phase-lock-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f442-kuramoto-phase-lock-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud" class="morph">
+  <div>Order r: <span id="r">0.00</span></div>
+  <div>Phase ψ: <span id="psi">0.00</span></div>
+  <div>Fitness: <span id="fit">0.00</span></div>
+  <div>Genome: <span id="gen">…</span></div>
+  <div style="margin-top:6px;font-size:11px;opacity:0.7">Pointer/tilt drive · Seal stores genome</div>
+</div>
+<button id="seal">Seal Genome</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">Kuramoto Phase-Lock Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,6 +1,7 @@
 # Versus by weight (owner, 2026-10-29: size is bytes and surface, not popularity): measures how heavy each rival's home page really is
 # (tools/tower-size.mjs) on a runner, since the sandboxes cannot reach rivals, and commits void-live-deploy/tower.size.json. The Versus card and the
-# queue (lib/tower.js) put the lightest site first. Plain GETs of public pages, robots.txt respected, never a no-rival site; no secret.
+# queue (lib/tower.js) put the fewest controls first, the lighter page on a tie. Plain GETs of public pages, robots.txt respected, never a no-rival
+# site; no secret. Chromium is installed so the controls are counted on the rendered page (one browser, at most 3 pages at once).
 name: Tower size
 on:
   workflow_dispatch:
@@ -19,7 +20,7 @@ permissions:
 jobs:
   size:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,6 +28,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: npm ci
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
       - name: Tests
         run: node --test tools/tower-size.test.mjs tools/tower-target.test.mjs
       - name: Weigh the sites

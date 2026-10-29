@@ -43,6 +43,7 @@ import { quoteBody, batch } from './markets.js';
 import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-kinds.js';
 import { kindOf as subjectKind } from '../../lib/card-kinds.js';
 import * as FP from '../../lib/free-pics.js';
+import { edgeCache, edgeGate, buildId, edgeKeyUrl, edgeGet, edgePut, edgeTtl, marked, storable, HIT, MISS, BYPASS, REFRESH } from '../../lib/answer-edge.js';
 import { askWords, grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
@@ -385,7 +386,17 @@ export async function toldMe(request, env, ask) {
   } catch (_) { return null; }
 }
 
-export async function onRequestPost({ request, env, waitUntil }) {
+// The edge cache (lib/answer-edge.js, asked by Verse: "Implement edge caching for answers."; the rules, key, TTLs and invalidation are written
+// there): a stable, non-personal answer the D1 cache would serve is kept in the colo's cache too, so a repeat costs no D1 read and no model
+// call. The answer path marks its reply x-verse-cache: HIT, MISS, REFRESH or BYPASS with a server-timing line; the modes, and any runtime
+// without caches.default, get no mark and behave exactly as before.
+export async function onRequestPost(ctx) {
+  const t0 = Date.now(), edge = { cache: edgeCache(), mark: null };
+  const res = await answerPost(ctx, edge);
+  return edge.cache && edge.mark ? marked(res, edge.mark, Date.now() - t0) : res;
+}
+
+async function answerPost({ request, env, waitUntil }, edge = { cache: null, mark: null }) {
   const t0 = Date.now();
   let body = {};
   try { body = JSON.parse((await request.text()).slice(0, 20000)); } catch (_) { return new Response('bad', { status: 400 }); }
@@ -413,14 +424,26 @@ export async function onRequestPost({ request, env, waitUntil }) {
   const self = isSelfAsk(ask) && !isPaste(ask) || isOwnCardNote(ask); // a long paste that mentions Verse is still a paste, not a question about Verse (owner, 2026-10-16)
   // what this person told Verse (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
   const told = self ? null : await toldMe(request, env, ask);
+  // the edge cache first, for an allow-listed ask only (lib/answer-edge.js edgeGate: no bearer, cookie, key or extra field, not personal, not
+  // about Verse, not a paste); the key carries this deploy's build id, so a deploy never reads the last one's copies. A hit is the whole reply.
+  let edgeUrl = null, edgeKind = null;
+  if (edge.cache) {
+    const gate = edgeGate({ request, body, ask, masked, self, told, paste: isPaste(ask) });
+    const origin = new URL(request.url).origin;
+    edgeUrl = gate.ok ? edgeKeyUrl(origin, key, await buildId(env, origin)) : null; // no build id (local dev): nothing is cached
+    edgeKind = gate.kind;
+    edge.mark = !edgeUrl ? BYPASS : gate.fresh ? REFRESH : MISS;
+    if (edgeUrl && !gate.fresh) { const hit = await edgeGet(edge.cache, edgeUrl); if (hit) { edge.mark = HIT; return hit; } }
+  }
+  const edgeKeep = edgeUrl ? (out, at) => { try { const p = edgePut(edge.cache, edgeUrl, out, edgeTtl(edgeKind, at, Date.now(), TTL_DAYS)); if (waitUntil) waitUntil(p); } catch (_) {} } : null;
   try {
     const hit = masked || self || told ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
     // an answer cached before sources were filtered is filtered on the way out (lib/cite.js)
-    if (hit && !isNoAnswer(hit.answer)) { const c = keepCited(dropFiller(dropUnbackedActs(hit.answer)) || hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }); } // a refusal cached before this check is not served again
+    if (hit && !isNoAnswer(hit.answer)) { const c = keepCited(dropFiller(dropUnbackedActs(hit.answer)) || hit.answer, JSON.parse(hit.sources)), out = { answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }; if (edgeKeep) edgeKeep(out, hit.at); return Response.json(out); } // a refusal cached before this check is not served again
   } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
 
-  if (modelsOn(env)) return modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, told);
+  if (modelsOn(env)) return modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, told, edgeKeep);
   if (self) {
     // no model: the facts themselves are the answer (Wikipedia knows nothing about Verse)
     const facts = selfFacts(await readSelf(env, new URL(request.url).origin));
@@ -477,7 +500,7 @@ export const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/
 function within(p, ms) { let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('timeout')), ms); })]).finally(() => clearTimeout(t)); }
 
 // The model path (on unless VOID_ANSWER_MODELS=off).
-async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, told = null) {
+async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, told = null, edgeKeep = null) {
   const later = (p) => { try { if (waitUntil) waitUntil(p); } catch (_) {} return p; };
   const origin = new URL(request.url).origin;
   // the router runs alongside the source fetch; the answer waits for it until BUDGET_MS from the start, then moves on without it
@@ -594,5 +617,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // a real place, animal, event or work of art gets a real, licensed picture with its credit (lib/free-pics.js), searched by the fetched source's own title, never the visitor's words;
   // a fictional character or a person keeps Verse's own drawing or neutral plate. Bounded: one picture, a few seconds, and the answer never waits longer.
   const pic = lead && lead.desc ? await picFor(env, lead) : null;
-  return Response.json({ answer, sources: linked(pub), at, route: route.kind, ...nearOut, ...(pic ? { pic } : {}), ...(!self && !told && src.length && isNameAsk(ask) && !sourcesMatch(ask, src) ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
+  const out = { answer, sources: linked(pub), at, route: route.kind, ...nearOut, ...(pic ? { pic } : {}), ...(!self && !told && src.length && isNameAsk(ask) && !sourcesMatch(ask, src) ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) };
+  // the edge copy goes where the D1 row goes, and only for a free model's answer (a paid escalation is never served again for free, lib/answer-edge.js)
+  if (edgeKeep && !masked && !self && !told && storable(out, { paid: model !== MODEL && model !== ANSWER_FALLBACK })) edgeKeep(out, at);
+  return Response.json(out);
 }

@@ -29,7 +29,7 @@
  * (AUTOMATION_REPOS, default atomeam/void-loop), branches only under void/, never workflow files, and http only to
  * public https hosts. Event data can fill text in but never chooses the repo, the branch prefix or a file path's root.
  */
-import { validateWatch, describe, TELLS, DEFAULT_EVERY } from './watch.js';
+import { validateWatch, describe, fingerprint, TELLS, DEFAULT_EVERY } from './watch.js';
 
 // What a hook can cost (#250): a rule runs at most RUN_CAP_DAY times a day from webhooks (AUTOMATION_RUN_CAP overrides it), and the same
 // ask for the same target is not queued again inside QUEUE_DEDUPE_MS. Both were named in that change but never defined, so every hook
@@ -72,8 +72,20 @@ export function matches(rule, event) {
 export const SLACK_MS = 3 * 60e3;
 export function due(rule, lastRun, now = Date.now()) {
   if (!rule || !rule.enabled || !rule.when || rule.when.on !== 'schedule') return false;
-  const last = lastRun ? Date.parse(lastRun) : NaN;
-  return !Number.isFinite(last) || now - last >= rule.when.every * 60e3 - SLACK_MS;
+  const last = lastRun ? Date.parse(lastRun) : NaN, period = rule.when.every * 60e3;
+  if (!Number.isFinite(last)) return true;
+  if (!knocks(rule) || !rule.id) return now - last >= period - SLACK_MS;
+  // a rule that reads someone else's page runs at its own minute (jitterMinutes): due once the newest slot of its period has come
+  // round (SLACK_MS early, as above) and it has not run since that slot, so the hourly page watches do not all knock at once
+  const off = jitterMinutes(rule.id, rule.when.every) * 60e3, slot = Math.floor((now + SLACK_MS - off) / period) * period + off;
+  return last < slot - SLACK_MS;
+}
+/** does the rule fetch someone else's page (a page or price watch)? Those are the ones spread over the hour. Pure. */
+export const knocks = (rule) => !!(rule && Array.isArray(rule.do) && rule.do.some((s) => s && s.action === 'watch' && s.watch && (s.watch.kind === 'page' || s.watch.kind === 'price')));
+/** the rule's own minute inside the hour (inside its period, when that is shorter): a hash of its id, the same on every tick. Pure. */
+export function jitterMinutes(id, every = 60) {
+  const span = Math.max(1, Math.min(60, Math.floor(Number(every) || 60)));
+  return parseInt(fingerprint('jitter:' + String(id || '')), 16) % span;
 }
 
 // a path inside the repo: relative, no '..', no hidden git or workflow files

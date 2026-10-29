@@ -133,5 +133,23 @@ export function correct(text, vocab) {
   return { text: fixes.length ? out : src, fixes };
 }
 
+/** the typed words correct() may change with some vocabulary: every word that passes the rules above, whatever the vocabulary. Pure. */
+export function openWords(text) {
+  const src = String(text || ''), out = [];
+  if (!src || src.length > 160) return out;
+  const quoted = []; for (const m of src.matchAll(QUOTED)) quoted.push([m.index, m.index + m[0].length]);
+  let prev = '';
+  for (const m of src.matchAll(/[A-Za-z]+|\S+/g)) {
+    const lw = m[0].toLowerCase(), was = prev; prev = lw;
+    if (!LETTERS.test(lw) || quoted.some(([a, b]) => m.index >= a && m.index < b) || PROTECT_AFTER.has(was)) continue;
+    if (allowed(lw.length) && lw.length <= MAX_LEN && !COMMON.has(lw)) out.push(lw);
+  }
+  return out;
+}
+
+/** true when correct() can change nothing in this ask with this vocabulary or any larger one: the vocabulary already knows every
+ *  open word, and a known word is never corrected. The page stops waiting for skills still loading at this point (void.html fuzzyFix). */
+export const settled = (text, vocab) => !!vocab && openWords(text).every((w) => vocab.known.has(w));
+
 /** true when the skill that takes the corrected ask owns every corrected word (a slip only ever becomes that skill's own word) */
 export const confirm = (result, skillName) => !!(result && result.fixes.length && skillName && result.fixes.every((f) => f.skills.includes(skillName)));
