@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 964,
+ "counted": 965,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,8 +20,8 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 60,
-   "tests": 5
+   "dependants": 61,
+   "tests": 6
   },
   {
    "file": "lib/ask-text.js",
@@ -1070,7 +1070,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
@@ -1110,6 +1110,13 @@
   },
   {
    "file": "lib/brain-creature.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-gardener.js",
    "skills": 1,
    "direct": 0,
    "dependants": 4,
@@ -1379,7 +1386,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/calc-more.js",
@@ -4340,6 +4347,20 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-gardener.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-hearing.js": {
    "imports": [
     "lib/field-kit.js",
@@ -4359,7 +4380,8 @@
     "lib/brain-organs.js",
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
-    "lib/brain-painter.js"
+    "lib/brain-painter.js",
+    "lib/brain-gardener.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
@@ -4379,6 +4401,7 @@
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
+    "lib/brain-gardener.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -4429,6 +4452,7 @@
    "importedBy": [
     "lib/brain-creature.js",
     "lib/brain-field.js",
+    "lib/brain-gardener.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -4447,7 +4471,8 @@
     "lib/brain-synapses.js",
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
-    "lib/brain-painter.js"
+    "lib/brain-painter.js",
+    "lib/brain-gardener.js"
    ],
    "importedBy": [
     "skills/verse-brain.js"
@@ -5497,6 +5522,7 @@
    "imports": [],
    "importedBy": [
     "lib/brain-creature.js",
+    "lib/brain-gardener.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
