@@ -1,0 +1,215 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+let W, H, gridW = 64, gridH = 40, cellSize;
+let field = []; // energy 0-1
+let pointer = {x: -1, y: -1, down: false};
+let orientationBias = {x: 0, y: 0};
+let portals = [];
+let fitness = 0.5, entropy = 0.3;
+let currentGenes = Array(12).fill(0.5);
+let worker;
+
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+  cellSize = Math.max(4, Math.floor(Math.min(W/gridW, H/gridH)));
+  gridW = Math.floor(W / cellSize);
+  gridH = Math.floor(H / cellSize);
+  field = Array(gridW * gridH).fill(0);
+  // seed some noise
+  for (let i = 0; i < field.length; i++) if (Math.random() < 0.05) field[i] = Math.random() * 0.4;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Simple NCA-like update: neighbor diffusion + activation based on genes
+function stepField(genes) {
+  const next = new Float32Array(field.length);
+  const [diff, grow, decay, thresh, n1, n2, n3, n4, biasX, biasY, noise, act] = genes.map(g => (g - 0.5) * 2); // -1..1
+  for (let y = 0; y < gridH; y++) {
+    for (let x = 0; x < gridW; x++) {
+      const i = y * gridW + x;
+      let sum = 0, cnt = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = (x + dx + gridW) % gridW;
+        const ny = (y + dy + gridH) % gridH;
+        sum += field[ny * gridW + nx];
+        cnt++;
+      }
+      const avg = sum / cnt;
+      let v = field[i] * (1 + decay * 0.1) + avg * diff * 0.3 + grow * 0.05 * Math.max(0, avg - thresh);
+      v += (biasX * orientationBias.x + biasY * orientationBias.y) * 0.02;
+      v += (Math.random() - 0.5) * noise * 0.05;
+      // soft activation
+      v = 1 / (1 + Math.exp(-act * 4 * (v - 0.4)));
+      next[i] = Math.max(0, Math.min(1, v));
+    }
+  }
+  // pointer seed
+  if (pointer.down || pointer.x >= 0) {
+    const px = Math.floor(pointer.x / cellSize);
+    const py = Math.floor(pointer.y / cellSize);
+    for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
+      const nx = px + dx, ny = py + dy;
+      if (nx >= 0 && nx < gridW && ny >= 0 && ny < gridH) {
+        const dist = Math.hypot(dx, dy);
+        if (dist < 3.5) next[ny * gridW + nx] = Math.min(1, next[ny * gridW + nx] + 0.3 * (1 - dist/3.5));
+      }
+    }
+  }
+  field = Array.from(next);
+}
+
+function computeMetrics() {
+  let sum = 0, sum2 = 0, high = 0;
+  for (const v of field) { sum += v; sum2 += v*v; if (v > 0.6) high++; }
+  const mean = sum / field.length;
+  const var_ = sum2 / field.length - mean*mean;
+  entropy = Math.min(1, var_ * 8); // proxy
+  const pointerActivity = pointer.x >= 0 ? 0.3 : 0;
+  fitness = 0.6 * entropy + 0.3 * Math.min(1, high / (gridW*gridH*0.1)) + pointerActivity * 0.1;
+  return {entropy, fitness, highCount: high};
+}
+
+function draw() {
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+  for (let y = 0; y < gridH; y++) {
+    for (let x = 0; x < gridW; x++) {
+      const v = field[y * gridW + x];
+      if (v < 0.05) continue;
+      const hue = 200 + v * 160;
+      ctx.fillStyle = `hsl(${hue}, 80%, ${20 + v*50}%)`;
+      ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
+    }
+  }
+}
+
+function managePortals() {
+  // expire
+  portals = portals.filter(p => {
+    if (Date.now() - p.born > 6000) { p.el.remove(); return false; }
+    return true;
+  });
+  if (portals.length >= 5) return;
+  // find a high cell
+  for (let tries = 0; tries < 20; tries++) {
+    const i = Math.floor(Math.random() * field.length);
+    if (field[i] > 0.55) {
+      const x = (i % gridW) * cellSize + cellSize/2;
+      const y = Math.floor(i / gridW) * cellSize + cellSize/2;
+      spawnPortal(x, y, field[i]);
+      break;
+    }
+  }
+}
+
+function spawnPortal(x, y, energy) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.style.left = (x - 40) + 'px';
+  el.style.top = (y - 20) + 'px';
+  el.textContent = `activity ${energy.toFixed(2)}`;
+  el.onclick = () => {
+    fitness = Math.min(1, fitness + 0.15); // reinforce
+    statusEl.textContent = `Portal reinforced · fitness ${fitness.toFixed(2)}`;
+    el.style.borderColor = '#afa';
+    setTimeout(() => el.remove(), 400);
+  };
+  document.body.appendChild(el);
+  portals.push({el, born: Date.now()});
+}
+
+function morph() {
+  const hue = 180 + entropy * 140 + fitness * 40;
+  const contrast = 1 + fitness * 0.4;
+  const scale = 1 + (entropy - 0.4) * 0.02;
+  document.documentElement.style.setProperty('--hue', hue.toFixed(0));
+  document.documentElement.style.setProperty('--contrast', contrast.toFixed(2));
+  document.documentElement.style.setProperty('--scale', scale.toFixed(3));
+}
+
+// Worker for evolution
+const workerCode = `
+let pop = Array.from({length: 8}, () => Array.from({length: 12}, () => Math.random()));
+let best = pop[0].slice();
+let bestFit = 0;
+onmessage = (e) => {
+  const {fitness, entropy} = e.data;
+  // simple: assign fitness to current best candidate, mutate
+  if (fitness > bestFit) { bestFit = fitness; best = pop[0].slice(); }
+  // mutate all
+  pop = pop.map(g => g.map(w => Math.max(0, Math.min(1, w + (Math.random()-0.5)*0.08))));
+  // elitism
+  pop[0] = best.slice();
+  postMessage({genes: best, fitness: bestFit});
+};
+`;
+try {
+  const blob = new Blob([workerCode], {type: 'application/javascript'});
+  worker = new Worker(URL.createObjectURL(blob));
+  worker.onmessage = (e) => {
+    currentGenes = e.data.genes;
+    statusEl.textContent = `WebGPU/Canvas NCA · fit ${e.data.fitness.toFixed(2)} · ent ${entropy.toFixed(2)} · portals ${portals.length}`;
+  };
+} catch (err) {
+  statusEl.textContent = 'Worker blocked; using fixed genes';
+  currentGenes = [0.6,0.4,0.3,0.5,0.5,0.5,0.5,0.5,0,0,0.2,0.7];
+}
+
+// Pointer
+canvas.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; });
+canvas.addEventListener('pointerdown', e => { pointer.down = true; pointer.x = e.clientX; pointer.y = e.clientY; });
+canvas.addEventListener('pointerup', () => pointer.down = false);
+canvas.addEventListener('pointerleave', () => { pointer.x = -1; pointer.down = false; });
+
+// Orientation
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    if (e.gamma != null) orientationBias.x = Math.max(-1, Math.min(1, e.gamma / 45));
+    if (e.beta != null) orientationBias.y = Math.max(-1, Math.min(1, e.beta / 45));
+  });
+}
+
+// Seal
+document.getElementById('seal').onclick = async () => {
+  const payload = {genes: currentGenes, fitness, ts: Date.now()};
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(payload)));
+  const hex = Array.from(new Uint8Array(hash)).slice(0,8).map(b => b.toString(16).padStart(2,'0')).join('');
+  try {
+    localStorage.setItem('f045-seal-' + hex, JSON.stringify(payload));
+    statusEl.textContent = `Sealed ${hex}`;
+  } catch { statusEl.textContent = 'Seal visual only (storage blocked)'; }
+};
+
+document.getElementById('reset').onclick = () => {
+  field.fill(0);
+  for (let i = 0; i < field.length * 0.08; i++) field[Math.floor(Math.random()*field.length)] = Math.random();
+};
+
+// Main loop
+let lastWorker = 0;
+function loop(t) {
+  stepField(currentGenes);
+  const m = computeMetrics();
+  draw();
+  managePortals();
+  morph();
+  if (worker && t - lastWorker > 800) {
+    worker.postMessage({fitness: m.fitness, entropy: m.entropy});
+    lastWorker = t;
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// WebGPU probe (future compute path)
+if (navigator.gpu) {
+  navigator.gpu.requestAdapter().then(a => {
+    if (a) statusEl.textContent += ' · WebGPU available (compute path ready for extension)';
+  }).catch(() => {});
+} else {
+  statusEl.textContent = 'Canvas2D NCA (WebGPU not present)';
+}

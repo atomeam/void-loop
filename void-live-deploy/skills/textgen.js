@@ -16,7 +16,7 @@ export function textgenOf(text) {
   if (/^(?:random |text |writing |name )?generators$/.test(l)) return GENERATORS[0];
   const m = /^(?:(?:give me|make me|make|show me|generate|i need)\s+)?(?:an? |some |\d{1,2} )?(?:random )?(.{3,40}?)(?: generator)?$/.exec(l);
   if (!m) return null;
-  const asked = /(?:generator$|^(?:give me|make|show me|generate|i need|random)\b)/.test(l); // a bare "band names" stays an encyclopedia ask
+  const asked = /(?:generator$|name$|^(?:give me|make|show me|generate|i need|random)\b)/.test(l); // a bare "band names" stays an encyclopedia ask
   if (!asked) return null;
   const want = stem(m[1]); const hit = BY.find(([k]) => k === want || k === want.replace(/ idea$/, '') || (want.length > 4 && k.startsWith(want + ' ')));
   return hit ? hit[1] : null;

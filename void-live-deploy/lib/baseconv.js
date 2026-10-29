@@ -68,6 +68,15 @@ const PATTERNS = [
   [new RegExp('^(?:please\\s+)?convert\\s+' + V + '\\s+from\\s+' + B + '\\s+(?:to|into)\\s+' + B + '$', 'i'), (m) => [m[1], m[2], m[3]]],
   [new RegExp('^(?:please\\s+)?(?:convert\\s+|what\\s+is\\s+)?(0[xbo][0-9a-fA-F_]+|[-+]?\\d[\\d,_]*)\\s+(?:to|into|in|as)\\s+' + B + '\\??$', 'i'), (m) => [m[1], '', m[2]]],
 ];
+/** the stage card for a number typed in base 2, 8, 10 or 16: "<digits> <base> to <decimal, or binary from decimal>", only when the ask
+ *  reads back to the same number; '' otherwise (the example stays). Pure. */
+const WORD = { 2: 'binary', 8: 'octal', 10: 'decimal', 16: 'hex' };
+export function baseAsk(text, base) {
+  const c = clean(text), w = WORD[base]; if (!c || !w || c.negative || c.digits.length > 200 || (c.base && c.base !== base)) return '';
+  const ask = c.digits + ' ' + w + ' to ' + (base === 10 ? 'binary' : 'decimal'), p = parseAsk(ask); if (!p) return '';
+  const a = convert(c.digits, base, 10), b = convert(p.value, p.from, 10);
+  return a.ok && b.ok && a.out === b.out ? ask : '';
+}
 /** what an ask wants: { value, from (0 = by prefix or decimal), to } or null. A bare number with a prefix or no source base is read as decimal unless it carries 0x/0b/0o. Pure. */
 export function parseAsk(text) {
   const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' ');

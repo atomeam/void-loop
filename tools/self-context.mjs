@@ -89,6 +89,17 @@ export function readWishlist(text, n = 12) {
     .filter((x) => !isPrivate(x.item) && !isPrivate(x.why)).slice(0, n);
 }
 
+// the tower (lib/tower.js): the site Verse is assimilating now (tower.target.json) and the next smallest unbeaten sites, in the tower's own
+// order, smallest first (owner's rule: every site ever made, smallest first). The answer engine lists what is still open from here,
+// so the target leads (owner, 2026-10-29: "the open asks are not in smallest-first order behind sycophanthex.com"). Pure.
+export function towerOf(floors, target, pages = {}, n = 3) {
+  const fl = Array.isArray(floors) ? floors : [], open = fl.filter((f) => f && !f.beaten);
+  const id = (target && target.id) || (open[0] && open[0].id); if (!id) return null;
+  const t = fl.find((f) => f.id === id) || { id }, name = (f) => clip(f.site || f.id, 60);
+  const page = t.page || pages[t.id] ? '' : 'my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js';
+  return { target: name(t), ...(target && target.since ? { since: clip(target.since, 10) } : {}), ...(page ? { page } : {}), next: open.filter((f) => f.id !== id).slice(0, n).map(name), beaten: fl.length - open.length, total: fl.length };
+}
+
 export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null, open = null, builders = null, wishlist = null } = {}) {
   const about = clip((/^>\s*(.+)$/m.exec(llms) || [])[1], 300);
   const rows = [];
@@ -141,6 +152,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     self.clips = { upload: 'Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say "upload this to YouTube". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).', tricks: Object.keys(TRICKS), learned: (c.learned || []).slice(-20), visits: c.visits || {}, note: clip(c.note, 300) }; } catch (_) { /* leave clips out */ } }
   // who visits (tools/traffic.mjs, daily into domains/traffic.json): one line of counts, our own runs and bots taken out; the growth card shows it
   try { const t = JSON.parse(readFileSync(resolve(root, 'domains/traffic.json'), 'utf8')); if (t && typeof t.line === 'string' && t.line) self.people = { line: clip(t.line, 200), at: clip(t.at, 20), source: clip(t.source, 20) }; } catch (_) { /* no count yet */ }
+  try {
+    const { tower, LANE_PAGES } = await import('../void-live-deploy/lib/tower.js');
+    const rd = (f) => { try { return JSON.parse(readFileSync(resolve(root, 'void-live-deploy', f), 'utf8')); } catch (_) { return null; } };
+    const target = rd('tower.target.json'), ev = rd('tower.evidence.json') || {};
+    const t = tower((rd('lap.items.json') || {}).onlySite || [], ev.floors || {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json'), target);
+    const tw = towerOf(t.floors, target, LANE_PAGES); if (tw) self.tower = tw;
+  } catch (_) { /* no tower data: the open list starts with the inbox */ }
   const text = JSON.stringify(deepQuoteFree(self), null, 1) + '\n'; // only Verse's words are served, never the owner's quoted ones (tools/private.mjs)
   if (process.argv.includes('--check')) {
     const same = existsSync(out) && readFileSync(out, 'utf8') === text;

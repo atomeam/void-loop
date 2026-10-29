@@ -35,5 +35,5 @@ test('the deploy regenerates every card through this tool, and the checks cover 
 });
 
 test('the volatile steps are exactly the ones that embed the newest commits, counts or commit dates', () => {
-  assert.deepEqual(STEPS.filter((s) => s.volatile).map((s) => s.name), ['asks', 'self', 'bench-alarms', 'sitemap']);
+  assert.deepEqual(STEPS.filter((s) => s.volatile).map((s) => s.name), ['asks', 'self', 'bench-alarms', 'churn', 'sitemap']);
 });

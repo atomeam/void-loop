@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: timeanddate.com (https://www.timeanddate.com/)
-- Verse: /time/?c=Tokyo (time zones, tower gate 11 of 14)
+- Verse: /time/?c=Tokyo (time zones, tower gate 12 of 14)
 - Live scan: 2026-10-28, HTTP 403, page title "Just a moment&hellip;"
 - History: [docs/HISTORY/timeanddate.com.md](../HISTORY/timeanddate.com.md)
 

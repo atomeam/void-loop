@@ -151,6 +151,10 @@ const COL = '(#[0-9a-f]{3,8}|' + NAMED + ')';
 /** what an ask wants: { g } (a gradient, maybe the default) or null. Pure. */
 export function askGradient(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?.!]+$/, '').replace(/\s+/g, ' ');
+  // a gradient written as CSS, "css gradient linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%)": what the gradient page's own stage link asks,
+  // so its card opens on every stop, angle and type the page has (owner via the team, 2026-10-29), not on two colours at 90 degrees
+  const w = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+|this\s+|a\s+)?(?:css\s+)?gradient:?\s+((?:repeating-)?(?:linear|radial|conic)-gradient\(.+\))$/.exec(t);
+  if (w && t.length <= 1200) { const r = read(w[1]); if (r) return { g: r }; }
   if (t.length > 120) return null;
   let m = new RegExp('^(?:make|create|generate|show|give)?\\s*(?:me\\s+)?(?:an?\\s+)?(?:(linear|radial|conic)\\s+)?(?:css\\s+)?gradient\\s+(?:from\\s+)?' + COL + '\\s+(?:to|and|into)\\s+' + COL + '$').exec(t);
   if (m) return { g: normal({ type: m[1] || 'linear', angle: 90, stops: [{ color: m[2] }, { color: m[3] }] }) };

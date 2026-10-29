@@ -6,15 +6,23 @@ import { readFileSync, existsSync } from 'node:fs';
 function norm(s) { return String(s).replace(/\r\n/g, '\n'); }
 const y = norm(readFileSync(new URL('../.github/workflows/grow-clock.yml', import.meta.url), 'utf8'));
 
-test('a step every 10 minutes for under the job timeout, then the next run starts; it starts only the growth workflows and holds no secret', () => {
-  const ticks = +/seq 0 (\d+)/.exec(y)[1] + 1, sleep = +/sleep (\d+)/.exec(y)[1], timeout = +/timeout-minutes: (\d+)/.exec(y)[1];
-  assert.equal(sleep, 600);
+// 2026-10-26 (owner: "look at Verse autonomy and fix it so it definitly will work on its own without either of us"): the clock runs the
+// conductor (tools/conductor.mjs) instead of alternating two workflows, so it reads the build queue with the owner token, and the chain
+// starts again whatever a run's ticks did. The proving pass (grow-self.yml) is started by the conductor again, at most every 2 hours: the
+// owner's 2026-10-24 words were read as "no self hardening" and taken off the clock; the owner put it right on 2026-10-26 ("never said there
+// a no self hardening i said to elaborate what that means"; "it needs to say what it improved").
+test('a conductor tick every 10 minutes for under the job timeout, then the next run starts whatever happened; the proving pass every 2 hours; one secret', () => {
+  const ticks = /n=33/.test(y) ? 33 : 0, sleep = +/sleep (\d+); fi\n\s+done/.exec(y)[1], timeout = +/timeout-minutes: (\d+)/.exec(y)[1];
+  assert.equal(ticks, 33); assert.equal(sleep, 600);
   assert.ok((ticks - 1) * sleep / 60 < timeout - 10, 'the loop ends before the job times out, so the chain step runs');
+  assert.match(y, /node tools\/conductor\.mjs tick/);
+  assert.match(y, /- name: Start the next clock run\n\s+if: always\(\) && !inputs\.dry/, 'a failed tick or run never stops the clock');
   assert.match(y, /gh workflow run grow-clock\.yml/);
-  const started = [...y.matchAll(/start ([\w-]+\.yml)/g)].map((m) => m[1]).sort();
-  assert.deepEqual([...new Set(started)], ['probe-asks.yml', 'propose-fix.yml'], 'no self-hardening on the clock (owner, 2026-10-24)');
-  for (const w of started) assert.ok(existsSync(new URL('../.github/workflows/' + w, import.meta.url)), w);
-  assert.doesNotMatch(y, /secrets\./); assert.match(y, /permissions:\n  actions: write\n/);
+  const code = (f) => norm(readFileSync(new URL('./' + f, import.meta.url), 'utf8')).replace(/^\s*\/\/.*$/gm, '');
+  assert.match(code('conductor.mjs'), /growDue\(\{[^}]*\}\)[^\n]*start\('grow-self\.yml'\)/, 'the conductor starts the proving pass when it is due (owner, 2026-10-26)');
+  assert.match(code('conductor-core.mjs'), /export const GROW_EVERY_H = 2;/, 'at most every 2 hours');
+  assert.deepEqual([...new Set([...y.matchAll(/secrets\.([A-Z_]+)/g)].map((m) => m[1]))], ['VOID_OWNER_TOKEN'], 'the queue token and nothing else');
+  assert.match(y, /permissions:\n  actions: write.*\n  contents: write/);
   assert.match(y, /group: grow-clock\n  cancel-in-progress: false/);
 });
 

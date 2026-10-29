@@ -18,6 +18,6 @@ export default {
   name: 'kanban-board',
   examples: ['kanban board', 'make a kanban board', 'free kanban board', 'kanban', 'start a kanban board', 'online kanban'],
   nearMisses: ['task board', 'my tasks', 'kanban meaning', 'what is kanban', 'toyota kanban history'],
-  match(lower) { return KANBAN_ASK.test(String(lower).trim()); },
+  match(lower) { return (String(lower).trim().startsWith('free ') ? KANBAN_ASK.test(String(lower).trim().replace(/^free /, '')) : KANBAN_ASK.test(String(lower).trim())); },
   run,
 };

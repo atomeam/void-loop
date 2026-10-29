@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg: #0a0614; --fg: #e0d0ff; --accent: #a7f; --hue: 280; }
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%; background: hsl(var(--hue), 30%, 5%);
+  color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden;
+}
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.portals { position: absolute; inset: 0; pointer-events: none; }
+.portal {
+  position: absolute; width: 72px; height: 48px;
+  background: hsla(var(--hue), 50%, 18%, 0.9);
+  border: 1.5px solid hsl(var(--hue), 80%, 60%);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 10px; pointer-events: auto; cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: filter 0.15s, opacity 0.2s;
+  user-select: none;
+}
+.portal.active { filter: brightness(1.4) drop-shadow(0 0 8px #a7f); }
+.ui { position: absolute; z-index: 20; padding: 10px; }
+button, .status {
+  background: rgba(10,6,20,0.9); color: var(--fg); border: 1px solid #446;
+  border-radius: 6px; padding: 7px 11px; margin: 3px; font-size: 13px;
+}
+button:hover { border-color: var(--accent); }
+.status { font-size: 11px; opacity: 0.85; max-width: 360px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze RNN DOM Portals · Verse lab</title>
+<meta name="description" content="Novel combination deliberately branching from the recent residual lattice / softbody / entanglement / acoustic-physics cluster (F239–F246):">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze RNN DOM Portals · Verse lab">
+<meta property="og:description" content="Novel combination deliberately branching from the recent residual lattice / softbody / entanglement / acoustic-physics cluster (F239–F246):">
+<meta property="og:url" content="https://a-to-mind.com/lab/f247-webxr-gaze-rnn-dom-portals/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f247-webxr-gaze-rnn-dom-portals/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="portals" id="portals"></div>
+<div class="ui">
+  <button id="xrBtn">Enter XR Gaze</button>
+  <button id="sealBtn">Seal Champion</button>
+  <button id="transferBtn">Offer Genome</button>
+  <button id="resetBtn">Reset</button>
+  <div class="status" id="status">gaze RNN portals · flat mode</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Gaze RNN DOM Portals</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

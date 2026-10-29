@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 220; --sat: 55%; --lit: 7%; --glow: 0.3; }
+  body { margin: 0; background: hsl(var(--hue), var(--sat), var(--lit)); color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.55); padding: 10px 14px; border-radius: 8px; font-size: 13px; pointer-events: none; backdrop-filter: blur(4px); }
+  .orb { position: absolute; width: 58px; height: 58px; border-radius: 50%; background: hsla(var(--oh), 75%, 52%, .75); border: 2px solid rgba(255,255,255,.35); cursor: grab; display: flex; align-items: center; justify-content: center; font-size: 9px; text-align: center; user-select: none; transform: translate(-50%, -50%); box-shadow: 0 0 14px hsla(var(--oh), 80%, 60%, calc(var(--glow) * 0.7)); }
+  .orb:active { cursor: grabbing; }
+  #seal { position: absolute; bottom: 12px; right: 12px; padding: 8px 16px; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; font-size: 13px; }
+  #mic { position: absolute; bottom: 12px; left: 12px; padding: 8px 16px; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; font-size: 13px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>audio-residual-swarm-mind · Verse lab</title>
+<meta name="description" content="Novel combination: Canvas2D particle swarm whose cohesion, separation, and hue are driven in real time by the residual error of a local Web Worker evolutionary">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="audio-residual-swarm-mind · Verse lab">
+<meta property="og:description" content="Novel combination: Canvas2D particle swarm whose cohesion, separation, and hue are driven in real time by the residual error of a local Web Worker evolutionary">
+<meta property="og:url" content="https://a-to-mind.com/lab/f176-audio-residual-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f176-audio-residual-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  F-176 Audio Residual Swarm Mind<br>
+  residual: <span id="res">—</span> · conf: <span id="conf">—</span> · audio: <span id="aud">—</span> · gen: <span id="gen">0</span>
+</div>
+<button id="mic">Enable mic</button>
+<button id="seal">Seal best genes</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">audio-residual-swarm-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

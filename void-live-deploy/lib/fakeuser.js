@@ -187,12 +187,14 @@ export function format(rows, kind = 'json') {
 const COUNTRY = { us: /\b(?:american|us|usa|united states)\b/, gb: /\b(?:british|uk|english|united kingdom|britain)\b/, fr: /\b(?:french|france)\b/, de: /\b(?:german|germany)\b/, es: /\b(?:spanish|spain)\b/, br: /\b(?:brazilian|brazil)\b/, in: /\b(?:indian|india)\b/, jp: /\b(?:japanese|japan)\b/,
   au: /\b(?:australian|australia|aussie)\b/, ca: /\b(?:canadian|canada)\b/, ch: /\b(?:swiss|switzerland)\b/, dk: /\b(?:danish|denmark)\b/, fi: /\b(?:finnish|finland)\b/, ie: /\b(?:irish|ireland)\b/, ir: /\b(?:iranian|iran|persian)\b/,
   mx: /\b(?:mexican|mexico)\b/, nl: /\b(?:dutch|netherlands|holland)\b/, no: /\b(?:norwegian|norway)\b/, nz: /\b(?:new zealand|kiwi)\b/, rs: /\b(?:serbian|serbia)\b/, tr: /\b(?:turkish|turkey|t\u00fcrkiye)\b/, ua: /\b(?:ukrainian|ukraine)\b/ };
-/** what an ask wants: { n, nats, gender } or null. Pure. */
+/** what an ask wants: { n, nats, gender } (and seed, when the ask ends ", seed <seed>": the page's card names its own people) or null. Pure. */
 export function askFake(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?.!]+$/, '').replace(/\s+/g, ' ');
+  const raw = String(text || ''), sm = /(?:,\s*|\s)seed[ :]+([A-Za-z0-9_-]{1,40})\s*[?.!]*\s*$/i.exec(raw), seed = sm ? sm[1] : '';
+  const t = (sm ? raw.slice(0, sm.index) : raw).trim().toLowerCase().replace(/[?.!]+$/, '').replace(/\s+/g, ' ');
   if (t.length > 120 || !/\b(?:fake|random|made[- ]up|test|dummy|sample|mock)\b/.test(t) || !/\b(?:users?|people|persons?|names?|identit(?:y|ies)|profiles?|contacts?|customers?|wom[ae]n|men|girls?|boys?)\b/.test(t)) return null;
   if (!/^(?:(?:please\s+)?(?:generate|make|create|give me|get me|show me)\s+)?(?:an?\s+|some\s+|\d{1,4}\s+)?/.test(t)) return null;
   if (/\b(?:pick|picker|choose|draw|wheel|spin|rows?|data|dataset)\b|\bfrom (?:alice|a list)|\bname a\b|\bwho\b/.test(t)) return null; // "pick a random name from ..." is the wheel or a pick
-  const n = (/\b(\d{1,4})\b/.exec(t) || [])[1], nats = Object.keys(COUNTRY).filter((k) => COUNTRY[k].test(t)), gender = /\b(?:female|women|woman|girls?)\b/.test(t) ? 'female' : /\b(?:male|men|man|boys?)\b/.test(t) ? 'male' : '';
-  return { n: n ? Math.min(5000, +n) : 10, nats: nats.length ? nats : ['us'], gender };
+  // nats in the order asked: the order picks who is from where, so the page's card gets the page's people
+  const n = (/\b(\d{1,4})\b/.exec(t) || [])[1], nats = Object.keys(COUNTRY).map((k) => [k, t.search(COUNTRY[k])]).filter((x) => x[1] >= 0).sort((a, b) => a[1] - b[1]).map((x) => x[0]), gender = /\b(?:female|women|woman|girls?)\b/.test(t) ? 'female' : /\b(?:male|men|man|boys?)\b/.test(t) ? 'male' : '';
+  return { n: n ? Math.min(5000, +n) : 10, nats: nats.length ? nats : ['us'], gender, ...(seed ? { seed } : {}) };
 }

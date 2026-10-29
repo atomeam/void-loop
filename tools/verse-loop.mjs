@@ -18,8 +18,11 @@ import { readFileSync, writeFileSync, existsSync, openSync, closeSync, unlinkSyn
 import { resolve, join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { check as addOnlyCheck } from './add-only.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
+/** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
+export const isMemberTask = (task) => !!task && task.kind === 'next' && /^Queue job \S+ \(member: /.test(String(task.text || ''));
 
 export const AGENTS = ['verse', 'opencode', 'aider', 'cmd'];
 // the fast part of .github/actions/void-test (the browser suite is verify.yml's, on every head of main)
@@ -184,12 +187,21 @@ export function loadState(path) {
 }
 export function saveState(path, s) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, JSON.stringify(s, null, 1) + '\n'); }
 
+/** The loop's own code: a commit to these after the failures began means the streak was not run on the code that runs now. */
+export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tools/verse-job.mjs', 'void-live-deploy/functions/api/coder.js'];
+
 /** Is the loop paused? From the flag in the state, or (a fresh runner) the open 'Verse loop paused' issue. Paused for
- *  PAUSE_HOURS from the moment it paused, then it resumes by itself: nobody has to close anything. Pure. */
-export function pauseState({ state = {}, issue = null, now = Date.now() }) {
+ *  PAUSE_HOURS from the moment it paused, then it resumes by itself: nobody has to close anything. It resumes early when
+ *  `changedAt` (the newest commit to LOOP_CODE on main) is after the first failure of the streak: the failures were on code
+ *  that no longer runs (2026-10-29: the coder's token-cap fix merged at the same minute the third failure paused the loop
+ *  for 6 hours). Pure. */
+export function pauseState({ state = {}, issue = null, now = Date.now(), changedAt = null }) {
   const since = state.pausedAt != null ? state.pausedAt : issue && Date.parse(issue.createdAt) ? Date.parse(issue.createdAt) : null;
   if (since == null) return { paused: false, resume: false };
   const until = since + PAUSE_HOURS * 3600e3;
+  const ats = (state.last || []).map((l) => Number(l && l.at)).filter((n) => n > 0);
+  const began = ats.length ? Math.min(...ats) : since;
+  if (now < until && Number(changedAt) > began) return { paused: false, resume: true, until, early: true };
   return now < until ? { paused: true, resume: false, until } : { paused: false, resume: true, until };
 }
 
@@ -314,12 +326,15 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
   try {
     // the pause: skip until it ends, then resume by itself
     const issue = pauseIssue();
-    const p = pauseState({ state, issue, now });
+    const ct = state.pausedAt != null || issue ? Number(git('log', '-1', '--first-parent', '--format=%ct', 'HEAD', '--', ...LOOP_CODE).out.trim()) : 0;
+    const p = pauseState({ state, issue, now, changedAt: ct > 0 ? ct * 1000 : null });
     if (p.paused) return done('paused', `${BACKOFF_AFTER} laps in a row failed or did not merge; it resumes by itself at ${new Date(p.until).toISOString()}`);
     if (p.resume) {
-      step('the pause is over; resuming');
+      step(p.early ? 'the loop\'s code changed after the failures began; resuming early' : 'the pause is over; resuming');
       if (keep) {
-        if (issue) gh('issue', 'close', String(issue.number), '--comment', `Resumed by itself after ${PAUSE_HOURS} hours (tools/verse-loop.mjs).`);
+        if (issue) gh('issue', 'close', String(issue.number), '--comment', p.early
+          ? `Resumed early: the loop's own code changed on main after these failures began, so they were not on the code that runs now (tools/verse-loop.mjs).`
+          : `Resumed by itself after ${PAUSE_HOURS} hours (tools/verse-loop.mjs).`);
         state = { ...state, fails: 0, pausedAt: null, last: [] };
         saveState(statePath, state);
       }
@@ -501,6 +516,11 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const g = gate(before, task);
     if (g.stop) return g.stop;
     const v = g.v;
+    if (isMemberTask(task)) { // owner, 2026-10-29: paid members "only add positive improvements"; enforced here, before any commit
+      const taken = addOnlyCheck(cwd, 'origin/' + opts.base);
+      if (taken.length) return done('refused', 'a member\'s idea may only add, and this change ' + taken.slice(0, 3).join('; '), { addOnly: taken });
+      step('add-only: nothing taken away');
+    }
 
     const branch = 'loop/' + stamp();
     const title = task.kind === 'fix' ? `Verse loop: fix ${task.check}`

@@ -1,0 +1,139 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const overlay = document.getElementById('overlay');
+let w, h, particles = [], mx = 0.5, my = 0.5, tiltX = 0, tiltY = 0;
+
+function resize() {
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+
+function randomEmbed(dim = 8) {
+  const e = new Float32Array(dim);
+  for (let i = 0; i < dim; i++) e[i] = (Math.random() - 0.5) * 2;
+  const n = Math.hypot(...e) || 1;
+  for (let i = 0; i < dim; i++) e[i] /= n;
+  return e;
+}
+
+class Particle {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    this.vx = (Math.random() - 0.5) * 1.5;
+    this.vy = (Math.random() - 0.5) * 1.5;
+    this.embed = randomEmbed();
+    this.weight = 0;
+  }
+  update(query, all) {
+    // cosine attention to query
+    let score = 0;
+    for (let i = 0; i < this.embed.length; i++) score += this.embed[i] * query[i];
+    this.weight = Math.exp(score * 4); // scaled
+    // simple force toward mouse scaled by weight
+    const dx = mx * w - this.x, dy = my * h - this.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const force = this.weight * 0.008;
+    this.vx += (dx / dist) * force;
+    this.vy += (dy / dist) * force;
+    // mild repulsion from very close others
+    for (const o of all) {
+      if (o === this) continue;
+      const nd = Math.hypot(o.x - this.x, o.y - this.y);
+      if (nd < 25 && nd > 0) {
+        this.vx -= (o.x - this.x) / nd * 0.3;
+        this.vy -= (o.y - this.y) / nd * 0.3;
+      }
+    }
+    this.vx *= 0.96; this.vy *= 0.96;
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0) this.x += w; if (this.x > w) this.x -= w;
+    if (this.y < 0) this.y += h; if (this.y > h) this.y -= h;
+  }
+}
+
+// seed
+for (let i = 0; i < 80; i++) particles.push(new Particle(Math.random() * w, Math.random() * h));
+
+function makeQuery() {
+  const q = new Float32Array(8);
+  q[0] = mx * 2 - 1;
+  q[1] = my * 2 - 1;
+  q[2] = tiltX;
+  q[3] = tiltY;
+  for (let i = 4; i < 8; i++) q[i] = Math.sin(Date.now() * 0.001 + i) * 0.3;
+  const n = Math.hypot(...q) || 1;
+  for (let i = 0; i < 8; i++) q[i] /= n;
+  return q;
+}
+
+addEventListener('pointermove', e => {
+  mx = e.clientX / w;
+  my = e.clientY / h;
+  overlay.style.setProperty('--cx', (mx * 100) + '%');
+  overlay.style.setProperty('--cy', (my * 100) + '%');
+});
+addEventListener('click', e => {
+  for (let i = 0; i < 6; i++) {
+    particles.push(new Particle(e.clientX + (Math.random()-0.5)*30, e.clientY + (Math.random()-0.5)*30));
+  }
+  if (particles.length > 200) particles.splice(0, particles.length - 200);
+});
+
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    tiltX = (e.gamma || 0) / 45;
+    tiltY = (e.beta || 0) / 45;
+  });
+}
+
+// persist recent queries
+let memory = JSON.parse(localStorage.getItem('f197-memory') || '[]');
+
+function step() {
+  const query = makeQuery();
+  let sumW = 0, maxW = 0;
+  for (const p of particles) {
+    p.update(query, particles);
+    sumW += p.weight;
+    if (p.weight > maxW) maxW = p.weight;
+  }
+  // normalize weights for entropy proxy
+  const avgW = sumW / (particles.length || 1);
+  let entropy = 0;
+  for (const p of particles) {
+    const pw = p.weight / (sumW || 1);
+    if (pw > 0) entropy -= pw * Math.log(pw);
+  }
+  entropy = Math.min(1, entropy / Math.log(particles.length || 2));
+  const peak = Math.min(1, maxW / (avgW * 8 || 1));
+
+  document.documentElement.style.setProperty('--entropy', entropy.toFixed(3));
+  document.documentElement.style.setProperty('--peak', peak.toFixed(3));
+  document.documentElement.style.setProperty('--hue', (180 + peak * 120).toFixed(0));
+  document.documentElement.style.setProperty('--radius', (20 + (1 - peak) * 40) + 'px');
+
+  const mood = peak > 0.6 ? 'concentrated' : entropy > 0.7 ? 'diffuse' : 'resonant';
+  statusEl.textContent = `void · ${mood} · peak ${(peak*100).toFixed(0)}%`;
+
+  // store query occasionally
+  if (Math.random() < 0.02) {
+    memory.push(Array.from(query).slice(0,4));
+    if (memory.length > 8) memory.shift();
+    localStorage.setItem('f197-memory', JSON.stringify(memory));
+  }
+
+  ctx.fillStyle = 'rgba(10,10,10,0.18)';
+  ctx.fillRect(0, 0, w, h);
+  for (const p of particles) {
+    const alpha = 0.4 + p.weight * 0.6;
+    ctx.fillStyle = `hsla(${180 + p.weight * 80}, 75%, 55%, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 1.5 + p.weight * 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  requestAnimationFrame(step);
+}
+step();

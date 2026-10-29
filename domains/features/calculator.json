@@ -1,152 +1,163 @@
 {
-  "floor": "calculator",
-  "verse_page": "/calculator/",
-  "researched": "2026-10-25",
-  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
-  "sites": {
-    "calculator.net": {
-      "sources": [
-        "https://www.calculator.net/",
-        "https://www.calculator.net/scientific-calculator.html",
-        "https://www.calculator.net/financial-calculator.html",
-        "https://www.calculator.net/fitness-and-health-calculator.html",
-        "https://www.calculator.net/math-calculator.html",
-        "https://www.calculator.net/other-calculator.html"
-      ],
-      "features": [
-        {
-          "name": "Scientific calculator on the home page",
-          "detail": "keypad with trig, logs, powers",
-          "paid": false,
-          "verse": "has",
-          "verse_evidence": "calculator/index.html keypad K[]"
-        },
-        {
-          "name": "Deg / Rad switch",
-          "detail": "",
-          "paid": false,
-          "verse": "has",
-          "verse_evidence": "buttons Deg / Rad"
-        },
-        {
-          "name": "Inverse trig",
-          "detail": "sin⁻¹ cos⁻¹ tan⁻¹",
-          "paid": false,
-          "verse": "has",
-          "verse_evidence": "keys sin⁻¹ cos⁻¹ tan⁻¹"
-        },
-        {
-          "name": "x², x³, xʸ, eˣ, 10ˣ",
-          "detail": "power keys",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "x² and xʸ present; no x³, eˣ, 10ˣ keys (typing ^ works)"
-        },
-        {
-          "name": "√, ∛, ʸ√x",
-          "detail": "root keys",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "√ and ∛ present; no y-th root key"
-        },
-        {
-          "name": "ln, log, n!, 1/x, %, ±, EXP, π, e",
-          "detail": "",
-          "paid": false,
-          "verse": "has",
-          "verse_evidence": "keys ln log n! 1/x % ± EXP π e"
-        },
-        {
-          "name": "Memory M+ M- MR",
-          "detail": "",
-          "paid": false,
-          "verse": "has",
-          "verse_evidence": "keys MC MR M+ M−"
-        },
-        {
-          "name": "Ans key",
-          "detail": "last answer",
-          "paid": false,
-          "verse": "has",
-          "verse_evidence": "key Ans"
-        },
-        {
-          "name": "RND key",
-          "detail": "random number between 0 and 1",
-          "paid": false,
-          "verse": "missing",
-          "verse_evidence": "no RND key"
-        },
-        {
-          "name": "Financial calculators",
-          "detail": "mortgage, loan, auto loan, interest, compound interest, payment, retirement, amortization, investment, inflation, income tax, salary, sales tax",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "loan with an amortization schedule and chart, mortgage with tax, insurance and HOA, compound interest and percentage panels on /calculator/ (lib/fincalc.js); no retirement, salary, tax or inflation calculators"
-        },
-        {
-          "name": "Fitness and health calculators",
-          "detail": "BMI, calorie, body fat, BMR, ideal weight, pace, pregnancy, due date",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "BMI with the WHO bands and a healthy weight range, calories a day (Mifflin-St Jeor with five activity levels) on /calculator/#bmi; no body fat, pace or pregnancy calculators"
-        },
-        {
-          "name": "Math calculators",
-          "detail": "fraction, percentage, random number, triangle, standard deviation, statistics",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "percent in the sum and the Percentage panel (x % of y, what %, % change); random on /random/; no fraction, triangle or statistics calculators"
-        },
-        {
-          "name": "Other calculators",
-          "detail": "age, date, time, hours, GPA, grade, concrete, subnet, conversion",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "date maths on the stage (skills/date-calc.js); unit conversion on /calculator/ and /convert/; no GPA, concrete or subnet"
-        },
-        {
-          "name": "Search across 200+ calculators",
-          "detail": "a search box to find a calculator by name",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "asking Verse anything routes to a skill; no calculator index on /calculator/"
-        },
-        {
-          "name": "Explanations and formulas on each calculator page",
-          "detail": "each calculator explains the maths with worked text",
-          "paid": false,
-          "verse": "partial",
-          "verse_evidence": "the page explains percent and precision; no per-formula articles"
-        },
-        {
-          "name": "Amortization tables and charts",
-          "detail": "loan schedules with charts",
-          "paid": false,
-          "verse": "has",
-          "verse_evidence": "/calculator/#loan: yearly schedule, Show every month, an SVG chart of principal, interest and balance each year"
-        }
-      ]
+ "floor": "calculator",
+ "verse_page": "/calculator/",
+ "researched": "2026-10-25",
+ "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+ "sites": {
+  "calculator.net": {
+   "sources": [
+    "https://www.calculator.net/",
+    "https://www.calculator.net/scientific-calculator.html",
+    "https://www.calculator.net/financial-calculator.html",
+    "https://www.calculator.net/fitness-and-health-calculator.html",
+    "https://www.calculator.net/math-calculator.html",
+    "https://www.calculator.net/other-calculator.html"
+   ],
+   "features": [
+    {
+     "name": "Scientific calculator on the home page",
+     "detail": "keypad with trig, logs, powers",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "calculator/index.html keypad K[]"
+    },
+    {
+     "name": "Deg / Rad switch",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "buttons Deg / Rad"
+    },
+    {
+     "name": "Inverse trig",
+     "detail": "sin⁻¹ cos⁻¹ tan⁻¹",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "keys sin⁻¹ cos⁻¹ tan⁻¹"
+    },
+    {
+     "name": "x², x³, xʸ, eˣ, 10ˣ",
+     "detail": "power keys",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "x² and xʸ present; no x³, eˣ, 10ˣ keys (typing ^ works)"
+    },
+    {
+     "name": "√, ∛, ʸ√x",
+     "detail": "root keys",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "√ and ∛ present; no y-th root key"
+    },
+    {
+     "name": "ln, log, n!, 1/x, %, ±, EXP, π, e",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "keys ln log n! 1/x % ± EXP π e"
+    },
+    {
+     "name": "Memory M+ M- MR",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "keys MC MR M+ M−"
+    },
+    {
+     "name": "Ans key",
+     "detail": "last answer",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "key Ans"
+    },
+    {
+     "name": "RND key",
+     "detail": "random number between 0 and 1",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no RND key"
+    },
+    {
+     "name": "Financial calculators",
+     "detail": "mortgage, loan, auto loan, interest, compound interest, payment, retirement, amortization, investment, inflation, income tax, salary, sales tax",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "loan with an amortization schedule and chart, mortgage with tax, insurance and HOA, compound interest and percentage panels on /calculator/ (lib/fincalc.js); no retirement, salary, tax or inflation calculators"
+    },
+    {
+     "name": "Fitness and health calculators",
+     "detail": "BMI, calorie, body fat, BMR, ideal weight, pace, pregnancy, due date",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "BMI with the WHO bands and a healthy weight range, calories a day (Mifflin-St Jeor with five activity levels) on /calculator/#bmi; no body fat, pace or pregnancy calculators"
+    },
+    {
+     "name": "Math calculators",
+     "detail": "fraction, percentage, random number, triangle, standard deviation, statistics",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "percent in the sum and the Percentage panel (x % of y, what %, % change); random on /random/; no fraction, triangle or statistics calculators"
+    },
+    {
+     "name": "Other calculators",
+     "detail": "age, date, time, hours, GPA, grade, concrete, subnet, conversion",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "date maths on the stage (skills/date-calc.js); unit conversion on /calculator/ and /convert/; no GPA, concrete or subnet"
+    },
+    {
+     "name": "Search across 200+ calculators",
+     "detail": "a search box to find a calculator by name",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "asking Verse anything routes to a skill; no calculator index on /calculator/"
+    },
+    {
+     "name": "Explanations and formulas on each calculator page",
+     "detail": "each calculator explains the maths with worked text",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the page explains percent and precision; no per-formula articles"
+    },
+    {
+     "name": "Amortization tables and charts",
+     "detail": "loan schedules with charts",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/calculator/#loan: yearly schedule, Show every month, an SVG chart of principal, interest and balance each year"
     }
-  },
-  "verse_extra": [
-    "History kept on this device, tap to reuse",
-    "Exact to 15 digits (0.1 + 0.2 = 0.3)",
-    "Percent as people mean it (200 + 10% = 220)",
-    "Keyboard typing with Enter / Esc / Backspace",
-    "Unit conversion beside the keypad",
-    "Copy result and a link that holds the sum",
-    "Opens offline"
-  ],
-  "gaps": [
-    "Financial calculators",
-    "Fitness and health calculators",
-    "Math calculators",
-    "Other calculators",
-    "Search across 200+ calculators",
-    "RND key",
-    "x², x³, xʸ, eˣ, 10ˣ",
-    "√, ∛, ʸ√x",
-    "Explanations and formulas on each calculator page"
+   ]
+  }
+ },
+ "verse_extra": [
+  "History kept on this device, tap to reuse",
+  "Exact to 15 digits (0.1 + 0.2 = 0.3)",
+  "Percent as people mean it (200 + 10% = 220)",
+  "Keyboard typing with Enter / Esc / Backspace",
+  "Unit conversion beside the keypad",
+  "Copy result and a link that holds the sum",
+  "Opens offline"
+ ],
+ "gaps": [
+  "Financial calculators",
+  "Fitness and health calculators",
+  "Math calculators",
+  "Other calculators",
+  "Search across 200+ calculators",
+  "RND key",
+  "x², x³, xʸ, eˣ, 10ˣ",
+  "√, ∛, ʸ√x",
+  "Explanations and formulas on each calculator page"
+ ],
+ "auto": {
+  "queued": [
+   {
+    "target": "feature:calculator-net-f655db8f",
+    "feature": "RND key",
+    "host": "calculator.net",
+    "at": "2026-10-29",
+    "id": "mvswwx66"
+   }
   ]
+ }
 }

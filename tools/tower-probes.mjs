@@ -89,6 +89,9 @@ const RIVAL_N = ((FLOORS.find((f) => f.id === 'formula calculators') || {}).riva
 /** the calculator count a page shows as "All calculators (N)", or 0. Pure. */
 export const libraryCount = (t) => Number((String(t).match(/All calculators \(([\d,]+)\)/i) || [])[1]?.replace(/,/g, '') || 0);
 const LIBRARY_GAP = 'at least ' + RIVAL_N.toLocaleString('en-US') + ' calculators, the size vcalc.com publishes (Verse has ' + CALCULATORS.length + ': ' + (RIVAL_N - CALCULATORS.length).toLocaleString('en-US') + ' short)';
+// the Writing Room's share link for a draft (lib/fanfic.js shareHash): base64url of the UTF-8 JSON { t: title, x: text }, after #room=
+const roomHash = (t, x) => 'room=' + Buffer.from(JSON.stringify({ t, x })).toString('base64url');
+const FIC_TITLE = 'The gate counts a draft', FIC_TEXT = WC_TEXT + '\n\n' + "Hermione's half-blood friend didn't wait.";
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -652,7 +655,7 @@ export const PROBES = Object.freeze({
       ['no account', /no account/i],
     ],
     askParts: {
-      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['a real registry check (RDAP)', /asks the registry itself \(RDAP/], ['the result line', /whether it is registered/]],
+      'domain search': [['domain input', /Domain search/], ['search control', /\bSearch\b/], ['a real registry check (RDAP)', /asks the registry of every ending[\s\S]{0,120}\bRDAP\b/], ['the result line', /whether it is registered/]],
       'tiered plans': [['Small plan', /Small/], ['Medium plan', /Medium/], ['Large plan', /Large/], ['Norwegian servers', /Servere i Norge/]],
       'capacity sizing': [['requests per second', /requests\/s/i], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/]],
       'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/]],
@@ -665,6 +668,30 @@ export const PROBES = Object.freeze({
       ['memory', /\bRAM\b/], ['SLA', /SLA/], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],
       ['TLS 1.3', /TLS 1\.3/], ['no account', /no account/i], ['works offline', /works offline/i],
       ['back to Verse', /Back to Verse/],
+    ],
+  },
+  // wheelroot.com (2026-10-29): "Drawing Fundamentals" (line, shape, proportion, shading; daily exercises; see like an artist; progress you can see),
+  // a course page whose "Begin the course" button goes nowhere. The ask opens a shared drawing: a straight line laid dot to dot, which is 100.
+  'wheelroot.com': {
+    site: 'https://wheelroot.com/', verse: '/learn-to-draw/',
+    ask: { verse: '/learn-to-draw/?d=line&s=14461e461o461y4628462i462s4632463c463m463w4646464g464q4650465a465k465u4664466e466o466y467846' },
+    truth: [
+      ['a straight line laid dot to dot scores 100', /Score: 100 of 100/],
+      ['its distance from the line, measured (0.0 px)', /0\.0 px from the line on average/],
+      ['how much of the way it covers, measured (100%)', /100% of the way covered/],
+      ['the shared drawing scored again on open', /Scored again from the link/],
+    ],
+    askParts: {
+      'the four fundamentals': [['line', /\bLine\b/], ['shape', /\bShape\b/], ['proportion', /\bProportion\b/], ['shading', /\bShading\b/]],
+      'daily exercises': [['a drill of the day', /Today's drill/], ['a streak', /Streak: \d+/], ['short drills', /8 short drills/]],
+      'see like an artist': [['draw from memory', /Draw it from memory/], ['judge by eye', /Find the middle/], ['a circle by eye', /A circle by eye/]],
+      'progress you can see': [['first try and best', /first try and best/i], ['a score for each drill', /of 100/], ['how each drill is scored', /How each drill is scored/]],
+    },
+    facts: [
+      ['a course to begin', /Begin the course/], ['line', /\bLine\b/], ['shape', /\bShape\b/], ['proportion', /\bProportion\b/], ['shading', /\bShading\b/],
+      ['daily exercises', /Today's drill/], ['observation (drawing from memory)', /Draw it from memory/], ['progress you can see', /first try and best/i],
+      ['absolute beginners', /absolute beginners/i], ['no talent required', /No talent needed/i], ['a few minutes a day', /a few minutes a day/i],
+      ['no account', /No account/], ['no cookies', /no cookies/i], ['works offline', /works offline/i], ['back to Verse', /Back to Verse/],
     ],
   },
   emojis: {
@@ -964,6 +991,32 @@ export const PROBES = Object.freeze({
     facts: [['the time now', /\b\d{1,2}:\d{2}(?::\d{2})?\b/], ['the date', /\b(?:mon|tues|wednes|thurs|fri|satur|sun)day\b/i], ['the time zone', /\btime ?zones?\b/i], ['the UTC offset', /\b(?:UTC|GMT)\s*[+−-]\s*\d/],
       ['daylight saving', /\bdaylight saving\b|\bDST\b/i], ['a world clock', /\bworld ?clock\b/i], ['a converter', /\bconverter\b/i], ['a meeting planner', /\bmeeting planner\b/i],
       ['the difference from you', /\bhours?\s+(?:ahead|behind)\b|\btime difference\b/i], ['sunrise and sunset', /\bsunrise\b|\bsunset\b/i], ['day length', /\bday length\b/i], ['solar noon', /\bsolar noon\b/i], ['a share link', /\bcopy link\b|\bshare\b/i]],
+  },
+  // sycophanthex.com (the tower target since 2026-10-29), against /fanfic/. The site turns this network away (403), so nothing here is read
+  // from it now: the facts are its own catalog features as its public pages showed them on 2026-10-29 (domains/targets/sycophanthex.json,
+  // features), and the truth is worked out here. The question: a draft put in the Writing Room by its own share link (the link holds the draft,
+  // nothing is posted, so no story is ever seeded): FIC_TEXT is 18 words as a word processor counts them (13 in the first two sentences, then
+  // Hermione's, half-blood, friend, didn't, wait: an apostrophe or a hyphen inside a word keeps it one word), and the draft keeps its title.
+  'sycophanthex.com': {
+    site: 'https://sycophanthex.com/', verse: '/fanfic/',
+    ask: { site: 'https://sycophanthex.com/', verse: '/fanfic/?v=room#' + roomHash(FIC_TITLE, FIC_TEXT) },
+    truth: [['18 words', /(?<![\d,])18\s+words?\b/i], ['the title kept', new RegExp(FIC_TITLE)]],
+    // one fact for each feature the archive's own pages show, read on the archive's front page as a reader sees it. An empty catalog shows no
+    // story rows, so the row facts (words, chapters, hits, reviews) count only when real stories are there: they are never seeded
+    facts: [['a catalog row for each story, with its words', /(?<![\d,])\d[\d,]*\s+words\b/i], ['browse by fandom or category', /\bfandoms?\b|\bcategor(?:y|ies)\b/i],
+      ['browse by character', /\bcharacters?\b/i], ['browse by genre', /\bgenres\b|\bby genre\b|\bgenre\s*:/i], ['browse by rating', /\bratings?\b|\brated\b/i], ['content warnings', /\bwarnings?\b/i],
+      ['an author list', { test: (t) => /\b(?:all|browse|list of|index of)\s+authors\b|\bauthors?\s+(?:a\s*to\s*z|index|list)\b/i.test(t) || /^Authors$/m.test(t) }], // a menu link; the site-info count "0 AUTHORS" is a number, not a list
+      ['a title index A to Z', /\bA\s*(?:to|-|–)\s*Z\b/], ['sort the list', /\bsort\b|\balphabetical(?:ly)?\b/i],
+      ['completed or in progress', { test: (t) => /\bcomplete(?:d)?\b/i.test(t) && /\bin progress\b|\bWIP\b/.test(t) }], ['pages of stories', /\bpage\s+\d+\s+of\s+\d+\b|\bnext page\b/i],
+      ['series', /\bseries\b/i], ['chapters, words and hits on each story', { test: (t) => /\bchapters?\b/i.test(t) && /(?<![\d,])\d[\d,]*\s+words\b/i.test(t) && /\bhits\b|\bviews\b|\breads\b/i.test(t) }],
+      ['reviews and a star rating', { test: (t) => /\breviews?\b/i.test(t) && /\bstars?\b|★/i.test(t) }], ['report a story', /\breport\b[^\n]{0,40}\b(?:story|this|spam|abuse)\b/i],
+      ['keyword search', /\bsearch\b/i], ['most recent stories and a feed of them', { test: (t) => /\bmost recent\b/i.test(t) && /\bRSS\b|\bfeeds?\b/i.test(t) }],
+      ['a random or featured story', /\brandom story\b|\bfeatured story\b/i], ['an account: register and log in', /\bregister\b|\blog ?in\b|\bsign ?(?:in|up)\b/i],
+      ['rules, help, ratings and upload guides', { test: (t) => /\brules\b/i.test(t) && /\bhelp\b|\bhow to\b|\bquick start\b/i.test(t) && /\bratings?\b/i.test(t) }],
+      ['site news', /\bnews\b|\bannouncements?\b/i], ['featured story lists', /\bfeatured (?:fics|stories|lists?)\b|\brecommended (?:stories|reads)\b|\brec lists?\b/i],
+      ['writing contests', /\bcontests?\b|\bchallenges?\b/i], ['archives by subject', /\barchives?\b/i],
+      ['forums and a help desk', { test: (t) => /\bforums?\b|\bboards\b/i.test(t) && /\bhelp desk\b|\bhelp\b|\bsupport\b/i.test(t) }],
+      ['staff, contact, terms and credits pages', /\bterms\b|\bprivacy\b|\bcontact\b|\bcredits\b/i]],
   },
 });
 // a floor's own named aspects (its `extra` in lib/tower.js), each a list both pages are scored on the same way: how many of the list a page

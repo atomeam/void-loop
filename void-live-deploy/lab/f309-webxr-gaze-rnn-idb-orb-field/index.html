@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root { color-scheme: dark; }
+html, body { margin: 0; height: 100%; background: #000; color: #d0d8e8; font: 14px/1.4 system-ui, sans-serif; overflow: hidden; }
+#stage { position: fixed; inset: 0; }
+canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+.orb { position: absolute; width: 48px; height: 48px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, #4af 60%, #028 100%); box-shadow: 0 0 20px #4af8; pointer-events: auto; cursor: grab; transition: transform 0.1s; display: grid; place-items: center; font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 0 4px #000; user-select: none; }
+.orb.champ { box-shadow: 0 0 28px #f80, 0 0 8px #fff; border: 2px solid #f80; }
+#panel { position: fixed; right: 16px; top: 16px; width: min(280px, calc(100vw - 32px)); padding: 14px; background: rgba(8,12,24,0.85); border: 1px solid #3a4a68; border-radius: 12px; backdrop-filter: blur(8px); z-index: 10; }
+#panel h1 { margin: 0 0 6px; font-size: 15px; letter-spacing: 0.04em; }
+#panel p { margin: 0 0 8px; font-size: 12px; color: #8a98b0; }
+.row { display: flex; justify-content: space-between; font-size: 12px; margin: 3px 0; font-variant-numeric: tabular-nums; }
+button { background: #121c30; color: #e0e8f8; border: 1px solid #3a4a68; border-radius: 6px; padding: 6px 10px; font: inherit; font-size: 12px; cursor: pointer; margin: 2px; }
+button:hover { border-color: #6af; }
+#hud { margin-top: 8px; font-size: 11px; color: #7a88a0; }
+#status { position: fixed; left: 16px; bottom: 16px; font-size: 12px; color: #6a7a90; max-width: 50vw; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze RNN Persistent Orb Field · Verse lab</title>
+<meta name="description" content="True WebXR (progressive immersive-vr head-pose gaze) or DeviceOrientation/pointer as continuous causal input to a population of local tiny Elman RNNs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze RNN Persistent Orb Field · Verse lab">
+<meta property="og:description" content="True WebXR (progressive immersive-vr head-pose gaze) or DeviceOrientation/pointer as continuous causal input to a population of local tiny Elman RNNs.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f309-webxr-gaze-rnn-idb-orb-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f309-webxr-gaze-rnn-idb-orb-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="panel">
+  <h1>Gaze RNN Orb Field · F-309</h1>
+  <p>Local tiny RNNs compete to claim gaze attention. Persistent spatial field in IndexedDB. WebXR gaze if available, else pointer + DeviceOrientation.</p>
+  <div class="row"><span>Agents</span><b id="nAgents">4</b></div>
+  <div class="row"><span>Champ fitness</span><b id="champFit">0</b></div>
+  <div class="row"><span>Field orbs</span><b id="nOrbs">8</b></div>
+  <div class="row"><span>Gaze mode</span><b id="mode">pointer</b></div>
+  <div>
+    <button id="evolve">Evolve</button>
+    <button id="seal">Seal genome</button>
+    <button id="load">Load sealed</button>
+    <button id="xr">Enter XR</button>
+    <button id="reset">Reset field</button>
+  </div>
+  <div id="hud">Ready. Move pointer or tilt device. Click orbs to reward.</div>
+</div>
+<div id="status">Offline-capable. IndexedDB persistence. Progressive WebXR.</div>
+<script type="module" src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

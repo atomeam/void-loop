@@ -22,6 +22,11 @@ export async function miniContract(fresh, { kind, a, b, settledWhen = 'flipping'
     const m = await import('/skills/scene3d.js');
     const wait = async (fn, ms) => { const end = performance.now() + ms; for (;;) { const v = fn(); if (v) return v; if (performance.now() > end) return false; await new Promise((r) => setTimeout(r, 100)); } };
     const key = 'contract:' + kind + (reduce ? ':still' : '');
+    // the studio light (scene3d's studioHdri) replaces the room light a moment after the engine starts and redraws every live
+    // miniature once; on a loaded runner that redraw fell inside the idle window (swatch under reduced motion: idleDraws 1 on
+    // 27ae12e9). Mount once it has landed, as a visitor's later cards do; where the studio light never loads, mount at once
+    const E = await m.engine(), x = E.renderer.extensions;
+    if (x.has('EXT_color_buffer_half_float') || x.has('EXT_color_buffer_float')) await wait(() => E.studio, 15000);
     const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:16px;top:16px;width:260px;height:210px;z-index:9';
     document.body.appendChild(host);
     const me = () => m.liveMiniatures().find((x) => x.key === key);
@@ -1028,7 +1033,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       const mean = a.reduce((m, s) => [m[0] + s.d[0], m[1] + s.d[1], m[2] + s.d[2]], [0, 0, 0]).map((x) => x / a.length);
       return { n: a.length, same: JSON.stringify(a) === JSON.stringify(b), other: JSON.stringify(a) !== JSON.stringify(c), lean: Math.hypot(...mean), inPage: !!document.querySelector('.vpage .void-self canvas') };
     });
-    const before = drawn ? drawn.draws : 0;
+    // the card frame's art and type line sit above the body, so at 720 px tall its middle falls below the page's visible bottom and a tap
+    // there lands on the stage and closes the page (verify on 725c3929 and 31a24cf5: "broke": false, draws stuck): bring it into view first,
+    // as a visitor scrolls to it
+    if (drawn) { await F.p.evaluate(() => { const s = document.querySelector('.vpage .void-self'); if (s) s.scrollIntoView({ block: 'center' }); }); await F.p.waitForTimeout(300); }
+    const before = drawn ? await F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'void').draws) : 0;
     const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.075, 0]), drawn.key);
     if (pt) await F.p.mouse.click(pt.x, pt.y);
     const broke = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'void').draws > b + 4, before), 15000);

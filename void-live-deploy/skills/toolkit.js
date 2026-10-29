@@ -6,7 +6,7 @@
  */
 import { TOOLS } from '../lib/toolkit.js';
 
-const WHEN = /^(?:(?:what|which) tools (?:do you have|are there|can i use)|(?:show me |list )?(?:all|every|your) (?:the )?tools|every tool|show me your tools|tool list|list of tools|how many (?:rolls of |units of )?.+ for .+)$/i;
+const WHEN = /^(?:(?:what|which) tools (?:do you have|are there|can i use|)?|(?:show me |list )?(?:all|every|your) (?:the )?tools|every tool|show me your tools|tool list|list of tools|how many rolls of tape for .+)$/i; // only tape: "how many rolls of wallpaper", paint, tiles and drywall belong to walls and home (tools/skill-overlap.mjs)
 
 function run(text, api) {
   const { showPage, esc } = api;

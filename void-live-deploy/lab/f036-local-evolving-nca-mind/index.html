@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --hue: 220;
+    --blur: 0px;
+    --contrast: 1;
+    --scale: 1;
+  }
+  body {
+    margin: 0;
+    background: #0a0a12;
+    color: #e0e0ff;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    filter: hue-rotate(calc(var(--hue) * 1deg)) blur(var(--blur)) contrast(var(--contrast));
+    transform: scale(var(--scale));
+    transform-origin: center;
+    transition: filter 0.4s, transform 0.4s;
+  }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui {
+    position: fixed; top: 12px; left: 12px; z-index: 10;
+    background: rgba(0,0,0,0.55); padding: 10px 14px; border-radius: 8px;
+    backdrop-filter: blur(6px); max-width: 280px;
+  }
+  button { margin: 4px 2px; padding: 6px 10px; background: #2a2a4a; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  #metrics { font-size: 12px; opacity: 0.8; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local Evolving Neural Cellular Automaton Spatial Mind · Verse lab</title>
+<meta name="description" content="Novel combination: A continuous 2D cellular field on Canvas2D whose local update rule is a shared tiny multi-layer perceptron (NCA-style).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local Evolving Neural Cellular Automaton Spatial Mind · Verse lab">
+<meta property="og:description" content="Novel combination: A continuous 2D cellular field on Canvas2D whose local update rule is a shared tiny multi-layer perceptron (NCA-style).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f036-local-evolving-nca-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f036-local-evolving-nca-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div><strong>F-036 Evolving NCA Mind</strong></div>
+  <button id="seal">Seal genome</button>
+  <button id="reset">Reset field</button>
+  <div id="metrics">entropy: – · variance: – · activity: –</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Local Evolving Neural Cellular Automaton Spatial Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

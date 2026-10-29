@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: rangen.co.uk (https://rangen.co.uk/)
-- Verse: /generators/ (random generators: rangen.co.uk, tower gate 13 of 17)
+- Verse: /generators/ (random generators: rangen.co.uk, tower gate 1 of 17)
 - Live scan: 2026-10-28, HTTP 200, page title "RanGen / Random Character Generators and Writing Prompts"
 - History: [docs/HISTORY/rangen.co.uk.md](../HISTORY/rangen.co.uk.md)
 

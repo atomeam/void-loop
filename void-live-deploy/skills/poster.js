@@ -139,14 +139,21 @@ async function themedPoster(want, api) {
   const [pw, ph] = POSTER_SIZES[0].px, k = 900 / ph;
   // the poster is the card's art (lib/card-frame.js takes only https pictures, so the finished poster is put in its own card's art box here, in the
   // portrait layout a film poster gets); with no art box the preview under the title shows it
-  const render = () => {
-    const url = drawPainted(title, pic, Math.round(pw * k), 900).toDataURL('image/jpeg', 0.9); preview.src = url;
-    const box = el.querySelector(':scope > .vc-art'); if (!box || !pic) return;
-    for (const n of box.querySelectorAll(':scope > svg, :scope > .vc-seal, :scope > img')) n.remove();
-    box.classList.remove('vc-sealed'); box.classList.add('has-photo'); el.dataset.poster = '1';
-    const im = document.createElement('img'); im.className = 'vc-art-photo'; im.alt = preview.alt; im.src = url; box.appendChild(im); preview.hidden = true;
+  // the card's frame is rebuilt whenever its facts change (the skill's stats arrive, its name lands: lib/card-frame.js keep), and a rebuild makes a
+  // new art box with the plate or a forge painting in it: the finished poster is put back in the new box each time, so it stays the card's art
+  let url = '';
+  const place = () => {
+    const box = el.querySelector(':scope > .vc-art'); if (!box || !pic || !url) return;
+    if (!box.querySelector(':scope > img.vc-art-photo')) {
+      for (const n of box.querySelectorAll(':scope > svg, :scope > .vc-seal, :scope > img')) n.remove();
+      box.classList.remove('vc-sealed'); box.classList.add('has-photo');
+      const im = document.createElement('img'); im.className = 'vc-art-photo'; im.alt = preview.alt; im.src = url; box.appendChild(im);
+    }
+    el.dataset.poster = '1'; preview.hidden = true;
   };
+  const render = () => { url = drawPainted(title, pic, Math.round(pw * k), 900).toDataURL('image/jpeg', 0.9); preview.src = url; place(); };
   render();
+  new MutationObserver(place).observe(el, { childList: true });
   for (const s of POSTER_SIZES) {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'poster-size'; b.disabled = true; b.style.cssText = BTN;
     b.textContent = `Download ${s.name} (${s.px[0]}×${s.px[1]} px)`;

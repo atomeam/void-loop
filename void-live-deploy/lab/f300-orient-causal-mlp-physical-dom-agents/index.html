@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --hue: 200; --energy: 0.5; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family: system-ui, sans-serif; overflow:hidden; }
+canvas { position:absolute; inset:0; z-index:0; }
+#arena { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.agent {
+  position:absolute; width:64px; height:64px; border-radius:50%;
+  background: hsla(var(--h), 70%, 55%, 0.85); border:2px solid #fff8;
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;
+  cursor:grab; pointer-events:auto; user-select:none; transition: filter 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.agent:active { cursor:grabbing; }
+#hud {
+  position:fixed; top:12px; left:12px; z-index:2; background:rgba(0,0,0,0.6);
+  padding:10px 14px; border-radius:8px; font-size:13px; max-width:280px;
+}
+button {
+  margin:4px 4px 0 0; padding:6px 10px; background:#223; color:#fff; border:1px solid #445;
+  border-radius:4px; cursor:pointer;
+}
+button:hover { background:#334; }
+#status { font-size:12px; opacity:0.8; margin-top:6px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orient-Causal MLP Physical DOM Agents · Verse lab</title>
+<meta name="description" content="DeviceOrientation (beta/gamma tilt) as the primary causal input to a population of local tiny MLPs (one per agent). Each MLP (4→8→2) outputs a 2D force.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orient-Causal MLP Physical DOM Agents · Verse lab">
+<meta property="og:description" content="DeviceOrientation (beta/gamma tilt) as the primary causal input to a population of local tiny MLPs (one per agent). Each MLP (4→8→2) outputs a 2D force.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f300-orient-causal-mlp-physical-dom-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f300-orient-causal-mlp-physical-dom-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="arena"></div>
+<div id="hud">
+  <div><strong>F300 Orient-Causal MLP DOM Agents</strong></div>
+  <div>Tilt device or move mouse to drive forces.</div>
+  <button id="seal">Seal Best Genome</button>
+  <button id="transfer">Transfer to Random</button>
+  <button id="reset">Reset Agents</button>
+  <div id="status">Waiting for orientation…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orient-Causal MLP Physical DOM Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

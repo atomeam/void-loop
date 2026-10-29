@@ -140,7 +140,12 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
     const u = location.origin + location.pathname + '?' + p; try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
   build(); $('ask').value = says(); document.documentElement.classList.remove('wait');
   // the "Use with" row last of all
-  import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/convert/')).catch(() => {});
+  // its stage card opens on the conversion shown here, read back by the card to the same number (lib/convert-math.js cardAsk)
+  const words = (u) => [u.sym, u.name].map((w) => String(w).toLowerCase());
+  Promise.all([import('/lib/toolkit.js'), import('/lib/convert-math.js')]).then(([m, { cardAsk }]) => m.mountRelated(document.getElementById('related'), '/convert/', [], { card: () => {
+    const v = parseNum(st.text); if (!v) return ''; // an exact fraction; the card takes a plain number
+    const answer = (b) => { const p = parseAsk('1 ' + st.from.sym + ' to ' + b); return p && p.from === st.from && p.to && (!st.to || p.to === st.to) ? +fmt(convert(v, st.from, p.to), 15) : NaN; };
+    return cardAsk(+fmt(v, 15), words(st.from), st.to ? words(st.to) : null, answer); } })).catch(() => {});
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

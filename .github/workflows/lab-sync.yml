@@ -1,0 +1,82 @@
+# The lab comes live (owner, 2026-10-29: "get all these live and working too"): the lab repo (github atomeam/a-to-mind.com) makes a small standalone
+# experiment every hour. Once a day this pulls the new ones, turns each into a page of Verse at /lab/<slug>/ (tools/lab-import.mjs: scripts moved to
+# app.js so the page needs no CSP rule), opens every new one in headless Chromium (tools/lab-probe.mjs), and opens a pull request with the ones that run,
+# the catalog, the gallery at /lab/, the sitemap and domains/lab.broken.md (the ones that did not, as queue-ready lines). No secret, no model, no write
+# to anything but those files; the PR is labelled like Verse's other bot PRs and merges on Verse's review. docs/playbooks/lab.md.
+name: Verse lab sync
+
+on:
+  schedule:
+    - cron: '37 7 * * *' # 3:37 AM New York (EDT), off the hour, after the lab's night runs
+  workflow_dispatch:
+    inputs:
+      all:
+        description: "re-import and re-test every draft, not only the new or changed ones"
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-lab-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Checks (no dependencies needed)
+        run: node --test tools/lab-import.test.mjs
+      - name: npm ci
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: npx playwright-core install --with-deps chromium
+      # clones the lab repo (depth 1, public, no token), imports and tests what is new or changed since void-live-deploy/lab/catalog.json
+      - name: Import, test and publish what runs
+        env:
+          ALL: ${{ inputs.all }}
+        run: |
+          flags=""; [ "$ALL" = "true" ] && flags="--all"
+          node tools/lab-sync.mjs $flags | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Open a pull request
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -n "$(git status --porcelain -- void-live-deploy/lab void-live-deploy/sitemap.xml domains/lab.broken.md)" ] || { echo "nothing new in the lab"; exit 0; }
+          works=$(node -p "JSON.parse(require('fs').readFileSync('void-live-deploy/lab/catalog.json','utf8')).filter((e) => e.status !== 'broken').length")
+          broken=$(node -p "JSON.parse(require('fs').readFileSync('void-live-deploy/lab/catalog.json','utf8')).filter((e) => e.status === 'broken').length")
+          title="Lab: $works experiments live at /lab/, $broken waiting for a fix"
+          branch="lab/sync-$(date -u +%Y%m%d-%H%M%S)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -- void-live-deploy/lab void-live-deploy/sitemap.xml domains/lab.broken.md
+          git commit -q -m "$title" -m "Pulled from the lab repo, imported (tools/lab-import.mjs), opened in headless Chromium (tools/lab-probe.mjs) and published by .github/workflows/lab-sync.yml. The ones that did not run are in domains/lab.broken.md."
+          git push -q origin "$branch"
+          gh label create "made by Verse" --color 5c5cff --description "a change Verse's own tools made and the repo's checks passed" --force >/dev/null 2>&1 || true
+          url=$(gh pr create --base main --head "$branch" --label "made by Verse" --label "automerge" --title "$title" --body "The lab repo's new experiments, as pages at /lab/<slug>/ (scripts moved to app.js, so no CSP rule each), each opened in headless Chromium first. Broken ones are not published; they are queue-ready lines in domains/lab.broken.md. Playbook: docs/playbooks/lab.md.")
+          echo "### Lab PR: $url" >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Verse's review on ${url} by hand"
+          gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true

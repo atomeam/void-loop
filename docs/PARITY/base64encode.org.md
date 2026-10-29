@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: base64encode.org (https://www.base64encode.org/)
-- Verse: /base64/ (encoder, tower gate 9 of 14)
+- Verse: /base64/ (encoder, tower gate 12 of 14)
 - Live scan: 2026-10-28, HTTP 200, page title "Base64 Encode and Decode - Online"
 - History: [docs/HISTORY/base64encode.org.md](../HISTORY/base64encode.org.md)
 

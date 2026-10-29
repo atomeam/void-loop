@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#050510; color:#ddd; font-family:system-ui; overflow:hidden; }
+#canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
+#stage { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+.orb { position:absolute; width:70px; height:70px; border-radius:50%; background:radial-gradient(circle, rgba(80,160,255,0.6), rgba(20,40,80,0.3)); border:1px solid rgba(100,180,255,0.8); display:flex; align-items:center; justify-content:center; font-size:10px; text-align:center; pointer-events:auto; user-select:none; cursor:grab; box-shadow:0 0 15px rgba(80,160,255,0.4); transition:box-shadow 0.2s; }
+.orb:active { cursor:grabbing; }
+#info { position:fixed; bottom:12px; left:12px; background:rgba(0,0,0,0.7); padding:10px; font-size:11px; z-index:10; max-width:280px; border-radius:6px; }
+button { margin:3px; padding:4px 8px; background:#223; color:#adf; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#status { margin-top:6px; line-height:1.3; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU DOM Orb Causal Echo Field · Verse lab</title>
+<meta name="description" content="A causal pointer-trajectory residual predictor (tiny online-learning MLP in main thread) generates a decaying residual hotspot.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU DOM Orb Causal Echo Field · Verse lab">
+<meta property="og:description" content="A causal pointer-trajectory residual predictor (tiny online-learning MLP in main thread) generates a decaying residual hotspot.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f294-webgpu-dom-orb-causal-echo/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f294-webgpu-dom-orb-causal-echo/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="stage"></div>
+<div id="info">
+  <button id="seal">Seal Echo</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+  <div id="status">Move pointer to generate causal trajectory. Orbs attract particles and morph with residual. Drag orbs to inject force. Offline-capable.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU DOM Orb Causal Echo Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -11,7 +11,8 @@ import { isIt } from '../void-live-deploy/skills/is-it.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const fixPages = JSON.parse(readFileSync(resolve(root, 'tools/fix-pages.json'), 'utf8'));
-const entries = pages({ fixPages }).map((p) => ({ ...p, lastmod: '2026-10-25' }));
+const lab = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/lab/catalog.json'), 'utf8')).filter((e) => e.status !== 'broken').map((e) => e.slug).sort();
+const entries = pages({ fixPages, lab }).map((p) => ({ ...p, lastmod: '2026-10-25' }));
 const locs = entries.map((e) => e.loc);
 
 test('every tool page, the home page, the tower and every fix page, each exactly once', () => {
@@ -20,6 +21,13 @@ test('every tool page, the home page, the tower and every fix page, each exactly
   for (const p of fixPages) assert.ok(locs.includes('/fix/' + p.slug + '/'), p.slug);
   assert.equal(new Set(locs).size, locs.length, 'no page listed twice');
   for (const l of locs) assert.match(l, /^\/(?:[a-z0-9-]+\/?|[a-z0-9-]+\/[a-z0-9-]+\/?|llms\.txt)?$/, l);
+});
+
+test('the lab: the gallery and every experiment the catalog publishes, none that is broken', () => {
+  assert.ok(locs.includes('/lab/'));
+  for (const slug of lab) assert.ok(locs.includes('/lab/' + slug + '/'), slug);
+  assert.equal(locs.filter((l) => l.startsWith('/lab/')).length, lab.length + 1);
+  assert.ok(!pages({ fixPages }).some((p) => p.loc.startsWith('/lab/')), 'no lab entries without a catalog');
 });
 
 test('the /is-it/ days: one slug per day the function knows, every one answered by isIt, no aliases', () => {

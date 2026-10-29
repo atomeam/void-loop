@@ -29,6 +29,7 @@
 <link rel="modulepreload" href="/lib/gate-badge.js">
 <link rel="modulepreload" href="/lib/tower-controls.js">
 <link rel="modulepreload" href="/lib/tower-journeys.js">
+<link rel="modulepreload" href="/lib/tower-weight.js">
 <link rel="modulepreload" href="/skills/tower.js">
 <link rel="modulepreload" href="/lib/avatar.js">
 <link rel="modulepreload" href="/lib/tower-rank.js">
@@ -37,13 +38,15 @@
 <body>
 <main><div id="tower">Reading Versus…</div><p id="detail" aria-live="polite"></p><div id="stamp"></div></main>
 <script type="module">
-  import { tower } from '/lib/tower.js';
+  import { tower, towerArgs } from '/lib/tower.js';
   import { towerHtml, detailText } from '/skills/tower.js';
   const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   async function draw() {
-    const [inv, ev, fr] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json')]);
-    const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr);
+    // the same files and the same arguments the stage's Versus card reads (skills/tower.js load), so this page and the card name one target:
+    // the lock in tower.target.json, then the smallest by rank and weight
+    const [inv, ev, fr, rk, sz, tg] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.size.json'), get('/tower.target.json')]);
+    const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg }));
     $('tower').innerHTML = towerHtml(t, esc); $('stamp').textContent = 'updated ' + new Date().toLocaleTimeString();
     for (const b of $('tower').querySelectorAll('.tower-floor')) b.onclick = () => { const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) $('detail').textContent = detailText(f); }; // the card has no detail slot of its own, so the floor's line goes under it
   }

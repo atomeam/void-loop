@@ -25,7 +25,9 @@ import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, pai
 import { nearOf } from '../../lib/near-miss.js';
 import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
+import { isSelfAsk, isOwnCardNote, readSelf, selfFacts, cardLists, SELF_RULE, OWN_CARD_RULE } from '../../lib/self-context.js';
+import { ownCardAnswer, fetchPulls, keptCards } from '../../lib/own-card.js';
+import { ASK_MAX, QUERY_MAX, supportedOnly, hasCorrection, CORRECTION_RULE, ACT_RULE, FILLER_RULE, dropUnbackedActs, dropFiller } from '../../lib/answer-honesty.js';
 import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '../../lib/draft.js';
 import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
@@ -47,14 +49,19 @@ const MODEL = models('answer');
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const TTL_DAYS = 7, RL_MAX = 12;
-const norm = (t) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
+// an ask is read whole up to ASK_MAX (lib/answer-honesty.js): at 300 a status note was cut mid-word and answered from the cut
+const OWN_CARDS = 'own-cards'; // void_kv: my last cards for one visitor's notes about my own card, so their next note's quotes are checked against them
+const norm = (t, n = ASK_MAX) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n);
 async function sha(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 32);
 }
 const UA = { 'user-agent': 'Verse/1.0 (https://a-to-mind.com; atom@a-to-mind.com)' };
 async function sources(ask) {
-  const q = ask.replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
+  const q = String(ask).slice(0, QUERY_MAX).replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
+  // a name's section lookups (below) need only the ask, so they go out with the search, not after the summaries: two round trips to
+  // Wikipedia before the answer, not four (the router runs beside them and must not be waited on, tools/test_void.mjs "router: it runs while")
+  const name = isNameAsk(q), looks = name ? sectionLookups(q) : null;
   const s = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&srsearch=' + encodeURIComponent(q), { headers: UA }).then((r) => r.json()).catch(() => null);
   const hits = (s && s.query && s.query.search) || [];
   // the three summaries are fetched together, not one after another (perf pass 2026-10-16: two round trips to Wikipedia saved
@@ -69,7 +76,7 @@ async function sources(ask) {
   // its own: the summaries above hold only fuzzy neighbours (Happy Harry's). When none holds every word of the ask, read the redirect's section, or the
   // full-text search's section hit, and put that first (lib/no-answer.js)
   // Wikipedia itself says where a name lives: a redirect into a section of a list page leads, even when the list's lead mentions the name in passing (Frylock, Meatwad); the full-text section search only when nothing matches
-  if (isNameAsk(q)) { const sec = await sectionSource(q, !sourcesMatch(q, out)); if (sec) out.unshift(sec); }
+  if (name) { const sec = await sectionSource(q, !sourcesMatch(q, out), looks); if (sec) out.unshift(sec); }
   // the page whose own title holds most of the ask's words leads ("marie curie physicist chemist" is Marie Curie, not Pierre Curie, whom the search ranked first); a tie keeps the search's order
   const need = askWords(q), over = (x) => { const t = new Set(String(x.title || '').toLowerCase().match(/[a-z0-9]+/g) || []); return need.filter((w) => t.has(w) || t.has(w + 's') || t.has(w.replace(/s$/, ''))).length; };
   out.map((x, i) => [x, i]).sort((a, b) => over(b[0]) - over(a[0]) || a[1] - b[1]).forEach(([x], i) => { out[i] = x; });
@@ -84,13 +91,21 @@ async function picFor(env, lead) {
     return { url: p.thumb || p.url, alt: String(p.alt || lead.name).slice(0, 140), credit: [{ t: 'Photo: ' }, p.credit.author ? (p.authorUrl ? { t: p.credit.author, href: p.authorUrl } : { t: p.credit.author }) : { t: 'author not stated' }, { t: ', ' }, { t: p.credit.licence, href: p.credit.licenceUrl }, { t: ', via ' }, { t: p.credit.source, href: p.credit.sourceUrl }], archive: true, source: p.source };
   } catch (_) { return null; }
 }
-async function sectionSource(q, textSearch = true) {
+// the two lookups that say where a name lives: the redirect of its title and the full-text section search. Both are started at once and
+// read only when needed (the section search only when the summaries hold no page that names the ask). Never rejects.
+function sectionLookups(q) {
+  const get = (u) => { try { return fetch(u(), { headers: UA }).then((r) => r.json()).catch(() => null); } catch (_) { return Promise.resolve(null); } };
+  const title = q.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+  return {
+    red: get(() => WIKI + '&action=query&redirects=1&titles=' + encodeURIComponent(title)),
+    fts: get(() => WIKI + '&action=query&list=search&srlimit=5&srprop=snippet|sectiontitle&srsearch=' + encodeURIComponent('"' + q + '"')),
+  };
+}
+async function sectionSource(q, textSearch, looks) {
   try {
-    const title = q.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
-    const red = await fetch(WIKI + '&action=query&redirects=1&titles=' + encodeURIComponent(title), { headers: UA }).then((r) => r.json()).catch(() => null);
-    let hit = listRedirect(red);
+    let hit = listRedirect(await looks.red);
     if (!hit && textSearch) {
-      const fts = await fetch(WIKI + '&action=query&list=search&srlimit=5&srprop=snippet|sectiontitle&srsearch=' + encodeURIComponent('"' + q + '"'), { headers: UA }).then((r) => r.json()).catch(() => null);
+      const fts = await looks.fts;
       hit = sectionHit(fts && fts.query && fts.query.search, q);
     }
     if (!hit || !hit.section) return null; // a redirect with no section is an ordinary article: the search already holds it
@@ -394,13 +409,14 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
   // an ask about Verse itself is answered from its own facts, which change with every ship: never from the 7-day cache
-  const self = isSelfAsk(ask) && !isPaste(ask); // a long paste that mentions Verse is still a paste, not a question about Verse (owner, 2026-10-16)
+  // a note about one of Verse's own cards is about Verse even when it is long (owner, 2026-10-29)
+  const self = isSelfAsk(ask) && !isPaste(ask) || isOwnCardNote(ask); // a long paste that mentions Verse is still a paste, not a question about Verse (owner, 2026-10-16)
   // what this person told Verse (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
   const told = self ? null : await toldMe(request, env, ask);
   try {
     const hit = masked || self || told ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
     // an answer cached before sources were filtered is filtered on the way out (lib/cite.js)
-    if (hit && !isNoAnswer(hit.answer)) { const c = keepCited(hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }); } // a refusal cached before this check is not served again
+    if (hit && !isNoAnswer(hit.answer)) { const c = keepCited(dropFiller(dropUnbackedActs(hit.answer)) || hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }); } // a refusal cached before this check is not served again
   } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
 
@@ -471,7 +487,16 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const clefP = clefOn(env) ? clefRoute(env, ask) : Promise.resolve(null);
   // an ask about Verse itself reads Verse's own facts instead of Wikipedia (lib/self-context.js)
   let selfP = self ? readSelf(env, origin) : null;
-  let src = self ? [] : await sources(ask);
+  // a note about my own card: the repo's pull requests (for the status of each fix it names) and my earlier cards (to check what it quotes),
+  // read beside everything else, both bounded (lib/own-card.js)
+  // kept per visitor (a hash of their address, never the address): one person's note or card never reaches another person's card
+  const own = isOwnCardNote(ask), ownKey = own ? OWN_CARDS + ':' + (await sha(request.headers.get('cf-connecting-ip') || 'anon')).slice(0, 16) : '';
+  const pullsP = own ? fetchPulls(fetch) : null;
+  const priorP = own && env.DB ? env.DB.prepare('SELECT v FROM void_kv WHERE k = ?').bind(ownKey).first().then((r) => (r && r.v ? JSON.parse(r.v) : []), () => []) : Promise.resolve([]);
+  const ownBody = async (lead) => { const s = (await selfP) || {}; const sj = s.self || null; return ownCardAnswer(lead, ask, { lists: cardLists(sj), commits: sj && Array.isArray(sj.commits) ? sj.commits : [], pulls: await pullsP, prior: (await priorP) || [] }); };
+  const keepCard = (card) => env.DB && later(priorP.then((old) => env.DB.prepare('INSERT INTO void_kv (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v').bind(ownKey, JSON.stringify(keptCards(old, ask, card, new Date().toISOString()))).run()).catch(() => {}));
+  // a paste is summarised from its own words (PASTE_RULE): a Wikipedia search on it only finds pages it never mentions
+  let src = self || isPaste(ask) ? [] : await sources(ask);
   const srcAt = Date.now();
   const route = await settle(routeP, t0 + BUDGET_MS);
   // the skill the ask nearly was (lib/near-miss.js, asked by Verse): the page offers that skill's first example when it ends up with no answer
@@ -479,17 +504,19 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
   if (!self && !isPaste(ask) && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
-  const facts = self ? selfFacts(await selfP) : '';
+  const facts = self ? selfFacts(await selfP, { card: own, note: ask }) : '';
   let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
   const lead = !self && !told && src.length && isNameAsk(ask) && sourcesMatch(ask, [src[0]]) ? src[0] : null; // the first source holds the ask itself: its description types the card (lib/subject-kinds.js)
   const sectioned = !self && src.length && /\u00a7/.test(src[0].title || '');
   const SECTION_RULE = 'Source [1] is the section of a list page that is about the thing asked: answer from it, say only what its text says (no episode, price, date or actor it does not name), and cite [1].';
+  // what an answer may claim, on every path (lib/answer-honesty.js): the correction wins, no claimed write, no filler
+  const honest = (hasCorrection(ask) ? ' ' + CORRECTION_RULE : '') + ' ' + ACT_RULE + ' ' + FILLER_RULE;
   const messages = self ? [
-    { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE },
+    { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE + (isOwnCardNote(ask) ? ' ' + OWN_CARD_RULE : '') + honest },
     { role: 'user', content: `Question: ${ask}\n\nFacts about Verse:\n${facts || '(my facts could not be read just now)'}` },
   ] : [
-    { role: 'system', content: ANSWER_SYSTEM + (sectioned ? ' ' + SECTION_RULE : '') + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') },
+    { role: 'system', content: ANSWER_SYSTEM + (sectioned ? ' ' + SECTION_RULE : '') + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') + honest },
     { role: 'user', content: `Question: ${ask}\n\n` + (told ? `What you told me:\n${told.map((l) => '- ' + l).join('\n')}\n\n` : '') + `Sources:\n${ctx}` },
   ];
   let answer = '', model = MODEL, outcome = route.kind === 'fallback' ? route.why : 'default', would = null;
@@ -539,21 +566,25 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       const paid = answer ? answer : access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
         // no paid path: the open-web answer, as with the switch off (for an ask about Verse: its facts)
-        const web = self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
+        const web = own ? await ownBody('') : self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
         log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
         if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind, ...nearOut });
+        if (own) keepCard(web);
         return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, ...nearOut, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
       }
       if (!answer) { answer = paid; model = access.model; outcome += '; default busy, paid from earnings'; }
     }
   }
   log({ model });
-  // only the sources the answer cited go on the card (lib/cite.js); its [n] markers are renumbered to match
-  ({ answer, sources: pub } = keepCited(answer, pub));
+  // no claimed write and no filler (lib/answer-honesty.js); then only the sources the answer cited, and whose fetched text holds the
+  // sentence that cites them, go on the card (lib/cite.js renumbers the [n] markers to match)
+  answer = dropFiller(dropUnbackedActs(answer)) || answer;
+  ({ answer, sources: pub } = supportedOnly(answer, src, pub));
   // a refusal ("I do not have information ...") is not an answer: nothing is cached or labelled as one, and the page gets the closest guess to offer as a question
   if (!self && !told && isNoAnswer(answer)) return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, ...(guessOf(src) ? { guess: guessOf(src) } : {}), route: route.kind, ...nearOut });
   if (sectioned && src[0] && answer) answer = grounded(answer, src[0].text); // a list-page section: only what its text says
   answer = scrubOut(answer, env); // no env value or key shape leaves in a model's words, whatever the model was told (lib/keeper.js)
+  if (own) { answer = scrubOut(await ownBody(answer), env); keepCard(answer); } // the lead the note gave reason for, then the lists from my records
   const at = new Date().toISOString();
   // the cache write finishes after the answer has gone out (waitUntil), not before: nobody waits on D1 for an answer they already have
   if (!masked && !self && !told) try {

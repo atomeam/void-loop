@@ -29,6 +29,7 @@ export const STEPS = [
   { name: 'asks', script: 'asks-link.mjs', write: ['--write'], check: ['--check'], volatile: true, why: "which of Verse's asks are built, linked to the ledger line that built them (the wants and self cards list only the rest); a new ledger line can answer an old ask, so the deploy links them" },
   { name: 'self', script: 'self-context.mjs', write: [], check: ['--check'], volatile: true, why: "Verse's facts about itself (the self card, /api/answer), from everything above and the ledgers; it embeds the newest commits, so only the deploy keeps it current" },
   { name: 'bench-alarms', script: 'bench-alarms.mjs', write: [], check: ['--check'], volatile: true, why: "the Bench icon's count of checked false alarms; regenerated at deploy" },
+  { name: 'churn', script: 'churn.mjs', write: ['--write'], check: ['--check'], volatile: true, why: "churn.json: the files changed more than 12 times in 7 days, from git; the will skips a want that names one, and only the deploy keeps the window current" },
   { name: 'sitemap', script: 'sitemap.mjs', write: [], check: ['--check'], volatile: true, why: 'sitemap.xml: the home page, every tool page, the tower, the /fix/ and /is-it/ pages, lastmod from git; the deploy sets the dates' },
 ];
 

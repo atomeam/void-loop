@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  .agent { position: absolute; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; pointer-events: none; transition: box-shadow 0.2s; }
+  .agent.champ { box-shadow: 0 0 16px #0f0; }
+  #ui { position: fixed; bottom: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 12px; border-radius: 8px; font-size: 13px; z-index: 10; max-width: 320px; }
+  button { background: #333; color: #fff; border: 1px solid #555; padding: 4px 8px; margin: 2px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #555; }
+  #status { margin-top: 6px; font-size: 12px; color: #aaa; }
+  textarea { width: 100%; height: 40px; font-size: 10px; background: #111; color: #ccc; border: 1px solid #444; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-Driven MLP Hybrid DOM-Canvas Agents · Verse lab</title>
+<meta name="description" content="Local tiny MLPs (pure JS) take DeviceOrientation (beta/gamma) as causal input and output velocity biases for competitive DOM agent cards.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-Driven MLP Hybrid DOM-Canvas Agents · Verse lab">
+<meta property="og:description" content="Local tiny MLPs (pure JS) take DeviceOrientation (beta/gamma) as causal input and output velocity biases for competitive DOM agent cards.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f191-orientation-mlp-hybrid-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f191-orientation-mlp-hybrid-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="agents"></div>
+<div id="ui">
+  <div>F191 Hybrid MLP Agents — tilt or move mouse</div>
+  <div id="fitness"></div>
+  <button id="seal">Seal Champion</button>
+  <button id="export">Export Genome</button>
+  <button id="import">Import</button>
+  <textarea id="payload" placeholder="paste sealed genome"></textarea>
+  <div id="status">Ready. Grant orientation or use mouse.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-Driven MLP Hybrid DOM-Canvas Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

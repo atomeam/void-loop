@@ -2205,18 +2205,59 @@
     },
     {
       "words": "Migrate answer generation from gpt-oss-120b to Gemma [What I want next].",
-      "ledgerAt": "2026-10-10T15:42:43Z",
-      "why": "built: model bake-off 2026-10-10 (llama-3.2-3b-instruct, gemma-4-26b-a4b-it, gpt-oss-120b), run 38064301087: void, the site route ran models with thinking on unlike the answer engine; rerun with the engine's own options (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma)"
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot (commit 630e666fb, lib/models.js); the bake-off of 2026-10-10 only measured the models (tools/asks-link.json)"
     },
     {
       "words": "Migrate answer generation from gpt-oss-120b to Gemma",
-      "ledgerAt": "2026-10-10T15:42:43Z",
-      "why": "built: model bake-off 2026-10-10 (llama-3.2-3b-instruct, gemma-4-26b-a4b-it, gpt-oss-120b), run 38064301087: void, the site route ran models with thinking on unlike the answer engine; rerun with the engine's own options (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma)"
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot (commit 630e666fb, lib/models.js); the bake-off of 2026-10-10 only measured the models (tools/asks-link.json)"
+    },
+    {
+      "words": "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done (tools/asks-link.json)"
+    }
+  ],
+  "held": [
+    {
+      "words": "Absorb every repository on the account into the core code",
+      "frontier": "Absorb and connect every repo",
+      "until": "sycophanthex.com",
+      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the tower goes every site ever made, smallest first (owner, 2026-10-29)"
+    },
+    {
+      "words": "Create a browser-based utility to check the watertightness of STL print files.",
+      "until": "sycophanthex.com",
+      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the forge already checks the STL files it writes (printCheck, ledger 2026-10-10T20:43:56Z), a check for a file someone brings waits (owner, 2026-10-29)"
     }
   ],
   "totals": {
     "asked": 239,
-    "built": 235,
-    "through": "2026-10-28T22:29:00Z"
+    "built": 236,
+    "through": "2026-10-28T22:29:00Z",
+    "open": [
+      {
+        "ask": "Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins.",
+        "at": "2026-10-17T12:33:00Z",
+        "kind": "build",
+        "small": true,
+        "times": 1
+      },
+      {
+        "ask": "Absorb every repository on the account into the core code",
+        "at": "2026-10-28T22:29:00Z",
+        "kind": "daily",
+        "small": false,
+        "times": 6
+      },
+      {
+        "ask": "Create a utility to check the watertightness of STL print files in the browser",
+        "at": "2026-10-28T22:29:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 6
+      }
+    ]
   }
 }

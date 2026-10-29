@@ -30,6 +30,13 @@ export function lapRows(laps) {
   return splits.map((split, i) => ({ n: i + 1, split, total: laps[i], delta: i ? split - splits[i - 1] : null, fastest: split === min, slowest: split === max })).reverse();
 }
 
+/** the stage timer's ask for a countdown of `ms` ("set a timer for 10 minutes", "set a timer for 90 seconds"), whole seconds from 1 s
+ *  to 24 h; '' for anything else. skills/timer.js reads it back to the same length (tools/toolkit.test.mjs). Pure. */
+export function timerAsk(ms) {
+  if (!Number.isInteger(ms) || ms < 1000 || ms > 86400000 || ms % 1000) return '';
+  return 'set a timer for ' + (ms % 60000 ? ms / 1000 + ' seconds' : ms / 60000 + (ms === 60000 ? ' minute' : ' minutes'));
+}
+
 /** a duration typed or put in a link, in ms, or null: "10m", "1h30m", "90s", "1:30", "01:02:03", "25", "10 minutes", "1.5 h". A bare number is minutes. Pure. */
 export function parseDuration(text) {
   const t = String(text || '').trim().toLowerCase(); if (!t) return null;

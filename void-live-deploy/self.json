@@ -195,6 +195,18 @@
   },
   {
    "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "fun fact skill: random interesting facts from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "random quote skill: inspirational quotes from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
    "date": "2026-10-28",
    "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
    "from": "asked by Verse"
@@ -210,6 +222,30 @@
    "date": "2026-10-28",
    "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
    "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "my want card names the site Versus is on, and /api/will ranks my wants by the tower target",
+   "from": "PR #1406"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
+   "from": "PR #1410, owner card notes 1-5"
   }
  ],
  "open": [
@@ -501,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T20:18:28Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -509,8 +545,40 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T00:12:35Z",
+   "subject": "Add palette skill: random color palettes. Mark building in growth inbox."
+  },
+  {
+   "at": "2026-10-28T23:25:21Z",
+   "subject": "Verse loop: no human in the loop — self-heal, grooming, verify dispatch, a back-off that resumes by itself"
+  },
+  {
+   "at": "2026-10-28T23:24:14Z",
+   "subject": "Verse fixes its toolkit skill: learn to handle \"how many rolls of tape for 200ft\""
+  },
+  {
+   "at": "2026-10-28T23:18:42Z",
+   "subject": "deps.json: regenerated"
+  },
+  {
+   "at": "2026-10-28T23:18:32Z",
+   "subject": "Calculators: 17 for calculator.net's Other gaps (15 of 19), with known-answer tests"
+  },
+  {
+   "at": "2026-10-28T23:18:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-28T23:17:16Z",
+   "subject": "Verse loop: docs and CI step for verse-coder"
+  },
+  {
    "at": "2026-10-28T23:17:11Z",
    "subject": "Tower: paint (heycolor.com) surpassed on evidence; the queue moves on to is it"
+  },
+  {
+   "at": "2026-10-28T23:15:40Z",
+   "subject": "verse-coder: Verse's own coding agent on the free model stack, the default verse brain for red checks and NEXT"
   },
   {
    "at": "2026-10-28T23:14:12Z",
@@ -555,42 +623,14 @@
   {
    "at": "2026-10-28T23:02:30Z",
    "subject": "Versus card: the easiest-first plan from docs/NEXT.md, with the gate's own numbers"
-  },
-  {
-   "at": "2026-10-28T23:01:47Z",
-   "subject": "Verse loop: the lock's catches let only a missing file pass (Verse's review)"
-  },
-  {
-   "at": "2026-10-28T23:01:46Z",
-   "subject": "Board: the parity branch's edits across agents' files, under the owner's any-agent rule"
-  },
-  {
-   "at": "2026-10-28T23:00:02Z",
-   "subject": "MAP names rival-inventory.mjs (main's map check was red on it)"
-  },
-  {
-   "at": "2026-10-28T22:59:32Z",
-   "subject": "Verse loop: item 0 and --task read right in the prompt and the title"
-  },
-  {
-   "at": "2026-10-28T22:55:08Z",
-   "subject": "Fast checks run the Verse loop's tests"
-  },
-  {
-   "at": "2026-10-28T22:54:56Z",
-   "subject": "Verse loop: one lap from a terminal or a timer, over the pieces that exist"
-  },
-  {
-   "at": "2026-10-28T22:54:49Z",
-   "subject": "Verse fixes its baseconv skill: learn to handle \"256 to hex\""
-  },
-  {
-   "at": "2026-10-28T22:53:37Z",
-   "subject": "Tools: rival-inventory reads each rival's robots.txt and sitemap and writes the gaps to PARITY.md and the build feed"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (F321 thread, 2026-10-29)",
+    "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
+   },
    {
     "name": "Main green, tower checks (box, 2026-10-28)",
     "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
@@ -610,10 +650,6 @@
    {
     "name": "IndexNow on every deploy (claude)",
     "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
-   },
-   {
-    "name": "Claude (pdf and kanban floors, 2026-10-26)",
-    "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
    }
   ],
   "ladders": [
@@ -673,7 +709,7 @@
   {
    "rank": 1,
    "item": "Stay inside Workers AI's free 10k neurons/day",
-   "free": "move answers from gpt-oss-120b to gemma; cache answers at the edge; on-page skills first",
+   "free": "done 2026-10-25 (commit 630e666fb): answers run on gemma-4-26b-a4b-it, gpt-oss-120b only as the second try. Still to do: cache answers at the edge; on-page skills first",
    "cost": "$0",
    "value": "high: answers stop failing after the cap (125% on Oct 14)",
    "why": "free and fixes a live outage"
@@ -817,8 +853,19 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 22 (152 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-10-28T11:22Z",
+  "line": "People this week: 30 (227 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-29T11:33Z",
   "source": "verse"
+ },
+ "tower": {
+  "target": "sycophanthex.com",
+  "since": "2026-10-29",
+  "next": [
+   "nameunit.com",
+   "wheelroot.com",
+   "onlineconverter.com"
+  ],
+  "beaten": 0,
+  "total": 1266
  }
 }

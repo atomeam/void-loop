@@ -186,7 +186,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const { tower } = await import(pathToFileURL(path.join(root, 'void-live-deploy/lib/tower.js')).href);
   const inv = JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy/lap.items.json'), 'utf8'));
   const ev = JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy/tower.evidence.json'), 'utf8'));
-  const floors = tower(inv.onlySite || [], ev.floors || {}, null).floors;
+  // every site of the queue, not only the hand floors: the frontier's sites too, in queue order (lightest first when weights are known), so no site is
+  // fought without a cited history and none is skipped
+  const rd = (f) => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', f), 'utf8')); } catch (_) { return null; } };
+  const floors = tower(inv.onlySite || [], ev.floors || {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json')).floors;
   const bySlug = new Map();
   for (const f of floors) { const s = slugOf(f.site); if (!bySlug.has(s)) bySlug.set(s, []); bySlug.get(s).push(f); }
   let list = [...bySlug.entries()].sort((a, b) => (+b[1].some((f) => f.beaten || (f.n >= 9 && !(f.lost || []).length))) - (+a[1].some((f) => f.beaten || (f.n >= 9 && !(f.lost || []).length))));
@@ -195,6 +198,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   if (only.length) list = list.filter(([s]) => only.includes(s));
   if (args.includes('--retry-archive')) list = list.filter(([s]) => { try { return /## Archived copies[^\n]*\n\n- unknown/.test(fs.readFileSync(path.join(root, 'docs/HISTORY', s + '.md'), 'utf8')); } catch (_) { return true; } });
   if (args.includes('--missing')) list = list.filter(([s]) => !fs.existsSync(path.join(root, 'docs/HISTORY', s + '.md')));
+  const mx = args.indexOf('--max'); if (args.includes('--missing') && mx >= 0) { list.sort((a, b) => Math.min(...a[1].map((f) => f.floor)) - Math.min(...b[1].map((f) => f.floor))); list = list.slice(0, Math.max(1, Number(args[mx + 1]) || 40)); }
   const date = new Date().toISOString().slice(0, 10);
   fs.mkdirSync(path.join(root, 'docs/HISTORY'), { recursive: true });
   const N = args.includes('--slow') ? 1 : 4; let i = 0;

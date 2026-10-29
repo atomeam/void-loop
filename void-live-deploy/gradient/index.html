@@ -164,7 +164,7 @@
   });
   addEventListener('hashchange', () => { const r = open(location.hash.slice(1)); if (r && pack(r) !== pack(g)) { g = r; draw(); } });
   draw();
-  mountRelated(document.getElementById('related'), '/gradient/', [{ label: 'Paint the wheel with it', href: () => (setPalette(along(pack(g).split('-').slice(1).map((x) => ({ color: '#' + x.slice(0, 6), pos: +x.slice(9) })), 8)) ? '/wheel/' : null) }, { label: 'Open its first colour', href: () => { const c = pack(g).split('-')[1]; return c ? '/color/?c=' + c.slice(0, 6) : null; } }]);
+  mountRelated(document.getElementById('related'), '/gradient/', [{ label: 'Paint the wheel with it', href: () => (pack(g).split('-').length > 1 ? '/wheel/' : null), go: () => setPalette(along(pack(g).split('-').slice(1).map((x) => ({ color: '#' + x.slice(0, 6), pos: +x.slice(9) })), 8)) }, { label: 'Open its first colour', href: () => { const c = pack(g).split('-')[1]; return c ? '/color/?c=' + c.slice(0, 6) : null; } }], { card: () => 'css gradient ' + css(g) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

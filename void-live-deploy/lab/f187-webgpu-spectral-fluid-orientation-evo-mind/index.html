@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 220; }
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  .echo { position: absolute; padding: 8px 12px; background: rgba(20,20,40,0.7); border: 1px solid hsla(var(--hue),70%,60%,0.6); border-radius: 8px; pointer-events: auto; cursor: grab; backdrop-filter: blur(4px); transition: transform 0.1s; font-size: 13px; max-width: 180px; }
+  .echo:active { cursor: grabbing; }
+  #hud { position: fixed; top: 12px; left: 12px; font-size: 12px; opacity: 0.8; z-index: 10; }
+  button { margin: 4px; padding: 4px 8px; background: #222; color: #eee; border: 1px solid #444; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Spectral Fluid Mind — Orientation Causal + Evolutionary DOM Echoes · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: WebGPU Spectral Fluid Mind — Orientation Causal + Evolutionary DOM Echoes.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Spectral Fluid Mind — Orientation Causal + Evolutionary DOM Echoes · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: WebGPU Spectral Fluid Mind — Orientation Causal + Evolutionary DOM Echoes.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f187-webgpu-spectral-fluid-orientation-evo-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f187-webgpu-spectral-fluid-orientation-evo-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <div>F-187 Spectral Fluid Mind <span id="status">init...</span></div>
+  <button id="seal">Seal genes</button>
+  <button id="reset">Reset</button>
+  <div id="info">Orientation + pointer inject forces. Worker evolves viscosity/forceGain. DOM echoes advected by velocity, morph with vorticity.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Spectral Fluid Mind — Orientation Causal + Evolutionary DOM Echoes</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

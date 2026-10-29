@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Verse's own coding agent (owner, 2026-10-28: "make verse a coding agent"). The default "verse" brain of tools/verse-loop.mjs
 // for a red check or the top of docs/NEXT.md, anywhere in the repo; tools/propose-fix.mjs stays the brain for skill probes.
-// A plain agent loop on the free model stack: Workers AI first (CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID), then OpenRouter,
+// A plain agent loop on the free model stack: Verse's own model first (the site's binding, /api/coder, VOID_OWNER_TOKEN), then Workers AI
+// over the REST API (CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID), GitHub Models (GH_MODELS_TOKEN), OpenRouter,
 // Groq, Gemini and Cerebras, whichever keys the environment holds. Keys come from the environment only and never reach a check.
 // The model answers each turn with one JSON tool call: list, read, search, edit (a unified diff), check (one named check), finish.
 // The limits, each enforced here and not left to the model:
@@ -15,7 +16,7 @@
 // Exit 0: done, the change is left in the tree. 3: nothing to change or gave up. 4: no model key. 5: a cap. 6: no model answered.
 // The last line printed is JSON: { outcome, why, turns, tokens, files, provider }.
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, unlinkSync, realpathSync, mkdtempSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, unlinkSync, realpathSync, mkdtempSync, rmSync, mkdirSync } from 'node:fs';
 import { resolve, join, relative, sep, dirname, isAbsolute } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -31,8 +32,13 @@ export const EXIT = { done: 0, nothing: 3, 'no-model': 4, 'turn-cap': 5, 'token-
 /** the providers the environment has keys for, in order. Pure: keys stay in the returned objects, never in a log line. */
 export function providersFrom(env = process.env) {
   const out = [];
+  // Verse's own model on the site's binding (functions/api/coder.js, the owner token): needs no Workers AI permission on any API token
+  if (env.VOID_OWNER_TOKEN) out.push({ name: 'verse', model: FREE_MODEL, key: env.VOID_OWNER_TOKEN, url: String(env.VOID_SITE || 'https://a-to-mind.com').replace(/\/+$/, '') + '/api/coder', shape: 'workers' });
   if (env.CLOUDFLARE_API_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: env.CLOUDFLARE_API_TOKEN,
     url: 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + (env.VERSE_CODER_CF_MODEL || FREE_MODEL), shape: 'workers' });
+  // GitHub Models (a free pool that needs no key to fetch: the workflow's own token with `models: read`); unverified against GitHub's docs from the sandbox, a refusal shows in the run log
+  if (env.GH_MODELS_TOKEN) out.push({ name: 'github-models', model: env.VERSE_CODER_GHMODELS_MODEL || 'openai/gpt-4.1', key: env.GH_MODELS_TOKEN, url: 'https://models.github.ai/inference/chat/completions', shape: 'openai',
+    headers: { accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28' } });
   const oa = (name, key, url, model) => { if (env[key]) out.push({ name, model, key: env[key], url, shape: 'openai' }); };
   oa('openrouter', 'OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions', env.VERSE_CODER_OPENROUTER_MODEL || 'qwen/qwen3-coder:free');
   oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'llama-3.3-70b-versatile');
@@ -40,7 +46,7 @@ export function providersFrom(env = process.env) {
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
 }
-export const KEY_NAMES = ['CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
+export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'GH_MODELS_TOKEN (the workflow token, permissions: models: read)', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
 
 /** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on */
 export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, maxOut = 4096 } = {}) {
@@ -51,9 +57,11 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
       const i = (at + k) % providers.length, p = providers[i];
       try {
         const body = p.shape === 'workers' ? { messages, max_tokens: maxOut, temperature: 0.2 } : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
-        const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+        const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
         if (!r.ok) { errs.push(p.name + ' ' + r.status); continue; }
-        const j = await r.json(), x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
+        // a 2xx that is not JSON says what came back (status and type), never its body: "github-models SyntaxError" told nobody anything
+        let j; try { j = await r.json(); } catch (_) { const t = (r.headers && typeof r.headers.get === 'function' && r.headers.get('content-type')) || 'no type'; errs.push(p.name + ' ' + (r.status || 'ok') + ' not JSON (' + String(t).split(';')[0].slice(0, 40) + ')'); continue; }
+        const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
         const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
         if (!text.trim()) { errs.push(p.name + ' empty'); continue; }
         at = i; fn.last = p.name + ' ' + p.model;
@@ -158,11 +166,43 @@ export const keyless = (env = process.env) => Object.fromEntries(Object.entries(
 const git = (root, args, opts = {}) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, ...opts });
 const readOr = (p) => { try { return readFileSync(p, 'utf8'); } catch (_) { return null; } };
 
+export const WINDOW = Object.freeze({ messages: 24, fresh: 4, keep: 600 });
+/** what the model gets each turn: the system and the task, then the last WINDOW.messages turns, with each tool result older than the
+ *  newest WINDOW.fresh messages cut to WINDOW.keep characters. Every turn sends the whole window again, so full old reads made the
+ *  count grow with the square of the turns: a 250000-token run stopped near turn 12 of 30 with nothing shipped; now the newest 2 results stay whole. Pure. */
+export function windowOf(messages) {
+  const m = Array.isArray(messages) ? messages : [];
+  const rest = m.length > WINDOW.messages + 2 ? m.slice(-WINDOW.messages) : m.slice(2);
+  return [...m.slice(0, 2), ...rest.map((x, i) => (x.role === 'user' && i < rest.length - WINDOW.fresh && x.content.length > WINDOW.keep
+    ? { role: 'user', content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older result; read it again if you need it]' } : x))];
+}
+
+export const BUDGET = Object.freeze({ warn: 0.4, last: 0.8 });
+/** the line after a tool result once 40% of the budget (turns or tokens, whichever is further) is gone: how much is used and, with no edit
+ *  yet, that the next answer is an edit; from 80%, that it is time to edit, or to check and finish. A run that read for 25 turns and never
+ *  edited stopped at the token cap with nothing to ship (2026-10-29): the window kept the turns cheap, but nothing told the model the budget
+ *  was running out. '' before 40%. Pure. */
+export function budgetNote({ turns = 0, tokens = 0, limits = LIMITS, edited = false } = {}) {
+  const used = Math.max(turns / limits.turns, tokens / limits.tokens);
+  if (!(used >= BUDGET.warn)) return '';
+  const where = 'turn ' + turns + ' of ' + limits.turns + ', ' + Math.min(100, Math.round((100 * tokens) / limits.tokens)) + '% of the token budget used';
+  if (used >= BUDGET.last) return '\n[' + where + '. ' + (edited ? 'Run the check now, then finish: at the cap a change is kept only if the last check after the last edit passed.'
+    : 'Nothing is changed yet, and a run with no edit ships nothing: answer with an edit now.') + ']';
+  return '\n[' + where + (edited ? '.]' : ', and no edit yet. You have read enough: answer with an edit next, the smallest one that moves the task.]');
+}
+
+/** the turns as a short trail for a stop at a cap ("read a, search x, edit: the diff does not apply"), so the job note says where they went. Pure. */
+export function trailOf(transcript, n = 12) {
+  const t = Array.isArray(transcript) ? transcript.slice(-n) : [];
+  return t.map((x) => [x.tool, x.path].filter(Boolean).join(' ') + (/^(refused|the diff|no such|no tool|no match|FAIL)/.test(String(x.result || '')) ? ': ' + String(x.result).split('\n')[0].slice(0, 60) : '')).join(', ');
+}
+
 const SYSTEM = (checks, target) => `You are Verse's coding agent, working in a git repository through tools. You change code so the task is done and every check stays green.
 Answer every turn with exactly one JSON object and nothing else (an edit may put its diff in a \`\`\`diff block right after the JSON instead):
 {"tool":"list","path":"tools"}                       list a directory
 {"tool":"read","path":"tools/x.mjs","from":1,"to":200} read lines of a file
 {"tool":"search","pattern":"regex","path":"."}       ripgrep the repo
+{"tool":"replace","path":"f","old":"exact text","new":"new text"} swap text that is in the file exactly once (best for most changes; "old":"" makes a new file)
 {"tool":"edit","diff":"--- a/f\\n+++ b/f\\n@@ ... @@\\n..."} apply a unified diff (paths relative to the repo; a new file is --- /dev/null)
 {"tool":"check","name":"<check>"}                    run one check; or {"tool":"check","test":"path/to/x.test.mjs"} for one node test file
 {"tool":"finish","summary":"what changed and why"}   when the task is done
@@ -180,14 +220,36 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   const touched = () => [...original.keys()];
   const transcript = [];
   const messages = [{ role: 'system', content: SYSTEM(checks, target) }, { role: 'user', content: String(prompt || 'No task given: finish.') }];
-  let turns = 0, tokens = 0, finishTries = 0, lastCheck = null;
+  let turns = 0, tokens = 0, finishTries = 0, lastCheck = null, lastEdit = 0;
 
   const restore = () => {
     for (const [p, c] of original) { const abs = join(root, p); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone already */ } } else writeFileSync(abs, c); }
   };
-  const end = (outcome, why) => { if (outcome !== 'done') restore(); return { outcome, why, turns, tokens, files: outcome === 'done' ? changedFiles() : [], log: transcript }; };
+  const end = (outcome, why) => {
+    if (outcome !== 'done') restore();
+    if ((outcome === 'turn-cap' || outcome === 'token-cap') && transcript.length) why += ' after ' + turns + ' turns: ' + trailOf(transcript);
+    return { outcome, why, turns, tokens, files: outcome === 'done' ? changedFiles() : [], log: transcript };
+  };
   const changedFiles = () => touched().filter((p) => readOr(join(root, p)) !== original.get(p));
 
+  // what every write passes after it lands: a test or check never weakened, patch-guard on code; '' when it stays, else why it was put back
+  const guarded_ = (before) => {
+    const undo = () => { for (const [f, c] of before) { const abs = join(root, f); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone */ } } else writeFileSync(abs, c); } };
+    for (const f of before.keys()) {
+      if (!original.has(f)) original.set(f, before.get(f));
+      const was = original.get(f), now = readOr(join(root, f));
+      if (TEST_FILE.test(f) || guarded.has(f)) {
+        const why = weakening(was, now);
+        if (why.length) { undo(); return 'refused: this edit weakens ' + f + ' (' + why.join('; ') + '). Fix the code under test, never the test.'; }
+      }
+      if (now != null && /\.(m?js|cjs|html?|json)$/.test(f)) {
+        const g = guardPatch({ before: was || '', after: now, kind: kindOf(f.split('.').pop()) });
+        if (!g.ok) { undo(); return 'refused by patch-guard on ' + f + ': ' + g.reasons.join('; '); }
+      }
+    }
+    lastEdit = turns;
+    return '';
+  };
   const tools = {
     list({ path = '.' }) {
       const why = pathRefusal(path, root); if (why) return 'refused: ' + why;
@@ -221,24 +283,29 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       for (const f of named) { const why = pathRefusal(f, root, { write: true }); if (why) return 'refused: ' + why; }
       for (const f of files) if (f.deleted && (TEST_FILE.test(f.path) || guarded.has(f.path))) return 'refused: ' + f.path + ' is a test or a check: never deleted';
       const chk = git(root, ['apply', p, '--check', '--recount', '--whitespace=nowarn', '-'], { input: text });
-      if (chk.status) return 'the diff does not apply: ' + tail(chk.stderr, 1500) + '\nRead the file again and send a diff whose context matches it exactly.';
+      if (chk.status) return 'the diff does not apply: ' + tail(chk.stderr, 1500) + '\nRead the file again, or use replace: {"tool":"replace","path":"f","old":"the exact lines now","new":"what they become"}.';
       const before = new Map([...named].map((f) => [f, readOr(join(root, f))]));
       const ap = git(root, ['apply', p, '--recount', '--whitespace=nowarn', '-'], { input: text });
       if (ap.status) return 'the diff did not apply: ' + tail(ap.stderr, 1500);
-      const undo = () => { for (const [f, c] of before) { const abs = join(root, f); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone */ } } else writeFileSync(abs, c); } };
-      for (const f of named) {
-        if (!original.has(f)) original.set(f, before.get(f));
-        const was = original.get(f), now = readOr(join(root, f));
-        if (TEST_FILE.test(f) || guarded.has(f)) {
-          const why = weakening(was, now);
-          if (why.length) { undo(); return 'refused: this edit weakens ' + f + ' (' + why.join('; ') + '). Fix the code under test, never the test.'; }
-        }
-        if (now != null && /\.(m?js|cjs|html?|json)$/.test(f)) {
-          const g = guardPatch({ before: was || '', after: now, kind: kindOf(f.split('.').pop()) });
-          if (!g.ok) { undo(); return 'refused by patch-guard on ' + f + ': ' + g.reasons.join('; '); }
-        }
+      return guarded_(before) || 'applied to ' + [...named].join(', ');
+    },
+    // an exact text swap needs no line numbers or context to line up: a run spent its turns on diffs that did not apply (2026-10-29)
+    replace({ path, old, new: next }) {
+      const why = pathRefusal(path, root, { write: true }); if (why) return 'refused: ' + why;
+      if (typeof old !== 'string' || typeof next !== 'string') return 'replace needs "path", "old" (the exact text in the file now) and "new" (what it becomes)';
+      const abs = join(root, path), was = readOr(abs);
+      if (was == null) {
+        if (old !== '') return 'no such file: ' + path + '. To make a new file, send "old":"" and the whole file as "new".';
+      } else {
+        if (old === '') return path + ' exists: put the exact text to change in "old"';
+        const n = was.split(old).length - 1;
+        if (!n) return 'no match: "old" is not in ' + path + ' as written. Read the lines again and copy them exactly, spaces included.';
+        if (n > 1) return '"old" is in ' + path + ' ' + n + ' times: add lines around it so it is there once';
       }
-      return 'applied to ' + [...named].join(', ');
+      const before = new Map([[path, was]]);
+      if (was == null) mkdirSync(dirname(abs), { recursive: true });
+      writeFileSync(abs, was == null ? next : was.replace(old, () => next));
+      return guarded_(before) || 'applied to ' + path;
     },
     check({ name, test }) {
       let cmd, timeoutMin = 10, label;
@@ -252,7 +319,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       }
       const r = Array.isArray(cmd) ? spawnSync(cmd[0], cmd[1], { cwd: root, env: cleanEnv, encoding: 'utf8', timeout: timeoutMin * 60e3, maxBuffer: 64 << 20 })
         : spawnSync(cmd, { cwd: root, env: cleanEnv, shell: true, encoding: 'utf8', timeout: timeoutMin * 60e3, maxBuffer: 64 << 20 });
-      const ok = r.status === 0; lastCheck = { label, ok };
+      const ok = r.status === 0; lastCheck = { label, ok, turn: turns };
       return (ok ? 'PASS ' : 'FAIL ') + label + (r.error ? ' (' + r.error.code + ')' : '') + '\n' + tail((r.stdout || '') + (r.stderr || ''));
     },
   };
@@ -271,11 +338,18 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
     return { end: ['done', String(summary || 'done').slice(0, 300)] };
   };
 
+  // at a cap, a change the model checked green after its last edit goes through finish as it stands; anything else is put back
+  const atCap = (outcome, why) => {
+    if (!(lastCheck && lastCheck.ok && lastCheck.turn > lastEdit && changedFiles().length)) return end(outcome, why);
+    const f = finish('');
+    if (f.end && f.end[0] === 'done') { transcript.push({ turn: turns, tool: 'finish', result: 'at the cap: ' + f.end[1] }); return end('done', why + ', with the change checked green after its last edit: kept as it stood'); }
+    return end(outcome, why + '; the change as it stood did not pass: ' + String(f.feedback || '').split('\n')[0].slice(0, 120));
+  };
   while (true) {
-    if (turns >= L.turns) return end('turn-cap', 'stopped at the turn cap (' + L.turns + ')');
-    if (tokens >= L.tokens) return end('token-cap', 'stopped at the token cap (' + L.tokens + ')');
+    if (turns >= L.turns) return atCap('turn-cap', 'stopped at the turn cap (' + L.turns + ')');
+    if (tokens >= L.tokens) return atCap('token-cap', 'stopped at the token cap (' + L.tokens + ')');
     turns++;
-    const recent = messages.length > 26 ? [messages[0], messages[1], ...messages.slice(-24)] : messages;
+    const recent = windowOf(messages);
     let reply;
     try { reply = await model(recent); } catch (e) { reply = { error: String((e && e.message) || e) }; }
     if (!reply || reply.error) return end('model-down', (reply && reply.error) || 'the model gave nothing');
@@ -291,10 +365,10 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       result = f.feedback;
     } else if (tools[act.tool]) {
       try { result = tools[act.tool](act); } catch (e) { result = act.tool + ' failed: ' + String((e && e.message) || e); }
-    } else result = 'no tool named ' + JSON.stringify(act.tool) + ': list, read, search, edit, check, finish';
+    } else result = 'no tool named ' + JSON.stringify(act.tool) + ': list, read, search, replace, edit, check, finish';
     transcript.push({ turn: turns, tool: act.tool || '?', path: act.path || act.name || act.test || '', result: String(result).slice(0, 200) });
     log('  turn ' + turns + ': ' + (act.tool || 'bad reply') + ' ' + (act.path || act.name || act.test || '') + ' -> ' + String(result).split('\n')[0].slice(0, 120));
-    messages.push({ role: 'assistant', content: text }, { role: 'user', content: String(result) });
+    messages.push({ role: 'assistant', content: text }, { role: 'user', content: String(result) + budgetNote({ turns, tokens, limits: L, edited: changedFiles().length > 0 }) });
   }
 }
 

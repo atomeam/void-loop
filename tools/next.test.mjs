@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { snapshotLines, summary, takeNext } from './next.mjs';
+import { snapshotLines, summary, takeNext, isHeld, towerTake } from './next.mjs';
 import { readFrontier } from './frontier.mjs';
 
 test('a session with no token reads the public snapshot: terms and counts, never ask text', () => {
@@ -42,4 +42,22 @@ test("Verse's asks, most repeated first, without the ones built (the menu a run 
   assert.ok(!built.some((r) => r.ask === 'Learn backgammon.'));
   // a link to an entry that does not exist proves nothing
   assert.ok(repeatedAsks(voice, [], [{ ask: 'ask-20261012-1-1', ledgerAt: 'nope' }]).some((r) => r.ask === 'Learn backgammon.'));
+});
+
+test('a held frontier item or ask is not taken while its site is the Versus target, and the target comes first (owner, 2026-10-29)', () => {
+  const held = [{ words: 'Absorb every repository on the account into the core code', frontier: 'Absorb and connect every repo', until: 'sycophanthex.com' }];
+  assert.ok(isHeld('Absorb and connect every repo', held, 'sycophanthex.com'), 'by its frontier title');
+  assert.ok(isHeld('Absorb every repository on the account into the core code to unify the system architecture.', held, 'sycophanthex.com'), 'by its words, reworded');
+  assert.ok(!isHeld('Absorb and connect every repo', held, 'next-site.com'), 'the hold ends when the target moves on');
+  assert.ok(!isHeld('Paid Verse', held, 'sycophanthex.com'));
+  const text = '**Folded in from the old lists (2026-10-11), still open, each with where it came from:**\n- **Absorb and connect every repo** (`owner`): x\n- **Paid Verse:** y\n';
+  const s = summary(text, { held, target: 'sycophanthex.com' });
+  assert.deepEqual(s.held.map((o) => o.title), ['Absorb and connect every repo']);
+  assert.ok(!s.open.some((o) => /Absorb/.test(o.title)));
+  const tower = towerTake('sycophanthex.com', [{ site: 'sycophanthex.com', features: [{ id: 'catalog', void: 'none' }, { id: 'tags', void: 'beats' }] }]);
+  assert.deepEqual([tower.site, tower.next.id, tower.beats, tower.total], ['sycophanthex.com', 'catalog', 1, 2]);
+  assert.match(takeNext({ open: [{ title: 'Paid Verse' }], tower }), /^sycophanthex\.com: catalog \(the Versus target/);
+  assert.match(takeNext({ steps: [{ n: 3, title: 'The salvage shelf' }], tower }), /^cleanup step 3/, 'a cleanup step still goes first');
+  assert.equal(towerTake('sycophanthex.com', [{ site: 'sycophanthex.com', features: [{ id: 'catalog', void: 'beats' }] }]), null, 'a beaten target is no take');
+  assert.equal(towerTake('none.com', []), null);
 });

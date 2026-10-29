@@ -7,6 +7,7 @@
 import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
+import { sameAsk as sameAskCard } from './self-blocks.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
@@ -23,10 +24,12 @@ export const VOICE_SYSTEM = 'You are the language model that writes the status r
   + 'It reports; it never makes up a motto, quest or identity; if a fact says something is not written yet, say you do not know it. Never mention money, prices or a budget. '
   + 'Reply with JSON only: {"thoughts":"<the state in 2-5 plain sentences>","better":"<what should change, 1-3 sentences>",'
   + '"weakest":"<daily only: the weakest operational area right now, with its numbers, 1-2 sentences>","next_game":"<daily only: the next targeted capability (a game, skill or card) and the tagged reason, one sentence>","next_trick":"<daily only: one new video trick or effect to learn for its own clips (not one in its tricks library), one sentence>",'
-  + '"asks":[{"ask":"<one concrete thing to build or fix, as an instruction>","small":<true if a builder could finish it in under an hour>}],'
+  + '"asks":[{"ask":"<one concrete thing to build or fix, as an instruction>","why":"<the tagged fact that makes this one ask matter, one sentence of its own>","small":<true if a builder could finish it in under an hour>}],'
   + '"evidence":{"thoughts":["S1"],"better":["S2"],"weakest":["S3"],"next_game":["S1"]},'
   + '"striking":<true only if there is something the owner should hear today: a real problem, a surprising need, a change of course>} '
-  + 'Give at most 3 asks, most important first. ' + INJECTION_RULE;
+  + 'Give at most 3 asks, most important first. Each ask has its own why: never give two asks the same why, and never reuse the thoughts as a why. '
+  // the owner's card (2026-10-29): three asks shared one reason, and none of them served the site Versus is on
+  + 'When a fact names the current Versus target, the first ask must move Verse closer to beating that site; an ask that does not serve the target comes after one that does. ' + INJECTION_RULE;
 
 // the question Verse is asked, in plain words (kept on the entry so the log shows what Verse was answering)
 export function questionFor(kind, shipped) {
@@ -62,7 +65,9 @@ export function parseVoice(text) {
   const out = {
     thoughts: clean(j.thoughts, 1500), better: clean(j.better, 800), weakest: clean(j.weakest, 600), next_game: clean(j.next_game, 400), next_trick: clean(j.next_trick, 400),
     asks: (Array.isArray(j.asks) ? j.asks : []).map((a) => (typeof a === 'string' ? { ask: a, small: false } : a || {}))
-      .map((a) => ({ ask: untag(clean(a.ask, 240)), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3),
+      .map((a) => ({ ask: untag(clean(a.ask, 240)), ...(untag(clean(a.why, 240)).length >= 4 ? { why: untag(clean(a.why, 240)) } : {}), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3)
+      // a why that an earlier ask already gave is no reason for this one (owner's card, 2026-10-29: one reason under three asks)
+      .map((a, i, xs) => (a.why && xs.slice(0, i).some((b) => b.why && b.why.toLowerCase() === a.why.toLowerCase()) ? (({ why, ...r }) => r)(a) : a)),
     striking: j.striking === true,
     evidence: evidenceOf(j.evidence),
   };
@@ -72,6 +77,25 @@ export function parseVoice(text) {
 // the fact tags of the prompt ("[S2]", "[S1, S3]", "[S2 tools/x.mjs]") are for the claims in its thoughts, never part of an ask: an ask that
 // kept one showed twice on the wants card, once with "[S2]" and once without (owner, 2026-10-19). Pure.
 export const untag = (s) => String(s || '').replace(/\s*\[S\d+(?:[,;]\s*S\d+)*(?:\s[^\]]{0,80})?\]/g, '').replace(/\s+([.,;:!?])/g, '$1').trim();
+/** Asks put behind the site Versus is on (void.asks.json `held`: {words, until, why}; owner, 2026-10-29: every site ever made, smallest
+ *  first, so an ask that does not help beat the current target waits). An ask is held while `until` is still the target in
+ *  tower.target.json; once that site is beaten and the target moves on, the hold ends by itself. Held asks keep their place on the
+ *  record and come after the open ones, each with `held` (the site). Nothing is dropped or reworded. Pure. */
+export function holdAsks(asks, held, target) {
+  const H = (Array.isArray(held) ? held : []).filter((h) => h && typeof h.words === 'string' && h.words.trim() && h.until && String(h.until) === String(target || ''));
+  const hold = (a) => H.find((h) => h.words.toLowerCase() === String(a && a.ask).toLowerCase() || sameAsk(h.words, a && a.ask));
+  const now = [], later = [];
+  for (const a of asks || []) { const h = hold(a); if (h) later.push({ ...a, held: String(h.until) }); else now.push(a); }
+  return now.concat(later);
+}
+/** The site Versus is fighting, as a fact for the reflection (owner's card, 2026-10-29: the asks named an STL checker and "absorb every
+ *  repo" while Verse was at 0 of 12 aspects against sycophanthex.com). From a lib/tower.js tower() result and tower.target.json; '' when
+ *  there is no target or the target is not the current floor. Pure. */
+export function targetFacts(t, tg) {
+  const f = t && Array.isArray(t.floors) ? t.floors[t.marker - 1] : null, id = tg && tg.id ? String(tg.id) : '';
+  if (!f || !id || f.site !== id) return '';
+  return 'The current Versus target is ' + id + ': Verse is ' + f.n + ' of ' + f.m + ' aspects ahead of it, and it stays the target until it is beaten. Asks that make Verse better than ' + id + ' come first.';
+}
 // A stable id for an ask: the reflection it came from (its time, to the minute) and its place in that reflection. It never
 // changes once the reflection is stored, so a ledger entry that names it (tools/grow.mjs --asked) still matches if the
 // ask's words are edited later.
@@ -84,7 +108,7 @@ export function currentAsks(entries, n = 6) {
       const ask = untag(a.ask), k = ask.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
       // one of each: the same words, or nearly the same words (sameAsk), are one ask
       if (!k || seen.has(k) || out.some((o) => sameAsk(o.ask, ask))) continue;
-      seen.add(k); out.push({ id: askId(e.at, i), ask, small: !!a.small, kind: e.kind, at: e.at });
+      seen.add(k); out.push({ id: askId(e.at, i), ask, ...(a.why ? { why: untag(a.why) } : {}), small: !!a.small, kind: e.kind, at: e.at });
       if (out.length >= n) return out;
     }
   }
@@ -129,6 +153,41 @@ export function followThrough(entries, ledger, links = []) {
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };
 }
+/** The one record of Verse's asks, for the self card, the wants card and its own facts alike, so its counts agree with each other
+ *  (asked by Verse, 2026-10-29; the self card said "3 waiting" beside "237 of 244 asks": 7 not built). The all-time totals
+ *  (void.asks.json `totals`, written at deploy from the whole voice log by tools/asks-link.mjs) carry the asks still open as of
+ *  `through`; an ask asked again online is matched to that list, never counted as a new one, and an old open ask the ledger
+ *  answers since moves to built. So waiting is exactly every ask not built: total = built + open.length, always. Without
+ *  `totals.open` (a file from before) it falls back to the window. answered: void.asks.json. Pure. */
+export function askRecord(entries, ledger, answered) {
+  const f = followThrough(entries, ledger, answered && answered.links);
+  const same = (a, b) => String(a || '').toLowerCase() === String(b || '').toLowerCase() || sameAsk(a, b) || sameAskCard(a, b);
+  // each window ask's newest mention: when and where it was asked, whether it was called small, the why it gave
+  const byId = new Map(); for (const e of entries || []) for (const [i, a] of (e.asks || []).entries()) if (a && a.ask) { const id = askId(e.at, i); if (!byId.has(id) || String(byId.get(id).at) < String(e.at)) byId.set(id, { e, a, id }); }
+  const item = (g) => { const m = g.ids.map((id) => byId.get(id)).filter(Boolean).sort((x, y) => String(y.e.at).localeCompare(String(x.e.at)))[0];
+    return { ...(m ? { id: m.id } : {}), ask: untag(g.ask), ...(m && m.a.why ? { why: untag(m.a.why) } : {}), small: !!(m && m.a.small), kind: m ? m.e.kind : (g.kind || ''), at: m ? m.e.at : (g.last || g.at || ''), times: g.times || 1 }; };
+  const T = answered && answered.totals && +answered.totals.asked > 0 && answered.totals.through ? answered.totals : null;
+  const order = (xs) => xs.sort((a, b) => String(b.at).localeCompare(String(a.at)) || b.times - a.times);
+  if (!T || !Array.isArray(T.open)) {
+    const newer = (g) => T && String(g.first || '') > String(T.through);
+    const open = order(f.open.map(item));
+    const total = T ? +T.asked + f.built.concat(f.open).filter(newer).length : f.total, built = T ? +T.built + f.built.filter(newer).length : f.built.length;
+    return { f, total, built, open };
+  }
+  const known = (g) => T.open.some((t) => t && same(t.ask, g.ask));
+  let builtSince = 0; const open = [];
+  for (const t of T.open) {
+    if (!t || !t.ask) continue;
+    if (f.built.some((g) => same(t.ask, g.ask))) { builtSince++; continue; } // answered by a ledger line since the log was read
+    const w = f.open.find((g) => same(t.ask, g.ask));
+    if (open.some((o) => same(o.ask, t.ask))) continue;
+    open.push(w ? item(w) : { ask: untag(t.ask), small: !!t.small, kind: t.kind || '', at: t.at || '', times: +t.times || 1 });
+  }
+  const after = (g) => String(g.first || '') > String(T.through) && !known(g); // first asked after the log, and not one it already holds
+  for (const g of f.open.filter(after)) if (!open.some((o) => same(o.ask, g.ask))) open.push(item(g));
+  const built = +T.built + builtSince + f.built.filter(after).length;
+  return { f, total: built + open.length, built, open: order(open) };
+}
 // its skill families and how far each skill is checked (tools/families.mjs, Verse's own ask of 2026-10-12: "skill-families ...
 // and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
 export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
@@ -146,11 +205,13 @@ export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
 // the decay timer (tools/families.mjs staleExperiments, asked by Verse): experiments left untested over 14 days, flagged for review only
 const staleLine = (fam, now) => { const t = Date.parse(now + 'T00:00:00Z'); const st = (fam.families || []).flatMap((f) => (f.skills || []).filter((s) => s.tier === 'experiment' && s.since && (t - Date.parse(s.since + 'T00:00:00Z')) / 864e5 > 14).map((s) => s.name)); return st.length ? ' Stale experiments flagged for review (untested over 14 days): ' + st.slice(0, 6).join(', ') + '.' : ''; };
 // the line Verse reads before it reflects: what its asks led to, so it builds on them instead of repeating them
-export function followFacts(f) {
+export function followFacts(f, rec) {
   if (!f || !f.total) return '';
+  // with the one record (askRecord) the numbers are the self card's own, so what Verse reads and what it shows agree
+  if (rec && Number.isFinite(+rec.total) && Array.isArray(rec.open)) f = { ...f, total: rec.total, open: rec.open, builtCount: rec.built };
   const b = f.built.slice(-4).map((x) => '"' + clean(x.ask, 90) + '" (' + (x.builtAt && x.first && String(x.builtAt) < String(x.first) ? 'already there since ' : 'built ') + String(x.builtAt || '').slice(0, 10) + ')').join('; ');
   const o = f.open.slice(0, 4).map((x) => '"' + clean(x.ask, 90) + '"' + (x.times > 1 ? ' (asked ' + x.times + ' times)' : '')).join('; ');
-  return 'What became of what I asked for: ' + f.built.length + ' of my ' + f.total + ' asks were built.' + (b ? ' Built: ' + b + '.' : '') + (o ? ' Still open: ' + o + '.' : '')
+  return 'What became of what I asked for: ' + (Number.isFinite(f.builtCount) ? f.builtCount : f.built.length) + ' of my ' + f.total + ' asks were built.' + (b ? ' Built: ' + b + '.' : '') + (o ? ' Still open: ' + o + '.' : '')
     + ' I do not ask again for what was built; I follow up on what is open, or say why I would drop it.';
 }
 

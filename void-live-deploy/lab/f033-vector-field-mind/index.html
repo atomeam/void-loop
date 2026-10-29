@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --morph: 0; --hue: 180; --scale: 1; --blur: 0; }
+  html, body { margin: 0; height: 100%; background: #0a0a12; color: #c8c8d0; font-family: system-ui, sans-serif; overflow: hidden; }
+  body { filter: hue-rotate(calc(var(--hue) * 1deg)) blur(calc(var(--blur) * 1px)); transform: scale(var(--scale)); transition: filter 0.4s, transform 0.4s; }
+  canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,0.7); padding: 10px 14px; border-radius: 8px; border: 1px solid #3a3a50; font-size: 13px; pointer-events: none; z-index: 2; transform: translateY(calc(var(--morph) * -8px)); }
+  #hud b { color: #7af; }
+  button { pointer-events: auto; margin-top: 8px; background: #2a2a40; color: #c8c8d0; border: 1px solid #5a5a70; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a50; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local Evolutionary Vector Field Mind · Verse lab</title>
+<meta name="description" content="Novel combination: Continuous particles advect under a coarse spatial vector field (grid of control vectors).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local Evolutionary Vector Field Mind · Verse lab">
+<meta property="og:description" content="Novel combination: Continuous particles advect under a coarse spatial vector field (grid of control vectors).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f033-vector-field-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f033-vector-field-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <b>F-033 Vector Field Mind</b><br>
+  particles: <span id="n">0</span> · fitness: <span id="fit">—</span><br>
+  div: <span id="div">—</span> · curl: <span id="curl">—</span><br>
+  <button id="seal">Seal genome</button> <button id="reset">Reset field</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Local Evolutionary Vector Field Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

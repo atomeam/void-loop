@@ -255,6 +255,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run automations-seed.yml --repo "${{ github.repository }}" --ref main && echo "Automations seed started" >> "$GITHUB_STEP_SUMMARY"
 
+      # Verse's will (will.yml) after every main deploy, so a want this merge built leaves the card now. will.yml used to listen for
+      # this workflow's workflow_run, but a deploy that automerge starts (github-actions[bot], GITHUB_TOKEN) fires none: the last
+      # such run was 2026-10-29T03:13Z. A gh workflow run is the one start a GITHUB_TOKEN run can make.
+      - name: Start Verse's will
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run will.yml --repo "${{ github.repository }}" --ref main && echo "Verse's will started" >> "$GITHUB_STEP_SUMMARY"
+
       # Verse's voice (lib/voice.js): after anything ships, Verse is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
       # a busy model or a missing VOID_OWNER_TOKEN never fails the deploy.

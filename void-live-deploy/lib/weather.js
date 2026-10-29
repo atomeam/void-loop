@@ -21,6 +21,8 @@ export const both = (c) => (Number.isFinite(c) ? Math.round(cToF(c)) + ' °F / '
 export function placeOf(q) {
   return String(q || '').replace(/[?.!]/g, ' ').replace(/^\s*(?:what'?s\s+the\s+|the\s+)?(?:weather|forecast|temperature)\s*(?:in|at|for|near)?\s*/i, '').replace(/\s+/g, ' ').trim().slice(0, 60);
 }
+/** the stage card for the place looked up: "weather in <place>", or "weather here" for where you are (the stage asks the same geocoder). Pure. */
+export const weatherAsk = (place) => { const p = placeOf(place); return p ? 'weather in ' + p : 'weather here'; };
 export const geocodeUrl = (name) => 'https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(name);
 export const forecastUrl = (lat, lon) => 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon
   + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day'

@@ -65,3 +65,78 @@ test('bad input does not throw or let anything through', () => {
   assert.equal(gate(null, null, T0).ok, true, 'nothing gated');
   assert.equal(gate({ tool: 'payment.send', args: null }, [null, { at: 'x' }], T0, {}).need, 'cosign');
 });
+
+// The gate wired into the confirm line (functions/api/approval.js): a yes runs only when the gate clears it.
+import { DatabaseSync } from 'node:sqlite';
+import * as api from '../void-live-deploy/functions/api/approval.js';
+import { fingerprint } from '../void-live-deploy/lib/approval-core.js';
+
+const TOKEN = 'owner-token-for-tests-1234567890';
+function d1() {
+  const db = new DatabaseSync(':memory:');
+  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b),
+    run: async () => { const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; },
+    all: async () => ({ results: db.prepare(sql).all(...a) }), first: async () => db.prepare(sql).get(...a) || null });
+  return { prepare: (sql) => stmt(sql), batch: async (list) => Promise.all(list.map((s) => s.run())), raw: db };
+}
+async function confirmLine(tool, run) {
+  const env = { DB: d1(), READ_TOKEN: TOKEN };
+  env.DB.raw.exec('CREATE TABLE IF NOT EXISTS void_actions (id TEXT PRIMARY KEY, owner TEXT, kind TEXT, ref TEXT, state TEXT, started TEXT, finished TEXT, result TEXT, error TEXT)');
+  const post = async (body) => (await api.onRequestPost({ env, request: new Request('https://x/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + TOKEN }, body: JSON.stringify(body) }) })).json();
+  const had = api.executors[tool];
+  api.executors[tool] = run;
+  const ask = async (args, actor = 'owner') => {
+    const req = await post({ type: 'a2m.approval.requested', toolName: tool, args });
+    const d = await post({ type: 'a2m.approval.decision', approvalId: req.approvalId, decision: 'approve', actor, argsFingerprint: await fingerprint(tool, args) });
+    const row = env.DB.raw.prepare('SELECT state FROM void_approvals WHERE id = ?').get(req.approvalId);
+    return { d, state: row && row.state };
+  };
+  return { ask, env, done: () => { if (had) api.executors[tool] = had; else delete api.executors[tool]; } };
+}
+
+test('the confirm line: the same request, word for word, does not run twice in a day; the second yes is held and says why', async () => {
+  const sent = [];
+  const c = await confirmLine('message.send', async (args) => { sent.push(args); return { id: 'm' + sent.length }; });
+  try {
+    const one = await c.ask({ to: 'jane', text: 'hi' });
+    assert.deepEqual([one.d.ran, one.state], [true, 'done'], JSON.stringify(one.d));
+    const two = await c.ask({ to: 'jane', text: 'hi' });
+    assert.deepEqual([two.d.ran, two.state, two.d.held && two.d.held.need], [false, 'held', 'repeat'], JSON.stringify(two.d));
+    assert.match(two.d.held.why, /already ran/);
+    assert.equal(sent.length, 1, 'the executor ran once');
+  } finally { c.done(); }
+});
+
+test('the confirm line: a second message right after the first waits out the cooldown; nothing runs meanwhile', async () => {
+  const sent = [];
+  const c = await confirmLine('message.send', async (args) => { sent.push(args); return {}; });
+  try {
+    assert.equal((await c.ask({ to: 'jane', text: 'one' })).d.ran, true);
+    const two = await c.ask({ to: 'jane', text: 'two' });
+    assert.deepEqual([two.d.ran, two.state, two.d.held.need], [false, 'held', 'wait'], JSON.stringify(two.d));
+    assert.ok(two.d.held.waitMs > 0 && two.d.held.waitMs <= COOLDOWN_MS.medium);
+    assert.equal(sent.length, 1);
+  } finally { c.done(); }
+});
+
+test('the confirm line: a high-risk spend needs a second person\'s yes, so the owner alone cannot run it; a stop still runs', async () => {
+  const ran = [];
+  const c = await confirmLine('models.spend', async (args) => { ran.push(args.cost.amount); return {}; });
+  try {
+    const big = await c.ask({ model: 'm', cost: { amount: HIGH_SPEND + 5, currency: 'USD' }, per: 'month' });
+    assert.deepEqual([big.d.ran, big.state, big.d.held.need, big.d.held.risk], [false, 'held', 'cosign', 'high'], JSON.stringify(big.d));
+    const stop = await c.ask({ model: 'm', cost: { amount: 0, currency: 'USD' }, per: 'month' });
+    assert.equal(stop.d.ran, true, 'stopping a spend is medium risk: the owner\'s own yes runs it');
+    assert.deepEqual(ran, [0]);
+  } finally { c.done(); }
+});
+
+test('the confirm line: a low-risk task needs no co-sign and has no cooldown', async () => {
+  const ran = [];
+  const c = await confirmLine('bridge.task', async (args) => { ran.push(args.title); return {}; });
+  try {
+    assert.equal((await c.ask({ title: 'a' }, 'someone')).d.ran, true);
+    assert.equal((await c.ask({ title: 'b' }, 'someone')).d.ran, true);
+    assert.deepEqual(ran, ['a', 'b']);
+  } finally { c.done(); }
+});

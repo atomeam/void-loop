@@ -1,0 +1,215 @@
+const field = document.getElementById('field');
+const stats = document.getElementById('stats');
+const status = document.getElementById('status');
+let agents = [];
+let orientation = { alpha: 0, beta: 0, gamma: 0 };
+let canvas, ctx;
+
+function setupCanvas() {
+  canvas = document.createElement('canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  field.appendChild(canvas);
+  ctx = canvas.getContext('2d');
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
+setupCanvas();
+
+// Tiny MLP: 5 inputs -> 4 hidden -> 2 outputs (dx, dy)
+function createMLP(weights) {
+  // weights: [w1 (5*4), b1(4), w2(4*2), b2(2)] = 20+4+8+2 = 34
+  const w = weights || Array.from({length: 34}, () => (Math.random()-0.5)*0.8);
+  return {
+    weights: w,
+    forward(inputs) { // inputs length 5: [alpha, beta, gamma, x, y] normalized
+      const h = new Array(4).fill(0);
+      for (let i = 0; i < 4; i++) {
+        let s = w[20 + i]; // bias
+        for (let j = 0; j < 5; j++) s += inputs[j] * w[i*5 + j];
+        h[i] = Math.tanh(s);
+      }
+      const o = [0, 0];
+      for (let i = 0; i < 2; i++) {
+        let s = w[32 + i];
+        for (let j = 0; j < 4; j++) s += h[j] * w[24 + i*4 + j];
+        o[i] = Math.tanh(s) * 4; // force scale
+      }
+      return o;
+    },
+    mutate() {
+      const nw = this.weights.map(v => v + (Math.random()-0.5)*0.15);
+      return createMLP(nw);
+    }
+  };
+}
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+class Agent {
+  constructor(x, y, mlp) {
+    this.x = x; this.y = y;
+    this.vx = 0; this.vy = 0;
+    this.energy = 1.0;
+    this.mlp = mlp || createMLP();
+    this.el = document.createElement('div');
+    this.el.className = 'agent';
+    this.color = `hsl(${Math.random()*360}, 70%, 55%)`;
+    this.el.style.background = this.color;
+    this.el.style.color = this.color;
+    this.el.textContent = '•';
+    field.appendChild(this.el);
+    this.id = Math.random().toString(36).slice(2, 8);
+  }
+  async seal() {
+    const key = this.mlp.weights.map(w => w.toFixed(4)).join(',');
+    this.hash = await sha256(key);
+    return this.hash;
+  }
+  update(dt, orients) {
+    const nx = (this.x / window.innerWidth - 0.5) * 2;
+    const ny = (this.y / window.innerHeight - 0.5) * 2;
+    const inputs = [
+      orients.alpha / 180,
+      orients.beta / 90,
+      orients.gamma / 90,
+      nx, ny
+    ];
+    const [fx, fy] = this.mlp.forward(inputs);
+    this.vx += fx * dt * 20;
+    this.vy += fy * dt * 20;
+    this.vx *= 0.96; this.vy *= 0.96;
+    this.x += this.vx;
+    this.y += this.vy;
+    // bounds
+    if (this.x < 14) { this.x = 14; this.vx *= -0.5; }
+    if (this.x > window.innerWidth-14) { this.x = window.innerWidth-14; this.vx *= -0.5; }
+    if (this.y < 14) { this.y = 14; this.vy *= -0.5; }
+    if (this.y > window.innerHeight-14) { this.y = window.innerHeight-14; this.vy *= -0.5; }
+    // energy decay + orientation boost
+    this.energy -= 0.002 * dt;
+    this.energy += Math.abs(orients.beta) * 0.0005;
+    if (this.energy > 2) this.energy = 2;
+    this.el.style.transform = `translate(${this.x-14}px, ${this.y-14}px) scale(${0.6 + this.energy*0.4})`;
+    this.el.style.opacity = Math.max(0.3, this.energy);
+    if (this.energy < 0.1) this.die();
+  }
+  die() {
+    this.el.remove();
+    const i = agents.indexOf(this);
+    if (i > -1) agents.splice(i, 1);
+  }
+  spawnChild() {
+    if (this.energy > 1.2 && agents.length < 24) {
+      this.energy -= 0.5;
+      const child = new Agent(this.x + (Math.random()-0.5)*40, this.y + (Math.random()-0.5)*40, this.mlp.mutate());
+      agents.push(child);
+    }
+  }
+}
+
+async function persist() {
+  const db = await new Promise((res, rej) => {
+    const r = indexedDB.open('void-f180', 1);
+    r.onupgradeneeded = e => e.target.result.createObjectStore('genomes');
+    r.onsuccess = e => res(e.target.result);
+    r.onerror = rej;
+  });
+  const tx = db.transaction('genomes', 'readwrite');
+  const store = tx.objectStore('genomes');
+  const data = await Promise.all(agents.map(async a => ({
+    id: a.id, x: a.x, y: a.y, energy: a.energy,
+    weights: a.mlp.weights, hash: await a.seal()
+  })));
+  store.put(data, 'current');
+  status.textContent = `Sealed ${data.length} genomes to IndexedDB`;
+}
+
+async function load() {
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('void-f180', 1);
+      r.onupgradeneeded = e => e.target.result.createObjectStore('genomes');
+      r.onsuccess = e => res(e.target.result);
+      r.onerror = () => res(null);
+    });
+    if (!db) return;
+    const tx = db.transaction('genomes', 'readonly');
+    const store = tx.objectStore('genomes');
+    const req = store.get('current');
+    req.onsuccess = () => {
+      const data = req.result;
+      if (data && data.length) {
+        data.forEach(d => {
+          const a = new Agent(d.x, d.y, createMLP(d.weights));
+          a.energy = d.energy;
+          a.id = d.id;
+          agents.push(a);
+        });
+        status.textContent = `Restored ${data.length} sealed agents`;
+      }
+    };
+  } catch(e) {}
+}
+
+function loop(t) {
+  const dt = Math.min(0.05, (t - (loop.last || t)) / 1000);
+  loop.last = t;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = 'rgba(100,180,255,0.15)';
+  ctx.beginPath();
+  agents.forEach(a => {
+    a.update(dt, orientation);
+    a.spawnChild();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(a.x - a.vx*3, a.y - a.vy*3);
+  });
+  ctx.stroke();
+  stats.textContent = `Agents: ${agents.length} | Energy: ${agents.reduce((s,a)=>s+a.energy,0).toFixed(1)} | β: ${orientation.beta.toFixed(0)}`;
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('perm').onclick = () => {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(p => {
+      if (p === 'granted') window.addEventListener('deviceorientation', e => {
+        orientation.alpha = e.alpha || 0;
+        orientation.beta = e.beta || 0;
+        orientation.gamma = e.gamma || 0;
+      });
+      status.textContent = 'Orientation granted. Tilt to influence MLPs.';
+    });
+  } else {
+    window.addEventListener('deviceorientation', e => {
+      orientation.alpha = e.alpha || 0;
+      orientation.beta = e.beta || 0;
+      orientation.gamma = e.gamma || 0;
+    });
+    status.textContent = 'Listening to orientation (desktop may be zero).';
+  }
+};
+
+document.getElementById('seed').onclick = () => {
+  const a = new Agent(window.innerWidth/2 + (Math.random()-0.5)*100, window.innerHeight/2 + (Math.random()-0.5)*100);
+  agents.push(a);
+};
+
+document.getElementById('save').onclick = persist;
+
+// Seed a few if empty
+setTimeout(() => { if (!agents.length) for (let i=0;i<4;i++) document.getElementById('seed').click(); }, 500);
+load();
+requestAnimationFrame(loop);
+
+// Click to inject energy or transfer
+field.addEventListener('click', e => {
+  agents.forEach(a => {
+    const dx = a.x - e.clientX, dy = a.y - e.clientY;
+    if (dx*dx + dy*dy < 900) a.energy = Math.min(2, a.energy + 0.4);
+  });
+});

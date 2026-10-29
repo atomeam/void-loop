@@ -14,6 +14,7 @@ export const LIMITS = {
   answer: { rpm: 30, body: 20000 },
   appraise: { rpm: 6, body: 1200000 },
   translate: { rpm: 40, body: 1200000 }, // 5,000 characters of text, or one downsized photo whose text the vision model reads, 40 a minute: a translation model call each (functions/api/translate.js) // one downsized photo (768 px JPEG) per call, 6 a minute: a vision model call each (functions/api/appraise.js) // /api/answer also keeps its own tighter 12 a minute for model calls
+  'fanfic-hits': { rpm: 60, body: 0 }, // /fanfic/ read counts (functions/api/fanfic-hits.js): a POST has no body; one count per visitor, story and day, 30 a minute per connection in the route
   boards: { rpm: 600, body: 4700000 }, // the boards (functions/api/boards/[[path]].js): a catalog page loads up to 150 thumbnails; a post carries one picture of up to 4 MB and its thumbnail; posting, reporting and making boards are rate-limited per hashed address in the route itself, behind a bot check
   calshare: { rpm: 60, body: 200000 }, // a whole calendar shared by link (functions/api/calshare.js): one document of up to 1,000 events; 30 a minute and daily ceilings in the route itself
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
@@ -39,6 +40,7 @@ export const LIMITS = {
   passkey: { rpm: 60, body: 20000 },
   mine: { rpm: 120, body: 900200 },
   publish: { rpm: 20, body: 40000 }, // a paid Verse's public page (/@name)
+  members: { rpm: 20, body: 8000 }, // paid Verse: a member's idea (functions/api/members.js; its own daily limit is in lib/members.js)
   gumroad: { rpm: 120, body: 50000 },
   handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
   rehearsal: { rpm: 10, body: 500 }, // owner-only: seed and clean the rehearsal's stand-in reply (functions/api/rehearsal.js)
@@ -54,6 +56,7 @@ export const LIMITS = {
   'voice-reply': { rpm: 20, body: 4000 }, // owner-only: a reply to Verse's reflection or card; one model call (functions/api/voice-reply.js)
   'probe-log': { rpm: 60, body: 2000 }, // the growth card reads it; the probe and fix tools write one record each (lib/probe-log.js)
   'v01d-fixes': { rpm: 10, body: 500 }, // owner-only: approve one of Verse's fix pull requests (functions/api/v01d-fixes.js)
+  coder: { rpm: 60, body: 400000 }, // owner-only: one turn of Verse's coder on Verse's own model (functions/api/coder.js); the body carries the lap's conversation, capped at 380,000 characters there, with its own hourly and daily call caps
   'propose-fix': { rpm: 6, body: 40000 }, // owner-only: Verse proposes a matcher fix for an ask its probe missed (lib/propose-fix.js); the body carries one skill file
   'probe-asks': { rpm: 6, body: 8000 }, // owner-only: Verse writes its own probe asks for one family (lib/probe-asks.js); the body carries 14 example asks and the wants
   automations: { rpm: 60, body: 2200000 }, // owner-only: Verse's own automations; a pull-request rule carries up to 20 files of 100 KB

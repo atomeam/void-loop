@@ -17,11 +17,15 @@
 //                                            (tower.evidence.2.json, or --out <file>; never committed); --list prints the slice and loads nothing
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, aspectsOf, tower , hostOf, noShotOf, noRivalOf, noRivalUrl } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, LANE_PAGES, aspectsOf, tower , hostOf, noShotOf, noRivalOf, noRivalUrl } from '../void-live-deploy/lib/tower.js';
 import { wallOf } from '../void-live-deploy/lib/tower-controls.js';
 import { probeFor as probeOf, withFeatureFacts, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
 // a floor's probe as the gate uses it: with the features its features file says Verse has added to completeness (domains/features/, tools/feature-scan.mjs)
 const probeFor = (id) => withFeatureFacts(probeOf(id), id);
+// the floors the gate measures: FLOORS, and each frontier site that LANE_PAGES gives a page by its bare host (sycophanthex.com: /fanfic/, 2026-10-29),
+// as the tower builds that floor. Without it the tower target linked its page and its 12 aspects were never measured ("no floor sycophanthex.com").
+export const GATE_FLOORS = FLOORS.concat(Object.entries(LANE_PAGES).filter(([k]) => hostOf(k) === k && !FLOORS.some((f) => (hostOf(f.url) || hostOf(f.site)) === k))
+  .map(([h, page]) => ({ id: h, site: h, url: 'https://' + h + '/', label: h, page, extra: [] })));
 import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
@@ -337,9 +341,9 @@ export function measurable(f) {
   const p = probeFor(f.id), want = aspectsOf(f);
   return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.askParts && p.askParts[a]) || (p && p.pageParts && p.pageParts[a]) || (p && p.motion && p.motion[a]));
 }
-/** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in FLOORS (a frontier site has no Verse page yet), at most max. Pure. */
-export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
-  const t = tower([], evidence, frontier), ids = new Set(FLOORS.map((f) => f.id)), out = [];
+/** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in GATE_FLOORS (a frontier site with no page in LANE_PAGES has no Verse page yet), at most max. Pure. */
+export function pick(evidence = {}, frontier = null, changed = [], max = 3, rank = null, size = null, target = null) {
+  const t = tower([], evidence, frontier, null, rank, size, target), ids = new Set(GATE_FLOORS.map((f) => f.id)), out = [];
   const add = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < max) out.push(id); };
   add((t.floors.find((f) => f.state === 'current' && ids.has(f.id)) || t.floors.find((f) => !f.beaten && ids.has(f.id)) || {}).id);
   // a floor whose own page the deploy changed: /color/ for void-live-deploy/color/index.html; its probe's page counts too
@@ -348,11 +352,11 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
   // hexcolor16.com, on the same page, with a reading from before it), the unbeaten first, at most 10; and when the service worker changed, every
   // unbeaten floor whose last offline reading is not a win
   const OKV = new Set(['better', 'equal-and-better']), room = Math.max(max, 10), addMore = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < room) out.push(id); };
-  const onPage = FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); });
+  const onPage = GATE_FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); });
   const beatenOf = (id) => { const g = t.floors.find((x) => x.id === id); return !!(g && g.beaten); };
   for (const f of onPage.filter((f) => !beatenOf(f.id)).concat(onPage.filter((f) => beatenOf(f.id)))) addMore(f.id);
   if (changed.includes('void-live-deploy/sw.js')) for (const f of t.floors) if (ids.has(f.id) && !f.beaten && !OKV.has(((evidence[f.id] || {}).offline || {}).verdict)) addMore(f.id);
-  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
+  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(GATE_FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
   return out;
 }
 
@@ -484,7 +488,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // --which [changed file ...]: print the floors a post-deploy run measures, one per line (.github/workflows/tower-gate.yml)
   if (argv[0] === '--which') {
     const data = read(), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
-    for (const id of pick(data.floors || {}, fr, argv.slice(1))) console.log(id);
+    for (const id of pick(data.floors || {}, fr, argv.slice(1), 3, (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.rank.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.size.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.target.json'), 'utf8')).id || null; } catch (_) { return null; } })())) console.log(id);
     process.exit(0);
   }
   // --merge <slice file ...>: the sweep's slices folded into the evidence file, a newer row over an older one only (tools/tower-merge.mjs); no site loaded
@@ -500,9 +504,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   for (let i = 0; i < argv.length; i++) { const a = argv[i]; if (['--shard', '--floors', '--out'].includes(a)) opt[a.slice(2)] = argv[++i] || ''; else if (['--rescore', '--list'].includes(a)) opt[a.slice(2)] = true; else words.push(a); }
   const sh = opt.shard !== undefined ? parseShard(opt.shard) : null;
   if (opt.shard !== undefined && !(sh && sh.i >= 1 && sh.i <= sh.n)) { console.error('--shard wants i/N with 1 <= i <= N, e.g. --shard 2/6; got ' + opt.shard); process.exit(2); }
-  const ids = sh ? shard(FLOORS.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
-  const floors = ids.map((id) => FLOORS.find((x) => x.id === id) || id), unknown = floors.filter((x) => typeof x === 'string');
-  if (unknown.length || !floors.length) { console.error('no floor ' + (unknown.join(', ') || '(none given)') + '; floors: ' + FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
+  const ids = sh ? shard(GATE_FLOORS.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
+  const floors = ids.map((id) => GATE_FLOORS.find((x) => x.id === id) || id), unknown = floors.filter((x) => typeof x === 'string');
+  if (unknown.length || !floors.length) { console.error('no floor ' + (unknown.join(', ') || '(none given)') + '; floors: ' + GATE_FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
   if (opt.list) { for (const f of floors) console.log(f.id); process.exit(0); } // the selection alone, nothing loaded
   if (opt.rescore) { // --rescore: today's rule on the stored numbers, no site loaded (a rule change, not a new measurement)
     const data = read(); for (const f of floors) { data.floors[f.id] = rescore(data.floors[f.id]); for (const [k, r] of Object.entries(data.floors[f.id])) console.log((floors.length > 1 ? f.id + ': ' : '') + k.padEnd(26) + r.verdict); }

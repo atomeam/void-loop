@@ -27,7 +27,7 @@ permissions:
 
 jobs:
   # The full suite no longer fits one runner's 28-minute budget (the 2026-10-28 run stopped at 397/409 with "suite budget"), so the
-  # watchdog runs it the way verify.yml does: the fast tests once, the browser suite in three shards (tools/shard.mjs), the
+  # watchdog runs it the way verify.yml does: the fast tests once, the browser suite in four shards (tools/shard.mjs), the
   # benchmark on its own on Sundays, and one job that opens, updates or closes the issue from all of their results.
   moved:
     runs-on: ubuntu-latest
@@ -71,17 +71,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Browser suite (shard ${{ matrix.shard }} of 3 of the full suite)
+      - name: Browser suite (shard ${{ matrix.shard }} of 4 of the full suite)
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/3
+          shard: ${{ matrix.shard }}/4
 
   bench:
     needs: moved

@@ -24,22 +24,16 @@ test('negative controls: no block, a line without an id, an unknown id and a rep
   const bad = problems(p, ['paint']);
   assert.ok(bad.some((b) => /not a tower floor: no such floor/.test(b)) && bad.some((b) => /named twice: paint/.test(b)), bad.join('; '));
 });
-test('the card shows the honest count, the floor worked on now, the next easiest and the far-future floors as not beaten, from the gate', () => {
+test('the card names the easiest site left as its target, says why, and lists the next easiest, from the gate ; the hand plan no longer picks the target', () => {
   const plan = parsePlan(md), t = tower(); t.plan = plan;
-  const html = towerHtml(t, esc, { now: 0 });
-  assert.match(html, new RegExp('>' + t.beaten + ' surpassed · working on: ' + t.floors.find((f) => f.id === plan.now[0].id).site.replace(/\./g, '\\.')));
-  assert.match(html, /Working on now/); assert.match(html, /Next easiest \(\d+\)/); assert.match(html, /Far future, not beaten/);
-  for (const { id } of [...plan.next.slice(0, 3), ...plan.far]) assert.ok(html.includes('data-id="' + esc(id) + '"'), id);
-  const far = html.slice(html.indexOf('tw-plan-far'));
-  assert.match(far, /Amazon/); assert.match(far, /YouTube/); assert.doesNotMatch(far.slice(0, far.indexOf('</ul>')), /surpassed/);
-  // the plan cannot promote a floor: with no evidence nothing on it says surpassed; with every aspect passing, the gate's word appears
-  assert.doesNotMatch(html.slice(html.indexOf('tw-plan'), html.indexOf('tw-plan-far')), />surpassed</);
-  const f = FLOORS.find((x) => x.id === plan.next[0].id), t2 = tower([], { [f.id]: passingRows(f) }); t2.plan = plan;
-  assert.equal(planOf(t2, plan).next[0].f.state, 'beaten');
-  assert.match(towerHtml(t2, esc, { now: 0 }), /^[\s\S]*tw-plan-next[\s\S]*>surpassed</);
+  const cur = t.floors.find((f) => f.state === 'current'), html = towerHtml(t, esc, { now: 0 });
+  assert.ok(html.includes('>' + t.beaten + ' surpassed · easiest site left: ' + esc(cur.site)));
+  assert.match(html, /Why this one: /); assert.match(html, /class="tw-next"[^>]*><b[^>]*>Up next<\/b>/); assert.doesNotMatch(html, /tw-plan/);
+  const f = FLOORS.find((x) => x.id === plan.next[0].id), t2 = tower([], { [f.id]: passingRows(f) });
+  assert.equal(t2.floors.find((x) => x.id === f.id).state, 'beaten');
 });
-test('no plan file: the card is what it was (the gate\'s current site in the score line)', () => {
+test('no plan file: the card still names the gate\'s current site in the score line', () => {
   const t = tower(), cur = t.floors.find((f) => f.state === 'current');
   assert.doesNotMatch(towerHtml(t, esc, { now: 0 }), /tw-plan/);
-  assert.ok(towerHtml(t, esc, { now: 0 }).includes(t.beaten + ' surpassed · working on: ' + cur.site));
+  assert.ok(towerHtml(t, esc, { now: 0 }).includes(t.beaten + ' surpassed · easiest site left: ' + cur.site));
 });

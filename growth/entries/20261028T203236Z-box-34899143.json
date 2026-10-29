@@ -1,1 +1,0 @@
-{"at":"2026-10-28T20:32:36Z","by":"box","kind":"build","what":"growth entries: each PR writes its own file under growth/entries and tools/growth-fold.mjs folds them into the ledger on deploy and on main, so PRs stop colliding on the ledger","show":"PRs no longer collide on the growth ledger"}

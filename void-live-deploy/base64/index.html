@@ -101,7 +101,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { encodeText, decodeText, decodeLines, encodeBytes, base64Chunks, hexOf, sizeOf, CHARSETS, CHARSET_GROUPS } from '/lib/base64.js';
+  import { encodeText, decodeText, decodeLines, encodeBytes, base64Chunks, hexOf, sizeOf, CHARSETS, CHARSET_GROUPS, cardAsk } from '/lib/base64.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.base64.v1', text = $('text'), b64 = $('b64'), note = $('note');
   const q = new URLSearchParams(location.search);
   let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
@@ -193,7 +193,7 @@
   mountRelated($('related'), '/base64/', [
     { label: 'Count the words of the text', href: () => (text.value ? '/word-count/?t=' + encodeURIComponent(text.value.slice(0, 4000)) : null) },
     { label: 'Its bytes as one hex number', href: () => (bytes.length && bytes.length <= 1000 ? '/base-converter/?v=' + hexOf(bytes).replace(/ /g, '') + '&b=16' : null) },
-  ]);
+  ], { card: () => (text.classList.contains('stale') ? '' : cardAsk(text.value)) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

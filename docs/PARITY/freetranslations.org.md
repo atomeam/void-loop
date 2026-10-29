@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: freetranslations.org (https://www.freetranslations.org/)
-- Verse: /translate/?q=hello&to=es (translate: freetranslations.org, tower gate 12 of 15)
+- Verse: /translate/?q=hello&to=es (translate: freetranslations.org, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Free Translation - Online English Translator, 200+ Languages"
 - History: [docs/HISTORY/freetranslations.org.md](../HISTORY/freetranslations.org.md)
 
@@ -13,10 +13,10 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | --- | --- | --- | --- | --- |
 | Translate typed text | Translate | have | its live page (2026-10-28): "Free Translation - Online English Translator, 200+ Languages FreeTranslations FT Toggle menu ☰ Free Online Tr" | void-live-deploy/translate/index.html:114 `textarea id="in" placeholder="Type to translate" maxlength="5000" rows="4" spellcheck="tru` |
 | Detect the language automatically | Translate | have | its live page (2026-10-28): "up to 100 words The source language is detected automatically. You can also pick it manually from the dropdow" | void-live-deploy/translate/index.html:99 `"sub" id="sub">100 languages, detected as you type. Documents, a dictionary, other words f` |
-| More than 100 languages | Translate | have | its live page (2026-10-28): "ranslation - Online English Translator, 200+ Languages FreeTranslations FT Toggle menu ☰ Free Online Translato" | void-live-deploy/translate/index.html:203 `ib/toolkit.js'), import('/lib/translate-langs.js'), import('/lib/translate-extras.js')]);` |
+| More than 100 languages | Translate | have | its live page (2026-10-28): "ranslation - Online English Translator, 200+ Languages FreeTranslations FT Toggle menu ☰ Free Online Translato" | void-live-deploy/translate/index.html:203 `ib/toolkit.js'), import('/lib/translate-langs.js'), import('/lib/translate-extras.js'), im` |
 | Swap the two languages | Translate | have | its live page (2026-10-28): "Send Translation Pairs Click &#8644; to swap direction English &#8594; Amharic Swap languages &#8644; English" | void-live-deploy/translate/index.html:105 `button" id="swap" aria-label="Swap languages" title="Swap languages">⇄</button>` |
 | Listen to the text or the translation | Speech | have | its live page (2026-10-28): "Free Online Translator Voice Translator Text to Speech About Us Contact Us Free Online Translator Free Online" | void-live-deploy/translate/index.html:118 `(tap again to hear it slowly)">Listen</button>` |
-| Speak instead of typing | Speech | have | its live page (2026-10-28): "FT Toggle menu ☰ Free Online Translator Voice Translator Text to Speech About Us Contact Us Free Online Transl" | void-live-deploy/translate/index.html:349 `const SR = window.SpeechRecognition // window.webkitSpeechRecognition; let rec = null;` |
+| Speak instead of typing | Speech | have | its live page (2026-10-28): "FT Toggle menu ☰ Free Online Translator Voice Translator Text to Speech About Us Contact Us Free Online Transl" | void-live-deploy/translate/index.html:352 `const SR = window.SpeechRecognition // window.webkitSpeechRecognition; let rec = null;` |
 | Copy the translation | Translate | have | its live page (2026-10-28): "ammar tips. 3 Read, listen, or download Copy the result, click the speaker icon to hear it spoken aloud, or sa" | void-live-deploy/translate/index.html:138 `button type="button" id="copy">Copy</button>` |
 | Example sentences in context | Dictionary | have | its live page (2026-10-28): "AQ answers and over 2,800 audio-enabled example phrases across all dedicated language pages. Languages from ev" | void-live-deploy/translate/index.html:141 `tions and how common each is, examples">Dictionary</button>` |
 | Translate a document (PDF, Word, slides) | Documents | have | its live page (2026-10-28): "est accepts up to 100 words. For longer documents, split the text into smaller paragraphs and translate each o" | void-live-deploy/translate/index.html:204 `nst docs = () => import('/lib/translate-docs.js');` |

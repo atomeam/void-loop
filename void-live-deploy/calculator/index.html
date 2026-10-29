@@ -111,7 +111,7 @@
   // the keypad is in the HTML and paints at once; the calculator's code comes in after the load event (calculator.net reaches its load event in
   // 83 ms and the tower gate times that), so nothing but this page's own bytes stands before it. A sum in the link is still worked out on arrival.
   addEventListener('load', async () => {
-  const [{ calc, show, grouped, memory, remember }, { convertUnits, expressionOf }] = await Promise.all([import('/lib/calculator.js'), import('/skills/calc.js')]);
+  const [{ calc, show, grouped, memory, remember, boxAsk }, { convertUnits, expressionOf }] = await Promise.all([import('/lib/calculator.js'), import('/skills/calc.js')]);
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.calculator.v1';
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
   const saved = load();
@@ -216,7 +216,7 @@
   // the money and health calculators (lib/calc-panels.js), wired to their panels once the keypad works
   import('/lib/calc-panels.js').then((m) => m.mount()).catch(() => {});
   // the "Use with" row last of all
-  import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculator/')).catch(() => {});
+  import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculator/', [], { card: () => boxAsk(ex.value, hist, done, { deg, ans, mem }) })).catch(() => {}); // its stage card works out the sum in the box, or the sum that gave the answer in it
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

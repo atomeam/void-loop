@@ -85,12 +85,12 @@
   <ul class="fits" id="fits"></ul>
   <details id="versions"><summary id="vsum">Earlier versions</summary><p class="note">A version is kept on this device each minute you write (and before a big change), the last 30. <button type="button" id="keepnow">Keep this version now</button></p><ol id="vlist"></ol></details>
   <p class="note" id="saved"></p>
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/fanfic/">Fan fiction</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Counted on this device as you type: your text is saved in this browser only (auto-save) and never sent anywhere, and the page works offline after one visit. A sentence ends at . ! or ?, but not after Mr., Dr., e.g. or U.S., and never inside a number like 3.5. Reading time at 238 words a minute, speaking time at 183; reading level is the Flesch-Kincaid grade. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { count, duration, phrases, goal, pages, LIMITS, keepVersion } from '/lib/wordcount.js';
+  import { count, duration, phrases, goal, pages, LIMITS, keepVersion, cardAsk } from '/lib/wordcount.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.wordcount.v1', box = $('text');
   const q = new URLSearchParams(location.search);
   let saved = ''; try { saved = localStorage.getItem(KEY) || ''; } catch (_) {}
@@ -146,7 +146,7 @@
   $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(box.value); toast($('copy'), 'Copied'); } catch (_) {} });
   $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + (box.value && box.value.length <= 4000 ? '?t=' + encodeURIComponent(box.value) : ''); try { await navigator.clipboard.writeText(u); toast($('link'), box.value.length > 4000 ? 'Link copied (text too long to carry)' : 'Copied'); } catch (_) {} });
   draw(); drawVersions();
-  mountRelated($('related'), '/word-count/', [{ label: 'Rehearse it: a countdown of its speaking time', href: () => { const c = count(box.value); return c.words ? '/stopwatch/?t=' + Math.max(1, Math.round(c.speakSec)) + 's' : null; } }]);
+  mountRelated($('related'), '/word-count/', [{ label: 'Rehearse it: a countdown of its speaking time', href: () => { const c = count(box.value); return c.words ? '/stopwatch/?t=' + Math.max(1, Math.round(c.speakSec)) + 's' : null; } }], { card: () => cardAsk(box.value) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

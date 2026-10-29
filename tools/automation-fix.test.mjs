@@ -69,3 +69,14 @@ assert.equal(intentOf(note).intent, 'report'); assert.equal(isFixAsk(note), fals
 assert.equal(isFixAsk(note + ' My zap fails with 401 Unauthorized.'), true);
 assert.equal(intentOf('I tried the zap again and I checked it and I reran the tests on the branch and I pushed it and the commit did not change the checks, the zap still stopped firing for the whole week and nothing helps at all now').intent, 'unclear');
 console.log('automation-fix: all passed');
+
+// a pasted status report with no error is a report, not a broken automation to fix (owner, 2026-10-29: the exact 724-character paste)
+{
+  const pasted = "Putting a thread on Verse's own asks: promote the 60 checked and tested skills, start with Words and the world, then edge caching for answers and the STL checker\n\nThat thread didn't start. A safety check blocked it because it would merge and deploy to the live site, and your message was only the screenshot.\n\nIf you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.\n\nVerse's own job loop merged #1470 by itself. It adds a /prizes/ row for crypto rewards and gambling, marked core. Nobody chose that, so it's worth a look.\n\nAlso, the sprite sheet cleaner is live, and the fix for the will's coder is set to ship after the 8 PM run limit resets.";
+  assert.equal(pasted.length, 724);
+  assert.equal(intentOf(pasted).intent, 'report');
+  assert.equal(isFixAsk(pasted), false);
+  assert.equal(hasDetails(pasted), false);
+  // a real complaint with the same words around it stays a fix ask
+  assert.equal(isFixAsk('My zap stopped firing after the update went live. It is blocked on something and the webhook is pending. I added a filter yesterday and nothing works since then.'), true);
+}

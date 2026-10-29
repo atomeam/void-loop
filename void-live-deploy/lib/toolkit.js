@@ -18,7 +18,7 @@ export const TOOLS = Object.freeze({
   '/ledger/': 'Repo activity ledger',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/learn-to-draw/': 'Learn to draw', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
@@ -37,7 +37,7 @@ const HAND_RELATED = Object.freeze({
   '/random/': ['/wheel/', '/flip/', '/random-user/', '/base-converter/'],
   '/flip/': ['/wheel/', '/random/'],
   '/stopwatch/': ['/word-count/', '/time/'],
-  '/word-count/': ['/stopwatch/'],
+  '/word-count/': ['/stopwatch/', '/fanfic/'],
   '/base-converter/': ['/convert/', '/color/', '/random/', '/calculator/'],
   '/convert/': ['/base-converter/', '/stopwatch/', '/calculator/'],
   '/password-strength/': ['/password/', '/random-user/'],
@@ -47,7 +47,7 @@ const HAND_RELATED = Object.freeze({
   '/calculators/': ['/calculator/', '/convert/', '/base-converter/'],
   '/time/': ['/stopwatch/', '/weather/'],
   '/weather/': ['/time/', '/stopwatch/'],
-  '/translate/': ['/word-count/', '/time/'],
+  '/translate/': ['/word-count/', '/time/', '/notes/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/scores/': ['/sports/', '/time/', '/calendar/'],
   '/sports/': ['/scores/', '/calendar/', '/time/'],
@@ -57,9 +57,11 @@ const HAND_RELATED = Object.freeze({
   '/markets/': ['/convert/', '/calculator/', '/time/'],
   '/generators/': ['/image/', '/random/', '/flip/', '/wheel/'],
   '/image/': ['/generators/', '/resize-image/', '/color/'],
-  '/notes/': ['/word-count/', '/translate/', '/calendar/'],
+  '/notes/': ['/word-count/', '/translate/', '/calendar/', '/fanfic/'],
   '/base64/': ['/word-count/', '/base-converter/'],
-  '/boards/': ['/resize-image/', '/translate/', '/notes/'],
+  '/boards/': ['/fanfic/', '/resize-image/', '/translate/', '/notes/'],
+  '/fanfic/': ['/generators/', '/word-count/', '/translate/', '/boards/'],
+  '/learn-to-draw/': ['/stopwatch/', '/color/', '/resize-image/', '/notes/'],
   '/news/': ['/translate/', '/notes/', '/weather/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/'],
   '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/'],
@@ -100,7 +102,7 @@ const HAND_CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/learn-to-draw/': 'sketch pad', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 // a self-built page opens its family's card on the stage
 export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base]).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });
@@ -170,6 +172,8 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // the drawing course (2026-10-29, assimilates wheelroot.com): 'learn to draw', 'drawing course', 'drawing lessons', 'drawing exercises' open /learn-to-draw/
+  [/\b(?:learn(?:ing)? (?:how )?to draw|drawing (?:course|lessons?|exercises?|drills?|fundamentals|basics|for beginners)|how to draw for beginners)\b/, () => '/learn-to-draw/'],
   // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
   [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
   // jobs (owner, 2026-10-26): 'job search', 'remote jobs', 'job alerts', 'jobs in germany', 'remote companies hiring' open the jobs page that does it (lib/job-sites.js)
@@ -184,6 +188,9 @@ const ROUTES = [
   [/^(?:add|put) (.+?) (?:to|on|in) (?:my |the )?(?:calendar|verse|void)$|^(?:calendar|schedule|new event)[:,] (.+)$|^remind me (?:to |about |of )?(.+)$/i, (m) => '/calendar/?q=' + encodeURIComponent(m[1] || m[2] || m[3])],
   // generators: 'fantasy name', 'name generator', 'writing prompt', 'band name generator'
   [/^(?:random |a )?(fantasy name|town name|band name|pet name|username|writing prompt|story prompt|superpower|haiku|villain plot|book title|album title|business name|potion name|planet name|side quest|superhero name)s?(?: generator| ideas?)?$|^(?:random )?name generator$/i, (m) => '/generators/?g=' + ({ 'fantasy name': 'fantasy-names', 'town name': 'town-names', 'band name': 'band-names', 'pet name': 'pet-names', username: 'usernames', 'writing prompt': 'writing-prompts', 'story prompt': 'story-prompts', superpower: 'superpowers', haiku: 'haiku', 'villain plot': 'villain-plots', 'book title': 'book-titles', 'album title': 'album-titles', 'business name': 'business-names', 'potion name': 'potion-names', 'planet name': 'planet-names', 'side quest': 'side-quests', 'superhero name': 'superhero-names' }[(m[1] || 'fantasy name').toLowerCase()] || 'fantasy-names')],
+  // fan fiction: 'fan fiction', 'fanfic archive', 'post a story', 'my writing room'
+  [/^(?:the |a |open )?(?:fan ?fic(?:tion)?|fanfics?)(?: archive| stories| site)?$|^(?:post|publish|share) (?:a |my )?(?:fan ?fic(?:tion)?|story|chapter)$/i, () => '/fanfic/'],
+  [/^(?:my |the |open (?:the |my )?)?writing room$/i, () => '/fanfic/?v=room'],
   // boards: 'image boards', 'text boards', 'the chans', '/tech/', 'make a board'
   [/^(?:make|create|start|new) (?:a |an |my own )?(?:image |text )?board$/i, () => '/boards/?new=1'],
   [/^\/([a-z0-9]{1,10})\/$/i, (m) => '/boards/?b=' + m[1].toLowerCase()],
@@ -229,7 +236,7 @@ const ROUTES = [
   [/^(?:a |one |some )?(?:random|fake|made-?up) (?:users?|people|persons?|names?)$|^(\d+) (?:random|fake|made-?up) (?:users?|people)$/i, (m) => '/random-user/' + (m[1] ? '?n=' + m[1] : '')],
   [/^(?:a )?random number(?: (?:between|from) (\d+) (?:and|to) (\d+))?$|^(?:roll|dice|d\d+)$/i, () => '/random/'],
   [/^(?:a |an? )?(?:strong )?(?:password|passphrase)(?: of (\d+)(?: characters| letters)?)?$|^(?:generate|make|new) (?:a |me a )?(?:strong )?(?:password|passphrase)(?: of (\d+))?$/i, (m) => '/password/' + (m[1] || m[2] ? '?len=' + (m[1] || m[2]) : '')],
-  [/^(?:how (?:strong|secure|safe) is|check(?: the)? (?:password|strength of)) (.+)$/i, (m) => '/password-strength/#p=' + encodeURIComponent(m[1])],
+  [/^(?:how (?:strong|secure|safe) is|check(?: the)? (?:password|strength of)) (.+)$/i, () => '/password-strength/'], // the typed password never goes in an address: the page asks for it
   [/^(?:base64 )?decode (.+)$|^(.+) from base64$/i, (m) => '/base64/?mode=decode&t=' + encodeURIComponent(m[1] || m[2])],
   [/^(?:base64 )?encode (.+)$|^(.+) (?:to|in|as) base64$/i, (m) => '/base64/?t=' + encodeURIComponent(m[1] || m[2])],
   [/^(?:0x[0-9a-f]+|0b[01]+|\d+) (?:in|to|as) (binary|hex(?:adecimal)?|octal|decimal|base \d+)$/i, (m, t) => { const v = t.split(/\s/)[0], b = /^bin/i.test(m[1]) ? 2 : /^hex/i.test(m[1]) ? 16 : /^oct/i.test(m[1]) ? 8 : /^dec/i.test(m[1]) ? 10 : +m[1].replace(/\D/g, ''); return '/base-converter/?v=' + encodeURIComponent(v) + '&b=' + b; }],
@@ -254,15 +261,31 @@ export function routeAsk(text) {
   return '/?q=' + encodeURIComponent(t);
 }
 
-/** the "Use with" row: this page's hand-offs (carrying what is on it), then its related tools, then the accent it wears. */
-export function mountRelated(el, path, handoffs = []) {
+/** the "Use with" row: this page's hand-offs (carrying what is on it), then its related tools, then the accent it wears. card, when a page
+ *  gives it, answers the stage ask for what is on the page now (the colour page: 'color #f5be3d'), so its own card opens on that, not the example. */
+export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
   if (!el) return;
   const d = el.ownerDocument, a = (href, text, cls) => { const x = d.createElement('a'); x.href = href; x.textContent = text; if (cls) x.className = cls; return x; };
   const row = d.createElement('div'); row.className = 'tk-row';
-  { const c = cardLinkOf(path); if (c) row.append(a(c, 'See it as a card on the stage →', 'tk-card')); } // first: the page's own card (owner, 2026-10-25: "and vice versa")
+  const aims = []; // every link that carries what is on the page: aimed now, again after anything the page does, and when pointed at or pressed
+  { const c = cardLinkOf(path); if (c) { // first: the page's own card (owner, 2026-10-25: "and vice versa")
+    const x = a(c, 'See it as a card on the stage →', 'tk-card'), aim = () => { let q = ''; try { q = card ? String(card() || '').trim() : ''; } catch (_) { /* the page's own problem: keep the example */ } x.href = q ? '/?q=' + encodeURIComponent(q) : c; };
+    // so a hover already shows the card for what is on the page (owner via the team, 2026-10-29: the link follows the colour live)
+    if (card) { aim(); aims.push(aim); for (const ev of ['pointerenter', 'pointerdown', 'focus', 'click']) x.addEventListener(ev, aim); }
+    row.append(x);
+  } }
   for (const h of handoffs) {
     if (h.run) { const b = d.createElement('button'); b.type = 'button'; b.className = 'tk-hand'; b.textContent = h.label; b.addEventListener('click', () => { const said = h.run(); if (said) { b.textContent = said; setTimeout(() => { b.textContent = h.label; }, 1600); } }); row.append(b); continue; }
-    const x = a('#', h.label, 'tk-hand'); x.addEventListener('click', (e) => { const u = h.href(); if (!u) { e.preventDefault(); return; } x.href = u; }); x.addEventListener('pointerdown', () => { const u = h.href(); if (u) x.href = u; }); row.append(x);
+    // a hand-off link carries the page's value in its href from the start, so a hover, a long press or a copied link goes there too, not to "#";
+    // with nothing on the page to carry yet it reads as off. href is only read, so it must not write; what a press writes goes in go
+    const x = a('#', h.label, 'tk-hand'), aim = () => { let u = null; try { u = h.href() || null; } catch (_) { /* nothing to carry */ } x.href = u || '#'; x.setAttribute('aria-disabled', u ? 'false' : 'true'); return u; };
+    aim(); aims.push(aim); for (const ev of ['pointerenter', 'pointerdown', 'focus']) x.addEventListener(ev, aim);
+    x.addEventListener('click', (e) => { const u = aim(); let ok = !!u; if (ok && h.go) try { ok = h.go() !== false; } catch (_) { ok = false; } if (!ok) e.preventDefault(); }); row.append(x);
+  }
+  if (aims.length) { const all = () => { for (const f of aims) f(); };
+    // tk:card: a page that changes with no event of its own (a forecast that comes back) says so: d.dispatchEvent(new Event('tk:card'))
+    if (d.addEventListener) for (const ev of ['input', 'change', 'click', 'pointerup', 'keyup', 'tk:card']) d.addEventListener(ev, all);
+    if (d.defaultView && d.defaultView.addEventListener) for (const ev of ['hashchange', 'popstate']) d.defaultView.addEventListener(ev, all);
   }
   for (const r of relatedOf(path)) row.append(a(r.href, r.label));
   if (path !== '/tools/') row.append(a('/tools/', 'All tools')); // the kit's own page (owner, 2026-10-25: "link them all so they are all usable together")
@@ -276,6 +299,6 @@ export function mountRelated(el, path, handoffs = []) {
   style.textContent = '.tk-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:14px 0 4px;font-size:13px}.tk-label{color:var(--soft,var(--muted,#888))}'
     + '.tk-row a,.tk-row button{font:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:4px 12px;border:1px solid var(--line,#8884);border-radius:999px;color:inherit;text-decoration:none}'
     + '.tk-ask{margin:14px 0 0}.tk-ask input{font:inherit;width:100%;box-sizing:border-box;min-height:40px;padding:6px 12px;border:1px solid var(--line,#8884);border-radius:999px;background:transparent;color:inherit}.tk-ask input:focus{outline:2px solid var(--accent,#6d4aff);outline-offset:1px}'
-    + '.tk-row .tk-hand,.tk-row a.tk-card{border-color:var(--accent,#6d4aff)}.tk-row a.tk-card{font-weight:600}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
+    + '.tk-row .tk-hand,.tk-row a.tk-card{border-color:var(--accent,#6d4aff)}.tk-row a.tk-card{font-weight:600}.tk-row a[aria-disabled="true"]{opacity:.5;cursor:default}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
   row.prepend(label); el.replaceChildren(style, form, row);
 }

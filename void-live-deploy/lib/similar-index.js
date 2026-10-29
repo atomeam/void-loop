@@ -345,7 +345,8 @@ export default {
      "answer me in Spanish: what is a void",
      "reply in Spanish",
      "contéstame en español",
-     "answer this in Spanish: where is the library"
+     "answer this in Spanish: where is the library",
+     "how to say bread in spanish"
     ]
    },
    {
@@ -585,6 +586,17 @@ export default {
      "show me the swarm mind",
      "competitive minds",
      "resonance seeking agents"
+    ]
+   },
+   {
+    "name": "agent-fluid-memory-orbs",
+    "examples": [
+     "memory orbs",
+     "agent fluid memory orbs",
+     "fluid memory orbs",
+     "show me the memory orbs",
+     "agent fluid",
+     "fluid orbs"
     ]
    }
   ],

@@ -14,7 +14,7 @@ export const OTHERS = ['/tournaments/', '/prizes/', '/wheel/', '/boards/', '/res
 export const EXTRA = ['/is-it/christmas'];  // live only routes (no index.html here)
 export function routes() {
   const out = [];
-  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
+  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
 const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/full-stack-audit/', '/one-time-fix/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/'];
@@ -99,6 +99,7 @@ export const SPECS = {
     await t.click('#c-loan summary'); await t.fill('#la', '20000'); await t.fill('#lr', '7'); await t.fill('#ly', '5'); await t.p.waitForTimeout(200); t.ok(/396\.02/.test(await t.text('#lout')), 'a 20,000 loan at 7% over 5 years is 396.02 a month');
     await t.copies('#copy', '036'); await t.share('#link', async (p) => /1,?036/.test(await p.locator('#out').innerText()));
   },
+  '/fanfic/': async (t) => { await t.p.click('#roomLink'); await t.p.waitForSelector('#room.on'); await t.fill('#dTitle', 'The Long Way Round'); await t.fill('#dText', 'One two three four five.\n\nSix seven.'); await t.p.waitForTimeout(300); t.ok((await t.p.locator('#sWords').innerText()) === '7', 'the Writing Room counts 7 words'); t.ok(/under a minute/.test(await t.p.locator('#sRead').innerText()), 'and a reading time'); await t.download(t.p.locator('#export'), /the-long-way-round\.txt$/); await t.share('#share', async (p) => /The Long Way Round/.test(await p.locator('#sharedSay').innerText())); },
   '/boards/': async (t) => { await t.fill('#sq', 'a'); await t.clickText('Search'); await t.p.waitForTimeout(1500); t.ok((await t.p.locator('main').innerText()).length > 200, 'the board list answers a search'); await t.share('#shareTop'); },
   '/calendar/': async (t) => {
     await t.click('#vWeek'); await t.click('#vMonth'); await t.click('#next'); await t.click('#today');
@@ -113,6 +114,12 @@ export const SPECS = {
     await t.fill('#trIn', 'C Am F G7'); await t.fill('#trBy', '2'); await t.p.waitForTimeout(200); t.ok((await t.text('#trOut')).trim() === 'D Bm G A7', 'C Am F G7 up 2 is D Bm G A7');
     await t.p.selectOption('#cRoot', 'G'); await t.p.waitForTimeout(200); t.ok(/G/.test(await t.p.locator('main').innerText()), 'picking G names a G chord');
     await t.share(t.p.getByRole('button', { name: /share/i }).first());
+  },
+  '/members/': async (t) => { // paid Verse: the perks read from lib/members.js, the join link carries the membership, the free line stands
+    await t.waitText('#perks', /Publish your Verse/, 8000);
+    t.ok((await t.p.locator('#perks li').count()) >= 4, 'the perks are listed');
+    t.ok(/gumroad\.com\/l\/yinmj/.test(await t.p.locator('#buy').getAttribute('href')), 'Join goes to the paid Verse membership');
+    t.ok(/free for everyone/i.test(await t.text('.free')), 'the page says Verse stays free');
   },
   '/code-review/': async (t) => {
     await t.fill('#code', 'function login(user, pass) { eval(user); const q = "SELECT * FROM users WHERE name = \'" + user + "\'"; }'); await t.click('#run'); await t.waitText('#out', /\S/, 15000);
@@ -253,6 +260,8 @@ for (const r of ['/kanban/', '/kanban/simple/', '/kanban/teams/', '/kanban/quick
 for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companies/', '/jobs/europe/', '/jobs/regions/', '/jobs/salary/', '/jobs/tags/']) SPECS[r] = jobs;
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
+// the lab gallery (tools/lab-import.mjs): the experiments under it are not routes here, each was opened headless by tools/lab-probe.mjs before it was published
+for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab li a').count(); t.ok(n > 50, n + ' experiments listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
 // honest text a page is allowed to show (audited): store items that say they are not out yet
 const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;

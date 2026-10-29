@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: weather.gov (https://www.weather.gov/)
-- Verse: /weather/?q=Boston (weather, tower gate 12 of 15)
+- Verse: /weather/?q=Boston (weather, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "National Weather Service"
 - History: [docs/HISTORY/weather.gov.md](../HISTORY/weather.gov.md)
 
@@ -14,7 +14,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Forecasts by place | Weather | have | its live page (2026-10-28): "nic and Atmospheric Administration HOME FORECAST Local Graphical Aviation Marine Rivers and Lakes Hurricanes S" | void-live-deploy/weather/index.html:75 `<footer>Forecasts from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>;` |
 | Warnings and alerts | Weather | have | its live page (2026-10-28): "a SAFETY INFORMATION Wireless Emergency Alerts Brochures Weather-Ready Nation Cooperative Observers Daily Brie" | void-live-deploy/weather/index.html:58 `d sunset, the chance of rain, alerts and radar.</p>` |
 | Radar | Weather | have | its live page (2026-10-28): "DING... --> ACTIVE ALERTS FORECAST MAPS RADAR Standard Radar (Low Bandwidth) Enhanced Radar RIVERS, LAKES, RAI" | void-live-deploy/weather/index.html:58 `he chance of rain, alerts and radar.</p>` |
-| Hourly forecast | Weather | have | every site of this kind offers it | void-live-deploy/lib/weather.js:27 `+ '&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_ma` |
+| Hourly forecast | Weather | have | every site of this kind offers it | void-live-deploy/lib/weather.js:29 `+ '&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_ma` |
 | Forecaster discussions | Weather | missing | studied by hand: weather.gov offers this (https://www.weather.gov/) | no sign of it in the source of /weather/ |
 | Marine, aviation and fire weather | Weather | missing | its live page (2026-10-28): "istration HOME FORECAST Local Graphical Aviation Marine Rivers and Lakes Hurricanes Severe Weather Fire Weathe" | no sign of it in the source of /weather/ |
 | Climate records | Weather | missing | its live page (2026-10-28): "her Sunrise/Sunset Long Range Forecasts Climate Prediction Space Weather PAST WEATHER Past Weather Astronomica" | no sign of it in the source of /weather/ |
