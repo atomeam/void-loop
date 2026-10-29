@@ -160,6 +160,16 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
   // the active target first, its ladder position second, the bookkeeping last: a card's body is read top down (owner, 2026-10-28)
+  /** the target's checklist as diff rows, not a paragraph: ✓ ahead, · still to prove, ✗ behind (owner, 2026-10-28) */
+  const diffRows = (f, esc) => {
+    const lead = (f.aspects || []).filter((a) => !f.left.includes(a)), lost = f.lost || [], open = f.left.filter((a) => !lost.includes(a));
+    const row = (mark, name, colour) => '<span style="white-space:nowrap;margin-right:10px;color:' + colour + '">' + mark + ' ' + esc(name) + '</span>';
+    return '<div class="tw-diff" style="font-size:12px;line-height:1.6;margin-top:4px">'
+      + lead.slice(0, 4).map((a) => row('✓', a, '#5bbf7a')).join('')
+      + open.slice(0, 3).map((a) => row('·', a, '#c9b26a')).join('')
+      + lost.slice(0, 3).map((a) => row('✗', a, '#cf6b6b')).join('')
+      + '</div>';
+  };
   // the plan's `now` is the active target (owner, 2026-10-28: the floor the card is worked on); the gate's own "easiest unbeaten"
   // can be a different floor, and when it is, both are named rather than one silently replacing the other
   const target = plan && plan.now.length ? plan.now[0].f : cur;
@@ -169,6 +179,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + '<div class="tw-target" style="font-size:21px;font-weight:700;line-height:1.2">' + esc(target.site) + '</div>'
     + '<div style="font-size:13px;margin-top:2px">' + esc(target.state === 'beaten' ? 'surpassed' : target.n + ' of ' + target.m + ' aspects ahead · not beaten yet') + (target.page ? ' · <a href="' + esc(target.page) + '">Verse\'s page</a>' : '') + '</div>'
     + '<div style="font-size:12px;opacity:.7;margin-top:2px">' + esc((Number.isFinite(size) ? 'Tranco #' + size.toLocaleString('en') + ' · ' : '') + (nexts.length ? 'next: ' + nexts[0].f.site + (nexts.length > 1 ? ' (+' + (nexts.length - 1) + ' more)' : '') : 'last floor in the queue')) + '</div>'
+    + diffRows(target, esc)
     + (cur && target.id !== cur.id ? '<div style="font-size:11px;opacity:.6;margin-top:2px">the gate\'s easiest unbeaten floor is ' + esc(cur.site) + ' (' + esc(cur.n + ' of ' + cur.m) + ')</div>' : '') + '</div>' : '';
   return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw">' + summary + '<div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (plan && plan.now.length ? ' · working on: ' + plan.now.map((r) => r.f.site).join(', ') : cur ? ' · working on: ' + cur.site : '')) + '</div>' + planHtml(plan, esc)
     + sortBar + (cur ? vsHtml(cur, esc, { enter }) : '')

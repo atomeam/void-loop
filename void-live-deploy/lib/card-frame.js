@@ -20,7 +20,7 @@ import { sealArt, SEAL_CSS } from './void-seal.js';
 import { subjectOf, motifsFor } from './card-subject.js';
 import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Verse)
 import { artSource } from './art-source.js';
-import { sectionsOf } from './card-sections.js';
+import { sectionsOf, LONG_BODY } from './card-sections.js';
 import { badgesOf, noticeOf, themeOf } from './subject-kinds.js';
 import { isNoAnswer } from './no-answer.js'; // a refusal body is a Not found card, never a sourced answer with an "Adds to Verse" line
 
@@ -324,9 +324,23 @@ function plain(el) {
 function accordion(el) {
   try {
     if (el.querySelector(':scope > .vc-sec') || el.dataset.skill || el.dataset.cardOwn) return;
-    const nodes = [...el.children].filter((n) => /^(P|UL|OL|PRE|BLOCKQUOTE|TABLE|H[1-6])$/.test(n.tagName) && !n.classList.contains('vc-title') && !n.classList.contains('vc-route') && !n.hidden);
+    const blocks = (parent) => [...parent.children].filter((n) => /^(P|UL|OL|PRE|BLOCKQUOTE|TABLE|H[1-6])$/.test(n.tagName) && !n.classList.contains('vc-title') && !n.classList.contains('vc-route') && !n.hidden);
+    // a page that returns one wrapper (skills/tower.js: <div class="tw">…) hides every block one level down: section the wrapper's own
+    // children instead of giving up and printing the whole body as one wall (owner, 2026-10-28)
+    let nodes = blocks(el);
+    if (!nodes.length && el.children.length === 1) nodes = blocks(el.children[0]);
     const secs = sectionsOf(nodes.map((n) => ({ heading: /^H\d$/.test(n.tagName), text: n.textContent })));
-    if (!secs.length) return;
+    if (!secs.length) {
+      // a body no section could be cut from (one dense block): clamp it instead of letting it stretch the card
+      if (el.textContent.length <= LONG_BODY) return;
+      el.style.maxHeight = '360px'; el.style.overflow = 'hidden'; el.style.maskImage = 'linear-gradient(#000 78%, transparent)'; el.style.webkitMaskImage = 'linear-gradient(#000 78%, transparent)';
+      const more = document.createElement('button');
+      more.type = 'button'; more.className = 'vc-more'; more.textContent = 'Show all ' + el.textContent.length.toLocaleString('en') + ' characters';
+      more.addEventListener('pointerdown', (e) => e.stopPropagation());
+      more.addEventListener('click', (e) => { e.stopPropagation(); el.style.maxHeight = ''; el.style.overflow = ''; el.style.maskImage = ''; el.style.webkitMaskImage = ''; more.remove(); });
+      el.after(more);
+      return;
+    }
     el.dataset.sections = String(secs.length);
     secs.forEach((sc, i) => {
       const group = nodes.slice(sc.from, sc.to + 1), wrap = document.createElement('div'), head = document.createElement('button'), body = document.createElement('div'), id = 'vcs' + Math.random().toString(36).slice(2, 8);
