@@ -160,6 +160,23 @@ test('the translate page\'s card translates the text in the box, exactly as type
   assert.match(src, /card:\s*\(\)\s*=>\s*C\.cardAsk\(\$\('in'\)\.value,\s*state\.from,\s*state\.to\)/, 'the page gives its card the text box and its two languages');
 });
 
+test('the random page\'s card draws from the range on the page, not 1 to 100, and the card\'s page link opens the page on that range', async () => {
+  const R = await import('../void-live-deploy/lib/random-card.js'), { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const src = fs.readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+  // the stage's own parser for "random number between a and b" (void.html chanceOf), read from the page so a change there is caught here
+  const line = src.split('\n').find((l) => l.includes('think\\s+of') && l.includes('random\\s+number')), re = new RegExp(/m = l\.match\(\/(.+)\/\);/.exec(line)[1]);
+  for (const [a, b, lo, hi] of [['1', '100', 1, 100], ['-5', '5', -5, 5], [' 9 ', '2', 2, 9], ['0', '0', 0, 0], ['-999999999', '999999999', -999999999, 999999999]]) {
+    const ask = R.cardAsk(a, b, '0'), m = re.exec(ask.toLowerCase()); assert.ok(m, 'the stage reads it: ' + ask);
+    assert.deepEqual([+(m[1] || m[3]), +(m[2] || m[4])], [lo, hi], 'the card draws from the same range: ' + ask);
+    assert.equal(await firstSkill(ask), null, 'no skill takes it before the stage\'s own random number: ' + ask);
+  }
+  for (const [a, b, d] of [['1.5', '3', '0'], ['1', '100', '2'], ['', '5', '0'], ['1', '1e3', '0'], ['1', '1234567890', '0']]) assert.equal(R.cardAsk(a, b, d), '', 'no whole-number range keeps the example: ' + [a, b, d]);
+  assert.deepEqual(pageOfCard('', '/random/?min=-5&max=5'), ['/random/?min=-5&max=5', 'Random number'], 'the card links back to the page on its range');
+  assert.equal(pageOfCard('', '/random/?min="><b>'), null, 'only a plain query is linked'); assert.equal(pageOfCard('', 'https://evil.example/?a=1'), null, 'only a known page is linked');
+  assert.ok(src.includes("p.dataset.page = '/random/?min=' + c.lo + '&max=' + c.hi"), 'the stage card names the page with its range');
+  assert.ok(/card: \(\) => cardAsk\(/.test(fs.readFileSync(new URL('../void-live-deploy/random/index.html', import.meta.url), 'utf8')), 'the page gives the stage its range');
+});
+
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
   const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
   for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {

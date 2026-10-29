@@ -55,6 +55,7 @@
 <link rel="modulepreload" href="/lib/wheel.js">
 <link rel="modulepreload" href="/lib/handoff.js">
 <link rel="modulepreload" href="/lib/prizes.js">
+<link rel="modulepreload" href="/lib/random-card.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -205,12 +206,13 @@
   import { mountRelated } from '/lib/toolkit.js';
   import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
   import { mountStrip, prizesLink } from '/lib/handoff.js';
+  import { cardAsk } from '/lib/random-card.js';
   const list = () => document.getElementById('list').value.split('\n').map((s) => s.trim()).filter(Boolean);
   mountRelated(document.getElementById('related'), '/random/', [
     { label: 'Spin your list on a wheel', href: () => (list().length ? '/wheel/#' + wheelCode(wheelEntries(list().join('\n'))) : null) },
     { label: 'Prize odds for your list', href: () => (list().length ? prizesLink(list().join('\n')) : null) },
     { label: 'This number in other bases', href: () => { const v = document.getElementById('out').textContent.trim(); return /^-?\d+$/.test(v) ? '/base-converter/?v=' + v + '&b=10' : null; } },
-  ]);
+  ], { card: () => cardAsk(document.getElementById('min').value, document.getElementById('max').value, document.getElementById('dec').value) });
   mountStrip(document.getElementById('related'), '/random/');
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
