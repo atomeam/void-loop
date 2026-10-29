@@ -126,3 +126,36 @@ test('the page reads the family on its own: routeOfCard, which feeds the misrout
     "      return m ? { skill: m[1], via: 'skill' } : null;",
     '    }', ''].join('\n'));
 });
+
+test('a reply kept before cards had a family is placed once, from the loop log; skill and the fix queue do not change', async () => {
+  const { placeByLog, placeUnplacedOnce } = await import('../void-live-deploy/lib/corrections.js');
+  const { familyOfNote } = await import('../void-live-deploy/lib/card-reply.js');
+  const { heatRows, hotEntry } = await import('../void-live-deploy/lib/correction-heat.js');
+  const fam = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8'));
+  const old = { at: '2026-10-29T15:40:00.000Z', ask: '5 miles in km', skill: '', wanted: '', text: 'Show two decimals please.' };
+  const routed = { at: '2026-10-29T15:41:00.000Z', ask: 'make a clock', skill: 'clock', wanted: '', text: 'Wrong hand.' };
+  const lost = { at: '2026-10-29T15:42:00.000Z', ask: 'an ask no log holds', skill: '', wanted: '', text: 'x' };
+  const log = [
+    { t: '2026-10-29T15:39:00.000Z', domain: 'void.page', ask: '5 Miles in KM', note: 'calc' },
+    { t: '2026-10-29T15:41:00.000Z', domain: 'void.page', ask: 'make a clock', note: 'skill:clock' },
+    { t: '2026-10-29T16:00:00.000Z', domain: 'void.page', ask: 'an ask no log holds', note: 'article' }, // after the reply: not its card
+  ];
+  const r = placeByLog([old, routed, lost], log, familyOfNote);
+  assert.equal(r.placed, 1);
+  assert.deepEqual(r.list.map((c) => [c.skill, c.family]), [['', 'numbers'], ['clock', undefined], ['', undefined]]);
+  assert.equal(familyOfNote('skill:clock'), '', 'a skill note gives no family');
+
+  const st = mem(); st.setItem(CORRECTIONS.key, JSON.stringify([old, routed, lost]));
+  const before = hotEntry(readCorrections(st), fam, 'time');
+  assert.equal(placeUnplacedOnce(st, log, familyOfNote), 1);
+  const after = readCorrections(st);
+  assert.equal(after[0].family, 'numbers'); assert.equal(after[0].skill, '', 'skill is never set');
+  assert.equal(heatRows(after, fam).unplaced, 1, 'only the reply no log holds stays unplaced');
+  assert.deepEqual(hotEntry(after, fam, 'time'), before, 'the fix queue reads the skill alone');
+  assert.equal(hotEntry(after, fam, 'numbers'), null, 'a placed reply drafts no fix');
+  assert.equal(st.getItem(CORRECTIONS.placedKey), '1');
+  st.setItem(CORRECTIONS.key, JSON.stringify([old]));
+  assert.equal(placeUnplacedOnce(st, log, familyOfNote), 0, 'it runs once on a device');
+  assert.equal(readCorrections(st)[0].family, undefined);
+  assert.equal(placeUnplacedOnce({ getItem() { throw new Error('x'); }, setItem() {} }, log, familyOfNote), 0, 'bad storage never throws');
+});
