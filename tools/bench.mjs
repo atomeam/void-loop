@@ -69,9 +69,8 @@ const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
 const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 // no host but this machine resolves: every outside service is a stand-in below, and one that has none (a worker's request, a map in an iframe) fails at once
-// --disable-gl-drawing-for-tests: GL draws give no pixels. A CI runner has no GPU, so the compositor and WebGL run on SwiftShader, a GPU in software,
-// on the same 4 cores the answers need (load average 20, #1626). Every check here reads the page's text and its loop log, never a pixel.
-const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1', '--disable-gl-drawing-for-tests'];
+// 2026-10-29: --disable-gl-drawing-for-tests was tried (#1627): an ask took 1.40 s on 3 pages, not 0.89 s, so it is gone again
+const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'];
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
@@ -111,7 +110,7 @@ function standIn(cdp, e, handler) {
     res = { status: r.status || 200, body: r.body || '', headers: [...cors, ...(r.contentType ? [{ name: 'content-type', value: r.contentType }] : [])] }; }
   cdp.send('Fetch.fulfillRequest', { requestId: e.requestId, responseCode: res.status, responseHeaders: res.headers, body: Buffer.from(res.body).toString('base64') }).catch(() => {});
 }
-const pace = { load: 0, answer: 0, full: 0, early: 0 }; // where the time goes, for the pace line below
+const pace = { load: 0, answer: 0, full: 0, early: 0, task: 0, script: 0, layout: 0, style: 0 }; // where the time goes, for the pace line below
 async function one(ctx, { ask: a, want, says, before }) {
   const tOpen = Date.now(); const miss = [];
   // the stand-ins: outside services, then Verse's own /api (served through the page's DevTools session, see standIn)
@@ -158,6 +157,7 @@ async function one(ctx, { ask: a, want, says, before }) {
   const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p);
   cdp.on('Fetch.requestPaused', (e) => standIn(cdp, e, /^http:\/\/127\.0\.0\.1:\d+\/api\//.test(e.request.url) ? api : external));
   await cdp.send('Fetch.enable', { patterns: [{ urlPattern: 'https://*' }, { urlPattern: 'http://127.0.0.1:*/api/*' }] });
+  await cdp.send('Performance.enable').catch(() => {}); // the page's own CPU time, read back before it closes, for the pace line
   // the ask starts as on a first visit: the earlier ask's cookies and storage go, on an empty page of the same origin, before Verse loads
   await ctx.clearCookies(); await p.goto(base + '__blank'); await p.evaluate(CLEAR_STORAGE);
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
@@ -197,6 +197,9 @@ async function one(ctx, { ask: a, want, says, before }) {
       const g = grounded(a, said + '\n' + card, triggersOf.get(skill)); if (g.subject.length) ground = { skill, ok: g.ok, missing: g.missing }; } }
   const valueOk = !says || new RegExp(says, 'i').test(shown);
   const right = routed && valueOk;
+  // the CPU this page used, by kind (seconds, from the browser): where an ask's time goes when the machine is the limit
+  const m = await cdp.send('Performance.getMetrics').then((r) => Object.fromEntries(r.metrics.map((x) => [x.name, x.value]))).catch(() => ({}));
+  pace.task += (m.TaskDuration || 0) * 1000; pace.script += (m.ScriptDuration || 0) * 1000; pace.layout += (m.LayoutDuration || 0) * 1000; pace.style += (m.RecalcStyleDuration || 0) * 1000;
   await p.close();
   return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms, ...(ground ? { ground } : {}) };
 }
@@ -209,7 +212,8 @@ let next = 0;
 let done = 0; const began = Date.now();
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { const ctx = await slot(); try { while (next < todo.length) { const i = next++; out[i] = await one(ctx, todo[i]);
   if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
-    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in, load ' + os.loadavg()[0].toFixed(1)); } } finally { await ctx.close(); } }));
+    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in, load ' + os.loadavg()[0].toFixed(1)
+    + '; page CPU per ask ' + Math.round(pace.task / done) + ' ms (script ' + Math.round(pace.script / done) + ', layout ' + Math.round(pace.layout / done) + ', style ' + Math.round(pace.style / done) + ')'); } } finally { await ctx.close(); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
