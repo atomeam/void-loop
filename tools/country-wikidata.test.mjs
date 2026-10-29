@@ -12,7 +12,7 @@ test('the query looks a country up by its English name or alias, as typed, in ti
   assert.deepEqual(namesOf('bosnia and herzegovina').slice(0, 2), ['bosnia and herzegovina', 'Bosnia and Herzegovina']);
   assert.ok(namesOf('uk').includes('the UK') && namesOf('uk').includes('UK'));
   const q = wikidataQuery('Japan');
-  assert.match(q, /VALUES \?lab \{ "Japan"@en/); assert.match(q, /wd:Q6256 wd:Q3624078/); assert.match(q, /wdt:P1082/); assert.match(q, /wikibase:label/);
+  assert.match(q, /VALUES \?lab \{ "Japan"@en/); assert.match(q, /wd:Q6256 wd:Q3624078/); assert.match(q, /wdt:P47 \?bord\. \?bord wdt:P31 \?bt\. VALUES \?bt \{ wd:Q6256 wd:Q3624078 \}/); assert.match(q, /wdt:P1082/); assert.match(q, /wikibase:label/);
   assert.doesNotMatch(wikidataQuery('x" } DROP'), /"x" \}/, 'a quote in the name cannot close the literal');
   assert.equal(WIKIDATA, 'https://query.wikidata.org/sparql');
 });
