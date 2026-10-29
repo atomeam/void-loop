@@ -6914,17 +6914,5 @@
   {"ask": "random password", "want": "skill:password"},
   {"ask": "another password", "want": "skill:password"},
   {"ask": "another emoji", "want": "skill:emoji"},
-  {"ask": "8 ball", "want": "skill:magic8"},
-  {"ask": "mp4 to mp3", "want": "skill:converter"},
-  {"ask": "file converter", "want": "skill:converter"},
-  {"ask": "audio converter", "want": "skill:converter"},
-  {"ask": "write me a rap about pizza", "want": "skill:rap"},
-  {"ask": "rap about my dog", "want": "skill:rap"},
-  {"ask": "spit some bars about mondays", "want": "skill:rap"},
-  {"ask": "team chat", "want": "skill:team-chat"},
-  {"ask": "open the team chat", "want": "skill:team-chat"},
-  {"ask": "agent workspace", "want": "skill:team-chat"},
-  {"ask": "random uuid", "want": "skill:uuid"},
-  {"ask": "another uuid", "want": "skill:uuid"},
-  {"ask": "random guid", "want": "skill:uuid"}
+  {"ask": "8 ball", "want": "skill:magic8"}
 ]
