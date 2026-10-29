@@ -426,7 +426,7 @@
   async function ask(d) {
     let r = null;
     for (let i = 0; i < 3; i++) {
-      try { r = await fetch('https://rdap.org/domain/' + encodeURIComponent(d), { headers: { accept: 'application/rdap+json' } }); } catch (_) { r = null; }
+      try { r = await fetch('https://rdap.org/domain/' + encodeURIComponent(d), { headers: { accept: 'application/rdap+json' } }); } catch (_) { r = null; } // void-review: ok (a retry of the same one request, one after the other by design: it waits for the registry's limit to pass)
       if (r && r.status !== 429 && r.status < 500) return r;
       if (i < 2) { const s = r && +r.headers.get('retry-after'); await wait(s > 0 ? Math.min(s, 4) * 1000 : 1500 * (i + 1)); }
     }
