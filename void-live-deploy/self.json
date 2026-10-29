@@ -210,6 +210,30 @@
    "date": "2026-10-28",
    "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
    "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "my want card names the site Versus is on, and /api/will ranks my wants by the tower target",
+   "from": "PR #1406"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase",
+   "from": "PR #PRNUM, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write",
+   "from": "PR #PRNUM, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
+   "from": "PR #PRNUM, owner card notes 1-5"
   }
  ],
  "open": [
@@ -501,7 +525,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-26T06:31:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -509,84 +533,80 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T04:48:05Z",
+   "subject": "Each Verse ask gets its own reason; asks serve the Versus target first"
+  },
+  {
+   "at": "2026-10-29T04:47:44Z",
+   "subject": "Incident: the browser suite failed on 0297c5ea (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T04:43:45Z",
+   "subject": "Obituaries: mark the docs/PARITY prose line as right for Verse's review (it is page text, not a constant)"
+  },
+  {
+   "at": "2026-10-29T04:39:17Z",
+   "subject": "Main green: tower checks follow tower.target.json, identity and translate get a fourth sibling, the honest obituaries page is back…"
+  },
+  {
+   "at": "2026-10-29T04:36:29Z",
+   "subject": "Want card names the site Versus is on: /api/will ranks with tower.target.json"
+  },
+  {
+   "at": "2026-10-29T04:30:34Z",
+   "subject": "Verse knows its answers already run on gemma, so the want closes"
+  },
+  {
+   "at": "2026-10-29T04:23:28Z",
+   "subject": "Better at coin, generators fill, kanban board and 2 more: 9 more ways of asking answered right — new phrases: “coin toss” now opens coin…"
+  },
+  {
+   "at": "2026-10-29T04:11:38Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T03:47:37Z",
+   "subject": "Incident: the browser suite failed on d390475f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T03:43:50Z",
+   "subject": "Spotter: 3 check(s) healed with no revert after d390475f7d8c097a4a1dce15fc3e0c22c5962605 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-29T03:17:05Z",
+   "subject": "Tower gate: nameunit,travel,gradient measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T03:14:00Z",
+   "subject": "Tower gate: nameunit,travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T03:12:00Z",
+   "subject": "Incident: the browser suite failed on 8560b023 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T03:11:52Z",
+   "subject": "Versus card: one surpassed count, not two"
+  },
+  {
+   "at": "2026-10-29T03:11:21Z",
+   "subject": "Verse fixes its coin skill: learn to handle \"heads or tails\""
+  },
+  {
+   "at": "2026-10-29T03:10:10Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T03:10:09Z",
+   "subject": "Tower gate: nameunit,travel: airmilescalculator.com,travel: gcmap.com measured against their live sites"
+  },
+  {
    "at": "2026-10-29T03:07:40Z",
    "subject": "Every site gets a cited history before it is fought: the history tool covers the whole queue, a daily workflow writes the next ones, and a…"
   },
   {
    "at": "2026-10-29T03:07:32Z",
    "subject": "Tower gate: nameunit,travel: aruljohn.com,travel: clock7.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T03:04:24Z",
-   "subject": "Served tower files speak as Verse: no owner words in the hold, the weight notes or the card styles"
-  },
-  {
-   "at": "2026-10-29T03:03:44Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-29T03:02:34Z",
-   "subject": "Rules: the smallest-opponent-first rule, rewritten in plain words"
-  },
-  {
-   "at": "2026-10-29T03:02:13Z",
-   "subject": "Tower size: clear the rows the tool filter refused so the next run reads them again"
-  },
-  {
-   "at": "2026-10-29T03:02:02Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-29T03:01:39Z",
-   "subject": "Rule: smallest opponent first, by weight; the owner's hold outranks the gate"
-  },
-  {
-   "at": "2026-10-29T03:00:58Z",
-   "subject": "Incident: the browser suite failed on be4734c8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T02:59:35Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-29T02:58:47Z",
-   "subject": "Tower size: do not require a tool; the owner asked for the smallest site by size (a real small site counts, only offline notices and error…"
-  },
-  {
-   "at": "2026-10-29T02:57:43Z",
-   "subject": "Tower size: a community, archive or news page is not a tool (sycophanthex.com is a fanfiction archive); re-weigh; the card-order test uses…"
-  },
-  {
-   "at": "2026-10-29T02:57:14Z",
-   "subject": "Versus card redone: the target as a hero with its weight, the fight, a compact aspect grid, three actions, up next, an honest empty…"
-  },
-  {
-   "at": "2026-10-29T02:55:59Z",
-   "subject": "Tower gate: unit converter: convertlive.com,random number,travel: tripwaffle.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T02:54:58Z",
-   "subject": "Versus card: bump the module version so a browser that kept the old lib/tower.js loads the heycolor.com hold"
-  },
-  {
-   "at": "2026-10-29T02:53:48Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-29T02:52:17Z",
-   "subject": "Refresh after merging the lab"
-  },
-  {
-   "at": "2026-10-29T02:51:44Z",
-   "subject": "Incident: the browser suite failed on 66dd2e52 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T02:51:24Z",
-   "subject": "Lab: the lab repo's experiments live at /lab/, tested in headless Chromium first"
-  },
-  {
-   "at": "2026-10-29T02:51:19Z",
-   "subject": "Tower size: re-weigh the lightest rows under the stricter rule"
   }
  ],
  "builders": {
@@ -820,5 +840,17 @@
   "line": "People this week: 22 (152 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
   "at": "2026-10-28T11:22Z",
   "source": "verse"
+ },
+ "tower": {
+  "target": "sycophanthex.com",
+  "since": "2026-10-29",
+  "page": "my page for it is not built yet: it still needs its row in lib/tool-sites.js and its LANE_PAGES entry in lib/tower.js",
+  "next": [
+   "nameunit.com",
+   "wheelroot.com",
+   "onlineconverter.com"
+  ],
+  "beaten": 0,
+  "total": 1266
  }
 }
