@@ -1113,3 +1113,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T07:31:34Z | claude | grow | Stage card links open the unit converter, calculator and countdown as they stand
 2026-10-29T07:43:51Z | claude | grow | the calculator's stage card takes the sum that gave the answer, not the bare answer
 2026-10-29T07:56:41Z | claude | grow | The word counter's stage card counts the text in its box, carried as a code no other skill reads
+2026-10-29T08:15:40Z | claude | grow | The translate page's stage card translates the text in the box, exactly as typed, between the page's own languages. Before, it always opened 'translate hello to spanish', and a text with weather words went to the weather skill.
