@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:21:20Z",
+   "subject": "Shard 3 server checks: the confirm line, the router and the ?q= link pass again"
+  },
+  {
+   "at": "2026-10-29T06:14:30Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T06:13:00Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:10:53Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T05:50:15Z",
    "subject": "Memory orbs: look up the shared field when asked, so a missing file is not a broken import"
-  },
-  {
-   "at": "2026-10-29T05:48:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:48:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:48:04Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
