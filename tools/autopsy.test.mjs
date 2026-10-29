@@ -89,7 +89,7 @@ test('a test case from each recent failure (asked by Verse): the ask the check q
 test('stability gauge: red suites in the last week lower the score; none is steady (asked by Verse)', async () => {
   const { stabilityOf, stabilityHtml } = await import('../void-live-deploy/lib/autopsy.js');
   const now = Date.parse('2026-10-18T12:00:00Z'), mk = (...ats) => ({ incidents: ats.map((at, n) => ({ at, sha: 'abcdef' + n, checks: ['x'] })) });
-  assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1, last: null, checks: 0, capped: false });
+  assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1, last: null, checks: 0, capped: false, fixed: 0 });
   const g = stabilityOf(mk('2026-10-18T06:00:00Z', '2026-10-15T00:00:00Z', '2026-10-01T00:00:00Z'), now); assert.deepEqual([g.score, g.label, g.week, g.day, g.last], [91, 'wobbly', 2, 1, 6]);
   assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-18T11:00:00Z')), now).score, 0); assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-18T11:00:00Z')), now).label, 'shaky');
   // a bad morning fades: 30 reds, then main stays green; a day later the dial is climbing, two days later it is nearly steady
