@@ -542,13 +542,33 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T17:06:26Z",
+   "subject": "Main green: 5 browser checks that the reply section, the MultiVerse rename and the pinned target made red"
+  },
+  {
+   "at": "2026-10-29T17:02:54Z",
+   "subject": "guide.json: follows the families.json refresh"
+  },
+  {
+   "at": "2026-10-29T17:01:01Z",
+   "subject": "families.json: the tower skill has 9 browser-suite mentions after #1594"
+  },
+  {
+   "at": "2026-10-29T17:00:21Z",
+   "subject": "Country borders: a neighbour counts when it is a country or a sovereign state"
+  },
+  {
+   "at": "2026-10-29T17:00:09Z",
+   "subject": "Edge cache live check: a repeat ask must be a HIT, personal and signed asks never"
+  },
   {
    "at": "2026-10-29T16:56:05Z",
    "subject": "Versus check: a pinned target's score line says \"now assimilating\""
@@ -559,10 +579,6 @@
   },
   {
    "at": "2026-10-29T16:48:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:44:31Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -590,10 +606,6 @@
    "subject": "converter: assimilate onlineconverter.com as /converter/"
   },
   {
-   "at": "2026-10-29T16:32:33Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-29T16:31:30Z",
    "subject": "Keep every proven skill's flavor line unique once the lore runs out; regenerate parity and hand-off gaps"
   },
@@ -603,10 +615,6 @@
   },
   {
    "at": "2026-10-29T16:28:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:28:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-29T16:24:24Z",
    "subject": "test(answer-honesty): read the tower target from the record"
-  },
-  {
-   "at": "2026-10-29T16:24:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:23:17Z",
-   "subject": "Regenerate the skill tools list after the main merge"
   }
  ],
  "builders": {

@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T16:10:18.044Z",
+ "updated": "2026-10-29T17:11:57.800Z",
  "last24h": {
-  "ticks": 84,
-  "started": 103,
+  "ticks": 90,
+  "started": 108,
   "requeued": 1,
   "setAside": 0,
-  "probes": 11,
+  "probes": 12,
   "errors": 0
  },
  "broken": [],
@@ -147,7 +147,12 @@
   "mvtn32ey": 1793287139520,
   "mvtn33d5": 1793287754610,
   "mvtow8r7": 1793288369770,
-  "mvtow96e": 1793288985611
+  "mvtow96e": 1793288985611,
+  "mvtr4xik": 1793291450672,
+  "mvtr4y9y": 1793292067638,
+  "mvtr4z0i": 1793292684921,
+  "mvtr4zrr": 1793293301015,
+  "mvtruzch": 1793293917800
  },
  "ticks": [
   {
@@ -2126,6 +2131,131 @@
    "at": "2026-10-29T16:10:18.044Z",
    "open": 106,
    "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T16:20:34.024Z",
+   "open": 106,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T16:30:50.672Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mvtr4xik",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T16:41:07.638Z",
+   "open": 109,
+   "started": [
+    {
+     "id": "mvtr4y9y",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T16:51:24.921Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mvtr4z0i",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": true,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T17:01:41.015Z",
+   "open": 109,
+   "started": [
+    {
+     "id": "mvtr4zrr",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T17:11:57.800Z",
+   "open": 107,
+   "started": [
+    {
+     "id": "mvtruzch",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
    "requeued": 0,
    "setAside": 0,
    "healed": [],
