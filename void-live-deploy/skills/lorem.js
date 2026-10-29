@@ -23,9 +23,8 @@ export function isLorem(text) {
 function run(text, api) {
   const { showPage, esc } = api;
   const n = paragraphsOf(text) || 1;
-  const paras = Array.from({ length: n }, () => LOREM).join('</p><p>');
   showPage((p) => {
-    p.innerHTML = '<h2>Lorem ipsum</h2><p>' + paras + '</p><div class="sub">say “generate more lorem” or “3 paragraphs of lorem”</div><div class="src">Classic placeholder text.</div>';
+    p.innerHTML = '<h2>Lorem ipsum</h2><p>' + Array.from({ length: n }, () => esc(LOREM)).join('</p><p>') + '</p><div class="sub">say “generate more lorem” or “3 paragraphs of lorem”</div><div class="src">Classic placeholder text.</div>';
   });
   return 'lorem';
 }
