@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 936,
+ "counted": 939,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -248,6 +248,13 @@
    "tests": 1
   },
   {
+   "file": "lib/card-mini.js",
+   "skills": 8,
+   "direct": 5,
+   "dependants": 14,
+   "tests": 0
+  },
+  {
    "file": "lib/flight-sites.js",
    "skills": 8,
    "direct": 1,
@@ -288,13 +295,6 @@
    "direct": 7,
    "dependants": 8,
    "tests": 1
-  },
-  {
-   "file": "lib/card-mini.js",
-   "skills": 7,
-   "direct": 5,
-   "dependants": 13,
-   "tests": 0
   },
   {
    "file": "lib/art-source.js",
@@ -486,11 +486,25 @@
    "tests": 1
   },
   {
+   "file": "lib/colour.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/movies.js",
    "skills": 4,
    "direct": 2,
    "dependants": 10,
    "tests": 0
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 10,
+   "tests": 1
   },
   {
    "file": "lib/art-meta.js",
@@ -598,23 +612,9 @@
    "tests": 8
   },
   {
-   "file": "lib/colour.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 11,
-   "tests": 1
-  },
-  {
    "file": "lib/ics.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/pwcheck.js",
-   "skills": 3,
-   "direct": 2,
    "dependants": 9,
    "tests": 1
   },
@@ -3440,6 +3440,7 @@
     "lib/honest.js",
     "lib/tower.js",
     "lib/lap.js",
+    "lib/churn.js",
     "lib/will-guard.js"
    ],
    "importedBy": []
@@ -4484,6 +4485,7 @@
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/languages.js",
+    "skills/lorem.js",
     "skills/writing-aids.js"
    ]
   },
@@ -4652,10 +4654,8 @@
   "lib/churn.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/will.js",
     "lib/will-guard.js"
-   ],
-   "reachedBy": [
-    "functions/api/will.js"
    ]
   },
   "lib/cite.js": {
@@ -4779,6 +4779,7 @@
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/gradient.js",
+    "skills/lorem.js",
     "skills/writing-aids.js"
    ]
   },
@@ -7473,6 +7474,7 @@
     "lib/seo-audit.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
+    "skills/lorem.js",
     "skills/writing-aids.js"
    ]
   },
@@ -9882,6 +9884,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/color.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/connect4-rules.js": {
    "imports": [],
    "importedBy": [
@@ -11098,6 +11104,16 @@
     "skills/lock-rules.js",
     "skills/lift3d.js"
    ],
+   "importedBy": []
+  },
+  "skills/lorem.js": {
+   "imports": [
+    "skills/util.js"
+   ],
+   "importedBy": []
+  },
+  "skills/magic8.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/magnetize.js": {
@@ -12983,7 +12999,8 @@
    ],
    "importedBy": [
     "lib/wordcount.js",
-    "lib/writing-aids.js"
+    "lib/writing-aids.js",
+    "skills/lorem.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
