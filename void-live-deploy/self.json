@@ -533,6 +533,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:10:00Z",
+   "subject": "List the proverb skill so it loads"
+  },
+  {
+   "at": "2026-10-29T05:09:35Z",
+   "subject": "Own-card lists: end a cut row at its last whole clause"
+  },
+  {
+   "at": "2026-10-29T05:05:44Z",
+   "subject": "Memory orbs: generated cards after bringing main in (node tools/refresh.mjs)"
+  },
+  {
+   "at": "2026-10-29T05:05:41Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:04:59Z",
+   "subject": "Memory orbs (F-321): agent-pushed fluid whose peaks become sealable orbs"
+  },
+  {
+   "at": "2026-10-29T05:04:25Z",
+   "subject": "Own-card notes: copy Fixed and Still open from the record, keep the record date"
+  },
+  {
    "at": "2026-10-29T05:02:56Z",
    "subject": "Fan fiction: list /fanfic/ in the sitemap generator and update the hand-off note"
   },
@@ -583,30 +607,6 @@
   {
    "at": "2026-10-29T04:39:17Z",
    "subject": "Main green: tower checks follow tower.target.json, identity and translate get a fourth sibling, the honest obituaries page is back…"
-  },
-  {
-   "at": "2026-10-29T04:36:29Z",
-   "subject": "Want card names the site Versus is on: /api/will ranks with tower.target.json"
-  },
-  {
-   "at": "2026-10-29T04:30:34Z",
-   "subject": "Verse knows its answers already run on gemma, so the want closes"
-  },
-  {
-   "at": "2026-10-29T04:23:28Z",
-   "subject": "Better at coin, generators fill, kanban board and 2 more: 9 more ways of asking answered right — new phrases: “coin toss” now opens coin…"
-  },
-  {
-   "at": "2026-10-29T04:11:38Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T04:02:26Z",
-   "subject": "Refresh the dependency map for lib/fanfic.js"
-  },
-  {
-   "at": "2026-10-29T03:59:40Z",
-   "subject": "Add /fanfic/: a fan-fiction archive on the anonymous boards, with a Writing Room"
   }
  ],
  "builders": {
