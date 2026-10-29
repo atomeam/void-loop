@@ -158,6 +158,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     el.dataset.utility = String(self.utility); el.dataset.gen = String(self.genome.gen); el.dataset.chosen = String(self.q); el.dataset.imagined = String(self.imagined);
     el.dataset.concepts = String(self.concepts); el.dataset.focus = String(b.focus.region); el.dataset.action = self.action; el.dataset.ticks = String(b.ticks);
     el.dataset.organs = String(B.ORGAN_IDS.length); el.dataset.episodes = String(self.episodes); el.dataset.procedures = String(self.procedures); el.dataset.wants = String(self.wants.length); el.dataset.conflicts = String(self.conflicts.length);
+    el.dataset.heard = String(b.ear.notes); el.dataset.guessed = String(b.ear.guessed); el.dataset.hits = String(b.ear.hits); el.dataset.ear = b.board.ear ? b.board.ear.note : ''; // Listen: notes heard, guesses made and right (numbers only)
     const fc = Field.census(); el.dataset.felt = String((felt.get(S()) || []).length); el.dataset.published = String(link ? link.held : 0); el.dataset.fieldOwners = Object.keys(fc.held).sort().join(',');
     const t = fieldSays(fc, +el.dataset.felt, link ? link.held : 0); if (fieldLine.textContent !== t) fieldLine.textContent = t;
   };

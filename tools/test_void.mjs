@@ -5700,6 +5700,42 @@ try {
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
+  if (want('verse brain hearing: a hum played into the microphone is heard as notes through the card\'s own Listen path, and the tune hummed again is guessed note by note')) { // owner, 2026-10-29: "combine all the builds into one entity", "dont fake it" (F299's ear, lib/brain-hearing.js)
+    // a fake microphone: getUserMedia returns a stream that plays a person humming Frere Jacques twice (G3, 0.3 s a beat, vibrato, 1.7 s apart),
+    // made in the page; the card's own AudioContext, analyser, 25 ms pitch reads and the brain's hearing organ do the rest
+    const HUM = () => { const md = navigator.mediaDevices; if (!md) return;
+      md.getUserMedia = async () => {
+        const AC = window.AudioContext || window.webkitAudioContext, ctx = new AC(), SR = ctx.sampleRate, out = []; let ph = 0;
+        const song = [[0, 1], [2, 1], [4, 1], [0, 1], [0, 1], [2, 1], [4, 1], [0, 1], [4, 1], [5, 1], [7, 2], [4, 1], [5, 1], [7, 2]];
+        for (let r = 0; r < 2; r++) {
+          for (const [st, bt] of song) {
+            const midi = 55 + st, ns = Math.floor((bt * 0.3 - 0.07) * SR);
+            for (let i = 0; i < ns; i++) { const t = i / SR; ph += 440 * Math.pow(2, (midi - 69 + 0.3 * Math.sin(34.56 * t)) / 12) / SR; let v = 0; for (let h = 1; h <= 6; h++) v += Math.sin(6.2832 * h * ph) / (h * h * 0.7 + 0.3); out.push(0.25 * Math.min(1, t / 0.03, (ns - i) / SR / 0.03) * v); }
+            for (let i = 0; i < 0.07 * SR; i++) out.push(0);
+          }
+          for (let i = 0; i < 1.7 * SR; i++) out.push(0);
+        }
+        const buf = ctx.createBuffer(1, out.length, SR); buf.copyToChannel(Float32Array.from(out), 0);
+        const src = ctx.createBufferSource(), dest = ctx.createMediaStreamDestination(); src.buffer = buf; src.connect(dest);
+        await ctx.resume().catch(() => {}); src.start(ctx.currentTime + 0.2); window.__hum = { ends: performance.now() + (out.length / SR + 0.2) * 1000, state: ctx.state };
+        return dest.stream;
+      }; };
+    const F = await fresh(HUM), card = '.ff-verse-brain';
+    await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' .vb-listen')), 8000);
+    await F.p.click(card + ' .vb-listen'); await until(async () => /^Listening/.test(await F.p.$eval(card + ' .vb-listen', (e) => e.textContent)), 4000);
+    const listening = await F.p.$eval(card + ' .vb-listen', (e) => e.textContent + '|' + e.getAttribute('aria-pressed'));
+    await until(() => F.p.evaluate(() => !!window.__hum && performance.now() > window.__hum.ends + 1000), 30000);
+    const ear = await F.p.$eval(card, (e) => ({ heard: +(e.dataset.heard || 0), guessed: +(e.dataset.guessed || 0), hits: +(e.dataset.hits || 0), note: e.dataset.ear || '', orb: !!e.querySelector('.vb-orb[data-key="ear"]') }));
+    const hum = await F.p.evaluate(() => window.__hum || null);
+    const self = await F.p.evaluate(() => ((window.verseBrain && window.verseBrain.state().self) || []).find((s) => /^Hearing:/.test(s)) || '');
+    const row = await F.p.$eval(card + ' .vb-organs tr[data-organ="hearing"]', (e) => e.textContent).catch(() => '');
+    await F.p.click(card + ' .vb-listen'); const stopped = await F.p.$eval(card + ' .vb-listen', (e) => e.textContent + '|' + e.getAttribute('aria-pressed'));
+    const errors = F.errors.slice(); await F.ctx.close();
+    check('verse brain hearing: Listen on, a hum played into the microphone (Frere Jacques, twice) reaches the brain as notes (24 or more of 28), it guesses each next note and gets 8 or more right the second time through, the ear orb names the note, '
+      + 'the self says "Hearing: N hummed notes; it guessed the next one right X% of the time", and tapping Listen again stops it',
+      listening === 'Listening (tap to stop)|true' && ear.heard >= 24 && ear.heard <= 30 && ear.guessed >= 20 && ear.hits >= 8 && /^[A-G]#?\d$/.test(ear.note) && ear.orb && /^Hearing: \d+ hummed notes; it guessed the next one right \d+% of the time/.test(self)
+      && /Hearing/.test(row) && stopped === 'Listen|false' && !errors.length, JSON.stringify({ listening, hum, ear, self, row, stopped, errors }));
+  }
   if (want("field minds: nca mind runs Grok's lattices on one card, the pointer seeds it, ask words and the Rule picker switch drafts, portals keep a rule, with or without a Worker")) { // asked by Owner, 2026-10-18: F-036, F-039, F-043, F-045
     const out = [];
     for (const noWorker of [false, true]) {
