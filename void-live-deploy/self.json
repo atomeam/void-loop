@@ -545,12 +545,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:05:46Z",
+   "subject": "uuid skill: take the asks util leaves (random, another, please), crypto ids, order file, family, map line, test"
+  },
+  {
    "at": "2026-10-29T15:04:44Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:02:55Z",
    "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
+  },
+  {
+   "at": "2026-10-29T15:01:49Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T14:59:55Z",
@@ -585,10 +593,6 @@
    "subject": "fix(hosting): mark the RDAP retry loop as a sequential retry for the review"
   },
   {
-   "at": "2026-10-29T14:46:31Z",
-   "subject": "feat(learn-to-draw): assimilate wheelroot.com with a scored drawing course"
-  },
-  {
    "at": "2026-10-29T14:45:06Z",
    "subject": "Refresh the parity and tools pages the refresh check found stale"
   },
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T14:36:35Z",
    "subject": "3D contract: mount after the studio light lands, so its one redraw stays out of the idle window"
-  },
-  {
-   "at": "2026-10-29T14:35:48Z",
-   "subject": "Revert #1470: drop the /prizes/ parity rows"
   }
  ],
  "builders": {
