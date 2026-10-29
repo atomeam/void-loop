@@ -2,6 +2,31 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-29T03:12:00.329Z",
+   "sha": "8560b02344b1393f118477cc2cc6f05b6fa59929",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40810369021",
+   "suite": "browser suite on main",
+   "checks": [
+    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/tower.evidence.json",
+    ".github/workflows/site-history.yml",
+    "docs/HISTORY/vcalc.com.md",
+    "docs/HISTORY/zapier.md",
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/history-coverage.test.mjs",
+    "tools/site-history.mjs",
+    "void-live-deploy/history/vcalc.com.json",
+    "void-live-deploy/history/zapier.json",
+    "void-live-deploy/parity.json",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json"
+   ]
+  },
+  {
    "at": "2026-10-29T03:00:57.820Z",
    "sha": "be4734c87089267653dcaaad708f2a572488ee15",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40806232662",
@@ -930,31 +955,6 @@
     "void-live-deploy/markets/index.html",
     "void-live-deploy/markets/screener/index.html",
     "void-live-deploy/og/markets.png"
-   ]
-  },
-  {
-   "at": "2026-10-26T03:30:49.832Z",
-   "sha": "92b0983f9e65404a997571426c6f5d45116b5234",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40260860474",
-   "suite": "browser suite on main",
-   "checks": [
-    "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
-   ],
-   "touched": [
-    ".github/workflows/verify.yml",
-    "tools/revert-target.test.mjs"
    ]
   }
  ]
