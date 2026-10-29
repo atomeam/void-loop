@@ -6,7 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import * as F from '../void-live-deploy/lib/fanfic.js';
-import { LIMITS, cleanText } from '../void-live-deploy/lib/boards.js';
+import { LIMITS, cleanText, excerpt } from '../void-live-deploy/lib/boards.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy');
 const DAY = 864e5;
@@ -96,8 +96,9 @@ test('file names, fandom codes, pen names and the device signature', () => {
 });
 
 test('a summary and chapter lines read back as they were written', () => {
-  assert.deepEqual(F.readSummary(F.withSummary('Two lines about it.', 'The story.')), { summary: 'Two lines about it.', text: 'The story.' });
-  assert.deepEqual(F.readSummary('No summary here.'), { summary: '', text: 'No summary here.' });
+  const none = F.cleanDetails({});
+  assert.deepEqual(F.readSummary(F.withSummary('Two lines about it.', 'The story.')), { summary: 'Two lines about it.', text: 'The story.', details: none });
+  assert.deepEqual(F.readSummary('No summary here.'), { summary: '', text: 'No summary here.', details: none });
   assert.deepEqual(F.readChapter(F.chapterHead(3, 'The Bridge') + 'Text.'), { n: 3, title: 'The Bridge', more: false, text: 'Text.' });
   assert.deepEqual(F.readChapter(F.chapterHead(3, '', true) + 'More.'), { n: 3, title: '', more: true, text: 'More.' });
   assert.equal(F.readChapter('Just a review.'), null);
@@ -203,4 +204,56 @@ test('every view that holds a text hands it to the translator and the word count
   assert.match(app, /handing = id === 'room' \? \(\) => draft\(\)\.text : id === 'post' \? \(\) => \$\('stForm'\)\.elements\.text\.value : null/, 'the room and the post form hand their text');
   assert.match(app, /handing = \(\) => \(c \? c\.text : ''\)/, 'the story hands the chapter being read');
   assert.match(app, /mountRelated\(\$\('related'\), '\/fanfic\/', hand\)/, 'through the shared row (lib/toolkit.js)');
+});
+
+test('story details: a known rating, at most 3 known genres, at most 6 characters and known warnings, written above the summary and read back', () => {
+  const d = F.cleanDetails({ rating: 'teen', genres: 'romance, Mystery, Nonsense, Drama, Horror', characters: 'Ana, Bo, ana, ' + 'x'.repeat(60) + ', C, D, E, F', warnings: ['violence', 'Spoilers'] });
+  assert.deepEqual(d.rating, 'Teen'); assert.deepEqual(d.genres, ['Drama', 'Mystery', 'Romance'], 'the list order, unknown dropped, 3 at most');
+  assert.equal(d.characters.length, 6); assert.deepEqual(d.characters.slice(0, 2), ['Ana', 'Bo']); assert.equal(d.characters[2].length, 40, 'a name is one line of 40 at most');
+  assert.deepEqual(d.warnings, ['Violence']); assert.equal(F.cleanDetails({ rating: 'Explicit' }).rating, '', 'an unknown rating is none');
+  const body = F.withSummary('About it.', 'The story.', { rating: 'Mature', genres: ['Angst'], characters: 'Ana', warnings: ['Dark themes'] });
+  assert.equal(body, 'Warnings: Dark themes\nGenres: Angst\nCharacters: Ana\nRated: Mature\nSummary: About it.\n\nThe story.', 'the rating last, so names end at a label');
+  assert.deepEqual(F.readSummary(body), { summary: 'About it.', text: 'The story.', details: { rating: 'Mature', genres: ['Angst'], characters: ['Ana'], warnings: ['Dark themes'] } });
+  assert.deepEqual(F.readSummary(F.withSummary('', 'Just text.', { rating: 'General' })), { summary: '', text: 'Just text.', details: { ...F.cleanDetails({}), rating: 'General' } });
+  assert.equal(F.withSummary('About it.', 'The story.', {}), F.withSummary('About it.', 'The story.'), 'no details, the body is as before');
+  const posts = F.chapterPosts(1, '', Array.from({ length: 14 }, (_, i) => 'Para ' + i + ' ' + 'word '.repeat(150).trim()).join('\n\n'), 'S.', { rating: 'Teen', genres: ['Drama'], characters: 'Ana', warnings: ['Violence'] });
+  assert.ok(posts[0].startsWith('Warnings: Violence\n'));
+  // a board's catalog gives each post as one line of at most 300 characters (lib/boards.js excerpt): the details read back from that too
+  const most = { rating: 'Mature', genres: ['Hurt/Comfort', 'Sci-fi', 'Adventure'], characters: Array.from({ length: 6 }, (_, i) => 'Name' + i + ' ' + 'y'.repeat(30)).join(','), warnings: F.WARNINGS };
+  const full = F.cleanDetails(most); assert.ok(full.characters.join(', ').length <= 140 && full.characters.length >= 3, 'at most 140 characters of names');
+  const flat = excerpt(F.withSummary('About it.', 'The story goes on and on. '.repeat(20), most), 300);
+  assert.deepEqual(F.readSummary(flat).details, full, 'every detail fits in the 300 a catalog keeps');
+  assert.deepEqual(F.readSummary(excerpt(body, 300)).details, F.readSummary(body).details);
+  assert.deepEqual(F.readSummary('Characters: Ana and then the story').details.characters, [], 'names with no label after them are not guessed');
+  assert.equal(F.readSummary('Rated: Teen and then the story').text, 'and then the story');
+  for (const p of posts) { assert.ok(p.split('\n').length <= LIMITS.lines); assert.equal(cleanText(p, LIMITS.body, LIMITS.lines), p); }
+  const row = F.topicOf({ no: 1, at: 1, sub: 'T', body }, { code: 'ficx', title: 'X' });
+  assert.deepEqual([row.rating, row.genres, row.characters, row.warnings, row.summary], ['Mature', ['Angst'], ['Ana'], ['Dark themes'], 'About it.']);
+  assert.equal(F.detailsLine(row), 'Warnings: Dark themes · Rated Mature · Angst · Characters: Ana'); assert.equal(F.detailsLine({}), '');
+});
+
+test('the catalog filters by rating, genres, characters, warnings and title letter, and sorts four ways', () => {
+  const t = (no, title, extra = {}) => ({ no, title, at: no, bumped: 10 - no, replies: no % 3, rating: '', genres: [], characters: [], warnings: [], ...extra });
+  const list = [t(1, 'Zebra', { rating: 'Teen', genres: ['Romance', 'Drama'], characters: ['Zoë Hart'] }), t(2, 'apple', { rating: 'General', genres: ['Romance'] }),
+    t(3, '“Élan”', { warnings: ['Violence'], characters: ['Bo'] }), t(4, '42 Days', { rating: 'Teen' })];
+  const nos = (a) => a.map((x) => x.no);
+  assert.deepEqual(nos(F.filterStories(list, {})), [1, 2, 3, 4]);
+  assert.deepEqual(nos(F.filterStories(list, { rating: 'Teen' })), [1, 4]);
+  assert.deepEqual(nos(F.filterStories(list, { genres: ['Romance'] })), [1, 2]); assert.deepEqual(nos(F.filterStories(list, { genres: ['Romance', 'Drama'] })), [1], 'every genre asked for');
+  assert.deepEqual(nos(F.filterStories(list, { characters: 'zoe' })), [1], 'part of a name, case and accents ignored');
+  assert.deepEqual(nos(F.filterStories(list, { noWarnings: true })), [1, 2, 4]);
+  assert.deepEqual(nos(F.filterStories(list, { letter: 'e' })), [3]); assert.deepEqual(nos(F.filterStories(list, { letter: '#' })), [4]);
+  assert.deepEqual([F.letterOf('apple'), F.letterOf('“Élan”'), F.letterOf('42 Days'), F.letterOf('')], ['A', 'E', '#', '#']);
+  assert.deepEqual(nos(F.sortStories(list, 'recent')), [1, 2, 3, 4]); assert.deepEqual(nos(F.sortStories(list, 'newest')), [4, 3, 2, 1]);
+  assert.deepEqual(nos(F.sortStories(list, 'title')), [4, 2, 3, 1]); assert.deepEqual(nos(F.sortStories(list, 'replies')), [2, 1, 4, 3], 'stable on ties');
+  assert.deepEqual(nos(F.sortStories(list, 'nonsense')), nos(F.sortStories(list, 'recent')));
+  assert.deepEqual(Object.keys(F.SORTS), ['recent', 'newest', 'title', 'replies']);
+});
+
+test('the index shows the filters, the sort and the A to Z bar, and the post form asks for a rating', () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8');
+  for (const id of ['fSort', 'fRated', 'fChars', 'fGenres', 'fNoWarn', 'fAz', 'stGenres', 'stWarnings', 'storyDetails']) assert.match(html, new RegExp('id="' + id + '"'), id);
+  assert.match(html, /<select name="rating" required/);
+  const de = fs.readFileSync(path.join(root, 'lib', 'fanfic-de.js'), 'utf8');
+  for (const s of ['Titles A to Z', 'Hide stories with warnings', ...Object.values(F.SORTS), ...F.GENRES, ...F.WARNINGS]) assert.ok(de.includes("'" + s + "'") || de.includes(' ' + s.replace(/[^A-Za-z]/g, '') + ':'), 'German for ' + s);
 });
