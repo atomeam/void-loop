@@ -248,6 +248,13 @@
    "tests": 1
   },
   {
+   "file": "lib/card-mini.js",
+   "skills": 8,
+   "direct": 5,
+   "dependants": 14,
+   "tests": 0
+  },
+  {
    "file": "lib/flight-sites.js",
    "skills": 8,
    "direct": 1,
@@ -288,13 +295,6 @@
    "direct": 7,
    "dependants": 8,
    "tests": 1
-  },
-  {
-   "file": "lib/card-mini.js",
-   "skills": 7,
-   "direct": 5,
-   "dependants": 13,
-   "tests": 0
   },
   {
    "file": "lib/art-source.js",
@@ -486,11 +486,25 @@
    "tests": 1
   },
   {
+   "file": "lib/colour.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/movies.js",
    "skills": 4,
    "direct": 2,
    "dependants": 10,
    "tests": 0
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 10,
+   "tests": 1
   },
   {
    "file": "lib/art-meta.js",
@@ -598,23 +612,9 @@
    "tests": 8
   },
   {
-   "file": "lib/colour.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 11,
-   "tests": 1
-  },
-  {
    "file": "lib/ics.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/pwcheck.js",
-   "skills": 3,
-   "direct": 2,
    "dependants": 9,
    "tests": 1
   },
@@ -4481,6 +4481,7 @@
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/languages.js",
+    "skills/lorem.js",
     "skills/writing-aids.js"
    ]
   },
@@ -4776,6 +4777,7 @@
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/gradient.js",
+    "skills/lorem.js",
     "skills/writing-aids.js"
    ]
   },
@@ -7468,6 +7470,7 @@
     "lib/seo-audit.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
+    "skills/lorem.js",
     "skills/writing-aids.js"
    ]
   },
@@ -11093,6 +11096,12 @@
    ],
    "importedBy": []
   },
+  "skills/lorem.js": {
+   "imports": [
+    "skills/util.js"
+   ],
+   "importedBy": []
+  },
   "skills/magnetize.js": {
    "imports": [],
    "importedBy": []
@@ -12976,7 +12985,8 @@
    ],
    "importedBy": [
     "lib/wordcount.js",
-    "lib/writing-aids.js"
+    "lib/writing-aids.js",
+    "skills/lorem.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",

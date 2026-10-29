@@ -195,18 +195,6 @@
   },
   {
    "state": "shipped",
-   "date": "2026-10-22",
-   "ask": "fun fact skill: random interesting facts from a public API",
-   "from": "new idea by growth agent"
-  },
-  {
-   "state": "shipped",
-   "date": "2026-10-22",
-   "ask": "random quote skill: inspirational quotes from a public API",
-   "from": "new idea by growth agent"
-  },
-  {
-   "state": "shipped",
    "date": "2026-10-28",
    "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
    "from": "asked by Verse"
@@ -561,6 +549,10 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-29T05:30:27Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T05:29:44Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -619,10 +611,6 @@
   {
    "at": "2026-10-29T05:14:30Z",
    "subject": "Verse fixes its kanban-board skill: learn to handle \"free kanban board\""
-  },
-  {
-   "at": "2026-10-29T05:14:21Z",
-   "subject": "Open the PR a helper pushed without one"
   }
  ],
  "builders": {
