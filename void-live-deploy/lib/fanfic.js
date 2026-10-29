@@ -187,6 +187,16 @@ export function readChapter(body) {
   const rest = b.slice(m[0].length), d = !m[3] && DONE_RE.exec(rest);
   return { n: +m[1], title: (m[2] || '').trim(), more: !!m[3], done: !!d, text: d ? rest.slice(d[0].length) : rest };
 }
+/** a review can give the story 1 to 5 stars: its post then opens "Stars: n of 5" and a blank line. Pure. */
+const STARS_RE = /^Stars: ([1-5]) of 5\n\n?/;
+export function reviewBody(text, stars = 0) { const n = Math.round(+stars); return (n >= 1 && n <= 5 ? 'Stars: ' + n + ' of 5\n\n' : '') + String(text == null ? '' : text); }
+/** { stars, text }: stars 0 when the review gives none. Pure. */
+export function readReview(body) { const b = String(body == null ? '' : body), m = STARS_RE.exec(b); return m ? { stars: +m[1], text: b.slice(m[0].length) } : { stars: 0, text: b }; }
+/** the stars the reviews give: { avg, n }, avg to one decimal, n the reviews that gave stars; { avg: 0, n: 0 } when none did. Pure. */
+export function starsOf(reviews = []) {
+  const got = reviews.map((p) => readReview(p && p.body).stars).filter(Boolean);
+  return got.length ? { avg: Math.round((got.reduce((a, b) => a + b, 0) / got.length) * 10) / 10, n: got.length } : { avg: 0, n: 0 };
+}
 /** a chapter's text as the posts the boards will take whole, each with its chapter line: the first "Chapter n: title", the rest ", continued".
  *  Chapter 1 has no line on its first post (it opens the thread, after the summary). */
 export function chapterPosts(n, title, text, summary = '', details = null, done = false) {
@@ -197,7 +207,7 @@ export function chapterPosts(n, title, text, summary = '', details = null, done 
 
 /** a story out of a thread: the opening post is chapter 1; a reply signed with the opening post's mark and opening with a chapter line is the
  *  author's (a new chapter, or more of one); every other reply is a review. Unsigned stories (posted on /boards/ without a mark) have chapter 1
- *  only. { title, author, trip, summary, chapters: [{ n, title, text, at, nos }], reviews, words, published, updated } */
+ *  only. { title, author, trip, summary, chapters: [{ n, title, text, at, nos }], reviews, stars: { avg, n }, words, published, updated } */
 export function storyOf(op, posts = []) {
   const { summary, text, details } = readSummary(op.body);
   const chapters = [{ n: 1, title: '', text, at: op.at, nos: [op.no] }], reviews = [];
@@ -214,7 +224,7 @@ export function storyOf(op, posts = []) {
   }
   const updated = chapters.reduce((t, c) => Math.max(t, c.at || 0), op.at || 0);
   if (done) details.status = 'Complete';
-  return { title: op.sub || excerpt(text, 60) || 'Untitled', author: op.name || 'Anonymous', trip: op.trip || '', summary, details, chapters, reviews,
+  return { title: op.sub || excerpt(text, 60) || 'Untitled', author: op.name || 'Anonymous', trip: op.trip || '', summary, details, chapters, reviews, stars: starsOf(reviews.filter((p) => !op.trip || p.trip !== op.trip)),
     words: chapters.reduce((n, c) => n + words(c.text), 0), published: op.at || 0, updated };
 }
 
