@@ -1119,3 +1119,5 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T08:26:57Z | claude | grow | The random number page's stage card draws from the range on the page, and the card links back to the page on that range
 2026-10-29T08:41:41Z | claude | grow | password page card hand-off by length
 2026-10-29T08:56:10Z | claude | grow | The password page hands a password to the strength page in memory, never in an address
+2026-10-29T08:51:04Z | verse | build | Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com
+2026-10-29T08:53:38Z | verse | build | Versus: took on no site; next randomarea.com
