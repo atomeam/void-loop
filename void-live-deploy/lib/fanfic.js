@@ -271,6 +271,16 @@ export function storyOf(op, posts = []) {
     words: chapters.reduce((n, c) => n + words(c.text), 0), published: op.at || 0, updated };
 }
 
+/** a story's own figures for its catalog row, from storyOf: chapters and words always, then reviews and the stars readers gave when it has any.
+ *  Read from the whole thread: the catalog holds only the opening post, cut short, so a row never guesses them from that. Pure. */
+export function rowFigures(s) {
+  const n = (k, one, many) => k.toLocaleString() + ' ' + (k === 1 ? one : many);
+  const out = [n(s.chapters.length, 'chapter', 'chapters'), n(s.words, 'word', 'words')];
+  if (s.reviews.length) out.push(n(s.reviews.length, 'review', 'reviews'));
+  if (s.stars && s.stars.n) out.push('★ ' + s.stars.avg);
+  return out;
+}
+
 /** a topic row for the archive's lists, from a thread in a board's catalog. */
 export function topicOf(t, board) {
   const { summary, text, details } = readSummary(t.body);
