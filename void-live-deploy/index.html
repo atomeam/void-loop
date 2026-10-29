@@ -4895,6 +4895,12 @@ say('nothing selected to remove');
       let j = null; try { j = await r.json(); } catch (_) {}
       return { status: r.status, body: j };
     }
+    // true when the owner's key is here and this ask sends, books or spends (lib/approval-core.js parseGatedAsk): it goes to the confirm line
+    async function gatedForOwner(text) {
+      if (!ownerToken()) return false;
+      const core = await Promise.race([approvalReady(), new Promise((r) => setTimeout(() => r(null), 6000))]);
+      return !!(core && core.parseGatedAsk(text));
+    }
     async function handleGatedAsk(text) {
       const core = await Promise.race([approvalReady(), new Promise((r) => setTimeout(() => r(null), 6000))]);
       const attach = confirmAttach; confirmAttach = null; // one ask only, used or not
@@ -5298,7 +5304,7 @@ say('nothing selected to remove');
     const PAID_CORE = [
       "upgrade(?: me| my (?:verse|void)| (?:verse|void)| my account| my plan)?(?: to (?:paid|pro|premium)(?: (?:verse|void))?)?",
       "(?:the |your )?(?:pricing|prices?|plans?|price list)",
-      "what (?:does|do) (?:void|it|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|it|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|paid (?:verse|void)|more)",
+      "what (?:does|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|verse|paid (?:verse|void)|more)",
       "pay(?: for (?:void|paid (?:verse|void)|more|it|the paid (?:version|tier|plan)))?(?: you)?",
       "(?:buy|get|try) (?:void )?(?:pro|premium|paid(?: (?:verse|void))?|monthly|the paid (?:version|tier|plan))",
       "subscribe|(?:a |my )?subscription|go pro|(?:void|verse) (?:pro|plus|premium|monthly|yearly|annual)|paid (?:verse|void)|premium|(?:a |the )?paid (?:tier|plan|version)",
@@ -5342,7 +5348,7 @@ say('nothing selected to remove');
     // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
     // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
     // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
-    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|a-to-mind)(?: cost)?)$/;
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|verse|a-to-mind)(?: cost)?)$/; // the name is Verse (owner, 2026-10-14)
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
       if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
@@ -5882,7 +5888,9 @@ say('nothing selected to remove');
           || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
       if (await handleGrownAsk(text, lower0)) return;
-      if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000) {
+      // a send, booking or spend the owner's key now covers is never "the same page": without the key, "send an email to jo@x.com saying hi"
+      // opens the mail card (skills/rides.js, lists run 7); the same ask after "unlock" is for the confirm line (plan item 7), not that card
+      if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000 && !(await gatedForOwner(text))) {
         const el = vpageEl; el.classList.remove('again'); void el.offsetWidth; el.classList.add('again');
         say('same page'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'same page' }); return;
       }

@@ -9232,8 +9232,17 @@ try {
   // the gate is shared by the whole run: the proposal card's Send has already asked once, so count from here
   const callsAt = gate.calls.length, requestedAt = sent('a2m.approval.requested').length;
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  // Without the owner's key Verse sends nothing. A send it would make for the owner gets the plain refusal; an email ask opens the mail
+  // card instead (skills/rides.js mailAsk, lists run 7, aab06c1e): the draft is filled in and only the person's own mail app can send it.
+  await t.ask('text sam saying hi', 700);
+  const visitorText = await t.whisper();
   await t.ask('send an email to jane@x.com saying hi', 700);
-  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === callsAt, await t.whisper());
+  const visitorMail = await until(() => t.p.$eval('.vpage.on', (e) => { const v = (s) => (e.querySelector(s) || {}).value; const links = Array.from(e.querySelectorAll('.ml-out a')).map((a) => a.href);
+    return e.classList.contains('mail-card') && { to: v('.ml-to'), body: v('.ml-body'), links }; }).catch(() => null), 5000) || {};
+  const visitorLine = await t.whisper();
+  check('confirm line: visitors cannot send', /person at the screen/.test(visitorText) && visitorMail.to === 'jane@x.com' && visitorMail.body === 'Hi.'
+    && visitorMail.links.some((h) => h === 'mailto:jane@x.com?subject=Hi&body=Hi.') && visitorMail.links.every((h) => /^(?:mailto:|https:\/\/(?:mail\.google\.com|outlook\.live\.com|compose\.mail\.yahoo\.com)\/)/.test(h))
+    && !/Yes \/ No/.test(visitorLine) && !(await t.p.$('#whisper [data-vc]')) && gate.calls.length === callsAt, JSON.stringify({ visitorText, visitorMail, visitorLine }).slice(0, 400));
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await t.ask('send an email to jane@x.com saying hi', 900);
   check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === requestedAt + 1 && gate.ran.length === 0, await t.whisper());
@@ -9340,16 +9349,18 @@ try {
   await A.ask('close');
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
   const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
-  await B.ask('send an email to jane@x.com saying hi', 0);
+  await B.ask('text sam saying hi', 0);
   const bNoOwner = await until(async () => /person at the screen/.test(await B.whisper()) && (await B.whisper()), 4000);
+  await B.ask('send an email to jane@x.com saying hi', 0); // without the owner's key: the mail card, which sends nothing itself (lists run 7)
+  const bMail = !!(await until(() => B.p.$eval('.vpage.on.mail-card .ml-to', (e) => e.value === 'jane@x.com').catch(() => false), 5000)) && !(await B.p.$('#whisper [data-vc]'));
   await A.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await A.ask('send an email to jane@x.com saying hi', 0);
   const pkLine = await until(async () => /Yes \/ No/.test(await A.whisper()) && (await A.whisper()), 6000);
   const ranWhileAsked = gate.ran.length;
   await A.ask('no', 0); const pkNo = await until(async () => /nothing sent/.test(await A.whisper()) && (await A.whisper()), 4000);
   await A.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
-  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /person at the screen/.test(bNoOwner) && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
-    [bNoOwner, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
+  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /person at the screen/.test(bNoOwner) && bMail && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
+    [bNoOwner, bMail, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
   await B.ask('add a sticky that says from the other device');
   const upB = await until(() => { const d = serverData(); return d && Object.values(d.state).some((x) => x.kind === 'sticky' && /from the other device/.test(x.text)); }, 6000);
   await A.p.reload();
