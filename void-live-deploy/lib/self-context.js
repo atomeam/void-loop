@@ -130,12 +130,19 @@ export function towerFacts(self) {
 // not pick (live card, 2026-10-29: the facts held PR #1406 and the card fixes, and the model's Fixed list named only the gemma move,
 // and it owned a wrong date as a fault). Fixed: the inbox rows shipped in the week before the newest one, and the model move, newest
 // first. Still open: the tower target with what its page still needs, the next smallest sites, then a count of the other open work.
+// a row self.json cut with "…" ends at its last whole clause, so the card shows no line broken mid-word (live card 5, 2026-10-29)
+export const wholeClause = (t) => {
+  const s = String(t || '');
+  if (!s.endsWith('…')) return s;
+  const cut = s.slice(0, -1), at = Math.max(cut.lastIndexOf(', '), cut.lastIndexOf(' ('), cut.lastIndexOf('; '));
+  return (at > 0 ? cut.slice(0, at) : cut).trim();
+};
 export function cardFacts(self, { days = 7, more = 3 } = {}) {
   if (!self) return '';
   const day = (d) => Date.parse(String(d || '') + 'T00:00:00Z');
   const shipped = (Array.isArray(self.shipped) ? self.shipped : []).filter((r) => Number.isFinite(day(r.date))).sort((x, y) => (x.date < y.date ? 1 : -1));
   const newest = shipped.length ? day(shipped[0].date) : NaN;
-  const fixed = shipped.filter((r) => newest - day(r.date) <= days * 864e5).map((r) => r.date + ': ' + r.ask + (/#\d+/.test(r.from) ? ' (' + r.from.match(/#\d+/)[0] + ')' : ''));
+  const fixed = shipped.filter((r) => newest - day(r.date) <= days * 864e5).map((r) => r.date + ': ' + wholeClause(r.ask) + (/#\d+/.test(r.from) ? ' (' + r.from.match(/#\d+/)[0] + ')' : ''));
   const mv = modelMove(self);
   if (mv) fixed.push(mv.date + ': my answers moved from gpt-oss-120b to gemma (merged and deployed, commit ' + mv.commit + ')');
   const t = self.tower, open = [];
@@ -144,7 +151,7 @@ export function cardFacts(self, { days = 7, more = 3 } = {}) {
     for (const n of Array.isArray(t.next) ? t.next : []) open.push(n + ', the next smallest');
   }
   const rest = Array.isArray(self.open) ? self.open : [];
-  for (const r of rest.slice(0, more)) open.push(r.ask);
+  for (const r of rest.slice(0, more)) open.push(wholeClause(r.ask));
   if (rest.length > more) open.push((rest.length - more) + ' more open items on my frontier');
   const parts = ['For this note about my own card, copy these two lists as they are, in this order:'];
   if (fixed.length) parts.push('Fixed: ' + fixed.map((x, i) => (i + 1) + '. ' + x).join(' '));
