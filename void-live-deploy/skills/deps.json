@@ -1288,7 +1288,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/brain-bridge.js",
@@ -2331,7 +2331,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/will-guard.js",
@@ -2345,7 +2345,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/ai-generators.js",

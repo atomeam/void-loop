@@ -116,3 +116,45 @@ test('the wheel page\'s card opens on the wheel open there: every entry and weig
   const src = fs.readFileSync(new URL('../void-live-deploy/wheel/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*askOf\(entries\)/, 'the wheel page gives its card the entries open on it');
 });
+
+test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
+  const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
+  for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {
+    const ask = L.weatherAsk(p); assert.equal(S.weatherPlace(ask), L.placeOf(p), 'the stage asks the geocoder for the same place: ' + ask);
+    assert.equal(await firstSkill(ask), 'weather', 'the stage gives it to the weather skill: ' + ask);
+  }
+  assert.equal(L.weatherAsk(''), 'weather here'); assert.equal(S.weatherPlace('weather here'), '', 'here: the device, as on the page');
+  const src = fs.readFileSync(new URL('../void-live-deploy/weather/index.html', import.meta.url), 'utf8');
+  assert.match(src, /cardAsk = weatherAsk\(coords \? '' : place\)/, 'set when a forecast is drawn for the place looked up');
+  assert.match(src, /\{ card: \(\) => cardAsk \}/, 'the weather page gives its card the place open on it');
+});
+
+test('the time page\'s card opens on the city asked for, else the clocks on the page, not Tokyo', async () => {
+  const Z = await import('../void-live-deploy/lib/zones.js'), { parseWorldTime } = await import('../void-live-deploy/skills/worldtime.js'), all = Z.allZones();
+  const paris = Z.findPlace('Paris', all), nyc = Z.findPlace('NYC', all), mumbai = Z.findPlace('Mumbai', all);
+  assert.equal(Z.timeAsk(paris, [paris]), 'time in Paris'); assert.equal(Z.timeAsk(nyc, [nyc]), 'time in New York', 'a short form is said as its zone\'s city');
+  assert.equal(Z.timeAsk(mumbai), 'time in Mumbai', 'a city keeps its own name, not its zone\'s (Kolkata)');
+  const three = ['London', 'New York', 'Tokyo', 'Buenos Aires'].map((n) => Z.findPlace(n, all));
+  const clock = Z.timeAsk(null, three); assert.equal(clock, 'world clock for London, New York, Tokyo, Buenos Aires');
+  assert.deepEqual(parseWorldTime(clock), { kind: 'clock', places: ['London', 'New York', 'Tokyo', 'Buenos Aires'] }, 'the stage draws the same clocks');
+  assert.equal(parseWorldTime(Z.timeAsk(paris)).place, 'Paris');
+  assert.equal(Z.timeAsk(null, [Z.findPlace('UTC+9', all)]), 'world clock', 'an offset has no city: the default clock');
+  for (const a of ['time in New York', clock]) assert.equal(await firstSkill(a), 'worldtime', 'the stage gives it to the time skill: ' + a);
+  const src = fs.readFileSync(new URL('../void-live-deploy/time/index.html', import.meta.url), 'utf8');
+  assert.match(src, /\{ card: \(\) => timeAsk\(main, places\) \}/, 'the time page gives its card the clocks open on it');
+});
+
+test('the base converter\'s card opens on the number typed there, in the base it was typed in, not 255', async () => {
+  const B = await import('../void-live-deploy/lib/baseconv.js');
+  const cases = [['ff', 16, 'ff hex to decimal'], ['1111 0000', 2, '11110000 binary to decimal'], ['777', 8, '777 octal to decimal'], ['4096', 10, '4096 decimal to binary'], ['0xBEEF', 16, 'beef hex to decimal']];
+  for (const [t, base, want] of cases) {
+    const ask = B.baseAsk(t, base); assert.equal(ask, want);
+    const p = B.parseAsk(ask); assert.equal(B.convert(p.value, p.from, 10).out, B.convert(t, base, 10).out, 'the card shows the same number');
+    assert.equal(await firstSkill(ask), 'baseconv', 'the stage gives it to the base skill: ' + ask);
+  }
+  assert.equal(B.baseAsk('12', 2), '', 'not a binary number: the example'); assert.equal(B.baseAsk('-5', 10), ''); assert.equal(B.baseAsk('', 16), '');
+  assert.equal(B.baseAsk('0b101', 16), '', 'a prefix for another base');
+  const src = fs.readFileSync(new URL('../void-live-deploy/base-converter/index.html', import.meta.url), 'utf8');
+  assert.match(src, /card: \(\) => \(!typedIn \? '' : typedIn\.dataset\.base === 'any' \? baseAsk\(\$\('b10'\)\.value, 10\) : baseAsk\(typedIn\.value, \+typedIn\.dataset\.base\)\)/, 'the page gives its card the box typed in');
+  assert.match(src, /const show = \(fromBox\) => \{\n\s+typedIn = fromBox;/, 'every show remembers the box');
+});
