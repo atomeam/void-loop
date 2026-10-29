@@ -545,6 +545,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T12:07:42Z",
+   "subject": "3D miniatures: a reframe frees the old ground only after the compile in flight settles"
+  },
+  {
+   "at": "2026-10-29T12:04:39Z",
+   "subject": "Naming audit: fail only on drift, not on gaps the gate already records"
+  },
+  {
+   "at": "2026-10-29T11:52:59Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T11:50:16Z",
+   "subject": "Subject eval: 54 of 54 live"
+  },
+  {
+   "at": "2026-10-29T11:44:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T11:44:43Z",
+   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
+  },
+  {
    "at": "2026-10-29T11:44:39Z",
    "subject": "Error garden check: a weed is any count of 2 or more, not 2-9"
   },
@@ -599,30 +623,6 @@
   {
    "at": "2026-10-29T10:43:29Z",
    "subject": "verse brain: painter organ (F322), the brain's look is a program it rewrites"
-  },
-  {
-   "at": "2026-10-29T10:41:54Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T10:34:08Z",
-   "subject": "Refresh the parity docs the merge left stale"
-  },
-  {
-   "at": "2026-10-29T10:33:29Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T10:33:16Z",
-   "subject": "Better at color and fanfic: 3 more ways of asking answered right — new phrases: “give me a color” now opens color; “fan fiction” now opens…"
-  },
-  {
-   "at": "2026-10-29T10:33:12Z",
-   "subject": "Password page test: the checker opens in a new tab with the password handed over in memory"
-  },
-  {
-   "at": "2026-10-29T10:21:00Z",
-   "subject": "Incident: the browser suite failed on fbf2a008 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
