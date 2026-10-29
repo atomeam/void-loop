@@ -103,13 +103,14 @@ async function readArchive() {
   if (!r.ok) throw new Error(r.say || 'the archive could not be read');
   const boards = (r.boards || []).filter(F.isFicBoard).sort((a, b) => (b.last || b.created || 0) - (a.last || a.created || 0));
   const lists = await Promise.all(boards.slice(0, 40).map((b) => api('?b=' + encodeURIComponent(b.code)).then((c) => (c.ok ? c.threads || [] : []))));
-  const topics = [];
-  boards.slice(0, 40).forEach((b, i) => { for (const t of lists[i]) if (!t.hidden) topics.push(F.topicOf(t, b)); });
-  topics.sort((a, b) => b.bumped - a.bumped);
+  // a writing challenge is a thread too, but not a story: it goes on the Challenges list, never on the story lists (lib/fanfic.js challengeOf)
+  const topics = [], challenges = [];
+  boards.slice(0, 40).forEach((b, i) => { for (const t of lists[i]) if (!t.hidden) { const c = F.challengeOf(t, b); if (c) challenges.push(c); else topics.push(F.topicOf(t, b)); } });
+  topics.sort((a, b) => b.bumped - a.bumped); challenges.sort((a, b) => b.bumped - a.bumped);
   // a story a later chapter finished says so in that chapter, not on chapter 1, so one search finds those chapters (lib/fanfic.js finishedLater)
   const open = topics.some((t) => t.status === 'In progress' && t.replies > 0);
   const done = open ? await api('?q=' + encodeURIComponent('chapter status complete')).catch(() => ({})) : {};
-  return { boards, topics: F.finishedLater(topics, done.ok ? done.results : []) };
+  return { boards, topics: F.finishedLater(topics, done.ok ? done.results : []), challenges };
 }
 const archive = (fresh) => (!fresh && loaded) || (loaded = readArchive().catch((e) => { loaded = null; throw e; }));
 const shown = (topics) => topics.filter((t) => !t.nsfw || adultOk()); // adult fandoms' stories stay off the shared lists until this device said 18+
@@ -173,8 +174,8 @@ function setPage(n, push) {
 }
 
 // ---- views ----
-const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'authors', 'series', 'recs', 'random', 'gate', 'gone'];
-const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice', authors: 'authors', series: 'series', recs: 'recs', random: 'index' };
+const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'authors', 'series', 'recs', 'challenges', 'challenge', 'random', 'gate', 'gone'];
+const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice', authors: 'authors', series: 'series', recs: 'recs', challenges: 'challenges', challenge: 'challenges', random: 'index' };
 // what the view on screen hands to the other pages (owner, 2026-10-29: "all the pages are supposed to be able to work together"): the chapter
 // being read, the draft in the Writing Room, or chapter 1 typed in the post form (the stage card's "Post a story" lands there); the index and the lists hand nothing. A link carries at most LINK_MAX encoded characters (a longer
 // address is refused by the edge), so the translator gets the opening of a long chapter (it takes 5,000 characters) and the word counter opens
@@ -390,6 +391,108 @@ async function viewRecs() {
   }));
 }
 
+// Writing challenges (sycophanthex.com runs writing contests): the list of challenges this device may see, newest post first, and a form to set
+// one. A challenge is a thread in a fandom (lib/fanfic.js challengeBody) signed with this device's mark, which is how its page knows who may
+// name the winners. Nothing is seeded: with no challenge posted, the list says so.
+const dayLabel = (day) => date(new Date(day + 'T12:00:00').getTime());
+const closesLabel = (c) => (!c.closes ? 'Open, no last day' : F.challengeOpen(c) ? 'Open until ' + dayLabel(c.closes) : 'Closed ' + dayLabel(c.closes));
+async function viewChallenges() {
+  show('challenges', 'Writing challenges');
+  const rows = $('challengeRows'), form = $('cgForm'), note = form.querySelector('[data-say]'); rows.replaceChildren(quietRow('Opening the archive…', 4));
+  botOf(form);
+  if (!form.elements.pen.value) form.elements.pen.value = me.pen || '';
+  form.elements.closes.min = F.dayOf();
+  let a; try { a = await archive(); } catch (e) { rows.replaceChildren(quietRow(e.message, 4)); return; }
+  fandomOptions($('cgFandom'), a.boards, $('cgFandom').value);
+  if (!a.boards.length) say(note, 'There is no fandom yet. Start one first, then set a challenge in it.');
+  const list = a.challenges.filter((c) => !c.nsfw || adultOk());
+  $('challengesSay').textContent = list.length ? list.length.toLocaleString() + (list.length === 1 ? ' challenge' : ' challenges') : '';
+  if (!list.length) rows.replaceChildren(quietRow('No challenges yet. Set the first one below.', 4));
+  else rows.replaceChildren(...list.map((c) => {
+    const tr = el('tr'), main = el('td', 'm'), fd = el('td', 'who hide-s'), cl = el('td', '', closesLabel(c)), when = el('td', 'when');
+    const ti = link(c.title, href({ f: c.board, s: c.no }), 't'); ti.translate = false; main.append(ti);
+    const by = el('span', 'about'), pen = el('span', '', c.author); pen.translate = false; by.append('Set by ', pen); main.append(by);
+    const fl = link(c.fandom, href({ f: c.board })); fl.translate = false; fd.append(fl);
+    cl.dataset.l = 'Entries close'; when.dataset.l = 'Last post'; when.append(timeEl(c.bumped));
+    tr.append(main, fd, cl, when); return tr;
+  }));
+  form.onsubmit = async (ev) => {
+    ev.preventDefault();
+    const b = $('cgFandom').value, title = form.elements.title.value.trim(), prompt = form.elements.prompt.value.trim(), closes = form.elements.closes.value;
+    if (!b) { say(note, 'Choose a fandom first.', 'bad'); $('cgFandom').focus(); return; }
+    if (!title) { say(note, 'Give the challenge a title.', 'bad'); form.elements.title.focus(); return; }
+    if (!prompt) { say(note, 'Write the prompt and its rules.', 'bad'); form.elements.prompt.focus(); return; }
+    if (closes && closes < F.dayOf()) { say(note, 'Choose a last day from today on, or leave it empty.', 'bad'); form.elements.closes.focus(); return; }
+    me.pen = F.penName(form.elements.pen.value); keep();
+    const s = sig(b, title, prompt, closes, me.pen);
+    if (!form._job || form._job.sig !== s) form._job = { sig: s, b, t: 0, sub: title, parts: [F.challengeBody(prompt, closes)], name: F.signedName(me.pen, me.secret), i: 0, onThread: (t, trip) => { me.mine[b + '/' + t] = trip || 1; keep(); } };
+    busy(form, true);
+    try { const job = await sendParts(form, form._job); form._job = null; form.reset(); loaded = null; say(note, 'The challenge is set.', 'good'); go(href({ f: job.b, s: job.t })); }
+    catch (e) { fail(note, e); } finally { busy(form, false); }
+  };
+}
+
+// one challenge: its prompt and last day, its winners, and its entries (lib/fanfic.js entriesOf, winnersOf: only replies signed with the story's
+// mark enter a story, only the setter's mark names a winner, and only stories posted in the challenge's fandom count). r is the thread as read.
+async function viewChallenge(code, no, r) {
+  const b = r.board, op = r.thread, c = F.readChallenge(op.body), key = code + '/' + no, posts = r.posts || [];
+  const title = op.sub || excerpt(c.prompt, 60) || 'Untitled challenge', open = F.challengeOpen(c) && !op.locked && !op.archived;
+  me.read.seen[key] = Math.max(op.bumped || 0, ...posts.map((p) => p.at || 0)); keep();
+  show('challenge', title);
+  handing = () => c.prompt; drawRelated();
+  $('challengeH').textContent = title;
+  const by = $('challengeBy'), pen = el('b', '', op.name || 'Anonymous'), fl = link(b.title, href({ f: code })); pen.translate = false; fl.translate = false;
+  by.replaceChildren('Set by ', pen, ' in ', fl); if (b.nsfw) by.append(el('span', 'tag adult', '18+'));
+  const prompt = $('challengePrompt'); prompt.replaceChildren(); paras(c.prompt, prompt);
+  $('challengeWrite').href = href({ new: 'story', f: code, for: key }); $('challengeWrite').hidden = !open;
+  $('challengeReport').href = boardLink(code, no);
+  const info = (n, w) => $('challengeInfo').replaceChildren(...[['Fandom', b.title], ['Set', date(op.at || 0)], ['Entries close', c.closes ? dayLabel(c.closes) : 'No last day'],
+    ['Status', open ? 'Open' : 'Closed'], ['Entries', n], ...(w ? [['Winners', String(w)]] : [])].map(([k, v]) => { const d = el('div'); d.append(el('dt', '', k), el('dd', '', v)); return d; }));
+  info('…', 0);
+  const entryRows = $('entryRows'), en = $('enForm'), wn = $('wnForm');
+  entryRows.replaceChildren(el('li', 'quiet', 'Opening the archive…')); wn.hidden = true;
+  let a; try { a = await archive(); } catch (e) { entryRows.replaceChildren(el('li', 'quiet', e.message)); return; }
+  const here = a.topics.filter((t) => t.board === code), entries = F.entriesOf(posts, here, c.closes), winners = F.winnersOf(posts, entries, op.trip || '', c.closes);
+  info(String(entries.length), winners.length);
+  $('entriesSay').textContent = entries.length ? entries.length + (entries.length === 1 ? ' story' : ' stories') : '';
+  const row = (t, extra) => { const li = el('li'), main = el('div'), ti = link(t.title, href({ f: t.board, s: t.no }), 't'); ti.translate = false; main.append(ti);
+    const line = el('span', 'in'), p = link(t.author, href({ by: F.authorKey(t) })); p.translate = false; line.append('by ', p, ' · ', extra); main.append(line);
+    const det = F.detailsLine(t); if (det) { const d = el('span', 'in det', det); d.translate = false; main.append(d); }
+    li.append(main); return li; };
+  const PLACES = ['First place', 'Second place', 'Third place'];
+  $('winnersBox').hidden = !winners.length;
+  $('winnerRows').replaceChildren(...winners.map((t, i) => row(t, PLACES[i])));
+  entryRows.replaceChildren(...(entries.length ? entries.map((t) => { const when = el('span'); when.append('entered ', timeEl(t.entered)); return row(t, when); })
+    : [el('li', 'quiet', open ? 'No entries yet. Write a story for this challenge, or enter one you posted in ' + b.title + '.' : 'No story was entered.')]));
+  // enter a story: the stories this device posted in this fandom, signed, not entered yet
+  const enNote = en.querySelector('[data-say]'), mine = here.filter((t) => t.trip && me.mine[t.board + '/' + t.no] === t.trip && !entries.some((e) => e.no === t.no));
+  $('enStory').replaceChildren(...(mine.length ? mine.map((t) => { const o = el('option', '', t.title); o.value = t.no; o.translate = false; return o; }) : [el('option', '', 'No story to enter')]));
+  say(enNote, !open ? (c.closes ? 'Entries closed on ' + dayLabel(c.closes) + '.' : 'This challenge is closed.') : mine.length ? '' : 'No story of yours in ' + b.title + ' to enter yet. Write one for this challenge first.');
+  busy(en, !open || !mine.length); $('enStory').disabled = !open || !mine.length;
+  if (open && mine.length) {
+    botOf(en);
+    en.onsubmit = async (ev) => {
+      ev.preventDefault();
+      busy(en, true);
+      try { await sendParts(en, { b: code, t: no, sub: '', parts: [F.entryBody(code, +$('enStory').value)], name: F.signedName(me.pen, me.secret), i: 0 }); loaded = null; say(enNote, 'Your story is entered.', 'good'); return viewStory(code, no); }
+      catch (e) { fail(enNote, e); } finally { busy(en, false); }
+    };
+  }
+  // name a winner: only on the device that set the challenge, once entries are closed (any time for a challenge with no last day), up to 3
+  const left = entries.filter((t) => !winners.includes(t));
+  wn.hidden = !(op.trip && me.mine[key] === op.trip && !op.locked && !op.archived && (!c.closes || !F.challengeOpen(c)) && winners.length < 3 && left.length);
+  if (!wn.hidden) {
+    $('wnStory').replaceChildren(...left.map((t) => { const o = el('option', '', t.title + ' by ' + t.author); o.value = t.no; o.translate = false; return o; }));
+    const wnNote = wn.querySelector('[data-say]'); say(wnNote, ''); botOf(wn);
+    wn.onsubmit = async (ev) => {
+      ev.preventDefault();
+      busy(wn, true);
+      try { await sendParts(wn, { b: code, t: no, sub: '', parts: [F.winnerBody(code, +$('wnStory').value)], name: F.signedName(me.pen, me.secret), i: 0 }); loaded = null; say(wnNote, 'Winner named.', 'good'); return viewStory(code, no); }
+      catch (e) { fail(wnNote, e); } finally { busy(wn, false); }
+    };
+  }
+}
+
 // Random story: one of the stories this device may see, picked at random; the address becomes that story's, so Back returns to where you were
 async function viewRandom() {
   show('random', 'Random story');
@@ -423,6 +526,7 @@ async function viewStory(code, no, chap) {
   const b = r.board, op = r.thread;
   if (!F.isFicBoard(b)) { location.replace(boardLink(code, no)); return; }
   if (b.nsfw && !adultOk()) { gate(); return; }
+  if (F.readChallenge(op.body)) return viewChallenge(code, no, r);
   const s = F.storyOf(op, r.posts || []), key = code + '/' + no;
   me.read.seen[key] = Math.max(op.bumped || 0, ...(r.posts || []).map((p) => p.at || 0)); keep();
   show('story', s.title);
@@ -532,9 +636,10 @@ function detailFields(form) {
   const cap = () => { const n = g.querySelectorAll('input:checked').length; for (const c of g.querySelectorAll('input')) c.disabled = !c.checked && n >= F.DETAIL_LIMITS.genres; };
   g.addEventListener('change', cap); form.addEventListener('reset', () => setTimeout(cap));
 }
-async function viewPost(pick) {
+async function viewPost(pick, forKey) {
   show('post', 'Post a story');
   const form = $('stForm'), note = form.querySelector('[data-say]'), sel = $('stFandom');
+  $('postFor').hidden = true; sel.disabled = false;
   botOf(form);
   if (sessionStorage.getItem('fanfic.fromRoom') === '1') {
     sessionStorage.removeItem('fanfic.fromRoom');
@@ -550,6 +655,9 @@ async function viewPost(pick) {
   let a; try { a = await archive(); } catch (e) { fail(note, e); return; }
   fandomOptions(sel, a.boards, pick || sel.value);
   if (!a.boards.length) say(note, 'There is no fandom yet. Start one first, then post your story in it.');
+  // written for a challenge (?for=fandom/no): the story goes up in the challenge's fandom, then enters the challenge with a reply signed the same way
+  const ch = forKey ? a.challenges.find((x) => x.board + '/' + x.no === forKey && x.board === pick) : null, chOpen = !!ch && F.challengeOpen(ch) && !ch.locked;
+  if (chOpen) { $('postForSay').textContent = 'This story enters the challenge "' + ch.title + '" once it is up.' + (ch.closes ? ' Entries close ' + dayLabel(ch.closes) + '.' : ''); $('postFor').hidden = false; sel.disabled = true; }
   form.onsubmit = async (ev) => {
     ev.preventDefault();
     const b = sel.value, title = form.elements.title.value.trim(), text = form.elements.text.value, summary = form.elements.summary.value, d = details();
@@ -563,7 +671,13 @@ async function viewPost(pick) {
     if (!form._job || form._job.sig !== s) form._job = { sig: s, b, t: 0, sub: title, parts: F.chapterPosts(1, '', text, summary, d), name: F.signedName(me.pen, me.secret), i: 0, onThread: (t, trip) => { me.mine[b + '/' + t] = trip || 1; keep(); } };
     busy(form, true);
     try {
-      const job = await sendParts(form, form._job); form._job = null; form.reset(); loaded = null;
+      const job = await sendParts(form, form._job); // sends nothing again once every part is up, so a second press only retries the entry
+      if (chOpen && job.b === ch.board) {
+        // the boards take one post at a time from a writer, so the entry waits as the parts of a long story do
+        if (!job.entry) { for (let w = 16; w > 0; w--) { say(note, 'Your story is up. It enters the challenge in ' + w + ' s, so the boards take it.'); await sleep(1000); } job.entry = { b: ch.board, t: ch.no, sub: '', parts: [F.entryBody(job.b, job.t)], name: job.name, i: 0 }; }
+        if (job.entry.i < 1) await sendParts(form, job.entry);
+      }
+      form._job = null; form.reset(); loaded = null;
       say(note, 'Posted.', 'good'); go(href({ f: job.b, s: job.t }));
     } catch (e) { fail(note, e); } finally { busy(form, false); }
   };
@@ -734,7 +848,7 @@ function viewNotice(which) {
 async function route() {
   const q = new URLSearchParams(location.search), f = (q.get('f') || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 10), s = +(q.get('s') || 0) || 0, v = q.get('v');
   if (q.has('notice')) return viewNotice(q.get('notice'));
-  if (q.get('new') === 'story') return viewPost(f);
+  if (q.get('new') === 'story') return viewPost(f, (q.get('for') || '').slice(0, 30));
   if (q.get('new') === 'fandom') return viewFandom();
   if (f && s) return viewStory(f, s, q.get('c'));
   if (f) return viewForum(f);
@@ -742,6 +856,7 @@ async function route() {
   if (v === 'authors') return viewAuthors();
   if (v === 'series') return viewSeries();
   if (v === 'recs' || /^#recs=/.test(location.hash)) return viewRecs();
+  if (v === 'challenges') return viewChallenges();
   if (v === 'random') return viewRandom();
   if (v === 'search') return viewSearch((q.get('q') || '').slice(0, 200));
   if (v === 'room' || /^#room=/.test(location.hash)) return viewRoom();

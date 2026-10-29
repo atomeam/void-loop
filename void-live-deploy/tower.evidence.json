@@ -20133,71 +20133,71 @@
     "verse": 3,
     "best": null,
     "evidence": "Verse (/fanfic/) 3 of 3 loads answered; sycophanthex.com turned the gate away or did not answer, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
-    "at": "2026-10-29T09:36:13.213Z"
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 80,
+    "verse": 120,
     "best": 200,
-    "evidence": "Verse (/fanfic/) 80 ms to the load event (median of 3, phone width) vs the bar (sycophanthex.com unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-29T09:36:13.213Z"
+    "evidence": "Verse (/fanfic/) 120 ms to the load event (median of 3, phone width) vs the bar (sycophanthex.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/fanfic/) 0 px sideways overflow at 390 px vs the bar (sycophanthex.com unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-29T09:36:13.213Z"
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/fanfic/) 0 unnamed controls or images vs the bar (sycophanthex.com unreachable) 0 unnamed controls or images",
-    "at": "2026-10-29T09:36:13.213Z"
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/fanfic/) 1 (1: the page shows itself again with the network cut) vs the bar (sycophanthex.com unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-29T09:36:13.213Z"
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/fanfic/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (sycophanthex.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-29T09:36:13.213Z"
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/fanfic/) 0 design defects vs the bar (sycophanthex.com unreachable) 0 design defects",
-    "at": "2026-10-29T09:36:13.213Z"
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "wider use": {
     "verdict": "equal-and-better",
     "verse": 11,
     "best": 11,
     "evidence": "Verse (/fanfic/) 11 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (sycophanthex.com unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-29T09:36:13.213Z"
+    "at": "2026-10-29T10:15:34.052Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/fanfic/) 2 of 2 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-29T09:36:13.213Z",
+    "at": "2026-10-29T10:15:34.052Z",
     "of": 2
    },
    "completeness": {
     "verdict": "worse",
-    "verse": 21,
+    "verse": 22,
     "best": 26,
-    "evidence": "Verse (/fanfic/) 21 of 26 things a full answer shows vs the bar (sycophanthex.com unreachable) 26 of 26 things a full answer shows (Verse lacks: a catalog row for each story, with its words, pages of stories, chapters, words and hits on each story, an account: register and log in, writing contests)",
-    "at": "2026-10-29T09:36:13.213Z",
+    "evidence": "Verse (/fanfic/) 22 of 26 things a full answer shows vs the bar (sycophanthex.com unreachable) 26 of 26 things a full answer shows (Verse lacks: a catalog row for each story, with its words, pages of stories, chapters, words and hits on each story, an account: register and log in)",
+    "at": "2026-10-29T10:15:34.052Z",
     "of": 26
    },
    "journey: do the main job and see the result": {
@@ -20210,7 +20210,7 @@
      "after open /fanfic/: no stub, placeholder, error or empty page"
     ],
     "evidence": "INCOMPLETE, not a pass: the archive has no stories yet, so there is none to open (it is never seeded)",
-    "at": "2026-10-29T09:36:44.885Z"
+    "at": "2026-10-29T10:16:08.325Z"
    },
    "journey: share the result and reopen it from the link": {
     "verdict": "incomplete",
@@ -20222,7 +20222,7 @@
      "after open /fanfic/: no stub, placeholder, error or empty page"
     ],
     "evidence": "INCOMPLETE, not a pass: the archive has no stories yet, so there is none to open (it is never seeded)",
-    "at": "2026-10-29T09:36:44.885Z"
+    "at": "2026-10-29T10:16:08.325Z"
    }
   }
  },

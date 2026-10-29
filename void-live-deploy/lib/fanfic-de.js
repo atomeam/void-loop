@@ -142,6 +142,23 @@ export const DICT = {
   Adventure: 'Abenteuer', Angst: 'Angst', Comedy: 'Komödie', Drama: 'Drama', Family: 'Familie', Fantasy: 'Fantasy', Fluff: 'Fluff', Friendship: 'Freundschaft',
   Horror: 'Horror', 'Hurt/Comfort': 'Hurt/Comfort', Mystery: 'Krimi', Poetry: 'Lyrik', Romance: 'Romantik', 'Sci-fi': 'Science-Fiction', Tragedy: 'Tragödie',
   Violence: 'Gewalt', 'Major character death': 'Tod einer Hauptfigur', 'Strong language': 'Derbe Sprache', 'Dark themes': 'Düstere Themen',
+  Challenges: 'Wettbewerbe', 'Writing challenges': 'Schreibwettbewerbe', Challenge: 'Wettbewerb', 'Entries close': 'Einsendeschluss', 'Set a challenge': 'Wettbewerb ausschreiben',
+  "A challenge is a prompt in a fandom, with a last day to enter if its setter gives one. Writers enter stories they posted here, and only a story's own writer can enter it. When the challenge closes, the one who set it names up to 3 winners.":
+    'Ein Wettbewerb ist eine Schreibaufgabe in einem Fandom, mit einem Einsendeschluss, wenn die ausschreibende Person einen festlegt. Eingereicht werden Geschichten, die hier veröffentlicht wurden, und nur wer eine Geschichte geschrieben hat, kann sie einreichen. Wenn der Wettbewerb endet, nennt die ausschreibende Person bis zu 3 Gewinner.',
+  'Entries are stories posted in this fandom.': 'Eingereicht werden Geschichten aus diesem Fandom.',
+  "Optional. The challenge carries this device's mark, so only you can name its winners.": 'Optional. Der Wettbewerb trägt das Zeichen dieses Geräts, daher kannst nur du die Gewinner nennen.',
+  Title: 'Titel', 'Prompt and rules': 'Aufgabe und Regeln', 'What to write, the rules, and how you will pick the winners': 'Was geschrieben werden soll, die Regeln und wie du die Gewinner auswählst',
+  'Last day to enter': 'Einsendeschluss', 'Optional. An entry posted after this day does not count. Leave it empty to keep the challenge open.': 'Optional. Eine Einsendung nach diesem Tag zählt nicht. Lass das Feld leer, damit der Wettbewerb offen bleibt.',
+  'Set the challenge': 'Wettbewerb ausschreiben', 'Write a story for it': 'Eine Geschichte dafür schreiben', Winners: 'Gewinner', Entries: 'Einsendungen',
+  'Enter a story you posted': 'Eine veröffentlichte Geschichte einreichen', 'Only stories this device posted in this fandom can be entered, signed with the same mark.': 'Nur Geschichten, die dieses Gerät in diesem Fandom veröffentlicht hat, können eingereicht werden, mit demselben Zeichen.',
+  'Enter the story': 'Geschichte einreichen', 'Name a winner': 'Gewinner nennen', 'You set this challenge, so you pick its winners: first place first, up to 3.': 'Du hast diesen Wettbewerb ausgeschrieben, also wählst du die Gewinner: den ersten Platz zuerst, bis zu 3.',
+  'Name the winner': 'Gewinner nennen', Set: 'Ausgeschrieben', Open: 'Offen', Closed: 'Beendet', 'No last day': 'Kein Einsendeschluss', 'Open, no last day': 'Offen, kein Einsendeschluss',
+  'First place': 'Erster Platz', 'Second place': 'Zweiter Platz', 'Third place': 'Dritter Platz', 'Set by': 'Ausgeschrieben von', entered: 'eingereicht',
+  'No challenges yet. Set the first one below.': 'Noch keine Wettbewerbe. Schreibe unten den ersten aus.', 'No story was entered.': 'Es wurde keine Geschichte eingereicht.', 'No story to enter': 'Keine Geschichte zum Einreichen',
+  'Choose a fandom first.': 'Wähle zuerst ein Fandom.', 'Give the challenge a title.': 'Gib dem Wettbewerb einen Titel.', 'Write the prompt and its rules.': 'Schreibe die Aufgabe und ihre Regeln.',
+  'Choose a last day from today on, or leave it empty.': 'Wähle einen Einsendeschluss ab heute oder lass das Feld leer.', 'The challenge is set.': 'Der Wettbewerb ist ausgeschrieben.',
+  'Your story is entered.': 'Deine Geschichte ist eingereicht.', 'Winner named.': 'Gewinner genannt.', 'This challenge is closed.': 'Dieser Wettbewerb ist beendet.',
+  'There is no fandom yet. Start one first, then set a challenge in it.': 'Es gibt noch kein Fandom. Gründe zuerst eines und schreibe dann darin einen Wettbewerb aus.',
 };
 
 // text made from numbers and names: the English shape on the left, the German on the right
@@ -149,6 +166,11 @@ const PATTERNS = [
   [/^Chapter (\d+)$/, 'Kapitel $1'], [/^Chapter (\d+) of (\d+)$/, 'Kapitel $1 von $2'], [/^Chapter (\d+): /, 'Kapitel $1: '], [/^Page (\d+) of (\d+)$/, 'Seite $1 von $2'],
   [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^★ (\d(?:\.\d)?) of 5 from (\d+) ratings?$/, '★ $1 von 5 aus $2 Bewertung(en)'], [/^(\d+) series posted here\.$/, '$1 Reihe(n) hier veröffentlicht.'], [/^(\d+) stor(?:y|ies)$/, '$1 Geschichte(n)'], [/^Your rec list is full at (\d+) stories\. Take one off in Rec lists first\.$/, 'Deine Empfehlungsliste ist mit $1 Geschichten voll. Entferne zuerst eine in den Empfehlungslisten.'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
   [/^(\d[\d,.]*) words?$/, '$1 Wörter'], [/^(\d+) min read$/, '$1 Min. Lesezeit'], [/^No story matches "(.*)"\.$/, 'Keine Geschichte passt zu „$1“.'],
+  [/^(\d+) challenges?$/, '$1 Wettbewerb(e)'], [/^Open until (.+)$/, 'Offen bis $1'], [/^Closed (\d.+|[A-Z][a-z]{2,}\.? \d.+)$/, 'Beendet am $1'], [/^Entries closed on (.+)\.$/, 'Einsendeschluss war am $1.'],
+  [/^No story of yours in (.+) to enter yet\. Write one for this challenge first\.$/, 'Noch keine Geschichte von dir in $1 zum Einreichen. Schreibe zuerst eine für diesen Wettbewerb.'],
+  [/^No entries yet\. Write a story for this challenge, or enter one you posted in (.+)\.$/, 'Noch keine Einsendungen. Schreibe eine Geschichte für diesen Wettbewerb oder reiche eine ein, die du in $1 veröffentlicht hast.'],
+  [/^Your story is up\. It enters the challenge in (\d+) s, so the boards take it\.$/, 'Deine Geschichte ist online. Sie wird in $1 s eingereicht, damit die Boards sie annehmen.'],
+  [/^This story enters the challenge "(.*)" once it is up\.( Entries close (.+)\.)?$/, (m, t, _, d) => 'Diese Geschichte wird beim Wettbewerb „' + t + '“ eingereicht, sobald sie online ist.' + (d ? ' Einsendeschluss: ' + d + '.' : '')],
   [/^Exported (\d+) stor(?:y|ies)\.$/, '$1 Geschichte(n) exportiert.'], [/^(\d[\d,.]*) authors? ha(?:s|ve) posted here\.$/, '$1 Autor:innen haben hier veröffentlicht.'], [/^No stories in (.*) yet\. Post the first one\.$/, 'Noch keine Geschichten in $1. Veröffentliche die erste.'],
 ];
 

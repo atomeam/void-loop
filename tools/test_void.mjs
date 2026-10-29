@@ -6692,14 +6692,17 @@ try {
     await Z.p.click('#tab-ph'); await Z.p.check('#cap'); await Z.p.check('#digit'); const phrase = await words(), bits = await Z.p.$eval('#strength', (e) => e.textContent);
     const wide = await Z.p.evaluate(() => document.documentElement.scrollWidth), unnamed = await Z.p.$$eval('input, select, button', (es) => es.filter((e) => !(e.getAttribute('aria-label') || (e.labels && e.labels.length) || e.textContent.trim())).length);
     if (process.env.VOID_SHOTS) await Z.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password.png'), fullPage: true }).catch(() => {});
-    // "Check it" hands the first password to /password-strength/ in the fragment, which reads it once and wipes it from the address
-    await Z.p.click('#tab-pw'); const handed = await words(); await Z.p.click('#list a'); await Z.p.waitForURL(/password-strength/);
-    const checker = { pw: await Z.p.$eval('#pw', (e) => e.value), url: Z.p.url(), label: await Z.p.$eval('#label', (e) => e.textContent) };
+    // "Check it" opens /password-strength/ in a new tab and hands the first password over in memory (lib/pw-handover.js, ed047c81): no
+    // address, hash or storage ever holds it, so the checker's address is the bare page and its box holds the password
+    await Z.p.click('#tab-pw'); const handed = await words();
+    const [tab] = await Promise.all([Z.ctx.waitForEvent('page'), Z.p.click('#list a')]); await tab.waitForLoadState('load');
+    await tab.waitForFunction(() => document.getElementById('pw') && document.getElementById('pw').value, null, { timeout: 10000 }).catch(() => {});
+    const checker = { pw: await tab.$eval('#pw', (e) => e.value), url: tab.url(), label: await tab.$eval('#label', (e) => e.textContent), stayed: /\/password\//.test(Z.p.url()) };
     check("password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
       first.length === 1 && first[0].length === 16 && every(first[0]) && /Very strong · strength 104\.6 bits of entropy · \d+ trillion years to crack/.test(strength) && /Remember|remember/.test(text) && /offline/.test(text)
       && many.length === 3 && many.every((w) => w.length === 24 && every(w) && !/[il1LoO0I]/.test(w) && new Set(w).size === 24) && copies.length === 3 && copies.every((c) => c === 'Copy this password')
       && phrase.length === 3 && phrase.every((w) => /^(?:[A-Z][a-z]{2,6}-){3}[A-Z][a-z]{2,6}\d$/.test(w)) && /Fair · strength 45 bits/.test(bits)
-      && checker.pw === handed[0] && !/#/.test(checker.url) && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
+      && checker.pw === handed[0] && !/#/.test(checker.url) && /\/password-strength\/$/.test(checker.url) && checker.stayed && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
       JSON.stringify({ first, strength, many, copies, phrase, bits, checker, handed, wide, unnamed, errors: Z.errors }));
     await Z.ctx.close();
   }
