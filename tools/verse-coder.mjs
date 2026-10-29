@@ -177,6 +177,20 @@ export function windowOf(messages) {
     ? { role: 'user', content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older result; read it again if you need it]' } : x))];
 }
 
+export const BUDGET = Object.freeze({ warn: 0.4, last: 0.8 });
+/** the line after a tool result once 40% of the budget (turns or tokens, whichever is further) is gone: how much is used and, with no edit
+ *  yet, that the next answer is an edit; from 80%, that it is time to edit, or to check and finish. A run that read for 25 turns and never
+ *  edited stopped at the token cap with nothing to ship (2026-10-29): the window kept the turns cheap, but nothing told the model the budget
+ *  was running out. '' before 40%. Pure. */
+export function budgetNote({ turns = 0, tokens = 0, limits = LIMITS, edited = false } = {}) {
+  const used = Math.max(turns / limits.turns, tokens / limits.tokens);
+  if (!(used >= BUDGET.warn)) return '';
+  const where = 'turn ' + turns + ' of ' + limits.turns + ', ' + Math.min(100, Math.round((100 * tokens) / limits.tokens)) + '% of the token budget used';
+  if (used >= BUDGET.last) return '\n[' + where + '. ' + (edited ? 'Run the check now, then finish: at the cap a change is kept only if the last check after the last edit passed.'
+    : 'Nothing is changed yet, and a run with no edit ships nothing: answer with an edit now.') + ']';
+  return '\n[' + where + (edited ? '.]' : ', and no edit yet. You have read enough: answer with an edit next, the smallest one that moves the task.]');
+}
+
 /** the turns as a short trail for a stop at a cap ("read a, search x, edit: the diff does not apply"), so the job note says where they went. Pure. */
 export function trailOf(transcript, n = 12) {
   const t = Array.isArray(transcript) ? transcript.slice(-n) : [];
@@ -205,7 +219,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   const touched = () => [...original.keys()];
   const transcript = [];
   const messages = [{ role: 'system', content: SYSTEM(checks, target) }, { role: 'user', content: String(prompt || 'No task given: finish.') }];
-  let turns = 0, tokens = 0, finishTries = 0, lastCheck = null;
+  let turns = 0, tokens = 0, finishTries = 0, lastCheck = null, lastEdit = 0;
 
   const restore = () => {
     for (const [p, c] of original) { const abs = join(root, p); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone already */ } } else writeFileSync(abs, c); }
@@ -267,6 +281,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
           if (!g.ok) { undo(); return 'refused by patch-guard on ' + f + ': ' + g.reasons.join('; '); }
         }
       }
+      lastEdit = turns;
       return 'applied to ' + [...named].join(', ');
     },
     check({ name, test }) {
@@ -281,7 +296,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       }
       const r = Array.isArray(cmd) ? spawnSync(cmd[0], cmd[1], { cwd: root, env: cleanEnv, encoding: 'utf8', timeout: timeoutMin * 60e3, maxBuffer: 64 << 20 })
         : spawnSync(cmd, { cwd: root, env: cleanEnv, shell: true, encoding: 'utf8', timeout: timeoutMin * 60e3, maxBuffer: 64 << 20 });
-      const ok = r.status === 0; lastCheck = { label, ok };
+      const ok = r.status === 0; lastCheck = { label, ok, turn: turns };
       return (ok ? 'PASS ' : 'FAIL ') + label + (r.error ? ' (' + r.error.code + ')' : '') + '\n' + tail((r.stdout || '') + (r.stderr || ''));
     },
   };
@@ -300,9 +315,16 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
     return { end: ['done', String(summary || 'done').slice(0, 300)] };
   };
 
+  // at a cap, a change the model checked green after its last edit goes through finish as it stands; anything else is put back
+  const atCap = (outcome, why) => {
+    if (!(lastCheck && lastCheck.ok && lastCheck.turn > lastEdit && changedFiles().length)) return end(outcome, why);
+    const f = finish('');
+    if (f.end && f.end[0] === 'done') { transcript.push({ turn: turns, tool: 'finish', result: 'at the cap: ' + f.end[1] }); return end('done', why + ', with the change checked green after its last edit: kept as it stood'); }
+    return end(outcome, why + '; the change as it stood did not pass: ' + String(f.feedback || '').split('\n')[0].slice(0, 120));
+  };
   while (true) {
-    if (turns >= L.turns) return end('turn-cap', 'stopped at the turn cap (' + L.turns + ')');
-    if (tokens >= L.tokens) return end('token-cap', 'stopped at the token cap (' + L.tokens + ')');
+    if (turns >= L.turns) return atCap('turn-cap', 'stopped at the turn cap (' + L.turns + ')');
+    if (tokens >= L.tokens) return atCap('token-cap', 'stopped at the token cap (' + L.tokens + ')');
     turns++;
     const recent = windowOf(messages);
     let reply;
@@ -323,7 +345,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
     } else result = 'no tool named ' + JSON.stringify(act.tool) + ': list, read, search, edit, check, finish';
     transcript.push({ turn: turns, tool: act.tool || '?', path: act.path || act.name || act.test || '', result: String(result).slice(0, 200) });
     log('  turn ' + turns + ': ' + (act.tool || 'bad reply') + ' ' + (act.path || act.name || act.test || '') + ' -> ' + String(result).split('\n')[0].slice(0, 120));
-    messages.push({ role: 'assistant', content: text }, { role: 'user', content: String(result) });
+    messages.push({ role: 'assistant', content: text }, { role: 'user', content: String(result) + budgetNote({ turns, tokens, limits: L, edited: changedFiles().length > 0 }) });
   }
 }
 
