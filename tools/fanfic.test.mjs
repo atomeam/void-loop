@@ -124,6 +124,9 @@ test('a story is its signed chapters; every other reply, a forged chapter too, i
   assert.deepEqual(s.chapters.map((c) => [c.n, c.title, c.text, c.nos]), [[1, '', 'One two three.', [1]], [2, 'Bridge', 'Four five.\n\nSix.', [2, 3]], [3, 'End', 'Seven.', [7]]]);
   assert.deepEqual(s.reviews.map((p) => p.no), [4, 5], 'a chapter line under another mark is a review');
   assert.equal(s.words, 7); assert.equal(s.published, 100); assert.equal(s.updated, 300);
+  assert.deepEqual(F.rowFigures(s), ['3 chapters', '7 words', '2 reviews'], 'a catalog row counts the whole story, not the opening post');
+  const starred = F.storyOf(op, [{ no: 8, at: 310, name: 'Reader', trip: '', body: F.reviewBody('Good.', 4) }, { no: 9, at: 320, name: 'Ink', trip: '!AAAAAAAAAA', body: F.reviewBody('Mine.', 1) }]);
+  assert.deepEqual(F.rowFigures(starred), ['1 chapter', '3 words', '2 reviews', '★ 4'], 'the writer\'s own stars do not count');
   const plain = F.storyOf({ ...op, trip: '' }, [{ no: 2, at: 200, name: 'Ink', trip: '', body: F.chapterHead(2) + 'x' }]);
   assert.equal(plain.chapters.length, 1, 'an unsigned story has chapter 1 only'); assert.equal(plain.reviews.length, 1);
   const row = F.topicOf({ ...op, replies: 6 }, { code: 'ficink', title: 'Ink', nsfw: false });
@@ -194,6 +197,7 @@ test('German: the archive\'s own words change, what readers wrote never does', a
   const DE = await import('../void-live-deploy/lib/fanfic-de.js');
   assert.equal(DE.de('Mark all read'), 'Alle als gelesen markieren'); assert.equal(DE.de('  Post story '), '  Geschichte veröffentlichen ', 'spaces kept');
   assert.equal(DE.de('Chapter 3 of 7'), 'Kapitel 3 von 7'); assert.equal(DE.de('Page 2 of 5'), 'Seite 2 von 5'); assert.equal(DE.de('Reviews (4)'), 'Rezensionen (4)');
+  assert.equal(DE.de('3 chapters'), '3 Kapitel'); assert.equal(DE.de('1,204 words'), '1,204 Wörter'); assert.equal(DE.de('1 review'), '1 Rezension(en)');
   assert.equal(DE.de('A line nobody wrote here'), 'A line nobody wrote here', 'unknown text stays as it is');
   assert.equal(DE.deTitle('Writing Room · Fan fiction · Verse'), 'Schreibzimmer · Fanfiction · Verse');
   assert.equal(DE.langOf('?lang=de', 'en', 'en-US'), 'de'); assert.equal(DE.langOf('', 'en', 'de-DE'), 'en', 'the device\'s pick over the browser');
