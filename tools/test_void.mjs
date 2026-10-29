@@ -5395,7 +5395,8 @@ try {
     await F.ctx.close(); }
   if (want("service health: every adapter and API gets a row graded up, slow or down with its time, and Check again checks again")) { // asked by Verse: the Service Health card
     const S = await fresh(); let hits = 0;
-    await S.ctx.route(/^https:\/\/(?:api\.coingecko\.com|public\.api\.bsky\.app|waymo\.com|m\.uber\.com|www\.ubereats\.com|www\.doordash\.com|www\.lyft\.com)\//, async (r) => {
+    // every adapter in skills/providers.js is a service (tools/service-health.test.mjs): the five mail adapters joined the five food and ride ones on 2026-10-28 (aab06c1e, lists run 7)
+    await S.ctx.route(/^https:\/\/(?:api\.coingecko\.com|public\.api\.bsky\.app|waymo\.com|m\.uber\.com|www\.ubereats\.com|www\.doordash\.com|www\.lyft\.com|mail\.google\.com|outlook\.live\.com|mail\.yahoo\.com|mail\.proton\.me|www\.icloud\.com)\//, async (r) => {
       const u = r.request().url(); hits++;
       if (u.includes('coingecko')) return r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: '{"gecko_says":"(V3) To the Moon!"}' });
       if (u.includes('bsky')) return r.fulfill({ status: 503, headers: { 'access-control-allow-origin': '*' }, body: '' });
@@ -5412,9 +5413,9 @@ try {
     const b = await read(), row = (id) => a.rows.find((x) => x.startsWith(id + ':')) || '';
     // the stability dial (asked by Verse): the served incidents.json is the real file, so the dial reads a label and a score, the needle sits at the score's angle, and Check again reads it again
     const dialOk = (g) => g && ['steady', 'wobbly', 'shaky'].includes(g.label) && g.score >= 0 && g.score <= 100 && +g.deg === Math.round(-90 + 1.8 * g.score);
-    check('service health (asked by Verse): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse\'s own stability dial reads incidents.json (again on Check again)',
-      a.rows.length === 7 && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
-      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && dialOk(a.gauge) && dialOk(b.gauge) && b.gauge.reads >= 2 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
+    check('service health (asked by Verse): "is uber down" lists all twelve services (ten adapters, two APIs); the five mail adapters up, CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse\'s own stability dial reads incidents.json (again on Check again)',
+      a.rows.length === 12 && ['gmail', 'outlook', 'yahoo', 'proton', 'icloud'].every((id) => /^[a-z]+:up:up · \d+ ms$/.test(row(id))) && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
+      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '9 of 12 up, 1 slow, 2 down' && hitsA === 12 && hits === 24 && b.rows.length === 12 && dialOk(a.gauge) && dialOk(b.gauge) && b.gauge.reads >= 2 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
     await S.ctx.close(); }
   if (want("field minds: living cards mind, five cards ride an evolving field, take their look from it, and dragging one seeds it, with or without a Worker")) { // asked by the owner: Grok's idea F-038
     const out = [];
@@ -5986,12 +5987,15 @@ try {
     // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
     // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
     const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '?with=' + room });
+    // A says the relay is off and tabs share before B opens: once B joins, A's line is B's arrival (lib/share-client.js notes every
+    // join in a room that is not public), so A's own line is read first and the arrival after
+    const saidA = await until(async () => { const w = await S.whisper(); return /tabs in this browser/.test(w) ? w : ''; }, 8000) || await S.whisper();
     const B = await S.ctx.newPage(); const errsS = []; B.on('pageerror', (e) => errsS.push(String(e && e.message || e)));
     await B.goto(base + '?with=' + room);
     // B listens only once its page has opened the channel (lib/share-client.js says so in its whisper); a fixed 900 ms lost the
     // race on a loaded machine and the clock never reached B (2026-10-13), so wait for B to be listening before A summons
     await until(() => B.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000);
-    const saidA = await S.whisper();
+    const joinedA = await until(async () => { const w = await S.whisper(); return /someone came into your Verse/.test(w) ? w : ''; }, 3000) || await S.whisper();
     await S.ask('clock', 900);
     // on B's own stage (both tabs share one localStorage, so the saved state proves nothing); waited for, not a fixed sleep: a loaded
     // machine delivers the broadcast later (it failed twice in a row under load at 900 ms, 2026-10-13)
@@ -6001,8 +6005,8 @@ try {
     await B.close(); await S.p.waitForTimeout(300);
     const after = await S.p.$$eval('.void-presence', (n) => n.length);
     check('shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence',
-      /tabs in this browser/.test(saidA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
-      JSON.stringify({ saidA, onB, dot, after, errsS, errs: S.errors }));
+      /tabs in this browser/.test(saidA) && /someone came into your Verse/.test(joinedA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
+      JSON.stringify({ saidA, joinedA, onB, dot, after, errsS, errs: S.errors }));
     await S.ctx.close(); }
   } // CORE
   // asked by Verse: what happened while you were away is also one execution record in your own scope (lib/scene-advance.js, kind scene.advance); the away line
@@ -8122,6 +8126,10 @@ try {
   // it shows Verse's void art quietly (no badge, no evolve or again button) and the painting replaces it when it lands (owner, 2026-10-18: "get rid of the distracting evolve stuff on the card art")
   if (want("collectible card: mint, variants, quiet art")) {
     const C = await fresh(); const posts = []; const IMG = 'data:image/png;base64,iVBORw0KGgo' + 'A'.repeat(9000);
+    // the dragon has its own article here: the shared fixture answers every lookup with "Black hole", and since 2026-10-26 (51056167, lib/no-answer.js) a name whose article does not match
+    // goes to the answer route, which opened a second "thinking…" page that the collectible skill then claimed, so the forge painted the skill's name (subject 'collectible') next to the dragon
+    await C.ctx.route(/wikipedia\.org\/(?:w\/api\.php|api\/rest_v1\/page\/summary\/)/, (r) => { const u = decodeURIComponent(r.request().url()); if (!/(?:srsearch=dragon(?:&|$)|\/page\/summary\/Dragon(?:$|\?))/i.test(u)) return r.fallback();
+      return r.fulfill(json(u.includes('/page/summary/') ? { type: 'standard', title: 'Dragon', description: 'Legendary creature', extract: 'A dragon is a magical legendary creature that appears in the folklore of multiple cultures.', timestamp: '2026-09-20T10:00:00Z' } : { query: { search: [{ title: 'Dragon' }] } })); });
     await C.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return new Promise((ok) => setTimeout(ok, 2500)).then(() => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: IMG, cached: false }) })); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
     await C.ask('make a collectible card of a dragon', 1200);
     const read = () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-collect]'); if (!e) return null; const a = e.querySelector(':scope > .vc-art');
@@ -9114,9 +9122,14 @@ try {
     const posts = [];
     await t.ctx.route(/\/api\/miss$/, (r) => { try { posts.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} return r.fulfill({ status: 204 }); });
     await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'zorbleflax quandary engine' })).catch(() => {});
+    // this browser is driven by automation (navigator.webdriver), so a miss typed here is tagged origin robot (owner, 2026-10-19; tools/miss-robot.test.mjs);
+    // a person's browser has no webdriver flag, so for the person's miss the flag is off, as it is on their device, and nothing else changes
+    await t.ask('quibblewort sprocket lantern', 1500);
+    await t.p.evaluate(() => Object.defineProperty(navigator, 'webdriver', { get: () => false, configurable: true }));
     await t.ask('plumbus hexagram mender', 1500);
-    const byAgent = posts.filter((x) => /zorbleflax/.test(x.ask)), byPerson = posts.filter((x) => /plumbus/.test(x.ask));
-    check('WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not', byAgent.length > 0 && byAgent.every((x) => x.origin === 'agent') && byPerson.length > 0 && byPerson.every((x) => !('origin' in x)) && t.errors.length === 0, JSON.stringify({ posts, errors: t.errors }).slice(0, 300));
+    await t.p.evaluate(() => { delete navigator.webdriver; });
+    const byAgent = posts.filter((x) => /zorbleflax/.test(x.ask)), byPerson = posts.filter((x) => /plumbus/.test(x.ask)), byRobot = posts.filter((x) => /quibblewort/.test(x.ask));
+    check('WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not', byAgent.length > 0 && byAgent.every((x) => x.origin === 'agent') && byPerson.length > 0 && byPerson.every((x) => !('origin' in x)) && byRobot.length > 0 && byRobot.every((x) => x.origin === 'robot') && t.errors.length === 0, JSON.stringify({ posts, errors: t.errors }).slice(0, 400));
   }
   owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
   check('WebMCP: owner-only asks never run from an agent (and the answer names no owner)', /person at the screen/.test(String(owner || '')) && !/\bowner\b/i.test(String(owner || '')) && t.errors.length === 0, JSON.stringify({ owner, errors: t.errors }));
@@ -10117,8 +10130,13 @@ try {
   await W.ask('close');
   await W.ask('make a clock'); await W.ask('make a 5 minute timer');
   const st = await W.state();
-  await W.ask('what is time', 300); await until(async () => /Black hole/.test(await W.page()), 5000);
-  check('worldtime: "make a clock", "make a 5 minute timer" and "what is time" still go where they went before', st.some((x) => x.kind === 'clock') && st.some((x) => x.kind === 'timer') && /Black hole/.test(await W.page()) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 0, JSON.stringify(st.map((x) => x.kind)));
+  // "what is time" has its own article here: the shared fixture answers every lookup with "Black hole", and since 2026-10-26 (51056167, lib/no-answer.js)
+  // a name whose article does not match goes to the answer route, so "time" would never show the article page it went to before worldtime existed
+  await W.ctx.route(/wikipedia\.org\/(?:w\/api\.php|api\/rest_v1\/page\/summary\/)/, (r) => { const u = decodeURIComponent(r.request().url()); if (!/(?:srsearch=time(?:&|$)|\/page\/summary\/Time(?:$|\?))/i.test(u)) return r.fallback();
+    return r.fulfill(json(u.includes('/page/summary/') ? { type: 'standard', title: 'Time', description: 'Dimension in which events can be ordered', extract: 'Time is the continued sequence of existence and events.', timestamp: '2026-09-20T10:00:00Z' } : { query: { search: [{ title: 'Time' }] } })); });
+  await W.ask('what is time', 300); await until(async () => /continued sequence of existence/.test(await W.page()), 5000);
+  const timePage = await W.page();
+  check('worldtime: "make a clock", "make a 5 minute timer" and "what is time" still go where they went before', st.some((x) => x.kind === 'clock') && st.some((x) => x.kind === 'timer') && /continued sequence of existence/.test(timePage) && /Source: Wikipedia · last edited/.test(timePage) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 0, JSON.stringify({ kinds: st.map((x) => x.kind), time: timePage.slice(0, 160) }));
   check('no script errors (worldtime)', W.errors.length === 0, W.errors.join(' | '));
   await W.ctx.close();
   }
