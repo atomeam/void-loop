@@ -264,20 +264,25 @@ export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
   if (!el) return;
   const d = el.ownerDocument, a = (href, text, cls) => { const x = d.createElement('a'); x.href = href; x.textContent = text; if (cls) x.className = cls; return x; };
   const row = d.createElement('div'); row.className = 'tk-row';
+  const aims = []; // every link that carries what is on the page: aimed now, again after anything the page does, and when pointed at or pressed
   { const c = cardLinkOf(path); if (c) { // first: the page's own card (owner, 2026-10-25: "and vice versa")
     const x = a(c, 'See it as a card on the stage →', 'tk-card'), aim = () => { let q = ''; try { q = card ? String(card() || '').trim() : ''; } catch (_) { /* the page's own problem: keep the example */ } x.href = q ? '/?q=' + encodeURIComponent(q) : c; };
-    if (card) { // aimed now, again after anything the page does (a swatch clicked, a stop dragged, a key typed), and when pointed at or pressed,
-      // so a hover already shows the card for what is on the page (owner via the team, 2026-10-29: the link follows the colour live)
-      aim(); for (const ev of ['pointerenter', 'pointerdown', 'focus', 'click']) x.addEventListener(ev, aim);
-      // tk:card: a page that changes with no event of its own (a forecast that comes back) says so: d.dispatchEvent(new Event('tk:card'))
-      if (d.addEventListener) for (const ev of ['input', 'change', 'click', 'pointerup', 'keyup', 'tk:card']) d.addEventListener(ev, aim);
-      if (d.defaultView && d.defaultView.addEventListener) for (const ev of ['hashchange', 'popstate']) d.defaultView.addEventListener(ev, aim);
-    }
+    // so a hover already shows the card for what is on the page (owner via the team, 2026-10-29: the link follows the colour live)
+    if (card) { aim(); aims.push(aim); for (const ev of ['pointerenter', 'pointerdown', 'focus', 'click']) x.addEventListener(ev, aim); }
     row.append(x);
   } }
   for (const h of handoffs) {
     if (h.run) { const b = d.createElement('button'); b.type = 'button'; b.className = 'tk-hand'; b.textContent = h.label; b.addEventListener('click', () => { const said = h.run(); if (said) { b.textContent = said; setTimeout(() => { b.textContent = h.label; }, 1600); } }); row.append(b); continue; }
-    const x = a('#', h.label, 'tk-hand'); x.addEventListener('click', (e) => { const u = h.href(); if (!u) { e.preventDefault(); return; } x.href = u; }); x.addEventListener('pointerdown', () => { const u = h.href(); if (u) x.href = u; }); row.append(x);
+    // a hand-off link carries the page's value in its href from the start, so a hover, a long press or a copied link goes there too, not to "#";
+    // with nothing on the page to carry yet it reads as off. href is only read, so it must not write; what a press writes goes in go
+    const x = a('#', h.label, 'tk-hand'), aim = () => { let u = null; try { u = h.href() || null; } catch (_) { /* nothing to carry */ } x.href = u || '#'; x.setAttribute('aria-disabled', u ? 'false' : 'true'); return u; };
+    aim(); aims.push(aim); for (const ev of ['pointerenter', 'pointerdown', 'focus']) x.addEventListener(ev, aim);
+    x.addEventListener('click', (e) => { const u = aim(); let ok = !!u; if (ok && h.go) try { ok = h.go() !== false; } catch (_) { ok = false; } if (!ok) e.preventDefault(); }); row.append(x);
+  }
+  if (aims.length) { const all = () => { for (const f of aims) f(); };
+    // tk:card: a page that changes with no event of its own (a forecast that comes back) says so: d.dispatchEvent(new Event('tk:card'))
+    if (d.addEventListener) for (const ev of ['input', 'change', 'click', 'pointerup', 'keyup', 'tk:card']) d.addEventListener(ev, all);
+    if (d.defaultView && d.defaultView.addEventListener) for (const ev of ['hashchange', 'popstate']) d.defaultView.addEventListener(ev, all);
   }
   for (const r of relatedOf(path)) row.append(a(r.href, r.label));
   if (path !== '/tools/') row.append(a('/tools/', 'All tools')); // the kit's own page (owner, 2026-10-25: "link them all so they are all usable together")
@@ -291,6 +296,6 @@ export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
   style.textContent = '.tk-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:14px 0 4px;font-size:13px}.tk-label{color:var(--soft,var(--muted,#888))}'
     + '.tk-row a,.tk-row button{font:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:4px 12px;border:1px solid var(--line,#8884);border-radius:999px;color:inherit;text-decoration:none}'
     + '.tk-ask{margin:14px 0 0}.tk-ask input{font:inherit;width:100%;box-sizing:border-box;min-height:40px;padding:6px 12px;border:1px solid var(--line,#8884);border-radius:999px;background:transparent;color:inherit}.tk-ask input:focus{outline:2px solid var(--accent,#6d4aff);outline-offset:1px}'
-    + '.tk-row .tk-hand,.tk-row a.tk-card{border-color:var(--accent,#6d4aff)}.tk-row a.tk-card{font-weight:600}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
+    + '.tk-row .tk-hand,.tk-row a.tk-card{border-color:var(--accent,#6d4aff)}.tk-row a.tk-card{font-weight:600}.tk-row a[aria-disabled="true"]{opacity:.5;cursor:default}.tk-row a.tk-accent::before{content:"";width:12px;height:12px;border-radius:50%;margin-right:6px;background:var(--accent,#6d4aff)}';
   row.prepend(label); el.replaceChildren(style, form, row);
 }

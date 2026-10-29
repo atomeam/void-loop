@@ -88,6 +88,31 @@ test('the stage link follows the page as it changes, with no press: after a clic
   hex = '778899'; fire('tk:card'); assert.equal(x.href, '/?q=color%20%23778899', 'a page that changes with no event of its own says so with tk:card');
 });
 
+// a hand-off link carries the page's value in its href from the start, not "#" until a press, so a hover, a long press or a copied link goes there
+const fakeHands = (handoffs) => {
+  const docOn = {}, mk = (tag) => { const on = {}, attr = {}; return { tag, on, attr, children: [], className: '', href: '', textContent: '', style: {}, append(...c) { this.children.push(...c); }, prepend(...c) { this.children.unshift(...c); }, setAttribute(k, v) { attr[k] = v; }, addEventListener(ev, fn) { (on[ev] ||= []).push(fn); }, replaceChildren(...c) { this.children = c; } }; };
+  const host = mk('nav'); host.ownerDocument = { createElement: mk, addEventListener: (ev, fn) => (docOn[ev] ||= []).push(fn), defaultView: { addEventListener() {} } };
+  return import('../void-live-deploy/lib/toolkit.js').then(({ mountRelated }) => { mountRelated(host, '/weather/', handoffs); const xs = host.children.find((c) => c.className === 'tk-row').children.filter((c) => c.className === 'tk-hand'); return { xs, fire: (ev) => (docOn[ev] || []).forEach((f) => f()) }; });
+};
+test('a hand-off link reads its place before any press, follows the page as it changes, and reads as off while there is nothing to carry', async () => {
+  let place = null; const { xs: [x], fire } = await fakeHands([{ label: 'The time in this place', href: () => (place ? '/time/?c=' + encodeURIComponent(place) : null) }]);
+  assert.equal(x.href, '#'); assert.equal(x.attr['aria-disabled'], 'true', 'nothing shown yet: off, not a link to nowhere');
+  let stopped = false; x.on.click[0]({ preventDefault() { stopped = true; } }); assert.ok(stopped, 'a press with nothing to carry goes nowhere');
+  place = 'Paris'; fire('tk:card'); assert.equal(x.href, '/time/?c=Paris', 'the forecast came back: the link reads Paris with no press'); assert.equal(x.attr['aria-disabled'], 'false');
+  place = 'Oslo'; fire('input'); assert.equal(x.href, '/time/?c=Oslo', 'after an input on the page');
+  place = 'Rome'; for (const fn of x.on.pointerenter) fn(); assert.equal(x.href, '/time/?c=Rome', 'pointed at');
+});
+test('a hand-off that writes something (the wheel\'s palette) writes it on a press only, never on a hover or a page change, and no page writes in href', async () => {
+  let wrote = 0, ok = true; const { xs: [x], fire } = await fakeHands([{ label: 'Paint the wheel', href: () => '/wheel/', go: () => { wrote++; return ok; } }]);
+  for (const fn of x.on.pointerenter) fn(); fire('input'); fire('click'); assert.equal(wrote, 0, 'aimed three times, nothing written');
+  let stopped = false; x.on.click[0]({ preventDefault() { stopped = true; } }); assert.equal(wrote, 1); assert.equal(stopped, false, 'written, then the link is followed');
+  ok = false; stopped = false; x.on.click[0]({ preventDefault() { stopped = true; } }); assert.ok(stopped, 'a write that fails keeps the person here');
+  for (const f of fs.readdirSync(new URL('../void-live-deploy/', import.meta.url))) {
+    const u = new URL('../void-live-deploy/' + f + '/index.html', import.meta.url); if (!fs.existsSync(u)) continue;
+    assert.doesNotMatch(fs.readFileSync(u, 'utf8'), /href: \(\) => (?:(?!, go:)[^}\n])*setPalette\(/, f + ': href is read on every hover and page change, so a write goes in go');
+  }
+});
+
 // skills/index.json order, first match wins, as on the stage
 async function firstSkill(ask) {
   const names = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8')), mods = [];
