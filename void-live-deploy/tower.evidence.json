@@ -21393,10 +21393,10 @@
   "nameunit": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 129,
-    "best": 224,
-    "evidence": "Verse (/hosting/) 129 ms to the load event (median of 3, phone width) vs nameunit.com 224 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-29T13:42:33.581Z",
+    "verse": 106,
+    "best": 210,
+    "evidence": "Verse (/hosting/) 106 ms to the load event (median of 3, phone width) vs nameunit.com 210 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
    },
    "reliability": {
@@ -21404,7 +21404,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 loads answered vs nameunit.com 3 of 3 loads answered",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
    },
    "mobile": {
@@ -21412,7 +21412,7 @@
     "verse": 0,
     "best": 176,
     "evidence": "Verse (/hosting/) 0 px sideways overflow at 390 px vs nameunit.com 176 px sideways overflow at 390 px",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
    },
    "accessibility": {
@@ -21420,7 +21420,7 @@
     "verse": 0,
     "best": 43,
     "evidence": "Verse (/hosting/) 0 unnamed controls or images vs nameunit.com 43 unnamed controls or images",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
    },
    "offline": {
@@ -21428,7 +21428,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/hosting/) 1 (1: the page shows itself again with the network cut) vs nameunit.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
    },
    "sharing": {
@@ -21436,7 +21436,7 @@
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/hosting/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs nameunit.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
    },
    "accuracy": {
@@ -21444,23 +21444,24 @@
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/hosting/) 8 of 8 right against the worked-out answer; judged against the standard, not nameunit.com (the site is not asked)",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "of": 8
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 18,
-    "evidence": "Verse (/hosting/) 0 design defects vs nameunit.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), nameunit.com (0 low-contrast texts, 18 small tap targets, layout shift 0.03)",
-    "at": "2026-10-29T13:42:33.581Z",
+    "evidence": "Verse (/hosting/) 0 design defects vs nameunit.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), nameunit.com (0 low-contrast texts, 18 small tap targets, layout shift 0.02)",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
    },
    "domain search": {
-    "verdict": "equal-and-better",
-    "verse": 4,
+    "verdict": "worse",
+    "verse": 2,
     "best": 4,
-    "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T13:42:33.581Z",
+    "evidence": "Verse (/hosting/) 2 of 4 shown for the question (Verse lacks: check control, a real registry check (RDAP)); judged on Verse alone, the site is not asked",
+    "at": "2026-10-29T14:28:22.666Z",
+    "was": "equal-and-better",
     "of": 4,
     "part": true
    },
@@ -21469,7 +21470,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "of": 4,
     "part": true
    },
@@ -21478,7 +21479,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "of": 4,
     "part": true
    },
@@ -21487,7 +21488,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "of": 3,
     "part": true
    },
@@ -21496,7 +21497,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "of": 3,
     "part": true
    },
@@ -21505,7 +21506,7 @@
     "verse": 19,
     "best": 2,
     "evidence": "Verse (/hosting/) 19 of 19 things a full answer shows vs nameunit.com 2 of 19 things a full answer shows (Verse lacks: none; site lacks: domain search, tiered plans, labelled as the rival's, Small, Medium, Large, bandwidth, monthly transfer, vCPUs, memory, SLA, NGINX, Caddy, TLS 1.3, no account, works offline, back to Verse, Name unit - Support / Kundeservice)",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "of": 19,
     "siteRead": true
    },
@@ -21514,8 +21515,45 @@
     "verse": 8,
     "best": 3,
     "evidence": "Verse (/hosting/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs nameunit.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-29T13:42:33.581Z",
+    "at": "2026-10-29T14:28:22.666Z",
     "siteRead": true
+   },
+   "journey: search a name and see each ending free or taken": {
+    "verdict": "pass",
+    "steps": [
+     "open /hosting/",
+     "type the name verse",
+     "press Search",
+     "sees each of the six endings with what its registry said, and the count",
+     "sees verse.com registered, with its registrar",
+     "type a name nobody has, versecheckmvtn3baz.com",
+     "press Search",
+     "sees versecheckmvtn3baz.com free to register"
+    ],
+    "negatives": [
+     "after open /hosting/: no stub, placeholder, error or empty page",
+     "after type the name verse: no stub, placeholder, error or empty page",
+     "after press Search: no stub, placeholder, error or empty page",
+     "after type a name nobody has, versecheckmvtn3baz.com: no stub, placeholder, error or empty page",
+     "after press Search: no stub, placeholder, error or empty page"
+    ],
+    "evidence": "Verse (/hosting/): 8 steps, every negative control held",
+    "at": "2026-10-29T14:29:25.089Z"
+   },
+   "journey: share the result and reopen it from the link": {
+    "verdict": "worse",
+    "steps": [
+     "open /hosting/",
+     "type verse.org",
+     "press Search"
+    ],
+    "negatives": [
+     "after open /hosting/: no stub, placeholder, error or empty page",
+     "after type verse.org: no stub, placeholder, error or empty page",
+     "after press Search: no stub, placeholder, error or empty page"
+    ],
+    "evidence": "failed: expected verse.org registered; the page showed: \"Traffic, queue & uptime calculator Calculate traffic capacity, queue wait times, server sizing, and allowed downtime for any service or venue. The same sums ans\"",
+    "at": "2026-10-29T14:29:25.089Z"
    }
   },
   "novelcrafter": {
