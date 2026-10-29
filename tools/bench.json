@@ -6844,5 +6844,6 @@
   {"ask": "tell me something wise", "want": "skill:advice"},
   {"ask": "give me a color", "want": "skill:color"},
   {"ask": "fan fiction", "want": "skill:fanfic"},
-  {"ask": "fan fiction archive", "want": "skill:fanfic"}
+  {"ask": "fan fiction archive", "want": "skill:fanfic"},
+  {"ask": "calculator for molar mass", "want": "skill:formulas"}
 ]
