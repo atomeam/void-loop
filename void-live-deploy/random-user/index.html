@@ -50,8 +50,9 @@
 <link rel="modulepreload" href="/lib/flight-sites.js">
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
-<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/people-card.js">
 <link rel="modulepreload" href="/lib/fakeuser.js">
+<link rel="modulepreload" href="/lib/wheel.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -85,6 +86,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
+  import { cardAsk } from '/lib/people-card.js';
   import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
   import { people, only, format, NATS, FIELDS, PW_SETS } from '/lib/fakeuser.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
@@ -135,7 +137,8 @@
   $('uses').addEventListener('click', (e) => { const b = e.target.closest('button[data-use]'); if (!b) return; const [n, want] = USES[b.dataset.use]; $('n').value = n;
     for (const c of $('fields').querySelectorAll('input[type=checkbox]')) if (c.checked !== want.includes(c.value)) { c.checked = want.includes(c.value); c.dispatchEvent(new Event('change')); }
     make(); });
-  mountRelated($('related'), '/random-user/', [{ label: 'Spin these names on a wheel', href: toWheel }, { label: 'Use them as a tournament roster', href: toCup }]);
+  mountRelated($('related'), '/random-user/', [{ label: 'Spin these names on a wheel', href: toWheel }, { label: 'Use them as a tournament roster', href: toCup }],
+    { card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

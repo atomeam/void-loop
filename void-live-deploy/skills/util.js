@@ -164,7 +164,7 @@ async function run(text, api) {
   }
   // the card links to the tool page that does the same thing in full (lib/card-frame.js pageOfCard; owner, 2026-10-25: "why are you not linking the cards to the pages?")
   const page = { password: '/password/', color: '/color/', count: '/word-count/' }[q.kind];
-  if (el && el.dataset && page) el.dataset.page = page;
+  if (el && el.dataset && page) el.dataset.page = q.kind === 'password' ? page + '?len=' + q.n : page; /* the password page opens on the same length, never the password */
   // and a 3D figure of the thing (owner, 2026-10-25: "3d figure if possible"): a paint-chip fan in the colour, a padlock rated by lib/pwcheck.js
   if (el && q.kind === 'color') { const hx = (el.querySelector('ul li') || {}).textContent || ''; const m = /#[0-9a-f]{6}/i.exec(hx); if (m) bandMini(api, el, 'swatch', { hex: m[0] }, '3D paint-chip fan in ' + m[0]); }
   if (el && q.kind === 'count' && !q.chars) bandMini(api, el, 'page', { words: (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length }, '3D page of writing, ' + (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length + ' words');

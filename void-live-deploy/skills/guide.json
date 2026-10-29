@@ -15,9 +15,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 16,
+    "tested": 15,
     "checked": 1,
-    "proven": 38
+    "proven": 39
    },
    "from": 6,
    "to": 61
@@ -438,8 +438,9 @@
     "fake name generator",
     "generate 5 fake german women"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. Say the words below and it answers.",
    "glow": 100,
    "n": 12
   },
@@ -675,7 +676,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 8 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. Say the words below and it answers.",
+   "flavor": "Not a boast but a record: 8 askings, each one answered. Say the words below and it answers.",
    "glow": 100,
    "n": 26
   },

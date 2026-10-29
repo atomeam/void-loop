@@ -58,6 +58,8 @@
 <link rel="modulepreload" href="/lib/flight-sites.js">
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/password-card.js">
+<link rel="modulepreload" href="/lib/pw-handover.js">
 <link rel="modulepreload" href="/lib/password.js">
 <!-- /modulepreload -->
 </head>
@@ -118,6 +120,8 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
+  import { cardAsk } from '/lib/password-card.js';
+  import { handOver } from '/lib/pw-handover.js';
   import { normalize, problemOf, bitsOf, generateMany, passphrase, phraseBits, strengthOf, sayable, MAX_COUNT } from '/lib/password.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.password.v1', q = new URLSearchParams(location.search);
   let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
@@ -150,7 +154,7 @@
       const box = document.createElement('div'); box.className = 'pw';
       const out = document.createElement('output'); out.className = 'word'; out.textContent = pw; out.setAttribute('aria-label', 'Generated ' + (ph ? 'passphrase' : 'password'));
       const c = document.createElement('button'); c.type = 'button'; c.textContent = 'Copy'; c.setAttribute('aria-label', 'Copy this ' + (ph ? 'passphrase' : 'password')); c.addEventListener('click', () => copy(c, pw));
-      const chk = document.createElement('a'); chk.textContent = 'Check it'; chk.href = '/password-strength/#p=' + encodeURIComponent(pw); chk.title = 'Open it in the strength checker (carried in the part of the address that never leaves the device)';
+      const chk = document.createElement('a'); chk.textContent = 'Check it'; chk.href = '/password-strength/'; chk.title = 'Open it in the strength checker (handed over in memory, never in the address)'; chk.addEventListener('click', (e) => { if (handOver(window, pw)) e.preventDefault(); });
       const m = document.createElement('div'); m.className = 'meter'; m.setAttribute('aria-hidden', 'true'); const i = document.createElement('i'); i.className = 's' + s.score; i.style.width = (10 + s.score * 22.5) + '%'; m.append(i);
       box.append(out, c, chk, m);
       if ($('say').checked) { const sy = document.createElement('div'); sy.className = 'say'; sy.textContent = 'Remember it: ' + sayable(pw); box.append(sy); }
@@ -166,8 +170,9 @@
   $('link').addEventListener('click', () => copy($('link'), location.origin + location.pathname + '?' + setting()));
   make();
   mountRelated($('related'), '/password/', [
-    { label: 'Check the first one\'s strength', href: () => (made[0] ? '/password-strength/#p=' + encodeURIComponent(made[0]) : null) },
-  ]);
+    // the address carries no password: the click hands the first one over in memory, in a new tab
+    { label: 'Check the first one\'s strength', href: () => (made[0] ? '/password-strength/' : null), go: () => !handOver(window, made[0]) },
+  ], { card: () => cardAsk($('lenN').value, mode) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

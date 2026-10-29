@@ -199,7 +199,7 @@
    "title": "Quality web design in, Paphos, Cyprus with SEO and social media plans"
   },
   "randomarea.com": {
-   "at": "2026-10-28T22:47:07Z",
+   "at": "2026-10-29T08:50:07Z",
    "outcome": "not-judged",
    "why": "the model answered 401"
   },
@@ -304,7 +304,7 @@
    "title": "Unit | Asset tokenization layer on Hyperliquid"
   },
   "email-checker.net": {
-   "at": "2026-10-28T22:47:15Z",
+   "at": "2026-10-29T08:50:14Z",
    "outcome": "not-judged",
    "why": "the model answered 401"
   },
@@ -315,7 +315,7 @@
    "title": "Johann Bessler - Orffyreus"
   },
   "getconverter.org": {
-   "at": "2026-10-28T22:47:27Z",
+   "at": "2026-10-29T08:50:22Z",
    "outcome": "not-judged",
    "why": "the model answered 401"
   },
@@ -326,12 +326,12 @@
    "title": "FreeFonts : Download Thousands of Fonts for Free : Free Fonts"
   },
   "copyemojio.com": {
-   "at": "2026-10-28T22:47:41Z",
+   "at": "2026-10-29T08:50:33Z",
    "outcome": "not-judged",
    "why": "the model answered 401"
   },
   "syncsketch.com": {
-   "at": "2026-10-28T22:47:45Z",
+   "at": "2026-10-29T08:50:37Z",
    "outcome": "not-judged",
    "why": "the model answered 401"
   },
@@ -339,6 +339,22 @@
    "at": "2026-10-28T22:47:47Z",
    "outcome": "gone",
    "why": "answered 508"
+  },
+  "colorjigsaw.com": {
+   "at": "2026-10-29T08:50:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a company page for a software and game development studio that offers various products including a color puzzle game, device )",
+   "title": "Jigsaw Color Game Technology - Expert in Software and Game Development"
+  },
+  "qunitjs.com": {
+   "at": "2026-10-29T08:50:50Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401"
+  },
+  "top-password.com": {
+   "at": "2026-10-29T08:50:56Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401"
   }
  },
  "runs": [
@@ -464,6 +480,22 @@
   },
   {
    "at": "2026-10-28T22:50:28Z",
+   "line": "Versus: took on no site; next randomarea.com",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-29T08:51:03Z",
+   "line": "Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com",
+   "built": 0,
+   "queued": 1,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-29T08:53:37Z",
    "line": "Versus: took on no site; next randomarea.com",
    "built": 0,
    "queued": 0,
