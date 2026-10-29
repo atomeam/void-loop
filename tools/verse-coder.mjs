@@ -33,6 +33,8 @@ export function providersFrom(env = process.env) {
   const out = [];
   if (env.CLOUDFLARE_API_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: env.CLOUDFLARE_API_TOKEN,
     url: 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + (env.VERSE_CODER_CF_MODEL || FREE_MODEL), shape: 'workers' });
+  // GitHub Models (a free pool that needs no key to fetch: the workflow's own token with `models: read`); unverified against GitHub's docs from the sandbox, a refusal shows in the run log
+  if (env.GH_MODELS_TOKEN) out.push({ name: 'github-models', model: env.VERSE_CODER_GHMODELS_MODEL || 'openai/gpt-4.1', key: env.GH_MODELS_TOKEN, url: 'https://models.github.ai/inference/chat/completions', shape: 'openai' });
   const oa = (name, key, url, model) => { if (env[key]) out.push({ name, model, key: env[key], url, shape: 'openai' }); };
   oa('openrouter', 'OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions', env.VERSE_CODER_OPENROUTER_MODEL || 'qwen/qwen3-coder:free');
   oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'llama-3.3-70b-versatile');
@@ -40,7 +42,7 @@ export function providersFrom(env = process.env) {
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
 }
-export const KEY_NAMES = ['CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
+export const KEY_NAMES = ['CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'GH_MODELS_TOKEN (the workflow token, permissions: models: read)', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
 
 /** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on */
 export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, maxOut = 4096 } = {}) {
