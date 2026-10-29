@@ -14,7 +14,7 @@ const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eigh
 
 const sentences = (t) => String(t || '').replace(/⏎/g, '\n').split(/\n+/).flatMap((l) => l.split(/(?<=[.!?]["”']?)\s+(?=["“']?[A-Z0-9])/)).map((s) => s.trim()).filter(Boolean);
 
-/** the fixes a note names ("First, ... Second, ... Third, ...") and how many it says there are ("three fixes", "5 fixes"). Pure. */
+/** the items a note opens with ordinals (First, Second, ...), and the number of fixes it states, else the number of items. Pure. */
 export function namedFixes(note) {
   const items = [];
   for (const s of sentences(note)) {
