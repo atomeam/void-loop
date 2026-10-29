@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:26:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:25:27Z",
+   "subject": "Place replies kept before cards had a family, once, from the loop log"
+  },
+  {
    "at": "2026-10-29T16:24:24Z",
    "subject": "test(answer-honesty): read the tower target from the record"
   },
@@ -576,6 +584,10 @@
   {
    "at": "2026-10-29T16:12:11Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:11:43Z",
+   "subject": "Add random emoji skill and mark inbox row building"
   },
   {
    "at": "2026-10-29T16:10:31Z",
@@ -615,18 +627,6 @@
   },
   {
    "at": "2026-10-29T16:04:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:04:10Z",
-   "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
-  },
-  {
-   "at": "2026-10-29T16:03:50Z",
-   "subject": "Card replies count on the heat map by the card's family"
-  },
-  {
-   "at": "2026-10-29T16:01:10Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
