@@ -550,6 +550,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T18:19:05Z",
+   "subject": "who is X check: a realistic answer-route reply; the retry reruns a check by its own section"
+  },
+  {
+   "at": "2026-10-29T18:13:43Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T18:11:10Z",
+   "subject": "Bench: a lighter page per ask (reduced motion, no pictures, fonts or media) so the daily run on main finishes inside 40 min"
+  },
+  {
+   "at": "2026-10-29T18:08:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T18:07:49Z",
    "subject": "Persona playtest: wait for a lifted 3D board before reading its card"
   },
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-29T17:23:04Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T17:22:40Z",
-   "subject": "Browser suite: count converter-ask.js as shared, wait for MultiVerse when signed out, and heal a retry only when the check ran"
-  },
-  {
-   "at": "2026-10-29T17:18:50Z",
-   "subject": "Refresh generated files after merging main"
-  },
-  {
-   "at": "2026-10-29T17:18:16Z",
-   "subject": "Verse Brain organ 19: Current, F447's lattice-Boltzmann flow and evolved swimmers"
-  },
-  {
-   "at": "2026-10-29T17:17:21Z",
-   "subject": "Tower size: how heavy each Versus site really is"
   }
  ],
  "builders": {
