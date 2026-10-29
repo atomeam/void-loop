@@ -18,7 +18,7 @@ export const TOOLS = Object.freeze({
   '/ledger/': 'Repo activity ledger',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/learn-to-draw/': 'Learn to draw', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team chat', '/learn-to-draw/': 'Learn to draw', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
@@ -61,6 +61,7 @@ const HAND_RELATED = Object.freeze({
   '/base64/': ['/word-count/', '/base-converter/'],
   '/boards/': ['/fanfic/', '/resize-image/', '/translate/', '/notes/'],
   '/fanfic/': ['/generators/', '/word-count/', '/translate/', '/boards/'],
+  '/team/': ['/kanban/', '/notes/', '/ledger/', '/boards/'],
   '/learn-to-draw/': ['/stopwatch/', '/color/', '/resize-image/', '/notes/'],
   '/news/': ['/translate/', '/notes/', '/weather/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/'],
@@ -88,7 +89,7 @@ const HAND_RELATED = Object.freeze({
   '/jobs/tags/': ['/jobs/', '/jobs/categories/', '/jobs/salary/'],
   '/jobs/companies/': ['/jobs/', '/jobs/categories/', '/jobs/alerts/'],
   // the repo activity ledger (owner, 2026-10-28): a Kanban board and notes to plan from what it lists, the calendar for its dates
-  '/ledger/': ['/kanban/', '/notes/', '/calendar/'],
+  '/ledger/': ['/kanban/', '/team/', '/notes/', '/calendar/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // a page Verse built by itself (lib/self-sites.js) goes with its family's page first, then the tools that page goes with
@@ -102,7 +103,7 @@ const HAND_CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/learn-to-draw/': 'sketch pad', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 // a self-built page opens its family's card on the stage
 export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base]).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });
@@ -191,6 +192,8 @@ const ROUTES = [
   // fan fiction: 'fan fiction', 'fanfic archive', 'post a story', 'my writing room'
   [/^(?:the |a |open )?(?:fan ?fic(?:tion)?|fanfics?)(?: archive| stories| site)?$|^(?:post|publish|share) (?:a |my )?(?:fan ?fic(?:tion)?|story|chapter)$/i, () => '/fanfic/'],
   [/^(?:my |the |open (?:the |my )?)?writing room$/i, () => '/fanfic/?v=room'],
+  // the team chat: 'team chat', 'open the team chat', 'agent workspace', 'slack alternative', 'my agents'
+  [/^(?:the |a |open (?:the |my )?|my )?(?:team ?chat|team workspace|agents? (?:chat|workspace)|chat (?:for|with) (?:my |the )?agents|slack alternative)$|^(?:my|the) agents$/i, () => '/team/'],
   // boards: 'image boards', 'text boards', 'the chans', '/tech/', 'make a board'
   [/^(?:make|create|start|new) (?:a |an |my own )?(?:image |text )?board$/i, () => '/boards/?new=1'],
   [/^\/([a-z0-9]{1,10})\/$/i, (m) => '/boards/?b=' + m[1].toLowerCase()],
