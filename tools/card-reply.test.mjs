@@ -60,13 +60,14 @@ test('an empty reply sends and keeps nothing', async () => {
   assert.equal(sent, 0); assert.deepEqual(readCorrections(st), []);
 });
 
-test('the section stays out of a shared card and its picture, and both pages carry it the same way', () => {
+test('the section stays out of a shared card and its picture, and the page and its two deploy copies carry it the same way', () => {
   const src = readFileSync(new URL('../void-live-deploy/lib/card-reply.js', import.meta.url), 'utf8');
   assert.match(src, /setAttribute\('data-share-skip', '1'\)/);
   assert.match(src, /className: 'vtell-box vreply'/, 'the frame, the forge and cardWords already leave .vtell-box out');
   assert.ok(!/\.innerHTML\b/.test(src), 'every word goes in as text');
-  const a = readFileSync(new URL('../void-live-deploy/index.html', import.meta.url), 'utf8'), b = readFileSync(new URL('../void-live-deploy/void.html', import.meta.url), 'utf8');
-  assert.equal(a, b);
+  // void.html is the page; the deploy copies it over both files (AGENTS.md), so the section must be in void.html itself
+  const a = readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+  for (const copy of ['../void-live-deploy/index.html', '../void-live-deploy/void.html']) assert.equal(readFileSync(new URL(copy, import.meta.url), 'utf8'), a, copy + ' is a copy of void.html');
   assert.match(a, /import\('\/lib\/card-reply\.js'\)/);
   assert.ok(!/tellV01D|a\.vtell'/.test(a), 'the old owner-only link is gone');
 });

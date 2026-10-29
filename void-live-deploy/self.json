@@ -537,13 +537,53 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T15:48:26Z",
+   "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
+  },
+  {
+   "at": "2026-10-29T15:44:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:41:49Z",
+   "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
+  },
+  {
+   "at": "2026-10-29T15:40:03Z",
+   "subject": "Put the reply section in void.html, the page the deploy copies"
+  },
+  {
+   "at": "2026-10-29T15:36:15Z",
+   "subject": "Queue ignores a shell control count under 2"
+  },
+  {
+   "at": "2026-10-29T15:35:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:34:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:33:45Z",
+   "subject": "MultiVerse, with a capital V (owner's spelling); the stage's source void.html carries the rename and both copies match it"
+  },
+  {
+   "at": "2026-10-29T15:33:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:31:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T15:31:39Z",
    "subject": "Tower size: how heavy each Versus site really is"
@@ -555,6 +595,10 @@
   {
    "at": "2026-10-29T15:29:59Z",
    "subject": "Put \"Reply to what I said, or correct me\" on every card"
+  },
+  {
+   "at": "2026-10-29T15:29:47Z",
+   "subject": "Name the membership Multiverse: a Verse of your own (owner: something better than Paid Verse)"
   },
   {
    "at": "2026-10-29T15:29:16Z",
@@ -579,50 +623,6 @@
   {
    "at": "2026-10-29T15:27:17Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:25:37Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:25:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:24:56Z",
-   "subject": "Main health: a real-pages spec for /learn-to-draw/ (begin, draw a stroke, Done scores it, share), and the stale parity pages and deps map…"
-  },
-  {
-   "at": "2026-10-29T15:24:48Z",
-   "subject": "STL checker: design and test plan (page held until sycophanthex.com is assimilated)"
-  },
-  {
-   "at": "2026-10-29T15:22:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:22:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:21:37Z",
-   "subject": "Merge Verse: the board takes the room above the ask bar, so New game is never under it"
-  },
-  {
-   "at": "2026-10-29T15:21:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:21:04Z",
-   "subject": "random skill: take only the bare dice notation the stage's chance cards leave (d20, 2d6), crypto rolls, order file, family, map line, test"
-  },
-  {
-   "at": "2026-10-29T15:20:39Z",
-   "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
-  },
-  {
-   "at": "2026-10-29T15:20:35Z",
-   "subject": "Restore the password generator's test (lib/password.js), overwritten by the password skill's test in #1536; the skill's test is…"
   }
  ],
  "builders": {
@@ -861,9 +861,9 @@
   "target": "sycophanthex.com",
   "since": "2026-10-29",
   "next": [
-   "jobicy.com",
-   "workingnomads.com",
-   "arbeitnow.com"
+   "serverdiscounter.com",
+   "howsecureismypassword.net",
+   "wheeloutlet.com"
   ],
   "beaten": 0,
   "total": 1266
