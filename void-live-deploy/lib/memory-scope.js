@@ -6,7 +6,7 @@ import { ownerOk } from './guard.js';
 import { ensureTables, session, tierOf } from './void-me.js';
 import { KEY_RE, keyHash } from './review-api.js';
 
-export const KEY_HELP = 'Make one at https://a-to-mind.com/code-review/#pro (signed in, on Multiverse).';
+export const KEY_HELP = 'Make one at https://a-to-mind.com/code-review/#pro (signed in, on MultiVerse).';
 export async function scopeOf({ request, env }) {
   if (await ownerOk(request, env)) return { scope: '' };
   if (!env.DB) return null;
@@ -16,10 +16,10 @@ export async function scopeOf({ request, env }) {
     if (KEY_RE.test(t)) { // a Verse key: its account must be paid right now
       const row = await env.DB.prepare('SELECT user_id FROM void_review_keys WHERE hash = ?').bind(await keyHash(t)).first();
       if (!row) return { free: true, why: 'Verse does not know this key. ' + KEY_HELP };
-      return (await tierOf(env, row.user_id)) === 'paid' ? { scope: row.user_id } : { free: true, why: 'this key belongs to an account that is not on Multiverse. ' + KEY_HELP };
+      return (await tierOf(env, row.user_id)) === 'paid' ? { scope: row.user_id } : { free: true, why: 'this key belongs to an account that is not on MultiVerse. ' + KEY_HELP };
     }
     const me = await session(request, env);
     if (!me) return null;
-    return (await tierOf(env, me.userId)) === 'paid' ? { scope: me.userId } : { free: true, why: 'this account is not on Multiverse.' };
+    return (await tierOf(env, me.userId)) === 'paid' ? { scope: me.userId } : { free: true, why: 'this account is not on MultiVerse.' };
   } catch (_) { return null; }
 }

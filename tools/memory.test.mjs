@@ -284,7 +284,7 @@ test('ouroboros for members: the owner\'s push is unchanged; a member\'s key lan
   const back = await (await as(annKey, api.onRequestGet, env, { url: 'https://x/api/memory?id=shared' })).json();
   assert.equal(back.memory[0].name, 'annsapp'); assert.match(back.memory[0].body_sha256, /^[0-9a-f]{64}$/);
   // refused, in plain words
-  const free = await push(env, freeKey, [rec({ id: 'x' })]); assert.equal(free.status, 403); assert.match(await free.text(), /owner and paid members: this key belongs to an account that is not on Multiverse\. Make one at https:\/\/a-to-mind\.com\/code-review\/#pro/);
+  const free = await push(env, freeKey, [rec({ id: 'x' })]); assert.equal(free.status, 403); assert.match(await free.text(), /owner and paid members: this key belongs to an account that is not on MultiVerse\. Make one at https:\/\/a-to-mind\.com\/code-review\/#pro/);
   const unknown = await push(env, newKey(), [rec({ id: 'x' })]); assert.equal(unknown.status, 403); assert.match(await unknown.text(), /Verse does not know this key/);
   assert.equal((await push(env, 'not-a-key-at-all', [rec({ id: 'x' })])).status, 401);
   assert.equal((await call(api.onRequestPost, env, { auth: false, method: 'POST', body: { records: [rec({ id: 'x' })] } })).status, 401);
