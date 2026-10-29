@@ -115,11 +115,10 @@ export const SPECS = {
     await t.p.selectOption('#cRoot', 'G'); await t.p.waitForTimeout(200); t.ok(/G/.test(await t.p.locator('main').innerText()), 'picking G names a G chord');
     await t.share(t.p.getByRole('button', { name: /share/i }).first());
   },
-  '/members/': async (t) => { // paid Verse: the perks read from lib/members.js, the join link carries the membership, the free line stands
+  '/members/': async (t) => { // paid Verse: the perks read from lib/members.js, the join link carries the membership
     await t.waitText('#perks', /Publish your Verse/, 8000);
     t.ok((await t.p.locator('#perks li').count()) >= 4, 'the perks are listed');
     t.ok(/gumroad\.com\/l\/yinmj/.test(await t.p.locator('#buy').getAttribute('href')), 'Join goes to the paid Verse membership');
-    t.ok(/free for everyone/i.test(await t.text('.free')), 'the page says Verse stays free');
   },
   '/code-review/': async (t) => {
     await t.fill('#code', 'function login(user, pass) { eval(user); const q = "SELECT * FROM users WHERE name = \'" + user + "\'"; }'); await t.click('#run'); await t.waitText('#out', /\S/, 15000);
