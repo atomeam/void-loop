@@ -25,8 +25,9 @@ const field = (cls, label, value, min, max) => '<label style="display:inline-fle
   + ' <input type="number" class="' + cls + '" value="' + value + '" min="' + min + '" max="' + max + '" style="width:52px;font:inherit;font-size:13px"></label>';
 
 function mount(th, stageApi) {
-  const el = cardEl(th, stageApi, 'sprite-card'), g = { cols: +th.cols || 4, rows: +th.rows || 1, cell: +th.cell || 64 };
-  el.innerHTML = '<div style="font-weight:600;margin-bottom:6px">Clean a sprite sheet</div>'
+  const whole = (v, lo, hi, d) => { const n = Math.round(+v); return n >= lo && n <= hi ? n : d; };
+  const el = cardEl(th, stageApi, 'sprite-card'), g = { cols: whole(th.cols, 1, 16, 4), rows: whole(th.rows, 1, 16, 1), cell: whole(th.cell, 16, 512, 64) };
+  el.innerHTML = '<div style="font-weight:600;margin-bottom:6px">Clean a sprite sheet</div>' // void-review: ok (fixed words and the three whole numbers above)
     + '<div style="font-size:13px;opacity:.8;margin-bottom:8px">Choose a PNG drawn on a magenta (#ff00ff) background. It stays in this browser; you get back the frames on a clear background, cut and lined up.</div>'
     + '<div style="font-size:13px;margin-bottom:6px">' + field('sp-cols', 'Columns', g.cols, 1, 16) + field('sp-rows', 'Rows', g.rows, 1, 16) + field('sp-cell', 'Frame px', g.cell, 16, 512) + '</div>'
     + '<div style="font-size:13px;margin-bottom:8px"><label style="margin-right:8px"><input type="checkbox" class="sp-feet"> Stand on the floor</label>'
