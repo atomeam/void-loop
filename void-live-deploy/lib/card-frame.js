@@ -12,7 +12,8 @@
 import { hueOf } from './guide.js';
 import { typeWords, kindOf, newInSub, repeatsTitle } from './card-kinds.js';
 import { lineageOf } from './lineage.js';
-import { bar as shareBar, SHARE_CSS } from './card-share.js';
+import { bar as shareBar, SHARE_CSS, SOURCE_BOX, SOURCE_LINKS } from './card-share.js';
+export { SOURCE_BOX, SOURCE_LINKS };
 import { artLook } from './art-meta.js';
 import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
@@ -249,7 +250,7 @@ export function keep(el, esc, stats) {
   if (el.dataset && el.dataset.cardPlain !== undefined) { plain(el); return; } // a utility card asks for no collectible frame (data-card-plain)
   if (!el.classList.contains('vcard')) el.classList.add('vcard');
   // a minted collectible (skills/collectible.js) stays the card of its subject, not of the skill that minted it
-  const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
+  const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll(SOURCE_LINKS).length, src = el.querySelector(SOURCE_BOX);
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture

@@ -54,3 +54,7 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-28 | color palette skill: generate random harmonious color palettes on the stage | new idea by growth agent |
 | open | 2026-10-28 | proverb skill: a random proverb or saying | new idea by growth agent |
 | open | 2026-10-28 | random number skill: roll dice or pick a random number in a range | new idea by growth agent |
+| shipped 0297c5e | 2026-10-29 | my want card names the site Versus is on, and /api/will ranks my wants by the tower target | PR #1406 |
+| shipped | 2026-10-29 | answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase | PR #1410, owner card notes 1-5 |
+| shipped | 2026-10-29 | answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write | PR #1410, owner card notes 1-5 |
+| shipped | 2026-10-29 | a note about my own card gets my own voice, with Fixed and Still open lists from my records | PR #1410, owner card notes 1-5 |
