@@ -269,7 +269,8 @@ export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
     if (card) { // aimed now, again after anything the page does (a swatch clicked, a stop dragged, a key typed), and when pointed at or pressed,
       // so a hover already shows the card for what is on the page (owner via the team, 2026-10-29: the link follows the colour live)
       aim(); for (const ev of ['pointerenter', 'pointerdown', 'focus', 'click']) x.addEventListener(ev, aim);
-      if (d.addEventListener) for (const ev of ['input', 'change', 'click', 'pointerup', 'keyup']) d.addEventListener(ev, aim);
+      // tk:card: a page that changes with no event of its own (a forecast that comes back) says so: d.dispatchEvent(new Event('tk:card'))
+      if (d.addEventListener) for (const ev of ['input', 'change', 'click', 'pointerup', 'keyup', 'tk:card']) d.addEventListener(ev, aim);
       if (d.defaultView && d.defaultView.addEventListener) for (const ev of ['hashchange', 'popstate']) d.defaultView.addEventListener(ev, aim);
     }
     row.append(x);

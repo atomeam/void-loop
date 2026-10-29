@@ -111,7 +111,7 @@
       if (!w) w = await get(forecastUrl(loc.lat, loc.lon));
       const v = viewOf(w, loc);
       if (!v.hours.length) throw new Error('no forecast');
-      draw(v); cardAsk = weatherAsk(coords ? '' : place); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
+      draw(v); cardAsk = weatherAsk(coords ? '' : place); document.dispatchEvent(new Event('tk:card')); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
       extras(loc);
     } catch (_) {
       let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}

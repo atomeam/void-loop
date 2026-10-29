@@ -85,6 +85,7 @@ test('the stage link follows the page as it changes, with no press: after a clic
     hex = h; how(ev); assert.equal(x.href, '/?q=color%20%23' + h, 'after ' + ev + ' on the page');
   }
   hex = '445566'; for (const fn of x.on.pointerenter) fn(); assert.equal(x.href, '/?q=color%20%23445566', 'pointed at: a hover shows the colour open now');
+  hex = '778899'; fire('tk:card'); assert.equal(x.href, '/?q=color%20%23778899', 'a page that changes with no event of its own says so with tk:card');
 });
 
 // skills/index.json order, first match wins, as on the stage
@@ -125,7 +126,7 @@ test('the weather page\'s card opens on the place looked up there, not Boston; w
   }
   assert.equal(L.weatherAsk(''), 'weather here'); assert.equal(S.weatherPlace('weather here'), '', 'here: the device, as on the page');
   const src = fs.readFileSync(new URL('../void-live-deploy/weather/index.html', import.meta.url), 'utf8');
-  assert.match(src, /cardAsk = weatherAsk\(coords \? '' : place\)/, 'set when a forecast is drawn for the place looked up');
+  assert.match(src, /cardAsk = weatherAsk\(coords \? '' : place\); document\.dispatchEvent\(new Event\('tk:card'\)\)/, 'set when a forecast is drawn for the place looked up, and the link aimed again then: the forecast comes back after the page loads');
   assert.match(src, /\{ card: \(\) => cardAsk \}/, 'the weather page gives its card the place open on it');
 });
 
