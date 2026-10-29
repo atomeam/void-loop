@@ -236,7 +236,7 @@
 <script>
 // the module after load, as /fanfic/ does: nothing fetched holds the load event back, and each file of the module is asked again of the server
 // (an unchanged one costs a 304) so a page under an old service worker never runs an old app.js. The list is the module's static imports.
-const CODE = ['/team/app.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/brain-bridge.js'];
+const CODE = ['/team/app.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-bridge.js'];
 addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: 'no-cache' }).catch(() => {}))).then(() => import('/team/app.js')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
