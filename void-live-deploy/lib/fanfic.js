@@ -1,10 +1,13 @@
-// /fanfic/'s pure half (owner, 2026-10-29: "build the page", the /fanfic/ spec): a writing archive that is only a way of reading the anonymous
-// boards (lib/boards.js, functions/api/boards/[[path]].js). No endpoint of its own, nothing seeded, no accounts: a fandom is a board someone
-// made, a story is a thread, a chapter is a post, and posting still goes through the boards' own form and bot check. The Writing Room keeps its
-// drafts on the device. Everything here is pure so tools/fanfic.test.mjs runs it in node; the page is void-live-deploy/fanfic/.
-import { LIMITS } from './boards.js';
+// /fanfic/'s pure half (owner, 2026-10-29: "build the page", the /fanfic/ spec; and, the same night, "a clean, dedicated fanfiction archive view
+// that matches legacy layouts (like Sycophant Hex)", "deep space dark mode", "without raw board form fields", "zero seeded or fake stories").
+// The archive is a way of reading and writing the anonymous boards (lib/boards.js, functions/api/boards/[[path]].js) with no endpoint of its own:
+// a fandom is a board, a story is a thread, chapter 1 opens it, and a later chapter is a reply its author signs. The author's signature is the
+// boards' own tripcode, made from a secret this device keeps (signedName), so nobody types tripcode syntax and nobody can post as another
+// device's author. Posting goes through POST /api/boards and its bot check and rates, as any post does. Everything here is pure, so
+// tools/fanfic.test.mjs runs it in node; the page is void-live-deploy/fanfic/.
+import { LIMITS, codeProblem, cleanLine, excerpt } from './boards.js';
 
-/** a board that belongs on /fanfic/: its code starts with fic (the "Start a fandom board" form fills that in), or its line says fan fiction. */
+/** a board that belongs on /fanfic/: its code starts with fic (the archive's "Start a fandom" form makes it so), or its line says fan fiction. */
 export const isFicBoard = (b) => !!b && (/^fic/.test(String(b.code || '')) || /\bfan ?fic(?:tion)?s?\b|\bfanfic/i.test(String(b.about || '') + ' ' + String(b.title || '')));
 
 /** words in a text: runs of letters or digits, an apostrophe or hyphen inside a word keeps it one word; CJK characters count one each. */
@@ -96,9 +99,76 @@ export function readShare(hash) {
 /** a file name for a draft: its title in lowercase words, or "story". */
 export const fileName = (title) => (String(title || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'story') + '.txt';
 
-// the hand-off to /boards/: the story waits on this device under this key, the board's own form is filled from it, and the visitor posts each
-// part themselves through the boards' bot check (boards/app.js). It lapses after six hours so an old story never fills a form by surprise.
-export const HANDOFF = 'a2m.void.fanfic.post.v1', HANDOFF_TTL = 6 * 3600e3;
-export const handoff = (b, title, text, now = Date.now()) => ({ b, sub: String(title || '').slice(0, LIMITS.sub), parts: splitParts(text), i: 0, t: 0, at: now });
-/** the hand-off if it is still good, else null. */
-export const liveHandoff = (h, now = Date.now()) => (h && Array.isArray(h.parts) && h.parts.length && typeof h.b === 'string' && now - (h.at || 0) < HANDOFF_TTL && h.i < h.parts.length ? h : null);
+/** the code for a new fandom's board: fic and the name's letters and digits, 10 at most, with a number on the end when that code is taken or
+ *  not allowed. '' when no code is left (it never runs out in practice: 999 tries). */
+export function ficCode(name, taken = new Set()) {
+  const stem = ('fic' + String(name || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]/g, '')).slice(0, 10);
+  if (!codeProblem(stem, taken)) return stem;
+  for (let n = 2; n < 1000; n++) { const c = stem.slice(0, 10 - String(n).length) + n; if (!codeProblem(c, taken)) return c; }
+  return '';
+}
+
+/** a pen name as the archive shows it: one line, no # (the # would start a tripcode), at most the boards' name length; '' when blank. */
+export const penName = (raw) => cleanLine(String(raw == null ? '' : raw).replace(/#/g, ''), LIMITS.name);
+/** the name field the boards take: the pen name (or Anonymous) and, after #, this device's secret, so the server signs every post from this
+ *  device with the same mark. The secret never shows; the visitor only ever types a pen name. */
+export const signedName = (pen, secret) => (penName(pen) || 'Anonymous') + (secret ? '#' + secret : '');
+
+const SUMMARY_RE = /^Summary: ([^\n]{1,300})\n\n?/;
+export const SUMMARY_MAX = 300;
+/** chapter 1's text with its summary on a first line of its own ("Summary: ..."), the way the archive reads it back. */
+export const withSummary = (summary, text) => { const s = cleanLine(summary, SUMMARY_MAX); return (s ? 'Summary: ' + s + '\n\n' : '') + String(text == null ? '' : text).trim(); };
+/** { summary, text } from chapter 1's post. */
+export function readSummary(body) { const b = String(body == null ? '' : body), m = SUMMARY_RE.exec(b); return m ? { summary: m[1].trim(), text: b.slice(m[0].length) } : { summary: '', text: b }; }
+
+const CHAPTER_RE = /^Chapter (\d{1,4})(?:: ([^\n]{0,100})|(, continued))?\n\n?/;
+/** the first line of a chapter's post: "Chapter 3: Title", or "Chapter 3, continued" on the posts that carry the rest of a long chapter. */
+export const chapterHead = (n, title = '', more = false) => 'Chapter ' + n + (more ? ', continued' : cleanLine(title, 100) ? ': ' + cleanLine(title, 100) : '') + '\n\n';
+/** { n, title, more, text } when a post opens with a chapter line, else null. */
+export function readChapter(body) {
+  const b = String(body == null ? '' : body), m = CHAPTER_RE.exec(b);
+  return m ? { n: +m[1], title: (m[2] || '').trim(), more: !!m[3], text: b.slice(m[0].length) } : null;
+}
+/** a chapter's text as the posts the boards will take whole, each with its chapter line: the first "Chapter n: title", the rest ", continued".
+ *  Chapter 1 has no line on its first post (it opens the thread, after the summary). */
+export function chapterPosts(n, title, text, summary = '') {
+  const first = n === 1 ? withSummary(summary, '') : chapterHead(n, title), more = chapterHead(n, '', true);
+  const room = LIMITS.body - Math.max(Array.from(first).length, Array.from(more).length), lines = LIMITS.lines - 3;
+  return splitParts(text, room, lines).map((p, i) => (i === 0 ? first : more) + p);
+}
+
+/** a story out of a thread: the opening post is chapter 1; a reply signed with the opening post's mark and opening with a chapter line is the
+ *  author's (a new chapter, or more of one); every other reply is a review. Unsigned stories (posted on /boards/ without a mark) have chapter 1
+ *  only. { title, author, trip, summary, chapters: [{ n, title, text, at, nos }], reviews, words, published, updated } */
+export function storyOf(op, posts = []) {
+  const { summary, text } = readSummary(op.body);
+  const chapters = [{ n: 1, title: '', text, at: op.at, nos: [op.no] }], reviews = [];
+  for (const p of posts) {
+    if (!p || p.no === op.no || p.hidden) continue;
+    const c = op.trip && p.trip === op.trip ? readChapter(p.body) : null;
+    if (!c) { reviews.push(p); continue; }
+    const last = chapters[chapters.length - 1];
+    if (c.more && last.n === c.n) { last.text += '\n\n' + c.text; last.nos.push(p.no); continue; }
+    if (c.more) { reviews.push(p); continue; }
+    chapters.push({ n: chapters.length + 1, title: c.title, text: c.text, at: p.at, nos: [p.no] });
+  }
+  const updated = chapters.reduce((t, c) => Math.max(t, c.at || 0), op.at || 0);
+  return { title: op.sub || excerpt(text, 60) || 'Untitled', author: op.name || 'Anonymous', trip: op.trip || '', summary, chapters, reviews,
+    words: chapters.reduce((n, c) => n + words(c.text), 0), published: op.at || 0, updated };
+}
+
+/** a topic row for the archive's lists, from a thread in a board's catalog. */
+export function topicOf(t, board) {
+  const { summary, text } = readSummary(t.body);
+  return { board: board.code, fandom: board.title, nsfw: !!board.nsfw, no: t.no, title: t.sub || excerpt(text, 60) || 'Untitled', author: t.name || 'Anonymous',
+    trip: t.trip || '', summary: summary || excerpt(text, 160), replies: t.replies || 0, at: t.at || 0, bumped: t.bumped || t.at || 0, locked: !!t.locked };
+}
+
+/** the archive's numbers, all counted from what is there: fandoms, stories, posts, and authors (a pen name and its mark count once). */
+export function statsOf(boards, topics) {
+  const authors = new Set(topics.map((t) => t.author + '!' + t.trip));
+  return { fandoms: boards.length, stories: topics.length, posts: topics.reduce((n, t) => n + 1 + (t.replies || 0), 0), authors: authors.size };
+}
+
+/** a random secret for this device: 16 bytes as hex. */
+export function newSecret(rand = (n) => crypto.getRandomValues(new Uint8Array(n))) { return [...rand(16)].map((x) => x.toString(16).padStart(2, '0')).join(''); }

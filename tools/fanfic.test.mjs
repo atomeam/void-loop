@@ -1,5 +1,6 @@
 // /fanfic/: lib/fanfic.js (which boards are fandom boards, word count, reading time, cutting a story into posts the boards take, the writing
-// streak, the period filter, paging, unread marks, the share link) and the page itself (no write of its own, nothing seeded).
+// streak, the period filter, paging, unread marks, the share link, fandom codes, the device signature, and how a thread reads as a story) and the
+// page itself (posts only through the boards, nothing seeded, dark only).
 // Run: node --test tools/fanfic.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -83,24 +84,70 @@ test('a share link holds the draft itself and reads back the same, any language'
   assert.equal(F.readShare('#room=' + Buffer.from('{"t":1}').toString('base64url')), null, 'no text, no draft');
 });
 
-test('file names and the hand-off to a board', () => {
+test('file names, fandom codes, pen names and the device signature', () => {
   assert.equal(F.fileName('The Long Way Round!'), 'the-long-way-round.txt'); assert.equal(F.fileName(''), 'story.txt');
-  const now = Date.now(), h = F.handoff('ficpotter', 'A title', 'Some words.', now);
-  assert.deepEqual({ ...h }, { b: 'ficpotter', sub: 'A title', parts: ['Some words.'], i: 0, t: 0, at: now });
-  assert.ok(F.liveHandoff(h, now + 1000));
-  assert.equal(F.liveHandoff(h, now + F.HANDOFF_TTL + 1), null, 'an old story never fills a form');
-  assert.equal(F.liveHandoff({ ...h, i: 1 }, now), null, 'all parts posted');
+  assert.equal(F.ficCode('Harry Potter'), 'ficharrypo');
+  assert.equal(F.ficCode('Harry Potter', new Set(['ficharrypo'])), 'ficharryp2', 'a taken code gets a number');
+  assert.match(F.ficCode('日本語'), /^fic[a-z0-9]*$/);
+  assert.equal(F.penName('  Ink # Quill  '), 'Ink  Quill'.replace('  ', ' '), 'no # so nobody types tripcode syntax');
+  assert.equal(F.penName(''), '');
+  assert.equal(F.signedName('Ink', 'abc'), 'Ink#abc'); assert.equal(F.signedName('', 'abc'), 'Anonymous#abc'); assert.equal(F.signedName('Ink', ''), 'Ink');
+  const sec = F.newSecret(); assert.match(sec, /^[0-9a-f]{32}$/); assert.notEqual(sec, F.newSecret());
 });
 
-test('the page reads the boards and writes nothing of its own; nothing is seeded', () => {
-  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), js = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
-  assert.ok(!/method\s*:\s*['"](?:POST|PUT|DELETE|PATCH)/i.test(js), 'no write from /fanfic/');
+test('a summary and chapter lines read back as they were written', () => {
+  assert.deepEqual(F.readSummary(F.withSummary('Two lines about it.', 'The story.')), { summary: 'Two lines about it.', text: 'The story.' });
+  assert.deepEqual(F.readSummary('No summary here.'), { summary: '', text: 'No summary here.' });
+  assert.deepEqual(F.readChapter(F.chapterHead(3, 'The Bridge') + 'Text.'), { n: 3, title: 'The Bridge', more: false, text: 'Text.' });
+  assert.deepEqual(F.readChapter(F.chapterHead(3, '', true) + 'More.'), { n: 3, title: '', more: true, text: 'More.' });
+  assert.equal(F.readChapter('Just a review.'), null);
+  const para = 'word '.repeat(150).trim(), long = Array.from({ length: 14 }, (_, i) => 'Para ' + i + ' ' + para).join('\n\n');
+  const one = F.chapterPosts(1, '', long, 'A summary.'), two = F.chapterPosts(2, 'Next', long);
+  assert.ok(one.length > 1 && two.length > 1);
+  assert.ok(one[0].startsWith('Summary: A summary.\n\n') && !F.readChapter(one[0]), 'chapter 1 opens the thread with its summary');
+  assert.ok(two[0].startsWith('Chapter 2: Next\n\n') && two.slice(1).every((p) => p.startsWith('Chapter 2, continued\n\n')));
+  for (const p of [...one, ...two]) { assert.ok(Array.from(p).length <= LIMITS.body); assert.ok(p.split('\n').length <= LIMITS.lines); assert.equal(cleanText(p, LIMITS.body, LIMITS.lines), p); }
+});
+
+test('a story is its signed chapters; every other reply, a forged chapter too, is a review', () => {
+  const op = { no: 1, at: 100, bumped: 400, sub: 'The Long Way', name: 'Ink', trip: '!AAAAAAAAAA', body: F.withSummary('About it.', 'One two three.') };
+  const posts = [op,
+    { no: 2, at: 200, name: 'Ink', trip: '!AAAAAAAAAA', body: F.chapterHead(2, 'Bridge') + 'Four five.' },
+    { no: 3, at: 210, name: 'Ink', trip: '!AAAAAAAAAA', body: F.chapterHead(2, '', true) + 'Six.' },
+    { no: 4, at: 250, name: 'Reader', trip: '', body: 'Loved it.' },
+    { no: 5, at: 260, name: 'Ink', trip: '!BBBBBBBBBB', body: F.chapterHead(3, 'Fake') + 'Not the author.' },
+    { no: 6, at: 270, hidden: true },
+    { no: 7, at: 300, name: 'Ink', trip: '!AAAAAAAAAA', body: F.chapterHead(3, 'End') + 'Seven.' }];
+  const s = F.storyOf(op, posts);
+  assert.equal(s.title, 'The Long Way'); assert.equal(s.summary, 'About it.'); assert.equal(s.author, 'Ink');
+  assert.deepEqual(s.chapters.map((c) => [c.n, c.title, c.text, c.nos]), [[1, '', 'One two three.', [1]], [2, 'Bridge', 'Four five.\n\nSix.', [2, 3]], [3, 'End', 'Seven.', [7]]]);
+  assert.deepEqual(s.reviews.map((p) => p.no), [4, 5], 'a chapter line under another mark is a review');
+  assert.equal(s.words, 7); assert.equal(s.published, 100); assert.equal(s.updated, 300);
+  const plain = F.storyOf({ ...op, trip: '' }, [{ no: 2, at: 200, name: 'Ink', trip: '', body: F.chapterHead(2) + 'x' }]);
+  assert.equal(plain.chapters.length, 1, 'an unsigned story has chapter 1 only'); assert.equal(plain.reviews.length, 1);
+  const row = F.topicOf({ ...op, replies: 6 }, { code: 'ficink', title: 'Ink', nsfw: false });
+  assert.deepEqual([row.board, row.fandom, row.no, row.title, row.replies, row.bumped], ['ficink', 'Ink', 1, 'The Long Way', 6, 400]);
+  assert.deepEqual(F.statsOf([{}, {}], [row, { ...row, no: 2, replies: 0 }]), { fandoms: 2, stories: 2, posts: 8, authors: 1 });
+});
+
+test('the page shows only real posts, posts only through the boards, and is dark only', () => {
+  const read = (...p) => fs.readFileSync(path.join(root, ...p), 'utf8');
+  const html = read('fanfic', 'index.html'), js = read('fanfic', 'app.js'), lib = read('lib', 'fanfic.js');
+  const calls = [...js.matchAll(/fetch\(([^,)]+)/g)].map((m) => m[1].trim());
+  assert.deepEqual([...new Set(calls)], ['API + qs'], 'one fetch, to the boards API');
+  assert.match(js, /API = '\/api\/boards'/);
   assert.ok(!fs.existsSync(path.join(root, 'functions', 'api', 'fanfic.js')) && !fs.existsSync(path.join(root, 'functions', 'fanfic')), 'no endpoint of its own');
   assert.match(html, /An open room for stories\. Post your first thread to begin\./);
-  for (const s of ['Writing Room', 'Search', 'Writing Glossary', 'How to format chapters', 'Report spam or abuse here', 'Writing rules and guidelines', 'Mark all read', 'This week', 'Today', 'All topics'])
+  assert.match(html, /Archive Descriptions &amp; Stories/);
+  for (const s of ['Writing Room', 'Search', 'Writing Glossary', 'How to format chapters', 'Report spam or abuse here', 'Writing rules &amp; guidelines'])
     assert.ok(html.includes(s), 'the page has ' + s);
+  for (const s of ['Mark all read', 'How to format chapters', 'Report spam or abuse here', 'Writing rules & guidelines']) assert.ok(js.includes(s), 'the script has ' + s);
+  assert.deepEqual(Object.values(F.PERIODS), ['All topics', 'Today', 'This week']);
   for (const th of ['Topics', 'Replies', 'Author', 'Last post']) assert.ok(html.includes('>' + th + '</th>'), 'the topic list has ' + th);
-  assert.ok(!/<tr>\s*<td/.test(html), 'no topic rows written into the page');
-  const boards = fs.readFileSync(path.join(root, 'boards', 'app.js'), 'utf8');
-  assert.ok(boards.includes("'a2m.void.fanfic.post.v1'") && F.HANDOFF === 'a2m.void.fanfic.post.v1', 'the boards read the same hand-off key');
+  assert.ok(!/<tr>\s*<td/.test(html) && !/<li>[^<]*<a[^>]*\?f=/.test(html), 'no topic rows written into the page');
+  for (const raw of [/\bsage\b/i, /Author code/i, /\btripcode\b/i, /\boptions\b/i]) assert.ok(!raw.test(html), 'no raw board field: ' + raw);
+  assert.match(html, /<meta name="color-scheme" content="dark">/); assert.ok(!/prefers-color-scheme:\s*light|color-scheme:\s*light/.test(html), 'dark only');
+  assert.ok(!/lorem ipsum|sample story|test story|example story/i.test(html + js + lib), 'nothing seeded');
+  const headers = read('_headers'), block = headers.slice(headers.indexOf('/fanfic/*'));
+  assert.ok(block.split('\n\n')[0].includes('https://challenges.cloudflare.com'), 'the archive may load the boards\' Turnstile check');
 });
