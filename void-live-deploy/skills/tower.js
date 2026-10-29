@@ -126,12 +126,16 @@ export function planHtml(p, esc) {
   if (!p) return '';
   const li = (r, i) => '<li data-id="' + esc(r.f.id) + '" data-state="' + esc(r.f.state) + '" style="margin:1px 0">' + (i != null ? '<b>' + (i + 1) + '.</b> ' : '') + '<span class="tw-name">' + esc(r.f.site) + '</span> <span class="tw-plan-id" style="opacity:.75">(' + esc(r.f.id) + ')</span> · <span class="tw-count">' + esc(planCount(r.f)) + '</span>' + (r.f.page ? ' · <a href="' + esc(r.f.page) + '">Verse\'s page</a>' : '') + '</li>';
   const block = (cls, head, rows, numbered) => rows.length ? '<div class="' + cls + '"><p style="margin:8px 0 2px;font-size:13px"><b>' + esc(head) + '</b></p><ul style="margin:0;padding-left:18px;font-size:13px;list-style:' + (numbered ? 'none' : 'disc') + '">' + rows.map((r, i) => li(r, numbered ? i : null)).join('') + '</ul></div>' : '';
+  // the queue is long by nature; the card keeps the fight and one line, and the rest opens on demand (owner, 2026-10-28: the card was a wall)
+  const more = (p.next.length || p.far.length || p.skipped.length)
+    ? '<details class="tw-plan-more" style="margin:4px 0 0"><summary style="cursor:pointer;font-size:12px;opacity:.8">The ladder: ' + p.next.length + ' next' + (p.far.length ? ', ' + p.far.length + ' far future' : '') + '</summary>'
+      + block('tw-plan-next', 'Next easiest (' + p.next.length + ')', p.next, true)
+      + block('tw-plan-far', 'Far future, not beaten', p.far, false)
+      + (p.skipped.length ? '<p class="tw-plan-skip" style="margin:4px 0 0;font-size:12px;opacity:.75">Skipped: ' + p.skipped.map((x) => esc(x.site) + (x.why ? ' (' + esc(x.why) + ')' : '')).join('; ') + '</p>' : '')
+      + '<p style="margin:4px 0 0;font-size:11px;opacity:.65">The order comes from docs/NEXT.md; the counts come from the gate. A floor is surpassed only on scripted journeys with negative controls.</p></details>'
+    : '';
   return '<div class="tw-plan" style="margin:6px 0 8px">'
-    + block('tw-plan-now', 'Working on now', p.now, false)
-    + block('tw-plan-next', 'Next easiest (' + p.next.length + ')', p.next, true)
-    + block('tw-plan-far', 'Far future, not beaten', p.far, false)
-    + (p.skipped.length ? '<p class="tw-plan-skip" style="margin:4px 0 0;font-size:12px;opacity:.75">Skipped: ' + p.skipped.map((x) => esc(x.site) + (x.why ? ' (' + esc(x.why) + ')' : '')).join('; ') + '</p>' : '')
-    + '<p style="margin:4px 0 0;font-size:11px;opacity:.65">The order comes from docs/NEXT.md; the counts come from the gate. A floor is surpassed only on scripted journeys with negative controls.</p></div>';
+    + block('tw-plan-now', 'Working on now', p.now, false) + more + '</div>';
 }
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
@@ -155,7 +159,18 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   // hidden from sight and from screen readers, who have the list itself
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
-  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (plan && plan.now.length ? ' · working on: ' + plan.now.map((r) => r.f.site).join(', ') : cur ? ' · working on: ' + cur.site : '')) + '</div>' + planHtml(plan, esc)
+  // the active target first, its ladder position second, the bookkeeping last: a card's body is read top down (owner, 2026-10-28)
+  // the plan's `now` is the active target (owner, 2026-10-28: the floor the card is worked on); the gate's own "easiest unbeaten"
+  // can be a different floor, and when it is, both are named rather than one silently replacing the other
+  const target = plan && plan.now.length ? plan.now[0].f : cur;
+  const nexts = plan && plan.next.length ? plan.next.filter((r) => !target || r.f.id !== target.id) : [];
+  const size = target ? sizeOf(target.id, ranks, order) : null;
+  const summary = target ? '<div class="tw-summary" style="margin:2px 0 10px">'
+    + '<div class="tw-target" style="font-size:21px;font-weight:700;line-height:1.2">' + esc(target.site) + '</div>'
+    + '<div style="font-size:13px;margin-top:2px">' + esc(target.state === 'beaten' ? 'surpassed' : target.n + ' of ' + target.m + ' aspects ahead · not beaten yet') + (target.page ? ' · <a href="' + esc(target.page) + '">Verse\'s page</a>' : '') + '</div>'
+    + '<div style="font-size:12px;opacity:.7;margin-top:2px">' + esc((Number.isFinite(size) ? 'Tranco #' + size.toLocaleString('en') + ' · ' : '') + (nexts.length ? 'next: ' + nexts[0].f.site + (nexts.length > 1 ? ' (+' + (nexts.length - 1) + ' more)' : '') : 'last floor in the queue')) + '</div>'
+    + (cur && target.id !== cur.id ? '<div style="font-size:11px;opacity:.6;margin-top:2px">the gate\'s easiest unbeaten floor is ' + esc(cur.site) + ' (' + esc(cur.n + ' of ' + cur.m) + ')</div>' : '') + '</div>' : '';
+  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw">' + summary + '<div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (plan && plan.now.length ? ' · working on: ' + plan.now.map((r) => r.f.site).join(', ') : cur ? ' · working on: ' + cur.site : '')) + '</div>' + planHtml(plan, esc)
     + sortBar + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
