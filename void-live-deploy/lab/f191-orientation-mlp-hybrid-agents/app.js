@@ -1,0 +1,195 @@
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const agentsEl = document.getElementById('agents');
+const fitnessEl = document.getElementById('fitness');
+const statusEl = document.getElementById('status');
+const payloadEl = document.getElementById('payload');
+
+let w, h;
+function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+// Simple MLP
+function createMLP() {
+  // 4 -> 6 -> 2
+  const w1 = Array.from({length: 4*6}, () => (Math.random()-0.5)*0.8);
+  const b1 = Array.from({length: 6}, () => (Math.random()-0.5)*0.2);
+  const w2 = Array.from({length: 6*2}, () => (Math.random()-0.5)*0.8);
+  const b2 = Array.from({length: 2}, () => (Math.random()-0.5)*0.2);
+  return {w1, b1, w2, b2};
+}
+function tanh(x) { return Math.tanh(x); }
+function forward(mlp, inp) {
+  const h = [];
+  for (let i = 0; i < 6; i++) {
+    let s = mlp.b1[i];
+    for (let j = 0; j < 4; j++) s += inp[j] * mlp.w1[j*6 + i];
+    h.push(tanh(s));
+  }
+  const out = [];
+  for (let i = 0; i < 2; i++) {
+    let s = mlp.b2[i];
+    for (let j = 0; j < 6; j++) s += h[j] * mlp.w2[j*2 + i];
+    out.push(tanh(s) * 4);
+  }
+  return out;
+}
+function cloneMLP(m) { return {w1:[...m.w1], b1:[...m.b1], w2:[...m.w2], b2:[...m.b2]}; }
+function mutate(m, rate=0.05) {
+  const n = cloneMLP(m);
+  for (let k of ['w1','b1','w2','b2']) for (let i=0;i<n[k].length;i++) if (Math.random()<rate) n[k][i] += (Math.random()-0.5)*0.3;
+  return n;
+}
+function hashWeights(m) {
+  let s = m.w1.join(',') + '|' + m.b1.join(',') + '|' + m.w2.join(',') + '|' + m.b2.join(',');
+  let h = 0; for (let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i))|0;
+  return (h>>>0).toString(16);
+}
+
+// Agents
+const agents = [];
+const colors = ['#ff6b6b','#4ecdc4','#ffe66d'];
+for (let i = 0; i < 3; i++) {
+  const el = document.createElement('div');
+  el.className = 'agent';
+  el.style.background = colors[i];
+  el.textContent = 'A'+(i+1);
+  agentsEl.appendChild(el);
+  agents.push({
+    id: i,
+    el,
+    x: Math.random()* (innerWidth-60)+30,
+    y: Math.random()* (innerHeight-60)+30,
+    vx: 0, vy: 0,
+    mlp: createMLP(),
+    fitness: 0,
+    captured: 0
+  });
+}
+
+// Particles
+const particles = [];
+for (let i = 0; i < 180; i++) {
+  particles.push({x: Math.random()*innerWidth, y: Math.random()*innerHeight, vx: 0, vy: 0, life: 1});
+}
+
+let ori = {beta: 0, gamma: 0};
+let mouse = {x: innerWidth/2, y: innerHeight/2};
+let usingMouse = true;
+
+window.addEventListener('deviceorientation', e => {
+  if (e.beta != null) { ori.beta = e.beta; ori.gamma = e.gamma; usingMouse = false; statusEl.textContent = `Orientation: β${ori.beta.toFixed(0)} γ${ori.gamma.toFixed(0)}`; }
+});
+addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; if (usingMouse) statusEl.textContent = 'Mouse proxy active'; });
+
+// Persistence
+const DB = 'f191-hybrid';
+let db;
+const req = indexedDB.open(DB, 1);
+req.onupgradeneeded = e => e.target.result.createObjectStore('genomes', {keyPath: 'id'});
+req.onsuccess = e => { db = e.target.result; loadChampion(); };
+function loadChampion() {
+  if (!db) return;
+  const tx = db.transaction('genomes','readonly');
+  const get = tx.objectStore('genomes').get('champ');
+  get.onsuccess = () => {
+    if (get.result) {
+      agents[0].mlp = get.result.mlp;
+      statusEl.textContent += ' | restored champion';
+    }
+  };
+}
+function saveChampion(mlp) {
+  if (!db) return;
+  const tx = db.transaction('genomes','readwrite');
+  tx.objectStore('genomes').put({id:'champ', mlp, hash: hashWeights(mlp), t: Date.now()});
+}
+
+function step() {
+  // Orientation or mouse as input vector
+  const ox = usingMouse ? (mouse.x / w - 0.5)*2 : Math.max(-1, Math.min(1, ori.gamma / 45));
+  const oy = usingMouse ? (mouse.y / h - 0.5)*2 : Math.max(-1, Math.min(1, ori.beta / 45));
+
+  agents.forEach(a => {
+    const inp = [ox, oy, (a.x/w - 0.5)*2, (a.y/h - 0.5)*2];
+    const [dx, dy] = forward(a.mlp, inp);
+    a.vx = a.vx * 0.8 + dx * 0.4;
+    a.vy = a.vy * 0.8 + dy * 0.4;
+    a.x = Math.max(20, Math.min(w-60, a.x + a.vx));
+    a.y = Math.max(20, Math.min(h-60, a.y + a.vy));
+    a.el.style.left = a.x + 'px';
+    a.el.style.top = a.y + 'px';
+    // center stability bonus
+    const cx = w/2, cy = h/2;
+    const dist = Math.hypot(a.x-cx, a.y-cy);
+    if (dist < 120) a.fitness += 0.01;
+  });
+
+  // Particles influenced by agents
+  particles.forEach(p => {
+    p.vx *= 0.96; p.vy *= 0.96;
+    agents.forEach(a => {
+      const dx = a.x + 24 - p.x, dy = a.y + 24 - p.y;
+      const d2 = dx*dx + dy*dy + 400;
+      const f = 80 / d2;
+      p.vx += dx * f * 0.15;
+      p.vy += dy * f * 0.15;
+      if (d2 < 900) { a.captured++; a.fitness += 0.002; }
+    });
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > w) p.vx *= -0.8;
+    if (p.y < 0 || p.y > h) p.vy *= -0.8;
+    p.x = Math.max(0, Math.min(w, p.x));
+    p.y = Math.max(0, Math.min(h, p.y));
+  });
+
+  // Render
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0,0,w,h);
+  particles.forEach(p => {
+    ctx.fillStyle = 'rgba(120,180,255,0.6)';
+    ctx.fillRect(p.x-1, p.y-1, 2, 2);
+  });
+
+  // Fitness display + champ highlight
+  let maxF = -1, champ = 0;
+  agents.forEach((a,i) => { if (a.fitness > maxF) { maxF = a.fitness; champ = i; } });
+  agents.forEach((a,i) => a.el.classList.toggle('champ', i===champ));
+  fitnessEl.innerHTML = agents.map((a,i) => `A${i+1}: ${a.fitness.toFixed(1)} (${a.captured})`).join('<br>');
+
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+
+// UI
+document.getElementById('seal').onclick = () => {
+  let maxF = -1, champ = 0;
+  agents.forEach((a,i) => { if (a.fitness > maxF) { maxF = a.fitness; champ = i; } });
+  const sealed = cloneMLP(agents[champ].mlp);
+  saveChampion(sealed);
+  statusEl.textContent = `Sealed A${champ+1} hash ${hashWeights(sealed)}`;
+  // transfer to weakest
+  let minF = Infinity, weak = 0;
+  agents.forEach((a,i) => { if (a.fitness < minF) { minF = a.fitness; weak = i; } });
+  if (weak !== champ) agents[weak].mlp = mutate(sealed, 0.08);
+  agents.forEach(a => { a.fitness *= 0.3; a.captured = 0; });
+};
+document.getElementById('export').onclick = () => {
+  let maxF = -1, champ = 0;
+  agents.forEach((a,i) => { if (a.fitness > maxF) { maxF = a.fitness; champ = i; } });
+  const m = agents[champ].mlp;
+  const payload = {hash: hashWeights(m), mlp: m};
+  payloadEl.value = btoa(JSON.stringify(payload));
+  statusEl.textContent = 'Exported champion genome';
+};
+document.getElementById('import').onclick = () => {
+  try {
+    const raw = atob(payloadEl.value.trim());
+    const p = JSON.parse(raw);
+    if (hashWeights(p.mlp) !== p.hash) { statusEl.textContent = 'Hash mismatch — rejected'; return; }
+    let minF = Infinity, weak = 0;
+    agents.forEach((a,i) => { if (a.fitness < minF) { minF = a.fitness; weak = i; } });
+    agents[weak].mlp = p.mlp;
+    statusEl.textContent = `Imported sealed genome into A${weak+1}`;
+  } catch(e) { statusEl.textContent = 'Import failed'; }
+};

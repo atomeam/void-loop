@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{--d:0.5;--w:500;--ls:0em;--r:14px}
+html,body{margin:0;height:100%;background:#020207;color:#d8dcff;font-family:system-ui,sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#hud{position:fixed;left:16px;top:16px;display:flex;flex-direction:column;gap:10px;max-width:330px;pointer-events:none}
+.card{pointer-events:auto;background:rgba(10,12,30,.62);backdrop-filter:blur(6px);border:1px solid rgba(140,150,255,calc(.15 + var(--d)*.6));
+ border-radius:var(--r);padding:10px 12px;font-weight:var(--w);letter-spacing:var(--ls);transition:border-radius .6s,letter-spacing .6s,transform .6s;
+ transform:skewX(calc(var(--d)*-6deg)) translateX(calc(var(--d)*8px))}
+.card h3{margin:0 0 4px;font-size:12px;text-transform:uppercase;opacity:.7;letter-spacing:.12em}
+.card div{font-size:13px;line-height:1.35}
+#help{position:fixed;right:16px;bottom:14px;font-size:12px;opacity:.6;text-align:right}
+button{background:#1a1d44;color:#cfd3ff;border:1px solid #445;border-radius:8px;padding:4px 9px;margin:4px 4px 0 0;cursor:pointer}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Resonant Imagination · The Verse · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Resonant Imagination · The Verse.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Resonant Imagination · The Verse · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Resonant Imagination · The Verse.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f212-resonant-imagination/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f212-resonant-imagination/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="c"></canvas>
+<div id="hud">
+ <div class="card"><h3>Thought</h3><div id="thought">waking…</div></div>
+ <div class="card"><h3>Metabolism</h3><div id="budget">…</div></div>
+ <div class="card"><h3>Harmony</h3><div id="harm">…</div>
+  <button id="chaos">Scatter (d)</button><button id="listen">Listen</button></div>
+</div>
+<div id="help">Click a star to detune it. The mind imagines each fix as sound in an OfflineAudioContext,<br>keeps the one that beats least, and thinks harder or softer with your device's CPU pressure.</div>
+<script src="app.js"></script><h1 class="vl-sr">Resonant Imagination · The Verse</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #050510; color: #c0c8ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #c { display: block; width: 100vw; height: 100vh; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 20; background: rgba(0,0,20,0.75); padding: 10px 14px; border-radius: 10px; font-size: 13px; max-width: 280px; }
+  button { margin: 4px 2px; padding: 5px 10px; background: #1a2040; color: #a0b0ff; border: 1px solid #334; border-radius: 4px; cursor: pointer; }
+  .portal { position: absolute; width: 90px; height: 60px; background: rgba(30,40,80,0.65); border: 2px solid #668; border-radius: 12px; font-size: 11px; padding: 6px; pointer-events: none; transition: all 0.15s ease; text-align: center; }
+  #status { font-size: 11px; color: #8af; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Softbody Lattice Driven by Local Worker RNN Swarm with Spatial Audio Sonification · Verse lab</title>
+<meta name="description" content="Pointer trajectory (last 32 samples) is fed as context to RNNs in the Worker.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Softbody Lattice Driven by Local Worker RNN Swarm with Spatial Audio Sonification · Verse lab">
+<meta property="og:description" content="Pointer trajectory (last 32 samples) is fed as context to RNNs in the Worker.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f204-webgpu-softbody-rnn-swarm-audio/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f204-webgpu-softbody-rnn-swarm-audio/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F204 · Softbody RNN Swarm</div>
+  <button id="pulse">Pulse Energy</button>
+  <button id="mute">Toggle Audio</button>
+  <div id="status">Click canvas or Pulse to start. Drag to influence.</div>
+</div>
+<div class="portal" id="p0">Portal 0</div>
+<div class="portal" id="p1">Portal 1</div>
+<div class="portal" id="p2">Portal 2</div>
+<div class="portal" id="p3">Portal 3</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Softbody Lattice Driven by Local Worker RNN Swarm with Spatial Audio Sonification</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

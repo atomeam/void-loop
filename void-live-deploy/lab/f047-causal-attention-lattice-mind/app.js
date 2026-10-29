@@ -1,0 +1,191 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d', { alpha: false });
+let W, H, scale = 4;
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+}
+resize(); addEventListener('resize', resize);
+
+const GW = 64, GH = 36;
+let field = new Float32Array(GW * GH);
+let attn = new Float32Array(GW * GH);
+let img = ctx.createImageData(GW, GH);
+
+// pointer history for causal attention
+const hist = [];
+const MAXH = 12;
+let px = 0, py = 0, lastX = 0, lastY = 0;
+
+// floating thought nodes
+const nodes = [];
+for (let i = 0; i < 5; i++) {
+  const el = document.createElement('div');
+  el.className = 'node';
+  el.textContent = 'node' + i;
+  el.style.setProperty('--nh', 40 + i * 50);
+  document.body.appendChild(el);
+  nodes.push({ el, x: Math.random()*W, y: Math.random()*H, vx: 0, vy: 0, id: i });
+  el.addEventListener('pointerdown', e => {
+    e.target.setPointerCapture(e.pointerId);
+    const n = nodes[i];
+    const move = ev => { n.x = ev.clientX; n.y = ev.clientY; };
+    const up = () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); };
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', up);
+    // reinforce: bias fitness by proximity
+    nodes[i].reinforced = true;
+  });
+}
+
+// Worker: evolutionary population of attention kernels
+const workerCode = `
+let pop = [];
+const P = 8, G = 6; // genes: attn radius, decay, pointer weight, residual gain, node attract, energy thresh
+function rand() { return Math.random() * 2 - 1; }
+for (let i = 0; i < P; i++) {
+  pop.push({ genes: Array.from({length:G}, rand), fit: 0, age: 0 });
+}
+function evaluate(genes, residual, conf, nodeProx) {
+  // fitness: low residual + high conf + node proximity bonus
+  return (1 - Math.min(1, residual)) * 0.5 + conf * 0.3 + nodeProx * 0.2;
+}
+self.onmessage = e => {
+  const { residual, conf, nodeProx } = e.data;
+  // eval
+  for (const ind of pop) {
+    ind.fit = evaluate(ind.genes, residual, conf, nodeProx) + Math.random()*0.05;
+    ind.age++;
+  }
+  pop.sort((a,b) => b.fit - a.fit);
+  // mutate top, replace worst
+  const best = pop[0];
+  const child = { genes: best.genes.map(g => g + (Math.random()-0.5)*0.3), fit: 0, age: 0 };
+  pop[P-1] = child;
+  self.postMessage({ best: best.genes, gen: pop.reduce((s,p)=>s+p.age,0) });
+};
+`;
+const blob = new Blob([workerCode], {type:'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let bestGenes = [0.5, 0.8, 0.4, 0.3, 0.2, 0.1];
+let gen = 0;
+worker.onmessage = e => {
+  bestGenes = e.data.best;
+  gen = e.data.gen;
+  document.getElementById('gen').textContent = gen;
+};
+
+function stepField(dt) {
+  const [rad, decay, pWeight, rGain, nAttract, eThresh] = bestGenes.map(g => Math.tanh(g));
+  const R = Math.max(1, Math.floor(3 + rad * 4));
+  // simple causal local attention: weight recent pointer history + neighbors
+  for (let y = 0; y < GH; y++) {
+    for (let x = 0; x < GW; x++) {
+      const i = y * GW + x;
+      let sum = 0, wsum = 0;
+      for (let dy = -R; dy <= R; dy++) {
+        for (let dx = -R; dx <= R; dx++) {
+          const nx = (x + dx + GW) % GW, ny = (y + dy + GH) % GH;
+          const ni = ny * GW + nx;
+          const dist = Math.hypot(dx, dy);
+          const w = Math.exp(-dist * decay);
+          sum += field[ni] * w;
+          wsum += w;
+        }
+      }
+      const local = wsum > 0 ? sum / wsum : field[i];
+      // pointer causal bias
+      const gx = (x / GW) * W, gy = (y / GH) * H;
+      let pBias = 0;
+      for (let k = 0; k < hist.length; k++) {
+        const h = hist[k];
+        const d = Math.hypot(gx - h.x, gy - h.y);
+        pBias += Math.exp(-d * 0.01) * (1 - k / MAXH) * pWeight;
+      }
+      const residual = Math.abs(local - field[i]);
+      attn[i] = Math.max(0, local * 0.7 + pBias * 0.3 - residual * rGain);
+      field[i] = Math.max(0, Math.min(1, field[i] * 0.92 + attn[i] * 0.08 + (attn[i] > eThresh ? 0.02 : 0)));
+    }
+  }
+  // node attraction injects
+  for (const n of nodes) {
+    const ix = Math.floor((n.x / W) * GW), iy = Math.floor((n.y / H) * GH);
+    if (ix >= 0 && ix < GW && iy >= 0 && iy < GH) {
+      field[iy * GW + ix] = Math.min(1, field[iy * GW + ix] + 0.15 * nAttract);
+    }
+  }
+}
+
+let last = performance.now();
+function loop(t) {
+  const dt = Math.min(32, t - last) / 1000;
+  last = t;
+  stepField(dt);
+  // residual / conf
+  let resSum = 0;
+  for (let i = 0; i < attn.length; i++) resSum += Math.abs(attn[i] - field[i]);
+  const residual = resSum / attn.length;
+  const conf = Math.max(0, 1 - residual * 3);
+  document.getElementById('res').textContent = residual.toFixed(3);
+  document.getElementById('conf').textContent = conf.toFixed(2);
+  // morph hue
+  document.documentElement.style.setProperty('--hue', 200 + conf * 80);
+  // update nodes from attention gradient
+  for (const n of nodes) {
+    const ix = Math.floor((n.x / W) * GW), iy = Math.floor((n.y / H) * GH);
+    let fx = 0, fy = 0;
+    if (ix > 1 && ix < GW-1 && iy > 1 && iy < GH-1) {
+      fx = attn[iy*GW + ix+1] - attn[iy*GW + ix-1];
+      fy = attn[(iy+1)*GW + ix] - attn[(iy-1)*GW + ix];
+    }
+    n.vx = n.vx * 0.85 + fx * 40;
+    n.vy = n.vy * 0.85 + fy * 40;
+    n.x = (n.x + n.vx + W) % W;
+    n.y = (n.y + n.vy + H) % H;
+    n.el.style.left = n.x + 'px';
+    n.el.style.top = n.y + 'px';
+    n.el.style.boxShadow = `0 0 ${8 + conf*20}px hsla(${getComputedStyle(n.el).getPropertyValue('--nh')},70%,50%,${0.4+conf*0.4})`;
+  }
+  // node proximity for fitness
+  let nodeProx = 0;
+  for (const n of nodes) {
+    const d = Math.hypot(n.x - px, n.y - py);
+    nodeProx += Math.exp(-d * 0.005);
+  }
+  nodeProx /= nodes.length;
+  // send to worker ~1 Hz
+  if (Math.random() < 0.016) worker.postMessage({ residual, conf, nodeProx });
+  // render
+  for (let i = 0; i < field.length; i++) {
+    const v = Math.floor(field[i] * 255);
+    const a = Math.floor(attn[i] * 180);
+    img.data[i*4] = v;
+    img.data[i*4+1] = Math.floor(v * 0.6 + a * 0.4);
+    img.data[i*4+2] = Math.floor(v * 0.3 + a * 0.7);
+    img.data[i*4+3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(canvas, 0, 0, GW, GH, 0, 0, W, H);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+canvas.addEventListener('pointermove', e => {
+  px = e.clientX; py = e.clientY;
+  hist.unshift({ x: px, y: py });
+  if (hist.length > MAXH) hist.pop();
+  // seed field
+  const ix = Math.floor((px / W) * GW), iy = Math.floor((py / H) * GH);
+  if (ix >= 0 && ix < GW && iy >= 0 && iy < GH) field[iy*GW + ix] = Math.min(1, field[iy*GW + ix] + 0.4);
+});
+
+document.getElementById('seal').onclick = () => {
+  localStorage.setItem('f047-genes', JSON.stringify({ bestGenes, gen, ts: Date.now() }));
+  alert('Sealed to localStorage');
+};
+// restore
+try {
+  const s = JSON.parse(localStorage.getItem('f047-genes') || 'null');
+  if (s?.bestGenes) bestGenes = s.bestGenes;
+} catch {}

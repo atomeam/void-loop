@@ -1,0 +1,226 @@
+const field = document.getElementById('field');
+const logEl = document.getElementById('log');
+function log(m) { const t = new Date().toISOString().slice(11,19); logEl.innerHTML = `<div>[${t}] ${m}</div>` + logEl.innerHTML; if (logEl.children.length > 12) logEl.lastChild.remove(); }
+
+// Tiny MLP: 4 inputs → 8 hidden → 2 outputs. Genome = weights + biases (~ 4*8 + 8 + 8*2 + 2 = 50 floats)
+function randomGenome() {
+  const w = new Float32Array(50);
+  for (let i = 0; i < 50; i++) w[i] = (Math.random() - 0.5) * 1.2;
+  return w;
+}
+function mlpForward(g, inputs) {
+  // 4→8
+  const h = new Float32Array(8);
+  for (let j = 0; j < 8; j++) {
+    let s = g[4*8 + j]; // bias
+    for (let i = 0; i < 4; i++) s += inputs[i] * g[i*8 + j];
+    h[j] = Math.tanh(s);
+  }
+  // 8→2
+  const out = [0, 0];
+  const base = 4*8 + 8;
+  for (let k = 0; k < 2; k++) {
+    let s = g[base + 8*2 + k];
+    for (let j = 0; j < 8; j++) s += h[j] * g[base + j*2 + k];
+    out[k] = Math.tanh(s) * 3.5; // velocity scale
+  }
+  return out;
+}
+async function seal(g) {
+  const buf = g.buffer;
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  const hex = [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,'0')).join('');
+  return hex.slice(0, 12);
+}
+
+let agents = [];
+let resources = [];
+let totalScore = 0;
+let nextId = 1;
+let selected = null;
+
+function spawnAgent(g = null, x, y) {
+  const genome = g || randomGenome();
+  const el = document.createElement('div');
+  el.className = 'agent';
+  const hue = Math.abs(genome[0] * 360) % 360;
+  el.style.background = `hsl(${hue},70%,55%)`;
+  el.style.left = (x ?? Math.random() * (window.innerWidth - 40)) + 'px';
+  el.style.top = (y ?? Math.random() * (window.innerHeight - 40)) + 'px';
+  field.appendChild(el);
+  const a = { id: nextId++, el, genome, energy: 10, vx: 0, vy: 0, seal: '…' };
+  agents.push(a);
+  seal(genome).then(s => { a.seal = s; el.textContent = s.slice(0,4); document.getElementById('lastseal').textContent = s; });
+  document.getElementById('acount').textContent = agents.length;
+  return a;
+}
+
+function spawnResource() {
+  const el = document.createElement('div');
+  el.className = 'resource';
+  el.style.left = Math.random() * window.innerWidth + 'px';
+  el.style.top = Math.random() * window.innerHeight + 'px';
+  field.appendChild(el);
+  resources.push({ el, x: parseFloat(el.style.left), y: parseFloat(el.style.top), vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8 });
+}
+
+function nearestResource(ax, ay) {
+  let best = 9999, bx = 0, by = 0;
+  for (const r of resources) {
+    const d = Math.hypot(r.x - ax, r.y - ay);
+    if (d < best) { best = d; bx = r.x; by = r.y; }
+  }
+  return { d: best, dx: bx - ax, dy: by - ay };
+}
+
+function step() {
+  // move resources
+  for (const r of resources) {
+    r.x += r.vx; r.y += r.vy;
+    if (r.x < 0 || r.x > window.innerWidth) r.vx *= -1;
+    if (r.y < 0 || r.y > window.innerHeight) r.vy *= -1;
+    r.el.style.left = r.x + 'px';
+    r.el.style.top = r.y + 'px';
+  }
+  // agents
+  for (const a of agents) {
+    const ax = parseFloat(a.el.style.left) + 14;
+    const ay = parseFloat(a.el.style.top) + 14;
+    const nr = nearestResource(ax, ay);
+    const dens = Math.min(1, 80 / (nr.d + 1));
+    const inputs = [dens, nr.dx / 400, nr.dy / 400, a.energy / 20];
+    const [dx, dy] = mlpForward(a.genome, inputs);
+    a.vx = a.vx * 0.7 + dx * 0.3;
+    a.vy = a.vy * 0.7 + dy * 0.3;
+    let nx = parseFloat(a.el.style.left) + a.vx;
+    let ny = parseFloat(a.el.style.top) + a.vy;
+    nx = Math.max(0, Math.min(window.innerWidth - 28, nx));
+    ny = Math.max(0, Math.min(window.innerHeight - 28, ny));
+    a.el.style.left = nx + 'px';
+    a.el.style.top = ny + 'px';
+    a.energy *= 0.998;
+    // consume
+    for (let i = resources.length - 1; i >= 0; i--) {
+      const r = resources[i];
+      if (Math.hypot(r.x - nx - 14, r.y - ny - 14) < 20) {
+        a.energy += 8;
+        totalScore += 1;
+        document.getElementById('score').textContent = totalScore;
+        r.el.remove();
+        resources.splice(i, 1);
+        spawnResource();
+      }
+    }
+  }
+  // occasional evolve pressure
+  if (Math.random() < 0.01 && agents.length > 4) {
+    agents.sort((a,b) => b.energy - a.energy);
+    const worst = agents.pop();
+    worst.el.remove();
+    const best = agents[0];
+    const ng = new Float32Array(best.genome);
+    for (let i = 0; i < ng.length; i++) if (Math.random() < 0.15) ng[i] += (Math.random()-0.5)*0.4;
+    spawnAgent(ng, parseFloat(best.el.style.left), parseFloat(best.el.style.top));
+    document.getElementById('acount').textContent = agents.length;
+  }
+  requestAnimationFrame(step);
+}
+
+// IndexedDB
+let db;
+const req = indexedDB.open('F193-swarm', 1);
+req.onupgradeneeded = e => {
+  const d = e.target.result;
+  d.createObjectStore('genomes', { keyPath: 'id' });
+};
+req.onsuccess = e => { db = e.target.result; log('IndexedDB ready'); };
+
+document.getElementById('spawn').onclick = () => spawnAgent();
+document.getElementById('evolve').onclick = () => {
+  if (agents.length < 2) return;
+  agents.sort((a,b) => b.energy - a.energy);
+  const best = agents[0];
+  const ng = new Float32Array(best.genome);
+  for (let i = 0; i < ng.length; i++) if (Math.random() < 0.2) ng[i] += (Math.random()-0.5)*0.5;
+  spawnAgent(ng);
+  log('Manual evolve from best');
+};
+document.getElementById('save').onclick = async () => {
+  if (!db) return log('No IDB');
+  const tx = db.transaction('genomes', 'readwrite');
+  const store = tx.objectStore('genomes');
+  store.clear();
+  for (const a of agents) {
+    store.put({ id: a.id, genome: Array.from(a.genome), seal: a.seal, energy: a.energy });
+  }
+  log(`Saved ${agents.length} sealed genomes`);
+};
+document.getElementById('load').onclick = () => {
+  if (!db) return log('No IDB');
+  const tx = db.transaction('genomes', 'readonly');
+  const store = tx.objectStore('genomes');
+  store.getAll().onsuccess = e => {
+    agents.forEach(a => a.el.remove());
+    agents = [];
+    for (const rec of e.target.result) {
+      spawnAgent(new Float32Array(rec.genome));
+    }
+    log(`Loaded ${e.target.result.length} from IDB`);
+  };
+};
+
+// WebRTC
+let pc = null, dc = null;
+function setupPC() {
+  pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+  pc.onicecandidate = e => { if (!e.candidate) { document.getElementById('sdp').value = JSON.stringify(pc.localDescription); log('SDP ready — copy it'); } };
+  pc.ondatachannel = e => {
+    dc = e.channel;
+    dc.onmessage = ev => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.type === 'genome') {
+          const g = new Float32Array(msg.weights);
+          spawnAgent(g);
+          log('Received sealed genome via WebRTC');
+        }
+      } catch {}
+    };
+    log('Data channel open (incoming)');
+  };
+}
+document.getElementById('offer').onclick = async () => {
+  setupPC();
+  dc = pc.createDataChannel('genomes');
+  dc.onopen = () => log('Data channel open');
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  log('Offer created — wait for ICE, then copy SDP');
+};
+document.getElementById('answer').onclick = async () => {
+  const remote = JSON.parse(document.getElementById('sdp').value);
+  setupPC();
+  await pc.setRemoteDescription(remote);
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+  log('Answer created — copy SDP back');
+};
+document.getElementById('connect').onclick = async () => {
+  if (!pc) return log('Create offer/answer first');
+  const remote = JSON.parse(document.getElementById('sdp').value);
+  await pc.setRemoteDescription(remote);
+  log('Remote description set');
+};
+document.getElementById('sendg').onclick = () => {
+  if (!dc || dc.readyState !== 'open') return log('No open data channel');
+  if (!agents.length) return;
+  const a = agents[0];
+  dc.send(JSON.stringify({ type: 'genome', weights: Array.from(a.genome), seal: a.seal }));
+  log('Sent genome ' + a.seal);
+};
+
+// init
+for (let i = 0; i < 6; i++) spawnAgent();
+for (let i = 0; i < 18; i++) spawnResource();
+requestAnimationFrame(step);
+log('F193 swarm online — local MLP agents, sealed genomes, IDB + optional WebRTC');

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; background: #0a0a12; color: #e0e0ff; overflow: hidden; }
+  #stage { position: relative; width: 100vw; height: 100vh; }
+  canvas#field { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .agent {
+    position: absolute; width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 10px;
+    font-weight: bold; cursor: pointer; user-select: none; border: 2px solid rgba(255,255,255,0.3);
+    transition: box-shadow 0.1s; will-change: transform;
+  }
+  .agent.selected { box-shadow: 0 0 0 3px #0ff, 0 0 12px #0ff; }
+  #ui {
+    position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,0.85); padding: 12px;
+    border-radius: 8px; font-size: 13px; max-width: 320px; z-index: 10; backdrop-filter: blur(4px);
+  }
+  button, textarea { margin: 4px 0; font-size: 12px; }
+  textarea { width: 100%; height: 60px; background: #111; color: #ccc; border: 1px solid #333; }
+  #status { margin-top: 8px; font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation MLP DOM Gravity Swarm · Verse lab</title>
+<meta name="description" content="Novel combination: Multi-agent competition embodied purely as hybrid DOM cards (absolute-positioned divs) whose positions obey simple Verlet-like physics under">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation MLP DOM Gravity Swarm · Verse lab">
+<meta property="og:description" content="Novel combination: Multi-agent competition embodied purely as hybrid DOM cards (absolute-positioned divs) whose positions obey simple Verlet-like physics under">
+<meta property="og:url" content="https://a-to-mind.com/lab/f198-orientation-mlp-dom-gravity-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f198-orientation-mlp-dom-gravity-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="field"></canvas>
+  <div id="agents"></div>
+</div>
+<div id="ui">
+  <strong>F198 Orientation MLP DOM Gravity Swarm</strong><br>
+  <button id="oriBtn">Enable Orientation</button>
+  <button id="evolve">Evolve step</button>
+  <button id="save">Save IDB</button>
+  <button id="load">Load IDB</button>
+  <button id="transfer">Copy selected seal</button>
+  <textarea id="paste" placeholder="Paste seal base64 to inject agent..."></textarea>
+  <button id="inject">Inject genome</button>
+  <div id="status">Click Enable Orientation (or use pointer tilt). Agents are DOM cards under gravity. MLP decides jump. Seal via SHA-256.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation MLP DOM Gravity Swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

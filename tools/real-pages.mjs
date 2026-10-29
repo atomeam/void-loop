@@ -14,7 +14,7 @@ export const OTHERS = ['/tournaments/', '/prizes/', '/wheel/', '/boards/', '/res
 export const EXTRA = ['/is-it/christmas'];  // live only routes (no index.html here)
 export function routes() {
   const out = [];
-  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
+  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
 const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/full-stack-audit/', '/one-time-fix/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/'];
@@ -253,6 +253,8 @@ for (const r of ['/kanban/', '/kanban/simple/', '/kanban/teams/', '/kanban/quick
 for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companies/', '/jobs/europe/', '/jobs/regions/', '/jobs/salary/', '/jobs/tags/']) SPECS[r] = jobs;
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
+// the lab gallery (tools/lab-import.mjs): the experiments under it are not routes here, each was opened headless by tools/lab-probe.mjs before it was published
+for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab li a').count(); t.ok(n > 50, n + ' experiments listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
 // honest text a page is allowed to show (audited): store items that say they are not out yet
 const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;

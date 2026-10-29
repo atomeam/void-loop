@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 8px; max-width: 320px; font-size: 13px; }
+  button, textarea { margin: 4px 0; width: 100%; }
+  textarea { height: 60px; font-family: monospace; font-size: 11px; }
+  .swarm { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Multi-MLP Compute Swarm Arena · Verse lab</title>
+<meta name="description" content="A competitive multi-agent arena where four independent tiny MLPs (genomes) each steer a swarm of particles.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Multi-MLP Compute Swarm Arena · Verse lab">
+<meta property="og:description" content="A competitive multi-agent arena where four independent tiny MLPs (genomes) each steer a swarm of particles.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f314-webgpu-multi-mlp-swarm-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f314-webgpu-multi-mlp-swarm-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <h3>F314 Multi-MLP Swarm Arena</h3>
+  <p>Click to place resource. Swarms compete via local MLPs driving WebGPU particles.</p>
+  <div id="status">Initializing…</div>
+  <div id="fitness"></div>
+  <button id="evolve">Evolve / Mutate</button>
+  <button id="seal">Seal Champion to IndexedDB</button>
+  <button id="load">Load Sealed</button>
+  <textarea id="export" placeholder="Sealed JSON appears here for transfer"></textarea>
+  <button id="inject">Inject Genome from Textarea</button>
+  <div id="hash"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Multi-MLP Compute Swarm Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
