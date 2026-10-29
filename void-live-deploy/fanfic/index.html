@@ -136,7 +136,7 @@
   .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   .tools select { width: auto; min-width: 170px; }
   .filters { padding: 14px 20px 4px; border-bottom: 1px solid var(--line); }
-  .filters .frow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 14px; } .filters label.f { margin-bottom: 12px; }
+  .filters .frow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 14px; } .filters label.f { margin-bottom: 12px; }
   .filters .fgen { margin: 0 0 12px; } .filters .fgen summary { cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; color: var(--ink-2);
     list-style: none; border: 1px solid var(--line-2); border-radius: 12px; background: var(--field); } .filters .fgen summary::-webkit-details-marker { display: none; }
   .filters .fgen summary::after { content: '▾'; color: var(--ink-3); margin-left: 4px; } .filters .fgen[open] summary::after { content: '▴'; } .filters .fgen #fGenresSay { color: var(--ink); }
@@ -305,6 +305,7 @@
         <div class="frow">
           <label class="f"><span>Sort</span><select id="fSort"></select></label>
           <label class="f"><span>Rated</span><select id="fRated"><option value="">Any rating</option></select></label>
+          <label class="f"><span>Status</span><select id="fStatus"><option value="">Complete or in progress</option><option value="Complete">Complete</option><option value="In progress">In progress</option></select></label>
           <label class="f"><span>Characters</span><input type="search" id="fChars" maxlength="120" placeholder="Names, split by commas"></label>
         </div>
         <details class="fgen"><summary><span>Genres:</span><span id="fGenresSay">any</span></summary><p class="quiet">A story shows when it has every genre ticked.</p><div class="radios" id="fGenres"></div></details>
@@ -399,6 +400,7 @@
       <form class="pbody" id="chForm" autocomplete="off">
         <label class="f"><span>Chapter title</span><input type="text" name="title" maxlength="100" placeholder="Optional"></label>
         <label class="f"><span>The chapter</span><textarea name="text" required></textarea></label>
+        <label class="chk" id="chDoneBox"><input type="checkbox" name="done"> This chapter ends the story: mark it Complete</label>
         <p class="count" data-count></p>
         <p class="bot" data-bot></p>
         <div class="acts"><button class="go" type="submit">Post chapter</button></div>
@@ -433,6 +435,7 @@
         <label class="f"><span>Rating</span><select name="rating" required><option value="">Choose a rating</option></select><small>Readers filter the archive by it.</small></label>
         <label class="f"><span>Characters</span><input type="text" name="characters" maxlength="260" placeholder="Up to 6 names, split by commas"><small>Readers find stories by the people in them.</small></label>
       </div>
+      <fieldset class="f"><legend>Status</legend><div class="radios"><label><input type="radio" name="status" value="In progress" checked> In progress: more chapters to come</label><label><input type="radio" name="status" value="Complete"> Complete: a one-shot, or every chapter is here</label></div><small>A later chapter can mark the story Complete.</small></fieldset>
       <fieldset class="f"><legend>Genres (up to 3)</legend><div class="radios" id="stGenres"></div></fieldset>
       <fieldset class="f"><legend>Warnings</legend><div class="radios" id="stWarnings"></div><small>Tick each one that applies. Readers can hide every story with a warning.</small></fieldset>
       <label class="f"><span>Summary</span><textarea class="short" name="summary" maxlength="300" placeholder="One or two lines a reader sees first"></textarea></label>
