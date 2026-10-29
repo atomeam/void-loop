@@ -42,6 +42,9 @@ async function openFirstStory(J) {
   return title;
 }
 
+/** /hosting/'s domain search: the registries answer in their own time, so wait (25 s at most) until no row still reads "Asking..." */
+const settleDomains = (J) => J.page.waitForFunction(() => { const r = document.getElementById('domainrows'); return r && r.children.length && !/Asking\.\.\./.test(r.textContent); }, null, { timeout: 25000 }).catch(() => {}); // void-review: ok (the controls after it read what the page shows)
+
 /** per floor id, per journey name: the script. A journey with no script here is INCOMPLETE. */
 export const SCRIPTS = {
   'random number': {
@@ -64,6 +67,25 @@ export const SCRIPTS = {
   'sycophanthex.com': {
     'do the main job and see the result': async (J) => { const t = await openFirstStory(J); await J.expect((x) => x.includes(t) && /\bchapters\b/i.test(x) && /\bwords\b\s*[\d,]+/i.test(x) && /\bby\s+\S/.test(x), 'the story "' + t + '" open, with its author, chapters and words'); },
     'share the result and reopen it from the link': async (J) => { const t = await openFirstStory(J); const u = await J.shareLink('#storyShare'); await J.open('/fanfic/'); await J.open(u); await J.expect((x) => x.includes(t) && /\bwords\b\s*[\d,]+/i.test(x), 'the same story "' + t + '" back from its link'); },
+  },
+  // nameunit (/hosting/, 2026-10-29): the name search against the real registries. verse.com and verse.org are long registered, so they must
+  // read Registered; a fresh name made at run time must read free at .com. Every one of the six endings must show what its registry said
+  nameunit: {
+    'search a name and see each ending free or taken': async (J) => {
+      await J.open('/hosting/'); await J.fill('#domain', 'verse', 'type the name verse'); await J.click('#domainbtn', 'press Search'); await settleDomains(J);
+      await J.expect((t) => ['no', 'com', 'net', 'org', 'info', 'biz'].every((e) => new RegExp('verse\\.' + e + '\\s+(Registered|No registration found|No public lookup)\\b').test(t)) && /verse: \d of 6 endings look free/.test(t), 'each of the six endings with what its registry said, and the count');
+      await J.expect(/verse\.com\s+Registered\s+Through \S/, 'verse.com registered, with its registrar');
+      const fresh = 'versecheck' + Date.now().toString(36);
+      await J.fill('#domain', fresh + '.com', 'type a name nobody has, ' + fresh + '.com'); await J.click('#domainbtn', 'press Search'); await settleDomains(J);
+      await J.expect(new RegExp(fresh + '\\.com\\s+No registration found'), fresh + '.com free to register');
+    },
+    'share the result and reopen it from the link': async (J) => {
+      await J.open('/hosting/'); await J.fill('#domain', 'verse.org', 'type verse.org'); await J.click('#domainbtn', 'press Search'); await settleDomains(J);
+      await J.expect(/verse\.org\s+Registered/, 'verse.org registered');
+      const u = await J.shareLink('#dshare'); if (!/[?&]d=verse\.org(&|$)/.test(u)) throw new Failed('the share link does not carry the domain: ' + u);
+      await J.open('/hosting/'); await J.open(u); await settleDomains(J);
+      await J.expect((t) => /verse\.org\s+Registered/.test(t) && /verse: \d of 6 endings/.test(t) && /server_name verse\.org;/.test(t), 'the search for verse.org back from its link, and the server config named for it');
+    },
   },
   // paint (/paint/, rebuilt 2026-10-28 against the colour-by-number sites): every step is a tap, a key or a file a person would use
   paint: {
