@@ -132,6 +132,7 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.ok(ps.every((p) => !/gpt-oss/.test(p.model)), 'no gpt-oss');
   assert.deepEqual(providersFrom({ CLOUDFLARE_API_TOKEN: 'x' }), [], 'Workers AI needs the account id too');
   assert.deepEqual(providersFrom({}), []);
+  assert.deepEqual(providersFrom({ ...env, GH_MODELS_TOKEN: 'gh'.repeat(10) }).map((p) => p.name), ['workers-ai', 'github-models', 'openrouter', 'groq', 'gemini', 'cerebras'], 'GitHub Models follows Workers AI');
   const seen = [];
   const fakeFetch = async (url, init) => {
     seen.push(url);
@@ -151,7 +152,7 @@ test('the CLI: no key means exit 4 with the keys it wants; a scripted model runs
   const s = repo();
   const bare = { PATH: process.env.PATH, HOME: process.env.HOME };
   let r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname, '--repo', s.work, '--task', 'fix add'], { env: bare, encoding: 'utf8' });
-  assert.equal(r.status, 4); assert.match(r.stdout, /CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID, OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY/);
+  assert.equal(r.status, 4); assert.match(r.stdout, /CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID, GH_MODELS_TOKEN.*?, OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY/);
   const script = join(s.dir, 'script.json'), checks = join(s.dir, 'checks.json');
   writeFileSync(script, JSON.stringify([{ tool: 'edit', diff: FIX }, { tool: 'check', name: 'add' }, { tool: 'finish', summary: 'fixed' }]));
   writeFileSync(checks, JSON.stringify(CHECKS));

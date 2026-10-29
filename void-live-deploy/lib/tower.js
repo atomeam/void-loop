@@ -16,6 +16,7 @@ import { SELF_SITES } from './self-sites.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
+import { bytesLabel, weightBand, weightOf } from './tower-weight.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -42,7 +43,8 @@ const HAND_FLOORS = [
   // colorzilla.com (Tranco 101,274), its gradient editor behind Carbon ads, a Twitter widget, Facebook styles, Google Analytics and a tag manager
   { id: 'gradient', learned: "a gradient is judged by the text on it: the worst contrast across the whole gradient, conic gradients, and a link that holds it whole", site: 'colorzilla.com', url: 'https://www.colorzilla.com/gradient-editor/', ask: 'gradient generator', page: '/gradient/', label: 'CSS gradient', glyph: '▤', fatality: 'conic gradients, the worst text contrast across the gradient, a link that holds it whole, and it opens offline, with no ads, trackers or social widgets', extra: ['stops with opacity', 'import css', 'presets'] },
   // paint by number (owner, 2026-10-26: "build wherever fits"): a frontier site given a page of its own, so the floor can be measured and beaten
-  { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', extra: [] },
+  { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', extra: [],
+    held: 'Verse\'s page is not yet better than this site at painting a picture, whatever the gate rows read, so the floor stays in the queue until it is' },
   // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com is the
   // frontier's next fight — its own page says the Twitter stream that fed it is inactive and it now ranks the emoji copied from
   // Emojipedia. Verse counts copies of a closed list of emoji on /emojis/ and says exactly that, so no global feed is faked
@@ -315,14 +317,28 @@ export function frontierOf(frontier, floors = FLOORS) {
 // floors\" from \"frontier floors\"—treat all unbeaten sites as one queue sorted easiest-first"): FLOORS and every frontier site are one queue,
 // sorted by how many aspects Verse still has to beat, then by the order they came (FLOORS, then the scan's hardness). `total` is the sites found
 // so far, never a ceiling: it grows as the scan grows.
-export function tower(onlySite = [], evidence = {}, frontier = null, icons = null) {
+// How big a site is, as a tier (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"; 2026-10-28: "move
+// backwards to easier sites"):
+// 0 = outside the top 100,000 most visited (Tranco, tower.rank.json) or unranked, 1 = 10,000 to 100,000, 2 = 1,000 to 10,000, 3 = the giants.
+export const sizeTier = (rank) => (!Number.isFinite(+rank) || !rank || +rank >= 100000 ? 0 : +rank >= 10000 ? 1 : +rank >= 1000 ? 2 : 3);
+export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant']);
+/** why a site stands where it does in the queue, in words, from its tier, what is left and whether Verse has a page for it. Pure. */
+export function easeLine(f) {
+  if (f.held) return 'held, not beaten: ' + f.held;
+  const left = Math.max(0, (f.m || 0) - (f.n || 0)), sc = f.size ? f.size.scripts : 0;
+  const how = f.weight !== null && f.size ? 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
+    : 'not weighed yet' + (f.rank ? ' (ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited)' : '');
+  return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
+}
+/** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */
+export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
-  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
+  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); return { ...f, order: i, ...g, ev, icon, badge, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);
@@ -339,9 +355,18 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // order, small single-purpose sites first (owner: "work through millions of small sites, easiest first"): a site with at most two aspects of
   // its own (a frontier tool site has none) stands before a broad, many-feature one
   const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  // with the size data (the card, the plan) the queue is easiest first by size, then by work left: gate, far future, a waiting giant, the size tier, what Verse
+  // loses on, aspects still to pass, a site with a page before one without, then the order they came. Without it the old order stands.
+  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the fight in progress stays first until it is won
+  const tierOf = (f) => (rank ? (f.weight !== null ? 0 : 1 + f.tier) : 0), lightOf = (f) => (f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
-export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead)' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+// a held site says why it is not surpassed, so "16 of 16 aspects ahead, 0 surpassed" explains itself (owner's card, 2026-10-29)
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+/** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
+ *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
+ *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */
+export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null];

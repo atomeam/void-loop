@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-27",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 10,
-  "tested": 27,
-  "checked": 18,
-  "proven": 297
+  "experiment": 3,
+  "tested": 35,
+  "checked": 17,
+  "proven": 298
  },
  "families": [
   {
@@ -24,8 +24,8 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 3,
-    "tested": 10,
+    "experiment": 1,
+    "tested": 12,
     "checked": 2,
     "proven": 36
    },
@@ -41,12 +41,13 @@
     },
     {
      "name": "photo-tools",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "gradient",
@@ -104,12 +105,13 @@
     },
     {
      "name": "music-tools",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "figure",
@@ -487,8 +489,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 1,
-    "proven": 30
+    "checked": 0,
+    "proven": 31
    },
    "skills": [
     {
@@ -502,10 +504,12 @@
     },
     {
      "name": "coin",
-     "tier": "checked",
-     "why": "a self-test, 12 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 12 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 4
     },
     {
@@ -1441,8 +1445,8 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 4,
-    "tested": 2,
+    "experiment": 1,
+    "tested": 5,
     "checked": 1,
     "proven": 29
    },
@@ -1910,12 +1914,13 @@
     },
     {
      "name": "fantasy",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "pdf-card",
@@ -1928,21 +1933,23 @@
     },
     {
      "name": "pdf-tools",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "kanban-board",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "coral",
@@ -2114,8 +2121,8 @@
    "name": "The stage",
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
-    "experiment": 2,
-    "tested": 5,
+    "experiment": 0,
+    "tested": 7,
     "checked": 7,
     "proven": 88
    },
@@ -2167,7 +2174,7 @@
     {
      "name": "notes-fill",
      "tier": "tested",
-     "why": "1 real ask in the benchmark",
+     "why": "4 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2184,21 +2191,23 @@
     },
     {
      "name": "recipes-fill",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "generators-fill",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "terminal",
@@ -3521,11 +3530,18 @@
    "for": "privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 5
    },
    "skills": [
+    {
+     "name": "advice",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "pwcheck",
      "tier": "proven",

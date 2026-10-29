@@ -1465,11 +1465,15 @@ try {
     await F.ctx.close();
   }
   // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
-  // the evidence is stubbed so three sites are conquered and the fourth is 4 aspects in
+  // the evidence is stubbed so three sites are conquered and the target is 4 aspects in. The target is the site tower.target.json names: it stays
+  // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
-    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
     const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
-    const floors = { [FLOORS[0].id]: rows(FLOORS[0], 99), [FLOORS[1].id]: rows(FLOORS[1], 99), [FLOORS[2].id]: rows(FLOORS[2], 99), [FLOORS[3].id]: rows(FLOORS[3], 4) };
+    const served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
+    const TARGET = served('tower.target.json').id, tgt = tower([], {}, served('tower.frontier.json'), null, null, null, TARGET).floors.find((f) => f.id === TARGET);
+    const won3 = FLOORS.filter((f) => f.id !== TARGET).slice(0, 3);
+    const floors = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f, 99)])), [tgt.id]: rows(tgt, 4) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
@@ -1477,14 +1481,14 @@ try {
         struck: all[1] && getComputedStyle(all[1].querySelector('.tw-name')).textDecorationLine, head: (c.querySelector('.tw-score') || {}).textContent, name: (c.querySelector('.tw-head') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
     // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
-    check('tower: ' + FLOORS[3].site + ' on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === FLOORS[3].site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && /^3 surpassed · working on: /.test(v.head || '')
+    check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · easiest site left: ' + tgt.site
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
     const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
-    check('tower: a saved or copied tower card says the fight (' + FLOORS[3].site + ': 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice',
-      new RegExp(FLOORS[3].site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects ahead\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+    check('tower: a saved or copied tower card says the fight (the target: 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice',
+      new RegExp(tgt.site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects ahead\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
@@ -9003,8 +9007,11 @@ try {
   await t.ask('why is the sky blue', 900); an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
   await t.ask('why is the model busy', 600); check('answer engine busy -> article excerpt', await until(async () => /Black hole/.test(await t.page()), 5000));
   await t.ask('what do you want to be?', 300); check('will: Verse says what it wants', await until(async () => /I want to answer every question about tides/.test(await t.page()), 4000));
-  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 4000); check('voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built', ok, (await t.page()).slice(0, 200)); }
-  { const v = await t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.v-asks details')] : []; if (d[0]) d[0].open = true; return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; });
+  // every block of the self card but the lead starts closed (owner, 2026-10-18) and "Newest" leads it (2026-10-19): the card is read as a reader
+  // reads it, each block opened by its heading, so what sits in a closed block is still checked as shown text
+  const selfOpened = () => t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return ''; pg.querySelectorAll('details.vs-sec').forEach((d) => { d.open = true; }); return pg.innerText; }).catch(() => '');
+  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await selfOpened(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 4000); check('voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built', ok, (await selfOpened()).slice(0, 600)); }
+  { const v = await t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.vs-sec[data-sec=asked] .v-asks details')] : []; if (d[0]) { d[0].closest('details.vs-sec').open = true; d[0].open = true; } return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; });
     check('voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet', v.now === '2' && v.max === '5' && v.w === '40%' && v.asks > 0 && /Asked (in my daily reflection|after a build)/.test(v.meta) && /not built yet/.test(v.meta), JSON.stringify(v)); }
   } // CORE
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
@@ -9228,8 +9235,17 @@ try {
   // the gate is shared by the whole run: the proposal card's Send has already asked once, so count from here
   const callsAt = gate.calls.length, requestedAt = sent('a2m.approval.requested').length;
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  // Without the owner's key Verse sends nothing. A send it would make for the owner gets the plain refusal; an email ask opens the mail
+  // card instead (skills/rides.js mailAsk, lists run 7, aab06c1e): the draft is filled in and only the person's own mail app can send it.
+  await t.ask('text sam saying hi', 700);
+  const visitorText = await t.whisper();
   await t.ask('send an email to jane@x.com saying hi', 700);
-  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === callsAt, await t.whisper());
+  const visitorMail = await until(() => t.p.$eval('.vpage.on', (e) => { const v = (s) => (e.querySelector(s) || {}).value; const links = Array.from(e.querySelectorAll('.ml-out a')).map((a) => a.href);
+    return e.classList.contains('mail-card') && { to: v('.ml-to'), body: v('.ml-body'), links }; }).catch(() => null), 5000) || {};
+  const visitorLine = await t.whisper();
+  check('confirm line: visitors cannot send', /person at the screen/.test(visitorText) && visitorMail.to === 'jane@x.com' && visitorMail.body === 'Hi.'
+    && visitorMail.links.some((h) => h === 'mailto:jane@x.com?subject=Hi&body=Hi.') && visitorMail.links.every((h) => /^(?:mailto:|https:\/\/(?:mail\.google\.com|outlook\.live\.com|compose\.mail\.yahoo\.com)\/)/.test(h))
+    && !/Yes \/ No/.test(visitorLine) && !(await t.p.$('#whisper [data-vc]')) && gate.calls.length === callsAt, JSON.stringify({ visitorText, visitorMail, visitorLine }).slice(0, 400));
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await t.ask('send an email to jane@x.com saying hi', 900);
   check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === requestedAt + 1 && gate.ran.length === 0, await t.whisper());
@@ -9336,16 +9352,18 @@ try {
   await A.ask('close');
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
   const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
-  await B.ask('send an email to jane@x.com saying hi', 0);
+  await B.ask('text sam saying hi', 0);
   const bNoOwner = await until(async () => /person at the screen/.test(await B.whisper()) && (await B.whisper()), 4000);
+  await B.ask('send an email to jane@x.com saying hi', 0); // without the owner's key: the mail card, which sends nothing itself (lists run 7)
+  const bMail = !!(await until(() => B.p.$eval('.vpage.on.mail-card .ml-to', (e) => e.value === 'jane@x.com').catch(() => false), 5000)) && !(await B.p.$('#whisper [data-vc]'));
   await A.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await A.ask('send an email to jane@x.com saying hi', 0);
   const pkLine = await until(async () => /Yes \/ No/.test(await A.whisper()) && (await A.whisper()), 6000);
   const ranWhileAsked = gate.ran.length;
   await A.ask('no', 0); const pkNo = await until(async () => /nothing sent/.test(await A.whisper()) && (await A.whisper()), 4000);
   await A.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
-  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /person at the screen/.test(bNoOwner) && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
-    [bNoOwner, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
+  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /person at the screen/.test(bNoOwner) && bMail && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
+    [bNoOwner, bMail, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
   await B.ask('add a sticky that says from the other device');
   const upB = await until(() => { const d = serverData(); return d && Object.values(d.state).some((x) => x.kind === 'sticky' && /from the other device/.test(x.text)); }, 6000);
   await A.p.reload();
@@ -10933,14 +10951,14 @@ try {
       const openAsk = (selfJson.open[0] || {}).ask || '(none open)';
       check('self-grounding: "what\'s next" is answered from Verse\'s own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache',
         sa.self === true && sa.sources.length === 0 && wikiHits === 0 && g.sys && g.sys.includes(SC.SELF_RULE) && /^You are Verse\. Answer the question directly/.test(g.sys)
-        && /Facts about Verse:/.test(g.user) && g.user.includes(openAsk) && /My skills \(\d+\): .*\btip\b/.test(g.user) && g.user.includes('I want a light look for my void.') && !/Sources:/.test(g.user)
+        && /Facts about Verse:/.test(g.user) && g.user.includes(openAsk) && /My skill index has \d+ entries \([^)]*not the skill count[^)]*\): .*\btip\b/.test(g.user) && g.user.includes('I want a light look for my void.') && !/Sources:/.test(g.user)
         && eS.DB.answers.size === 0 && /self-grounded/.test(rowOf(eS, SQ).outcome),
         JSON.stringify({ self: sa.self, wikiHits, user: String(g.user).slice(0, 200), cached: eS.DB.answers.size }));
       const eSo = envOf({ ai: { gemma: 'out' }, env: { ASSETS } });
       const so = await ask('what are you building', eSo);
       const off = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ ask: 'what are you building' }) }), env: { DB: routeD1(), ASSETS, VOID_ANSWER_MODELS: 'off' } })).json();
       check('self-grounding: with the model busy or switched off, a self ask gets Verse\'s own facts, never a Wikipedia extract',
-        so.self === true && so.note === 'model busy, my own facts' && /My skills/.test(so.answer) && off.self === true && /Growth inbox, still open/.test(off.answer) && !/sourced extract/.test(off.answer + so.answer),
+        so.self === true && so.note === 'model busy, my own facts' && /My skill index has \d+ entries/.test(so.answer) && off.self === true && /Growth inbox, still open/.test(off.answer) && !/sourced extract/.test(off.answer + so.answer),
         JSON.stringify({ so: so.note, off: String(off.answer).slice(0, 120) }));
     }
     // The Verse extension's "Ask Verse about this page" / "Help me with this draft": the page is the material, not the web

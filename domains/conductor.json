@@ -1,0 +1,383 @@
+{
+ "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
+ "updated": "2026-10-29T04:11:25.803Z",
+ "last24h": {
+  "ticks": 12,
+  "started": 28,
+  "requeued": 0,
+  "setAside": 0,
+  "probes": 1,
+  "errors": 0
+ },
+ "broken": [],
+ "held": [],
+ "handed": {
+  "mvbl52gd": 1793240307118,
+  "mveb8rsi": 1793240307118,
+  "mva30i2e": 1793240307118,
+  "mveb8svc": 1793240922697,
+  "mva30j4u": 1793240922697,
+  "mvfu4evy": 1793241541772,
+  "mvsw572e": 1793241541772,
+  "mvpuq9g6": 1793242157695,
+  "mvsx1hkt": 1793242157695,
+  "mvpuqaee": 1793242780023,
+  "mvsx1icm": 1793242780023,
+  "mvpuqb4r": 1793243395604,
+  "mvsx1j7q": 1793243395604,
+  "mvsz9hzz": 1793244628643,
+  "mvsz9j3o": 1793245242692,
+  "mvsz9k8n": 1793245856821,
+  "mvsz9lb1": 1793246471356
+ },
+ "ticks": [
+  {
+   "at": "2026-10-29T02:18:27.118Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 114
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 80
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 66
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "lap": false,
+   "revived": [],
+   "held": 100,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T02:28:42.697Z",
+   "open": 113,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 80
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 66
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T02:39:01.772Z",
+   "open": 113,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvfu4evy",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 78
+    },
+    {
+     "id": "mvsw572e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T02:49:17.695Z",
+   "open": 112,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvpuq9g6",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 64
+    },
+    {
+     "id": "mvsx1hkt",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T02:59:40.023Z",
+   "open": 111,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvpuqaee",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 64
+    },
+    {
+     "id": "mvsx1icm",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T03:09:55.604Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvpuqb4r",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 64
+    },
+    {
+     "id": "mvsx1j7q",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T03:20:12.173Z",
+   "open": 109,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T03:30:28.643Z",
+   "open": 113,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvsz9hzz",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T03:40:42.692Z",
+   "open": 112,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvsz9j3o",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T03:50:56.821Z",
+   "open": 111,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvsz9k8n",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T04:01:11.356Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    },
+    {
+     "id": "mvsz9lb1",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T04:11:25.803Z",
+   "open": 109,
+   "started": [
+    {
+     "id": "mv1icyux",
+     "kind": "voice",
+     "wf": "verse-job.yml",
+     "score": 125
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  }
+ ]
+}

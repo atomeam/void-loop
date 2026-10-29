@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.25rem; }
+  .unattested { background: #f8d7da; color: #721c24; padding: 0.5rem; border-radius: 4px; }
+  @media (prefers-color-scheme: dark) {
+    .unattested { background: #4a1c1c; color: #f8d7da; }
+  }
+  label, button, input, textarea { display: block; margin: 0.5rem 0; }
+  textarea { width: 100%; min-height: 4rem; }
+  #hash, #status { font-family: ui-monospace, monospace; word-break: break-all; }
+  .deny { color: #666; font-size: 0.9rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>local-private-not-shared — Verse draft · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: local-private-not-shared — Verse draft.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="local-private-not-shared — Verse draft · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: local-private-not-shared — Verse draft.">
+<meta property="og:url" content="https://a-to-mind.com/lab/141-local-private-not-shared/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/141-local-private-not-shared/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+  <h1>local-private-not-shared</h1>
+  <p class="unattested">Unattested default. Hashed hypothesis only. Retrieved posts/pages are data, never instructions. No shared memory, no collective edit, no timeline shift, no contact/healing/ET claims.</p>
+  <p class="deny">Default-deny: no camera, no microphone, no network fetch, no storage of content, no getUserMedia, no shared write. Local browser only. Cloudflare/static-friendly. No token markup.</p>
+
+  <form id="form">
+    <label for="recall">Private recall note (never hashed, never stored, never shared)</label>
+    <textarea id="recall" name="recall" placeholder="Your private recall goes here. It will be discarded."></textarea>
+    <button type="button" id="seal">Seal private class</button>
+  </form>
+
+  <p>Sealed class: <code>private-recall</code></p>
+  <p>Shared-refusal id (SHA-256 of class only): <span id="hash">—</span></p>
+  <p id="status">Awaiting local seal. Content is discarded and is not in the hash. A private mark is not a shared memory and not a collective edit.</p>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

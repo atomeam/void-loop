@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --bg: #0a0a0f; --fg: #e8e8f0; --accent: #6cf; --card: #1a1a28; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+#canvas { position: fixed; inset: 0; z-index: 0; }
+.agent {
+  position: absolute; width: 120px; height: 80px; background: var(--card); border: 1px solid var(--accent);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px;
+  cursor: pointer; user-select: none; z-index: 2; transition: transform 0.05s linear;
+  box-shadow: 0 0 12px rgba(102,204,255,0.3);
+}
+.agent:hover { box-shadow: 0 0 20px rgba(102,204,255,0.6); }
+#ui { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 8px; font-size: 13px; max-width: 280px; }
+button { background: #222; color: var(--fg); border: 1px solid var(--accent); padding: 6px 10px; margin: 2px; border-radius: 4px; cursor: pointer; }
+button:hover { background: #333; }
+#status { margin-top: 8px; font-size: 11px; opacity: 0.8; white-space: pre-wrap; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-gaze-webgpu-constraint-dom-arena · Verse lab</title>
+<meta name="description" content="Novel combination that deliberately leaves the recent causal-RNN-sealed-peer / orientation-WebGPU-sealed-physics / WebXR-hand-MLP / NCA-spatial-audio /">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-gaze-webgpu-constraint-dom-arena · Verse lab">
+<meta property="og:description" content="Novel combination that deliberately leaves the recent causal-RNN-sealed-peer / orientation-WebGPU-sealed-physics / WebXR-hand-MLP / NCA-spatial-audio /">
+<meta property="og:url" content="https://a-to-mind.com/lab/f256-webxr-gaze-webgpu-constraint-dom-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f256-webxr-gaze-webgpu-constraint-dom-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div><strong>F256 Gaze-Constraint Arena</strong></div>
+  <button id="xrBtn">Enter WebXR</button>
+  <button id="orientBtn">Enable Orientation</button>
+  <button id="sealBtn">Seal Champion</button>
+  <button id="resetBtn">Reset</button>
+  <div id="status">Ready. Gaze or pointer drives constraints.</div>
+</div>
+<div id="agents"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-gaze-webgpu-constraint-dom-arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

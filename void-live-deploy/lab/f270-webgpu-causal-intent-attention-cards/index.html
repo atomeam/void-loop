@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --hue: 220;
+  --blur: 0px;
+  --contrast: 1;
+  --energy: 0.4;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #0a0a12;
+  color: #e0e8ff;
+  font-family: system-ui, sans-serif;
+  filter: hue-rotate(calc(var(--hue) * 1deg)) blur(var(--blur)) contrast(var(--contrast));
+  transition: filter 0.3s;
+}
+#c {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+#scene {
+  position: absolute;
+  inset: 0;
+  perspective: 900px;
+  z-index: 2;
+  pointer-events: none;
+}
+.card {
+  position: absolute;
+  width: 140px;
+  height: 90px;
+  background: rgba(20, 30, 60, 0.75);
+  border: 1px solid rgba(180, 210, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 11px;
+  color: #d0e0ff;
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1), filter 0.3s;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.card strong { color: #9cf; }
+#hud {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  font-size: 12px;
+  background: rgba(0,0,0,0.5);
+  padding: 8px 12px;
+  border-radius: 6px;
+  pointer-events: auto;
+}
+button {
+  background: #1a2a4a;
+  color: #9cf;
+  border: 1px solid #4a6a9a;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 6px;
+}
+#status { margin-top: 6px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Causal Intent Lattice with Evolutionary Multi-Head Attention Agents and Physically Morphing Thought Cards · Verse lab</title>
+<meta name="description" content="A 2D causal deposit lattice (pointer trajectory + device orientation inject decaying energy that diffuses) whose local field statistics and recent history are">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Causal Intent Lattice with Evolutionary Multi-Head Attention Agents and Physically Morphing Thought Cards · Verse lab">
+<meta property="og:description" content="A 2D causal deposit lattice (pointer trajectory + device orientation inject decaying energy that diffuses) whose local field statistics and recent history are">
+<meta property="og:url" content="https://a-to-mind.com/lab/f270-webgpu-causal-intent-attention-cards/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f270-webgpu-causal-intent-attention-cards/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="scene"></div>
+<div id="hud">
+  <div>F-270 Causal Intent Attention Cards</div>
+  <button id="seal">Seal genome</button>
+  <button id="xr">Enter XR (stub)</button>
+  <div id="status">gesture for audio · tilt or drag to deposit</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Causal Intent Lattice with Evolutionary Multi-Head Attention Agents and Physically Morphing Thought Cards</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

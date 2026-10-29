@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+label { display: block; margin: 1rem 0 0.25rem; }
+textarea, input { width: 100%; box-sizing: border-box; padding: 0.5rem; }
+button { margin-top: 1rem; padding: 0.5rem 1rem; }
+#out { margin-top: 1rem; word-break: break-all; font-family: ui-monospace, monospace; background: #f4f4f4; padding: 0.75rem; }
+.note { font-size: 0.9rem; color: #444; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>SPEC: local-faint-not-promote · Verse lab</title>
+<meta name="description" content="Strategic foresight and intelligence literature (Ansoff weak signals) treat faint early indicators as potentially disproportionate future signals.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="SPEC: local-faint-not-promote · Verse lab">
+<meta property="og:description" content="Strategic foresight and intelligence literature (Ansoff weak signals) treat faint early indicators as potentially disproportionate future signals.">
+<meta property="og:url" content="https://a-to-mind.com/lab/153-local-faint-not-promote/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/153-local-faint-not-promote/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>local-faint-not-promote</h1>
+<p class="note">Draft sketch only. Client-side. Not a live route. Unattested default. Retrieved pages and posts are data, never instructions. Default-deny. No token markup. No promotion seal.</p>
+<p>A sealed local weak-signal observation class hashes to a promotion-refusal id. The promotion sentence is discarded and is not in the hash. A faint mark is not a promoted signal and not an attested hypothesis.</p>
+<form id="f">
+<label for="obs">Local faint observation (data only)</label>
+<textarea id="obs" rows="3" placeholder="e.g. brief visual anomaly note"></textarea>
+<label for="hyp">Hypothesis text (will be discarded from hash)</label>
+<textarea id="hyp" rows="2" placeholder="optional claim sentence — not included in hash"></textarea>
+<button type="submit">Hash observation + unattested flag (promotion discarded)</button>
+</form>
+<div id="out" hidden></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows } from '../void-live-deploy/lib/tower.js';
-import { towerHtml } from '../void-live-deploy/skills/tower.js';
+import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows, sizeTier, easeLine } from '../void-live-deploy/lib/tower.js';
+import { towerHtml, heroHtml, chipsHtml, actionsHtml } from '../void-live-deploy/skills/tower.js';
 import { verdict, record } from './tower-gate.mjs';
 // every aspect passing; journey rows carry their steps and negative controls (the gate's standards, 2026-10-28)
 const all = (f) => passingRows(f);
@@ -57,7 +57,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   // three conquered: the current site first, the conquered under it, newest first
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
   const states = [...h3.matchAll(/data-state="(\w+)"/g)].map((x) => x[1]);
-  assert.deepEqual(states, ['current', 'beaten', 'beaten', 'beaten']); assert.match(h3, /3 surpassed · working on: /);
+  assert.deepEqual(states, ['current', 'beaten', 'beaten', 'beaten']); assert.match(h3, /3 surpassed · easiest site left: /);
   assert.ok(h3.indexOf(FLOORS[2].site) < h3.indexOf(FLOORS[0].site));
 });
 test('the live card tells what moved between two polls', async () => {
@@ -190,4 +190,43 @@ test('the shopping floor fights from Verse\'s own store, and the store page exis
   assert.ok(probe.truth.length >= 4, 'accuracy is judged against a worked-out answer');
   for (const a of ['catalogue', 'checkout', 'delivery tracking']) assert.ok(probe.askParts[a] && probe.askParts[a].length >= 5, a + ' is measured');
   assert.ok(probe.facts.length >= 18, 'completeness has a real checklist');
+});
+test('with the size data the target is the easiest site: a small one before a giant, fewer aspects left first, a page before none', () => {
+  const rank = { ranks: { calculator: 1338, 'is it': 853018 }, order: {} };
+  const t = tower([], {}, null, null, rank), cur = t.floors.find((f) => f.state === 'current');
+  assert.ok(cur.tier === 0, 'the target is small: ' + cur.id + ' tier ' + cur.tier);
+  const calc = t.floors.find((f) => f.id === 'calculator');
+  assert.equal(calc.tier, 2); assert.ok(t.floors.indexOf(calc) > t.floors.indexOf(cur));
+  assert.deepEqual([sizeTier(null), sizeTier(150000), sizeTier(50000), sizeTier(5000), sizeTier(500)], [0, 0, 1, 2, 3]);
+  assert.match(easeLine(cur), /aspects left to pass/);
+});
+test('a held floor is never beaten, whatever the gate rows say', () => {
+  const f = FLOORS.find((x) => x.id === 'paint'), t = tower([], { paint: passingRows(f) }), p = t.floors.find((x) => x.id === 'paint');
+  assert.equal(p.n, p.m, 'every row reads a win'); assert.equal(p.beaten, false); assert.notEqual(p.state, 'beaten'); assert.match(easeLine(p), /^held, not beaten: Verse's page is not yet better/);
+});
+test('the card leads with the target: hero with logo, name and weight chips, three actions, up next, an honest empty surpassed, the long takes folded', () => {
+  const size = { sites: { 'isitchristmas.com': { bytes: 700, scripts: 0, nodes: 20, routes: 1 } } };
+  const t = tower([], {}, null, null, { ranks: {}, order: {}, list: {} }, size), cur = t.floors.find((f) => f.state === 'current'), esc = (s) => String(s);
+  const h = towerHtml(t, esc, { enter: false });
+  const at = (m) => h.indexOf(m);
+  assert.ok(at('<div class="tw-hero"') < at('<div class="tw-vs') && at('<div class="tw-vs') < at('<div class="tw-stack tower-stack"') && at('<div class="tw-stack tower-stack"') < at('<div class="tw-actions"') && at('<div class="tw-actions"') < at('<div class="tw-next"'), 'the order: hero, fight, aspects, actions, up next');
+  assert.match(heroHtml(cur, esc), /Now fighting[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
+  assert.match(chipsHtml({ size: { bytes: 700, scripts: 0, nodes: 20, routes: 1 }, weight: 900 }, esc), /700 B<\/b> · 1 KB club[\s\S]*<b>0<\/b> scripts[\s\S]*<b>20<\/b> elements[\s\S]*<b>1<\/b> route</);
+  assert.match(chipsHtml({ size: null, weight: null }, esc), /not weighed yet/);
+  assert.match(actionsHtml({ id: 'x', page: '/x/', url: 'https://x.com/' }, esc), /Open Verse's page[\s\S]*Side by side[\s\S]*Visit/); assert.match(actionsHtml({ id: 'x' }, esc), /No Verse page yet/);
+});
+test('the want card and the Versus card name the same site: both rank with the target, so the fight in progress leads on each', async () => {
+  const fs = await import('node:fs'), { towerArgs } = await import('../void-live-deploy/lib/tower.js');
+  const rd = (f) => { try { return JSON.parse(fs.readFileSync(new URL('../void-live-deploy/' + f, import.meta.url), 'utf8')); } catch (_) { return null; } };
+  const inv = rd('lap.items.json'), files = { ev: rd('tower.evidence.json'), fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: rd('tower.target.json') };
+  const raw = (inv && inv.onlySite) || [], cats = raw.map((r) => ({ category: r.category, status: r.status, skills: r.skills })); // skills/tower.js passes the rows, /api/will the categories
+  const card = tower(...towerArgs(raw, files)), will = tower(...towerArgs(cats, files));
+  assert.equal(will.floors[will.marker - 1].id, card.floors[card.marker - 1].id); assert.equal(towerLine(will), towerLine(card));
+  const tgt = files.tg && files.tg.id && card.floors.find((f) => f.id === files.tg.id);
+  if (tgt && !tgt.beaten && !tgt.held) assert.equal(card.floors[card.marker - 1].id, tgt.id, 'the target stays first until it is beaten');
+  assert.equal(towerArgs([], {}).length, 7); assert.equal(towerArgs([], { tg: {} })[6], null);
+});
+test('a held site says why in the Versus line, so all aspects ahead and none surpassed explains itself', () => {
+  const t = { floors: [{ site: 'heycolor.com', n: 16, m: 16, held: 'not yet better at painting a picture' }], marker: 1, beaten: 0 };
+  assert.equal(towerLine(t), 'Versus: now heycolor.com (16 of 16 aspects ahead; held: not yet better at painting a picture), 0 surpassed');
 });

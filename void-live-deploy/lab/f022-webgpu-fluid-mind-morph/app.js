@@ -1,0 +1,172 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const regimeEl = document.getElementById('regime');
+const confEl = document.getElementById('conf');
+const sealsEl = document.getElementById('seals');
+const gpuNote = document.getElementById('gpu-note');
+
+let W = canvas.width = innerWidth;
+let H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const N = 800;
+const particles = [];
+for (let i = 0; i < N; i++) {
+  particles.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: (Math.random() - 0.5) * 0.5
+  });
+}
+
+let mouse = { x: W/2, y: H/2, down: false };
+let gravity = { x: 0, y: 0 };
+let viscosity = 0.98;
+let attract = 0.002;
+let frame = 0;
+let lastRegime = 'chaos';
+let seals = [];
+
+canvas.addEventListener('pointerdown', e => { mouse.down = true; mouse.x = e.clientX; mouse.y = e.clientY; });
+canvas.addEventListener('pointerup', () => mouse.down = false);
+canvas.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+document.getElementById('orient').onclick = async () => {
+  if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+    try { await DeviceOrientationEvent.requestPermission(); } catch(e) {}
+  }
+  addEventListener('deviceorientation', e => {
+    gravity.x = (e.gamma || 0) * 0.02;
+    gravity.y = (e.beta || 0) * 0.02;
+  });
+  statusEl.textContent = 'orientation on';
+};
+
+document.getElementById('clear').onclick = () => {
+  for (const p of particles) {
+    p.x = Math.random() * W; p.y = Math.random() * H;
+    p.vx = (Math.random()-0.5)*0.5; p.vy = (Math.random()-0.5)*0.5;
+  }
+};
+
+document.getElementById('seal').onclick = async () => {
+  const data = `${lastRegime}|${frame}|${viscosity.toFixed(3)}|${attract.toFixed(4)}`;
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data))
+    .then(b => Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,12));
+  seals.unshift({ regime: lastRegime, hash, ts: Date.now() });
+  if (seals.length > 8) seals.pop();
+  renderSeals();
+  try {
+    const db = await new Promise(res => {
+      const r = indexedDB.open('void-fluid-seals', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('seals', { autoIncrement: true });
+      r.onsuccess = () => res(r.result);
+    });
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').add({ regime: lastRegime, hash, ts: Date.now() });
+  } catch(e) { /* in-memory only */ }
+};
+
+function renderSeals() {
+  sealsEl.innerHTML = seals.map(s => `<div>${s.regime} · ${s.hash}</div>`).join('');
+}
+
+// Simple local mind via Worker (blob)
+const workerCode = `
+self.onmessage = (e) => {
+  const { meanSpeed, meanDiv, cluster } = e.data;
+  let regime = 'chaos';
+  let conf = 0.4;
+  if (meanSpeed > 1.2 && Math.abs(meanDiv) < 0.3) { regime = 'stream'; conf = 0.7; }
+  else if (Math.abs(meanDiv) > 0.4) { regime = 'pulse'; conf = 0.65; }
+  else if (cluster > 0.15) { regime = 'swirl'; conf = 0.75; }
+  else if (meanSpeed < 0.4) { regime = 'laminar'; conf = 0.6; }
+  const bias = {
+    viscosity: regime === 'stream' ? 0.985 : regime === 'pulse' ? 0.97 : 0.98,
+    attract: regime === 'swirl' ? 0.004 : 0.002
+  };
+  self.postMessage({ regime, conf, bias });
+};
+`;
+const worker = new Worker(URL.createObjectURL(new Blob([workerCode])));
+
+worker.onmessage = (e) => {
+  const { regime, conf, bias } = e.data;
+  lastRegime = regime;
+  regimeEl.textContent = `regime: ${regime}`;
+  confEl.textContent = `conf: ${(conf*100|0)}%`;
+  viscosity = bias.viscosity;
+  attract = bias.attract;
+  // Morph UI
+  const hue = { swirl: 280, stream: 140, pulse: 30, laminar: 200, chaos: 0 }[regime] || 200;
+  document.documentElement.style.setProperty('--hue', hue);
+  document.documentElement.style.setProperty('--border-r', regime === 'swirl' ? '48px' : '16px');
+  document.documentElement.style.setProperty('--border-w', regime === 'pulse' ? '8px' : '4px');
+  document.documentElement.style.setProperty('--card-scale', (0.95 + conf * 0.2).toFixed(2));
+  document.documentElement.style.setProperty('--card-rot', (regime === 'swirl' ? 8 : regime === 'stream' ? -6 : 0) + 'deg');
+  document.documentElement.style.setProperty('--bg', `hsl(${hue}, 20%, 6%)`);
+};
+
+function sampleStats() {
+  let speed = 0, div = 0, near = 0;
+  for (const p of particles) {
+    speed += Math.hypot(p.vx, p.vy);
+    div += p.vx + p.vy; // crude
+  }
+  // crude cluster: fraction of particles within 40px of mouse
+  for (const p of particles) {
+    if (Math.hypot(p.x - mouse.x, p.y - mouse.y) < 40) near++;
+  }
+  return {
+    meanSpeed: speed / N,
+    meanDiv: div / N,
+    cluster: near / N
+  };
+}
+
+function step() {
+  frame++;
+  // inject force
+  for (const p of particles) {
+    if (mouse.down) {
+      const dx = mouse.x - p.x, dy = mouse.y - p.y;
+      const d = Math.hypot(dx, dy) || 1;
+      p.vx += (dx / d) * 0.15;
+      p.vy += (dy / d) * 0.15;
+    }
+    p.vx += gravity.x;
+    p.vy += gravity.y;
+    // simple attraction to local mean (very cheap)
+    p.vx *= viscosity;
+    p.vy *= viscosity;
+    p.x += p.vx;
+    p.y += p.vy;
+    // wrap
+    if (p.x < 0) p.x += W; if (p.x > W) p.x -= W;
+    if (p.y < 0) p.y += H; if (p.y > H) p.y -= H;
+  }
+  // mind sample
+  if (frame % 15 === 0) {
+    worker.postMessage(sampleStats());
+  }
+  // draw
+  ctx.fillStyle = 'rgba(5,5,8,0.15)';
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = `hsl(${getComputedStyle(document.documentElement).getPropertyValue('--hue')}, 80%, 60%)`;
+  for (const p of particles) {
+    ctx.fillRect(p.x, p.y, 1.5, 1.5);
+  }
+  statusEl.textContent = `particles ${N} · frame ${frame}`;
+  requestAnimationFrame(step);
+}
+
+// GPU note
+if (navigator.gpu) {
+  gpuNote.textContent = 'WebGPU available — compute path reserved for next iteration; running Canvas2D fluid.';
+} else {
+  gpuNote.textContent = 'WebGPU unavailable — Canvas2D fallback active.';
+}
+
+step();

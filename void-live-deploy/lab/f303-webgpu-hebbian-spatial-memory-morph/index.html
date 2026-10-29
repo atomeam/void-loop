@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --coherence: 0.3;
+  --variance: 0.2;
+  --hue: 200;
+}
+body {
+  margin: 0;
+  background: #0a0a12;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+}
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+}
+.panel {
+  position: absolute;
+  background: rgba(20, 30, 50, 0.7);
+  border: 1px solid rgba(100, 150, 255, 0.4);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+  transition: transform 0.3s ease, filter 0.4s ease, opacity 0.3s;
+  z-index: 10;
+  pointer-events: auto;
+  transform: scale(calc(0.8 + var(--coherence) * 0.6)) rotate(calc(var(--variance) * 15deg));
+  filter: hue-rotate(calc(var(--hue) * 1deg)) blur(calc(var(--variance) * 2px));
+  opacity: calc(0.7 + var(--coherence) * 0.3);
+}
+#hud { top: 20px; left: 20px; width: 220px; }
+#stats { top: 20px; right: 20px; width: 180px; }
+#controls { bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+button {
+  background: #1a2a4a;
+  color: #c0d0ff;
+  border: 1px solid #446;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { background: #2a3a5a; }
+#status { font-size: 12px; opacity: 0.8; margin-top: 8px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Hebbian Spatial Memory Morph · Verse lab</title>
+<meta name="description" content="A WebGPU particle lattice where each particle carries a small local memory vector.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Hebbian Spatial Memory Morph · Verse lab">
+<meta property="og:description" content="A WebGPU particle lattice where each particle carries a small local memory vector.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f303-webgpu-hebbian-spatial-memory-morph/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f303-webgpu-hebbian-spatial-memory-morph/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="panel" id="hud">
+  <strong>Hebbian Memory Field</strong>
+  <div id="status">Initializing...</div>
+  <p>Move pointer or tilt. Particles form associations.</p>
+</div>
+<div class="panel" id="stats">
+  Coherence: <span id="coh">0.00</span><br>
+  Variance: <span id="var">0.00</span><br>
+  Particles: <span id="npart">0</span>
+</div>
+<div class="panel" id="controls">
+  <button id="seal">Seal Memory</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Hebbian Spatial Memory Morph</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

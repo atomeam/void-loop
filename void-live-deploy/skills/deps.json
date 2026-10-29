@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 920,
+ "counted": 923,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -160,7 +160,7 @@
    "file": "lib/self-sites.js",
    "skills": 10,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 1
   },
   {
@@ -532,7 +532,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/success-pulse.js",
@@ -626,6 +626,13 @@
    "tests": 3
   },
   {
+   "file": "lib/tower-controls.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
@@ -633,25 +640,32 @@
    "tests": 1
   },
   {
-   "file": "lib/tower-controls.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
    "file": "lib/gate-badge.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 1
   },
   {
    "file": "lib/tower-journeys.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 1
+  },
+  {
+   "file": "lib/tower-weight.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 5,
+   "tests": 25
   },
   {
    "file": "lib/arena-say.js",
@@ -701,13 +715,6 @@
    "direct": 1,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/tower.js",
-   "skills": 3,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 22
   },
   {
    "file": "lib/chat-calendar.js",
@@ -1651,8 +1658,8 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 48,
-   "tests": 8
+   "dependants": 49,
+   "tests": 9
   },
   {
    "file": "lib/pages.js",
@@ -1746,6 +1753,13 @@
    "tests": 0
   },
   {
+   "file": "lib/cite.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 21,
+   "tests": 1
+  },
+  {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
@@ -1764,17 +1778,17 @@
    "skills": 0,
    "direct": 0,
    "dependants": 21,
-   "tests": 5
+   "tests": 6
   },
   {
-   "file": "lib/character.js",
+   "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
    "tests": 1
   },
   {
-   "file": "lib/cite.js",
+   "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
@@ -1900,6 +1914,13 @@
    "tests": 1
   },
   {
+   "file": "lib/boards.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/comments.js",
    "skills": 0,
    "direct": 0,
@@ -1947,13 +1968,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 9
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/calshare.js",
@@ -2334,6 +2348,13 @@
    "tests": 1
   },
   {
+   "file": "lib/fanfic.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/fantasy.js",
    "skills": 0,
    "direct": 0,
@@ -2646,6 +2667,7 @@
     "lib/clef.js",
     "lib/shortfall.js",
     "lib/self-context.js",
+    "lib/answer-honesty.js",
     "lib/draft.js",
     "lib/memory-scope.js",
     "lib/memory-core.js",
@@ -3158,7 +3180,8 @@
     "lib/models.js",
     "lib/self-context.js",
     "lib/shortfall.js",
-    "lib/voice.js"
+    "lib/voice.js",
+    "lib/tower.js"
    ],
    "importedBy": []
   },
@@ -3520,6 +3543,35 @@
     "lib/state.js"
    ],
    "importedBy": []
+  },
+  "lib/answer-honesty.js": {
+   "imports": [
+    "lib/cite.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
   },
   "lib/appraise-photo.js": {
    "imports": [],
@@ -4027,7 +4079,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/boards/[[path]].js",
-    "functions/boards/t/[[path]].js"
+    "functions/boards/t/[[path]].js",
+    "lib/fanfic.js"
    ]
   },
   "lib/book-face.js": {
@@ -4528,7 +4581,8 @@
   "lib/cite.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/answer-honesty.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
@@ -5007,6 +5061,12 @@
     "skills/fakeuser.js"
    ]
   },
+  "lib/fanfic.js": {
+   "imports": [
+    "lib/boards.js"
+   ],
+   "importedBy": []
+  },
   "lib/fantasy.js": {
    "imports": [
     "lib/scores.js"
@@ -5430,6 +5490,7 @@
     "skills/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/walker.js"
@@ -6382,7 +6443,8 @@
     "lib/approval-core.js",
     "lib/clef.js",
     "lib/review-api.js",
-    "lib/router.js"
+    "lib/router.js",
+    "lib/self-context.js"
    ],
    "reachedBy": [
     "functions/api/actions.js",
@@ -7796,7 +7858,8 @@
   "lib/self-context.js": {
    "imports": [
     "lib/voice.js",
-    "lib/persona.js"
+    "lib/persona.js",
+    "lib/models.js"
    ],
    "importedBy": [
     "functions/api/answer.js",
@@ -7831,6 +7894,7 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
@@ -8911,6 +8975,7 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/tower.js",
@@ -8925,6 +8990,7 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/tower.js",
@@ -8937,17 +9003,32 @@
     "skills/tower.js"
    ]
   },
+  "lib/tower-weight.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tower.js",
+    "skills/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js",
+    "functions/api/will.js",
+    "skills/cartoon.js",
+    "skills/walker.js"
+   ]
+  },
   "lib/tower.js": {
    "imports": [
     "lib/self-sites.js",
     "lib/gate-badge.js",
     "lib/tower-controls.js",
-    "lib/tower-journeys.js"
+    "lib/tower-journeys.js",
+    "lib/tower-weight.js"
    ],
    "external": [
     ", "
    ],
    "importedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/tower.js",
     "skills/walker.js"
@@ -9301,6 +9382,10 @@
    "imports": [
     "skills/live.js"
    ],
+   "importedBy": []
+  },
+  "skills/advice.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/aggravation.js": {
@@ -12713,7 +12798,8 @@
     "lib/tower.js",
     "lib/gate-badge.js",
     "lib/avatar.js",
-    "lib/tower-rank.js"
+    "lib/tower-rank.js",
+    "lib/tower-weight.js"
    ],
    "importedBy": []
   },

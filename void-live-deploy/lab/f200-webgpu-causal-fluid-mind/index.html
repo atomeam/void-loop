@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --hue: 210; --sat: 40%; --energy: 0.3; --visc: 0.5; }
+  body { margin: 0; overflow: hidden; background: hsl(var(--hue), var(--sat), 8%); color: #ddd; font-family: system-ui, sans-serif; transition: background 0.4s; }
+  #c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .portal { position: absolute; border-radius: 50%; pointer-events: none; mix-blend-mode: screen; transition: transform 0.15s, filter 0.2s; will-change: transform; }
+  .hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.55); padding: 8px 12px; border-radius: 8px; font-size: 13px; max-width: 280px; }
+  .seal { position: fixed; bottom: 12px; right: 12px; padding: 6px 10px; background: #333; border: none; color: #eee; border-radius: 6px; cursor: pointer; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Causal Fluid Mind · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: WebGPU Causal Fluid Mind.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Causal Fluid Mind · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: WebGPU Causal Fluid Mind.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f200-webgpu-causal-fluid-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f200-webgpu-causal-fluid-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud" id="hud">F-200 Causal Fluid Mind<br>Move to deposit. Drag portals.<br>Visc / energy morph chrome.</div>
+<button class="seal" id="seal">Seal genes</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Causal Fluid Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
