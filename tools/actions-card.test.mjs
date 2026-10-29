@@ -14,9 +14,10 @@ test('the card opens on the ways people ask for the record, and not on look-alik
 });
 
 test('the tally counts each state and reads as a sentence; an empty record says so', () => {
-  const rows = [{ state: 'done' }, { state: 'done' }, { state: 'failed' }, { state: 'stubbed' }, { state: 'running' }, { state: 'odd' }, null];
-  assert.deepEqual(tally(rows), { done: 2, failed: 1, stubbed: 1, running: 1 });
-  assert.equal(tallyText(tally(rows)), '2 done · 1 failed · 1 stubbed (nothing left Verse) · 1 still running or never reported back');
+  const rows = [{ state: 'done' }, { state: 'done' }, { state: 'failed' }, { state: 'stubbed' }, { state: 'running' }, { state: 'deferred' }, { state: 'odd' }, null];
+  assert.deepEqual(tally(rows), { done: 2, failed: 1, stubbed: 1, running: 1, deferred: 1 });
+  assert.equal(tallyText(tally(rows)), '2 done · 1 failed · 1 stubbed (nothing left Verse) · 1 waiting to try again (a site asked Verse to slow down; not failed) · 1 still running or never reported back');
+  assert.ok(lineOf({ state: 'deferred', started: '2026-10-29T12:36:00Z', kind: 'watch.check', ref: 'hourly-store', result: 'rate limited, retry later' }).startsWith(MARK.deferred + ' '), 'a deferred record has its own mark, not the failed one');
   assert.match(tallyText(tally([])), /^No actions recorded yet/);
 });
 

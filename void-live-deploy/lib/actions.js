@@ -3,9 +3,11 @@
 // without its record: the record is written as `running` before the action starts, and an action whose record can't be
 // written does not run. A record that stays `running` means the action started and Verse never learned how it ended.
 //   states: running -> done (result) | failed (error) | stubbed (result says what would have happened; nothing left Verse)
+//           | deferred (result says why and when it tries again: the far side asked Verse to wait, a 429; not a failure)
 // D1 table void_actions; the owner reads them at /api/actions. The pure half (begin/settle/problems) has no D1.
 
-export const STATES = ['running', 'done', 'failed', 'stubbed'];
+export const STATES = ['running', 'done', 'failed', 'stubbed', 'deferred'];
+export const ENDS = ['done', 'failed', 'stubbed', 'deferred'];
 export const KEEP = 1000;
 export const TABLE = 'CREATE TABLE IF NOT EXISTS void_actions (id TEXT PRIMARY KEY, owner TEXT NOT NULL, kind TEXT NOT NULL, ref TEXT, state TEXT NOT NULL, result TEXT, error TEXT, started TEXT NOT NULL, finished TEXT)';
 const clip = (s, n = 500) => (s == null ? null : String(s).slice(0, n));
@@ -20,7 +22,7 @@ export function begin({ owner, kind, ref = null }, now = new Date()) {
 /** The record moved to its end state. Only a running record can end, and only once. Pure. */
 export function settle(rec, state, text, now = new Date()) {
   if (rec.state !== 'running') throw new Error('record ' + rec.id + ' already ended as ' + rec.state);
-  if (!['done', 'failed', 'stubbed'].includes(state)) throw new Error('not an end state: ' + state);
+  if (!ENDS.includes(state)) throw new Error('not an end state: ' + state);
   return { ...rec, state, result: state === 'failed' ? null : clip(text), error: state === 'failed' ? clip(text) || 'failed' : null, finished: now.toISOString() };
 }
 
@@ -37,10 +39,15 @@ export function problems(r) {
   if (r.state !== 'running' && !r.finished) out.push('an ended record has its finish time');
   if (r.state === 'done' && r.result == null) out.push('a done record says what it did');
   if (r.state === 'stubbed' && r.result == null) out.push('a stubbed record says what would have happened');
+  if (r.state === 'deferred' && r.result == null) out.push('a deferred record says when it tries again');
   if (r.state === 'failed' && !r.error) out.push('a failed record says why');
   if (r.state !== 'failed' && r.error) out.push('only a failed record has an error');
   return out;
 }
+
+/** An error that ends a record `deferred`, not `failed`: the action was asked to wait (a site's 429) and says when it tries again.
+ * track() keeps it as the result and does not rethrow it, so the run goes on and nothing counts it as a failure. */
+export function deferred(text) { const e = new Error(String(text || 'asked to wait')); e.deferred = true; return e; }
 
 const write = (env, r) => env.DB.prepare('INSERT INTO void_actions (id, owner, kind, ref, state, result, error, started, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET state = excluded.state, result = excluded.result, error = excluded.error, finished = excluded.finished')
   .bind(r.id, r.owner, r.kind, r.ref, r.state, r.result, r.error, r.started, r.finished).run();
@@ -48,7 +55,7 @@ const write = (env, r) => env.DB.prepare('INSERT INTO void_actions (id, owner, k
 /**
  * Run one action with its record. The `running` record is written first; if that write fails the action does not run
  * and this throws. Then fn() runs: its return value is the result (done), a thrown error is the error (failed, and
- * rethrown). opts.stub: the action is not taken at all; the record ends `stubbed` with opts.stub as what would have happened.
+ * rethrown; a deferred() error ends it `deferred` and is returned as the value, with deferred: true). opts.stub: the action is not taken at all; the record ends `stubbed` with opts.stub as what would have happened.
  * Returns { record, value }.
  */
 export async function track(env, { owner, kind, ref }, fn, opts = {}) {
@@ -58,7 +65,10 @@ export async function track(env, { owner, kind, ref }, fn, opts = {}) {
   if (opts.stub != null) { rec = settle(rec, 'stubbed', opts.stub); await write(env, rec); return { record: rec, value: undefined }; }
   let value;
   try { value = await fn(); }
-  catch (e) { rec = settle(rec, 'failed', (e && e.message) || String(e)); try { await write(env, rec); } catch (_) {} throw e; }
+  catch (e) {
+    if (e && e.deferred) { rec = settle(rec, 'deferred', e.message); try { await write(env, rec); } catch (_) {} return { record: rec, value: rec.result, deferred: true }; }
+    rec = settle(rec, 'failed', (e && e.message) || String(e)); try { await write(env, rec); } catch (_) {} throw e;
+  }
   rec = settle(rec, 'done', typeof value === 'string' ? value : JSON.stringify(value ?? 'done'));
   try { await write(env, rec); } catch (_) {} // the action happened; a lost update leaves it `running`, which says so
   await env.DB.prepare('DELETE FROM void_actions WHERE id NOT IN (SELECT id FROM void_actions ORDER BY started DESC LIMIT ?)').bind(KEEP).run().catch(() => {});

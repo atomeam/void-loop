@@ -1,6 +1,6 @@
 /**
  * actions skill — the execution record as a card (frontier build order step 2; lib/actions.js keeps one record per action
- * Verse takes or stubs: owner, kind, ref, state running → done | failed | stubbed, result or error; /api/actions serves
+ * Verse takes or stubs: owner, kind, ref, state running → done | failed | stubbed | deferred (asked to wait), result or error; /api/actions serves
  * them to the owner). The card lists the newest 30 records with a mark per state, a tally line, a switch to see only what
  * failed, Show more for the next 30, and Refresh; it keeps itself live (skills/live.js, every minute) so a record that
  * is running settles on screen by itself. Nothing here takes an action; it only shows what Verse did. Owner-only: without
@@ -21,10 +21,10 @@ export function actionsOf(text) {
   return null;
 }
 
-export const MARK = { done: '✓', failed: '✗', stubbed: '○', running: '…' };
+export const MARK = { done: '✓', failed: '✗', stubbed: '○', running: '…', deferred: '◷' };
 /** how many records sit in each state; running counts what started and never reported back */
 export function tally(records) {
-  const n = { done: 0, failed: 0, stubbed: 0, running: 0 };
+  const n = { done: 0, failed: 0, stubbed: 0, running: 0, deferred: 0 };
   for (const r of records || []) if (r && n[r.state] != null) n[r.state] += 1;
   return n;
 }
@@ -33,6 +33,7 @@ export function tallyText(n) {
   if (n.done) parts.push(n.done + ' done');
   if (n.failed) parts.push(n.failed + ' failed');
   if (n.stubbed) parts.push(n.stubbed + ' stubbed (nothing left Verse)');
+  if (n.deferred) parts.push(n.deferred + ' waiting to try again (a site asked Verse to slow down; not failed)');
   if (n.running) parts.push(n.running + ' still running or never reported back');
   return parts.length ? parts.join(' · ') : 'No actions recorded yet. Every automation step writes one when it runs.';
 }

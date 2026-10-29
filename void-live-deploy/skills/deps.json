@@ -896,7 +896,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 12,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/showers.js",
@@ -1050,7 +1050,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 22,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/plan.js",
@@ -1071,7 +1071,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 10,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/boards.js",
@@ -2058,7 +2058,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 5,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/image-gen.js",

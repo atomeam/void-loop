@@ -21,7 +21,7 @@ const when = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLoca
 export function lastLine(w) {
   const c = w.checks && w.checks[0];
   if (!c) return w.last && w.last.at ? 'checked ' + when(w.last.at) : 'not checked yet';
-  return (c.state === 'failed' ? '✗ ' : /^MATCH/.test(c.result || '') ? '★ ' : '· ') + when(c.started) + ' · ' + (c.state === 'failed' ? c.error : c.result || '');
+  return (c.state === 'failed' ? '✗ ' : c.state === 'deferred' ? '◷ ' : /^MATCH/.test(c.result || '') ? '★ ' : '· ') + when(c.started) + ' · ' + (c.state === 'failed' ? c.error : c.result || '');
 }
 
 function mount(th, stageApi) {
