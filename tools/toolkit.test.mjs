@@ -184,3 +184,41 @@ test('the base converter\'s card opens on the number typed there, in the base it
   assert.match(src, /card: \(\) => \(!typedIn \? '' : typedIn\.dataset\.base === 'any' \? baseAsk\(\$\('b10'\)\.value, 10\) : baseAsk\(typedIn\.value, \+typedIn\.dataset\.base\)\)/, 'the page gives its card the box typed in');
   assert.match(src, /const show = \(fromBox\) => \{\n\s+typedIn = fromBox;/, 'every show remembers the box');
 });
+
+test('the unit converter\'s card opens on the conversion shown there, as the card reads it back, not on a bare converter', async () => {
+  const U = await import('../void-live-deploy/lib/units.js'), M = await import('../void-live-deploy/lib/convert-math.js'), N = (x) => +U.fmt(x, 15);
+  const words = (u) => [u.sym, u.name].map((w) => String(w).toLowerCase());
+  const askFor = (typed) => { const st = U.parseAsk(typed), v = U.parseNum(st.text); // as the page does it
+    const answer = (b) => { const p = U.parseAsk('1 ' + st.from.sym + ' to ' + b); return p && p.from === st.from && p.to && (!st.to || p.to === st.to) ? N(U.convert(v, st.from, p.to)) : NaN; };
+    return { st, v, ask: M.cardAsk(N(v), words(st.from), st.to ? words(st.to) : null, answer) }; };
+  for (const typed of ['5 km to mi', '100 c to f', '-40 c to f', '180 lb to kg', '1 1/2 cups to ml', '100 mph to kmh', '1 acre in square metres', '2 hours to minutes', '3 ft']) {
+    const { st, v, ask } = askFor(typed); assert.ok(ask, 'a card ask for ' + typed);
+    assert.equal(await firstSkill(ask), 'convert', 'the stage gives it to the converter card: ' + ask);
+    const q = M.askOf(ask), to = st.to || U.parseAsk('1 ' + st.from.sym + ' to ' + M.KINDS[q.kind].units[q.to][0].replace(/\s*\(.*\)$/, '')).to;
+    assert.equal(q.value, N(v), 'the card holds the number shown: ' + ask);
+    assert.ok(Math.abs(M.convert(q.kind, q.from, q.to, q.value) - N(U.convert(v, st.from, to))) <= 1e-9 * Math.max(1, Math.abs(N(U.convert(v, st.from, to)))), 'and works out what the page does: ' + ask);
+  }
+  assert.equal(askFor('1 MB to KB').ask, '', 'the card\'s KB is 1024 bytes and the page\'s is 1000: the example, not a wrong number');
+  assert.equal(askFor('30 psi to bar').ask, '', 'a kind the card has not got: the example');
+  const src = fs.readFileSync(new URL('../void-live-deploy/convert/index.html', import.meta.url), 'utf8');
+  assert.match(src, /m\.mountRelated\(document\.getElementById\('related'\), '\/convert\/', \[\], \{ card: \(\) => \{/, 'the page gives its card the conversion shown');
+  assert.match(src, /return cardAsk\(\+fmt\(v, 15\), words\(st\.from\), st\.to \? words\(st\.to\) : null, answer\);/);
+});
+
+test('the calculator\'s card works out the sum in the box, and the stopwatch\'s card is a timer of the countdown\'s length', async () => {
+  const C = await import('../void-live-deploy/lib/calculator.js'), K = await import('../void-live-deploy/skills/calc.js');
+  for (const [sum, want] of [['2×(3+4)', 'calculator 2*(3+4)'], ['1000÷8−2', 'calculator 1000/8-2'], ['17% of 240', 'calculator 17% of 240'], ['(1.5+2.25)*4=', 'calculator (1.5+2.25)*4']]) {
+    const ask = C.cardAsk(sum); assert.equal(ask, want);
+    const e = K.evaluate(K.expressionOf(ask)); assert.ok(e.ok); assert.equal(e.value, C.calc(sum).value, 'the card shows the page\'s answer: ' + ask);
+    assert.equal(await firstSkill(ask), null, 'no skill takes it before the stage calculator: ' + ask);
+  }
+  for (const sum of ['sin(30)', 'π*2', 'Ans+1', '5!', '', '2+']) assert.equal(C.cardAsk(sum), '', 'a sum the card cannot work out the same way: the example: ' + sum);
+  const S = await import('../void-live-deploy/lib/stopwatch.js'), T = await import('../void-live-deploy/skills/timer.js');
+  for (const ms of [30000, 45000, 60000, 90000, 120000, 300000, 600000, 1500000, 3600000, 5400000, 86400000]) {
+    const ask = S.timerAsk(ms); assert.equal(await firstSkill(ask), 'timer', 'the stage gives it to the timer: ' + ask); assert.equal(T.parseDuration(ask), ms, 'the same length: ' + ask);
+  }
+  for (const ms of [0, 500, 90500, 86401000, NaN]) assert.equal(S.timerAsk(ms), '');
+  const calc = fs.readFileSync(new URL('../void-live-deploy/calculator/index.html', import.meta.url), 'utf8'), sw = fs.readFileSync(new URL('../void-live-deploy/stopwatch/index.html', import.meta.url), 'utf8');
+  assert.match(calc, /mountRelated\(document\.getElementById\('related'\), '\/calculator\/', \[\], \{ card: \(\) => cardAsk\(ex\.value, \{ deg, ans, mem \}\) \}\)/, 'the page gives its card the box');
+  assert.match(sw, /mountRelated\(document\.getElementById\('related'\), '\/stopwatch\/', \[\], \{ card: \(\) => \(tab === 'cd' \? timerAsk\(cd\.total\) : ''\) \}\)/, 'the countdown gives its card its length');
+});
