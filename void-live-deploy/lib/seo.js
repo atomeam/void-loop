@@ -11,7 +11,10 @@ export const SITE = 'https://a-to-mind.com';
 
 /** one row per tool page: path (as lib/toolkit.js TOOLS names it), name, what it does (true of the page), the phrases people search, the setting
  *  the link takes (an EntryPoint urlTemplate with one placeholder, or none) and the common asks shown as links on the page */
-export const PAGES = Object.freeze([
+// one row per path: a floor row (lib/tool-sites.js) for a page this table already describes by hand keeps the hand row, which comes first
+// (the calculator floor, Versus job mvoxrtv8, names /calculator/ too)
+const firstOfEach = (rows) => rows.filter((r, i) => rows.findIndex((q) => q.path === r.path) === i);
+export const PAGES = Object.freeze(firstOfEach([
   { path: '/photos/', name: 'Photo tools: compress, convert, edit, strip EXIF', does: 'Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.',
     asks: ['compress image online', 'convert png to webp', 'photo editor online', 'crop photo online', 'remove exif data from photo', 'image compressor no upload', 'compress images in bulk to zip'],
     action: { template: '/photos/?tab={tab}', input: 'tab' },
@@ -166,7 +169,7 @@ export const PAGES = Object.freeze([
   ...SITE_PAGES.map((p) => ({ path: p.path, name: p.name, does: p.does, asks: p.asks, ...(p.links && p.links.length ? { links: p.links, action: p.action || { template: p.path + '?tool={tool}', input: 'tool' } } : {}) })),
   { path: '/tools/', name: 'Every Verse tool', does: 'Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.',
     asks: ['free online tools', 'online utilities', 'web tools without ads', 'tools that work offline', 'converter and generator tools'] },
-]);
+]));
 
 /** the row for a path, or null. Pure. */
 export const pageOf = (path) => PAGES.find((p) => p.path === path) || null;
