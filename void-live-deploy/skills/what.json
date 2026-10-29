@@ -216,6 +216,7 @@
  "own-parts": "Verse's own components by name",
  "part": "Summon Linemote-1, the first printable part: a page with what it is, its dimensions, materials, the one…",
  "partial-answer": "\"partial answer on <question>\" / \"tell me only what you know about <x>\"",
+ "password": "Generate a random secure password",
  "pdf-card": "\"ask questions about a pdf\", \"read this pdf\", \"chat with a pdf\"",
  "pdf-tools": "\"merge pdf\", \"split a pdf\", \"compress pdf\", \"jpg to pdf\", \"pdf to jpg\", \"rotate a pdf\", \"reorder pdf pages\"…",
  "period": "A period log kept in your own Verse (this browser only), and the predictions it unlocks",

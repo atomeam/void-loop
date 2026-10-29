@@ -210,6 +210,8 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   // a frontier site's own page, by its host: sycophanthex.com, the tower target since 2026-10-29 (a fan-fiction archive), is assimilated by /fanfic/, the
   // archive built to its catalog (domains/targets/sycophanthex.json)
   'sycophanthex.com': '/fanfic/',
+  // wheelroot.com ("Drawing Fundamentals", a course page whose button leads nowhere) is assimilated by /learn-to-draw/, the course itself (domains/targets/wheelroot.json)
+  'wheelroot.com': '/learn-to-draw/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores

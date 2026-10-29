@@ -71,6 +71,7 @@ const JBCSS = `
   .counts { font-size: 14px; } .pick { position: absolute; left: -9999px; } details summary { cursor: pointer; min-height: 32px; padding: 4px 0; }
   @media print { button, footer, .tk-row, .tk-ask, #jb-form { display: none !important; } body { background: #fff; color: #000; } }`;
 const KBCSS = `
+  .lead { font-size: 15px; margin: 2px 0 4px; } .tries { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 10px; font-size: 14px; } .tries a { padding: 6px 0; }
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
   .chead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; } .chead h3 { flex: 1; font-size: 15px; overflow-wrap: anywhere; } .count { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; } .count.over { color: var(--bad); font-weight: 700; }
@@ -118,8 +119,8 @@ export function pageOf(row, kind) {
 <body>
 <main>
   <h1>${esc(row.h1)}</h1>
-  <p class="intro">${esc(row.intro)}</p>
-  <div id="app"></div>
+  ${row.lead ? '<p class="lead" id="lead">' + esc(row.lead) + '</p>\n  ' : ''}<p class="intro">${esc(row.intro)}</p>
+  ${row.tries ? triesOf(row) + '\n  ' : ''}<div id="app"></div>
   <nav id="related" aria-label="Related tools"></nav>
   <footer>${foot}</footer>
 </main>
@@ -129,6 +130,9 @@ export function pageOf(row, kind) {
 </html>
 `;
 }
+/** ready boards a newcomer can open in one tap (docs/WIDER-USE.md): each is a share link (#b=, lib/kanban-ui.js imports it), so it works as a plain link and adds a board, never replaces one */
+export const tryLink = (board) => '?try=1#b=' + Buffer.from(JSON.stringify(board), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+export function triesOf(row) { return '<nav class="tries" id="tries" aria-label="Open a ready board"><span class="note">Try a ready board:</span> ' + row.tries.map(([label, board]) => '<a href="' + tryLink(board) + '">' + esc(label) + '</a>').join(' ') + '</nav>'; }
 /** the page's module: the one place its path and settings are written (a file of its own, so every page of a family has the same inline scripts and shares one CSP rule, tools/csp-hashes.mjs) */
 export function appOf(row, kind) {
   const pdf = kind === 'pdf', fl = kind === 'flights', jb = kind === 'jobs', cfg = jb ? { panels: row.panels, ...(row.preset ? { preset: row.preset } : {}), de: row.de } : pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };

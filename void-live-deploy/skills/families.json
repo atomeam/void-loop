@@ -1200,7 +1200,7 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 3,
+    "checked": 4,
     "proven": 14
    },
    "skills": [
@@ -1390,6 +1390,13 @@
      "name": "uuid",
      "tier": "tested",
      "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "password",
+     "tier": "checked",
+     "why": "a self-test, 5 browser-suite mentions",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test"
     }

@@ -103,9 +103,9 @@ export async function runPick(api) {
 
 export default {
   name: 'movie',
-  examples: ['pick a movie to watch with me', 'movie night', 'movie card for Nosferatu (1922)'],
+  examples: ['pick a movie to watch with me', 'movie night', 'movie card for Nosferatu (1922)', 'scary movies from the 90s'],
   nearMisses: ['film metadata for inception', 'watch this for me', 'movie metadata for the matrix', 'how do I film a video', 'pick a color'],
-  match(lower, text) { return pickAsk(text) || !!cardAsk(text); },
+  match(lower, text) { return pickAsk(text) || !!cardAsk(text) || (text.includes('movie') && (text.includes('from the') || text.includes('in the') || text.includes('genre'))); },
   run(text, api) { const c = cardAsk(text); return c ? runCard(c, api) : runPick(api); },
   suite() {
     const c = cardAsk('movie card for Talk to Me (2022)');

@@ -30,11 +30,11 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 1,
+    "checked": 0,
     "proven": 31
    },
    "from": 62,
-   "to": 97
+   "to": 96
   },
   {
    "id": "sky",
@@ -47,8 +47,8 @@
     "checked": 1,
     "proven": 16
    },
-   "from": 98,
-   "to": 118
+   "from": 97,
+   "to": 117
   },
   {
    "id": "time",
@@ -61,8 +61,8 @@
     "checked": 0,
     "proven": 18
    },
-   "from": 119,
-   "to": 139
+   "from": 118,
+   "to": 138
   },
   {
    "id": "numbers",
@@ -72,10 +72,10 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 3,
+    "checked": 4,
     "proven": 14
    },
-   "from": 140,
+   "from": 139,
    "to": 161
   },
   {
@@ -1295,8 +1295,7 @@
     "rally",
     "gamebox",
     "merge",
-    "zorbleflux",
-    "random"
+    "zorbleflux"
    ],
    "n": 62
   },
@@ -1962,21 +1961,6 @@
    "n": 95
   },
   {
-   "kind": "skill",
-   "chapter": "games",
-   "name": "random",
-   "title": "Random",
-   "line": "Dice written the way players write them: \"d20\", \"2d6\", \"3d8\"",
-   "examples": [
-    "d20",
-    "2d6",
-    "3d8"
-   ],
-   "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
-   "n": 96
-  },
-  {
    "kind": "game",
    "chapter": "games",
    "name": "voidquest",
@@ -1993,7 +1977,7 @@
     "ink": "#cdbcff",
     "motif": "monopoly"
    },
-   "n": 97
+   "n": 96
   },
   {
    "kind": "opener",
@@ -2022,7 +2006,7 @@
     "distance",
     "country"
    ],
-   "n": 98
+   "n": 97
   },
   {
    "kind": "skill",
@@ -2039,7 +2023,7 @@
    "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
    "flavor": "Not a boast but a record: 2 askings, each one answered. The void remembers each asking.",
    "glow": 100,
-   "n": 99
+   "n": 98
   },
   {
    "kind": "skill",
@@ -2056,7 +2040,7 @@
    "why": "a self-test, 2 browser-suite mentions, 10 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 10 real askings. Say the words below and it answers.",
    "glow": 100,
-   "n": 100
+   "n": 99
   },
   {
    "kind": "skill",
@@ -2073,7 +2057,7 @@
    "why": "a self-test, 17 real asks in the benchmark",
    "flavor": "Keep this page; the sky and earth are built on it. Ask, and see.",
    "glow": 100,
-   "n": 101
+   "n": 100
   },
   {
    "kind": "skill",
@@ -2090,7 +2074,7 @@
    "why": "a self-test, 8 real asks in the benchmark",
    "flavor": "Of the sky and earth; set down here after it answered true 8 times. It has not failed a reader yet.",
    "glow": 100,
-   "n": 102
+   "n": 101
   },
   {
    "kind": "skill",
@@ -2107,7 +2091,7 @@
    "why": "a self-test, 2 browser-suite mentions, 8 real asks in the benchmark",
    "flavor": "Asked 8 times in earnest, and never once left unanswered. It has not failed a reader yet.",
    "glow": 100,
-   "n": 103
+   "n": 102
   },
   {
    "kind": "skill",
@@ -2124,7 +2108,7 @@
    "why": "a self-test, 8 real asks in the benchmark",
    "flavor": "8 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
    "glow": 100,
-   "n": 104
+   "n": 103
   },
   {
    "kind": "skill",
@@ -2141,7 +2125,7 @@
    "why": "a self-test, 3 browser-suite mentions, 8 real asks in the benchmark",
    "flavor": "Not a boast but a record: 8 askings, each one answered. It has not failed a reader yet.",
    "glow": 100,
-   "n": 105
+   "n": 104
   },
   {
    "kind": "skill",
@@ -2158,7 +2142,7 @@
    "why": "a self-test, 12 browser-suite mentions, 45 real asks in the benchmark",
    "flavor": "An old art of the sky and earth, tested each day before the sun is up. Say the words below and it answers.",
    "glow": 100,
-   "n": 106
+   "n": 105
   },
   {
    "kind": "skill",
@@ -2175,7 +2159,7 @@
    "why": "1 browser-suite mention, 7 real asks in the benchmark",
    "flavor": "An old art of the sky and earth, tested each day before the sun is up. Ask, and see.",
    "glow": 100,
-   "n": 107
+   "n": 106
   },
   {
    "kind": "skill",
@@ -2192,7 +2176,7 @@
    "why": "1 browser-suite mention, 8 real asks in the benchmark",
    "flavor": "8 who came with a need went away with an answer. The page is theirs. Let the stage be the proof.",
    "glow": 100,
-   "n": 108
+   "n": 107
   },
   {
    "kind": "skill",
@@ -2208,7 +2192,7 @@
    "tier": "tested",
    "why": "4 real asks in the benchmark",
    "glow": 100,
-   "n": 109
+   "n": 108
   },
   {
    "kind": "skill",
@@ -2225,7 +2209,7 @@
    "why": "a self-test, 1 browser-suite mention, 9 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the sky and earth. Let the stage be the proof.",
    "glow": 100,
-   "n": 110
+   "n": 109
   },
   {
    "kind": "skill",
@@ -2242,7 +2226,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Among the sky and earth it is the one a traveller is told to ask for first. The void remembers each asking.",
    "glow": 100,
-   "n": 111
+   "n": 110
   },
   {
    "kind": "skill",
@@ -2259,7 +2243,7 @@
    "why": "a self-test, 6 real asks in the benchmark",
    "flavor": "Of all the sky and earth, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
-   "n": 112
+   "n": 111
   },
   {
    "kind": "skill",
@@ -2276,7 +2260,7 @@
    "why": "a self-test, 1 browser-suite mention, 11 real asks in the benchmark",
    "flavor": "Not a boast but a record: 11 askings, each one answered. The void remembers each asking.",
    "glow": 100,
-   "n": 113
+   "n": 112
   },
   {
    "kind": "skill",
@@ -2290,7 +2274,7 @@
    "tier": "checked",
    "why": "a self-test, 1 real ask in the benchmark",
    "glow": 100,
-   "n": 114
+   "n": 113
   },
   {
    "kind": "skill",
@@ -2306,7 +2290,7 @@
    "tier": "tested",
    "why": "4 real asks in the benchmark",
    "glow": 100,
-   "n": 115
+   "n": 114
   },
   {
    "kind": "skill",
@@ -2323,7 +2307,7 @@
    "why": "a self-test, 14 browser-suite mentions, 91 real asks in the benchmark",
    "flavor": "91 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
    "glow": 100,
-   "n": 116
+   "n": 115
   },
   {
    "kind": "skill",
@@ -2339,7 +2323,7 @@
    "tier": "tested",
    "why": "26 real asks in the benchmark",
    "glow": 100,
-   "n": 117
+   "n": 116
   },
   {
    "kind": "skill",
@@ -2356,7 +2340,7 @@
    "why": "a self-test, 4 browser-suite mentions, 56 real asks in the benchmark",
    "flavor": "Keep this page; the sky and earth are built on it. It has not failed a reader yet.",
    "glow": 100,
-   "n": 118
+   "n": 117
   },
   {
    "kind": "opener",
@@ -2385,7 +2369,7 @@
     "date-calc",
     "date-grid"
    ],
-   "n": 119
+   "n": 118
   },
   {
    "kind": "skill",
@@ -2402,7 +2386,7 @@
    "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the time; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
-   "n": 120
+   "n": 119
   },
   {
    "kind": "skill",
@@ -2419,7 +2403,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of all the time, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
-   "n": 121
+   "n": 120
   },
   {
    "kind": "skill",
@@ -2436,7 +2420,7 @@
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the time it is the one a traveller is told to ask for first. Say the words below and it answers.",
    "glow": 100,
-   "n": 122
+   "n": 121
   },
   {
    "kind": "skill",
@@ -2453,7 +2437,7 @@
    "why": "a self-test, 2 browser-suite mentions, 34 real asks in the benchmark",
    "flavor": "Asked 34 times in earnest, and never once left unanswered. It has not failed a reader yet.",
    "glow": 100,
-   "n": 123
+   "n": 122
   },
   {
    "kind": "skill",
@@ -2470,7 +2454,7 @@
    "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Of all the time, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
-   "n": 124
+   "n": 123
   },
   {
    "kind": "skill",
@@ -2487,7 +2471,7 @@
    "why": "a self-test, 8 browser-suite mentions, 22 real asks in the benchmark",
    "flavor": "Not a boast but a record: 22 askings, each one answered. So it is written.",
    "glow": 90.9,
-   "n": 125
+   "n": 124
   },
   {
    "kind": "skill",
@@ -2504,7 +2488,7 @@
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the time; set down here after it answered true 3 times. So it is written.",
    "glow": 100,
-   "n": 126
+   "n": 125
   },
   {
    "kind": "skill",
@@ -2521,7 +2505,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 3 real askings. Say the words below and it answers.",
    "glow": 100,
-   "n": 127
+   "n": 126
   },
   {
    "kind": "skill",
@@ -2538,7 +2522,7 @@
    "why": "12 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the time. It has not failed a reader yet.",
    "glow": 100,
-   "n": 128
+   "n": 127
   },
   {
    "kind": "skill",
@@ -2555,7 +2539,7 @@
    "why": "a self-test, 9 browser-suite mentions, 28 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 28 real askings. Ask, and see.",
    "glow": 100,
-   "n": 129
+   "n": 128
   },
   {
    "kind": "skill",
@@ -2571,7 +2555,7 @@
    "tier": "tested",
    "why": "5 real asks in the benchmark",
    "glow": 100,
-   "n": 130
+   "n": 129
   },
   {
    "kind": "skill",
@@ -2588,7 +2572,7 @@
    "why": "a self-test, 19 real asks in the benchmark",
    "flavor": "Not a boast but a record: 19 askings, each one answered. The void remembers each asking.",
    "glow": 94.7,
-   "n": 131
+   "n": 130
   },
   {
    "kind": "skill",
@@ -2604,7 +2588,7 @@
    "tier": "tested",
    "why": "4 real asks in the benchmark",
    "glow": 100,
-   "n": 132
+   "n": 131
   },
   {
    "kind": "skill",
@@ -2621,7 +2605,7 @@
    "why": "5 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Among the time it is the one a traveller is told to ask for first. So it is written.",
    "glow": 100,
-   "n": 133
+   "n": 132
   },
   {
    "kind": "skill",
@@ -2638,7 +2622,7 @@
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the time it is the one a traveller is told to ask for first. Turn the page when you are done.",
    "glow": 100,
-   "n": 134
+   "n": 133
   },
   {
    "kind": "skill",
@@ -2655,7 +2639,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "An old art of the time, tested each day before the sun is up.",
    "glow": 100,
-   "n": 135
+   "n": 134
   },
   {
    "kind": "skill",
@@ -2672,7 +2656,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Keep this page; the time are built on it. The void remembers each asking.",
    "glow": 100,
-   "n": 136
+   "n": 135
   },
   {
    "kind": "skill",
@@ -2689,7 +2673,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Of the time; set down here after it answered true 3 times.",
    "glow": 100,
-   "n": 137
+   "n": 136
   },
   {
    "kind": "skill",
@@ -2706,7 +2690,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of all the time, this one is trusted enough to be taught. Ask, and see.",
    "glow": 100,
-   "n": 138
+   "n": 137
   },
   {
    "kind": "skill",
@@ -2723,7 +2707,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the time. Say the words below and it answers.",
    "glow": 100,
-   "n": 139
+   "n": 138
   },
   {
    "kind": "opener",
@@ -2751,9 +2735,10 @@
     "calc-more",
     "formulas",
     "dev-tools",
-    "uuid"
+    "uuid",
+    "password"
    ],
-   "n": 140
+   "n": 139
   },
   {
    "kind": "skill",
@@ -2769,7 +2754,7 @@
    "tier": "checked",
    "why": "1 browser-suite mention, 2 real asks in the benchmark",
    "glow": 100,
-   "n": 141
+   "n": 140
   },
   {
    "kind": "skill",
@@ -2785,7 +2770,7 @@
    "tier": "tested",
    "why": "3 real asks in the benchmark",
    "glow": 100,
-   "n": 142
+   "n": 141
   },
   {
    "kind": "skill",
@@ -2802,7 +2787,7 @@
    "why": "a self-test, 2 browser-suite mentions, 829 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 829 real askings stand behind this page. Ask, and see.",
    "glow": 99.8,
-   "n": 143
+   "n": 142
   },
   {
    "kind": "skill",
@@ -2819,7 +2804,7 @@
    "why": "a self-test, 9 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 5 real askings stand behind this page. The void remembers each asking.",
    "glow": 100,
-   "n": 144
+   "n": 143
   },
   {
    "kind": "skill",
@@ -2836,7 +2821,7 @@
    "why": "a self-test, 5 browser-suite mentions, 15 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the numbers and money. Turn the page when you are done.",
    "glow": 100,
-   "n": 145
+   "n": 144
   },
   {
    "kind": "skill",
@@ -2853,7 +2838,7 @@
    "why": "9 browser-suite mentions, 13 real asks in the benchmark",
    "flavor": "Proven 13 times over by those who asked, and kept among the numbers and money. Turn the page when you are done.",
    "glow": 100,
-   "n": 146
+   "n": 145
   },
   {
    "kind": "skill",
@@ -2869,7 +2854,7 @@
    "tier": "tested",
    "why": "10 real asks in the benchmark",
    "glow": 100,
-   "n": 147
+   "n": 146
   },
   {
    "kind": "skill",
@@ -2886,7 +2871,7 @@
    "why": "a self-test, 2 browser-suite mentions, 36 real asks in the benchmark",
    "flavor": "36 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
    "glow": 100,
-   "n": 148
+   "n": 147
   },
   {
    "kind": "skill",
@@ -2902,7 +2887,7 @@
    "tier": "tested",
    "why": "7 real asks in the benchmark",
    "glow": 100,
-   "n": 149
+   "n": 148
   },
   {
    "kind": "skill",
@@ -2919,7 +2904,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Among the numbers and money it is the one a traveller is told to ask for first. It has not failed a reader yet.",
    "glow": 100,
-   "n": 150
+   "n": 149
   },
   {
    "kind": "skill",
@@ -2936,7 +2921,7 @@
    "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
    "flavor": "Of the numbers and money; set down here after it answered true 20 times. So it is written.",
    "glow": 100,
-   "n": 151
+   "n": 150
   },
   {
    "kind": "skill",
@@ -2953,7 +2938,7 @@
    "why": "a self-test, 1 browser-suite mention, 70 real asks in the benchmark",
    "flavor": "Of all the numbers and money, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
-   "n": 152
+   "n": 151
   },
   {
    "kind": "skill",
@@ -2970,7 +2955,7 @@
    "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "An old art of the numbers and money, tested each day before the sun is up. The void remembers each asking.",
    "glow": 100,
-   "n": 153
+   "n": 152
   },
   {
    "kind": "skill",
@@ -2987,7 +2972,7 @@
    "why": "a self-test, 7 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "14 who came with a need went away with an answer. The page is theirs. Ask, and see.",
    "glow": 100,
-   "n": 154
+   "n": 153
   },
   {
    "kind": "skill",
@@ -3004,7 +2989,7 @@
    "why": "a self-test, 10 browser-suite mentions, 16 real asks in the benchmark",
    "flavor": "Asked 16 times in earnest, and never once left unanswered. Say the words below and it answers.",
    "glow": 100,
-   "n": 155
+   "n": 154
   },
   {
    "kind": "skill",
@@ -3021,7 +3006,7 @@
    "why": "a self-test, 11 browser-suite mentions, 19 real asks in the benchmark",
    "flavor": "Asked 19 times in earnest, and never once left unanswered. Ask, and see.",
    "glow": 100,
-   "n": 156
+   "n": 155
   },
   {
    "kind": "skill",
@@ -3038,7 +3023,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Not a boast but a record: 3 askings, each one answered.",
    "glow": 100,
-   "n": 157
+   "n": 156
   },
   {
    "kind": "skill",
@@ -3055,7 +3040,7 @@
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the numbers and money it is the one a traveller is told to ask for first. Say the words below and it answers.",
    "glow": 100,
-   "n": 158
+   "n": 157
   },
   {
    "kind": "skill",
@@ -3071,7 +3056,7 @@
    "tier": "checked",
    "why": "a self-test, 1 real ask in the benchmark",
    "glow": 100,
-   "n": 159
+   "n": 158
   },
   {
    "kind": "skill",
@@ -3085,7 +3070,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 1 browser-suite mention",
-   "n": 160
+   "n": 159
   },
   {
    "kind": "skill",
@@ -3100,6 +3085,21 @@
    ],
    "tier": "tested",
    "why": "a self-test",
+   "n": 160
+  },
+  {
+   "kind": "skill",
+   "chapter": "numbers",
+   "name": "password",
+   "title": "Password",
+   "line": "Generate a random secure password",
+   "examples": [
+    "random password",
+    "another password",
+    "password of 20 characters"
+   ],
+   "tier": "checked",
+   "why": "a self-test, 5 browser-suite mentions",
    "n": 161
   },
   {
@@ -7131,7 +7131,7 @@
     "calculator"
    ],
    "owner": "calc",
-   "ownerPage": 143,
+   "ownerPage": 142,
    "n": 392
   },
   {
@@ -7191,7 +7191,7 @@
     "clock"
    ],
    "owner": "clock",
-   "ownerPage": 124,
+   "ownerPage": 123,
    "n": 396
   },
   {
@@ -7221,7 +7221,7 @@
     "how many days until new year"
    ],
    "owner": "countdown",
-   "ownerPage": 125,
+   "ownerPage": 124,
    "n": 398
   },
   {
@@ -7236,7 +7236,7 @@
     "count up"
    ],
    "owner": "counter",
-   "ownerPage": 153,
+   "ownerPage": 152,
    "n": 399
   },
   {
@@ -7428,7 +7428,7 @@
     "how do moon phases work"
    ],
    "owner": "moon",
-   "ownerPage": 113,
+   "ownerPage": 112,
    "n": 412
   },
   {
@@ -7522,7 +7522,7 @@
     "how long to save 50000 if i save 500 a month"
    ],
    "owner": "savings",
-   "ownerPage": 146,
+   "ownerPage": 145,
    "n": 419
   },
   {
@@ -7594,7 +7594,7 @@
     "how long to save 50000 if i save 500 a month"
    ],
    "owner": "savings",
-   "ownerPage": 146,
+   "ownerPage": 145,
    "n": 424
   },
   {
@@ -7673,7 +7673,7 @@
     "a 2 second timer"
    ],
    "owner": "timer",
-   "ownerPage": 123,
+   "ownerPage": 122,
    "n": 430
   },
   {
@@ -7688,7 +7688,7 @@
     "tip on $67.50 at 18%"
    ],
    "owner": "tip",
-   "ownerPage": 148,
+   "ownerPage": 147,
    "n": 431
   },
   {
@@ -7728,7 +7728,7 @@
     "weather here"
    ],
    "owner": "weather",
-   "ownerPage": 106,
+   "ownerPage": 105,
    "n": 434
   },
   {
@@ -8063,7 +8063,7 @@
     "morse",
     "sprite-sheet",
     "yesno",
-    "random",
+    "password",
     "uuid"
    ],
    "n": 436
@@ -9934,8 +9934,8 @@
     },
     {
      "rank": 312,
-     "name": "random",
-     "catches": "d20"
+     "name": "password",
+     "catches": "random password"
     }
    ],
    "n": 475
@@ -9988,7 +9988,7 @@
     },
     {
      "name": "Air",
-     "page": 107
+     "page": 106
     },
     {
      "name": "Anneal ambition",
@@ -10000,7 +10000,7 @@
     },
     {
      "name": "Appraise",
-     "page": 157
+     "page": 156
     },
     {
      "name": "Approve card",
@@ -10040,7 +10040,7 @@
     },
     {
      "name": "Aurora tonight",
-     "page": 102
+     "page": 101
     },
     {
      "name": "Automations",
@@ -10060,7 +10060,7 @@
     },
     {
      "name": "Baseconv",
-     "page": 141
+     "page": 140
     },
     {
      "name": "Battleship",
@@ -10100,7 +10100,7 @@
     },
     {
      "name": "Busy blocks",
-     "page": 137
+     "page": 136
     }
    ],
    "n": 477
@@ -10112,11 +10112,11 @@
    "entries": [
     {
      "name": "Calc",
-     "page": 143
+     "page": 142
     },
     {
      "name": "Calc more",
-     "page": 158
+     "page": 157
     },
     {
      "name": "Calculator (3D)",
@@ -10124,11 +10124,11 @@
     },
     {
      "name": "Calendar",
-     "page": 128
+     "page": 127
     },
     {
      "name": "Calendar file",
-     "page": 121
+     "page": 120
     },
     {
      "name": "Calendar fill",
@@ -10176,7 +10176,7 @@
     },
     {
      "name": "Clock",
-     "page": 124
+     "page": 123
     },
     {
      "name": "Clock (3D)",
@@ -10212,7 +10212,7 @@
     },
     {
      "name": "Constellation",
-     "page": 105
+     "page": 104
     },
     {
      "name": "Constellation weaver",
@@ -10224,7 +10224,7 @@
     },
     {
      "name": "Convert",
-     "page": 144
+     "page": 143
     },
     {
      "name": "Copy stack",
@@ -10236,7 +10236,7 @@
     },
     {
      "name": "Countdown",
-     "page": 125
+     "page": 124
     },
     {
      "name": "Countdown (3D)",
@@ -10244,7 +10244,7 @@
     },
     {
      "name": "Counter",
-     "page": 153
+     "page": 152
     },
     {
      "name": "Counter (3D)",
@@ -10264,7 +10264,7 @@
    "entries": [
     {
      "name": "Country",
-     "page": 118
+     "page": 117
     },
     {
      "name": "Crowd",
@@ -10272,7 +10272,7 @@
     },
     {
      "name": "Crypto",
-     "page": 149
+     "page": 148
     },
     {
      "name": "Csv table",
@@ -10284,11 +10284,11 @@
     },
     {
      "name": "Date calc",
-     "page": 138
+     "page": 137
     },
     {
      "name": "Date grid",
-     "page": 139
+     "page": 138
     },
     {
      "name": "Dating",
@@ -10296,7 +10296,7 @@
     },
     {
      "name": "Deadlines",
-     "page": 134
+     "page": 133
     },
     {
      "name": "Decide cards",
@@ -10324,7 +10324,7 @@
     },
     {
      "name": "Dev tools",
-     "page": 160
+     "page": 159
     },
     {
      "name": "Dice (3D)",
@@ -10352,7 +10352,7 @@
     },
     {
      "name": "Distance",
-     "page": 117
+     "page": 116
     },
     {
      "name": "Doodle Mind",
@@ -10388,7 +10388,7 @@
     },
     {
      "name": "Eclipse",
-     "page": 103
+     "page": 102
     },
     {
      "name": "Eigenwork",
@@ -10416,7 +10416,7 @@
    "entries": [
     {
      "name": "Event countdown",
-     "page": 126
+     "page": 125
     },
     {
      "name": "Extinction",
@@ -10492,7 +10492,7 @@
     },
     {
      "name": "Flights",
-     "page": 99
+     "page": 98
     },
     {
      "name": "Flow canvas",
@@ -10520,7 +10520,7 @@
     },
     {
      "name": "Formulas",
-     "page": 159
+     "page": 158
     },
     {
      "name": "Four channels",
@@ -10540,7 +10540,7 @@
     },
     {
      "name": "Fuel",
-     "page": 147
+     "page": 146
     },
     {
      "name": "Gamebox",
@@ -10596,7 +10596,7 @@
     },
     {
      "name": "Grades",
-     "page": 151
+     "page": 150
     },
     {
      "name": "Gradient",
@@ -10640,11 +10640,11 @@
     },
     {
      "name": "Holidays",
-     "page": 131
+     "page": 130
     },
     {
      "name": "Home",
-     "page": 156
+     "page": 155
     },
     {
      "name": "Homotopy edit",
@@ -10692,7 +10692,7 @@
     },
     {
      "name": "Is it",
-     "page": 120
+     "page": 119
     },
     {
      "name": "Joke",
@@ -10760,7 +10760,7 @@
     },
     {
      "name": "Loan",
-     "page": 145
+     "page": 144
     },
     {
      "name": "Local inference",
@@ -10804,11 +10804,11 @@
     },
     {
      "name": "Map",
-     "page": 115
+     "page": 114
     },
     {
      "name": "Markets",
-     "page": 150
+     "page": 149
     },
     {
      "name": "Media object",
@@ -10844,7 +10844,7 @@
     },
     {
      "name": "Meteors",
-     "page": 104
+     "page": 103
     },
     {
      "name": "Mind Field",
@@ -10876,7 +10876,7 @@
     },
     {
      "name": "Moon",
-     "page": 113
+     "page": 112
     },
     {
      "name": "Moon (3D)",
@@ -10884,7 +10884,7 @@
     },
     {
      "name": "Moontonight",
-     "page": 101
+     "page": 100
     },
     {
      "name": "Morse",
@@ -10932,7 +10932,7 @@
     },
     {
      "name": "Night sky",
-     "page": 114
+     "page": 113
     },
     {
      "name": "Note tools",
@@ -11023,6 +11023,10 @@
    "title": "Index P–R",
    "entries": [
     {
+     "name": "Password",
+     "page": 161
+    },
+    {
      "name": "Pdf card",
      "page": 203
     },
@@ -11076,7 +11080,7 @@
     },
     {
      "name": "Pollen",
-     "page": 110
+     "page": 109
     },
     {
      "name": "Pong",
@@ -11128,7 +11132,7 @@
     },
     {
      "name": "Quake",
-     "page": 109
+     "page": 108
     },
     {
      "name": "Quiz",
@@ -11149,10 +11153,6 @@
     {
      "name": "Rally",
      "page": 92
-    },
-    {
-     "name": "Random",
-     "page": 96
     },
     {
      "name": "Rebuild map",
@@ -11192,7 +11192,7 @@
     },
     {
      "name": "Remind",
-     "page": 130
+     "page": 129
     },
     {
      "name": "Repo",
@@ -11228,15 +11228,15 @@
     },
     {
      "name": "Ritual template",
-     "page": 122
+     "page": 121
     },
     {
      "name": "Room",
-     "page": 154
+     "page": 153
     },
     {
      "name": "Routine",
-     "page": 133
+     "page": 132
     },
     {
      "name": "Rts",
@@ -11248,7 +11248,7 @@
     },
     {
      "name": "Savings",
-     "page": 146
+     "page": 145
     },
     {
      "name": "Savings (3D)",
@@ -11288,7 +11288,7 @@
     },
     {
      "name": "Shortcut",
-     "page": 135
+     "page": 134
     },
     {
      "name": "Show",
@@ -11296,7 +11296,7 @@
     },
     {
      "name": "Show countdown",
-     "page": 127
+     "page": 126
     },
     {
      "name": "Showcase",
@@ -11312,11 +11312,11 @@
     },
     {
      "name": "Sky",
-     "page": 100
+     "page": 99
     },
     {
      "name": "Sky card",
-     "page": 111
+     "page": 110
     }
    ],
    "n": 485
@@ -11452,7 +11452,7 @@
     },
     {
      "name": "Suntimes",
-     "page": 112
+     "page": 111
     },
     {
      "name": "Swaps",
@@ -11560,11 +11560,11 @@
     },
     {
      "name": "Time math",
-     "page": 136
+     "page": 135
     },
     {
      "name": "Timer",
-     "page": 123
+     "page": 122
     },
     {
      "name": "Timer (3D)",
@@ -11572,7 +11572,7 @@
     },
     {
      "name": "Tip",
-     "page": 148
+     "page": 147
     },
     {
      "name": "Tip (3D)",
@@ -11580,7 +11580,7 @@
     },
     {
      "name": "Today",
-     "page": 129
+     "page": 128
     },
     {
      "name": "Together",
@@ -11588,7 +11588,7 @@
     },
     {
      "name": "Toolkit",
-     "page": 142
+     "page": 141
     },
     {
      "name": "Tower",
@@ -11620,7 +11620,7 @@
     },
     {
      "name": "Util",
-     "page": 152
+     "page": 151
     }
    ],
    "n": 487
@@ -11632,11 +11632,11 @@
    "entries": [
     {
      "name": "Uuid",
-     "page": 161
+     "page": 160
     },
     {
      "name": "Uv",
-     "page": 108
+     "page": 107
     },
     {
      "name": "Vector field mind",
@@ -11672,7 +11672,7 @@
     },
     {
      "name": "VoidQuest",
-     "page": 97
+     "page": 96
     },
     {
      "name": "Walker",
@@ -11680,7 +11680,7 @@
     },
     {
      "name": "Walls",
-     "page": 155
+     "page": 154
     },
     {
      "name": "Wants",
@@ -11692,7 +11692,7 @@
     },
     {
      "name": "Weather",
-     "page": 106
+     "page": 105
     },
     {
      "name": "Weather (3D)",
@@ -11724,11 +11724,11 @@
     },
     {
      "name": "Work",
-     "page": 132
+     "page": 131
     },
     {
      "name": "Worldtime",
-     "page": 116
+     "page": 115
     },
     {
      "name": "Writing aids",
@@ -11781,7 +11781,7 @@
   },
   {
    "name": "Air",
-   "page": 107
+   "page": 106
   },
   {
    "name": "Anneal ambition",
@@ -11793,7 +11793,7 @@
   },
   {
    "name": "Appraise",
-   "page": 157
+   "page": 156
   },
   {
    "name": "Approve card",
@@ -11833,7 +11833,7 @@
   },
   {
    "name": "Aurora tonight",
-   "page": 102
+   "page": 101
   },
   {
    "name": "Automations",
@@ -11853,7 +11853,7 @@
   },
   {
    "name": "Baseconv",
-   "page": 141
+   "page": 140
   },
   {
    "name": "Battleship",
@@ -11893,15 +11893,15 @@
   },
   {
    "name": "Busy blocks",
-   "page": 137
+   "page": 136
   },
   {
    "name": "Calc",
-   "page": 143
+   "page": 142
   },
   {
    "name": "Calc more",
-   "page": 158
+   "page": 157
   },
   {
    "name": "Calculator (3D)",
@@ -11909,11 +11909,11 @@
   },
   {
    "name": "Calendar",
-   "page": 128
+   "page": 127
   },
   {
    "name": "Calendar file",
-   "page": 121
+   "page": 120
   },
   {
    "name": "Calendar fill",
@@ -11961,7 +11961,7 @@
   },
   {
    "name": "Clock",
-   "page": 124
+   "page": 123
   },
   {
    "name": "Clock (3D)",
@@ -11997,7 +11997,7 @@
   },
   {
    "name": "Constellation",
-   "page": 105
+   "page": 104
   },
   {
    "name": "Constellation weaver",
@@ -12009,7 +12009,7 @@
   },
   {
    "name": "Convert",
-   "page": 144
+   "page": 143
   },
   {
    "name": "Copy stack",
@@ -12021,7 +12021,7 @@
   },
   {
    "name": "Countdown",
-   "page": 125
+   "page": 124
   },
   {
    "name": "Countdown (3D)",
@@ -12029,7 +12029,7 @@
   },
   {
    "name": "Counter",
-   "page": 153
+   "page": 152
   },
   {
    "name": "Counter (3D)",
@@ -12041,7 +12041,7 @@
   },
   {
    "name": "Country",
-   "page": 118
+   "page": 117
   },
   {
    "name": "Crowd",
@@ -12049,7 +12049,7 @@
   },
   {
    "name": "Crypto",
-   "page": 149
+   "page": 148
   },
   {
    "name": "Csv table",
@@ -12061,11 +12061,11 @@
   },
   {
    "name": "Date calc",
-   "page": 138
+   "page": 137
   },
   {
    "name": "Date grid",
-   "page": 139
+   "page": 138
   },
   {
    "name": "Dating",
@@ -12073,7 +12073,7 @@
   },
   {
    "name": "Deadlines",
-   "page": 134
+   "page": 133
   },
   {
    "name": "Decide cards",
@@ -12101,7 +12101,7 @@
   },
   {
    "name": "Dev tools",
-   "page": 160
+   "page": 159
   },
   {
    "name": "Dice (3D)",
@@ -12129,7 +12129,7 @@
   },
   {
    "name": "Distance",
-   "page": 117
+   "page": 116
   },
   {
    "name": "Doodle Mind",
@@ -12165,7 +12165,7 @@
   },
   {
    "name": "Eclipse",
-   "page": 103
+   "page": 102
   },
   {
    "name": "Eigenwork",
@@ -12185,7 +12185,7 @@
   },
   {
    "name": "Event countdown",
-   "page": 126
+   "page": 125
   },
   {
    "name": "Extinction",
@@ -12261,7 +12261,7 @@
   },
   {
    "name": "Flights",
-   "page": 99
+   "page": 98
   },
   {
    "name": "Flow canvas",
@@ -12289,7 +12289,7 @@
   },
   {
    "name": "Formulas",
-   "page": 159
+   "page": 158
   },
   {
    "name": "Four channels",
@@ -12309,7 +12309,7 @@
   },
   {
    "name": "Fuel",
-   "page": 147
+   "page": 146
   },
   {
    "name": "Gamebox",
@@ -12357,7 +12357,7 @@
   },
   {
    "name": "Grades",
-   "page": 151
+   "page": 150
   },
   {
    "name": "Gradient",
@@ -12401,11 +12401,11 @@
   },
   {
    "name": "Holidays",
-   "page": 131
+   "page": 130
   },
   {
    "name": "Home",
-   "page": 156
+   "page": 155
   },
   {
    "name": "Homotopy edit",
@@ -12453,7 +12453,7 @@
   },
   {
    "name": "Is it",
-   "page": 120
+   "page": 119
   },
   {
    "name": "Joke",
@@ -12513,7 +12513,7 @@
   },
   {
    "name": "Loan",
-   "page": 145
+   "page": 144
   },
   {
    "name": "Local inference",
@@ -12557,11 +12557,11 @@
   },
   {
    "name": "Map",
-   "page": 115
+   "page": 114
   },
   {
    "name": "Markets",
-   "page": 150
+   "page": 149
   },
   {
    "name": "Media object",
@@ -12597,7 +12597,7 @@
   },
   {
    "name": "Meteors",
-   "page": 104
+   "page": 103
   },
   {
    "name": "Mind Field",
@@ -12621,7 +12621,7 @@
   },
   {
    "name": "Moon",
-   "page": 113
+   "page": 112
   },
   {
    "name": "Moon (3D)",
@@ -12629,7 +12629,7 @@
   },
   {
    "name": "Moontonight",
-   "page": 101
+   "page": 100
   },
   {
    "name": "Morse",
@@ -12677,7 +12677,7 @@
   },
   {
    "name": "Night sky",
-   "page": 114
+   "page": 113
   },
   {
    "name": "Note tools",
@@ -12760,6 +12760,10 @@
    "page": 289
   },
   {
+   "name": "Password",
+   "page": 161
+  },
+  {
    "name": "Pdf card",
    "page": 203
   },
@@ -12813,7 +12817,7 @@
   },
   {
    "name": "Pollen",
-   "page": 110
+   "page": 109
   },
   {
    "name": "Pong",
@@ -12865,7 +12869,7 @@
   },
   {
    "name": "Quake",
-   "page": 109
+   "page": 108
   },
   {
    "name": "Quiz",
@@ -12886,10 +12890,6 @@
   {
    "name": "Rally",
    "page": 92
-  },
-  {
-   "name": "Random",
-   "page": 96
   },
   {
    "name": "Rebuild map",
@@ -12921,7 +12921,7 @@
   },
   {
    "name": "Remind",
-   "page": 130
+   "page": 129
   },
   {
    "name": "Repo",
@@ -12957,15 +12957,15 @@
   },
   {
    "name": "Ritual template",
-   "page": 122
+   "page": 121
   },
   {
    "name": "Room",
-   "page": 154
+   "page": 153
   },
   {
    "name": "Routine",
-   "page": 133
+   "page": 132
   },
   {
    "name": "Rts",
@@ -12977,7 +12977,7 @@
   },
   {
    "name": "Savings",
-   "page": 146
+   "page": 145
   },
   {
    "name": "Savings (3D)",
@@ -13017,7 +13017,7 @@
   },
   {
    "name": "Shortcut",
-   "page": 135
+   "page": 134
   },
   {
    "name": "Show",
@@ -13025,7 +13025,7 @@
   },
   {
    "name": "Show countdown",
-   "page": 127
+   "page": 126
   },
   {
    "name": "Showcase",
@@ -13041,11 +13041,11 @@
   },
   {
    "name": "Sky",
-   "page": 100
+   "page": 99
   },
   {
    "name": "Sky card",
-   "page": 111
+   "page": 110
   },
   {
    "name": "Sleep",
@@ -13173,7 +13173,7 @@
   },
   {
    "name": "Suntimes",
-   "page": 112
+   "page": 111
   },
   {
    "name": "Swaps",
@@ -13273,11 +13273,11 @@
   },
   {
    "name": "Time math",
-   "page": 136
+   "page": 135
   },
   {
    "name": "Timer",
-   "page": 123
+   "page": 122
   },
   {
    "name": "Timer (3D)",
@@ -13285,7 +13285,7 @@
   },
   {
    "name": "Tip",
-   "page": 148
+   "page": 147
   },
   {
    "name": "Tip (3D)",
@@ -13293,7 +13293,7 @@
   },
   {
    "name": "Today",
-   "page": 129
+   "page": 128
   },
   {
    "name": "Together",
@@ -13301,7 +13301,7 @@
   },
   {
    "name": "Toolkit",
-   "page": 142
+   "page": 141
   },
   {
    "name": "Tower",
@@ -13333,15 +13333,15 @@
   },
   {
    "name": "Util",
-   "page": 152
+   "page": 151
   },
   {
    "name": "Uuid",
-   "page": 161
+   "page": 160
   },
   {
    "name": "Uv",
-   "page": 108
+   "page": 107
   },
   {
    "name": "Vector field mind",
@@ -13377,7 +13377,7 @@
   },
   {
    "name": "VoidQuest",
-   "page": 97
+   "page": 96
   },
   {
    "name": "Walker",
@@ -13385,7 +13385,7 @@
   },
   {
    "name": "Walls",
-   "page": 155
+   "page": 154
   },
   {
    "name": "Wants",
@@ -13397,7 +13397,7 @@
   },
   {
    "name": "Weather",
-   "page": 106
+   "page": 105
   },
   {
    "name": "Weather (3D)",
@@ -13429,11 +13429,11 @@
   },
   {
    "name": "Work",
-   "page": 132
+   "page": 131
   },
   {
    "name": "Worldtime",
-   "page": 116
+   "page": 115
   },
   {
    "name": "Writing aids",
