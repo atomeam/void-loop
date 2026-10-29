@@ -5153,6 +5153,8 @@ try {
       if (/generator=search/.test(u)) return r.fulfill(json({ query: { pages: { 11: { index: 1, title: 'Air Jordan', description: 'Brand of basketball shoes' }, 12: { index: 2, title: 'Michael Jordan', description: 'American basketball player (born 1963)' } } } }));
       return r.fulfill(json({ query: { search: [{ title: /snorgleblat/.test(u) ? 'Blat' : 'Air Jordan' }] } })); });
     await E.ctx.route(/\/page\/summary\//, (r) => { const t = decodeURIComponent(r.request().url().split('/summary/')[1]).replace(/_/g, ' '); sums.push(t);
+      // like Wikipedia: a title with no page answers 404 (the exact-title try, ccaf78621, asks for "Snorgleblat" before it searches)
+      if (!['Michael Jordan', 'Air Jordan', 'Blat'].includes(t)) return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ type: 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found', title: 'Not found.' }) });
       return r.fulfill(json({ type: 'standard', title: t, description: t === 'Michael Jordan' ? 'American basketball player (born 1963)' : t === 'Blat' ? 'Russian slang' : 'Brand of basketball shoes', extract: t + ' extract.' })); });
     await E.ask('who is michael jordan', 1200); const mj = await E.page();
     await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
