@@ -1,0 +1,216 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const statsEl = document.getElementById('stats');
+const nodesEl = document.getElementById('nodes');
+const micBtn = document.getElementById('micBtn');
+const oriBtn = document.getElementById('oriBtn');
+const xrBtn = document.getElementById('xrBtn');
+
+let W, H, particles = [];
+const N = 400;
+let micStream, analyser, dataArray, audioEnergy = 0, spectralPeak = 0;
+let tiltX = 0, tiltY = 0;
+let energy = 0.3, residual = 0.1, hue = 200;
+let genome = { cohesion: 0.02, separation: 0.04, wind: 0.5, attract: 0.3 };
+let clusters = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Simple Canvas2D swarm (WebGPU path noted; this is the always-runnable core)
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+      e: Math.random()
+    });
+  }
+}
+initParticles();
+
+// Worker for evolutionary strategy on stats
+const workerCode = `
+let pop = Array.from({length:8}, () => ({
+  g: { cohesion: 0.01+Math.random()*0.04, separation: 0.02+Math.random()*0.06, wind: Math.random(), attract: Math.random()*0.6 },
+  fitness: 0
+}));
+let best = pop[0].g;
+self.onmessage = (e) => {
+  const { energy, entropy, residual } = e.data;
+  // fitness: balance energy, low residual, some entropy
+  pop.forEach(p => {
+    p.fitness = energy * 0.6 - residual * 0.4 + entropy * 0.2 + Math.random()*0.05;
+  });
+  pop.sort((a,b) => b.fitness - a.fitness);
+  best = pop[0].g;
+  // mutate
+  for (let i = 4; i < 8; i++) {
+    pop[i].g = {
+      cohesion: Math.max(0.005, best.cohesion + (Math.random()-0.5)*0.01),
+      separation: Math.max(0.01, best.separation + (Math.random()-0.5)*0.015),
+      wind: Math.max(0, Math.min(1, best.wind + (Math.random()-0.5)*0.1)),
+      attract: Math.max(0, Math.min(1, best.attract + (Math.random()-0.5)*0.1))
+    };
+  }
+  self.postMessage({ genome: best, residual: 1 - pop[0].fitness });
+};
+`;
+const blob = new Blob([workerCode], {type:'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+worker.onmessage = (e) => {
+  genome = e.data.genome;
+  residual = Math.max(0, Math.min(1, e.data.residual || 0.1));
+};
+
+function updateSwarm() {
+  // sensor forces
+  const windX = tiltX * genome.wind * 0.5;
+  const windY = tiltY * genome.wind * 0.5;
+  const attract = audioEnergy * genome.attract * 2;
+  // simple centroid
+  let cx = 0, cy = 0;
+  particles.forEach(p => { cx += p.x; cy += p.y; });
+  cx /= N; cy /= N;
+
+  particles.forEach(p => {
+    // cohesion
+    p.vx += (cx - p.x) * genome.cohesion * 0.1;
+    p.vy += (cy - p.y) * genome.cohesion * 0.1;
+    // separation (approx)
+    p.vx += (Math.random()-0.5) * genome.separation;
+    p.vy += (Math.random()-0.5) * genome.separation;
+    // wind + audio attract toward center if energy high
+    p.vx += windX + (W/2 - p.x) * attract * 0.001;
+    p.vy += windY + (H/2 - p.y) * attract * 0.001;
+    // damping
+    p.vx *= 0.96; p.vy *= 0.96;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x += W; if (p.x > W) p.x -= W;
+    if (p.y < 0) p.y += H; if (p.y > H) p.y -= H;
+    p.e = Math.min(1, p.e * 0.98 + audioEnergy * 0.05);
+  });
+
+  energy = audioEnergy * 0.7 + (Math.hypot(tiltX, tiltY) * 0.3);
+  // entropy proxy
+  let ent = 0;
+  particles.forEach(p => ent += Math.abs(p.vx) + Math.abs(p.vy));
+  ent = Math.min(1, ent / N / 4);
+  if (Math.random() < 0.05) worker.postMessage({ energy, entropy: ent, residual });
+
+  // simple clusters (4 quadrants)
+  clusters = [
+    { x: W*0.25, y: H*0.25, count: 0 },
+    { x: W*0.75, y: H*0.25, count: 0 },
+    { x: W*0.25, y: H*0.75, count: 0 },
+    { x: W*0.75, y: H*0.75, count: 0 }
+  ];
+  particles.forEach(p => {
+    const q = (p.x > W/2 ? 1 : 0) + (p.y > H/2 ? 2 : 0);
+    clusters[q].count++;
+  });
+}
+
+function draw() {
+  ctx.fillStyle = `rgba(8,8,16,0.35)`;
+  ctx.fillRect(0,0,W,H);
+  particles.forEach(p => {
+    const a = 0.3 + p.e * 0.7;
+    ctx.fillStyle = `hsla(${hue},70%,60%,${a})`;
+    ctx.fillRect(p.x, p.y, 2, 2);
+  });
+}
+
+const lexicon = ['echo','drift','lattice','pulse','tilt','spectral','swarm','mind','void','node','force','cluster','residual','wind','energy','phase','seed','orbit','field','trace'];
+function generatePhrase(ent) {
+  const n = 2 + Math.floor(ent * 3);
+  return Array.from({length:n}, () => lexicon[Math.floor(Math.random()*lexicon.length)]).join(' ');
+}
+
+function updateNodes() {
+  nodesEl.innerHTML = '';
+  clusters.forEach((c, i) => {
+    if (c.count < 30) return;
+    const node = document.createElement('div');
+    node.className = 'node';
+    node.style.left = c.x + 'px';
+    node.style.top = c.y + 'px';
+    node.style.opacity = Math.min(1, c.count / 120);
+    node.textContent = generatePhrase(energy);
+    nodesEl.appendChild(node);
+  });
+}
+
+function morph() {
+  document.documentElement.style.setProperty('--energy', energy.toFixed(2));
+  document.documentElement.style.setProperty('--residual', residual.toFixed(2));
+  document.documentElement.style.setProperty('--hue', (180 + energy * 120).toFixed(0));
+  document.documentElement.style.setProperty('--blur', (residual * 2).toFixed(1) + 'px');
+  statsEl.textContent = `E:${energy.toFixed(2)} R:${residual.toFixed(2)} C:${genome.cohesion.toFixed(3)} A:${genome.attract.toFixed(2)}`;
+}
+
+function loop() {
+  updateSwarm();
+  draw();
+  if (Math.random() < 0.1) updateNodes();
+  morph();
+  requestAnimationFrame(loop);
+}
+loop();
+
+// Sensors
+micBtn.onclick = async () => {
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const ac = new AudioContext();
+    const src = ac.createMediaStreamSource(micStream);
+    analyser = ac.createAnalyser();
+    analyser.fftSize = 256;
+    src.connect(analyser);
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    statusEl.textContent = 'mic active';
+    setInterval(() => {
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0, peak = 0, peakI = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        sum += dataArray[i];
+        if (dataArray[i] > peak) { peak = dataArray[i]; peakI = i; }
+      }
+      audioEnergy = Math.min(1, sum / dataArray.length / 80);
+      spectralPeak = peakI / dataArray.length;
+    }, 100);
+  } catch (e) { statusEl.textContent = 'mic denied'; }
+};
+
+oriBtn.onclick = () => {
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', (e) => {
+      tiltX = (e.gamma || 0) / 45;
+      tiltY = (e.beta || 0) / 45;
+    });
+    statusEl.textContent = 'orientation active';
+  } else statusEl.textContent = 'no orientation';
+};
+
+// Seal
+try {
+  const saved = localStorage.getItem('f197-genome');
+  if (saved) genome = JSON.parse(saved);
+} catch (e) { console.warn('f425-webgpu-acoustic-swarm-mind:', e); }
+setInterval(() => {
+  try { localStorage.setItem('f197-genome', JSON.stringify(genome)); } catch (e) { console.warn('f425-webgpu-acoustic-swarm-mind:', e); }
+}, 5000);
+
+statusEl.textContent = 'Canvas2D swarm (WebGPU path noted). Enable sensors.';
+// XR button if available
+if (navigator.xr) xrBtn.style.display = 'inline';
+xrBtn.onclick = async () => {
+  statusEl.textContent = 'XR entry (flat mode remains active)';
+  // progressive: session start would project swarm; stub for prototype
+};

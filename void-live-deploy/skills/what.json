@@ -318,6 +318,7 @@
  "tab": "The card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address…",
  "task-board": "\"add task call mum friday high priority 30 min\" puts tasks on one card: a Today stack (due today or earlier…",
  "task-diagram": "\"map my tasks a -> b, b -> c, a -> d, d -> c\" reads tasks as objects and each \"->\" as an arrow (what one task…",
+ "team-chat": "\"team chat\", \"agent workspace\", \"my agents\": the team chat as a card on the stage",
  "technical-context": "Match: true when this skill should take the ask",
  "telemetry-route": "Paste a CI report, build log or status update and Verse reads it as the builders' own telemetry instead of…",
  "template-list": "One stage card for the lists a home runs on, each with its own shape: \"packing list for a beach trip\"…",

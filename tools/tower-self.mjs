@@ -40,6 +40,8 @@ export const RETRY_DAYS = 60; // a site no floor covered is tried again after th
 export const MAX_READ = 8, MAX_BUILT = 4, MAX_OPEN_JOBS = 6; // per run: sites read, pages built; versus jobs open at once
 const now = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z'), today = () => now().slice(0, 10);
 const clip = (s, n) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, n);
+// a cut at a whole word, never mid-word (Versus job mvoxd09y: "a niche professional servic)")
+export const clipWords = (s, n) => { const c = clip(s, 4000); return c.length <= n ? c : c.slice(0, n + 1).replace(/\s+\S*$/, '').replace(/[,;:]$/, ''); };
 const readJson = (p, d) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (_) { return d; } };
 const pathOnly = (u) => String(u || '').replace(/[?#].*$/, ''), tailOf = (u) => { const m = String(u || '').match(/[?#].*$/); return m ? m[0] : ''; };
 
@@ -219,9 +221,9 @@ async function build(planFile, outFile, maxBuilt) {
       if (a.error) { decision.state[c.host] = { at: now(), outcome: 'not-judged', why: a.error }; console.log(c.host + ': ' + a.error); continue; }
       const fam = fams.find((f) => f.id === String(a.family || '').trim().toLowerCase());
       if (!fam || !sharesWords(fam, siteText)) {
-        const why = !fam ? 'no floor does its job (' + clip(a.why, 140) + ')' : 'the model chose ' + fam.id + ' but the site says none of its words';
+        const why = !fam ? 'no floor does its job (' + clipWords(a.why, 160) + ')' : 'the model chose ' + fam.id + ' but the site says none of its words';
         decision.state[c.host] = { at: now(), outcome: 'no-family', why: clip(why, 200), title: clip(r.pages[0].title, 80) };
-        decision.jobs.push({ target: ('versus:' + c.host).slice(0, 40), ask: clip('Versus: ' + c.host + ' (' + clip(r.pages[0].title, 60) + ') needs a page no floor has yet: ' + clip(a.why, 90), 200) });
+        decision.jobs.push({ target: ('versus:' + c.host).slice(0, 40), ask: clip('Versus: ' + c.host + ' (' + clip(r.pages[0].title, 60) + ') needs a page no floor has yet: ' + clipWords(a.why, 90), 200) });
         console.log(c.host + ': ' + why); continue;
       }
       const baseText = textOf(baseHtmlOf(fam.base)) + ' ' + fam.does;

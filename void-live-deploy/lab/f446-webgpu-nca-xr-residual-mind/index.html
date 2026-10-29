@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 10; max-width: 320px; }
+  #probes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  .probe { position: absolute; width: 48px; height: 48px; background: radial-gradient(circle, #6cf 0%, transparent 70%); border: 1px solid #8cf; border-radius: 50%; pointer-events: auto; cursor: grab; opacity: 0.85; transition: transform 0.1s; }
+  .probe:active { cursor: grabbing; }
+  button { background: #224; color: #adf; border: 1px solid #46a; padding: 4px 10px; margin: 2px; border-radius: 4px; cursor: pointer; }
+  #status { color: #8f8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU NCA XR Residual Mind · Verse lab</title>
+<meta name="description" content="Novel combination of WebGPU-targeted Neural Cellular Automata (NCA) substrate whose local reaction is parameterized by a small evolved MLP (weights adapted by local">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU NCA XR Residual Mind · Verse lab">
+<meta property="og:description" content="Novel combination of WebGPU-targeted Neural Cellular Automata (NCA) substrate whose local reaction is parameterized by a small evolved MLP (weights adapted by local">
+<meta property="og:url" content="https://a-to-mind.com/lab/f446-webgpu-nca-xr-residual-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f446-webgpu-nca-xr-residual-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="probes"></div>
+<div id="hud">
+  <div><strong>F-314 NCA Residual Mind</strong></div>
+  <div id="status">init</div>
+  <div>Energy: <span id="energy">0</span> | Residual: <span id="res">0</span></div>
+  <div>Fitness: <span id="fit">0</span></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Field</button>
+  <div style="font-size:11px;margin-top:6px;">Pointer seeds · Drag probes to inject · Tilt if available · Seal stores best MLP weights</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU NCA XR Residual Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

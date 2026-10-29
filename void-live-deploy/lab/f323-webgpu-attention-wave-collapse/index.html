@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { margin: 4px; padding: 6px 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; cursor: pointer; }
+  .orb {
+    position: absolute; width: 28px; height: 28px; border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #4af 40%, transparent 70%);
+    border: 1px solid rgba(255,255,255,0.4); pointer-events: auto; cursor: grab;
+    box-shadow: 0 0 12px #4af; z-index: 5; transition: transform 0.1s;
+  }
+  .orb:active { cursor: grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Attention Wave Collapse · Verse lab</title>
+<meta name="description" content="Main thread: 64x64 wave lattice step (discrete Laplacian + damping + attention-biased sources)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Attention Wave Collapse · Verse lab">
+<meta property="og:description" content="Main thread: 64x64 wave lattice step (discrete Laplacian + damping + attention-biased sources)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f323-webgpu-attention-wave-collapse/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f323-webgpu-attention-wave-collapse/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>Coherence: <span id="coh">0.00</span> | Orbs: <span id="orbs">0</span></div>
+  <button id="seal">Seal Mind</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Attention Wave Collapse</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
