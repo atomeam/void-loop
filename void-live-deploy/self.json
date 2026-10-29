@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T08:43:02Z",
+   "subject": "Fan fiction: a story is complete or in progress"
+  },
+  {
+   "at": "2026-10-29T08:38:57Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T08:38:29Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T08:37:39Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T08:12:23Z",
    "subject": "Regenerate after merging main"
-  },
-  {
-   "at": "2026-10-29T08:12:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:12:08Z",
-   "subject": "3D miniatures: free materials only after a shader compile in flight settles"
-  },
-  {
-   "at": "2026-10-29T08:10:38Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
