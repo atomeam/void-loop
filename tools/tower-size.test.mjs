@@ -1,7 +1,7 @@
 // Versus by weight: what a page weighs, which sites get measured, and that the lightest measured site stands first. Run: node --test tools/tower-size.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { measure, weightOf, weightBand, bytesLabel, controlsOf } from '../void-live-deploy/lib/tower-weight.js';
+import { measure, weightOf, weightBand, bytesLabel, controlsOf, trustedControls } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
 import { planSizes, usable, isTool } from './tower-size.mjs';
 
@@ -58,6 +58,16 @@ test('the queue is smallest first: the fewest controls, then the fewer bytes; a 
   assert.ok(at('calculator') < at('is it'), 'fewer controls first, however heavy');
   assert.ok(at('is it') < at('coin flip'), 'a counted site before one only weighed');
   assert.match(easeLine(t.floors[at('is it')]), /has 9 controls on its home page and weighs 700 B/);
+});
+
+test('a shell count is not a count: a home page under 2 controls (a script-built shell, a sign-in wall) never jumps the queue (linkedin.com/jobs read 1)', () => {
+  assert.equal(trustedControls({ controls: 1 }), null); assert.equal(trustedControls({ controls: 0 }), null); assert.equal(trustedControls({}), null);
+  assert.equal(trustedControls({ controls: 2 }), 2); assert.equal(trustedControls({ controls: '34' }), 34);
+  const rank = { ranks: {}, order: {}, list: {} };
+  const size = { sites: { 'linkedin.com': { bytes: 177301, controls: 1, scripts: 19, nodes: 53, routes: 0 }, 'isitchristmas.com': { bytes: 700, controls: 9, scripts: 0, nodes: 20, routes: 0 } } };
+  const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
+  assert.ok(at('is it') < at('jobs'), 'the counted site stands before the shell');
+  assert.doesNotMatch(easeLine(t.floors[at('jobs')]), /control/, 'the card does not repeat the shell count');
 });
 
 test('an offline notice, an error page or a page with nothing to use is not weighed (counterscope.ae was 728 bytes of "is offline")', () => {
