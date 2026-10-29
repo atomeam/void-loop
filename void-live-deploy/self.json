@@ -542,13 +542,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T17:39:54Z",
+   "subject": "void_ask: keep waiting while the answer body still ends in an ellipsis"
+  },
+  {
+   "at": "2026-10-29T17:31:53Z",
+   "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-10-29T17:27:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T17:27:21Z",
    "subject": "Incidents closed: shard(s) 4 passed on 9dafcb7d (void-live-deploy/incidents.json)"
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-29T17:02:54Z",
    "subject": "guide.json: follows the families.json refresh"
-  },
-  {
-   "at": "2026-10-29T17:01:01Z",
-   "subject": "families.json: the tower skill has 9 browser-suite mentions after #1594"
-  },
-  {
-   "at": "2026-10-29T17:00:21Z",
-   "subject": "Country borders: a neighbour counts when it is a country or a sovereign state"
-  },
-  {
-   "at": "2026-10-29T17:00:09Z",
-   "subject": "Edge cache live check: a repeat ask must be a HIT, personal and signed asks never"
   }
  ],
  "builders": {

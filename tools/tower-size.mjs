@@ -52,9 +52,12 @@ export async function renderedControls(browser, url) {
     ctx = await browser.newContext({ userAgent: UA, javaScriptEnabled: true });
     const page = await ctx.newPage();
     await page.route('**/*', (r) => (['image', 'media', 'font'].includes(r.request().resourceType()) ? r.abort() : r.continue()));
-    await page.goto(url, { waitUntil: 'load', timeout: 20000 });
-    await page.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
-    return controlsOf(await page.content()).total;
+    // a page whose load event never fires (a slow ad or tracker) has still built its page: count what is there, unless it never left about:blank
+    const loaded = await page.goto(url, { waitUntil: 'load', timeout: 20000 }).then(() => true, () => false);
+    if (loaded) await page.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+    else if (!/^https?:/.test(page.url())) return null;
+    const n = controlsOf(await page.content()).total;
+    return loaded || n > 0 ? n : null;
   } catch (_) { return null; } finally { if (ctx) await ctx.close().catch(() => {}); }
 }
 /** the run's one browser, when this machine has one (VOID_TEST_BROWSER or the sandbox path), else null: the raw count stands. */
