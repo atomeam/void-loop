@@ -545,7 +545,7 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T15:11:22Z",
+   "at": "2026-10-29T15:12:02Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -577,8 +577,12 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:06:28Z",
+   "at": "2026-10-29T15:06:42Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:06:21Z",
+   "subject": "Translate page: language lists show their own spellings after load, so the first layout no longer shapes 30 scripts"
   },
   {
    "at": "2026-10-29T15:05:46Z",
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T14:59:43Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:59:18Z",
-   "subject": "Self card: waiting and built add up to the total"
   }
  ],
  "builders": {
