@@ -533,6 +533,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:25:14Z",
+   "subject": "List the morse skill so it loads, and narrow its match"
+  },
+  {
    "at": "2026-10-29T05:22:00Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -607,10 +611,6 @@
   {
    "at": "2026-10-29T05:02:56Z",
    "subject": "Fan fiction: list /fanfic/ in the sitemap generator and update the hand-off note"
-  },
-  {
-   "at": "2026-10-29T05:00:38Z",
-   "subject": "Incident: the browser suite failed on 12e44a29 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
