@@ -59,10 +59,21 @@ export const sorted = (entries) => entries.slice().sort((a, b) => a.label.locale
 export function pack(entries) { const b = new TextEncoder().encode(textOf(entries)); let s = ''; for (const x of b) s += String.fromCharCode(x); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
 export function open(code) { try { const s = atob(String(code || '').replace(/-/g, '+').replace(/_/g, '/')); const e = entriesOf(new TextDecoder().decode(Uint8Array.from(s, (c) => c.charCodeAt(0)))); return e.length ? e : null; } catch (_) { return null; } }
 
+/** the stage ask that opens these exact entries, weights kept: "spin the wheel with pizza, tacos*3, sushi" when that reads back the same, else
+ *  "spin the wheel #<pack>"; '' for fewer than two (the card has nothing to spin). Pure. */
+export function askOf(entries) {
+  const e = entries || []; if (e.length < 2) return '';
+  const words = 'spin the wheel with ' + e.map((x) => x.label + (x.weight > 1 ? '*' + x.weight : '')).join(', '), back = askWheel(words);
+  return back && textOf(back.entries) === textOf(e) ? words : 'spin the wheel #' + pack(e);
+}
+
 // the asks: "spin the wheel", "wheel of names", "spinner wheel", "spin a wheel with pizza, tacos, sushi", "random name picker wheel"
 /** what an ask wants: { entries } (maybe empty, for the starting wheel) or null. Pure. */
 export function askWheel(text) {
   const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
+  // the wheel page's own stage link: "spin the wheel #<entries in a link>" when its entries do not read back from words (owner via the team, 2026-10-29)
+  const k = /^spin\s+(?:the|a)\s+wheel\s+#([a-z0-9_-]{2,12000})$/i.exec(t);
+  if (k) { const e = open(k[1]); return e && e.length >= 2 ? { entries: e } : null; }
   if (t.length > 400) return null;
   const m = /^(?:spin|make|create|build)\s+(?:me\s+)?(?:a|the)\s+(?:prize\s+|random\s+|decision\s+)?wheel\s+(?:with|of|for)\s*:?\s+(.+)$/i.exec(t);
   if (m) { const e = entriesOf(m[1].replace(/\s+(?:and|or)\s+/gi, ', ')); return e.length >= 2 ? { entries: e } : null; }

@@ -1232,7 +1232,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/a11y-modes.js",
@@ -1498,7 +1498,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/health-habits.js",

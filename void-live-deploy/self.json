@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T06:33:10Z",
-   "subject": "Coder on Verse's own model: the loop tests and the API list catch up with #1439"
+   "at": "2026-10-29T06:32:26Z",
+   "subject": "Stage links follow the colour, gradient and wheel open on the page"
   },
   {
    "at": "2026-10-29T06:31:47Z",
