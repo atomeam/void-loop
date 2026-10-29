@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 939,
+ "counted": 940,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 4
   },
   {
@@ -871,6 +871,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-fluid-orbs.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/generators.js",
    "skills": 2,
    "direct": 1,
@@ -920,13 +927,6 @@
    "tests": 1
   },
   {
-   "file": "lib/field-fluid-orbs.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/fx.js",
    "skills": 2,
    "direct": 2,
@@ -960,6 +960,13 @@
    "direct": 2,
    "dependants": 2,
    "tests": 2
+  },
+  {
+   "file": "lib/orb-field.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/photo-ask.js",
@@ -5208,6 +5215,7 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
+    "lib/orb-field.js",
     "skills/agent-fluid-memory-orbs.js"
    ],
    "reachedBy": [
@@ -5241,6 +5249,7 @@
    ],
    "reachedBy": [
     "lib/field-vector-worker.js",
+    "lib/orb-field.js",
     "lib/tilt-arena-idea.js",
     "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
@@ -6846,6 +6855,17 @@
     "skills/overload.js",
     "skills/riot.js",
     "skills/sudden-death.js"
+   ]
+  },
+  "lib/orb-field.js": {
+   "imports": [
+    "lib/field-fluid-orbs.js"
+   ],
+   "importedBy": [
+    "skills/agent-fluid-memory-orbs.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field.js"
    ]
   },
   "lib/own-parts.js": {
@@ -9503,7 +9523,8 @@
    "imports": [
     "lib/field-stage.js",
     "lib/field-worker.js",
-    "lib/field-fluid-orbs.js"
+    "lib/field-fluid-orbs.js",
+    "lib/orb-field.js"
    ],
    "importedBy": [
     "skills/mind-field.js"

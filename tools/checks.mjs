@@ -308,6 +308,7 @@ for (const [name, file] of [
   ['field-nca', 'field-nca.test.mjs'],
   ['field-resonance', 'field-resonance.test.mjs'],
   ['field-swarm', 'field-swarm.test.mjs'],
+  ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field.js, null and nothing changes; a field gets free slots only
   ['field-fluid-orbs', 'field-fluid-orbs.test.mjs'], // F-321: orientation leans the flow, a peak spawns an orb, seal then load gives the same SHA-256
   ['stage-camera', 'stage-camera.test.mjs'],
   ['star-parallax', 'star-parallax.test.mjs'],
