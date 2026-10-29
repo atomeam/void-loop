@@ -89,6 +89,9 @@ const RIVAL_N = ((FLOORS.find((f) => f.id === 'formula calculators') || {}).riva
 /** the calculator count a page shows as "All calculators (N)", or 0. Pure. */
 export const libraryCount = (t) => Number((String(t).match(/All calculators \(([\d,]+)\)/i) || [])[1]?.replace(/,/g, '') || 0);
 const LIBRARY_GAP = 'at least ' + RIVAL_N.toLocaleString('en-US') + ' calculators, the size vcalc.com publishes (Verse has ' + CALCULATORS.length + ': ' + (RIVAL_N - CALCULATORS.length).toLocaleString('en-US') + ' short)';
+// the Writing Room's share link for a draft (lib/fanfic.js shareHash): base64url of the UTF-8 JSON { t: title, x: text }, after #room=
+const roomHash = (t, x) => 'room=' + Buffer.from(JSON.stringify({ t, x })).toString('base64url');
+const FIC_TITLE = 'The gate counts a draft', FIC_TEXT = WC_TEXT + '\n\n' + "Hermione's half-blood friend didn't wait.";
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -964,6 +967,32 @@ export const PROBES = Object.freeze({
     facts: [['the time now', /\b\d{1,2}:\d{2}(?::\d{2})?\b/], ['the date', /\b(?:mon|tues|wednes|thurs|fri|satur|sun)day\b/i], ['the time zone', /\btime ?zones?\b/i], ['the UTC offset', /\b(?:UTC|GMT)\s*[+−-]\s*\d/],
       ['daylight saving', /\bdaylight saving\b|\bDST\b/i], ['a world clock', /\bworld ?clock\b/i], ['a converter', /\bconverter\b/i], ['a meeting planner', /\bmeeting planner\b/i],
       ['the difference from you', /\bhours?\s+(?:ahead|behind)\b|\btime difference\b/i], ['sunrise and sunset', /\bsunrise\b|\bsunset\b/i], ['day length', /\bday length\b/i], ['solar noon', /\bsolar noon\b/i], ['a share link', /\bcopy link\b|\bshare\b/i]],
+  },
+  // sycophanthex.com (the tower target since 2026-10-29), against /fanfic/. The site turns this network away (403), so nothing here is read
+  // from it now: the facts are its own catalog features as its public pages showed them on 2026-10-29 (domains/targets/sycophanthex.json,
+  // features), and the truth is worked out here. The question: a draft put in the Writing Room by its own share link (the link holds the draft,
+  // nothing is posted, so no story is ever seeded): FIC_TEXT is 18 words as a word processor counts them (13 in the first two sentences, then
+  // Hermione's, half-blood, friend, didn't, wait: an apostrophe or a hyphen inside a word keeps it one word), and the draft keeps its title.
+  'sycophanthex.com': {
+    site: 'https://sycophanthex.com/', verse: '/fanfic/',
+    ask: { site: 'https://sycophanthex.com/', verse: '/fanfic/?v=room#' + roomHash(FIC_TITLE, FIC_TEXT) },
+    truth: [['18 words', /(?<![\d,])18\s+words?\b/i], ['the title kept', new RegExp(FIC_TITLE)]],
+    // one fact for each feature the archive's own pages show, read on the archive's front page as a reader sees it. An empty catalog shows no
+    // story rows, so the row facts (words, chapters, hits, reviews) count only when real stories are there: they are never seeded
+    facts: [['a catalog row for each story, with its words', /(?<![\d,])\d[\d,]*\s+words\b/i], ['browse by fandom or category', /\bfandoms?\b|\bcategor(?:y|ies)\b/i],
+      ['browse by character', /\bcharacters?\b/i], ['browse by genre', /\bgenres\b|\bby genre\b|\bgenre\s*:/i], ['browse by rating', /\bratings?\b|\brated\b/i], ['content warnings', /\bwarnings?\b/i],
+      ['an author list', { test: (t) => /\b(?:all|browse|list of|index of)\s+authors\b|\bauthors?\s+(?:a\s*to\s*z|index|list)\b/i.test(t) || /^Authors$/m.test(t) }], // a menu link; the site-info count "0 AUTHORS" is a number, not a list
+      ['a title index A to Z', /\bA\s*(?:to|-|–)\s*Z\b/], ['sort the list', /\bsort\b|\balphabetical(?:ly)?\b/i],
+      ['completed or in progress', { test: (t) => /\bcomplete(?:d)?\b/i.test(t) && /\bin progress\b|\bWIP\b/.test(t) }], ['pages of stories', /\bpage\s+\d+\s+of\s+\d+\b|\bnext page\b/i],
+      ['series', /\bseries\b/i], ['chapters, words and hits on each story', { test: (t) => /\bchapters?\b/i.test(t) && /(?<![\d,])\d[\d,]*\s+words\b/i.test(t) && /\bhits\b|\bviews\b|\breads\b/i.test(t) }],
+      ['reviews and a star rating', { test: (t) => /\breviews?\b/i.test(t) && /\bstars?\b|★/i.test(t) }], ['report a story', /\breport\b[^\n]{0,40}\b(?:story|this|spam|abuse)\b/i],
+      ['keyword search', /\bsearch\b/i], ['most recent stories and a feed of them', { test: (t) => /\bmost recent\b/i.test(t) && /\bRSS\b|\bfeeds?\b/i.test(t) }],
+      ['a random or featured story', /\brandom story\b|\bfeatured story\b/i], ['an account: register and log in', /\bregister\b|\blog ?in\b|\bsign ?(?:in|up)\b/i],
+      ['rules, help, ratings and upload guides', { test: (t) => /\brules\b/i.test(t) && /\bhelp\b|\bhow to\b|\bquick start\b/i.test(t) && /\bratings?\b/i.test(t) }],
+      ['site news', /\bnews\b|\bannouncements?\b/i], ['featured story lists', /\bfeatured (?:fics|stories|lists?)\b|\brecommended (?:stories|reads)\b|\brec lists?\b/i],
+      ['writing contests', /\bcontests?\b|\bchallenges?\b/i], ['archives by subject', /\barchives?\b/i],
+      ['forums and a help desk', { test: (t) => /\bforums?\b|\bboards\b/i.test(t) && /\bhelp desk\b|\bhelp\b|\bsupport\b/i.test(t) }],
+      ['staff, contact, terms and credits pages', /\bterms\b|\bprivacy\b|\bcontact\b|\bcredits\b/i]],
   },
 });
 // a floor's own named aspects (its `extra` in lib/tower.js), each a list both pages are scored on the same way: how many of the list a page
