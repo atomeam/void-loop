@@ -106,7 +106,10 @@ async function readArchive() {
   const topics = [];
   boards.slice(0, 40).forEach((b, i) => { for (const t of lists[i]) if (!t.hidden) topics.push(F.topicOf(t, b)); });
   topics.sort((a, b) => b.bumped - a.bumped);
-  return { boards, topics };
+  // a story a later chapter finished says so in that chapter, not on chapter 1, so one search finds those chapters (lib/fanfic.js finishedLater)
+  const open = topics.some((t) => t.status === 'In progress' && t.replies > 0);
+  const done = open ? await api('?q=' + encodeURIComponent('chapter status complete')).catch(() => ({})) : {};
+  return { boards, topics: F.finishedLater(topics, done.ok ? done.results : []) };
 }
 const archive = (fresh) => (!fresh && loaded) || (loaded = readArchive().catch((e) => { loaded = null; throw e; }));
 const shown = (topics) => topics.filter((t) => !t.nsfw || adultOk()); // adult fandoms' stories stay off the shared lists until this device said 18+
@@ -226,8 +229,9 @@ const findQ = () => (new URLSearchParams(location.search).get('find') || '').sli
 // warnings, and a title letter A to Z; they combine with the find field and live in the address, so a filtered list can be shared
 const filtersQ = () => { const q = new URLSearchParams(location.search);
   return { sort: F.SORTS[q.get('sort')] ? q.get('sort') : 'recent', rating: (q.get('rated') || '').slice(0, 20), genres: (q.get('genre') || '').split(',').filter(Boolean).slice(0, 15),
-    characters: (q.get('char') || '').slice(0, 120), noWarnings: q.get('nowarn') === '1', letter: (q.get('letter') || '').slice(0, 1), by: (q.get('by') || '').slice(0, 120) }; };
-const filtering = (f) => !!(f.rating || f.genres.length || f.characters.trim() || f.noWarnings || f.letter || f.by);
+    characters: (q.get('char') || '').slice(0, 120), noWarnings: q.get('nowarn') === '1', letter: (q.get('letter') || '').slice(0, 1), by: (q.get('by') || '').slice(0, 120),
+    status: F.STATUSES.includes(q.get('status')) ? q.get('status') : '' }; };
+const filtering = (f) => !!(f.rating || f.genres.length || f.characters.trim() || f.noWarnings || f.letter || f.by || f.status);
 const indexList = () => { if (!idx) return []; const f = filtersQ(); return F.sortStories(F.filterStories(F.findIn(idx.list, findQ()), f), f.sort); };
 function drawIndexList() {
   if (!idx) return;
@@ -249,12 +253,13 @@ function drawFilters(f) {
     for (const x of ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#']) { const b = el('button', '', x); b.type = 'button'; b.dataset.letter = x === 'All' ? '' : x; if (x === '#') b.setAttribute('aria-label', 'Titles that start with a number or a sign'); az.append(b); }
     sort.onchange = () => setFilter('sort', sort.value === 'recent' ? '' : sort.value);
     rated.onchange = () => setFilter('rated', rated.value);
+    $('fStatus').onchange = () => setFilter('status', $('fStatus').value);
     genres.onchange = () => setFilter('genre', [...genres.querySelectorAll('input:checked')].map((c) => c.value).join(','));
     $('fChars').oninput = () => setFilter('char', $('fChars').value.slice(0, 120));
     $('fNoWarn').onchange = () => setFilter('nowarn', $('fNoWarn').checked ? '1' : '');
     az.onclick = (ev) => { const b = ev.target.closest('button[data-letter]'); if (b) setFilter('letter', b.dataset.letter); };
   }
-  sort.value = f.sort; rated.value = F.RATINGS.some(([n]) => n === f.rating) ? f.rating : '';
+  sort.value = f.sort; rated.value = F.RATINGS.some(([n]) => n === f.rating) ? f.rating : ''; $('fStatus').value = f.status;
   for (const c of genres.querySelectorAll('input')) c.checked = f.genres.includes(c.value);
   if (document.activeElement !== $('fChars')) $('fChars').value = f.characters; $('fNoWarn').checked = f.noWarnings;
   for (const b of az.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.letter === f.letter.toUpperCase()));
@@ -352,7 +357,7 @@ async function viewStory(code, no, chap) {
   if (b.nsfw) by.append(el('span', 'tag adult', '18+'));
   const det = F.detailsLine(s.details); $('storyDetails').textContent = det; $('storyDetails').hidden = !det;
   $('storySum').textContent = s.summary; $('storySum').hidden = !s.summary;
-  const facts = [['Rated', s.details.rating ? s.details.rating + (b.nsfw ? ' · 18+' : '') : b.nsfw ? '18+' : 'All ages'], ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
+  const facts = [['Rated', s.details.rating ? s.details.rating + (b.nsfw ? ' · 18+' : '') : b.nsfw ? '18+' : 'All ages'], ...(s.details.status ? [['Status', s.details.status]] : []), ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
     ['Reading time', F.readLabel(s.words)], ['Reviews', String(s.reviews.length)], ['Published', date(s.published)], ['Updated', date(s.updated)]];
   $('storyInfo').replaceChildren(...facts.map(([k, v]) => { const d = el('div'); d.append(el('dt', '', k), el('dd', '', v)); return d; }));
   // the chapter shown, and the chapter list
@@ -385,7 +390,7 @@ async function viewStory(code, no, chap) {
   // the next chapter: only for the device that posted the story, while the thread is open
   const own = !!me.mine[key] && !!s.trip && !op.locked && !op.archived;
   $('addChapter').hidden = !own;
-  if (own) wireChapter(code, no, s.chapters.length + 1);
+  if (own) wireChapter(code, no, s.chapters.length + 1, s.details.status === 'Complete');
 }
 
 function gate() { show('gate', 'For adults'); }
@@ -452,7 +457,7 @@ async function viewPost(pick) {
   }
   if (!form.elements.pen.value) form.elements.pen.value = me.pen || '';
   detailFields(form);
-  const details = () => ({ rating: form.elements.rating.value, characters: form.elements.characters.value,
+  const details = () => ({ rating: form.elements.rating.value, characters: form.elements.characters.value, status: (form.querySelector('input[name=status]:checked') || {}).value || '',
     genres: [...form.querySelectorAll('input[name=genre]:checked')].map((c) => c.value), warnings: [...form.querySelectorAll('input[name=warning]:checked')].map((c) => c.value) });
   const parts = () => F.chapterPosts(1, '', form.elements.text.value, form.elements.summary.value, details()).length;
   counter(form, 'text', parts);
@@ -477,17 +482,18 @@ async function viewPost(pick) {
   };
 }
 
-function wireChapter(code, no, n) {
+function wireChapter(code, no, n, complete) {
   const form = $('chForm'), note = form.querySelector('[data-say]');
+  $('chDoneBox').hidden = !!complete; if (complete) form.elements.done.checked = false;
   $('addChapter').querySelector('h2').textContent = 'Add chapter ' + n;
   botOf(form);
-  counter(form, 'text', () => F.chapterPosts(n, form.elements.title.value, form.elements.text.value).length);
+  counter(form, 'text', () => F.chapterPosts(n, form.elements.title.value, form.elements.text.value, '', null, form.elements.done.checked).length);
   form.onsubmit = async (ev) => {
     ev.preventDefault();
-    const title = form.elements.title.value, text = form.elements.text.value;
+    const title = form.elements.title.value, text = form.elements.text.value, done = form.elements.done.checked;
     if (!F.words(text)) { say(note, 'Write or paste the chapter first.', 'bad'); form.elements.text.focus(); return; }
-    const s = sig(code, no, n, title, text);
-    if (!form._job || form._job.sig !== s) form._job = { sig: s, b: code, t: no, sub: '', parts: F.chapterPosts(n, title, text), name: F.signedName(me.pen, me.secret), i: 0 };
+    const s = sig(code, no, n, title, text, done);
+    if (!form._job || form._job.sig !== s) form._job = { sig: s, b: code, t: no, sub: '', parts: F.chapterPosts(n, title, text, '', null, done), name: F.signedName(me.pen, me.secret), i: 0 };
     busy(form, true);
     try { await sendParts(form, form._job); form._job = null; form.reset(); loaded = null; say(note, 'Chapter ' + n + ' is up.', 'good'); go(href({ f: code, s: no, c: n }), true); }
     catch (e) { fail(note, e); } finally { busy(form, false); }

@@ -120,7 +120,10 @@ export const signedName = (pen, secret) => (penName(pen) || 'Anonymous') + (secr
 export const RATINGS = Object.freeze([['General', 'fine for every reader'], ['Teen', 'some violence, strong words or romance'], ['Mature', 'strong themes, for adult readers']]);
 export const GENRES = Object.freeze(['Adventure', 'Angst', 'Comedy', 'Drama', 'Family', 'Fantasy', 'Fluff', 'Friendship', 'Horror', 'Hurt/Comfort', 'Mystery', 'Poetry', 'Romance', 'Sci-fi', 'Tragedy']);
 export const WARNINGS = Object.freeze(['Violence', 'Major character death', 'Strong language', 'Dark themes']);
-export const DETAIL_LIMITS = Object.freeze({ genres: 3, characters: 6, name: 40, line: 140 });
+// a story's status (sycophanthex.com marks each story completed or in progress): the author says it on chapter 1 ("Status: In progress", or
+// "Complete" for a one-shot), and a later chapter that ends the story says "Status: Complete" under its chapter line (chapterPosts done)
+export const STATUSES = Object.freeze(['In progress', 'Complete']);
+export const DETAIL_LIMITS = Object.freeze({ genres: 3, characters: 6, name: 40, line: 136 }); // 136: with a status, the longest detail lines still fit the catalog's 300
 // the known names in list (an array or a comma list), the first max given, in all's order
 const pick = (list, all, max) => {
   const got = [];
@@ -128,31 +131,32 @@ const pick = (list, all, max) => {
   return all.filter((a) => got.includes(a));
 };
 /** details as the archive keeps them: a known rating or '', known genres (at most 3) and warnings in the lists' order, and at most 6 character
- *  names, each one line of at most 40 characters and 140 in all, the first spelling of a name kept once. Pure. */
+ *  names, each one line of at most 40 characters and 136 in all, the first spelling of a name kept once. Pure. */
 export function cleanDetails(d = {}) {
   const r = RATINGS.find(([n]) => n.toLowerCase() === String(d.rating || '').trim().toLowerCase()), seen = new Set(), characters = [];
   for (const raw of Array.isArray(d.characters) ? d.characters : String(d.characters || '').split(',')) {
     const c = cleanLine(String(raw).replace(/,/g, ' '), DETAIL_LIMITS.name), k = c.toLowerCase();
     if (c && !seen.has(k) && characters.length < DETAIL_LIMITS.characters && [...characters, c].join(', ').length <= DETAIL_LIMITS.line) { seen.add(k); characters.push(c); }
   }
-  return { rating: r ? r[0] : '', genres: pick(d.genres, GENRES, DETAIL_LIMITS.genres), characters, warnings: pick(d.warnings, WARNINGS, WARNINGS.length) };
+  const st = STATUSES.find((x) => x.toLowerCase() === String(d.status || '').trim().toLowerCase()) || '';
+  return { rating: r ? r[0] : '', genres: pick(d.genres, GENRES, DETAIL_LIMITS.genres), characters, warnings: pick(d.warnings, WARNINGS, WARNINGS.length), status: st };
 }
 /** the detail lines chapter 1 opens with, each "Label: value" and a newline; '' for a story with none. The rating comes last, so in a board's
  *  catalog, where a post is one line of at most 300 characters, the free-text character names end at a label; the lines fit in 300. Pure. */
 export function detailLines(d) {
   const c = cleanDetails(d);
-  return (c.warnings.length ? 'Warnings: ' + c.warnings.join(', ') + '\n' : '') + (c.genres.length ? 'Genres: ' + c.genres.join(', ') + '\n' : '')
+  return (c.status ? 'Status: ' + c.status + '\n' : '') + (c.warnings.length ? 'Warnings: ' + c.warnings.join(', ') + '\n' : '') + (c.genres.length ? 'Genres: ' + c.genres.join(', ') + '\n' : '')
     + (c.characters.length ? 'Characters: ' + c.characters.join(', ') + '\n' : '') + (c.rating ? 'Rated: ' + c.rating + '\n' : '');
 }
-const DETAIL_RE = /^(Rated|Genres|Characters|Warnings): ([^\n]{1,300})\n/;
+const DETAIL_RE = /^(Status|Rated|Genres|Characters|Warnings): ([^\n]{1,300})\n/;
 const listRe = (all) => new RegExp('^((?:' + all.map((x) => x.replace(/[/-]/g, '\\$&')).join('|') + ')(?:, (?:' + all.map((x) => x.replace(/[/-]/g, '\\$&')).join('|') + '))*)(?= |$)');
-const FLAT = { Rated: listRe(RATINGS.map(([n]) => n)), Genres: listRe(GENRES), Warnings: listRe(WARNINGS) };
+const FLAT = { Status: listRe(STATUSES), Rated: listRe(RATINGS.map(([n]) => n)), Genres: listRe(GENRES), Warnings: listRe(WARNINGS) };
 // the details at the head of a catalog excerpt (newlines made spaces): known words for a rating, genres and warnings; the names up to the next label
 function flatDetails(b) {
   const raw = {}; let m;
-  while ((m = /^(Rated|Genres|Characters|Warnings): /.exec(b)) && !raw[m[1]]) {
+  while ((m = /^(Status|Rated|Genres|Characters|Warnings): /.exec(b)) && !raw[m[1]]) {
     const rest = b.slice(m[0].length);
-    if (m[1] === 'Characters') { const n = / (?=(?:Rated|Genres|Warnings|Summary): )/.exec(rest); if (!n) break; raw.Characters = rest.slice(0, n.index); b = rest.slice(n.index + 1); continue; }
+    if (m[1] === 'Characters') { const n = / (?=(?:Status|Rated|Genres|Warnings|Summary): )/.exec(rest); if (!n) break; raw.Characters = rest.slice(0, n.index); b = rest.slice(n.index + 1); continue; }
     const v = FLAT[m[1]].exec(rest); if (!v) break; raw[m[1]] = v[1]; b = rest.slice(v[1].length).replace(/^ /, '');
   }
   return { raw, b };
@@ -167,7 +171,7 @@ export function readSummary(body) {
   let b = String(body == null ? '' : body), m; const raw = {};
   while ((m = DETAIL_RE.exec(b)) && !raw[m[1]]) { raw[m[1]] = m[2]; b = b.slice(m[0].length); }
   if (!Object.keys(raw).length && !b.includes('\n')) { const f = flatDetails(b); Object.assign(raw, f.raw); b = f.b; }
-  const details = cleanDetails({ rating: raw.Rated, genres: raw.Genres, characters: raw.Characters, warnings: raw.Warnings });
+  const details = cleanDetails({ rating: raw.Rated, genres: raw.Genres, characters: raw.Characters, warnings: raw.Warnings, status: raw.Status });
   if (Object.keys(raw).length && !SUMMARY_RE.test(b)) b = b.replace(/^\n/, '');
   m = SUMMARY_RE.exec(b); return m ? { summary: m[1].trim(), text: b.slice(m[0].length), details } : { summary: '', text: b, details };
 }
@@ -175,15 +179,18 @@ export function readSummary(body) {
 const CHAPTER_RE = /^Chapter (\d{1,4})(?:: ([^\n]{0,100})|(, continued))?\n\n?/;
 /** the first line of a chapter's post: "Chapter 3: Title", or "Chapter 3, continued" on the posts that carry the rest of a long chapter. */
 export const chapterHead = (n, title = '', more = false) => 'Chapter ' + n + (more ? ', continued' : cleanLine(title, 100) ? ': ' + cleanLine(title, 100) : '') + '\n\n';
-/** { n, title, more, text } when a post opens with a chapter line, else null. */
+const DONE_RE = /^Status: Complete\n\n?/;
+/** { n, title, more, done, text } when a post opens with a chapter line, else null; done when the chapter's first post says it ends the story. */
 export function readChapter(body) {
   const b = String(body == null ? '' : body), m = CHAPTER_RE.exec(b);
-  return m ? { n: +m[1], title: (m[2] || '').trim(), more: !!m[3], text: b.slice(m[0].length) } : null;
+  if (!m) return null;
+  const rest = b.slice(m[0].length), d = !m[3] && DONE_RE.exec(rest);
+  return { n: +m[1], title: (m[2] || '').trim(), more: !!m[3], done: !!d, text: d ? rest.slice(d[0].length) : rest };
 }
 /** a chapter's text as the posts the boards will take whole, each with its chapter line: the first "Chapter n: title", the rest ", continued".
  *  Chapter 1 has no line on its first post (it opens the thread, after the summary). */
-export function chapterPosts(n, title, text, summary = '', details = null) {
-  const first = n === 1 ? withSummary(summary, '', details) : chapterHead(n, title), more = chapterHead(n, '', true);
+export function chapterPosts(n, title, text, summary = '', details = null, done = false) {
+  const first = n === 1 ? withSummary(summary, '', details) : chapterHead(n, title) + (done ? 'Status: Complete\n\n' : ''), more = chapterHead(n, '', true);
   const room = LIMITS.body - Math.max(Array.from(first).length, Array.from(more).length), lines = LIMITS.lines - Math.max(first.split('\n').length, more.split('\n').length);
   return splitParts(text, room, lines).map((p, i) => (i === 0 ? first : more) + p);
 }
@@ -194,6 +201,7 @@ export function chapterPosts(n, title, text, summary = '', details = null) {
 export function storyOf(op, posts = []) {
   const { summary, text, details } = readSummary(op.body);
   const chapters = [{ n: 1, title: '', text, at: op.at, nos: [op.no] }], reviews = [];
+  let done = details.status === 'Complete';
   for (const p of posts) {
     if (!p || p.no === op.no || p.hidden) continue;
     const c = op.trip && p.trip === op.trip ? readChapter(p.body) : null;
@@ -202,8 +210,10 @@ export function storyOf(op, posts = []) {
     if (c.more && last.n === c.n) { last.text += '\n\n' + c.text; last.nos.push(p.no); continue; }
     if (c.more) { reviews.push(p); continue; }
     chapters.push({ n: chapters.length + 1, title: c.title, text: c.text, at: p.at, nos: [p.no] });
+    if (c.done) done = true;
   }
   const updated = chapters.reduce((t, c) => Math.max(t, c.at || 0), op.at || 0);
+  if (done) details.status = 'Complete';
   return { title: op.sub || excerpt(text, 60) || 'Untitled', author: op.name || 'Anonymous', trip: op.trip || '', summary, details, chapters, reviews,
     words: chapters.reduce((n, c) => n + words(c.text), 0), published: op.at || 0, updated };
 }
@@ -228,6 +238,20 @@ export function authorsOf(topics) {
 }
 /** one story picked at random from the list, or null for an empty list. rand is Math.random by default, so a test can fix it. Pure apart from rand. */
 export const randomOf = (list, rand = Math.random) => (list && list.length ? list[Math.min(list.length - 1, Math.floor(rand() * list.length))] : null);
+
+/** the stories a later chapter finished, from the boards' search for "status complete" (posts with board, thread, trip, body): a hit counts only
+ *  when it is a chapter's first post that says it ends the story, in that story's thread, signed with the story's own mark. Returns the topics
+ *  with status 'Complete' where a hit finished them; the rest unchanged. Pure. */
+const FLAT_DONE_RE = /^Chapter \d{1,4}(?:: [^\n]{0,100}?)? Status: Complete(?: |$)/;
+export function finishedLater(topics, hits) {
+  const done = new Set();
+  for (const h of hits || []) {
+    if (!h || !h.trip) continue;
+    const c = readChapter(h.body), flat = FLAT_DONE_RE.test(String(h.body || '')); // search results come as one-line excerpts
+    if ((c && c.done && !c.more) || (!c && flat)) done.add(h.board + '/' + h.thread + '!' + h.trip);
+  }
+  return (topics || []).map((t) => (t.status !== 'Complete' && t.trip && done.has(t.board + '/' + t.no + '!' + t.trip) ? { ...t, status: 'Complete' } : t));
+}
 
 /** the archive's numbers, all counted from what is there: fandoms, stories, posts, and authors (a pen name and its mark count once). */
 export function statsOf(boards, topics) {
@@ -275,9 +299,9 @@ export const SORTS = Object.freeze({ recent: 'Most recent post', newest: 'Newest
 export const letterOf = (title) => { const c = byTitle(title).charAt(0).toUpperCase(); return /^[A-Z]$/.test(c) ? c : '#'; };
 /** the stories that pass every filter given: a rating, every genre asked for, every character name asked for (part of a name is enough, case and
  *  accents ignored), no warnings when noWarnings, and a title letter. Empty filters pass everything. Pure. */
-export function filterStories(topics, { rating = '', genres = [], characters = '', noWarnings = false, letter = '', by = '' } = {}) {
+export function filterStories(topics, { rating = '', genres = [], characters = '', noWarnings = false, letter = '', by = '', status = '' } = {}) {
   const g = pick(genres, GENRES, GENRES.length), names = String(characters || '').split(',').map(fold).map((x) => x.trim()).filter(Boolean), L = String(letter || '').toUpperCase();
-  return (topics || []).filter((t) => (!by || authorKey(t) === by) && (!rating || t.rating === rating) && g.every((x) => (t.genres || []).includes(x))
+  return (topics || []).filter((t) => (!by || authorKey(t) === by) && (!status || t.status === status) && (!rating || t.rating === rating) && g.every((x) => (t.genres || []).includes(x))
     && names.every((n) => (t.characters || []).some((c) => fold(c).includes(n))) && (!noWarnings || !(t.warnings || []).length) && (!L || letterOf(t.title) === L));
 }
 const byTitle = (t) => fold(t).replace(/^[^\p{L}\p{N}]+/u, '');
@@ -290,5 +314,5 @@ export function sortStories(topics, sort = 'recent') {
 /** the details of a story as one line for its row and its page: "Rated Teen · Romance, Mystery · Characters: … · Warnings: …"; '' for none. Pure. */
 export function detailsLine(d) {
   const c = cleanDetails(d || {});
-  return [c.warnings.length ? 'Warnings: ' + c.warnings.join(', ') : '', c.rating ? 'Rated ' + c.rating : '', c.genres.join(', '), c.characters.length ? 'Characters: ' + c.characters.join(', ') : ''].filter(Boolean).join(' · ');
+  return [c.status, c.warnings.length ? 'Warnings: ' + c.warnings.join(', ') : '', c.rating ? 'Rated ' + c.rating : '', c.genres.join(', '), c.characters.length ? 'Characters: ' + c.characters.join(', ') : ''].filter(Boolean).join(' · ');
 }

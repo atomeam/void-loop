@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,12 +545,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T08:41:44Z",
-   "subject": "Password page: the stage card makes the length on the page, both ways"
-  },
-  {
-   "at": "2026-10-29T08:41:41Z",
-   "subject": "Password page: its stage card makes the length on the page, and the card opens the page on that length"
+   "at": "2026-10-29T08:43:02Z",
+   "subject": "Fan fiction: a story is complete or in progress"
   },
   {
    "at": "2026-10-29T08:38:57Z",
@@ -623,6 +619,10 @@
   {
    "at": "2026-10-29T08:13:56Z",
    "subject": "fanfic: Authors list, a writer's stories, Random story and a help desk"
+  },
+  {
+   "at": "2026-10-29T08:12:23Z",
+   "subject": "Regenerate after merging main"
   }
  ],
  "builders": {

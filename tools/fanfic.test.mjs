@@ -99,8 +99,8 @@ test('a summary and chapter lines read back as they were written', () => {
   const none = F.cleanDetails({});
   assert.deepEqual(F.readSummary(F.withSummary('Two lines about it.', 'The story.')), { summary: 'Two lines about it.', text: 'The story.', details: none });
   assert.deepEqual(F.readSummary('No summary here.'), { summary: '', text: 'No summary here.', details: none });
-  assert.deepEqual(F.readChapter(F.chapterHead(3, 'The Bridge') + 'Text.'), { n: 3, title: 'The Bridge', more: false, text: 'Text.' });
-  assert.deepEqual(F.readChapter(F.chapterHead(3, '', true) + 'More.'), { n: 3, title: '', more: true, text: 'More.' });
+  assert.deepEqual(F.readChapter(F.chapterHead(3, 'The Bridge') + 'Text.'), { n: 3, title: 'The Bridge', more: false, done: false, text: 'Text.' });
+  assert.deepEqual(F.readChapter(F.chapterHead(3, '', true) + 'More.'), { n: 3, title: '', more: true, done: false, text: 'More.' });
   assert.equal(F.readChapter('Just a review.'), null);
   const para = 'word '.repeat(150).trim(), long = Array.from({ length: 14 }, (_, i) => 'Para ' + i + ' ' + para).join('\n\n');
   const one = F.chapterPosts(1, '', long, 'A summary.'), two = F.chapterPosts(2, 'Next', long);
@@ -217,14 +217,14 @@ test('story details: a known rating, at most 3 known genres, at most 6 character
   assert.deepEqual(d.warnings, ['Violence']); assert.equal(F.cleanDetails({ rating: 'Explicit' }).rating, '', 'an unknown rating is none');
   const body = F.withSummary('About it.', 'The story.', { rating: 'Mature', genres: ['Angst'], characters: 'Ana', warnings: ['Dark themes'] });
   assert.equal(body, 'Warnings: Dark themes\nGenres: Angst\nCharacters: Ana\nRated: Mature\nSummary: About it.\n\nThe story.', 'the rating last, so names end at a label');
-  assert.deepEqual(F.readSummary(body), { summary: 'About it.', text: 'The story.', details: { rating: 'Mature', genres: ['Angst'], characters: ['Ana'], warnings: ['Dark themes'] } });
+  assert.deepEqual(F.readSummary(body), { summary: 'About it.', text: 'The story.', details: { rating: 'Mature', genres: ['Angst'], characters: ['Ana'], warnings: ['Dark themes'], status: '' } });
   assert.deepEqual(F.readSummary(F.withSummary('', 'Just text.', { rating: 'General' })), { summary: '', text: 'Just text.', details: { ...F.cleanDetails({}), rating: 'General' } });
   assert.equal(F.withSummary('About it.', 'The story.', {}), F.withSummary('About it.', 'The story.'), 'no details, the body is as before');
   const posts = F.chapterPosts(1, '', Array.from({ length: 14 }, (_, i) => 'Para ' + i + ' ' + 'word '.repeat(150).trim()).join('\n\n'), 'S.', { rating: 'Teen', genres: ['Drama'], characters: 'Ana', warnings: ['Violence'] });
   assert.ok(posts[0].startsWith('Warnings: Violence\n'));
   // a board's catalog gives each post as one line of at most 300 characters (lib/boards.js excerpt): the details read back from that too
   const most = { rating: 'Mature', genres: ['Hurt/Comfort', 'Sci-fi', 'Adventure'], characters: Array.from({ length: 6 }, (_, i) => 'Name' + i + ' ' + 'y'.repeat(30)).join(','), warnings: F.WARNINGS };
-  const full = F.cleanDetails(most); assert.ok(full.characters.join(', ').length <= 140 && full.characters.length >= 3, 'at most 140 characters of names');
+  const full = F.cleanDetails(most); assert.ok(full.characters.join(', ').length <= F.DETAIL_LIMITS.line && full.characters.length >= 3, 'at most 136 characters of names');
   const flat = excerpt(F.withSummary('About it.', 'The story goes on and on. '.repeat(20), most), 300);
   assert.deepEqual(F.readSummary(flat).details, full, 'every detail fits in the 300 a catalog keeps');
   assert.deepEqual(F.readSummary(excerpt(body, 300)).details, F.readSummary(body).details);
@@ -300,4 +300,32 @@ test('the feed lists the newest stories first, links each story, escapes what re
   const r = await onRequestGet({ env: {}, request: new Request('https://a-to-mind.com/fanfic/rss') });
   assert.equal(r.headers.get('content-type'), 'application/rss+xml; charset=utf-8');
   assert.ok(!/<item>/.test(await r.text()), 'no boards here: an empty feed, never an error');
+});
+
+test('a story is in progress or complete: said on chapter 1, or by a later chapter that ends it, signed with the story\'s mark', () => {
+  const op = (body, trip = 'aa') => ({ no: 1, at: 1, sub: 'S', name: 'n', trip, body });
+  const first = F.chapterPosts(1, '', 'One.', 'Sum.', { rating: 'Teen', status: 'in progress' })[0];
+  assert.match(first, /^Status: In progress\n/);
+  assert.equal(F.readSummary(first).details.status, 'In progress');
+  assert.equal(F.cleanDetails({ status: 'finished' }).status, '', 'an unknown status is none');
+  const last = F.chapterPosts(2, 'End', 'Two.', '', null, true);
+  assert.equal(last[0], 'Chapter 2: End\n\nStatus: Complete\n\nTwo.');
+  assert.deepEqual(F.readChapter(last[0]), { n: 2, title: 'End', more: false, done: true, text: 'Two.' });
+  assert.equal(F.storyOf(op(first), [{ no: 2, at: 2, trip: 'aa', body: last[0] }]).details.status, 'Complete');
+  assert.equal(F.storyOf(op(first), [{ no: 2, at: 2, trip: 'zz', body: last[0] }]).details.status, 'In progress', 'a review cannot finish the story');
+  assert.equal(F.storyOf(op(first), [{ no: 2, at: 2, trip: 'aa', body: F.chapterPosts(2, '', 'Two.')[0] }]).chapters[1].text, 'Two.');
+  // the catalog's flat excerpt (newlines made spaces) keeps the status
+  const flat = F.topicOf({ no: 1, body: first.replace(/\n+/g, ' '), name: 'n', trip: 'aa' }, { code: 'ficx', title: 'X' });
+  assert.equal(flat.status, 'In progress'); assert.equal(flat.rating, 'Teen');
+  assert.equal(F.detailsLine({ status: 'Complete', rating: 'Teen' }), 'Complete · Rated Teen');
+  const most = { status: 'In progress', rating: 'Mature', genres: ['Hurt/Comfort', 'Friendship', 'Adventure'], warnings: F.WARNINGS, characters: ['a', 'b', 'c', 'd', 'e'].map((x) => x.repeat(40)).join(',') };
+  const lines = F.detailLines(most).trim(); assert.ok(lines.length <= 300, 'the longest details fit the catalog excerpt: ' + lines.length);
+  assert.equal(F.topicOf({ no: 1, body: (lines + '\n\nSummary: s\n\nText').replace(/\s+/g, ' ').slice(0, 300), name: 'n' }, { code: 'ficx', title: 'X' }).rating, 'Mature');
+  const list = [{ ...flat }, { ...flat, no: 2, status: 'Complete' }, { ...flat, no: 3, status: '' }];
+  assert.deepEqual(F.filterStories(list, { status: 'Complete' }).map((t) => t.no), [2]);
+  assert.deepEqual(F.filterStories(list, { status: 'In progress' }).map((t) => t.no), [1]);
+  const hits = [{ board: 'ficx', thread: 1, trip: 'aa', body: last[0] }, { board: 'ficx', thread: 3, trip: 'bb', body: last[0] }, { board: 'ficx', thread: 1, trip: 'aa', body: 'Status: Complete' }, { board: 'ficx', thread: 3, trip: 'aa', body: 'Chapter 2, continued Status: Complete' }];
+  assert.deepEqual(F.finishedLater(list, hits).map((t) => t.status), ['Complete', 'Complete', ''], 'only a chapter signed with the story\'s mark finishes it');
+  const flatHit = [{ board: 'ficx', thread: 3, trip: 'aa', body: 'Chapter 2: The End Status: Complete Two.' }];
+  assert.deepEqual(F.finishedLater(list, flatHit).map((t) => t.status), ['In progress', 'Complete', 'Complete'], 'a search excerpt (one line) counts too');
 });
