@@ -133,7 +133,7 @@ const free = () => { const r = figWait.shift(); if (r) r(); else figBusy--; };
 function figuresOf(t) {
   const k = t.board + '/' + t.no, had = figs.get(k);
   if (had && had.bumped === t.bumped) return had.p;
-  const p = slot().then(() => api('?b=' + encodeURIComponent(t.board) + '&t=' + t.no)).then((r) => (r.ok && r.thread ? F.rowFigures(F.storyOf(r.thread, r.posts || [])) : null)).finally(free);
+  const p = slot().then(() => api('?b=' + encodeURIComponent(t.board) + '&t=' + t.no)).then((r) => (r.ok && r.thread ? F.rowFigures(F.storyOf(r.thread, r.posts || [])) : null)).catch(() => null).finally(free);
   figs.set(k, { bumped: t.bumped, p }); p.then((x) => { if (!x) figs.delete(k); });
   return p;
 }
