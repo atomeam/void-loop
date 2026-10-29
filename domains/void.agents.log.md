@@ -1111,3 +1111,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T07:00:45Z | claude | grow | The weather page's stage link aims again when the forecast comes back, so it opens the place looked up before any press
 2026-10-29T07:13:41Z | claude | grow | Hand-off links on every tool page carry their place before a press, and the wheel palette is written on a press only
 2026-10-29T07:31:34Z | claude | grow | Stage card links open the unit converter, calculator and countdown as they stand
+2026-10-29T07:43:51Z | claude | grow | the calculator's stage card takes the sum that gave the answer, not the bare answer

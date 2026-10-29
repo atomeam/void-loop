@@ -56,6 +56,12 @@ export function cardAsk(src, opts) {
   return a.ok && b.ok && Number.isFinite(a.value) && Math.abs(a.value - b.value) <= 1e-9 * Math.max(1, Math.abs(a.value)) ? ask : '';
 }
 
+/** the card for the page: just after =, the box holds the answer, so the card takes the sum that gave it (the history's top row), not the bare number. */
+export function boxAsk(box, list, done, opts) {
+  const top = done && Array.isArray(list) && list[0];
+  return (top && top.v === String(box || '').trim() && cardAsk(top.e, opts)) || cardAsk(box, opts);
+}
+
 /** work out an expression: { ok, value } or { ok: false, error }. opts: { deg (true: trig in degrees), ans (the last answer), mem }. Pure. */
 export function calc(src, { deg = true, ans = 0, mem = 0 } = {}) {
   try {

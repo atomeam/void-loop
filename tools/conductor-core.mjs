@@ -57,10 +57,14 @@ export const withTries = (note, n, why) => {
 };
 const ms = (iso) => { const t = Date.parse(iso || ''); return Number.isFinite(t) ? t : 0; };
 
-/** a job's worth now: its kind's weight, plus 2 a day of waiting (up to 30), minus 25 a try. Pure. */
+// a try costs a job 25, so a hopeless one sinks; the will's want costs only 5 a try (2026-10-29: with 34 fresh versus jobs at 85, a want at
+// 95 that had one try sank to 75 and waited behind every one of them until it was set aside untried; Verse's own ask comes first, and
+// MAX_TRIES and the 2N-hour wait still stop a hopeless want)
+export const TRY_COST = Object.freeze({ will: 5 });
+/** a job's worth now: its kind's weight, plus 2 a day of waiting (up to 30), minus 25 a try (TRY_COST for the will). Pure. */
 export function score(job, now) {
-  const w = WEIGHT[kindOf(job.target)] ?? 30, days = Math.max(0, (now - ms(job.at)) / (24 * H));
-  return w + Math.min(30, 2 * days) - 25 * triesOf(job.note);
+  const k = kindOf(job.target), w = WEIGHT[k] ?? 30, days = Math.max(0, (now - ms(job.at)) / (24 * H));
+  return w + Math.min(30, 2 * days) - (TRY_COST[k] ?? 25) * triesOf(job.note);
 }
 
 /** where a job goes: { wf, input, claims, cap } or null when nothing can run it. Pure. */

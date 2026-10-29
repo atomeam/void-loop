@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T07:15:49.007Z",
+ "updated": "2026-10-29T07:46:34.050Z",
  "last24h": {
-  "ticks": 30,
-  "started": 58,
+  "ticks": 33,
+  "started": 61,
   "requeued": 0,
   "setAside": 0,
   "probes": 4,
@@ -12,8 +12,8 @@
  "broken": [
   {
    "wf": "tower-gate.yml",
-   "fails": 3,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/40829167642"
+   "fails": 5,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/40834599593"
   }
  ],
  "held": [],
@@ -853,6 +853,78 @@
     "tower-gate.yml"
    ],
    "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T07:26:06.001Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mvoxczpi",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T07:36:20.269Z",
+   "open": 109,
+   "started": [
+    {
+     "id": "mvoxd09y",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T07:46:34.050Z",
+   "open": 108,
+   "started": [
+    {
+     "id": "mvoxrsct",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
    "grow": false,
    "will": false,
    "lap": false,
