@@ -109,7 +109,7 @@ function standIn(cdp, e, handler) {
     res = { status: r.status || 200, body: r.body || '', headers: [...cors, ...(r.contentType ? [{ name: 'content-type', value: r.contentType }] : [])] }; }
   cdp.send('Fetch.fulfillRequest', { requestId: e.requestId, responseCode: res.status, responseHeaders: res.headers, body: Buffer.from(res.body).toString('base64') }).catch(() => {});
 }
-const pace = { load: 0, answer: 0, full: 0 }; // where the time goes, for the pace line below
+const pace = { load: 0, answer: 0, full: 0, early: 0 }; // where the time goes, for the pace line below
 async function one(ctx, { ask: a, want, says, before }) {
   const tOpen = Date.now(); const miss = [];
   // the stand-ins: outside services, then Verse's own /api (served through the page's DevTools session, see standIn)
@@ -169,6 +169,7 @@ async function one(ctx, { ask: a, want, says, before }) {
     if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
   await p.evaluate(() => { window.__said = ''; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
+  if (!(await p.evaluate(() => document.documentElement.dataset.skills === 'ready').catch(() => false))) pace.early++; // asked before every skill file was in: the answer may wait on them
   const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, ASK_WAIT_MS);
   const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
@@ -205,7 +206,7 @@ let next = 0;
 let done = 0; const began = Date.now();
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { const ctx = await slot(); try { while (next < todo.length) { const i = next++; out[i] = await one(ctx, todo[i]);
   if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
-    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms'); } } finally { await ctx.close(); } }));
+    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in'); } } finally { await ctx.close(); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
