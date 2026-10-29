@@ -6848,5 +6848,11 @@
   {"ask": "calculator for molar mass", "want": "skill:formulas"},
   {"ask": "1337 speak for world", "want": "skill:leet"},
   {"ask": "lorem", "want": "skill:lorem"},
-  {"ask": "give me some lorem", "want": "skill:lorem"}
+  {"ask": "give me some lorem", "want": "skill:lorem"},
+  {"ask": "2d6", "want": "skill:random"},
+  {"ask": "3d8", "want": "skill:random"},
+  {"ask": "memory orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "fluid memory orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "char codes of world", "want": "skill:ascii"},
+  {"ask": "what is the ascii of A", "want": "skill:ascii"}
 ]
