@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: pancardresizer.com (https://pancardresizer.com/)
-- Verse: /resize-image/ (photo resizer, tower gate 12 of 15)
+- Verse: /resize-image/ (photo resizer, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "PAN Card Resizer - Photo, Signature and document Resizer, Converter and size compressor"
 - History: [docs/HISTORY/pancardresizer.com.md](../HISTORY/pancardresizer.com.md)
 

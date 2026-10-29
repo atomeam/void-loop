@@ -297,6 +297,21 @@ test('the archive has Authors, Help and Random story, with the help desk as a pi
   for (const s of ['Random story', 'Help desk: questions and answers', 'Show every author', 'Authors A to Z']) assert.ok(de.includes("'" + s + "'"), 'German for ' + s);
 });
 
+test('the archive has site news, pinned first on the story lists, with a dated news archive in English and German', async () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  assert.match(app, /const NOTICES = \[\['news', 'Site news and the news archive'\],/, 'site news is the first pinned notice');
+  assert.ok(html.includes('href="/fanfic/?notice=news" data-go>News</a>'), 'the footer links the news');
+  const art = /<article class="notice" id="n-news" hidden>([\s\S]*?)<\/article>/.exec(html);
+  assert.ok(art, 'the news page');
+  assert.match(art[1], />News archive</, 'the news archive heading');
+  for (const m of art[1].matchAll(/<time datetime="([^"]+)">/g)) assert.match(m[1], /^\d{4}-\d{2}-\d{2}$/, 'each day carries its date');
+  const DE = await import('../void-live-deploy/lib/fanfic-de.js');
+  // every text the news page shows, cut at its tags, has German
+  const texts = art[1].replace(/<[^>]+>/g, '\n').split('\n').map((x) => x.trim()).filter((x) => /[A-Za-z]{3}/.test(x) && x !== 'RSS');
+  assert.ok(texts.length > 10);
+  for (const x of texts) assert.notEqual(DE.de(x), x, 'German for ' + x);
+});
+
 test('the archive has terms, disclaimer and credits pages, linked from the footer and not pinned on the story lists', async () => {
   const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
   for (const id of ['terms', 'disclaimer', 'credits']) {

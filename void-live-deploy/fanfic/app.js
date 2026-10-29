@@ -116,7 +116,7 @@ const archive = (fresh) => (!fresh && loaded) || (loaded = readArchive().catch((
 const shown = (topics) => topics.filter((t) => !t.nsfw || adultOk()); // adult fandoms' stories stay off the shared lists until this device said 18+
 
 // ---- topic lists: pinned notices, then the stories, with the period filter, paging and read marks ----
-const NOTICES = [['format', 'How to format chapters'], ['report', 'Report spam or abuse here'], ['rules', 'Writing rules & guidelines'], ['help', 'Help desk: questions and answers'], ['reviews', 'Reviews and stars: how they work']];
+const NOTICES = [['news', 'Site news and the news archive'], ['format', 'How to format chapters'], ['report', 'Report spam or abuse here'], ['rules', 'Writing rules & guidelines'], ['help', 'Help desk: questions and answers'], ['reviews', 'Reviews and stars: how they work']];
 // the site's own pages (terms, disclaimer, credits): opened from the footer like a notice, never pinned on the story lists
 const SITE_PAGES = [['terms', 'Terms of use'], ['disclaimer', 'Disclaimer'], ['credits', 'Credits']];
 function dot(kind, label) { const d = el('i', 'dot' + (kind ? ' ' + kind : '')); d.setAttribute('role', 'img'); d.setAttribute('aria-label', label); return d; }
@@ -935,7 +935,7 @@ function viewRoom() {
 
 function viewNotice(which) {
   const all = NOTICES.concat(SITE_PAGES), id = all.some(([k]) => k === which) ? which : 'rules', site = SITE_PAGES.some(([k]) => k === id);
-  show('notice', all.find(([k]) => k === id)[1], site ? '' : id === 'help' ? 'help' : 'notice'); // a site page is no tab's: the footer opens it
+  show('notice', all.find(([k]) => k === id)[1], site || id === 'news' ? '' : id === 'help' ? 'help' : 'notice'); // a site page and the news are no tab's: the footer opens them
   for (const [k] of all) $('n-' + k).hidden = k !== id;
   $('crumbNotice').hidden = site; $('crumbAbout').hidden = !site;
 }
