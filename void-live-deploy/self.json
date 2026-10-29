@@ -545,15 +545,11 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T15:10:46Z",
+   "at": "2026-10-29T15:12:02Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:10:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:09:28Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -563,10 +559,6 @@
   {
    "at": "2026-10-29T15:08:57Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T15:08:07Z",
-   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:07:52Z",
@@ -583,6 +575,14 @@
   {
    "at": "2026-10-29T15:06:42Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:06:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:06:21Z",
+   "subject": "Translate page: language lists show their own spellings after load, so the first layout no longer shapes 30 scripts"
   },
   {
    "at": "2026-10-29T15:05:46Z",
