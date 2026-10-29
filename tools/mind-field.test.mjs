@@ -39,7 +39,7 @@ test('the plain words open Mind Field and each mode', () => {
   for (const m of MODES) { assert.ok(fam.match(m.ask.toLowerCase(), m.ask), m.ask); assert.equal(modeAsk('mind field ' + m.name.toLowerCase()).id, m.id); }
 });
 test('the family takes one place in the index, keeps every old name as a part, and every part has a stage kind', () => {
-  assert.deepEqual(fam.parts, ['mind-field-mode', 'doodle-mind', 'echo-field', 'resonant-membrane', 'vector-field-mind', 'living-cards-mind', 'attention-field-mind', 'nca-mind', 'resonance-mind', 'swarm-mind']);
+  assert.deepEqual(fam.parts, ['mind-field-mode', 'doodle-mind', 'echo-field', 'resonant-membrane', 'vector-field-mind', 'living-cards-mind', 'attention-field-mind', 'nca-mind', 'resonance-mind', 'swarm-mind', 'agent-fluid-memory-orbs']);
   const index = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8'));
   assert.ok(index.includes('mind-field')); for (const n of fam.parts) assert.ok(!index.includes(n), n);
   assert.ok(existsSync(new URL('../void-live-deploy/skills/order/1400-mind-field', import.meta.url)));
@@ -47,7 +47,7 @@ test('the family takes one place in the index, keeps every old name as a part, a
 });
 test('"what\'s similar" lists the modes of any combined skill', () => {
   for (const a of ["what's similar to swarm mind", 'modes of mind field', 'skills like nca mind']) assert.ok(similar.match(a.toLowerCase(), a), a);
-  assert.equal(INDEX.families['mind-field'].length, 10); assert.ok(doodle.examples.includes('mind field')); assert.ok(modeSkill.examples.includes('listen field'));
+  assert.equal(INDEX.families['mind-field'].length, 11); assert.ok(doodle.examples.includes('mind field')); assert.ok(modeSkill.examples.includes('listen field'));
   for (const a of similar.nearMisses) assert.equal(similar.match(a.toLowerCase(), a), false, a);
 });
 test('the Draw law: seeded, bounded, predicts the stroke, seals numbers only, fast', () => {

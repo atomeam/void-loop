@@ -5,6 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import * as route from '../void-live-deploy/functions/api/tally.js';
 import { TALLIES, TALLY_IDS, LIMITS, parseTally, countsOf, coinLine, isValue } from '../void-live-deploy/lib/tally.js';
 import { resetGuard } from '../void-live-deploy/lib/guard.js';
+import { EMOJI_CHARS } from '../void-live-deploy/lib/emoji.js';
 
 const store = new Map();
 globalThis.caches = { default: { match: async (req) => (store.has(req.url) ? new Response(store.get(req.url)) : undefined), put: async (req, res) => { store.set(req.url, await res.text()); } } };
@@ -22,9 +23,13 @@ const post = (env, body, { ip = IP, type = 'application/json', headers = {} } = 
 const get = (env, of) => route.onRequestGet({ env, request: new Request('https://x/api/tally?of=' + encodeURIComponent(of)) });
 const today = new Date().toISOString().slice(0, 10);
 
-test('the list is closed: one tally (coin) with two values, and nothing else counts', () => {
-  assert.deepEqual(TALLY_IDS, ['coin']); assert.deepEqual([...TALLIES.coin], ['heads', 'tails']); assert.ok(Object.isFrozen(TALLIES));
+test('the list is closed: the coin (two values) and the emoji wall (lib/emoji.js\'s list, owner 2026-10-26), and nothing else counts', () => {
+  assert.deepEqual(TALLY_IDS, ['coin', 'emoji']); assert.deepEqual([...TALLIES.coin], ['heads', 'tails']); assert.ok(Object.isFrozen(TALLIES));
+  for (const id of TALLY_IDS) assert.ok(Object.isFrozen(TALLIES[id]), id + ' values frozen');
+  assert.equal(TALLIES.emoji, EMOJI_CHARS); assert.ok(EMOJI_CHARS.length > 0);
   for (const bad of ['', 'HEADS', 'constructor', '__proto__', 'toString', null, 5]) assert.equal(isValue('coin', bad), false, String(bad));
+  assert.equal(isValue('emoji', EMOJI_CHARS[0]), true);
+  for (const bad of ['', 'heads', 'hello', EMOJI_CHARS[0] + EMOJI_CHARS[0], '<script>', '__proto__', null]) assert.equal(isValue('emoji', bad), false, String(bad));
   assert.equal(isValue('__proto__', 'heads'), false);
 });
 test('parseTally: content type, size, shape, the count, unknown fields ignored, fixed errors that echo nothing', () => {

@@ -58,6 +58,8 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/prizes.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -92,6 +94,7 @@
 <script type="module">
   import { mountRelated, paletteOf, setPalette } from '/lib/toolkit.js';
   import { entriesOf, textOf, slices, pickIndex, plan, under, ease, shuffle, sorted, pack, open, fairRandom } from '/lib/wheel.js';
+  import { put, mountPill, mountStrip, prizesLink, tournamentsLink, labelsFrom, textOfHandoff } from '/lib/handoff.js';
   const $ = (id) => document.getElementById(id), cv = $('wheel'), cx = cv.getContext('2d'), WINPIC = $('winpic');
   const START = 'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHeidi';
   let lastKept = null; try { lastKept = localStorage.getItem('a2m.void.wheel.last.v1'); } catch (_) {} // the wheel you had, when a tool sends you back without one
@@ -214,8 +217,14 @@
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
   $('sound').addEventListener('click', () => { sound = !sound; $('sound').textContent = sound ? 'Sound on' : 'Sound off'; $('sound').setAttribute('aria-pressed', String(sound)); });
   sync(false);
-  mountRelated($('related'), '/wheel/', [{ label: 'Pick from these on the random page', href: () => (entries.length ? '/random/?list=' + encodeURIComponent(textOf(entries)) : null) }]
+  // the prize and scoring pages: the entries travel in the link, and the click leaves one copy for the next page's paste pill (lib/handoff.js)
+  const handoff = (href) => () => { if (!entries.length) return null; put('list', 'wheel entries', entries.map((e) => e.label), '/wheel/'); return href(); };
+  mountRelated($('related'), '/wheel/', [{ label: 'Pick from these on the random page', href: () => (entries.length ? '/random/?list=' + encodeURIComponent(textOf(entries)) : null) },
+    { label: 'Prize odds for these', href: handoff(() => prizesLink(textOf(entries))) },
+    { label: 'Seed a tournament', href: handoff(() => tournamentsLink(entries.map((e) => e.label))) }]
     .concat(COLORS !== OWN ? [{ label: 'Its own colours again', run: () => { setPalette(null); COLORS = OWN; draw(); return 'Back to its own colours'; } }] : []));
+  mountStrip($('related'), '/wheel/');
+  mountPill($('entries'), '/wheel/', (h) => { entries = entriesOf(labelsFrom(textOfHandoff(h)).join('\n')); sync(false); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

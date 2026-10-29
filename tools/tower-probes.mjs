@@ -12,6 +12,7 @@ import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 // a site Verse took on by itself (tools/tower-self.mjs) is asked its family's question on its own page: the row keeps that question's address
 const SELF_ASK = new Map(SELF_SITES.filter((r) => r && r.lane && r.ask).map((r) => [r.lane, r.ask]));
 import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
+import { CALCULATORS } from '../void-live-deploy/lib/calculators.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -83,6 +84,11 @@ export const LIST_PROBE = 'p.' + Buffer.from(LIST_PROBE_TEXT, 'utf8').toString('
 export const inDays = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
 // the trip the trip page is asked about: London (LHR) to New York (JFK) landing at 13:00 local, then a flight to Lisbon (LIS) leaving 40 minutes later
 const ASK_TRIP = tripToToken([{ al: 'BA', no: '117', from: 'LHR', to: 'JFK', dep: '2027-03-12T10:00', arr: '2027-03-12T13:00', loc: 'ABC123' }, { al: 'UA', no: '904', from: 'JFK', to: 'LIS', dep: '2027-03-12T13:40', arr: '2027-03-13T01:50', loc: 'ABC123' }]);
+// the formula library floor's rival size (lib/tower.js rivalCount: vcalc.com's published count) and the gap to Verse's library, for the label
+const RIVAL_N = ((FLOORS.find((f) => f.id === 'formula calculators') || {}).rivalCount || {}).n || 15000;
+/** the calculator count a page shows as "All calculators (N)", or 0. Pure. */
+export const libraryCount = (t) => Number((String(t).match(/All calculators \(([\d,]+)\)/i) || [])[1]?.replace(/,/g, '') || 0);
+const LIBRARY_GAP = 'at least ' + RIVAL_N.toLocaleString('en-US') + ' calculators, the size vcalc.com publishes (Verse has ' + CALCULATORS.length + ': ' + (RIVAL_N - CALCULATORS.length).toLocaleString('en-US') + ' short)';
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -436,24 +442,24 @@ export const PROBES = Object.freeze({
   // yunite.xyz (owner, 2026-10-27): the scrim scorer a Fortnite lobby passes around. Its scores arrive through an account and its bot
   // reads screenshots; Verse's /tournaments/ takes results typed in and shows the arithmetic - placement pays the highest matching threshold
   // (a win is not a win plus the top-five), the tiebreakers are points, wins, eliminations then average placement, heats are dealt in snake
-  // order and two teams on one drop spot are flagged contested. The seeded ask is a three-team match, worked out by hand below.
+  // order and two teams on one starting spot are flagged contested. The seeded ask is a three-team match, worked out by hand below.
   tournaments: {
     site: 'https://yunite.xyz/', verse: '/tournaments/',
-    ask: { verse: '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Tilted%20Towers,Bravo:Pleasant%20Park,Charlie:Tilted%20Towers&elim=2&win=10&top5=5' },
+    ask: { verse: '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor,Charlie:Old%20Mill&elim=2&win=10&top5=5' },
     truth: [['the first seeded team', /Alpha/], ['its points, worked out: 1st is 10 plus 6 x 2 (22)', /Alpha\s+22\s+1\s+6/],
       ['the second seeded team', /Bravo/], ['its points, worked out: 2nd is 5 plus 7 x 2 (19)', /Bravo\s+19\s+0\s+7/],
       ['the third seeded team', /Charlie/], ['its points, worked out: 6th is 0 plus 3 x 2 (6)', /Charlie\s+6\s+0\s+3/],
       ['the total teams', /3 teams/], ['the total eliminations, worked out (16)', /16 eliminations/], ['the total points, worked out (47)', /47 points/],
       ['the leader, named', /leader Alpha/], ['the threshold rule, said on the page', /highest matching threshold/],
       ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/],
-      ['the contested drop spot', /Tilted Towers[\s\S]*?contested/], ['the snake heat split', /snake order/]],
+      ['the contested starting spot', /Old Mill[\s\S]*?contested/], ['the snake heat split', /snake order/]],
     facts: [
-      ['tournament standings', /tournament standings/i], ['a point system', /point system/i], ['preset systems', /FNCS finals/i],
+      ['tournament standings', /tournament standings/i], ['a point system', /point system/i], ['preset systems', /Finals-style/i],
       ['team sizes', /(?:solo|duos|trios|squads)/i], ['points per elimination', /per elimination/i],
       ['the threshold rule, said', /highest matching threshold/], ['the standings table', /standings after every match entered/i],
       ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/], ['wins counted', /wins/i],
       ['average placement', /average placement/i], ['one match per line', /one match per line/i],
-      ['snake heats', /snake order/i], ['drop spots', /drop spots/i], ['contested spots flagged', /contested/i],
+      ['snake heats', /snake order/i], ['starting spots', /starting spots/i], ['contested spots flagged', /contested/i],
       ['CSV in', /Import CSV/], ['CSV out', /Export CSV/], ['a share link', /Copy share link/],
       ['the share link carries the state', /Share link: \/tournaments\/\?results=/],
       ['nothing sent', /nothing is sent anywhere/i], ['no account', /no account/i], ['works offline', /works offline/i],
@@ -463,10 +469,10 @@ export const PROBES = Object.freeze({
     // the five rows this floor is fought on (its extra aspects): each is read off the same seeded answer, so a page that shows all of
     // them is the most any page can show - judged on Verse alone, like the codebase rows (commit f108005d)
     askParts: {
-      'point system presets': [['FNCS finals', /FNCS finals/], ['a cash cup preset', /Cash cup/], ['a scrim preset', /Scrim/], ['a custom choice', /Custom/]],
+      'point system presets': [['a finals-style preset', /Finals-style/], ['a cash-cup-style preset', /Cash-cup-style/], ['a scrim preset', /Scrim/], ['a custom choice', /Custom/]],
       'multi-match standings': [['one match per line', /one match per line/i], ['standings after every match', /standings after every match entered/i], ['average placement named', /average placement/i], ['the counts for the set', /\d+ teams? · \d+ match/]],
       'heat split': [['snake order', /snake order/i], ['the heats numbered', /Heat 1/], ['a second heat', /Heat 2/], ['seeded by standing rank', /seeded by standing rank/i]],
-      'drop spots': [['drop spots', /drop spots/i], ['contested flagged', /contested/i], ['a claimed place', /Tilted Towers/], ['clear ones too', /\bclear\b/]],
+      'drop spots': [['starting spots', /starting spots \(drops/i], ['contested flagged', /contested/i], ['a claimed place', /Old Mill/], ['who is contesting, ranked', /#1 Alpha \(22 pts\) vs #3 Charlie \(6 pts\)/], ['clear ones too', /\bclear\b/]],
       'CSV in and out': [['import', /Import CSV/], ['export', /Export CSV/], ['the columns named', /team, place, eliminations/i], ['the heading', /CSV in and out/]],
     },
   },
@@ -507,12 +513,33 @@ export const PROBES = Object.freeze({
       ['Share link', /Share link/], ['on this device', /on this device/], ['works offline', /works offline/i], ['no account', /no account/i],
     ],
   },
+  prizes: {
+    site: 'https://wheelofgold.com/', verse: '/prizes/',
+    // the reward faucet audit preset, worked out by hand: slices $1 x1, $0.10 x9, $0.01 x90, $0.001 x900 (1,000 tickets), so the EV is
+    // (1 + 0.9 + 0.9 + 0.9) / 1000 = $0.0037 a spin; the top prize is 1 in 1,000, P(at least once in 1,000) = 1 - 0.999^1000 = 63.2%;
+    // even odds take 693 spins; one spin an hour to a $5 cashout is ceil(5 / 0.0037) = 1,352 spins, 1,352 hours, 56.3 days
+    ask: { verse: '/prizes/?preset=faucet' },
+    truth: [
+      ['the expected value per spin ($0.0037)', /Expected value per spin\s*\$0\.0037\b/],
+      ['the top prize chance (0.1%, 1 in 1,000)', /0\.1% a spin, 1 in 1,000/],
+      ['P(top prize at least once in 1,000 spins) (63.2%)', /P\(top prize ≥1 in 1,000\)\s*63\.2%/],
+      ['the spins for even odds (693)', /even odds of the top prize\s*693\b/],
+      ['the drip to a $5 cashout (1,352 spins, 1,352 hours, 56.3 days)', /1,352 spins · 1,352 hours · 56\.3 days to reach \$5/]],
+    askParts: {
+      'odds table': [['a chance column', /\bchance\b/i], ['every slice listed', /Top prize[\s\S]*Big[\s\S]*Small[\s\S]*Dust/]],
+      'expected value': [['EV per spin', /EV per spin/i], ['net of the cost', /Net per spin/i]],
+      'drip calculator': [['a cooldown', /cooldown/i], ['a minimum cashout', /minimum cashout/i], ['a referral share', /referral/i]],
+    },
+    facts: [
+      ['a spin', /\bSpin\b/], ['a 1,000-spin check', /1,000 spins/], ['weights', /\bweight\b/i], ['a share link', /share link/i], ['CSV export', /Export CSV/],
+      ['says it never pays or collects', /never pays out/i], ['secure random numbers', /secure random numbers/i]],
+  },
   identity: {
     site: 'https://anycolorid.com/', verse: '/identity/',
-    ask: { verse: '/identity/#name=Atom%20Bomb&email=atomicmoonbeam88%40gmail.com&aid=AC-0001&region=jp' },
+    ask: { verse: '/identity/#name=Sky%20Rivera&email=sky%40example.com&aid=AC-0001&region=jp' },
     truth: [
-      ['the profile name, edited (Atom Bomb)', /Atom Bomb/],
-      ['the profile email, edited', /atomicmoonbeam88@gmail.com/],
+      ['the profile name, edited (Sky Rivera)', /Sky Rivera/],
+      ['the profile email, edited', /sky@example.com/],
       ['the account ID (AC-0001)', /AC-0001/],
       ['the region (JP)', /\bJP\b/],
       ['a change history ledger', /Change history/],
@@ -586,7 +613,7 @@ export const PROBES = Object.freeze({
       ['eyedropper', /Pick a colour from the screen/i], ['copy CSS', /Copy CSS/],
     ],
   },
-  books: {
+  sudowrite: {
     site: 'https://www.sudowrite.com/', verse: '/books/',
     ask: { verse: '/books/' },
     truth: [
@@ -625,14 +652,14 @@ export const PROBES = Object.freeze({
       ['no account', /no account/i],
     ],
     askParts: {
-      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['availability result', /available for sovereign registration/]],
+      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['a real registry check (RDAP)', /asks the registry itself \(RDAP/], ['the result line', /whether it is registered/]],
       'tiered plans': [['Small plan', /Small/], ['Medium plan', /Medium/], ['Large plan', /Large/], ['Norwegian servers', /Servere i Norge/]],
       'capacity sizing': [['requests per second', /requests\/s/i], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/]],
       'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/]],
       'server config': [['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/], ['TLS 1.3', /TLS 1\.3/]],
     },
     facts: [
-      ['domain search', /Domain search/], ['tiered plans', /Tiered hosting packages/], ['Small', /Small/],
+      ['domain search', /Domain search/], ['tiered plans, labelled as the rival\'s', /Name Unit's hosting plans/], ['Small', /Small/],
       ['Medium', /Medium/], ['Large', /Large/], ['Norwegian servers', /Servere i Norge/],
       ['bandwidth', /bandwidth/i], ['monthly transfer', /GB\/month/], ['vCPUs', /\bvCPUs?\b/],
       ['memory', /\bRAM\b/], ['SLA', /SLA/], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],
@@ -676,6 +703,27 @@ export const PROBES = Object.freeze({
       ['a timer', /\bTimer\b/], ['start and stop', /Start[\s\S]{0,120}Stop/], ['the time shown', /\d+ m \d+ s/], ['the total time', /Total \d+ m/],
       ['notes and docs', /\bNotes and docs\b/], ['a preview', /\bPreview\b/], ['file sizes', /\d+ B\b/], ['download them all', /Download all/],
       ['kept on this device', /on this device/], ['works offline', /works offline/i], ['a GitHub file', /GitHub/],
+    ],
+  },
+  // automation (owner, 2026-10-28: the Zapier trial runs out; two Zaps logged the issues and pull requests of atomeam/void-loop into a Zapier table):
+  // Zapier is the floor, fought from /ledger/. The question is the oldest pull requests of the repo, which never change: #1 and #2 are pull requests,
+  // merged by atomeam on 2026-09-28 (05:14 and 04:57 UTC, so Sep 27 or 28 in the reader's own zone). Judged on Verse alone (the Zapier table is private).
+  automation: {
+    site: 'https://zapier.com/', verse: '/ledger/',
+    ask: { verse: '/ledger/?tab=pr&sort=old' },
+    truth: [['pull request #1 by its title', /Void side-panel extension/], ['pull request #2 by its title', /PC-free deploys/], ['who opened them', /atomeam/], ['merged, not just closed', /Merged/], ['the day they merged', /Sep 2[78], 2026/]],
+    askParts: {
+      'repo activity log': [['issues and pull requests apart', /Issues[\s\S]{0,80}Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/], ['how many are shown', /[\d,]+ of [\d,]+ (?:issues|pull requests) shown/]],
+      tables: [['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/], ['copy as CSV', /Copy as CSV/], ['the view as a link', /Copy link to this view/]],
+      'triggers and actions': [['a refresh that asks only for what changed', /Refresh/], ['an unchanged answer is free', /304/]],
+      'app integrations': [['opens in any spreadsheet', /spreadsheet/i]],
+      'scheduled runs': [['the saved copy opens offline', /opens offline/]],
+    },
+    facts: [
+      ['issues tab', /\bIssues\b/], ['pull requests tab', /Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/],
+      ['an author filter', /\bAuthor\b/], ['merged shown apart from closed', /Merged/], ['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/],
+      ['copy as CSV', /Copy as CSV/], ['a link to the exact view', /Copy link to this view/], ['no account', /no account/i], ['no token', /no token/i],
+      ['the rate limit said plainly', /60 requests an hour/], ['an unchanged answer is free', /304/], ['kept on this device', /on this device/], ['opens offline', /opens offline/],
     ],
   },
   // shopping (owner, 2026-10-26: "need a /store page that beats amazons"; and, the same day: "we should just go after smaller sites no reason to go after big
@@ -861,6 +909,30 @@ export const PROBES = Object.freeze({
       ['logarithms', /\bln\b[\s\S]{0,80}\blog\b|\blog\b[\s\S]{0,80}\bln\b/i], ['pi', /π|\bpi\b/i], ['factorial', /n!|\bfactorial\b/i], ['percent', /%/],
       ['memory', /\bM\+[\s\S]{0,60}\bMR\b|\bMR\b[\s\S]{0,60}\bM\+|\bmemory\b/i], ['last answer', /\bAns\b/], ['exponent entry', /\bEXP\b|×\s*10/], ['change sign', /±|\+\/[-−]/],
       ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
+  },
+  'formula calculators': {
+    site: 'https://www.vcalc.com/', verse: '/calculators/',
+    // vcalc.com's robots.txt asks robots not to read it, so accuracy is Verse against the worked-out answer: the outside area of a pipe 2 inches
+    // across and 10 feet long, pi x d x l = pi x (2/12 ft) x 10 ft = 5.235988 ft², and the same area in square metres (0.4864390 m²) and square
+    // inches (753.9822 in²), the units a page that is unit-aware shows beside it
+    ask: { verse: '/calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
+    truth: [['5.23599 ft²', /(?<![\d.])5\.2359\d*\s*ft²/], ['0.486439 m²', /(?<![\d.])0\.48643\d*\s*m²/], ['753.982 in²', /(?<![\d.])753\.98\d*\s*in²/]],
+    askParts: {
+      // the library: each kind of calculator the best formula sites keep, named as a section of the page
+      'formula library': [['everyday', /\bEveryday\b/i], ['maths', /\bMath(?:s|ematics)?\b/i], ['geometry', /\bGeometry\b/i], ['statistics', /\bStatistics\b/i], ['physics', /\bPhysics\b/i],
+        ['chemistry', /\bChemistry\b/i], ['electrical', /\bElectrical\b|\bElectricity\b/i], ['health', /\bHealth\b/i], ['dates', /\bDays between two dates\b/i], ['more than 100 calculators', /\bAll calculators \((?:[1-9]\d{2,})\)/i]],
+      // unit-aware: every input offers the units of its kind, the answer in any unit, the same answer in every other unit, the formula and its working
+      'unit-aware inputs': [['each input takes a unit of its kind', /Diameter of pipe\s*\n\s*m \(metres\)[\s\S]*?in \(inches\)[\s\S]*?ft \(feet\)/], ['the answer in any unit', /\bShow in\b/], ['every other unit', /\bIn other units\b/], ['the formula in its symbols, with the working', /A = π × d × l[\s\S]*\bWorking\b/], ['square metres beside square feet', /\bm²[\s\S]*\bft²|\bft²[\s\S]*\bm²/]],
+      // a formula of your own: guided rows or the raw text, with units, kept on the device and shared by a link
+      'custom formulas': [['build your own formula', /\bBuild your own formula\b/i], ['a guided mode', /\bGuided\b/], ['a raw mode', /\bRaw\b/], ['saved on the device', /\bSave on this device\b/i], ['shared by a link', /\bShare formula link\b/i]],
+      // the library's size against what vcalc.com publishes (owner, 2026-10-28: not beaten while the count is short, the gap shown): the page's own
+      // "All calculators (N)" read off the answer, held to the floor's rivalCount, so this fails, honestly, until Verse has as many
+      'library size': [[LIBRARY_GAP, (t) => libraryCount(t) >= RIVAL_N]],
+    },
+    // what a full formula library offers: the everyday sums, the sciences, units, the working, and a way out (share, export) and in (your own)
+    facts: [['percent', /\bpercent/i], ['tip', /\btip\b/i], ['loan', /\bloan\b/i], ['BMI', /\bBMI\b/], ['date maths', /\bdays between\b|\bdate\b/i], ['unit conversion', /\bconver/i], ['area', /\barea\b/i],
+      ['physics', /\bPhysics\b/i], ['chemistry', /\bChemistry\b/i], ['electrical', /\bOhm/], ['geometry', /\bGeometry\b/i], ['statistics', /\bStatistics\b/i], ['the formula shown', /\b\w+ = [^\n]*[×÷+−^√π]/],
+      ['a share link', /\bShare link\b/i], ['copy the answer', /\bCopy answer\b/i], ['export', /\bExport\b/i], ['a custom formula', /\bBuild your own formula\b/i], ['works offline', /\boffline\b/i]],
   },
   password: {
     // both pages make a password as they open (passwordsgenerator.net's default is 16 characters of every class; Verse's link asks for the same);
@@ -1064,7 +1136,7 @@ const LANE_PROBES = Object.freeze({
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 // a second floor standing on the same page reads it the same way (owner, 2026-10-26: tildegit is /g/ like codebase): the questions and the
 // lists come from the page, and only the site it is compared with changes — said once here, never copied into a second probe that can drift
-const SAME_PAGE = { tildegit: 'codebase', sudowrite: 'books', squibler: 'books', inkfluence: 'books', novelcrafter: 'books' };
+const SAME_PAGE = { tildegit: 'codebase', squibler: 'sudowrite', inkfluence: 'sudowrite', novelcrafter: 'sudowrite' };
 
 export function probeFor(id) {
   // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site

@@ -22,8 +22,8 @@ function run(text, api) {
 
 export default {
   name: 'gradient',
-  examples: ['gradient generator', 'css gradient', 'make a gradient from red to blue', 'gradient from #ff5f6d to #ffc371', 'radial gradient generator', 'generate a gradient blue to pink', 'make a 2d sunset with blue and orange', 'generate a gradient background'],
-  nearMisses: ['gradient descent', 'the gradient of a hill', 'calculate the gradient of y = 2x', 'colour picker', 'what is a gradient', 'draw a picture of a cat'],
-  match(lower, text) { return !!askGradient(text || lower) || lower.includes('generate a gradient') || (lower.includes('make a') && lower.includes('with') && (lower.includes('sunset') || lower.includes('sunrise'))); },
+  examples: ['gradient generator', 'css gradient', 'make a gradient from red to blue', 'gradient from #ff5f6d to #ffc371', 'radial gradient generator', 'generate a gradient blue to pink', 'make a 2d sunset with blue and orange', 'generate a gradient background', 'fix the gradient on this', 'render a sphere with pink to blue'],
+  nearMisses: ['gradient descent', 'the gradient of a hill', 'calculate the gradient of y = 2x', 'colour picker', 'what is a gradient', 'draw a picture of a cat', 'make a list with milk, eggs', 'make a plan with sam'],
+  match(lower, text) { return !!askGradient(text || lower) || lower.includes('generate a gradient') || lower.includes('fix the gradient'); },
   run
 };

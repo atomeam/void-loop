@@ -21,8 +21,8 @@ function run(text, api) {
 
 export default {
   name: 'photo-tools',
-  examples: ['edit a photo', 'photo editor', 'compress an image', 'convert png to webp', 'crop a photo', 'view the exif of a photo', 'squoosh', 'tinypng'],
+  examples: ['edit a photo', 'photo editor', 'compress an image', 'convert png to webp', 'crop a photo', 'view the exif of a photo', 'squoosh', 'tinypng', 'edit lighting on this photo'],
   nearMisses: ['compress my image to 100kb', 'resize a photo to 3.5 x 2.5 cm under 50 kb', 'my photos', 'draw a picture of a cat', 'strip the exif from a photo', 'what is exif data', 'reduce the size of my photo', 'edit the stage', 'rotate the stage image'],
-  match(lower, text) { return !!photoAsk(text || lower); },
+  match(lower, text) { return !!photoAsk(text || lower) || (lower.includes('edit') && (lower.includes('photo') || lower.includes('image') || lower.includes('lighting'))) || lower.includes('fix lighting'); },
   run
 };

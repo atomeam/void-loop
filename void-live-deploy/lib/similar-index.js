@@ -195,8 +195,10 @@ export default {
     ]
    },
    {
-    "name": "nightsky",
-    "examples": []
+    "name": "night-sky",
+    "examples": [
+     "hide the sky"
+    ]
    },
    {
     "name": "moontonight",
@@ -458,6 +460,28 @@ export default {
     ]
    }
   ],
+  "shop": [
+   {
+    "name": "store",
+    "examples": [
+     "what's new in the store",
+     "store preview",
+     "new products",
+     "what can i buy",
+     "tip",
+     "buy"
+    ]
+   },
+   {
+    "name": "services",
+    "examples": [
+     "what do you sell",
+     "hire you",
+     "fix my automation",
+     "what does void cost"
+    ]
+   }
+  ],
   "mind-field": [
    {
     "name": "mind-field-mode",
@@ -561,6 +585,17 @@ export default {
      "show me the swarm mind",
      "competitive minds",
      "resonance seeking agents"
+    ]
+   },
+   {
+    "name": "agent-fluid-memory-orbs",
+    "examples": [
+     "memory orbs",
+     "agent fluid memory orbs",
+     "fluid memory orbs",
+     "show me the memory orbs",
+     "agent fluid",
+     "fluid orbs"
     ]
    }
   ],

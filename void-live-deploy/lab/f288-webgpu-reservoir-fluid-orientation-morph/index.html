@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0c0e0; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#chrome { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.5); padding:8px 12px; border-radius:8px; font-size:13px; }
+#probes { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.probe { position:absolute; width:72px; height:48px; background:rgba(80,120,200,.35); border:1px solid rgba(180,200,255,.6); border-radius:6px; pointer-events:auto; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; user-select:none; transition:transform .15s, opacity .2s; }
+.probe:active { cursor:grabbing; }
+button { margin:4px; padding:4px 8px; background:#223; color:#adf; border:1px solid #446; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Reservoir Fluid Orientation Morph · Verse lab</title>
+<meta name="description" content="Device orientation (beta/gamma) and pointer residual (local prediction error from a tiny linear readout) are causal inputs to a local Echo State Network (reservoir">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Reservoir Fluid Orientation Morph · Verse lab">
+<meta property="og:description" content="Device orientation (beta/gamma) and pointer residual (local prediction error from a tiny linear readout) are causal inputs to a local Echo State Network (reservoir">
+<meta property="og:url" content="https://a-to-mind.com/lab/f288-webgpu-reservoir-fluid-orientation-morph/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f288-webgpu-reservoir-fluid-orientation-morph/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="chrome">
+  F288 Reservoir Fluid · <span id="status">init</span><br>
+  energy: <span id="en">0.00</span> residual: <span id="res">0.00</span><br>
+  <button id="seal">Seal</button> <button id="load">Load</button> <button id="orient">Enable Orient</button>
+</div>
+<div id="probes"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Reservoir Fluid Orientation Morph</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

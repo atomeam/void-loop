@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --hue: 200;
+  --energy: 0.5;
+  --scale: 1;
+}
+body {
+  margin: 0;
+  background: #0a0a12;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  filter: hue-rotate(calc(var(--hue) * 1deg)) contrast(calc(1 + var(--energy) * 0.3));
+  transform: scale(var(--scale));
+  transition: filter 0.3s, transform 0.2s;
+}
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+#body {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, hsl(var(--hue), 70%, 60%), hsl(var(--hue), 50%, 30%));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  box-shadow: 0 0 30px hsl(var(--hue), 80%, 50%);
+}
+.limb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 0;
+  background: linear-gradient(to top, hsl(var(--hue), 60%, 40%), hsl(var(--hue), 80%, 70%));
+  transform-origin: bottom center;
+  border-radius: 3px;
+  z-index: 9;
+  cursor: pointer;
+  transition: height 0.1s, transform 0.1s;
+}
+#hud {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+  background: rgba(0,0,0,0.6);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+button {
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 6px 12px;
+  margin: 4px;
+  cursor: pointer;
+}
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Embodied RNN Morph Interface · Verse lab</title>
+<meta name="description" content="Local recurrent mind (simple tanh RNN) integrates pointer, orientation, and sensory feedback from CSS-embodied limbs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Embodied RNN Morph Interface · Verse lab">
+<meta property="og:description" content="Local recurrent mind (simple tanh RNN) integrates pointer, orientation, and sensory feedback from CSS-embodied limbs.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f201-webgpu-embodied-rnn-morph/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f201-webgpu-embodied-rnn-morph/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="body"></div>
+<div id="hud">
+  <div>F-201 Embodied RNN Morph</div>
+  <div>Hidden: <span id="hval">0</span></div>
+  <div>Energy: <span id="eval">0</span></div>
+  <button id="seal">Seal state</button>
+  <button id="orient">Enable orientation</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Embodied RNN Morph Interface</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

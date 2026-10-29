@@ -12,7 +12,8 @@
 import { hueOf } from './guide.js';
 import { typeWords, kindOf, newInSub, repeatsTitle } from './card-kinds.js';
 import { lineageOf } from './lineage.js';
-import { bar as shareBar, SHARE_CSS } from './card-share.js';
+import { bar as shareBar, SHARE_CSS, SOURCE_BOX, SOURCE_LINKS } from './card-share.js';
+export { SOURCE_BOX, SOURCE_LINKS };
 import { artLook } from './art-meta.js';
 import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
@@ -234,7 +235,7 @@ export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) 
   words: ['/word-count/', 'Word counter'], fakeuser: ['/random-user/', 'Made-up people'], time: ['/time/', 'Time zones'], colour: ['/color/', 'Colour codes'], color: ['/color/', 'Colour codes'],
   password: ['/password/', 'Password generator'], base64: ['/base64/', 'Base64'], random: ['/random/', 'Random number'],
   worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], 'photo-tools': ['/photos/', 'Photo tools'], pwcheck: ['/password-strength/', 'Password strength'], toolkit: ['/tools/', 'Every tool'],
-  podcast: ['/podcasts/', 'Podcasts'], notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'], boards: ['/boards/', 'Boards'], markets: ['/markets/', 'Markets'], news: ['/news/', 'News'], scores: ['/scores/', 'Scores'], 'sports-browse': ['/sports/', 'Sports'], fantasy: ['/fantasy/', 'Fantasy tools'], metronome: ['/metronome/', 'Metronome'], piano: ['/piano/', 'Piano'], tuner: ['/tuner/', 'Tuner'], bpm: ['/bpm/', 'BPM counter'], chordfinder: ['/chords/', 'Chords and scales'], 'music-tools': ['/music/', 'Music tools'], cartoon: ['/image/', 'AI image generator'] });
+  podcast: ['/podcasts/', 'Podcasts'], notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'], boards: ['/boards/', 'Boards'], markets: ['/markets/', 'Markets'], news: ['/news/', 'News'], scores: ['/scores/', 'Scores'], 'sports-browse': ['/sports/', 'Sports'], fantasy: ['/fantasy/', 'Fantasy tools'], metronome: ['/metronome/', 'Metronome'], piano: ['/piano/', 'Piano'], tuner: ['/tuner/', 'Tuner'], bpm: ['/bpm/', 'BPM counter'], chordfinder: ['/chords/', 'Chords and scales'], 'music-tools': ['/music/', 'Music tools'], cartoon: ['/image/', 'AI image generator'], formulas: ['/calculators/', 'Formula calculators'], repo: ['/ledger/', 'Repo activity ledger'] });
 // a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
 // stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")
 export const PAGE_PATHS = Object.freeze(Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])));
@@ -249,7 +250,7 @@ export function keep(el, esc, stats) {
   if (el.dataset && el.dataset.cardPlain !== undefined) { plain(el); return; } // a utility card asks for no collectible frame (data-card-plain)
   if (!el.classList.contains('vcard')) el.classList.add('vcard');
   // a minted collectible (skills/collectible.js) stays the card of its subject, not of the skill that minted it
-  const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
+  const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll(SOURCE_LINKS).length, src = el.querySelector(SOURCE_BOX);
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture

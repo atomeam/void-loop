@@ -59,6 +59,14 @@ runs:
       if: inputs.bench != 'only' && inputs.part != 'suite'
       shell: bash
       run: node --test tools/dispatcher.test.mjs
+    - name: node --test tools/verse-loop.test.mjs (the Verse loop's laps, dry and real, with a fake brain and a fake gh)
+      if: inputs.bench != 'only' && inputs.part != 'suite'
+      shell: bash
+      run: node --test tools/verse-loop.test.mjs
+    - name: node --test tools/verse-coder.test.mjs (Verse's coding agent with a scripted fake model, its guards and caps)
+      if: inputs.bench != 'only' && inputs.part != 'suite'
+      shell: bash
+      run: node --test tools/verse-coder.test.mjs
     - name: disk tools and memory API (void_lens, ouroboros, its download pack, /api/memory)
       if: inputs.bench != 'only' && inputs.part != 'suite'
       shell: bash

@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-27",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 11,
-  "tested": 27,
-  "checked": 17,
-  "proven": 297
+  "experiment": 3,
+  "tested": 39,
+  "checked": 18,
+  "proven": 298
  },
  "families": [
   {
@@ -24,9 +24,9 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 3,
-    "tested": 10,
-    "checked": 2,
+    "experiment": 1,
+    "tested": 13,
+    "checked": 3,
     "proven": 36
    },
    "skills": [
@@ -41,12 +41,13 @@
     },
     {
      "name": "photo-tools",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "gradient",
@@ -104,12 +105,13 @@
     },
     {
      "name": "music-tools",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "figure",
@@ -278,12 +280,12 @@
     {
      "name": "shape",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 4 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
      "failing": [
       "draw a circle"
      ],
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 0.75,
      "streak": 10
     },
@@ -347,6 +349,13 @@
      "success_rate": 1
     },
     {
+     "name": "verse-brain",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "rts",
      "tier": "proven",
      "why": "a self-test, 4 real asks in the benchmark",
@@ -378,6 +387,13 @@
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
+    },
+    {
+     "name": "agent-fluid-memory-orbs",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
     },
     {
      "name": "doodle-mind",
@@ -487,8 +503,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 1,
-    "proven": 30
+    "checked": 0,
+    "proven": 31
    },
    "skills": [
     {
@@ -502,10 +518,12 @@
     },
     {
      "name": "coin",
-     "tier": "checked",
-     "why": "a self-test, 12 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 12 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 4
     },
     {
@@ -768,9 +786,9 @@
    "name": "Sky and earth",
    "for": "weather, the sky tonight, places and time zones",
    "count": {
-    "experiment": 1,
+    "experiment": 0,
     "tested": 3,
-    "checked": 1,
+    "checked": 2,
     "proven": 15
    },
    "skills": [
@@ -896,13 +914,12 @@
      "streak": 10
     },
     {
-     "name": "nightsky",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
-     "streak": 10,
-     "since": "2026-10-28"
+     "name": "night-sky",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
+     "success_rate": 1
     },
     {
      "name": "place",
@@ -1028,9 +1045,9 @@
     {
      "name": "calendar",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 14 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "12 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1140,7 +1157,7 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 1,
-    "tested": 2,
+    "tested": 3,
     "checked": 2,
     "proven": 14
    },
@@ -1309,6 +1326,13 @@
      "streak": 9
     },
     {
+     "name": "formulas",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "dev-tools",
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
@@ -1435,8 +1459,8 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 4,
-    "tested": 2,
+    "experiment": 1,
+    "tested": 8,
     "checked": 1,
     "proven": 29
    },
@@ -1660,9 +1684,9 @@
     {
      "name": "translate",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 33 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 17 browser-suite mentions, 33 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "source": {
       "sites": [
@@ -1755,6 +1779,13 @@
       "next": "live",
       "words": "source 1 of 3: jsph.pl; named on the card; no second source; no kept live answer yet. One kept live answer from jsph.pl would make it proven"
      }
+    },
+    {
+     "name": "proverb",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
     },
     {
      "name": "recipe",
@@ -1875,9 +1906,9 @@
     {
      "name": "scores",
      "tier": "tested",
-     "why": "2 browser-suite mentions",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "3 browser-suite mentions",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "streak": 2,
      "source": {
       "sites": [
@@ -1904,12 +1935,13 @@
     },
     {
      "name": "fantasy",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "pdf-card",
@@ -1922,21 +1954,23 @@
     },
     {
      "name": "pdf-tools",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "kanban-board",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "coral",
@@ -2036,6 +2070,20 @@
      "streak": 9
     },
     {
+     "name": "morse",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "ascii",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "study-cards",
      "tier": "proven",
      "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
@@ -2060,9 +2108,9 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 13 live findings, 2026-10-27",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 14 live findings, 2026-10-28",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 10
     },
@@ -2108,8 +2156,8 @@
    "name": "The stage",
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
-    "experiment": 2,
-    "tested": 5,
+    "experiment": 0,
+    "tested": 7,
     "checked": 7,
     "proven": 88
    },
@@ -2161,7 +2209,7 @@
     {
      "name": "notes-fill",
      "tier": "tested",
-     "why": "1 real ask in the benchmark",
+     "why": "4 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2178,21 +2226,23 @@
     },
     {
      "name": "recipes-fill",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "generators-fill",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-26"
+     "success_rate": 1,
+     "promoted": "2026-10-29",
+     "streak": 2
     },
     {
      "name": "terminal",
@@ -2348,9 +2398,9 @@
     {
      "name": "recent",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 10
     },
@@ -3036,7 +3086,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 2,
     "proven": 44
    },
@@ -3166,9 +3216,9 @@
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 17 browser-suite mentions, 11 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 19 browser-suite mentions, 11 real asks in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 10
     },
@@ -3184,9 +3234,9 @@
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 9 browser-suite mentions, 8 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 10 browser-suite mentions, 8 real asks in the benchmark",
+     "last_tested": "2026-10-28",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 10
     },
@@ -3466,13 +3516,6 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 4
-    },
-    {
-     "name": "hosting",
-     "tier": "tested",
-     "why": "9 browser-suite mentions",
-     "last_tested": "2026-10-28",
-     "last_tested_by": "its tests"
     }
    ]
   },
@@ -3522,11 +3565,18 @@
    "for": "privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 5
    },
    "skills": [
+    {
+     "name": "advice",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "pwcheck",
      "tier": "proven",

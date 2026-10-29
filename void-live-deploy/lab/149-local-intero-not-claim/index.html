@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  label { display: block; margin-top: 1rem; font-weight: 600; }
+  textarea { width: 100%; min-height: 6rem; font: inherit; }
+  button { margin-top: 1rem; padding: 0.5rem 1rem; }
+  #out { margin-top: 1rem; padding: 1rem; background: #f4f4f4; word-break: break-all; }
+  .note { font-size: 0.9rem; color: #555; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>SPEC — local-intero-not-claim (run 149) · Verse lab</title>
+<meta name="description" content="Local intero-not-claim; a sealed local attention or interoceptive observation class hashes to a claim-refusal id;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="SPEC — local-intero-not-claim (run 149) · Verse lab">
+<meta property="og:description" content="Local intero-not-claim; a sealed local attention or interoceptive observation class hashes to a claim-refusal id;">
+<meta property="og:url" content="https://a-to-mind.com/lab/149-local-intero-not-claim/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/149-local-intero-not-claim/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>local-intero-not-claim</h1>
+<p class="note">Draft only. Default-deny. Unattested. No live seal. Claim sentence is discarded and is not hashed.</p>
+
+<label for="obs">Local attention / interoceptive observation (data)</label>
+<textarea id="obs" placeholder="e.g. warmth along spine, pressure at crown, ringing — local note only"></textarea>
+
+<label for="claim">Anomalous claim sentence (will be discarded, not hashed)</label>
+<textarea id="claim" placeholder="e.g. this is contact / healing / non-human signal — type then discard"></textarea>
+
+<button id="go" type="button">Hash as unattested</button>
+
+<div id="out" hidden>
+  <strong>claim-refusal id</strong>
+  <div id="hash"></div>
+  <p class="note">The claim sentence was discarded and is not in the hash. This id is not an attestation, not a seal, and not a promotion to fact. Status: unattested default.</p>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

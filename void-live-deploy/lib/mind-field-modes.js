@@ -1,5 +1,5 @@
 // mind-field-modes — Mind Field's modes (owner, 2026-10-21: "always combine anything that can be without taking away" and "make them all
-// easier to find"): the nine field minds are one skill (skills/mind-field.js), each old skill a mode that keeps its own file, words and
+// easier to find"): the ten field minds are one skill (skills/mind-field.js), each old skill a mode that keeps its own file, words and
 // tests. This table is the switcher on every mode's card, the "mind field <mode>" words, and the list the book and "what's similar" show.
 // Pure: no DOM.
 export const MODES = [
@@ -11,7 +11,8 @@ export const MODES = [
   { id: 'resonance-mind', name: 'Listen', title: 'Listen (resonance)', ask: 'resonance mind', words: ['listen', 'listening', 'sound', 'resonance', 'spectral', 'audio'], about: 'a lattice that rings with sound' },
   { id: 'nca-mind', name: 'Grow', title: 'Grow (living lattice)', ask: 'nca mind', words: ['grow', 'growing', 'lattice', 'nca', 'cells', 'cellular'], about: 'a self-growing pattern with tappable hotspots' },
   { id: 'attention-field-mind', name: 'Attention', title: 'Attention (probes)', ask: 'attention field mind', words: ['attention', 'attend', 'focus', 'probes', 'probe', 'attention probes'], about: 'a field steered by a small attention model (the attention probes), with the pointing-arrow focus test beside it', link: { href: '/fringe/attention-7.html', text: 'Try the pointing-arrow focus test' } },
-  { id: 'living-cards-mind', name: 'Cards', title: 'Living cards', ask: 'living cards mind', words: ['cards', 'card', 'living cards'], about: 'the cards move like a living field' }
+  { id: 'living-cards-mind', name: 'Cards', title: 'Living cards', ask: 'living cards mind', words: ['cards', 'card', 'living cards'], about: 'the cards move like a living field' },
+  { id: 'agent-fluid-memory-orbs', name: 'Orbs', title: 'Memory orbs (fluid)', ask: 'memory orbs', words: ['orbs', 'memory orbs', 'fluid', 'fluid orbs', 'memory'], about: 'small agents push a fluid; where it pools a memory orb is born, and you can seal one and recall it (F-321)' }
 ];
 export const MODE_IDS = MODES.map((m) => m.id);
 export const isMode = (id) => MODE_IDS.includes(String(id || ''));

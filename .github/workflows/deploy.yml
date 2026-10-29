@@ -96,6 +96,7 @@ jobs:
           printf '{"id":"%s"}' "$(git rev-parse HEAD)" > void-live-deploy/build.json # this deploy's id: an open tab compares it and offers a reload (lib/stale-tab.js)
           # every generated card, in dependency order (tools/refresh.mjs: the skill index, the dependency map, the families, the book, Verse's facts about itself, the bench alarms):
           # a merge that left one stale still deploys a current site, and a step that fails is a warning, never a blocked deploy or a hidden second failure
+          node tools/growth-fold.mjs --keep # the entries PRs left in growth/entries/ join the served ledger now; growth-fold.yml commits the fold on main
           node tools/refresh.mjs --keep-going || echo "::warning title=A generated card is stale::tools/refresh.mjs could not regenerate every step; the live site may show an older card"
           node tools/public-ledger.mjs # the served ledger leaves out what Verse studies (tools/private.mjs); the repo's stays append-only
           node tools/public-quotes.mjs # only Verse's words are served: the owner's quoted words leave every served comment and JSON file (the repo keeps them)

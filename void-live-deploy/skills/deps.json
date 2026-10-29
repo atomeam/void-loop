@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 903,
+ "counted": 934,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -17,18 +17,18 @@
    "tests": 4
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 32,
+   "direct": 2,
+   "dependants": 53,
+   "tests": 4
+  },
+  {
    "file": "lib/ask-text.js",
    "skills": 32,
    "direct": 23,
    "dependants": 34,
    "tests": 2
-  },
-  {
-   "file": "lib/field-kit.js",
-   "skills": 30,
-   "direct": 2,
-   "dependants": 47,
-   "tests": 4
   },
   {
    "file": "lib/placement.js",
@@ -42,6 +42,13 @@
    "skills": 24,
    "direct": 1,
    "dependants": 25,
+   "tests": 1
+  },
+  {
+   "file": "lib/motion-throttle.js",
+   "skills": 21,
+   "direct": 1,
+   "dependants": 22,
    "tests": 1
   },
   {
@@ -73,24 +80,17 @@
    "tests": 2
   },
   {
-   "file": "lib/motion-throttle.js",
-   "skills": 19,
-   "direct": 1,
-   "dependants": 20,
-   "tests": 1
-  },
-  {
    "file": "lib/mind-field-modes.js",
-   "skills": 18,
+   "skills": 20,
    "direct": 1,
-   "dependants": 19,
-   "tests": 1
+   "dependants": 21,
+   "tests": 2
   },
   {
    "file": "lib/field-stage.js",
-   "skills": 18,
-   "direct": 14,
-   "dependants": 18,
+   "skills": 20,
+   "direct": 16,
+   "dependants": 20,
    "tests": 0
   },
   {
@@ -160,7 +160,7 @@
    "file": "lib/self-sites.js",
    "skills": 10,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 1
   },
   {
@@ -169,6 +169,13 @@
    "direct": 9,
    "dependants": 12,
    "tests": 2
+  },
+  {
+   "file": "lib/skill-family.js",
+   "skills": 10,
+   "direct": 10,
+   "dependants": 10,
+   "tests": 1
   },
   {
    "file": "lib/probe-log.js",
@@ -227,9 +234,9 @@
    "tests": 1
   },
   {
-   "file": "lib/skill-family.js",
+   "file": "lib/field-worker.js",
    "skills": 9,
-   "direct": 9,
+   "direct": 7,
    "dependants": 9,
    "tests": 1
   },
@@ -259,13 +266,6 @@
    "skills": 8,
    "direct": 3,
    "dependants": 10,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-worker.js",
-   "skills": 8,
-   "direct": 6,
-   "dependants": 8,
    "tests": 1
   },
   {
@@ -514,6 +514,13 @@
    "tests": 1
   },
   {
+   "file": "lib/field-resonance.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
    "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
@@ -532,7 +539,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/success-pulse.js",
@@ -612,6 +619,13 @@
    "tests": 1
   },
   {
+   "file": "lib/date-math.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/share.js",
    "skills": 3,
    "direct": 0,
@@ -619,11 +633,46 @@
    "tests": 3
   },
   {
+   "file": "lib/tower-controls.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6,
    "tests": 1
+  },
+  {
+   "file": "lib/gate-badge.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower-journeys.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower-weight.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 5,
+   "tests": 26
   },
   {
    "file": "lib/arena-say.js",
@@ -675,13 +724,6 @@
    "tests": 2
   },
   {
-   "file": "lib/tower.js",
-   "skills": 3,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 17
-  },
-  {
    "file": "lib/chat-calendar.js",
    "skills": 3,
    "direct": 2,
@@ -697,13 +739,6 @@
   },
   {
    "file": "lib/field-nca.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-resonance.js",
    "skills": 3,
    "direct": 1,
    "dependants": 3,
@@ -728,7 +763,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 3,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/practice.js",
@@ -773,17 +808,59 @@
    "tests": 1
   },
   {
+   "file": "lib/pay-share.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 26,
+   "tests": 1
+  },
+  {
+   "file": "lib/alt-pay.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 25,
+   "tests": 1
+  },
+  {
+   "file": "lib/store-products.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 25,
+   "tests": 0
+  },
+  {
+   "file": "lib/store.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 6
+  },
+  {
+   "file": "lib/gumroad.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 20,
+   "tests": 4
+  },
+  {
+   "file": "lib/store-db.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 17,
+   "tests": 1
+  },
+  {
+   "file": "lib/products.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 3
+  },
+  {
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
    "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/date-math.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 5,
    "tests": 1
   },
   {
@@ -837,6 +914,13 @@
   },
   {
    "file": "lib/eclipses.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-fluid-orbs.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2,
@@ -899,13 +983,6 @@
    "tests": 1
   },
   {
-   "file": "lib/pay-share.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 25,
-   "tests": 1
-  },
-  {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
@@ -913,32 +990,11 @@
    "tests": 2
   },
   {
-   "file": "lib/alt-pay.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 24,
-   "tests": 1
-  },
-  {
-   "file": "lib/store-products.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 24,
-   "tests": 0
-  },
-  {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
    "dependants": 23,
    "tests": 2
-  },
-  {
-   "file": "lib/store.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 23,
-   "tests": 6
   },
   {
    "file": "lib/actions.js",
@@ -953,27 +1009,6 @@
    "direct": 1,
    "dependants": 21,
    "tests": 1
-  },
-  {
-   "file": "lib/gumroad.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 19,
-   "tests": 4
-  },
-  {
-   "file": "lib/store-db.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 16,
-   "tests": 1
-  },
-  {
-   "file": "lib/products.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 3
   },
   {
    "file": "lib/automations.js",
@@ -1011,6 +1046,13 @@
    "tests": 1
   },
   {
+   "file": "lib/calc-units.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/keep-going.js",
    "skills": 1,
    "direct": 1,
@@ -1025,11 +1067,32 @@
    "tests": 2
   },
   {
+   "file": "lib/brain-workspace.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/emoji.js",
    "skills": 1,
    "direct": 0,
    "dependants": 3,
-   "tests": 0
+   "tests": 1
+  },
+  {
+   "file": "lib/fincalc.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/formulas-1.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/jobs-core.js",
@@ -1067,6 +1130,13 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-organs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/compose.js",
    "skills": 1,
    "direct": 1,
@@ -1077,6 +1147,20 @@
    "file": "lib/film-discovery.js",
    "skills": 1,
    "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/formula-engine.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/formulas.js",
+   "skills": 1,
+   "direct": 0,
    "dependants": 2,
    "tests": 1
   },
@@ -1107,6 +1191,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/wheel.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
   },
   {
    "file": "lib/a11y-modes.js",
@@ -1158,11 +1249,32 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-bridge.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/calc-more.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/calculators.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 7
   },
   {
    "file": "lib/chat-generators.js",
@@ -1564,13 +1676,6 @@
    "tests": 1
   },
   {
-   "file": "lib/wheel.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/zorbleflux.js",
    "skills": 1,
    "direct": 1,
@@ -1588,8 +1693,8 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 48,
-   "tests": 8
+   "dependants": 49,
+   "tests": 9
   },
   {
    "file": "lib/pages.js",
@@ -1683,6 +1788,13 @@
    "tests": 0
   },
   {
+   "file": "lib/cite.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 21,
+   "tests": 1
+  },
+  {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
@@ -1701,17 +1813,17 @@
    "skills": 0,
    "direct": 0,
    "dependants": 21,
-   "tests": 5
+   "tests": 6
   },
   {
-   "file": "lib/character.js",
+   "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
    "tests": 1
   },
   {
-   "file": "lib/cite.js",
+   "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
@@ -1837,6 +1949,13 @@
    "tests": 1
   },
   {
+   "file": "lib/boards.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/comments.js",
    "skills": 0,
    "direct": 0,
@@ -1872,18 +1991,18 @@
    "tests": 1
   },
   {
+   "file": "lib/translate-langs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/approval-core.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
    "tests": 9
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/calshare.js",
@@ -1935,18 +2054,18 @@
    "tests": 1
   },
   {
-   "file": "lib/translate-langs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/used.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
    "tests": 0
+  },
+  {
+   "file": "lib/approval-gate.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/aurora-feed.js",
@@ -1985,13 +2104,6 @@
   },
   {
    "file": "lib/email-send.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/fincalc.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2065,7 +2177,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/pdf-tools.js",
@@ -2080,6 +2192,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/prizes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/probe-asks.js",
@@ -2194,13 +2313,6 @@
    "tests": 1
   },
   {
-   "file": "lib/approval-gate.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/arena.js",
    "skills": 0,
    "direct": 0,
@@ -2271,6 +2383,13 @@
    "tests": 1
   },
   {
+   "file": "lib/fanfic.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/fantasy.js",
    "skills": 0,
    "direct": 0,
@@ -2313,6 +2432,13 @@
    "tests": 1
   },
   {
+   "file": "lib/handoff.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/jobs-ui.js",
    "skills": 0,
    "direct": 0,
@@ -2327,7 +2453,21 @@
    "tests": 1
   },
   {
+   "file": "lib/keypad.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/kitchen.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/ledger.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2360,6 +2500,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 0
+  },
+  {
+   "file": "lib/obituary.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/page-picture.js",
@@ -2432,6 +2579,13 @@
    "tests": 1
   },
   {
+   "file": "lib/scrim.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/self-blocks.js",
    "skills": 0,
    "direct": 0,
@@ -2482,6 +2636,13 @@
   },
   {
    "file": "lib/translate-docs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-extras.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2541,6 +2702,7 @@
     "lib/clef.js",
     "lib/shortfall.js",
     "lib/self-context.js",
+    "lib/answer-honesty.js",
     "lib/draft.js",
     "lib/memory-scope.js",
     "lib/memory-core.js",
@@ -2601,7 +2763,8 @@
     "lib/email-send.js",
     "lib/keep-going.js",
     "lib/automations-run.js",
-    "lib/approval-core.js"
+    "lib/approval-core.js",
+    "lib/approval-gate.js"
    ],
    "importedBy": []
   },
@@ -3053,7 +3216,8 @@
     "lib/models.js",
     "lib/self-context.js",
     "lib/shortfall.js",
-    "lib/voice.js"
+    "lib/voice.js",
+    "lib/tower.js"
    ],
    "importedBy": []
   },
@@ -3405,6 +3569,7 @@
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
+    "skills/shop.js",
     "skills/store.js"
    ]
   },
@@ -3414,6 +3579,35 @@
     "lib/state.js"
    ],
    "importedBy": []
+  },
+  "lib/answer-honesty.js": {
+   "imports": [
+    "lib/cite.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
   },
   "lib/appraise-photo.js": {
    "imports": [],
@@ -3444,7 +3638,9 @@
    "imports": [
     "lib/approval-core.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/approval.js"
+   ]
   },
   "lib/arcade-ghost.js": {
    "imports": [],
@@ -3921,7 +4117,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/boards/[[path]].js",
-    "functions/boards/t/[[path]].js"
+    "functions/boards/t/[[path]].js",
+    "lib/fanfic.js"
    ]
   },
   "lib/book-face.js": {
@@ -3941,6 +4138,45 @@
     "lib/about-skill.js",
     "skills/about-skill.js",
     "skills/own-parts.js"
+   ]
+  },
+  "lib/brain-bridge.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-organs.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/field-resonance.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-workspace.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "lib/brain-organs.js",
+    "lib/brain.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js",
+    "lib/brain-organs.js"
+   ],
+   "importedBy": [
+    "skills/verse-brain.js"
    ]
   },
   "lib/bridges.js": {
@@ -3978,11 +4214,34 @@
    ],
    "importedBy": []
   },
+  "lib/calc-units.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/calculators.js",
+    "lib/formula-engine.js",
+    "lib/keypad.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
+  },
   "lib/calculator.js": {
    "imports": [
     "skills/calc.js"
    ],
    "importedBy": []
+  },
+  "lib/calculators.js": {
+   "imports": [
+    "lib/calc-units.js",
+    "lib/fincalc.js",
+    "lib/date-math.js",
+    "lib/formula-engine.js",
+    "lib/formulas.js"
+   ],
+   "importedBy": [
+    "skills/formulas.js"
+   ]
   },
   "lib/calendar.js": {
    "imports": [],
@@ -4399,7 +4658,8 @@
   "lib/cite.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/answer-honesty.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
@@ -4699,13 +4959,15 @@
   "lib/date-math.js": {
    "imports": [],
    "importedBy": [
+    "lib/calculators.js",
     "lib/date-ask.js",
     "lib/zones.js",
     "skills/date-grid.js"
    ],
    "reachedBy": [
     "lib/sun-day.js",
-    "skills/date-calc.js"
+    "skills/date-calc.js",
+    "skills/formulas.js"
    ]
   },
   "lib/date-words.js": {
@@ -4876,6 +5138,12 @@
     "skills/fakeuser.js"
    ]
   },
+  "lib/fanfic.js": {
+   "imports": [
+    "lib/boards.js"
+   ],
+   "importedBy": []
+  },
   "lib/fantasy.js": {
    "imports": [
     "lib/scores.js"
@@ -4929,14 +5197,29 @@
     "skills/flow-canvas.js"
    ]
   },
+  "lib/field-fluid-orbs.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/agent-fluid-memory-orbs.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field.js"
+   ]
+  },
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-organs.js",
+    "lib/brain-workspace.js",
+    "lib/brain.js",
     "lib/council-law.js",
     "lib/field-attention.js",
     "lib/field-cards.js",
     "lib/field-doodle.js",
     "lib/field-flow.js",
+    "lib/field-fluid-orbs.js",
     "lib/field-nca.js",
     "lib/field-resonance.js",
     "lib/field-stage.js",
@@ -4953,6 +5236,7 @@
    "reachedBy": [
     "lib/field-vector-worker.js",
     "lib/tilt-arena-idea.js",
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -4979,6 +5263,7 @@
     "skills/tilt-arena.js",
     "skills/tilt-mode.js",
     "skills/vector-field-mind.js",
+    "skills/verse-brain.js",
     "skills/veto-council.js",
     "skills/zorbleflux.js"
    ]
@@ -5000,11 +5285,14 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
+    "lib/brain-organs.js",
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
+    "lib/brain.js",
     "skills/mind-field-mode.js",
-    "skills/mind-field.js"
+    "skills/mind-field.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/field-stage.js": {
@@ -5014,6 +5302,7 @@
     "lib/mind-field-modes.js"
    ],
    "importedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -5027,7 +5316,8 @@
     "skills/resonant-membrane.js",
     "skills/swarm-mind.js",
     "skills/tilt-mode.js",
-    "skills/vector-field-mind.js"
+    "skills/vector-field-mind.js",
+    "skills/verse-brain.js"
    ],
    "reachedBy": [
     "skills/mind-field-mode.js",
@@ -5070,6 +5360,7 @@
   "lib/field-worker.js": {
    "imports": [],
    "importedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
@@ -5117,7 +5408,11 @@
   "lib/fincalc.js": {
    "imports": [],
    "importedBy": [
-    "lib/calc-panels.js"
+    "lib/calc-panels.js",
+    "lib/calculators.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
    ]
   },
   "lib/fix-audit.js": {
@@ -5188,6 +5483,38 @@
     "skills/forge.js"
    ]
   },
+  "lib/formula-engine.js": {
+   "imports": [
+    "lib/calc-units.js"
+   ],
+   "importedBy": [
+    "lib/calculators.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
+  },
+  "lib/formulas-1.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/formulas.js"
+   ],
+   "reachedBy": [
+    "lib/calculators.js",
+    "skills/formulas.js"
+   ]
+  },
+  "lib/formulas.js": {
+   "imports": [
+    "lib/formulas-1.js"
+   ],
+   "importedBy": [
+    "lib/calculators.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
+  },
   "lib/free-pics.js": {
    "imports": [],
    "importedBy": [
@@ -5254,6 +5581,19 @@
     "skills/merge.js",
     "skills/monopoly.js",
     "skills/oracle.js"
+   ]
+  },
+  "lib/gate-badge.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tower.js",
+    "skills/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js",
+    "functions/api/will.js",
+    "skills/cartoon.js",
+    "skills/walker.js"
    ]
   },
   "lib/generators.js": {
@@ -5451,8 +5791,16 @@
     "functions/api/support.js",
     "functions/films/rss.js",
     "lib/paid-access.js",
-    "lib/products.js"
+    "lib/products.js",
+    "skills/shop.js"
    ]
+  },
+  "lib/handoff.js": {
+   "imports": [
+    "lib/wheel.js",
+    "lib/prizes.js"
+   ],
+   "importedBy": []
   },
   "lib/health-habits.js": {
    "imports": [],
@@ -5728,6 +6076,12 @@
     "skills/walker.js"
    ]
   },
+  "lib/keypad.js": {
+   "imports": [
+    "lib/calc-units.js"
+   ],
+   "importedBy": []
+  },
   "lib/kitchen.js": {
    "imports": [
     "lib/recipes.js"
@@ -5808,6 +6162,10 @@
     "lib/refusal.js",
     "skills/miss-jobs.js"
    ]
+  },
+  "lib/ledger.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/lineage.js": {
    "imports": [],
@@ -6137,6 +6495,7 @@
     "skills/mind-field-mode.js"
    ],
    "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -6153,7 +6512,8 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
     "skills/tilt-mode.js",
-    "skills/vector-field-mind.js"
+    "skills/vector-field-mind.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/misskey.js": {
@@ -6185,7 +6545,8 @@
     "lib/approval-core.js",
     "lib/clef.js",
     "lib/review-api.js",
-    "lib/router.js"
+    "lib/router.js",
+    "lib/self-context.js"
    ],
    "reachedBy": [
     "functions/api/actions.js",
@@ -6224,6 +6585,7 @@
     "skills/zorbleflux.js"
    ],
    "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
     "skills/attention-field-mind.js",
     "skills/doodle-mind.js",
     "skills/echo-field.js",
@@ -6241,7 +6603,8 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
     "skills/tilt-mode.js",
-    "skills/vector-field-mind.js"
+    "skills/vector-field-mind.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/movies.js": {
@@ -6450,6 +6813,10 @@
     "lib/note-extras.js",
     "skills/notes-fill.js"
    ]
+  },
+  "lib/obituary.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/observations.js": {
    "imports": [],
@@ -6705,6 +7072,7 @@
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
+    "skills/shop.js",
     "skills/store.js"
    ]
   },
@@ -6941,6 +7309,12 @@
     "skills/work.js"
    ]
   },
+  "lib/prizes.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/handoff.js"
+   ]
+  },
   "lib/probe-asks.js": {
    "imports": [
     "lib/persona.js",
@@ -7022,7 +7396,8 @@
     "functions/api/handoff.js",
     "functions/api/mcp.js",
     "functions/api/support.js",
-    "functions/films/rss.js"
+    "functions/films/rss.js",
+    "skills/shop.js"
    ]
   },
   "lib/progress-chart.js": {
@@ -7574,6 +7949,10 @@
     "skills/scores.js"
    ]
   },
+  "lib/scrim.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/self-blocks.js": {
    "imports": [
     "lib/spark.js"
@@ -7583,7 +7962,8 @@
   "lib/self-context.js": {
    "imports": [
     "lib/voice.js",
-    "lib/persona.js"
+    "lib/persona.js",
+    "lib/models.js"
    ],
    "importedBy": [
     "functions/api/answer.js",
@@ -7618,6 +7998,7 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
@@ -7803,6 +8184,7 @@
     "skills/list-starters.js",
     "skills/mind-field.js",
     "skills/rooms.js",
+    "skills/shop.js",
     "skills/stage-out.js",
     "skills/tilt-arena.js",
     "skills/time.js"
@@ -8252,7 +8634,8 @@
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/sale-jobs.js",
-    "skills/services.js"
+    "skills/services.js",
+    "skills/shop.js"
    ]
   },
   "lib/store-products.js": {
@@ -8283,6 +8666,7 @@
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
+    "skills/shop.js",
     "skills/store.js"
    ]
   },
@@ -8317,7 +8701,8 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "skills/shop.js"
    ]
   },
   "lib/story.js": {
@@ -8687,20 +9072,67 @@
     "skills/toolkit.js"
    ]
   },
+  "lib/tower-controls.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tower-journeys.js",
+    "lib/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js",
+    "functions/api/will.js",
+    "skills/cartoon.js",
+    "skills/tower.js",
+    "skills/walker.js"
+   ]
+  },
+  "lib/tower-journeys.js": {
+   "imports": [
+    "lib/tower-controls.js"
+   ],
+   "importedBy": [
+    "lib/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js",
+    "functions/api/will.js",
+    "skills/cartoon.js",
+    "skills/tower.js",
+    "skills/walker.js"
+   ]
+  },
   "lib/tower-rank.js": {
    "imports": [],
    "importedBy": [
     "skills/tower.js"
    ]
   },
+  "lib/tower-weight.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/tower.js",
+    "skills/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js",
+    "functions/api/will.js",
+    "skills/cartoon.js",
+    "skills/walker.js"
+   ]
+  },
   "lib/tower.js": {
    "imports": [
-    "lib/self-sites.js"
+    "lib/self-sites.js",
+    "lib/gate-badge.js",
+    "lib/tower-controls.js",
+    "lib/tower-journeys.js",
+    "lib/tower-weight.js"
    ],
    "external": [
     ", "
    ],
    "importedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/tower.js",
     "skills/walker.js"
@@ -8713,10 +9145,17 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/translate-extras.js": {
+   "imports": [
+    "lib/translate-langs.js"
+   ],
+   "importedBy": []
+  },
   "lib/translate-langs.js": {
    "imports": [],
    "importedBy": [
     "functions/api/translate.js",
+    "lib/translate-extras.js",
     "lib/translate-words.js"
    ]
   },
@@ -8950,6 +9389,7 @@
   "lib/wheel.js": {
    "imports": [],
    "importedBy": [
+    "lib/handoff.js",
     "skills/wheel.js"
    ]
   },
@@ -9048,6 +9488,20 @@
    ],
    "importedBy": []
   },
+  "skills/advice.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/agent-fluid-memory-orbs.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-fluid-orbs.js"
+   ],
+   "importedBy": [
+    "skills/mind-field.js"
+   ]
+  },
   "skills/aggravation.js": {
    "imports": [
     "skills/lift3d.js",
@@ -9109,6 +9563,10 @@
    "importedBy": [
     "skills/forge-table.js"
    ]
+  },
+  "skills/ascii.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/ask-clipboard.js": {
    "imports": [
@@ -9954,6 +10412,12 @@
    ],
    "importedBy": []
   },
+  "skills/formulas.js": {
+   "imports": [
+    "lib/calculators.js"
+   ],
+   "importedBy": []
+  },
   "skills/four-channels.js": {
    "imports": [
     "lib/stage-pack.js"
@@ -10765,7 +11229,8 @@
     "skills/attention-field-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
-    "skills/swarm-mind.js"
+    "skills/swarm-mind.js",
+    "skills/agent-fluid-memory-orbs.js"
    ],
    "importedBy": []
   },
@@ -11086,6 +11551,10 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/morse.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/motorbody.js": {
    "imports": [
@@ -11451,6 +11920,10 @@
    ],
    "importedBy": []
   },
+  "skills/proverb.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/providers.js": {
    "imports": [],
    "importedBy": [
@@ -11771,7 +12244,9 @@
     "lib/products.js",
     "lib/gumroad.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/shop.js"
+   ]
   },
   "skills/sfx.js": {
    "imports": [],
@@ -11822,6 +12297,14 @@
    "imports": [
     "lib/stage-pack.js",
     "lib/stage-math.js"
+   ],
+   "importedBy": []
+  },
+  "skills/shop.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/store.js",
+    "skills/services.js"
    ],
    "importedBy": []
   },
@@ -12172,7 +12655,9 @@
    "imports": [
     "lib/store.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/shop.js"
+   ]
   },
   "skills/study-cards.js": {
    "imports": [
@@ -12438,8 +12923,10 @@
   "skills/tower.js": {
    "imports": [
     "lib/tower.js",
+    "lib/gate-badge.js",
     "lib/avatar.js",
-    "lib/tower-rank.js"
+    "lib/tower-rank.js",
+    "lib/tower-weight.js"
    ],
    "importedBy": []
   },
@@ -12512,6 +12999,15 @@
     "skills/mind-field-mode.js",
     "skills/mind-field.js"
    ]
+  },
+  "skills/verse-brain.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/brain.js",
+    "lib/brain-workspace.js",
+    "lib/brain-bridge.js"
+   ],
+   "importedBy": []
   },
   "skills/veto-council.js": {
    "imports": [

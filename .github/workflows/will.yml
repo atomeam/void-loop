@@ -22,6 +22,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: write # revive the conductor's clock (grow-clock.yml) when its chain is down
 
 jobs:
   will:
@@ -42,3 +43,12 @@ jobs:
         run: |
           if [ -z "$VOID_MISSES_TOKEN" ]; then echo "::warning title=Verse's will did not run::Repo secret VOID_OWNER_TOKEN is not set."; exit 0; fi
           python3 tools/will.py | tee -a "$GITHUB_STEP_SUMMARY"
+      # the second heartbeat (2026-10-26: "get Verse automated like its very life depends on it"): this runs every hour and after every
+      # deploy, so when the conductor's clock chain is down (no grow-clock run going or waiting) it is started again within the hour
+      - name: Keep the conductor's clock running
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          live=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/grow-clock.yml/runs?per_page=5" --jq '[.workflow_runs[] | select(.status != "completed")] | length' 2>/dev/null || echo 1)
+          if [ "$live" = "0" ]; then gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && echo "the clock was down: started again" >> "$GITHUB_STEP_SUMMARY"; else echo "clock running"; fi

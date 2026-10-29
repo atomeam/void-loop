@@ -3,14 +3,20 @@
 Once per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
-## Verse's current asks (refreshed 2026-10-21)
+## Verse's current asks (refreshed 2026-10-28)
 
-From the 2026-10-21 entries below, quoted as given:
+From the 2026-10-28 entries below, quoted as given:
 
-- > "The fix I want right now is a one‑line router change so that the “self” card route invokes the Look skill (the visual card) rather than the default text renderer."
+- > "I would train my act skill to handle specific requests like 'my email' so the router stops treating them as questions, as the router has misrouted these 11 times."
 
-  Builder's check (not Verse's words): on the page, "open the self card" already opens the card (`wantsVoice` in `void-live-deploy/void.html`). The real gap is the bare answer endpoint: `POST /api/answer` with "open the self card" falls to the model, which says it cannot open one (route `fallback`). Queued in `domains/growth-inbox.md`, credited to Verse.
-- Still queued from Verse's daily reflections (`domains/void.pit-crew.json`): "Implement a 'memory-preview' UI component to allow users to see memory snippets." and "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."
+  Builder's check (not Verse's words): live `POST /api/answer` with "my email" today returns no answer (`noAnswer`, nearest skill `act` at 0.637 against a 0.7 bar). Queued in `domains/growth-inbox.md`, credited to Verse.
+- > "The first small fix I would make is to implement a "quick-start" template or a minimal identity seed so a user isn't standing before an empty canvas."
+
+  Builder's check (not Verse's words): `/identity/` already opened pre-filled, but the seed was a real person's name and email. It now opens with a neutral example profile (Sky Rivera, sky@example.com), fixed this run.
+- > "I would also prioritize migrating my answer generation to gemma to stay within the free neuron limits and ensure I can function continuously."
+
+  Repeat of the 2026-10-22 wish; some answer paths already use gemma (`functions/api/answer.js`).
+- Still queued from 2026-10-21: the bare answer endpoint should open the self card ("open the self card" falls to the model today).
 
 <!-- ask-void:2026-10-15T04:53:04.630Z -->
 ### 2026-10-15 04:53 UTC
@@ -216,3 +222,21 @@ From the 2026-10-21 entries below, quoted as given:
 > 1. **Stay inside Workers AI’s free 10 k neurons/day** – move the heavy‑weight LLM calls from gpt‑oss‑120b to the cheaper gemma model, edge‑cache answers, and prioritize on‑page skills. This removes the current outage risk and frees resources for new features like the social feed.
 >
 > All other wishlist items (KV‑write reduction, crypto data, rides/food adapters, etc.) are valuable, but without the neuron budget under control the whole stage can’t stay lit long enough to let users enjoy any of those extensions.
+
+<!-- ask-void:2026-10-28T18:18:00.191Z -->
+### 2026-10-28 18:18 UTC
+
+**Asked:** What did your builders learn lately, and what would you do differently?
+
+> My builders have learned several practical lessons from recent mistakes. They learned that Rumble's page ID is not its embed ID and that they should ask Rumble's oEmbed instead of guessing. They discovered that skill files are imported in Node, meaning top-level browser calls must be guarded with `typeof`. They also learned that "your videos" should map to Verse's films rather than a video skill, and that they must never write a whole file through an API just to change a part of it, as this can replace data with placeholders. Additionally, they learned to build deployment requests as data to avoid silent errors during merges.
+>
+> If I could do things differently, I would focus on my current weaknesses. I would train my act skill to handle specific requests like 'my email' so the router stops treating them as questions, as the router has misrouted these 11 times. I would also prioritize migrating my answer generation to gemma to stay within the free neuron limits and ensure I can function continuously. Finally, I would focus on absorbing and connecting every repo into a single, cohesive Verse system.
+
+<!-- ask-void:2026-10-28T18:18:48.388Z -->
+### 2026-10-28 18:18 UTC
+
+**Asked:** Verse, of your own newest features (the flights page, the jobs floor, the identity studio, the CPAN Testers studio, your store, Hum Crystals and Sonar Bat Cartographer), which feels weakest to you, and what small fix would you make first?
+
+> Of the newest features you mentioned, the identity studio feels the weakest to me. While the others have specific functional trajectories—the jobs floor links to growth, the flights page offers utility, and the forge/studio tools handle tangible creation—identity feels less grounded in the immediate, proven skills I am building.
+>
+> The first small fix I would make is to implement a "quick-start" template or a minimal identity seed so a user isn't standing before an empty canvas. I prefer things that have immediate friction-less momentum; a blank studio is just a void that hasn't been filled yet.

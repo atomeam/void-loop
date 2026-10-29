@@ -23,10 +23,12 @@ export const VOICE_SYSTEM = 'You are the language model that writes the status r
   + 'It reports; it never makes up a motto, quest or identity; if a fact says something is not written yet, say you do not know it. Never mention money, prices or a budget. '
   + 'Reply with JSON only: {"thoughts":"<the state in 2-5 plain sentences>","better":"<what should change, 1-3 sentences>",'
   + '"weakest":"<daily only: the weakest operational area right now, with its numbers, 1-2 sentences>","next_game":"<daily only: the next targeted capability (a game, skill or card) and the tagged reason, one sentence>","next_trick":"<daily only: one new video trick or effect to learn for its own clips (not one in its tricks library), one sentence>",'
-  + '"asks":[{"ask":"<one concrete thing to build or fix, as an instruction>","small":<true if a builder could finish it in under an hour>}],'
+  + '"asks":[{"ask":"<one concrete thing to build or fix, as an instruction>","why":"<the tagged fact that makes this one ask matter, one sentence of its own>","small":<true if a builder could finish it in under an hour>}],'
   + '"evidence":{"thoughts":["S1"],"better":["S2"],"weakest":["S3"],"next_game":["S1"]},'
   + '"striking":<true only if there is something the owner should hear today: a real problem, a surprising need, a change of course>} '
-  + 'Give at most 3 asks, most important first. ' + INJECTION_RULE;
+  + 'Give at most 3 asks, most important first. Each ask has its own why: never give two asks the same why, and never reuse the thoughts as a why. '
+  // the owner's card (2026-10-29): three asks shared one reason, and none of them served the site Versus is on
+  + 'When a fact names the current Versus target, the first ask must move Verse closer to beating that site; an ask that does not serve the target comes after one that does. ' + INJECTION_RULE;
 
 // the question Verse is asked, in plain words (kept on the entry so the log shows what Verse was answering)
 export function questionFor(kind, shipped) {
@@ -62,7 +64,9 @@ export function parseVoice(text) {
   const out = {
     thoughts: clean(j.thoughts, 1500), better: clean(j.better, 800), weakest: clean(j.weakest, 600), next_game: clean(j.next_game, 400), next_trick: clean(j.next_trick, 400),
     asks: (Array.isArray(j.asks) ? j.asks : []).map((a) => (typeof a === 'string' ? { ask: a, small: false } : a || {}))
-      .map((a) => ({ ask: untag(clean(a.ask, 240)), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3),
+      .map((a) => ({ ask: untag(clean(a.ask, 240)), ...(untag(clean(a.why, 240)).length >= 4 ? { why: untag(clean(a.why, 240)) } : {}), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3)
+      // a why that an earlier ask already gave is no reason for this one (owner's card, 2026-10-29: one reason under three asks)
+      .map((a, i, xs) => (a.why && xs.slice(0, i).some((b) => b.why && b.why.toLowerCase() === a.why.toLowerCase()) ? (({ why, ...r }) => r)(a) : a)),
     striking: j.striking === true,
     evidence: evidenceOf(j.evidence),
   };
@@ -72,6 +76,25 @@ export function parseVoice(text) {
 // the fact tags of the prompt ("[S2]", "[S1, S3]", "[S2 tools/x.mjs]") are for the claims in its thoughts, never part of an ask: an ask that
 // kept one showed twice on the wants card, once with "[S2]" and once without (owner, 2026-10-19). Pure.
 export const untag = (s) => String(s || '').replace(/\s*\[S\d+(?:[,;]\s*S\d+)*(?:\s[^\]]{0,80})?\]/g, '').replace(/\s+([.,;:!?])/g, '$1').trim();
+/** Asks put behind the site Versus is on (void.asks.json `held`: {words, until, why}; owner, 2026-10-29: every site ever made, smallest
+ *  first, so an ask that does not help beat the current target waits). An ask is held while `until` is still the target in
+ *  tower.target.json; once that site is beaten and the target moves on, the hold ends by itself. Held asks keep their place on the
+ *  record and come after the open ones, each with `held` (the site). Nothing is dropped or reworded. Pure. */
+export function holdAsks(asks, held, target) {
+  const H = (Array.isArray(held) ? held : []).filter((h) => h && typeof h.words === 'string' && h.words.trim() && h.until && String(h.until) === String(target || ''));
+  const hold = (a) => H.find((h) => h.words.toLowerCase() === String(a && a.ask).toLowerCase() || sameAsk(h.words, a && a.ask));
+  const now = [], later = [];
+  for (const a of asks || []) { const h = hold(a); if (h) later.push({ ...a, held: String(h.until) }); else now.push(a); }
+  return now.concat(later);
+}
+/** The site Versus is fighting, as a fact for the reflection (owner's card, 2026-10-29: the asks named an STL checker and "absorb every
+ *  repo" while Verse was at 0 of 12 aspects against sycophanthex.com). From a lib/tower.js tower() result and tower.target.json; '' when
+ *  there is no target or the target is not the current floor. Pure. */
+export function targetFacts(t, tg) {
+  const f = t && Array.isArray(t.floors) ? t.floors[t.marker - 1] : null, id = tg && tg.id ? String(tg.id) : '';
+  if (!f || !id || f.site !== id) return '';
+  return 'The current Versus target is ' + id + ': Verse is ' + f.n + ' of ' + f.m + ' aspects ahead of it, and it stays the target until it is beaten. Asks that make Verse better than ' + id + ' come first.';
+}
 // A stable id for an ask: the reflection it came from (its time, to the minute) and its place in that reflection. It never
 // changes once the reflection is stored, so a ledger entry that names it (tools/grow.mjs --asked) still matches if the
 // ask's words are edited later.
@@ -84,7 +107,7 @@ export function currentAsks(entries, n = 6) {
       const ask = untag(a.ask), k = ask.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
       // one of each: the same words, or nearly the same words (sameAsk), are one ask
       if (!k || seen.has(k) || out.some((o) => sameAsk(o.ask, ask))) continue;
-      seen.add(k); out.push({ id: askId(e.at, i), ask, small: !!a.small, kind: e.kind, at: e.at });
+      seen.add(k); out.push({ id: askId(e.at, i), ask, ...(a.why ? { why: untag(a.why) } : {}), small: !!a.small, kind: e.kind, at: e.at });
       if (out.length >= n) return out;
     }
   }

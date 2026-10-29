@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<style>
+  :root {
+    --bg: #0a0a12;
+    --accent: #7cf;
+    --crystal-hue: 200;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: #eef;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    touch-action: none;
+  }
+  #field {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .crystal {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, hsl(var(--crystal-hue), 80%, 70%), hsl(var(--crystal-hue), 90%, 40%));
+    box-shadow: 0 0 20px hsl(var(--crystal-hue), 100%, 60%);
+    border: 2px solid rgba(255,255,255,0.4);
+    z-index: 10;
+    cursor: grab;
+    transition: filter 0.2s, transform 0.1s;
+    user-select: none;
+    --energy: 1;
+    transform: scale(calc(0.6 + var(--energy) * 0.8));
+    filter: blur(calc((1 - var(--energy)) * 2px)) hue-rotate(calc(var(--energy) * 40deg));
+  }
+  .crystal:active { cursor: grabbing; }
+  #ui {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 20;
+    background: rgba(0,0,0,0.6);
+    padding: 12px 16px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    max-width: 280px;
+  }
+  button {
+    background: #246;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin: 4px 4px 4px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  button:hover { background: #368; }
+  #status { font-size: 12px; opacity: 0.8; margin-top: 8px; }
+  #seal-status { color: #7cf; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Acoustic Orientation Crystal Mind · Verse lab</title>
+<meta name="description" content="Novel combination branching from the recent memory-lattice / neural-DOM / fluid / swarm cluster (F238–F241):">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Acoustic Orientation Crystal Mind · Verse lab">
+<meta property="og:description" content="Novel combination branching from the recent memory-lattice / neural-DOM / fluid / swarm cluster (F238–F241):">
+<meta property="og:url" content="https://a-to-mind.com/lab/f242-acoustic-orientation-crystal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f242-acoustic-orientation-crystal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="field"></canvas>
+<div id="ui">
+  <strong>F-242 Crystal Mind</strong><br>
+  <button id="micBtn">Enable Mic</button>
+  <button id="oriBtn">Enable Tilt</button>
+  <button id="sealBtn">Seal Snapshot</button>
+  <div id="status">Pointer deposits energy. Grant sensors for acoustic + tilt.</div>
+  <div id="seal-status"></div>
+</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">Acoustic Orientation Crystal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
