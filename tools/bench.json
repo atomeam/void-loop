@@ -6805,5 +6805,12 @@
   {"ask": "gradient generator", "want": "skill:gradient"},
   {"ask": "css gradient", "want": "skill:gradient"},
   {"ask": "make a gradient from red to blue", "want": "skill:gradient"},
-  {"ask": "1010 binary to decimal", "want": "skill:baseconv"}
+  {"ask": "1010 binary to decimal", "want": "skill:baseconv"},
+  {"ask": "add a note: buy milk", "want": "skill:notes-fill"},
+  {"ask": "add eggs to my shopping list", "want": "skill:notes-fill"},
+  {"ask": "what did I write about Lisbon", "want": "skill:notes-fill"},
+  {"ask": "guitar tuner", "want": "skill:music-tools"},
+  {"ask": "split a pdf", "want": "skill:pdf-tools"},
+  {"ask": "fantasy tools", "want": "skill:fantasy"},
+  {"ask": "start or sit", "want": "skill:fantasy"}
 ]
