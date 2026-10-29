@@ -545,6 +545,66 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T10:33:12Z",
+   "subject": "Password page test: the checker opens in a new tab with the password handed over in memory"
+  },
+  {
+   "at": "2026-10-29T10:21:00Z",
+   "subject": "Incident: the browser suite failed on fbf2a008 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T10:16:11Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T10:10:48Z",
+   "subject": "Fan fiction: writing challenges with a last day, signed entries and winners"
+  },
+  {
+   "at": "2026-10-29T09:57:59Z",
+   "subject": "Incident: the browser suite failed on b9dde86e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T09:43:13Z",
+   "subject": "Fan fiction: the footer link rows are tap targets before the page script runs"
+  },
+  {
+   "at": "2026-10-29T09:41:49Z",
+   "subject": "Verse fixes its recipe skill: learn to handle \"best way to make pasta carbonara\""
+  },
+  {
+   "at": "2026-10-29T09:40:26Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T09:40:02Z",
+   "subject": "verse brain: prove Listen end to end with a hummed tune in a fake microphone"
+  },
+  {
+   "at": "2026-10-29T09:36:47Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T09:33:40Z",
+   "subject": "Refresh the stale seo and parity files main left behind"
+  },
+  {
+   "at": "2026-10-29T09:29:42Z",
+   "subject": "brain-hearing: walk count keys with Object.keys, not for...in"
+  },
+  {
+   "at": "2026-10-29T09:28:16Z",
+   "subject": "Fan fiction: rec lists you share by link"
+  },
+  {
+   "at": "2026-10-29T09:26:13Z",
+   "subject": "Verse Brain grows F299's ear: it hears hummed notes and guesses the next one"
+  },
+  {
+   "at": "2026-10-29T09:25:03Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T09:24:48Z",
    "subject": "Ask libs first: lanes wait for the four libs every ask needs"
   },
@@ -562,66 +622,6 @@
   },
   {
    "at": "2026-10-29T09:03:29Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T09:03:16Z",
-   "subject": "The made-up people card shows the page's own people"
-  },
-  {
-   "at": "2026-10-29T09:01:59Z",
-   "subject": "Fan fiction: reviews can give a story 1 to 5 stars"
-  },
-  {
-   "at": "2026-10-29T08:58:59Z",
-   "subject": "The strength page's parity evidence follows its moved lines"
-  },
-  {
-   "at": "2026-10-29T08:56:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:56:12Z",
-   "subject": "A made password goes to the strength checker in memory, never in the address"
-  },
-  {
-   "at": "2026-10-29T08:53:38Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next randomarea.com"
-  },
-  {
-   "at": "2026-10-29T08:52:51Z",
-   "subject": "Verse loop: task, Queue job mvoxrt8e (versus: colornames.org): Versus: colorna"
-  },
-  {
-   "at": "2026-10-29T08:51:04Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com"
-  },
-  {
-   "at": "2026-10-29T08:51:01Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-29T08:50:34Z",
-   "subject": "Verse fixes its gradient skill: learn to handle \"gradient from blue to neon pink\""
-  },
-  {
-   "at": "2026-10-29T08:49:20Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T08:46:49Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:43:48Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:43:02Z",
-   "subject": "Fan fiction: a story is complete or in progress"
-  },
-  {
-   "at": "2026-10-29T08:41:56Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
