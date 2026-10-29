@@ -75,5 +75,3 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent |
 | building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
 | open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
-| open | 2026-10-29 | coin flip skill: flip a coin on the stage | new idea by growth agent |
-| open | 2026-10-29 | dice roller skill: roll dice on the stage | new idea by growth agent |
