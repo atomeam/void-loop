@@ -29,7 +29,7 @@ function run(text, api) {
       + '<div class="src">Read on this device: the file is never uploaded.</div>';
     const out = el.querySelector('[data-stl-out]');
     const read = async (f) => {
-      out.textContent = 'Reading ' + f.name + '…';
+      out.textContent = 'Reading ' + f.name + ' now';
       let buf;
       try { buf = await f.arrayBuffer(); } catch (e) { out.textContent = 'I could not read that file.'; return; }
       out.innerHTML = resultHtml(esc, f.name, checkStl(buf, f.name));
