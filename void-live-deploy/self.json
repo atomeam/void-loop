@@ -545,12 +545,28 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:30:26Z",
+   "subject": "Naming audit: launch the Chrome the Tower gate names (CHROME_PATH), not playwright's missing download"
+  },
+  {
+   "at": "2026-10-29T06:28:06Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-10-29T06:28:06Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:27:50Z",
    "subject": "CSP smoke: a ! Name line in _headers drops the earlier header, as Cloudflare does"
   },
   {
    "at": "2026-10-29T06:26:56Z",
    "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T06:26:23Z",
+   "subject": "Better at sports browse, textgen, backdrop and 1 more: 6 more ways of asking answered right — new phrases: “browse sports” now opens…"
   },
   {
    "at": "2026-10-29T06:24:03Z",
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T06:07:44Z",
    "subject": "Coder: think on Verse's own model (/api/coder), so queued jobs ship again"
-  },
-  {
-   "at": "2026-10-29T06:06:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:04:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:04:03Z",
-   "subject": "Verse shared field"
-  },
-  {
-   "at": "2026-10-29T06:03:54Z",
-   "subject": "Verse's shared field: skills/field.js, the memory orbs write into it, Verse Brain feels their slots and publishes its ideas as numbers"
   }
  ],
  "builders": {
