@@ -1,12 +1,12 @@
 /**
  * verse-brain skill — Verse Brain, the one entity Grok's frontier drafts became (owner, 2026-10-29: "build all the unique builds as a
  * combination and that can be verse"; "the grok builds combined can be verse brain"; "combine all the builds into one entity"; "all the
- * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, thirteen organs, attention, imagination, the
- * self); lib/brain-drafts.json says which of the 233 drafts in atomeam/a-to-mind.com each organ is made from, and why the rest were left out.
+ * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, fourteen organs, attention, imagination, the
+ * self); lib/brain-drafts.json says which frontier drafts in atomeam/a-to-mind.com each organ is made from, and why the rest were left out.
  * The card shows the workspace live: the tissue tinted by the rhythm's phase, surprise in red, the memory's expectation in violet, the
  * attention spotlight, the swarm, the membrane. The words you type, what the gestures organ named, what the memory expects and what the will
  * is doing are DOM orbs you can drag: a drag writes into the workspace as "you". Good rewards the will; Listen feeds it the microphone's
- * level (a number a frame, never recorded). Every other Verse page in this browser reaches the same brain (lib/brain-bridge.js).
+ * level and the pitch of what you hum (numbers, never recorded: lib/brain-hearing.js turns them into notes and guesses the next one). Every other Verse page in this browser reaches the same brain (lib/brain-bridge.js).
  * The mind layers (lib/brain-mind.js): every ask on the stage (the page's 'void:ask' event) and every word typed here becomes ideas and
  * goals that pull; a question ("why did that form?", "what just happened?", "what are you doing?") is answered from its own state; its
  * choices are remembered as moments the will reads before choosing, its winning genomes by context; where two organs disagree over a
@@ -24,6 +24,7 @@ import { MODES, BRAIN } from '../lib/mind-field-modes.js';
 import { loadKept, keep, forget } from '../lib/brain-store.js';
 import * as Field from '../lib/shared-field.js';
 import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
+import { detectPitch } from '../lib/brain-hearing.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
 const offs = new WeakMap(); // an offscreen GW x GH canvas per state, kept off the state (the stage saves its things)
@@ -34,9 +35,12 @@ function create(seed) { return { b: B.createBrain(seed, { phone: phone() }), lev
 // the shared field (lib/shared-field.js, also skills/field.js): one link per page; the brain feels other skills' slots and publishes its ideas
 let link = null; const fieldLink = () => link || (link = linkBrain(Field));
 const felt = new WeakMap(); // what the brain felt last tick, per state, for the drawing
+const pitchQ = new WeakMap(); // pitch frames [Hz, seconds] the microphone gave since the last tick, per state, kept off the state (never saved)
+const framesFor = (s) => { let q = pitchQ.get(s); if (!q) pitchQ.set(s, (q = [])); return q; };
 function step(s, dt, input) {
   const L = fieldLink(), f = feltFrom(Field, L.code); felt.set(s, f);
-  B.stepBrain(s.b, { x: input.x, y: input.y, over: input.over, down: input.down, tiltX: input.tiltX, tiltY: input.tiltY, sound: s.level, field: f });
+  const q = framesFor(s), pitches = q.splice(0, q.length);
+  B.stepBrain(s.b, { x: input.x, y: input.y, over: input.over, down: input.down, tiltX: input.tiltX, tiltY: input.tiltY, sound: s.level, pitches, field: f });
   Field.step(dt); if (s.b.ticks % 10 === 0) L.publish(s.b);
 }
 function metrics(s) { const m = s.b.metrics; return { entropy: m.entropy, activity: m.activity, consensus: m.order, cx: s.b.focus.x, cy: s.b.focus.y }; }
@@ -180,16 +184,18 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   document.addEventListener('void:ask', onAsk);
   q('.vb-good').addEventListener('click', () => { const n = B.reward(S().b); const a = S().b.board.action; said.textContent = 'Rewarded ' + (a ? '"' + a.name + '"' : 'what it did last') + '. The will learns from it at its next choice (' + n + ' waiting).'; save(); });
 
-  // Listen: the microphone's loudness as one number a frame (never recorded, never sent)
+  // Listen: the microphone's loudness and the pitch of a hum, as numbers (never recorded, never sent). Pitch is read every 25 ms so a
+  // short note still gets the 3 frames the ear needs; the loudness keeps its 100 ms beat.
   let mic = null;
-  const stopMic = () => { if (!mic) return; try { mic.stream.getTracks().forEach((t) => t.stop()); mic.ctx.close(); } catch (_) { /* gone */ } mic = null; S().level = 0; listenBtn.setAttribute('aria-pressed', 'false'); listenBtn.textContent = 'Listen'; };
+  const stopMic = () => { if (!mic) return; framesFor(S()).push([0, mic.ctx.currentTime + 0.05]); clearInterval(mic.pitch); try { mic.stream.getTracks().forEach((t) => t.stop()); mic.ctx.close(); } catch (_) { /* gone */ } mic = null; S().level = 0; listenBtn.setAttribute('aria-pressed', 'false'); listenBtn.textContent = 'Listen'; };
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { listenBtn.disabled = true; listenBtn.textContent = 'Listen unavailable'; }
   listenBtn.addEventListener('click', async () => {
     if (mic) return stopMic();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true }), AC = window.AudioContext || window.webkitAudioContext, ctx = new AC();
-      const an = ctx.createAnalyser(); an.fftSize = 512; ctx.createMediaStreamSource(stream).connect(an);
-      mic = { stream, ctx, an, buf: new Float32Array(an.fftSize) }; listenBtn.setAttribute('aria-pressed', 'true'); listenBtn.textContent = 'Listening (tap to stop)';
+      const an = ctx.createAnalyser(); an.fftSize = 1024; ctx.createMediaStreamSource(stream).connect(an);
+      mic = { stream, ctx, an, buf: new Float32Array(an.fftSize) };
+      mic.pitch = setInterval(() => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); const p = detectPitch(mic.buf, mic.ctx.sampleRate), q = framesFor(S()); q.push([Math.round(p.f * 10) / 10, mic.ctx.currentTime]); if (q.length > 64) q.shift(); }, 25); listenBtn.setAttribute('aria-pressed', 'true'); listenBtn.textContent = 'Listening (tap to stop)';
     } catch (_) { listenBtn.textContent = 'Microphone not allowed'; }
   });
   const hear = () => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); let s = 0; for (const v of mic.buf) s += v * v; S().level = Math.min(1, Math.sqrt(s / mic.buf.length) * 6); };
@@ -235,12 +241,12 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 }
 
 const idea = {
-  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · thirteen organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
+  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · fourteen organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
   // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
   modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
   params: (s) => B.params(s.b),
-  how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. Every action is imagined before it is taken, and checked against moments it remembers.'
+  how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. With Listen on, hum to it: it hears the notes and guesses your next one. Every action is imagined before it is taken, and checked against moments it remembers.'
 };
 
 export default fieldSkill({
@@ -249,5 +255,5 @@ export default fieldSkill({
   examples: ['verse brain', 'show me your brain', 'your brain', 'how do you think', 'what are you thinking about', 'show the shared field'],
   nearMisses: ['add a brain', 'summon a zombie and a brain', 'brain teaser', 'mind field', 'what do you think of this song'],
   idea,
-  say: "My brain, live: one workspace that thirteen organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
+  say: "My brain, live: one workspace that fourteen organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
 });
