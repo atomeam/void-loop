@@ -1,40 +1,44 @@
 /**
  * palindrome skill — check if a word or phrase is a palindrome
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "palindrome", "is this a palindrome".
+ * "is racecar a palindrome", "palindrome check for a man a plan a canal panama", "is it a palindrome: kayak".
+ * Empty surface stays empty.
  */
 export function isPalindromeAsk(text) {
-  return /^(?:please\s+)?(?:(?:is\s+(?:this|it)\s+a\s+)?palindrome|(?:check|is)\s+.+\s+a\s+palindrome)(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, '')) || /palindrome\s+of\s+/i.test(text);
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '');
+  return /^(?:please\s+)?(?:is\s+.+?\s+a\s+palindrome|palindrome\s+check(?:\s+for)?\s+.+|is\s+it\s+a\s+palindrome:\s+.+)$/i.test(t);
 }
 
-function isPal(s) {
-  const c = s.toLowerCase().replace(/[^a-z0-9]/g, '');
-  return c === c.split('').reverse().join('');
+export function isPalindrome(str) {
+  const clean = String(str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  return clean.length > 0 && clean === clean.split('').reverse().join('');
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const m = text.match(/(?:is\s+)?(.+?)\s+(?:a\s+)?palindrome/i) || text.match(/palindrome\s+of\s+(.+)/i);
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '');
+  let phrase = '';
+  const m1 = t.match(/^is\s+(.+?)\s+a\s+palindrome$/i);
+  const m2 = t.match(/^palindrome\s+check(?:\s+for)?\s+(.+)$/i);
+  const m3 = t.match(/^is\s+it\s+a\s+palindrome:\s+(.+)$/i);
+  if (m1) phrase = m1[1];
+  else if (m2) phrase = m2[1];
+  else if (m3) phrase = m3[1];
+  const yes = isPalindrome(phrase);
   showPage((p) => {
-    if (m) {
-      const phrase = m[1].trim();
-      const yes = isPal(phrase);
-      p.innerHTML = '<h2>Palindrome?</h2><p style="font-size:24px;text-align:center">' + esc(phrase) + ': ' + (yes ? 'Yes' : 'No') + '</p>';
-    } else {
-      p.innerHTML = '<h2>Palindrome</h2><p>Say “is racecar a palindrome” or “check a man a plan a canal panama”</p>';
-    }
+    p.innerHTML = '<h2>Palindrome</h2><p style="font-size:24px">' + esc(yes ? 'Yes, “' + phrase + '” is a palindrome' : 'No, “' + phrase + '” is not a palindrome') + '</p>';
   });
   return 'palindrome';
 }
 
 export default {
   name: 'palindrome',
-  examples: ['palindrome', 'is racecar a palindrome', 'check a man a plan a canal panama'],
-  nearMisses: ['what is a palindrome', 'palindrome list'],
+  examples: ['is racecar a palindrome', 'palindrome check for a man a plan a canal panama', 'is it a palindrome: kayak'],
+  nearMisses: ['what is a palindrome', 'palindrome meaning'],
   match(lower, text) { return isPalindromeAsk(text); },
   run,
   suite() {
-    const ok = isPalindromeAsk('palindrome') && isPalindromeAsk('is racecar a palindrome') && !isPalindromeAsk('what is a palindrome');
+    const ok = isPalindromeAsk('is racecar a palindrome') && isPalindrome('racecar') && !isPalindromeAsk('what is a palindrome');
     return { ok, got: 'match works' };
   }
 };
