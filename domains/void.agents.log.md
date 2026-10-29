@@ -1104,3 +1104,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T05:47:53Z | claude | grow | Memory orbs connect to Verse's shared field when it exists: live orbs go into free slots, a seal is sealed there too, and with no field.js the card works exactly as before
 2026-10-29T06:04:00Z | claude | grow | Verse's shared field: the memory orbs and Verse Brain share one field; the brain feels other cards' memories and publishes its ideas
 2026-10-29T06:08:47Z | claude | grow | Memory orbs hand their colour to the colour page, and the field bridge is proven to turn on by itself
+2026-10-29T06:19:10Z | claude | fix | the colour page's 'See it as a card on the stage' opens the colour open on the page, not always #ff5733

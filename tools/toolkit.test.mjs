@@ -58,3 +58,17 @@ test('every tool page links to its own card on the stage, and every page has a c
   const row = host.children.find((c) => c.className === 'tk-row'), links = row.children.filter((c) => c.tag === 'a');
   assert.equal(links[0].className, 'tk-card'); assert.equal(links[0].href, '/?q=flip%20a%20coin');
 });
+
+test('the colour page\'s card opens on the colour open there, not the example, and follows it as it changes', async () => {
+  const { mountRelated, cardLinkOf } = await import('../void-live-deploy/lib/toolkit.js');
+  const mk = (tag) => { const on = {}; return { tag, on, children: [], className: '', href: '', textContent: '', style: {}, append(...c) { this.children.push(...c); }, prepend(...c) { this.children.unshift(...c); }, setAttribute() {}, addEventListener(ev, fn) { (on[ev] ||= []).push(fn); }, replaceChildren(...c) { this.children = c; } }; };
+  const cardOf = (card) => { const host = mk('nav'); host.ownerDocument = { createElement: mk, defaultView: {} }; mountRelated(host, '/color/', [], { card }); return host.children.find((c) => c.className === 'tk-row').children.find((c) => c.className === 'tk-card'); };
+  let hex = 'f5be3d'; const x = cardOf(() => 'color #' + hex);
+  assert.equal(x.href, '/?q=color%20%23f5be3d', 'the colour open now');
+  hex = '3d6bf5'; for (const fn of x.on.pointerdown) fn(); assert.equal(x.href, '/?q=color%20%233d6bf5', 'worked out again when pressed');
+  hex = '00ff88'; for (const fn of x.on.click) fn(); assert.equal(x.href, '/?q=color%20%2300ff88', 'and on click (keyboard)');
+  assert.equal(cardOf(() => '').href, cardLinkOf('/color/'), 'nothing open: the example');
+  assert.equal(cardOf(() => { throw new Error('broken'); }).href, cardLinkOf('/color/'), 'a broken page: the example');
+  const src = fs.readFileSync(new URL('../void-live-deploy/color/index.html', import.meta.url), 'utf8');
+  assert.match(src, /card:\s*\(\)\s*=>\s*'color #'\s*\+\s*curHex\(\)/, 'the colour page gives its card the colour open on it');
+});

@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T06:21:20Z",
-   "subject": "Shard 3 server checks: the confirm line, the router and the ?q= link pass again"
+   "at": "2026-10-29T06:19:12Z",
+   "subject": "Colour page: its stage card opens the colour you have open"
   },
   {
    "at": "2026-10-29T06:14:30Z",
