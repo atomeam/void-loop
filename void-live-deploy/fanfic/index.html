@@ -147,6 +147,8 @@
   .empty p { margin: 0 auto 22px; max-width: 34em; color: var(--ink-3); font-size: 15px; }
   .empty .acts { justify-content: center; }
   .quiet { padding: 26px 20px; text-align: center; color: var(--ink-3); font-size: 15px; }
+  /* while the archive is read, the empty room keeps its place unseen, so nothing below jumps when the answer comes (a slow answer moved the page 0.34) */
+  .glass.loading #emptyArchive[hidden] { display: block !important; visibility: hidden; } .glass.loading #indexSay { position: absolute; inset: 61px 0 auto; margin: 0; }
 
   /* site info, like an archive's stats block */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); }
@@ -254,7 +256,7 @@
       <a class="btn" href="/fanfic/?v=glossary" data-go>Writing Glossary</a>
     </div>
 
-    <div class="glass">
+    <div class="glass loading" id="fandomBox">
       <div class="phead"><h2 class="grow" id="fandomsH">Fandoms</h2><a class="btn" href="/fanfic/?new=fandom" data-go>Start a fandom</a></div>
       <table class="list" aria-labelledby="fandomsH" id="fandomList" hidden>
         <thead><tr><th class="ic"><span class="vh">New</span></th><th>Fandom</th><th class="num">Stories</th><th class="num">Posts</th><th>Last post</th></tr></thead>

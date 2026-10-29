@@ -187,9 +187,10 @@ const fail = (node, e) => say(node, e && e.message ? e.message.replace(/^./, (c)
 
 async function viewIndex() {
   show('index', 'Archive Descriptions & Stories');
-  const s = $('indexSay'); s.hidden = false; say(s, 'Opening the archive…');
-  let a; try { a = await archive(); } catch (e) { fail(s, e); return; }
-  s.hidden = true;
+  const s = $('indexSay'), box = $('fandomBox'); s.hidden = false; say(s, 'Opening the archive…');
+  box.classList.add('loading'); drawList('index', [], { emptySay: 'Opening the stories…' }); // the notices and tools are fixed: they show at once
+  let a; try { a = await archive(); } catch (e) { box.classList.remove('loading'); fail(s, e); return; }
+  box.classList.remove('loading'); s.hidden = true;
   const { boards, topics } = a, body = $('fandoms');
   body.replaceChildren(...boards.map((b) => {
     const tr = el('tr'), ic = el('td', 'ic'), main = el('td', 'm'), n = el('td', 'num'), p = el('td', 'num'), when = el('td', 'when');
