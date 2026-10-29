@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: bbc.com (https://www.bbc.com/sport)
-- Verse: /scores/ (sports: bbc.com, tower gate 12 of 15)
+- Verse: /scores/ (sports: bbc.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "BBC Sport - Scores, Fixtures, News - Live Sport"
 - History: [docs/HISTORY/bbc.com.md](../HISTORY/bbc.com.md)
 

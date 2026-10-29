@@ -187,6 +187,22 @@ export const DICT = {
   'The fonts already on your device: Iowan Old Style, Palatino or Georgia for stories. Nothing is downloaded for them.': 'Die Schriften, die schon auf deinem Gerät sind: Iowan Old Style, Palatino oder Georgia für Geschichten. Dafür wird nichts heruntergeladen.',
   'The person check when you post': 'Die Personenprüfung beim Veröffentlichen',
   'Cloudflare Turnstile when the site has it set up, or else a short puzzle that your device solves by itself.': 'Cloudflare Turnstile, wenn die Seite es eingerichtet hat, sonst ein kurzes Rätsel, das dein Gerät selbst löst.',
+  // site news and the news archive
+  'Site news and the news archive': 'Neuigkeiten und das Nachrichtenarchiv', News: 'Neuigkeiten', 'News archive': 'Nachrichtenarchiv', '29 October 2026': '29. Oktober 2026',
+  "What is new in the archive, newest first. Talk about it on Verse's": 'Was im Archiv neu ist, das Neueste zuerst. Sprich darüber auf den',
+  'Terms, disclaimer and credits': 'Bedingungen, Haftungshinweis und Mitwirkende', 'The footer links the terms of use, a disclaimer and the credits.': 'Die Fußzeile verlinkt die Nutzungsbedingungen, einen Haftungshinweis und die Mitwirkenden.',
+  'Open a file in the post form': 'Eine Datei im Formular öffnen', 'Open a .docx, .txt, .html or .md file as chapter 1, and check it in Preview before you post.': 'Öffne eine .docx-, .txt-, .html- oder .md-Datei als Kapitel 1 und prüfe sie in der Vorschau, bevor du veröffentlichst.',
+  'Hits, figures and the first story': 'Aufrufe, Zahlen und die erste Geschichte',
+  'Hits count real reads of each story. Each row shows its chapters, words, reviews and stars. The first writer opens a fandom and posts the story with one press.': 'Aufrufe zählen echte Lesevorgänge jeder Geschichte. Jede Zeile zeigt Kapitel, Wörter, Rezensionen und Sterne. Wer zuerst schreibt, öffnet ein Fandom und veröffentlicht die Geschichte mit einem Klick.',
+  'Challenges, rec lists and series': 'Wettbewerbe, Empfehlungslisten und Reihen',
+  'Writing challenges have a last day, signed entries and winners. Share a rec list by link. A story can be a part of a series, complete or in progress, and get 1 to 5 stars.': 'Schreibwettbewerbe haben einen letzten Tag, signierte Einsendungen und Gewinner. Teile eine Empfehlungsliste per Link. Eine Geschichte kann Teil einer Reihe sein, abgeschlossen oder in Arbeit, und 1 bis 5 Sterne bekommen.',
+  'A feed of new stories': 'Ein Feed neuer Geschichten', 'Follow the newest stories by': 'Folge den neuesten Geschichten per',
+  'Authors, Random story and the help desk': 'Autor:innen, Zufällige Geschichte und der Hilfebereich',
+  "Find a writer's stories, open a random story, and read the answers on the help desk. The index has story details, filters, sort and Titles A to Z.": 'Finde die Geschichten einer schreibenden Person, öffne eine zufällige Geschichte und lies die Antworten im Hilfebereich. Die Übersicht hat Details zu Geschichten, Filter, Sortierung und Titel von A bis Z.',
+  'Find, link and export': 'Finden, verlinken und exportieren',
+  'Find a story, link to it, export the list as CSV, use the keyboard shortcuts, and read the archive in German.': 'Finde eine Geschichte, verlinke sie, exportiere die Liste als CSV, nutze die Tastenkürzel und lies das Archiv auf Deutsch.',
+  'The archive opens': 'Das Archiv öffnet',
+  'The archive opens with a Writing Room, and it works offline. It starts empty. The first story shows when a writer posts it.': 'Das Archiv öffnet mit einem Schreibraum und funktioniert offline. Es beginnt leer. Die erste Geschichte erscheint, wenn jemand sie veröffentlicht.',
 };
 
 // text made from numbers and names: the English shape on the left, the German on the right

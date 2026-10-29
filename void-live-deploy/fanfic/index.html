@@ -192,6 +192,7 @@
   .review .stars { margin: 0 0 6px; color: rgb(var(--key)); letter-spacing: 2px; font-size: 16px; }
 
   /* notices, the glossary and search results */
+  .notice h3.nd { font-size: 1rem; margin: 18px 0 2px; color: var(--ink); } .notice p.nd { margin: 0 0 10px; font-size: .9rem; }
   .notice { max-width: 44em; } .notice li, .notice p { color: var(--ink-2); margin-bottom: 8px; } .notice b { color: var(--ink); font-weight: 600; }
   dl.gl { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin: 0; }
   dl.gl dt, dl.gl dd { padding: 13px 20px; border-bottom: 1px solid var(--line); margin: 0; }
@@ -682,6 +683,24 @@
         <dt>Where can I ask something else?</dt><dd>Ask on Verse's <a href="/boards/">open boards</a> (the forums every story here is posted to), or write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</dd>
       </dl></div>
     </article>
+    <article class="notice" id="n-news" hidden>
+      <h2 class="h1">Site news and the news archive</h2>
+      <div class="glass pbody">
+        <p>What is new in the archive, newest first. Talk about it on Verse's <a href="/boards/">open boards</a>.</p>
+        <h3 class="nd">News archive</h3>
+        <p class="nd"><time datetime="2026-10-29">29 October 2026</time></p>
+        <dl class="qa">
+          <dt>Terms, disclaimer and credits</dt><dd>The footer links the terms of use, a disclaimer and the credits.</dd>
+          <dt>Open a file in the post form</dt><dd>Open a .docx, .txt, .html or .md file as chapter 1, and check it in Preview before you post.</dd>
+          <dt>Hits, figures and the first story</dt><dd>Hits count real reads of each story. Each row shows its chapters, words, reviews and stars. The first writer opens a fandom and posts the story with one press.</dd>
+          <dt>Challenges, rec lists and series</dt><dd>Writing challenges have a last day, signed entries and winners. Share a rec list by link. A story can be a part of a series, complete or in progress, and get 1 to 5 stars.</dd>
+          <dt>A feed of new stories</dt><dd>Follow the newest stories by <a href="/fanfic/rss" type="application/rss+xml">RSS</a>.</dd>
+          <dt>Authors, Random story and the help desk</dt><dd>Find a writer's stories, open a random story, and read the answers on the help desk. The index has story details, filters, sort and Titles A to Z.</dd>
+          <dt>Find, link and export</dt><dd>Find a story, link to it, export the list as CSV, use the keyboard shortcuts, and read the archive in German.</dd>
+          <dt>The archive opens</dt><dd>The archive opens with a Writing Room, and it works offline. It starts empty. The first story shows when a writer posts it.</dd>
+        </dl>
+      </div>
+    </article>
     <article class="notice" id="n-terms" hidden>
       <h2 class="h1">Terms of use</h2>
       <div class="glass pbody"><ul>
@@ -741,7 +760,7 @@
   <p>New stories by feed: <a href="/fanfic/rss" type="application/rss+xml">RSS</a></p>
   <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>/</kbd> find a story · <kbd>n</kbd> post a new story · <kbd>w</kbd> the Writing Room · <kbd>i</kbd> the index · <kbd>r</kbd> the most recent stories · <kbd>?</kbd> these shortcuts</p><p>Shortcuts work anywhere outside a text field.</p></details>
   <p id="brainSay" hidden></p>
-  <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/fanfic/?notice=terms" data-go>Terms</a> · <a href="/fanfic/?notice=disclaimer" data-go>Disclaimer</a> · <a href="/fanfic/?notice=credits" data-go>Credits</a> · <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
+  <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/fanfic/?notice=news" data-go>News</a> · <a href="/fanfic/?notice=terms" data-go>Terms</a> · <a href="/fanfic/?notice=disclaimer" data-go>Disclaimer</a> · <a href="/fanfic/?notice=credits" data-go>Credits</a> · <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
 </footer>
 <script>
 // the module after load, as /boards/ does: nothing fetched holds the load event back (Versus measures speed). Each file of the module is first
