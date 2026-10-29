@@ -319,6 +319,7 @@ for (const [name, file] of [
   ['brain-painter', 'brain-painter.test.mjs'], // F322's look as a program: programs stay valid numbers, evolution beats random search with the same budget, it runs in the brain, its programs are kept
   ['brain-hearing', 'brain-hearing.test.mjs'], // F299's hummed notes: it hears pitch as notes, learns tunes it heard and guesses the next note, runs in the brain, its counts are kept
   ['brain-gardener', 'brain-gardener.test.mjs'], // F215's codec retina gardener: its coder tells still from noise, it keeps more patches at the edge of chaos than the same brain watching, its gardening is kept
+  ['brain-host', 'brain-host.test.mjs'], // Verse uses its brain on every page: it hears every ask, learns what you ask next, ranks the ask box by it (measured against newest-first) and answers "what are you thinking?"
   ['shared-field', 'shared-field.test.mjs'], // the shared field (skills/field.js): its API, and Verse Brain feeling other skills' slots and publishing numbers only
   ['field-fluid-orbs', 'field-fluid-orbs.test.mjs'], // F-321: orientation leans the flow, a peak spawns an orb, seal then load gives the same SHA-256
   ['stage-camera', 'stage-camera.test.mjs'],

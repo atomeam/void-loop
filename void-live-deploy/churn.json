@@ -1,5 +1,5 @@
 {
- "at": "2026-10-29T15:02:10.009Z",
+ "at": "2026-10-29T15:05:34.705Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -10,7 +10,7 @@
   },
   {
    "file": "tools/tower-probes.mjs",
-   "changes": 86
+   "changes": 87
   },
   {
    "file": "void-live-deploy/sw.js",
@@ -53,6 +53,10 @@
    "changes": 25
   },
   {
+   "file": "tools/bench.json",
+   "changes": 24
+  },
+  {
    "file": "tools/openapi-check.mjs",
    "changes": 24
   },
@@ -69,11 +73,15 @@
    "changes": 23
   },
   {
-   "file": "tools/bench.json",
+   "file": "tools/card-cycle.json",
    "changes": 23
   },
   {
    "file": "tools/fanfic.test.mjs",
+   "changes": 23
+  },
+  {
+   "file": "tools/grow-self.state.json",
    "changes": 23
   },
   {
@@ -83,14 +91,6 @@
   {
    "file": "void-live-deploy/lib/card-frame.js",
    "changes": 23
-  },
-  {
-   "file": "tools/card-cycle.json",
-   "changes": 22
-  },
-  {
-   "file": "tools/grow-self.state.json",
-   "changes": 22
   },
   {
    "file": "tools/tower.test.mjs",
