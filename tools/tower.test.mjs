@@ -125,6 +125,24 @@ test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"
   assert.match(h, /@media \(prefers-reduced-motion:reduce\)\{\.tw-vs \*,\.tw-vs::after\{animation:none!important\}/);
 });
 
+test('a row the gate scored against its default bar (the site turned it away) says "default bar" and is not credited to the site (2026-10-29)', async () => {
+  const { vsHtml, matchRows, onBar } = await import('../void-live-deploy/skills/tower.js'); const esc = (s) => String(s);
+  const at = '2026-10-29T05:59:18.672Z', b = (verdict, verse, best, what) => ({ verdict, verse, best, at, evidence: 'Verse (/fanfic/) ' + verse + what + ' vs the bar (sycophanthex.com unreachable) ' + best + what });
+  const ev = { speed: b('worse', 261, 200, ' ms to the load event'), mobile: b('equal-and-better', 0, 0, ' px sideways overflow at 390 px'), offline: b('worse', 0, 1, ' (1: the page shows itself again with the network cut)'),
+    reliability: { verdict: 'incomplete', incomplete: true, verse: 3, best: null, evidence: 'Verse (/fanfic/) 3 of 3 loads answered; sycophanthex.com turned the gate away', at },
+    accuracy: { verdict: 'worse', verse: 1, best: 3, evidence: 'Verse (/fanfic/) 1 of 3 right vs sycophanthex.com 3 of 3 right', at } };
+  const f = { site: 'sycophanthex.com', url: 'https://sycophanthex.com/', aspects: ['speed', 'mobile', 'offline', 'reliability', 'accuracy'], m: 5, n: 1, lost: ['speed', 'offline', 'accuracy'], left: ['reliability'], ev };
+  assert.equal(onBar(ev.speed), true); assert.equal(onBar(ev.accuracy), false); assert.equal(onBar(ev.reliability), false); assert.equal(onBar(undefined), false);
+  const by = Object.fromEntries(matchRows(f).map((r) => [r.a, r]));
+  assert.deepEqual([by.speed.say, by.speed.bar, by.speed.nums], ['below the default bar', true, '261 ms vs 200 ms']); assert.equal(by.mobile.say, 'equal and better (default bar)');
+  assert.equal(by.offline.say, 'below the default bar'); assert.deepEqual([by.accuracy.say, by.accuracy.bar], ['lost', false], 'a row measured on the site keeps its own word'); assert.equal(by.reliability.say, 'not measured yet');
+  const vs = vsHtml(f, esc);
+  assert.equal((vs.match(/<i data-k="s">/g) || []).length, 1, "the site's bar lights only what was measured on the site"); assert.match(vs, /class="tw-bar-n">1 of 5<\/span><\/div><\/div>/);
+  assert.match(vs, /<div class="tw-barnote">3 of 5 aspects are scored against the default bar: sycophanthex\.com turned the gate away, so those numbers are not its own<\/div>/);
+  assert.match(vs, /aria-label="Verse versus sycophanthex\.com: Verse ahead on 1 of 5 aspects, sycophanthex\.com on 1; 3 of 5 aspects are scored against the default bar/);
+  assert.doesNotMatch(vsHtml({ ...f, ev: { accuracy: ev.accuracy } }, esc), /tw-barnote/, 'no note when every row was measured on the site');
+});
+
 test('every surpassed site is on the card, visible and copyable, with a taught-me line from the gate\'s numbers when none was written', async () => {
   const { tower, learnedOf, FLOORS } = await import('../void-live-deploy/lib/tower.js');
   const { towerHtml, verseTake } = await import('../void-live-deploy/skills/tower.js');

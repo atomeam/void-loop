@@ -163,3 +163,9 @@ test('the stage card (skills/fanfic.js) answers the page\'s own stage ask, lists
   assert.deepEqual(lines, [{ href: '/fanfic/?f=ficx', text: 'Adult fandom (18+)' }, { href: '/fanfic/?f=ficdw', text: 'Doctor Who' }]);
   assert.deepEqual(fandomLines(null), [], 'nothing posted: no lines, so the card says there are none yet');
 });
+
+test('the page opens offline: the service worker shells /fanfic/ at install and keeps its app.js like other page code', () => {
+  const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8'); assert.match(sw, /const TOOLS = \[[^\]]*'\/fanfic\/'/);
+  const code = /const pageCode = \(p\) => ([^\n]+);\n/.exec(sw); assert.ok(code, 'pageCode is one line'); const pageCode = new Function('p', 'return ' + code[1]);
+  assert.equal(pageCode('/fanfic/app.js'), true); assert.equal(pageCode('/fanfic/index.html'), false); assert.equal(pageCode('/pdf/merge/app.js'), true, 'the other pages keep theirs');
+});
