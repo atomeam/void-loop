@@ -126,7 +126,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     el.dataset.drafts = String(DRAFTS.inBrain || 0);
   };
 
-  // the organ table: one row per organ, its live share of ticks and its job
+  // the organ table: one row per organ, its share of recent ticks and its job
   const rows = new Map();
   for (const o of B.ORGANS) {
     const tr = document.createElement('tr');
@@ -134,7 +134,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     tr.children[0].textContent = o.name; tr.children[2].textContent = o.job;
     tr.dataset.organ = o.id; tr.dataset.job = o.job; body.appendChild(tr); rows.set(o.id, tr);
   }
-  const table = () => { const b = S().b, ran = new Set(b.granted); for (const [id, tr] of rows) { tr.children[1].textContent = Math.round((b.runs[id] / Math.max(1, b.ticks)) * 100) + '%'; tr.style.opacity = ran.has(id) ? '1' : '0.6'; } };
+  const table = () => { const b = S().b, ran = new Set(b.granted), use = B.useOf(b); for (const [id, tr] of rows) { tr.children[1].textContent = Math.round(use[id] * 100) + '%'; tr.style.opacity = ran.has(id) ? '1' : '0.6'; } };
 
   // the orbs: one DOM element per embodied thing, reused by key; dragging one writes into the workspace
   const orbs = new Map(); let drag = null;

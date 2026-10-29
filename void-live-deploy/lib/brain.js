@@ -28,6 +28,7 @@ import { makeGardener, gardenerOf, TILES as GARDEN_TILES } from './brain-gardene
 
 export const VERSION = 1;
 export const STARVE = 120; // ticks of waiting that add a whole 1 to an organ's want
+export const USE_RATE = 1 / 256; // how fast an organ's recent share of ticks follows what it does now (about 4 seconds at 60 ticks a second)
 export const BUDGET = 7, BUDGET_PHONE = 5; // organ runs a tick (senses always runs and is not counted)
 export const GOALS = ['keep the tissue alive and varied', 'expect what you will do next', 'stay in step without freezing', 'attend where something new is happening'];
 
@@ -46,7 +47,7 @@ export function createBrain(seed = 1, opts = {}) {
     senses: { feat: new Float32Array(8), px: 0.5, py: 0.5, has: false, over: false, speed: 0, trail: [] },
     reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), ear: makeEar(), painter: makePainter(seed), gardener: makeGardener(seed), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
     focus: { x: 0.5, y: 0.5, px: 0.5, py: 0.5, region: 5, held: 0 }, surprise: 0, utility: 0, metrics: measure(ws),
-    runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
+    runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), recent: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
     board: { drive: 'rest', eye: null, creature: null, ear: null, paint: null, garden: null, gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
   seedSwarm(b); seedMembrane(b);
   b.swarmIds = nodesOf(ws, [0, 1, 2]); b.membraneIds = nodesOf(ws, [KIND.membrane]);
@@ -90,6 +91,7 @@ export function stepBrain(b, input = {}) {
   const ids = scheduleTick(b);
   for (const id of ids) { const o = ORGANS.find((x) => x.id === id); o.run(b, input, imagine); b.runs[id]++; b.lastRun[id] = b.ticks; }
   b.granted = ids;
+  const ran = new Set(ids); for (const id of ORGAN_IDS) b.recent[id] += ((ran.has(id) ? 1 : 0) - b.recent[id]) * USE_RATE;
   Mind.stepGoals(b, deposit); Mind.stepValence(b); Mind.stepMonitor(b, ORGANS);
   if ((b.ticks & 7) === 0) { b.metrics = measure(ws); b.utility = valence(b); }
   Mind.stepHistory(b);
@@ -162,7 +164,7 @@ export function workingOf(b) {
   const C = b.concepts, M = b.mind;
   return { v: VERSION, organs: b.ws.organs.slice(), ws: snapshot(b.ws),
     concepts: { words: C.words.slice(), node: C.node.slice(), edges: [...C.edges], ppm: { seen: C.ppm.seen, counts: [...C.ppm.counts].map(([k, m]) => [k, [...m]]) }, lastBits: C.lastBits },
-    focus: { ...b.focus }, surprise: b.surprise, ticks: b.ticks, runs: { ...b.runs }, lastRun: { ...b.lastRun },
+    focus: { ...b.focus }, surprise: b.surprise, ticks: b.ticks, runs: { ...b.runs }, lastRun: { ...b.lastRun }, recent: { ...b.recent },
     mind: { goals: M.goals.map((g) => ({ ...g })), history: M.history.map((h) => ({ ...h })), approval: M.approval, dwell: M.dwell } };
 }
 /** put a kept working memory into a brain. A record of the wrong shape changes nothing (an old record never breaks a new brain).
@@ -184,7 +186,12 @@ export function loadWorking(b, w) {
   const done = ['workspace', 'ideas'];
   const f = w.focus; if (['x', 'y', 'px', 'py', 'held'].every((k) => Number.isFinite(f[k])) && Number.isInteger(f.region) && f.region >= 0 && f.region < REGIONS_X * REGIONS_Y) { b.focus = { x: f.x, y: f.y, px: f.px, py: f.py, region: f.region, held: f.held }; done.push('attention'); }
   b.ticks = Math.max(0, Math.floor(+w.ticks)); b.surprise = Number.isFinite(w.surprise) ? w.surprise : 0;
-  for (const id of ORGAN_IDS) { if (w.runs && Number.isFinite(w.runs[id])) b.runs[id] = w.runs[id]; if (w.lastRun && Number.isFinite(w.lastRun[id])) b.lastRun[id] = w.lastRun[id]; }
+  for (const id of ORGAN_IDS) {
+    if (w.runs && Number.isFinite(w.runs[id])) b.runs[id] = w.runs[id];
+    if (w.lastRun && Number.isFinite(w.lastRun[id])) b.lastRun[id] = w.lastRun[id];
+    // a record from before the recent share starts from the lifetime share, then follows what the organ does now
+    const r = w.recent && w.recent[id]; b.recent[id] = Number.isFinite(r) && r >= 0 && r <= 1 ? r : clamp(b.runs[id] / Math.max(1, b.ticks), 0, 1);
+  }
   const M = w.mind || {};
   if (Array.isArray(M.goals)) { b.mind.goals = M.goals.filter((g) => g && typeof g.word === 'string' && Number.isInteger(g.idx) && cs.words[g.idx] === g.word && Number.isFinite(g.strength)).map((g) => ({ ...g })); if (b.mind.goals.length) done.push('goals'); }
   if (Array.isArray(M.history)) b.mind.history = M.history.filter((h) => h && Number.isFinite(h.t)).map((h) => ({ ...h }));
@@ -219,9 +226,11 @@ export function embodiment(b) {
 }
 
 // ---- 5. the self -------------------------------------------------------------------------------------------------------------------
+/** each organ's share of recent ticks, 0..1 to 2 places: what it does now, not its share of a life that began before it existed. Pure. */
+export function useOf(b) { return Object.fromEntries(ORGAN_IDS.map((id) => [id, Math.round(clamp(b.recent[id], 0, 1) * 100) / 100])); }
 /** what Verse can say about its own brain right now. Pure. */
 export function selfOf(b) {
-  const total = Math.max(1, b.ticks), use = Object.fromEntries(ORGAN_IDS.map((id) => [id, Math.round((b.runs[id] / total) * 100) / 100]));
+  const use = useOf(b);
   const wants = Object.fromEntries(ORGANS.map((o) => [o.id, clamp(o.want(b), 0, 1)]));
   let starved = null, gap = 0; for (const o of ORGANS) { if (o.id === 'senses') continue; const d = wants[o.id] - use[o.id]; if (d > gap) { gap = d; starved = o.id; } }
   const own = ownership(b.ws); let top = null, tv = 0; for (const [k, v] of Object.entries(own)) if (v > tv) { tv = v; top = k; }
