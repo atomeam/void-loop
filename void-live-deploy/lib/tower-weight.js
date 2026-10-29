@@ -19,6 +19,9 @@ export function controlsOf(html = '') {
   const buttons = n(/<button\b/gi) + n(/<input\b[^>]*\btype\s*=\s*["']?(?:submit|button|reset|image)\b/gi) + n(/<(?!button\b|a\b|input\b)[a-z][a-z0-9-]*\b[^>]*\brole\s*=\s*["']?button\b/gi);
   return { links, inputs, buttons, selects, total: links + inputs + buttons + selects };
 }
+/** the controls count a ranking may trust, else null: a home page whose html holds fewer than 2 controls is the shell a script builds the page in,
+ *  a sign-in wall or a stub, not the page (2026-10-29: linkedin.com/jobs read 1 control over 19 scripts and put the jobs lane first). Pure. */
+export const trustedControls = (row) => { const c = row && row.controls; return c === null || c === undefined || !Number.isFinite(+c) || +c < 2 ? null : +c; };
 /** what one home page is made of, from its html text, the sizes of what it loads and its sitemap: { bytes, controls, scripts, styles, nodes, routes }.
  *  `assets` is [{ url, bytes }] for the same-site scripts, stylesheets and images the html names; `sitemapUrls` the count of urls its sitemap lists
  *  (null when it has none: the page's own internal links stand in). `controls` is controlsOf's total. Pure. */
