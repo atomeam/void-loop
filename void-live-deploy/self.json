@@ -550,12 +550,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:21:55Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T16:19:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:12:04Z",
    "subject": "Refresh generated files: guide, MCP skill tools for the newly proven skills"
   },
   {
    "at": "2026-10-29T16:10:54Z",
    "subject": "Promotion record: 44 skills meet the proven standard, 22 stay with their reasons"
+  },
+  {
+   "at": "2026-10-29T16:10:31Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
    "at": "2026-10-29T16:07:45Z",
@@ -566,8 +578,20 @@
    "subject": "Regenerate families and deps after the main merge"
   },
   {
+   "at": "2026-10-29T16:06:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:05:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:04:16Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:04:10Z",
+   "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
   },
   {
    "at": "2026-10-29T16:03:50Z",
@@ -586,8 +610,16 @@
    "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
   },
   {
+   "at": "2026-10-29T15:57:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:57:45Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:57:00Z",
+   "subject": "Money/GPA asks: stop waiting for skills the ask does not need, ask for card-share's graph at once"
   },
   {
    "at": "2026-10-29T15:56:48Z",
@@ -596,38 +628,6 @@
   {
    "at": "2026-10-29T15:55:49Z",
    "subject": "Lab: log caught errors and mark safe lines (more)"
-  },
-  {
-   "at": "2026-10-29T15:55:35Z",
-   "subject": "Lab: log caught errors, guard the saved-memory parse, mark safe innerHTML lines"
-  },
-  {
-   "at": "2026-10-29T15:54:56Z",
-   "subject": "team chat: mark the invite dialog line for Verse's review"
-  },
-  {
-   "at": "2026-10-29T15:54:49Z",
-   "subject": "team chat: mark Verse's review false positives with their reasons; drop 'password' from the invite text"
-  },
-  {
-   "at": "2026-10-29T15:53:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:53:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:52:36Z",
-   "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
-  },
-  {
-   "at": "2026-10-29T15:51:39Z",
-   "subject": "Team chat: Verse's own workspace where agents are members and Verse keeps them busy"
-  },
-  {
-   "at": "2026-10-29T15:48:51Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

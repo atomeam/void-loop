@@ -1,5 +1,5 @@
 {
- "at": "2026-10-29T16:23:34.572Z",
+ "at": "2026-10-29T16:31:23.722Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -121,6 +121,10 @@
    "changes": 18
   },
   {
+   "file": "domains/conductor.json",
+   "changes": 16
+  },
+  {
    "file": "void-live-deploy/color/index.html",
    "changes": 16
   },
@@ -157,15 +161,15 @@
    "changes": 16
   },
   {
-   "file": "domains/conductor.json",
-   "changes": 15
-  },
-  {
    "file": "tools/skill-matchers.test.mjs",
    "changes": 15
   },
   {
    "file": "void-live-deploy/conquered/index.html",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/functions/api/answer.js",
    "changes": 15
   },
   {
@@ -177,15 +181,15 @@
    "changes": 14
   },
   {
-   "file": "void-live-deploy/functions/api/answer.js",
-   "changes": 14
-  },
-  {
    "file": "void-live-deploy/recipes/index.html",
    "changes": 14
   },
   {
    "file": "void-live-deploy/skills/coin.js",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/tower.size.json",
    "changes": 14
   },
   {
@@ -218,10 +222,6 @@
   },
   {
    "file": "void-live-deploy/tools/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/tower.size.json",
    "changes": 13
   },
   {

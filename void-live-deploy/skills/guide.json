@@ -6031,7 +6031,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it.",
+   "flavor": "Keep this page; the stage are built on it. This is the page of stage-image.",
    "glow": 100,
    "n": 327
   },
@@ -6048,7 +6048,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it.",
+   "flavor": "Keep this page; the stage are built on it. This is the page of media-object.",
    "glow": 100,
    "n": 328
   },
