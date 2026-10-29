@@ -6905,5 +6905,10 @@
   {"ask": "encode in morse sos", "want": "skill:morse"},
   {"ask": "mix the list a b c d", "want": "skill:shuffle"},
   {"ask": "random palette", "want": "skill:palette"},
-  {"ask": "give me a fact", "want": "skill:fact"}
+  {"ask": "give me a fact", "want": "skill:fact"},
+  {"ask": "2d6", "want": "skill:random"},
+  {"ask": "3d8", "want": "skill:random"},
+  {"ask": "memory orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "fluid memory orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "what is the ascii of A", "want": "skill:ascii"}
 ]
