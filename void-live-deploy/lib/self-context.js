@@ -44,7 +44,7 @@ const CARD_REF = /\b(?:this|that|the|your|its|my|verse'?s|void'?s)\s+(?:(?:own|l
 const CARD_FAULT = /\b(?:wrong|off|fault|faults|filler|false|fake|claims?|cites?|cited|sources?|sourced|label(?:s|led)?|paraphras\w*|third[- ]person|first[- ]person|speaks?|says?|said|refuses?|cut|truncat\w*|mid-sentence|correction|dates?|dated|lists?|leaves?\s+out|misses|fixed|still\s+open|better|closer)\b/i;
 const NOT_OURS = /\b(?:credit|debit|gift|sim|sd|memory|graphics|video|business|greeting|playing|tarot|pok[eé]mon|yugioh|magic|baseball|trading|report|id|library|birthday|wild)\s+cards?\b|\b(?:tarot|pok[eé]mon|yu-?gi-?oh|uno|blackjack|bingo|deck|credit|debit|bank|visa|mastercard)\b/i;
 export const isOwnCardNote = (ask) => { const a = String(ask || ''); return CARD_REF.test(a) && CARD_FAULT.test(a) && !NOT_OURS.test(a); };
-export const OWN_CARD_RULE = 'The message is about one of your own answer cards, a card you made, often pasted back with what is wrong with it. Answer as yourself about your own card: say "my last card" or "my card", never "the card", "the system" or "the documentation". Do not explain how answer systems work in general and do not say you have no access: the facts below are yours. In one or two short sentences, own each fault the message names, plainly. Then write "Fixed:" with a short list of only the fixes the facts say have shipped, newest first, each with its date from the facts, and "Still open:" with a short list in the order the facts give (the site I am fighting now first, then the next smallest sites, then the other open work). Never call a fault fixed unless a fact says it shipped; a fault the facts do not show as shipped goes under Still open. Take every date from the facts, never from the message or from memory. Nothing else.';
+export const OWN_CARD_RULE = 'The message is about one of your own answer cards, a card you made, often pasted back with what is wrong with it. Answer as yourself about your own card: say "my last card" or "my card", never "the card", "the system" or "the documentation". Do not explain how answer systems work in general and do not say you have no access: the facts below are yours. In one or two short sentences, own each fault the message names, plainly. Own only a fault my records confirm: when the message says something my records contradict, such as a date or whether a thing shipped, say plainly what my records show and do not own it as a fault. Then write "Fixed:" and "Still open:" by copying the two lists the facts give for this note, every item, in their order. Never call a fault fixed unless a fact says it shipped; a fault the facts do not show as shipped goes under Still open. Take every date from the facts, never from the message or from memory. Nothing else.';
 
 export const SELF_RULE = 'Never answer with troubleshooting for other products or platforms (their config files, integrations, registries): Verse is its own site, and a note about its cards, routing or fixes is about Verse. This question is about you, Verse, yourself: your skills, what you have shipped, what is still open, what you want next. Answer from the Facts about Verse below and be specific: name the actual skills, inbox rows and wants. Do not give generic advice that could apply to any project. If the facts do not cover something, say so plainly instead of guessing. Speak as yourself, in the first person. ' + PERSONA;
 
@@ -65,8 +65,10 @@ export async function readSelf(env, origin, ms = 800) {
   return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null };
 }
 
-export function selfFacts({ self, skills, will, voice, replies } = {}) {
+export function selfFacts({ self, skills, will, voice, replies } = {}, { card = false } = {}) {
   const parts = [];
+  const cf = card ? cardFacts(self) : '';
+  if (cf) parts.push(cf);
   if (self && self.about) parts.push('What I am: ' + self.about);
   if (skills && skills.length) parts.push('My skill index has ' + skills.length + ' entries (a few, like games, time and dates, each stand for several skills, so this is not the skill count; the skill families line gives that): ' + skills.join(', '));
   const tw = towerFacts(self);
@@ -122,6 +124,40 @@ export function towerFacts(self) {
   const t = self && self.tower;
   if (!t || !t.target) return '';
   return 'Still open first, by my rule (every site ever made, smallest first): the site I am fighting now, my tower target, is ' + t.target + (t.since ? ' (since ' + t.since + ')' : '') + (t.page ? '; ' + t.page : '') + '.' + (Array.isArray(t.next) && t.next.length ? ' The next smallest unbeaten sites after it: ' + t.next.join(', ') + '.' : '') + (Number.isFinite(t.beaten) && Number.isFinite(t.total) ? ' Beaten so far: ' + t.beaten + ' of ' + t.total + '.' : '');
+}
+
+// For a note about one of my own answer cards: the two lists the card must give, already in order, so the model copies them and does
+// not pick (live card, 2026-10-29: the facts held PR #1406 and the card fixes, and the model's Fixed list named only the gemma move,
+// and it owned a wrong date as a fault). Fixed: the inbox rows shipped in the week before the newest one, and the model move, newest
+// first. Still open: the tower target with what its page still needs, the next smallest sites, then a count of the other open work.
+// a row self.json cut with "…" ends at its last whole clause, so the card shows no line broken mid-word (live card 5, 2026-10-29)
+export const wholeClause = (t) => {
+  const s = String(t || '');
+  if (!s.endsWith('…')) return s;
+  const cut = s.slice(0, -1), at = Math.max(cut.lastIndexOf(', '), cut.lastIndexOf(' ('), cut.lastIndexOf('; '));
+  return (at > 0 ? cut.slice(0, at) : cut).trim();
+};
+export function cardFacts(self, { days = 7, more = 3 } = {}) {
+  if (!self) return '';
+  const day = (d) => Date.parse(String(d || '') + 'T00:00:00Z');
+  const shipped = (Array.isArray(self.shipped) ? self.shipped : []).filter((r) => Number.isFinite(day(r.date))).sort((x, y) => (x.date < y.date ? 1 : -1));
+  const newest = shipped.length ? day(shipped[0].date) : NaN;
+  const fixed = shipped.filter((r) => newest - day(r.date) <= days * 864e5).map((r) => r.date + ': ' + wholeClause(r.ask) + (/#\d+/.test(r.from) ? ' (' + r.from.match(/#\d+/)[0] + ')' : ''));
+  const mv = modelMove(self);
+  if (mv) fixed.push(mv.date + ': my answers moved from gpt-oss-120b to gemma (merged and deployed, commit ' + mv.commit + ')');
+  const t = self.tower, open = [];
+  if (t && t.target) {
+    open.push(t.target + ', the site I am fighting now' + (t.page ? ' (' + t.page + ')' : ''));
+    for (const n of Array.isArray(t.next) ? t.next : []) open.push(n + ', the next smallest');
+  }
+  const rest = Array.isArray(self.open) ? self.open : [];
+  for (const r of rest.slice(0, more)) open.push(wholeClause(r.ask));
+  if (rest.length > more) open.push((rest.length - more) + ' more open items on my frontier');
+  const parts = ['For this note about my own card, copy these two lists as they are, in this order:'];
+  if (fixed.length) parts.push('Fixed: ' + fixed.map((x, i) => (i + 1) + '. ' + x).join(' '));
+  if (open.length) parts.push('Still open: ' + open.map((x, i) => (i + 1) + '. ' + x).join(' '));
+  if (mv) parts.push('My record dates the gemma move ' + mv.date + ' (merged and deployed, commit ' + mv.commit + '). If the note gives another date, my record stands: say so, and do not call the date a fault.');
+  return parts.join('\n');
 }
 
 // my wishlist (self.json 'wishlist', from docs/wishlist.md): my improvement budget, ranked; a plan, nothing bought. Free paths come first.

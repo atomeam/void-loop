@@ -494,7 +494,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
   if (!self && !isPaste(ask) && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
-  const facts = self ? selfFacts(await selfP) : '';
+  const facts = self ? selfFacts(await selfP, { card: isOwnCardNote(ask) }) : '';
   let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
   const lead = !self && !told && src.length && isNameAsk(ask) && sourcesMatch(ask, [src[0]]) ? src[0] : null; // the first source holds the ask itself: its description types the card (lib/subject-kinds.js)

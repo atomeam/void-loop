@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { supports, supportedOnly, hasCorrection, dropUnbackedActs, dropFiller, ASK_MAX, QUERY_MAX, CORRECTION_RULE, ACT_RULE } from '../void-live-deploy/lib/answer-honesty.js';
-import { isOwnCardNote, OWN_CARD_RULE, modelFacts, towerFacts, selfFacts } from '../void-live-deploy/lib/self-context.js';
+import { isOwnCardNote, OWN_CARD_RULE, modelFacts, towerFacts, selfFacts, cardFacts, wholeClause } from '../void-live-deploy/lib/self-context.js';
 import { SOURCE_LINKS, SOURCE_BOX, cardOf, keywordsOf } from '../void-live-deploy/lib/card-frame.js';
 import { towerOf } from './self-context.mjs';
 
@@ -91,6 +91,26 @@ test('fault 5: Still open starts with the tower target, then the next smallest s
   assert.ok(facts.indexOf('my tower target') < facts.indexOf('Growth inbox, still open'), 'the tower comes before the other open work');
 });
 
+// card 5's note: the lists the model copies come from the record, and the record's gemma date stands
+test('card 5: the own-card facts give Fixed and Still open from my records, target first, record date kept', () => {
+  const c = cardFacts(selfJson);
+  const fixed = c.slice(c.indexOf('Fixed:'), c.indexOf('Still open:')), open = c.slice(c.indexOf('Still open:'));
+  assert.ok(c.indexOf('Fixed:') >= 0 && c.indexOf('Fixed:') < c.indexOf('Still open:'), 'Fixed comes before Still open');
+  assert.match(fixed, /#1406/); assert.match(fixed, /#1410/); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
+  assert.doesNotMatch(open, /#1406/, 'a shipped fix is never listed as open');
+  assert.match(open, /^Still open: 1\. sycophanthex\.com, the site I am fighting now \(my page for it is not built yet: it still needs its row in lib\/tool-sites\.js/);
+  const next = selfJson.tower.next.map((s) => open.indexOf(s));
+  assert.ok(next.every((i, k) => i > open.indexOf('sycophanthex.com') && (k === 0 || i > next[k - 1])), 'the next smallest follow the target, in order');
+  assert.match(c, /My record dates the gemma move 2026-10-25[^\n]*my record stands: say so, and do not call the date a fault/);
+  assert.match(OWN_CARD_RULE, /Own only a fault my records confirm/);
+  assert.equal(selfFacts({ self: selfJson }).includes('copy these two lists'), false, 'only a note about my own card gets the lists');
+  assert.ok(selfFacts({ self: selfJson }, { card: true }).startsWith(c), 'and there they come first');
+  assert.doesNotMatch(c, /…/, 'no row is broken mid-word');
+  assert.equal(wholeClause('value-drift tracker: how prices move over time, grouped by kind, a kind flagged to…'), 'value-drift tracker: how prices move over time, grouped by kind');
+  assert.equal(wholeClause('act skill: asks route to the act skill instead of no answer (`POST /api/answer` "my email" is…'), 'act skill: asks route to the act skill instead of no answer');
+  assert.equal(wholeClause('a whole row'), 'a whole row');
+});
+
 // fault 6: an answer claims an action only when the action ran and left a record; the answer engine writes nothing
 test('fault 6: an answer with no write cannot claim one', () => {
   for (const s of ['I have noted this correction for the thread.', "I've logged it.", 'I will pass this on to my builders.', 'I have added it to my notes.', 'I made a note of it.'])
@@ -118,6 +138,7 @@ test('the card 5 note, end to end: self route, whole note, my own facts, no clai
   const all = (seen.messages || []).map((m) => m.content).join('\n');
   assert.match(all, /smallest-first order behind sycophanthex\.com/, 'the note reached the model whole');
   assert.match(all, /my last card/); assert.match(all, /2026-10-25, commit 630e666fb/); assert.match(all, /my tower target/);
+  assert.match(all, /copy these two lists/); assert.match(all, /my record stands/);
   assert.equal(res.self, true);
   assert.deepEqual(res.sources, []);
   assert.doesNotMatch(res.answer, /noted this correction|do not have feelings|I am a program/);

@@ -5464,6 +5464,31 @@ try {
     check('field minds: the swarm mind (F-044, F-030, F-026, F-028) runs 160 agents in two competing tribes whose genomes a mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio; a typed thought becomes a well (F-022), Law runs each draft (F-040, F-041 too) with its own agents, Seal keeps the law and genome but not the thought or the pointer, and "thought gravity" opens on its law',
       out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable' && out[0].gravity && out[0].gravity.law === 'gravity' && out[0].gravity.wells === 3, JSON.stringify(out.map((o) => ({ ...o, kept: o.kept.slice(0, 300) }))));
   }
+  if (want("field minds: memory orbs, agents push a fluid, density peaks become orbs, an orb seals and Recall loads it to the same hash, with or without a Worker")) { // asked by Owner, 2026-10-29: the F321 draft (agent-fluid memory orbs)
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? 'delete window.Worker; delete window.AudioContext;' : () => {}); // the playbook's test: no Worker, no Web Audio
+      await F.ask('memory orbs', 700); await until(async () => !!(await F.p.$('.ff-agent-fluid-memory-orbs canvas')), 8000);
+      const card = '.ff-agent-fluid-memory-orbs', box = await (await F.p.$(card + ' canvas')).boundingBox();
+      const read = () => F.p.$eval(card, (e) => ({ orbs: +(e.dataset.orbs || 0), els: e.querySelectorAll('.fo-orb').length, gen: +(e.dataset.gen || 0), mind: e.dataset.mind, status: e.querySelector('.ff-hud').textContent,
+        hue: e.style.getPropertyValue('--fo-hue'), filter: e.style.filter, page: getComputedStyle(document.body).filter, seal: e.dataset.orbSeal || '', recalled: e.dataset.recalled || '', same: e.dataset.recallSame || '',
+        sealed: e.querySelector('.ff-sealed').textContent, mode: (e.querySelector('select.mf-mode') || {}).value || '' }));
+      await F.p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await F.p.mouse.down(); // pour energy in: press and circle
+      for (let i = 0; i < 30; i++) { const a = i / 5; await F.p.mouse.move(box.x + box.width / 2 + Math.cos(a) * box.width / 5, box.y + box.height / 2 + Math.sin(a) * box.height / 5); }
+      await F.p.mouse.up();
+      await until(async () => (await read()).els > 0, 12000).catch(() => {});
+      const a = await read();
+      await F.p.$eval(card + ' .fo-orb', (b) => b.click()).catch(() => {}); // the orb drifts, so it is tapped where it is
+      await until(async () => !!(await read()).seal, 5000).catch(() => {});
+      await F.p.click(card + ' .fo-recall'); await until(async () => !!(await read()).recalled, 5000).catch(() => {});
+      await until(async () => (await read()).gen > 0, 12000).catch(() => {});
+      out.push({ noWorker, a, b: await read(), errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.orbs > 0 && o.a.els === o.a.orbs && /^[0-9a-f]{12}$/.test(o.b.seal) && o.b.recalled === o.b.seal && o.b.same === 'true' && o.b.gen > 0
+      && /^F-321 · gen \d+ · fitness [\d.]+ · \d+ orbs? · swirl [\d.]+ · entropy [\d.]+ · thinking/.test(o.b.status) && o.b.hue !== '' && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.mode === 'agent-fluid-memory-orbs' && !o.errors.length;
+    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, and the chrome follows the field on the card, never the page',
+      out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
+  }
   if (want("mind field: the seven field minds are one skill with a Mode switcher, Draw mode guesses the next stroke, orbs drag and feed back, every old ask still opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
     const out = {};
     for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 700 }]) {
@@ -5488,8 +5513,8 @@ try {
       await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
       out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
     }
-    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 9 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
-      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 9 && o.sim === 10 && !o.errors.length;
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 10 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 10 && o.sim === 11 && !o.errors.length; // ten modes since F-321's memory orbs (2026-10-29)
     check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
       good(out[1280]) && good(out[390]), JSON.stringify(out));
   }
