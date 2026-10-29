@@ -143,6 +143,23 @@ test('the wheel page\'s card opens on the wheel open there: every entry and weig
   assert.match(src, /card:\s*\(\)\s*=>\s*askOf\(entries\)/, 'the wheel page gives its card the entries open on it');
 });
 
+test('the translate page\'s card translates the text in the box, exactly as typed, between the page\'s own languages; no word in it sends it to another skill', async () => {
+  const C = await import('../void-live-deploy/lib/translate-card.js'), T = (await import('../void-live-deploy/skills/translate.js')).default;
+  const texts = ['hello', 'I hate rainy weather, will it rain tomorrow?', 'tip 20% on 50', 'is it christmas in french', 'line one\nline two', 'Zoë’s café 😀 日本', '"quoted" #tag', 'set a timer for 5 minutes', 'what is cat in german'];
+  const pairs = [['auto', 'es', undefined, 'spanish'], ['en', 'fr', 'english', 'french'], ['de', 'zh', 'german', 'chinese'], ['auto', 'tl', undefined, 'filipino'], ['af', 'ja', undefined, 'japanese']];
+  for (const t of texts) for (const [from, to, fromName, toName] of pairs) {
+    const ask = C.cardAsk(t, from, to); assert.match(ask, /^translate #[A-Za-z0-9_-]+( from [a-z]+)? to [a-z]+$/, t);
+    assert.equal(await firstSkill(ask), 'translate', 'the stage gives it to the translate skill: ' + t);
+    const p = T.translateOf(ask); assert.equal(p.q, t.trim(), 'the card translates this text, as typed'); assert.equal(p.to, toName); assert.equal(p.from, fromName, 'from the page\'s language, or detected when the stage has no name for it');
+  }
+  assert.equal(C.cardAsk('', 'auto', 'es'), '', 'an empty box: the example'); assert.equal(C.cardAsk('  \n ', 'auto', 'es'), '');
+  assert.equal(C.cardAsk('hello', 'auto', 'af'), '', 'a language the stage cannot ask for: the example');
+  assert.equal(C.cardAsk('x'.repeat(1001), 'auto', 'es'), '', 'past 1000 characters: the example, so a long text does not go in a link');
+  assert.equal(T.translateOf('translate #blessed to spanish').q, '#blessed', 'a typed tag is not a card code'); assert.equal(T.translateOf('translate hello to spanish').q, 'hello');
+  const src = fs.readFileSync(new URL('../void-live-deploy/translate/index.html', import.meta.url), 'utf8');
+  assert.match(src, /card:\s*\(\)\s*=>\s*C\.cardAsk\(\$\('in'\)\.value,\s*state\.from,\s*state\.to\)/, 'the page gives its card the text box and its two languages');
+});
+
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
   const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
   for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {
