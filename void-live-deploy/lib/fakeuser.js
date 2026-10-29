@@ -194,6 +194,7 @@ export function askFake(text) {
   if (t.length > 120 || !/\b(?:fake|random|made[- ]up|test|dummy|sample|mock)\b/.test(t) || !/\b(?:users?|people|persons?|names?|identit(?:y|ies)|profiles?|contacts?|customers?|wom[ae]n|men|girls?|boys?)\b/.test(t)) return null;
   if (!/^(?:(?:please\s+)?(?:generate|make|create|give me|get me|show me)\s+)?(?:an?\s+|some\s+|\d{1,4}\s+)?/.test(t)) return null;
   if (/\b(?:pick|picker|choose|draw|wheel|spin|rows?|data|dataset)\b|\bfrom (?:alice|a list)|\bname a\b|\bwho\b/.test(t)) return null; // "pick a random name from ..." is the wheel or a pick
+  if (/\b(?:fantasy|elf|elven|dwarf|dragon|town|city|band|pet|dog|cat|business|company|brand|superhero|hero|villain|potion|planet|product|palette|album|book|team|ship)\s+names?\b/.test(t)) return null; // "random band name" is a made-up thing's name (skills/textgen.js), not a made-up person
   // nats in the order asked: the order picks who is from where, so the page's card gets the page's people
   const n = (/\b(\d{1,4})\b/.exec(t) || [])[1], nats = Object.keys(COUNTRY).map((k) => [k, t.search(COUNTRY[k])]).filter((x) => x[1] >= 0).sort((a, b) => a[1] - b[1]).map((x) => x[0]), gender = /\b(?:female|women|woman|girls?)\b/.test(t) ? 'female' : /\b(?:male|men|man|boys?)\b/.test(t) ? 'male' : '';
   return { n: n ? Math.min(5000, +n) : 10, nats: nats.length ? nats : ['us'], gender, ...(seed ? { seed } : {}) };

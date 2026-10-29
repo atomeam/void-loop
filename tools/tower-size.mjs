@@ -6,7 +6,9 @@
 // first, then the rows with no controls count yet. With a browser (VOID_TEST_BROWSER, as tower-size.yml installs it) the controls are counted on the
 // rendered page, after its scripts ran, so a page a script builds is not read as its empty shell (2026-10-29: serverdiscounter.com read 3 controls
 // from 210 KB of html); rows counted only from raw html are read again. Without a browser the raw count stands, marked counted: 'html'.
-//   node tools/tower-size.mjs [--max 120] [--only host,host]
+// A run stops taking new sites after --minutes (default 35) and gives each site at most 90 s, so it always writes what it read before the job's
+// time limit (2026-10-29: an 850-site run hit the 45-minute limit and wrote nothing).
+//   node tools/tower-size.mjs [--max 120] [--minutes 35] [--only host,host]
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -61,6 +63,8 @@ export async function openBrowser() {
   if (!exe) return null;
   try { const { chromium } = await import('playwright-core'); return await chromium.launch({ executablePath: exe, headless: true }); } catch (_) { return null; }
 }
+/** p, or null once ms have passed: one slow site cannot hold a worker past its share of the run. */
+export const within = (p, ms) => { let t; return Promise.race([p, new Promise((r) => { t = setTimeout(() => r(null), ms); })]).finally(() => clearTimeout(t)); };
 /** read one site: its home page and what it loads, and with a browser its controls after its scripts ran. Returns a row or null (refused, unreachable). */
 export async function readSite(host, { browser = null } = {}) {
   const base = 'https://' + host + '/';
@@ -85,10 +89,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const browser = await openBrowser();
   const list = only ? sites.filter((s) => only.split(',').includes(s.host)) : planSizes({ sites, file, max: Number(opt('--max', 120)), rendered: !!browser });
   const out = { about: 'How big each Versus site really is, measured by tools/tower-size.mjs: the interactive elements on its home page (controls: links, inputs, buttons, selects; counted on the rendered page when counted is rendered, with htmlControls the raw-html count, else on the raw html), transfer bytes of its home page plus its own scripts and styles, script and element counts, routes (sitemap urls, else internal links). The queue ranks the fewest controls first, the fewer bytes on a tie. weight = bytes + 2000 per script + 10 per element + 500 per route (lib/tower-weight.js). Keyed by host.', sites: { ...(file.sites || {}) } };
-  let n = 0; const queue = [...list];
+  let n = 0, late = 0; const queue = [...list], stop = Date.now() + Math.max(1, Number(opt('--minutes', 35)) || 35) * 6e4;
+  // a known site that timed out or would not render keeps its row, marked unrendered, and waits its 30 days
   // one browser, at most 3 pages in it at once (AGENTS.md: never 2 heavy browser jobs at once; the workflow's concurrency group keeps this the only one)
-  await Promise.all(Array.from({ length: browser ? 3 : 6 }, async () => { for (let s; (s = queue.shift());) { const r = await readSite(s.host, { browser }); if (r) { out.sites[s.host] = r; n++; } else if (!out.sites[s.host]) out.sites[s.host] = { refused: true, at: new Date().toISOString().slice(0, 10) }; } }));
+  await Promise.all(Array.from({ length: browser ? 3 : 6 }, async () => { for (let s; (s = queue.shift());) { if (Date.now() > stop) { late++; continue; } const r = await within(readSite(s.host, { browser }), 90000); if (r) { out.sites[s.host] = r; n++; } else if (!out.sites[s.host]) out.sites[s.host] = { refused: true, at: new Date().toISOString().slice(0, 10) }; else if (browser && !out.sites[s.host].refused) out.sites[s.host] = { ...out.sites[s.host], counted: 'unrendered' }; } }));
   if (browser) await browser.close().catch(() => {});
   fs.writeFileSync(OUT, JSON.stringify(Object.fromEntries(Object.entries(out).map(([k, v]) => [k, k === 'sites' ? Object.fromEntries(Object.entries(v).sort()) : v])), null, 1) + '\n');
-  console.log('measured ' + n + ' of ' + list.length + ' sites' + (browser ? ', controls counted on the rendered page' : ', controls counted from raw html (no browser)'));
+  console.log('measured ' + n + ' of ' + list.length + ' sites' + (late ? ', ' + late + ' left for the next run (time budget)' : '') + (browser ? ', controls counted on the rendered page' : ', controls counted from raw html (no browser)'));
 }
