@@ -22,7 +22,12 @@ const readJson = (f, d) => { try { return JSON.parse(fs.readFileSync(f, 'utf8'))
 export async function floorsBySite() {
   const { tower } = await import(pathToFileURL(path.join(DEP, 'lib/tower.js')).href);
   const inv = readJson(path.join(DEP, 'lap.items.json'), {}), ev = readJson(path.join(DEP, 'tower.evidence.json'), {});
-  const floors = tower(inv.onlySite || [], ev.floors || {}, null).floors;
+  // the tower's own floors, and the site Verse is on now (tower.target.json) when it comes from the frontier: its inventory is the one the
+  // Versus card is judged by, so it is built here like any floor's (2026-10-29: sycophanthex.com's page was written by hand and went stale)
+  const base = tower(inv.onlySite || [], ev.floors || {}, null).floors, ids = new Set(base.map((f) => f.id));
+  const target = readJson(path.join(DEP, 'tower.target.json'), {}).id || null;
+  const extra = target && !ids.has(target) ? tower(inv.onlySite || [], ev.floors || {}, readJson(path.join(DEP, 'tower.frontier.json'), null), null, null, null, target).floors.filter((f) => f.id === target) : [];
+  const floors = base.concat(extra);
   const by = new Map();
   for (const f of floors) { const s = slugOf(f.site); if (!by.has(s)) by.set(s, { slug: s, site: f.site, url: f.url, floors: [] }); by.get(s).floors.push(f); }
   return [...by.values()];
