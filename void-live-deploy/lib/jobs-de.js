@@ -28,7 +28,7 @@ export const DE = Object.freeze({
   'Visa sponsorship mentioned': 'Visa-Unterstützung erwähnt', 'What Verse does not do': 'Was Verse nicht macht', 'Work from': 'Arbeiten von',
   'address pattern confirmed': 'Adressmuster bestätigt', 'address pattern not confirmed: it may open the front page': 'Adressmuster nicht bestätigt: es öffnet vielleicht die Startseite', 'address pattern partly confirmed': 'Adressmuster teilweise bestätigt',
   'its terms': 'ihre Bedingungen', job: 'Job', jobs: 'Jobs', 'new jobs in your saved searches': 'neue Jobs in Ihren gespeicherten Suchen', 'new since your last visit': 'neu seit Ihrem letzten Besuch', new: 'neu', 'not live': 'nicht live',
-  'python, design, sales…': 'python, design, vertrieb…', 'the live feeds are being asked': 'die Live-Feeds werden gefragt', 'with the snapshot of': 'mit dem Stand vom', updated: 'aktualisiert',
+  'python, design, sales…': 'python, design, vertrieb…', 'the live feeds are being asked': 'die Live-Feeds werden gefragt', 'with the snapshot of': 'mit dem Stand vom', updated: 'aktualisiert', 'More filters': 'Weitere Filter',
   'Search jobs': 'Jobs suchen', 'Where you may work from': 'Von wo aus Sie arbeiten dürfen', Categories: 'Kategorien', Tags: 'Schlagwörter', 'Companies hiring': 'Firmen, die einstellen', 'Saved jobs': 'Gemerkte Jobs', Alerts: 'Alarme', Applications: 'Bewerbungen', Feed: 'Feed', 'Where the jobs come from': 'Woher die Jobs kommen',
   'remote jobs, shown 24 hours after they are posted (its rule)': 'Remote-Jobs, 24 Stunden nach Veröffentlichung gezeigt (ihre Regel)', 'remote jobs': 'Remote-Jobs',
   Newest: 'Neueste zuerst', 'Highest salary': 'Höchstes Gehalt', 'Company A to Z': 'Firma A bis Z', 'Title A to Z': 'Titel A bis Z',
