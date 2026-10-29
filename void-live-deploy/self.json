@@ -537,13 +537,17 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-26T02:42:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T15:57:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T15:56:48Z",
    "subject": "Regenerate the generated files after the merge"
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T15:33:45Z",
    "subject": "MultiVerse, with a capital V (owner's spelling); the stage's source void.html carries the rename and both copies match it"
-  },
-  {
-   "at": "2026-10-29T15:33:37Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
