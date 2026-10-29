@@ -17,10 +17,15 @@
 //                                            (tower.evidence.2.json, or --out <file>; never committed); --list prints the slice and loads nothing
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, aspectsOf, tower , hostOf, noShotOf } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, LANE_PAGES, aspectsOf, tower , hostOf, noShotOf, noRivalOf, noRivalUrl } from '../void-live-deploy/lib/tower.js';
+import { wallOf } from '../void-live-deploy/lib/tower-controls.js';
 import { probeFor as probeOf, withFeatureFacts, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
 // a floor's probe as the gate uses it: with the features its features file says Verse has added to completeness (domains/features/, tools/feature-scan.mjs)
 const probeFor = (id) => withFeatureFacts(probeOf(id), id);
+// the floors the gate measures: FLOORS, and each frontier site that LANE_PAGES gives a page by its bare host (sycophanthex.com: /fanfic/, 2026-10-29),
+// as the tower builds that floor. Without it the tower target linked its page and its 12 aspects were never measured ("no floor sycophanthex.com").
+export const GATE_FLOORS = FLOORS.concat(Object.entries(LANE_PAGES).filter(([k]) => hostOf(k) === k && !FLOORS.some((f) => (hostOf(f.url) || hostOf(f.site)) === k))
+  .map(([h, page]) => ({ id: h, site: h, url: 'https://' + h + '/', label: h, page, extra: [] })));
 import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
@@ -132,6 +137,7 @@ export async function motionOf(p, ms = 1500) {
  *  pages can carry explicit or illegal pictures, in a public repository); Verse's own page is not published either way. Pure. */
 export const keepShot = (tag, noShot) => /-site$/.test(tag) && !noShot;
 export async function measure(browser, url, tag, ask, probe, { noShot = false } = {}) {
+  if (noRivalUrl(url)) throw new Error('the gate never opens ' + hostOf(url) + ': its robots.txt asks robots to stay away');
   const times = [], ok = []; const out = { mobile: null, a11y: null, skill: null, offline: null, sharing: null, big: null, text: '' };
   const ctx = await browser.newContext({ viewport: { width: 390, height: 800 }, userAgent: UA, locale: 'en-US', extraHTTPHeaders: { 'accept-language': 'en-US,en;q=0.9' } });
   await ctx.addInitScript(CLS_INIT);
@@ -190,7 +196,7 @@ export async function measure(browser, url, tag, ask, probe, { noShot = false } 
  *  or null when it could not be read. Exported for tools/tower-gate.test.mjs, which runs it against local pages. */
 /** the picture the gate puts into a page that answers once a photo is chosen (a one-pixel PNG: the size a page makes of it is what is read) */
 export const PIXEL = { name: 'photo.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64') };
-export async function answer(b, url, type, spin = false, inBox = false, timed = 0, presses = 0, file = null) { const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+export async function answer(b, url, type, spin = false, inBox = false, timed = 0, presses = 0, file = null) { if (noRivalUrl(url)) throw new Error('the gate never opens ' + hostOf(url) + ': its robots.txt asks robots to stay away'); const ctx = await b.newContext({ userAgent: UA, locale: 'en-US' }); try { const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 }); await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
       if (/[?&]q=/.test(url)) await p.waitForTimeout(3000); // Verse answering an ask in the address: the card lands a moment after load
       const read = () => p.evaluate(() => ({ text: document.body ? document.body.innerText : '', boxes: [...document.querySelectorAll('input:not([type=hidden]), textarea, output')].map((e) => e.value || e.textContent || '').join('\n') }));
       if (file) { // a page that answers once a picture is put in (the photo resizer): the gate chooses a small picture of its own, as a person
@@ -320,6 +326,7 @@ export async function answer(b, url, type, spin = false, inBox = false, timed = 
  *  Returns a score ({ n, of: 1, has, missing }) whose missing label says what the page showed instead. Exported for tools/tower-gate.test.mjs. */
 export const MADE_SRC = /^(?:data:image\/|blob:|https:\/\/[^/]*r2\.(?:dev|cloudflarestorage\.com)\/|\/(?:api|r2)\/)/;
 export async function pictureOf(b, url, within = 60000, sel = 'img') { // sel: where the made picture must appear (a page's results, never its gallery)
+  if (noRivalUrl(url)) throw new Error('the gate never opens ' + hostOf(url) + ': its robots.txt asks robots to stay away');
   const ctx = await b.newContext({ viewport: { width: 390, height: 800 }, userAgent: UA, locale: 'en-US' });
   try {
     const p = await ctx.newPage(); await p.goto(url, { waitUntil: 'load', timeout: 30000 });
@@ -334,9 +341,9 @@ export function measurable(f) {
   const p = probeFor(f.id), want = aspectsOf(f);
   return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.askParts && p.askParts[a]) || (p && p.pageParts && p.pageParts[a]) || (p && p.motion && p.motion[a]));
 }
-/** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in FLOORS (a frontier site has no Verse page yet), at most max. Pure. */
-export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
-  const t = tower([], evidence, frontier), ids = new Set(FLOORS.map((f) => f.id)), out = [];
+/** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in GATE_FLOORS (a frontier site with no page in LANE_PAGES has no Verse page yet), at most max. Pure. */
+export function pick(evidence = {}, frontier = null, changed = [], max = 3, rank = null, size = null, target = null) {
+  const t = tower([], evidence, frontier, null, rank, size, target), ids = new Set(GATE_FLOORS.map((f) => f.id)), out = [];
   const add = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < max) out.push(id); };
   add((t.floors.find((f) => f.state === 'current' && ids.has(f.id)) || t.floors.find((f) => !f.beaten && ids.has(f.id)) || {}).id);
   // a floor whose own page the deploy changed: /color/ for void-live-deploy/color/index.html; its probe's page counts too
@@ -345,11 +352,11 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
   // hexcolor16.com, on the same page, with a reading from before it), the unbeaten first, at most 10; and when the service worker changed, every
   // unbeaten floor whose last offline reading is not a win
   const OKV = new Set(['better', 'equal-and-better']), room = Math.max(max, 10), addMore = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < room) out.push(id); };
-  const onPage = FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); });
+  const onPage = GATE_FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); });
   const beatenOf = (id) => { const g = t.floors.find((x) => x.id === id); return !!(g && g.beaten); };
   for (const f of onPage.filter((f) => !beatenOf(f.id)).concat(onPage.filter((f) => beatenOf(f.id)))) addMore(f.id);
   if (changed.includes('void-live-deploy/sw.js')) for (const f of t.floors) if (ids.has(f.id) && !f.beaten && !OKV.has(((evidence[f.id] || {}).offline || {}).verdict)) addMore(f.id);
-  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
+  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(GATE_FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
   return out;
 }
 
@@ -378,8 +385,15 @@ async function measureFloor(f, data) {
   const slug = f.id.replace(/\W+/g, '-'), at = new Date().toISOString(), probe = probeFor(f.id), want = new Set(aspectsOf(f));
   // a floor with Verse's own page for the job (/is-it/christmas, /flip/) is measured there, as a person would open it; others through the ask
   const versePage = probe && probe.verse ? probe.verse : f.page, siteUrl = siteOf(f, probe);
-  const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = await measure(b, siteUrl, slug + '-site', null, probe, { noShot: noShotOf(f) });
+  // a site whose robots.txt asks robots to stay away (noRival, owner 2026-10-28) is never opened: no loads, no icon, no wider-use look
+  const noRival = noRivalOf(f);
+  const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = noRival ? { reliability: 0, notOpened: true } : await measure(b, siteUrl, slug + '-site', null, probe, { noShot: noShotOf(f) });
   // the site's icon, kept beside its screenshot and named in the evidence file's icons map (a sweep slice keeps the file but not the map entry: the next fight run restores it)
+  // a rival page that is a bot wall or a sign-in wall (owner's standards, 2026-10-28: Amazon read as "0 of 23" behind one) was never read: the
+  // gate treats it as unreachable, so nothing is won against what was behind it
+  const walled = !!(s && s.reliability && wallOf(s.text));
+  if (walled) s.reliability = 0;
+  const siteRead = !!(s && s.reliability);
   if (s && s.icon) { try { const host = hostOf(f.url) || hostOf(f.site), dir = path.join(root, 'void-live-deploy', 'tower.icons'), name = host + '.' + s.icon.ext; fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, name), s.icon.bytes); data.icons = { ...(data.icons || {}), [host]: 'tower.icons/' + name }; } catch (_) {} }
   // the same question put to both at addresses made for it (tower-probes.mjs `ask`: random.org answers on another page than its form): accuracy is
   // scored on those answers instead of the pages above; an answer written into a box (a converter's output field) counts as shown
@@ -416,15 +430,19 @@ async function measureFloor(f, data) {
   // fast as a page needs to be, so it passes whatever the site's time; above the bar the two are compared as before
   const put = (aspect, a, c, unit, extra = {}) => { if (!want.has(aspect)) return; const m = MEASURES[aspect] || PART, ideal = m.ideal !== undefined ? m.ideal : extra.of;
     const v = aspect === 'speed' && Number.isFinite(a) && a <= SPEED_BAR ? 'equal-and-better' : verdict(a, c, m.hi, ideal), note = aspect === 'speed' && v === 'equal-and-better' && a > c ? ' (under the ' + SPEED_BAR + ' ms bar: as fast as a page needs to be; the site\'s time is context)' : '';
-    ev[aspect] = { ...record(ev[aspect], v, a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || '') + note, at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }) }; };
+    ev[aspect] = { ...record(ev[aspect], v, a, c, where + ' ' + a + unit + ' vs ' + f.site + ' ' + c + unit + (extra.note || '') + note, at), ...(extra.of ? { of: extra.of } : {}), ...(MEASURES[aspect] ? {} : { part: true }), ...(siteRead ? { siteRead: true } : {}) };
+    if (!siteRead && ev[aspect]) delete ev[aspect].siteRead; };
   // a site that answered none of the loads turned the gate away. That no longer holds a floor (owner, 2026-10-25: "we shouldnt be stopped by our
   // own standards"; "no need to test the competition"): Verse is judged against the best score there is for each aspect (MEASURES ideal) and a
   // 200 ms bar for speed (the owner's own bar, 2026-10-25), the evidence saying so; the site's reliability row keeps what the gate saw
   if (!s.reliability) {
     // a site that answers none of its loads is behind on reliability, by the numbers (3 of 3 against 0 of 3): the row is a verdict, not a blank
-    ev.reliability = { ...record(ev.reliability, verdict(v.reliability, 0, true, 3), v.reliability, 0, where + ' ' + v.reliability + ' of 3 loads answered vs ' + f.site + ' 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is', at) };
+    // a site never opened (noRival) is not called down: Verse's own loads are held to all 3 of 3, the bar, and the evidence says the site was not opened and why
+    if (noRival) ev.reliability = { ...record(ev.reliability, verdict(v.reliability, 3, true, 3), v.reliability, 3, where + ' ' + v.reliability + ' of 3 loads answered vs the bar 3 of 3 (' + f.site + ' not opened: ' + noRival + '; judged on internal metrics)', at) };
+    // the standards (owner, 2026-10-28): a blocked check is INCOMPLETE, never a pass, so the site's reliability is not "won" against a wall
+    else ev.reliability = { verdict: 'incomplete', incomplete: true, verse: v.reliability, best: null, evidence: where + ' ' + v.reliability + ' of 3 loads answered; ' + f.site + (walled ? ' showed a bot or sign-in wall' : ' turned the gate away or did not answer') + ', so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is', at };
     const bar = { speed: 200, mobile: 0, a11y: 0, offline: 1, sharing: 4, german: 1 }, site = f.site;
-    f = { ...f, site: 'the bar (' + site + ' unreachable)' };
+    f = { ...f, site: 'the bar (' + site + (noRival ? ' not opened: ' + noRival : ' unreachable') + ')' };
     put('speed', v.speed, bar.speed, ' ms to the load event (median of 3, phone width)');
     put('mobile', v.mobile, bar.mobile, ' px sideways overflow at 390 px');
     put('accessibility', v.a11y, bar.a11y, ' unnamed controls or images');
@@ -470,7 +488,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // --which [changed file ...]: print the floors a post-deploy run measures, one per line (.github/workflows/tower-gate.yml)
   if (argv[0] === '--which') {
     const data = read(), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
-    for (const id of pick(data.floors || {}, fr, argv.slice(1))) console.log(id);
+    for (const id of pick(data.floors || {}, fr, argv.slice(1), 3, (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.rank.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.size.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.target.json'), 'utf8')).id || null; } catch (_) { return null; } })())) console.log(id);
     process.exit(0);
   }
   // --merge <slice file ...>: the sweep's slices folded into the evidence file, a newer row over an older one only (tools/tower-merge.mjs); no site loaded
@@ -486,9 +504,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   for (let i = 0; i < argv.length; i++) { const a = argv[i]; if (['--shard', '--floors', '--out'].includes(a)) opt[a.slice(2)] = argv[++i] || ''; else if (['--rescore', '--list'].includes(a)) opt[a.slice(2)] = true; else words.push(a); }
   const sh = opt.shard !== undefined ? parseShard(opt.shard) : null;
   if (opt.shard !== undefined && !(sh && sh.i >= 1 && sh.i <= sh.n)) { console.error('--shard wants i/N with 1 <= i <= N, e.g. --shard 2/6; got ' + opt.shard); process.exit(2); }
-  const ids = sh ? shard(FLOORS.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
-  const floors = ids.map((id) => FLOORS.find((x) => x.id === id) || id), unknown = floors.filter((x) => typeof x === 'string');
-  if (unknown.length || !floors.length) { console.error('no floor ' + (unknown.join(', ') || '(none given)') + '; floors: ' + FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
+  const ids = sh ? shard(GATE_FLOORS.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
+  const floors = ids.map((id) => GATE_FLOORS.find((x) => x.id === id) || id), unknown = floors.filter((x) => typeof x === 'string');
+  if (unknown.length || !floors.length) { console.error('no floor ' + (unknown.join(', ') || '(none given)') + '; floors: ' + GATE_FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
   if (opt.list) { for (const f of floors) console.log(f.id); process.exit(0); } // the selection alone, nothing loaded
   if (opt.rescore) { // --rescore: today's rule on the stored numbers, no site loaded (a rule change, not a new measurement)
     const data = read(); for (const f of floors) { data.floors[f.id] = rescore(data.floors[f.id]); for (const [k, r] of Object.entries(data.floors[f.id])) console.log((floors.length > 1 ? f.id + ': ' : '') + k.padEnd(26) + r.verdict); }

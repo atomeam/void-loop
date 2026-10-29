@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --echo-hue: 200;
+  --echo-scale: 1;
+  --residual-blur: 0px;
+  --confidence: 0.5;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #0a0a12;
+  color: #eee;
+  font-family: system-ui, sans-serif;
+  filter: hue-rotate(calc(var(--echo-hue) * 1deg)) blur(var(--residual-blur));
+  transform: scale(var(--echo-scale));
+  transform-origin: center;
+  transition: filter 0.3s, transform 0.3s;
+}
+canvas { display: block; width: 100vw; height: 100vh; }
+#hud {
+  position: fixed;
+  top: 12px; left: 12px;
+  background: rgba(0,0,0,0.6);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+}
+#seal {
+  position: fixed;
+  bottom: 12px; right: 12px;
+  padding: 8px 16px;
+  background: #2a2a4a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.card {
+  position: absolute;
+  background: rgba(20,20,40,0.7);
+  border: 1px solid #446;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  transition: transform 0.2s, opacity 0.2s;
+}
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local Trajectory Embedding Echo Field · Verse lab</title>
+<meta name="description" content="A spatial canvas where short user trajectories (pointer paths + device orientation deltas) are compressed by a local tiny encoder into fixed embedding vectors.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local Trajectory Embedding Echo Field · Verse lab">
+<meta property="og:description" content="A spatial canvas where short user trajectories (pointer paths + device orientation deltas) are compressed by a local tiny encoder into fixed embedding vectors.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f054-local-trajectory-embedding-echo/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f054-local-trajectory-embedding-echo/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">Draw or tilt to record trajectories. Echoes appear from memory. Residual morphs the field.</div>
+<button id="seal">Seal Memory</button>
+<div id="card0" class="card" style="top:40%;left:20%">echo 0</div>
+<div id="card1" class="card" style="top:60%;left:70%">echo 1</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Local Trajectory Embedding Echo Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

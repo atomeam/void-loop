@@ -1,15 +1,15 @@
 {
-  "status": "closed",
-  "run": "40112643814",
-  "at": "2026-10-24T16:41:47Z",
-  "what": "Verse hardened itself: 1 benchmark ask(s) for baseconv.  Why these: fact (only 1 benchmark ask, evidence tier: checked); tab (no benchmark ask, evidence tier: tested, 30 failed runs name it); coin (no benchmark ask, evidence tier: checked); eightball (no benchmark ask, evidence tier: tested); baseconv (only 1 benchmark ask, evidence tier: checked); echo-disagrees (only 2 benchmark asks, evidence tier: checked). New phrases: “1010 binary to decimal” now opens baseconv. Did not route: fun fact; random fact; put in the page; draft for me.",
-  "try": "1010 binary to decimal",
-  "closedAt": "2026-10-24T19:11:29Z",
-  "proof": "answered live on a-to-mind.com",
+  "status": "open",
+  "run": "40893446461",
+  "at": "2026-10-29T14:39:29Z",
+  "what": "Verse hardened itself: 3 benchmark ask(s) for leet, lorem.  Why these: tab (no benchmark ask, evidence tier: tested, 21 failed runs name it); agent-fluid-memory-orbs (no benchmark ask, evidence tier: tested); ascii (no benchmark ask, evidence tier: tested); eightball (no benchmark ask, evidence tier: tested); leet (no benchmark ask, evidence tier: tested); lorem (no benchmark ask, evidence tier: tested). New phrases: “1337 speak for world” now opens leet; “lorem” now opens lorem; “give me some lorem” now opens lorem. Did not route: put in the page; draft for me; memory orbs; agent fluid memory orbs.",
+  "try": "1337 speak for world",
+  "closedAt": null,
+  "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-24T16:31:42Z",
-    "try": "random user generator",
-    "closedAt": "2026-10-24T16:41:26Z"
+    "at": "2026-10-29T12:35:49Z",
+    "try": "calculator for molar mass",
+    "closedAt": "2026-10-29T14:38:50Z"
   }
 }

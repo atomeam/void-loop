@@ -23,6 +23,7 @@
 //   node tools/tower-self.mjs judge ids.txt [--queue]                         read the gate's rows, apply mechanical fixes, queue the rest, report
 //   node tools/tower-self.mjs guard                                           exit 1 when a frontier site at the front of the queue has no page
 //   node tools/tower-self.mjs status                                          what the loop has done and how many pages a day
+import { badgeOf, buildable } from '../void-live-deploy/lib/gate-badge.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
@@ -30,6 +31,7 @@ import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 import { probeFor, keywordsOf } from './tower-probes.mjs';
 import { secretsIn } from './secret-scan.mjs';
 import { pageOf as seoPageOf } from '../void-live-deploy/lib/seo.js';
+import { rankingOf, offLimits, versusAllowed } from './versus-ranking.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), SITE_DIR = path.join(root, 'void-live-deploy');
 export const STATE = path.join(root, 'domains', 'tower-self.json'), ROWS = path.join(SITE_DIR, 'lib', 'self-sites.js'), SW = path.join(SITE_DIR, 'sw.js');
@@ -53,10 +55,14 @@ export const textOf = (html) => String(html || '').replace(/<script[\s\S]*?<\/sc
 // tools/flights.test.mjs: seven travel sites; tools/generators.test.mjs: ten generator sites): a site of theirs waits as a queued job until those
 // tests read lib/self-sites.js too
 export const PINNED = Object.freeze(['pdf', 'kanban', 'travel', 'random generators']);
+// floors whose page does only part of their site's job, so a new site must never be beaten by copying that page under its name: the codebase floor
+// stands on /g/ (a gist with a task list and a timer), and a code host's job (repositories, tickets, accounts) is wider; tildegit, a second code
+// host on /g/, waits as a deferred floor for that reason (lib/tower.js). A site like them is added by hand as a deferred floor, never by a data row
+export const PARTIAL = Object.freeze(['codebase']);
 export function familiesOf(floors = FLOORS, probe = probeFor, read = baseHtmlOf) {
   const out = [];
   for (const f of floors) {
-    if (f.lane || !f.page || noShotOf(f) || PINNED.includes(f.id)) continue;
+    if (f.lane || !f.page || noShotOf(f) || PINNED.includes(f.id) || PARTIAL.includes(f.id) || f.defer) continue;
     const base = pathOnly(f.page); if (!/^\/[a-z0-9-]+\/$/.test(base)) continue;
     const p = probe(f.id); if (!p || !p.truth || !(p.truth.length) || !(p.facts || []).length) continue;
     if (pathOnly(p.verse) !== base || (p.ask && pathOnly(p.ask.verse) !== base)) continue;
@@ -76,9 +82,10 @@ export const sharesWords = (fam, text) => { const t = norm(text); return familyW
 /** the next sites to read: the frontier easiest first, never a site that is already a floor, a site blocked by its own wall, or one tried lately
  *  (a site no floor covered is tried again after RETRY_DAYS). Pure. */
 export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date.now(), floors = FLOORS } = {}) {
-  const tried = (state && state.sites) || {}, out = [];
+  const tried = (state && state.sites) || {}, out = [], ranking = rankingOf({ frontier, floors, state });
   for (const x of frontierOf(frontier, floors)) {
-    if (x.blocked) continue; const t = tried[x.host];
+    if (x.blocked || offLimits(x.host, ranking)) continue; // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
+    const t = tried[x.host];
     if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
     out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness }); if (out.length >= max) break;
   }
@@ -290,7 +297,10 @@ async function judge(idsFile, { queue = false, decisionFile = null } = {}) {
   }
   const d = decisionFile ? readJson(decisionFile, {}) : {};
   jobs.push(...((d && d.jobs) || []));
-  const queued = queue && jobs.length ? await queueJobs(jobs) : 0;
+  // a versus job only for a site of the smallest-first ranking that is not a gambling or crypto site (#1470): the scan's own words of this run count
+  const ranking = rankingOf({ frontier: readJson(path.join(SITE_DIR, 'tower.frontier.json'), null), floors: FLOORS, state: { sites: { ...st.sites, ...((d && d.state) || {}) } } });
+  const allowed = jobs.filter((j) => { const v = versusAllowed(j.target, ranking); if (!v.ok) console.log('not queued ' + j.target + ': ' + v.why); return v.ok; });
+  const queued = queue && allowed.length ? await queueJobs(allowed) : 0;
   // the mechanical fixes: the offline list and the pages' own tags (writePages rewrites them from the rows; swWith adds a missing page)
   let swNext = sw; for (const r of SELF_SITES) swNext = swWith(swNext, r.path); if (swNext !== sw) fs.writeFileSync(SW, swNext); const rewrote = writePages();
   const next = pickCandidates(readJson(path.join(SITE_DIR, 'tower.frontier.json'), null), st, { max: 1 })[0];

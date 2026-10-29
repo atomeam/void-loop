@@ -74,16 +74,18 @@ jobs:
           exit 1
 
   # Three shards since 2026-10-16: the whole suite ran to 1,652 s of its 1,680 s budget on one runner, so every new section risked
-  # going red on the clock alone. Each job runs the sections whose heading hashes to its shard (tools/test_void.mjs --shard i/n,
-  # tools/shard.mjs), every section in exactly one of them (60 / 67 / 76 sections; the shared-page section, the longest, is in
-  # the third), each job its own verdict; the revert reads all three (tools/revert-target.mjs isSuiteJob).
+  # going red on the clock alone. Four since 2026-10-29: the suite had doubled (143 / 127 / 142 sections), shard 2 took 1,390 s,
+  # shard 3 1,575 s and shard 1 ran past the 1,680 s budget with six 3D sections still to go (run 40819702176), so the work, not a
+  # slow check, outgrew three runners; the budget stays. Each job runs the sections whose heading hashes to its shard
+  # (tools/test_void.mjs --shard i/n, tools/shard.mjs), every section in exactly one of them (86 / 112 / 96 / 118 sections; the
+  # shared-page section, the longest, is in the second), each job its own verdict; the revert reads them all (tools/revert-target.mjs isSuiteJob).
   browser-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4]
     concurrency:
       group: void-verify-${{ matrix.shard }}
       cancel-in-progress: false
@@ -109,14 +111,14 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Only the incident record changed: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Test what shipped (shard ${{ matrix.shard }} of 3 of the full suite)
+      - name: Test what shipped (shard ${{ matrix.shard }} of 4 of the full suite)
         id: test
         if: steps.skip.outputs.skip != 'true'
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/3
+          shard: ${{ matrix.shard }}/4
 
       # the site under its real CSP, with the per-page script hashes the deploy adds (tools/csp-hashes.mjs): /, /films/ and /store/
       # with the 3D, a Gumroad and a YouTube frame, zero violations (tools/csp-smoke.mjs; docs/secrets.md)

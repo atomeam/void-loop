@@ -4,6 +4,8 @@
 // POST { type: 'a2m.approval.decision', approvalId, decision, actor, reason?, argsFingerprint }
 //   -> the decision event. Only an in-time 'approve' whose fingerprint still matches resumes the action.
 // GET ?id=<approvalId> -> the approval record.
+// A yes runs only when lib/approval-gate.js clears it against what ran in the last day: no repeat, the cooldown, the co-sign.
+//   Otherwise the approval ends 'held', nothing runs, and the decision answers { held: { need, risk, why } }.
 //
 // Pause/resume: Pages Functions can't host a Cloudflare Workflow, so the paused action lives in D1
 // (void_approvals) and resumeOnDecision() below is the continuation that step.waitForEvent would give us.
@@ -22,6 +24,7 @@ import {
   EVENT_REQUESTED, EVENT_DECISION, POLICY_VERSION, GATED, ORG_ID, WORKFLOW_ID, CONFIRM_TTL_MS,
   isGated, fingerprint, confirmLine, budgetImpact, checkDecision,
 } from '../../lib/approval-core.js';
+import { gate, REPEAT_MS } from '../../lib/approval-gate.js';
 
 // toolName -> async (args, env) => result. Empty until a connector ships: an approved action with no
 // executor is recorded as approved-but-not-run and Verse says the service isn't connected yet.
@@ -60,6 +63,12 @@ async function ledger(env, rec, kind, detail) {
   await env.DB.prepare('INSERT INTO void_ledger (id, approval_id, kind, at, entry) VALUES (?, ?, ?, ?, ?)')
     .bind(id, rec.approvalId, kind, at, JSON.stringify({ toolName: rec.toolName, policyRuleId: rec.policyRuleId, budgetImpact: rec.budgetImpact, ...detail })).run();
   return id;
+}
+
+// The approval gate (lib/approval-gate.js) reads what already ran: the approvals that ended done in the last day.
+async function executedSince(env, since) {
+  const r = await env.DB.prepare("SELECT record, updated FROM void_approvals WHERE state = 'done' AND updated >= ?").bind(since).all();
+  return ((r && r.results) || []).map((row) => { const x = JSON.parse(row.record); return { fp: x.argsFingerprint, tool: x.toolName, at: row.updated, state: 'executed' }; });
 }
 
 async function requested(env, b) {
@@ -123,14 +132,24 @@ async function decided(env, b) {
   let decision = b.decision, reason = String(b.reason || '').slice(0, 300);
   if (Date.now() >= Date.parse(rec.expiresAt) && decision !== 'reject') { decision = 'timeout'; reason = reason || 'no answer in time'; } // fails closed
   const event = { type: EVENT_DECISION, approvalId: rec.approvalId, correlateKey: rec.approvalId, decision, actor: String(b.actor).slice(0, 64), reason, decidedAt, argsFingerprint: String(b.argsFingerprint || '') };
+  // a yes still has to clear the gate before anything runs: no repeat of the same request within a day, the cooldown after the
+  // same tool ran, and the owner's co-sign by a second person above medium risk (the requester is rec.requestedBy, the yes is event.actor)
+  // A changed request is not the one the person said yes to: it fails hard (409, 'failed') in resumeOnDecision, before the gate is asked,
+  // so a tampered or mismatched yes is never reported as merely held by a repeat or the cooldown.
+  let held = null;
+  if (decision === 'approve' && event.argsFingerprint === rec.argsFingerprint && (await fingerprint(rec.toolName, rec.argsSnapshot)) === rec.argsFingerprint) {
+    const now = Date.now(), v = gate({ tool: rec.toolName, args: rec.argsSnapshot, fp: rec.argsFingerprint, actor: rec.requestedBy || 'owner', cosigner: event.actor },
+      await executedSince(env, new Date(now - REPEAT_MS).toISOString()), now, { owner: env.OWNER_ID || 'owner' });
+    if (!v.ok) held = { need: v.need, risk: v.risk, why: v.why, ...(v.waitMs ? { waitMs: v.waitMs } : {}), rollback: v.rollback };
+  }
   // claim the approval first so two decisions can never both run it
   const claim = await env.DB.prepare("UPDATE void_approvals SET state = ?, record = ?, updated = ? WHERE id = ? AND state = 'pending'")
     .bind('deciding', JSON.stringify({ ...rec, decision }), decidedAt, rec.approvalId).run();
   if (!claim.meta || !claim.meta.changes) return bad(409, 'already decided');
-  const outcome = decision === 'approve' ? await resumeOnDecision(env, rec, event) : { ran: false };
-  const state = outcome.ran ? 'done' : outcome.error ? 'failed' : decision === 'approve' ? 'approved-not-run' : decision;
-  const ledgerEntryId = await ledger(env, rec, state, { decision, actor: event.actor, reason, ran: outcome.ran, error: outcome.error || null, note: outcome.note || null });
-  const out = { ...event, ledgerEntryId, ran: outcome.ran, ...(outcome.note ? { note: outcome.note } : {}), ...(outcome.error ? { error: outcome.error } : {}), ...(outcome.ran ? { result: outcome.result ?? null } : {}) };
+  const outcome = held ? { ran: false, held } : decision === 'approve' ? await resumeOnDecision(env, rec, event) : { ran: false };
+  const state = outcome.ran ? 'done' : outcome.error ? 'failed' : held ? 'held' : decision === 'approve' ? 'approved-not-run' : decision;
+  const ledgerEntryId = await ledger(env, rec, state, { decision, actor: event.actor, reason, ran: outcome.ran, error: outcome.error || null, note: outcome.note || null, ...(held ? { held } : {}) });
+  const out = { ...event, ledgerEntryId, ran: outcome.ran, ...(outcome.note ? { note: outcome.note } : {}), ...(outcome.error ? { error: outcome.error } : {}), ...(held ? { held } : {}), ...(outcome.ran ? { result: outcome.result ?? null } : {}) };
   await env.DB.prepare('UPDATE void_approvals SET state = ?, record = ?, updated = ? WHERE id = ?')
     .bind(state, JSON.stringify({ ...rec, ...out, type: EVENT_REQUESTED, decisionEvent: EVENT_DECISION }), decidedAt, rec.approvalId).run();
   return Response.json(out, { status: outcome.error === 'fingerprint mismatch' ? 409 : 200 });

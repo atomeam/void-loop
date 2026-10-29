@@ -74,6 +74,12 @@
   #filters button { flex: none; padding: 4px 12px; }
   #meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 0 0; }
   #meta input { flex: 1 1 200px; min-height: 40px; }
+  .body img, .doc img { max-width: 100%; height: auto; border-radius: 6px; display: inline-block; vertical-align: bottom; }
+  .body mark.cm, .doc mark.cm { background: #ffe58a; color: inherit; border-bottom: 2px solid #e0a800; } .body mark.cm.on { background: #ffc94d; outline: 2px solid #e0a800; }
+  #cmts { margin: 10px 0 0; } #cmts h2 { font-size: 16px; margin: 0 0 6px; } #cmList { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  #cmList > li { border: 1px solid var(--line); border-left: 4px solid #e0a800; border-radius: 8px; padding: 8px 10px; font-size: 15px; } #cmList q { color: var(--soft); font-size: 13px; display: block; cursor: pointer; }
+  #cmList .rep { margin: 4px 0 0 12px; font-size: 14px; } #cmList .orph { color: var(--soft); font-size: 12px; } #cmList input { font: inherit; min-height: 36px; width: 100%; max-width: 28em; }
+  #cmNew textarea { width: 100%; font: inherit; } #micB[aria-pressed="true"] { background: #c62828; color: #fff; }
   #links { min-height: 3.2em; margin: 8px 0 0; font-size: 14px; color: var(--soft); }
   #links .lk { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 2px 0; } #links button { min-height: 36px; padding: 2px 12px; }
   #slash, #tblbar { position: fixed; z-index: 30; background: var(--box); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 6px 24px #0004; padding: 4px; }
@@ -92,7 +98,7 @@
   footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
   #related, #asks { margin-top: 14px; }
   #trash li { border-top: 1px solid var(--line); padding: 4px 0; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; } #trash li span { flex: 1 1 160px; overflow-wrap: anywhere; } #fr input { flex: 1 1 140px; }
-  @media print { html, body { background: #fff; color: #000; } main > *:not(.layout) { display: none !important; } .layout { display: block; } .layout > :not(#doc) { display: none !important; } #bar, .status, #hist, .row, #tools, #sharedCard, #meta, #links, #filters, #slash, #tblbar, #fr, #trash { display: none !important; } #dtitle, .body { border: 0; } }
+  @media print { html, body { background: #fff; color: #000; } main > *:not(.layout) { display: none !important; } .layout { display: block; } .layout > :not(#doc) { display: none !important; } #bar, .status, #hist, .row, #tools, #sharedCard, #meta, #links, #cmts, #cmNew, #filters, #slash, #tblbar, #fr, #trash { display: none !important; } #dtitle, .body { border: 0; } }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/notes/">
@@ -139,11 +145,17 @@
         <button type="button" data-cmd="code" aria-label="Code" data-wal="code" title="Code">&lt;/&gt;</button>
         <button type="button" data-cmd="link" aria-label="Link" data-wal="link" title="Link (Ctrl+K)">Link</button>
         <button type="button" data-cmd="clear" aria-label="Clear formatting" data-wal="clear" title="Clear formatting">Tx</button>
+        <button type="button" id="imgB" aria-label="Insert a picture" title="Insert a picture (or paste or drop one into the note)">Picture</button><input type="file" id="imgF" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+        <button type="button" id="cmB" aria-label="Comment on the selected words" title="Comment on the selected words (Ctrl+Alt+M)">Comment</button>
+        <button type="button" id="micB" aria-pressed="false" aria-label="Voice typing" title="Voice typing: speak and the words go in where the cursor is">Voice typing</button>
       </div>
       <div id="dtitle" contenteditable="true" role="textbox" aria-label="Title" data-wal="titlePh" data-ph="Title" spellcheck="true"></div>
       <div class="body" id="body" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Note" data-ph="Start writing…" spellcheck="true"></div>
       <div class="status"><span id="words">0 words</span><span id="saved" data-w="saved">Saved on this device</span></div>
       <div id="meta"><button type="button" id="pinBtn" aria-pressed="false" data-w="pin">Pin</button><label class="vh" for="tagsIn" data-w="tagsLabel">Tags</label><input id="tagsIn" maxlength="120" placeholder="Tags: travel, work" data-wph="tagsPh" autocomplete="off"></div>
+      <form id="cmNew" hidden onsubmit="return false" aria-label="New comment"><p class="note">Comment on <q id="cmQ"></q></p><label class="vh" for="cmT">Your comment</label><textarea id="cmT" rows="2" maxlength="2000" placeholder="Your comment"></textarea>
+        <div class="row"><button type="submit" class="go" id="cmSave">Comment</button><button type="button" id="cmCancel">Cancel</button></div></form>
+      <section id="cmts" hidden aria-labelledby="cmH"><h2 id="cmH">Comments</h2><ul id="cmList"></ul></section>
       <div id="links" aria-label="Links between notes"></div>
       <div class="row" id="tools">
         <button type="button" id="histBtn" aria-expanded="false" aria-controls="hist" data-w="history">Version history</button>
@@ -179,7 +191,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread">Shopping list: milk, eggs, bread</a><a href="/notes/?q=note%3A%20buy%20milk">Buy milk</a><a href="/notes/?q=note%3A%20Packing%20-%20passport%2C%20charger%2C%20socks">Packing: passport, charger, socks</a><a href="/notes/?q=note%3A%20Meeting%20-%20agenda%2C%20minutes%2C%20actions">Meeting: agenda, minutes, actions</a><a href="/notes/?q=note%3A%20call%20mum%20on%20Sunday">Call mum on Sunday</a></nav>
 <!-- /asks -->
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/calendar/">Calendar</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/calendar/">Calendar</a> <a href="/fanfic/">Fan fiction</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 
   <p class="srcs" id="srcs" data-w="note">Notes stay in this browser; nothing goes to a server. A share link carries the note itself.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
@@ -226,7 +238,7 @@
     // ---- the note being written ----
     let timer = 0, dirty = false;
     function show(d) {
-      $('dtitle').textContent = d.title; $('body').innerHTML = d.html; stats(); drawList(); hideHist(); drawMeta(d); drawLinks(d);
+      $('dtitle').textContent = d.title; $('body').innerHTML = N.clean(d.html); stats(); drawList(); hideHist(); drawMeta(d); drawLinks(d); drawComments(d); // N.clean keeps only an allowlist of tags (void-review: ok)
     }
     function open(id) { flush(); store.cur = id; const d = cur(); if (d) show(d); keep(); }
     function stats() { const n = N.wordCount($('body').innerHTML); $('words').textContent = n + ' ' + W.words; }
@@ -244,6 +256,7 @@
 
     // paste: only what the whitelist keeps (no foreign fonts, colours, scripts)
     $('body').addEventListener('paste', (e) => {
+      const pics = [...(e.clipboardData ? e.clipboardData.files : [])].filter((f) => /^image\//.test(f.type)); if (pics.length) { e.preventDefault(); pictures(pics); return; }
       e.preventDefault(); const cd = e.clipboardData; if (!cd) return;
       const h = cd.getData('text/html'), t = cd.getData('text/plain');
       document.execCommand('insertHTML', false, h ? N.clean(h) : N.textToHtml(t));
@@ -262,6 +275,73 @@
     function link() { const u = prompt(W.linkAsk, 'https://'); if (u && /^(?:https?:|mailto:)/i.test(u.trim())) ex('createLink', u.trim()); }
     const CMD = { bold: () => ex('bold'), italic: () => ex('italic'), underline: () => ex('underline'), h1: () => block('h1'), h2: () => block('h2'), ul: () => ex('insertUnorderedList'), ol: () => ex('insertOrderedList'), todo, code, link, clear: () => { ex('removeFormat'); ex('formatBlock', 'p'); } };
     $('bar').addEventListener('mousedown', (e) => e.preventDefault()); // keep the selection in the page
+    // ---- catching up with Google Docs (docs/PARITY/google-docs.md): pictures, comments on a passage, voice typing. Rules: lib/note-extras.js ----
+    let caret = null; const keepCaret = () => { const s = getSelection(); if (s.rangeCount && $('body').contains(s.anchorNode)) caret = s.getRangeAt(0).cloneRange(); };
+    document.addEventListener('selectionchange', keepCaret);
+    const atCaret = () => { $('body').focus(); if (caret && $('body').contains(caret.startContainer)) { const s = getSelection(); s.removeAllRanges(); s.addRange(caret); } };
+    async function picture(f) {
+      if (!/^image\/(?:png|jpeg|gif|webp)$/.test(f.type)) return '';
+      const url = URL.createObjectURL(f); try {
+        const img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = url; });
+        const { w, h } = X.fitImage(img.naturalWidth, img.naturalHeight), c = document.createElement('canvas'); c.width = w; c.height = h;
+        const g = c.getContext('2d'); if (f.type !== 'image/png') { g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); } g.drawImage(img, 0, 0, w, h);
+        let src = c.toDataURL(f.type === 'image/png' ? 'image/png' : 'image/jpeg', .85); if (src.length > 1.5e6) src = c.toDataURL('image/jpeg', .7);
+        return N.IMG_SRC.test(src) ? '<img src="' + src + '" alt="' + f.name.replace(/\.[a-z0-9]+$/i, '').replace(/[&<>"]/g, ' ').slice(0, 120) + '">' : '';
+      } catch (_) { return ''; } finally { URL.revokeObjectURL(url); }
+    }
+    async function pictures(files) {
+      let h = ''; for (const f of [...files].slice(0, 10)) h += await picture(f);
+      if (!h) return say(de ? 'Das Bild ließ sich nicht lesen (PNG, JPEG, GIF oder WebP)' : 'That picture could not be read (PNG, JPEG, GIF or WebP)');
+      atCaret(); document.execCommand('insertHTML', false, h); changed(); flush();
+      if (!(cur() || {}).html.includes('<img')) say(de ? 'Bild zu groß für diesen Speicher' : 'The picture was too big to keep');
+    }
+    $('imgB').addEventListener('click', () => $('imgF').click());
+    $('imgF').addEventListener('change', () => { const f = [...$('imgF').files]; $('imgF').value = ''; pictures(f); });
+    $('body').addEventListener('dragover', (e) => { if ([...(e.dataTransfer ? e.dataTransfer.items : [])].some((i) => i.kind === 'file')) e.preventDefault(); });
+    $('body').addEventListener('drop', (e) => { const f = [...(e.dataTransfer ? e.dataTransfer.files : [])].filter((x) => /^image\//.test(x.type)); if (!f.length) return; e.preventDefault();
+      const r = document.caretRangeFromPoint ? document.caretRangeFromPoint(e.clientX, e.clientY) : null; if (r) caret = r; pictures(f); });
+    // comments: the selected words get a highlight; the comment, its replies and Resolve sit under the note
+    let pending = null;
+    function comment() {
+      const s = getSelection(); if (!s.rangeCount || s.isCollapsed || !$('body').contains(s.anchorNode) || !$('body').contains(s.focusNode)) return say(de ? 'Markieren Sie zuerst die Wörter, die Sie kommentieren' : 'Select the words to comment on first');
+      const r = s.getRangeAt(0), id = N.uid(now()).replace(/[^a-z0-9]/g, '').slice(0, 16), quote = String(s).trim();
+      const m = document.createElement('mark'); m.className = 'cm'; m.dataset.c = id; m.append(r.extractContents()); r.insertNode(m); s.removeAllRanges();
+      changed(); flush(); pending = { id, quote }; $('cmQ').textContent = quote.length > 120 ? quote.slice(0, 117) + '…' : quote; $('cmT').value = ''; $('cmNew').hidden = false; $('cmT').focus();
+    }
+    function dropPending() { if (!pending) return; const d = cur(); if (d) { put({ ...d, html: X.unmark(d.html, pending.id) }); keep(); show(cur()); } pending = null; $('cmNew').hidden = true; }
+    $('cmB').addEventListener('click', comment);
+    $('cmCancel').addEventListener('click', dropPending);
+    $('cmNew').addEventListener('submit', () => { const t = $('cmT').value.trim(); if (!pending) return; if (!t) return dropPending(); flush(); const d = cur(); if (!d) return;
+      put(X.addComment(d, pending.id, pending.quote, t, now())); keep(); pending = null; $('cmNew').hidden = true; drawComments(cur()); say(de ? 'Kommentar gespeichert' : 'Comment saved'); });
+    $('cmT').addEventListener('keydown', (e) => { if (e.key === 'Escape') dropPending(); if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $('cmSave').click(); } });
+    $('body').addEventListener('keydown', (e) => { if (e.ctrlKey && e.altKey && (e.key === 'm' || e.key === 'M')) { e.preventDefault(); comment(); } });
+    const flash = (id) => { const m = $('body').querySelector('mark.cm[data-c="' + id + '"]'); if (!m) return; for (const x of $('body').querySelectorAll('mark.cm.on')) x.classList.remove('on'); m.classList.add('on'); m.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(() => m.classList.remove('on'), 1600); };
+    function drawComments(d) {
+      const list = d ? X.openComments(d) : [], ul = $('cmList'); ul.replaceChildren(); $('cmts').hidden = !list.length;
+      $('cmH').textContent = (de ? 'Kommentare' : 'Comments') + ' (' + list.length + ')';
+      for (const c of list) {
+        const li = el('li'), q = el('q', '', c.quote); q.tabIndex = 0; q.title = de ? 'Zur Stelle' : 'Show where'; q.addEventListener('click', () => flash(c.id)); q.addEventListener('keydown', (e) => { if (e.key === 'Enter') flash(c.id); });
+        li.dataset.c = c.id; li.append(q, el('div', '', c.text)); if (c.orphan) li.append(el('div', 'orph', de ? 'Die kommentierten Wörter wurden gelöscht' : 'The words it was about were deleted'));
+        for (const r of c.replies || []) li.append(el('div', 'rep', '↳ ' + r.text));
+        const inp = el('input'); inp.placeholder = de ? 'Antworten' : 'Reply'; inp.setAttribute('aria-label', (de ? 'Antwort auf: ' : 'Reply to: ') + c.text.slice(0, 60)); inp.maxLength = 2000;
+        inp.addEventListener('keydown', (e) => { if (e.key !== 'Enter') return; e.preventDefault(); flush(); const x = cur(); if (!x || !inp.value.trim()) return; put(X.replyTo(x, c.id, inp.value, now())); keep(); drawComments(cur()); });
+        const done = el('button', '', de ? 'Erledigt' : 'Resolve'); done.type = 'button'; done.addEventListener('click', () => { flush(); const x = cur(); if (!x) return; put({ ...X.resolveComment(x, c.id), updated: now() }); keep(); show(cur()); say(de ? 'Kommentar erledigt' : 'Comment resolved'); });
+        const row = el('div', 'row'); row.append(inp, done); li.append(row); ul.append(li);
+      }
+    }
+    // voice typing: speech in the page's language, written in at the cursor as it is recognised
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null;
+    if (!SR) $('micB').title = de ? 'Spracheingabe braucht Chrome, Edge oder Safari' : 'Voice typing needs Chrome, Edge or Safari';
+    function voiceText(t) { atCaret(); const s = getSelection(); const before = s.rangeCount ? s.getRangeAt(0).startContainer.textContent.slice(0, s.getRangeAt(0).startOffset) : ''; document.execCommand('insertText', false, (before && !/\s$/.test(before) ? ' ' : '') + t.trim()); keepCaret(); changed(); }
+    $('micB').addEventListener('click', () => {
+      if (!SR) return say($('micB').title);
+      if (rec) { rec.stop(); return; }
+      rec = new SR(); rec.lang = lang; rec.continuous = true; rec.interimResults = false; $('micB').setAttribute('aria-pressed', 'true'); say(de ? 'Sprechen Sie – noch einmal tippen zum Beenden' : 'Speak now; tap Voice typing again to stop');
+      rec.onresult = (e) => { for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) voiceText(e.results[i][0].transcript); };
+      rec.onerror = (e) => say((de ? 'Mikrofon: ' : 'Microphone: ') + (e.error || 'no'));
+      rec.onend = () => { rec = null; $('micB').setAttribute('aria-pressed', 'false'); say(''); };
+      try { rec.start(); } catch (_) { rec = null; $('micB').setAttribute('aria-pressed', 'false'); }
+    });
     $('bar').addEventListener('click', (e) => { const b = e.target.closest('button[data-cmd]'); if (!b) return; $('body').focus(); CMD[b.dataset.cmd](); changed(); });
     $('body').addEventListener('click', (e) => { // a checkbox is the left edge of a checklist item
       const li = e.target.closest && e.target.closest('li.chk'); if (!li || e.target !== li) return;

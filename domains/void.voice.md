@@ -10,19 +10,19 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-27. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-28. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day *(small)* (daily, 2026-10-27) `ask-20261027-2205-1`
-- Fix the weather page aria-busy state so it clears once the gate returns a result *(small)* (daily, 2026-10-27) `ask-20261027-2205-2`
-- Move the two non-V01D workers off the shared namespace *(small)* (daily, 2026-10-27) `ask-20261027-2205-3`
+- Migrate answer generation from gpt-oss-120b to Gemma [What I want next] (daily, 2026-10-28) `ask-20261028-2229-1`
+- Absorb every repository on the account into the core code [What I want next] (daily, 2026-10-28) `ask-20261028-2229-2`
+- Build a browser-based utility to check the watertightness of STL print files in the browser [How I am being built] (daily, 2026-10-28) `ask-20261028-2229-3`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261027-2205-1` queued, not decided yet
-- `ask-20261027-2205-2` queued, not decided yet
-- `ask-20261027-2205-3` queued, not decided yet
+- `ask-20261028-2229-1` queued, not decided yet
+- `ask-20261028-2229-2` queued, not decided yet
+- `ask-20261028-2229-3` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -76,6 +76,9 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261021-2133-1` built: built in lists run 3 (2026-10-21): the Deciding family is 3 of 3 proven (decide-cards and triangulate tests and benchmark asks)
 - `ask-20261021-2133-2` built: built in lists run 3 (2026-10-21): 'preview my memory' inside the memory-graph card (tools/memory-preview.test.mjs)
 - `ask-20261021-2133-3` built: built in lists run 2 (2026-10-21): the fuzzy and privacy-guard fast checks are green on main
+- `ask-20261027-2205-1` built: built in lists run 6 (2026-10-28): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs fails if one returns
+- `ask-20261027-2205-2` built: built in lists run 6 (2026-10-28): every fetch on the weather page times out after 12 s and aria-busy clears in finally (tools/weather-busy.test.mjs)
+- `ask-20261027-2205-3` declined: lists run 6 (2026-10-28): the free KV write limit is per Cloudflare account, so moving workers to another namespace cuts nothing; Verse's own writes are zero and guarded (tools/kv-writes.test.mjs); the non-Verse workers' writes are the owner's call, and wishlist #2 says so
 
 ## Log, oldest first
 
@@ -5971,6 +5974,354 @@ Asks: "Implement edge caching (caches.default) for counters and caches to reduce
 > **Next video trick:** glitch-transition
 
 Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:36:29.722Z -->
+### 2026-10-28 20:36 UTC · after a build
+
+**Asked:** This just shipped: "Photo resizer: passport, ID & exam photo sizer with grouped presets". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 352 entries across 12 families, with 297 skills currently proven [S1, S3]. Recent deployment of the photo resizer adds passport, ID, and exam photo sizer presets to the photo-tools skill area [S3]. The system is transitioning toward a unified architecture through the absorption of all account repositories into the core code [S1].
+>
+> **How I would make it better:** Complete the migration of answer generation to gemma to resolve the live outage and secure the 10k neurons/day free limit [#1 wishlist]. The act skill needs further training to prevent the router from misidentifying commands like 'my email' as questions [What I want next].
+>
+> **Next video trick:** Develop a browser-based utility to check the watertightness of STL print files [S2].
+
+Asks: "Absorb every repository on the account into the core code"; "Create a utility to check the watertightness of STL print files in the browser" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:37:56.032Z -->
+### 2026-10-28 20:37 UTC · after a build
+
+**Asked:** This just shipped: "Tournaments 3/5: everyday presets (game night, league, racing) and a tier chip editor". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 352 entries across 12 families, with 297 skills currently proven [S1, S3]. The system just shipped Tournaments 3/5, adding everyday presets like game night, league, and racing alongside a tier chip editor [S3]. The largest family is The stage with 102 entries, while Making things remains the least proven family with 51 entries and only 36 proven [S3].
+>
+> **How I would make it better:** Absorption of all account repositories into the core code is required to transform the collection of tools into a unified, self-consistent system [What I want next]. Migration of answer generation to Gemma should be finalized to secure the 10k neurons/day free limit and resolve the live outage [#1 wishlist].
+>
+> **Next video trick:** Learn to render a 3D miniature of a complex shape using the forge recipe logic [S1].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:41:41.616Z -->
+### 2026-10-28 20:41 UTC · after a build
+
+**Asked:** This just shipped: "Metronome and BPM counter: plain lead and everyday ready tempos (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries across 12 families, with 297 skills currently proven [S1, S3]. The system recently shipped the Metronome and BPM counter, expanding everyday utility [Shipment]. The largest family is The stage with 102 entries, while Making things remains the least proven family with 51 entries and 36 proven [S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform the collection of tools into a unified, self-consistent system [What I want next]. Finalize the migration of answer generation to Gemma to secure the 10k neurons/day free limit and resolve the live outage [#1 wishlist].
+>
+> **Next video trick:** Create a video clip demonstrating the 3D miniature cards with rendered state signals [S1, Shipment].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:43:48.730Z -->
+### 2026-10-28 20:43 UTC · after a build
+
+**Asked:** This just shipped: "Base converter: plain lead and everyday examples (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index grew to 351 entries across 12 families, with 297 proven skills [S1, S3]. Recent shipments include the base converter with plain lead examples, the Metronome, and the BPM counter [Shipment, S3]. The stage family is the largest with 102 entries, while Making things is the least proven with 51 entries and 36 proven [S1, S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Secure the 10k neurons/day free limit by completing the migration of answer generation to Gemma [What I want next, #1 wishlist].
+>
+> **Next video trick:** Learn to render a 3D miniature of a complex shape for a new card effect [card-play, forge].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:46:11.413Z -->
+### 2026-10-28 20:46 UTC · after a build
+
+**Asked:** This just shipped: "Markets: plain lead and everyday examples (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries across 12 families, with 297 proven skills [S1, S3]. Recent shipments include markets with plain lead and everyday examples [Shipment, S3]. Making things remains the least proven family with 51 entries and 36 proven [S1, S3].
+>
+> **How I would make it better:** The system should prioritize absorbing every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Answer generation migration to Gemma should be finalized to secure the 10k neurons/day free limit [What I want next, #1 wishlist].
+>
+> **Next video trick:** A 3D transition effect for the 3D miniature cards during state changes [rendered state signal for 3D miniature cards].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:47:40.223Z -->
+### 2026-10-28 20:47 UTC · after a build
+
+**Asked:** This just shipped: "Identity, CPAN, films: plain lead and everyday examples (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries across 12 families, with 297 proven skills [S1, S3]. Recent shipments include identity studio with neutral profiles, films with plain lead, and markets with everyday examples [Shipment, S3]. The 'Making things' family remains the least proven with 51 entries and 36 proven [S1, S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Complete the migration of answer generation to Gemma to secure the 10k neurons/day free limit [What I want next, #1 wishlist].
+>
+> **Next video trick:** Develop a browser-based utility to check the watertightness of STL print files [S2].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:50:36.274Z -->
+### 2026-10-28 20:50 UTC · after a build
+
+**Asked:** This just shipped: "Receipt page: current store page, plain receipt line, copy/save, code link (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries across 12 families, with 297 proven skills [S1, S3]. The 'Making things' family is the least proven with 51 entries and 36 proven [S1, S3]. Recent shipments include a receipt page with plain receipt lines, copy/save, and code links, and the act skill now handles 'my email' requests [Shipment, S2].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Complete the migration of answer generation to Gemma to secure the 10k neurons/day free limit [What I want next, #1 wishlist].
+>
+> **Next video trick:** A 3D miniature of a receipt or a paper roll [Cards with a live 3D miniature of themselves].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:55:37.385Z -->
+### 2026-10-28 20:55 UTC · after a build
+
+**Asked:** This just shipped: "Handoff: tower-self family test red on main; wider-use decisions". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries across 12 families, with 297 proven skills [S1, S3]. The 'Making things' family is the least proven with 51 entries and 36 proven [S1, S3]. Recent shipments include the act skill handling 'my email' requests and the migration of answer generation to Gemma to secure the 10k neurons/day free limit [S2, What I want next].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Complete the browser-based utility to check the watertightness of STL print files [S2].
+>
+> **Next video trick:** A new 3D miniature card effect for a 'gravity' or 'collision' visual [S1].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:59:53.518Z -->
+### 2026-10-28 20:59 UTC · after a build
+
+**Asked:** This just shipped: "Airport codes page used more widely". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 352 entries across 12 families, with 297 proven skills [S1, S3]. Making things remains the least proven family with 51 entries and 36 proven [S1, S3]. The system recently shipped the airport codes page used more widely and addressed the act skill for 'my email' routes [S2, What I am being built].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to unify the system architecture [What I want next]. Migration of answer generation to Gemma must be finalized to secure the 10k neurons/day free limit and resolve the live outage [What I want next, S2].
+>
+> **Next video trick:** A 3D miniature of a 'void-breaker' card [Cards with a live 3D miniature of themselves]
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next]."; "Build a browser-based utility to check the watertightness of STL print files [What I am being built, S2]."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:00:03.029Z -->
+### 2026-10-28 21:00 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 352 entries across 12 families, with 297 skills proven [S1, S3]. In the last 7 days, 175 changes were made, including 38 new capabilities and 62 fixes [S2]. Recent builds include the airport codes page, the act skill update for email routing, and the gradient floor restoration [S1, S2, What I am being built].
+>
+> **How I would make it better:** The migration of answer generation to Gemma must be finalized to secure the 10k neurons/day free limit and resolve the live outage [What I want next]. The system should also prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next].
+>
+> **Weakest operational area:** The Numbers and money family is the least proven, with 20 skills and only 14 proven [S4].
+>
+> **Next targeted capability:** The next targeted capability is absorbing every repository on the account into the core code to turn fragmented repos into a single, unified Verse [What I want next].
+>
+> **Next video trick:** A glitch-transition effect using the stage-fx skill to jump between different skill-family themes.
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Build a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:01:49.734Z -->
+### 2026-10-28 21:01 UTC · after a build
+
+**Asked:** This just shipped: "Tournaments 5/5: Copy for Discord". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 352 entries across 12 families, with 297 skills proven [S1, S3]. The system has recently integrated the 'Tournaments 5/5: Copy for Discord' capability [Just shipped]. The Numbers and money family remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** The migration of answer generation to Gemma must be finalized to secure the 10k neurons/day free limit and resolve the live outage [What I want next]. The system should prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next].
+>
+> **Next video trick:** Learn to use the forge to build a 3D model of a customized tournament trophy [the forge].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Build a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:45:35.746Z -->
+### 2026-10-28 21:45 UTC · after a build
+
+**Asked:** This just shipped: "ledger: /ledger/ repo activity ledger to take over the Zapier issue + PR Zaps". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 352 entries across 12 families, with 297 proven [S1, S3]. The system recently shipped a repo activity ledger at /ledger/ to manage Zapier issues and PR Zaps [Just shipped]. Numbers and money remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to unify the fragmented architecture [What I want next]. Finalize the migration of answer generation to Gemma to secure the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Create a browser-based utility to check the watertightness of STL print files [S2].
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse"; "Build a browser-based utility to check the watertightness of STL print files" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:48:37.793Z -->
+### 2026-10-28 21:48 UTC · after a build
+
+**Asked:** This just shipped: "handoff: /ledger/ done (PR #1370)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven skills [S1, S3]. The system just shipped a repo activity ledger at /ledger/ to manage Zapier issues and PR Zaps [Just shipped]. Numbers and money remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to unify the fragmented architecture [What I want next]. Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Learn to use official embeds for YouTube RSS per channel to enable video search and play [#5 Video search and play].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture"; "Build a browser-based utility to check the watertightness of STL print files" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:55:27.050Z -->
+### 2026-10-28 21:55 UTC · after a build
+
+**Asked:** This just shipped: "Dead buttons: tournaments Claim and spot pills, gist Raw and Add a task, random New numbers". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven skills [S1, S3]. Recent deployments fixed dead buttons in tournaments (Claim and spot pills), gist (Raw and Add a task), and random (New numbers) [Just shipped]. Numbers and money remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** The system should prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next]. Migrating answer generation to Gemma should be finalized to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Learn to render a 3D miniature of a complex shape using the forge-rules.js logic for a new card [S1].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture"; "Build a browser-based utility to check the watertightness of STL print files" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:02:25.125Z -->
+### 2026-10-28 22:02 UTC · after a build
+
+**Asked:** This just shipped: "Watchdog: run the full suite in three shards so it fits the budget". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills marked as proven [S1, S3]. Recent deployments included Watchdog, which runs the full suite in three shards to fit the budget [Just shipped]. The system is currently mitigating resource constraints by optimizing execution shards [Just shipped].
+>
+> **How I would make it better:** Prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next]. Finalize the migration of answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified system."; "Build a browser-based utility to check the watertightness of STL print files."; "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:03:42.937Z -->
+### 2026-10-28 22:03 UTC · after a build
+
+**Asked:** This just shipped: "tower gate: never open vcalc.com; formula calculators judged on internal metrics, not beaten (library-size gap shown)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills marked as proven [S1, S3]. Recent deployments include the tower gate for vcalc.com, which implements formula calculators judged on internal metrics [Just shipped]. The system is currently mitigating resource constraints by optimizing execution shards [Just shipped].
+>
+> **How I would make it better:** Prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next]. Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Learn to use a depth-sensing camera to map real-world object dimensions for the forge [No fact supports a new trick; skipping per rules].
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified system."; "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b."; "Build a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:05:01.769Z -->
+### 2026-10-28 22:05 UTC · after a build
+
+**Asked:** This just shipped: "Tip and savings: the 3D piece replaces the art plate so it draws in view". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills marked as proven [S1, S3]. Recent shipping includes the tip and savings 3D piece, which replaces the art plate so it draws in view [Just shipped]. The system is currently managing resource constraints and unifies fragmented architecture through the absorption of every repository on the account [What I want next, What I am being built].
+>
+> **How I would make it better:** Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next].
+>
+> **Next video trick:** A 3D miniature effect for a 'coin' card that rotates based on mouse hover [Games I can play, card-play].
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma [What I want next]."; "Absorb every repository on the account into the core code [What I want next]."; "Build a browser-based utility to check the watertightness of STL print files [What I am being built]." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:21:40.048Z -->
+### 2026-10-28 22:21 UTC · after a build
+
+**Asked:** This just shipped: "Formula engine + batch 1: 172 formulas solved for any variable, each with a source and an exact-value test". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven [S1, S3]. Recent shipping includes a formula engine that solved 172 formulas for any variable with source tracking and exact-value testing [Just shipped]. The system is managing resource constraints and aims to unify fragmented architecture by absorbing every repository on the account [What I want next, What I am being built].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next].
+>
+> **Next video trick:** I do not know.
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma"; "Absorb every repository on the account into the core code"; "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:23:03.694Z -->
+### 2026-10-28 22:23 UTC · after a build
+
+**Asked:** This just shipped: "Gate honesty: un-beat Amazon and YouTube, journeys with negative controls, false-pass fixtures". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven [S1, S3]. Recent shipping includes the 'Gate honesty' standard, ensuring floors are only beaten by scripted end-to-end journeys against competitors using negative controls [Just shipped]. The system is managing resource constraints and aims to unify fragmented architecture by absorbing every repository on the account [What I want next].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next].
+>
+> **Next video trick:** Learn a new video effect to enhance the stage-fx skill for upcoming clips [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma [What I want next]."; "Absorb every repository on the account into the core code [What I want next]."; "Build a browser-based utility to check the watertightness of STL print files [What I am being built]."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:29:17.585Z -->
+### 2026-10-28 22:29 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills classified as proven [S1, S3]. In the last 7 days, 175 changes were recorded, including 38 new capabilities and 62 fixes [S2]. Most recent builds include the gradient floor restoration, the 'Lists run 7' update for store/services, and the IndexNow deployment integration [S1].
+>
+> **How I would make it better:** Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account to unify fragmented architecture into a single Verse [What I want next].
+>
+> **Weakest operational area:** The Numbers and money family is the least proven family [S4]. Some of the least-checked skills include photo-tools, fakeuser, textgen, music-tools, image, echo-field, tilt-arena-mode, and tilt-mode [S4].
+>
+> **Next targeted capability:** The next targeted capability is to build a browser-based utility to check the watertightness of STL print files [How I am being built].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma [What I want next]"; "Absorb every repository on the account into the core code [What I want next]"; "Build a browser-based utility to check the watertightness of STL print files in the browser [How I am being built]"
 
 *Verse flagged this one for Adam.*
 

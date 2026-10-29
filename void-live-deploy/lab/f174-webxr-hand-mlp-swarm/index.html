@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:12px; border-radius:8px; z-index:10; }
+button { margin:4px; padding:6px 12px; background:#223; color:#fff; border:1px solid #44a; cursor:pointer; }
+#status { font-size:12px; margin-top:8px; opacity:0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-hand-mlp-swarm · Verse lab</title>
+<meta name="description" content="Novel combination: true WebXR hand-tracking (or pointer/DeviceOrientation fallback) as causal input to a local tiny MLP that outputs force multipliers for a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-hand-mlp-swarm · Verse lab">
+<meta property="og:description" content="Novel combination: true WebXR hand-tracking (or pointer/DeviceOrientation fallback) as causal input to a local tiny MLP that outputs force multipliers for a">
+<meta property="og:url" content="https://a-to-mind.com/lab/f174-webxr-hand-mlp-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f174-webxr-hand-mlp-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="enter">Enter XR</button>
+  <button id="reward">Reward</button>
+  <button id="seal">Seal</button>
+  <button id="reset">Reset</button>
+  <div id="status">Pointer mode. Move mouse. WebXR hand if available.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-hand-mlp-swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

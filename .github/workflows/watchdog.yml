@@ -26,9 +26,14 @@ permissions:
   actions: read # to find the last green watchdog run
 
 jobs:
-  check:
+  # The full suite no longer fits one runner's 28-minute budget (the 2026-10-28 run stopped at 397/409 with "suite budget"), so the
+  # watchdog runs it the way verify.yml does: the fast tests once, the browser suite in four shards (tools/shard.mjs), the
+  # benchmark on its own on Sundays, and one job that opens, updates or closes the issue from all of their results.
+  moved:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.moved.outputs.run }}
     steps:
       - name: Main moved since the last green run?
         id: moved
@@ -42,22 +47,67 @@ jobs:
           else
             echo "run=true" >> "$GITHUB_OUTPUT"
           fi
+
+  fast:
+    needs: moved
+    if: needs.moved.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
       - uses: actions/checkout@v4
-        if: steps.moved.outputs.run == 'true'
         with:
           fetch-depth: 0
-      - name: Test (full suite; benchmark on Sundays)
-        id: test
-        if: steps.moved.outputs.run == 'true'
-        continue-on-error: true
+      - name: The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)
         uses: ./.github/actions/void-test
         with:
-          bench: ${{ (github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.bench)) && 'with' || 'skip' }}
+          bench: skip
+          part: fast
+
+  suite:
+    needs: moved
+    if: needs.moved.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Browser suite (shard ${{ matrix.shard }} of 4 of the full suite)
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+          part: suite
+          shard: ${{ matrix.shard }}/4
+
+  bench:
+    needs: moved
+    if: needs.moved.outputs.run == 'true' && (github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.bench))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: The everyday benchmark (not below tools/bench.best.json)
+        uses: ./.github/actions/void-test
+        with:
+          bench: only
+
+  check:
+    needs: [moved, fast, suite, bench]
+    if: always() && needs.moved.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
       - name: Open, update or close the watchdog issue
-        if: steps.moved.outputs.run == 'true'
         uses: actions/github-script@v7
         env:
-          OUTCOME: ${{ steps.test.outcome }}
+          # green only when the fast tests and every shard passed, and the benchmark passed or was not due
+          OUTCOME: ${{ (needs.fast.result == 'success' && needs.suite.result == 'success' && (needs.bench.result == 'success' || needs.bench.result == 'skipped')) && 'success' || 'failure' }}
         with:
           script: |
             const title = 'Verse watchdog: main is failing';

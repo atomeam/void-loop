@@ -70,6 +70,8 @@ jobs:
           fi
           echo "measuring: $(paste -sd, floors.txt)"
           while IFS= read -r f; do [ -n "$f" ] && { timeout 480 node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured (or stopped after 8 minutes)"; }; done < floors.txt # a floor that hangs costs 8 minutes, never the run
+          # the floor's scripted journeys on Verse's own page, in the same browser (tools/tower-journeys.mjs; an unscripted floor is skipped)
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 240 node tools/tower-journeys.mjs --scripted "$f" || echo "::warning::$f journeys not run (or stopped after 4 minutes)"; }; done < floors.txt
       - name: Commit the verdicts and deploy
         env:
           GH_TOKEN: ${{ github.token }}
@@ -124,7 +126,9 @@ jobs:
   # the naming audit (owner, 2026-10-26: "every future floor measurement entirely bulletproof"): the completeness checklist reads a
   # page the way a visitor does, so a feature the page HAS but never NAMES counts as missing. Two floors lost completeness that way (the
   # coin's flip counter, the base64 decoder). This runs the gate's own checklist over the deployed pages and fails when a page stops
-  # naming something it is credited with, so the drift is found here instead of by a gate run days later.
+  # naming something it is credited with, so the drift is found here instead of by a gate run days later. Credited means the gate's last
+  # measurement (tower.evidence.json) does not list it as lacking; a known gap is listed, never failed on (2026-10-29: the check failed on
+  # every run because it failed on gaps). A drifted page shows as an annotation on the run.
   naming:
     if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.floor == 'all' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest

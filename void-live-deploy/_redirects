@@ -10,3 +10,6 @@
 /photos/compress/ /photos/tinypng/ 301
 /photos/metadata /photos/exifeditor/ 301
 /photos/metadata/ /photos/exifeditor/ 301
+# the photo details checker by its short name
+/exif /photos/exif/ 301
+/exif/ /photos/exif/ 301

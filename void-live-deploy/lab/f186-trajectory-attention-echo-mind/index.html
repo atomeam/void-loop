@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root { --bg: #0b0b0f; --fg: #eae8e4; --accent: #6b8cff; --echo: #c084fc; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.echo { position: absolute; min-width: 120px; max-width: 180px; padding: 10px 12px; background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.55); border-radius: 10px; backdrop-filter: blur(8px); font-size: 13px; line-height: 1.3; pointer-events: none; transform-origin: center; transition: border-color 0.3s; }
+.echo strong { display: block; font-size: 11px; opacity: 0.7; margin-bottom: 4px; }
+#ui { position: absolute; top: 12px; left: 12px; z-index: 20; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+input, button { background: #16161e; color: var(--fg); border: 1px solid #333; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+button { cursor: pointer; }
+button:hover { background: #22222c; }
+#status { position: absolute; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.75; z-index: 20; max-width: 70%; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Trajectory Attention Echo Mind · Verse lab</title>
+<meta name="description" content="Pointer trajectories build a persistent spatial memory field (coarse grid of local embeddings).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Trajectory Attention Echo Mind · Verse lab">
+<meta property="og:description" content="Pointer trajectories build a persistent spatial memory field (coarse grid of local embeddings).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f186-trajectory-attention-echo-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f186-trajectory-attention-echo-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <input id="seed" placeholder="seed word" maxlength="16">
+  <button id="inject">Inject</button>
+  <button id="seal">Seal Field</button>
+  <button id="clear">Clear Memory</button>
+</div>
+<div id="status">Move pointer to write trajectories. Inject seeds. Attention echoes appear on cards.</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Trajectory Attention Echo Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

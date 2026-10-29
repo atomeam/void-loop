@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 260; --blur: 0px; --scale: 1; }
+  body { margin: 0; background: hsl(var(--hue), 30%, 8%); color: #eee; font-family: system-ui, sans-serif; overflow: hidden; filter: blur(var(--blur)); transform: scale(var(--scale)); transform-origin: center; transition: filter .3s, transform .3s; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; pointer-events: none; }
+  #seal { position: absolute; bottom: 16px; right: 16px; padding: 8px 16px; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
+  #start { position: absolute; bottom: 16px; left: 16px; padding: 8px 16px; background: #1a3; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Resonant Spatial Audio Mind · Verse lab</title>
+<meta name="description" content="Novel combination of a Canvas2D spatial particle field, a local Web Worker evolutionary policy mind that controls a multi-oscillator Web Audio synthesizer">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Resonant Spatial Audio Mind · Verse lab">
+<meta property="og:description" content="Novel combination of a Canvas2D spatial particle field, a local Web Worker evolutionary policy mind that controls a multi-oscillator Web Audio synthesizer">
+<meta property="og:url" content="https://a-to-mind.com/lab/f048-resonant-spatial-audio-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f048-resonant-spatial-audio-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  F-048 Resonant Spatial Audio Mind<br>
+  resonance: <span id="res">—</span> · gen: <span id="gen">0</span> · particles: <span id="np">180</span>
+</div>
+<button id="start">Start Audio</button>
+<button id="seal">Seal best policy</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">Resonant Spatial Audio Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

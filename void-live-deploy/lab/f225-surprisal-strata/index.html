@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;height:100%;background:#020205;color:#cfd3e6;font:15px/1.5 ui-sans-serif,system-ui,sans-serif;overflow:hidden}
+canvas#w{position:fixed;inset:0;width:100%;height:100%;display:block}
+#panel{position:fixed;left:50%;bottom:4vh;transform:translateX(-50%);width:min(760px,92vw);background:rgba(6,6,14,.72);backdrop-filter:blur(10px);border:1px solid #ffffff14;border-radius:14px;padding:14px 16px}
+#ed{min-height:5.5em;max-height:30vh;overflow:auto;outline:none;white-space:pre-wrap;font:17px/1.55 ui-serif,Georgia,serif;color:#e9ebf5;caret-color:#9fd}
+#ed:empty::before{content:"Write anything. The Verse learns your language as you type, and your surprises become mountains.";color:#6a6f88}
+::highlight(s0){color:#7b8099}
+::highlight(s1){color:#c9cde0}
+::highlight(s2){color:#9fe8d8}
+::highlight(s3){color:#ffd27a;background:#ffb02012}
+::highlight(s4){color:#ff7aa8;background:#ff3a7a22;text-decoration:underline wavy #ff7aa866}
+#ghost{color:#6f7aa0;font:14px ui-monospace,monospace;min-height:1.4em;margin-top:6px}
+#ghost b{color:#9fd;font-weight:normal;background:#9fd1;padding:0 3px;border-radius:3px}
+#stats{display:flex;gap:16px;flex-wrap:wrap;font:12px ui-monospace,monospace;color:#8a90aa;margin-top:8px}
+#stats span b{color:#e9ebf5;font-weight:normal}
+button{background:#ffffff0d;color:#cfd3e6;border:1px solid #ffffff1f;border-radius:8px;padding:4px 10px;font:12px ui-sans-serif,system-ui;cursor:pointer}
+#title{position:fixed;left:18px;top:14px;font:12px ui-monospace,monospace;color:#6a6f88;letter-spacing:.08em}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Surprisal Strata — The Verse · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Surprisal Strata — The Verse.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Surprisal Strata — The Verse · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Surprisal Strata — The Verse.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f225-surprisal-strata/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f225-surprisal-strata/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="w"></canvas>
+<div id="title">F-225 · SURPRISAL STRATA · nothing leaves this page</div>
+<div id="panel">
+  <div id="ed" contenteditable="plaintext-only" spellcheck="false"></div>
+  <div id="ghost"></div>
+  <div id="stats">
+    <span>bits/char <b id="bpc">–</b></span><span>last <b id="last">–</b></span>
+    <span>contexts <b id="ctx">0</b></span><span>hesitation↔surprise r <b id="r">–</b></span>
+    <span>keys saved <b id="saved">0</b></span>
+    <button id="teach">teach it a page</button><button id="forget">forget</button>
+  </div>
+</div>
+<script src="core.js"></script>
+<script src="app.js"></script><h1 class="vl-sr">Surprisal Strata — The Verse</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

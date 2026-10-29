@@ -307,3 +307,84 @@ export function gapsFor(rows, sc, { cutoff = 0 } = {}) {
     return { gap, target: out ? 'cutoff' : 'first', hint: '-' + gap + ' pts' + (how ? ' · needs ' + how + ' ' + goal : ' ' + goal) };
   });
 }
+
+// ---- Starting spots (drops, courts, tables): a conflict checker. Claims are "Team:Spot", one per line (or comma-separated); a spot
+// typed a second time snaps to the spelling it was first claimed under, by key ("old mill") or by word prefix ("old m", "harb").
+
+/** The word-prefix match: every typed word starts the same word of the known name, same word count ("old m" is "Old Mill"). */
+const prefixOf = (typed, known) => {
+  const a = nameKey(typed).split(' '), b = nameKey(known).split(' ');
+  return a.length === b.length && a.every((w, i) => w && b[i].startsWith(w));
+};
+
+/** The known name a typed one snaps to: the same key first, else the only known name it is a word prefix of; else the typed name. */
+export function snapName(typed, known) {
+  const name = cleanName(typed), k = nameKey(name);
+  if (!k) return '';
+  const same = known.find((x) => nameKey(x) === k);
+  if (same) return same;
+  const hits = known.filter((x) => prefixOf(name, x));
+  return hits.length === 1 ? hits[0] : name;
+}
+
+/** The claims in the spots text: [{ team, spot }], teams snapped to the roster and spots to the first spelling claimed. A line with
+ * no spot is left out; a team claimed twice keeps its last claim. */
+export function parseSpots(text, teams = []) {
+  const spots = [], by = new Map();
+  for (const line of String(text == null ? '' : text).split(/[\n,]+/)) {
+    const at = line.indexOf(':');
+    if (at < 0) continue;
+    const team = snapName(line.slice(0, at), teams), raw = cleanName(line.slice(at + 1));
+    if (!team || !raw) continue;
+    const spot = snapName(raw, spots);
+    if (!spots.includes(spot)) spots.push(spot);
+    by.delete(nameKey(team)); by.set(nameKey(team), { team, spot });
+  }
+  return [...by.values()];
+}
+
+/** The claims grouped by spot, in the order spots were first claimed: [{ spot, teams: [{ name, rank, points }], contested }]. rows are
+ * the standings (rank is the 1-based place in them, 0 for a team not in them yet). */
+export function spotGroups(claims, rows = []) {
+  const at = new Map(rows.map((r, i) => [nameKey(r.name), { rank: i + 1, points: r.points }])), groups = new Map();
+  for (const c of claims) {
+    const g = groups.get(c.spot) || { spot: c.spot, teams: [] };
+    const s = at.get(nameKey(c.team)) || { rank: 0, points: 0 };
+    g.teams.push({ name: c.team, rank: s.rank, points: s.points });
+    groups.set(c.spot, g);
+  }
+  return [...groups.values()].map((g) => ({ ...g, teams: g.teams.sort((a, b) => (a.rank || 1e9) - (b.rank || 1e9)), contested: g.teams.length > 1 }));
+}
+
+/** One team's badge: "#1 Alpha (22 pts)", or the bare name for a team not in the standings yet. */
+export const spotBadge = (t) => (t.rank ? '#' + t.rank + ' ' + t.name + ' (' + t.points + ' pts)' : t.name);
+/** A spot's teams said in one line: "#1 Alpha (22 pts) vs #3 Charlie (6 pts)". */
+export const spotLine = (g) => g.teams.map(spotBadge).join(' vs ');
+
+/** The teams in the standings with no spot claimed. */
+export const unclaimed = (claims, rows) => { const k = new Set(claims.map((c) => nameKey(c.team))); return rows.filter((r) => !k.has(nameKey(r.name))).map((r) => r.name); };
+
+/** The spots text with one claim set (or replaced, for a team that had one): "Team:Spot" lines. */
+export function claimSpot(text, team, spot, teams = []) {
+  const claims = parseSpots(text, teams), t = snapName(team, teams);
+  if (!t) return claims.map((c) => c.team + ':' + c.spot).join('\n');
+  const s = snapName(spot, [...new Set(claims.map((c) => c.spot))]);
+  const out = claims.filter((c) => nameKey(c.team) !== nameKey(t));
+  if (s) out.push({ team: t, spot: s });
+  return out.map((c) => c.team + ':' + c.spot).join('\n');
+}
+
+// ---- Copy for Discord: the standings as a monospace Markdown block, so the columns line up in a chat message.
+
+/** The standings as a Discord message: a bold title line, then a ```text block with the rank, team and the kind's own columns,
+ * padded so they line up (numbers right-aligned). Backticks in names become ' so a name cannot close the block early; a long name
+ * is kept whole and the column widens to it (no sentence cut with an ellipsis, tools/no-ellipsis.mjs). */
+export function discordText(rows, sc, { title = 'Standings', rounds = 0 } = {}) {
+  const word = sc.word || 'match', clip = (s) => String(s).replace(/`/g, "'");
+  const head = ['#', 'Team'].concat(sc.cols.map(([h]) => h));
+  const body = rows.map((r, i) => [String(i + 1), clip(r.name)].concat(sc.cols.map(([, f]) => String(f(r)))));
+  const width = head.map((h, c) => Math.max(h.length, ...body.map((b) => b[c].length)));
+  const line = (cells) => cells.map((x, c) => (c === 1 ? x.padEnd(width[c]) : x.padStart(width[c]))).join('  ').trimEnd();
+  const after = rounds ? ' · after ' + rounds + ' ' + word + (rounds === 1 ? '' : (word === 'match' ? 'es' : 's')) : '';
+  return '**' + String(title).replace(/[*`]/g, '') + '**' + after + '\n```text\n' + [line(head)].concat(body.map(line)).join('\n') + '\n```';
+}

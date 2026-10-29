@@ -53,6 +53,7 @@ export function upgradeAsk(id) {
   if (g === 'tool') return 'make the ' + name + ' tool better tested or more useful';
   if (g === 'surface') return 'upgrade the ' + name + ' surface as a whole';
   if (g === 'site') return 'move the ' + name + ' category up (missing to partial, partial to replaced): what a visitor would otherwise leave Verse for, usable by more people than the original';
+  if (g === 'loop' && name === 'handoffs') return 'build the top few page-to-page connections in docs/HANDOFF-GAPS.md (one page\'s result opening another, verse_handoff or a link) and play each end to end in tools/handoff-e2e.mjs';
   if (g === 'loop') return 'upgrade the loop itself';
   return 'upgrade the ' + name + ' skill: fix its gaps, add missing basics, make it usable by more people (docs/WIDER-USE.md) and apply every discovered rule';
 }

@@ -1,7 +1,7 @@
 // tools/tower-gate.mjs and tools/tower-probes.mjs: the scores behind the aspects the gate measures, and the probes' answers worked out by hand
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { verdict, rescore, germanScore, sharingScore, MEASURES, UA } from './tower-gate.mjs';
+import { verdict, rescore, germanScore, sharingScore, MEASURES, UA, GATE_FLOORS } from './tower-gate.mjs';
 import { probeFor, score, PROBES, timesIn, tokyoNow } from './tower-probes.mjs';
 import { FLOORS, aspectsOf } from '../void-live-deploy/lib/tower.js';
 
@@ -30,7 +30,7 @@ test('is it: the right answer depends on the day', () => {
   const dec25 = new Date().getUTCMonth() === 11 && new Date().getUTCDate() === 25; assert.equal(score(dec25 ? 'YES' : 'NO', t).n, 1); assert.equal(score(dec25 ? 'NO' : 'YES', t).n, 0);
 });
 test('a probe exists only for a floor on the tower, and floors with no fair question leave accuracy unverified', () => {
-  for (const id of Object.keys(PROBES)) assert.ok(FLOORS.some((f) => f.id === id), id);
+  for (const id of Object.keys(PROBES)) assert.ok(GATE_FLOORS.some((f) => f.id === id), id); // the gate's floors: the tower's, and a frontier site's own page by its host (sycophanthex.com)
   assert.equal(probeFor('coin flip').ask.presses, 10, 'coin flip: ten flips pressed on both, checked for their shape');
   // the base converter's question is typed into hextobinary.com's box: exact digits pass, a rounded answer does not
   const bc = probeFor('base converter'); assert.equal(bc.ask.type, '123456789abcdef0123456789abcdef'); assert.ok(bc.askParts['huge numbers'].length === 3);
@@ -386,4 +386,11 @@ test('a lane site with a page of its own asks its own question; the others keep 
   for (const [a, items] of Object.entries(own.askParts)) assert.equal(score(page, items).n, items.length, a);
   assert.equal(score(page, own.truth).n, own.truth.length); assert.ok(score('Loading', own.truth).n === 0, 'a page that shows only a loading state fails');
   assert.equal(score('Click a sport to browse Born on this day', own.askParts['born on this day']).n, 1, 'the title alone, without a person born that day, is half');
+});
+test('a frontier site with a Verse page in LANE_PAGES is a floor the gate measures (sycophanthex.com: /fanfic/); one with no page is not', async () => {
+  const { GATE_FLOORS, pick } = await import('./tower-gate.mjs'), { LANE_PAGES } = await import('../void-live-deploy/lib/tower.js');
+  const f = GATE_FLOORS.find((x) => x.id === 'sycophanthex.com'); assert.ok(f, 'sycophanthex.com is measured'); assert.equal(f.page, LANE_PAGES['sycophanthex.com']); assert.equal(f.url, 'https://sycophanthex.com/');
+  assert.ok(!GATE_FLOORS.some((x) => x.id === 'only-on-the-frontier.example'));
+  assert.equal(new Set(GATE_FLOORS.map((x) => x.id)).size, GATE_FLOORS.length, 'no floor twice');
+  assert.equal(pick({}, { sites: [{ site: 'sycophanthex.com', hardness: 1 }] }, [], 3, null, null, 'sycophanthex.com')[0], 'sycophanthex.com', 'the tower target is measured first');
 });

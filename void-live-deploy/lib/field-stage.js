@@ -15,7 +15,10 @@
 // fieldSkill(...) makes the whole skill (routing words, examples, stage kind) from an idea so a new field mind is one small file.
 import { morphOf, morphCss, audioMap, tiltOf, pointerIn, seal } from './field-kit.js';
 import { motionThrottle } from './motion-throttle.js';
-import { MODES, isMode } from './mind-field-modes.js'; // every field mind is a Mind Field mode: its card gets the Mode switcher // asked by Verse: chaotic motion slows to a quarter while someone types in another card
+import * as Field from './shared-field.js'; // the one shared field (also skills/field.js): every Mind Field mode's card is felt by Verse Brain there
+import { linkMode } from './mode-field.js';
+import { keepWhile } from './live-cards.js'; // a field card keeps running when the stage redraws (render() in void.html puts it back)
+import { MODES, BRAIN, isMode } from './mind-field-modes.js'; // every field mind is a Mind Field mode: its card gets the Mode switcher // asked by Verse: chaotic motion slows to a quarter while someone types in another card
 
 const reduced = () => { try { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { return false; } };
 
@@ -93,7 +96,7 @@ export function mountField(th, stageApi, idea) {
   q('.ff-frame').appendChild(cv);
   const hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
   for (const n of el.querySelectorAll('canvas,button')) n.addEventListener('pointerdown', (e) => e.stopPropagation());
-  stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
+  stageApi.bindDrag(el, th); keepWhile(el, th); stageApi.stage.appendChild(el);
 
   const input = { x: 0.5, y: 0.5, over: false, down: false, tiltX: 0, tiltY: 0, tilting: false };
   const at = (e) => { const p = pointerIn(e.clientX, e.clientY, cv.getBoundingClientRect()); input.x = p.x; input.y = p.y; };
@@ -104,7 +107,10 @@ export function mountField(th, stageApi, idea) {
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
   cv.addEventListener('pointerleave', () => { input.over = false; input.down = false; });
 
-  let metrics = idea.metrics(th.state), frames = 0;
+  let metrics = idea.metrics(th.state), frames = 0, morphs = 0;
+  // every Mind Field mode is part of Verse Brain: its card's numbers sit in one slot of the shared field (lib/mode-field.js), where the
+  // brain feels them; the memory orbs write their own orbs, and the brain is the one feeling
+  const modeLink = isMode(idea.id) && idea.id !== 'agent-fluid-memory-orbs' ? (() => { try { return linkMode(Field, idea.id); } catch (_) { return null; } })() : null;
   const morph = () => {
     metrics = idea.metrics(th.state); const mo = idea.morph ? idea.morph(th.state, metrics) : morphOf(metrics), css = morphCss(mo), extra = idea.vars ? idea.vars(th.state, metrics) : {};
     el.style.filter = css.filter; el.style.borderRadius = css.radius; el.style.boxShadow = css.glow;
@@ -114,6 +120,7 @@ export function mountField(th, stageApi, idea) {
     el.dataset.hue = String(mo.hue); el.dataset.entropy = metrics.entropy.toFixed(3); el.dataset.activity = metrics.activity.toFixed(3); el.dataset.consensus = metrics.consensus.toFixed(3); el.dataset.radius = String(mo.radius); el.dataset.frames = String(frames);
     hud.textContent = idea.status ? idea.status(th.state, metrics) : '';
     if (sound) sound.update(metrics);
+    if (modeLink && (morphs++ % 8 === 0 || still)) { try { modeLink.write(metrics, input); el.dataset.fieldSlot = String(modeLink.slot); } catch (_) { /* the field's own problem */ } }
   };
   const draw = () => { if (g) { g.save(); if (!idea.trails) g.clearRect(0, 0, W, H); idea.draw(g, th.state, W, H, input); g.restore(); } };
   const tick = (n = 1, dt = 1 / 60) => { for (let i = 0; i < n; i++) { idea.step(th.state, dt, input); frames++; } morph(); draw(); };
@@ -152,16 +159,19 @@ export function mountField(th, stageApi, idea) {
   // Mind Field (owner, 2026-10-21: "combine anything that can be without taking away"): a mode's card switches to any other mode in
   // place; the old card leaves and the new one opens where it was, by the new mode's own ask (so its words, log and tests are its own)
   // a family of its own (Tilt Arena) passes idea.modes = { list, label, ask(m) } and gets the same switcher
-  const MT = idea.modes || (isMode(idea.id) ? { list: MODES, label: 'Mind Field mode', ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) } : null);
+  // every mode's switcher ends with Verse Brain, which feels all of them; idea.modes.beside opens the choice next to the card instead
+  const MT = idea.modes || (isMode(idea.id) ? { list: [...MODES, BRAIN], label: 'Mind Field mode', ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) } : null);
   if (MT) {
     const row = document.createElement('label'), pick = document.createElement('select');
     row.className = 'mf-mode-row'; row.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:100%;font-size:12px';
     row.append('Mode', pick); pick.className = 'mf-mode'; pick.setAttribute('aria-label', MT.label);
     pick.style.cssText = 'max-width:100%;min-width:0;font:inherit;font-size:12px;padding:3px 6px;border-radius:7px;background:rgba(0,0,0,.25);color:inherit;border:1px solid rgba(255,255,255,.25)';
+    row.firstChild.textContent = MT.beside ? 'Open' : 'Mode';
     for (const m of MT.list) { const o = document.createElement('option'); o.value = m.id; o.textContent = m.title; o.selected = m.id === idea.id; pick.appendChild(o); }
     for (const n of [row, pick]) n.addEventListener('pointerdown', (e) => e.stopPropagation());
     pick.addEventListener('change', () => {
       const m = MT.list.find((x) => x.id === pick.value); if (!m || m.id === idea.id || !stageApi.ask) return;
+      if (MT.beside) { pick.value = idea.id; Promise.resolve(stageApi.ask(MT.ask(m))).catch(() => {}); return; } // the card stays; the choice opens beside it
       const things = stageApi.things(), at = { x: th.x, y: th.y };
       delete things[th.id]; if (stageApi.save) stageApi.save(); if (stageApi.render) stageApi.render();
       Promise.resolve(stageApi.ask(MT.ask(m))).then(() => {
@@ -175,7 +185,7 @@ export function mountField(th, stageApi, idea) {
   }
   // every control stays inside the card (owner, 2026-10-18: Tilt and Reset were clipped off the right edge): the row wraps, and no one control is wider than it
   for (const c of q('.ff-btns').children) c.style.maxWidth = '100%';
-  const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; };
+  const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; try { modeLink && modeLink.close(); } catch (_) { /* gone */ } };
 
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
   tick(idea.warm || 0); tick(1);

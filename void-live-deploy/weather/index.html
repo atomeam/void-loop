@@ -76,9 +76,10 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { placeOf, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words } from '/lib/weather.js';
+  import { placeOf, weatherAsk, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words } from '/lib/weather.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.weather.v1', esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   let shown = null; // the view on the page, for the share text and the hand-off
+  let cardAsk = ''; // the stage card for the place looked up last ('' until one is drawn: the example)
   // every fetch gives up after 12 s, so a service that never answers ends in the kept forecast or the retry line, never a page stuck busy
   const WAIT_MS = 12000, timed = () => (typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(WAIT_MS) : undefined);
   const get = (u) => fetch(u, { headers: { accept: 'application/geo+json, application/json' }, signal: timed() }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))));
@@ -110,7 +111,7 @@
       if (!w) w = await get(forecastUrl(loc.lat, loc.lon));
       const v = viewOf(w, loc);
       if (!v.hours.length) throw new Error('no forecast');
-      draw(v); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
+      draw(v); cardAsk = weatherAsk(coords ? '' : place); document.dispatchEvent(new Event('tk:card')); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
       extras(loc);
     } catch (_) {
       let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
@@ -125,7 +126,7 @@
   const linkOf = () => location.origin + location.pathname + (asked || $('q').value ? '?q=' + encodeURIComponent(placeOf($('q').value) || asked) : '');
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(linkOf()); $('link').textContent = 'Link copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1500); } catch (_) {} });
   $('share').addEventListener('click', async () => { const text = shown ? shown.place + ': ' + both(shown.now.temp) + ', ' + words(shown.now.code) : 'Weather'; try { if (navigator.share) await navigator.share({ title: document.title, text, url: linkOf() }); else { await navigator.clipboard.writeText(text + ' ' + linkOf()); $('share').textContent = 'Copied'; setTimeout(() => { $('share').textContent = 'Share'; }, 1500); } } catch (_) {} });
-  mountRelated($('related'), '/weather/', [{ label: 'The time in this place', href: () => (shown ? '/time/?c=' + encodeURIComponent(shown.place.split(',')[0]) : null) }]);
+  mountRelated($('related'), '/weather/', [{ label: 'The time in this place', href: () => (shown ? '/time/?c=' + encodeURIComponent(shown.place.split(',')[0]) : null) }], { card: () => cardAsk });
   if (asked) look(asked);
   else { let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {} if (kept && kept.v) { $('q').value = kept.v.place.split(',')[0]; look($('q').value); } }
 </script>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<style>
+:root{--bg:#020306;--ink:#cfe9ff;--dim:#6d8299;--acc:#ffd27a}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:radial-gradient(ellipse at 50% 40%,#08101c 0%,var(--bg) 70%);color:var(--ink);font:14px/1.4 system-ui,sans-serif;overflow:hidden}
+#stage{position:absolute;inset:0;display:grid;place-items:center}
+#wrap{position:relative;width:min(92vmin,880px);aspect-ratio:1}
+canvas{width:100%;height:100%;display:block;border-radius:18px;box-shadow:0 0 80px #1d3d6a55}
+#overlay{position:absolute;inset:0;pointer-events:none}
+.city{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;border-radius:50%;border:2px solid var(--acc);background:#1a1206cc;color:var(--acc);font:600 11px system-ui;display:grid;place-items:center;cursor:pointer;transition:width .5s,height .5s,box-shadow .5s;padding:0}
+.city.sel{background:var(--acc);color:#1a1206}
+.city:focus-visible{outline:2px solid #fff;outline-offset:3px}
+#panel{position:absolute;left:16px;top:16px;width:min(300px,calc(100vw - 32px));padding:14px 16px;background:#0a1220d9;border:1px solid #2a4566;backdrop-filter:blur(8px);transition:transform .6s,border-radius .6s;transform-origin:0 0}
+#panel h1{margin:0 0 4px;font-size:15px;letter-spacing:.04em}
+#panel p{margin:0 0 8px;color:var(--dim);font-size:12px}
+.row{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:12.5px;margin:2px 0}
+.row b{color:#fff;font-weight:600}
+#spark{width:100%;height:42px;margin:6px 0}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+button.b{background:#12233a;color:var(--ink);border:1px solid #2f507a;border-radius:8px;padding:6px 9px;font:12px system-ui;cursor:pointer}
+button.b:hover{background:#1b3354}
+#msg{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);color:var(--dim);font-size:12px;text-align:center;width:min(90vw,640px)}
+@media (max-width:640px){#panel{top:auto;bottom:44px;left:8px;right:8px;width:auto}}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Slime Rail Planner · The Verse · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Slime Rail Planner · The Verse.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Slime Rail Planner · The Verse · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Slime Rail Planner · The Verse.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f306-slime-rail-planner/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f306-slime-rail-planner/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<div id="stage"><div id="wrap"><canvas id="cv" width="560" height="560" aria-label="Slime mould growing a rail network between cities"></canvas><div id="overlay"></div></div></div>
+<section id="panel" aria-live="polite">
+  <h1>Slime Rail Planner</h1>
+  <p>A slime mould lays rail between your cities. An on-device optimiser keeps rewriting its physics to connect everyone with less track.</p>
+  <div class="row"><span>Cities linked</span><b id="mConn">–</b></div>
+  <div class="row"><span>Track laid (× shortest tree)</span><b id="mCost">–</b></div>
+  <div class="row"><span>Detour factor</span><b id="mStr">–</b></div>
+  <div class="row"><span>Generation</span><b id="mGen">0</b></div>
+  <canvas id="spark" width="268" height="42" aria-hidden="true"></canvas>
+  <div class="btns">
+    <button class="b" id="bPause">Pause learning</button>
+    <button class="b" id="bRoute">Trace a route</button>
+    <button class="b" id="bNew">New map</button>
+    <button class="b" id="bShare">Copy link</button>
+  </div>
+</section>
+<div id="msg">Tap empty space to add a city. Tap a city to remove it. Use "Trace a route", then tap two cities to ride the network.</div>
+<script src="core.js"></script>
+<script src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

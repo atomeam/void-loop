@@ -35,9 +35,11 @@ export function pathsOf(rel) {
   if (rel.endsWith('/index.html')) return ['/' + rel.slice(0, -'index.html'.length)];
   return ['/' + rel.replace(/\.html$/, '')];
 }
-/** Pages in one directory that carry the very same inline scripts share one splat rule (/fix/*): Cloudflare caps _headers rules,
- *  and a generated family (the /fix/ error pages) otherwise costs a rule per page. Only when EVERY page under the directory has
- *  that exact set, since a second CSP on a page with other inline scripts would block them. */
+/** Pages in one directory share one splat rule (/fix/*, /fringe/*): Cloudflare caps _headers at 100 rules, and a family of pages
+ *  otherwise costs a rule per page. The shared rule lists every inline script of every page under the directory (the union), since a
+ *  second CSP on a page that lacks one of its own scripts would block it; a page still runs no inline script that is not one of its
+ *  directory's own. A directory whose union would make the header longer than Cloudflare takes (2,000 characters) keeps a rule per page. */
+export const VALUE_MAX = 2000;
 export function rules() {
   const per = [];
   for (const f of pages()) {
@@ -46,11 +48,12 @@ export function rules() {
   }
   const dirOf = (p) => (p.match(/^\/([^/]+)\/./) || p.match(/^\/([^/]+)\/$/) || [])[1]; // a directory's own index counts in it: /x/* covers /x/, so a page there with other scripts must stop the sharing
   const allPages = pages().flatMap((f) => pathsOf(relative(root, f)));
-  const sets = new Map(); // directory -> the distinct inline-script sets of every page under it ('' = none)
-  for (const p of allPages) { const d = dirOf(p); if (!d) continue; const e = per.find((x) => x.p === p); (sets.get(d) || sets.set(d, new Set()).get(d)).add(e ? e.h : ''); }
-  const shared = new Map(); // directory -> hashes, when every page under it has the same set
-  for (const [d, set] of sets) { const one = [...set]; if (one.length === 1 && one[0]) shared.set(d, one[0]); }
-  const rule = (p, h) => p + '\n  Content-Security-Policy: script-src ' + REST + ' ' + h;
+  const sets = new Map(); // directory -> every inline-script hash of every page under it (a directory's own index counts in it)
+  for (const p of allPages) { const d = dirOf(p); if (!d) continue; const e = per.find((x) => x.p === p); const u = sets.get(d) || sets.set(d, new Set()).get(d); if (e) for (const h of e.h.split(' ')) u.add(h); }
+  const value = (h) => 'script-src ' + REST + ' ' + h;
+  const shared = new Map(); // directory -> the union of its hashes, when it fits in one header
+  for (const [d, set] of sets) { const h = [...set].join(' '); if (h && value(h).length <= VALUE_MAX) shared.set(d, h); }
+  const rule = (p, h) => p + '\n  Content-Security-Policy: ' + value(h);
   const out = [];
   for (const [d, h] of shared) if (per.filter((x) => dirOf(x.p) === d).length >= 3) out.push(rule('/' + d + '/*', h)); else shared.delete(d);
   for (const x of per) { const d = dirOf(x.p); if (d && shared.has(d)) continue; out.push(rule(x.p, x.h)); }

@@ -40,24 +40,29 @@ export const targetOf = (title) => 'will:' + slug(title);
 /** how many of the rows ({ target, state }) are earlier jobs of this want that were set aside or failed. Pure. */
 export const triesOf = (rows, title) => (Array.isArray(rows) ? rows : []).filter((r) => r && r.target === targetOf(title) && /^(?:set aside|failed)$/.test(String(r.state))).length;
 
-/** the first want that has not used up its tries, and the wants above it that were skipped: { want, skipped: [{ title, tries }] }; want is null when every want waits. Pure. */
+/** the first want that has not used up its tries, and the wants above it that were skipped: { want, skipped: [{ title, tries }] }; want is null when every want
+ *  has used up its tries. The churn cap never starves the loop: when every want left names a hot file, the first of them goes ahead anyway and the result
+ *  carries overCap (the hot files it names). Pure. */
 export function pickWant(wants, rows, max = MAX_TRIES, hot = []) {
   const skipped = [];
+  let capped = null; // the first want held back only by the churn cap
   for (const w of Array.isArray(wants) ? wants : []) {
     const tries = triesOf(rows, w && w.title), churn = namedHot((w && w.title) + ' ' + ((w && w.why) || ''), hot);
     if (tries >= max) skipped.push({ title: String(w.title), tries });
-    else if (churn.length) skipped.push({ title: String(w.title), tries, churn }); // names a file that is changing too fast
+    else if (churn.length) { skipped.push({ title: String(w.title), tries, churn }); if (!capped) capped = { w, churn }; } // names a file that is changing too fast
     else return { want: w || null, skipped };
   }
+  if (capped) return { want: capped.w, skipped: skipped.filter((x) => x.title !== String(capped.w.title)), overCap: capped.churn };
   return { want: null, skipped };
 }
 
-/** what the queued job's note says about the wants skipped for it ('' when none). Pure. */
-export function skippedNote(skipped) {
+/** what the queued job's note says about the wants skipped for it, and about a want that went ahead over the churn cap ('' when neither). Pure. */
+export function skippedNote(skipped, overCap) {
   const l = Array.isArray(skipped) ? skipped : [], hot = l.filter((x) => x.churn && x.churn.length), tried = l.length - hot.length;
   const part = (n, why) => n + ' want' + (n === 1 ? '' : 's') + ' above it waits: ' + why;
   return (tried ? ' · ' + part(tried, 'its jobs were set aside or failed ' + MAX_TRIES + ' times in ' + WINDOW_DAYS + ' days') : '')
-    + (hot.length ? ' · ' + part(hot.length, 'it names ' + [...new Set(hot.flatMap((x) => x.churn))].slice(0, 3).join(', ') + ', changed more than ' + MAX_CHANGES + ' times in ' + CHURN_DAYS + ' days') : '');
+    + (hot.length ? ' · ' + part(hot.length, 'it names ' + [...new Set(hot.flatMap((x) => x.churn))].slice(0, 3).join(', ') + ', changed more than ' + MAX_CHANGES + ' times in ' + CHURN_DAYS + ' days') : '')
+    + (Array.isArray(overCap) && overCap.length ? ' · every want left names a file changed more than ' + MAX_CHANGES + ' times in ' + CHURN_DAYS + ' days, so this one goes ahead anyway (' + overCap.slice(0, 3).join(', ') + ')' : '');
 }
 
 /** the earliest time a job's end still counts, as an ISO string. Pure. */

@@ -189,9 +189,9 @@
   mountRelated($('related'), '/color/', [
     { label: 'Make a gradient from it', href: () => '/gradient/#' + gradientCode({ type: 'linear', angle: 90, stops: [{ color: '#' + curHex(), pos: 0 }, { color: lighter(curHex()), pos: 100 }] }) },
     { label: 'Use it as every tool\u2019s accent', run: () => (setAccent('#' + curHex()) ? 'Every tool wears it now' : 'This browser will not keep it') },
-    { label: 'Paint the wheel in its shades', href: () => (setPalette(shadesOf('#' + curHex(), 8)) ? '/wheel/' : null) },
+    { label: 'Paint the wheel in its shades', href: () => '/wheel/', go: () => setPalette(shadesOf('#' + curHex(), 8)) },
     { label: 'It as a number', href: () => '/base-converter/?v=' + curHex() + '&b=16' },
-  ]);
+  ], { card: () => 'color #' + curHex() }); // the stage card opens on the colour open here, not the example
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

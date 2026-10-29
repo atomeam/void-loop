@@ -88,3 +88,40 @@ export const TEMPLATES = {
   weekly: { title: 'Weekly plan', html: '<h2>Goals</h2><ul class="todo"><li class="chk"></li></ul><h2>Monday</h2><p><br></p><h2>Tuesday</h2><p><br></p><h2>Wednesday</h2><p><br></p><h2>Thursday</h2><p><br></p><h2>Friday</h2><p><br></p><h2>Weekend</h2><p><br></p>' },
 };
 export { clean };
+
+// ---- catching up with Google Docs (docs/PARITY/google-docs.md): comments on a passage, pictures in a note ----
+/** the comment ids anchored in a body (<mark class="cm" data-c="id">), once each, in order. Pure. */
+export const anchorsOf = (html) => [...new Set([...String(html || '').matchAll(/<mark class="cm" data-c="([a-z0-9]{1,16})">/g)].map((m) => m[1]))];
+/** the note with a comment added: its text, the words it is about, when. An empty text adds nothing. Pure. */
+export function addComment(doc, id, quote, text, at = Date.now()) {
+  const t = String(text || '').trim().slice(0, 2000); if (!t || !/^[a-z0-9]{1,16}$/.test(id)) return doc;
+  return { ...doc, comments: [...(doc.comments || []).filter((c) => c.id !== id), { id, quote: String(quote || '').replace(/\s+/g, ' ').trim().slice(0, 300), text: t, at }] };
+}
+/** a reply under a comment. Pure. */
+export function replyTo(doc, id, text, at = Date.now()) {
+  const t = String(text || '').trim().slice(0, 2000); if (!t) return doc;
+  return { ...doc, comments: (doc.comments || []).map((c) => (c.id === id ? { ...c, replies: [...(c.replies || []), { text: t, at }].slice(-100) } : c)) };
+}
+/** resolve (or reopen) a comment: resolved ones keep their thread but lose the highlight in the body. Pure. */
+export function resolveComment(doc, id, done = true) {
+  const comments = (doc.comments || []).map((c) => { if (c.id !== id) return c; const { done: _, ...r } = c; return done ? { ...r, done: true } : r; });
+  return { ...doc, comments, html: done ? unmark(doc.html, id) : doc.html };
+}
+/** a body with one comment's highlight taken off, its words left in place. Pure. */
+export function unmark(html, id) {
+  const open = '<mark class="cm" data-c="' + id + '">'; let h = String(html || ''), i;
+  while ((i = h.indexOf(open)) >= 0) { let depth = 1, j = i + open.length; const re = /<mark\b[^>]*>|<\/mark>/g; re.lastIndex = j; let m;
+    while ((m = re.exec(h))) { depth += m[0][1] === '/' ? -1 : 1; if (!depth) break; }
+    if (!m) { h = h.slice(0, i) + h.slice(j); break; } h = h.slice(0, i) + h.slice(j, m.index) + h.slice(m.index + 7); }
+  return h;
+}
+/** the open comments, in the order their words appear in the body; ones whose words were deleted come last, marked orphan. Pure. */
+export function openComments(doc) {
+  const order = anchorsOf(doc.html), rank = (c) => { const i = order.indexOf(c.id); return i < 0 ? 1e9 : i; };
+  return (doc.comments || []).filter((c) => !c.done).map((c) => ({ ...c, orphan: !order.includes(c.id) })).sort((a, b) => rank(a) - rank(b) || a.at - b.at);
+}
+/** the size a picture goes into a note at: no side over max, the shape kept, never enlarged. Pure. */
+export function fitImage(w, h, max = 1200) {
+  w = Math.max(1, Math.round(+w || 1)); h = Math.max(1, Math.round(+h || 1)); const k = Math.min(1, max / Math.max(w, h));
+  return { w: Math.max(1, Math.round(w * k)), h: Math.max(1, Math.round(h * k)) };
+}

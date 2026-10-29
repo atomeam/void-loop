@@ -1,0 +1,64 @@
+{
+ "_": "made by tools/tower-plan.mjs from the tower-plan block in docs/NEXT.md; edit that block, not this file. The card joins each id with the gate (lib/tower.js), so nothing here is a score.",
+ "source": "docs/NEXT.md",
+ "now": [
+  {
+   "id": "is it",
+   "why": "isitchristmas.com, one answer a day (robots: allowed). Before it, `paint` (heycolor.com) was surpassed on 2026-10-28: all 16 aspects, its six journeys scripted with negative controls (tower.evidence.json)"
+  }
+ ],
+ "next": [
+  {
+   "id": "coin flip",
+   "why": "justflipacoin.com (robots: allowed except /flips)"
+  },
+  {
+   "id": "password strength",
+   "why": "howsecureismypassword.net (no robots.txt: allowed)"
+  },
+  {
+   "id": "word count",
+   "why": "wordcounter.net (robots: allowed)"
+  },
+  {
+   "id": "stopwatch",
+   "why": "online-stopwatch.com (robots: allowed)"
+  },
+  {
+   "id": "colour codes",
+   "why": "hexcolor16.com (robots: allowed)"
+  },
+  {
+   "id": "wheel",
+   "why": "wheelofnames.com (robots: allowed)"
+  },
+  {
+   "id": "gradient",
+   "why": "colorzilla.com gradient editor (robots: empty, allowed)"
+  },
+  {
+   "id": "encoder",
+   "why": "base64encode.org (robots: allowed)"
+  },
+  {
+   "id": "random number",
+   "why": "random.org (robots: home page allowed; /integers/?* disallowed, so only the home page is read)"
+  }
+ ],
+ "far": [
+  {
+   "id": "shopping",
+   "why": "Amazon, far future"
+  },
+  {
+   "id": "video",
+   "why": "YouTube, far future"
+  }
+ ],
+ "skipped": [
+  {
+   "site": "hextobinary.com",
+   "why": "its robots.txt disallows every path for every agent"
+  }
+ ]
+}

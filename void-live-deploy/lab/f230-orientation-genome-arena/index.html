@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; background: #0a0a12; color: #e0e0e0; overflow: hidden; }
+  #arena { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; }
+  #ui { position: absolute; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 8px; max-width: 320px; }
+  button { background: #2a2a4a; color: #fff; border: 1px solid #555; padding: 6px 12px; margin: 4px; cursor: pointer; border-radius: 4px; }
+  button:hover { background: #3a3a6a; }
+  #bodies { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  .body { position: absolute; border-radius: 50%; pointer-events: auto; cursor: grab; opacity: 0.85; transition: all 0.1s; box-shadow: 0 0 15px currentColor; }
+  .body:active { cursor: grabbing; }
+  #status { font-size: 0.85em; margin-top: 8px; line-height: 1.3; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation Genome Arena · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Orientation Genome Arena.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation Genome Arena · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Orientation Genome Arena.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f230-orientation-genome-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f230-orientation-genome-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="arena"></canvas>
+<div id="bodies"></div>
+<div id="ui">
+  <h3 style="margin:0 0 8px">Orientation Genome Arena F-230</h3>
+  <p style="margin:4px 0; font-size:0.9em">Tilt device or drag to compete. Seal & transfer winning genome.</p>
+  <button id="start">Start Competition</button>
+  <button id="seal">Seal Winner Genome</button>
+  <button id="reset">Reset Arena</button>
+  <div id="status">Awaiting orientation or mouse. Offline capable.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation Genome Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

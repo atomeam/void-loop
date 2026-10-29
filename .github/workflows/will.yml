@@ -8,13 +8,12 @@ name: Verse's will
 on:
   schedule:
     - cron: '7 * * * *' # every hour at :07, day and night; each run chooses three fresh wants and replaces the card's
+  # GitHub throttles this cron (75 scheduled runs in 2 weeks, 2026-10-29), so the conductor's clock also starts the will when the
+  # last run is an hour old (tools/conductor-core.mjs willDue). Its concurrency group keeps the two from running at once.
   workflow_dispatch:
   # also right after main deploys (owner, 2026-10-18: "ok there is too much not updating"): a merge that built a want would
-  # otherwise leave it on the card until the next hourly slot. One Workers AI call per merge, and only when the deploy passed.
-  workflow_run:
-    workflows: ['Verse deploy']
-    types: [completed]
-    branches: [main]
+  # otherwise leave it on the card until the next hourly slot. deploy.yml starts it with gh workflow run, only when the deploy
+  # passed: a workflow_run trigger never fired for a deploy that automerge starts (GITHUB_TOKEN runs fire no workflow_run).
 
 concurrency:
   group: void-will
@@ -22,10 +21,10 @@ concurrency:
 
 permissions:
   contents: read
+  actions: write # revive the conductor's clock (grow-clock.yml) when its chain is down
 
 jobs:
   will:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -42,3 +41,12 @@ jobs:
         run: |
           if [ -z "$VOID_MISSES_TOKEN" ]; then echo "::warning title=Verse's will did not run::Repo secret VOID_OWNER_TOKEN is not set."; exit 0; fi
           python3 tools/will.py | tee -a "$GITHUB_STEP_SUMMARY"
+      # the second heartbeat (2026-10-26: "get Verse automated like its very life depends on it"): this runs every hour and after every
+      # deploy, so when the conductor's clock chain is down (no grow-clock run going or waiting) it is started again within the hour
+      - name: Keep the conductor's clock running
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          live=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/grow-clock.yml/runs?per_page=5" --jq '[.workflow_runs[] | select(.status != "completed")] | length' 2>/dev/null || echo 1)
+          if [ "$live" = "0" ]; then gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && echo "the clock was down: started again" >> "$GITHUB_STEP_SUMMARY"; else echo "clock running"; fi

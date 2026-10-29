@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body { margin: 0; background: #0a0a0f; color: #e0e0e0; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 8px; max-width: 320px; font-size: 13px; }
+  #ui h1 { margin: 0 0 8px; font-size: 16px; }
+  button { background: #222; color: #fff; border: 1px solid #444; padding: 6px 10px; margin: 4px 4px 0 0; cursor: pointer; border-radius: 4px; }
+  button:hover { background: #333; }
+  #status { margin-top: 8px; font-family: monospace; font-size: 11px; white-space: pre-wrap; }
+  .agent-card { display: inline-block; margin: 2px; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-competitive-genome-agents · Verse lab</title>
+<meta name="description" content="Novel combination: multi-agent competition on a spatial resource field where each agent is controlled by a local tiny MLP genome.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-competitive-genome-agents · Verse lab">
+<meta property="og:description" content="Novel combination: multi-agent competition on a spatial resource field where each agent is controlled by a local tiny MLP genome.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f172-webgpu-competitive-genome-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f172-webgpu-competitive-genome-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <h1>F172 Competitive Genome Agents</h1>
+  <p>Multi-agent competition on a spatial resource field. Local tiny policies (genomes) compete to gather energy. Winner seals and transfers genome (mutated) to losers via IndexedDB persistence.</p>
+  <button id="seal">Seal Best Genome</button>
+  <button id="reset">Reset Field</button>
+  <button id="transfer">Force Transfer</button>
+  <div id="status">Loading…</div>
+</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

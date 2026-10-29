@@ -3,6 +3,9 @@
 // into Verse reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
 import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
+// a card's sources are the links in its .src boxes, never the product line (.src.vtail, void.html keepTail): the Gumroad page in that line
+// is not where the answer came from, so it never makes the card read "from a source" or earn "fetched, sourced and dated" (owner, 2026-10-29)
+export const SOURCE_BOX = '.src:not(.vtail)', SOURCE_LINKS = '.src:not(.vtail) a';
 export const MARK = 'VERSE-CARD:'; // renamed from V01D-CARD: on 2026-10-18 with the brand; the parser below still reads every card shared before
 const CODE_RE = /(?:VERSE|Verse|V01D)-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
@@ -84,7 +87,7 @@ function bodyOf(el) {
 export function readCard(el) {
   const { title, body } = bodyOf(el);
   const kind = (el.querySelector(':scope > .vc-type') || {}).textContent || '';
-  const sources = [...el.querySelectorAll('.src a')].map((a) => ({ title: a.textContent.replace(/^\[\d+\]\s*/, ''), url: a.href }));
+  const sources = [...el.querySelectorAll(SOURCE_LINKS)].map((a) => ({ title: a.textContent.replace(/^\[\d+\]\s*/, ''), url: a.href }));
   const was = Math.floor(+(el.dataset && el.dataset.cardVersion)); // a card brought back from a paste is at version `was`; copying it again makes the next
   return dataOf({ title, kind: kind.replace(/\s+/g, ' ').trim(), body, sources, n: was >= 1 ? was + 1 : undefined });
 }

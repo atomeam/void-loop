@@ -42,7 +42,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/random/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Random number","url":"https://a-to-mind.com/random/","description":"A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random number generator, random number between 1 and 100, random number picker, random numbers no repeats, lottery number generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Random number","item":"https://a-to-mind.com/random/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Random number","url":"https://a-to-mind.com/random/","description":"A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random number generator, random number between 1 and 100, random number picker, random numbers no repeats, lottery number generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/random/?min=1&max={max}"},"max-input":"required name=max"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Random number","item":"https://a-to-mind.com/random/"}]}]}</script>
 <!-- /seo -->
 <script src="/visit.js" defer></script>
 
@@ -55,6 +55,7 @@
 <link rel="modulepreload" href="/lib/wheel.js">
 <link rel="modulepreload" href="/lib/handoff.js">
 <link rel="modulepreload" href="/lib/prizes.js">
+<link rel="modulepreload" href="/lib/random-card.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -113,7 +114,7 @@
   // a public, checkable draw (lib/beacon.js): the numbers come from a drand round, and the link carries the round so anyone re-derives them
   let wantRound = 0, busy = false;
   async function beaconDraw(a, b, n, uniq) {
-    if (busy) return; busy = true; $('proof').textContent = 'Asking the public beacon for its newest round…';
+    if (busy) { $('proof').textContent = 'Still waiting for the public beacon\'s newest round: the numbers appear as soon as it answers.'; return null; } busy = true; $('proof').textContent = 'Asking the public beacon for its newest round…';
     try {
       const B = await import('/lib/beacon.js'), r = await B.fetchRound(wantRound); wantRound = 0;
       const vals = await B.numbers(r.randomness, a, b, n, uniq); busy = false; return { vals, r, url: B.roundUrl(r.round) };
@@ -205,12 +206,13 @@
   import { mountRelated } from '/lib/toolkit.js';
   import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
   import { mountStrip, prizesLink } from '/lib/handoff.js';
+  import { cardAsk } from '/lib/random-card.js';
   const list = () => document.getElementById('list').value.split('\n').map((s) => s.trim()).filter(Boolean);
   mountRelated(document.getElementById('related'), '/random/', [
     { label: 'Spin your list on a wheel', href: () => (list().length ? '/wheel/#' + wheelCode(wheelEntries(list().join('\n'))) : null) },
     { label: 'Prize odds for your list', href: () => (list().length ? prizesLink(list().join('\n')) : null) },
     { label: 'This number in other bases', href: () => { const v = document.getElementById('out').textContent.trim(); return /^-?\d+$/.test(v) ? '/base-converter/?v=' + v + '&b=10' : null; } },
-  ]);
+  ], { card: () => cardAsk(document.getElementById('min').value, document.getElementById('max').value, document.getElementById('dec').value) });
   mountStrip(document.getElementById('related'), '/random/');
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

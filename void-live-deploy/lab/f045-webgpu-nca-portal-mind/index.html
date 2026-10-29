@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --hue: 220; --contrast: 1.1; --scale: 1; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; }
+  body { filter: hue-rotate(calc(var(--hue) * 1deg)) contrast(var(--contrast)) ; transform: scale(var(--scale)); transform-origin: center; }
+  canvas { display: block; width: 100%; height: 100%; background: #000; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,20,0.7); padding: 8px 12px; border-radius: 8px; font-size: 13px; pointer-events: none; }
+  #ui button, #ui .portal { pointer-events: auto; }
+  button { background: #222244; color: #aaf; border: 1px solid #44a; padding: 4px 10px; border-radius: 4px; cursor: pointer; margin: 2px; }
+  button:hover { background: #334466; }
+  .portal { position: fixed; background: rgba(40,20,80,0.85); border: 1px solid #88f; border-radius: 12px; padding: 6px 10px; font-size: 12px; cursor: pointer; z-index: 20; animation: float 3s ease-in-out infinite; box-shadow: 0 0 12px #448; transition: transform 0.2s; }
+  .portal:hover { transform: scale(1.1); }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  #status { margin-top: 6px; opacity: 0.8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Compute NCA Portal Mind · Verse lab</title>
+<meta name="description" content="Novel combination of a large-scale Neural Cellular Automaton (NCA) updated via WebGPU compute (with Canvas2D fallback), a local Worker evolutionary mind that">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Compute NCA Portal Mind · Verse lab">
+<meta property="og:description" content="Novel combination of a large-scale Neural Cellular Automaton (NCA) updated via WebGPU compute (with Canvas2D fallback), a local Worker evolutionary mind that">
+<meta property="og:url" content="https://a-to-mind.com/lab/f045-webgpu-nca-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f045-webgpu-nca-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F-045 NCA Portal Mind</div>
+  <div id="status">Initializing…</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Field</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Compute NCA Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

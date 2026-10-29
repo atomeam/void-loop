@@ -1,6 +1,7 @@
 // /generators/story/'s code, kept out of the page so the page needs no inline-script CSP rule (tools/csp-hashes.mjs budget)
 import { mountRelated } from '/lib/toolkit.js';
 import { GENRES, STORY_SAYS } from '/lib/story.js';
+import { shareHash, SHARE_MAX } from '/lib/fanfic.js';
 addEventListener('load', () => {
   const $ = (id) => document.getElementById(id), de = /^de\b/i.test(navigator.language || '');
   const KEY = 'a2m.void.stories.v1';
@@ -42,6 +43,8 @@ addEventListener('load', () => {
   if (de) { document.documentElement.lang = 'de'; $('h').textContent = 'Geschichtenschreiber'; $('sub').textContent = 'Eine Idee rein, eine Geschichte raus, Teil für Teil. Deine Geschichten bleiben auf diesem Gerät.'; $('ideaL').textContent = 'Die Idee'; $('genreL').textContent = 'Genre'; $('lenL').textContent = 'Länge eines Teils'; $('write').textContent = 'Anfang schreiben'; $('storyH').textContent = 'Die Geschichte'; $('steerL').textContent = 'Was als Nächstes passiert (optional)'; $('more').textContent = 'Weiter'; $('again').textContent = 'Letzten Teil neu'; $('undo').textContent = 'Letzten Teil entfernen'; $('copy').textContent = 'Kopieren'; $('dl').textContent = '.txt laden'; $('newS').textContent = 'Neue Geschichte'; $('mineH').textContent = 'Deine Geschichten auf diesem Gerät'; }
   if (cur) { $('idea').value = cur.idea || ''; $('genre').value = cur.genre || 'any'; }
   draw();
-  mountRelated($('related'), '/generators/');
+  // the story goes on to the fan fiction Writing Room as a draft, held in the link after the # (owner, 2026-10-29: the pages work together)
+  const toRoom = () => { if (!cur || !cur.parts.length) return null; const u = '/fanfic/?v=room&from=story#' + shareHash({ title: titleOf(cur), text: text() }); return u.length <= SHARE_MAX ? u : null; };
+  mountRelated($('related'), '/generators/', [{ label: de ? 'Im Schreibraum weiterschreiben' : 'Keep writing it on Fan fiction', href: toRoom }]);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 });

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 220; --sat: 40%; --morph: 0; }
+  body {
+    margin: 0; background: hsl(var(--hue), var(--sat), 8%); color: #eee;
+    font-family: system-ui, sans-serif; overflow: hidden;
+    transition: background 0.8s, filter 0.4s;
+    filter: hue-rotate(calc(var(--morph) * 40deg)) brightness(calc(1 + var(--morph) * 0.15));
+  }
+  #void {
+    position: absolute; inset: 0; display: block;
+  }
+  #hud {
+    position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.55);
+    padding: 10px 14px; border-radius: 12px; backdrop-filter: blur(6px);
+    transform: scale(calc(1 + var(--morph) * 0.08)) translateY(calc(var(--morph) * -8px));
+    border: 1px solid hsl(var(--hue), 60%, 50%);
+    transition: transform 0.6s, border-color 0.6s;
+  }
+  button { margin: 4px; padding: 6px 10px; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #333; }
+  #status { font-size: 12px; opacity: 0.8; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Boids RL Mind · Verse lab</title>
+<meta name="description" content="Novel combination: GPU-accelerated (Canvas fallback; WebGPU compute path noted) boids/flocking field whose behavioral parameters are continuously adapted by a local">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Boids RL Mind · Verse lab">
+<meta property="og:description" content="Novel combination: GPU-accelerated (Canvas fallback; WebGPU compute path noted) boids/flocking field whose behavioral parameters are continuously adapted by a local">
+<meta property="og:url" content="https://a-to-mind.com/lab/f025-webgpu-boids-rl-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f025-webgpu-boids-rl-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="void"></canvas>
+<div id="hud">
+  <strong>F-025 Boids RL Mind</strong><br>
+  <button id="seed">Seed energy</button>
+  <button id="seal">Seal genome</button>
+  <div id="status">mind initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Boids RL Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

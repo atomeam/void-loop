@@ -41,5 +41,12 @@ test('csp-hashes: hashes only inline scripts that run, one rule per page, inside
   const r = rules(); assert.ok(r.length > 0 && r.length <= 90 - 10, r.length + ' rules');
   assert.ok(r.every((x) => !/unsafe-inline/.test(x)));
   assert.ok(r.some((x) => x.startsWith('/fix/*\n')), 'the /fix/ pages share one splat rule, not one rule each');
+  assert.ok(r.some((x) => x.startsWith('/fringe/*\n')), 'a directory of pages with different scripts shares one rule too (their union)');
+  assert.ok(r.length + readFileSync(at('void-live-deploy/_headers'), 'utf8').split('\n').filter((l) => l.startsWith('/')).length <= 100, 'with the committed rules, inside Cloudflare\'s 100');
+  for (const f of ['fringe/interval-timing.html', 'markets/screener/index.html', 'fix/index.html']) { // each page's own inline scripts are allowed by the rule that serves it
+    let html; try { html = readFileSync(at('void-live-deploy/' + f), 'utf8'); } catch { continue; }
+    const p = pathsOf(f)[0], hit = r.find((x) => x.startsWith(p + '\n')) || r.find((x) => { const head = x.split('\n')[0]; return head.endsWith('*') && p.startsWith(head.slice(0, -1)); });
+    for (const h of inlineHashes(html)) assert.ok(hit && hit.includes(h), f + ' runs its own script ' + h);
+  }
   assert.ok(!readFileSync(at('void-live-deploy/_headers'), 'utf8').includes('sha256-'), 'hashes are made at deploy, never committed');
 });
