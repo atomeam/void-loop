@@ -16,6 +16,7 @@ export const TECHNIQUES = [
   ['hummed melody', /hum[ -]crystal|pitch[ -]detect|\byin\b|music[ -]box/, 'hearing'],
   ['self-mutating program', /self[ -]mutating|shader[ -]mind|genetic programming/, 'painter'],
   ['codec retina', /codec[ -]retina/, 'gardener'],
+  ['l-system grammar', /l[ -]system (?:spatial|generative|expansion|grammar)|lindenmayer/, 'grower'], // "branches away from ... L-systems" in other specs is not the idea
   ['reservoir', /reservoir|echo[ -]state|\besn\b/, 'predictor'],
   ['online k-means', /k-?means/, 'gestures'],
   ['compression oracle', /compression|\bncd\b|kolmogorov/, 'gestures'],
