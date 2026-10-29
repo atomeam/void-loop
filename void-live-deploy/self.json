@@ -525,13 +525,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-15T00:00:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T05:30:53Z",
+   "subject": "Verse Brain draft map: 235 drafts after a-to-mind.com master gained F323 and F447"
+  },
+  {
+   "at": "2026-10-29T05:30:32Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T05:29:44Z",
    "subject": "Regenerate the generated files after the merge"
@@ -603,14 +611,6 @@
   {
    "at": "2026-10-29T05:12:43Z",
    "subject": "Tower: sycophanthex.com is fought by /fanfic/"
-  },
-  {
-   "at": "2026-10-29T05:10:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:10:00Z",
-   "subject": "List the proverb skill so it loads"
   }
  ],
  "builders": {
