@@ -5937,12 +5937,13 @@
   },
   "howsecureismypassword.net": {
    "bytes": 282094,
-   "controls": 3,
+   "controls": 9,
    "scripts": 9,
    "styles": 2,
    "nodes": 46,
    "routes": 0,
-   "counted": "unrendered",
+   "htmlControls": 3,
+   "counted": "rendered",
    "weight": 300554,
    "at": "2026-10-29"
   },
