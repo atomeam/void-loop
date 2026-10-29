@@ -1102,3 +1102,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T05:55:58Z | claude | fix | tools/next.mjs: the Versus target first, held asks and frontier items listed apart until their site is beaten; lib/churn.js: generated cards and the tower evidence are expected churn; parity docs regenerated
 2026-10-29T05:47:51Z | claude | grow | Verse Brain mind layers: asks become goals, episodic and procedural memory, one valence, a monitor of organs that disagree, answers from its own state, learning kept on the device
 2026-10-29T05:47:53Z | claude | grow | Memory orbs connect to Verse's shared field when it exists: live orbs go into free slots, a seal is sealed there too, and with no field.js the card works exactly as before
+2026-10-29T06:08:47Z | claude | grow | Memory orbs hand their colour to the colour page, and the field bridge is proven to turn on by itself
