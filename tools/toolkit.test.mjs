@@ -90,7 +90,7 @@ test('the stage link follows the page as it changes, with no press: after a clic
 // skills/index.json order, first match wins, as on the stage
 async function firstSkill(ask) {
   const names = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8')), mods = [];
-  for (const n of names) { const sk = (await import('../void-live-deploy/skills/' + n + '.js')).default; mods.push(...(sk.family ? sk.members : [sk])); }
+  for (const n of names) { const u = new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url), sk = (await import(u.href)).default; mods.push(...(sk.family ? sk.members : [sk])); }
   const k = mods.find((s) => s.match(ask.toLowerCase(), ask)); return k ? k.name : null;
 }
 
