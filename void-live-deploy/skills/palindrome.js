@@ -3,43 +3,38 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "palindrome", "is this a palindrome".
  */
-export function isPalindrome(text) {
-  return /^(?:please\s+)?(?:(?:check|is\s+this\s+a?)\s+)?palindrome(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+export function isPalindromeAsk(text) {
+  return /^(?:please\s+)?(?:(?:is\s+(?:this|it)\s+a\s+)?palindrome|(?:check|is)\s+.+\s+a\s+palindrome)(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, '')) || /palindrome\s+of\s+/i.test(text);
 }
 
 function isPal(s) {
-  const n = s.toLowerCase().replace(/[^a-z0-9]/g, '');
-  return n === n.split('').reverse().join('') && n.length > 0;
+  const c = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return c === c.split('').reverse().join('');
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const update = (p, out = '') => {
-    p.innerHTML = '<h2>Palindrome</h2><p>Enter a word or phrase:</p>' +
-      '<input id="pal-in" style="font-size:18px;width:80%" placeholder="e.g. racecar or a man a plan a canal panama"> <button id="pal-go" class="g-btn">Check</button>' +
-      (out ? '<p style="font-size:22px;margin-top:12px">' + esc(out) + '</p>' : '') +
-      '<div class="sub">say “palindrome” to start over</div>';
-    const inp = p.querySelector('#pal-in'), btn = p.querySelector('#pal-go');
-    const go = () => {
-      const v = (inp.value || '').trim();
-      const result = v ? (isPal(v) ? 'Yes, it is a palindrome' : 'No, not a palindrome') : 'Enter something';
-      update(p, result);
-    };
-    btn.addEventListener('click', (e) => { e.stopPropagation(); go(); });
-    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.stopPropagation(); go(); } });
-  };
-  showPage((p) => update(p));
+  const m = text.match(/(?:is\s+)?(.+?)\s+(?:a\s+)?palindrome/i) || text.match(/palindrome\s+of\s+(.+)/i);
+  showPage((p) => {
+    if (m) {
+      const phrase = m[1].trim();
+      const yes = isPal(phrase);
+      p.innerHTML = '<h2>Palindrome?</h2><p style="font-size:24px;text-align:center">' + esc(phrase) + ': ' + (yes ? 'Yes' : 'No') + '</p>';
+    } else {
+      p.innerHTML = '<h2>Palindrome</h2><p>Say “is racecar a palindrome” or “check a man a plan a canal panama”</p>';
+    }
+  });
   return 'palindrome';
 }
 
 export default {
   name: 'palindrome',
-  examples: ['palindrome', 'is this a palindrome', 'check palindrome'],
-  nearMisses: ['what is a palindrome', 'palindrome examples', 'word play'],
-  match(lower, text) { return isPalindrome(text); },
+  examples: ['palindrome', 'is racecar a palindrome', 'check a man a plan a canal panama'],
+  nearMisses: ['what is a palindrome', 'palindrome list'],
+  match(lower, text) { return isPalindromeAsk(text); },
   run,
   suite() {
-    const ok = isPalindrome('palindrome') && isPalindrome('is this a palindrome') && !isPalindrome('what is a palindrome');
+    const ok = isPalindromeAsk('palindrome') && isPalindromeAsk('is racecar a palindrome') && !isPalindromeAsk('what is a palindrome');
     return { ok, got: 'match works' };
   }
 };
