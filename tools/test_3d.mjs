@@ -1028,7 +1028,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       const mean = a.reduce((m, s) => [m[0] + s.d[0], m[1] + s.d[1], m[2] + s.d[2]], [0, 0, 0]).map((x) => x / a.length);
       return { n: a.length, same: JSON.stringify(a) === JSON.stringify(b), other: JSON.stringify(a) !== JSON.stringify(c), lean: Math.hypot(...mean), inPage: !!document.querySelector('.vpage .void-self canvas') };
     });
-    const before = drawn ? drawn.draws : 0;
+    // the card frame's art and type line sit above the body, so at 720 px tall its middle falls below the page's visible bottom and a tap
+    // there lands on the stage and closes the page (verify on 725c3929 and 31a24cf5: "broke": false, draws stuck): bring it into view first,
+    // as a visitor scrolls to it
+    if (drawn) { await F.p.evaluate(() => { const s = document.querySelector('.vpage .void-self'); if (s) s.scrollIntoView({ block: 'center' }); }); await F.p.waitForTimeout(300); }
+    const before = drawn ? await F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'void').draws) : 0;
     const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.075, 0]), drawn.key);
     if (pt) await F.p.mouse.click(pt.x, pt.y);
     const broke = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'void').draws > b + 4, before), 15000);
