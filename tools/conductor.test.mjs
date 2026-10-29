@@ -22,6 +22,8 @@ test('Verse\'s own asks and money outrank old flakes; age lifts a job; tries low
   assert.ok(score(job('a', 'will:x'), NOW) > score(job('b', 'flake:y', { at: iso(24 * 10) }), NOW), 'a want beats a ten-day-old flake');
   assert.ok(score(job('a', 'feature:x', { at: iso(24 * 5) }), NOW) > score(job('b', 'feature:y'), NOW), 'the older feature first');
   assert.ok(score(job('a', 'feature:x', { note: 'tries 2' }), NOW) < score(job('b', 'feature:y'), NOW));
+  assert.ok(score(job('a', 'will:x', { note: 'tries 2', at: iso(24 * 2) }), NOW) > score(job('b', 'versus:y', { at: iso(24) }), NOW), 'a two-day-old want tried twice still beats a day-old versus job');
+  assert.ok(score(job('a', 'versus:x', { note: 'tries 1' }), NOW) < score(job('b', 'versus:y'), NOW), 'any other job still sinks 25 a try');
 });
 
 test('each executor takes its most valuable job, one a tick, and the agent claims while self-claiming executors do not', () => {
