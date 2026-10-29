@@ -957,7 +957,7 @@
     "your brain"
    ],
    "tier": "checked",
-   "why": "a self-test, 5 browser-suite mentions",
+   "why": "a self-test, 6 browser-suite mentions",
    "n": 43
   },
   {
@@ -6175,7 +6175,7 @@
     "what do you remember about the parser"
    ],
    "tier": "proven",
-   "why": "a self-test, 19 browser-suite mentions, 11 real asks in the benchmark",
+   "why": "a self-test, 20 browser-suite mentions, 11 real asks in the benchmark",
    "flavor": "11 who came with a need went away with an answer. The page is theirs. So it is written.",
    "glow": 100,
    "n": 337
