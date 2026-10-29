@@ -1,9 +1,10 @@
 // Versus by weight: what a page weighs, which sites get measured, and that the lightest measured site stands first. Run: node --test tools/tower-size.test.mjs
 import { test } from 'node:test';
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { measure, weightOf, weightBand, bytesLabel, controlsOf, trustedControls } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
-import { planSizes, usable, isTool } from './tower-size.mjs';
+import { planSizes, usable, isTool, renderedControls, openBrowser } from './tower-size.mjs';
 
 test('a page is weighed by its bytes, scripts, elements and routes', () => {
   const html = '<html><head><script src="/a.js"></script><link rel="stylesheet" href="/s.css"></head><body><a href="/one">1</a><a href="/two">2</a><a href="https://x.com/o">o</a><p>hi</p></body></html>';
@@ -86,4 +87,37 @@ test('a community, archive or news page is not a tool even with a search box; a 
   const tool = '<html><body><h1>Hex to decimal</h1><p>Type a number.</p><input id="n" type="text"><button id="go">Convert</button><pre id="out"></pre></body></html>';
   assert.equal(isTool(tool), true);
   assert.equal(isTool('<html><body><p>Just words about hex.</p></body></html>'), false, 'nothing to use');
+});
+
+test('with a browser, a row counted only from raw html is read again, after the unmeasured and before the stale; without one it is not', () => {
+  const now = Date.parse('2026-10-29'), sites = ['a.com', 'b.com', 'c.com', 'd.com', 'e.com'].map((host) => ({ host }));
+  const file = { sites: { 'a.com': { at: '2026-10-28', bytes: 1, controls: 3 }, 'b.com': { at: '2026-10-28', bytes: 1, controls: 9, counted: 'rendered' }, 'c.com': { at: '2026-08-01', bytes: 1, controls: 4, counted: 'rendered' }, 'e.com': { at: '2026-10-28', bytes: 1, controls: 5, counted: 'unrendered' } } };
+  assert.deepEqual(planSizes({ sites, file, now, rendered: true }).map((s) => s.host), ['d.com', 'a.com', 'c.com'], 'a page that would not render waits its 30 days');
+  assert.deepEqual(planSizes({ sites, file, now }).map((s) => s.host), ['d.com', 'c.com']);
+});
+
+test('the rendered count is the page after its scripts ran, not its shell; a page that will not render gives null and closes its context', async () => {
+  const shell = '<html><body><div id="app"></div><script src="/app.js"></script></body></html>';
+  const built = '<html><body><div id="app"><nav>' + Array.from({ length: 8 }, (_, i) => '<a href="/p' + i + '">p</a>').join('') + '</nav><input name="q"><button>Go</button></div></body></html>';
+  let closed = 0, routed = 0;
+  const browser = (fail) => ({ newContext: async () => ({ close: async () => { closed++; }, newPage: async () => ({ route: async () => { routed++; }, goto: async () => { if (fail) throw new Error('timeout'); }, waitForLoadState: async () => {}, content: async () => built }) }) });
+  assert.equal(controlsOf(shell).total, 0);
+  assert.equal(await renderedControls(browser(false), 'https://x.com/'), 10);
+  assert.equal(await renderedControls(browser(true), 'https://x.com/'), null);
+  assert.equal(closed, 2); assert.equal(routed, 2);
+  const keep = process.env.VOID_TEST_BROWSER; process.env.VOID_TEST_BROWSER = '/no/such/browser';
+  try { if (!fs.existsSync('/opt/pw-browsers/chromium')) assert.equal(await openBrowser(), null, 'no browser: the raw count stands'); } finally { if (keep === undefined) delete process.env.VOID_TEST_BROWSER; else process.env.VOID_TEST_BROWSER = keep; }
+});
+
+test('the target stands first and the card says it is the target, not the easiest site left; with no target the card says easiest', async () => {
+  const sk = (await import('../void-live-deploy/skills/tower.js')).default, rank = { ranks: {}, order: {}, list: {} };
+  const size = { sites: { 'isitchristmas.com': { bytes: 700, controls: 3, scripts: 0, nodes: 20, routes: 0 }, 'calculator.net': { bytes: 2.4e6, controls: 400, scripts: 40, nodes: 9000, routes: 600 } } };
+  const free = tower([], {}, null, null, rank, size), c0 = free.floors.find((f) => f.state === 'current');
+  assert.equal(c0.id, 'is it'); assert.equal(c0.pinned, false);
+  const h0 = sk.towerHtml(free, (s) => String(s)); assert.match(h0, /easiest site left: /); assert.doesNotMatch(h0, /the target until Verse surpasses it/);
+  const held = tower([], {}, null, null, rank, size, 'calculator'), c1 = held.floors.find((f) => f.state === 'current');
+  assert.equal(c1.id, 'calculator'); assert.equal(c1.pinned, true);
+  const h1 = sk.towerHtml(held, (s) => String(s)); assert.match(h1, /now assimilating: /); assert.doesNotMatch(h1, /easiest site left: calculator/);
+  assert.match(h1, /the target until Verse surpasses it/);
+  assert.equal(held.floors.find((f) => f.id === 'is it').pinned, false);
 });
