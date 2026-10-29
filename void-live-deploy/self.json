@@ -545,8 +545,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T15:04:22Z",
-   "subject": "Answer cards for notes about my own card: no denial, no blame for a site's block, each fix's status"
+   "at": "2026-10-29T15:02:55Z",
+   "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
   },
   {
    "at": "2026-10-29T14:59:55Z",
@@ -563,6 +563,10 @@
   {
    "at": "2026-10-29T14:55:57Z",
    "subject": "Versus queue and picker rank on measured rows only"
+  },
+  {
+   "at": "2026-10-29T14:52:15Z",
+   "subject": "Paid Verse: members send ideas that only add (dark until go-live)"
   },
   {
    "at": "2026-10-29T14:49:16Z",
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T14:29:35Z",
    "subject": "Tower gate: nameunit measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:25:59Z",
-   "subject": "Tower: point the two colour-name floors at /color/, gate the loop on lane-pages"
   }
  ],
  "builders": {
