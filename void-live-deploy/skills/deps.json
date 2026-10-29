@@ -1085,7 +1085,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 3,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/jobs-core.js",
