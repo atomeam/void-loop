@@ -7,13 +7,18 @@
  * attention spotlight, the swarm, the membrane. The words you type, what the gestures organ named, what the memory expects and what the will
  * is doing are DOM orbs you can drag: a drag writes into the workspace as "you". Good rewards the will; Listen feeds it the microphone's
  * level (a number a frame, never recorded). Every other Verse page in this browser reaches the same brain (lib/brain-bridge.js).
- * Typed words stay in this browser: never sealed, stored or sent. A seal is the genome, the Q-table and counts (lib/brain.js params).
+ * The mind layers (lib/brain-mind.js): every ask on the stage (the page's 'void:ask' event) and every word typed here becomes ideas and
+ * goals that pull; a question ("why did that form?", "what just happened?", "what are you doing?") is answered from its own state; its
+ * choices are remembered as moments the will reads before choosing, its winning genomes by context; where two organs disagree over a
+ * region the card outlines it. What it learned is kept on this device (lib/brain-store.js, Forget clears it) and Verse's own priorities
+ * (/self.json) are standing ideas it compares yours with. Nothing is sent anywhere; a seal is numbers only (lib/brain.js params).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }, made with lib/field-stage.js fieldSkill.
  */
 import { fieldSkill } from '../lib/field-stage.js';
 import * as B from '../lib/brain.js';
-import { GW, GH, RG, RH, KIND } from '../lib/brain-workspace.js';
+import { GW, GH, RG, RH, KIND, REGIONS_X, REGIONS_Y } from '../lib/brain-workspace.js';
 import { hostBrain } from '../lib/brain-bridge.js';
+import { loadKept, keep, forget } from '../lib/brain-store.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
 const offs = new WeakMap(); // an offscreen GW x GH canvas per state, kept off the state (the stage saves its things)
@@ -56,6 +61,13 @@ function draw(g, s, W, H) {
   // links between ideas (the orbs themselves are DOM, above the canvas)
   const C = b.concepts; g.strokeStyle = 'rgba(190,210,255,.25)'; g.lineWidth = 1;
   for (const [key, w] of C.edges) { if (w < 1) continue; const [p, q] = String(key).split(':').map(Number); const i = C.node[p], j = C.node[q]; if (i == null || j == null || N.kind[i] !== KIND.concept) continue; g.beginPath(); g.moveTo(N.x[i] * W, N.y[i] * H); g.lineTo(N.x[j] * W, N.y[j] * H); g.stroke(); }
+  // where two organs disagree (the monitor): the region outlined in amber, with who
+  g.font = '600 10px system-ui,sans-serif'; g.textBaseline = 'top';
+  for (const c of b.mind.conflicts) {
+    const rx = (c.region % REGIONS_X) * W / REGIONS_X, ry = Math.floor(c.region / REGIONS_X) * H / REGIONS_Y, rw = W / REGIONS_X, rh = H / REGIONS_Y;
+    g.strokeStyle = 'rgba(255,196,90,.85)'; g.setLineDash([3, 3]); g.strokeRect(rx + 1, ry + 1, rw - 2, rh - 2); g.setLineDash([]);
+    g.fillStyle = 'rgba(255,214,140,.95)'; g.fillText(c.organs.slice(0, 2).join(' / '), rx + 4, ry + 4);
+  }
 }
 function status(s) { return B.selfSays(s.b).slice(0, 2).join(' '); }
 
@@ -67,8 +79,8 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   const layer = document.createElement('div'); layer.className = 'vb-orbs'; layer.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden';
   frame.appendChild(layer);
   const row = document.createElement('div'); row.className = 'vb-ctl'; row.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px';
-  row.innerHTML = '<form class="vb-form" style="display:flex;gap:6px;flex:1;min-width:180px"><input class="vb-word" type="text" maxlength="120" autocomplete="off" spellcheck="false" placeholder="tell it something" aria-label="Words for Verse Brain to think about" style="flex:1;min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--line,#444);background:transparent;color:inherit">'
-    + '<button type="submit" class="g-btn vb-tell">Tell</button></form><button type="button" class="g-btn vb-good">Good</button><button type="button" class="g-btn vb-listen" aria-pressed="false">Listen</button>';
+  row.innerHTML = '<form class="vb-form" style="display:flex;gap:6px;flex:1;min-width:180px"><input class="vb-word" type="text" maxlength="120" autocomplete="off" spellcheck="false" placeholder="tell it something, or ask why" aria-label="Words for Verse Brain to think about, or a question about what it is doing" style="flex:1;min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--line,#444);background:transparent;color:inherit">'
+    + '<button type="submit" class="g-btn vb-tell">Tell</button></form><button type="button" class="g-btn vb-good">Good</button><button type="button" class="g-btn vb-listen" aria-pressed="false">Listen</button><button type="button" class="g-btn vb-forget">Forget</button>';
   q('.ff-btns').insertAdjacentElement('beforebegin', row);
   const said = document.createElement('div'); said.className = 'vb-said'; said.setAttribute('aria-live', 'polite'); said.style.cssText = 'font-size:12px;min-height:1.3em;margin-top:4px';
   row.insertAdjacentElement('afterend', said);
@@ -125,7 +137,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     const b = S().b, self = B.selfOf(b);
     el.dataset.utility = String(self.utility); el.dataset.gen = String(self.genome.gen); el.dataset.chosen = String(self.q); el.dataset.imagined = String(self.imagined);
     el.dataset.concepts = String(self.concepts); el.dataset.focus = String(b.focus.region); el.dataset.action = self.action; el.dataset.ticks = String(b.ticks);
-    el.dataset.organs = String(B.ORGAN_IDS.length);
+    el.dataset.organs = String(B.ORGAN_IDS.length); el.dataset.episodes = String(self.episodes); el.dataset.procedures = String(self.procedures); el.dataset.wants = String(self.wants.length); el.dataset.conflicts = String(self.conflicts.length);
   };
 
   // words, from this card or from any other Verse page (the bridge)
@@ -135,8 +147,15 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     said.textContent = (from === 'page' ? 'Another Verse page told it: ' : 'Holding: ') + r.words.join(', ') + '.' + (rel.length ? ' Nearest ideas: ' + rel.join(', ') + '.' : '')
       + (r.surprise != null ? ' Surprise ' + (+r.surprise).toFixed(1) + ' bits a letter.' : '');
   };
-  q('.vb-form').addEventListener('submit', (e) => { e.preventDefault(); const t = box.value; box.value = ''; const r = B.tell(S().b, t); heard(r, 'card'); if (still()) tick(20); else redraw(); place(); sync(); bridge.publish(true); });
-  q('.vb-good').addEventListener('click', () => { const n = B.reward(S().b); const a = S().b.board.action; said.textContent = 'Rewarded ' + (a ? '"' + a.name + '"' : 'what it did last') + '. The will learns from it at its next choice (' + n + ' waiting).'; });
+  q('.vb-form').addEventListener('submit', (e) => {
+    e.preventDefault(); const t = box.value; box.value = ''; const r = B.ask(S().b, t);
+    if (r.answer) { said.textContent = r.answer.join(' '); el.dataset.answered = String(+(el.dataset.answered || 0) + 1); return; }
+    heard(r, 'card'); if (still()) tick(20); else redraw(); place(); sync(); bridge.publish(true);
+  });
+  // every ask on the stage reaches the brain while its card is open (void.html dispatches 'void:ask' after the owner key is handled)
+  const onAsk = (e) => { const t = e && e.detail && e.detail.text; if (!t || !el.isConnected || B.ask === undefined) return; const r = B.ask(S().b, t); if (!r.answer && r.words.length) { said.textContent = 'From the stage: ' + r.words.join(', ') + '.'; place(); } };
+  document.addEventListener('void:ask', onAsk);
+  q('.vb-good').addEventListener('click', () => { const n = B.reward(S().b); const a = S().b.board.action; said.textContent = 'Rewarded ' + (a ? '"' + a.name + '"' : 'what it did last') + '. The will learns from it at its next choice (' + n + ' waiting).'; save(); });
 
   // Listen: the microphone's loudness as one number a frame (never recorded, never sent)
   let mic = null;
@@ -152,22 +171,32 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   });
   const hear = () => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); let s = 0; for (const v of mic.buf) s += v * v; S().level = Math.min(1, Math.sqrt(s / mic.buf.length) * 6); };
 
+  // what it learned, kept on this device: loaded now, put back into a new brain after Reset, saved every 20 seconds and when the page hides
+  let kept = null, bound = null, saving = false; el.dataset.kept = 'none';
+  const bind = () => { const b = S().b; if (bound === b) return; bound = b; if (kept) el.dataset.kept = B.loadKnowledge(b, kept).join(',') || 'none'; if (verse) B.knowVerse(b, verse); };
+  const save = async () => { if (saving || !el.isConnected) return; saving = true; try { kept = JSON.parse(JSON.stringify(B.knowledgeOf(S().b))); el.dataset.saved = String(await keep(kept)); } finally { saving = false; } };
+  const onHide = () => { if (document.visibilityState === 'hidden') save(); };
+  document.addEventListener('visibilitychange', onHide); addEventListener('pagehide', save);
+  loadKept().then((k) => { if (k && k.v === 1) { kept = k; bound = null; bind(); } }).catch(() => {});
+  let verse = null; fetch('/self.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) { verse = j; el.dataset.semantic = String(B.knowVerse(S().b, j)); } }).catch(() => {});
+  q('.vb-forget').addEventListener('click', async () => { kept = null; await forget(); const b = S().b; b.mind.episodes = []; b.mind.procedures = []; b.mind.pref.fill(0); el.dataset.kept = 'none'; said.textContent = 'Forgot what it kept on this device: its moments, its winning genomes and its preferences. It starts learning again now.'; });
   const bridge = hostBrain(B, () => (el.isConnected ? S().b : null), { onWords: (t, from) => { heard({ words: S().b.concepts.words.slice(-3), related: [], surprise: S().b.concepts.lastBits }, from); place(); } });
   let n = 0;
   const every = setInterval(() => {
-    if (!el.isConnected) { clearInterval(every); bridge.close(); stopMic(); return; }
-    hear(); place(); bridge.publish(); if ((n++ & 3) === 0) { table(); sync(); }
+    if (!el.isConnected) { clearInterval(every); bridge.close(); stopMic(); end(); return; }
+    bind(); hear(); place(); bridge.publish(); if ((n++ & 3) === 0) { table(); sync(); } if (n % 200 === 0) save();
   }, 100);
   place(); table(); sync(); bridge.publish(true);
   fetch(new URL('../lib/brain-drafts.json', import.meta.url)).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && j.drafts) { DRAFTS = j; made(); } }).catch(() => {});
-  return { dispose() { clearInterval(every); bridge.close(); stopMic(); } };
+  function end() { document.removeEventListener('void:ask', onAsk); document.removeEventListener('visibilitychange', onHide); removeEventListener('pagehide', save); }
+  return { dispose() { save(); clearInterval(every); bridge.close(); stopMic(); end(); } };
 }
 
 const idea = {
   id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · eleven organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
   params: (s) => B.params(s.b),
-  how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like. Every action is imagined before it is taken.'
+  how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. Every action is imagined before it is taken, and checked against moments it remembers.'
 };
 
 export default fieldSkill({

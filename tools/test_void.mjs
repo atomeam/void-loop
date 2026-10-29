@@ -5637,7 +5637,20 @@ try {
     const sealed = await F.p.$eval(card, (e) => e.dataset.seal || '');
     const rows = await F.p.evaluate(() => new Promise((res) => { const done = setTimeout(() => res(''), 8000);
       try { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { try { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { clearTimeout(done); q.result.close(); res(JSON.stringify(g.result)); }; g.onerror = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }; q.onerror = q.onblocked = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }));
+    // the mind layers: a question is answered from its state, a stage ask becomes a goal, and what it learned survives a reload on this device
+    await F.p.fill(card + ' .vb-word', 'what just happened'); await F.p.press(card + ' .vb-word', 'Enter');
+    const answer = await F.p.$eval(card + ' .vb-said', (e) => e.textContent);
+    await F.ask('tell me about knights', 700); const fromStage = await F.p.$eval(card, (e) => ({ said: e.querySelector('.vb-said').textContent, wants: +(e.dataset.wants || 0) })).catch(() => null);
+    await until(async () => (await read()).chosen >= 3, 8000).catch(() => {});
+    await F.p.click(card + ' .vb-good'); await until(async () => (await F.p.$eval(card, (e) => e.dataset.saved).catch(() => '')) === 'true', 4000).catch(() => {});
+    const mind = await F.p.$eval(card, (e) => ({ episodes: +(e.dataset.episodes || 0), procedures: +(e.dataset.procedures || 0), saved: e.dataset.saved, semantic: +(e.dataset.semantic || 0) }));
+    await F.p.reload(); await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+    await until(async () => (await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none')) !== 'none', 6000).catch(() => {});
+    const keptAfter = await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none');
     const errors = F.errors.slice(); await F.ctx.close();
+    check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
+      /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
+      JSON.stringify({ answer, fromStage, mind, keptAfter }));
     check('verse brain: "show me your brain" opens one card (no figure), its eleven organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
       a.organs === 11 && a.rows === 11 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures

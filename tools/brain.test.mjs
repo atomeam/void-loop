@@ -151,3 +151,81 @@ test('the card takes its asks and leaves the look-alikes (skills/verse-brain.js)
   const { natureSummon } = await import('../void-live-deploy/skills/figures.js');
   assert.equal(natureSummon('show me your brain'), null, 'not a figure'); assert.ok(natureSummon('add a brain'), 'a brain figure is still a figure');
 });
+
+// ---- the mind layers (lib/brain-mind.js; owner's spec, 2026-10-29) -----------------------------------------------------------------------
+import * as Mi from '../void-live-deploy/lib/brain-mind.js';
+
+test('goals: an ask becomes ideas that pull the input layer where they sit, decay unless kept, and count toward the valence', () => {
+  const b = run(B.createBrain(21), 120), r = B.ask(b, 'show me the dragons');
+  assert.deepEqual(r.words, ['dragons'], 'the little words carry no idea'); assert.equal(b.mind.goals.length, 1);
+  const n = b.concepts.node[b.mind.goals[0].idx], x = b.ws.nodes.x[n], y = b.ws.nodes.y[n];
+  const before = W.readRegion(b.ws, 'input', { x0: x - 0.05, y0: y - 0.05, x1: x + 0.05, y1: y + 0.05 }).mean; run(b, 20);
+  assert.ok(W.readRegion(b.ws, 'input', { x0: x - 0.05, y0: y - 0.05, x1: x + 0.05, y1: y + 0.05 }).mean > before, 'the goal pulls where its idea is');
+  assert.ok(Mi.goalMatch(b) > 0); const s0 = b.mind.goals[0].strength; run(b, 2000); assert.ok(!b.mind.goals.length || b.mind.goals[0].strength < s0, 'it fades unless asked again');
+  B.ask(b, 'dragons'); assert.equal(b.mind.goals[0].strength, 1, 'asking again renews it');
+});
+
+test('episodes: each choice is remembered with what it did, and the will reads states like this one before it chooses', () => {
+  const b = run(B.createBrain(22), 600, circle);
+  assert.ok(b.mind.episodes.length >= 5, 'episodes: ' + b.mind.episodes.length);
+  for (const e of b.mind.episodes) { assert.equal(e.key.length, 26); assert.ok(Number.isFinite(e.gain)); }
+  const key = Mi.keyOf(b), fake = { t: 0, key: Array.from(key), action: 3, gesture: -1, before: 0.4, after: 0.7, gain: 0.3, goals: [] };
+  b.mind.episodes = [fake, fake, fake, { ...fake, action: 1, gain: -0.2 }];
+  const p = Mi.episodicPrior(b, key); assert.ok(p.gain[3] > 0.25 && p.gain[1] < -0.15, 'swirl helped here, seed hurt: ' + Array.from(p.gain));
+  assert.ok(Mi.nearestEpisodes(b, 1)[0].sim > 0.99);
+});
+
+test('procedures: the arena keeps the genome that won with its context, and a later generation in that context starts from it', () => {
+  const b = run(B.createBrain(23), 900, circle);
+  assert.ok(b.mind.procedures.length >= 1); const p = Mi.bestProcedure(b, b.mind.procedures[0].ctx); assert.ok(p && p.genome && Number.isFinite(p.fitness));
+  const ctx = Mi.contextOf(b), special = O.fixGenome({ ...b.genome, feed: 0.031 }); b.mind.procedures = [{ ctx, fitness: 9, genome: special, gen: 0 }];
+  b.arena.since = 1e6; b.arena.gen = 2; run(b, 2); // the next generation is the third: it seeds from memory
+  assert.ok(b.arena.fromMemory || b.arena.pop.some((g) => Math.abs(g.feed - 0.031) < 1e-9), 'the remembered genome joined the population');
+});
+
+test('monitor: two organs that write one region in turn while its value swings are found, the one that wants it less is slowed, and the card can say where', () => {
+  const b = B.createBrain(24), c = W.regionCenter(5);
+  const cells = []; for (let i = 0; i < W.CELLS; i++) { const x = ((i % W.GW) + 0.5) / W.GW, y = (Math.floor(i / W.GW) + 0.5) / W.GH; if (W.regionOf(x, y) === 5) cells.push(i); }
+  for (let t = 0; t < Mi.MONITOR_EVERY * 2; t++) { // the swarm lifts the region, the membrane presses it down, in turn
+    b.ticks++; b.ws.tick++;
+    for (const i of cells) W.writeCell(b.ws, 'input', i, t % 2 ? 0.6 : 0.05, t % 2 ? 'swarm' : 'membrane');
+    Mi.stepMonitor(b, B.ORGANS);
+  }
+  const k = b.mind.conflicts.find((x) => x.region === 5); assert.ok(k, JSON.stringify(b.mind.conflicts));
+  assert.ok(k.organs.includes('swarm') && k.organs.includes('membrane')); assert.ok(b.mind.throttle[k.slowed] > 0);
+  const ids = B.scheduleTick(b); assert.ok(Array.isArray(ids));
+  assert.ok(Mi.explain(b, 'why is that region like that', { swarm: 'swarm', membrane: 'membrane' }).some((t) => /disagree/.test(t)));
+  const quiet = run(B.createBrain(25), 400); assert.equal(quiet.mind.conflicts.filter((x) => x.organs.includes('you')).length, 0, 'nobody there, no disagreement with you');
+});
+
+test('valence: approval, goals and alignment with what Verse is working on move the preference; with nobody there it is the coherence', () => {
+  const b = run(B.createBrain(26), 200), coh = B.utilityOf(b.ws, b.focus);
+  assert.ok(Math.abs(B.valence(b) - coh) < 1e-9, 'nobody there: coherence alone');
+  const n = B.knowVerse(b, { tower: { target: 'sycophanthex.com' }, open: [{ ask: 'Absorb and connect every repo' }], tracks: [{ name: 'Planet restoration' }] });
+  assert.ok(n >= 4 && b.mind.semantic.some((s) => s.word === 'sycophanthex'));
+  B.ask(b, 'planets'); run(b, 5); assert.ok(Mi.alignment(b) > 0.1, 'planets is near planet: ' + Mi.alignment(b)); assert.equal(b.mind.aligned.near, 'planet');
+  const p0 = b.mind.pref[b.will.action]; B.reward(b); assert.ok(b.mind.approval > 0.4 && b.mind.pref[b.will.action] > p0);
+});
+
+test('history and explain: it says what just happened and why a region formed, from its own state', () => {
+  const b = run(B.createBrain(27), 900, circle), r = Mi.recent(b);
+  assert.ok(r.seconds >= 10 && r.utility.length === 2 && r.focusMoves >= 0);
+  const a = B.ask(b, 'what just happened?').answer; assert.match(a[0], /^In the last \d+ seconds my utility went from [\d.]+ to [\d.]+/);
+  const w = B.ask(b, 'why did that cluster form?').answer; assert.match(w[0], /^The (?:top|middle|bottom) (?:far left|left|right|far right) is (?:busy|quiet)/); assert.ok(w.some((t) => /written by/.test(t)), w.join(' '));
+  assert.ok(B.ask(b, 'what are you doing').answer[0].startsWith('I am attending to'));
+  assert.equal(b.concepts.words.length, 0, 'a question is answered, not stored as ideas');
+});
+
+test('knowledge: what it learned survives a reload as numbers, a wrong record is ignored, and a seal still holds no words', () => {
+  const b = run(B.createBrain(28), 900, circle); B.ask(b, 'romance'); run(b, 100, circle);
+  const k = JSON.parse(JSON.stringify(B.knowledgeOf(b))), b2 = B.createBrain(29), done = B.loadKnowledge(b2, k);
+  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'procedures', 'episodes']);
+  assert.deepEqual(Array.from(b2.will.q), Array.from(b.will.q, (v) => Math.round(v * 1000) / 1000).map((v) => Math.fround(v)));
+  assert.deepEqual(B.loadKnowledge(B.createBrain(30), { v: 1, q: [1, 2], episodes: [{ key: [1], action: 9 }] }), [], 'a record of the wrong shape restores nothing');
+  assert.equal(B.createBrain(31).mind.episodes.length, 0); assert.ok(JSON.stringify(B.params(b)).indexOf('romance') < 0);
+});
+
+test('store: with no IndexedDB (node, a private window that refuses it) every call resolves and nothing breaks (lib/brain-store.js)', async () => {
+  const St = await import('../void-live-deploy/lib/brain-store.js');
+  assert.equal(await St.loadKept(), null); assert.equal(await St.keep({ v: 1 }), false); assert.equal(await St.forget(), false);
+});
