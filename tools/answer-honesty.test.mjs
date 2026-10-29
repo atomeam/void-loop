@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { supports, supportedOnly, hasCorrection, dropUnbackedActs, dropFiller, ASK_MAX, QUERY_MAX, CORRECTION_RULE, ACT_RULE } from '../void-live-deploy/lib/answer-honesty.js';
-import { isOwnCardNote, OWN_CARD_RULE, modelFacts, towerFacts, selfFacts, cardFacts } from '../void-live-deploy/lib/self-context.js';
+import { isOwnCardNote, OWN_CARD_RULE, modelFacts, towerFacts, selfFacts, cardFacts, wholeClause } from '../void-live-deploy/lib/self-context.js';
 import { SOURCE_LINKS, SOURCE_BOX, cardOf, keywordsOf } from '../void-live-deploy/lib/card-frame.js';
 import { towerOf } from './self-context.mjs';
 
@@ -105,6 +105,10 @@ test('card 5: the own-card facts give Fixed and Still open from my records, targ
   assert.match(OWN_CARD_RULE, /Own only a fault my records confirm/);
   assert.equal(selfFacts({ self: selfJson }).includes('copy these two lists'), false, 'only a note about my own card gets the lists');
   assert.ok(selfFacts({ self: selfJson }, { card: true }).startsWith(c), 'and there they come first');
+  assert.doesNotMatch(c, /…/, 'no row is broken mid-word');
+  assert.equal(wholeClause('value-drift tracker: how prices move over time, grouped by kind, a kind flagged to…'), 'value-drift tracker: how prices move over time, grouped by kind');
+  assert.equal(wholeClause('act skill: asks route to the act skill instead of no answer (`POST /api/answer` "my email" is…'), 'act skill: asks route to the act skill instead of no answer');
+  assert.equal(wholeClause('a whole row'), 'a whole row');
 });
 
 // fault 6: an answer claims an action only when the action ran and left a record; the answer engine writes nothing
