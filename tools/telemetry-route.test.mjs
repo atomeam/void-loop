@@ -114,3 +114,35 @@ test('a short builder status update that links this repo\'s own pull request ope
   ]) { const r = telemetryOf(t); assert.ok(r, t.slice(0, 40)); assert.deepEqual(r.prs, ['1176']); assert.deepEqual(r.failures, []); }
   for (const t of ['review this PR https://github.com/atomeam/void-loop/pull/1176 and tell me what is wrong with it', 'what does https://github.com/atomeam/void-loop/pull/1176 change in the self card?', 'see https://github.com/someone/else/pull/12 for the details of that change, thanks']) assert.equal(telemetryOf(t), null, t);
 });
+
+// The exact report the owner pasted on 2026-10-29 (9 lines, 724 characters). Verse answered it with the broken-automation fix card.
+export const PASTED_STATUS = "Putting a thread on Verse's own asks: promote the 60 checked and tested skills, start with Words and the world, then edge caching for answers and the STL checker\n\nThat thread didn't start. A safety check blocked it because it would merge and deploy to the live site, and your message was only the screenshot.\n\nIf you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.\n\nVerse's own job loop merged #1470 by itself. It adds a /prizes/ row for crypto rewards and gambling, marked core. Nobody chose that, so it's worth a look.\n\nAlso, the sprite sheet cleaner is live, and the fix for the will's coder is set to ship after the 8 PM run limit resets.";
+
+test('a pasted status report is read back as what changed, what waits and the next step (owner, 2026-10-29)', async () => {
+  const { statusReadOf, isStatusReport } = await import('../void-live-deploy/lib/telemetry.js');
+  assert.equal(PASTED_STATUS.length, 724); assert.equal(PASTED_STATUS.split('\n').length, 9);
+  assert.equal(isStatusReport(PASTED_STATUS), true);
+  assert.deepEqual(statusReadOf(PASTED_STATUS), {
+    changed: ["Verse's own job loop merged #1470 by itself.", 'It adds a /prizes/ row for crypto rewards and gambling, marked core.', 'The sprite sheet cleaner is live.'],
+    waits: ["That thread didn't start.", 'A safety check blocked it because it would merge and deploy to the live site, and your message was only the screenshot.', "Nobody chose that, so it's worth a look.", "The fix for the will's coder is set to ship after the 8 PM run limit resets."],
+    next: 'If you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.',
+  });
+  const t = telemetryOf(PASTED_STATUS);
+  assert.ok(t); assert.equal(t.kind, 'status'); assert.deepEqual(t.prs, ['1470']); assert.deepEqual(t.failures, []);
+  assert.equal(skill.match(PASTED_STATUS.toLowerCase(), PASTED_STATUS), true);
+  const lines = summaryOf(t);
+  assert.ok(lines.includes("Changed: Verse's own job loop merged #1470 by itself."));
+  assert.ok(lines.includes("Waiting: That thread didn't start."));
+  assert.ok(lines.includes('Next step: If you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.'));
+  assert.ok(!lines.some((l) => /broken|automation|troubleshoot/i.test(l)));
+});
+
+test('a status read needs both a change and a wait, and never takes a complaint that something is broken', async () => {
+  const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');
+  for (const t of [
+    'My zap stopped firing after the update went live. It is blocked on something and the webhook is pending. I added a filter yesterday and nothing works since then, so what do I change?',
+    'The new header is live. The footer is live too. The about page shipped this morning and the menu was fixed. Everything from the list is done now and merged into main.',
+    'why did the deploy not start? It was merged an hour ago and it is still pending on the queue with nothing in the log at all, which is odd for this repo.',
+    "That thread didn't start.",
+  ]) assert.equal(statusReadOf(t), null, t.slice(0, 50));
+});
