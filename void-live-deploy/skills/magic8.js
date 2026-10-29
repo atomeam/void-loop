@@ -3,7 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "magic 8 ball", "ask the magic 8 ball", "8 ball".
  */
-const ANSWERS = [
+export const ANSWERS = [
   'It is certain.', 'It is decidedly so.', 'Without a doubt.', 'Yes — definitely.',
   'You may rely on it.', 'As I see it, yes.', 'Most likely.', 'Outlook good.',
   'Yes.', 'Signs point to yes.', 'Reply hazy, try again.', 'Ask again later.',
@@ -13,14 +13,14 @@ const ANSWERS = [
 ];
 
 export function isMagic(text) {
-  return /^(?:please\\s+)?(?:magic\\s+8\\s*ball|ask\\s+(?:the\\s+)?magic\\s+8\\s*ball|8\\s*ball)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:magic\s+8[\s-]*ball|ask\s+(?:the\s+)?magic\s+8[\s-]*ball|8[\s-]*ball)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
   const ans = ANSWERS[Math.floor(Math.random() * ANSWERS.length)];
   showPage((p) => {
-    p.innerHTML = '<h2>Magic 8-Ball</h2><p style="font-size:24px;font-style:italic;text-align:center">' + esc(ans) + '</p><div class="sub">say “ask again” or “magic 8 ball” for another</div><div class="src">A classic 20 answers, chosen here on this device.</div>';
+    p.innerHTML = '<h2>Magic 8-Ball</h2><p style="font-size:24px;font-style:italic;text-align:center">' + esc(ans) + '</p><div class="sub">say “magic 8 ball” for another</div><div class="src">A classic 20 answers, chosen here on this device.</div>';
   });
   return 'magic8';
 }
