@@ -1,0 +1,2 @@
+Verse's coder is paused: nothing in verse-loop.yml or verse-job.yml runs live while this file exists (a dry run still goes through).
+Delete this file (a commit, no settings page) to switch the coder on. The loop pauses itself for 6 hours after 3 failed laps in a row, and resumes by itself; this file is only the owner's and Verse's kill switch.

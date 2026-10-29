@@ -7,14 +7,14 @@
 // A tick never fails the clock: every error is a warning in the summary and the tick ends with exit 0. Playbook: docs/playbooks/conductor.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { plan, probeDue, growDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT } from './conductor-core.mjs';
+import { plan, probeDue, growDue, lapDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
 const REPO = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
 const args = process.argv.slice(2), DRY = args.includes('--dry');
 const STATE = (() => { const i = args.indexOf('--state'); return i >= 0 ? args[i + 1] : 'domains/conductor.json'; })();
 // the loops watched for health: every executor, plus the loops the rest stand on (a broken one gets a heal: job)
-export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, 'probe-asks.yml', 'tower-self.yml', 'tower-gate.yml', 'deploy.yml',
+export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-self.yml', 'tower-gate.yml', 'deploy.yml',
   'grow-self.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml'])];
 const BUSY = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending']);
 const warnings = [];
@@ -60,6 +60,9 @@ async function tick() {
     wf[f] = { exists: true, busy: r.some((x) => BUSY.has(x.status)), today: 0, fails: s.fails, url: s.url, last: r[0] ? Date.parse(r[0].created_at) : 0 };
   }
   for (const r of Object.values(ROUTES)) if (wf[r.wf] && wf[r.wf].exists && !('counted' in wf[r.wf])) { wf[r.wf].today = todayOf(r.wf, day); wf[r.wf].counted = true; }
+  // the kill switch is a file in the repository the clock checks out each tick (domains/verse-loop.pause): while it exists the coder takes no job
+  const paused = fs.existsSync('domains/verse-loop.pause');
+  for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].paused = paused;
   const p = plan({ jobs, wf, handed, now });
   const done = { started: [], requeued: [], setAside: [], healed: [], probe: false };
   const act = async (label, fn) => { if (DRY) return true; try { return await fn(); } catch (e) { warn(label + ': ' + String(e.message || e).slice(0, 120)); return false; } };
@@ -93,6 +96,11 @@ async function tick() {
   // a proving pass (grow-self.yml) at most every 2 hours: it locks in asks Verse answers right and queues the ones it misses as fixes
   const grow = wf['grow-self.yml'] || {};
   if (growDue({ exists: grow.exists, busy: grow.busy, lastRunMs: grow.last, now }) && await act('grow-self', async () => { start('grow-self.yml'); return true; })) done.grow = true;
+  // nothing for the coder to take from the queue: a lap of the Verse loop (red checks, the top of docs/NEXT.md, grooming) at most hourly
+  const lapWf = wf[LAP] || {}, lapRuns = runs[LAP] || [];
+  if (lapDue({ exists: lapWf.exists, busy: lapWf.busy || (wf[AGENT] || {}).busy, started: done.started.some((s) => s.wf === AGENT), paused, lastRunMs: lapWf.last, now })
+    && await act('verse-loop', async () => { start(LAP); return true; })) done.lap = true;
+  void lapRuns;
   // the site's own clock (void-tick.yml, a chain like this one) is started again when no run of it is going or waiting
   const siteClock = runsOf('void-tick.yml');
   if (siteClock && !siteClock.some((x) => BUSY.has(x.status)) && await act('void-tick', async () => { start('void-tick.yml'); return true; })) done.revived = ['void-tick.yml'];
@@ -101,7 +109,7 @@ async function tick() {
 
 function finish(state, now, t) {
   const at = new Date(now).toISOString();
-  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, revived: t.done.revived || [], held: t.held.length, warnings: warnings.length }
+  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, lap: !!t.done.lap, revived: t.done.revived || [], held: t.held.length, warnings: warnings.length }
     : { at, error: warnings[0] || 'no plan', warnings: warnings.length };
   const ticks = [...(state.ticks || []), tick].filter((x) => now - Date.parse(x.at) < 24 * 3600000).slice(-200);
   const day = { ticks: ticks.length, started: ticks.reduce((n, x) => n + ((x.started || []).length), 0), requeued: ticks.reduce((n, x) => n + (x.requeued || 0), 0),
@@ -110,7 +118,7 @@ function finish(state, now, t) {
   const out = { about: 'What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.',
     updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), handed: state.handed || {}, ticks };
   if (!DRY) { fs.mkdirSync(STATE.replace(/\/[^/]*$/, '') || '.', { recursive: true }); fs.writeFileSync(STATE, JSON.stringify(out, null, 1) + '\n'); }
-  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}` : 'no plan: ' + (warnings[0] || ''),
+  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}` : 'no plan: ' + (warnings[0] || ''),
     t && t.held.length ? 'held: ' + [...new Set(t.held.map((h) => h.why))].slice(0, 6).join('; ') : '', broken.length ? 'broken loops: ' + broken.map((b) => `${b.wf} (${b.fails})`).join(', ') : 'no broken loops',
     `last 24 h: ${day.started} started, ${day.requeued} put back, ${day.setAside} set aside, ${day.probes} probe runs, ${day.errors} ticks without a plan`].filter(Boolean);
   console.log(lines.join('\n'));

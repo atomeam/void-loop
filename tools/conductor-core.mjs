@@ -17,7 +17,10 @@ const H = 3600000;
 // who runs each kind of job. claims: the conductor claims the job before starting the run (the executor reads it by id and reports back);
 // otherwise the executor claims for itself. input: the workflow_dispatch input that names the job (null: the executor takes its own oldest).
 // cap: runs a day at most. lane: a job of this kind goes here only when its note matches.
-export const AGENT = 'verse-agent.yml';
+export const AGENT = 'verse-job.yml';   // one queue job through the coder (tools/verse-job.mjs)
+export const LAP = 'verse-loop.yml';    // one lap of the Verse loop: red checks, the top of docs/NEXT.md, grooming
+// the two share a concurrency group (one coder at a time: the free model budget, docs/TAGTEAM.md): busy if either runs
+export const ALSO_BUSY = Object.freeze({ [AGENT]: [LAP], [LAP]: [AGENT] });
 export const ROUTES = Object.freeze({
   probe: { wf: 'propose-fix.yml', input: 'job', claims: false, cap: 72 },
   miss: { wf: 'build-miss.yml', input: 'job', claims: false, cap: 8, lane: /lane: new skill/i, else: AGENT },
@@ -95,8 +98,15 @@ export function probeDue({ openProbes, done24, failed24, lastProbeRunMs, now }) 
  *  read as "stop hardening"; the owner put it right on 2026-10-26: "never said there a no self hardening i said to elaborate what that
  *  means". So the pass runs again, and its report names what it improved: each ask it locked in, each one it queued to fix ("self hardening sounds like magikarp useless, it needs to say what it improved", owner, 2026-10-26). Pure. */
 export const GROW_EVERY_H = 2;
+export const LAP_EVERY_H = 1; // a lap of the Verse loop when the coder has no queue job to take
 export function growDue({ exists, busy, lastRunMs, now }) {
   return !!exists && !busy && now - (lastRunMs || 0) >= GROW_EVERY_H * H;
+}
+
+/** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
+ *  lap is an hour old. Pure. */
+export function lapDue({ exists, busy, started, paused, lastRunMs, now }) {
+  return !!exists && !busy && !started && !paused && now - (lastRunMs || 0) >= LAP_EVERY_H * H;
 }
 
 /**
@@ -114,7 +124,8 @@ export function plan({ jobs = [], wf = {}, handed = {}, now }) {
   // state), so a fix that landed elsewhere, or the agent's own repair, is found out instead of the loop staying shut for good
   const broken = (f) => (wf[f] && wf[f].fails >= FAIL_STREAK && now - (wf[f].last || 0) < RETRY_BROKEN_H * H);
   // a broken loop gets a repair job (the queue keeps one open job per target, so asking again is harmless) and is not started
-  for (const [f, s] of Object.entries(wf)) if (s.exists && s.fails >= FAIL_STREAK && f !== AGENT) out.heal.push({ wf: f, url: s.url, fails: s.fails });
+  // the coder cannot be handed its own repair: its back-off (tools/verse-loop.mjs: 3 failed laps pause it 6 hours) and the trial run below are its cure
+  for (const [f, s] of Object.entries(wf)) if (s.exists && s.fails >= FAIL_STREAK && f !== AGENT && f !== LAP) out.heal.push({ wf: f, url: s.url, fails: s.fails });
   // the conductor's own claims left building by a run that died go back, or aside after MAX_TRIES
   for (const j of jobs) {
     if (j.state !== 'building' || !/claimed by conductor/i.test(j.note || '')) continue;
@@ -131,7 +142,8 @@ export function plan({ jobs = [], wf = {}, handed = {}, now }) {
     if (triesOf(j.note) >= MAX_TRIES) { out.setAside.push({ id: j.id, note: withTries(j.note, triesOf(j.note), 'set aside after ' + MAX_TRIES + ' tries') }); continue; }
     const s = wf[r.wf] || {};
     if (!s.exists) { out.held.push({ id: j.id, why: r.wf + ' is not on main yet' }); continue; }
-    if (taken.has(r.wf) || s.busy) continue;
+    if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (domains/verse-loop.pause)' }); continue; }
+    if (taken.has(r.wf) || s.busy || (ALSO_BUSY[r.wf] || []).some((f) => wf[f] && wf[f].busy)) continue;
     if (broken(r.wf) && kindOf(j.target) !== 'heal') { out.held.push({ id: j.id, why: r.wf + ' is broken (' + s.fails + ' failed runs); its repair is queued' }); continue; }
     if ((s.today || 0) >= r.cap) { out.held.push({ id: j.id, why: r.wf + ' reached its ' + r.cap + ' runs today' }); continue; }
     // a try the queue holds back: tries N waits 2N hours after its last change

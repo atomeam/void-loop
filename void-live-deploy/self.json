@@ -509,6 +509,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T01:52:46Z",
+   "subject": "Adopt the advice skill into a family and regenerate"
+  },
+  {
    "at": "2026-10-29T01:42:11Z",
    "subject": "Regenerate the generated files after merging main into the conductor"
   },
@@ -583,10 +587,6 @@
   {
    "at": "2026-10-28T23:10:39Z",
    "subject": "Notes clean a note's HTML when they show it; the review's false alarms marked with why"
-  },
-  {
-   "at": "2026-10-28T23:09:17Z",
-   "subject": "Paint by number rebuilt: a picture library with categories, smooth zoom and pan, hints, highlighting, saved progress, a reveal, your own…"
   }
  ],
  "builders": {

@@ -2,7 +2,7 @@
 // are broken, and when Verse writes new probe asks. Run: node --test tools/conductor.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, AGENT, MAX_TRIES } from './conductor-core.mjs';
+import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, lapDue, AGENT, LAP, ALSO_BUSY, MAX_TRIES } from './conductor-core.mjs';
 
 const H = 3600000, NOW = Date.parse('2026-10-26T08:00:00Z');
 const iso = (hAgo) => new Date(NOW - hAgo * H).toISOString();
@@ -104,4 +104,29 @@ test('the proving pass (grow-self.yml) runs again, at most every 2 hours and nev
   assert.equal(growDue({ exists: true, busy: false, lastRunMs: NOW - H, now: NOW }), false, 'ran an hour ago');
   assert.equal(growDue({ exists: true, busy: true, lastRunMs: NOW - 9 * H, now: NOW }), false, 'one at a time');
   assert.equal(growDue({ exists: false, busy: false, lastRunMs: 0, now: NOW }), false);
+});
+
+test('a paused coder (domains/verse-loop.pause) takes no job and says why; the other executors go on', () => {
+  const jobs = [job('w1', 'will:paint'), job('p1', 'probe:q')];
+  const p = plan({ jobs, wf: all({ [AGENT]: { paused: true } }), now: NOW });
+  assert.ok(!p.start.some((s) => s.wf === AGENT));
+  assert.ok(p.held.some((h) => /paused \(domains\/verse-loop\.pause\)/.test(h.why)));
+  assert.equal(p.start.find((s) => s.wf === 'propose-fix.yml').id, 'p1', 'probes are not the coder\'s');
+});
+
+test('verse-job and verse-loop are one coder: a lap running holds the queue job back, and neither is handed its own repair', () => {
+  const jobs = [job('w1', 'will:paint')];
+  const busy = plan({ jobs, wf: { ...all(), [LAP]: live({ busy: true }) }, now: NOW });
+  assert.equal(busy.start.length, 0, 'the lap is running: one coder at a time');
+  assert.deepEqual(ALSO_BUSY[AGENT], [LAP]); assert.deepEqual(ALSO_BUSY[LAP], [AGENT]);
+  const lapDown = plan({ jobs: [], wf: { ...all(), [LAP]: live({ fails: 5, last: NOW - H }) }, now: NOW });
+  assert.equal(lapDown.heal.length, 0, 'the loop\'s own back-off is its cure, not a queue job for itself');
+});
+
+test('a lap of the Verse loop starts hourly when the coder is idle, took no job this tick and is not paused', () => {
+  const base = { exists: true, busy: false, started: false, paused: false, lastRunMs: NOW - 2 * H, now: NOW };
+  assert.equal(lapDue(base), true);
+  assert.equal(lapDue({ ...base, lastRunMs: NOW - 30 * 60000 }), false, 'a lap ran 30 minutes ago');
+  assert.equal(lapDue({ ...base, busy: true }), false); assert.equal(lapDue({ ...base, started: true }), false, 'a job took the coder this tick');
+  assert.equal(lapDue({ ...base, paused: true }), false); assert.equal(lapDue({ ...base, exists: false }), false);
 });
