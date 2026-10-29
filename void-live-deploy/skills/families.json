@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 10,
-  "tested": 27,
+  "tested": 28,
   "checked": 18,
   "proven": 297
  },
@@ -3521,11 +3521,18 @@
    "for": "privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 5
    },
    "skills": [
+    {
+     "name": "advice",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "pwcheck",
      "tier": "proven",

@@ -509,6 +509,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T01:42:11Z",
+   "subject": "Regenerate the generated files after merging main into the conductor"
+  },
+  {
    "at": "2026-10-29T01:19:06Z",
    "subject": "Incident: the browser suite failed on 56c92eef (void-live-deploy/incidents.json)"
   },
@@ -583,10 +587,6 @@
   {
    "at": "2026-10-28T23:09:17Z",
    "subject": "Paint by number rebuilt: a picture library with categories, smooth zoom and pan, hints, highlighting, saved progress, a reveal, your own…"
-  },
-  {
-   "at": "2026-10-28T23:06:53Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
