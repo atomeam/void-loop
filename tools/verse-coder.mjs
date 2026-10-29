@@ -16,7 +16,7 @@
 // Exit 0: done, the change is left in the tree. 3: nothing to change or gave up. 4: no model key. 5: a cap. 6: no model answered.
 // The last line printed is JSON: { outcome, why, turns, tokens, files, provider }.
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, unlinkSync, realpathSync, mkdtempSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, unlinkSync, realpathSync, mkdtempSync, rmSync, mkdirSync } from 'node:fs';
 import { resolve, join, relative, sep, dirname, isAbsolute } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -194,7 +194,7 @@ export function budgetNote({ turns = 0, tokens = 0, limits = LIMITS, edited = fa
 /** the turns as a short trail for a stop at a cap ("read a, search x, edit: the diff does not apply"), so the job note says where they went. Pure. */
 export function trailOf(transcript, n = 12) {
   const t = Array.isArray(transcript) ? transcript.slice(-n) : [];
-  return t.map((x) => [x.tool, x.path].filter(Boolean).join(' ') + (/^(refused|the diff|no such|no tool|FAIL)/.test(String(x.result || '')) ? ': ' + String(x.result).split('\n')[0].slice(0, 60) : '')).join(', ');
+  return t.map((x) => [x.tool, x.path].filter(Boolean).join(' ') + (/^(refused|the diff|no such|no tool|no match|FAIL)/.test(String(x.result || '')) ? ': ' + String(x.result).split('\n')[0].slice(0, 60) : '')).join(', ');
 }
 
 const SYSTEM = (checks, target) => `You are Verse's coding agent, working in a git repository through tools. You change code so the task is done and every check stays green.
@@ -202,6 +202,7 @@ Answer every turn with exactly one JSON object and nothing else (an edit may put
 {"tool":"list","path":"tools"}                       list a directory
 {"tool":"read","path":"tools/x.mjs","from":1,"to":200} read lines of a file
 {"tool":"search","pattern":"regex","path":"."}       ripgrep the repo
+{"tool":"replace","path":"f","old":"exact text","new":"new text"} swap text that is in the file exactly once (best for most changes; "old":"" makes a new file)
 {"tool":"edit","diff":"--- a/f\\n+++ b/f\\n@@ ... @@\\n..."} apply a unified diff (paths relative to the repo; a new file is --- /dev/null)
 {"tool":"check","name":"<check>"}                    run one check; or {"tool":"check","test":"path/to/x.test.mjs"} for one node test file
 {"tool":"finish","summary":"what changed and why"}   when the task is done
@@ -231,6 +232,24 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   };
   const changedFiles = () => touched().filter((p) => readOr(join(root, p)) !== original.get(p));
 
+  // what every write passes after it lands: a test or check never weakened, patch-guard on code; '' when it stays, else why it was put back
+  const guarded_ = (before) => {
+    const undo = () => { for (const [f, c] of before) { const abs = join(root, f); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone */ } } else writeFileSync(abs, c); } };
+    for (const f of before.keys()) {
+      if (!original.has(f)) original.set(f, before.get(f));
+      const was = original.get(f), now = readOr(join(root, f));
+      if (TEST_FILE.test(f) || guarded.has(f)) {
+        const why = weakening(was, now);
+        if (why.length) { undo(); return 'refused: this edit weakens ' + f + ' (' + why.join('; ') + '). Fix the code under test, never the test.'; }
+      }
+      if (now != null && /\.(m?js|cjs|html?|json)$/.test(f)) {
+        const g = guardPatch({ before: was || '', after: now, kind: kindOf(f.split('.').pop()) });
+        if (!g.ok) { undo(); return 'refused by patch-guard on ' + f + ': ' + g.reasons.join('; '); }
+      }
+    }
+    lastEdit = turns;
+    return '';
+  };
   const tools = {
     list({ path = '.' }) {
       const why = pathRefusal(path, root); if (why) return 'refused: ' + why;
@@ -264,25 +283,29 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       for (const f of named) { const why = pathRefusal(f, root, { write: true }); if (why) return 'refused: ' + why; }
       for (const f of files) if (f.deleted && (TEST_FILE.test(f.path) || guarded.has(f.path))) return 'refused: ' + f.path + ' is a test or a check: never deleted';
       const chk = git(root, ['apply', p, '--check', '--recount', '--whitespace=nowarn', '-'], { input: text });
-      if (chk.status) return 'the diff does not apply: ' + tail(chk.stderr, 1500) + '\nRead the file again and send a diff whose context matches it exactly.';
+      if (chk.status) return 'the diff does not apply: ' + tail(chk.stderr, 1500) + '\nRead the file again, or use replace: {"tool":"replace","path":"f","old":"the exact lines now","new":"what they become"}.';
       const before = new Map([...named].map((f) => [f, readOr(join(root, f))]));
       const ap = git(root, ['apply', p, '--recount', '--whitespace=nowarn', '-'], { input: text });
       if (ap.status) return 'the diff did not apply: ' + tail(ap.stderr, 1500);
-      const undo = () => { for (const [f, c] of before) { const abs = join(root, f); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone */ } } else writeFileSync(abs, c); } };
-      for (const f of named) {
-        if (!original.has(f)) original.set(f, before.get(f));
-        const was = original.get(f), now = readOr(join(root, f));
-        if (TEST_FILE.test(f) || guarded.has(f)) {
-          const why = weakening(was, now);
-          if (why.length) { undo(); return 'refused: this edit weakens ' + f + ' (' + why.join('; ') + '). Fix the code under test, never the test.'; }
-        }
-        if (now != null && /\.(m?js|cjs|html?|json)$/.test(f)) {
-          const g = guardPatch({ before: was || '', after: now, kind: kindOf(f.split('.').pop()) });
-          if (!g.ok) { undo(); return 'refused by patch-guard on ' + f + ': ' + g.reasons.join('; '); }
-        }
+      return guarded_(before) || 'applied to ' + [...named].join(', ');
+    },
+    // an exact text swap needs no line numbers or context to line up: a run spent its turns on diffs that did not apply (2026-10-29)
+    replace({ path, old, new: next }) {
+      const why = pathRefusal(path, root, { write: true }); if (why) return 'refused: ' + why;
+      if (typeof old !== 'string' || typeof next !== 'string') return 'replace needs "path", "old" (the exact text in the file now) and "new" (what it becomes)';
+      const abs = join(root, path), was = readOr(abs);
+      if (was == null) {
+        if (old !== '') return 'no such file: ' + path + '. To make a new file, send "old":"" and the whole file as "new".';
+      } else {
+        if (old === '') return path + ' exists: put the exact text to change in "old"';
+        const n = was.split(old).length - 1;
+        if (!n) return 'no match: "old" is not in ' + path + ' as written. Read the lines again and copy them exactly, spaces included.';
+        if (n > 1) return '"old" is in ' + path + ' ' + n + ' times: add lines around it so it is there once';
       }
-      lastEdit = turns;
-      return 'applied to ' + [...named].join(', ');
+      const before = new Map([[path, was]]);
+      if (was == null) mkdirSync(dirname(abs), { recursive: true });
+      writeFileSync(abs, was == null ? next : was.replace(old, () => next));
+      return guarded_(before) || 'applied to ' + path;
     },
     check({ name, test }) {
       let cmd, timeoutMin = 10, label;
@@ -342,7 +365,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       result = f.feedback;
     } else if (tools[act.tool]) {
       try { result = tools[act.tool](act); } catch (e) { result = act.tool + ' failed: ' + String((e && e.message) || e); }
-    } else result = 'no tool named ' + JSON.stringify(act.tool) + ': list, read, search, edit, check, finish';
+    } else result = 'no tool named ' + JSON.stringify(act.tool) + ': list, read, search, replace, edit, check, finish';
     transcript.push({ turn: turns, tool: act.tool || '?', path: act.path || act.name || act.test || '', result: String(result).slice(0, 200) });
     log('  turn ' + turns + ': ' + (act.tool || 'bad reply') + ' ' + (act.path || act.name || act.test || '') + ' -> ' + String(result).split('\n')[0].slice(0, 120));
     messages.push({ role: 'assistant', content: text }, { role: 'user', content: String(result) + budgetNote({ turns, tokens, limits: L, edited: changedFiles().length > 0 }) });
