@@ -38,6 +38,7 @@ import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
 import { capAll, cap as dayCap } from '../../lib/daily-cap.js';
 import { prepare as prepareReport, settle as settleReport, REPORT_SYSTEM } from '../../lib/news-report.js';
 import { storyMessages, aiTextMessages, cleanText, STORY_SAYS, PART_MAX, AI_TEXT_MAX } from '../../lib/story.js';
+import { rapMessages, parseRap, cleanRap, cacheKeyOf as rapKeyOf, RAP_SAYS } from '../../lib/rap.js';
 import { reportAnswer as marketReportRun, d1Store } from '../../lib/report-run.js';
 import { quoteBody, batch } from './markets.js';
 import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-kinds.js';
@@ -258,6 +259,29 @@ async function storyAnswer(request, env, body) {
 }
 
 
+// Verse raps (/rap/ and the stage's rap card, lib/rap.js; owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats
+// what it is"): a rap written for the visitor's own settings (topic, style, mood, flow, point of view, words to work in) by the same free answer model
+// under the same 12-a-minute limit as any answer, read into verses and a hook and checked clean (lib/rap.js parseRap, cleanRap). The same settings and
+// take are kept on the edge for a week, so a second ask for them costs nothing; at most RAP_PER_DAY new raps a day for everyone (lib/daily-cap.js,
+// fail closed), so raps never eat the free allowance the answers need. Refused words get no model call. Nothing is written but the day's count.
+export const RAP_PER_DAY = 400;
+async function rapAnswer(request, env, body) {
+  const p = rapMessages(body);
+  if (p.refused) return Response.json({ rap: null, note: p.error, say: RAP_SAYS[p.error] || RAP_SAYS.unsuitable });
+  const cacheReq = new Request(new URL(request.url).origin + '/__void-answer/rap/' + await sha(rapKeyOf(p.settings)));
+  try { const hit = await caches.default.match(cacheReq); if (hit) return Response.json({ rap: await hit.json(), cached: true }); } catch (_) {}
+  if (!modelsOn(env)) return Response.json({ rap: null, note: 'models off', say: RAP_SAYS.off });
+  if (await rateLimited(request, env)) return Response.json({ rap: null, note: 'slow down', say: RAP_SAYS.slow }, { status: 429 });
+  if (!(await dayCap(env, 'rap', RAP_PER_DAY)).ok) return Response.json({ rap: null, note: 'full', say: RAP_SAYS.full });
+  try {
+    const r = await env.AI.run(MODEL, { messages: p.messages.map((m) => (m.role === 'system' ? { ...m, content: m.content + ' ' + INJECTION_RULE } : { ...m, content: redact(m.content) })), max_tokens: 900, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const rap = cleanRap(parseRap(scrubOut(redact(noThink(pick(r))), env)));
+    if (!rap) return Response.json({ rap: null, note: 'empty', say: RAP_SAYS.busy });
+    try { await caches.default.put(cacheReq, new Response(JSON.stringify(rap), { headers: { 'content-type': 'application/json', 'cache-control': 'max-age=604800' } })); } catch (_) {}
+    return Response.json({ rap });
+  } catch (e) { await recordShortfall(env, 'rap', reasonOf(e)); return Response.json({ rap: null, note: 'model busy', say: RAP_SAYS.busy }); }
+}
+
 // "Verse reports" on /news/ (lib/news-report.js): a short write-up of what the news feeds already say. The caller sends only items (a source from the closed
 // list, a headline, a short summary); the route builds the plain draft itself, asks the free answer model to polish it, and VALIDATES the polish (every name,
 // number and date must be in the source text, no quote, no reporter): a polish that fails is dropped and the draft is the answer. One generation per distinct
@@ -398,6 +422,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'character') return characterAnswer(request, env, body);
   if (body && body.mode === 'report') return reportAnswer(request, env, body);
   if (body && (body.mode === 'story' || body.mode === 'aitext')) return storyAnswer(request, env, body);
+  if (body && body.mode === 'rap') return rapAnswer(request, env, body);
   if (body && body.mode === 'market-report') return marketReport(request, env, body); // the /markets/ page's "Verse reports" (lib/report-run.js): one per window for everyone, validated, capped
   const typed = norm(body.ask), ask = redactPersonal(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });

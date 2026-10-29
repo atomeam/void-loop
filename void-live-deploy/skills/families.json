@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 46,
+  "tested": 47,
   "checked": 20,
   "proven": 305
  },
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 15,
+    "tested": 16,
     "checked": 2,
     "proven": 39
    },
@@ -122,6 +122,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 11
+    },
+    {
+     "name": "rap",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "music-tools",

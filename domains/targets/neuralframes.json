@@ -1,0 +1,20 @@
+{
+ "site": "neuralframes.com (Rap Lyrics Generator)",
+ "kind": "rap lyrics generator page",
+ "chosen": "2026-10-29",
+ "why": "owner, 2026-10-29: \"Verse should learn to rap for those who hear the name and think thats what it is\". The rap lyrics generators found by search that day were neuralframes.com/tools/rap-lyrics-generator and notegpt.io/ai-rap-lyrics-generator; neuralframes' page has the fuller form (style, flow, mood, perspective, words to include), so it is the one measured, on Versus' music lane.",
+ "source": ["the tool page, read 2026-10-29", "https://www.neuralframes.com/tools/rap-lyrics-generator"],
+ "rule": "Verse assimilates the site: every feature it has, plus one notch, on one page wired into the rest of Verse.",
+ "features": [
+  { "id": "topic", "theirs": "a topic box for what the rap is about", "plus_one": "the topic from the form, or straight from an ask on the stage ('rap about my dog', 'spit some bars about mondays') or a link (?t=)", "void": "beats" },
+  { "id": "styles", "theirs": "modern trap, boom bap, drill, melodic, conscious", "plus_one": "the same five, each with its own beat composed in the browser at the style's tempo (boom bap about 90 BPM, trap and drill at half time); drill kept clean", "void": "beats" },
+  { "id": "mood-flow-view", "theirs": "mood (confident, hungry, reflective, party, gritty), flow and perspective choices", "plus_one": "the five moods and funny, three flows that also set how fast the voice raps each bar, and first, second or third person", "void": "beats" },
+  { "id": "words", "theirs": "words or ad-libs to work in", "plus_one": "the same, worked into the bars and passed to the writer as words to include", "void": "matches" },
+  { "id": "lyrics", "theirs": "generated verses and a hook", "plus_one": "two 8-bar verses and a 4-bar hook written for the settings, each bar lettered by its end rhyme so the scheme shows, and a line counting bars, rhymed bars and syllables a bar", "void": "beats" },
+  { "id": "perform", "theirs": "none: lyrics only", "plus_one": "Perform it: the beat plays and each bar is said on its measure with the browser's own voice, the bar lit as it goes; Rap it yourself plays the beat and lights the bars with no voice; Save the beat as a WAV", "void": "beats" },
+  { "id": "copy-share", "theirs": "copy the lyrics", "plus_one": "Copy the lyrics, and Share this rap puts the whole rap in the link, which opens exactly as written with no model call", "void": "beats" },
+  { "id": "another", "theirs": "generate again", "plus_one": "Another take, while the same settings bring back the same rap for a week", "void": "matches" },
+  { "id": "song", "theirs": "a hand-off to its paid song generator", "plus_one": "hand-offs to Verse's own free tools: make a song of it on the stage, count the words, translate it, music tools", "void": "beats" },
+  { "id": "limit", "theirs": "3 free generations a day, more on a paid plan", "plus_one": "free with no account; one shared daily cap for the whole site, said plainly when it is reached", "void": "beats" }
+ ]
+}
