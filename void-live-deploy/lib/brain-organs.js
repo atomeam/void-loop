@@ -10,6 +10,7 @@ import { episodicPrior, recordEpisode, keyOf, recordProcedure, bestProcedure } f
 import { clamp, laplacian4, idx, mutate, randomGenome, rng } from './field-kit.js';
 import { kuramoto } from './field-resonance.js';
 import { synapses } from './brain-synapses.js';
+import { creature } from './brain-creature.js';
 import { GW, GH, CELLS, RG, RH, EMB, KIND, REGIONS_X, REGIONS_Y, deposit, writeCell, readRegion, regionMeans, regionCenter, regionOf, addNode, nodesOf, cellOf } from './brain-workspace.js';
 
 const TAU = Math.PI * 2;
@@ -408,7 +409,7 @@ const arena = {
   }
 };
 
-export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, rhythm, synapses, swarm, membrane, will, arena];
+export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, rhythm, synapses, creature, swarm, membrane, will, arena];
 export const ORGAN_IDS = ORGANS.map((o) => o.id);
 export { randomGenome };
 export const _private = { kuramoto, idx, writeCell, regionOf, nodesOf };

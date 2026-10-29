@@ -20,6 +20,7 @@
 import { clamp } from './field-kit.js';
 import { regionMeans, regionCenter, REGIONS_X, REGIONS_Y } from './brain-workspace.js';
 import { hvSim, hypervector, cleanWords, ACTIONS } from './brain-organs.js';
+import { loadMean } from './brain-creature.js';
 
 export const REGIONS = REGIONS_X * REGIONS_Y;
 export const MAX_GOALS = 8, GOAL_DECAY = 0.997, GOAL_FLOOR = 0.05;
@@ -213,7 +214,7 @@ export function explain(b, text, names = {}) {
 export function knowledgeOf(b) {
   const r2 = (v) => Math.round(v * 1000) / 1000;
   return { v: 1, q: Array.from(b.will.q, r2), hebb: Array.from(b.memory.w, r2), centroids: b.gestures.c.map((c) => c.map(r2)), counts: b.gestures.n.slice(), pref: Array.from(b.mind.pref, r2),
-    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES) };
+    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, creature: b.creature ? b.creature.mean.map(r2) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES) };
 }
 /** put kept knowledge back into a new brain (wrong shapes are ignored, so an old record never breaks a new brain). Returns what was restored. */
 export function loadKnowledge(b, k) {
@@ -225,6 +226,7 @@ export function loadKnowledge(b, k) {
   if (Array.isArray(k.centroids) && k.centroids.length === b.gestures.c.length && k.centroids.every((c, i) => fit(b.gestures.c[i], c))) { k.centroids.forEach((c, i) => { b.gestures.c[i] = c.slice(); }); if (Array.isArray(k.counts)) b.gestures.n = k.counts.slice(0, b.gestures.n.length).map((x) => +x || 0); done.push('gestures'); }
   if (fit(b.mind.pref, k.pref)) { b.mind.pref.set(k.pref); done.push('preferences'); }
   if (b.synapses && fit(b.synapses.W, k.synapses) && k.synapses.every((x) => x >= 0 && x <= 6)) { b.synapses.W.set(k.synapses); done.push('synapses'); } // the spiking eye's learned wiring (lib/brain-synapses.js)
+  if (b.creature && loadMean(b.creature, k.creature)) done.push('creature'); // the Lenia creature's evolved physics (lib/brain-creature.js)
   if (Array.isArray(k.procedures)) { const p = k.procedures.filter((x) => x && typeof x.ctx === 'string' && x.genome && typeof x.genome === 'object' && Number.isFinite(x.fitness)).slice(0, MAX_PROCEDURES); if (p.length || !k.procedures.length) { b.mind.procedures = p; done.push('procedures'); } }
   if (Array.isArray(k.episodes)) { b.mind.episodes = k.episodes.filter((e) => e && Array.isArray(e.key) && e.key.length === REGIONS * 2 + 2 && Number.isInteger(e.action) && e.action >= 0 && e.action < ACTIONS.length && Number.isFinite(e.gain)).slice(-MAX_EPISODES); if (!b.mind.episodes.length && k.episodes.length) b.mind.episodes = []; else done.push('episodes'); }
   return done;
