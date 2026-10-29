@@ -545,6 +545,54 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T12:57:50Z",
+   "subject": "skills: register yesno (order file, Games family, map line) so the fast checks pass on main"
+  },
+  {
+   "at": "2026-10-29T12:50:13Z",
+   "subject": "fanfic: ask the server again for each module file before the import"
+  },
+  {
+   "at": "2026-10-29T12:44:47Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T12:36:10Z",
+   "subject": "Better at formulas: 1 more way of asking answered right — new phrases: “calculator for molar mass” now opens formulas"
+  },
+  {
+   "at": "2026-10-29T12:29:04Z",
+   "subject": "brain: organ shares show recent runs, so a new organ in an old saved brain no longer reads 0%"
+  },
+  {
+   "at": "2026-10-29T12:18:18Z",
+   "subject": "/fanfic/: the first writer opens a fandom and posts the story with one press"
+  },
+  {
+   "at": "2026-10-29T12:17:41Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T12:15:33Z",
+   "subject": "add yesno skill: yes or no answers"
+  },
+  {
+   "at": "2026-10-29T12:12:16Z",
+   "subject": "Naming gate: read a page after its own fetch answers; resize-image says it compresses"
+  },
+  {
+   "at": "2026-10-29T12:09:37Z",
+   "subject": "Verse Brain: F215's codec retina gardener is the 16th organ"
+  },
+  {
+   "at": "2026-10-29T12:08:15Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T12:08:14Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T12:07:42Z",
    "subject": "3D miniatures: a reframe frees the old ground only after the compile in flight settles"
   },
@@ -575,54 +623,6 @@
   {
    "at": "2026-10-29T11:43:21Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T11:36:18Z",
-   "subject": "Verse Brain: when a tune ends, the card says how many notes it heard and guessed right"
-  },
-  {
-   "at": "2026-10-29T11:33:00Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
-  },
-  {
-   "at": "2026-10-29T11:18:04Z",
-   "subject": "/fanfic/: count real reads of each story (hits)"
-  },
-  {
-   "at": "2026-10-29T11:17:45Z",
-   "subject": "Verse Brain: Play a tune lets anyone watch Hearing work with no microphone"
-  },
-  {
-   "at": "2026-10-29T11:00:55Z",
-   "subject": "Shard 4: the brain bridge check opens its second page on the stage's own origin, and the memory orbs check expects the shared field"
-  },
-  {
-   "at": "2026-10-29T10:56:57Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T10:55:41Z",
-   "subject": "fanfic: a row whose story read fails shows no figures instead of an unhandled rejection"
-  },
-  {
-   "at": "2026-10-29T10:51:18Z",
-   "subject": "fanfic: catalog rows show each story's chapters, words, reviews and stars"
-  },
-  {
-   "at": "2026-10-29T10:48:24Z",
-   "subject": "Incident: the browser suite failed on 8aa556a5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T10:48:15Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T10:47:59Z",
-   "subject": "Shard 4: the memory orbs and Verse Brain checks match what Verse now does"
-  },
-  {
-   "at": "2026-10-29T10:43:29Z",
-   "subject": "verse brain: painter organ (F322), the brain's look is a program it rewrites"
   }
  ],
  "builders": {
