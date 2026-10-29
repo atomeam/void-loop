@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:11:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:10:31Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:09:09Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -566,6 +574,10 @@
   },
   {
    "at": "2026-10-29T15:06:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:06:28Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T14:59:18Z",
    "subject": "Self card: waiting and built add up to the total"
-  },
-  {
-   "at": "2026-10-29T14:58:30Z",
-   "subject": "Verse uses its brain on every page: one host hears every ask, ranks the ask box, answers what it is thinking"
-  },
-  {
-   "at": "2026-10-29T14:55:57Z",
-   "subject": "Versus queue and picker rank on measured rows only"
-  },
-  {
-   "at": "2026-10-29T14:52:15Z",
-   "subject": "Paid Verse: members send ideas that only add (dark until go-live)"
   }
  ],
  "builders": {
