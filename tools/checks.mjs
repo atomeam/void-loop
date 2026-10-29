@@ -106,6 +106,7 @@ for (const [name, file] of [
   ['fanfic', 'fanfic.test.mjs'],
   ['fanfic-hits', 'fanfic-hits.test.mjs'],
   ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
+  ['team', 'team.test.mjs'],
   ['naming-audit', 'naming-audit.test.mjs'],
   ['music-tools', 'music-tools.test.mjs'],
   ['flights', 'flights.test.mjs'],
