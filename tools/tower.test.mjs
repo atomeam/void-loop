@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows } from '../void-live-deploy/lib/tower.js';
+import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows, sizeTier, easeLine } from '../void-live-deploy/lib/tower.js';
 import { towerHtml } from '../void-live-deploy/skills/tower.js';
 import { verdict, record } from './tower-gate.mjs';
 // every aspect passing; journey rows carry their steps and negative controls (the gate's standards, 2026-10-28)
@@ -57,7 +57,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   // three conquered: the current site first, the conquered under it, newest first
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
   const states = [...h3.matchAll(/data-state="(\w+)"/g)].map((x) => x[1]);
-  assert.deepEqual(states, ['current', 'beaten', 'beaten', 'beaten']); assert.match(h3, /3 surpassed · working on: /);
+  assert.deepEqual(states, ['current', 'beaten', 'beaten', 'beaten']); assert.match(h3, /3 surpassed · easiest site left: /);
   assert.ok(h3.indexOf(FLOORS[2].site) < h3.indexOf(FLOORS[0].site));
 });
 test('the live card tells what moved between two polls', async () => {
@@ -190,4 +190,13 @@ test('the shopping floor fights from Verse\'s own store, and the store page exis
   assert.ok(probe.truth.length >= 4, 'accuracy is judged against a worked-out answer');
   for (const a of ['catalogue', 'checkout', 'delivery tracking']) assert.ok(probe.askParts[a] && probe.askParts[a].length >= 5, a + ' is measured');
   assert.ok(probe.facts.length >= 18, 'completeness has a real checklist');
+});
+test('with the size data the target is the easiest site: a small one before a giant, fewer aspects left first, a page before none (owner, 2026-10-29)', () => {
+  const rank = { ranks: { calculator: 1338, 'is it': 853018 }, order: {} };
+  const t = tower([], {}, null, null, rank), cur = t.floors.find((f) => f.state === 'current');
+  assert.ok(cur.tier === 0, 'the target is small: ' + cur.id + ' tier ' + cur.tier);
+  const calc = t.floors.find((f) => f.id === 'calculator');
+  assert.equal(calc.tier, 2); assert.ok(t.floors.indexOf(calc) > t.floors.indexOf(cur));
+  assert.deepEqual([sizeTier(null), sizeTier(150000), sizeTier(50000), sizeTier(5000), sizeTier(500)], [0, 0, 1, 2, 3]);
+  assert.match(easeLine(cur), /aspects left to pass/);
 });

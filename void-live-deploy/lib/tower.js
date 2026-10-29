@@ -315,14 +315,25 @@ export function frontierOf(frontier, floors = FLOORS) {
 // floors\" from \"frontier floors\"—treat all unbeaten sites as one queue sorted easiest-first"): FLOORS and every frontier site are one queue,
 // sorted by how many aspects Verse still has to beat, then by the order they came (FLOORS, then the scan's hardness). `total` is the sites found
 // so far, never a ceiling: it grows as the scan grows.
-export function tower(onlySite = [], evidence = {}, frontier = null, icons = null) {
+// How big a site is, as a tier (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"; 2026-10-28: "move
+// backwards to easier sites"; 2026-10-29: "the tower card ... needs completely rethought and redone, with the actual easiest site as the target"):
+// 0 = outside the top 100,000 most visited (Tranco, tower.rank.json) or unranked, 1 = 10,000 to 100,000, 2 = 1,000 to 10,000, 3 = the giants.
+export const sizeTier = (rank) => (!Number.isFinite(+rank) || !rank || +rank >= 100000 ? 0 : +rank >= 10000 ? 1 : +rank >= 1000 ? 2 : 3);
+export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant']);
+/** why a site stands where it does in the queue, in words, from its tier, what is left and whether Verse has a page for it. Pure. */
+export function easeLine(f) {
+  const tier = TIER_WORDS[f.tier || 0], left = Math.max(0, (f.m || 0) - (f.n || 0));
+  return (f.rank ? 'ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited' : 'outside the million most visited') + ' (' + tier + ')'
+    + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
+}
+export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
-  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
+  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); return { ...f, order: i, ...g, ev, icon, badge, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, ev, icon, badge, rank: r, tier: sizeTier(r), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);
@@ -339,7 +350,10 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // order, small single-purpose sites first (owner: "work through millions of small sites, easiest first"): a site with at most two aspects of
   // its own (a frontier tool site has none) stands before a broad, many-feature one
   const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  // with the size data (the card, the plan) the queue is easiest first by size, then by work left: gate, far future, a waiting giant, the size tier, what Verse
+  // loses on, aspects still to pass, a site with a page before one without, then the order they came. Without it the old order stands.
+  const tierOf = (f) => (rank ? f.tier : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }

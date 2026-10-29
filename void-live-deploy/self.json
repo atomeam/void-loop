@@ -501,13 +501,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-15T00:00:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T01:59:01Z",
+   "subject": "Connect the conductor to Verse's coder: verse-job.yml, kill-switch file, one coder at a time"
+  },
+  {
+   "at": "2026-10-29T01:58:44Z",
+   "subject": "Tower gate: calculator,unit converter: convertlive.com,unit converter: convertunits.com measured against their live sites"
+  },
   {
    "at": "2026-10-29T01:52:46Z",
    "subject": "Adopt the advice skill into a family and regenerate"
@@ -579,14 +587,6 @@
   {
    "at": "2026-10-28T23:11:08Z",
    "subject": "verse-loop: run with the workflow token, no extra secret needed (Actions may open PRs now)"
-  },
-  {
-   "at": "2026-10-28T23:11:05Z",
-   "subject": "Notes: the render line says why its HTML is safe"
-  },
-  {
-   "at": "2026-10-28T23:10:39Z",
-   "subject": "Notes clean a note's HTML when they show it; the review's false alarms marked with why"
   }
  ],
  "builders": {

@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-55';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-56';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -133,6 +133,11 @@ export function planHtml(p, esc) {
     + (p.skipped.length ? '<p class="tw-plan-skip" style="margin:4px 0 0;font-size:12px;opacity:.75">Skipped: ' + p.skipped.map((x) => esc(x.site) + (x.why ? ' (' + esc(x.why) + ')' : '')).join('; ') + '</p>' : '')
     + '<p style="margin:4px 0 0;font-size:11px;opacity:.65">The order comes from docs/NEXT.md; the counts come from the gate. A floor is surpassed only on scripted journeys with negative controls.</p></div>';
 }
+/** the next easiest sites after the target, from the same order that picks the target (lib/tower.js: size tier, then work left, then a page first). Pure. */
+export function nextHtml(t, esc, n = 5) {
+  const rows = t.floors.filter((f) => f.state === 'ahead' && !f.defer && !f.farFuture).slice(0, n);
+  return rows.length ? '<div class="tw-next" data-share-skip style="margin:0 0 8px;font-size:12px"><b>Next easiest</b><ol style="margin:2px 0 0;padding-left:20px">' + rows.map((f) => '<li data-id="' + esc(f.id) + '"><span class="tw-name">' + esc(f.site) + '</span> <span style="opacity:.75">' + esc(f.n + ' of ' + f.m + ' ahead' + (f.page ? '' : ', no page yet')) + '</span></li>').join('') + '</ol></div>' : '';
+}
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
   const sizeTag = (f) => rk ? '<span class="tw-size" title="' + esc(w.rank) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>' : '';
@@ -155,7 +160,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   // hidden from sight and from screen readers, who have the list itself
   const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
-  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (plan && plan.now.length ? ' · working on: ' + plan.now.map((r) => r.f.site).join(', ') : cur ? ' · working on: ' + cur.site : '')) + '</div>' + planHtml(plan, esc)
+  return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? ' · easiest site left: ' + cur.site : '')) + '</div>' + (cur ? '<p class="tw-why" style="margin:0 0 8px;font-size:12px;opacity:.8;text-align:center">' + esc('Why this one: ' + easeLine(cur) + '.') + '</p>' : '') + (on ? '' : nextHtml(t, esc))
     + sortBar + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
@@ -213,7 +218,7 @@ let stale = 0;
 // is ignored. No "reload" notice: the card is live, so it heals instead of asking (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card").
 let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
-const load = async () => { const [inv, ev, fr, rk, pl] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json')]); const args = [(inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null]; let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; return t; };
+const load = async () => { const [inv, ev, fr, rk, pl] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json')]); const args = [(inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null]; const rkd = (rk && rk.list && rk.ranks) ? rk : null; args.push(rkd); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
@@ -264,5 +269,5 @@ export default {
   examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me', 'cats versus dogs', 'verse versus google'],
   match(lower, text) { return towerOf(text || lower); },
-  run, towerOf, towerHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
+  run, towerOf, towerHtml, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
 };
