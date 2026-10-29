@@ -15,8 +15,6 @@
 <meta property="og:url" content="https://a-to-mind.com/fanfic/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="modulepreload" href="/lib/fanfic.js">
-<link rel="modulepreload" href="/lib/boards.js">
 <style>
   /* a-to-mind.com/fanfic/ (owner, 2026-10-29: "build the page"; the same night: "deep space dark mode", "a clean, dedicated fanfiction archive
      view that matches legacy layouts (like Sycophant Hex)", "without raw board form fields", "zero seeded or fake stories").
@@ -55,13 +53,14 @@
   .top .wrap { display: flex; align-items: center; gap: 6px 18px; min-height: 60px; flex-wrap: wrap; }
   .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--ink); white-space: nowrap; }
   .brand b { font-weight: 300; font-size: 20px; letter-spacing: -.03em; background: linear-gradient(180deg, #fff, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .brand span { font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--ink-3); }
+  .brand span { font-size: 15px; letter-spacing: .22em; font-variant-caps: all-small-caps; font-variant-ligatures: none; color: var(--ink-3); } /* small caps, so the words stay words to a screen reader */
   .nav { display: flex; flex-wrap: wrap; gap: 2px; margin-left: auto; }
   .nav a { color: var(--ink-2); text-decoration: none; font-size: 14px; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 999px; transition: color .2s, background .2s; }
   .nav a:hover { color: var(--ink); background: rgba(255,255,255,.05); }
   .nav a[aria-current] { color: var(--ink); background: rgb(var(--key) / .12); box-shadow: 0 0 0 1px rgb(var(--key) / .28) inset; }
 
-  main.wrap { padding-top: 34px; padding-bottom: 40px; }
+  /* the views draw after the page script runs: the main area keeps a screen's height from the first paint, so the footer never jumps down (layout shift, tower gate design polish) */
+  main.wrap { padding-top: 34px; padding-bottom: 40px; min-height: 100vh; min-height: 100svh; }
   .view { display: none; } .view.on { display: block; animation: rise .5s var(--ease); }
   @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
   h1, .h1 { font-weight: 280; font-size: clamp(30px, 5vw, 46px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 10px; overflow-wrap: anywhere;
@@ -121,7 +120,7 @@
   table.list .when { white-space: nowrap; color: var(--ink-3); font-size: 13px; width: 1%; }
   table.list .ic { width: 22px; padding-right: 0; }
   table.list .who { white-space: nowrap; color: var(--ink-2); font-size: 14px; }
-  table.list a.t { color: var(--ink); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; }
+  table.list a.t { color: var(--ink); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; display: inline-block; padding: 2px 0; } /* 24 px tap target at least (WCAG 2.5.8) */
   table.list a.t:hover { color: #fff; text-decoration: underline; text-decoration-color: rgb(var(--key) / .6); }
   table.list .about { display: block; font-size: 13px; color: var(--ink-3); margin-top: 2px; overflow-wrap: anywhere; }
   table.list .in { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
@@ -148,6 +147,8 @@
   .empty p { margin: 0 auto 22px; max-width: 34em; color: var(--ink-3); font-size: 15px; }
   .empty .acts { justify-content: center; }
   .quiet { padding: 26px 20px; text-align: center; color: var(--ink-3); font-size: 15px; }
+  /* while the archive is read, the empty room keeps its place unseen, so nothing below jumps when the answer comes (a slow answer moved the page 0.34) */
+  .glass.loading #emptyArchive[hidden] { display: block !important; visibility: hidden; } .glass.loading #indexSay { position: absolute; inset: 61px 0 auto; margin: 0; }
 
   /* site info, like an archive's stats block */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); }
@@ -188,8 +189,13 @@
 
   footer { border-top: 1px solid var(--line); padding: 22px 0 40px; font-size: 13px; color: var(--ink-3); }
   footer a { color: var(--ink-2); } footer p { margin: 0 0 6px; }
-  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; clip-path: inset(50%); white-space: nowrap; } /* hidden by clip-path, not overflow, so no text reads as cut off */
   [hidden] { display: none !important; }
+  .tools input[type=search] { width: auto; min-width: 220px; flex: 1 1 220px; }
+  .listacts { padding: 12px 20px; border-top: 1px solid var(--line); } .listacts .quiet { padding: 0; font-size: 13px; }
+  .langb { align-self: center; min-height: 32px; padding: 0 12px; font-size: 13px; margin-left: 6px; }
+  details.keys { margin: 0 0 8px; } details.keys summary { cursor: pointer; color: var(--ink-2); min-height: 24px; display: inline-flex; align-items: center; }
+  kbd { font: 12px/1 ui-monospace, monospace; padding: 2px 6px; border: 1px solid var(--line-2); border-radius: 6px; color: var(--ink-2); background: rgba(255,255,255,.04); }
 
   @media (max-width: 760px) {
     .wrap { padding: 0 16px; }
@@ -230,14 +236,15 @@
 <canvas id="stars" aria-hidden="true"></canvas>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="/fanfic/" data-go><b>Verse</b><span>Fan fiction</span></a>
+    <a class="brand" href="/fanfic/" data-go><b>Verse</b><span>Fan Fiction</span></a>
     <nav class="nav" aria-label="Archive">
-      <a href="/fanfic/" data-go data-v="index">Index</a>
-      <a href="/fanfic/?v=recent" data-go data-v="recent">Most recent</a>
-      <a href="/fanfic/?v=search" data-go data-v="search">Search</a>
-      <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink">Writing Room</a>
+      <a href="/fanfic/" data-go data-v="index" aria-keyshortcuts="i">Index</a>
+      <a href="/fanfic/?v=recent" data-go data-v="recent" aria-keyshortcuts="r">Most recent</a>
+      <a href="/fanfic/?v=search" data-go data-v="search" aria-keyshortcuts="/">Search</a>
+      <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink" aria-keyshortcuts="w">Writing Room</a>
       <a href="/fanfic/?v=glossary" data-go data-v="glossary">Writing Glossary</a>
       <a href="/fanfic/?notice=rules" data-go data-v="notice">Rules</a>
+      <button type="button" class="langb" id="langBtn" translate="no" lang="de" aria-label="Auf Deutsch lesen">Deutsch</button>
     </nav>
   </div>
 </header>
@@ -253,9 +260,10 @@
       <a class="btn go" href="/fanfic/?v=room" data-go>Open the Writing Room</a>
       <a class="btn" href="/fanfic/?v=search" data-go>Search</a>
       <a class="btn" href="/fanfic/?v=glossary" data-go>Writing Glossary</a>
+      <a class="btn" href="/fanfic/?notice=format" data-go>Quick start: how to post</a>
     </div>
 
-    <div class="glass">
+    <div class="glass loading" id="fandomBox">
       <div class="phead"><h2 class="grow" id="fandomsH">Fandoms</h2><a class="btn" href="/fanfic/?new=fandom" data-go>Start a fandom</a></div>
       <table class="list" aria-labelledby="fandomsH" id="fandomList" hidden>
         <thead><tr><th class="ic"><span class="vh">New</span></th><th>Fandom</th><th class="num">Stories</th><th class="num">Posts</th><th>Last post</th></tr></thead>
@@ -272,6 +280,7 @@
 
     <div class="glass" id="latestBox">
       <div class="phead"><h2 class="grow" id="latestH">Stories</h2>
+        <div class="tools"><label class="vh" for="find">Find a story</label><input type="search" id="find" maxlength="100" enterkeyhint="search" placeholder="A title, a fandom or a pen name" aria-keyshortcuts="/"></div>
         <div class="tools" data-tools></div>
       </div>
       <table class="list" aria-labelledby="latestH" id="latest">
@@ -279,6 +288,7 @@
         <tbody data-rows></tbody>
       </table>
       <div class="pages" data-pages hidden></div>
+      <div class="acts listacts"><button type="button" id="copyLink">Copy link</button><button type="button" id="exportCsv">Export list (.csv)</button><span class="quiet" id="listSay" role="status"></span></div>
       <div class="legend"><span><i class="dot new"></i>New posts</span><span><i class="dot"></i>No new posts</span><span><i class="dot pin"></i>Announcement</span><span><i class="dot lock"></i>Locked</span></div>
     </div>
 
@@ -295,8 +305,8 @@
 
   <!-- one fandom: its topic list -->
   <section class="view" id="forum" aria-labelledby="forumH">
-    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span id="forumCrumb"></span></nav>
-    <h2 id="forumH" class="h1"></h2>
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span id="forumCrumb" translate="no"></span></nav>
+    <h2 id="forumH" class="h1" translate="no"></h2>
     <p class="lead" id="forumAbout"></p>
     <div class="acts" style="margin:0 0 24px"><a class="btn go" id="forumPost" href="/fanfic/?new=story" data-go>Post a new story</a></div>
     <div class="glass">
@@ -325,12 +335,12 @@
 
   <!-- one story -->
   <section class="view" id="story" aria-labelledby="storyH">
-    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><a id="storyCrumb" href="/fanfic/" data-go></a></nav>
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><a id="storyCrumb" href="/fanfic/" data-go>Story</a></nav>
     <article class="glass">
       <div class="storyh">
-        <h2 id="storyH" class="h1"></h2>
+        <h2 id="storyH" class="h1" translate="no"></h2>
         <p class="by" id="storyBy"></p>
-        <p class="summary" id="storySum"></p>
+        <p class="summary" id="storySum" translate="no"></p>
       </div>
       <dl class="facts" id="storyInfo"></dl>
       <div class="toc" id="toc"><label class="vh" for="tocSel">Chapter</label><select id="tocSel"></select><span class="muted" id="tocSay"></span></div>
@@ -501,10 +511,11 @@
 <!-- /asks -->
 <nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/generators/">Generators</a> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <p>Stories here are posts on Verse's <a href="/boards/">open boards</a> and follow <a href="/boards/rules/">the rules</a>. Takedowns and reports of illegal content: <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+  <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>/</kbd> find a story · <kbd>n</kbd> post a new story · <kbd>w</kbd> the Writing Room · <kbd>i</kbd> the index · <kbd>r</kbd> the most recent stories · <kbd>?</kbd> these shortcuts</p><p>Shortcuts work anywhere outside a text field.</p></details>
   <p id="brainSay" hidden></p>
   <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
 </footer>
-<script type="module" src="/fanfic/app.js"></script>
+<script>addEventListener('load', () => { import('/fanfic/app.js').catch(() => {}); }); // the module after load, as /boards/ does: nothing fetched holds the load event back (Versus measures speed)</script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 </body>
 </html>

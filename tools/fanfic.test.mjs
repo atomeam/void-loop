@@ -163,3 +163,37 @@ test('the stage card (skills/fanfic.js) answers the page\'s own stage ask, lists
   assert.deepEqual(lines, [{ href: '/fanfic/?f=ficx', text: 'Adult fandom (18+)' }, { href: '/fanfic/?f=ficdw', text: 'Doctor Who' }]);
   assert.deepEqual(fandomLines(null), [], 'nothing posted: no lines, so the card says there are none yet');
 });
+
+test('the page opens offline: the service worker shells /fanfic/ at install and keeps its app.js like other page code', () => {
+  const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8'); assert.match(sw, /const TOOLS = \[[^\]]*'\/fanfic\/'/);
+  const code = /const pageCode = \(p\) => ([^\n]+);\n/.exec(sw); assert.ok(code, 'pageCode is one line'); const pageCode = new Function('p', 'return ' + code[1]);
+  assert.equal(pageCode('/fanfic/app.js'), true); assert.equal(pageCode('/fanfic/index.html'), false); assert.equal(pageCode('/pdf/merge/app.js'), true, 'the other pages keep theirs');
+});
+
+test('the index list: find narrows it by title, fandom and pen name, and the CSV export is safe in a spreadsheet', async () => {
+  const list = [{ board: 'ficdw', fandom: 'Doctor Who', title: 'The Café at the End', author: 'Rose', no: 4, replies: 2, bumped: Date.UTC(2026, 9, 29) },
+    { board: 'ficx', fandom: 'Adult fandom', title: '=HYPERLINK("x")', author: 'Ann, "Q"', no: 9, nsfw: true, replies: 0, bumped: 0 }];
+  assert.deepEqual(F.findIn(list, 'cafe doctor').map((t) => t.no), [4], 'every word, accents ignored');
+  assert.deepEqual(F.findIn(list, 'ann').map((t) => t.no), [9]); assert.equal(F.findIn(list, '  ').length, 2); assert.equal(F.findIn(list, 'zebra').length, 0);
+  const csv = F.storiesCsv(list, 'https://a-to-mind.com').split('\r\n');
+  assert.equal(csv[0], 'Title,Fandom,Author,Replies,Rating,Last post,Link');
+  assert.equal(csv[1], 'The Café at the End,Doctor Who,Rose,2,All ages,2026-10-29T00:00:00.000Z,https://a-to-mind.com/fanfic/?f=ficdw&s=4');
+  assert.equal(csv[2], '"\'=HYPERLINK(""x"")",Adult fandom,"Ann, ""Q""",0,18+,,https://a-to-mind.com/fanfic/?f=ficx&s=9', 'a formula is made text; quotes and commas are escaped');
+  const page = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  assert.match(page, /<input type="search" id="find"/); assert.match(page, />Copy link</); assert.match(page, />Export list \(\.csv\)</);
+  assert.match(app, /u\.set\('find', v\)/, 'what was typed goes in the address, so the link restores it');
+  assert.match(page, /<details class="keys"><summary>Keyboard shortcuts<\/summary>/); assert.match(page, /aria-keyshortcuts="\/"/);
+});
+
+test('German: the archive\'s own words change, what readers wrote never does', async () => {
+  const DE = await import('../void-live-deploy/lib/fanfic-de.js');
+  assert.equal(DE.de('Mark all read'), 'Alle als gelesen markieren'); assert.equal(DE.de('  Post story '), '  Geschichte veröffentlichen ', 'spaces kept');
+  assert.equal(DE.de('Chapter 3 of 7'), 'Kapitel 3 von 7'); assert.equal(DE.de('Page 2 of 5'), 'Seite 2 von 5'); assert.equal(DE.de('Reviews (4)'), 'Rezensionen (4)');
+  assert.equal(DE.de('A line nobody wrote here'), 'A line nobody wrote here', 'unknown text stays as it is');
+  assert.equal(DE.deTitle('Writing Room · Fan fiction · Verse'), 'Schreibzimmer · Fanfiction · Verse');
+  assert.equal(DE.langOf('?lang=de', 'en', 'en-US'), 'de'); assert.equal(DE.langOf('', 'en', 'de-DE'), 'en', 'the device\'s pick over the browser');
+  assert.equal(DE.langOf('', '', 'de-AT'), 'de'); assert.equal(DE.langOf('', '', 'en-GB'), 'en');
+  for (const v of Object.values(DE.DICT)) assert.ok(!Object.prototype.hasOwnProperty.call(DE.DICT, v) || DE.DICT[v] === v, 'no German word is itself a key: ' + v);
+  const app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  for (const m of ["a.translate = false", "pen.translate = false", "prose.translate = false", "body.translate = false"]) assert.ok(app.includes(m), m);
+});

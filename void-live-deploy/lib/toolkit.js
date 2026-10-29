@@ -258,12 +258,22 @@ export function routeAsk(text) {
   return '/?q=' + encodeURIComponent(t);
 }
 
-/** the "Use with" row: this page's hand-offs (carrying what is on it), then its related tools, then the accent it wears. */
-export function mountRelated(el, path, handoffs = []) {
+/** the "Use with" row: this page's hand-offs (carrying what is on it), then its related tools, then the accent it wears. card, when a page
+ *  gives it, answers the stage ask for what is on the page now (the colour page: 'color #f5be3d'), so its own card opens on that, not the example. */
+export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
   if (!el) return;
   const d = el.ownerDocument, a = (href, text, cls) => { const x = d.createElement('a'); x.href = href; x.textContent = text; if (cls) x.className = cls; return x; };
   const row = d.createElement('div'); row.className = 'tk-row';
-  { const c = cardLinkOf(path); if (c) row.append(a(c, 'See it as a card on the stage →', 'tk-card')); } // first: the page's own card (owner, 2026-10-25: "and vice versa")
+  { const c = cardLinkOf(path); if (c) { // first: the page's own card (owner, 2026-10-25: "and vice versa")
+    const x = a(c, 'See it as a card on the stage →', 'tk-card'), aim = () => { let q = ''; try { q = card ? String(card() || '').trim() : ''; } catch (_) { /* the page's own problem: keep the example */ } x.href = q ? '/?q=' + encodeURIComponent(q) : c; };
+    if (card) { // aimed now, again after anything the page does (a swatch clicked, a stop dragged, a key typed), and when pointed at or pressed,
+      // so a hover already shows the card for what is on the page (owner via the team, 2026-10-29: the link follows the colour live)
+      aim(); for (const ev of ['pointerenter', 'pointerdown', 'focus', 'click']) x.addEventListener(ev, aim);
+      if (d.addEventListener) for (const ev of ['input', 'change', 'click', 'pointerup', 'keyup']) d.addEventListener(ev, aim);
+      if (d.defaultView && d.defaultView.addEventListener) for (const ev of ['hashchange', 'popstate']) d.defaultView.addEventListener(ev, aim);
+    }
+    row.append(x);
+  } }
   for (const h of handoffs) {
     if (h.run) { const b = d.createElement('button'); b.type = 'button'; b.className = 'tk-hand'; b.textContent = h.label; b.addEventListener('click', () => { const said = h.run(); if (said) { b.textContent = said; setTimeout(() => { b.textContent = h.label; }, 1600); } }); row.append(b); continue; }
     const x = a('#', h.label, 'tk-hand'); x.addEventListener('click', (e) => { const u = h.href(); if (!u) { e.preventDefault(); return; } x.href = u; }); x.addEventListener('pointerdown', () => { const u = h.href(); if (u) x.href = u; }); row.append(x);

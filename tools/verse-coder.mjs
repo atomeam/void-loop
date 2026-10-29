@@ -166,6 +166,23 @@ export const keyless = (env = process.env) => Object.fromEntries(Object.entries(
 const git = (root, args, opts = {}) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, ...opts });
 const readOr = (p) => { try { return readFileSync(p, 'utf8'); } catch (_) { return null; } };
 
+export const WINDOW = Object.freeze({ messages: 24, fresh: 4, keep: 600 });
+/** what the model gets each turn: the system and the task, then the last WINDOW.messages turns, with each tool result older than the
+ *  newest WINDOW.fresh messages cut to WINDOW.keep characters. Every turn sends the whole window again, so full old reads made the
+ *  count grow with the square of the turns: a 250000-token run stopped near turn 12 of 30 with nothing shipped; now the newest 2 results stay whole. Pure. */
+export function windowOf(messages) {
+  const m = Array.isArray(messages) ? messages : [];
+  const rest = m.length > WINDOW.messages + 2 ? m.slice(-WINDOW.messages) : m.slice(2);
+  return [...m.slice(0, 2), ...rest.map((x, i) => (x.role === 'user' && i < rest.length - WINDOW.fresh && x.content.length > WINDOW.keep
+    ? { role: 'user', content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older result; read it again if you need it]' } : x))];
+}
+
+/** the turns as a short trail for a stop at a cap ("read a, search x, edit: the diff does not apply"), so the job note says where they went. Pure. */
+export function trailOf(transcript, n = 12) {
+  const t = Array.isArray(transcript) ? transcript.slice(-n) : [];
+  return t.map((x) => [x.tool, x.path].filter(Boolean).join(' ') + (/^(refused|the diff|no such|no tool|FAIL)/.test(String(x.result || '')) ? ': ' + String(x.result).split('\n')[0].slice(0, 60) : '')).join(', ');
+}
+
 const SYSTEM = (checks, target) => `You are Verse's coding agent, working in a git repository through tools. You change code so the task is done and every check stays green.
 Answer every turn with exactly one JSON object and nothing else (an edit may put its diff in a \`\`\`diff block right after the JSON instead):
 {"tool":"list","path":"tools"}                       list a directory
@@ -193,7 +210,11 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   const restore = () => {
     for (const [p, c] of original) { const abs = join(root, p); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone already */ } } else writeFileSync(abs, c); }
   };
-  const end = (outcome, why) => { if (outcome !== 'done') restore(); return { outcome, why, turns, tokens, files: outcome === 'done' ? changedFiles() : [], log: transcript }; };
+  const end = (outcome, why) => {
+    if (outcome !== 'done') restore();
+    if ((outcome === 'turn-cap' || outcome === 'token-cap') && transcript.length) why += ' after ' + turns + ' turns: ' + trailOf(transcript);
+    return { outcome, why, turns, tokens, files: outcome === 'done' ? changedFiles() : [], log: transcript };
+  };
   const changedFiles = () => touched().filter((p) => readOr(join(root, p)) !== original.get(p));
 
   const tools = {
@@ -283,7 +304,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
     if (turns >= L.turns) return end('turn-cap', 'stopped at the turn cap (' + L.turns + ')');
     if (tokens >= L.tokens) return end('token-cap', 'stopped at the token cap (' + L.tokens + ')');
     turns++;
-    const recent = messages.length > 26 ? [messages[0], messages[1], ...messages.slice(-24)] : messages;
+    const recent = windowOf(messages);
     let reply;
     try { reply = await model(recent); } catch (e) { reply = { error: String((e && e.message) || e) }; }
     if (!reply || reply.error) return end('model-down', (reply && reply.error) || 'the model gave nothing');

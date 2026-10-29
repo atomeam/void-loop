@@ -18,9 +18,10 @@ import { fieldSkill } from '../lib/field-stage.js';
 import * as B from '../lib/brain.js';
 import { GW, GH, RG, RH, KIND, REGIONS_X, REGIONS_Y } from '../lib/brain-workspace.js';
 import { hostBrain } from '../lib/brain-bridge.js';
+import { MODES, BRAIN } from '../lib/mind-field-modes.js';
 import { loadKept, keep, forget } from '../lib/brain-store.js';
 import * as Field from '../lib/shared-field.js';
-import { feltFrom, linkBrain } from '../lib/brain-field.js';
+import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
 const offs = new WeakMap(); // an offscreen GW x GH canvas per state, kept off the state (the stage saves its things)
@@ -94,10 +95,13 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   q('.ff-btns').insertAdjacentElement('beforebegin', row);
   const said = document.createElement('div'); said.className = 'vb-said'; said.setAttribute('aria-live', 'polite'); said.style.cssText = 'font-size:12px;min-height:1.3em;margin-top:4px';
   row.insertAdjacentElement('afterend', said);
+  // the shared field, said in words on the card: what it feels from the other mind cards, and what it holds there of its own
+  const fieldLine = document.createElement('div'); fieldLine.className = 'vb-field'; fieldLine.setAttribute('aria-live', 'polite'); fieldLine.style.cssText = 'font-size:12px;margin-top:4px;color:rgb(255,170,230)';
+  said.insertAdjacentElement('afterend', fieldLine);
   const det = document.createElement('details'); det.className = 'vb-organs'; det.style.cssText = 'font-size:12px;margin-top:6px';
   det.innerHTML = '<summary>Organs: what each does and how much it runs</summary><table style="width:100%;border-collapse:collapse;margin-top:4px"><tbody></tbody></table>'
     + '<div class="vb-made" style="color:var(--muted,#8a8a8a);margin-top:4px"></div>';
-  said.insertAdjacentElement('afterend', det);
+  fieldLine.insertAdjacentElement('afterend', det);
   for (const n of [row, det, ...row.querySelectorAll('input,button')]) for (const ev of ['pointerdown', 'keydown']) n.addEventListener(ev, (e) => e.stopPropagation());
   const box = q('.vb-word'), listenBtn = q('.vb-listen'), body = det.querySelector('tbody');
   const made = () => {
@@ -149,6 +153,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     el.dataset.concepts = String(self.concepts); el.dataset.focus = String(b.focus.region); el.dataset.action = self.action; el.dataset.ticks = String(b.ticks);
     el.dataset.organs = String(B.ORGAN_IDS.length); el.dataset.episodes = String(self.episodes); el.dataset.procedures = String(self.procedures); el.dataset.wants = String(self.wants.length); el.dataset.conflicts = String(self.conflicts.length);
     const fc = Field.census(); el.dataset.felt = String((felt.get(S()) || []).length); el.dataset.published = String(link ? link.held : 0); el.dataset.fieldOwners = Object.keys(fc.held).sort().join(',');
+    const t = fieldSays(fc, +el.dataset.felt, link ? link.held : 0); if (fieldLine.textContent !== t) fieldLine.textContent = t;
   };
 
   // words, from this card or from any other Verse page (the bridge)
@@ -206,6 +211,8 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 const idea = {
   id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · eleven organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
+  // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
+  modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
   params: (s) => B.params(s.b),
   how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. Every action is imagined before it is taken, and checked against moments it remembers.'
 };

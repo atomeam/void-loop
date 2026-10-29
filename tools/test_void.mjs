@@ -147,9 +147,9 @@ function memoryD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     const made = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql);
     if (made) { tables.add(made[1]); return { meta: { changes: 0 } }; }
-    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
+    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2], updated: a[4] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); actions.set(a[0], { kind: a[2], ref: a[3], state: a[4], result: a[5], error: a[6] }); return { meta: { changes: 1 } }; } // the execution record (lib/actions.js)
     if (/^DELETE FROM void_actions/.test(sql)) { need('void_actions'); return { meta: { changes: 0 } }; }
@@ -164,6 +164,8 @@ function memoryD1({ broken = false } = {}) {
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql, a) => {
+    // the approval gate's history (functions/api/approval.js executedSince, #1422): the approvals that ended done since a time
+    if (/^SELECT record, updated FROM void_approvals WHERE state = 'done' AND updated >= \?$/.test(sql)) { need('void_approvals'); return { results: [...approvals.values()].filter((r) => r.state === 'done' && r.updated >= a[0]).map((r) => ({ record: r.record, updated: r.updated })) }; }
     if (/^SELECT .* FROM void_automations WHERE scope = \? ORDER BY created$/.test(sql)) { need('void_automations'); return { results: [...autos.values()].filter((r) => (r.scope || '') === a[0]) }; }
     if (/^SELECT .* FROM void_automation_runs WHERE rule_id = \? ORDER BY at DESC LIMIT 100$/.test(sql)) { need('void_automation_runs'); return { results: autoRuns.filter((r) => r.rule_id === a[0]).sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 100) }; }
     if (/^SELECT .* FROM void_automation_runs ORDER BY at DESC LIMIT 60$/.test(sql)) { need('void_automation_runs'); return { results: [...autoRuns].sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 60) }; }
@@ -5151,6 +5153,8 @@ try {
       if (/generator=search/.test(u)) return r.fulfill(json({ query: { pages: { 11: { index: 1, title: 'Air Jordan', description: 'Brand of basketball shoes' }, 12: { index: 2, title: 'Michael Jordan', description: 'American basketball player (born 1963)' } } } }));
       return r.fulfill(json({ query: { search: [{ title: /snorgleblat/.test(u) ? 'Blat' : 'Air Jordan' }] } })); });
     await E.ctx.route(/\/page\/summary\//, (r) => { const t = decodeURIComponent(r.request().url().split('/summary/')[1]).replace(/_/g, ' '); sums.push(t);
+      // like Wikipedia: a title with no page answers 404 (the exact-title try, ccaf78621, asks for "Snorgleblat" before it searches)
+      if (!['Michael Jordan', 'Air Jordan', 'Blat'].includes(t)) return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ type: 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found', title: 'Not found.' }) });
       return r.fulfill(json({ type: 'standard', title: t, description: t === 'Michael Jordan' ? 'American basketball player (born 1963)' : t === 'Blat' ? 'Russian slang' : 'Brand of basketball shoes', extract: t + ' extract.' })); });
     await E.ask('who is michael jordan', 1200); const mj = await E.page();
     await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
@@ -5510,7 +5514,7 @@ try {
       await F.p.mouse.move(orb.x + orb.width / 2, orb.y + orb.height / 2); await F.p.mouse.down(); await F.p.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.2, { steps: 6 }); await F.p.mouse.up();
       await F.p.waitForTimeout(1200);
       const r = await F.p.$eval(card, (e) => { const cb = e.getBoundingClientRect(); const out = [...e.querySelectorAll('button,select,.g-title,.g-sub,.ff-hud,.ff-why')].filter((n) => { const b = n.getBoundingClientRect(); return b.width && (b.left < cb.left - 1 || b.right > cb.right + 1 || n.scrollWidth > n.clientWidth + 1); }).map((n) => n.className);
-        return { dragged: +(e.dataset.dragged || 0), modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), fps: +(e.dataset.fps || 0), frameMs: +(e.dataset.frameMs || 99), clipped: out, hue: e.style.getPropertyValue('--mf-hue'), listen: !!e.querySelector('.mf-listen'), page: getComputedStyle(document.body).filter }; });
+        return { dragged: +(e.dataset.dragged || 0), slot: e.dataset.fieldSlot == null ? -1 : +e.dataset.fieldSlot, modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), fps: +(e.dataset.fps || 0), frameMs: +(e.dataset.frameMs || 99), clipped: out, hue: e.style.getPropertyValue('--mf-hue'), listen: !!e.querySelector('.mf-listen'), page: getComputedStyle(document.body).filter }; });
       await F.ask('save this mind', 700); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
       const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
       await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind'); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
@@ -5520,9 +5524,9 @@ try {
       await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
       out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
     }
-    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 10 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
-      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 10 && o.sim === 11 && !o.errors.length; // ten modes since F-321's memory orbs (2026-10-29)
-    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 11 && o.modes[0] === 'doodle-mind' && o.modes[10] === 'verse-brain' && o.slot >= 0 && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 10 && o.sim === 11 && !o.errors.length; // ten modes since F-321's memory orbs, and Verse Brain last on the switcher (2026-10-29)
+    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm and ends with Verse Brain, the card keeps a slot of its own numbers in the shared field, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
       good(out[1280]) && good(out[390]), JSON.stringify(out));
   }
   if (want("tilt arena: four modes in one card, agents learn, Mode switches, GPU Swarm falls back, every ask opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
@@ -5657,9 +5661,16 @@ try {
     await F.p.evaluate(async () => { const Fd = await import('/skills/field.js'); Fd.init(); const L = Fd.layout, who = 'agent-fluid-memory-orbs', c = Fd.provenanceOf(who);
       Fd.writeRegion(L.pos + 3 * 200, 3, [0.3, 0.4, 0], who); Fd.writeRegion(L.act + 200, 1, [0.9], who); Fd.writeRegion(L.prov + 200, 1, [c], who); }).catch(() => {});
     await until(async () => +(await F.p.$eval(card, (e) => e.dataset.felt).catch(() => 0)) >= 1, 6000).catch(() => {});
-    const shared = await F.p.$eval(card, (e) => ({ felt: +(e.dataset.felt || 0), owners: e.dataset.fieldOwners || '', says: e.querySelector('[role=status]') ? e.querySelector('[role=status]').textContent : '' })).catch(() => null);
-    check('verse brain shared field: an orb\'s slot in skills/field.js is felt by the brain on the same page, and the brain\'s ideas are in the field under its own name',
-      !!shared && shared.felt >= 1 && /agent-fluid-memory-orbs/.test(shared.owners), JSON.stringify(shared));
+    const shared = await F.p.$eval(card, (e) => ({ felt: +(e.dataset.felt || 0), owners: e.dataset.fieldOwners || '', says: e.querySelector('[role=status]') ? e.querySelector('[role=status]').textContent : '', line: e.querySelector('.vb-field') ? e.querySelector('.vb-field').textContent : '' })).catch(() => null);
+    check('verse brain shared field: an orb\'s slot in skills/field.js is felt by the brain on the same page, the card says so in words ("Shared field: feels N memories from other cards: Memory orbs (N)"), and the brain\'s ideas are in the field under its own name',
+      !!shared && shared.felt >= 1 && /agent-fluid-memory-orbs/.test(shared.owners) && /^Shared field: feels \d+ memor(y|ies) from other cards: Memory orbs \(\d+\)/.test(shared.line), JSON.stringify(shared));
+    // the Mind Field modes join it: the brain card opens Swarm beside itself (it stays), and the swarm's card is felt and named on the brain
+    const pickModes = await F.p.$$eval(card + ' select.mf-mode option', (o) => o.map((x) => x.value)).catch(() => []);
+    await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind').catch(() => {}); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
+    await until(async () => /Swarm \(1\)/.test(await F.p.$eval(card + ' .vb-field', (e) => e.textContent).catch(() => '')), 8000).catch(() => {});
+    const joined = { modes: pickModes.length, stays: !!(await F.p.$(card)), swarm: !!(await F.p.$('.ff-swarm-mind')), line: await F.p.$eval(card + ' .vb-field', (e) => e.textContent).catch(() => ''), owners: await F.p.$eval(card, (e) => e.dataset.fieldOwners || '').catch(() => '') };
+    check('verse brain and the Mind Field modes, one entity: its card opens any of the eleven choices beside it (it stays), and an open Swarm card is felt in the shared field and named on the brain ("Swarm (1)")',
+      joined.modes === 11 && joined.stays && joined.swarm && /Swarm \(1\)/.test(joined.line) && /swarm-mind/.test(joined.owners), JSON.stringify(joined));
     const errors = F.errors.slice(); await F.ctx.close();
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
@@ -10959,11 +10970,11 @@ try {
         if (/^INSERT INTO void_spends/.test(sql)) { need('void_spends'); spends.push({ id: a[0], approval_id: a[1], model: a[2], cap_cents: a[3], per: a[4], at: a[5] }); return ch(1); }
         if (/^INSERT INTO void_kv \(k, v\) VALUES \(\?, \?\) ON CONFLICT\(k\) DO UPDATE SET v = CAST\(CAST\(v AS REAL\)/.test(sql)) { need('void_kv'); kv.set(a[0], String((Number(kv.get(a[0])) || 0) + Number(a[1]))); return ch(1); }
         if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2], entry: JSON.parse(a[4]) }); return ch(1); }
-        if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return ch(1); }
+        if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2], updated: a[4] }); return ch(1); }
         if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); return ch(1); } // the execution record (lib/actions.js) around an approved action
         if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
-        if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
-        if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
+        if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return ch(1); }
+        if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return ch(1); }
         throw new Error('unexpected sql: ' + sql);
       },
       first: async () => {
@@ -10977,6 +10988,8 @@ try {
       },
       all: async () => {
         if (/FROM void_sales/.test(sql)) { need('void_sales'); return { results: sales }; }
+        // the approval gate's history (functions/api/approval.js executedSince, #1422): the approvals that ended done since a time
+        if (/^SELECT record, updated FROM void_approvals WHERE state = 'done' AND updated >= \?$/.test(sql)) { need('void_approvals'); return { results: [...approvals.values()].filter((r) => r.state === 'done' && r.updated >= a[0]).map((r) => ({ record: r.record, updated: r.updated })) }; }
         need('void_routes'); return { results: [...rows.values()].sort((x, y) => (x.last < y.last ? 1 : -1)).slice(0, a[0]) };
       } });
     return { rows, kv, answers, spends, ledger, approvals, shortfalls, tables, prepare: (sql) => stmt(sql), batch: async (list) => { const out = []; for (const q of list) out.push(await q.run()); return out; } };
@@ -10997,12 +11010,15 @@ try {
     return { response: 'Gemma: a short answer [1].' };
   } });
   const realFetch = globalThis.fetch;
+  // the fetched source holds what the stand-in models' cited sentences say: since #1410 (f92c2d219, lib/answer-honesty.js supportedOnly) a [1]
+  // whose sentence the source's text does not hold is dropped with its source, so a source that said nothing of the answer would leave neither
+  const EXTRACT = 'A sourced extract: a short answer, a paid answer.';
   let wikiDelay = 0;
   const wiki = async (u) => {
     if (wikiDelay) await new Promise((r) => setTimeout(r, wikiDelay));
     const s = String(u);
     if (/list=search/.test(s)) return new Response(JSON.stringify({ query: { search: [{ title: 'Topic' }] } }), { headers: { 'content-type': 'application/json' } });
-    return new Response(JSON.stringify({ title: 'Topic', extract: 'A sourced extract.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Topic' } } }), { headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify({ title: 'Topic', extract: EXTRACT, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Topic' } } }), { headers: { 'content-type': 'application/json' } });
   };
   const ask = async (text, env) => {
     const pending = [];
@@ -11104,7 +11120,7 @@ try {
     const o0 = await ask('who wrote the odyssey', eOut0), em = await ask('who wrote the odyssey', eEmpty);
     const fx = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ mode: 'fix', ask: 'my cron job is not running', details: '*/5 * * * * python3 sync.py' }) }), env: eOut0 })).json();
     check('router: when Gemma fails (daily free allocation used up, or an empty reply) it is counted in void_shortfalls (answer / fix, by reason, never the ask) and the answer is the open web, the fix the rules',
-      o0.answer === 'A sourced extract.' && o0.note === 'model busy, from the web' && em.answer === 'A sourced extract.' && fx.fix === 'rules' && fx.note === 'model busy, fixed from the error'
+      o0.answer === EXTRACT && o0.note === 'model busy, from the web' && em.answer === EXTRACT && fx.fix === 'rules' && fx.note === 'model busy, fixed from the error'
       && eOut0.DB.shortfalls.get('answer|free limit') === 1 && eOut0.DB.shortfalls.get('fix|free limit') === 1 && eEmpty.DB.shortfalls.get('answer|empty') === 1 && !JSON.stringify([...eOut0.DB.shortfalls]).includes('odyssey'),
       JSON.stringify({ o0: o0.note, em: em.answer, fx: fx.fix, sf: [...eOut0.DB.shortfalls, ...eEmpty.DB.shortfalls] }));
     // fallbacks: the classifier fails or hangs = the old behaviour, in about the old time
@@ -11164,7 +11180,7 @@ try {
     const eSaidNo = envOf({ db: { sales: SALE } }); const no = await approveSpend(eSaidNo, 'let Verse spend up to $5 a month on a stronger model', 'reject');
     const eStopped = envOf({ db: { sales: SALE } }); await approveSpend(eStopped, 'let Verse spend up to $5 a month on a stronger model'); await new Promise((r) => setTimeout(r, 5)); await approveSpend(eStopped, 'stop paying for stronger models');
     const eCapUsed = envOf({ db: { sales: SALE } }); await approveSpend(eCapUsed, 'let Verse spend up to $5 a month on a stronger model'); eCapUsed.DB.kv.set('router:paid:' + eCapUsed.DB.spends[0].id + ':' + R.periodKey('month'), '499.5');
-    const eBudgetUsed = envOf({ db: { sales: SALE } }); await approveSpend(eBudgetUsed, 'let Verse spend up to $100 a month on a stronger model'); eBudgetUsed.DB.kv.set('router:paid:total', '4899.5');
+    const eBudgetUsed = envOf({ db: { sales: SALE } }); await approveSpend(eBudgetUsed, 'let Verse spend up to $20 a month on a stronger model'); eBudgetUsed.DB.kv.set('router:paid:total', '4899.5'); // $20, under HIGH_SPEND: since #1422 (356cfdc97) a $25+ spend needs a second person's yes
     const blocked = [];
     for (const [name, env] of [['no standing spend', eNoSpend], ['refunded to zero', eNoMoney], ['no sales table', eNoTable], ['said no', eSaidNo], ['stopped ($0)', eStopped], ['cap used', eCapUsed], ['budget used', eBudgetUsed]]) {
       const x = await ask(HARDQ, env), r = rowOf(env, HARDQ);
@@ -11199,7 +11215,7 @@ try {
     const untouched = (e) => e.DB.rows.size === 0 && e.DB.answers.size === 0 && e.DB.kv.size === 0 && e.DB.spends.length === 0 && e.DB.shortfalls.size === 0 && e.DB.tables.size === 0;
     const cOn = calls.length, eOn = envOf(), d3 = await ask('who wrote the odyssey', eOn);
     check('router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)',
-      cOn === cOff && untouched(eOffX) && untouched(eOffY) && d1.answer === 'A sourced extract.' && d2.answer === 'A sourced extract.' && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic'
+      cOn === cOff && untouched(eOffX) && untouched(eOffY) && d1.answer === EXTRACT && d2.answer === EXTRACT && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic'
       && fOff.fix === 'rules' && !fOff.note && d3.answer === 'Gemma: a short answer [1].' && d3.route === 'simple' && calls.length > cOn,
       JSON.stringify({ off: cOn - cOff, d1: d1.answer, d2: d2.answer, fix: fOff.fix, on: d3.answer, route: d3.route }));
     const nAI = await ask('who wrote the odyssey', { AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE) });

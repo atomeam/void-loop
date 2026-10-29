@@ -36,7 +36,7 @@ const TW_CSS = '<style>.vpage:has(.tw) .vc-art{display:none}.tw{max-width:520px;
   // the VS splash: Verse's corner violet, the challenger's crimson, a pale slanted split between them
   + '.tw-vs{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;padding:10px 8px 8px;margin:4px 0 8px;border-radius:10px;overflow:hidden;border:1px solid #3a3550;background:linear-gradient(104deg,#2a1a4a 0 48.5%,#e9dcc0 48.5% 51.5%,#4a1420 51.5% 100%)}'
   + '.tw-side{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}.tw-side svg{width:56px;height:56px}.tw-side.tw-v svg{filter:drop-shadow(0 0 7px rgba(190,140,255,.75))}.tw-side.tw-s svg{filter:drop-shadow(0 0 7px rgba(255,110,90,.65))}'
-  + '.tw-who{font-weight:700;font-size:12px;text-align:center;overflow-wrap:anywhere;max-width:100%}.tw-bar{display:flex;gap:2px;width:100%;max-width:120px;height:6px}.tw-bar i{flex:1;border-radius:2px;background:#4a4658}.tw-bar i[data-k=v]{background:#a98bff;box-shadow:0 0 4px #a98bff}.tw-bar i[data-k=s]{background:#ff7a6a;box-shadow:0 0 4px #ff7a6a}.tw-bar-n{font-size:11px;opacity:.8}'
+  + '.tw-who{font-weight:700;font-size:12px;text-align:center;overflow-wrap:anywhere;max-width:100%}.tw-bar{display:flex;gap:2px;width:100%;max-width:120px;height:6px}.tw-bar i{flex:1;border-radius:2px;background:#4a4658}.tw-bar i[data-k=v]{background:#a98bff;box-shadow:0 0 4px #a98bff}.tw-bar i[data-k=s]{background:#ff7a6a;box-shadow:0 0 4px #ff7a6a}.tw-bar-n{font-size:11px;opacity:.8}.tw-barnote{font-size:11px;opacity:.8;text-align:center;margin:4px 0 2px}'
   + '.tw-vsmark{font-weight:900;font-size:24px;font-style:italic;color:#fff;text-shadow:0 0 8px #ffd36a,0 0 18px #ff6a3d;letter-spacing:1px;padding:0 4px}'
   // the entrance: the two slide in from their corners, the VS pops, a flash fades (400 ms, once); none of it when motion is reduced
   + '.tw-in .tw-v{animation:tw-l .4s ease-out}.tw-in .tw-s{animation:tw-r .4s ease-out}.tw-in .tw-vsmark{animation:tw-pop .4s ease-out}.tw-in::after{content:"";position:absolute;inset:0;background:#fff;pointer-events:none;animation:tw-flash .4s ease-out forwards}'
@@ -53,8 +53,15 @@ export function nums(r) {
   const m = /^Verse(?: \([^)]*\))? -?[\d.]+( ms| px| of \d+| %)?/.exec(String(r.evidence || '')), u = m && m[1] ? m[1] : '';
   return r.verse + u + ' vs ' + r.best + u;
 }
+// a row the gate judged against its default bar because the site turned the gate away (tools/tower-gate.mjs "vs the bar (<site> unreachable)")
+// is not a measure of the site (2026-10-29): the card says "default bar" on it and does not credit the site with it
+export const onBar = (e) => !!e && / vs the bar \(/.test(String(e.evidence || ''));
+const barSay = (e, say) => e.verdict === 'worse' ? 'below the default bar' : say + ' (default bar)';
 /** one row per aspect: where Verse stands (won / lost / open), the word for it, the numbers, when it was measured. Pure. */
-export const matchRows = (f) => aspectRows(f).map((r) => { const e = (f.ev || {})[r.a]; return { ...r, say: r.v === 'open' ? (e && SAY[e.verdict] && e.verdict !== 'worse' ? SAY[e.verdict] : 'not measured yet') : SAY[e && e.verdict] || r.v, nums: nums(e), at: (e && e.at) || '' }; });
+export const matchRows = (f) => aspectRows(f).map((r) => {
+  const e = (f.ev || {})[r.a], say = r.v === 'open' ? (e && SAY[e.verdict] && e.verdict !== 'worse' ? SAY[e.verdict] : 'not measured yet') : SAY[e && e.verdict] || r.v;
+  return { ...r, say: onBar(e) && say !== 'not measured yet' ? barSay(e, say) : say, nums: nums(e), at: (e && e.at) || '', bar: onBar(e) };
+});
 /** when a floor was last measured: the newest `at` of its rows, or ''. Pure. */
 export const lastAt = (f) => Object.values(f.ev || {}).map((r) => String((r && r.at) || '')).filter((s) => Number.isFinite(Date.parse(s))).sort().pop() || '';
 /** a time in words: just now, 12 minutes ago, 3 hours ago, 2 days ago, else the date. Pure. */
@@ -78,12 +85,16 @@ export const siteFace = (f, size = 56) => '<span class="tw-logo-wrap" style="dis
 /** the VS splash for the current fight: Verse's mark left, the site's fighter right, names in plain text under them, an energy bar each (Verse's
  *  lit by the aspects it has won or is equal-and-better on, the site's by the aspects Verse still loses, the unmeasured grey). Pure. */
 export function vsHtml(f, esc, { enter = true } = {}) {
-  const m = Math.max(1, f.m || 0), n = Math.max(0, f.n || 0), lost = (f.lost || []).length;
+  const m = Math.max(1, f.m || 0), n = Math.max(0, f.n || 0), ev = f.ev || {};
+  // the site's side counts only what was measured on the site; a loss against the default bar is Verse short of the bar, not the site ahead
+  const lost = (f.lost || []).filter((a) => !onBar(ev[a])).length, onB = (f.aspects || []).filter((a) => onBar(ev[a])).length;
+  const note = onB ? onB + ' of ' + m + ' aspects are scored against the default bar: ' + f.site + ' turned the gate away, so those numbers are not its own' : '';
   const bar = (k, lit) => '<span class="tw-bar" aria-hidden="true">' + Array.from({ length: m }, (_, i) => '<i' + (i < lit ? ' data-k="' + k + '"' : '') + '></i>').join('') + '</span>';
-  return '<div class="tw-vs' + (enter ? ' tw-in' : '') + '" role="group" aria-label="' + esc('Verse versus ' + f.site + ': Verse ahead on ' + n + ' of ' + m + ' aspects, ' + f.site + ' on ' + lost) + '">'
+  return '<div class="tw-vs' + (enter ? ' tw-in' : '') + '" role="group" aria-label="' + esc('Verse versus ' + f.site + ': Verse ahead on ' + n + ' of ' + m + ' aspects, ' + f.site + ' on ' + lost + (note ? '; ' + note : '')) + '">'
     + '<div class="tw-side tw-v">' + '<img class="tw-logo" src="/verse-logo.webp" alt="" width="56" height="56" style="width:56px;height:56px;border-radius:50%">' + '<span class="tw-who">Verse</span>' + bar('v', n) + '<span class="tw-bar-n">' + n + ' of ' + m + '</span></div>'
     + '<div class="tw-vsmark" aria-hidden="true">VS</div>'
-    + '<div class="tw-side tw-s">' + siteFace(f, 56) + '<span class="tw-who">' + esc(f.site) + '</span>' + bar('s', lost) + '<span class="tw-bar-n">' + lost + ' of ' + m + '</span></div></div>';
+    + '<div class="tw-side tw-s">' + siteFace(f, 56) + '<span class="tw-who">' + esc(f.site) + '</span>' + bar('s', lost) + '<span class="tw-bar-n">' + lost + ' of ' + m + '</span></div></div>'
+    + (note ? '<div class="tw-barnote">' + esc(note) + '</div>' : '');
 }
 /** the awareness rows: one per aspect (the verdict in a word, the measured numbers), then when it was measured and what is next. Pure. */
 const rowsHtml = (f, esc, now) => '<ul class="tw-aspects">' + matchRows(f).map((r) => '<li data-v="' + r.v + '"><span>' + MARK[r.v] + ' ' + esc(r.a) + '<span class="tw-say' + (r.say === 'not measured yet' ? ' tw-nm' : '') + '">' + esc(r.say) + '</span></span>' + (r.nums ? '<span class="tw-num">' + esc(r.nums) + '</span>' : '') + '</li>').join('') + '</ul>'
