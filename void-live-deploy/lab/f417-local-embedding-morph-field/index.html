@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --entropy: 0.5;
+    --peak: 0.3;
+    --hue: 200;
+    --radius: 40px;
+  }
+  body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+  #hud {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    pointer-events: none;
+    max-width: 28rem;
+  }
+  #status {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 2px solid hsl(var(--hue), 70%, 50%);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    background: rgba(10,10,10,0.6);
+    backdrop-filter: blur(calc(var(--peak) * 8px));
+    transition: all 0.3s;
+    box-shadow: 0 0 calc(var(--peak) * 20px) hsl(var(--hue), 70%, 40%);
+  }
+  #overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), transparent calc(30% - var(--peak)*20%), rgba(0,0,0,0.4));
+    mix-blend-mode: multiply;
+    transition: all 0.2s;
+  }
+  #info {
+    margin-top: 0.6rem;
+    font-size: 0.75rem;
+    opacity: 0.75;
+  }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>local-embedding-morph-field · Verse lab</title>
+<meta name="description" content="Novel combination: Spatial particle field (Canvas2D with WebGPU path noted) where each particle carries a local embedding vector.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="local-embedding-morph-field · Verse lab">
+<meta property="og:description" content="Novel combination: Spatial particle field (Canvas2D with WebGPU path noted) where each particle carries a local embedding vector.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f417-local-embedding-morph-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f417-local-embedding-morph-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="overlay"></div>
+<div id="hud">
+  <div id="status">void · embedding attention</div>
+  <div id="info">Move mouse or tilt · click to seed · local cosine attention morphs chrome</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">local-embedding-morph-field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
