@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:44:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:43:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:41:15Z",
    "subject": "Breath card: no \"-1 rounds done\" on the first frame"
   },
@@ -558,8 +566,16 @@
    "subject": "converter: a whole one-line skill summary, and mark the unit-kind links as not keys"
   },
   {
+   "at": "2026-10-29T16:39:39Z",
+   "subject": "brain-gardener: check collapse on a brain that collapses when only watched"
+  },
+  {
    "at": "2026-10-29T16:34:49Z",
    "subject": "converter: assimilate onlineconverter.com as /converter/"
+  },
+  {
+   "at": "2026-10-29T16:32:16Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T16:31:30Z",
@@ -571,6 +587,10 @@
   },
   {
    "at": "2026-10-29T16:28:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:28:18Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -594,6 +614,10 @@
    "subject": "Regenerate the skill tools list after the main merge"
   },
   {
+   "at": "2026-10-29T16:21:56Z",
+   "subject": "Verse Brain organ 18: an evolved formula of its own tissue (F451)"
+  },
+  {
    "at": "2026-10-29T16:21:55Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-29T16:19:47Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:19:33Z",
-   "subject": "Keep the reply section last on cards that order their own parts"
-  },
-  {
-   "at": "2026-10-29T16:19:07Z",
-   "subject": "chore(rap): self.json as main has it"
-  },
-  {
-   "at": "2026-10-29T16:12:11Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:12:04Z",
-   "subject": "Refresh generated files: guide, MCP skill tools for the newly proven skills"
-  },
-  {
-   "at": "2026-10-29T16:10:54Z",
-   "subject": "Promotion record: 44 skills meet the proven standard, 22 stay with their reasons"
-  },
-  {
-   "at": "2026-10-29T16:10:31Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
