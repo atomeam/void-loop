@@ -195,6 +195,18 @@
   },
   {
    "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "fun fact skill: random interesting facts from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "random quote skill: inspirational quotes from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
    "date": "2026-10-28",
    "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
    "from": "asked by Verse"
@@ -533,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:33:03Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T05:32:21Z",
    "subject": "List the leet skill so it loads, and narrow its match"
   },
@@ -607,10 +623,6 @@
   {
    "at": "2026-10-29T05:14:21Z",
    "subject": "Open the PR a helper pushed without one"
-  },
-  {
-   "at": "2026-10-29T05:13:36Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
