@@ -537,13 +537,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T06:32:26Z",
+   "subject": "Stage links follow the colour, gradient and wheel open on the page"
+  },
+  {
+   "at": "2026-10-29T06:31:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T06:30:26Z",
    "subject": "Naming audit: launch the Chrome the Tower gate names (CHROME_PATH), not playwright's missing download"
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T06:08:58Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:08:49Z",
-   "subject": "Memory orbs: hand an orb's colour to the colour page"
-  },
-  {
-   "at": "2026-10-29T06:07:44Z",
-   "subject": "Coder: think on Verse's own model (/api/coder), so queued jobs ship again"
   }
  ],
  "builders": {
