@@ -215,3 +215,18 @@ test('the card leads with the target: hero with logo, name and weight chips, thr
   assert.match(chipsHtml({ size: null, weight: null }, esc), /not weighed yet/);
   assert.match(actionsHtml({ id: 'x', page: '/x/', url: 'https://x.com/' }, esc), /Open Verse's page[\s\S]*Side by side[\s\S]*Visit/); assert.match(actionsHtml({ id: 'x' }, esc), /No Verse page yet/);
 });
+test('the want card and the Versus card name the same site: both rank with the target, so the fight in progress leads on each', async () => {
+  const fs = await import('node:fs'), { towerArgs } = await import('../void-live-deploy/lib/tower.js');
+  const rd = (f) => { try { return JSON.parse(fs.readFileSync(new URL('../void-live-deploy/' + f, import.meta.url), 'utf8')); } catch (_) { return null; } };
+  const inv = rd('lap.items.json'), files = { ev: rd('tower.evidence.json'), fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: rd('tower.target.json') };
+  const raw = (inv && inv.onlySite) || [], cats = raw.map((r) => ({ category: r.category, status: r.status, skills: r.skills })); // skills/tower.js passes the rows, /api/will the categories
+  const card = tower(...towerArgs(raw, files)), will = tower(...towerArgs(cats, files));
+  assert.equal(will.floors[will.marker - 1].id, card.floors[card.marker - 1].id); assert.equal(towerLine(will), towerLine(card));
+  const tgt = files.tg && files.tg.id && card.floors.find((f) => f.id === files.tg.id);
+  if (tgt && !tgt.beaten && !tgt.held) assert.equal(card.floors[card.marker - 1].id, tgt.id, 'the target stays first until it is beaten');
+  assert.equal(towerArgs([], {}).length, 7); assert.equal(towerArgs([], { tg: {} })[6], null);
+});
+test('a held site says why in the Versus line, so all aspects ahead and none surpassed explains itself', () => {
+  const t = { floors: [{ site: 'heycolor.com', n: 16, m: 16, held: 'not yet better at painting a picture' }], marker: 1, beaten: 0 };
+  assert.equal(towerLine(t), 'Versus: now heycolor.com (16 of 16 aspects ahead; held: not yet better at painting a picture), 0 surpassed');
+});
