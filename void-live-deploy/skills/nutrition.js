@@ -13,8 +13,13 @@
  * Water: "how much water should i drink a day", "how many glasses of water a day", "how much water should a pregnant woman drink".
  *   National Academies adequate intake (3.7 L men, 2.7 L women in all, about 80% of it from drinks: 13 and 9 cups),
  *   pregnancy, breastfeeding and children, plus more for each hour of sweaty exercise.
- * Leaves food lookups ("calories in a banana"), exercise burns ("calories burned running"), BMI (calc) and
+ * Leaves food lookups ("calories in a banana": skills/food.js), exercise burns ("calories burned running"), BMI (calc) and
  * "how many calories to lose a pound" (calc: 3,500) to the skills that already answer them.
+ * Asked by Verse (2026-10-14): the BMI card keeps a weight trend, but only when the person taps "save this" (dated entries in
+ * this browser's localStorage, nothing saved otherwise: no behaviour tracking), and links its band to the calorie card with the
+ * same height and weight ("daily calories for overweight"). "plan my meals" (ask-20261014-1453-1) splits the day's target
+ * into breakfast, lunch, dinner and snacks the way dietitians do (25 / 30 / 35 / 10 %) and puts the list on the stage; the
+ * calorie and food cards link to it with the day's target carried over.
  */
 const LB = 0.45359237, CUP = 0.236588;
 const fmt = (x, d) => Number(x).toLocaleString('en-US', { maximumFractionDigits: d == null ? 0 : d });
@@ -89,10 +94,13 @@ const OFFC = /\b(?:burn(?:ed|t)?\s+(?:by|from|when|while|during|running|walking|
 function askOf(text) {
   const t = clean(text);
   if (!t || t.length > 200) return null;
+  const meals = mealsAskOf(t); if (meals) return meals;
   // calculators by name
   if (/^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:calorie|calories|tdee|bmr|maintenance\s+calories?|daily\s+calorie|macro|macros)\s+calculator$/.test(t)) return { kind: 'cal', s: {}, form: true };
   if (/^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:protein(?:\s+intake)?)\s+calculator$/.test(t)) return { kind: 'pro', s: {}, form: true };
   if (/^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:water(?:\s+intake)?|hydration)\s+calculator$/.test(t)) return { kind: 'h2o', s: {}, form: true };
+  // "bmi calculator", "what is my bmi", "check my bmi": the live form. With the numbers in the ask ("bmi 5'10 170 lbs") it is calc's.
+  if (/^(?:a\s+|open\s+(?:a\s+|the\s+|my\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+|my\s+)?|calculate\s+(?:my\s+)?|check\s+(?:my\s+)?|work\s+out\s+(?:my\s+)?|what(?:'s|\s+is)\s+my\s+)?(?:bmi|body\s+mass\s+index)(?:\s+(?:calculator|chart|checker))?$/.test(t)) return { kind: 'bmi', s: {}, form: true };
   const s = statsOf(t);
   // water: how much to drink
   if (/\bwater\b/.test(t) && !/\b(?:in\s+(?:a|the|an)\s+(?!day\b)|ocean|sea|earth|planet|pool|tank|bath|tub|rice|pasta|cook|boil|bottle\s+of|gallon\s+of\s+water\s+in|liters?\s+of\s+water\s+in|litres?\s+of\s+water\s+in|weigh(?:s)?\s+a|plants?|lawn|grass|garden|dog|cat|fish|tree|ratio|heater|bill|filter|translate|spanish|french|meaning)\b/.test(t)
@@ -160,6 +168,7 @@ function calHtml(s, esc) {
     + out.map((o) => (out.length === 2 ? '<div class="sub" style="margin-top:10px">' + (o.sex === 'm' ? 'Man' : 'Woman') + '</div>' : '')
       + table(o) + GREY + 'Resting burn (BMR) ' + fmt(o.bmr) + ' \u00b7 with your activity (TDEE) ' + fmt(o.tdee) + ' calories a day.</p>').join('')
     + (s.age && s.age < 18 ? GREY + 'This equation is built for adults; teens still growing usually need more, so treat it as the low end and ask their doctor.</p>' : '')
+    + '<p class="nu-next"><a href="#" data-ask="' + esc(mealsAsk(pick(main).kcal)) + '">plan my meals around ' + fmt(pick(main).kcal) + ' calories</a> \u00b7 <a href="#" data-ask="how much protein do i need if i weigh ' + esc(s.lb ? fmt(s.lb) + ' pounds' : fmt(s.kg, 1) + ' kg') + '">and protein</a></p>'
     + GREY + 'Mifflin-St Jeor, the equation dietitians trust most for a quick estimate, is usually within about 10% of a measured burn. Each pound is roughly 3,500 calories, but loss slows as you get lighter, so recheck every few kilos. Aim for about ' + esc(protein) + ' of protein a day (1.2\u20131.6 g per kg) to hold on to muscle. Ask "calorie calculator" to try other numbers.</p>' + SRC_CAL;
 }
 function calGeneral(esc) {
@@ -198,6 +207,110 @@ function calForm(el, s, esc) {
   box.querySelectorAll('input,select').forEach((n) => n.addEventListener('input', upd));
   box.querySelectorAll('select').forEach((n) => n.addEventListener('change', upd));
   upd();
+}
+
+// BMI: weight over height squared, the adult bands WHO and the CDC use, and the weights that make 18.5 to 24.9 at a height. Pure.
+export function bmiOf(kg, cm) {
+  if (!(kg > 0) || !(cm > 0)) return null;
+  const m2 = (cm / 100) ** 2, bmi = kg / m2;
+  return { bmi, band: bmi < 18.5 ? 'underweight' : bmi < 25 ? 'healthy weight' : bmi < 30 ? 'overweight' : 'obesity', lo: 18.5 * m2, hi: 24.9 * m2 };
+}
+// The weight trend (asked by Verse, ask-20261014-2248-1): dated entries saved only when "save this" is tapped, in this browser.
+export const BMI_KEY = 'a2m.void.bmi.v1', BMI_MAX = 60;
+export function bmiEntries() { try { const a = JSON.parse(localStorage.getItem(BMI_KEY) || '[]'); return Array.isArray(a) ? a.filter((e) => e && e.kg > 0 && e.cm > 0 && e.at) : []; } catch (_) { return []; } }
+export function bmiSave(kg, cm, at = new Date().toISOString()) {
+  const b = bmiOf(kg, cm); if (!b) return null;
+  const all = bmiEntries().concat([{ at, kg: Math.round(kg * 10) / 10, cm: Math.round(cm * 10) / 10, bmi: Math.round(b.bmi * 10) / 10 }]).slice(-BMI_MAX);
+  try { localStorage.setItem(BMI_KEY, JSON.stringify(all)); } catch (_) {}
+  return all;
+}
+export function bmiForget() { try { localStorage.removeItem(BMI_KEY); } catch (_) {} }
+/** the trend of saved entries: { n, first, last, days, dBmi, dKg, kgWeek } or null with none. Pure. */
+export function bmiTrend(entries) {
+  const e = (entries || []).filter((x) => x && Number.isFinite(+x.bmi) && Number.isFinite(+x.kg)).slice().sort((a, b) => String(a.at).localeCompare(String(b.at)));
+  if (!e.length) return null;
+  const first = e[0], last = e[e.length - 1], days = Math.max(0, (Date.parse(last.at) - Date.parse(first.at)) / 864e5);
+  const dKg = +last.kg - +first.kg, dBmi = +last.bmi - +first.bmi;
+  return { n: e.length, first, last, days, dBmi: Math.round(dBmi * 10) / 10, dKg: Math.round(dKg * 10) / 10, kgWeek: days >= 3 ? Math.round(dKg / days * 7 * 100) / 100 : null };
+}
+/** the calorie ask for a BMI band, carrying the height and weight (asked by Verse, ask-20261014-2248-2). Pure. */
+export function bandAsk(band, kg, cm, metric) {
+  const goal = band === 'underweight' ? 'to gain weight' : /healthy/.test(band || '') ? 'a day' : 'to lose weight';
+  const body = metric ? Math.round(cm) + ' cm ' + Math.round(kg) + ' kg' : Math.floor(cm / 2.54 / 12) + "'" + (Math.round(cm / 2.54) % 12) + ' ' + Math.round(kg / LB) + ' lb';
+  return 'how many calories should i eat ' + goal + ' at ' + body;
+}
+function trendHtml(esc, metric) {
+  const t = bmiTrend(bmiEntries());
+  if (!t) return '<p class="nu-trend" style="color:#8a8a8a">Nothing saved. Tap save this to keep today\'s entry in this browser only; the trend shows here as entries add up.</p>';
+  const W = (kg) => metric ? fmt(kg, 1) + ' kg' : fmt(kg / LB) + ' lb';
+  const day = (iso) => new Date(iso).toLocaleDateString([], { month: 'short', day: 'numeric' });
+  const sign = (x, u) => (x > 0 ? '+' : '') + fmt(x, 1) + u;
+  const line = t.n === 1 ? 'One entry saved (' + day(t.first.at) + '): BMI ' + fmt(t.first.bmi, 1) + ', ' + W(t.first.kg) + '.'
+    : t.n + ' entries since ' + day(t.first.at) + ': BMI ' + fmt(t.first.bmi, 1) + ' \u2192 ' + fmt(t.last.bmi, 1) + ' (' + sign(t.dBmi, '') + '), ' + sign(metric ? t.dKg : t.dKg / LB, metric ? ' kg' : ' lb')
+      + (t.kgWeek != null ? ', about ' + sign(metric ? t.kgWeek : t.kgWeek / LB, metric ? ' kg' : ' lb') + ' a week' : '') + '.';
+  const rows = bmiEntries().slice(-6).reverse().map((e) => '<li>' + esc(day(e.at)) + ' \u00b7 ' + esc(W(e.kg)) + ' \u00b7 BMI ' + esc(fmt(e.bmi, 1)) + '</li>').join('');
+  return '<p class="nu-trend">' + esc(line) + '</p><ul class="nu-trend-rows" style="color:#8a8a8a">' + rows + '</ul><p style="color:#8a8a8a">Saved in this browser only, never sent. <a href="#" id="nu-forget">forget saved entries</a></p>';
+}
+const SRC_BMI = '<div class="src">Bands: <a href="https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html" target="_blank" rel="noopener">CDC adult BMI categories</a> (the same as WHO\u2019s). BMI ignores muscle, build, age and where weight sits; for children and teens it is read on growth charts instead.</div>';
+function bmiForm(el, esc) {
+  const box = el.querySelector('#nu-form');
+  box.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0">'
+    + '<select id="nu-u" aria-label="units"><option value="us">ft / lb</option><option value="m">cm / kg</option></select>'
+    + '<span id="nu-hus"><input id="nu-ft" type="number" min="3" max="8" value="5" style="width:48px" aria-label="feet"> ft <input id="nu-in" type="number" min="0" max="11" value="9" style="width:48px" aria-label="inches"> in</span>'
+    + '<span id="nu-hm" hidden><input id="nu-cm" type="number" min="90" max="250" value="175" style="width:64px" aria-label="height in cm"> cm</span>'
+    + '<input id="nu-w" type="number" min="20" max="700" value="160" style="width:64px" aria-label="weight"> <span id="nu-wu">lb</span></div>'
+    + '<div id="nu-out" aria-live="polite"></div>';
+  const q = (id) => box.querySelector('#' + id), out = q('nu-out');
+  const upd = () => {
+    const metric = q('nu-u').value === 'm';
+    q('nu-hus').hidden = metric; q('nu-hm').hidden = !metric; q('nu-wu').textContent = metric ? 'kg' : 'lb';
+    const w = +q('nu-w').value, cm = metric ? +q('nu-cm').value : (+q('nu-ft').value * 12 + +q('nu-in').value) * 2.54;
+    const b = bmiOf(metric ? w : w * LB, cm);
+    if (!b) { out.textContent = 'fill in your height and weight'; return; }
+    const range = metric ? fmt(b.lo) + '\u2013' + fmt(b.hi) + ' kg' : fmt(b.lo / LB) + '\u2013' + fmt(b.hi / LB) + ' lb';
+    out.innerHTML = BIG + fmt(b.bmi, 1) + '</div><div class="sub nu-bmi-band">' + esc(b.band) + ' (adult bands: under 18.5, 18.5\u201324.9 healthy, 25\u201329.9 overweight, 30+ obesity)</div>'
+      + GREY + 'A healthy BMI at this height is ' + esc(range) + '.</p>'
+      + '<p class="nu-next"><a href="#" data-ask="' + esc(bandAsk(b.band, metric ? w : w * LB, cm, metric)) + '">daily calories for ' + esc(b.band) + '</a> \u00b7 <a href="#" data-ask="' + esc(mealsAsk(0)) + '">plan my meals</a></p>'
+      + '<p><button type="button" id="nu-save" class="g-btn">save this</button> <span style="color:#8a8a8a">keeps today\'s weight in this browser, for the trend</span></p><div id="nu-trendbox">' + trendHtml(esc, metric) + '</div>';
+    out.querySelector('#nu-save').addEventListener('click', () => { bmiSave(metric ? w : w * LB, cm); out.querySelector('#nu-trendbox').innerHTML = trendHtml(esc, metric); });
+    out.addEventListener('click', (e) => { if (e.target && e.target.id === 'nu-forget') { e.preventDefault(); bmiForget(); out.querySelector('#nu-trendbox').innerHTML = trendHtml(esc, metric); } });
+  };
+  box.querySelectorAll('input,select').forEach((n) => n.addEventListener('input', upd));
+  box.querySelectorAll('select').forEach((n) => n.addEventListener('change', upd));
+  upd();
+}
+
+// "plan my meals" (asked by Verse, ask-20261014-1453-1): the day's calories split the way dietitians plan a day (breakfast 25%,
+// lunch 30%, dinner 35%, snacks 10%: the usual starting split in clinical meal planning), each with its protein when the
+// weight is known. The target: the number in the ask, else the last calorie card's goal row (page memory), else 2,000.
+const MEALS = [['Breakfast', 0.25], ['Lunch', 0.30], ['Dinner', 0.35], ['Snacks', 0.10]];
+export const mealsAsk = (kcal) => kcal > 0 ? 'plan my meals for ' + Math.round(kcal) + ' calories' : 'plan my meals';
+export function mealsAskOf(t) {
+  const m = String(t || '').match(/^(?:(?:please\s+)?(?:plan|make|build|split|give\s+me|i\s+(?:need|want))\s+(?:a\s+|my\s+|me\s+a\s+|the\s+)?(?:meals?(?:\s+plan)?|daily\s+meals|meal\s+plan|eating\s+plan)|(?:a\s+|my\s+)?meal\s+plan)(?:\s+(?:for|at|around|on|with|of|into\s+meals(?:\s+for)?)?\s*(?:today|the\s+day|tomorrow|a\s+day)?)?(?:\s+(?:for|at|around|on|with|of)\s+(\d{3,4}|\d[.,]\d{3})\s*(?:kcal|calories|cals?)?(?:\s+(?:a|per)\s+day)?)?$/)
+    || String(t || '').match(/^split\s+(\d{3,4}|\d[.,]\d{3})\s*(?:kcal|calories|cals?)\s+into\s+meals$/);
+  if (!m) return null;
+  if (/\b(?:recipe|recipes|vegan|keto|week|weekly|grocery|shopping)\b/.test(t)) return null; // a week's menu or a diet is not this
+  const kcal = m[1] ? +String(m[1]).replace(/[.,]/g, '') : 0;
+  return { kind: 'meals', s: {}, t, kcal: kcal >= 800 && kcal <= 6000 ? kcal : 0 };
+}
+/** the day split into meals: [{ meal, share, kcal, protein }] (protein in g when kg is given). Pure. */
+export function mealSplit(kcal, kg) {
+  const day = Math.round(kcal), pro = kg > 0 ? Math.round(kg * 1.2) : 0;
+  return MEALS.map(([meal, share]) => ({ meal, share, kcal: Math.round(day * share / 5) * 5, protein: pro ? Math.round(pro * share) : 0 }));
+}
+function mealsHtml(q, esc) {
+  const prev = lastStatsOf(), s = prev && prev.s ? prev.s : {};
+  let kcal = q.kcal, from = kcal ? 'the target you gave' : '';
+  if (!kcal && s.kg && s.cm) { const { out } = calc(s), goal = s.goal === 'lose' ? out[0].rows.find((r) => /^Lose (?:1 lb|0\.5 kg)/.test(r.label)) : s.goal === 'gain' ? out[0].rows.find((r) => /^Gain (?:0\.5 lb|0\.25 kg)/.test(r.label)) : null; kcal = (goal || out[0].rows.find((r) => r.d === 0)).kcal; from = 'your last calorie card'; }
+  if (!kcal) { kcal = 2000; from = 'the 2,000 that food labels use as a round guide; ask "calories for a 30 year old male 5\'10 180 lbs" first for your own'; }
+  const rows = mealSplit(kcal, s.kg);
+  const list = 'make a list with ' + rows.map((r) => r.meal + ' about ' + r.kcal + ' calories' + (r.protein ? ' + ' + r.protein + ' g protein' : '')).join(', '); // '+', not 'and': the list skill splits items on 'and'
+  return '<h2>Meals for the day</h2><div class="sub">' + esc(fmt(kcal)) + ' calories, from ' + esc(from) + '</div>'
+    + BIG + esc(fmt(kcal)) + '<span style="font-size:18px"> calories a day</span></div>'
+    + '<table class="nu-meals" style="border-collapse:collapse">' + rows.map((r) => '<tr><td style="padding-right:24px">' + esc(r.meal) + ' <span style="color:#8a8a8a">' + Math.round(r.share * 100) + '%</span></td><td style="text-align:right"><b>' + esc(fmt(r.kcal)) + '</b> cal' + (r.protein ? ' <span style="color:#8a8a8a">\u00b7 ' + r.protein + ' g protein</span>' : '') + '</td></tr>').join('') + '</table>'
+    + '<p class="nu-next"><a href="#" data-ask="' + esc(list) + '">put it on the stage as a checklist</a> \u00b7 <a href="#" data-ask="' + esc('add a sticky that says today: ' + fmt(kcal) + ' calories, ' + rows.map((r) => r.meal.toLowerCase() + ' ' + r.kcal).join(', ')) + '">a note to self</a></p>'
+    + GREY + 'The 25 / 30 / 35 / 10 split is the usual starting point in meal planning; move calories between meals as your day goes. Say "plan my meals for 1800 calories" for another target' + (s.kg ? '' : ', or give your weight for protein per meal') + '.</p>'
+    + '<div class="src">Split: the standard clinical starting split (Academy of Nutrition and Dietetics meal planning). Protein per meal from 1.2 g per kg a day. Not medical advice.</div>';
 }
 
 function proHtml(s, esc) {
@@ -322,6 +435,8 @@ async function run(text, api) {
     calForm(el, s, esc);
     return 'nutrition';
   }
+  if (q.kind === 'meals') { showPage((el) => { el.innerHTML = mealsHtml(q, esc); }); return 'nutrition'; }
+  if (q.kind === 'bmi') { const el = showPage((p) => { p.innerHTML = '<h2>BMI calculator</h2><div class="sub">body mass index: weight for height</div><div id="nu-form"></div>' + SRC_BMI; }); bmiForm(el, esc); return 'nutrition'; }
   if (q.kind === 'pro') { showPage((el) => { el.innerHTML = proHtml(s, esc).replace(SRC_PRO, note + SRC_PRO); }); return 'nutrition'; }
   showPage((el) => { el.innerHTML = h2oHtml(s, q.t, esc).replace(SRC_H2O, note + SRC_H2O); });
   return 'nutrition';
@@ -335,6 +450,9 @@ export default {
     'calories for a 30 year old male 5\'10 180 lbs moderately active',
     'how many calories should a 25 year old woman 165 cm 60 kg eat to lose weight',
     'calorie calculator',
+    'bmi calculator',
+    'plan my meals',
+    'plan my meals for 1800 calories',
     'how much protein do i need if i weigh 180 pounds',
     'how much protein do i need',
     'how much water should i drink a day',
@@ -346,7 +464,9 @@ export default {
     'how many calories to lose a pound',
     'how much protein in an egg',
     'how much water is in the ocean',
-    'what is my bmi 5 foot 10 180 pounds'
+    'what is my bmi 5 foot 10 180 pounds',
+    'meal plan for the week',
+    'vegan meal plan recipes'
   ],
   match(lower, text) { return !!askOf(text) || !!followOf(text); },
   run

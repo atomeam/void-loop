@@ -27,16 +27,16 @@ export default async function build(ctx, data) {
       if (side === 'top') g.fillRect(x + 1, y + 1, cp - 2, cp * 0.24); else if (side === 'bottom') g.fillRect(x + 1, y + cp * 0.76, cp - 2, cp * 0.24 - 1);
       else if (side === 'right') g.fillRect(x + cp * 0.76, y + 1, cp * 0.24 - 1, cp - 2); else g.fillRect(x + 1, y + 1, cp * 0.24, cp - 2); }
     g.fillStyle = '#1a1a1a'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    const words = sp.n.split(' '), fs = Math.round(cp * (sp.t === 'street' || sp.t === 'station' ? 0.13 : 0.15));
+    const words = ((data.names && data.names[i]) || sp.n).split(' '), fs = Math.round(cp * (sp.t === 'street' || sp.t === 'station' ? 0.13 : 0.15));
     g.font = `600 ${fs}px 'Helvetica Neue', Arial, sans-serif`;
     words.forEach((w, k) => g.fillText(w, x + cp / 2, y + cp * 0.5 + (k - (words.length - 1) / 2) * fs * 1.1));
     if (sp.p) { g.font = `${Math.round(fs * 0.9)}px Arial, sans-serif`; g.fillText(String(sp.p), x + cp / 2, y + cp * 0.86); }
   });
-  // Void's own lid in the middle (not the original's logo): THE LANDLORD'S GAME, set like a vintage box
+  // Verse's own lid in the middle (not the original's logo): THE LANDLORD'S GAME, set like a vintage box
   g.fillStyle = '#2b4a33'; g.textAlign = 'center';
-  g.font = `700 ${Math.round(cp * 0.32)}px Georgia, serif`; g.fillText('THE', px / 2, px / 2 - cp * 0.62);
-  g.font = `700 ${Math.round(cp * 0.7)}px Georgia, serif`; g.fillText('LANDLORD’S GAME', px / 2, px / 2 + cp * 0.1);
-  g.font = `${Math.round(cp * 0.2)}px system-ui, sans-serif`; g.fillText('A  VOID  GAME', px / 2, px / 2 + cp * 0.5);
+  g.font = `700 ${Math.round(cp * 0.32)}px Georgia, serif`; if (!data.lid) g.fillText('THE', px / 2, px / 2 - cp * 0.62);
+  g.font = `700 ${Math.round(cp * 0.7)}px Georgia, serif`; g.fillText(data.lid || 'LANDLORD’S GAME', px / 2, px / 2 + cp * 0.1);
+  g.font = `${Math.round(cp * 0.2)}px system-ui, sans-serif`; g.fillText('A  VERSE  GAME', px / 2, px / 2 + cp * 0.5);
   const c2 = document.createElement('canvas'); c2.width = c2.height = px;
   const g2 = c2.getContext('2d'); g2.translate(px, px); g2.rotate(Math.PI); g2.drawImage(flat, 0, 0);
   const topMap = new THREE.CanvasTexture(c2); topMap.colorSpace = THREE.SRGBColorSpace; topMap.anisotropy = 8;
@@ -44,8 +44,8 @@ export default async function build(ctx, data) {
   const edgeM = new THREE.MeshPhysicalMaterial({ color: '#2b4a33', roughness: 0.6 });
   const board = new THREE.Mesh(new THREE.BoxGeometry(B, H, B), [edgeM, edgeM, topM, edgeM, edgeM, edgeM]);
   board.position.y = H / 2; board.castShadow = board.receiveShadow = true; board.userData.isBoard = true; root.add(board);
-  // tokens: die-cast pewter pieces, Void's own set (a lantern, a teapot, an anchor, a house key; Adam: "the pieces should
-  // all be accurate", in Void's brand), each on a plinth ringed with its seat's enamel colour so you can tell them apart
+  // tokens: die-cast pewter pieces, Verse's own set (a lantern, a teapot, an anchor, a house key; Adam: "the pieces should
+  // all be accurate", in Verse's brand), each on a plinth ringed with its seat's enamel colour so you can tell them apart
   const pewter = new THREE.MeshStandardMaterial({ color: '#c3c7cd', metalness: 0.9, roughness: 0.32 });
   const amber = new THREE.MeshStandardMaterial({ color: '#ffcf7a', emissive: '#ff9a2e', emissiveIntensity: 0.35, roughness: 0.4 });
   const geos = [];
@@ -64,7 +64,8 @@ export default async function build(ctx, data) {
     (t) => t.add(part(new THREE.TorusGeometry(0.003, 0.0009, 10, 24), pewter, 0, 0.0126, 0), part(new THREE.CylinderGeometry(0.0008, 0.0008, 0.0082, 10), pewter, 0, 0.0055, 0), // a house key
       part(new THREE.BoxGeometry(0.0032, 0.0011, 0.0011), pewter, 0.0016, 0.0026, 0), part(new THREE.BoxGeometry(0.0022, 0.0011, 0.0011), pewter, 0.0011, 0.0043, 0)),
   ];
-  const plinthGeo = G(new THREE.CylinderGeometry(0.0052, 0.0058, 0.0016, 28)), bandGeo = G(new THREE.TorusGeometry(0.0056, 0.0006, 8, 32).rotateX(Math.PI / 2));
+  // a turned plinth with a bevelled lip (a lathe profile, not a plain cylinder: "a better 3D", owner 2026-10-15)
+  const plinthGeo = G(new THREE.LatheGeometry([[0, 0], [0.0058, 0], [0.0060, 0.0003], [0.0059, 0.0008], [0.0054, 0.0012], [0.0050, 0.0016], [0.0046, 0.0017], [0, 0.0017]].map(([x, y]) => new THREE.Vector2(x, y)), 40)), bandGeo = G(new THREE.TorusGeometry(0.0056, 0.0006, 8, 32).rotateX(Math.PI / 2));
   const pawns = (data.players || []).map((_, k) => {
     const m = new THREE.MeshStandardMaterial({ color: SEATS[k], roughness: 0.25, metalness: 0.1 }); // the seat's enamel
     const o = new THREE.Group(), t = new THREE.Group();
@@ -75,9 +76,15 @@ export default async function build(ctx, data) {
     return { o, m, pos: -1 };
   });
   const offset = (k) => [(k % 2 ? 1 : -1) * C * 0.18, (k < 2 ? -1 : 1) * C * 0.18]; // seats share a space side by side
-  const houseGeo = new THREE.BoxGeometry(C * 0.16, C * 0.14, C * 0.16), roofGeo = new THREE.ConeGeometry(C * 0.13, C * 0.1, 4);
-  const hotelGeo = new THREE.BoxGeometry(C * 0.5, C * 0.18, C * 0.2);
-  const greenM = new THREE.MeshStandardMaterial({ color: '#1f8a45', roughness: 0.5 }), redM = new THREE.MeshStandardMaterial({ color: '#c0262b', roughness: 0.5 });
+    // houses and hotels are one moulded piece each: a gabled profile extruded with rounded, bevelled edges, in glossy
+  // injection-moulded plastic (clearcoat over a slightly soft base, a faint sheen like a real plastic piece)
+  const gable = (w, h, roof) => { const sh = new THREE.Shape(); sh.moveTo(-w / 2, 0); sh.lineTo(w / 2, 0); sh.lineTo(w / 2, h); sh.lineTo(0, h + roof); sh.lineTo(-w / 2, h); sh.closePath(); return sh; };
+  const moulded = (w, h, roof, depth) => { const b = Math.min(w, depth) * 0.09; const g = new THREE.ExtrudeGeometry(gable(w - 2 * b, h - b, roof), { depth: depth - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelSegments: 3, curveSegments: 1 });
+    g.translate(0, b, -(depth - 2 * b) / 2); g.computeVertexNormals(); return g; };
+  const houseGeo = moulded(C * 0.16, C * 0.13, C * 0.08, C * 0.17);
+  const hotelGeo = moulded(C * 0.5, C * 0.15, C * 0.07, C * 0.2);
+  const plastic = (color) => new THREE.MeshPhysicalMaterial({ color, roughness: 0.38, clearcoat: 1, clearcoatRoughness: 0.12, sheen: 0.25, sheenColor: new THREE.Color(color).offsetHSL(0, 0, 0.2), sheenRoughness: 0.5 });
+  const greenM = plastic('#1f8a45'), redM = plastic('#c0262b');
   const markGeo = new THREE.CylinderGeometry(C * 0.1, C * 0.1, 0.002, 24);
   const ringGeo = new THREE.RingGeometry(C * 0.44, C * 0.5, 4, 1).rotateX(-Math.PI / 2).rotateY(Math.PI / 4);
   const ringM = new THREE.MeshBasicMaterial({ color: '#ffd76a' });
@@ -86,8 +93,10 @@ export default async function build(ctx, data) {
   const pip = (n) => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); x.fillStyle = '#fbfaf5'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#1b1b1f';
     const P = { 1: [[64, 64]], 2: [[34, 34], [94, 94]], 3: [[30, 30], [64, 64], [98, 98]], 4: [[34, 34], [94, 34], [34, 94], [94, 94]], 5: [[30, 30], [98, 30], [64, 64], [30, 98], [98, 98]], 6: [[34, 28], [94, 28], [34, 64], [94, 64], [34, 100], [94, 100]] };
     for (const [a, b] of P[n]) { x.beginPath(); x.arc(a, b, 11, 0, Math.PI * 2); x.fill(); } const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
-  const faces = [1, 2, 3, 4, 5, 6].map((n) => new THREE.MeshStandardMaterial({ map: pip(n), roughness: 0.4 }));
-  const dieGeo = new THREE.BoxGeometry(0.016, 0.016, 0.016);
+  const faces = [1, 2, 3, 4, 5, 6].map((n) => new THREE.MeshPhysicalMaterial({ map: pip(n), roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.08 }));
+  // rounded dice (bevelled corners and edges like real ones), the pips on each face; RoundedBoxGeometry keeps BoxGeometry's face groups
+  const { RoundedBoxGeometry } = await import('/vendor/three-r180a/addons/RoundedBoxGeometry.js');
+  const dieGeo = new RoundedBoxGeometry(0.016, 0.016, 0.016, 4, 0.0022);
   // BoxGeometry faces: +x, -x, +y, -y, +z, -z; the +y face shows the roll
   const dieFor = (n) => { const rest = [1, 2, 3, 4, 5, 6].filter((f) => f !== n && f !== 7 - n); return new THREE.Mesh(dieGeo, [rest[0], rest[1], n, 7 - n, rest[2], rest[3]].map((v) => faces[v - 1])); };
   let dice = [];
@@ -98,9 +107,9 @@ export default async function build(ctx, data) {
     for (const o of [...pickG.children]) pickG.remove(o);
     for (const [i, o] of Object.entries(d.owner || {})) { const m = new THREE.Mesh(markGeo, new THREE.MeshStandardMaterial({ color: SEATS[o], roughness: 0.4 })); m.position.copy(at(+i, H + 0.001, 0, 0)); m.position.lerp(new THREE.Vector3(0, H + 0.001, 0), 0.06); marks.add(m); }
     for (const [i, n] of Object.entries(d.houses || {})) {
-      if (n === 5) { const h = new THREE.Mesh(hotelGeo, redM); h.position.copy(at(+i, H + C * 0.09)); h.castShadow = true; builds.add(h); continue; }
-      for (let k = 0; k < n; k++) { const h = new THREE.Group(), b = new THREE.Mesh(houseGeo, greenM), roof = new THREE.Mesh(roofGeo, greenM); roof.position.y = C * 0.12; roof.rotation.y = Math.PI / 4; h.add(b, roof);
-        h.position.copy(at(+i, H + C * 0.07, (k - 1.5) * C * 0.2, 0)); b.castShadow = true; builds.add(h); }
+      if (n === 5) { const h = new THREE.Mesh(hotelGeo, redM); h.position.copy(at(+i, H)); h.castShadow = true; builds.add(h); continue; }
+      for (let k = 0; k < n; k++) { const h = new THREE.Group(), b = new THREE.Mesh(houseGeo, greenM); h.add(b);
+        h.position.copy(at(+i, H, (k - 1.5) * C * 0.2, 0)); b.castShadow = true; builds.add(h); }
     }
     if (d.picked >= 0) { const r = new THREE.Mesh(ringGeo, ringM); r.position.copy(at(d.picked, H + 0.0012)); pickG.add(r); }
     (d.players || []).forEach((p, k) => {
@@ -132,6 +141,6 @@ export default async function build(ctx, data) {
     update(d) { paint(d); ctx.requestRender(); },
     tick(dt) { return tw.tick(dt); },
     state() { return { pawns: pawns.map((p) => p.pos), marks: marks.children.length, builds: builds.children.length, dice: dice.length }; },
-    dispose() { for (const x of [board.geometry, ...geos, houseGeo, roofGeo, hotelGeo, markGeo, ringGeo, dieGeo]) x.dispose(); for (const m of [topM, edgeM, pewter, amber, greenM, redM, ringM, ...faces, ...pawns.map((p) => p.m)]) { if (m.map) m.map.dispose(); m.dispose(); } topMap.dispose(); },
+    dispose() { for (const x of [board.geometry, ...geos, houseGeo, hotelGeo, markGeo, ringGeo, dieGeo]) x.dispose(); for (const m of [topM, edgeM, pewter, amber, greenM, redM, ringM, ...faces, ...pawns.map((p) => p.m)]) { if (m.map) m.map.dispose(); m.dispose(); } topMap.dispose(); },
   };
 }

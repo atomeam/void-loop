@@ -1,8 +1,8 @@
 /**
  * connect4-rules — Connect Four in plain JS (no DOM, no three.js), shared by the card (skills/connect4.js), its 3D frame
- * and the tests. On Adam's list as the game of forced sequences and tactical prediction: Void looks several moves ahead
+ * and the tests. On Adam's list as the game of forced sequences and tactical prediction: Verse looks several moves ahead
  * (alpha-beta) and every disc it drops says why: a win now, a block of your four, a threat it is building, or the best
- * line it found. Board: 6 rows x 7 columns, cell = row * 7 + col, row 0 at the top. You are red (1), Void is yellow (2).
+ * line it found. Board: 6 rows x 7 columns, cell = row * 7 + col, row 0 at the top. You are red (1), Verse is yellow (2).
  *   create() -> state      drop(s, col) -> s      voidMove(s, depth?, weights?) -> { col, why }      winLine(board, p) -> [cells] | null
  * The evaluation's weights are an argument (WEIGHTS are the ones the card plays with), so the self-play arena (lib/arena.js)
  * can try others and keep what wins.
@@ -31,14 +31,14 @@ export function drop(s0, col, why) {
   if (r < 0) return s0;
   const s = { ...s0, board: s0.board.slice(), log: s0.log.slice(-80) }, p = s.turn;
   s.board[r * C + col] = p; s.last = r * C + col;
-  s.log.push({ who: p === 1 ? 'You' : 'Void', text: 'dropped in column ' + (col + 1), ...(why ? { why } : {}) });
+  s.log.push({ who: p === 1 ? 'You' : 'Verse', text: 'dropped in column ' + (col + 1), ...(why ? { why } : {}) });
   if (winLine(s.board, p)) s.over = p === 1 ? 'you' : 'void';
   else if (full(s.board)) s.over = 'draw';
   else s.turn = 3 - p;
   return s;
 }
 
-// a position's value for Void: open lines of two and three, the centre column
+// a position's value for Verse: open lines of two and three, the centre column
 export const WEIGHTS = Object.freeze({ centre: 3, three: 6, two: 2, theirThree: 8, theirTwo: 2 });
 function score(b, w) {
   let s = 0;
@@ -67,7 +67,7 @@ function search(b, depth, a, z, maxi, w) {
   }
   return best;
 }
-// Void's choice and why. The why is checked in this order: win now, block your four, then what the look-ahead found.
+// Verse's choice and why. The why is checked in this order: win now, block your four, then what the look-ahead found.
 export function voidMove(s, depth = 6, w = WEIGHTS) {
   const b = s.board.slice(), cols = ORDER.filter((c) => rowFor(b, c) >= 0);
   const tryDrop = (c, p) => { const r = rowFor(b, c); b[r * C + c] = p; const w = !!winLine(b, p); b[r * C + c] = 0; return w; };

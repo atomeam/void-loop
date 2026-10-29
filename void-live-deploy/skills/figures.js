@@ -1,16 +1,19 @@
 /**
- * figures skill — a small 3D friend that roams your own Void, notices your cursor, and leaves when you send it away
+ * figures skill — a small 3D friend that roams your own Verse, notices your cursor, and leaves when you send it away
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Board Next #17. "summon a sprite", "bring a friend", "show me a 3D buddy"; "send them away" / "dismiss figures" (undo brings
  * them back); "less motion" holds them still. Figures are stage items in this browser (the personal layer), so the next
- * visitor still arrives at a blank Void. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
+ * visitor still arrives at a blank Verse. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
  */
 import { fallbackScript, natureOf } from './scripts.js';
+import { thingOf } from './forge-rules.js';
+import { yieldOf } from '../lib/rts.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
+export const DETAIL_KEY = 'a2m.void.3d.v1'; // the same key skills/scene3d.js reads
 
 const NOUN = '(?:sprites?|buddy|buddies|friends?|figurines?|critters?|creatures?|companions?|pals?)'; // not bare figure(s): Motelet
 const FIG = '(?:sprites?|buddy|buddies|friends?|figures?|figurines?|critters?|creatures?|companions?|pals?)';
-const ADJ = '(?:(?:little|tiny|small|cute|new|roaming|void|3d|3-d|three[\\s-]?d)\\s+)*';
+const ADJ = '(?:(?:little|tiny|small|cute|new|roaming|(?:verse|void)|3d|3-d|three[\\s-]?d)\\s+)*';
 const SUMMON = new RegExp('^(?:please\\s+)?(?:summon|bring(?:\\s+(?:out|in))?|show\\s+me|give\\s+me|call(?:\\s+up)?|spawn|add|make\\s+me)\\s+'
   + '(?:me\\s+)?(?:a|an|another|one\\s+more|my|some)?\\s*' + ADJ + NOUN + '(?:\\s+(?:friend|buddy))?(?:\\s+please)?$');
 const WHO = '(?:them|the\\s+' + ADJ + FIG + '|my\\s+' + ADJ + FIG + '|all\\s+(?:the\\s+)?' + ADJ + FIG + '|everyone|everybody)';
@@ -22,13 +25,24 @@ const DISMISS = [
 const STILL = /^(?:please\s+)?(?:less\s+motion|reduce(?:d)?\s+motion|hold\s+still|stay\s+still|stop\s+moving|keep\s+(?:them|the\s+(?:figures?|sprites?))\s+still|(?:figures?|sprites?)\s+hold\s+still)$/;
 const ROAM = /^(?:please\s+)?(?:more\s+motion|let\s+(?:them|the\s+(?:figures?|sprites?))\s+(?:roam|move|wander)(?:\s+again)?|roam\s+free|you\s+can\s+move(?:\s+again)?)$/;
 
-/** What a figures ask wants: { act: 'summon' | 'dismiss' | 'still' | 'roam' } or null. */
+// the 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Verse, ask-20261015-0347-2: a low-poly toggle for older hardware)
+const LOW_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?low[\s-]?poly(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:lighter|simpler?|lite|light)\s+3d|3d\s+(?:low|light|lite|simple|low[\s-]?poly)(?:\s+mode)?|low\s+3d\s+detail)$/;
+const FULL_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?(?:full|high)[\s-]?(?:poly|detail)(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:full|detailed|sharp)\s+3d|3d\s+(?:full|high|detailed)(?:\s+(?:detail|mode))?|full\s+3d\s+detail)$/;
+const AUTO_POLY = /^(?:please\s+)?(?:auto(?:matic)?\s+3d(?:\s+(?:detail|mode))?|3d\s+(?:detail\s+)?auto(?:matic)?|3d\s+auto\s+detail|(?:let\s+)?3d\s+(?:detail\s+)?decide(?:\s+itself)?)$/;
+/** The 3D detail an ask sets: 'low' | 'full' | 'auto', or null. */
+export function detailAsk(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return LOW_POLY.test(t) ? 'low' : FULL_POLY.test(t) ? 'full' : AUTO_POLY.test(t) ? 'auto' : null;
+}
+/** What a figures ask wants: { act: 'summon' | 'dismiss' | 'still' | 'roam' | 'detail' } or null. */
 // Things with a nature (skills/scripts.js NATURES): "summon a zombie" and "add a brain", and the zombie finds the brain and
 // eats it; "bring a cat" and "add a mouse", and the cat gives chase. Each arrives with the body and colour its kind wears.
 const NATURE_LOOK = { zombie: ['person', '#7d9a5a'], brain: ['object', '#e9a3b4'], cat: ['animal', '#e39a4f'], mouse: ['animal', '#b9b3ad'],
   dog: ['animal', '#a8784c'], bone: ['object', '#efe8da'], fish: ['animal', '#5fa8d8'], cheese: ['object', '#f2c94c'], rabbit: ['animal', '#e8e1d8'],
-  carrot: ['object', '#ef8a2c'], monkey: ['animal', '#8a5a3a'], banana: ['object', '#f5d84a'], shark: ['animal', '#7c8fa3'], bee: ['animal', '#f2c230'], flower: ['object', '#ef6fa0'],
-  cloud: ['object', '#eef1f4', 0.3], sun: ['object', '#ffc23a', 0.05], fire: ['object', '#ff6a1a', 0.05], ice: ['object', '#cfeaff', 0.05], water: ['place', '#2e6d96', 0.05] }; // third: walking pace (clouds drift, a fire stays put)
+  carrot: ['object', '#ef8a2c'], monkey: ['animal', '#8a5a3a'], horse: ['animal', '#6e3f22', 1.4], donkey: ['animal', '#8e8780', 0.9], /* third: walking pace (a horse's trot, a donkey's plod) */ banana: ['object', '#f5d84a'], shark: ['animal', '#7c8fa3'], bee: ['animal', '#f2c230'], flower: ['object', '#ef6fa0'],
+  cloud: ['object', '#eef1f4', 0.3], sun: ['object', '#ffc23a', 0.05], fire: ['object', '#ff6a1a', 0.05], ice: ['object', '#cfeaff', 0.05], water: ['place', '#2e6d96', 0.05],
+  // the RTS world (lib/rts.js): a tree and a rock stand where they are put (places), a villager is a person who gathers them
+  tree: ['place', '#3f7a3a', 0.05], rock: ['place', '#8a8f96', 0.05], villager: ['person', '#c9a06a'] }; // third: walking pace (clouds drift, a fire stays put)
 const NATURE_SUMMON = /^(?:please\s+)?(?:summon|bring(?:\s+(?:out|in))?|add|spawn|make|drop|put|release|let\s+loose|give\s+me|show\s+me)\s+(?:me\s+)?(?:(?:an|a|some|another|one\s+more|the)\s+)?([a-z]+(?:\s[a-z]+)?)(?:\s+(?:on\s+the\s+stage|here|in))?(?:\s+please)?$/;
 // Every summon is an individual: a random seed picks its shade, size and build, so no two zombies match; "clone it"
 // copies the seed, so a clone is identical. Pure: the same seed always gives the same look (tests rely on it).
@@ -67,12 +81,14 @@ export function natureSummon(t) {
   const noun = m[1], last = noun.split(' ').pop(), find = (w) => natureOf(w).tags.find((x) => NATURE_LOOK[x]);
   // the last word is the thing ("a dog picture" is not a dog); a two-word name ("ice cube", "storm cloud") counts whole
   const kind = find(last) || (/^(?:pictures?|photos?|images?|drawings?|videos?|movies?|films?|songs?|facts?|names?|recipes?|emojis?|costumes?|toys?|games?)$/.test(last) ? null : find(noun));
+  // "make a tree" is the forge's (a printable model); "add a tree" / "summon a tree" is a tree on the stage, a node the villagers gather (lib/rts.js)
+  if (kind && thingOf(noun) && /^(?:please\s+)?(?:make|build|forge|print|model|create)\b/.test(t)) return null;
   return kind ? { act: 'summon', kind, title: noun } : null;
 }
 
 // An article's figure is the thing itself (Adam, 2026-10-09): a page about cats brings a real cat, about a banana a real
 // banana. Matched on the title's last word, then the whole title ("Honey bee" is a bee, "Great white shark" a shark);
-// null when Void has no real model of it yet, so the page brings no stand-in.
+// null when Verse has no real model of it yet, so the page brings no stand-in.
 export function realFigureFor(card, seed = (Math.random() * 4294967296) >>> 0) {
   const title = String((card && card.title) || '').replace(/\s*\(.*\)$/, '').trim().toLowerCase();
   if (!title || title.split(/\s+/).length > 4) return null;
@@ -95,6 +111,7 @@ export function figuresOf(text) {
   if (DISMISS.some((re) => re.test(t))) return { act: 'dismiss' };
   if (STILL.test(t)) return { act: 'still' };
   if (ROAM.test(t)) return { act: 'roam' };
+  const d = detailAsk(t); if (d) return { act: 'detail', mode: d };
   return null;
 }
 
@@ -108,7 +125,9 @@ async function run(text, api) {
   if (q.act === 'summon' && q.kind) {
     const [body, , pace] = NATURE_LOOK[q.kind], seed = (Math.random() * 4294967296) >>> 0, look = lookFor(q.kind, seed);
     if (pace) look.pace = +(look.pace * pace).toFixed(3);
-    const th = api.summon && api.summon('figure', { body, ...look, seed, kindOf: q.kind, title: q.title, script: fallbackScript(body, q.title) });
+    // a node of the RTS world (lib/rts.js) carries its loads from the start: a tree is 8 wood wherever it stands, so the 3D layer's brain knows what is left
+    const y = yieldOf(natureOf(q.kind).tags);
+    const th = api.summon && api.summon('figure', { body, ...look, seed, kindOf: q.kind, title: q.title, script: fallbackScript(body, q.title), ...(y ? { res: { kind: y.res, left: y.units } } : {}) });
     if (!th) { say('the stage is full'); return 'figures'; }
     say('a ' + q.title + ' is here, one of a kind');
     return 'figures';
@@ -136,6 +155,15 @@ async function run(text, api) {
     return 'figures';
   }
   const bag = store();
+  if (q.act === 'detail') {
+    // the setting is written here so it holds even before any 3D has loaded; a live engine applies it at once
+    try { if (bag) { if (q.mode === 'auto') bag.removeItem(DETAIL_KEY); else bag.setItem(DETAIL_KEY, q.mode); } } catch (_) {}
+    if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.querySelector('.void-mini, #void-3d')) import('/skills/scene3d.js').then((m) => m.setDetail(q.mode)).catch(() => {});
+    say(q.mode === 'low' ? 'low-poly 3D: 1x pixels, no shadows, light figures. "full 3d" brings the detail back.'
+      : q.mode === 'full' ? 'full 3D detail, whatever the device. "auto 3d" lets Verse step down when frames run late.'
+      : 'auto 3D detail: full, stepping down to low-poly only while frames run late.');
+    return 'figures';
+  }
   if (q.act === 'still') {
     try { if (bag) bag.setItem(MOTION_KEY, 'still'); } catch (_) {}
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('void-motion'));
@@ -150,7 +178,7 @@ async function run(text, api) {
 
 export default {
   name: 'figures',
-  examples: ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'send them away', 'dismiss figures', 'less motion', 'summon a zombie', 'add a brain', 'bring a cat', 'add a mouse', 'clone the zombie', 'add a cloud', 'add a sea', 'add an ice cube', 'add a campfire'],
+  examples: ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'send them away', 'dismiss figures', 'less motion', 'low poly 3d', 'full 3d', 'summon a zombie', 'add a brain', 'bring a cat', 'add a mouse', 'clone the zombie', 'add a cloud', 'add a sea', 'add an ice cube', 'add a campfire'],
   nearMisses: ['what is a sprite', 'how do I make friends', 'show me a figure of the heart', 'summon a figure', 'summon motelet', 'send an email to sam', 'what is reduced motion', 'sprite soda'],
   match(lower, text) { return !!figuresOf(text); },
   run,

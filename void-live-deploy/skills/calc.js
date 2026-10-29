@@ -176,6 +176,17 @@ export const plainCalc = (lower) => /^(?:please\s+)?(?:(?:open|show|make|add|giv
 
 let typed = null; // the sum just asked for: its miniature presses the keys once, then later draws only show the result
 
+/** the five 3D models (skills/mini/calculator.js MODELS, in the same order); a new card gets the next one round-robin (owner, 2026-10-25:
+ *  "a cycle of all the existing calculators too for 3d, all with verse branding but also saying which model") */
+export const CALC_MODELS = ['SL-200', 'FX-900', 'DT-12', 'RP-11', 'GX-84'];
+export const MODEL_KEY = 'a2m.void.calcmodel.v1'; // how many calculators this device has made: the next model is that modulo five
+export function nextModel() {
+  let n = 0;
+  try { n = parseInt(localStorage.getItem(MODEL_KEY) || '0', 10); if (!Number.isFinite(n) || n < 0) n = 0; } catch (_) { n = 0; }
+  try { localStorage.setItem(MODEL_KEY, String(n + 1)); } catch (_) {}
+  return CALC_MODELS[n % CALC_MODELS.length];
+}
+
 const calcs = (stageApi) => Object.values(stageApi.things()).filter((t) => t && t.kind === 'calc');
 
 /** the picked calculator, or the first one, or a new one; it is picked */
@@ -185,7 +196,7 @@ export function ensure(stageApi) {
   if (!calc) {
     const st = stageApi.stage;
     calc = { id: 'calc_' + Math.random().toString(36).slice(2, 9), kind: 'calc',
-      x: Math.max(40, (st.clientWidth || 800) / 2 - 130), y: Math.max(40, (st.clientHeight || 600) / 2 - 90), title: '', expression: '', result: '' };
+      x: Math.max(40, (st.clientWidth || 800) / 2 - 130), y: Math.max(40, (st.clientHeight || 600) / 2 - 90), title: '', expression: '', result: '', model: nextModel() };
     stageApi.things()[calc.id] = calc;
   }
   stageApi.select(calc.id);
@@ -205,7 +216,7 @@ function mount(th, stageApi) {
   title.className = 'calc-title';
   title.contentEditable = 'true';
   title.spellcheck = false;
-  title.dataset.placeholder = 'Calculator';
+  title.dataset.placeholder = 'Calculator · VERSE ' + (th.model || CALC_MODELS[0]); // which model its 3D one is (cards from before the models are the SL-200)
   title.textContent = th.title || '';
   title.addEventListener('pointerdown', (e) => e.stopPropagation());
   title.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); title.blur(); } });
@@ -227,9 +238,11 @@ function mount(th, stageApi) {
   // a 3D pocket calculator whose keys press out the sum, then show the result (skills/mini/calculator.js)
   const calcHost = document.createElement('div'); calcHost.className = 'calc-mini'; calcHost.style.cssText = 'height:150px;margin:-4px -6px 8px';
   el.insertBefore(calcHost, title);
-  stageApi.miniature(calcHost, 'calculator', { expression: th.expression || '', result: th.result || '', typed: typed === th.id + '|' + th.expression },
-    { key: 'calculator:' + th.id, label: '3D calculator' + (th.result ? ' showing ' + th.result : '') }).catch(() => calcHost.remove());
+  stageApi.miniature(calcHost, 'calculator', { expression: th.expression || '', result: th.result || '', typed: typed === th.id + '|' + th.expression, model: th.model || CALC_MODELS[0] },
+    { key: 'calculator:' + th.id, label: '3D calculator, VERSE ' + (th.model || CALC_MODELS[0]) + (th.result ? ', showing ' + th.result : '') }).catch(() => calcHost.remove());
   stageApi.bindDrag(el, th);
+  // the full page (owner, 2026-10-25: "theres no link to /calculator"): the scientific calculator with history and unit conversion, offline
+  if (!(typeof location !== 'undefined' && /^\/calculator\//.test(location.pathname))) { const full = document.createElement('p'); full.className = 'calc-full'; full.style.cssText = 'text-align:center;font-size:13px;margin:4px 0 2px'; const a = document.createElement('a'); a.href = '/calculator/' + (th.expression ? '?e=' + encodeURIComponent(th.expression) : ''); a.style.color = 'inherit'; a.textContent = 'The full calculator page: scientific keys, memory, history, units'; a.addEventListener('pointerdown', (e) => e.stopPropagation()); full.appendChild(a); el.appendChild(full); }
   stageApi.stage.appendChild(el);
 }
 

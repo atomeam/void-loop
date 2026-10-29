@@ -12,15 +12,22 @@ export function placesOf(text) {
   if (n) return { a: n[2].trim(), b: n[1].trim() };
   const q = t.match(/^(.+?)\s+to\s+(.+?)\s+distance$/i); // "Lyon to Turin distance"
   if (q) return { a: q[1].trim(), b: q[2].trim() };
-  const k = t.match(/^how many\s+(?:km|kilomet(?:er|re)s?|miles?|mi)\s+from\s+(.+?)\s+to\s+(.+)$/i); // "how many km from Lyon to Turin"
+  const k = t.match(/^(?:how many\s+)?(?:km|kilomet(?:er|re)s?|miles?|mi)\s+from\s+(.+?)\s+to\s+(.+)$/i); // "how many km from Lyon to Turin", "km from Lyon to Turin"
   if (k) return { a: k[1].trim(), b: k[2].trim() };
+  const f = t.match(/^how\s+long\s+(?:is\s+(?:the|a)\s+flight|does\s+it\s+take\s+to\s+fly)\s+from\s+(.+?)\s+to\s+(.+)$/i); // "how long is the flight from London to New York"
+  if (f) return { a: f[1].trim(), b: f[2].trim(), flight: true };
   return null;
 }
-async function geo(name) {
+// a rough nonstop flight time: about 800 km/h cruising plus half an hour for climb and descent
+export function flightTime(d) {
+  const mins = Math.round((d / 800 + 0.5) * 60 / 5) * 5;
+  return 'About ' + (mins >= 60 ? Math.floor(mins / 60) + ' h' + (mins % 60 ? ' ' + (mins % 60) + ' min' : '') : mins + ' min');
+}
+export async function geo(name) {
   const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&name=' + encodeURIComponent(name.split(',')[0])).then((r) => r.json());
   return ((g && g.results) || []).sort((x, y) => (y.population || 0) - (x.population || 0))[0] || null;
 }
-function km(a, b) {
+export function km(a, b) {
   const R = 6371.0088, rad = (d) => d * Math.PI / 180;
   const dl = rad(b.latitude - a.latitude), dn = rad(b.longitude - a.longitude);
   const h = Math.sin(dl / 2) ** 2 + Math.cos(rad(a.latitude)) * Math.cos(rad(b.latitude)) * Math.sin(dn / 2) ** 2;
@@ -41,6 +48,7 @@ async function run(text, api) {
     el.innerHTML = '<h2>' + esc(a.name + ' → ' + b.name) + '</h2><div class="sub">' + esc(lab(a)) + ' to ' + esc(lab(b)) + '</div>'
       + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(Math.round(d).toLocaleString()) + ' km</div>'
       + '<p style="color:#8a8a8a">' + esc(Math.round(mi).toLocaleString()) + ' miles, in a straight line (roads are longer)</p>'
+      + (q.flight ? '<p>' + esc(flightTime(d)) + ' in the air, roughly: airliner speed plus half an hour for take-off and landing. A real schedule depends on winds and the route.</p>' : '')
       + '<p class="dir-links">Route: <a href="https://www.openstreetmap.org/directions?from=' + a.latitude + '%2C' + a.longitude + '&to=' + b.latitude + '%2C' + b.longitude + '" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.google.com/maps/dir/?api=1&origin=' + a.latitude + '%2C' + a.longitude + '&destination=' + b.latitude + '%2C' + b.longitude + '" target="_blank" rel="noopener">Google Maps</a></p>'
       + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (places) · great-circle distance</div>';
     return 'distance';

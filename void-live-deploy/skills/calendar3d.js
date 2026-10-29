@@ -3,17 +3,17 @@
  * can grab and turn. Drag turns it (it keeps a little spin and settles); the arrows flip the page over the rings to the
  * next or previous month; tap a day and an editor opens under it: add an event, change its name or time, or remove it.
  * Events are written on the days like ink. Built from the page's own elements with CSS 3D, so text stays sharp and
- * readable by screen readers. Events live in this browser, the same list calendar.js and the stage card use.
+ * readable by screen readers. Events live in this browser, in the /calendar/ page's own store (lib/agenda.js), the same list the stage card uses.
  */
-const KEY = 'a2m.void.agenda.v1';
+import * as A from '../lib/agenda.js';
 const STYLE_ID = 'void-cal3d-style';
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+/** the events as rows { id, title, at, allDay }, two years back to two years on (a repeat's days each a row); [] when there are none */
 export function loadEvents() {
-  try { const r = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(r) ? r : []; } catch (_) { return []; }
+  const now = Date.now(), Y = 731 * 864e5;
+  try { return A.rowsOf(A.events(), new Date(now - Y), new Date(now + Y)); } catch (_) { return []; }
 }
-function saveEvents(rows) { try { localStorage.setItem(KEY, JSON.stringify(rows)); } catch (_) {} }
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const dayKey = (d) => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
 const fromKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
 const hhmm = (d) => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
@@ -49,7 +49,7 @@ function ensureStyle() {
     '.c3d-day:hover{background:#f6efe2}',
     '.c3d-day.today .n{color:#fff;background:#c23a2e;border-radius:999px;padding:0 5px;align-self:flex-start}',
     '.c3d-day.sel{background:#fff4d6;box-shadow:inset 0 0 0 2px #e0a43a}',
-    '.c3d-ev{font-size:9.5px;line-height:1.25;color:#1f3f8f;font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.c3d-ev{font-size:9.5px;line-height:1.25;color:#1f3f8f;font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}', // ellipsis-ok: drawn picture or short label, the full text is on the card
     '.c3d-more{font-size:9px;color:#8b877a}',
     // spiral rings over the top edge
     '.c3d-rings{position:absolute;left:14px;right:14px;top:-9px;height:24px;display:flex;justify-content:space-between;transform:translateZ(3px);pointer-events:none}',
@@ -131,19 +131,17 @@ export function show3d(api, focus) {
       + '<div class="row add"><input type="time" class="t" aria-label="time for the new event"><input type="text" class="w" aria-label="new event" maxlength="160" placeholder="add an event…"><button type="button" class="ok">add</button></div>';
   }
   function at(k, t) { const d = fromKey(k); if (t) { const [h, mi] = t.split(':').map(Number); d.setHours(h, mi, 0, 0); } return d; }
-  function change(id, fn) { const rows = loadEvents(); const r = rows.find((x) => x.id === id); if (r) { fn(r); saveEvents(rows); } build(); refreshStage(); }
+  function change(id, patch) { A.write(A.withRow(A.events(), id, patch)); build(); refreshStage(); }
   function addFrom(row) {
     const w = row.querySelector('.w'), t = row.querySelector('.t'), title = (w.value || '').trim(); if (!title) { w.focus(); return; }
-    const rows = loadEvents(), when = at(sel, t.value);
-    rows.push({ id: uid(), title: title.slice(0, 160), at: when.toISOString(), allDay: !t.value, text: title.slice(0, 200) });
-    saveEvents(rows); build(); refreshStage();
+    A.write(A.withNew(A.events(), { title: title.slice(0, 160), at: at(sel, t.value), allDay: !t.value })); build(); refreshStage();
     const nw = edit.querySelector('.row.add .w'); if (nw) nw.focus();
     if (api.say) api.say('on your calendar: ' + title);
   }
   edit.addEventListener('click', (e) => {
     const row = e.target.closest('.row'); if (!row) return;
     if (e.target.closest('.ok')) addFrom(row);
-    else if (e.target.closest('.x')) { const rows = loadEvents().filter((x) => x.id !== row.dataset.id); saveEvents(rows); build(); refreshStage(); }
+    else if (e.target.closest('.x')) { A.write(A.withoutRow(A.events(), row.dataset.id)); build(); refreshStage(); }
   });
   edit.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter') return; const row = e.target.closest('.row'); if (!row) return; e.preventDefault(); e.stopPropagation();
@@ -151,8 +149,8 @@ export function show3d(api, focus) {
   });
   edit.addEventListener('change', (e) => {
     const row = e.target.closest('.row'); if (!row || row.classList.contains('add')) return;
-    if (e.target.classList.contains('w')) { const v = e.target.value.trim(); if (v) change(row.dataset.id, (r) => { r.title = v.slice(0, 160); }); }
-    if (e.target.classList.contains('t')) { const v = e.target.value; change(row.dataset.id, (r) => { r.at = at(sel, v).toISOString(); r.allDay = !v; }); }
+    if (e.target.classList.contains('w')) { const v = e.target.value.trim(); if (v) change(row.dataset.id, { title: v.slice(0, 160) }); }
+    if (e.target.classList.contains('t')) { const v = e.target.value; change(row.dataset.id, { at: at(sel, v), allDay: !v }); }
   });
 
   // turning: drag sets the angle; letting go keeps a little spin that slows, then it eases back to face you

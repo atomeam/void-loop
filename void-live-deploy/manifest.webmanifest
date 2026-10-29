@@ -1,8 +1,11 @@
 {
   "id": "/",
-  "name": "Void",
-  "short_name": "Void",
-  "description": "Ask, and it appears.",
+  "name": "Verse",
+  "short_name": "Verse",
+  "description": "Verse by A-to-Mind: ask for anything and it appears. The weather, a timer, a list, a game, a page about anything.",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities"],
   "start_url": "/?source=app",
   "scope": "/",
   "display": "standalone",
@@ -14,6 +17,10 @@
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "VERSE FILMS", "short_name": "Films", "description": "Watch and review VERSE FILMS", "url": "/films/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "What's new", "short_name": "New", "url": "/?q=what%27s%20new&source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ],
   "share_target": {
     "action": "/",

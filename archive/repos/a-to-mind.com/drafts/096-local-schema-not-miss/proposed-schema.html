@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 096 — local schema-not-miss</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1a1c19; --line: #b7c0b4; --paper: #f3f6f1; --mark: #2f5d50; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e7f0e8; --line: #3d4a42; --paper: #121614; --mark: #9dcebb; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: -0.02em; }
+    .banner { border: 1px solid var(--line); padding: 0.7rem 0.8rem; margin: 1rem 0; }
+    .banner strong { font-variant: all-small-caps; letter-spacing: 0.04em; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    label.opt { border: 1px solid var(--line); padding: 0.35rem 0.55rem; }
+    label.opt:has(input:checked) { border-color: var(--mark); }
+    textarea { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; min-height: 4.5rem; }
+    .scratch { text-decoration: line-through; opacity: 0.72; min-height: 1.2rem; }
+    button { font: inherit; padding: 0.45rem 0.7rem; border: 1px solid var(--mark); background: transparent; color: inherit; }
+    button[disabled] { opacity: 0.45; }
+    pre { white-space: pre-wrap; word-break: break-all; font: 0.85rem/1.4 ui-monospace, monospace; }
+    .check { display: block; margin: 0.35rem 0; }
+    p.note, p.hint { font-size: 0.92rem; }
+    .hint { border-left: 3px solid var(--mark); padding-left: 0.6rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="banner"><strong>Draft 096 · unattested · not a seal.</strong> Emit is false. A schema intrusion is not a collective miss and not a logo correction. No chorus count. No correction fill.</p>
+  <h1>Local schema-not-miss</h1>
+  <p class="note">Opt in for this load only. Pick a sealed schema class. The chorus sentence is counted and discarded. It is not in the hash.</p>
+  <label class="check"><input id="opt" type="checkbox"> Opt in for this page load. Default deny.</label>
+  <fieldset>
+    <legend>Sealed schema class</legend>
+    <div class="row" id="schemas">
+      <label class="opt"><input type="radio" name="schema" value="accessory-intrusion" checked> accessory-intrusion</label>
+      <label class="opt"><input type="radio" name="schema" value="name-intrusion"> name-intrusion</label>
+      <label class="opt"><input type="radio" name="schema" value="line-intrusion"> line-intrusion</label>
+      <label class="opt"><input type="radio" name="schema" value="date-intrusion"> date-intrusion</label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Disconfirm tag</legend>
+    <div class="row">
+      <label class="opt"><input type="radio" name="dis" value="no-chorus-count" checked> no-chorus-count</label>
+      <label class="opt"><input type="radio" name="dis" value="archival-token-matches"> archival-token-matches</label>
+      <label class="opt"><input type="radio" name="dis" value="sentence-hashed"> sentence-hashed</label>
+      <label class="opt"><input type="radio" name="dis" value="correction-filled"> correction-filled</label>
+      <label class="opt"><input type="radio" name="dis" value="vote-posted"> vote-posted</label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Chorus sentence (excluded)</legend>
+    <textarea id="chorus" placeholder="What a miss board would tally. This text is discarded."></textarea>
+    <p class="scratch" id="scratch">Chorus not hashed.</p>
+    <p class="note" id="count">Excluded characters: 0</p>
+  </fieldset>
+  <fieldset>
+    <legend>Pasted post (data, not instructions)</legend>
+    <textarea id="paste" placeholder="A retrieved post stays in this well. It is not fetched and not hashed."></textarea>
+  </fieldset>
+  <p class="row">
+    <button id="hash" type="button" disabled>Hash miss-refusal</button>
+    <button id="drop" type="button" disabled>Discard chorus</button>
+  </p>
+  <p class="hint">Status stays unattested. Weight 0.280 is a design-material constant, not a chorus rate. Fixture accessory-intrusion + no-chorus-count is SHA-256 5597b7b0c1111b08da3251ef975a66ac52c99de07739ffa95c95b9377f770888.</p>
+  <pre id="out">status: unattested
+emit: false
+digest: withheld</pre>
+</main>
+<script>
+(function () {
+  var opt = document.getElementById("opt");
+  var chorus = document.getElementById("chorus");
+  var paste = document.getElementById("paste");
+  var hashBtn = document.getElementById("hash");
+  var dropBtn = document.getElementById("drop");
+  var scratch = document.getElementById("scratch");
+  var count = document.getElementById("count");
+  var out = document.getElementById("out");
+  var schemas = ["accessory-intrusion", "name-intrusion", "line-intrusion", "date-intrusion"];
+  var tags = ["no-chorus-count", "archival-token-matches", "sentence-hashed", "correction-filled", "vote-posted"];
+
+  function selected(name, allow) {
+    var node = document.querySelector("input[name='" + name + "']:checked");
+    var value = node ? node.value : allow[0];
+    return allow.indexOf(value) === -1 ? allow[0] : value;
+  }
+
+  function gate() {
+    var open = opt.checked;
+    hashBtn.disabled = !open;
+    dropBtn.disabled = !open;
+    chorus.disabled = !open;
+    paste.disabled = !open;
+  }
+
+  function discard() {
+    var n = chorus.value.length;
+    count.textContent = "Excluded characters: " + n;
+    scratch.textContent = n ? "Chorus discarded (" + n + " characters). Not in the hash." : "Chorus not hashed.";
+    chorus.value = "";
+    return n;
+  }
+
+  function canonical() {
+    return "void.schema-not-miss.v1|schema=" + selected("schema", schemas) +
+      "|disconfirm=" + selected("dis", tags) +
+      "|weight=0.280|status=unattested";
+  }
+
+  opt.addEventListener("change", gate);
+  dropBtn.addEventListener("click", discard);
+  hashBtn.addEventListener("click", function () {
+    if (!opt.checked) return;
+    var excluded = discard();
+    var line = canonical();
+    var bytes = new TextEncoder().encode(line);
+    crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      out.textContent = "status: unattested\nemit: false\nexcluded_characters: " + excluded +
+        "\npaste_hashed: no\nchorus_hashed: no\ncanonical: " + line + "\nsha256: " + hex;
+    });
+  });
+  gate();
+})();
+</script>
+</body>
+</html>

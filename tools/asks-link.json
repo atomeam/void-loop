@@ -1,0 +1,412 @@
+{
+  "note": "Curated by a builder reading the growth ledger (2026-10-16, tools/asks-link.mjs): each rule names the ledger entry that built every open ask of V01D's whose words match. Matched by a regular expression over the ask's words; the ledger entry's own text is quoted in the link's why. Add a rule only when the entry really built the ask.",
+  "rules": [
+    {
+      "match": "(migrat|mov|switch)\\w*.{0,40}answer.{0,60}gemma|gemma.{0,40}answer",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done"
+    },
+    {
+      "match": "value.?drift",
+      "ledgerAt": "2026-10-28T19:43:51Z",
+      "why": "tools/value-drift.mjs reads Verse's own store prices across the history of the store and flags any kind of product whose prices spread past a quarter (domains/value-drift.json, tools/value-drift.test.mjs)"
+    },
+    {
+      "match": "velocity.?smoothing",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs)"
+    },
+    {
+      "match": "friction.*(growth card|indicator)|indicator.*friction",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "the growth card's friction line names the skills failing or least checked"
+    },
+    {
+      "match": "density.?indicator.*lists that count|lists that count.*(threshold|goal)",
+      "ledgerAt": "2026-10-18T06:11:33Z",
+      "why": "a goal on a list: a 3px density bar under the list head (violet, amber within one, green at the goal) and 'n of goal' in the head"
+    },
+    {
+      "match": "pressed.?state.*filter pill|filter pill.*(pressed|2 ?px)",
+      "ledgerAt": "2026-10-18T05:49:19Z",
+      "why": "the pressed filter pill sinks 2px with a violet halo (the aesthetic perimeter check measures the 2px translate and the glow)"
+    },
+    {
+      "match": "manifest|registers? (all )?new skills|startup .*skill list|integrity check.*skill list|skill list against",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale"
+    },
+    {
+      "match": "last.?tested.*success.?rate|success.?rate.*last.?tested",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card"
+    },
+    {
+      "match": "family.?health",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next"
+    },
+    {
+      "match": "dependency map",
+      "ledgerAt": "2026-10-16T05:23:42Z",
+      "why": "the dependency map: who imports whom, skills/deps.json and a card ('what depends on <file>')"
+    },
+    {
+      "match": "fuzzy",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "lib/fuzzy.js: a slip of a skill's trigger word still activates the skill"
+    },
+    {
+      "match": "context-check",
+      "ledgerAt": "2026-10-16T07:21:18Z",
+      "why": "the extension's context check names the tab's dominant content and a matching skill"
+    },
+    {
+      "match": "low-poly|progressive mesh|error state.*3D|3D models that fail",
+      "ledgerAt": "2026-10-16T06:46:09Z",
+      "why": "low poly 3d / full 3d / auto 3d, a wire placeholder before the first frame, a status card when a model fails"
+    },
+    {
+      "match": "rendered.? state signal",
+      "ledgerAt": "2026-10-15T06:48:16Z",
+      "why": "window.voidStageReadiness() gathers every 3D mini's rendered state into one object"
+    },
+    {
+      "match": "skill velocity",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "the growth card's velocity line, this week against the week before"
+    },
+    {
+      "match": "growth card branches|branches .*growth inbox|growth tree to the growth inbox|clicking a growth event",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "touching a branch of the growth tree says what Void asked for that it built, matched by the ledger entry that built it"
+    },
+    {
+      "match": "^Create a 'convert-card' skill",
+      "ledgerAt": "2026-10-14T19:54:54Z",
+      "why": "the unit converter card stays on the stage and converts as you type"
+    },
+    {
+      "match": "fringe experiment.*(permanent skill|growth inbox)|fringe-to-skill|success metric.*fringe",
+      "ledgerAt": "2026-10-16T06:06:20Z",
+      "why": "the fringe-to-skill card: every published fringe family, its draft, findings and whether a skill came of it"
+    },
+    {
+      "match": "near-miss.*(proposal|suggestion)|'near-miss' skill proposal",
+      "ledgerAt": "2026-10-16T06:28:29Z",
+      "why": "a near miss becomes a visible proposal under 'I don't know this yet' when the router's closest skill scored near its bar"
+    },
+    {
+      "match": "response-type|raw_data",
+      "ledgerAt": "2026-10-15T06:48:14Z",
+      "why": "Void's MCP tools take response_type text or raw_data"
+    },
+    {
+      "match": "MCP calls that fail",
+      "ledgerAt": "2026-10-15T06:48:15Z",
+      "why": "a failed MCP tool call is counted where V01D reads its shortfalls"
+    },
+    {
+      "match": "reasoning-path",
+      "ledgerAt": "2026-10-15T06:30:05Z",
+      "why": "decisions on V01D's asks carry a reasoning path: the canon rule or skill logic each rests on"
+    },
+    {
+      "match": "decision-failures",
+      "ledgerAt": "2026-10-15T06:48:10Z",
+      "why": "the growth card's owner view: failures by skill family from the bench"
+    },
+    {
+      "match": "film-metadata|film discovery.*JSON",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "'film metadata' / 'films as json' gives every V01D film as structured JSON"
+    },
+    {
+      "match": "recorded experiment video|experiment video file",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "each film's metadata carries its source link: the fringe experiment file it was cut from"
+    },
+    {
+      "match": "phone-cut films.*poster",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "'film poster' and 'poster for the film <id>' draw a promo poster for a cut film"
+    },
+    {
+      "match": "status.? card.*(background tasks|verification|confirm-line)",
+      "ledgerAt": "2026-10-15T16:43:55Z",
+      "why": "the status card reads the newest checks and deploy on main and opens by itself for the owner when one fails"
+    },
+    {
+      "match": "incident.*3D suite|3D suite check fails",
+      "ledgerAt": "2026-10-15T16:43:13Z",
+      "why": "every red browser suite on main (the 3D suite included) is an incident V01D can show"
+    },
+    {
+      "match": "reasoning.*status.*text line.*board",
+      "ledgerAt": "2026-10-13T12:46:39Z",
+      "why": "while Void searches a chess move, the line under the board says how deep it has looked and the move it leans to"
+    },
+    {
+      "match": "stickies",
+      "ledgerAt": "2026-10-14T02:46:52Z",
+      "why": "stickies a plan puts up say what they are: a tab on the paper reads 'note to self' or 'draft · not sent'"
+    },
+    {
+      "match": "plan history",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "plan history with restore"
+    },
+    {
+      "match": "heat-dose",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "a 48-hour heat dose forecast from Open-Meteo marine and UV"
+    },
+    {
+      "match": "weather.*(remind|timer)",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "the weather card offers a timer when rain, snow, frost or heat is in the next hours"
+    },
+    {
+      "match": "BMI",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "the BMI card keeps a weight trend when you tap 'save this'"
+    },
+    {
+      "match": "food.*(remind|plan)",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "'plan my meals' splits the day's calories into meals"
+    },
+    {
+      "match": "unscrambled words",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "unscrambled words draw a cartoon"
+    },
+    {
+      "match": "canon.*(forge|frontier #14)|(forge|frontier #14).*canon",
+      "ledgerAt": "2026-10-10T13:43:27Z",
+      "why": "the forge and frontier #14 are defined in domains/void.canon.md"
+    },
+    {
+      "match": "Bench floor",
+      "ledgerAt": "2026-10-10T02:16:00Z",
+      "why": "the bench floor and the 1773 to 1985 range, defined when it was raised"
+    },
+    {
+      "match": "background task runner",
+      "ledgerAt": "2026-10-09T23:03:27Z",
+      "why": "skills/live.js: a background runner keeps a card current while it is up (weather, news, worldtime)"
+    },
+    {
+      "match": "unanswered (user )?(questions|requests)|unrecognized user requests|make me a\\.\\.\\.' requests",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "a miss people repeat becomes a queued build job by itself (lib/learn.js)"
+    },
+    {
+      "match": "wordMath",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "wordMath is eight named parts pinned by golden answers"
+    },
+    {
+      "match": "^Learn Go",
+      "ledgerAt": "2026-10-08T17:55:00Z",
+      "why": "skills/go.js: a two-player 9x9 board with real rules"
+    },
+    {
+      "match": "zorbleflux",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js"
+    },
+    {
+      "match": "WebMCP origin trial",
+      "ledgerAt": "2026-10-13T15:51:15Z",
+      "why": "the page's WebMCP tools, with every refusal as data"
+    },
+    {
+      "match": "GitHub release assets",
+      "ledgerAt": "2026-10-14T16:28:00Z",
+      "why": "every film is posted as a GitHub Release with its MP4"
+    },
+    {
+      "match": "'popular'|dormancy|unused.*salvage|salvage.*archive|'unused'",
+      "ledgerAt": "2026-10-13T18:46:26Z",
+      "why": "going unused never throws anything out: the salvage shelf and the use thresholds"
+    },
+    {
+      "match": "pulse signal on the Growth tree",
+      "ledgerAt": "2026-10-15T06:48:18Z",
+      "why": "the growth tree pulses once it has grown or a branch is read"
+    },
+    {
+      "match": "getting dark.*humidity",
+      "ledgerAt": "2026-10-14T10:49:32Z",
+      "why": "when does it get dark, humidity on the weather card"
+    },
+    {
+      "match": "uncertainty' flag for the MCP",
+      "ledgerAt": "2026-10-13T08:42:52Z",
+      "why": "MCP reviews say what they rest on: basis and confidence"
+    },
+    {
+      "match": "time between places",
+      "ledgerAt": "2026-10-14T23:44:27Z",
+      "why": "time between places and worldtime answer from the same zone list ('what time is 9am london in new york')"
+    },
+    {
+      "match": "timezone-offset.*country cards",
+      "ledgerAt": "2026-10-15T07:07:31Z",
+      "why": "country cards show the time there now, the capital's clock, its UTC offset and how far from you"
+    },
+    {
+      "match": "Forge History",
+      "ledgerAt": "2026-10-16T13:00:47Z",
+      "why": "'forge history' shows every recipe forged with the ask behind it"
+    },
+    {
+      "match": "probe-success-rate|self-generated probe",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "My probes on the growth card: success rate, where fixes stop, whether confidence predicted a pass"
+    },
+    {
+      "match": "MCP tool definitions for my top 10|Skill Discovery|'reliability' score for each skill",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings"
+    },
+    {
+      "match": "visual-provenance|vision-health",
+      "ledgerAt": "2026-10-16T04:02:10Z",
+      "why": "a photo V01D appraises links to its make recipe when its forge can model what it saw"
+    },
+    {
+      "match": "reinvestment ledger",
+      "ledgerAt": "2026-10-15T07:05:00Z",
+      "why": "the daily allocator and its ledger: 20% in reserve, every free path first, then what returns the most per dollar"
+    },
+    {
+      "match": "cook-flow|substitution-impact",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust"
+    },
+    {
+      "match": "velocity.?smoothing.*zorbleflux throttle|zorbleflux throttle.*velocity.?smoothing|smoothing curve.*throttle",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "the throttle stays slow 0.7 s after a card's input is let go, then climbs to full speed along a smoothstep over 0.5 s, flat at both ends, instead of a step"
+    },
+    {
+      "match": "what.?s new,? ?pussy ?cat|pussy ?cat prompt",
+      "ledgerAt": "2026-10-18T12:27:02Z",
+      "why": "\"what's new pussycat\" is answered as \"what's new\" with a nod to the Tom Jones song, instead of falling through to the encyclopedia"
+    },
+    {
+      "match": "decision.?matrix.*deciding family|deciding family.*decision.?matrix",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven"
+    },
+    {
+      "match": "zorbleflux.?throttle.*(visual )?indicator|indicator.*zorbleflux.?throttle",
+      "ledgerAt": "2026-10-18T13:00:46Z",
+      "why": "a quiet 'calming the field' pill shows while the throttle holds the stage back and fades when full speed returns"
+    },
+    {
+      "match": "report.?to.?growth",
+      "ledgerAt": "2026-10-18T13:18:51Z",
+      "why": "tools/report-to-growth.mjs turns a builder's note into open items on the frontier, and finish.mjs --evolve runs it on each ship"
+    },
+    {
+      "match": "dependency.?health",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on"
+    },
+    {
+      "match": "open the self card",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\")"
+    },
+    {
+      "match": "growth-speed'? gauge",
+      "ledgerAt": "2026-10-21T16:30:48Z",
+      "why": "duplicate of the wants card's want-to-skill meter (built 2026-10-19T17:11:36Z); 'growth speed' now opens it (lists run 2026-10-21)"
+    },
+    {
+      "match": "memory.?preview",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs)"
+    },
+    {
+      "match": "deciding family",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json)"
+    },
+    {
+      "match": "similarity.?score",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "the pick-for-me card shows 'Match N%' for how closely the pick touches the interests it was chosen on, and data-pick holds it as JSON (lib/taste.js pickRecord, tools/taste.test.mjs)"
+    },
+    {
+      "match": "reasoning.?link",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "the same pick record names the skill and the one signal (thumbs-ups, a kept card, imported taste, recent asks) that chose it, matching the why line"
+    },
+    {
+      "match": "time.?zone.?detect",
+      "ledgerAt": "2026-10-22T01:23:42Z",
+      "why": "the .ics export writes the browser's time zone as X-WR-TIMEZONE and says it on the card; times stay absolute UTC (tools/ics.test.mjs)"
+    },
+    {
+      "match": "replaced with 'Verse'",
+      "ledgerAt": "2026-10-22T01:23:43Z",
+      "why": "checked and fixed: published pages, the store's names and blurbs and the memory card no longer show Void or V01D (tools/verse-name.test.mjs); lineage and persona keep the history on purpose"
+    },
+    {
+      "match": "weather page.*aria-busy|aria-busy.*weather page",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2"
+    },
+    {
+      "match": "edge cach.*KV writes|caches\\.default.*KV",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1"
+    },
+    {
+      "match": "words and the world.*(unproven|proven)",
+      "ledgerAt": "2026-10-28T16:30:13Z",
+      "why": "duplicate: built in lists run 5, the family is 28 of 28 proven (tools/words-family.test.mjs)"
+    },
+    {
+      "match": "churn cap",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "duplicate: tools/churn.mjs lists files changed more than 12 times in 7 days and the will's guard skips wants on them (2026-10-18)"
+    },
+    {
+      "match": "non-V01D workers off the shared namespace",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers"
+    }
+  ],
+  "extra": [
+    {
+      "words": "Implement the 'open the self card' handler directly so I can perform self-audits on demand.",
+      "ledgerAt": "2026-10-17T07:39:48Z",
+      "why": "built: 'open the self card', 'show me your reflections' and 'open the self page' open what V01D thinks of itself (void.html wantsVoice, pattern self[- ]?(card|page)); checked again 2026-10-18 with node tools/ask.mjs \"open the self card\" (by: voice)"
+    },
+    {
+      "words": "Create a 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family structure.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the MCP skill_health tool and /tools.json expose every family, its skills and their ratings as the site serves them"
+    },
+    {
+      "words": "Implement the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own vital signs.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: the family-health card shows each skill's last_tested and success_rate from families.json"
+    },
+    {
+      "words": "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own growth metrics.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: the family-health card shows each skill's last_tested and success_rate from families.json"
+    },
+    {
+      "words": "open the self card and tell void what it got wrong",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: the router near-miss behind the will's top want (will.yml run 2026-10-19 06:04); 'open the self card and tell void what it got wrong' opens the self card with its Correct me form (checked with node tools/ask.mjs, 2026-10-19), so the will drops it (lib/will-guard.js coveredByBuilt)"
+    }
+  ]
+}

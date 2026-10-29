@@ -1,6 +1,6 @@
 // The same ask in different words is one miss (list item 26): "What is a black hole?", "whats a black hole" and
 // "tell me about black holes" count together on the board. Only the board merges; each row is stored as typed.
-const FILLER = /^(?:please|pls|hey|hi|ok|okay|void|so|um|uh|can you|could you|would you|will you|i want to|i want|i'd like to|id like to|i need|show me|tell me about|tell me|give me|find me|find|look up|search for|search|what is|what's|whats|what are|who is|who's|whos|who was|what was)\s+/;
+const FILLER = /^(?:please|pls|hey|hi|ok|okay|(?:verse|void)|so|um|uh|can you|could you|would you|will you|i want to|i want|i'd like to|id like to|i need|show me|tell me about|tell me|give me|find me|find|look up|search for|search|what is|what's|whats|what are|who is|who's|whos|who was|what was)\s+/;
 const TRAIL = /\s+(?:please|pls|for me|now|right now|thanks|thank you)$/;
 export function missKey(ask) {
   let t = String(ask || '').toLowerCase().replace(/[’']/g, "'").replace(/[?!.,;:"“”()]+/g, ' ').replace(/\s+/g, ' ').trim();

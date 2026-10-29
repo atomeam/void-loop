@@ -76,6 +76,12 @@ function askOf(text) {
       || /^(?:what\s+(?:should|does)\s+my\s+heart\s+rate\s+be\s+(?:when|while|during)\s+(?:i\s+)?(?:exercise|exercising|working\s+out|work\s+out|running|run|jogging|cycling|walking))/.test(t))
     && !/\b(?:lower|raise|increase|decrease|reduce|why\s+is|causes?|symptoms?)\b/.test(t))
     return { kind: 'zones', age, rest, max, zone, t };
+  // "what heart rate burns fat", "best heart rate to burn fat", "fat burning zone": zone 2
+  if (/^(?:what|which)\s+(?:heart[\s-]?rate|hr|pulse)\s+(?:burns|is\s+best\s+(?:for|to)\s+burn(?:ing)?)\s+(?:the\s+most\s+)?fat$/.test(t)
+    || /^(?:the\s+)?(?:best|ideal|optimal|right)\s+(?:heart[\s-]?rate|hr|pulse)\s+(?:to|for)\s+(?:burn(?:ing)?\s+fat|fat\s+(?:loss|burning))$/.test(t)
+    || /^(?:what(?:'s|\s+is)\s+(?:the\s+|my\s+)?)?fat[\s-]?burn(?:ing)?\s+zone$/.test(t)
+    || /^(?:heart[\s-]?rate|hr)\s+(?:for|to)\s+(?:fat\s+loss|burn\s+fat|lose\s+weight)$/.test(t))
+    return { kind: 'zones', age, rest, max, zone: 2, t };
   // "what is zone 2", "zone 2 training" (no heart rate words)
   if (/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?zone\s*(?:[1-5]|two)(?:\s+(?:training|cardio|range|for\s+(?:a\s+)?(?:1[3-9]|[2-9]\d)\s*(?:year\s+old)?))?$/.test(t)) return { kind: 'zones', age, rest, max, zone, t };
   return null;

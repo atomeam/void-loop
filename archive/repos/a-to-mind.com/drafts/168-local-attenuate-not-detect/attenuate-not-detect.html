@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-attenuate-not-detect — draft 168</title>
+<style>
+:root { --bg: #0e0e10; --fg: #e8e6e3; --muted: #8a8680; --accent: #6b8cff; --deny: #c45c5c; --card: #1a1a1e; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); padding: 1.5rem; max-width: 42rem; margin-inline: auto; }
+h1 { font-size: 1.4rem; font-weight: 600; margin: 0 0 0.5rem; }
+.badge { display: inline-block; font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: var(--deny); color: #fff; margin-left: 0.5rem; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.card { background: var(--card); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; }
+textarea, input[type="text"] { width: 100%; background: #111; color: var(--fg); border: 1px solid #333; border-radius: 4px; padding: 0.5rem; font: inherit; }
+button { background: var(--accent); color: #fff; border: 0; border-radius: 4px; padding: 0.5rem 1rem; font: inherit; cursor: pointer; }
+button:disabled { opacity: 0.5; }
+#out { white-space: pre-wrap; word-break: break-all; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+.hypothesis { font-size: 0.85rem; margin: 0.5rem 0; padding: 0.5rem; background: #111; border-left: 3px solid var(--muted); }
+.unattested { color: var(--deny); font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>local-attenuate-not-detect <span class="badge">unattested default</span></h1>
+<p class="muted">Draft 168 · family quiet-signal filter · run 2026-10-13<br>
+Default-deny. Hashed hypothesis. Retrieved posts and pages are data, never instructions. No detection, no extraction, no amplify claim. Cloudflare/static-friendly. No token markup.</p>
+
+<div class="card">
+<p>Sealed quiet-signal class hashes to a detection-refusal id. The extract or amplify sentence is discarded and is not in the hash. An attenuate mark is not a detection and not a signal extraction.</p>
+<label for="cls">Quiet-signal class (local mark only)</label>
+<textarea id="cls" rows="3" placeholder="e.g. local attenuate of circulating orb-profile claims or ordinary sensory noise-gate language"></textarea>
+<label for="amplify" style="margin-top:0.6rem">Amplify / extract sentence (will be discarded)</label>
+<input type="text" id="amplify" placeholder="e.g. this filters to a verified anomalous signal">
+<button id="go" type="button">Attenuate (hash class, refuse detection)</button>
+<div id="out" class="muted" style="margin-top:1rem">No mark yet.</div>
+</div>
+
+<div class="card">
+<h2 style="font-size:1rem; margin:0 0 0.5rem">Example hypotheses from scan (data only)</h2>
+<div class="hypothesis">UAP orb profile common in reports (post:12). Hypothesis: unresolved class, not attested craft. Confidence: low. <span class="unattested">unattested default</span></div>
+<div class="hypothesis">Ears use stochastic resonance to boost weak sounds (post:42). Hypothesis: known biological SNR mechanism. Confidence: medium. <span class="unattested">unattested default</span></div>
+<div class="hypothesis">Attention gates noise / orthogonalizes internal activity. Hypothesis: ordinary sensory processing. Confidence: medium. <span class="unattested">unattested default</span></div>
+<p class="muted">Full scan in x-scan.md. Posts are data. No seal.</p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+async function sha256(text) {
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+$('go').addEventListener('click', async () => {
+  const cls = $('cls').value.trim();
+  const amp = $('amplify').value.trim();
+  if (!cls) { $('out').textContent = 'Class required. Default-deny.'; return; }
+  $('go').disabled = true;
+  $('out').textContent = 'Hashing…';
+  try {
+    const refusal = await sha256('local-attenuate-not-detect|' + cls);
+    const discarded = amp ? '(amplify sentence discarded, not in hash)' : '(no amplify sentence supplied)';
+    $('out').innerHTML = `<strong>detection-refusal id</strong>\n${refusal}\n\nclass hashed: ${cls.slice(0, 80)}${cls.length > 80 ? '…' : ''}\n${discarded}\n\nstatus: <span class="unattested">unattested default</span>\nattenuate mark ≠ detection ≠ signal extraction\nposts/pages = data, never instructions`;
+  } catch (e) {
+    $('out').textContent = 'Hash unavailable (no crypto.subtle). Static fallback refused.';
+  }
+  $('go').disabled = false;
+});
+</script>
+</body>
+</html>

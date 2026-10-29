@@ -1,9 +1,9 @@
-# Void watchdog: the loop checks itself. Once a day (and on demand) it runs the full suite on main; on Sundays the everyday
+# Verse watchdog: the loop checks itself. Once a day (and on demand) it runs the full suite on main; on Sundays the everyday
 # benchmark and the grown replay too. A daily run is skipped when main has not moved since the last green watchdog run, so a
 # quiet day costs about a minute. If anything fails it opens one issue (or comments on the open one) with the failing run,
 # so the next agent fixes it first; when main is green again it closes that issue. No secrets needed.
 # (Once a day rather than every six hours: GitHub Free gives a private repo 2,000 Actions minutes a month.)
-name: Void watchdog
+name: Verse watchdog
 
 on:
   schedule:
@@ -26,9 +26,14 @@ permissions:
   actions: read # to find the last green watchdog run
 
 jobs:
-  check:
+  # The full suite no longer fits one runner's 28-minute budget (the 2026-10-28 run stopped at 397/409 with "suite budget"), so the
+  # watchdog runs it the way verify.yml does: the fast tests once, the browser suite in three shards (tools/shard.mjs), the
+  # benchmark on its own on Sundays, and one job that opens, updates or closes the issue from all of their results.
+  moved:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.moved.outputs.run }}
     steps:
       - name: Main moved since the last green run?
         id: moved
@@ -42,25 +47,70 @@ jobs:
           else
             echo "run=true" >> "$GITHUB_OUTPUT"
           fi
+
+  fast:
+    needs: moved
+    if: needs.moved.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
       - uses: actions/checkout@v4
-        if: steps.moved.outputs.run == 'true'
         with:
           fetch-depth: 0
-      - name: Test (full suite; benchmark on Sundays)
-        id: test
-        if: steps.moved.outputs.run == 'true'
-        continue-on-error: true
+      - name: The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)
         uses: ./.github/actions/void-test
         with:
-          bench: ${{ (github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.bench)) && 'with' || 'skip' }}
+          bench: skip
+          part: fast
+
+  suite:
+    needs: moved
+    if: needs.moved.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Browser suite (shard ${{ matrix.shard }} of 3 of the full suite)
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+          part: suite
+          shard: ${{ matrix.shard }}/3
+
+  bench:
+    needs: moved
+    if: needs.moved.outputs.run == 'true' && (github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.bench))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: The everyday benchmark (not below tools/bench.best.json)
+        uses: ./.github/actions/void-test
+        with:
+          bench: only
+
+  check:
+    needs: [moved, fast, suite, bench]
+    if: always() && needs.moved.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
       - name: Open, update or close the watchdog issue
-        if: steps.moved.outputs.run == 'true'
         uses: actions/github-script@v7
         env:
-          OUTCOME: ${{ steps.test.outcome }}
+          # green only when the fast tests and every shard passed, and the benchmark passed or was not due
+          OUTCOME: ${{ (needs.fast.result == 'success' && needs.suite.result == 'success' && (needs.bench.result == 'success' || needs.bench.result == 'skipped')) && 'success' || 'failure' }}
         with:
           script: |
-            const title = 'Void watchdog: main is failing';
+            const title = 'Verse watchdog: main is failing';
             const { data: open } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'watchdog' });
             const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             if (process.env.OUTCOME === 'success') {
@@ -75,10 +125,10 @@ jobs:
             else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['watchdog'] });
             core.setFailed('main failed the check');
 
-  # The reviewer's own scoreboard, once a week (frontier #1): tools/review-learn.mjs reads Void's closer read on the PRs merged in the
+  # The reviewer's own scoreboard, once a week (frontier #1): tools/review-learn.mjs reads Verse's closer read on the PRs merged in the
   # last 30 days, counts the findings its rules had already flagged and the false claims it filtered, and writes the numbers to
-  # void-live-deploy/review-stats.json; /code-review/ shows them ("this month Void's rules caught N of M findings its closer read
-  # made; K rules learned"). The commit goes straight to main like Void's voice does (void-voice.yml); main's deploy carries it.
+  # void-live-deploy/review-stats.json; /code-review/ shows them ("this month Verse's rules caught N of M findings its closer read
+  # made; K rules learned"). The commit goes straight to main like Verse's voice does (void-voice.yml); main's deploy carries it.
   review-stats:
     if: github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.stats)
     runs-on: ubuntu-latest

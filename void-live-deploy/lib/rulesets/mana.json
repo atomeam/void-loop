@@ -1,0 +1,80 @@
+{
+ "name": "mana",
+ "title": "Mana and a land a turn",
+ "about": "Pay to summon: a card costs the coins printed on it, and each land you play makes one more coin every turn.",
+ "rules": [
+  {
+   "id": "mana-printed-cost",
+   "source": "mana set",
+   "layer": 2,
+   "when": "summon",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "cost",
+     "add": {
+      "fact": "cardCost"
+     }
+    }
+   ]
+  },
+  {
+   "id": "mana-land-limit",
+   "source": "mana set",
+   "layer": 1,
+   "when": "land",
+   "if": [
+    {
+     "fact": "landsThisTurn",
+     "cmp": "gte",
+     "value": 1
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "only one land can be played each turn"
+    }
+   ]
+  },
+  {
+   "id": "mana-land-counts",
+   "source": "mana set",
+   "layer": 3,
+   "when": "land",
+   "then": [
+    {
+     "do": "gain",
+     "resource": "lands",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "id": "mana-lands-pay",
+   "source": "mana set",
+   "layer": 2,
+   "when": "turnStart",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "income",
+     "add": {
+      "fact": "lands"
+     }
+    }
+   ]
+  },
+  {
+   "id": "mana-pass-ends",
+   "source": "mana set",
+   "layer": 3,
+   "when": "pass",
+   "then": [
+    {
+     "do": "endTurn"
+    }
+   ]
+  }
+ ]
+}

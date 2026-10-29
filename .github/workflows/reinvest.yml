@@ -1,0 +1,48 @@
+# Verse reinvests its own money, daily (Adam, 2026-10-15; lib/reinvest.js, tools/reinvest.mjs, docs/reinvest.md).
+# Reads net earnings from the owner-only GET /api/earnings (in memory), splits new income (20% reserve, free first, ROI per dollar,
+# payoff tests, Verse's own answer), sends spend proposals to the confirm line and rewrites the public plan (no real amounts).
+# Buys nothing: Adam pays through his own accounts.
+# About 1 Actions minute a day. Uses the repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) when set.
+name: reinvest
+
+on:
+  schedule:
+    - cron: '41 11 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: reinvest
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Allocator tests
+        run: node tools/reinvest.test.mjs
+      - name: Re-plan
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: node tools/reinvest.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Commit the plan
+        run: |
+          git diff --quiet && { echo "plan unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/void.reinvest.json docs/reinvest.md
+          git commit -m "reinvest: today's plan for Verse's money"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

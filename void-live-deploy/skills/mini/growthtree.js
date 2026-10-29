@@ -1,9 +1,9 @@
 /**
- * growthtree miniature — Void's growth tree (frontier #3), standing in the growth card: one branch per ledger entry, laid
+ * growthtree miniature — Verse's growth tree (frontier #3), standing in the growth card: one branch per ledger entry, laid
  * out by skills/growth-tree.js (the oldest entry is the trunk, the newest are at the tips), barked wood tapering by the
  * pipe model, each branch ending in a cluster of real leaves (the season of its entry's date) with a berry in its kind's
  * colour (the card's chips). The think tank's open tracks are faint shoots with no leaves, and the claim being built now
- * glows; Void's wants are closed buds; the last commits on main are fresh young leaves. Touch a branch, leaf or berry to read
+ * glows; Verse's wants are closed buds; the last commits on main are fresh young leaves. Touch a branch, leaf or berry to read
  * its entry (data.onPick(ledgerIndex)), a faint shoot or a bud to read what it is (data.onPickGhost(ghost)), a young leaf to
  * read its commit (data.onPickCommit(leaf)); the picked one is lit. data.until grows the tree as it stood then (the time slider): going
  * forward, new branches grow in; under reduced motion they are simply there. Everything is posed from data; nothing is kept.

@@ -1,17 +1,32 @@
 /**
- * inventory skill — assimilate row 6 (Inventory orchestrator → Void)
+ * inventory skill — assimilate row 6 (Inventory orchestrator → Verse)
  * Feeds agents and anyone who asks with "already built" rows so they reuse before rebuilding.
  * Skill ids come from skills/index.json so the list cannot drift from the registry.
- * No network. Tessl / BoardKit exist outside Void; this is Void's own form.
+ * No network. Tessl / BoardKit exist outside Verse; this is Verse's own form.
  */
 import skillNames from './index.json' with { type: 'json' };
+import familyList from './families.json' with { type: 'json' };
+import whatList from './what.json' with { type: 'json' }; // one current line per skill, written from the book on every build (tools/what-skills.mjs)
+import { clean } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 
-export const SKILL_NAMES = skillNames;
+// a family (skills/time.js, dates.js) is one entry in index.json; its members (weather, worldtime, holidays…) are still built skills
+export const SKILL_NAMES = [...new Set([...skillNames, ...(familyList.families || []).flatMap((f) => (f.skills || []).map((x) => x.name))])];
 
 /** Words for a skill id. Unknown ids still show, under their registry name. */
 const WHAT = {
+  games: 'every board and table game in one place: the game rack, chess, checkers, go, othello and the rest',
+  time: 'timers, clocks, the sky, weather and the time around the world, in one place',
+  rooms: 'a room project on one card: paint, flooring, wallpaper, drywall and baseboard, with prices',
+  dates: 'the calendar, today, public holidays and countdowns',
+  'stage-out': 'the stage off the screen: a one-page sheet to print, JSON in and out, email-ready text',
+  pollen: 'pollen and allergy forecast for a European city (Open-Meteo)',
+  'mind-field': 'Mind Field: eight living field minds in one card with a Mode switcher (Doodle Mind, Echo Field, swarm, flow, listen, grow, attention, living cards)',
+  'tilt-arena': 'Tilt Arena: little learning agents chase what you steer, in four modes (Tilt, Gaze Chase, GPU Swarm, Hand Arena)',
+  similar: 'what is similar: the modes and siblings of any combined skill',
+  'list-starters': 'ready-made lists: packing, chores, bills and guests, and starter templates for shopping, agendas and more',
+  languages: 'answer in Spanish and translate anything',
   part: 'named printable parts (Linemote-1 and the like)',
   figure: 'summoned figures on the stage',
   make: 'make an app from stage parts',
@@ -19,10 +34,9 @@ const WHAT = {
   air: 'air quality',
   uv: 'UV index',
   quake: 'recent earthquakes',
-  pollen: 'pollen',
   spanish: 'answers in Spanish',
   translate: 'translation',
-  'rebuild-map': 'assimilation map (what is being rebuilt as Void)',
+  'rebuild-map': 'assimilation map (what is being rebuilt as Verse)',
   place: 'street maps and places',
   worldtime: 'world clock, time zones, sunrise/sunset',
   define: 'definitions',
@@ -39,7 +53,7 @@ const WHAT = {
   util: 'passwords, QR, colours, moon, lorem',
   remind: 'a reminder held on the confirm line',
   calendar: 'calendar / agenda on this device',
-  today: "what Void did today (this device's loop log)",
+  today: "what Verse did today (this device's loop log)",
   book: 'books (Open Library)',
   show: 'TV shows (TVMaze)',
   sport: 'teams (TheSportsDB)',
@@ -51,36 +65,40 @@ const WHAT = {
   inventory: 'this list — already built rows',
 };
 
-export const SKILLS_BUILT = SKILL_NAMES.map((id) => ({ id, what: WHAT[id] || id }));
+/** the words on a skill's row: the hand-written line, else the book's current one, else (a skill with neither) its name. */
+export const whatFor = (id) => WHAT[id] || whatList[id] || id;
+export const SKILLS_BUILT = SKILL_NAMES.map((id) => ({ id, what: whatFor(id) }));
 
 export const TOOLS_BUILT = [
   { id: 'existing-tools.md', what: 'registry of tools to check before building anything' },
   { id: 'confirm line', what: 'yes before any send, book or spend' },
   { id: 'Workers AI + router', what: 'Gemma answers; bge-m3 routes; paid model only from earnings' },
-  { id: 'passkeys', what: 'your Void follows you across devices' },
-  { id: 'WebMCP tools.json', what: 'Void tools declared for browser agents' },
+  { id: 'passkeys', what: 'your Verse follows you across devices' },
+  { id: 'WebMCP tools.json', what: 'Verse tools declared for browser agents' },
   { id: 'Gumroad catalog', what: 'live store products when asked' },
   { id: 'defences middleware', what: 'limits, secret masking, CSP, no cross-site writes' },
   { id: 'growth inbox', what: 'unfinished features written down before they are built' },
 ];
 
 export const ASSIMILATE_LIVE = [
-  { id: 'board (misses)', what: 'show the board — what people asked that Void cannot answer yet' },
-  { id: 'skill files', what: 'edit engine step 1 — skills as files Void loads' },
+  { id: 'board (misses)', what: 'show the board — what people asked that Verse cannot answer yet' },
+  { id: 'skill files', what: 'edit engine step 1 — skills as files Verse loads' },
   { id: 'today', what: 'what did you do today' },
   { id: 'work', what: 'find me work as a …' },
   { id: 'inventory', what: 'already built rows (this skill + board section)' },
   { id: 'ops log', what: 'void.agents.log.md' },
   { id: 'open sources', what: 'Wikipedia / Wiktionary / Open-Meteo' },
   { id: 'calc', what: 'percentages, units, dates, currency' },
-  { id: 'your void', what: 'silent entry + personal look per browser' },
+  { id: 'your verse', what: 'silent entry + personal look per browser' },
 ];
 
 export function inventoryOf(text) {
   const t = CLEAN(text);
   if (!t) return null;
-  if (/^(?:what\s+(?:can|could)\s+(?:you|i|void|the\s+forge)\s+(?:3d[\s-]?)?(?:print|make)(?:\s+for\s+me)?|show\s+(?:me\s+)?what\s+you\s+can\s+(?:3d[\s-]?)?print|list\s+(?:the\s+)?printable\s+things|what\s+physical\s+things\s+can\s+you\s+make|what\s+(?:things\s+)?(?:are|is)\s+printable)$/i.test(t)
-    && !/^what\s+can\s+(?:you|i|void)\s+make$/i.test(t)) return { kind: 'printable' };
+  if (/^(?:what\s+(?:can|could)\s+(?:you|i|(?:verse|void)|the\s+forge)\s+(?:3d[\s-]?)?(?:print|make)(?:\s+for\s+me)?|show\s+(?:me\s+)?what\s+you\s+can\s+(?:3d[\s-]?)?print|list\s+(?:the\s+)?printable\s+things|what\s+physical\s+things\s+can\s+you\s+make|what\s+(?:things\s+)?(?:are|is)\s+printable)$/i.test(t)
+    && !/^what\s+can\s+(?:you|i|(?:verse|void))\s+make$/i.test(t)) return { kind: 'printable' };
+  // the print ledger (asked by Verse: a feedback loop between print-file and inventory): what has actually left for a printer
+  if (/^(?:what\s+(?:have\s+(?:i|we|you)\s+printed|(?:physical\s+)?(?:things|assets|objects)\s+(?:do\s+(?:i|we|you)\s+have|exist)|physical\s+assets\s+exist)|(?:show\s+(?:me\s+)?)?(?:my|the)\s+(?:print\s+ledger|printed\s+things|physical\s+inventory)|physical\s+inventory)$/i.test(t)) return { kind: 'printed' };
   let m = t.match(/^(?:have\s+we\s+built|did\s+we\s+build|is\s+there\s+already|do\s+we\s+already\s+have|already\s+built)\s+(.+)$/i);
   if (m) {
     const q = m[1].replace(/^(?:a|an|the)\s+/i, '').trim();
@@ -92,7 +110,7 @@ export function inventoryOf(text) {
   return null;
 }
 
-/** What Void can make in the world right now: every forge thing whose file passes the same check "print it" runs
+/** What Verse can make in the world right now: every forge thing whose file passes the same check "print it" runs
  *  (forge-rules.js verifyStl, the file read back and held to its model), with its size and solid-PLA weight; one that
  *  fails is held back with the reason. Computed from the recipes on each ask: nothing about anyone is kept. */
 export async function printable(verify) {
@@ -117,6 +135,25 @@ export function printableHtml(esc, p) {
     + '<div class="src">Source: the forge recipes (skills/forge-rules.js), checked on this ask · nothing about you is kept</div>';
 }
 
+/** The built skills combined by family (owner, 2026-10-19: "a lot of these can be combined"): [{ id, name, for, rows }] in the families' own order, the
+ * rows in a family sorted by name, and any skill no family lists under "Everything else". Pure. */
+export function groupsOf(rows, families = familyList.families || []) {
+  const byId = new Map((rows || []).map((r) => [r.id, r])), used = new Set(), out = [];
+  for (const f of families) {
+    const mine = (f.skills || []).map((x) => byId.get(x.name)).filter((r) => r && !used.has(r.id));
+    mine.forEach((r) => used.add(r.id));
+    if (mine.length) out.push({ id: f.id, name: f.name || f.id, for: f.for || '', rows: mine.sort((a, b) => a.id.localeCompare(b.id)) });
+  }
+  const rest = (rows || []).filter((r) => !used.has(r.id)).sort((a, b) => a.id.localeCompare(b.id));
+  if (rest.length) out.push({ id: 'other', name: 'Everything else', for: '', rows: rest });
+  return out;
+}
+
+/** the family groups as collapsible blocks: the name and how many, then every skill with its words. */
+export const groupsHtml = (esc, groups) => groups.map((g) => '<details class="inv-family" data-family="' + esc(g.id) + '"><summary><b>' + esc(g.name) + '</b> · ' + g.rows.length + ' skill' + (g.rows.length === 1 ? '' : 's')
+  + (g.for ? ' <span style="color:#8a8a8a">· ' + esc(g.for) + '</span>' : '') + '</summary><ul>'
+  + g.rows.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('') + '</ul></details>').join('');
+
 function hay(row) {
   return (row.id + ' ' + row.what).toLowerCase();
 }
@@ -132,11 +169,11 @@ function matchesQuery(rows, q) {
 }
 
 export function boardSectionHtml(esc) {
-  const skills = SKILLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
+  const skills = groupsHtml(esc, groupsOf(SKILLS_BUILT));
   const tools = TOOLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   return '<div class="sub" style="margin-top:18px">Already built · reuse these before queuing a rebuild</div>'
     + '<p style="color:#8a8a8a;font-size:13px;margin:4px 0 8px">Skills live on the stage; tools are in the repo. Say “what\'s already built” anytime.</p>'
-    + '<div class="sub">Skills</div><ul>' + skills + '</ul>'
+    + '<div class="sub">Skills, by family</div>' + skills
     + '<div class="sub">Tools &amp; features</div><ul>' + tools + '</ul>';
 }
 
@@ -150,23 +187,29 @@ function pageHtml(esc, hit) {
     }
     const rows = found.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
     return '<h2>Already built · ' + esc(hit.q) + '</h2><div class="sub">Matches in skills, tools and live assimilate rows · reuse before rebuilding</div><ul>' + rows + '</ul>'
-      + '<div class="src">Source: Void inventory · skills/index.json</div>';
+      + '<div class="src">Source: Verse inventory · skills/index.json</div>';
   }
-  const skills = SKILLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
+  const skills = groupsHtml(esc, groupsOf(SKILLS_BUILT));
   const tools = TOOLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   const assim = ASSIMILATE_LIVE.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   return '<h2>Already built</h2>'
     + '<div class="sub">Reuse these before building · Atom\'s rule · nothing thrown out</div>'
-    + '<div class="sub" style="margin-top:12px">Skills</div><ul>' + skills + '</ul>'
+    + '<div class="sub" style="margin-top:12px">Skills, combined by family (tap a family to open it)</div>' + skills
     + '<div class="sub">Tools &amp; features</div><ul>' + tools + '</ul>'
     + '<div class="sub">Assimilate (live)</div><ul>' + assim + '</ul>'
-    + '<div class="src">Source: Void inventory · skills/index.json, domains/void.existing-tools.md, domains/void.assimilate.md</div>';
+    + '<div class="src">Source: Verse inventory · skills/index.json, domains/void.existing-tools.md, domains/void.assimilate.md</div>';
 }
 
 async function run(text, api) {
   const { showPage, esc, loopLog } = api;
   const hit = inventoryOf(text);
   if (!hit) return 'none';
+  if (hit.kind === 'printed') {
+    const P = await import('../lib/prints.js'), ls = P.storeOf();
+    showPage((page) => { page.innerHTML = P.printsHtml(esc, P.load(ls)); }); // void-review: ok: printsHtml escapes every value
+    if (loopLog) loopLog({ domain: 'void.inventory', ask: text, score: 'pass', note: 'printed' });
+    return 'inventory';
+  }
   const p = hit.kind === 'printable' ? await printable() : null;
   const el = showPage((page) => { page.innerHTML = p ? printableHtml(esc, p) : pageHtml(esc, hit); });
   if (loopLog) loopLog({ domain: 'void.inventory', ask: text, score: 'pass', note: hit.kind === 'query' ? 'query:' + hit.q : hit.kind });
@@ -185,6 +228,8 @@ export default {
     'what can i reuse',
     'what can you print',
     'what can the forge make',
+    'what have i printed',
+    'what physical assets exist',
   ],
   nearMisses: [
     'build inventory',

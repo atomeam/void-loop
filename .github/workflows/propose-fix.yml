@@ -1,0 +1,242 @@
+# Verse proposes the fix (frontier #28, step 3 of docs/playbooks/probe-and-fix.md). Once a day, after its own probe has queued the
+# asks it missed (probe-asks.yml, `probe:` jobs), Verse's model reads the owning skill and proposes the narrowest matcher change
+# (owner-only /api/propose-fix, lib/propose-fix.js); tools/propose-fix.mjs applies it to a copy and lets the repo decide: the skill
+# collision check, the skill's unit test, Verse's review as a gate, and the everyday benchmark on the missed ask plus every bench ask
+# the skill already answers. Only a proposal that passes all four leaves this job, as a patch file; the second job holds the write
+# token, moves the patch's bytes into a branch (git apply, nothing run) and opens a pull request labelled "made by Verse" and
+# automerge (owner, 2026-10-16): it merges on Verse's review like any PR, and verify.yml reverts it if main's suite goes red. A PR the
+# workflow token opens starts no pull_request runs, so this job dispatches Verse's review and the automerge bot on it itself.
+# A proposal that fails is undone and the job's note says which step, for a builder.
+# Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
+# The brain: the daily run asks Verse's own model (Workers AI, free). A run started by hand can pick "claude" instead
+# (tools/claude-brain.mjs): one call on the GitHub runner with the ANTHROPIC_API_KEY repo secret, the output capped, about $0.20 at
+# most; the key goes to that step only and never to the site. Same gate, same checks, same pull request.
+name: Verse proposes a fix
+
+on:
+  schedule:
+    - cron: '53 */2 * * *' # every 2 hours (owner, 2026-10-19: "upgrades extremely often"); each run takes the oldest open probe: job
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "the probe: job id to work on (empty = the oldest open one)"
+        type: string
+        default: ''
+      dry:
+        description: "propose, apply and test, but leave the queue note alone and open no pull request"
+        type: boolean
+        default: false
+      brain:
+        description: "who proposes: v01d (its own model, free) or claude (ANTHROPIC_API_KEY, one capped call)"
+        type: choice
+        options: [v01d, claude]
+        default: v01d
+
+concurrency:
+  group: void-propose-fix
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    outputs:
+      passed: ${{ steps.result.outputs.passed }}
+      skill: ${{ steps.result.outputs.skill }}
+      slug: ${{ steps.result.outputs.slug }}
+      ask: ${{ steps.result.outputs.ask }}
+      why: ${{ steps.result.outputs.why }}
+      confidence: ${{ steps.result.outputs.confidence }}
+      title: ${{ steps.result.outputs.title }}
+      where: ${{ steps.result.outputs.where }}
+      model: ${{ steps.result.outputs.model }}
+      risk: ${{ steps.result.outputs.risk }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: npm ci (first, because the Claude brain test imports the SDK)
+        run: npm ci --no-audit --no-fund
+      - name: Checks
+        run: node --test tools/propose-fix.test.mjs tools/claude-brain.test.mjs
+      - name: Every workflow file parses (asked by Verse; a broken YAML stopped this one from loading on 2026-10-15)
+        run: |
+          python3 - <<'PY'
+          import glob, sys, yaml
+          bad = []
+          for f in glob.glob('.github/workflows/*.yml'):
+              try:
+                  if not isinstance(yaml.safe_load(open(f)), dict): bad.append(f)
+              except yaml.YAMLError as e:
+                  bad.append(f + ' (' + str(e).splitlines()[0] + ')')
+          print('every workflow parses' if not bad else 'does not parse - ' + '; '.join(bad))
+          sys.exit(1 if bad else 0)
+          PY
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Sync void.html copies (what the benchmark serves)
+        run: |
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+      - name: Verse proposes, the repo decides
+        id: result
+        shell: bash
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          JOB: ${{ inputs.job }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+          BRAIN: ${{ inputs.brain || 'v01d' }}
+          # only a run that picked Claude carries the key
+          ANTHROPIC_API_KEY: ${{ inputs.brain == 'claude' && secrets.ANTHROPIC_API_KEY || '' }}
+        run: |
+          echo "passed=0" >> "$GITHUB_OUTPUT"
+          if [ -z "$VOID_OWNER_TOKEN" ]; then
+            echo "::warning title=Verse did not propose a fix::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            exit 0
+          fi
+          if [ "$BRAIN" = "claude" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning title=Claude did not propose a fix::Repo secret ANTHROPIC_API_KEY is not set."
+            exit 0
+          fi
+          args=($DRY --brain "$BRAIN" --out "$RUNNER_TEMP/fix"); [ -n "$JOB" ] && args+=(--job "$JOB")
+          code=0; node tools/propose-fix.mjs "${args[@]}" > propose.txt || code=$?
+          sed -n '/^### Verse proposed/,$p' propose.txt >> "$GITHUB_STEP_SUMMARY" || true
+          tail -n 30 propose.txt
+          case $code in
+            0) ;;
+            3) echo "::notice title=Nothing to fix today::no open probe: job, the site could not be reached, or Verse proposed nothing that passed the gate"; exit 0 ;;
+            *) echo "::warning title=The proposal did not run::see the lines above"; exit 0 ;;
+          esac
+          r="$RUNNER_TEMP/fix/propose-fix.json"
+          if [ -f "$r" ] && [ -f "$RUNNER_TEMP/fix/propose-fix.patch" ] && node -e "process.exit(require(process.argv[1]).passed ? 0 : 1)" "$r"; then
+            echo "passed=${{ inputs.dry && '0' || '1' }}" >> "$GITHUB_OUTPUT"
+            echo "skill=$(node -p "require(process.argv[1]).skill" "$r")" >> "$GITHUB_OUTPUT"
+            echo "slug=$(node -p "require(process.argv[1]).ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 34)" "$r")" >> "$GITHUB_OUTPUT"
+            echo "ask=$(node -p "require(process.argv[1]).ask.replace(/[^\w ,.'?!-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "why=$(node -p "require(process.argv[1]).why.replace(/[^\w ,.'?!():;-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            # the evidence (asked by Verse): Verse's confidence and the file and lines each edit changes
+            echo "title=$(node -p "require(process.argv[1]).title.replace(/[^\w ,.'?!:\"-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "confidence=$(node -p "String(require(process.argv[1]).confidence ?? 'none given').replace(/[^\w .-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "risk=$(node -p "const k = require(process.argv[1]).risk || { level: 'unknown', why: '' }; (k.level + ' (' + k.why + ')').replace(/[^\\w .,()'-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "model=$(node -p "String(require(process.argv[1]).model || 'Verse\'s own model').replace(/[^\w .\/@:-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "where=$(node -p "const e = require(process.argv[1]).evidence || []; (e.length ? e[0].file + (e.length > 1 ? ' lines ' : ' line ') + e.map((x) => x.line).join(', ') : 'not found').replace(/[^\w ./,-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+          fi
+      # a line on the growth ledger with the ask it learned, so "look what I made" shows what Verse built by itself (owner, 2026-10-19: Verse's own
+      # fixes never reached the ledger, so nothing popped up when it built something); written here, where nothing holds a write token
+      - name: The growth-ledger line
+        if: steps.result.outputs.passed == '1'
+        shell: bash
+        env:
+          TITLE: ${{ steps.result.outputs.title }}
+          ASK: ${{ steps.result.outputs.ask }}
+        run: |
+          case "$TITLE" in "Verse fixes"*) node tools/grow.mjs fix "$TITLE" --by verse --try "$ASK" ;; *) node tools/grow.mjs fix "$TITLE" --by verse ;; esac
+          git diff -- void-live-deploy/void.growth.json > "$RUNNER_TEMP/fix/ledger.patch"
+      - uses: actions/upload-artifact@v4
+        if: steps.result.outputs.passed == '1'
+        with:
+          name: v01d-fix
+          path: |
+            ${{ runner.temp }}/fix/propose-fix.patch
+            ${{ runner.temp }}/fix/ledger.patch
+          retention-days: 7
+
+  # the passing patch becomes a pull request: this job can write, and it only moves bytes (it never runs anything a model wrote)
+  pull-request:
+    needs: propose
+    if: needs.propose.outputs.passed == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: v01d-fix
+          path: ${{ runner.temp }}/fix
+      - name: Open a pull request with Verse's fix
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SKILL: ${{ needs.propose.outputs.skill }}
+          SLUG: ${{ needs.propose.outputs.slug }}
+          ASK: ${{ needs.propose.outputs.ask }}
+          WHY: ${{ needs.propose.outputs.why }}
+          CONFIDENCE: ${{ needs.propose.outputs.confidence }}
+          TITLE: ${{ needs.propose.outputs.title }}
+          WHERE: ${{ needs.propose.outputs.where }}
+          MODEL: ${{ needs.propose.outputs.model }}
+          RISK: ${{ needs.propose.outputs.risk }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          patch="$RUNNER_TEMP/fix/propose-fix.patch"
+          # the patch touches exactly one file, the skill named, under skills/: anything else is not Verse's matcher change
+          files=$(git apply --numstat "$patch" | cut -f3)
+          [ "$files" = "void-live-deploy/skills/$SKILL.js" ] || { echo "::error title=Not opened::the patch touches '$files', not void-live-deploy/skills/$SKILL.js"; exit 1; }
+          branch="v01d/fix-$SLUG-$(date -u +%Y%m%d)"
+          git switch -c "$branch"
+          git apply "$patch"
+          git diff --quiet && { echo "nothing to propose"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # the growth-ledger line the propose job wrote (ledger.patch): only bytes moved here, and only into the ledger
+          lp="$RUNNER_TEMP/fix/ledger.patch"
+          if [ -s "$lp" ] && [ "$(git apply --numstat "$lp" | cut -f3)" = "void-live-deploy/void.growth.json" ]; then git apply "$lp" || echo "::warning title=No ledger line::the ledger moved on; the fix goes up without its line"; fi
+          git add "void-live-deploy/skills/$SKILL.js" void-live-deploy/void.growth.json
+          git commit -q -m "$TITLE" -m "Proposed by Verse's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Verse's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in Verse's words: $WHY" -m "Verse's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL." -m "Suggested-by: Verse (probe)"
+          # the confidence gate (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"). A pull request cannot be opened
+          # from here ("GitHub Actions is not permitted to create or approve pull requests", 2026-10-19: not one Verse fix ever reached main), and the
+          # gates a pull request waited for already ran in the propose job (collisions, the skill's test, Verse's review, the benchmark): sure enough,
+          # the fix goes straight onto main like the site tester's commits and starts the deploy (its push starts nothing by itself); otherwise the branch
+          # waits for the owner on GitHub
+          gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
+          url=""
+          if [ "$gate" = "automerge" ]; then
+            for i in 1 2 3 4; do
+              git push -q origin HEAD:main && { url="https://github.com/${{ github.repository }}/commit/$(git rev-parse HEAD)"; break; }
+              sleep $((2 ** i)); git pull -q --rebase origin main || { echo "::error title=Not committed::main moved and the fix no longer applies"; exit 1; }
+            done
+            [ -n "$url" ] || exit 1
+            echo "### Verse's fix is on main: $url" >> "$GITHUB_STEP_SUMMARY"
+            # a push by this token starts no workflow: the fix reaches the site only when the deploy is started here (2026-10-19)
+            gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
+          else
+            git push -q origin "$branch"
+            url="https://github.com/${{ github.repository }}/compare/main...$branch"
+            echo "### Verse's fix waits for the owner (confidence $CONFIDENCE): $url" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "Verse's confidence $CONFIDENCE: $gate" >> "$GITHUB_STEP_SUMMARY"
+          # the job's note says where the fix went (counts and the link only)
+          if [ -n "$VOID_OWNER_TOKEN" ]; then
+            node -e "
+              const url = process.argv[1], slug = process.argv[2];
+              fetch('https://a-to-mind.com/api/queue', { headers: { authorization: 'Bearer ' + process.env.VOID_OWNER_TOKEN } }).then((r) => r.json()).then(async (q) => {
+                const it = (q.items || []).find((i) => i.target === 'probe:' + slug && /^(queued|building)$/.test(i.state)); if (!it) return;
+                const res = await fetch('https://a-to-mind.com/api/queue', { method: 'PATCH', headers: { authorization: 'Bearer ' + process.env.VOID_OWNER_TOKEN, 'content-type': 'application/json' }, body: JSON.stringify({ id: it.id, note: String(it.note || '').slice(0, 200) + '; fix: ' + url }) });
+                console.log('note ' + res.status); }).catch((e) => console.log('note not written: ' + e.message));
+            " "$url" "$SLUG" || true
+          fi

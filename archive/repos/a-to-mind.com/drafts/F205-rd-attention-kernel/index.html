@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F205 · Reaction-Diffusion Attention Kernel</title>
+<style>
+  :root {
+    --hue: 220;
+    --radius: 12px;
+    --blur: 0px;
+    --density: 0.3;
+  }
+  body { margin: 0; background: #020208; color: #d0d8ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #c { display: block; width: 100vw; height: 100vh; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 20; background: rgba(0,0,16,0.8); padding: 10px 14px; border-radius: var(--radius); font-size: 13px; max-width: 300px; border: 1px solid hsl(var(--hue), 50%, 40%); filter: blur(var(--blur)); transition: all 0.2s; }
+  button { margin: 4px 2px; padding: 5px 10px; background: #121828; color: #a0b0ff; border: 1px solid #334; border-radius: 4px; cursor: pointer; }
+  .chrome { position: absolute; width: 80px; height: 50px; background: hsla(var(--hue), 60%, 30%, 0.6); border: 2px solid hsl(var(--hue), 70%, 55%); border-radius: var(--radius); font-size: 10px; padding: 4px; pointer-events: none; text-align: center; transition: all 0.15s; }
+  #status { font-size: 11px; color: #8af; margin-top: 6px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F205 · RD Attention Kernel</div>
+  <button id="inject">Inject Thought</button>
+  <button id="orient">Enable Tilt</button>
+  <button id="mute">Toggle Audio</button>
+  <div id="status">Click or Inject. Tilt if enabled.</div>
+</div>
+<div class="chrome" id="ch0">A0</div>
+<div class="chrome" id="ch1">A1</div>
+<div class="chrome" id="ch2">A2</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const GW = 96, GH = 64;
+const SIZE = GW * GH;
+let A = new Float32Array(SIZE).fill(1);
+let B = new Float32Array(SIZE).fill(0);
+for (let i = 0; i < 80; i++) {
+  const x = 30 + Math.floor(Math.random()*36);
+  const y = 20 + Math.floor(Math.random()*24);
+  B[y*GW + x] = 1;
+}
+
+let worker;
+let injectMask = new Float32Array(SIZE);
+function startWorker() {
+  const code = `\n    let heads = 2;\n    function attention(tokens) {\n      if (tokens.length < 2) return tokens.map(t => ({...t, score: 0.5}));\n      return tokens.map((t, i) => {\n        let s = 0;\n        tokens.forEach((o, j) => {\n          if (i === j) return;\n          const dx = t.pos[0] - o.pos[0], dy = t.pos[1] - o.pos[1];\n          const dist = Math.hypot(dx, dy);\n          s += Math.exp(-dist * 4) * ((t.vec[0]||0)*(o.vec[0]||0) + (t.vec[1]||0)*(o.vec[1]||0));\n        });\n        return { ...t, score: Math.tanh(s) };\n      });\n    }\n    self.onmessage = e => {\n      const { sensors, entropy } = e.data;\n      const toks = sensors.map(s => ({ pos: s.pos, vec: s.vec || [entropy, 0.1] }));\n      const attn = attention(toks);\n      const mask = new Float32Array(

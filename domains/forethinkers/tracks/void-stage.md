@@ -1,4 +1,4 @@
-# Void stage
+# Verse stage
 
 ## Progress ledger
 

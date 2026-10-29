@@ -1,0 +1,35 @@
+{
+  "slug": "local-sample-not-score",
+  "run": 137,
+  "date": "2026-10-09",
+  "family": "attention/interoception",
+  "status": "unattested",
+  "emit": false,
+  "one_line": "Local sample-not-score; a sealed sample class hashes to a score-refusal id; the accuracy sentence is discarded and is not in the hash; a sample mark is not an interoceptive accuracy score and not a body diagnosis; unattested default.",
+  "preimage": "sample-not-score|v1|<class>|score-refusal|status=unattested",
+  "catalog": ["withheld", "on-task", "off-task", "body-notice", "external-notice", "abstain"],
+  "refusal_ids": {
+    "withheld": "0e3ee1f5853318d3e0bef60a6f9edc87268f8e2da2b4e50a17da56bb8aae5121",
+    "on-task": "edbf67023a107d57f15d65b9d368f68bf799f52e6ffe48040153d85f0c2dd050",
+    "off-task": "6782b52524eae79eb638a62dd055d66a6ec92d3d1ccdf94b3d3ae3d2f1169436",
+    "body-notice": "32b8ac88c2f50561442cf55f0bd3d9950d24bcde8a94812ebfe0664dddc49e10",
+    "external-notice": "dbf282abffcad977fb92242eedccfd53fd352ff0d2480c616eb6a1e4118de412",
+    "abstain": "22aa572574796bd9bd4c0fc1244977e75cf2137ad170e112537a738554289c11"
+  },
+  "not_in_hash": ["accuracy sentence", "beat count", "percentage", "BPM", "MAIA total", "Likert depth", "post id", "duration"],
+  "denied": ["camera", "microphone", "PPG", "ECG", "Web Bluetooth", "heartbeat counter", "probe upload", "countdown", "contact claim", "healing claim", "crash retrieval", "extraterrestrial hardware"],
+  "hypotheses": [
+    {
+      "id": "uap-report-not-craft",
+      "confidence": 0.22,
+      "status": "unattested",
+      "line": "A public orb clip or satellite-scan sentence is a report class, not a retrieved craft."
+    },
+    {
+      "id": "sample-not-score",
+      "confidence": 0.34,
+      "status": "unattested",
+      "line": "An attention sample is a closed class, not an interoceptive accuracy score."
+    }
+  ]
+}

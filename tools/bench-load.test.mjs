@@ -147,9 +147,11 @@ test('an inconclusive run changes neither the floor nor the baseline', () => {
   assert.equal(nextFloor(disturbed, { score: 1773, total: 1773 }), null, 'even a high score earns nothing');
 });
 
-// the real bench on two made-up asks: one answered, one not (it misses alone too, so it is real), against a made-up floor file
+// the real bench on two made-up asks: one answered, one not (it misses alone too, so it is real), against a made-up floor file.
+// It checks the counting, not the speed, so it does not queue behind other heavy jobs on the machine (VOID_HEAVY_OFF) and gives each ask 20 s, not a person's 4 (VOID_BENCH_ASK_WAIT_MS): waiting
+// there used to use up its 180 s and fail it whenever another job held the lock (2026-10-15, several builders on one machine).
 const asks = write('asks.json', [{ ask: 'what is 2 plus 2', want: 'skill:util|math|calc|.*' }, { ask: 'zzqx blorp wibble', want: 'skill:nothing-answers-this' }]);
-const bench = (best, extra = {}) => spawnSync(process.execPath, [join(here, 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 180000, env: { ...process.env, BENCH_ASKS: asks, BENCH_BEST: best, BENCH_PAR: '2', CI: '', ...extra } });
+const bench = (best, extra = {}) => spawnSync(process.execPath, [join(here, 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 180000, env: { ...process.env, BENCH_ASKS: asks, BENCH_BEST: best, BENCH_PAR: '2', CI: '', VOID_HEAVY_OFF: '1', VOID_BENCH_ASK_WAIT_MS: '20000', ...extra } });
 const lastLine = (o) => JSON.parse(o.trim().split('\n').pop());
 
 test('bench.mjs: a miss that still misses alone is real; the floor tolerates a known one and fails an unknown one', () => {

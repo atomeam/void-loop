@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --hue: 200;
+    --contrast: 1;
+    --scale: 1;
+  }
+  body {
+    margin: 0;
+    background: #0a0a0c;
+    color: #e0e0e0;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    filter: hue-rotate(calc(var(--hue) * 1deg)) contrast(var(--contrast));
+    transform: scale(var(--scale));
+    transform-origin: center;
+    transition: filter 0.3s, transform 0.3s;
+  }
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair;
+  }
+  .portal {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle, hsla(var(--p-hue), 70%, 60%, 0.8), transparent);
+    border: 2px solid hsla(var(--p-hue), 80%, 70%, 0.9);
+    pointer-events: auto;
+    cursor: grab;
+    transform: translate(-50%, -50%) scale(var(--p-scale, 1));
+    transition: transform 0.15s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    text-shadow: 0 0 4px black;
+    user-select: none;
+  }
+  .portal:active { cursor: grabbing; }
+  #ui {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.6);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 10;
+  }
+  button {
+    margin: 4px;
+    padding: 4px 8px;
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #status { font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Causal RNN Memory Field · Verse lab</title>
+<meta name="description" content="Novel combination: a continuous Canvas2D causal deposit field (pointer + DeviceOrientation traces that diffuse and decay) whose recent history statistics are">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Causal RNN Memory Field · Verse lab">
+<meta property="og:description" content="Novel combination: a continuous Canvas2D causal deposit field (pointer + DeviceOrientation traces that diffuse and decay) whose recent history statistics are">
+<meta property="og:url" content="https://a-to-mind.com/lab/f273-causal-rnn-memory-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f273-causal-rnn-memory-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F273 Causal RNN Memory Field</div>
+  <button id="seal">Seal Latent</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+  <div id="status">pointer / orient → deposit → RNN latent → residual portals</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Causal RNN Memory Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

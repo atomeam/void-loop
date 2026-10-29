@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unfilled span — draft 074 — not a seal</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --paper: #f4f0e6; --line: #c8bfb0; --hold: #8a8175; --deny: #7a3b32; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f4f0e6; --paper: #1c1915; --line: #3d3832; --hold: #a3988c; --deny: #e0a096; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.45rem; letter-spacing: -0.02em; margin: 0 0 0.25rem; }
+  p.lede { margin-top: 0; }
+  .flag { display: inline-block; border: 1px solid var(--deny); color: var(--deny); padding: 0.1rem 0.4rem; font: 12px/1.3 ui-monospace, monospace; letter-spacing: 0.04em; }
+  form, section { border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1rem; }
+  label { display: block; margin: 0.6rem 0 0.2rem; font-size: 0.92rem; }
+  input, select, textarea, button { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.35rem 0.5rem; }
+  input[type="number"] { width: 8rem; }
+  textarea { width: 100%; min-height: 5rem; }
+  button { cursor: pointer; }
+  button[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .row { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .rail { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.8rem 0; }
+  .bin { width: 4.2rem; min-height: 3.2rem; border: 1px dashed var(--hold); display: flex; align-items: flex-end; padding: 0.25rem; font: 11px/1.2 ui-monospace, monospace; }
+  .holdbar { height: 0.45rem; border-top: 2px dashed var(--deny); margin: 0.4rem 0 0.2rem; }
+  .mono { font: 12px/1.4 ui-monospace, monospace; word-break: break-all; }
+  .hint { font-size: 0.85rem; color: var(--hold); }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="flag">UNATTESTED · FILL DENIED · EMIT FALSE</p>
+  <h1>Unfilled span</h1>
+  <p class="lede">Draft 074, <span class="mono">local-unfilled-span</span>. Two typed minute bounds hash to a span id. Interior bins stay empty. A gap is not an event. This page is not a seal.</p>
+  <p class="hint">Catalog digest 71a4bb3fdad6c01bc3d4a5bb80dae9fe4ac1147b3b39920d3277bd10ecefc323. Claims digest ee62bd7af912d71078c95221c24aa166db7888a0895b8992771fae04395185e6. Digests are not a seal. No network. Posts are not loaded.</p>
+
+  <section aria-labelledby="fixture-h">
+    <h2 id="fixture-h">Fixture rail</h2>
+    <p>Sealed empty bins from the catalog. Not an event list. The coarse row is held and is not expanded into hours.</p>
+    <div class="rail" id="fixture"></div>
+    <p class="mono" id="coarse">coarse-hold · month · not expanded</p>
+  </section>
+
+  <form id="span-form">
+    <h2>Local bounds</h2>
+    <p class="hint">Offsets are minutes from a label you type. The page does not read the clock into the hash.</p>
+    <label for="zero">Session-zero label</label>
+    <input id="zero" name="zero" maxlength="48" autocomplete="off" value="session-zero">
+    <div class="row">
+      <div>
+        <label for="start">Start minute</label>
+        <input id="start" name="start" type="number" inputmode="numeric" min="0" max="10080" value="0">
+      </div>
+      <div>
+        <label for="end">End minute</label>
+        <input id="end" name="end" type="number" inputmode="numeric" min="0" max="10080" value="45">
+      </div>
+      <div>
+        <label for="cap">Max span</label>
+        <select id="cap" name="cap">
+          <option value="60">60 min</option>
+          <option value="120" selected>120 min</option>
+          <option value="240">240 min</option>
+        </select>
+      </div>
+    </div>
+    <fieldset>
+      <legend>Gap label — not an event title</legend>
+      <label><input type="radio" name="gap" value="unreported" checked> unreported</label>
+      <label><input type="radio" name="gap" value="clock-skew"> clock-skew</label>
+      <label><input type="radio" name="gap" value="sleep"> sleep</label>
+      <label><input type="radio" name="gap" value="not-an-event"> not-an-event</label>
+    </fieldset>
+    <label for="weight">Design-material weight</label>
+    <select id="weight" name="weight">
+      <option value="sketch">sketch</option>
+      <option value="noted" selected>noted</option>
+      <option value="loud">loud</option>
+    </select>
+    <label for="disconfirm">What would disconfirm this span</label>
+    <textarea id="disconfirm" name="disconfirm" required minlength="24" placeholder="A clock log, an ordinary occupied interval, or a duplicate typing."></textarea>
+    <label for="paste">Paste is data</label>
+    <textarea id="paste" name="paste" placeholder="Not fetched. Not executed."></textarea>
+    <p class="hint" id="paste-note"></p>
+    <label><input type="checkbox" id="remember"> Remember in this tab only</label>
+    <p>
+      <button type="submit" id="hash-btn" disabled>Hash unfilled span</button>
+      <button type="button" id="export-btn" disabled>Download hypothesis</button>
+    </p>
+  </form>
+
+  <section aria-live="polite" aria-labelledby="out-h">
+    <h2 id="out-h">Span card</h2>
+    <p class="holdbar" id="holdbar" hidden></p>
+    <p class="mono" id="relation">fill denied · no span yet</p>
+    <div class="rail" id="bins"></div>
+    <p class="mono" id="hash-out">hash withheld until a disconfirm line</p>
+    <p class="hint">Cause: not-claimed. Gap: not-an-event. Status: unattested. Order of the bounds is not a cause.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var fixture = document.getElementById("fixture");
+  ["0–15", "15–30", "30–45", "45–60"].forEach(function (label) {
+    var cell = document.createElement("div");
+    cell.className = "bin";
+    cell.textContent = label + " unfilled";
+    fixture.appendChild(cell);
+  });
+
+  var form = document.getElementById("span-form");
+  var disconfirm = document.getElementById("disconfirm");
+  var hashBtn = document.getElementById("hash-btn");
+  var exportBtn = document.getElementById("export-btn");
+  var paste = document.getElementById("paste");
+  var pasteNote = document.getElementById("paste-note");
+  var last = null;
+
+  function gate() {
+    hashBtn.disabled = disconfirm.value.trim().length < 24;
+  }
+  disconfirm.addEventListener("input", gate);
+  gate();
+
+  paste.addEventListener("input", function () {
+    var raw = paste.value.replace(/<[^>]*>/g, "");
+    if (raw !== paste.value) paste.value = raw;
+    var hints = [];
+    if (/https?:\/\//i.test(raw)) hints.push("url-shaped text is not fetched");
+    if (/attest this|set emit true|we now know|fill the gap|ignore previous/i.test(raw)) hints.push("imperative paste is a hint, not a seal");
+    pasteNote.textContent = hints.join(" · ");
+  });
+
+  function selectedGap() {
+    var node = form.querySelector("input[name=gap]:checked");
+    return node ? node.value : "unreported";
+  }
+
+  function build() {
+    var start = Number(document.getElementById("start").value);
+    var end = Number(document.getElementById("end").value);
+    var cap = Number(document.getElementById("cap").value);
+    var card = {
+      slug: "local-unfilled-span",
+      status: "unattested",
+      cause: "not-claimed",
+      fill: "denied",
+      gap: "not-an-event",
+      emit: false,
+      zero: document.getElementById("zero").value.slice(0, 48),
+      start: start,
+      end: end,
+      cap: cap,
+      label: selectedGap(),
+      weight: document.getElementById("weight").value,
+      disconfirm: disconfirm.value.trim(),
+      bins: []
+    };
+    if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < 0) {
+      card.relation = "bounds-refused";
+      return card;
+    }
+    if (end <= start) {
+      card.relation = "bounds-refused";
+      return card;
+    }
+    if ((end - start) > cap) {
+      card.relation = "span-refused";
+      return card;
+    }
+    var cursor = start;
+    while (cursor < end) {
+      var next = Math.min(cursor + 15, end);
+      card.bins.push({
+        from: cursor,
+        to: next,
+        state: (next - cursor) === 15 ? "unfilled" : "partial-unfilled"
+      });
+      cursor = next;
+    }
+    card.relation = "fill-denied";
+    return card;
+  }
+
+  function render(card, digest) {
+    var bins = document.getElementById("bins");
+    bins.textContent = "";
+    document.getElementById("holdbar").hidden = card.relation !== "fill-denied";
+    document.getElementById("relation").textContent = card.relation + " · " + card.label + " · unattested";
+    card.bins.forEach(function (bin) {
+      var cell = document.createElement("div");
+      cell.className = "bin";
+      cell.textContent = bin.from + "–" + bin.to + " " + bin.state;
+      bins.appendChild(cell);
+    });
+    document.getElementById("hash-out").textContent = digest ? digest : "no hash · " + card.relation;
+  }
+
+  function canonical(card) {
+    return ["void-span-v1", card.zero, card.start, card.end, card.cap, card.label, card.weight, card.disconfirm].join("|");
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var card = build();
+    if (card.relation !== "fill-denied") {
+      last = null;
+      exportBtn.disabled = true;
+      render(card, "");
+      return;
+    }
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical(card))).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      card.hash = hex;
+      last = card;
+      exportBtn.disabled = false;
+      render(card, hex);
+      if (document.getElementById("remember").checked) {
+        try { sessionStorage.setItem("void-unfilled-span-074", JSON.stringify(card)); } catch (err) { /* tab memory only */ }
+      }
+    });
+  });
+
+  exportBtn.addEventListener("click", function () {
+    if (!last) return;
+    var blob = new Blob([JSON.stringify(last, null, 2) + "\n"], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "unfilled-span-hypothesis.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  try {
+    var saved = sessionStorage.getItem("void-unfilled-span-074");
+    if (saved) document.getElementById("relation").textContent = "tab memory present · still unattested · hash not restored as a seal";
+  } catch (err) { /* ignore */ }
+})();
+</script>
+</body>
+</html>

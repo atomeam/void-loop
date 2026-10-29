@@ -1,5 +1,5 @@
 // What happened to a stage while its owner was away, as one execution record (lib/actions.js track(), kind `scene.advance`).
-// Asked by Void: "Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct
+// Asked by Verse: "Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct
 // user input." advance() (skills/scripts.js) runs in the browser; the page sends its result here, and a record is written in the
 // sender's own scope only: the owner's (owner 'owner') or a paid member's (owner 'member:<account id>'). A stranger, a free
 // account and a made-up session get nothing written (nothing is stored for strangers; the note on the page stands alone).
@@ -12,7 +12,7 @@ export const KIND = 'scene.advance';
 export const MAX_CHANGES = 20;
 export const MIN_GAP_MS = 60e3;
 export const MEMBER_KEEP = 50;
-export const WHAT = ['rained', 'snowed', 'grew', 'melted', 'melted away', 'found', 'caught'];
+export const WHAT = ['rained', 'snowed', 'grew', 'melted', 'melted away', 'found', 'caught', 'gathered', 'built'];
 const THINGS = /^[a-z]{2,20}$/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u001f]+/g, ' ').slice(0, n);
 
@@ -31,7 +31,7 @@ export function describe(s, max = 500) {
   const head = s.note ? s.note + ' ' : '', count = '[' + s.changes.length + ': ';
   let list = s.changes.map((c) => c.kind + ' ' + c.what + (c.with ? ' ' + c.with : '')).join('; ');
   const room = Math.max(10, max - head.length - count.length - 1);
-  if (list.length > room) list = list.slice(0, room - 1) + '…';
+  if (list.length > room) list = list.slice(0, room - 1) + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
   return head + count + list + ']';
 }
 

@@ -1,195 +1,437 @@
 [
-  {
-    "slug": "zapier-401-unauthorized",
-    "platform": "Zapier",
-    "title": "Zapier 401 Unauthorized: why your Zap lost access and how to fix it",
-    "short": "Zapier 401 Unauthorized",
-    "error": "401 Unauthorized",
-    "means": "The app your Zap talks to no longer accepts the login Zapier holds for it. The connection expired, the password changed, the token was revoked, or the account that connected it lost access.",
-    "steps": [
-      "Open Zap history, click the errored run and open the step that failed. Its Troubleshoot tab names the app and shows the error.",
-      "Go to the Apps page in Zapier, find that app's connection and reconnect it (sign in again).",
-      "If the sign-in popup fails or closes on its own, try another browser, or a private window with popups allowed.",
-      "Back in the Zap, make sure the step uses the reconnected account, then replay the failed runs from Zap history."
-    ],
-    "again": "If it comes back every few days, the app is expiring its tokens or someone keeps changing the password. Connect it with an account that does not rotate (a shared service login, where the app allows one).",
-    "sources": [["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
-  },
-  {
-    "slug": "zapier-403-forbidden",
-    "platform": "Zapier",
-    "title": "Zapier 403 Forbidden: when the Zap is signed in but not allowed",
-    "short": "Zapier 403 Forbidden",
-    "error": "403 Forbidden",
-    "means": "Zapier is signed in to the app, but that account is not allowed to do what the step asks: create the record, read the folder, post in the channel. It is a permissions problem, not a broken login.",
-    "steps": [
-      "Open the errored run in Zap history and read which step failed and what it tried to do.",
-      "Check the connected account's role in that app. Ask the app's administrator for the permission the step needs (for example, write access to that sheet, folder or pipeline).",
-      "If the step points at something owned by another person or workspace, share it with the connected account or reconnect with an account that owns it.",
-      "Replay the failed runs once access is in place."
-    ],
-    "again": "A 403 that starts out of nowhere usually follows a change on the app side: a role was downgraded, a shared drive moved, or a plan lost a feature.",
-    "sources": [["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
-  },
-  {
-    "slug": "zapier-422-unprocessable-entity",
-    "platform": "Zapier",
-    "title": "Zapier 422 Unprocessable Entity: the app refused the data your Zap sent",
-    "short": "Zapier 422 Unprocessable Entity",
-    "error": "422 Unprocessable Entity",
-    "means": "The app received the request but rejected the data in it: a required field was empty, or a value was in the wrong shape (a date the app cannot read, text where it wants a number, an email that is not an email).",
-    "steps": [
-      "Open the errored run in Zap history and look at the data the failing step sent. The empty or odd-looking field is usually visible right there.",
-      "Make sure every field the app requires is mapped, and that earlier steps actually produce a value for it on every run (one blank form answer is enough to break it).",
-      "Convert values to the shape the app wants with a Formatter step: dates to the format it expects, text to numbers, phone numbers cleaned up.",
-      "Test the step again with a real record, then replay the failed runs."
-    ],
-    "again": "When only some runs fail, compare a run that worked with one that failed: the difference in their input is the cause.",
-    "sources": [["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
-  },
-  {
-    "slug": "zapier-throttled-429",
-    "platform": "Zapier",
-    "title": "\"Throttled by Zapier\" or 429 Too Many Requests: how to slow a Zap down",
-    "short": "Zapier throttled / 429",
-    "error": "Throttled by Zapier · Zapier has blocked this task · 429 Too Many Requests",
-    "means": "The Zap made too many requests in a short time, to Zapier or to the app it calls, so the requests were held back. Big imports, loops and bursts of new records are the usual cause.",
-    "steps": [
-      "Replay the throttled or blocked runs from Zap history once the burst has passed.",
-      "Add a Delay step (or Delay After Queue) before the step that calls the app, so runs go out one at a time instead of all at once.",
-      "If the Zap loops over many items, process fewer per run.",
-      "If it keeps happening with normal traffic, check Zapier's status page and the app's status page for an outage."
-    ],
-    "again": "A 429 from the app itself means its own rate limit: check that app's API limits for your plan, and space the Zap's calls to fit under them.",
-    "sources": [["Fix \"Throttled by Zapier\" or \"Zapier has blocked this task\" errors (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496038845325-Fix-Throttled-by-Zapier-or-Zapier-has-blocked-this-task-errors-in-Zap-workflows"], ["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
-  },
-  {
-    "slug": "zapier-zap-turned-off-or-held",
-    "ask": "my zap was turned off and is not triggering, runs are on hold",
-    "platform": "Zapier",
-    "title": "Zap turned off, held or not triggering: how to get it running again",
-    "short": "Zap turned off or held",
-    "error": "Zap turned off · run on hold · Zap not triggering",
-    "means": "A Zap that errors again and again is turned off automatically. Runs are held when flood protection kicks in, an app is disconnected, the account hit its task limit, or there is a payment problem. A trigger that never fires is usually a disconnected account or a required trigger field left empty.",
-    "steps": [
-      "Open Zap history and filter by status: errored runs explain why the Zap was turned off, held runs say why they were held.",
-      "Fix the cause it names: reconnect the app, raise or wait out the task limit, or update the payment details.",
-      "Replay the held runs, then turn the Zap back on.",
-      "If the trigger never fires, check that its account is still connected and its required fields are filled, then create a new item in the app and test the trigger again."
-    ],
-    "again": "Runs marked safely halted or handled error do not turn a Zap off; only repeated errors do. Fix the step that errors and the Zap stays on.",
-    "sources": [["How to troubleshoot held Zap or step runs (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/37454233721869-How-to-troubleshoot-held-Zap-or-step-runs"], ["Zap trigger test fails (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496262128141-Zap-trigger-test-fails"], ["Zap is not working (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/30582278131597-Zap-is-not-working"]]
-  },
-  {
-    "slug": "make-rate-limit-error",
-    "platform": "Make",
-    "title": "Make RateLimitError (429): how to stop a scenario hitting the app's limit",
-    "short": "Make RateLimitError",
-    "error": "RateLimitError · 429",
-    "means": "The scenario sent more requests to an app than its API allows in that window, so the app answered 429 and Make raised a RateLimitError.",
-    "steps": [
-      "Turn on incomplete executions in the scenario settings, so a failed run is stored and retried instead of lost. Often the retry alone clears it.",
-      "For an instant trigger, set a rate limit on the scenario; for a scheduled one, run it less often.",
-      "Handle fewer records per run (around 20), and use the app's bulk modules where it has them.",
-      "If it still trips the limit, add a Sleep module before the module that calls the app."
-    ],
-    "again": "Two scenarios calling the same app share its limit. Spread their schedules apart, or merge them.",
-    "sources": [["Fix rate limit errors (Make Help Center)", "https://help.make.com/fix-rate-limit-errors"], ["Overview of error handling (Make Help Center)", "https://help.make.com/Overview-of-error-handling"]]
-  },
-  {
-    "slug": "make-connection-error",
-    "platform": "Make",
-    "title": "Make ConnectionError (502, 503, 504): when the app on the other end is down",
-    "short": "Make ConnectionError",
-    "error": "ConnectionError · 502 · 503 · 504",
-    "means": "The app the module talks to did not answer properly: it was down, overloaded or timing out (HTTP 502, 503 or 504). Nothing is wrong with your mapping.",
-    "steps": [
-      "Check the app's status page: if it is having an outage, wait for it to recover.",
-      "Turn on incomplete executions in the scenario settings, so runs that hit the outage are kept and can be retried.",
-      "Add a Break error handler to the module so Make retries it automatically after a pause.",
-      "Once the app is back, replay or resolve the stored incomplete executions."
-    ],
-    "again": "If one app times out often, it may be the request: ask for less data per call, or split one heavy run into smaller ones.",
-    "sources": [["Overview of error handling (Make Help Center)", "https://help.make.com/Overview-of-error-handling"], ["Incomplete executions (Make Help Center)", "https://help.make.com/incomplete-executions"], ["Error handlers (Make Help Center)", "https://help.make.com/error-handlers"]]
-  },
-  {
-    "slug": "make-data-error",
-    "platform": "Make",
-    "title": "Make DataError: the app rejected what the module sent",
-    "short": "Make DataError",
-    "error": "DataError",
-    "means": "The data a module sent did not pass the app's validation: a value too long, in the wrong format, or missing. A post longer than the platform allows is the classic example.",
-    "steps": [
-      "Open the failed run and the module that errored, and read the input bundle it sent next to the error message.",
-      "Fix the mapping: fill the missing field, trim or convert the value (Make's text, date and number functions), or add a filter so records that cannot be sent are skipped.",
-      "If some records will always be bad, add a Resume or Ignore error handler so one bad record does not stop the rest.",
-      "Run the scenario once with a real record to confirm."
-    ],
-    "again": "A DataError that appears after months of working usually means the data changed: a new form field, a longer product name, a new date format upstream.",
-    "sources": [["Overview of error handling (Make Help Center)", "https://help.make.com/Overview-of-error-handling"], ["Fix missing data errors (Make Help Center)", "https://help.make.com/fix-missing-data-errors"]]
-  },
-  {
-    "slug": "n8n-webhook-404-not-registered",
-    "platform": "n8n",
-    "title": "n8n webhook 404 \"not registered\": test URL or production URL, and how to fix it",
-    "short": "n8n webhook 404",
-    "error": "404 · webhook is not registered",
-    "means": "n8n gives every Webhook node two URLs. The test URL only answers while the editor is listening for a test event; the production URL only answers once the workflow is active (published, in newer versions). A 404 nearly always means the sender is calling the one that is not listening right now.",
-    "steps": [
-      "Open the Webhook node and compare its Test URL and Production URL with the URL the sending app is calling. The test one has /webhook-test/ in its path.",
-      "For live traffic, put the Production URL into the sending app, then save the workflow and switch it to active (publish it, in newer n8n).",
-      "For a test, click Listen for test event first and send within the listening window (about two minutes), then check the run in the editor.",
-      "Check the HTTP method: the node only answers the method it is set to (GET, POST and so on). Production runs show in the Executions tab, not the editor."
-    ],
-    "again": "Self-hosted behind a proxy: if the URLs n8n shows point at localhost or the wrong host, set the WEBHOOK_URL environment variable to your public address, and make sure the proxy forwards both /webhook/ and /webhook-test/.",
-    "sources": [["Webhook node (n8n Docs)", "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook"], ["Webhook node common issues (n8n Docs)", "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/common-issues"], ["Endpoints environment variables (n8n Docs)", "https://docs.n8n.io/hosting/configuration/environment-variables/endpoints/"]]
-  },
-  {
-    "slug": "n8n-google-credential-401",
-    "platform": "n8n",
-    "title": "n8n Google node 401: why the credential stopped working after a week, and the fix",
-    "short": "n8n Google credential 401",
-    "error": "401 Unauthorized · Google credential",
-    "means": "The Google credential n8n holds no longer gives a valid token. The most common cause: the Google Cloud OAuth app is External with its publishing status set to Testing, and Google expires consent and tokens for testing apps after seven days. Changed scopes or a disabled API do the same.",
-    "steps": [
-      "Open the failing node's error to see which Google service refused it, then open that credential in n8n (Credentials).",
-      "Click to reconnect (sign in with Google again) and allow every permission it asks for.",
-      "In Google Cloud, check that the API the node uses (Gmail, Sheets, Drive...) is enabled for the project the credential belongs to.",
-      "Back in the workflow, select the reconnected credential on the node and run it once to confirm."
-    ],
-    "again": "To stop the weekly expiry, move the OAuth app out of Testing (publish it in Google Cloud's OAuth consent screen), or use an Internal app inside a Google Workspace organisation.",
-    "sources": [["Google OAuth2 single service credentials (n8n Docs)", "https://docs.n8n.io/integrations/builtin/credentials/google/oauth-single-service"], ["Gmail node common issues (n8n Docs)", "https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.gmail/common-issues"]]
-  },
-  {
-    "slug": "power-automate-429-rate-limit-exceeded",
-    "platform": "Power Automate",
-    "title": "Power Automate 429 \"Rate limit is exceeded\": why your flow is throttled and how to fix it",
-    "short": "Power Automate 429",
-    "error": "429 · Rate limit is exceeded",
-    "means": "A connector your flow uses has its own limit on calls per connection in a time window. Your flow went over it, so the service answered 429 Too Many Requests and told you how many seconds to wait. Retries and pagination count as calls too.",
-    "steps": [
-      "Open the failed run and find the action that returned 429; its connector is the one being throttled.",
-      "Lower the concurrency on Apply to each (or on the trigger) so fewer calls run at once.",
-      "Cut the number of calls: filter rows in the trigger or the List action instead of looping over everything, and use batch actions where the connector has them.",
-      "Spread the work out: run the flow less often, or split a big run into child flows that each handle part of it."
-    ],
-    "again": "Flows that keep hitting limits can be slowed down, and a flow throttled continuously for 14 days can be turned off. Check the connector's Throttling section on Microsoft Learn for its exact numbers.",
-    "sources": [["Understand limits (Power Automate, Microsoft Learn)", "https://learn.microsoft.com/en-us/power-automate/guidance/coding-guidelines/understand-limits"], ["Troubleshoot slow running flows (Microsoft Learn)", "https://learn.microsoft.com/troubleshoot/power-platform/power-automate/flow-run-issues/troubleshoot-slow-running-flows"]]
-  },
-  {
-    "slug": "github-actions-resource-not-accessible-by-integration",
-    "platform": "GitHub Actions",
-    "title": "GitHub Actions \"Resource not accessible by integration\" (403): give the token the permission it needs",
-    "short": "GitHub Actions 403 not accessible",
-    "error": "403 · Resource not accessible by integration",
-    "means": "The GITHUB_TOKEN your workflow runs with does not have the permission the step needs. Its permissions start from the repository or organization default (often read-only) and are then set by the permissions key in the workflow. Writing to a different repository is outside what that token can ever do.",
-    "steps": [
-      "Find the step that failed and what it tried to do: comment on a pull request, push, create a release, label an issue.",
-      "Add a permissions block to that job granting just that, for example permissions: with pull-requests: write, or contents: write. Scopes you leave out drop to none.",
-      "If the run comes from a fork's pull request or Dependabot, the token is read-only by design; move the write into a workflow that runs on the base repository.",
-      "If it writes to another repository, use a GitHub App installation token or a personal access token stored as a secret instead of GITHUB_TOKEN."
-    ],
-    "again": "An admin can change the default in the repository's Settings, Actions, General, Workflow permissions; setting permissions per job in the workflow is the safer habit.",
-    "sources": [["Controlling permissions for GITHUB_TOKEN (GitHub Docs)", "https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token"], ["Managing GitHub Actions settings for a repository (GitHub Docs)", "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository"]]
-  }
+ {
+  "slug": "zapier-401-unauthorized",
+  "platform": "Zapier",
+  "title": "Zapier 401 Unauthorized: why your Zap lost access and how to fix it",
+  "short": "Zapier 401 Unauthorized",
+  "error": "401 Unauthorized",
+  "means": "The app your Zap talks to no longer accepts the login Zapier holds for it. The connection expired, the password changed, the token was revoked, or the account that connected it lost access.",
+  "steps": [
+   "Open Zap history, click the errored run and open the step that failed. Its Troubleshoot tab names the app and shows the error.",
+   "Go to the Apps page in Zapier, find that app's connection and reconnect it (sign in again).",
+   "If the sign-in popup fails or closes on its own, try another browser, or a private window with popups allowed.",
+   "Back in the Zap, make sure the step uses the reconnected account, then replay the failed runs from Zap history."
+  ],
+  "again": "If it comes back every few days, the app is expiring its tokens or someone keeps changing the password. Connect it with an account that does not rotate (a shared service login, where the app allows one).",
+  "sources": [
+   [
+    "How to troubleshoot errors in Zap workflows (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"
+   ]
+  ]
+ },
+ {
+  "slug": "zapier-403-forbidden",
+  "platform": "Zapier",
+  "title": "Zapier 403 Forbidden: when the Zap is signed in but not allowed",
+  "short": "Zapier 403 Forbidden",
+  "error": "403 Forbidden",
+  "means": "Zapier is signed in to the app, but that account is not allowed to do what the step asks: create the record, read the folder, post in the channel. It is a permissions problem, not a broken login.",
+  "steps": [
+   "Open the errored run in Zap history and read which step failed and what it tried to do.",
+   "Check the connected account's role in that app. Ask the app's administrator for the permission the step needs (for example, write access to that sheet, folder or pipeline).",
+   "If the step points at something owned by another person or workspace, share it with the connected account or reconnect with an account that owns it.",
+   "Replay the failed runs once access is in place."
+  ],
+  "again": "A 403 that starts out of nowhere usually follows a change on the app side: a role was downgraded, a shared drive moved, or a plan lost a feature.",
+  "sources": [
+   [
+    "How to troubleshoot errors in Zap workflows (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"
+   ]
+  ]
+ },
+ {
+  "slug": "zapier-422-unprocessable-entity",
+  "platform": "Zapier",
+  "title": "Zapier 422 Unprocessable Entity: the app refused the data your Zap sent",
+  "short": "Zapier 422 Unprocessable Entity",
+  "error": "422 Unprocessable Entity",
+  "means": "The app received the request but rejected the data in it: a required field was empty, or a value was in the wrong shape (a date the app cannot read, text where it wants a number, an email that is not an email).",
+  "steps": [
+   "Open the errored run in Zap history and look at the data the failing step sent. The empty or odd-looking field is usually visible right there.",
+   "Make sure every field the app requires is mapped, and that earlier steps actually produce a value for it on every run (one blank form answer is enough to break it).",
+   "Convert values to the shape the app wants with a Formatter step: dates to the format it expects, text to numbers, phone numbers cleaned up.",
+   "Test the step again with a real record, then replay the failed runs."
+  ],
+  "again": "When only some runs fail, compare a run that worked with one that failed: the difference in their input is the cause.",
+  "sources": [
+   [
+    "How to troubleshoot errors in Zap workflows (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"
+   ]
+  ]
+ },
+ {
+  "slug": "zapier-throttled-429",
+  "platform": "Zapier",
+  "title": "\"Throttled by Zapier\" or 429 Too Many Requests: how to slow a Zap down",
+  "short": "Zapier throttled / 429",
+  "error": "Throttled by Zapier · Zapier has blocked this task · 429 Too Many Requests",
+  "means": "The Zap made too many requests in a short time, to Zapier or to the app it calls, so the requests were held back. Big imports, loops and bursts of new records are the usual cause.",
+  "steps": [
+   "Replay the throttled or blocked runs from Zap history once the burst has passed.",
+   "Add a Delay step (or Delay After Queue) before the step that calls the app, so runs go out one at a time instead of all at once.",
+   "If the Zap loops over many items, process fewer per run.",
+   "If it keeps happening with normal traffic, check Zapier's status page and the app's status page for an outage."
+  ],
+  "again": "A 429 from the app itself means its own rate limit: check that app's API limits for your plan, and space the Zap's calls to fit under them.",
+  "sources": [
+   [
+    "Fix \"Throttled by Zapier\" or \"Zapier has blocked this task\" errors (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/8496038845325-Fix-Throttled-by-Zapier-or-Zapier-has-blocked-this-task-errors-in-Zap-workflows"
+   ],
+   [
+    "How to troubleshoot errors in Zap workflows (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"
+   ]
+  ]
+ },
+ {
+  "slug": "zapier-zap-turned-off-or-held",
+  "ask": "my zap was turned off and is not triggering, runs are on hold",
+  "platform": "Zapier",
+  "title": "Zap turned off, held or not triggering: how to get it running again",
+  "short": "Zap turned off or held",
+  "error": "Zap turned off · run on hold · Zap not triggering",
+  "means": "A Zap that errors again and again is turned off automatically. Runs are held when flood protection kicks in, an app is disconnected, the account hit its task limit, or there is a payment problem. A trigger that never fires is usually a disconnected account or a required trigger field left empty.",
+  "steps": [
+   "Open Zap history and filter by status: errored runs explain why the Zap was turned off, held runs say why they were held.",
+   "Fix the cause it names: reconnect the app, raise or wait out the task limit, or update the payment details.",
+   "Replay the held runs, then turn the Zap back on.",
+   "If the trigger never fires, check that its account is still connected and its required fields are filled, then create a new item in the app and test the trigger again."
+  ],
+  "again": "Runs marked safely halted or handled error do not turn a Zap off; only repeated errors do. Fix the step that errors and the Zap stays on.",
+  "sources": [
+   [
+    "How to troubleshoot held Zap or step runs (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/37454233721869-How-to-troubleshoot-held-Zap-or-step-runs"
+   ],
+   [
+    "Zap trigger test fails (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/8496262128141-Zap-trigger-test-fails"
+   ],
+   [
+    "Zap is not working (Zapier Help Center)",
+    "https://help.zapier.com/hc/en-us/articles/30582278131597-Zap-is-not-working"
+   ]
+  ]
+ },
+ {
+  "slug": "make-rate-limit-error",
+  "platform": "Make",
+  "title": "Make RateLimitError (429): how to stop a scenario hitting the app's limit",
+  "short": "Make RateLimitError",
+  "error": "RateLimitError · 429",
+  "means": "The scenario sent more requests to an app than its API allows in that window, so the app answered 429 and Make raised a RateLimitError.",
+  "steps": [
+   "Turn on incomplete executions in the scenario settings, so a failed run is stored and retried instead of lost. Often the retry alone clears it.",
+   "For an instant trigger, set a rate limit on the scenario; for a scheduled one, run it less often.",
+   "Handle fewer records per run (around 20), and use the app's bulk modules where it has them.",
+   "If it still trips the limit, add a Sleep module before the module that calls the app."
+  ],
+  "again": "Two scenarios calling the same app share its limit. Spread their schedules apart, or merge them.",
+  "sources": [
+   [
+    "Fix rate limit errors (Make Help Center)",
+    "https://help.make.com/fix-rate-limit-errors"
+   ],
+   [
+    "Overview of error handling (Make Help Center)",
+    "https://help.make.com/Overview-of-error-handling"
+   ]
+  ]
+ },
+ {
+  "slug": "make-connection-error",
+  "platform": "Make",
+  "title": "Make ConnectionError (502, 503, 504): when the app on the other end is down",
+  "short": "Make ConnectionError",
+  "error": "ConnectionError · 502 · 503 · 504",
+  "means": "The app the module talks to did not answer properly: it was down, overloaded or timing out (HTTP 502, 503 or 504). Nothing is wrong with your mapping.",
+  "steps": [
+   "Check the app's status page: if it is having an outage, wait for it to recover.",
+   "Turn on incomplete executions in the scenario settings, so runs that hit the outage are kept and can be retried.",
+   "Add a Break error handler to the module so Make retries it automatically after a pause.",
+   "Once the app is back, replay or resolve the stored incomplete executions."
+  ],
+  "again": "If one app times out often, it may be the request: ask for less data per call, or split one heavy run into smaller ones.",
+  "sources": [
+   [
+    "Overview of error handling (Make Help Center)",
+    "https://help.make.com/Overview-of-error-handling"
+   ],
+   [
+    "Incomplete executions (Make Help Center)",
+    "https://help.make.com/incomplete-executions"
+   ],
+   [
+    "Error handlers (Make Help Center)",
+    "https://help.make.com/error-handlers"
+   ]
+  ]
+ },
+ {
+  "slug": "make-data-error",
+  "platform": "Make",
+  "title": "Make DataError: the app rejected what the module sent",
+  "short": "Make DataError",
+  "error": "DataError",
+  "means": "The data a module sent did not pass the app's validation: a value too long, in the wrong format, or missing. A post longer than the platform allows is the classic example.",
+  "steps": [
+   "Open the failed run and the module that errored, and read the input bundle it sent next to the error message.",
+   "Fix the mapping: fill the missing field, trim or convert the value (Make's text, date and number functions), or add a filter so records that cannot be sent are skipped.",
+   "If some records will always be bad, add a Resume or Ignore error handler so one bad record does not stop the rest.",
+   "Run the scenario once with a real record to confirm."
+  ],
+  "again": "A DataError that appears after months of working usually means the data changed: a new form field, a longer product name, a new date format upstream.",
+  "sources": [
+   [
+    "Overview of error handling (Make Help Center)",
+    "https://help.make.com/Overview-of-error-handling"
+   ],
+   [
+    "Fix missing data errors (Make Help Center)",
+    "https://help.make.com/fix-missing-data-errors"
+   ]
+  ]
+ },
+ {
+  "slug": "n8n-webhook-404-not-registered",
+  "platform": "n8n",
+  "title": "n8n webhook 404 \"not registered\": test URL or production URL, and how to fix it",
+  "short": "n8n webhook 404",
+  "error": "404 · webhook is not registered",
+  "means": "n8n gives every Webhook node two URLs. The test URL only answers while the editor is listening for a test event; the production URL only answers once the workflow is active (published, in newer versions). A 404 nearly always means the sender is calling the one that is not listening right now.",
+  "steps": [
+   "Open the Webhook node and compare its Test URL and Production URL with the URL the sending app is calling. The test one has /webhook-test/ in its path.",
+   "For live traffic, put the Production URL into the sending app, then save the workflow and switch it to active (publish it, in newer n8n).",
+   "For a test, click Listen for test event first and send within the listening window (about two minutes), then check the run in the editor.",
+   "Check the HTTP method: the node only answers the method it is set to (GET, POST and so on). Production runs show in the Executions tab, not the editor."
+  ],
+  "again": "Self-hosted behind a proxy: if the URLs n8n shows point at localhost or the wrong host, set the WEBHOOK_URL environment variable to your public address, and make sure the proxy forwards both /webhook/ and /webhook-test/.",
+  "sources": [
+   [
+    "Webhook node (n8n Docs)",
+    "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook"
+   ],
+   [
+    "Webhook node common issues (n8n Docs)",
+    "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/common-issues"
+   ],
+   [
+    "Endpoints environment variables (n8n Docs)",
+    "https://docs.n8n.io/hosting/configuration/environment-variables/endpoints/"
+   ]
+  ]
+ },
+ {
+  "slug": "n8n-google-credential-401",
+  "platform": "n8n",
+  "title": "n8n Google node 401: why the credential stopped working after a week, and the fix",
+  "short": "n8n Google credential 401",
+  "error": "401 Unauthorized · Google credential",
+  "means": "The Google credential n8n holds no longer gives a valid token. The most common cause: the Google Cloud OAuth app is External with its publishing status set to Testing, and Google expires consent and tokens for testing apps after seven days. Changed scopes or a disabled API do the same.",
+  "steps": [
+   "Open the failing node's error to see which Google service refused it, then open that credential in n8n (Credentials).",
+   "Click to reconnect (sign in with Google again) and allow every permission it asks for.",
+   "In Google Cloud, check that the API the node uses (Gmail, Sheets, Drive...) is enabled for the project the credential belongs to.",
+   "Back in the workflow, select the reconnected credential on the node and run it once to confirm."
+  ],
+  "again": "To stop the weekly expiry, move the OAuth app out of Testing (publish it in Google Cloud's OAuth consent screen), or use an Internal app inside a Google Workspace organisation.",
+  "sources": [
+   [
+    "Google OAuth2 single service credentials (n8n Docs)",
+    "https://docs.n8n.io/integrations/builtin/credentials/google/oauth-single-service"
+   ],
+   [
+    "Gmail node common issues (n8n Docs)",
+    "https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.gmail/common-issues"
+   ]
+  ]
+ },
+ {
+  "slug": "power-automate-429-rate-limit-exceeded",
+  "platform": "Power Automate",
+  "title": "Power Automate 429 \"Rate limit is exceeded\": why your flow is throttled and how to fix it",
+  "short": "Power Automate 429",
+  "error": "429 · Rate limit is exceeded",
+  "means": "A connector your flow uses has its own limit on calls per connection in a time window. Your flow went over it, so the service answered 429 Too Many Requests and told you how many seconds to wait. Retries and pagination count as calls too.",
+  "steps": [
+   "Open the failed run and find the action that returned 429; its connector is the one being throttled.",
+   "Lower the concurrency on Apply to each (or on the trigger) so fewer calls run at once.",
+   "Cut the number of calls: filter rows in the trigger or the List action instead of looping over everything, and use batch actions where the connector has them.",
+   "Spread the work out: run the flow less often, or split a big run into child flows that each handle part of it."
+  ],
+  "again": "Flows that keep hitting limits can be slowed down, and a flow throttled continuously for 14 days can be turned off. Check the connector's Throttling section on Microsoft Learn for its exact numbers.",
+  "sources": [
+   [
+    "Understand limits (Power Automate, Microsoft Learn)",
+    "https://learn.microsoft.com/en-us/power-automate/guidance/coding-guidelines/understand-limits"
+   ],
+   [
+    "Troubleshoot slow running flows (Microsoft Learn)",
+    "https://learn.microsoft.com/troubleshoot/power-platform/power-automate/flow-run-issues/troubleshoot-slow-running-flows"
+   ]
+  ]
+ },
+ {
+  "slug": "github-actions-resource-not-accessible-by-integration",
+  "platform": "GitHub Actions",
+  "title": "GitHub Actions \"Resource not accessible by integration\" (403): give the token the permission it needs",
+  "short": "GitHub Actions 403 not accessible",
+  "error": "403 · Resource not accessible by integration",
+  "means": "The GITHUB_TOKEN your workflow runs with does not have the permission the step needs. Its permissions start from the repository or organization default (often read-only) and are then set by the permissions key in the workflow. Writing to a different repository is outside what that token can ever do.",
+  "steps": [
+   "Find the step that failed and what it tried to do: comment on a pull request, push, create a release, label an issue.",
+   "Add a permissions block to that job granting just that, for example permissions: with pull-requests: write, or contents: write. Scopes you leave out drop to none.",
+   "If the run comes from a fork's pull request or Dependabot, the token is read-only by design; move the write into a workflow that runs on the base repository.",
+   "If it writes to another repository, use a GitHub App installation token or a personal access token stored as a secret instead of GITHUB_TOKEN."
+  ],
+  "again": "An admin can change the default in the repository's Settings, Actions, General, Workflow permissions; setting permissions per job in the workflow is the safer habit.",
+  "sources": [
+   [
+    "Controlling permissions for GITHUB_TOKEN (GitHub Docs)",
+    "https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token"
+   ],
+   [
+    "Managing GitHub Actions settings for a repository (GitHub Docs)",
+    "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository"
+   ]
+  ]
+ },
+ {
+  "slug": "n8n-json-parameter-needs-valid-json",
+  "platform": "n8n",
+  "title": "n8n \"JSON parameter needs to be valid JSON\": what it means and how to fix it",
+  "short": "n8n JSON parameter needs to be valid JSON",
+  "error": "JSON parameter needs to be valid JSON",
+  "ask": "my n8n workflow is failing with JSON parameter needs to be valid JSON",
+  "means": "A node (usually HTTP Request or Set) has a JSON field whose text is not valid JSON once n8n has filled in any expressions. The usual causes are a trailing comma, single quotes, an expression that puts a value with quotes or line breaks inside a string, or a value that is empty so the field reads {\"name\": }.",
+  "steps": [
+   "Open the failing node and look at the JSON field. Copy what the field resolves to (run the node once, or hover over the expression) into a JSON checker and read where it breaks.",
+   "Wrap any expression that fills in text in JSON.stringify so quotes and line breaks are escaped for you, for example {{ JSON.stringify($json.message) }}, and leave the quotes off around it.",
+   "Remove trailing commas and use double quotes only. If a value can be empty, give it a default, for example {{ $json.name ?? '' }}.",
+   "Run the node again with Execute node, then run the whole workflow."
+  ],
+  "again": "If it only breaks for some items, one of them has a value you did not plan for (an empty field, a line break, a quote). Pin that item's data on the node and test with it.",
+  "sources": [
+   [
+    "Expressions (n8n docs)",
+    "https://docs.n8n.io/code/expressions/"
+   ]
+  ]
+ },
+ {
+  "slug": "n8n-econnrefused-http-request",
+  "platform": "n8n",
+  "title": "n8n \"ECONNREFUSED\" on an HTTP Request node: why the connection is refused and how to fix it",
+  "short": "n8n ECONNREFUSED",
+  "error": "ECONNREFUSED · The service refused the connection - perhaps it is offline",
+  "ask": "my n8n workflow is failing with ECONNREFUSED the service refused the connection perhaps it is offline",
+  "means": "n8n tried to open a connection to an address and nothing was listening there. The most common reason is that n8n runs in Docker and the URL says localhost: inside the container, localhost is the container itself, not your computer or the other service.",
+  "steps": [
+   "Look at the URL the node calls. If it says localhost or 127.0.0.1 and n8n runs in Docker, replace it: use the other container's service name (for example http://my-api:3000) when both are in the same Docker network, or host.docker.internal for something on your own machine.",
+   "Check the port. The service has to be running and listening on the port in the URL; open the same URL from a terminal in the same place n8n runs to see if it answers.",
+   "If the target is a cloud service, check it is up and that a firewall or IP allow list is not refusing n8n's address.",
+   "Execute the node again once the URL answers."
+  ],
+  "again": "If it only fails now and then, the target is restarting or overloaded: turn on Retry On Fail in the node's settings and add a short wait between tries.",
+  "sources": [
+   [
+    "Docker installation (n8n docs)",
+    "https://docs.n8n.io/hosting/installation/docker/"
+   ]
+  ]
+ },
+ {
+  "slug": "power-automate-invalid-template-expression",
+  "platform": "Power Automate",
+  "title": "Power Automate \"InvalidTemplate\": why an expression fails and how to fix it",
+  "short": "Power Automate InvalidTemplate",
+  "error": "InvalidTemplate · Unable to process template language expressions in action",
+  "ask": "my power automate flow is failing with InvalidTemplate unable to process template language expressions in action",
+  "means": "An expression in one of the flow's actions could not be worked out. The input it points at is empty, missing or the wrong type, for example reading a field from an item that does not have it, or taking the first item of an empty list.",
+  "steps": [
+   "Open the flow's run history, open the failed run and click the action marked with the red cross. The error names the action and the expression.",
+   "Open the earlier action the expression reads from and look at its outputs: is the field there for this run, and is it text, a number or a list?",
+   "Make the expression forgiving: read optional fields with the question-mark form, body('Get_item')?['Title'], and give empty values a fallback with coalesce(), for example coalesce(triggerBody()?['email'], '').",
+   "Check lists before using them: use a Condition on length(body('List_rows')?['value']) greater than 0 before first(), or use a loop.",
+   "Save, then resubmit the failed run from run history."
+  ],
+  "again": "If it fails only for certain runs, the trigger is sometimes sent without a field. Test with that run's data on the trigger and add the fallback there.",
+  "sources": [
+   [
+    "Reference guide to workflow expression functions (Microsoft Learn)",
+    "https://learn.microsoft.com/en-us/azure/logic-apps/workflow-definition-language-functions-reference"
+   ]
+  ]
+ },
+ {
+  "slug": "power-automate-connection-needs-fixing",
+  "platform": "Power Automate",
+  "title": "Power Automate \"flow stopped: connection needs to be fixed\": how to reconnect and resume",
+  "short": "Power Automate connection needs fixing",
+  "error": "401 Unauthorized · connection is broken or needs to be fixed",
+  "ask": "my power automate flow is failing with 401 unauthorized the connection is broken and needs to be fixed",
+  "means": "One of the connections the flow uses (Outlook, SharePoint, Teams and so on) has expired or lost access, often after a password change, a multi-factor change or an admin policy. The flow cannot call the service until it is signed in again, so runs fail with a 401 or Unauthorized.",
+  "steps": [
+   "In Power Automate open Data, then Connections, and find the connection marked with a warning. Click Fix connection (or sign in again).",
+   "Open the flow and check each action uses the connection you just fixed, not an old one belonging to someone who has left.",
+   "If the flow turned itself off, turn it on again from the flow's page.",
+   "Open run history and Resubmit the runs that failed while it was broken."
+  ],
+  "again": "Flows owned by a person break when that person's account changes. Move important flows to a service account or share them with co-owners so someone else can fix the connection.",
+  "sources": [
+   [
+    "Fix flow failures (Microsoft Learn)",
+    "https://learn.microsoft.com/en-us/power-automate/fix-flow-failures"
+   ]
+  ]
+ },
+ {
+  "slug": "github-actions-npm-ci-lockfile-out-of-sync",
+  "platform": "GitHub Actions",
+  "title": "GitHub Actions \"npm ci can only install packages when package.json and package-lock.json are in sync\": the fix",
+  "short": "GitHub Actions npm ci lockfile out of sync",
+  "error": "npm ci can only install packages when your package.json and package-lock.json are in sync · Process completed with exit code 1",
+  "ask": "my github actions workflow is failing with npm ci can only install packages when your package.json and package-lock.json are in sync process completed with exit code 1",
+  "means": "npm ci installs exactly what package-lock.json lists and refuses to run if that file does not match package.json. Someone changed a dependency in package.json without updating the lock file, or the lock file was made with a different npm version.",
+  "steps": [
+   "On your computer run npm install in the project, so the lock file is rewritten to match package.json.",
+   "Commit package-lock.json and push. Make sure it is not in .gitignore.",
+   "Pin the same Node version in the workflow that you use locally with the setup-node action, so the lock file format matches: uses: actions/setup-node@v4 with node-version set to your version.",
+   "Re-run the workflow."
+  ],
+  "again": "If it comes back, two people are on different npm versions. Agree on one (an .nvmrc file or the engines field) and use it in the workflow.",
+  "sources": [
+   [
+    "npm ci (npm docs)",
+    "https://docs.npmjs.com/cli/commands/npm-ci"
+   ]
+  ]
+ },
+ {
+  "slug": "github-actions-permission-denied-publickey",
+  "platform": "GitHub Actions",
+  "title": "GitHub Actions \"Permission denied (publickey)\" on checkout: why it fails and how to fix it",
+  "short": "GitHub Actions Permission denied (publickey)",
+  "error": "Permission denied (publickey) · fatal: Could not read from remote repository",
+  "ask": "my github actions workflow is failing with Permission denied (publickey) fatal could not read from remote repository",
+  "means": "The job tried to fetch another private repository (a private submodule or a second checkout) and the credential it has is not allowed to read it. The automatic GITHUB_TOKEN only covers the repository the workflow runs in, and a runner has no SSH key of its own.",
+  "steps": [
+   "Decide how the job should read the other repository: a read-only deploy key on that repository, or a fine-grained personal access token or GitHub App token limited to it.",
+   "Store the key or token as a repository secret (Settings, Secrets and variables, Actions) and never paste it into the workflow file.",
+   "Give it to the checkout step, for example actions/checkout with token: ${{ secrets.OTHER_REPO_TOKEN }} (or ssh-key: for a deploy key), and set submodules: recursive if it is a submodule.",
+   "If the submodule URL uses git@github.com: and you use a token, change it to the https:// form.",
+   "Re-run the workflow."
+  ],
+  "again": "Tokens expire. If it worked for weeks and then stopped, renew the token and update the secret.",
+  "sources": [
+   [
+    "Automatic token authentication (GitHub Docs)",
+    "https://docs.github.com/en/actions/security-guides/automatic-token-authentication"
+   ]
+  ]
+ }
 ]

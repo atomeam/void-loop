@@ -1,0 +1,318 @@
+{
+  "note": "How V01D reinvests its own money (Adam, 2026-10-15). Public by design, so ranking and plan logic only: candidates at their public list prices, learned multipliers, and which proposals were sent (id, approval id, date). No income, balance, reserve or spend amounts: tools/reinvest.mjs reads net earnings from the owner-only GET /api/earnings in memory and sends each funded item to the confirm line (order.place) with its cost, expected payback, check date and payoff-test baseline, all owner-only in D1. Metrics: sales (sale count from /api/earnings), misses (open misses from /api/misses, down is better), signups (not measured yet: nothing learned from it). Plan in docs/reinvest.md.",
+  "owned_accounts": [
+    "cloudflare",
+    "github",
+    "gumroad"
+  ],
+  "learned": {
+    "revenue": 1,
+    "speed": 1,
+    "quality": 1
+  },
+  "candidates": [
+    {
+      "id": "workers-paid",
+      "item": "Cloudflare Workers Paid",
+      "kind": "revenue",
+      "cost_cents": 500,
+      "monthly": true,
+      "impact": 0.9,
+      "confidence": 0.9,
+      "urgent": true,
+      "wishlist": 6,
+      "match": "Workers",
+      "free_path": "stay under Workers AI's free 10k neurons/day and 1k KV writes/day (wishlist 1 and 2: gemma, edge cache)",
+      "free_done": false,
+      "account": "cloudflare",
+      "why": "the free AI cap was hit (125% on Oct 14): answers fail after it, and every failed answer is a lost visitor or sale",
+      "expected": "no more capped answers; 10M requests and 1M KV writes a month",
+      "metric": "misses"
+    },
+    {
+      "id": "domain",
+      "item": "a-to-mind.com renewal, set aside (Cloudflare at-cost .com, about $10.50/yr)",
+      "kind": "revenue",
+      "cost_cents": 1050,
+      "impact": 0.6,
+      "confidence": 1,
+      "account": "cloudflare",
+      "why": "the store and every film link live on the domain; losing it would end all revenue",
+      "expected": "the domain never lapses",
+      "metric": "sales"
+    },
+    {
+      "id": "sample-prints",
+      "item": "a small test batch of printed Forge models (V01D's 'micro-business test')",
+      "kind": "revenue",
+      "cost_cents": 1500,
+      "impact": 0.5,
+      "confidence": 0.4,
+      "free_path": "sell the files digitally first (V01D Forge Printables, live)",
+      "free_done": true,
+      "why": "V01D asked for a tiny product test; physical prints show whether people pay for the objects, not just the files",
+      "expected": "first physical-goods sale or a clear no",
+      "metric": "sales"
+    },
+    {
+      "id": "stripe",
+      "item": "Turn on Stripe for fixed-price checkout (no monthly fee; per-sale fee only)",
+      "kind": "revenue",
+      "cost_cents": 0,
+      "impact": 0.8,
+      "confidence": 0.7,
+      "why": "paid products wait as 'coming soon' without it or a Gumroad listing",
+      "expected": "fixed-price products can sell",
+      "needs": "Adam's login",
+      "metric": "sales"
+    },
+    {
+      "id": "business-email",
+      "item": "Business email on a-to-mind.com",
+      "kind": "revenue",
+      "cost_cents": 700,
+      "monthly": true,
+      "impact": 0.4,
+      "confidence": 0.8,
+      "free_path": "Cloudflare Email Routing to Adam's inbox (free) plus the bot inbox",
+      "free_done": false,
+      "why": "a store and a payment processor want a reachable business address",
+      "expected": "Stripe and buyers have a real contact",
+      "metric": "sales"
+    },
+    {
+      "id": "promotion",
+      "item": "Ads-free promotion: post every V01D film as a Short, list V01D in AI directories and the MCP registry (live), share store packs",
+      "kind": "revenue",
+      "cost_cents": 0,
+      "impact": 0.7,
+      "confidence": 0.6,
+      "why": "visitors are the input to every sale; free reach comes before paid ads",
+      "expected": "more store visits per week",
+      "metric": "sales"
+    },
+    {
+      "id": "compute",
+      "item": "CI compute: keep the public repo on GitHub's free runners and trim the slowest workflows",
+      "kind": "speed",
+      "cost_cents": 0,
+      "impact": 0.5,
+      "confidence": 0.8,
+      "why": "faster checks mean faster merges",
+      "expected": "shorter time from push to green"
+    },
+    {
+      "id": "coingecko",
+      "item": "CoinGecko Basic",
+      "kind": "quality",
+      "cost_cents": 3500,
+      "monthly": true,
+      "impact": 0.5,
+      "confidence": 0.6,
+      "wishlist": 3,
+      "match": "Crypto",
+      "free_path": "keyless CoinGecko behind a 2-minute edge cache (live), then the free Demo key",
+      "free_done": false,
+      "why": "crypto prices that never run dry",
+      "expected": "no empty crypto cards",
+      "metric": "misses"
+    },
+    {
+      "id": "x-api",
+      "item": "X API Basic",
+      "kind": "quality",
+      "cost_cents": 20000,
+      "monthly": true,
+      "impact": 0.5,
+      "confidence": 0.5,
+      "wishlist": 4,
+      "match": "Social",
+      "free_path": "official embeds, Bluesky and Mastodon (live)",
+      "free_done": false,
+      "why": "X timelines and search",
+      "expected": "social card covers X",
+      "metric": "misses"
+    }
+  ],
+  "proposed": [],
+  "plan": {
+    "at": "2026-10-28T17:23:24.903Z",
+    "wishlist_rows": 14,
+    "learned": {
+      "revenue": 1,
+      "speed": 1,
+      "quality": 1
+    },
+    "voice": {
+      "weight": 0.3,
+      "shares": {
+        "reserve": 0.4,
+        "quality": 0.3,
+        "revenue": 0.3,
+        "speed": 0
+      },
+      "unmapped": [
+        {
+          "amount": 50,
+          "text": "Buy fractional shares or a diversified ETF"
+        }
+      ],
+      "voice": {
+        "revenue": 1.06,
+        "speed": 0.7,
+        "quality": 1.06,
+        "reserve": 1.18
+      },
+      "reserve": 0.2
+    },
+    "first_100": {
+      "income_cents": 10000,
+      "reserve_cents": 2000,
+      "reserve_share": 0.2,
+      "free": [
+        {
+          "id": "stripe",
+          "item": "Turn on Stripe for fixed-price checkout (no monthly fee; per-sale fee only)",
+          "cents": 0,
+          "why": "paid products wait as 'coming soon' without it or a Gumroad listing",
+          "kind": "revenue"
+        },
+        {
+          "id": "promotion",
+          "item": "Ads-free promotion: post every V01D film as a Short, list V01D in AI directories and the MCP registry (live), share store packs",
+          "cents": 0,
+          "why": "visitors are the input to every sale; free reach comes before paid ads",
+          "kind": "revenue"
+        },
+        {
+          "id": "compute",
+          "item": "CI compute: keep the public repo on GitHub's free runners and trim the slowest workflows",
+          "cents": 0,
+          "why": "faster checks mean faster merges",
+          "kind": "speed"
+        },
+        {
+          "id": "workers-paid",
+          "item": "stay under Workers AI's free 10k neurons/day and 1k KV writes/day (wishlist 1 and 2: gemma, edge cache)",
+          "cents": 0,
+          "why": "the free AI cap was hit (125% on Oct 14): answers fail after it, and every failed answer is a lost visitor or sale",
+          "kind": "revenue"
+        },
+        {
+          "id": "business-email",
+          "item": "Cloudflare Email Routing to Adam's inbox (free) plus the bot inbox",
+          "cents": 0,
+          "why": "a store and a payment processor want a reachable business address",
+          "kind": "revenue"
+        },
+        {
+          "id": "coingecko",
+          "item": "keyless CoinGecko behind a 2-minute edge cache (live), then the free Demo key",
+          "cents": 0,
+          "why": "crypto prices that never run dry",
+          "kind": "quality"
+        },
+        {
+          "id": "x-api",
+          "item": "official embeds, Bluesky and Mastodon (live)",
+          "cents": 0,
+          "why": "X timelines and search",
+          "kind": "quality"
+        }
+      ],
+      "funded": [
+        {
+          "id": "domain",
+          "item": "a-to-mind.com renewal, set aside (Cloudflare at-cost .com, about $10.50/yr)",
+          "cost_cents": 1050,
+          "why": "the store and every film link live on the domain; losing it would end all revenue",
+          "expected": "the domain never lapses",
+          "kind": "revenue",
+          "account": "cloudflare",
+          "metric": "sales",
+          "status": "ready",
+          "how": "Adam buys it in his existing cloudflare account"
+        },
+        {
+          "id": "workers-paid",
+          "item": "Cloudflare Workers Paid",
+          "cost_cents": 1500,
+          "why": "the free AI cap was hit (125% on Oct 14): answers fail after it, and every failed answer is a lost visitor or sale",
+          "expected": "no more capped answers; 10M requests and 1M KV writes a month",
+          "kind": "revenue",
+          "account": "cloudflare",
+          "metric": "misses",
+          "status": "ready",
+          "how": "Adam buys it in his existing cloudflare account"
+        },
+        {
+          "id": "sample-prints",
+          "item": "a small test batch of printed Forge models (V01D's 'micro-business test')",
+          "cost_cents": 1500,
+          "why": "V01D asked for a tiny product test; physical prints show whether people pay for the objects, not just the files",
+          "expected": "first physical-goods sale or a clear no",
+          "kind": "revenue",
+          "account": null,
+          "metric": "sales",
+          "status": "queued",
+          "how": "needs Adam: no account Verse may use yet (none is opened for it)"
+        }
+      ],
+      "saving": null,
+      "held_cents": 3950,
+      "ranked": [
+        {
+          "id": "stripe",
+          "roi": 593.6,
+          "eligible": true,
+          "cost_cents": 0
+        },
+        {
+          "id": "promotion",
+          "roi": 445.2,
+          "eligible": true,
+          "cost_cents": 0
+        },
+        {
+          "id": "compute",
+          "roi": 280,
+          "eligible": true,
+          "cost_cents": 0
+        },
+        {
+          "id": "domain",
+          "roi": 0.0606,
+          "eligible": true,
+          "cost_cents": 1050
+        },
+        {
+          "id": "workers-paid",
+          "roi": 0.0572,
+          "eligible": true,
+          "cost_cents": 1500
+        },
+        {
+          "id": "business-email",
+          "roi": 0.0162,
+          "cost_cents": 2100
+        },
+        {
+          "id": "sample-prints",
+          "roi": 0.0141,
+          "eligible": true,
+          "cost_cents": 1500
+        },
+        {
+          "id": "coingecko",
+          "roi": 0.003,
+          "cost_cents": 10500
+        },
+        {
+          "id": "x-api",
+          "roi": 0.0004,
+          "cost_cents": 60000
+        }
+      ]
+    }
+  }
+}

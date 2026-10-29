@@ -1,0 +1,91 @@
+# The site tester (tools/site-test.mjs): live a-to-mind.com in headless Chrome, after every deploy and once an hour. It only tests:
+# every non-GET request is answered inside the browser, so nothing is submitted, posted, bought, sent or logged on Verse.
+# Every run ends in one improvement (tools/site-test.log.json): a new failure or a wording Verse missed opens ONE issue labelled
+# site-test (the same title is never opened twice; an open one gets no comment spam), else the suite grows or a limit tightens,
+# committed to main as data (suite, seen-set, log: tester-made asks only, never a visitor's words). Screenshots are the artifact.
+name: Site test
+
+on:
+  schedule:
+    - cron: '41 * * * *'
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: site-test
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the suite, seen-set and run log on main
+  issues: write   # one fix item per distinct failure
+  pull-requests: write # the teach PR (tools/site-teach.mjs)
+  actions: write  # start Verse's review on the teach PR (a PR opened with this token starts no pull_request run)
+
+jobs:
+  test:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Test the live site and pick this run's improvement
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/site-test.mjs --improve --shots site-test-shots || echo "::warning title=Site test::a regression case failed (the issue step files it once)"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: site-test-shots
+          path: site-test-shots/
+          retention-days: 7
+      - name: File the fix item once
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title=$(node -e "const j=require('./site-test-shots/improvement.json');process.stdout.write(j.title||'')" 2>/dev/null || true)
+          [ -z "$title" ] && { echo "no item this run"; exit 0; }
+          gh label create site-test --color 5319e7 --description "Found by the site tester" 2>/dev/null || true
+          seen=$(gh issue list --label site-test --state all --limit 200 --json title --jq '.[].title' | grep -Fxc -- "$title" || true)
+          [ "$seen" != "0" ] && { echo "already filed: $title"; exit 0; }
+          url=$(gh issue create --label site-test --title "$title" --body "Found by the site tester (tools/site-test.mjs) on live a-to-mind.com, run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} (screenshots in its artifact). Fix it with a regression test; for a missed wording, teach the skill the phrase (its examples or match) and keep the case in tools/site-test.json.")
+          echo "ISSUE=${url##*/}" >> "$GITHUB_ENV"; echo "TITLE=$title" >> "$GITHUB_ENV"
+      - name: Verify every "built" claim answers live (the showcase plays only these)
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/claims-verify.mjs --live || echo "::warning title=Claims::some built claims fall through to the fallback; they show as in progress"
+      - name: Nothing clipped at three window sizes (tools/no-clip.mjs)
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/no-clip.mjs || { echo "::error title=Clipped::the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700"; exit 1; }
+      - name: Keep the suite, seen-set and run log
+        run: |
+          node tools/tester-log.mjs # the stage's tester-log card reads this public view (asked by Verse)
+          git diff --quiet -- tools/site-test.json tools/site-test.seen.json tools/site-test.log.json void-live-deploy/tester-log.json void-live-deploy/claims-verified.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/site-test.json tools/site-test.seen.json tools/site-test.log.json void-live-deploy/tester-log.json void-live-deploy/claims-verified.json
+          git commit -m "Site test: $(node -e "const l=require('./tools/site-test.log.json');process.stdout.write(l.at(-1).note.slice(0,60))")"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1
+      - name: Teach Verse the wording it missed (a ready PR, merged on green)
+        if: env.ISSUE != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          case "$TITLE" in *"teach Verse"*) ;; *) echo "not a teach item"; exit 0;; esac
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin main && git checkout -q -B teach-base origin/main
+          out=$(node tools/site-teach.mjs --from-title "$TITLE" --issue "$ISSUE" --pr) || exit 0
+          echo "$out"; pr=$(echo "$out" | grep -o 'pull/[0-9]*' | cut -d/ -f2)
+          [ -n "$pr" ] && gh workflow run void-review.yml -f pr="$pr" || true

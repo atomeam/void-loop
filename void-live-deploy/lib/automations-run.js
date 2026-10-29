@@ -1,5 +1,5 @@
 /**
- * Void's automations, the side that touches the world (lib/automations.js says what a rule may do; this runs it).
+ * Verse's automations, the side that touches the world (lib/automations.js says what a rule may do; this runs it).
  * D1: void_automations (the rules) and void_automation_runs (what each run did, newest 200 kept). GitHub through its
  * REST API with GITHUB_TOKEN (a fine-grained token the owner sets in the Pages project: contents + pull requests +
  * issues on the allowed repos). Without the token a GitHub step fails with that reason in the log, nothing else.
@@ -38,12 +38,15 @@ const slugId = (name) => (String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
 export async function ensure(env) { for (const t of TABLES) await env.DB.prepare(t).run(); try { await env.DB.prepare(ADD_SCOPE).run(); } catch (_) {} }
 
-/** the rules of one scope ('' = the owner's; a paid member's watches live under their account id) and the last runs */
-export async function list(env, { scope = '' } = {}) {
+/** the rules of one scope ('' = the owner's; a paid member's watches live under their account id) and the last runs: the 30 newest
+ * across all rules, or, with `rule`, that one rule's 100 newest (an approve card reads a night of runs; skills/approve-card.js) */
+export async function list(env, { scope = '', rule = '' } = {}) {
   await ensure(env);
   const rules = (await env.DB.prepare('SELECT id, name, enabled, rule, hook, created, updated, scope FROM void_automations WHERE scope = ? ORDER BY created').bind(scope).all()).results || [];
   const ids = new Set(rules.map((r) => r.id));
-  const runs = ((await env.DB.prepare('SELECT id, rule_id, at, trigger, ok, log FROM void_automation_runs ORDER BY at DESC LIMIT 60').all()).results || []).filter((r) => ids.has(r.rule_id)).slice(0, 30);
+  const runs = rule
+    ? ((await env.DB.prepare('SELECT id, rule_id, at, trigger, ok, log FROM void_automation_runs WHERE rule_id = ? ORDER BY at DESC LIMIT 100').bind(String(rule)).all()).results || []).filter((r) => ids.has(r.rule_id))
+    : ((await env.DB.prepare('SELECT id, rule_id, at, trigger, ok, log FROM void_automation_runs ORDER BY at DESC LIMIT 60').all()).results || []).filter((r) => ids.has(r.rule_id)).slice(0, 30);
   return {
     rules: rules.map((r) => ({ ...JSON.parse(r.rule), id: r.id, enabled: !!r.enabled, hasHook: !!r.hook, created: r.created, updated: r.updated, scope: r.scope || '' })),
     runs: runs.map((r) => ({ id: r.id, rule: r.rule_id, at: r.at, trigger: r.trigger, ok: !!r.ok, log: JSON.parse(r.log) })),
@@ -87,7 +90,7 @@ export async function remove(env, id, scope) {
 }
 
 // ---- the watch (lib/watch.js): fetch one thing, judge it, keep the check as its record ----
-const UA = { 'user-agent': 'Void/1.0 (https://a-to-mind.com; a standing watch asked for by a person)' };
+const UA = { 'user-agent': 'Verse/1.0 (https://a-to-mind.com; a standing watch asked for by a person)' };
 /** what one check looks at: a temperature, a page's text, or the clock */
 export async function sampleFor(w, { fetcher = fetch, now = Date.now } = {}) {
   if (w.kind === 'time') return { now: typeof now === 'function' ? now() : now };
@@ -129,7 +132,7 @@ export async function hookOk(stored, given) { return !!stored && typeof given ==
 // ---- the actions ----
 const GH = 'https://api.github.com';
 async function gh(env, fetcher, method, path, body) {
-  if (!env.GITHUB_TOKEN) throw new Error('GITHUB_TOKEN is not set in the Pages project, so Void cannot reach GitHub');
+  if (!env.GITHUB_TOKEN) throw new Error('GITHUB_TOKEN is not set in the Pages project, so Verse cannot reach GitHub');
   const r = await fetcher(GH + path, { method, headers: { authorization: 'Bearer ' + env.GITHUB_TOKEN, accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28', 'user-agent': 'void-automations', ...(body ? { 'content-type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined });
   const data = await r.json().catch(() => null);
   return { status: r.status, ok: r.ok, data };
@@ -167,7 +170,7 @@ export async function act(env, step, { fetcher = fetch } = {}) {
       const put = await gh(env, fetcher, 'PUT', repo + '/contents/' + pathEnc(f.path), { message: step.title, content: b64(f.content), branch: step.branch, ...(cur.ok && cur.data && cur.data.sha ? { sha: cur.data.sha } : {}) });
       if (!put.ok) throw new Error('could not write ' + f.path + ' (' + put.status + ')');
     }
-    const pr = await gh(env, fetcher, 'POST', repo + '/pulls', { title: step.title, head: step.branch, base: step.base, body: step.body || 'Opened by a Void automation.', draft: true });
+    const pr = await gh(env, fetcher, 'POST', repo + '/pulls', { title: step.title, head: step.branch, base: step.base, body: step.body || 'Opened by a Verse automation.', draft: true });
     if (pr.ok) return 'opened ' + pr.data.html_url;
     if (pr.status === 422) { const open = await gh(env, fetcher, 'GET', repo + '/pulls?state=open&head=' + enc(step.repo.split('/')[0] + ':' + step.branch)); if (open.ok && open.data && open.data[0]) return 'updated ' + open.data[0].html_url; }
     throw new Error('could not open the pull request (' + pr.status + ')');

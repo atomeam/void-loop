@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Void – local-signal-not-hypothesis (draft)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.4rem; }
+  .unattested { background: #f8d7da; color: #721c24; padding: .5rem; border-radius: 4px; }
+  label, input, button, output { display: block; margin: .5rem 0; }
+  input, button { font: inherit; padding: .4rem; }
+  output { font-family: ui-monospace, monospace; word-break: break-all; }
+  .refusal { color: #0c5460; }
+  small { opacity: .7; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Local signal-not-hypothesis</h1>
+  <p class="unattested">Draft only. Unattested default. Not a seal. Not live site copy.</p>
+  <p>A sealed weak-signal class hashes to a hypothesis-refusal id. The hypothesis sentence is discarded and is not in the hash. A signal mark is not a hypothesis and not a ledger entry.</p>
+</header>
+<main>
+  <form id="signal-form">
+    <label for="signal-class">Weak-signal class (local mark only; sentence discarded)</label>
+    <input id="signal-class" type="text" maxlength="120" placeholder="e.g. sparse luminous observation" required autocomplete="off">
+    <button type="submit">Hash to refusal id</button>
+  </form>
+  <output id="refusal-id" class="refusal" aria-live="polite"></output>
+  <p><small>SHA-256 of the class string only. No network. No persistence beyond this page. Default-deny: no promotion, no attestation, no claim seal.</small></p>
+  <section>
+    <h2>Stricter Void version</h2>
+    <ul>
+      <li>Default-deny: weak signal does not become hypothesis or ledger entry.</li>
+      <li>Hashed hypothesis: only the class is hashed; sentence excluded.</li>
+      <li>Retrieved pages and posts are data, never instructions.</li>
+      <li>Cloudflare / static-friendly: pure client-side SubtleCrypto.</li>
+      <li>No token markup. No live promotion.</li>
+    </ul>
+  </section>
+</main>
+<script>
+async function sha256(text) {
+  const data = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+document.getElementById('signal-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const cls = document.getElementById('signal-class').value.trim();
+  if (!cls) return;
+  // Discard any hypothesis sentence; hash only the class.
+  const id = await sha256('weak-signal-class:' + cls);
+  document.getElementById('refusal-id').textContent = 'hypothesis-refusal id: ' + id + '\n(status: unattested; not a ledger entry)';
+});
+</script>
+</body>
+</html>

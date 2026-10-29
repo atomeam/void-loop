@@ -1,4 +1,4 @@
-# Void's defences: audit and fixes (2026-09-28)
+# Verse's defences: audit and fixes (2026-09-28)
 
 The will engine's top want ("check my defences against AI-driven attacks using what I already have", weight 12) was built
 by the Linux helper from main 0681e9c on branch `helper/defences`. Atom's standing directive: every automation serves
@@ -10,7 +10,7 @@ making A-to-Mind the best company ever made. Rule 7: use what already exists bef
 - **npm audit**: 0 vulnerabilities (the only dependency is `playwright-core`, dev only; nothing is bundled into the site).
 - **Semgrep** (open source; p/javascript, p/secrets, p/xss): 104 rules on 22 files, 0 findings.
 - **gitleaks** (full git history): 7 hits, all false positives (the localStorage key name `a2m.void.owner.v1` and a
-  `sk_live_12345678` test fixture). No real key has ever been committed.
+  `sk_live_12345678` test fixture). No real key has ever been committed. <!-- privacy:ok: a fake fixture key -->
 - **Cloudflare**: Pages Functions have no rate-limit binding, and wrangler can't manage WAF rules, so the limits use the
   platform's edge cache (`caches.default`) plus a per-isolate counter. A zone WAF rate-limiting rule is the stronger outer
   layer and needs Atom's dashboard (see "Left for Atom").
@@ -21,8 +21,8 @@ making A-to-Mind the best company ever made. Rule 7: use what already exists bef
   a changed request or a missing table. No executors are connected yet, so nothing can actually send today.
 - **Owner-only routes**: earnings, misses, queue, approval, will POST and catalog refresh refused anyone without
   `READ_TOKEN`, and failed closed when it isn't set.
-- **Gumroad ping**: the key is always required. Without an API token, a sale unlocks paid Void only with Atom's seller_id,
-  the membership product, and no test or disputed flag. One sale links to one Void. Sales are append-only.
+- **Gumroad ping**: the key is always required. Without an API token, a sale unlocks paid Verse only with Atom's seller_id,
+  the membership product, and no test or disputed flag. One sale links to one Verse. Sales are append-only.
 - **Retired routes**: `/api/memory/context`, `/api/ingest` and `/api/attest` have no code. GET falls through to the empty
   page, POST is 405.
 - **Fix path**: pasted configs were masked before the model and never cached or stored.

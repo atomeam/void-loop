@@ -1,0 +1,1496 @@
+[
+ {
+  "at": "2026-10-15T06:04:21Z",
+  "passed": 10,
+  "of": 10,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"my actions\" (skill:actions)"
+ },
+ {
+  "at": "2026-10-15T06:20:22Z",
+  "passed": 11,
+  "of": 11,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"air quality in Tokyo\" (skill:air)"
+ },
+ {
+  "at": "2026-10-15T06:23:11Z",
+  "passed": 6,
+  "of": 12,
+  "kind": "file",
+  "key": "what are you? | console: Failed to load module script: Expected a JavaScript",
+  "note": "fix: \"what are you?\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
+ },
+ {
+  "at": "2026-10-15T06:25:50Z",
+  "passed": 8,
+  "of": 12,
+  "kind": "file",
+  "key": "play voidquest | console: Failed to load module script: Expected a JavaScript",
+  "note": "fix: \"play voidquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
+ },
+ {
+  "at": "2026-10-15T06:28:23Z",
+  "passed": 7,
+  "of": 12,
+  "kind": "file",
+  "key": "play solarquest | console: Failed to load module script: Expected a JavaScript",
+  "note": "fix: \"play solarquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
+ },
+ {
+  "at": "2026-10-15T06:31:10Z",
+  "passed": 11,
+  "of": 12,
+  "kind": "file",
+  "key": "what did this video teach? | nothing appeared",
+  "note": "fix: \"what did this video teach?\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T06:34:08Z",
+  "passed": 7,
+  "of": 12,
+  "kind": "teach",
+  "key": "teach | yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+  "note": "teach V01D \"yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:36:52Z",
+  "passed": 2,
+  "of": 12,
+  "kind": "teach",
+  "key": "teach | can we play despacito",
+  "note": "teach V01D \"can we play despacito\" (means \"play despacito\", skill:video-play): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:39:37Z",
+  "passed": 0,
+  "of": 12,
+  "kind": "teach",
+  "key": "teach | start despacito",
+  "note": "teach V01D \"start despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920' "
+ },
+ {
+  "at": "2026-10-15T06:42:25Z",
+  "passed": 0,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo play despacito",
+  "note": "teach V01D \"yo play despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920' "
+ },
+ {
+  "at": "2026-10-15T06:45:15Z",
+  "passed": 7,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo what does ephemeral mean",
+  "note": "teach V01D \"yo what does ephemeral mean\" (means \"define serendipity\", skill:define): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:48:00Z",
+  "passed": 11,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | what did this video teach? pls",
+  "note": "teach V01D \"what did this video teach? pls\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): nothing appeared"
+ },
+ {
+  "at": "2026-10-15T06:50:33Z",
+  "passed": 2,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo watch the apollo 11 landing",
+  "note": "teach V01D \"yo watch the apollo 11 landing\" (means \"play despacito\", skill:video-play): console: Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' b"
+ },
+ {
+  "at": "2026-10-15T06:53:09Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "what can I buy | console: script /lib/skill-family#js served as text/html; ch",
+  "note": "fix: \"what can I buy\" console: script /lib/skill-family.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:55:39Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "site | console: script /vendor/three-r#/build/three#module#min#js s",
+  "note": "fix: \"what are you?\" console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:58:08Z",
+  "passed": 8,
+  "of": 13,
+  "kind": "file",
+  "key": "menaing of saudade | refused: don't know this yet",
+  "note": "fix: \"menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:02:38Z",
+  "passed": 13,
+  "of": 13,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
+ },
+ {
+  "at": "2026-10-15T07:07:55Z",
+  "passed": 10,
+  "of": 14,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
+ },
+ {
+  "at": "2026-10-15T07:14:22Z",
+  "passed": 9,
+  "of": 15,
+  "kind": "file",
+  "key": "deifnition of hubris | refused: don't know this yet",
+  "note": "fix: \"deifnition of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:17:32Z",
+  "passed": 9,
+  "of": 15,
+  "kind": "file",
+  "key": "yo movie metadata for the matrix | refused: don't know this yet",
+  "note": "fix: \"yo movie metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:20:54Z",
+  "passed": 15,
+  "of": 15,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"bokos like dune\" (skill:book)"
+ },
+ {
+  "at": "2026-10-15T07:23:58Z",
+  "passed": 10,
+  "of": 16,
+  "kind": "file",
+  "key": "moive metadata for the matrix | refused: don't know this yet",
+  "note": "fix: \"moive metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:27:54Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "yo menaing of saudade | refused: don't know this yet",
+  "note": "fix: \"yo menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:34:43Z",
+  "passed": 11,
+  "of": 16,
+  "kind": "file",
+  "key": "my auotmations | refused: don't know this yet",
+  "note": "fix: \"my auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T08:17:23Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "find fimls about space | refused: don't know this yet",
+  "note": "fix: \"find fimls about space\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T08:35:24Z",
+  "passed": 14,
+  "of": 16,
+  "kind": "file",
+  "key": "catroon version of a plague | refused: don't know this yet",
+  "note": "fix: \"catroon version of a plague\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T08:58:55Z",
+  "passed": 14,
+  "of": 16,
+  "kind": "file",
+  "key": "deifntion of hubris | refused: don't know this yet",
+  "note": "fix: \"deifntion of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T10:30:49Z",
+  "passed": 15,
+  "of": 15,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo automations\" (skill:automations)"
+ },
+ {
+  "at": "2026-10-15T10:50:37Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "catroon version of a shipwreck | refused: don't know this yet",
+  "note": "fix: \"catroon version of a shipwreck\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T11:56:55Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "auotmations | refused: don't know this yet",
+  "note": "fix: \"auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T12:07:13Z",
+  "passed": 16,
+  "of": 16,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo new automation\" (skill:automations)"
+ },
+ {
+  "at": "2026-10-15T12:12:56Z",
+  "passed": 16,
+  "of": 17,
+  "kind": "file",
+  "key": "catroon version of gg allin | refused: don't know this yet",
+  "note": "fix: \"catroon version of gg allin\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T15:57:36Z",
+  "passed": 16,
+  "of": 17,
+  "kind": "file",
+  "key": "new auotmation | refused: don't know this yet",
+  "note": "fix: \"new auotmation\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T16:11:51Z",
+  "passed": 11,
+  "of": 17,
+  "kind": "file",
+  "key": "dark | nothing appeared",
+  "note": "fix: \"dark\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T16:35:42Z",
+  "passed": 14,
+  "of": 17,
+  "kind": "file",
+  "key": "catroon version of a hard subject | refused: don't know this yet",
+  "note": "fix: \"catroon version of a hard subject\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T16:40:07Z",
+  "passed": 17,
+  "of": 18,
+  "kind": "file",
+  "key": "dismiss this | nothing appeared",
+  "note": "fix: \"dismiss this\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T16:50:11Z",
+  "passed": 17,
+  "of": 18,
+  "kind": "file",
+  "key": "what can this figure do | nothing appeared",
+  "note": "fix: \"what can this figure do\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T17:22:57Z",
+  "passed": 12,
+  "of": 18,
+  "kind": "file",
+  "key": "summon a sprite | nothing appeared",
+  "note": "fix: \"summon a sprite\" nothing appeared; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T17:47:37Z",
+  "passed": 17,
+  "of": 18,
+  "kind": "file",
+  "key": "give me a challenge with this | nothing appeared",
+  "note": "fix: \"give me a challenge with this\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T18:58:00Z",
+  "passed": 6,
+  "of": 18,
+  "kind": "file",
+  "key": "site | console: Failed to load resource: the server responded with ",
+  "note": "fix: \"update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list\" console: Failed to load resource: the server responded with a status of 520 ()"
+ },
+ {
+  "at": "2026-10-15T19:02:51Z",
+  "passed": 0,
+  "of": 18,
+  "kind": "file",
+  "key": "yo automations | nothing appeared",
+  "note": "fix: \"yo automations\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T20:06:20Z",
+  "passed": 0,
+  "of": 18,
+  "kind": "grow",
+  "note": "grew the suite: \"what time is it in tokyo\""
+ },
+ {
+  "at": "2026-10-15T20:10:35Z",
+  "passed": 0,
+  "of": 19,
+  "kind": "file",
+  "key": "label the clock kitchen | nothing appeared",
+  "note": "fix: \"label the clock kitchen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T20:35:25Z",
+  "passed": 0,
+  "of": 19,
+  "kind": "file",
+  "key": "make my void light | nothing appeared",
+  "note": "fix: \"make my void light\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T21:48:02Z",
+  "passed": 0,
+  "of": 19,
+  "kind": "grow",
+  "note": "grew the suite: \"weather in boston\""
+ },
+ {
+  "at": "2026-10-15T22:01:53Z",
+  "passed": 0,
+  "of": 20,
+  "kind": "grow",
+  "note": "grew the suite: \"convert 5 miles to km\""
+ },
+ {
+  "at": "2026-10-15T22:07:53Z",
+  "passed": 0,
+  "of": 21,
+  "kind": "file",
+  "key": "hide the sky | nothing appeared",
+  "note": "fix: \"hide the sky\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T22:49:16Z",
+  "passed": 0,
+  "of": 21,
+  "kind": "file",
+  "key": "play chess | nothing appeared",
+  "note": "fix: \"play chess\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T23:20:00Z",
+  "passed": 0,
+  "of": 21,
+  "kind": "grow",
+  "note": "grew the suite: \"play connect four\""
+ },
+ {
+  "at": "2026-10-16T01:42:30Z",
+  "passed": 0,
+  "of": 22,
+  "kind": "file",
+  "key": "download the print file | nothing appeared",
+  "note": "fix: \"download the print file\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T03:10:24Z",
+  "passed": 0,
+  "of": 22,
+  "kind": "file",
+  "key": "quiz me on this | nothing appeared",
+  "note": "fix: \"quiz me on this\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T03:25:28Z",
+  "passed": 0,
+  "of": 22,
+  "kind": "grow",
+  "note": "grew the suite: \"set a timer for 5 minutes\""
+ },
+ {
+  "at": "2026-10-16T03:41:58Z",
+  "passed": 0,
+  "of": 23,
+  "kind": "grow",
+  "note": "grew the suite: \"what is 17 times 23\""
+ },
+ {
+  "at": "2026-10-16T04:06:43Z",
+  "passed": 0,
+  "of": 24,
+  "kind": "grow",
+  "note": "grew the suite: \"play reversi\""
+ },
+ {
+  "at": "2026-10-16T04:18:47Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "grow",
+  "note": "grew the suite: \"show me the night sky\""
+ },
+ {
+  "at": "2026-10-16T05:13:33Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "tighten",
+  "note": "load ceiling 15000 -> 1900 ms"
+ },
+ {
+  "at": "2026-10-16T05:25:04Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "tighten",
+  "note": "fps floor 1 -> 3"
+ },
+ {
+  "at": "2026-10-16T05:48:40Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "throw it off the screen | nothing appeared",
+  "note": "fix: \"throw it off the screen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:02:43Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what are they doing | nothing appeared",
+  "note": "fix: \"what are they doing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:09:19Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T06:26:11Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T06:31:32Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "zoom in on the figure | nothing appeared",
+  "note": "fix: \"zoom in on the figure\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:38:50Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1900 -> 1700 ms"
+ },
+ {
+  "at": "2026-10-16T06:45:10Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "give me 5 minutes with that | nothing appeared",
+  "note": "fix: \"give me 5 minutes with that\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:51:30Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T07:04:58Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "make my void dark | nothing appeared",
+  "note": "fix: \"make my void dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T07:15:33Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T07:37:17Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "send this away | nothing appeared",
+  "note": "fix: \"send this away\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T07:50:13Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T07:56:26Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what can motelet do | nothing appeared",
+  "note": "fix: \"what can motelet do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T08:04:30Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1700 -> 1500 ms"
+ },
+ {
+  "at": "2026-10-16T08:24:59Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "give me a goal with this | nothing appeared",
+  "note": "fix: \"give me a goal with this\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T08:39:08Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "group the timer with the clock | nothing appeared",
+  "note": "fix: \"group the timer with the clock\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T09:49:37Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T10:24:46Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "fps floor 3 -> 5"
+ },
+ {
+  "at": "2026-10-16T11:10:19Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1500 -> 1400 ms"
+ },
+ {
+  "at": "2026-10-16T11:56:52Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "label the note groceries | nothing appeared",
+  "note": "fix: \"label the note groceries\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T13:06:04Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "play voidquest | nothing appeared",
+  "note": "fix: \"play voidquest\" nothing appeared; no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 (); fps 3 < 5"
+ },
+ {
+  "at": "2026-10-16T13:54:16Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T14:38:42Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T15:29:50Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1400 -> 1200 ms"
+ },
+ {
+  "at": "2026-10-16T15:54:55Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T16:03:40Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T16:16:40Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T16:36:48Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T16:42:11Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "download the print file offline | nothing appeared",
+  "note": "fix: \"download the print file offline\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T16:59:40Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "quiz me | nothing appeared",
+  "note": "fix: \"quiz me\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T17:30:08Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T18:09:42Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T18:17:08Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T18:24:14Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T19:04:15Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T19:10:46Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T22:51:37Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T00:06:20Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T01:37:54Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "file",
+  "key": "any collisions | nothing appeared",
+  "note": "fix: \"any collisions\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T02:25:35Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "file",
+  "key": "turn this card into a note | nothing appeared",
+  "note": "fix: \"turn this card into a note\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 (); load 1208 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T02:48:01Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T06:04:06Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T06:09:27Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T06:15:29Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what can I buy | missing text /store|buy|\\$/",
+  "note": "fix: \"what can I buy\" missing text /store|buy|\\$/; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T06:26:48Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T07:19:24Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T07:26:44Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T07:32:11Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "zoom in | nothing appeared",
+  "note": "fix: \"zoom in\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T07:42:31Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T07:48:48Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "five minute challenge | nothing appeared",
+  "note": "fix: \"five minute challenge\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T07:56:04Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T08:05:32Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "switch my void to dark | nothing appeared",
+  "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T08:11:24Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "dismiss the selected thing | nothing appeared",
+  "note": "fix: \"dismiss the selected thing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T08:18:35Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T08:24:25Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what does this figure do | nothing appeared",
+  "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T08:31:36Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T08:39:02Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T08:44:50Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T08:50:25Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "set me a challenge with the gears | nothing appeared",
+  "note": "fix: \"set me a challenge with the gears\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T09:03:23Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "group everything | nothing appeared",
+  "note": "fix: \"group everything\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T09:09:31Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T09:15:36Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T09:22:52Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T09:37:26Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "label it pasta | nothing appeared",
+  "note": "fix: \"label it pasta\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T09:43:30Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "bring it to the front | nothing appeared",
+  "note": "fix: \"bring it to the front\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T09:49:14Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T09:57:04Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T10:04:20Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T10:10:51Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T10:26:08Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T10:32:13Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "hide the sky pls | nothing appeared",
+  "note": "fix: \"hide the sky pls\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T11:03:56Z",
+  "passed": 13,
+  "of": 25,
+  "kind": "file",
+  "key": "show me the night sky | load # ms > #",
+  "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:11:24Z",
+  "passed": 20,
+  "of": 25,
+  "kind": "file",
+  "key": "play voidquest | fps # < #",
+  "note": "fix: \"play voidquest\" fps 1 < 5"
+ },
+ {
+  "at": "2026-10-17T11:17:08Z",
+  "passed": 16,
+  "of": 25,
+  "kind": "file",
+  "key": "play chess | fps # < #",
+  "note": "fix: \"play chess\" fps 2 < 5"
+ },
+ {
+  "at": "2026-10-17T11:23:07Z",
+  "passed": 13,
+  "of": 25,
+  "kind": "file",
+  "key": "what can I buy | load # ms > #",
+  "note": "fix: \"what can I buy\" load 1244 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:28:39Z",
+  "passed": 14,
+  "of": 25,
+  "kind": "file",
+  "key": "test me on that | nothing appeared",
+  "note": "fix: \"test me on that\" nothing appeared"
+ },
+ {
+  "at": "2026-10-17T11:36:13Z",
+  "passed": 19,
+  "of": 25,
+  "kind": "file",
+  "key": "my actions | load # ms > #",
+  "note": "fix: \"my actions\" load 1251 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:42:36Z",
+  "passed": 16,
+  "of": 25,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"is waymo in austin\" (skill:rides)"
+ },
+ {
+  "at": "2026-10-17T11:53:29Z",
+  "passed": 24,
+  "of": 26,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"how much do i need to save a month to have 1 million in 30 years at 7%\" (skill:savings)"
+ },
+ {
+  "at": "2026-10-17T12:21:39Z",
+  "passed": 19,
+  "of": 27,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"draw a line\" (skill:shape)"
+ },
+ {
+  "at": "2026-10-17T13:52:50Z",
+  "passed": 26,
+  "of": 28,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"show the days until a date\" (skill:show-countdown)"
+ },
+ {
+  "at": "2026-10-17T14:29:51Z",
+  "passed": 19,
+  "of": 29,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"living spatial cards mind\" (skill:living-cards-mind)"
+ },
+ {
+  "at": "2026-10-17T17:36:35Z",
+  "passed": 20,
+  "of": 30,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"bluesky feed of jay.bsky.team\" (skill:social)"
+ },
+ {
+  "at": "2026-10-17T19:47:49Z",
+  "passed": 29,
+  "of": 31,
+  "kind": "file",
+  "key": "site | console: Access to fetch at 'https://www#thesportsdb#com/api",
+  "note": "fix: \"nfl team chiefs\" console: Access to fetch at 'https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=chiefs' from origin 'https://a-to-mind.c"
+ },
+ {
+  "at": "2026-10-17T20:35:41Z",
+  "passed": 29,
+  "of": 31,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"bench icon\" (skill:bench)"
+ },
+ {
+  "at": "2026-10-17T21:02:03Z",
+  "passed": 21,
+  "of": 32,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"drag friction\" (skill:friction)"
+ },
+ {
+  "at": "2026-10-17T21:21:26Z",
+  "passed": 32,
+  "of": 33,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"which games do you know\" (skill:know)"
+ },
+ {
+  "at": "2026-10-17T21:51:18Z",
+  "passed": 32,
+  "of": 34,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"what do you get if you merge a pizza and a black hole\" (skill:merge)"
+ },
+ {
+  "at": "2026-10-17T22:05:31Z",
+  "passed": 34,
+  "of": 35,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"is unwrap risky in rust\" (skill:technical-context)"
+ },
+ {
+  "at": "2026-10-17T22:18:36Z",
+  "passed": 36,
+  "of": 36,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"are you web4\" (skill:web4)"
+ },
+ {
+  "at": "2026-10-17T22:33:54Z",
+  "passed": 25,
+  "of": 37,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"toss it off the screen\" (skill:throw-off)"
+ },
+ {
+  "at": "2026-10-17T22:46:32Z",
+  "passed": 36,
+  "of": 38,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"what are the figures doing\" (skill:together)"
+ },
+ {
+  "at": "2026-10-17T22:56:47Z",
+  "passed": 37,
+  "of": 39,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"longevity trial watch\" (skill:trialwatch)"
+ },
+ {
+  "at": "2026-10-17T23:06:05Z",
+  "passed": 33,
+  "of": 40,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find a rumble video about bitcoin\" (skill:video)"
+ },
+ {
+  "at": "2026-10-17T23:19:19Z",
+  "passed": 39,
+  "of": 41,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"what rhymes with orange\" (skill:words)"
+ },
+ {
+  "at": "2026-10-17T23:49:12Z",
+  "passed": 41,
+  "of": 42,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"closer on the figure\" (skill:zoom-figure)"
+ },
+ {
+  "at": "2026-10-18T00:02:54Z",
+  "passed": 32,
+  "of": 43,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"turn the questions i missed into a five-minute challenge\" (skill:challenge)"
+ },
+ {
+  "at": "2026-10-18T00:19:50Z",
+  "passed": 42,
+  "of": 44,
+  "kind": "file",
+  "key": "site | console: Access to fetch at 'https://restcountries#com/v#/na",
+  "note": "fix: \"population of Japan\" console: Access to fetch at 'https://restcountries.com/v3.1/name/Japan?fields=name,capital,population,currencies,languages,area,f"
+ },
+ {
+  "at": "2026-10-18T00:31:24Z",
+  "passed": 42,
+  "of": 44,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
+ },
+ {
+  "at": "2026-10-18T00:52:54Z",
+  "passed": 35,
+  "of": 45,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
+ },
+ {
+  "at": "2026-10-18T02:53:48Z",
+  "passed": 44,
+  "of": 46,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
+ },
+ {
+  "at": "2026-10-18T03:06:28Z",
+  "passed": 42,
+  "of": 48,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"attention field\" (skill:attention-field-mind)"
+ },
+ {
+  "at": "2026-10-18T04:03:13Z",
+  "passed": 46,
+  "of": 48,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"swarm mind\" (skill:swarm-mind)"
+ },
+ {
+  "at": "2026-10-18T04:16:45Z",
+  "passed": 48,
+  "of": 50,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
+ },
+ {
+  "at": "2026-10-18T04:27:19Z",
+  "passed": 41,
+  "of": 51,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
+ },
+ {
+  "at": "2026-10-18T04:39:06Z",
+  "passed": 42,
+  "of": 52,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
+ },
+ {
+  "at": "2026-10-18T05:01:15Z",
+  "passed": 52,
+  "of": 53,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
+ },
+ {
+  "at": "2026-10-18T05:16:07Z",
+  "passed": 45,
+  "of": 54,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"csv table: name,age ⏎ ann,30 ⏎ bo,25\" (skill:csv-table)"
+ },
+ {
+  "at": "2026-10-18T05:30:07Z",
+  "passed": 54,
+  "of": 55,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"decision matrix for whether to move to Berlin\" (skill:decision-matrix)"
+ },
+ {
+  "at": "2026-10-18T06:02:59Z",
+  "passed": 54,
+  "of": 56,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"favorite this\" (skill:bookmarks)"
+ },
+ {
+  "at": "2026-10-18T06:18:56Z",
+  "passed": 55,
+  "of": 57,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"echo this\" (skill:echo-disagrees)"
+ },
+ {
+  "at": "2026-10-18T06:32:52Z",
+  "passed": 55,
+  "of": 58,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"approve later: keep morning-digest running every 2 hours\" (skill:approve-card)"
+ },
+ {
+  "at": "2026-10-18T06:45:07Z",
+  "passed": 59,
+  "of": 59,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"fly around\" (skill:fly)"
+ },
+ {
+  "at": "2026-10-18T06:59:10Z",
+  "passed": 57,
+  "of": 60,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"habit ring for write, walk, sleep\" (skill:habit-ring)"
+ },
+ {
+  "at": "2026-10-18T07:14:02Z",
+  "passed": 59,
+  "of": 61,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" (skill:idea-certificate)"
+ },
+ {
+  "at": "2026-10-18T07:27:02Z",
+  "passed": 52,
+  "of": 62,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"play a local audio file\" (skill:media-object)"
+ },
+ {
+  "at": "2026-10-18T08:43:06Z",
+  "passed": 52,
+  "of": 63,
+  "kind": "file",
+  "key": "what are you? | missing text /V#D/",
+  "note": "fix: \"what are you?\" missing text /V01D/; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-18T09:26:58Z",
+  "passed": 62,
+  "of": 63,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T10:02:42Z",
+  "passed": 54,
+  "of": 64,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T10:17:16Z",
+  "passed": 55,
+  "of": 65,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T11:21:11Z",
+  "passed": 56,
+  "of": 66,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo find me a sci-fi film from the 80s\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T12:35:31Z",
+  "passed": 64,
+  "of": 67,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s pls\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T13:46:58Z",
+  "passed": 57,
+  "of": 68,
+  "kind": "file",
+  "key": "find me a sc-ifi film from the 80s | refused: don't know this yet",
+  "note": "fix: \"find me a sc-ifi film from the 80s\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-18T14:06:18Z",
+  "passed": 67,
+  "of": 68,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T16:03:13Z",
+  "passed": 59,
+  "of": 69,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"films by kurosawa pls\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T18:18:28Z",
+  "passed": 68,
+  "of": 70,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"fimls by kurosawa\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T18:45:56Z",
+  "passed": 59,
+  "of": 71,
+  "kind": "file",
+  "key": "yo film metadata for ikiru | refused: don't know this yet",
+  "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-19T00:40:40Z",
+  "passed": 70,
+  "of": 71,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"film metadata for ikiru pls\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-19T02:18:29Z",
+  "passed": 71,
+  "of": 72,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"film meatdata for ikiru\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-19T02:33:17Z",
+  "passed": 63,
+  "of": 73,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"add task call mum friday high priority 30 min\" (skill:task-board)"
+ },
+ {
+  "at": "2026-10-19T04:58:40Z",
+  "passed": 64,
+  "of": 74,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"dim the void\" (skill:dim-void)"
+ },
+ {
+  "at": "2026-10-19T10:59:48Z",
+  "passed": 73,
+  "of": 74,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"arcade games\" (skill:arcade)"
+ },
+ {
+  "at": "2026-10-20T22:41:16Z",
+  "passed": 67,
+  "of": 75,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play chess",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "set a timer for 5 minutes",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "what is 17 times 23",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "arcade games",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   }
+  ],
+  "note": "new ground passed, kept as a regression case: \"my photos\" (skill:photos)"
+ },
+ {
+  "at": "2026-10-22T01:56:37Z",
+  "passed": 67,
+  "of": 78,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "what are you?",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play voidquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play chess",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play connect four",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "set a timer for 5 minutes",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "what is 17 times 23",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "play reversi",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   },
+   {
+    "ask": "arcade games",
+    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+   }
+  ],
+  "note": "new ground passed, kept as a regression case: \"contéstame en español\" (skill:languages)"
+ }
+]

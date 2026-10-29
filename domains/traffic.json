@@ -1,0 +1,98 @@
+{
+ "at": "2026-10-28T11:22Z",
+ "source": "verse",
+ "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
+ "week": {
+  "since": "2026-10-22",
+  "unique": true,
+  "people": 22,
+  "views": 152,
+  "ours": 2151,
+  "bots": 0
+ },
+ "days": [
+  {
+   "day": "2026-10-26",
+   "all": 1100,
+   "people": 54,
+   "ours": 1046,
+   "bots": 0,
+   "uniquePeople": 10
+  },
+  {
+   "day": "2026-10-27",
+   "all": 947,
+   "people": 11,
+   "ours": 936,
+   "bots": 0,
+   "uniquePeople": 9
+  },
+  {
+   "day": "2026-10-28",
+   "all": 256,
+   "people": 87,
+   "ours": 169,
+   "bots": 0,
+   "uniquePeople": 3
+  }
+ ],
+ "pages": [
+  {
+   "k": "/",
+   "n": 107
+  },
+  {
+   "k": "/emojis/",
+   "n": 6
+  },
+  {
+   "k": "/flip/",
+   "n": 6
+  },
+  {
+   "k": "/base64/",
+   "n": 5
+  },
+  {
+   "k": "/jobs/",
+   "n": 5
+  },
+  {
+   "k": "/conquered/",
+   "n": 3
+  },
+  {
+   "k": "/hosting/",
+   "n": 3
+  },
+  {
+   "k": "/convert/",
+   "n": 2
+  },
+  {
+   "k": "/cpan/",
+   "n": 2
+  },
+  {
+   "k": "/paint/",
+   "n": 2
+  }
+ ],
+ "referrers": [
+  {
+   "k": "google.com",
+   "n": 7
+  },
+  {
+   "k": "github.com",
+   "n": 4
+  }
+ ],
+ "countries": [
+  {
+   "k": "US",
+   "n": 144
+  }
+ ],
+ "line": "People this week: 22 (152 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
+}

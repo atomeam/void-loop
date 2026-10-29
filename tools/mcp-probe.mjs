@@ -1,6 +1,6 @@
-// mcp-probe — a real MCP client (the official SDK, @modelcontextprotocol/sdk) against Void's MCP endpoint (frontier #6):
+// mcp-probe — a real MCP client (the official SDK, @modelcontextprotocol/sdk) against Verse's MCP endpoint (frontier #6):
 // connect over streamable HTTP, initialize, list the tools, and call each one with an input whose answer is known. It proves an
-// MCP client can use Void, not only that the handler answers our own tests. .github/workflows/mcp-live.yml runs it against
+// MCP client can use Verse, not only that the handler answers our own tests. .github/workflows/mcp-live.yml runs it against
 // a-to-mind.com after each deploy; the SDK is installed there for this job only (the repo does not depend on it).
 //   node tools/mcp-probe.mjs [url]     default https://a-to-mind.com/api/mcp; exit 1 on the first thing that is wrong
 // Self-contained on purpose (no imports from this repo), so it can be copied next to an SDK install and run anywhere.
@@ -17,7 +17,7 @@ console.log('ok   initialize: ' + info.name + ' ' + info.version);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name);
-for (const want of ['review_code', 'review_code_closer', 'moon_phase', 'meteor_showers']) if (!names.includes(want)) fail('tools/list has no ' + want + ': ' + names.join(', '));
+for (const want of ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers']) if (!names.includes(want)) fail('tools/list has no ' + want + ': ' + names.join(', '));
 console.log('ok   tools/list: ' + names.join(', '));
 
 const call = async (name, args, check) => {
@@ -31,5 +31,7 @@ await call('review_code', { code: 'function f(a) { eval(a) }\ntry { f() } catch 
 await call('review_code_closer', { code: 'function f(a) { eval(a) }\ntry { f() } catch (e) {}', lang: 'javascript' }, (s, text) => s.tier === 'free' && (s.findings || []).some((f) => f.rule === 'eval') && /code-review/.test(text));
 await call('moon_phase', { date: '2026-10-11T00:00:00Z' }, (s) => s.illuminated >= 0 && s.illuminated <= 1 && typeof s.phase === 'string');
 await call('meteor_showers', { date: '2026-10-11' }, (s) => Array.isArray(s.active) && !!(s.next && s.next.name));
+// Verse's answer engine: a question it has answered before (the 7-day cache), and the open web answers when the model cannot
+await call('ask_void', { ask: 'what is the moon' }, (s) => typeof s.answer === 'string' && s.answer.length > 20);
 await client.close();
-console.log('mcp probe: an MCP client listed and called all four tools at ' + URL_);
+console.log('mcp probe: an MCP client listed and called all five tools at ' + URL_);

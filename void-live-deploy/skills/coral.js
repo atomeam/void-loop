@@ -7,6 +7,8 @@
  * "coral restoration florida keys", "reef accretion potential", "can coral survive heatwaves", "flonduran coral".
  */
 import { liveLine } from '../lib/reefwatch.js';
+import { cleanLower } from '../lib/ask-text.js';
+import { doseForecast, doseLines, MARINE_URL, WX_URL, KEYS } from '../lib/heat-dose.js'; // asked by Verse: the 48-hour projected dose
 
 export const ACCRETION_SOURCES = [
   { date: '2025', name: 'Toth et al., Scientific Reports', href: 'https://doi.org/10.1038/s41598-025-04818-3' },
@@ -21,9 +23,9 @@ export const HEAT_SOURCES = [
   { date: '2026-05-19', name: 'University of Miami', href: null },
 ];
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ACCRETION_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's)\s+)?(?:coral\s+restoration(?:\s+(?:in\s+)?(?:the\s+)?(?:florida\s+keys|florida|keys))?|(?:the\s+)?florida\s+keys\s+(?:coral\s+)?(?:reef|reefs|coral)(?:\s+restoration)?|reef[\s-]accretion(?:\s+potential)?|does\s+(?:coral\s+)?(?:planting|restoration)\s+(?:coral\s+)?work|does\s+planting\s+coral\s+work)$/;
-const HEAT_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's|what are)\s+)?(?:can\s+(?:coral|corals|coral\s+reefs|reefs)\s+survive\s+(?:a\s+)?(?:heatwaves?|heat\s+waves?|marine\s+heatwaves?|the\s+next\s+heatwave)|flonduran\s+corals?|heat[\s-]tolerant\s+corals?|coral\s+heat\s+(?:survival|tolerance)|coral\s+bleaching\s+(?:in\s+)?(?:florida|the\s+florida\s+keys))$/;
+const HEAT_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's|what are)\s+)?(?:can\s+(?:coral|corals|coral\s+reefs|reefs)\s+survive\s+(?:a\s+)?(?:heatwaves?|heat\s+waves?|marine\s+heatwaves?|the\s+next\s+heatwave)|flonduran\s+corals?|heat[\s-]tolerant\s+corals?|coral\s+heat\s+(?:survival|tolerance)|coral\s+bleaching\s+(?:in\s+)?(?:florida|the\s+florida\s+keys)|(?:coral\s+|reef\s+|florida\s+keys\s+)?heat[\s-]dose(?:\s+(?:ruler|forecast|card))?|(?:coral|reef)\s+heat\s+forecast|(?:the\s+)?(?:coral|reef)\s+(?:heat\s+)?dose\s+forecast)$/;
 
 /** Which card an ask wants: 'accretion', 'heat' or null. */
 export function coralOf(text) {
@@ -85,9 +87,11 @@ export function accretionHtml(esc) {
 }
 
 // live: lib/reefwatch.js liveLine() from the served reading (the reef watch keeps it daily), or null for the card without it
-export function heatHtml(esc, live = null) {
+export function heatHtml(esc, live = null, dose = null) {
   const c = heatCard();
+  const L = doseLines(dose);
   return '<h2>' + esc(c.title) + '</h2><div class="sub">' + esc(c.sub) + '</div>'
+    + (L.length ? '<div data-coral-dose><h3 style="margin:14px 0 4px;font-size:15px">' + esc(L[0]) + '</h3><p>' + esc(L[1]) + '</p><p>' + esc(L[2]) + '</p><p><b>' + esc(L[3]) + '</b></p><p style="' + SRC_STYLE + '">Water: <a href="https://open-meteo.com/en/docs/marine-weather-api" target="_blank" rel="noopener">Open-Meteo marine forecast</a> at ' + esc(KEYS.name) + '; UV and air: Open-Meteo forecast. NOAA\'s own maths: a HotSpot is water over the summer maximum (MMM), degree heating weeks add HotSpots of 1 °C and more. A projection, not a reading: the station\'s number is the record.</p></div>' : '')
     + (live ? '<div data-coral-live><h3 style="margin:14px 0 4px;font-size:15px">Right now</h3><p>' + esc(live.text) + ' <span style="' + SRC_STYLE + '">· <a href="' + esc(live.href) + '" target="_blank" rel="noopener">the station</a></span></p><p style="' + SRC_STYLE + '">' + esc(live.note) + '</p></div>' : '')
     + c.parts.map(([head, lines]) => '<h3 style="margin:14px 0 4px;font-size:15px">' + esc(head) + '</h3>'
       + lines.map(([line, i]) => '<p>' + (i < 0 ? '<b>' + esc(line) + '</b>' : esc(line) + ' <span style="' + SRC_STYLE + '">· ' + srcRef(c.sources[i], esc) + '</span>') + '</p>').join('')).join('')
@@ -101,10 +105,11 @@ async function run(text, api) {
   if (!which) return 'none';
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = which === 'heat' ? heatHtml(esc) : accretionHtml(esc); });
-  if (which === 'heat') { // the live level from the reef watch's served reading; the card stands without it
-    fetch('/reefwatch.json').then((r) => (r.ok ? r.json() : null)).catch(() => null).then((snap) => {
-      const live = liveLine(snap);
-      if (live && el && el.isConnected) el.innerHTML = heatHtml(esc, live); // void-review: ok: heatHtml escapes every value
+  if (which === 'heat') { // the live level from the reef watch's served reading, and the 48-hour dose coming; the card stands without either
+    const get = (u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    Promise.all([get('/reefwatch.json'), get(MARINE_URL), get(WX_URL)]).then(([snap, marine, wx]) => {
+      const live = liveLine(snap), dose = doseForecast(marine, wx);
+      if ((live || dose) && el && el.isConnected) el.innerHTML = heatHtml(esc, live, dose); // void-review: ok: heatHtml escapes every value
     });
   }
   return 'coral';
@@ -112,7 +117,7 @@ async function run(text, api) {
 
 export default {
   name: 'coral',
-  examples: ['coral restoration florida keys', 'reef accretion potential', 'does planting coral work', 'can coral survive heatwaves', 'flonduran coral', 'heat tolerant coral'],
+  examples: ['coral restoration florida keys', 'reef accretion potential', 'does planting coral work', 'can coral survive heatwaves', 'flonduran coral', 'heat tolerant coral', 'coral heat dose'],
   nearMisses: ['what is coral', 'coral color', 'coral springs florida', 'define coral', 'great barrier reef', 'coral reef fish'],
   coralOf,
   accretionCard,

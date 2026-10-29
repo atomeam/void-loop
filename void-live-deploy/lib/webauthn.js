@@ -1,4 +1,4 @@
-// WebAuthn (Level 3, W3C Recommendation 2026-08-25) verification for Void's passkeys. No dependencies:
+// WebAuthn (Level 3, W3C Recommendation 2026-08-25) verification for Verse's passkeys. No dependencies:
 // runs on Workers (Pages Functions) and in Node 20+ (the test suite) with only WebCrypto.
 // What it checks, per https://www.w3.org/TR/webauthn-3/#sctn-registering-a-new-credential and #sctn-verifying-assertion:
 //   clientDataJSON: type, challenge (the one we stored), origin (exact match), not cross-origin

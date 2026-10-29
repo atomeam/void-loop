@@ -5,7 +5,7 @@
  * "ragweed count in Vienna", "is pollen high in Madrid".
  * Shows the leading pollen type right now, grains/m3, a plain band + tip, today's peak,
  * and tomorrow's peak from the 4-day CAMS forecast.
- * Counts cover Europe (CAMS); elsewhere Void says so plainly.
+ * Counts cover Europe (CAMS); elsewhere Verse says so plainly.
  */
 const TYPES = [
   { key: 'grass_pollen', name: 'Grass' },

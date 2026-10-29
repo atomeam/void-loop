@@ -1,0 +1,3081 @@
+{
+ "floor": "sports",
+ "verse_page": "/scores/",
+ "researched": "2026-10-25",
+ "sites": {
+  "espn.com": {
+   "sources": [
+    "https://www.espn.com/",
+    "https://support.espn.com/hc/en-us/articles/15414854326676-Adjusting-Fantasy-Alert-Preferences",
+    "https://support.espn.com/hc/en-us/articles/115003858572-Fantasy-Football-On-Mobile",
+    "https://espnpressroom.com/?p=71038",
+    "https://www.espnfrontrow.com/2025/08/dtc-launch-week-a-sports-fans-guide-to-the-enhanced-espn-app/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Live scoreboard",
+     "detail": "Scores for every game of a day per league (NFL, NBA, MLB, NHL, soccer, college, F1, tennis, golf), live-updating, with date picker",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a league and a day, live / final / upcoming rows with local kick-off, status and scores, a day picker (yesterday, today, tomorrow, date box), 12 leagues (EPL, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL, F1), refresh every 30 s while a game is live; tennis and cricket not built (no free feed read)"
+    },
+    {
+     "group": "core",
+     "name": "Gamecast",
+     "detail": "Live play-by-play for one game: field/court drawing, win probability, box score, team stats, drive/shot charts",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): game detail has score, goals and cards, team stats, line-ups, play by play where the feed has it (plays or commentary), earlier meetings and each side's last five, and Verse's own win chance from score and clock with a curve over the visit; no field drawing, shot charts or ESPN's win probability"
+    },
+    {
+     "group": "core",
+     "name": "Box scores",
+     "detail": "Per-player stat lines for a finished or live game",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): US leagues: per-player tables; NFL tables add an estimated FPTS column with PPR, half and standard scoring (no fumbles, kickers or defences); soccer: events, stats and line-ups"
+    },
+    {
+     "group": "core",
+     "name": "Schedules",
+     "detail": "Team and league schedules with times in your zone, TV channel, results for past dates",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a team page with its next and last five games, kick-offs in the viewer zone, a day-by-day scoreboard, and an .ics file for an upcoming game; no TV channel"
+    },
+    {
+     "group": "core",
+     "name": "Standings",
+     "detail": "League, conference and division tables, playoff picture and clinch markers",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): sortable columns, search, a self-check of the sums, last-five form dots and a Verse rating (soccer), cut-line colours and a key where ESPN marks them; no playoff-picture view"
+    },
+    {
+     "group": "core",
+     "name": "Team pages",
+     "detail": "Roster, schedule, stats, news, injuries, depth chart, transactions",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): next and last five games and a follow star; no roster, stats, news, injuries or depth chart"
+    },
+    {
+     "group": "core",
+     "name": "Player pages",
+     "detail": "Bio, season and career stats, game log, splits, news",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "League stat leaders",
+     "detail": "Leaders by category, sortable stat tables",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Headlines and stories",
+     "detail": "News articles, columns and video highlights per league and team",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): Verse writes its own short stories from score data (Verse reports); no news articles, columns or video"
+    },
+    {
+     "group": "core",
+     "name": "Injury reports",
+     "detail": "Current injuries per team with status",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Favourites",
+     "detail": "Pick favourite teams and leagues; home, scores and alerts reorder around them",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): followed teams and leagues kept on the device (a2m.void.scores.v1), their games float to the top, a \"My teams\" view; no alerts"
+    },
+    {
+     "group": "power",
+     "name": "Score and game alerts",
+     "detail": "Push alerts for game start, scoring plays, close games, final; per team",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Fantasy games",
+     "detail": "Fantasy football, basketball, baseball, hockey leagues: draft, lineups, trades, waivers, live scoring",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no fantasy anything"
+    },
+    {
+     "group": "power",
+     "name": "Fantasy alerts",
+     "detail": "Per-league alerts for trades, add/drops, lineup warnings (support.espn.com)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Bracket and pick'em games",
+     "detail": "Tournament Challenge brackets, NFL pick'em, groups with friends",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Betting odds and lines",
+     "detail": "Spreads, totals, moneylines beside each game (ESPN BET)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Power rankings and predictions",
+     "detail": "Team rankings, Football Power Index, matchup predictor",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): Verse's own Elo-style rating over the last six weeks of results, labelled as such; no playoff odds"
+    },
+    {
+     "group": "power",
+     "name": "Historical results",
+     "detail": "Past seasons, champions, records",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Multiview",
+     "detail": "Watch up to four games at once on connected TV",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "StreamCenter two-screen",
+     "detail": "TV stream synced with live stats and alerts on the phone, spoiler-free",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share a game or story",
+     "detail": "Share links to games, clips and articles",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): a link holds league, day, tab, game or team; word-only preview; no per-game image"
+    },
+    {
+     "group": "sharing",
+     "name": "Fantasy league chat and trash talk",
+     "detail": "League message board",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile apps and widgets",
+     "detail": "iOS/Android apps, home-screen score widgets, Live Activities on lock screen",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Watch on TV apps",
+     "detail": "Roku, Apple TV, Fire TV, smart TV apps",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Captions on video",
+     "detail": "Closed captions on clips and streams",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Spoiler controls",
+     "detail": "Hide scores to watch later",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "ESPN streaming (ESPN+/ESPN Unlimited)",
+     "detail": "Live games, replays, originals, 30 for 30 library; pay-per-view UFC",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "ESPN+ Insider articles",
+     "detail": "Paywalled analysis, rankings and fantasy advice",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Fantasy premium tools",
+     "detail": "Projections and advanced fantasy tools behind subscription",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Fantasy: live points and my fantasy team",
+     "detail": "tier 2 of the owner's order (2026-10-26); not built",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/fantasy/ (2026-10-26, from the visitor's own sheet, on the device): compare, start or sit and trade from a pasted or opened sheet, plus box-score averages and an NFL FPTS estimate; no league sync, no live projections, no roster slots"
+    },
+    {
+     "group": "power",
+     "name": "Start/sit and trade comparator",
+     "detail": "tier 2; only where a free projection source exists",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/fantasy/ (2026-10-26, from the visitor's own sheet, on the device): start or sit with margin, floor and ceiling and a trade in the visitor's own value column; the numbers are the visitor's, not Verse's projections"
+    },
+    {
+     "group": "power",
+     "name": "Mock draft simulator",
+     "detail": "tier 2",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/fantasy/ (2026-10-26, from the visitor's own sheet, on the device): a snake mock draft from the sheet ranked by any column, on the scores Sports tab from a pasted list as well"
+    },
+    {
+     "group": "power",
+     "name": "Pick'em, survivor and bracket challenge, on device",
+     "detail": "tier 2 (no account, no wagering)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): weekly Pick'em (straight or confidence, tiebreaker, share link) and a Survivor tracker (no team twice); no bracket challenge"
+    },
+    {
+     "group": "power",
+     "name": "Playoff and standings simulator",
+     "detail": "tier 3",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): a What-if tab: tap upcoming games and the table recalculates with places moved; NBA, NFL, NHL and MLB conference tables mark playoff places by rank (NBA play-in too), said plainly that division winners and tiebreakers are not modelled"
+    },
+    {
+     "group": "power",
+     "name": "Trade and salary-cap checker",
+     "detail": "tier 3; needs a free reliable cap source, none found",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Power ratings, playoff odds, win-probability curve (Verse's own, computed from results)",
+     "detail": "tier 3; never called FPI/BPI/SPI",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Search across teams, leagues and players",
+     "detail": "teams filtered in a day's games and in a table; no league or player search",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ (lib/scores.js, functions/api/scores.js, tools/scores.test.mjs, tools/scores-page.mjs; 2026-10-26; fixture feeds, not yet read live): teams filtered in a day's games and in a table; no league or player search"
+    },
+    {
+     "group": "core",
+     "name": "Head-to-head and form in a game",
+     "detail": "tier 1 gap",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Polls and brackets (AP, CFP, NCAA)",
+     "detail": "tier 4",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Recruiting and transfer portal",
+     "detail": "tier 4; no free permitted source known",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Draft hubs",
+     "detail": "tier 4",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Golf leaderboard, UFC fight cards, tennis draws, NASCAR, medal tables",
+     "detail": "tier 4: tennis and cricket have no free feed read yet",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Injuries, depth charts and transactions",
+     "detail": "tier 4 (the team drawer)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Venue guides and radio links",
+     "detail": "tier 4",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "core",
+     "name": "Browse by sport (icon grid)",
+     "detail": "a grid of 42 emoji-icon sports; six have leagues with live feeds (soccer, basketball, American football, baseball, ice hockey, Formula 1), the rest say plainly that Verse has no free live feed and link to TheSportsDB (thesportsdb.com home page feature, owner 2026-10-26)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): a grid of 42 emoji-icon sports; six have leagues with live feeds (soccer, basketball, American football, baseball, ice hockey, Formula 1), the rest say plainly that Verse has no free live feed and link to TheSportsDB (thesportsdb.com home page feature, owner 2026-10-26)"
+    },
+    {
+     "group": "core",
+     "name": "Search teams, events, venues and players across sports",
+     "detail": "one box through /api/sportsearch to TheSportsDB free public v1 API (test key; edge-cached a day, 15 misses a minute, text fields only, source named)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): one box through /api/sportsearch to TheSportsDB free public v1 API (test key; edge-cached a day, 15 misses a minute, text fields only, source named)"
+    },
+    {
+     "group": "power",
+     "name": "Born on this day athletes",
+     "detail": "Wikipedia On this day births filtered to athletes by their one-line description, kept on the device for the day, CC BY-SA named",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): Wikipedia On this day births filtered to athletes by their one-line description, kept on the device for the day, CC BY-SA named"
+    },
+    {
+     "group": "power",
+     "name": "Hall of fame / famous players strip",
+     "detail": "no free dataset read",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    },
+    {
+     "group": "power",
+     "name": "Stats strip of held data",
+     "detail": "leagues, sports, followed teams and saved answers on this device",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): leagues, sports, followed teams and saved answers on this device"
+    },
+    {
+     "group": "power",
+     "name": "Free read-only API with docs",
+     "detail": "/api/scores documented in openapi.json (no key, no premium tier) and described on the Sports tab",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ Sports tab (2026-10-26, fixture feeds, not read live): /api/scores documented in openapi.json (no key, no premium tier) and described on the Sports tab"
+    },
+    {
+     "group": "core",
+     "name": "Editorial: recaps, previews, briefs",
+     "detail": "Verse reports tab: a recap per finished game, a preview per upcoming game, a league brief, a weekly roundup and top stories, written from the feeds' data (template first, model wording only if every number and name is in the data), labelled as written by Verse; no quotes, odds or injuries",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): Verse reports tab: a recap per finished game, a preview per upcoming game, a league brief, a weekly roundup and top stories, written from the feeds' data (template first, model wording only if every number and name is in the data), labelled as written by Verse; no quotes, odds or injuries"
+    },
+    {
+     "group": "core",
+     "name": "Match graphics (score card, timeline, stats bars, lineups, day collage)",
+     "detail": "inline SVG drawn from the feed's data with alt text, Save and Copy picture; lineups on a pitch only where the feed gives a formation",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/scores/ (2026-10-26, fixture feeds, not read live): inline SVG drawn from the feed's data with alt text, Save and Copy picture; lineups on a pitch only where the feed gives a formation"
+    },
+    {
+     "group": "core",
+     "name": "Shot charts",
+     "detail": "no shot coordinates verified in the free feed; none drawn",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse page does this yet"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "league stat leaders (no simple free feed read)",
+  "playoff cut-lines are only those ESPN notes",
+  "tennis and cricket (no free feed read yet)",
+  "team rosters, injuries and depth charts",
+  "player pages and stats",
+  "alerts",
+  "playoff seeding simulator, trade and salary-cap checker, playoff odds",
+  "polls and brackets, recruiting, draft hubs, golf/UFC/tennis/NASCAR templates, historical archive (tier 4, not started)",
+  "league stat leaders (ESPN's leaders endpoint shape not verified from here; computing from box scores needs one fetch per game)",
+  "fantasy league sync (ESPN, Yahoo, Sleeper) and live projections: not bundled; Sleeper, OpenF1 and Jolpica terms and fields could not be verified from the build sandbox"
+ ],
+ "verse_extra": [
+  "a team card from an ask in plain words with the stadium answered (\"what stadium do the yankees play in\")",
+  "no ads, no betting promotion, no account needed",
+  "live, final and upcoming games for 12 leagues with scores kept on the device when the feed is down",
+  "standings that check their own sums",
+  "an .ics file for any upcoming game",
+  "German UI"
+ ],
+ "first_page": "Scores page /scores/ for sports fans who want today's results without ads or betting. First: \"nba scores\" opens every game of the day for a league (live score, clock, final), date arrows, tap a game for its box score, standings tab, favourite teams kept on the device that float to the top, a link that holds league+date. Built on a keyless public scoreboard feed cached at the edge. Will not build: fantasy, odds, video streaming, articles or alerts.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "thesportsdb.com": {
+    "url": "https://www.thesportsdb.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.thesportsdb.com/",
+     "https://www.thesportsdb.com/contribute_guide",
+     "https://www.thesportsdb.com/pricing",
+     "https://www.thesportsdb.com/docs_api_testing",
+     "https://www.thesportsdb.com/docs_api_data",
+     "https://www.thesportsdb.com/channel/70-espn-premium-argentina-Schedule",
+     "https://www.thesportsdb.com/channel/2377-arena-sport-1-premium-rs-Schedule"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Welcome to TheSportsDB.com",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"com\"; not \"welcome\", \"thesportsdb\""
+     },
+     {
+      "name": "Born on this day",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"day\"; not \"born\""
+     },
+     {
+      "name": "Latest Edits (3,471 today)",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"3\"; not \"latest\", \"edit\", \"471\""
+     },
+     {
+      "name": "Hall of Fame",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"hall\", \"fame\""
+     },
+     {
+      "name": "Featured Events",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"featur\", \"event\""
+     },
+     {
+      "name": "Match Centre YouTube Highlights",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"match\", \"centre\", \"youtube\", \"highlight\""
+     },
+     {
+      "name": "Top live events on TV today",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"live\", \"today\"; not \"top\", \"event\""
+     },
+     {
+      "name": "All Events Scheduled today",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"schedul\", \"today\"; not \"event\""
+     },
+     {
+      "name": "Latest Player Edits",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"latest\", \"player\", \"edit\""
+     },
+     {
+      "name": "Latest Player Renders",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"latest\", \"player\", \"render\""
+     },
+     {
+      "name": "Latest Player Transfers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"latest\", \"player\", \"transfer\""
+     },
+     {
+      "name": "Latest Event Artwork",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"latest\", \"event\", \"artwork\""
+     },
+     {
+      "name": "Contribution Guide",
+      "detail": "a heading on /contribute_guide",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"contribution\", \"guide\""
+     },
+     {
+      "name": "Artwork",
+      "detail": "a heading on /contribute_guide",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"artwork\""
+     },
+     {
+      "name": "Event Schedules",
+      "detail": "a heading on /contribute_guide",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"schedule\"; not \"event\""
+     },
+     {
+      "name": "Team Data",
+      "detail": "a heading on /contribute_guide",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"team\", \"data\""
+     },
+     {
+      "name": "Player Data",
+      "detail": "a heading on /contribute_guide",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"data\"; not \"player\""
+     },
+     {
+      "name": "Missing Scores",
+      "detail": "a heading on /contribute_guide",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"miss\""
+     },
+     {
+      "name": "TV Schedules",
+      "detail": "a heading on /contribute_guide",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"schedule\""
+     },
+     {
+      "name": "API Upgrade Pricing",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"api\", \"upgrade\", \"pric\""
+     },
+     {
+      "name": "🆓 Free Sports API",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\"; not \"api\""
+     },
+     {
+      "name": "🧑 Single Developer",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"single\", \"developer\""
+     },
+     {
+      "name": "🏢 Small Business",
+      "detail": "a heading on /pricing",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"small\", \"busi\""
+     },
+     {
+      "name": "API Testing",
+      "detail": "a heading on /docs_api_testing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"api\", \"test\""
+     },
+     {
+      "name": "Intro",
+      "detail": "a heading on /docs_api_testing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"intro\""
+     },
+     {
+      "name": "Testing V1",
+      "detail": "a heading on /docs_api_testing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"test\""
+     },
+     {
+      "name": "Testing V2",
+      "detail": "a heading on /docs_api_testing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"test\""
+     },
+     {
+      "name": "API Data",
+      "detail": "a heading on /docs_api_data",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"data\"; not \"api\""
+     },
+     {
+      "name": "Livescore",
+      "detail": "a heading on /docs_api_data",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"livescore\""
+     },
+     {
+      "name": "Event Status",
+      "detail": "a heading on /docs_api_data",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"event\", \"statu\""
+     },
+     {
+      "name": "Rounds",
+      "detail": "a heading on /docs_api_data",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"round\""
+     },
+     {
+      "name": "Next Event",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"next\"; not \"event\""
+     },
+     {
+      "name": "ESPN Premium Argentina TV Schedule (Next 7 Days)",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": true,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"espn\", \"schedule\"; not \"premium\", \"argentina\""
+     },
+     {
+      "name": "Mon 26 Oct (today)",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"today\"; not \"mon\", \"26\", \"oct\""
+     },
+     {
+      "name": "Tue 27 Oct (tomorrow)",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"tomorrow\"; not \"tue\", \"27\", \"oct\""
+     },
+     {
+      "name": "Wed 28 Oct",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"wed\", \"28\", \"oct\""
+     },
+     {
+      "name": "Thu 29 Oct",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"thu\", \"29\", \"oct\""
+     },
+     {
+      "name": "Fri 30 Oct",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"fri\", \"30\", \"oct\""
+     },
+     {
+      "name": "Sat 31 Oct",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"sat\", \"31\", \"oct\""
+     },
+     {
+      "name": "Sun 01 Nov",
+      "detail": "a heading on /channel/70-espn-premium-argentina-Schedule",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"sun\", \"01\", \"nov\""
+     }
+    ]
+   },
+   "besoccer.com": {
+    "url": "https://www.besoccer.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.besoccer.com/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "THU. 22 OCT",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"thu\", \"22\", \"oct\""
+     },
+     {
+      "name": "FRI. 23 OCT",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"fri\", \"23\", \"oct\""
+     },
+     {
+      "name": "SAT. 24 OCT",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"sat\", \"24\", \"oct\""
+     },
+     {
+      "name": "TODAY",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"today\""
+     },
+     {
+      "name": "MON. 26 OCT",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"mon\", \"26\", \"oct\""
+     },
+     {
+      "name": "TUE. 27 OCT",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"tue\", \"27\", \"oct\""
+     },
+     {
+      "name": "WED. 28 OCT",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"wed\", \"28\", \"oct\""
+     },
+     {
+      "name": "Personal Data Processing Opt Outs",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"data\"; not \"personal\", \"process\", \"opt\""
+     },
+     {
+      "name": "Bet on this match now LIVE",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"bet\", \"live\"; not \"match\", \"now\""
+     }
+    ]
+   },
+   "int.soccerway.com": {
+    "url": "https://int.soccerway.com/",
+    "scanned": "2026-10-26",
+    "went_to": "us.soccerway.com",
+    "pages": [
+     "https://us.soccerway.com/",
+     "https://us.soccerway.com/faq/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Live Soccer Scores, Fixtures, Results & Tables",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"live\", \"score\"; not \"soccer\", \"fixture\""
+     },
+     {
+      "name": "General questions",
+      "detail": "a heading on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"general\", \"question\""
+     },
+     {
+      "name": "Product features",
+      "detail": "a heading on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"product\", \"feature\""
+     },
+     {
+      "name": "We Care About Your Privacy",
+      "detail": "a heading on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"care\", \"about\", \"privacy\""
+     },
+     {
+      "name": "We and our partners process data to provide",
+      "detail": "a heading on /faq/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"data\"; not \"our\", \"partner\", \"process\""
+     },
+     {
+      "name": "Full fixtures and results for all leagues",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"league\"; not \"full\", \"fixture\", \"result\""
+     },
+     {
+      "name": "In-depth team pages with performance data",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"team\", \"page\"; not \"depth\", \"performance\""
+     },
+     {
+      "name": "Player profiles including career stats and achievements",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"player\", \"profile\", \"includ\", \"career\""
+     },
+     {
+      "name": "Comprehensive league tables updated in real-time",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"league\", \"table\", \"updat\"; not \"comprehensive\""
+     },
+     {
+      "name": "General information",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"general\", \"information\""
+     },
+     {
+      "name": "Registration and user account",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"registration\", \"user\", \"account\""
+     },
+     {
+      "name": "Ads and subscription",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"ads\"; not \"subscription\""
+     },
+     {
+      "name": "Betting and odds",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"bett\", \"odd\""
+     },
+     {
+      "name": "Technical issues and solutions",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"technical\", \"issue\", \"solution\""
+     },
+     {
+      "name": "Favorites and other features",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"favorite\", \"other\", \"feature\""
+     },
+     {
+      "name": "Sports data and results",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\", \"data\"; not \"result\""
+     },
+     {
+      "name": "News and content",
+      "detail": "a list item on /faq/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"new\"; not \"content\""
+     },
+     {
+      "name": "I Accept",
+      "detail": "a button on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"accept\""
+     },
+     {
+      "name": "Manage Preferences",
+      "detail": "a button on /faq/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"manage\", \"preference\""
+     }
+    ]
+   },
+   "onefootball.com": {
+    "url": "https://www.onefootball.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://onefootball.com/en/home"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "OneFootball: Football News, Scores & Latest Updates",
+      "detail": "a heading on /en/home",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\", \"new\", \"score\"; not \"onefootball\""
+     },
+     {
+      "name": "Opt out of sale of personal data and Targeted Advertising",
+      "detail": "a button on /en/home",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"opt\", \"out\", \"sale\", \"personal\""
+     }
+    ]
+   },
+   "365scores.com": {
+    "url": "https://www.365scores.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.365scores.com/",
+     "https://www.365scores.com/pages/about"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Today's Matches",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"today\"; not \"matche\""
+     },
+     {
+      "name": "Presented by BetMGM",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"present\", \"betmgm\""
+     },
+     {
+      "name": "Popular Football Leagues",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\", \"league\"; not \"popular\""
+     },
+     {
+      "name": "Today's Football Matches By Country",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"today\", \"football\"; not \"matche\", \"country\""
+     },
+     {
+      "name": "About 365Scores",
+      "detail": "a heading on /pages/about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"about\", \"365score\""
+     },
+     {
+      "name": "Support 10 Different Sports Types",
+      "detail": "a heading on /pages/about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\"; not \"support\", \"10\", \"different\""
+     },
+     {
+      "name": "More Than 2,000 Competitions",
+      "detail": "a heading on /pages/about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"2\"; not \"than\", \"000\", \"competition\""
+     },
+     {
+      "name": "Your Teams",
+      "detail": "a heading on /pages/about",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"team\""
+     },
+     {
+      "name": "Own the transfer market with our special transfer feed",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"transfer\", \"market\", \"our\", \"special\""
+     },
+     {
+      "name": "Follow the sports TV schedule",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"follow\", \"sport\", \"schedule\""
+     },
+     {
+      "name": "For partnerships and business development info: [email]",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"partnership\", \"busi\", \"development\", \"info\""
+     },
+     {
+      "name": "Want to advertise on our app? [email]",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"want\", \"advertise\", \"our\", \"advertiser\""
+     },
+     {
+      "name": "For general inquiries and just to say \"howdy\": [email]",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"general\", \"inquiry\", \"just\", \"say\""
+     },
+     {
+      "name": "Care to write something nice about us? [email]",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"care\", \"write\", \"someth\", \"nice\""
+     },
+     {
+      "name": "Complaints? Not a problem. Let us know at [email]",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"not\"; not \"complaint\", \"problem\", \"let\""
+     },
+     {
+      "name": "Facebook: http://www.facebook.com/365scores",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"com\"; not \"facebook\", \"http\", \"www\""
+     },
+     {
+      "name": "Twitter: http://www.twitter.com/365scores",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"com\"; not \"twitter\", \"http\", \"www\""
+     },
+     {
+      "name": "Instagram: http://www.instagram.com/365scores",
+      "detail": "a list item on /pages/about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"com\"; not \"instagram\", \"http\", \"www\""
+     }
+    ]
+   },
+   "fotmob.com": {
+    "url": "https://www.fotmob.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.fotmob.com/",
+     "https://www.fotmob.com/tv-guide/us",
+     "https://www.fotmob.com/faq",
+     "https://www.fotmob.com/aboutUs/company"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "FotMob - Football Live Scores",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\", \"live\", \"score\"; not \"fotmob\""
+     },
+     {
+      "name": "Matches",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"matche\""
+     },
+     {
+      "name": "United States - Major League Soccer",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"unit\", \"league\"; not \"state\", \"major\""
+     },
+     {
+      "name": "Spain - LaLiga",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"spain\", \"laliga\""
+     },
+     {
+      "name": "France - Ligue 1",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"ligue\", \"1\"; not \"france\""
+     },
+     {
+      "name": "Mexico - Liga MX",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"liga\"; not \"mexico\""
+     },
+     {
+      "name": "AFC Champions League Elite West",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"afc\", \"champion\", \"league\"; not \"elite\""
+     },
+     {
+      "name": "Argentina - Liga Profesional",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"liga\"; not \"argentina\", \"profesional\""
+     },
+     {
+      "name": "Argentina - Primera Nacional",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"argentina\", \"primera\", \"nacional\""
+     },
+     {
+      "name": "Argentina - Primera B Metropolitana",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"argentina\", \"primera\", \"metropolitana\""
+     },
+     {
+      "name": "Armenia - Premier League",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"premier\", \"league\"; not \"armenia\""
+     },
+     {
+      "name": "Football TV Schedules in USA",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\", \"schedule\"; not \"usa\""
+     },
+     {
+      "name": "Tomorrow",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"tomorrow\""
+     },
+     {
+      "name": "Wed, Oct 28",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"wed\", \"oct\", \"28\""
+     },
+     {
+      "name": "Thu, Oct 29",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"thu\", \"oct\", \"29\""
+     },
+     {
+      "name": "Fri, Oct 30",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"fri\", \"oct\", \"30\""
+     },
+     {
+      "name": "Sat, Oct 31",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"sat\", \"oct\", \"31\""
+     },
+     {
+      "name": "Sun, Nov 1",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"1\"; not \"sun\", \"nov\""
+     },
+     {
+      "name": "Get the best mobile experience",
+      "detail": "a heading on /tv-guide/us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"best\", \"mobile\", \"experience\""
+     },
+     {
+      "name": "Pro tips",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"pro\", \"tip\""
+     },
+     {
+      "name": "I get alerts ahead of my stream",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"alert\", \"ahead\", \"stream\""
+     },
+     {
+      "name": "Ads and purchases",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"ads\"; not \"purchase\""
+     },
+     {
+      "name": "I see an inappropriate ad",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"see\"; not \"inappropriate\""
+     },
+     {
+      "name": "Leagues and matches",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"league\"; not \"matche\""
+     },
+     {
+      "name": "Various",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"variou\""
+     },
+     {
+      "name": "Stats Definitions",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"stat\", \"definition\""
+     },
+     {
+      "name": "FotMob Rating",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"fotmob\", \"rating\""
+     },
+     {
+      "name": "Expected Goals (xG)",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"expect\", \"goal\""
+     },
+     {
+      "name": "Expected Goals On Target (xGOT)",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"expect\", \"goal\", \"target\", \"xgot\""
+     },
+     {
+      "name": "Expected Assists (xA)",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"expect\", \"assist\""
+     },
+     {
+      "name": "Big Chance",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"big\", \"chance\""
+     },
+     {
+      "name": "Chance created",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"chance\", \"creat\""
+     },
+     {
+      "name": "Duel",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"duel\""
+     },
+     {
+      "name": "Dribble",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"dribble\""
+     },
+     {
+      "name": "Goals Prevented",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"goal\", \"prevent\""
+     },
+     {
+      "name": "Interception",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"interception\""
+     },
+     {
+      "name": "Recovery",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"recovery\""
+     },
+     {
+      "name": "Shot on target",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"shot\", \"target\""
+     },
+     {
+      "name": "Shot off target",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"shot\", \"off\", \"target\""
+     },
+     {
+      "name": "Blocked shot",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"block\", \"shot\""
+     }
+    ]
+   },
+   "cbssports.com": {
+    "url": "https://www.cbssports.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.cbssports.com/",
+     "https://www.cbssports.com/features/the-notorious-conor-mcgregor",
+     "https://www.cbssports.com/features/2026-fantasy-football-must-draft-players",
+     "https://www.cbssports.com/watch/pga-tour"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Seahawks stifle Mahomes, champs hand Chiefs first loss",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"champ\"; not \"seahawk\", \"stifle\", \"mahome\""
+     },
+     {
+      "name": "Rodgers reveals NFL once had different plan for international games",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"nfl\"; not \"rodger\", \"reveal\", \"once\""
+     },
+     {
+      "name": "Nikola Jokić on booing Nuggets fans: 'Not welcome anymore'",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"nikola\", \"joki\", \"booing\", \"nugget\""
+     },
+     {
+      "name": "Bermuda Championship pushed to rare Monday playoff after 54 holes",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"bermuda\", \"championship\", \"push\", \"rare\""
+     },
+     {
+      "name": "How Rays can overcome 2-0 World Series deficit against Brewers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"2\"; not \"how\", \"ray\", \"overcome\""
+     },
+     {
+      "name": "Rams vs Raiders",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"ram\", \"raider\""
+     },
+     {
+      "name": "Broncos vs Cardinals",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"bronco\", \"cardinal\""
+     },
+     {
+      "name": "Check out these top trending videos from CBS Sports HQ",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"check\", \"out\", \"these\", \"top\""
+     },
+     {
+      "name": "Kalshi promo code: CBSSPORTS55 for $55 in bonuses (October 2026)",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"kalshi\", \"promo\", \"code\", \"cbssports55\""
+     },
+     {
+      "name": "Week 7 NFL picks, parlay, DFS advice, props and more",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"week\", \"nfl\", \"pick\"; not \"7\""
+     },
+     {
+      "name": "Oregon fires OC Mehringer after poor showing",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"oregon\", \"fire\", \"mehringer\", \"after\""
+     },
+     {
+      "name": "Ashby on the verge of history during postseason run",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"ashby\", \"verge\", \"history\", \"during\""
+     },
+     {
+      "name": "Fever clean house, but a front office refresh isn't enough",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"fever\", \"clean\", \"house\", \"but\""
+     },
+     {
+      "name": "Kylian Mbappe fires Real Madrid past Barcelona in El Clasico",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"kylian\", \"mbappe\", \"fire\", \"real\""
+     },
+     {
+      "name": "Another CFP shake-up in latest college football bowl projections",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"another\", \"cfp\", \"shake\", \"latest\""
+     },
+     {
+      "name": "Bengals flip switch, blow past Ravens after early deficit",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"bengal\", \"flip\", \"switch\", \"blow\""
+     },
+     {
+      "name": "College football's era of invincible superpowers is officially over",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\"; not \"college\", \"era\", \"invincible\""
+     },
+     {
+      "name": "Report: Texas star Goosby suffers season-ending knee injury",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"report\"; not \"texa\", \"star\", \"goosby\""
+     },
+     {
+      "name": "The buyout economics of the 2026-27 coaching carousel",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"buyout\", \"economic\", \"2026\", \"27\""
+     },
+     {
+      "name": "Manfred: Brewers-Rays boosts cap case; MLBPA pushes back",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"manfr\", \"brewer\", \"ray\", \"boost\""
+     },
+     {
+      "name": "Rothstein: Ten x-factors to watch in college basketball this season",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"rothstein\", \"ten\", \"factor\", \"watch\""
+     },
+     {
+      "name": "Chiefs vs. Seahawks picks by expert on 28-16 roll",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"pick\"; not \"chief\", \"seahawk\", \"expert\""
+     },
+     {
+      "name": "NFL model simulates every Week 7 game 10,000 times",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"nfl\", \"every\"; not \"model\", \"simulate\""
+     },
+     {
+      "name": "DraftKings Sportsbook review and promo code 2026",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"draftk\", \"sportsbook\", \"review\", \"promo\""
+     },
+     {
+      "name": "Fantasy baseball 2027: Pete Crow-Armstrong leads a thin outfield field",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"fantasy\"; not \"baseball\", \"2027\", \"pete\""
+     },
+     {
+      "name": "Cam Skattebo refuses to change after controversial flag",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"cam\", \"skattebo\", \"refuse\", \"change\""
+     },
+     {
+      "name": "Report: Texas star LT Trevor Goosby suffers season-ending knee injury",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"report\"; not \"texa\", \"star\", \"trevor\""
+     },
+     {
+      "name": "Ahmad Hardy returns to practice after recovering from gunshot wound",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"ahmad\", \"hardy\", \"return\", \"practice\""
+     },
+     {
+      "name": "NC State insiders reveal coaching hot board",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"state\", \"insider\", \"reveal\", \"coach\""
+     },
+     {
+      "name": "TGL rosters, teams set for 2027 season",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"team\"; not \"tgl\", \"roster\", \"set\""
+     },
+     {
+      "name": "2026 Ballon d'Or: What to know",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"what\"; not \"2026\", \"ballon\", \"know\""
+     },
+     {
+      "name": "Kylian Mbappe hits century mark as Real Madrid edge Barcelona",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"kylian\", \"mbappe\", \"hit\", \"century\""
+     },
+     {
+      "name": "Thunder star Jalen Williams stretchered off with leg injury",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"thunder\", \"star\", \"jalen\", \"william\""
+     },
+     {
+      "name": "LSU's all-time winningest basketball coach Dale Brown dies at 90",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"time\"; not \"lsu\", \"winningest\", \"basketball\""
+     },
+     {
+      "name": "Ranking college basketball's best defenders; Chinyelu named DPOY",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"rank\", \"college\", \"basketball\", \"best\""
+     },
+     {
+      "name": "Viral sensation GG Banks commits to South Carolina women's hoops",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"viral\", \"sensation\", \"bank\", \"commit\""
+     },
+     {
+      "name": "How Rays can overcome 2-0 World Series deficit vs. Brewers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"2\"; not \"how\", \"ray\", \"overcome\""
+     },
+     {
+      "name": "CONOR MCGREGOR THE NOTORIOUS",
+      "detail": "a heading on /features/the-notorious-conor-mcgregor",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"conor\", \"mcgregor\", \"notoriou\""
+     },
+     {
+      "name": "THE RISE",
+      "detail": "a heading on /features/the-notorious-conor-mcgregor",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"rise\""
+     },
+     {
+      "name": "ROLLING THE DICE",
+      "detail": "a heading on /features/the-notorious-conor-mcgregor",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"roll\", \"dice\""
+     }
+    ]
+   },
+   "bbc.com": {
+    "url": "https://www.bbc.com/sport",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.bbc.com/sport",
+     "https://www.bbc.com/sport/football/articles/cmj47lq7e5e7o",
+     "https://www.bbc.com/sport",
+     "https://www.bbc.com/sport/cycling/articles/cq1kd0z33r8ro",
+     "https://www.bbc.com/news/world-radio-and-tv-14563857",
+     "https://www.bbc.com/sport/football/articles/c6d93eeq27gqo",
+     "https://www.bbc.com/sport/articles/cn33yxd1rz0o"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "BBC Sport",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\"; not \"bbc\""
+     },
+     {
+      "name": "England lose to Pakistan after improbable last-wicket stand",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"england\", \"lose\", \"pakistan\", \"after\""
+     },
+     {
+      "name": "Bayern beat Freiburg as fans unveil Kompany banner",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"fan\"; not \"bayern\", \"beat\", \"freiburg\""
+     },
+     {
+      "name": "Antonelli superb and Leclerc close to perfect - driver ratings",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"antonelli\", \"superb\", \"leclerc\", \"close\""
+     },
+     {
+      "name": "Pressure grows on Sage as fans turn on Palace boss",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"fan\"; not \"pressure\", \"grow\", \"sage\""
+     },
+     {
+      "name": "Celtic restore four-point lead with narrow win at Hibs",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"celtic\", \"restore\", \"four\", \"point\""
+     },
+     {
+      "name": "Video",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"video\""
+     },
+     {
+      "name": "More sports news",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\", \"new\""
+     },
+     {
+      "name": "Howe open to Man Utd talks - Monday's gossip",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"open\", \"man\"; not \"howe\", \"utd\""
+     },
+     {
+      "name": "Mbappe double fires Real Madrid to win at leaders Barcelona",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"mbappe\", \"double\", \"fire\", \"real\""
+     },
+     {
+      "name": "Sunderland still bottom after stalemate with Leeds",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"sunderland\", \"still\", \"bottom\", \"after\""
+     },
+     {
+      "name": "Malard scores twice as Chelsea maintain unbeaten run",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\", \"chelsea\"; not \"malard\", \"twice\""
+     },
+     {
+      "name": "Smith holds on to beat Schindler in Euros final",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"smith\", \"hold\", \"beat\", \"schindler\""
+     },
+     {
+      "name": "My Sport",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\""
+     },
+     {
+      "name": "More news & analysis",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"new\"; not \"analysi\""
+     },
+     {
+      "name": "Marchant recalled by Borthwick for England training camp",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"marchant\", \"recall\", \"borthwick\", \"england\""
+     },
+     {
+      "name": "Smith stars as Quins beat Saracens for first win",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"smith\", \"star\", \"quin\", \"beat\""
+     },
+     {
+      "name": "Anderson stops short of retiring after Lancashire exit",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"short\"; not \"anderson\", \"stop\", \"retir\""
+     },
+     {
+      "name": "Hearts enjoy rare away win as Motherwell gloom lingers",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"heart\", \"enjoy\", \"rare\", \"away\""
+     },
+     {
+      "name": "Hull and Brentford draw as unbeaten runs continue",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"brentford\"; not \"hull\", \"draw\", \"unbeaten\""
+     },
+     {
+      "name": "Man City's 100% WSL start ended by Man Utd",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"man\", \"city\"; not \"100\", \"wsl\""
+     },
+     {
+      "name": "Late own goal earns Liverpool draw against London City",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"liverpool\"; not \"late\", \"goal\", \"earn\""
+     },
+     {
+      "name": "Vangsgaard shines as Sorensen's Villa beat Everton",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"villa\"; not \"vangsgaard\", \"shine\", \"sorensen\""
+     },
+     {
+      "name": "Weir would swap Ballon d'Or nods for World Cup",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"weir\", \"would\", \"swap\", \"ballon\""
+     },
+     {
+      "name": "Osaka 'not far off' her best but often ponders future",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"not\"; not \"osaka\", \"far\", \"off\""
+     },
+     {
+      "name": "Jarman claims historic second silver at Worlds",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"jarman\", \"claim\", \"historic\", \"second\""
+     },
+     {
+      "name": "Wilson beats Jones to secure NI Open title",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"wilson\", \"beat\", \"jone\", \"secure\""
+     },
+     {
+      "name": "More video",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"video\""
+     },
+     {
+      "name": "Only from the BBC",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"only\", \"bbc\""
+     },
+     {
+      "name": "Insight: Must-read sports stories",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"read\", \"sport\"; not \"insight\", \"must\""
+     },
+     {
+      "name": "Faster than F1: The extreme motorsport where women keep winning",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"faster\", \"than\", \"extreme\", \"motorsport\""
+     },
+     {
+      "name": "The part-timers who won three Wembley finals in a row",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"part\", \"timer\", \"who\", \"won\""
+     },
+     {
+      "name": "More to explore",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"explore\""
+     },
+     {
+      "name": "Man City's leaky defence highlights Donnarumma & Guehi struggles",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"man\", \"city\"; not \"leaky\", \"defence\""
+     },
+     {
+      "name": "Tour de France UK stages in detail",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"stage\", \"detail\"; not \"tour\", \"france\""
+     },
+     {
+      "name": "Our latest podcasts",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"our\", \"latest\", \"podcast\""
+     },
+     {
+      "name": "Discover the BBC's best sports podcasts",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\"; not \"discover\", \"bbc\", \"best\""
+     },
+     {
+      "name": "Football Extra newsletter",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\"; not \"extra\", \"newsletter\""
+     },
+     {
+      "name": "Things you need to know",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"thing\", \"need\", \"know\""
+     },
+     {
+      "name": "More from BBC News",
+      "detail": "a heading on /sport",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"new\"; not \"bbc\""
+     }
+    ]
+   },
+   "sofascore.com": {
+    "url": "https://www.sofascore.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "flashscore.com": {
+    "url": "https://www.flashscore.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.flashscore.com/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "We Care About Your Privacy",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"care\", \"about\", \"privacy\""
+     },
+     {
+      "name": "We and our partners process data to provide",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"data\"; not \"our\", \"partner\", \"process\""
+     },
+     {
+      "name": "26/10 MO",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"26\", \"10\""
+     },
+     {
+      "name": "I Accept",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"accept\""
+     },
+     {
+      "name": "Manage Preferences",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"manage\", \"preference\""
+     }
+    ]
+   },
+   "livescore.com": {
+    "url": "https://www.livescore.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.livescore.com/en/",
+     "https://www.livescore.com/en/tv-guide/football-on-tv/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "LiveScore - Latest Football Scores, Results, Fixtures and Tables",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\", \"score\"; not \"livescore\", \"latest\""
+     },
+     {
+      "name": "Football",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\""
+     },
+     {
+      "name": "Other Sports",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\"; not \"other\""
+     },
+     {
+      "name": "Trending",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows none of its words; not \"trend\""
+     },
+     {
+      "name": "Live Football TV Guide",
+      "detail": "a heading on /en/tv-guide/football-on-tv/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"live\", \"football\"; not \"guide\""
+     },
+     {
+      "name": "Today’s Football TV Guide",
+      "detail": "a heading on /en/tv-guide/football-on-tv/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"today\", \"football\"; not \"guide\""
+     },
+     {
+      "name": "Premier League Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"premier\", \"league\", \"score\""
+     },
+     {
+      "name": "EFL Championship Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"efl\", \"championship\""
+     },
+     {
+      "name": "Scottish Premiership Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"scottish\", \"premiership\""
+     },
+     {
+      "name": "LaLiga Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"laliga\""
+     },
+     {
+      "name": "Serie A Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"serie\", \"score\""
+     },
+     {
+      "name": "EFL League One Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"league\", \"score\"; not \"efl\""
+     },
+     {
+      "name": "Cricket Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"cricket\""
+     },
+     {
+      "name": "Tennis Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"tenni\""
+     },
+     {
+      "name": "Basketball Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"basketball\""
+     },
+     {
+      "name": "Ice Hockey Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"score\"; not \"ice\", \"hockey\""
+     },
+     {
+      "name": "Today's Live Football Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"today\", \"live\", \"football\", \"score\""
+     },
+     {
+      "name": "Football on TV",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"football\""
+     },
+     {
+      "name": "Premier League News",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"premier\", \"league\", \"new\""
+     },
+     {
+      "name": "Sports Predictions",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"sport\"; not \"prediction\""
+     },
+     {
+      "name": "Europa League Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"league\", \"score\"; not \"europa\""
+     },
+     {
+      "name": "Champions League Scores",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"champion\", \"league\", \"score\""
+     },
+     {
+      "name": "Under 21",
+      "detail": "a button on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"21\"; not \"under\""
+     },
+     {
+      "name": "21 & Over",
+      "detail": "a button on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/scores/?league=epl&date=2025-05-25 shows \"21\"; not \"over\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "We Care About Your Privacy",
+    "sites": [
+     "int.soccerway.com",
+     "flashscore.com"
+    ]
+   },
+   {
+    "name": "I Accept",
+    "sites": [
+     "int.soccerway.com",
+     "flashscore.com"
+    ]
+   },
+   {
+    "name": "Manage Preferences",
+    "sites": [
+     "int.soccerway.com",
+     "flashscore.com"
+    ]
+   },
+   {
+    "name": "Hall of Fame",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Featured Events",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Match Centre YouTube Highlights",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Latest Player Edits",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Latest Player Renders",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Latest Player Transfers",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Latest Event Artwork",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Contribution Guide",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Artwork",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "API Upgrade Pricing",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "🧑 Single Developer",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "🏢 Small Business",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "API Testing",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Intro",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Testing V1",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Testing V2",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Livescore",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Event Status",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Rounds",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Wed 28 Oct",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Thu 29 Oct",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Fri 30 Oct",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Sat 31 Oct",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "Sun 01 Nov",
+    "sites": [
+     "thesportsdb.com"
+    ]
+   },
+   {
+    "name": "THU. 22 OCT",
+    "sites": [
+     "besoccer.com"
+    ]
+   },
+   {
+    "name": "FRI. 23 OCT",
+    "sites": [
+     "besoccer.com"
+    ]
+   },
+   {
+    "name": "SAT. 24 OCT",
+    "sites": [
+     "besoccer.com"
+    ]
+   },
+   {
+    "name": "MON. 26 OCT",
+    "sites": [
+     "besoccer.com"
+    ]
+   },
+   {
+    "name": "TUE. 27 OCT",
+    "sites": [
+     "besoccer.com"
+    ]
+   },
+   {
+    "name": "WED. 28 OCT",
+    "sites": [
+     "besoccer.com"
+    ]
+   },
+   {
+    "name": "General questions",
+    "sites": [
+     "int.soccerway.com"
+    ]
+   },
+   {
+    "name": "Product features",
+    "sites": [
+     "int.soccerway.com"
+    ]
+   },
+   {
+    "name": "Player profiles including career stats and achievements",
+    "sites": [
+     "int.soccerway.com"
+    ]
+   },
+   {
+    "name": "General information",
+    "sites": [
+     "int.soccerway.com"
+    ]
+   },
+   {
+    "name": "Registration and user account",
+    "sites": [
+     "int.soccerway.com"
+    ]
+   },
+   {
+    "name": "Technical issues and solutions",
+    "sites": [
+     "int.soccerway.com"
+    ]
+   },
+   {
+    "name": "Favorites and other features",
+    "sites": [
+     "int.soccerway.com"
+    ]
+   },
+   {
+    "name": "Opt out of sale of personal data and Targeted Advertising",
+    "sites": [
+     "onefootball.com"
+    ]
+   },
+   {
+    "name": "Presented by BetMGM",
+    "sites": [
+     "365scores.com"
+    ]
+   },
+   {
+    "name": "About 365Scores",
+    "sites": [
+     "365scores.com"
+    ]
+   },
+   {
+    "name": "Own the transfer market with our special transfer feed",
+    "sites": [
+     "365scores.com"
+    ]
+   },
+   {
+    "name": "For partnerships and business development info: [email]",
+    "sites": [
+     "365scores.com"
+    ]
+   },
+   {
+    "name": "Want to advertise on our app? [email]",
+    "sites": [
+     "365scores.com"
+    ]
+   },
+   {
+    "name": "For general inquiries and just to say \"howdy\": [email]",
+    "sites": [
+     "365scores.com"
+    ]
+   },
+   {
+    "name": "Care to write something nice about us? [email]",
+    "sites": [
+     "365scores.com"
+    ]
+   },
+   {
+    "name": "Matches",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Spain - LaLiga",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Argentina - Primera Nacional",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Argentina - Primera B Metropolitana",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Wed, Oct 28",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Thu, Oct 29",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Fri, Oct 30",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Sat, Oct 31",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Get the best mobile experience",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Pro tips",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "I get alerts ahead of my stream",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Various",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Stats Definitions",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "FotMob Rating",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Expected Goals (xG)",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Expected Goals On Target (xGOT)",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Expected Assists (xA)",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Big Chance",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Chance created",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Duel",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Dribble",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Goals Prevented",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Interception",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Recovery",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Shot on target",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Shot off target",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Blocked shot",
+    "sites": [
+     "fotmob.com"
+    ]
+   },
+   {
+    "name": "Nikola Jokić on booing Nuggets fans: 'Not welcome anymore'",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Bermuda Championship pushed to rare Monday playoff after 54 holes",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Rams vs Raiders",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Broncos vs Cardinals",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Check out these top trending videos from CBS Sports HQ",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Kalshi promo code: CBSSPORTS55 for $55 in bonuses (October 2026)",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Oregon fires OC Mehringer after poor showing",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Ashby on the verge of history during postseason run",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Fever clean house, but a front office refresh isn't enough",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Kylian Mbappe fires Real Madrid past Barcelona in El Clasico",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Another CFP shake-up in latest college football bowl projections",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Bengals flip switch, blow past Ravens after early deficit",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "The buyout economics of the 2026-27 coaching carousel",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Manfred: Brewers-Rays boosts cap case; MLBPA pushes back",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Rothstein: Ten x-factors to watch in college basketball this season",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "DraftKings Sportsbook review and promo code 2026",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Cam Skattebo refuses to change after controversial flag",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Ahmad Hardy returns to practice after recovering from gunshot wound",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "NC State insiders reveal coaching hot board",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Kylian Mbappe hits century mark as Real Madrid edge Barcelona",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Thunder star Jalen Williams stretchered off with leg injury",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Ranking college basketball's best defenders; Chinyelu named DPOY",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "Viral sensation GG Banks commits to South Carolina women's hoops",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "CONOR MCGREGOR THE NOTORIOUS",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "THE RISE",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "ROLLING THE DICE",
+    "sites": [
+     "cbssports.com"
+    ]
+   },
+   {
+    "name": "England lose to Pakistan after improbable last-wicket stand",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Antonelli superb and Leclerc close to perfect - driver ratings",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Celtic restore four-point lead with narrow win at Hibs",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Video",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Mbappe double fires Real Madrid to win at leaders Barcelona",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Sunderland still bottom after stalemate with Leeds",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Smith holds on to beat Schindler in Euros final",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Marchant recalled by Borthwick for England training camp",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Smith stars as Quins beat Saracens for first win",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Hearts enjoy rare away win as Motherwell gloom lingers",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Weir would swap Ballon d'Or nods for World Cup",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Jarman claims historic second silver at Worlds",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Wilson beats Jones to secure NI Open title",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "More video",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Only from the BBC",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Faster than F1: The extreme motorsport where women keep winning",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "The part-timers who won three Wembley finals in a row",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "More to explore",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Our latest podcasts",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "Things you need to know",
+    "sites": [
+     "bbc.com"
+    ]
+   },
+   {
+    "name": "26/10 MO",
+    "sites": [
+     "flashscore.com"
+    ]
+   },
+   {
+    "name": "Trending",
+    "sites": [
+     "livescore.com"
+    ]
+   }
+  ],
+  "queued": []
+ },
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "thesportsdb.com": {
+    "url": "https://www.thesportsdb.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bootstrap.min.css"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Respects high-contrast settings",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "main2.css@54017"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bootstrap.min.css@5669"
+     },
+     {
+      "name": "Path kept from crawlers /nfo.php",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /nfo/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /Sport/ (35 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   }
+  }
+ }
+}

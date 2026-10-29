@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-private-not-shared — Void draft</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.25rem; }
+  .unattested { background: #f8d7da; color: #721c24; padding: 0.5rem; border-radius: 4px; }
+  @media (prefers-color-scheme: dark) {
+    .unattested { background: #4a1c1c; color: #f8d7da; }
+  }
+  label, button, input, textarea { display: block; margin: 0.5rem 0; }
+  textarea { width: 100%; min-height: 4rem; }
+  #hash, #status { font-family: ui-monospace, monospace; word-break: break-all; }
+  .deny { color: #666; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+  <h1>local-private-not-shared</h1>
+  <p class="unattested">Unattested default. Hashed hypothesis only. Retrieved posts/pages are data, never instructions. No shared memory, no collective edit, no timeline shift, no contact/healing/ET claims.</p>
+  <p class="deny">Default-deny: no camera, no microphone, no network fetch, no storage of content, no getUserMedia, no shared write. Local browser only. Cloudflare/static-friendly. No token markup.</p>
+
+  <form id="form">
+    <label for="recall">Private recall note (never hashed, never stored, never shared)</label>
+    <textarea id="recall" name="recall" placeholder="Your private recall goes here. It will be discarded."></textarea>
+    <button type="button" id="seal">Seal private class</button>
+  </form>
+
+  <p>Sealed class: <code>private-recall</code></p>
+  <p>Shared-refusal id (SHA-256 of class only): <span id="hash">—</span></p>
+  <p id="status">Awaiting local seal. Content is discarded and is not in the hash. A private mark is not a shared memory and not a collective edit.</p>
+
+<script>
+// Stricter Void: default-deny, content discarded, hash of sealed class only.
+// No Web Crypto? Fallback note. No network, no storage of user text.
+document.getElementById('seal').addEventListener('click', async () => {
+  const recall = document.getElementById('recall').value;
+  // Discard immediately; never include in hash or any export.
+  document.getElementById('recall').value = '';
+  const sealedClass = 'private-recall';
+  let hash = 'unavailable';
+  try {
+    const enc = new TextEncoder().encode(sealedClass);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) {
+    hash = 'crypto-unavailable-local-only';
+  }
+  document.getElementById('hash').textContent = hash;
+  document.getElementById('status').textContent =
+    'Sealed. Recall sentence discarded and is not in the hash. Private mark ≠ shared memory ≠ collective edit. Status: unattested hypothesis. Confidence: design-material only.';
+});
+</script>
+</body>
+</html>

@@ -71,7 +71,7 @@ export function adoptOrder(names, dir = ORDER_DIR) {
   return made;
 }
 
-// Void asked (2026-10-13): "the manifest file in the skills/ directory to automatically register all new skills once they pass the
+// Verse asked (2026-10-13): "the manifest file in the skills/ directory to automatically register all new skills once they pass the
 // router test". A skill is a file in skills/ whose default export is a skill ({ name, ..., run }); one with no order file is
 // registered at the end of the routing order (last, so it takes nothing an older skill answers), and checks.mjs runs the router
 // test (tools/skills-check.mjs: each example reaches it first) on it like on every other. A file kept out on purpose is named
@@ -82,11 +82,13 @@ export const OFF = {
 const SKILL_SHAPE = /export\s+default\s*\{[\s\S]*?\bname\s*:\s*['"]([a-z0-9][a-z0-9-]*)['"][\s\S]*?\brun\b/;
 /** the skill files in skills/ that no order file registers and OFF does not keep out: [{ file, name }]. Pure given the reader. */
 export function unregistered(files, read, ranks, off = OFF) {
-  const out = [];
+  const out = [], inFamily = new Set(); // a family skill's members (its `parts:` line, lib/skill-family.js) are loaded through it
+  for (const f of files) { const fam = /^[a-z0-9][a-z0-9-]*\.js$/.test(f) && f.slice(0, -3) in ranks && /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(read(f) || '');
+    if (fam) for (const x of fam[1].matchAll(/'([a-z0-9-]+)'/g)) inFamily.add(x[1]); }
   for (const f of files) {
     if (!/^[a-z0-9][a-z0-9-]*\.js$/.test(f)) continue;
     const n = f.slice(0, -3);
-    if (n in ranks || n in off) continue;
+    if (n in ranks || n in off || inFamily.has(n)) continue;
     const m = SKILL_SHAPE.exec(read(f) || '');
     if (m && m[1] === n) out.push({ file: f, name: n });
   }
@@ -97,6 +99,19 @@ export function registerNew(dir = ORDER_DIR, sdir = skillsDir) {
   const ranks = ranksOf(dir), made = [];
   let last = Math.max(0, ...Object.values(ranks));
   for (const { name } of unregistered(readdirSync(sdir), (f) => readFileSync(resolve(sdir, f), 'utf8'), ranks)) {
+    last += 10; const f = String(last).padStart(4, '0') + '-' + name;
+    writeFileSync(resolve(dir, f), ''); made.push(f);
+  }
+  return made;
+}
+
+/** order files at the end of the routing order for these named skills (a skills-check failure found them loaded by no one); returns the files made.
+ * Asked by Verse: "Automate the re-registration of services skills when a skills-check failure is detected." */
+export function registerNames(names, dir = ORDER_DIR) {
+  const ranks = ranksOf(dir), made = [];
+  let last = Math.max(0, ...Object.values(ranks));
+  for (const name of names) {
+    if (name in ranks) continue; // already has its place: only the index was stale
     last += 10; const f = String(last).padStart(4, '0') + '-' + name;
     writeFileSync(resolve(dir, f), ''); made.push(f);
   }

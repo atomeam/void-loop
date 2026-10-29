@@ -12,7 +12,9 @@ import { agoWords, inWords, dayWord, compass, compassWord, lightName } from '../
 const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'skills');
 const names = JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8'));
 const mods = {}; for (const n of names) mods[n] = (await import(pathToFileURL(resolve(dir, n + '.js')).href)).default;
-const route = (ask) => { const k = names.find((n) => mods[n].match(ask.toLowerCase(), ask)); return k || null; };
+// a family skill (lib/skill-family.js) answers through its members: the route names the member, and each member is reachable by name
+for (const n of names) for (const m of mods[n].members || []) mods[m.name] = m;
+const route = (ask) => { const k = names.find((n) => mods[n].match(ask.toLowerCase(), ask)); return k ? (mods[k].part ? mods[k].part(ask.toLowerCase(), ask) : k) : null; };
 const LONDON = { lat: 51.5, lon: -0.1, tz: 'Europe/London', name: 'London, GB' }, TROMSO = { lat: 69.65, lon: 18.96, tz: 'Europe/Oslo', name: 'Tromsø, NO' }, CHCH = { lat: -43.5, lon: 172.6, tz: 'Pacific/Auckland', name: 'Christchurch, NZ' };
 const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -136,6 +138,12 @@ test('constellations: what is up, where Orion is and when it is best, and the na
   assert.match((await c.oneAnswer(date, CHCH, 'Cru')).lines.join(' '), /never sets/);
   const list = await c.listAnswer(date, LONDON); assert.ok(list.lines.some((l) => /^Orion: Rigel is 3\d° up, to the south\.$/.test(l)));
   assert.match((await c.listAnswer(new Date('2026-01-15T12:00:00Z'), LONDON)).lines[0], /no constellation is showing yet/);
+  // no place known (owner, 2026-10-14: "a tighter grounding mechanism"; "where is Orion" answered "I need a place" and nothing about Orion):
+  // what does not depend on the place, and the name the person used beside the official one
+  const any = (await c.anywhereAnswer(date, 'Ori')).lines.join(' ');
+  assert.match(any, /Orion: look for Rigel, Betelgeuse, Bellatrix/); assert.match(any, /at midnight around December 1[45]/); assert.match(any, /north of 8\d°S/);
+  assert.match((await c.anywhereAnswer(date, 'Cru')).lines.join(' '), /Crux can be seen from anywhere south of 30°N/);
+  assert.equal(c.askedAs('find the southern cross', 'Cru'), 'Southern Cross'); assert.equal(c.askedAs('where is orions belt', 'Ori'), ''); assert.equal(c.askedAs('where is Orion', 'Ori'), '');
 });
 
 test('meteor showers: the right ones on the right days, the moon at the peak, and the radiant', async () => {

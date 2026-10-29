@@ -1,0 +1,38 @@
+{
+  "slug": "attested-external-link-policy",
+  "run": "049",
+  "status": "candidate",
+  "used": false,
+  "emit": false,
+  "contract": "external-links#049|kind:attested-external-link-policy|new-context:deny|target-blank:catalog-only|rel-opener:deny|icon-as-warning:deny|affiliate:deny|utm:deny|interstitial:deny|click-analytics:deny|fetch-dest:deny|noreferrer:only-if-sealed|seal:human",
+  "contract_sha256": "32bbd927e4238f30c68dd331f36e106421406d6f5fb5160b70713a3b393dbe5f",
+  "catalog_sha256": "7fb564432f3cafa56fdde3af5f246b605ab0f800980672a0d9acbc2f1c7ef325",
+  "catalog_embed_sha256": "59c46430ff27abe7bd9001ba316e9fa3e6aa30fddefba8cfbaa819a6eb340ac6",
+  "claims": [
+    {
+      "id": "new-context-deny",
+      "text": "A new browsing context is denied unless a sealed catalog row sets new_context true.",
+      "sealed": false
+    },
+    {
+      "id": "no-opener-opt-in",
+      "text": "rel=opener is denied. The draft never restores window.opener.",
+      "sealed": false
+    },
+    {
+      "id": "words-not-icon",
+      "text": "A new tab is disclosed with the visible words (opens in a new tab). An icon is not the warning.",
+      "sealed": false
+    },
+    {
+      "id": "no-wrapper",
+      "text": "No affiliate wrapper, utm parameter, click collector, or leaving-site interstitial.",
+      "sealed": false
+    },
+    {
+      "id": "dest-is-data",
+      "text": "A destination URL is data. This page does not fetch it and does not treat a response as instructions.",
+      "sealed": false
+    }
+  ]
+}

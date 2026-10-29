@@ -9,6 +9,7 @@
  */
 import { howTo } from './howto.js';
 import { soundButton } from './sfx.js';
+import { fitPanel } from '../lib/panel-fit.js';
 const SOUNDS = new Set(['sorry', 'aggravation']); // games that make table sounds so far
 
 export function grip(label) {
@@ -20,10 +21,12 @@ export function grip(label) {
   return g;
 }
 
-const CSS = '.side-card{position:absolute;z-index:2;padding:14px 16px;border-radius:var(--radius,16px);background:var(--card-bg,rgba(16,16,18,.94));border:1px solid var(--card-line,rgba(255,255,255,.12));'
+const CSS = '.side-card{position:absolute;z-index:2;padding:14px 16px 22px;border-radius:var(--radius,16px);background:var(--card-bg,rgba(16,16,18,.94));border:1px solid var(--card-line,rgba(255,255,255,.12));'
   + 'box-shadow:var(--card-shadow,0 18px 50px rgba(0,0,0,.45));color:var(--ink,#eee);font-size:var(--fs-s,13px);line-height:1.45;text-align:left;user-select:none;backdrop-filter:blur(8px);'
-  + 'scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent;overscroll-behavior:contain}'
-  + '.side-card::-webkit-scrollbar{width:6px}.side-card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:6px}.side-card::-webkit-scrollbar-button{display:none}'
+  + 'scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.4) rgba(255,255,255,.06);overscroll-behavior:contain}'
+  + '.side-card::-webkit-scrollbar{width:8px}.side-card::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:8px}.side-card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.4);border-radius:8px}.side-card::-webkit-scrollbar-button{display:none}'
+  // a card that scrolls says so: a fade and an arrow at its foot until the end is reached
+  + '.side-card.scrolls:not(.at-end)::after{content:"\\25BE  more";display:block;position:sticky;bottom:-22px;margin:-6px -16px -22px;padding:16px 0 6px;text-align:center;font-size:11px;letter-spacing:.06em;color:var(--muted,#a9a9b2);pointer-events:none;background:linear-gradient(to bottom,transparent,var(--card-bg,rgba(16,16,18,.94)) 60%)}'
   + '.side-card .g-head{cursor:grab}.side-card button{cursor:pointer}';
 function style() {
   if (typeof document === 'undefined' || document.getElementById('side-card-style')) return;
@@ -49,9 +52,25 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
   card.style.position = 'absolute';
   card.style.left = at.x + 'px'; card.style.top = at.y + 'px';
   card.style.width = cw + 'px';
-  // it stops above the ask bar and scrolls inside, thin and dark, instead of running under it
-  const vh = typeof innerHeight === 'number' ? innerHeight : 900;
-  if (at.y < vh) { card.style.maxHeight = Math.max(200, vh - at.y - 120) + 'px'; card.style.overflowY = 'auto'; }
+  // it ends above the ask bar and scrolls inside, thin and lit, with a "more" fade: the one box that holds every step (owner, 2026-10-18)
+  const dockTop = () => { const d = typeof document !== 'undefined' && document.getElementById('dock'), r = document.getElementById('row'); const t = [d, r].filter(Boolean).map((e) => e.getBoundingClientRect().top).filter((v) => v > 0); return t.length ? Math.min(...t) : (typeof innerHeight === 'number' ? innerHeight : 900) - 120; };
+  const fit = () => {
+    if (!card.isConnected || !card.parentElement) return;
+    const stageTop = card.parentElement.getBoundingClientRect().top, top = parseFloat(card.style.top) || 0, floor = dockTop() - stageTop;
+    if (top >= (typeof innerHeight === 'number' ? innerHeight : 900) + 200) return; // far off the screen: leave it
+    const had = card.style.maxHeight; card.style.maxHeight = 'none';
+    const content = card.scrollHeight + (card.offsetHeight - card.clientHeight); // everything it holds, borders included
+    card.style.maxHeight = had;
+    const r = fitPanel({ top, content: Math.min(content, Math.max(120, floor - 12 - top)), floor });
+    if (card.style.maxHeight !== r.maxHeight + 'px') card.style.maxHeight = r.maxHeight + 'px';
+    card.style.overflowY = 'auto';
+    if (Math.abs(r.top - top) > 1 && !(th.scale < 1)) { card.style.top = r.top + 'px'; th.card = { x: parseFloat(card.style.left) || 0, y: r.top }; stageApi.save && stageApi.save(); }
+    const more = card.scrollHeight > card.clientHeight + 1;
+    card.classList.toggle('scrolls', more); card.classList.toggle('at-end', !more || card.scrollTop + card.clientHeight >= card.scrollHeight - 2);
+  };
+  card.addEventListener('scroll', () => card.classList.toggle('at-end', card.scrollTop + card.clientHeight >= card.scrollHeight - 2), { passive: true });
+  if (typeof ResizeObserver === 'function') { const ro = new ResizeObserver(() => fit()); ro.observe(card); const d = document.getElementById('dock'); if (d) ro.observe(d); }
+  if (typeof addEventListener === 'function') { addEventListener('resize', fit); if (window.visualViewport) window.visualViewport.addEventListener('resize', fit); }
   card.style.cursor = 'grab';
   card.addEventListener('pointerdown', (e) => {
     if (e.button > 0 || (e.target && e.target.closest && e.target.closest('button,input,select,a'))) return;
@@ -68,5 +87,7 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
     addEventListener('pointermove', move); addEventListener('pointerup', up);
   });
   stageApi.stage.appendChild(card);
+  fit(); requestAnimationFrame(fit);
+  card.fitPanel = fit; // the stage asks for a fresh fit after it moves the card
   return card;
 }

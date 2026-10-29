@@ -64,7 +64,7 @@ export function prepareProposal(body, redact = (s) => s) {
 }
 
 // What the model is told: fields only, facts only, no price.
-export const PROPOSAL_SYSTEM = 'You are Void, drafting a proposal for the owner of a small business from a request a customer sent them. '
+export const PROPOSAL_SYSTEM = 'You are Verse, drafting a proposal for the owner of a small business from a request a customer sent them. '
   + 'Reply with JSON only, no prose around it: {"title": "...", "asked": "...", "approach": "...", "scope": "- one line per item", "timeline": "...", "next": "..."}. '
   + '"title" names the work in a few words; "asked" says what the customer asked for, in plain words; "approach" says what the owner would do about it, concretely; '
   + '"scope" lists what is in and what is out, one line per item starting with "- "; "timeline" says how long and in what order; "next" is the one thing the customer does to start. '

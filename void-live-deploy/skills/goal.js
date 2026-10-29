@@ -68,7 +68,7 @@ async function run(text, api) {
   const goals = src ? Goal.goalsFor(src.kind) : [];
   if (!src || !goals.length) { api.say(src ? 'No goals for the ' + src.kind + ' yet · the gears have them: "explain gears", then "give me a challenge with this"' : NONE); return 'goal'; }
   const g = Goal.nextGoal(src.kind, kinds[src.kind].gives.observations(src));
-  if (!g) { api.say('The ' + src.kind + ' already meet every goal Void has for them · change them and ask again'); return 'goal'; }
+  if (!g) { api.say('The ' + src.kind + ' already meet every goal Verse has for them · change them and ask again'); return 'goal'; }
   const mine = Object.values(things).find((t) => t.kind === 'goal');
   if (mine) { mine.sourceId = src.id; mine.sourceKind = src.kind; mine.goalId = g.id; api.stage.render(); if (api.stage.center) api.stage.center(mine.id); }
   else api.summon('goal', { sourceId: src.id, sourceKind: src.kind, goalId: g.id, center: true });

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Side by side: Verse and the site it is up against</title>
+<meta name="description" content="Verse's page and the site it is measured against, side by side, with where each aspect stands.">
+<link rel="canonical" href="https://a-to-mind.com/compare/">
+<meta property="og:title" content="Side by side"><meta property="og:description" content="Verse's page beside the site it is up against."><meta property="og:image" content="https://a-to-mind.com/og.png"><meta property="og:url" content="https://a-to-mind.com/compare/"><meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{color-scheme:dark}html,body{margin:0;height:100%;background:#07070b;color:#eee;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}body{display:flex;flex-direction:column}
+  header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 12px;border-bottom:1px solid #2a2a36;background:#0d0d14}
+  header a{color:#d8b45a}header .st{opacity:.85}header .st b{color:#9df09d}header .st i{color:#f0b35a;font-style:normal}
+  main{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0}
+  #vs{border-bottom:1px solid #2a2a36;background:#0d0d14;padding:0 10px 6px;max-height:46vh;overflow:auto}#vs summary{cursor:pointer;padding:6px 0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#aaa}#vs .tw{max-width:560px}
+  h2 .av-face,h2 .av-verse{width:26px;height:26px;vertical-align:middle;margin-right:6px}
+  section{display:flex;flex-direction:column;min-width:0}section h2{margin:0;padding:5px 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#aaa;border-bottom:1px solid #2a2a36;display:flex;justify-content:space-between;gap:8px}
+  iframe{flex:1;border:0;width:100%;background:#fff}
+  .shot{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px;text-align:center}.shot img{width:min(100%,390px);border:1px solid #2a2a36;border-radius:8px}
+  .cap{margin:0;font-size:12px;color:#aaa}button{font:inherit;padding:8px 14px;border-radius:999px;border:1px solid #d8b45a;background:transparent;color:#eee;cursor:pointer}
+  @media (max-width:700px){main{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+</style>
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/tower.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/gate-badge.js">
+<link rel="modulepreload" href="/lib/tower-controls.js">
+<link rel="modulepreload" href="/lib/tower-journeys.js">
+<link rel="modulepreload" href="/lib/tower-weight.js">
+<link rel="modulepreload" href="/skills/tower.js">
+<link rel="modulepreload" href="/lib/avatar.js">
+<link rel="modulepreload" href="/lib/tower-rank.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<header><a href="/">Verse</a> · <span id="who">Side by side</span> <span class="st" id="st"></span> <a href="/conquered/" style="margin-left:auto">Versus</a></header>
+<details id="vs" open hidden><summary id="vsum">The matchup</summary><div id="vsin"></div></details>
+<main>
+  <section><h2><span id="vn">Verse</span><a id="vo" href="/" target="_blank" rel="noopener">open</a></h2><iframe id="vf" title="Verse's page" src="about:blank"></iframe></section>
+  <section><h2><span id="sn">The site</span><a id="so" href="#" target="_blank" rel="noopener noreferrer">open it ↗</a></h2>
+    <div class="shot" id="shot"><img id="si" alt="" hidden><p class="cap" id="cap"></p><button type="button" id="beside">Open the site itself in a window beside this one</button></div></section>
+</main>
+<script type="module">
+  import { FLOORS, tower, noShotOf } from '/lib/tower.js';
+  import { matchupHtml } from '/skills/tower.js';
+  import { faceSvg, verseFace } from '/lib/avatar.js';
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const q = new URLSearchParams(location.search), id = (q.get('floor') || '').toLowerCase(), f = FLOORS.find((x) => x.id === id || x.aka === id) || null;
+  const $ = (i) => document.getElementById(i);
+  if (!f) { $('who').textContent = 'Side by side: say which floor, /compare/?floor=' + (FLOORS[0] && FLOORS[0].id); }
+  else {
+    const vp = f.page || ('/?q=' + encodeURIComponent(f.ask || '')), site = f.url;
+    document.title = 'Side by side: Verse and ' + f.site; $('who').textContent = 'Verse and ' + f.site + ', side by side';
+    $('vo').href = vp; $('vf').src = vp; $('sn').textContent = f.site; $('so').href = site;
+    // the two avatars over the panes (owner, 2026-10-25: "each site and verse should have an avatar face for the battle"): Verse's mark and the site's
+    // drawn fighter (lib/avatar.js, never its logo); the site's host is the seed, so it is the same face as on the Versus card
+    $('vn').innerHTML = '<img src="/verse-logo.webp" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;vertical-align:middle"> ' + 'Verse'; $('sn').innerHTML = '<img src="https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(f.site) + '" alt="" width="26" height="26" referrerpolicy="no-referrer" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;vertical-align:middle"> ' + esc(f.site); // the site's logo; its kept icon replaces it below when the gate has one
+    // sites refuse to be framed (X-Frame-Options, every one measured so far), so the site is shown as the tower gate saw it: its screenshot at phone
+    // width from the last measurement (tower.shots/<id>.jpg, written by tools/tower-gate.mjs), dated; the site itself opens in a window beside this one
+    // a noShot floor (lib/tower.js: the image boards) is never pictured: its front page can carry explicit or illegal pictures
+    const slug = f.id.replace(/\W+/g, '-'), img = $('si'), noShot = noShotOf(f); if (noShot) { $('cap').textContent = 'No picture kept for this kind of site: a board\u2019s front page can carry anything its posters put there. Open it beside this one if you choose to.'; } else { img.src = '/tower.shots/' + slug + '.jpg'; } img.alt = f.site + ' as the gate saw it';
+    img.onload = () => { img.hidden = false; fetch(img.src, { method: 'HEAD' }).then((r) => { const d = r.headers.get('last-modified'); $('cap').textContent = f.site + ' as the gate saw it' + (d ? ' on ' + new Date(d).toLocaleDateString() : '') + ', at phone width. It does not allow itself inside another page, so this is a picture.'; }).catch(() => { $('cap').textContent = f.site + ' as the gate saw it, at phone width.'; }); };
+    img.onerror = () => { img.hidden = true; $('cap').textContent = 'No picture of ' + f.site + ' yet: the gate takes one at its next measurement. It does not allow itself inside another page.'; };
+    const beside = () => { const w = Math.floor(screen.availWidth / 2), h = screen.availHeight; try { window.resizeTo(w, h); window.moveTo(0, 0); } catch (_) {} window.open(site, 'verse-compare', 'noopener,noreferrer,width=' + w + ',height=' + h + ',left=' + w + ',top=0'); };
+    $('beside').onclick = beside;
+    // where each aspect stands, from the gate's last verdicts
+    fetch('/tower.evidence.json').then((r) => r.json()).then((e) => { const t = tower([], e.floors || e, null, e.icons || null); const fl = t.floors.find((x) => x.id === f.id); if (!fl) return;
+      if (fl.icon && /^tower\.icons\/[\w.-]+$/.test(fl.icon)) $('sn').innerHTML = '<img src="/' + fl.icon + '" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;vertical-align:middle"> ' + esc(f.site); // the site's own icon once the gate has kept one
+      $('st').innerHTML = (fl.beaten ? '<b>surpassed</b>' : '<i>' + fl.n + ' of ' + fl.m + ' aspects ahead</i>') + (fl.left && fl.left.length ? ' · still to pass: ' + fl.left.map((a) => a.replace(/[<>&]/g, '')).join(', ') : '');
+      // the matchup (skills/tower.js matchupHtml, the same as the Versus card): the VS splash, one row per aspect with the gate's numbers, when it was measured, what is next
+      $('vsum').textContent = 'The matchup: Verse vs ' + f.site + ' · ' + fl.n + ' of ' + fl.m + ' aspects ahead'; $('vsin').innerHTML = matchupHtml(fl, esc); $('vs').hidden = false; }).catch(() => {});
+  }
+</script>
+</body>
+</html>

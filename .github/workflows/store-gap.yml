@@ -1,0 +1,52 @@
+# Product gaps become products (tools/store-gap.mjs). Every few hours: take one queued `store-gap:<topic>` job (3+ asks for something
+# Verse doesn't sell, lib/product-gap.js), have Verse write the kit, test the files, price it with lib/appraise.js, upload the zip to R2,
+# and open a PR with the catalog row + public changelog entry; automerge.yml merges it on green. Needs VOID_OWNER_TOKEN (queue) and
+# CLOUDFLARE_API_TOKEN/CLOUDFLARE_ACCOUNT_ID with R2 write; without them every run is a quiet no-op.
+name: Verse builds store gaps
+
+on:
+  schedule:
+    - cron: '41 */4 * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  group: void-store-gap
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Checks
+        run: node tools/store-gap.test.mjs && node tools/appraise.test.mjs
+      - name: Build one gap product
+        run: |
+          [ -n "$VOID_OWNER_TOKEN" ] || { echo "no VOID_OWNER_TOKEN: nothing to do"; exit 0; }
+          node tools/store-gap.mjs queue
+          git diff --quiet && { echo "nothing new"; exit 0; }
+          branch="void/store-gap-$(date -u +%Y%m%d%H%M)"
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/store.products.json domains/store.clips.jsonl void-live-deploy/lib/store-products.js void-live-deploy/store/changelog.json docs/store-changelog.md
+          git commit -q -m "store: Verse publishes a product people asked for (tools/store-gap.mjs)"
+          git push -q origin "$branch"
+          gh pr create --base main --head "$branch" --title "store: new Verse product from a product gap" --body "Built by tools/store-gap.mjs from a queued store-gap job: files tested, no trademarks, priced by lib/appraise.js (why-note in the public changelog)."

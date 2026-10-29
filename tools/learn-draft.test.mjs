@@ -1,4 +1,4 @@
-// tools/learn-draft.mjs: the drafting half of Void learns. A stranger's ask goes to a model as quoted data, the draft
+// tools/learn-draft.mjs: the drafting half of Verse learns. A stranger's ask goes to a model as quoted data, the draft
 // lands only under drafts/learned/<slug>.md, and what comes back is stripped of HTML and links.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -46,4 +46,12 @@ test('main: drafts each new job into drafts/learned, skips what exists, and repo
   const failed = await main([file, '--out', out2], { OPENROUTER_API_KEY: 'k' }, { fetcher: async () => new Response('{}', { status: 429 }) });
   assert.deepEqual(failed, ['failed: tide-tables (the model answered 429)', 'failed: escape (the model answered 429)']);
   assert.ok(!existsSync(join(out2, 'tide-tables.md')));
+  // the patch guard: a draft with stub text or code that does not parse is not written, and the line says why
+  const out3 = join(dir, 'd3');
+  const stubby = async () => new Response(JSON.stringify({ choices: [{ message: { content: '# tide tables\n3. ten ways: tide times, high tide... (the rest of the list truncated for brevity)' } }] }), { status: 200 });
+  const held = await main([file, '--out', out3], { OPENROUTER_API_KEY: 'k' }, { fetcher: stubby });
+  assert.match(held[0], /^failed: tide-tables \(the draft was not used: it says "for brevity", so something was left out; it says part of it was truncated\)$/);
+  assert.ok(!existsSync(join(out3, 'tide-tables.md')));
+  const badCode = async () => new Response(JSON.stringify({ choices: [{ message: { content: '# tide tables\n```js\nconst t = tides(;\n```' } }] }), { status: 200 });
+  assert.match((await main([file, '--out', join(dir, 'd4')], { OPENROUTER_API_KEY: 'k' }, { fetcher: badCode }))[0], /^failed: tide-tables \(the draft was not used: the code block: its JavaScript does not parse/);
 });

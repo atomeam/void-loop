@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure (1980) - Atari 2600 Emulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .rom-upload {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px dashed #4a5568;
+        }
+
+        .rom-upload:hover {
+            border-color: #ff6b6b;
+        }
+
+        #romInput {
+            display: none;
+        }
+
+        .upload-btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1em;
+        }
+
+        .upload-btn:hover {
+            background: #ff5252;
+        }
+
+        .checksum-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .checksum-pass {
+            background: #2d5a27;
+            color: #90EE90;
+        }
+
+        .checksum-fail {
+            background: #5a2727;
+            color: #ff6b6b;
+        }
+
+        .checksum-pending {
+            background: #5a4a27;
+            color: #ffd700;
+        }
+
+        #javatari-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+        }
+
+        .controls-info {
+            background: #16213e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.85em;
+        }
+
+        .controls-info h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .controls-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .controls-info li {
+            margin: 5px 0;
+        }
+
+        .enhancement-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .enhancement-btn {
+            background: #4a5568;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+
+        .enhancement-btn:hover {
+            background: #5a6578;
+        }
+
+        .enhancement-btn.active {
+            background: #ff6b6b;
+        }
+
+        .difficulty-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .difficulty-btn {
+            background: #2d5a27;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+
+        .difficulty-btn:hover {
+            background: #3d6a37;
+        }
+
+        #crt-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+
+        .fullscreen-container {
+            position: relative;
+        }
+
+        .agent-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            z-index: 1001;
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="agentBadge" class="agent-badge">AGENT MODE (VISION-ONLY)</div>
+    
+    <h1>Adventure (1980)</h1>
+    <p class="subtitle">Atari 2600 VCS - PAL Edition</p>
+
+    <div class="rom-upload">
+        <p>Drop your Adventure ROM here or click to upload</p>
+        <input type="file" id="romInput" accept=".bin,.rom,.a26">
+        <button class="upload-btn" onclick="document.getElementById('romInput').click()">Select ROM File</button>
+        <div id="checksumStatus" class="checksum-status"></div>
+    </div>
+
+    <div id="javatari-container"></div>
+
+    <div class="controls-info">
+        <h3>Controls</h3>
+        <ul>
+            <li>Arrow Keys: Move</li>
+            <li>Space: Fire Button</li>
+            <li>R: Reset Console</li>
+            <li>1-3: Select Game Variation</li>
+        </ul>
+        
+        <div class="enhancement-controls">
+            <button class="enhancement-btn" id="crtToggle" onclick="toggleCRT()">CRT Effect: OFF</button>
+            <button class="enhancement-btn" id="fullscreenBtn" onclick="toggleFullscreen()">Fullscreen</button>
+            <button class="enhancement-btn" id="saveStateBtn" onclick="saveState()">Save State</button>
+            <button class="enhancement-btn" id="loadStateBtn" onclick="loadState()">Load State</button>
+        </div>
+
+        <div class="difficulty-controls">
+            <button class="difficulty-btn" onclick="setDifficulty('left', 'A')">Left Diff: A</button>
+            <button class="difficulty-btn" onclick="setDifficulty('left', 'B')">Left Diff: B</button>
+            <button class="difficulty-btn" onclick="setDifficulty('right', 'A')">Right Diff: A</button>
+            <button class="difficulty-btn" onclick="setDifficulty('right', 'B')">Right Diff: B</button>
+            <button class="difficulty-btn" onclick="selectGame(1)">Game 1</button>
+            <button class="difficulty-btn" onclick="selectGame(2)">Game 2</button>
+            <button class="difficulty-btn" onclick="selectGame(3)">Game 3</button>
+        </div>
+    </div>
+
+    <canvas id="crt-canvas"></canvas>
+
+    <script src="https://javatari.org/javatari/javatari.js"></script>
+    <script>
+        const EXPECTED_SHA1 = 'ec23bbea83cf47277482e775ad58ac8e6d1483fe';
+        let crtEnabled = false;
+        let javatariReady = false;
+        let agentMode = false;
+        let inputQueue = [];
+        let currentFrame = 0;
+
+        // Configure Javatari for PAL mode
+        window.Javatari = {
+            PAL_MODE: true,
+            CARTRIDGE_FORCE_AUTO_POWER: true,
+            SOUND_ENABLED: true,
+            SHOW_CONSOLE_PANEL: false,
+            AUTO_POWER_ON: true
+        };
+
+        // Check for agent mode via URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('agent') === '1') {
+            agentMode = true;
+            document.getElementById('agentBadge').style.display = 'block';
+        }
+
+        // AgentBridge API for programmatic control
+        window.AgentBridge = {
+            // Load ROM from ArrayBuffer (bypasses file picker)
+            loadRom: async function(arrayBuffer) {
+                const hashBuffer = await crypto.subtle.digest('SHA-1', arrayBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                if (hashHex.toLowerCase() !== EXPECTED_SHA1.toLowerCase()) {
+                    throw new Error(`ROM SHA-1 mismatch: ${hashHex} (expected: ${EXPECTED_SHA1})`);
+                }
+
+                const romData = new Uint8Array(arrayBuffer);
+                
+                return new Promise((resolve, reject) => {
+                    if (window.Javatari && window.Javatari.loadROM) {
+                        window.Javatari.loadROM(romData);
+                        javatariReady = true;
+                        resolve();
+                    } else {
+                        setTimeout(() => {
+                            if (window.Javatari && window.Javatari.loadROM) {
+                                window.Javatari.loadROM(romData);
+                                javatariReady = true;
+                                resolve();
+                            } else {
+                                reject(new Error('Javatari not available'));
+                            }
+                        }, 1000);
+                    }
+                });
+            },
+
+            // Queue input action with duration
+            input: function(action, durationMs) {
+                if (!agentMode) {
+                    throw new Error('AgentBridge.input() only available in agent mode (?agent=1)');
+                }
+
+                const validActions = ['up', 'down', 'left', 'right', 'fire', 'reset', 'select'];
+                if (!validActions.includes(action.toLowerCase())) {
+                    throw new Error(`Invalid action: ${action}. Valid: ${validActions.join(', ')}`);
+                }
+
+                inputQueue.push({
+                    action: action.toLowerCase(),
+                    duration: durationMs,
+                    startTime: Date.now(),
+                    startFrame: currentFrame
+                });
+            },
+
+            // Get current frame as base64 PNG
+            getFrame: function() {
+                if (!javatariReady) {
+                    throw new Error('ROM not loaded');
+                }
+
+                const canvas = document.querySelector('#javatari-container canvas');
+                if (!canvas) {
+                    throw new Error('Emulator canvas not found');
+                }
+
+                return canvas.toDataURL('image/png');
+            },
+
+            // Get current state as JSON-serializable object
+            getState: function() {
+                if (!javatariReady) {
+                    throw new Error('ROM not loaded');
+                }
+
+                try {
+                    if (window.Javatari && window.Javatari.saveState) {
+                        return JSON.stringify(window.Javatari.saveState());
+                    } else {
+                        throw new Error('Save state not available');
+                    }
+                } catch (error) {
+                    throw new Error('Error getting state: ' + error.message);
+                }
+            },
+
+            // Set state from JSON string
+            setState: function(stateJson) {
+                if (!javatariReady) {
+                    throw new Error('ROM not loaded');
+                }
+
+                try {
+                    const state = JSON.parse(stateJson);
+                    if (window.Javatari && window.Javatari.loadState) {
+                        window.Javatari.loadState(state);
+                    } else {
+                        throw new Error('Load state not available');
+                    }
+                } catch (error) {
+                    throw new Error('Error setting state: ' + error.message);
+                }
+            },
+
+            // NOTE: RAM access (peek/poke) is not available
+            // Javatari.js does not expose public RAM access APIs
+            // Headless CLI is also non-functional within $0 budget constraints
+            // Agents play vision-only via input/output (frames + controls)
+            peek: function(addr) {
+                throw new Error('RAM access (peek) is not available. Javatari.js does not expose public RAM access APIs, and headless CLI is non-functional within $0 budget. Agents play vision-only via frames + controls.');
+            },
+
+            poke: function(addr, value, reason) {
+                throw new Error('RAM access (poke) is not available. Javatari.js does not expose public RAM access APIs, and headless CLI is non-functional within $0 budget. Agents play vision-only via frames + controls.');
+            },
+
+            getAuditLog: function() {
+                throw new Error('Audit logging is not available. Requires working headless CLI with RAM access, which is non-functional within $0 budget.');
+            },
+
+            // Get current frame count
+            getFrameCount: function() {
+                return currentFrame;
+            }
+        };
+
+        // Process input queue (frame-accurate input execution)
+        function processInputQueue() {
+            if (inputQueue.length === 0) return;
+
+            const now = Date.now();
+            inputQueue = inputQueue.filter(input => {
+                const elapsed = now - input.startTime;
+                if (elapsed < input.duration) {
+                    // Still executing this input
+                    executeInput(input.action, true);
+                    return true;
+                } else {
+                    // Done with this input
+                    executeInput(input.action, false);
+                    return false;
+                }
+            });
+        }
+
+        function executeInput(action, pressed) {
+            const keyMap = {
+                'up': 'UP',
+                'down': 'DOWN',
+                'left': 'LEFT',
+                'right': 'RIGHT',
+                'fire': 'FIRE',
+                'reset': 'RESET',
+                'select': 'SELECT'
+            };
+
+            const mappedAction = keyMap[action];
+            if (!mappedAction) return;
+
+            if (action === 'reset' && pressed) {
+                if (window.Javatari && window.Javatari.resetConsole) {
+                    window.Javatari.resetConsole();
+                }
+            } else if (action === 'select' && pressed) {
+                if (window.Javatari && window.Javatari.pressButton) {
+                    window.Javatari.pressButton('SELECT', true);
+                    setTimeout(() => window.Javatari.pressButton('SELECT', false), 100);
+                }
+            } else if (window.Javatari && window.Javatari.pressJoystickButton) {
+                window.Javatari.pressJoystickButton(0, mappedAction, pressed);
+            }
+        }
+
+        // Frame counter and input processing loop
+        setInterval(() => {
+            if (javatariReady) {
+                currentFrame++;
+                processInputQueue();
+            }
+        }, 16.67); // ~60 FPS
+
+        // ROM file handling
+        const romInput = document.getElementById('romInput');
+        const checksumStatus = document.getElementById('checksumStatus');
+
+        romInput.addEventListener('change', handleRomUpload);
+        
+        // Drag and drop support
+        document.querySelector('.rom-upload').addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.currentTarget.style.borderColor = '#ff6b6b';
+        });
+
+        document.querySelector('.rom-upload').addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.currentTarget.style.borderColor = '#4a5568';
+        });
+
+        document.querySelector('.rom-upload').addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.currentTarget.style.borderColor = '#4a5568';
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                processRomFile(file);
+            }
+        });
+
+        async function handleRomUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                await processRomFile(file);
+            }
+        }
+
+        async function processRomFile(file) {
+            checksumStatus.style.display = 'block';
+            checksumStatus.className = 'checksum-status checksum-pending';
+            checksumStatus.textContent = 'Computing SHA-1 checksum...';
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const hashBuffer = await crypto.subtle.digest('SHA-1', arrayBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                if (hashHex.toLowerCase() === EXPECTED_SHA1.toLowerCase()) {
+                    checksumStatus.className = 'checksum-status checksum-pass';
+                    checksumStatus.textContent = `✓ SHA-1 PASS: ${hashHex}`;
+                    loadRom(arrayBuffer);
+                } else {
+                    checksumStatus.className = 'checksum-status checksum-fail';
+                    checksumStatus.textContent = `✗ SHA-1 FAIL: ${hashHex} (Expected: ${EXPECTED_SHA1})`;
+                }
+            } catch (error) {
+                checksumStatus.className = 'checksum-status checksum-fail';
+                checksumStatus.textContent = `Error computing checksum: ${error.message}`;
+            }
+        }
+
+        function loadRom(arrayBuffer) {
+            // Convert ArrayBuffer to Uint8Array
+            const romData = new Uint8Array(arrayBuffer);
+            
+            // Load ROM into Javatari
+            if (window.Javatari && window.Javatari.loadROM) {
+                window.Javatari.loadROM(romData);
+                javatariReady = true;
+            } else {
+                // Fallback: wait for Javatari to load
+                setTimeout(() => {
+                    if (window.Javatari && window.Javatari.loadROM) {
+                        window.Javatari.loadROM(romData);
+                        javatariReady = true;
+                    }
+                }, 1000);
+            }
+        }
+
+        // CRT Effect
+        function toggleCRT() {
+            crtEnabled = !crtEnabled;
+            const btn = document.getElementById('crtToggle');
+            const canvas = document.getElementById('crt-canvas');
+            
+            if (crtEnabled) {
+                btn.textContent = 'CRT Effect: ON';
+                btn.classList.add('active');
+                canvas.style.display = 'block';
+                applyCRTEffect();
+            } else {
+                btn.textContent = 'CRT Effect: OFF';
+                btn.classList.remove('active');
+                canvas.style.display = 'none';
+            }
+        }
+
+        function applyCRTEffect() {
+            const canvas = document.getElementById('crt-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            function draw() {
+                if (!crtEnabled) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Scanlines
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                for (let y = 0; y < canvas.height; y += 2) {
+                    ctx.fillRect(0, y, canvas.width, 1);
+                }
+
+                // Vignette
+                const gradient = ctx.createRadialGradient(
+                    canvas.width / 2, canvas.height / 2, 0,
+                    canvas.width / 2, canvas.height / 2, canvas.width / 1.5
+                );
+                gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.4)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        }
+
+        // Fullscreen
+        function toggleFullscreen() {
+            const container = document.getElementById('javatari-container');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    console.log('Fullscreen error:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Save State
+        function saveState() {
+            if (!javatariReady) {
+                alert('Please load a ROM first');
+                return;
+            }
+            
+            try {
+                if (window.Javatari && window.Javatari.saveState) {
+                    const state = window.Javatari.saveState();
+                    localStorage.setItem('adventure-save-state', JSON.stringify(state));
+                    alert('State saved to localStorage');
+                } else {
+                    alert('Save state not available');
+                }
+            } catch (error) {
+                alert('Error saving state: ' + error.message);
+            }
+        }
+
+        function loadState() {
+            if (!javatariReady) {
+                alert('Please load a ROM first');
+                return;
+            }
+
+            try {
+                const savedState = localStorage.getItem('adventure-save-state');
+                if (savedState) {
+                    const state = JSON.parse(savedState);
+                    if (window.Javatari && window.Javatari.loadState) {
+                        window.Javatari.loadState(state);
+                        alert('State loaded from localStorage');
+                    } else {
+                        alert('Load state not available');
+                    }
+                } else {
+                    alert('No saved state found');
+                }
+            } catch (error) {
+                alert('Error loading state: ' + error.message);
+            }
+        }
+
+        // Difficulty switches
+        function setDifficulty(side, level) {
+            if (!javatariReady) {
+                alert('Please load a ROM first');
+                return;
+            }
+            
+            // Javatari difficulty switch simulation
+            if (window.Javatari && window.Javatari.setConsoleSwitch) {
+                const switchName = side === 'left' ? 'LEFT_DIFFICULTY' : 'RIGHT_DIFFICULTY';
+                window.Javatari.setConsoleSwitch(switchName, level === 'B');
+                alert(`${side.charAt(0).toUpperCase() + side.slice(1)} Difficulty set to ${level}`);
+            } else {
+                alert('Difficulty control not available via API');
+            }
+        }
+
+        // Game selection
+        function selectGame(number) {
+            if (!javatariReady) {
+                alert('Please load a ROM first');
+                return;
+            }
+
+            // Simulate game select by resetting and pressing select
+            if (window.Javatari && window.Javatari.resetConsole) {
+                window.Javatari.resetConsole();
+                setTimeout(() => {
+                    // Press select button number times
+                    for (let i = 0; i < number; i++) {
+                        if (window.Javatari.pressButton) {
+                            window.Javatari.pressButton('SELECT', true);
+                            setTimeout(() => window.Javatari.pressButton('SELECT', false), 100);
+                        }
+                    }
+                }, 500);
+                alert(`Game ${number} selected`);
+            } else {
+                alert('Game selection not available via API');
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (!javatariReady) return;
+
+            const keyMap = {
+                'ArrowUp': 'UP',
+                'ArrowDown': 'DOWN',
+                'ArrowLeft': 'LEFT',
+                'ArrowRight': 'RIGHT',
+                ' ': 'FIRE'
+            };
+
+            if (keyMap[e.key]) {
+                e.preventDefault();
+                if (window.Javatari && window.Javatari.pressJoystickButton) {
+                    window.Javatari.pressJoystickButton(0, keyMap[e.key], true);
+                }
+            }
+
+            if (e.key === 'r' || e.key === 'R') {
+                if (window.Javatari && window.Javatari.resetConsole) {
+                    window.Javatari.resetConsole();
+                }
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (!javatariReady) return;
+
+            const keyMap = {
+                'ArrowUp': 'UP',
+                'ArrowDown': 'DOWN',
+                'ArrowLeft': 'LEFT',
+                'ArrowRight': 'RIGHT',
+                ' ': 'FIRE'
+            };
+
+            if (keyMap[e.key]) {
+                if (window.Javatari && window.Javatari.pressJoystickButton) {
+                    window.Javatari.pressJoystickButton(0, keyMap[e.key], false);
+                }
+            }
+        });
+
+        // Handle window resize for CRT effect
+        window.addEventListener('resize', () => {
+            if (crtEnabled) {
+                const canvas = document.getElementById('crt-canvas');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        });
+    </script>
+</body>
+</html>

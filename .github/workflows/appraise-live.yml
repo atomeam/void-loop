@@ -1,0 +1,31 @@
+# The live appraiser, checked from outside (tools/appraise-live.mjs): one tiny test image to /api/appraise on the live site, and
+# whether Verse valued it (the vision slot bound and answering) and complimented a person ask. Results in the job summary:
+# status, kind and yes/no only, never an image. Manual only; nothing stored, no key needed (the route is public).
+name: Appraise live
+
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: The site to check
+        default: 'https://a-to-mind.com'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Value one test image on the live site
+        env:
+          SITE: ${{ inputs.site }}
+        run: |
+          set -o pipefail
+          node tools/appraise-live.mjs --site "$SITE" | tee -a "$GITHUB_STEP_SUMMARY"

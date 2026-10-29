@@ -1,0 +1,5 @@
+// /flights/distance/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), {"panels":["controls","facts","route"],"controls":["airports"],"de":{"h1":"Flugdistanz","intro":"Die Entfernung zwischen zwei Flughäfen in Kilometern, Meilen und Seemeilen entlang des Großkreises, mit üblicher Flugzeit, Zeitunterschied, Richtung und tatsächlich geflogener Strecke. Verketten Sie mehrere Flughäfen für eine Reise mit Zwischenstopps und sehen Sie jede Etappe und die Summe."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/distance/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

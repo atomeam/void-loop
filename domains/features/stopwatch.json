@@ -1,0 +1,153 @@
+{
+  "floor": "stopwatch",
+  "verse_page": "/stopwatch/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "online-stopwatch.com": {
+      "sources": [
+        "https://www.online-stopwatch.com/",
+        "https://www.online-stopwatch.com/countdown-timer/",
+        "https://www.online-stopwatch.com/interval-timer/",
+        "https://www.online-stopwatch.com/split-timer/",
+        "https://www.online-stopwatch.com/race-timers/",
+        "https://www.online-stopwatch.com/classroom-timers/",
+        "https://www.online-stopwatch.com/exam-timers/",
+        "https://www.online-stopwatch.com/clocks/",
+        "https://www.online-stopwatch.com/premium/",
+        "https://www.online-stopwatch.com/download-stopwatch/"
+      ],
+      "features": [
+        {
+          "name": "Full-screen stopwatch",
+          "detail": "start, stop, reset, full screen",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "stopwatch/index.html Start / Reset; F full screen"
+        },
+        {
+          "name": "Countdown timer with alarm",
+          "detail": "set hours, minutes, seconds; alarm at zero",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Countdown timer: Length, Set, Start, \"Alarm sound on\", Test sound"
+        },
+        {
+          "name": "Split / lap timer",
+          "detail": "record splits while running",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Lap button; table Lap / Split / Change / Total, fastest and slowest marked"
+        },
+        {
+          "name": "Interval timer",
+          "detail": "work/rest rounds that repeat, full screen; custom timers can be saved",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "stopwatch/index.html #iv: work, rest, rounds, sets, rest between sets, get ready; Tabata/HIIT/EMOM/circuit presets; tones at each change and 3-2-1 ticks; ?iv= link (lib/stopwatch.js intervalSteps)"
+        },
+        {
+          "name": "Saved custom timers",
+          "detail": "premium members save their own timers",
+          "paid": true,
+          "verse": "has",
+          "verse_evidence": "Save as preset keeps your own countdowns on this device (free), each with a remove button"
+        },
+        {
+          "name": "Choice of alarm sounds",
+          "detail": "pick the alarm sound",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Alarm: Beeps, Bell, Chime, Digital watch, Gong, all made on the device"
+        },
+        {
+          "name": "Chess clock",
+          "detail": "two-player clock (and a counting-down chess timer)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "stopwatch/index.html #cc: two tap clocks, Fischer increment, move counts, pause, flag on time out, bullet to classical presets, ?cc=3+2 link (lib/stopwatch.js chessTap)"
+        },
+        {
+          "name": "Race timers",
+          "detail": "random races between 6 characters free, up to 100 for premium",
+          "paid": true,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Egg timer (sand)",
+          "detail": "sand-glass style timer",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "no themed timer faces"
+        },
+        {
+          "name": "Classroom / fun themed timers",
+          "detail": "bomb, candle and other animated timers for class",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Exam timers",
+          "detail": "big clear timers for tests",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "full-screen countdown (F) serves; no exam-specific layout (time remaining + end time)"
+        },
+        {
+          "name": "Clocks",
+          "detail": "full-screen analog and digital clocks",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "clock on the stage (skills/clock.js) and /time/; not on /stopwatch/"
+        },
+        {
+          "name": "Random name pickers",
+          "detail": "free name pickers; premium saves name lists",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/wheel/ (Verse page), entries kept in the link"
+        },
+        {
+          "name": "Holiday countdowns",
+          "detail": "countdown to Christmas and other dates",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/is-it/<day> live countdown; stage countdown skill (skills/countdown.js)"
+        },
+        {
+          "name": "Downloadable stay-on-top stopwatch app",
+          "detail": "desktop download",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "no desktop app; the page installs offline (sw.js)"
+        },
+        {
+          "name": "Premium: ad-free and extras",
+          "detail": "paid membership removes ads and unlocks saved timers, lists, more racers",
+          "paid": true,
+          "verse": "has",
+          "verse_evidence": "Verse has no ads at all and nothing to pay"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Time kept as the moment it started: a reload or background tab never drifts",
+    "Keyboard: Space, L lap, R reset, M mute, F full screen",
+    "Laps copied as CSV",
+    "Lengths typed as 10m, 1h30m, 90s or 1:30",
+    "A link that holds the countdown",
+    "Alarm made on the device, works offline",
+    "Stopwatch and timer on one page"
+  ],
+  "gaps": [
+    "Classroom / fun themed timers",
+    "Egg timer (sand)",
+    "Downloadable stay-on-top stopwatch app",
+    "Exam timers",
+    "Clocks",
+    "Race timers"
+  ]
+}

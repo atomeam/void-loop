@@ -1,6 +1,6 @@
 /**
- * spanish skill — answer this ask in Spanish (plan item 9, Void in other languages)
- * Uses the translator already in Void (Google gtx, MyMemory fallback, no key).
+ * spanish skill — answer this ask in Spanish (plan item 9, Verse in other languages)
+ * Uses the translator already in Verse (Google gtx, MyMemory fallback, no key).
  * Does not publish, rename, or send. Empty surface stays empty until asked.
  * "answer me in Spanish", "answer me in Spanish: what is a void".
  */
@@ -52,7 +52,7 @@ async function run(text, api) {
   const line = out || 'No pude traducir eso ahora. Pregunta otra vez en un momento.';
   el.innerHTML = '<h2>En español</h2><div class="sub">' + esc(hit.q) + '</div>'
     + '<p style="font-size:28px;font-weight:300;line-height:1.3">' + esc(line) + '</p>'
-    + '<div class="src">Uses the translator already in Void (Google Translate, MyMemory if needed). Nothing is published.</div>';
+    + '<div class="src">Uses the translator already in Verse (Google Translate, MyMemory if needed). Nothing is published.</div>';
   return 'spanish';
 }
 

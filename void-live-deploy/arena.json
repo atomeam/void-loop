@@ -62,32 +62,32 @@
   ],
   "champion": {
     "weights": {
-      "centre": 3,
-      "three": 6.7,
-      "two": 2.1,
-      "theirThree": 7.4,
-      "theirTwo": 2
+      "centre": 8.3,
+      "three": 6.5,
+      "two": 1.6,
+      "theirThree": 9.1,
+      "theirTwo": 4.9
     },
-    "vsCard": 0.5375,
-    "since": "2026-10-12",
-    "last": "2026-10-13",
-    "days": 3,
+    "vsCard": 0.4875,
+    "since": "2026-10-28",
+    "last": "2026-10-28",
+    "days": 18,
     "tried": [
       {
-        "score": 0.3875,
+        "score": 0.575,
+        "kept": true
+      },
+      {
+        "score": 0.4875,
         "kept": false
       },
       {
-        "score": 0.3875,
-        "kept": false
-      },
-      {
-        "score": 0.2875,
-        "kept": false
+        "score": 0.5625,
+        "kept": true
       }
     ]
   },
-  "played": "2026-10-13",
+  "played": "2026-10-28",
   "history": [
     {
       "date": "2026-10-11",
@@ -103,6 +103,81 @@
       "date": "2026-10-13",
       "rating": 1609,
       "vsCard": 0.5375
+    },
+    {
+      "date": "2026-10-14",
+      "rating": 1609,
+      "vsCard": 0.3
+    },
+    {
+      "date": "2026-10-15",
+      "rating": 1609,
+      "vsCard": 0.525
+    },
+    {
+      "date": "2026-10-16",
+      "rating": 1609,
+      "vsCard": 0.475
+    },
+    {
+      "date": "2026-10-17",
+      "rating": 1609,
+      "vsCard": 0.375
+    },
+    {
+      "date": "2026-10-18",
+      "rating": 1609,
+      "vsCard": 0.5625
+    },
+    {
+      "date": "2026-10-19",
+      "rating": 1609,
+      "vsCard": 0.3375
+    },
+    {
+      "date": "2026-10-20",
+      "rating": 1609,
+      "vsCard": 0.325
+    },
+    {
+      "date": "2026-10-21",
+      "rating": 1609,
+      "vsCard": 0.475
+    },
+    {
+      "date": "2026-10-22",
+      "rating": 1609,
+      "vsCard": 0.35
+    },
+    {
+      "date": "2026-10-23",
+      "rating": 1609,
+      "vsCard": 0.325
+    },
+    {
+      "date": "2026-10-24",
+      "rating": 1609,
+      "vsCard": 0.5625
+    },
+    {
+      "date": "2026-10-25",
+      "rating": 1609,
+      "vsCard": 0.3875
+    },
+    {
+      "date": "2026-10-26",
+      "rating": 1609,
+      "vsCard": 0.3875
+    },
+    {
+      "date": "2026-10-27",
+      "rating": 1609,
+      "vsCard": 0.3875
+    },
+    {
+      "date": "2026-10-28",
+      "rating": 1609,
+      "vsCard": 0.4875
     }
   ]
 }

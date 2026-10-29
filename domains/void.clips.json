@@ -1,0 +1,29 @@
+{
+ "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here).",
+ "visits": {
+  "clock-mini": 1,
+  "x9": 1
+ },
+ "learned": [
+  {
+   "trick": "explosion",
+   "at": "2026-10-15",
+   "asked": "Adam"
+  },
+  {
+   "trick": "ufo-flyover",
+   "at": "2026-10-15",
+   "asked": "Adam"
+  },
+  {
+   "trick": "ufo-abduction",
+   "at": "2026-10-15",
+   "asked": "Adam"
+  },
+  {
+   "trick": "camera-shake",
+   "at": "2026-10-15",
+   "asked": "Adam"
+  }
+ ]
+}

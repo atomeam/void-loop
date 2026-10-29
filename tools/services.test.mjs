@@ -1,4 +1,4 @@
-// The pricing card (void-live-deploy/skills/services.js): what Void sells, from lib/products.js.
+// The pricing card (void-live-deploy/skills/services.js): what Verse sells, from lib/products.js.
 // Run: node --test tools/services.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -65,5 +65,5 @@ test('the card reads the live store: a matched row shows the catalog price and l
   // url matching: a catalog row known only by its /l/ url still matches
   assert.ok(liveRowFor(withSlug, [{ url: 'https://moonbeam846.gumroad.com/l/full-stack-audit', price_cents: 1 }]));
   // the whole card falls back cleanly with no catalog at all
-  assert.match(cardHtml(esc, null), /What Void sells/);
+  assert.match(cardHtml(esc, null), /What Verse sells/);
 });

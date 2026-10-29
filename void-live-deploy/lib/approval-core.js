@@ -5,6 +5,7 @@
 
 import { PAID_MODEL } from './models.js';
 
+import { keepAsk, keepLine } from './keep-going.js';
 export const POLICY_VERSION = 'void-confirm-v0.1';
 export const EVENT_REQUESTED = 'a2m.approval.requested';
 export const EVENT_DECISION = 'a2m.approval.decision';
@@ -30,10 +31,15 @@ export const GATED = {
   'booking.make': { rule: 'book.booking', kind: 'book', service: 'booking', board: 'make a booking' },
   'order.place': { rule: 'spend.order', kind: 'spend', service: 'shopping', board: 'buy something' },
   'payment.send': { rule: 'spend.payment', kind: 'spend', service: 'payments', board: 'pay someone' },
-  // A standing spend on a stronger model, paid only from what Void earned (STANDING.md; lib/router.js). The newest one wins; $0 stops it.
-  'models.spend': { rule: 'spend.models', kind: 'spend', service: 'model spending', board: 'let Void pay for a stronger model' },
+  // A standing spend on a stronger model, paid only from what Verse earned (STANDING.md; lib/router.js). The newest one wins; $0 stops it.
+  'models.spend': { rule: 'spend.models', kind: 'spend', service: 'model spending', board: 'let Verse pay for a stronger model' },
   // Phone push is not connected. The ask still stops on the confirm line; no executor, so a yes does not send.
   'reminder.ping': { rule: 'send.reminder', kind: 'send', service: 'reminders', board: 'remind me' },
+  // Build-queue handoff to a2m-bridge (tools/dispatcher.mjs). Not a spend: hands a task title to the bridge after the owner yes.
+  // Execution layer 2026-10-16: without this gate, approval mode always got 400 'not a gated action'.
+  // An approval that starts a task which keeps running after the person leaves (lib/keep-going.js): the yes switches an automation on the clock; nothing runs at request time.
+  'automation.keep': { rule: 'send.automation-keep', kind: 'send', service: 'automations', board: 'keep an automation running by itself' },
+  'bridge.task': { rule: 'send.bridge-task', kind: 'send', service: 'build queue', board: 'hand a build task to the bridge' },
 };
 export const isGated = (toolName) => Object.prototype.hasOwnProperty.call(GATED, toolName);
 export const NOTHING = { send: 'nothing sent', book: 'nothing booked', spend: 'nothing spent' };
@@ -75,10 +81,15 @@ export function confirmLine(toolName, args) {
     case 'proposal.send': return a.title ? `Send the proposal “${a.title}” to ${a.to}?` : `Send the proposal to ${a.to}?`;
     case 'calendar.book': return `Add “${a.what}” to your calendar${a.when ? ' ' + a.when : ''}?`;
     case 'booking.make': return `Book ${a.what}${cost ? ' for ' + cost : ''}?`;
-    case 'order.place': return cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`;
+    case 'order.place': { // a spend proposal from Verse's own money (lib/reinvest.js) also says what it should pay back, and by when
+      const back = a.payback ? ` Expected payback: ${a.payback}${a.by ? ', checked by ' + a.by : ''}.` : '';
+      return (cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`) + back;
+    }
     case 'payment.send': return `Pay ${a.to} ${cost}?`;
-    case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Void spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Void paying for a stronger model?';
+    case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Verse spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Verse paying for a stronger model?';
     case 'reminder.ping': return `Remind you at ${a.when}${a.what ? ' to ' + a.what : ''}?`;
+    case 'automation.keep': return keepLine(a);
+    case 'bridge.task': return a.title ? `Hand build task “${a.title}” to the bridge?` : 'Hand this build task to the bridge?';
     default: return '';
   }
 }
@@ -120,15 +131,15 @@ export function parseGatedAsk(text) {
       || (m = s.match(/^e-?mail\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))) {
     return { toolName: 'email.send', args: { to: clip(m[1], 120), body: clip(m[2], 2000) } };
   }
-  // "let Void spend up to $5 a month on a stronger model" / "let Void pay for a stronger model up to $5 a month" / "stop paying for stronger models"
+  // "let Verse spend up to $5 a month on a stronger model" / "let Verse pay for a stronger model up to $5 a month" / "stop paying for stronger models"
   const MODELS = '(?:a\\s+)?(?:stronger|better|smarter|paid)\\s+(?:ai\\s+)?models?';
   const EARNED = '(?:\\s+(?:from|out of)\\s+(?:what\\s+(?:it|you)(?:\\s+ha(?:s|ve))?\\s+earned|(?:its|your)\\s+earnings))?';
-  if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))
-      || (m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?pay\\s+for\\s+' + MODELS + '\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)' + EARNED + '$', 'i')))) {
+  if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|verse|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))
+      || (m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|verse|yourself|you)\\s+(?:to\\s+)?pay\\s+for\\s+' + MODELS + '\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)' + EARNED + '$', 'i')))) {
     const cost = parseCost(m[1]);
     if (cost && cost.currency === 'USD') return { toolName: 'models.spend', args: { model: PAID_MODEL, cost, per: m[2].toLowerCase() } };
   }
-  if (new RegExp('^(?:stop|don\'?t)\\s+(?:void\\s+)?(?:paying|pay|spending)\\s+(?:for|on)\\s+' + MODELS + '$', 'i').test(s)) {
+  if (new RegExp('^(?:stop|don\'?t)\\s+(?:(?:void|verse)\\s+)?(?:paying|pay|spending)\\s+(?:for|on)\\s+' + MODELS + '$', 'i').test(s)) {
     return { toolName: 'models.spend', args: { model: PAID_MODEL, cost: { amount: 0, currency: 'USD' }, per: 'month' } };
   }
   if ((m = s.match(new RegExp('^(?:pay|send)\\s+' + COST + '\\s+to\\s+(.+)$', 'i'))) || (m = s.match(new RegExp('^pay\\s+(.+?)\\s+' + COST + '$', 'i')))) {
@@ -152,10 +163,14 @@ export function parseGatedAsk(text) {
     const cost = m[2] ? parseCost(m[2]) : null;
     return { toolName: 'booking.make', args: cost ? { what: clip(m[1], 160), cost } : { what: clip(m[1], 160) } };
   }
+  // food from a restaurant ("order food from lovebird in lakeland", "order from joe's pizza") is skills/eat.js: it finds the place and every
+  // way to order, and the person places the order there, so nothing is spent here and nothing needs a yes
+  if (/^order\s+(?:me\s+|us\s+)?(?:some\s+)?(?:(?:food|dinner|lunch|breakfast|brunch|takeout|take-out|delivery|pizza|chicken|burgers?|tacos?|sushi|wings)\s+)?from\s+\S|^order\s+(?:me\s+|us\s+)?(?:some\s+)?(?:food|dinner|lunch|takeout|delivery)$/i.test(s)) return null;
   if ((m = s.match(new RegExp('^(?:buy|order|purchase)\\s+(?!of\\b|by\\b|in\\b)(?:me\\s+|us\\s+)?(.+?)(?:\\s+for\\s+' + COST + ')?$', 'i')))) {
     const cost = m[2] ? parseCost(m[2]) : null;
     return { toolName: 'order.place', args: cost ? { item: clip(m[1], 160), cost } : { item: clip(m[1], 160) } };
   }
+  { const k = keepAsk(s); if (k) return k; }
   // "remind me at 5" — behind the confirm line. No executor, so a yes does not push.
   // "remind me to call mom at 6pm" (the task first) is the calendar's: it saves on this device (skills/remind.js).
   if ((m = s.match(/^remind me\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i))) {

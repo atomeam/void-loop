@@ -87,6 +87,9 @@ function mount(th, stageApi) {
   if (stageApi.selected() === th.id && shapeType !== 'circle') el.style.outline = '1px solid rgba(255,255,255,0.25)';
   const inner = document.createElement('div');
   inner.className = shapeType === 'circle' ? 'shape-circle' : shapeType === 'line' ? 'shape-line' : 'shape-rect';
+  if (shapeType === 'triangle') { // the caution shape (skills/technical-context.js): a filled amber triangle with a mark in it
+    inner.style.clipPath = 'polygon(50% 4%, 97% 94%, 3% 94%)'; inner.style.background = th.color || '#f5a623'; inner.style.border = '0'; inner.style.opacity = '0.9';
+  }
   inner.style.width = '100%';
   if (shapeType !== 'line') inner.style.height = '100%';
   else if (th.rotation) inner.style.transform = 'rotate(' + th.rotation + 'deg)';
@@ -106,7 +109,8 @@ function mount(th, stageApi) {
   } else {
     const label = document.createElement('div');
     label.className = 'shape-label';
-    label.textContent = shapeType;
+    label.textContent = shapeType === 'triangle' ? '!' : shapeType;
+    if (shapeType === 'triangle') { label.style.cssText = 'color:#1a1200;font-weight:700;font-size:28px;top:42%;opacity:1'; if (th.caption) el.title = th.caption; }
     el.appendChild(label);
   }
   stageApi.bindDrag(el, th);

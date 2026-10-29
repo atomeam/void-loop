@@ -142,7 +142,7 @@ test('a mail thread read off the page drafts from the message, not its headers: 
   assert.equal(mailBody('Fix our order flow\nWe need it by June.'), 'Fix our order flow\nWe need it by June.', 'a pasted request with no headers is left as it is');
 });
 
-test('one owner gate across Void: the confirm line takes the memory page\'s signed owner session, and refuses a forged one', async () => {
+test('one owner gate across Verse: the confirm line takes the memory page\'s signed owner session, and refuses a forged one', async () => {
   const { mintOwnerSession } = await import('../void-live-deploy/lib/guard.js');
   const env = { READ_TOKEN: TOKEN, SALT: 'test-salt', DB: d1() };
   const session = (await mintOwnerSession(env, 'owner-credential-1')).token; // what passkey sign-in stores in a2m.void.owner.v1

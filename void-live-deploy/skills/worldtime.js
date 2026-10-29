@@ -22,13 +22,17 @@ export function parseWorldTime(text) {
   m = t.match(new RegExp('^(?:what\\s+)?(?:time\\s+(?:is|will)\\s+it(?:\\s+be)?|time)\\s+in\\s+(.+?)\\s+(?:when|if)\\s+it(?:\\s+is|\'?s)\\s+' + TIME + '\\s+in\\s+(.+?)$', 'i'));
   if (m) { const to = PLACE(m[1]), from = PLACE(m[3]); if (to && from && !NOT_PLACE.test(to) && !NOT_PLACE.test(from)) return { kind: 'convert', time: m[2].toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to }; }
   // "jet lag from LA to London": the clock difference, now
-  m = t.match(/^how\s+many\s+hours\s+(?:ahead|behind)\s+is\s+(.+?)\s+(?:than|from|of)\s+(.+)$/i); // "how many hours ahead is Lagos than London"
+  m = t.match(/^how\s+many\s+hours\s+(?:ahead|behind)\s+is\s+(.+?)\s+(?:than|from|of)\s+(?!(?:me|here|us)$)(.+)$/i); // "how many hours ahead is Lagos than London"
   if (m) { const to = PLACE(m[1]), from = PLACE(m[2]); if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: 'now', from, to }; }
   m = t.match(/^(?:how\s+(?:bad|much)\s+is\s+(?:the\s+)?)?jet\s*lag\s+(?:from|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i);
   if (m) { const from = PLACE(m[1]), to = PLACE(m[2]); if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: 'now', from, to }; }
   m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+|now\s+)?(?:over\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^what\s+time\s+is\s+it\s+(?:right\s+now\s+|now\s+)?(?:over\s+|out\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^(?:current|local)\s+time\s+(?:in|at|for)\s+(.+)$/i)
+    // "current time lagos": no "in" (typed fast); not "current time zone"
+    || t.match(/^(?:current|local)\s+time\s+(?!zone\b|is\b|now\b|please\b)([a-z][\w .,'-]{1,60})$/i)
+    // "how many hours ahead is Dubai": against your own clock (the card says "N hours ahead of you")
+    || t.match(/^how\s+many\s+hours\s+(?:ahead|behind)\s+is\s+(.+?)(?:\s+(?:of|from)\s+(?:me|here|us))?$/i)
     || t.match(/^what\s+(?:day|date)\s+is\s+it\s+(?:today\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^(?:what'?s|whats|what\s+is)\s+(?:the\s+)?(?:date|day)\s+(?:today\s+)?(?:in|at)\s+(.+)$/i)
     // "what is the time zone of Denver", "time zone in Tokyo", "what time zone is Denver in": the card shows the zone and offset
@@ -45,6 +49,18 @@ export function parseWorldTime(text) {
     if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1] ? m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, '') : 'now', from, to };
     return null;
   }
+  // a time between two places in the other orders people type: "what time is 9am london in new york", "noon in paris is what
+  // time in chicago", "meeting at 2pm london what time in san francisco", "my call is at 10am in new york, what time is that in berlin"
+  const conv = (time, a, b) => { const from = PLACE(a), to = PLACE(b); return from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to) ? { kind: 'convert', time: time.toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to } : null; };
+  m = t.match(new RegExp('^what\\s+time\\s+is\\s+' + TIME + '\\s+(?:in\\s+)?(.+?)\\s+in\\s+(.+)$', 'i'))
+    || t.match(new RegExp('^' + TIME + '\\s+(?:in\\s+)?(.+?)\\s+is\\s+what\\s+time\\s+in\\s+(.+)$', 'i'))
+    || t.match(new RegExp('^(?:(?:a|the|my|our)\\s+)?(?:meeting|call|class|game|flight|show|event|match|webinar|stream)\\s+(?:is\\s+)?at\\s+' + TIME + '\\s+(?:in\\s+)?(.+?),?\\s+what\\s+time\\s+(?:is\\s+(?:that|it)\\s+)?in\\s+(.+)$', 'i'));
+  if (m) { const q = conv(m[1], m[2], m[3]); if (q) return q; }
+  // "is sydney ahead of los angeles", "is tokyo behind london": the two clocks now, read from the second
+  m = t.match(/^is\s+(.+?)\s+(ahead\s+of|behind)\s+(.+)$/i);
+  if (m && !/\b(?:schedule|time|plan|us|me|you)\b/i.test(m[3])) { const q = conv('now', m[3], m[1]); if (q) return q; }
+  // "what is gmt now", "utc time": the time in UTC
+  if (/^(?:(?:what(?:'s|\s+is)\s+)?(?:the\s+)?)?(?:gmt|utc)(?:\s+time)?(?:\s+(?:right\s+)?now)?$/i.test(t)) { const place = PLACE('utc'); if (place) return { kind: 'now', place }; }
   // "if it's 3pm in new york what time is it in paris"
   m = t.match(new RegExp('^(?:if|when)\\s+it(?:\'?s|\\s+is)\\s+' + TIME + '\\s+in\\s+(.+?),?\\s+what\\s+time\\s+(?:is\\s+it|will\\s+it\\s+be)\\s+in\\s+(.+)$', 'i'));
   if (m) {
@@ -58,43 +74,38 @@ export function parseWorldTime(text) {
     return null;
   }
   m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what's\s+|whats\s+)?(?:the\s+)?(?:(today's|tomorrow's)\s+)?(sunrise|sunset|sun\s+rise|sun\s+set|dawn|dusk)(?:\s+and\s+(?:the\s+)?(?:sunrise|sunset|dawn|dusk))?\s+(?:(?:today|tomorrow)\s+)?(?:in|at|for)\s+(.+)$/i)
-    || t.match(/^(?:(when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+?)(?:\s+(?:today|tonight|tomorrow))?$/i);
+    || t.match(/^(?:(when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+?)(?:\s+(?:today|tonight|tomorrow))?$/i)
+    // "when does it get dark in London today": dark is sunset, light is sunrise
+    || ((x) => x && [x[0], x[1], /dark/i.test(x[2]) ? 'set' : 'rise', x[3]])(t.match(/^(when|what\s+time)\s+does\s+it\s+get\s+(dark|light)\s+(?:(?:today|tonight|tomorrow)\s+)?(?:in|at)\s+(.+?)(?:\s+(?:today|tonight|tomorrow))?$/i));
   if (m) {
     const which = /rise|dawn/i.test(m[2]) ? 'sunrise' : 'sunset', place = PLACE(m[3]);
     const tomorrow = /tomorrow/i.test(t);
     return place && !NOT_PLACE.test(place) ? { kind: 'sun', which, place, tomorrow } : null;
   }
-  // "what time is sunset", "when is sunrise tomorrow": no place named, so the city your device's time zone names
-  // (the page title says which city, so it is never a hidden guess)
-  m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what'?s\s+)?(?:the\s+)?(?:(today'?s|tomorrow'?s)\s+)?(sunrise|sunset|dawn|dusk)(?:\s+(today|tonight|tomorrow))?$/i)
-    || t.match(/^(?:(?:when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)(?:\s+(today|tonight|tomorrow))?$/i);
-  if (m) {
-    let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
-    const place = tz.includes('/') ? tz.split('/').pop().replace(/_/g, ' ') : '';
-    if (!place) return null;
-    return { kind: 'sun', which: /rise|dawn/i.test(m[2] || m[1]) ? 'sunrise' : 'sunset', place, tomorrow: /tomorrow/i.test(t) };
-  }
+  // "what time is sunset", "when is sunrise tomorrow" with no place named belong to suntimes (skills/suntimes.js), which reads where
+  // you are and adds the day length and twilight; the world clock keeps the asks that name a place (lists run 2, 2026-10-21:
+  // the two skills both answered the bare ask and the overlap check failed; docs/convergence.md)
   return null;
 }
 
 // The UTC offset (minutes) of a time zone at a given instant, from Intl alone.
-function offsetMin(tz, at) {
+export function offsetMin(tz, at) {
   const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(at);
   const g = (k) => +parts.find((p) => p.type === k).value;
   return Math.round((Date.UTC(g('year'), g('month') - 1, g('day'), g('hour') % 24, g('minute'), g('second')) - at.getTime()) / 60000);
 }
 // Wall-clock y-m-d h:m in tz -> the real instant (checked twice, so a DST change in between still lands right).
-function instantIn(tz, y, mo, d, h, mi) {
+export function instantIn(tz, y, mo, d, h, mi) {
   const guess = Date.UTC(y, mo, d, h, mi);
   let at = new Date(guess - offsetMin(tz, new Date(guess)) * 60000);
   at = new Date(guess - offsetMin(tz, at) * 60000);
   return at;
 }
-function ymdIn(tz, at) {
+export function ymdIn(tz, at) {
   const p = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(at).split('-');
   return [+p[0], +p[1] - 1, +p[2]];
 }
-function parseClock(s) {
+export function parseClock(s) {
   if (s === 'noon') return [12, 0];
   if (s === 'midnight') return [0, 0];
   const m = s.match(/^(\d{1,2})(?::(\d{2}))?(am|pm)?$/);
@@ -106,7 +117,7 @@ function parseClock(s) {
 }
 const fmtTime = (tz, at) => new Intl.DateTimeFormat([], { timeZone: tz, hour: 'numeric', minute: '2-digit' }).format(at);
 const fmtDay = (tz, at) => new Intl.DateTimeFormat([], { timeZone: tz, weekday: 'long', month: 'long', day: 'numeric' }).format(at);
-const gmt = (min) => 'UTC' + (min >= 0 ? '+' : '−') + Math.floor(Math.abs(min) / 60) + (Math.abs(min) % 60 ? ':' + String(Math.abs(min) % 60).padStart(2, '0') : '');
+export const gmt = (min) => 'UTC' + (min >= 0 ? '+' : '−') + Math.floor(Math.abs(min) / 60) + (Math.abs(min) % 60 ? ':' + String(Math.abs(min) % 60).padStart(2, '0') : '');
 function diffWords(min) {
   if (!min) return 'same time as you';
   const h = Math.abs(min) / 60, n = Number.isInteger(h) ? String(h) : h.toFixed(1).replace(/\.0$/, '');

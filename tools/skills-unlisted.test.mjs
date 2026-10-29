@@ -29,3 +29,12 @@ test('the real index lists every real skill', async () => {
   const dir = new URL('../void-live-deploy/skills/', import.meta.url).pathname;
   assert.deepEqual(await unlistedSkills(dir), []);
 });
+
+test('a skill the index lost is registered again at the end of the order (asked by Verse)', async () => {
+  const { mkdtempSync: mk, writeFileSync: wf, readdirSync: rd } = await import('node:fs');
+  const { registerNames } = await import('./skills-index.mjs');
+  const od = mk(join(tmpdir(), 'order-'));
+  wf(join(od, '0010-clock'), ''); wf(join(od, '0020-timer'), '');
+  assert.deepEqual(registerNames(['services', 'clock'], od), ['0030-services'], 'a name with a place is left alone');
+  assert.deepEqual(rd(od).sort(), ['0010-clock', '0020-timer', '0030-services']);
+});

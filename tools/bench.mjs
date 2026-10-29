@@ -1,6 +1,6 @@
 // The everyday benchmark: common asks replayed on the real page. tools/bench.json says what should answer each one (`want`, a
 // note from the page's own log a2m.void.loop.v1, alternatives with |). The score is how many are answered by what should answer
-// them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
+// them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Verse, not their uptime.
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
 //   node tools/bench.mjs --score    prints only {"score","total","wrong":[...],"env","cores","pages","latency":{p50,p95,n}} (plus "inconclusive","note" when the machine was under load: tools/bench-load.mjs) (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
@@ -20,10 +20,15 @@ import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 import { execFileSync } from 'node:child_process';
 import { envName, latencyOf, assess } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
+import { isRouted } from './routed.mjs';
+import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
+// how long one ask may take before it counts as unanswered (4 s, as a person waits); a test that checks counting, not speed, raises it
+// (tools/bench-load.test.mjs: on a loaded machine the page logged the ask after 4 s and the miss read as "said")
+const ASK_WAIT_MS = Number(process.env.VOID_BENCH_ASK_WAIT_MS) || 4000;
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 // --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
-// finds the gaps fast. Add the ones worth keeping with tools/append.mjs once Void answers them.
+// finds the gaps fast. Add the ones worth keeping with tools/append.mjs once Verse answers them.
 // --again: probe only the asks the last probe missed (kept outside the repo), so a fix is checked in seconds, not a whole batch
 const AGAIN = path.join(os.tmpdir(), 'void-probe-misses-' + crypto.createHash('sha1').update(here).digest('hex').slice(0, 10) + '.json'); // one per checkout
 const probeFile = process.argv.includes('--again') ? AGAIN : process.argv.includes('--probe') ? process.argv[process.argv.indexOf('--probe') + 1] : null;
@@ -64,12 +69,21 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
+// --ground: the semantic validator's measurement (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"). Every answer the
+// right skill gave, with no "says" to check it, is read off the page and asked: is this card about the ask's subject? Reported
+// apart (tools/bench.ground.json); it never changes the score. A skill's trigger words are read off its own asks in bench.json.
+const GROUND = process.argv.includes('--ground');
+const triggersOf = new Map();
+if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))) for (const w of String(x.want).split('|')) if (w.startsWith('skill:')) { const k = w.slice(6); if (!by.has(k)) by.set(k, []); by.get(k).push(x.ask); }
+  for (const [k, list] of by) triggersOf.set(k, triggersFrom(list)); }
 async function one({ ask: a, want, says, before }) {
   const ctx = await browser.newContext(); const miss = [];
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Topic', extract: 'An extract.' }));
-    if (u.includes('geocoding-api.open-meteo.com')) return r.fulfill(json({ results: [{ name: 'Paris', country: 'France', country_code: 'FR', latitude: 48.85, longitude: 2.35, timezone: 'Europe/Paris', population: 2100000 }] }));
+    // the place found is the place asked for (the coordinates and the rest stay the fixed stand-in), so a card names what was asked
+    if (u.includes('geocoding-api.open-meteo.com')) { const q = String(new URL(u).searchParams.get('name') || 'Paris').trim(); const name = q.replace(/\b\w/g, (c) => c.toUpperCase());
+      return r.fulfill(json({ results: [{ name, country: 'France', country_code: 'FR', latitude: 48.85, longitude: 2.35, timezone: 'Europe/Paris', population: 2100000 }] })); }
     if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
     if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10);
       return r.fulfill(json({ timezone: 'Europe/Paris', current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5, relative_humidity_2m: 50 },
@@ -79,7 +93,13 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('translate.googleapis.com')) return r.fulfill(json([[['hola', 'hello']]]));
     if (u.includes('api.datamuse.com/sug')) return r.fulfill(json([{ word: 'necessary', score: 1 }]));
     if (u.includes('api.datamuse.com')) return r.fulfill(json([{ word: 'glad' }, { word: 'joyful' }, { word: 'cheerful' }, { word: 'content' }]));
-    if (u.includes('restcountries.com')) { // the country asked for, from Void's own built-in lists (Australia in full)
+    if (u.includes('query.wikidata.org/sparql')) { // the country skill's live source (skills/country.js wikidataQuery): the same stand-in as REST Countries' below
+      const n = ((String(new URL(u).searchParams.get('query') || '').match(/VALUES \?lab \{ "([^"]+)"@en/) || [])[1] || '').toLowerCase().replace(/^the\s+/, '');
+      const t = n.replace(/\b\w/g, (x) => x.toUpperCase()), L = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, { type: 'literal', value: String(v) }]));
+      const row = n === 'australia' || !CAPITALS[n] ? L({ c: 'https://www.wikidata.org/entity/Q408', name: 'Australia', capitals: 'Canberra', population: 25687041, currencies: 'Australian dollar', languages: 'English', area: 7692024, continents: 'Oceania', timezones: 'UTC+10:00', cca2: 'AU' })
+        : L({ c: 'https://www.wikidata.org/entity/Q1', name: t, capitals: CAPITALS[n], population: 1000000, currencies: CURRENCIES[n] || '', languages: 'Local', area: 100000 });
+      return r.fulfill(json({ results: { bindings: [row] } })); }
+    if (u.includes('restcountries.com')) { // the country asked for, from Verse's own built-in lists (Australia in full)
       const n = decodeURIComponent((u.match(/\/name\/([^?]+)/) || [])[1] || '').toLowerCase();
       if (n === 'australia' || !CAPITALS[n]) return r.fulfill(json([{ name: { common: 'Australia', official: 'Commonwealth of Australia' }, capital: ['Canberra'], population: 25687041, currencies: { AUD: { name: 'Australian dollar', symbol: '$' } }, languages: { eng: 'English' }, area: 7692024, flag: '🇦🇺', region: 'Oceania', subregion: 'Australia and New Zealand' }]));
       const t = n.replace(/\b\w/g, (x) => x.toUpperCase());
@@ -93,7 +113,9 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
     return r.fulfill({ status: 204, body: '' }); });
-  await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u)) miss.push(1);
+  await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u) && !/"kind":"used"|"fallback":"ungrounded:/.test(r.request().postData() || '')) miss.push(1); // a lab experiment's use count (lib/used.js) and the page's own grounding report (lib/ground.js, reported apart) are no miss
+    // an open plan ("plan my garden") asks the engine for its steps (skills/intent.js engineSteps); with none the skill reports a miss (intent:no-steps), so the stub gives it three
+    if (/\/api\/answer$/.test(u) && /"mode":"plan"/.test(r.request().postData() || '')) return r.fulfill(json({ steps: ['Pick a first small step', 'Do it for a week', 'Review and adjust'] }));
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); });
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
@@ -106,13 +128,16 @@ async function one({ ask: a, want, says, before }) {
     if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
   await p.evaluate(() => { window.__said = ''; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
-  const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, 4000);
+  const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, ASK_WAIT_MS);
   const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
   const ms = Date.now() - t0; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
-  const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
+  // a plain want ("timer", "list", "calc") is the ability, whichever code answers it: the page's own parser used to log "timer",
+  // the skill it moved out to (cleanup step 6) logs "skill:timer", and both are the timer answering (2026-10-16: 20 first-session
+  // asks read as misses on main for that prefix alone, and the growth card called the timer, list and calc failing)
+  const routed = !miss.length && isRouted(want, note);
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
   let shown = '';
   // a card can finish drawing after the answer is logged: wait until the value shows (or 2.5 s), then read the page
@@ -122,10 +147,14 @@ async function one({ ask: a, want, says, before }) {
   // (other cards may rightly repeat the ask: a note shows its text, a spelling answer shows the word)
   if (/(^|\|)review(\||$)/.test(want)) { const echoes = [a, a.includes(':') ? a.slice(a.indexOf(':') + 1) : ''].map((x) => x.trim()).filter((x) => x.length >= 4);
     for (const e of echoes) shown = shown.split(e).join(' '); }
+  let ground = null;
+  if (GROUND && routed && !says) { const skill = (/^skill:([\w-]+)/.exec(note) || [])[1];
+    if (skill) { await p.waitForTimeout(400); const card = await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => '');
+      const g = grounded(a, said + '\n' + card, triggersOf.get(skill)); if (g.subject.length) ground = { skill, ok: g.ok, missing: g.missing }; } }
   const valueOk = !says || new RegExp(says, 'i').test(shown);
   const right = routed && valueOk;
   await ctx.close();
-  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms };
+  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms, ...(ground ? { ground } : {}) };
 }
 // default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
 // of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
@@ -155,9 +184,16 @@ for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  '
 const n = a.score;
 // with --last N only part of the list ran: the asks that did not run stay in the replay file
 // say why the common misses happen, so a fix starts in the right file
-if (probeFile && out.some((x) => !x.right && /asked for code/.test(x.by))) console.log('("asked for code": Void did not see code in the ask. Name the language in NAMED and give looksLikeCode a reason to count a short paste, both in void-live-deploy/lib/code-review.js)');
+if (probeFile && out.some((x) => !x.right && /asked for code/.test(x.by))) console.log('("asked for code": Verse did not see code in the ask. Name the language in NAMED and give looksLikeCode a reason to count a short paste, both in void-live-deploy/lib/code-review.js)');
 if (probeFile && out.some((x) => !x.right && /^review .* 0 \(wrong value\)/.test(x.by))) console.log('("review … 0 (wrong value)": the review found nothing. Add a rule to RULES in void-live-deploy/lib/code-review.js and a case to tools/review.test.mjs)');
 if (probeFile) { const missed = asks.filter((a) => !todo.includes(a)).concat(todo.filter((_, i) => !out[i].right)); fs.writeFileSync(AGAIN, JSON.stringify(missed, null, 1)); if (missed.length) console.log('(node tools/bench.mjs --again probes just these ' + missed.length + ' after a fix)'); }
+if (GROUND) {
+  const judged = out.filter((x) => x && x.ground), off = judged.filter((x) => !x.ground.ok);
+  const per = {}; for (const x of judged) { const k = x.ground.skill; per[k] = per[k] || { judged: 0, ungrounded: 0 }; per[k].judged++; if (!x.ground.ok) per[k].ungrounded++; }
+  fs.writeFileSync(path.join(here, 'bench.ground.json'), JSON.stringify({ at: new Date().toISOString(), judged: judged.length, ungrounded: off.length, skills: per, asks: off.map((x) => ({ ask: x.ask, skill: x.ground.skill, missing: x.ground.missing })) }, null, 1) + '\n');
+  console.log('\nGrounding: ' + (judged.length - off.length) + ' of ' + judged.length + ' answers with a subject show it (tools/bench.ground.json)');
+  for (const [k, v] of Object.entries(per).filter(([, v]) => v.ungrounded).sort((x, y) => y[1].ungrounded - x[1].ungrounded)) console.log('  ' + k.padEnd(14) + v.ungrounded + ' of ' + v.judged + ' ungrounded: ' + off.filter((x) => x.ground.skill === k).slice(0, 3).map((x) => '"' + x.ask + '" (no ' + x.ground.missing.join(', ') + ')').join('; '));
+}
 console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them (answers took p50 ' + latency.p50 + 'ms, p95 ' + latency.p95 + 'ms' + (a.loadMisses.length ? '; ' + a.loadMisses.length + ' miss(es) passed alone and count as answered' : '') + ').');
 if (a.inconclusive) console.log(a.note);
 if (a.failed) console.log('FAILED: ' + a.wrong.length + ' miss(es) reproduce alone and take the score below the floor (' + best.score + '/' + best.total + ')');

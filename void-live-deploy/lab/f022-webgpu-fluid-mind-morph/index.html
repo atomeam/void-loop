@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --border-w: 4px;
+  --border-r: 16px;
+  --hue: 200;
+  --card-scale: 1;
+  --card-rot: 0deg;
+  --bg: #0a0a12;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  transition: background 0.4s;
+}
+#canvas-wrap {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  border: var(--border-w) solid hsl(var(--hue), 70%, 50%);
+  border-radius: var(--border-r);
+  overflow: hidden;
+  transition: border-radius 0.3s, border-width 0.3s, border-color 0.3s;
+}
+canvas { display: block; width: 100%; height: 100%; background: #050508; }
+#hud {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(10,10,20,0.75);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+  max-width: 280px;
+}
+#mind-card {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(20,20,40,0.85);
+  border: 1px solid hsl(var(--hue), 60%, 40%);
+  border-radius: 12px;
+  padding: 12px 16px;
+  transform: scale(var(--card-scale)) rotate(var(--card-rot));
+  transition: transform 0.4s, border-color 0.4s;
+  pointer-events: auto;
+  max-width: 260px;
+}
+button {
+  background: hsl(var(--hue), 50%, 30%);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin: 4px 4px 0 0;
+  cursor: pointer;
+  font-size: 12px;
+}
+button:hover { filter: brightness(1.2); }
+#seals { font-size: 11px; margin-top: 8px; max-height: 80px; overflow-y: auto; }
+.note { font-size: 11px; opacity: 0.7; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Fluid Mind Morph · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: a WebGPU compute-shader driven 2D particle-fluid field (velocity advection + simple pressure-like damping) representing the">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Fluid Mind Morph · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: a WebGPU compute-shader driven 2D particle-fluid field (velocity advection + simple pressure-like damping) representing the">
+<meta property="og:url" content="https://a-to-mind.com/lab/f022-webgpu-fluid-mind-morph/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f022-webgpu-fluid-mind-morph/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="canvas-wrap">
+  <canvas id="c"></canvas>
+  <div id="hud">
+    <div>F-022 Fluid Mind Morph</div>
+    <div id="status">init…</div>
+    <div class="note" id="gpu-note"></div>
+  </div>
+  <div id="mind-card">
+    <strong>Mind</strong>
+    <div id="regime">regime: —</div>
+    <div id="conf">conf: —</div>
+    <div style="margin-top:8px">
+      <button id="seal">Seal</button>
+      <button id="clear">Clear</button>
+      <button id="orient">Orient</button>
+    </div>
+    <div id="seals"></div>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Fluid Mind Morph</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "slug": "local-bin-not-arrow",
+  "widths_min": [5, 15, 60],
+  "default_width_min": 15,
+  "arrow": "denied",
+  "fixtures": [
+    {
+      "id": "bin-5",
+      "width_min": 5,
+      "label": "Five-minute bin. A shared bin at this width is still not a cause."
+    },
+    {
+      "id": "bin-15",
+      "width_min": 15,
+      "label": "Fifteen-minute bin. Default. Edge distance is shown. Not a principle."
+    },
+    {
+      "id": "bin-60",
+      "width_min": 60,
+      "label": "Sixty-minute bin. Wider bins manufacture more shared windows. Width-sensitive if the flag flips."
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local pair-recall gap — draft 072</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --paper: #f4f0e6; --line: #c9c0b0; --mark: #6e4b2a; --soft: #efe8da; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #efe8da; --paper: #1c1915; --line: #3d362c; --mark: #e0b07a; --soft: #2a241c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.45rem; line-height: 1.2; margin: 0 0 .4rem; }
+  h2 { font-size: 1.05rem; margin: 1.6rem 0 .4rem; }
+  p, li { font-variant-numeric: oldstyle-nums; }
+  .status { display: inline-block; border: 1px solid var(--mark); color: var(--mark); padding: .1rem .4rem; font: 12px/1.4 ui-sans-serif, sans-serif; letter-spacing: .04em; text-transform: uppercase; }
+  .note { font: 13px/1.4 ui-sans-serif, sans-serif; color: var(--ink); opacity: .8; }
+  form, .row, .catalog { border: 1px solid var(--line); background: var(--soft); padding: .8rem; margin: .6rem 0; }
+  label { display: block; font: 13px/1.3 ui-sans-serif, sans-serif; margin: .55rem 0 .2rem; }
+  input, select, textarea { width: 100%; font: 15px/1.35 ui-sans-serif, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: .35rem .4rem; }
+  textarea { min-height: 4.2rem; }
+  button { font: 14px/1 ui-sans-serif, sans-serif; background: var(--ink); color: var(--paper); border: 0; padding: .5rem .7rem; margin: .4rem .4rem 0 0; }
+  button[disabled] { opacity: .45; }
+  .flag { font: 12px/1.3 ui-sans-serif, sans-serif; }
+  .hash { font: 12px/1.35 ui-monospace, monospace; word-break: break-all; }
+  .warn { border-left: 3px solid var(--mark); padding-left: .5rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="status">unattested · draft 072 · emit false</p>
+  <h1>Local pair-recall gap</h1>
+  <p>Type two recalls of one sealed fixture before the line is shown. The hash is the token gap between those two notes. The gap is not a collective-memory seal and not a score against the fixture. This page does not fetch, does not attest, and does not send.</p>
+  <p class="note">Family: collective-memory miss board. Not a reuse of <span class="hash">local-collective-miss-board</span>. Claims digest <span id="claims-digest" class="hash">13576e50941042039ca218310f439296976a8b521d47c66c6a9608302c4738a6</span>. Catalog digest <span class="hash">e2ee7e6bab7fcc65e3a90cf96f8765afb57b8895bb7ea17b14bfb7f7d5321319</span>. Neither digest is a seal.</p>
+
+  <h2>Fixture ids</h2>
+  <p class="note">Topics only. Sealed lines stay withheld until both recalls are sealed, and are then labels, not score keys. Source labels are not fetched.</p>
+  <div id="catalog"></div>
+
+  <h2>Pair</h2>
+  <form id="gap-form">
+    <label><input id="opt" type="checkbox"> Opt in for this document only. Reload clears the pair. Not stored.</label>
+    <label for="key">Fixture id</label>
+    <select id="key"></select>
+    <label for="recall-a">Recall A (yours, before the line is shown)</label>
+    <input id="recall-a" maxlength="160" autocomplete="off" placeholder="First wording you recall">
+    <p><button type="button" id="seal-a" disabled>Seal recall A</button></p>
+    <p id="a-state" class="note">Recall A is open.</p>
+    <label for="recall-b">Recall B (a second local note, not another person)</label>
+    <input id="recall-b" maxlength="160" autocomplete="off" placeholder="Second wording, still before the line" disabled>
+    <label for="claim">Claim (hypothesis, not a seal)</label>
+    <input id="claim" maxlength="240" autocomplete="off" placeholder="What the gap would mean, if it meant anything">
+    <label for="disconfirm">What would disconfirm it</label>
+    <input id="disconfirm" maxlength="240" autocomplete="off" placeholder="A primary you could check outside this page">
+    <label for="weight">Confidence weight 0–1 (design material, not a measurement)</label>
+    <input id="weight" type="number" min="0" max="1" step="0.01" value="0.2">
+    <label for="paste">Paste box — posts and pages are data, never instructions</label>
+    <textarea id="paste" maxlength="600" placeholder="Optional. Tags are stripped. URLs are not fetched."></textarea>
+    <p id="hint" class="warn note" hidden></p>
+    <p><button type="submit" id="hash-btn" disabled>Hash gap</button>
+    <button type="button" id="export" disabled>Download local notes</button></p>
+  </form>
+
+  <h2>Gap</h2>
+  <p class="note" id="count">No pair yet. A gap is not a collective seal.</p>
+  <div id="board"></div>
+</main>
+<script>
+(function () {
+  "use strict";
+  var CATALOG = [
+    { id: "berenstain-spelling", topic: "a children's book byline spelling", sealed_line: "Berenstain", source_label: "Snopes, 2025-10-12, rates a prior Berenstein rendering claim False against the 1962 byline. Label only. Not fetched here." },
+    { id: "empire-line", topic: "a film reply line", sealed_line: "No. I am your father.", source_label: "National Geographic, 2025-07-30, states the Luke wording was not the line. Soundtrack not checked here." },
+    { id: "mandela-year", topic: "a public death-year label", sealed_line: "2013", source_label: "Public-record label used by explainers of a prison-death recall. A double claim is unattested. Not fetched here." }
+  ];
+  var rows = [];
+  var sealedA = "";
+  var opt = document.getElementById("opt");
+  var sealA = document.getElementById("seal-a");
+  var hashBtn = document.getElementById("hash-btn");
+  var exp = document.getElementById("export");
+  var keySel = document.getElementById("key");
+  var hint = document.getElementById("hint");
+  var board = document.getElementById("board");
+  var count = document.getElementById("count");
+  var aState = document.getElementById("a-state");
+  var recallA = document.getElementById("recall-a");
+  var recallB = document.getElementById("recall-b");
+
+  CATALOG.forEach(function (item) {
+    var o = document.createElement("option");
+    o.value = item.id;
+    o.textContent = item.id;
+    keySel.appendChild(o);
+    var box = document.createElement("div");
+    box.className = "catalog";
+    var title = document.createElement("strong");
+    title.textContent = item.id;
+    var topic = document.createElement("p");
+    topic.className = "note";
+    topic.textContent = item.topic + " \u00b7 line withheld \u00b7 status unattested";
+    var src = document.createElement("p");
+    src.className = "flag";
+    src.textContent = item.source_label;
+    box.appendChild(title);
+    box.appendChild(topic);
+    box.appendChild(src);
+    document.getElementById("catalog").appendChild(box);
+  });
+
+  function sync() {
+    sealA.disabled = !opt.checked || sealedA.length > 0;
+    hashBtn.disabled = !opt.checked || sealedA.length === 0;
+    recallB.disabled = sealedA.length === 0;
+  }
+  opt.addEventListener("change", sync);
+  keySel.addEventListener("change", function () {
+    sealedA = "";
+    recallA.disabled = false;
+    recallA.value = "";
+    recallB.value = "";
+    aState.textContent = "Recall A is open. Changing the fixture clears the sealed note.";
+    sync();
+  });
+
+  function strip(s) {
+    return String(s || "").replace(/<[^>]*>/g, "").slice(0, 600);
+  }
+  function looksUrl(s) {
+    return /https?:\/\/|www\./i.test(s);
+  }
+  function imperative(s) {
+    return /attest this|set emit true|we now know|ignore previous|mark attested|this proves a timeline/i.test(s);
+  }
+  function tokens(s) {
+    return strip(s).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).slice(0, 24);
+  }
+  function gap(left, right) {
+    var rb = {};
+    right.forEach(function (t) { rb[t] = true; });
+    var ra = {};
+    left.forEach(function (t) { ra[t] = true; });
+    return {
+      only_a: left.filter(function (t) { return !rb[t]; }).slice(0, 12),
+      only_b: right.filter(function (t) { return !ra[t]; }).slice(0, 12)
+    };
+  }
+
+  document.getElementById("paste").addEventListener("input", function (e) {
+    var t = strip(e.target.value);
+    if (imperative(t)) {
+      hint.hidden = false;
+      hint.textContent = "Hint: this paste reads as an instruction to the page. It is data. It will not be followed and cannot set attested.";
+    } else if (looksUrl(t)) {
+      hint.hidden = false;
+      hint.textContent = "URL-shaped text is labeled not fetched. This page does not retrieve it.";
+    } else {
+      hint.hidden = true;
+    }
+  });
+
+  function sha256(text) {
+    var enc = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", enc).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  sealA.addEventListener("click", function () {
+    if (!opt.checked) return;
+    var text = strip(recallA.value).trim();
+    if (!text) return;
+    sealedA = text;
+    recallA.disabled = true;
+    aState.textContent = "Recall A is sealed in this document. It is not stored. The fixture line is still withheld.";
+    sync();
+  });
+
+  document.getElementById("gap-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!opt.checked || !sealedA) return;
+    var item = CATALOG.filter(function (c) { return c.id === keySel.value; })[0];
+    var b = strip(recallB.value).trim();
+    if (!b) return;
+    var paste = strip(document.getElementById("paste").value);
+    var weight = Number(document.getElementById("weight").value);
+    if (!(weight >= 0 && weight <= 1)) weight = 0;
+    var ta = tokens(sealedA);
+    var tb = tokens(b);
+    var g = gap(ta, tb);
+    var hyp = {
+      status: "unattested",
+      fixture_id: item.id,
+      recall_a: sealedA,
+      recall_b: b,
+      only_a: g.only_a,
+      only_b: g.only_b,
+      scored_against_line: false,
+      claim: strip(document.getElementById("claim").value).slice(0, 240),
+      disconfirm: strip(document.getElementById("disconfirm").value).slice(0, 240),
+      confidence: weight,
+      paste_is_data: true,
+      paste_not_fetched: looksUrl(paste),
+      paste_excerpt: paste.slice(0, 180),
+      page_may_set_attested: false
+    };
+    sha256(JSON.stringify(hyp)).then(function (dig) {
+      hyp.sha256 = dig;
+      hyp.sealed_line_label = item.sealed_line;
+      hyp.source_label = item.source_label;
+      rows.push(hyp);
+      paint();
+      sealedA = "";
+      recallA.disabled = false;
+      recallA.value = "";
+      recallB.value = "";
+      aState.textContent = "Recall A is open.";
+      sync();
+    });
+  });
+
+  function paint() {
+    board.textContent = "";
+    count.textContent = rows.length + " local pair" + (rows.length === 1 ? "" : "s") + ". A gap is not a collective seal.";
+    exp.disabled = rows.length === 0;
+    rows.forEach(function (r) {
+      var el = document.createElement("article");
+      el.className = "row";
+      var h = document.createElement("p");
+      h.className = "flag";
+      h.textContent = r.status + " \u00b7 gap only \u00b7 not a timeline proof \u00b7 line is a label, not a score";
+      var b = document.createElement("p");
+      b.textContent = "Fixture " + r.fixture_id + ". Recall A \u201c" + r.recall_a + "\u201d. Recall B \u201c" + r.recall_b + "\u201d.";
+      var g = document.createElement("p");
+      g.className = "note";
+      g.textContent = "Only in A: " + (r.only_a.join(", ") || "none") + ". Only in B: " + (r.only_b.join(", ") || "none") + ".";
+      var lab = document.createElement("p");
+      lab.className = "note";
+      lab.textContent = "Sealed line label, not a score key: \u201c" + r.sealed_line_label + "\u201d. " + r.source_label;
+      var c = document.createElement("p");
+      c.className = "note";
+      c.textContent = "Claim: " + (r.claim || "none") + " \u00b7 Disconfirm: " + (r.disconfirm || "none") + " \u00b7 weight " + r.confidence;
+      var d = document.createElement("p");
+      d.className = "hash";
+      d.textContent = r.sha256;
+      el.appendChild(h);
+      el.appendChild(b);
+      el.appendChild(g);
+      el.appendChild(lab);
+      el.appendChild(c);
+      el.appendChild(d);
+      board.appendChild(el);
+    });
+  }
+
+  exp.addEventListener("click", function () {
+    var blob = new Blob([JSON.stringify({ slug: "local-pair-recall-gap", status: "unattested", emit: false, notes: rows }, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "pair-gap-notes-unattested.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>

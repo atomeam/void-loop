@@ -168,7 +168,7 @@ class Ouroboros(unittest.TestCase):
         self.assertEqual(before, snapshot(self.root))
 
     def _absorb(self):
-        """harvest, then push to a stand-in Void that verifies, so projects count as absorbed"""
+        """harvest, then push to a stand-in Verse that verifies, so projects count as absorbed"""
         self.harvest()
         srv, _ = self._server()
         with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
@@ -217,7 +217,7 @@ class Ouroboros(unittest.TestCase):
     def test_a_project_with_new_work_since_absorption_is_protected_again(self):
         self._absorb()
         a = self.root / "dev" / "alpha"
-        write(a / "later.py", "new work Void has not seen"); commit_all(a)
+        write(a / "later.py", "new work Verse has not seen"); commit_all(a)
         rc, txt = self._reclaim()
         self.assertTrue((a / "node_modules").exists(), "alpha changed after it was absorbed, so nothing of it may be deleted")
         self.assertFalse((self.root / "dev" / "beta" / ".venv").exists(), "beta is unchanged and absorbed, so its rebuildable folder goes")
@@ -267,7 +267,7 @@ class Ouroboros(unittest.TestCase):
                 ouroboros.main(["--version"])
 
     def _server(self, status=200, tamper=False, no_get=False, refusal=None):
-        """A stand-in for Void's /api/memory: stores what it is sent and hands it back by id with the hash it computed itself."""
+        """A stand-in for Verse's /api/memory: stores what it is sent and hands it back by id with the hash it computed itself."""
         got, store = [], {}
         class H(http.server.BaseHTTPRequestHandler):
             def _send(h, code, obj):
@@ -316,7 +316,7 @@ class Ouroboros(unittest.TestCase):
         alpha = next(v for v in srv.store.values() if v["name"] == "alpha")
         self.assertIn("# alpha", alpha["body"])
         n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
-        self.assertIn(f"Void remembers {n} of {n}", txt)
+        self.assertIn(f"Verse remembers {n} of {n}", txt)
 
     def test_push_as_a_member_sends_the_void_key_as_the_bearer_and_asks_for_it_at_a_terminal_without_echo(self):
         self.harvest()
@@ -345,7 +345,7 @@ class Ouroboros(unittest.TestCase):
             with mock.patch.object(sys.stdin, "isatty", return_value=False):
                 rc, txt = call("push", ["--out", str(self.out), "--url", "https://example.com"])
         self.assertEqual(rc, 2)
-        self.assertIn("vr1.", txt); self.assertIn("paid Void", txt); self.assertIn("a-to-mind.com", txt)
+        self.assertIn("vr1.", txt); self.assertIn("paid Verse", txt); self.assertIn("a-to-mind.com", txt)
 
     def test_push_refused_for_a_free_account_or_an_unknown_key_says_so_in_plain_words_and_claims_nothing(self):
         self.harvest()
@@ -354,13 +354,13 @@ class Ouroboros(unittest.TestCase):
         with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "vr1." + "B" * 43}):
             rc, txt = call("push", ["--out", str(self.out), "--url", url])
         self.assertEqual(rc, 1)
-        self.assertIn("Void answered 403", txt); self.assertIn("owner and paid members", txt)
+        self.assertIn("Verse answered 403", txt); self.assertIn("owner and paid members", txt)
         # the server's own sentence is read from the refusal (urlopen raises before anything consumes the body) and shown
-        srv2, _ = self._server(status=403, refusal="Void memory is for the owner and paid members: Void does not know this key. Make one at https://a-to-mind.com/code-review/#pro (signed in, on paid Void).")
+        srv2, _ = self._server(status=403, refusal="Verse memory is for the owner and paid members: Verse does not know this key. Make one at https://a-to-mind.com/code-review/#pro (signed in, on paid Verse).")
         with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "vr1." + "C" * 43}):
             rc, txt2 = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv2.server_address[1]}"])
-        self.assertEqual(rc, 1); self.assertIn("Void does not know this key", txt2); self.assertIn("https://a-to-mind.com/code-review/#pro", txt)
-        self.assertNotIn("Void remembers", txt)
+        self.assertEqual(rc, 1); self.assertIn("Verse does not know this key", txt2); self.assertIn("https://a-to-mind.com/code-review/#pro", txt)
+        self.assertNotIn("Verse remembers", txt)
         self.assertFalse((self.out / "absorbed.json").exists(), "a refused push never writes a receipt")
         self.assertIn("paid members", ouroboros.refused_text(403, ""))
         self.assertIn("500", ouroboros.refused_text(413))
@@ -372,7 +372,7 @@ class Ouroboros(unittest.TestCase):
             rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
         self.assertEqual(rc, 1)
         n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
-        self.assertIn(f"Void remembers 0 of {n}", txt)
+        self.assertIn(f"Verse remembers 0 of {n}", txt)
         self.assertIn("differs", txt)
 
     def test_push_does_not_claim_memory_when_the_record_cannot_be_read_back(self):
@@ -382,7 +382,7 @@ class Ouroboros(unittest.TestCase):
             rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
         self.assertEqual(rc, 1)
         n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
-        self.assertIn(f"Void remembers 0 of {n}", txt)
+        self.assertIn(f"Verse remembers 0 of {n}", txt)
 
     def test_push_splits_requests_by_size(self):
         self.harvest()
@@ -438,7 +438,7 @@ class Ouroboros(unittest.TestCase):
         self.assertEqual(got, [])
         self.assertIn("nothing was sent", txt)
 
-    # ---------------- --drop: delete a project folder only after Void has verifiably absorbed it ----------------
+    # ---------------- --drop: delete a project folder only after Verse has verifiably absorbed it ----------------
     def _backed_up(self, name="omega"):
         """a project that is pushed, clean, and has only rebuildable ignored folders: the one kind --drop may remove without an override"""
         p = self.root / "dev" / name
@@ -466,7 +466,7 @@ class Ouroboros(unittest.TestCase):
         self.assertEqual((tomb["status"], tomb["project"]), ("absorbed", "omega"))
         for k in ("timestamp", "record_id", "digest_sha256", "memory_endpoint", "head"):
             self.assertTrue(tomb[k], k)
-        self.assertEqual(tomb["digest_sha256"], hashlib.sha256(srv.store[tomb["record_id"]]["body"].encode()).hexdigest(), "the tombstone points at what Void actually holds")
+        self.assertEqual(tomb["digest_sha256"], hashlib.sha256(srv.store[tomb["record_id"]]["body"].encode()).hexdigest(), "the tombstone points at what Verse actually holds")
         self.assertIn("Dropped omega", txt); self.assertIn("reclaimed", txt)
         after = snapshot(self.root)
         self.assertEqual(before, {k: v for k, v in after.items() if "omega" not in k and "void-tombstone" not in k}, "nothing but omega may change")
@@ -507,7 +507,7 @@ class Ouroboros(unittest.TestCase):
         omega = self._backed_up(); self.harvest()
         with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
             rc, txt = call("push", ["--out", str(self.out), "--url", "http://127.0.0.1:9", "--drop", "--yes"])
-        self.assertEqual(rc, 1); self.assertTrue(omega.exists()); self.assertIn("could not reach Void", txt)
+        self.assertEqual(rc, 1); self.assertTrue(omega.exists()); self.assertIn("could not reach Verse", txt)
 
     def test_drop_refuses_without_a_receipt_or_with_a_stale_one(self):
         omega = self._backed_up(); self.harvest()

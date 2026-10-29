@@ -4,12 +4,27 @@
  * "define serendipity", "what does ephemeral mean", "meaning of saudade", "definition of hubris".
  */
 const ABBR_HELD = new Set(['lol', 'asap', 'brb', 'btw', 'fyi', 'imo', 'imho', 'tbh', 'idk', 'omg', 'rsvp', 'eta', 'faq', 'diy', 'aka', 'tba', 'tbd', 'fomo', 'smh', 'irl', 'dm', 'afaik', 'tldr', 'ootd', 'nvm', 'ttyl', 'rofl', 'jk', 'ikr', 'ftw', 'goat', 'ama', 'eod', 'ooo', 'wfh', 'pto', 'roi', 'kpi', 'cc', 'bcc', 'ps', 'nb', 'ie', 'eg', 'etc']);
+// typo-tolerant key words (issue #792: "menaing of saudade"): a word within a small edit distance of meaning/definition/define is read as it. Pure.
+function lev(a, b) { const d = Array.from({ length: b.length + 1 }, (_, j) => j); for (let i = 1; i <= a.length; i++) { let p = d[0]; d[0] = i;
+  for (let j = 1; j <= b.length; j++) { const t = d[j]; d[j] = Math.min(d[j] + 1, d[j - 1] + 1, p + (a[i - 1] === b[j - 1] ? 0 : 1)); p = t; } } return d[b.length]; }
+const REAL = new Set(['mending', 'melting', 'meeting', 'meaning', 'morning', 'moaning', 'meant', 'defense', 'defiant', 'definite', 'refine', 'decline', 'design', 'detention', 'deflation', 'demolition']);
+const KEYS = [['meaning', 2], ['definition', 2], ['define', 1]];
+export function fixKeyTypos(t) {
+  return t.replace(/^((?:please\s+|what(?:['’]?s|\s+is)\s+the\s+|(?:the\s+)?(?:dictionary|oxford)\s+)?)([a-z]{5,12})\b/i, (all, pre, w) => {
+    const lw = w.toLowerCase(); if (KEYS.some(([k]) => k === lw) || REAL.has(lw)) return all;
+    const hit = KEYS.find(([k, n]) => Math.abs(k.length - lw.length) <= n && lw[0] === k[0] && lev(lw, k) <= n);
+    return hit ? pre + hit[0] : all; });
+}
 export function wordOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const t = fixKeyTypos(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
   const m = t.match(/^(?:please\s+)?define\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
     || t.match(/^(?:what(?:['’]?s|\s+is)\s+the\s+)?(?:meaning|definition)\s+of\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
     || t.match(/^what\s+does\s+(?:the\s+word\s+)?["“]?(.+?)["”]?\s+mean$/i)
-    || t.match(/^what\s+is\s+the\s+meaning\s+of\s+["“]?(.+?)["”]?$/i);
+    || t.match(/^what\s+is\s+the\s+meaning\s+of\s+["“]?(.+?)["”]?$/i)
+    // "what does it mean to be pragmatic", "dictionary definition of empathy", "use serendipity in a sentence" (the card's example)
+    || t.match(/^what\s+does\s+it\s+mean\s+to\s+be\s+(?:an?\s+)?["“]?([a-z][a-z'-]+)["”]?$/i)
+    || t.match(/^(?:the\s+)?(?:dictionary|oxford|webster'?s?|merriam[- ]webster)\s+(?:definition|meaning)\s+(?:of|for)\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
+    || t.match(/^(?:use|put)\s+(?:the\s+word\s+)?["“]?([a-z][a-z'-]+)["”]?\s+in\s+a\s+sentence$/i);
   if (!m) return null;
   const w = m[1].trim();
   if (/^(?:[a-z]{2,6})$/i.test(w) && ABBR_HELD.has(w.toLowerCase())) return null; // texting and office abbreviations are answered by the calculator's table
@@ -32,7 +47,9 @@ async function run(text, api) {
   try { const r = await fetch(url); reached = r.ok || r.status === 404; if (r.ok) j = await r.json(); } catch (_) {}
   if (!api._pageStill(el)) return 'define';
   let senses = (j && (j.en || j[Object.keys(j)[0]])) || [];
-  senses = senses.map((s) => ({ pos: s.partOfSpeech, defs: (s.definitions || []).map((d) => strip(d.definition)).filter(Boolean).slice(0, 3) })).filter((s) => s.defs.length).slice(0, 3);
+  senses = senses.map((s) => ({ pos: s.partOfSpeech, defs: (s.definitions || []).map((d) => strip(d.definition)).filter(Boolean).slice(0, 3),
+    // one example sentence per sense, when the dictionary has one ("use serendipity in a sentence" is answered by it)
+    ex: (s.definitions || []).flatMap((d) => (d.examples || []).map(strip)).find((e) => e && e.length <= 220) || '' })).filter((s) => s.defs.length).slice(0, 3);
   if (!senses.length && !reached) {
     el.innerHTML = '<h2>' + esc(word) + '</h2><p>The dictionary didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';
@@ -42,14 +59,14 @@ async function run(text, api) {
     return 'none';
   }
   el.innerHTML = '<h2>' + esc(word) + '</h2>'
-    + senses.map((s) => '<div class="sub" style="margin-top:8px">' + esc(s.pos || '') + '</div><ol style="margin:4px 0 0 18px;padding:0">' + s.defs.map((d) => '<li style="margin:2px 0">' + esc(d) + '</li>').join('') + '</ol>').join('')
+    + senses.map((s) => '<div class="sub" style="margin-top:8px">' + esc(s.pos || '') + '</div><ol style="margin:4px 0 0 18px;padding:0">' + s.defs.map((d) => '<li style="margin:2px 0">' + esc(d) + '</li>').join('') + '</ol>' + (s.ex ? '<div class="sub" style="margin:4px 0 0 18px;font-style:italic">“' + esc(s.ex) + '”</div>' : '')).join('')
     + '<div class="src">Source: <a href="' + esc(page) + '" target="_blank" rel="noopener">Wiktionary</a></div>';
   return 'define';
 }
 
 export default {
   name: 'define',
-  examples: ['define serendipity', 'what does ephemeral mean', 'meaning of saudade', 'definition of hubris'],
+  examples: ['define serendipity', 'what does ephemeral mean', 'meaning of saudade', 'definition of hubris', 'menaing of saudade', 'defintion of hubris'],
   nearMisses: ['what is a black hole', 'what does it mean', 'define 42', 'meaning of life', 'what time is it in Tokyo'],
   match(lower, text) { return !!wordOf(text); },
   run

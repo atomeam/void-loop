@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power Automate &quot;InvalidTemplate&quot;: why an expression fails and how to fix it</title>
+  <meta name="description" content="An expression in one of the flow's actions could not be worked out. What it means and the steps to fix it.">
+  <link rel="canonical" href="https://a-to-mind.com/fix/power-automate-invalid-template-expression/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Power Automate &quot;InvalidTemplate&quot;: why an expression fails and how to fix it">
+  <meta property="og:description" content="An expression in one of the flow's actions could not be worked out. What it means and the steps to fix it.">
+  <meta property="og:url" content="https://a-to-mind.com/fix/power-automate-invalid-template-expression/">
+  <meta property="og:image" content="https://a-to-mind.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Power Automate \"InvalidTemplate\": why an expression fails and how to fix it",
+  "description": "An expression in one of the flow's actions could not be worked out. What it means and the steps to fix it.",
+  "url": "https://a-to-mind.com/fix/power-automate-invalid-template-expression/",
+  "about": "Power Automate",
+  "publisher": {
+    "@type": "Organization",
+    "name": "A-to-Mind",
+    "url": "https://a-to-mind.com/"
+  }
+}
+  </script>
+  <style>
+    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; }
+    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    h1 { font-size: clamp(26px, 5.5vw, 38px); line-height: 1.15; margin: 18px 0 10px; }
+    h2 { font-size: 21px; margin: 34px 0 8px; }
+    .lead { font-size: 18px; color: var(--muted); }
+    code { font: 14px ui-monospace, Menlo, Consolas, monospace; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; overflow-wrap: anywhere; }
+    ol, ul { padding-left: 22px; } li { margin: 8px 0; }
+    .help { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 34px 0 8px; }
+    .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+    .box h2 { margin: 0 0 4px; font-size: 18px; }
+    .box p { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+    .btn { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); padding: 9px 16px; text-decoration: none; display: inline-block; }
+    .btn.solid { background: var(--accent); color: #fff; }
+    .muted { color: var(--muted); font-size: 14px; }
+  </style>
+  <script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <p><a href="/">&larr; Verse &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
+  <h1>Power Automate &quot;InvalidTemplate&quot;: why an expression fails and how to fix it</h1>
+  <p class="lead">You see: <code>InvalidTemplate · Unable to process template language expressions in action</code></p>
+
+  <h2>What it means</h2>
+  <p>An expression in one of the flow's actions could not be worked out. The input it points at is empty, missing or the wrong type, for example reading a field from an item that does not have it, or taking the first item of an empty list.</p>
+
+  <h2>How to fix it</h2>
+  <ol>
+    <li>Open the flow's run history, open the failed run and click the action marked with the red cross. The error names the action and the expression.</li>
+    <li>Open the earlier action the expression reads from and look at its outputs: is the field there for this run, and is it text, a number or a list?</li>
+    <li>Make the expression forgiving: read optional fields with the question-mark form, body('Get_item')?['Title'], and give empty values a fallback with coalesce(), for example coalesce(triggerBody()?['email'], '').</li>
+    <li>Check lists before using them: use a Condition on length(body('List_rows')?['value']) greater than 0 before first(), or use a loop.</li>
+    <li>Save, then resubmit the failed run from run history.</li>
+  </ol>
+
+  <h2>If it keeps coming back</h2>
+  <p>If it fails only for certain runs, the trigger is sometimes sent without a field. Test with that run's data on the trigger and add the fallback there.</p>
+
+  <div class="help">
+    <div class="box">
+      <h2>Still stuck? Ask Verse, free</h2>
+      <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
+      <a class="btn" data-fix="ask" href="/?q=my%20power%20automate%20flow%20is%20failing%20with%20InvalidTemplate%20unable%20to%20process%20template%20language%20expressions%20in%20action">Ask Verse about this error</a>
+    </div>
+    <div class="box">
+      <h2>Or have it fixed: <span id="fix-price">$25</span></h2>
+      <p>One broken automation, diagnosed and repaired, with proof it runs again. Reply to the receipt with what stopped.</p>
+      <a class="btn solid" id="fix-buy" data-fix="buy" href="https://moonbeam846.gumroad.com/l/eozcma" rel="noopener">Get the One-Time Fix</a>
+    </div>
+  </div>
+  <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>. Several workflows breaking? The <a href="/full-stack-audit/">Full Stack Audit</a> reviews them all. Want them watched so this does not happen again? The <a href="/keep-it-running/">Keep-It-Running Plan</a>.</p>
+
+  <h2>Sources</h2>
+  <ul class="muted">
+    <li><a href="https://learn.microsoft.com/en-us/azure/logic-apps/workflow-definition-language-functions-reference" rel="noopener">Reference guide to workflow expression functions (Microsoft Learn)</a></li>
+  </ul>
+</main>
+<script>
+(function () {
+  'use strict';
+  const SLUG = "eozcma";
+  function money(x) { return '$' + (x.price_cents / 100).toFixed(x.price_cents % 100 ? 2 : 0); }
+  fetch('/api/catalog').then(function (r) { return r.json(); }).then(function (j) {
+    const row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
+    if (!row) return; // the page's own price and link stand
+    const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
+    if (row.price_cents && price) price.textContent = money(row);
+    if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
+    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url;
+  }).catch(function (e) { console.warn('[fix] the live price could not load; the page\'s own price and link stand', e); });
+})();
+</script>
+</body>
+</html>

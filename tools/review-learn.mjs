@@ -1,10 +1,10 @@
 // node tools/review-learn.mjs [--from 120] [--to 210] [--since 30d] [--stats void-live-deploy/review-stats.json] [--json] [--all]
 // A closer-read finding that names a symbol rather than a file is placed by searching the PR's added lines for it (placeBySymbol, 2026-10-10).
-// Also counts Void's own closer read's false 'not defined' and mask claims on those PRs (phantomsIn, 2026-10-10).
-// Void's review is the main one; the other reviewers are extras (domains/void.frontier.md #1). This reads every finding an
-// extra (CodeRabbit) left on the merged PRs in the range, runs Void's own checks (void-live-deploy/lib/code-review.js) on
-// the file as it stood at that commit, and says whether Void flagged the same spot (a finding within 3 lines). It prints
-// Void's catch rate and each finding Void missed: a real one becomes a rule plus a case in tools/review.test.mjs, a wrong
+// Also counts Verse's own closer read's false 'not defined' and mask claims on those PRs (phantomsIn, 2026-10-10).
+// Verse's review is the main one; the other reviewers are extras (domains/void.frontier.md #1). This reads every finding an
+// extra (CodeRabbit) left on the merged PRs in the range, runs Verse's own checks (void-live-deploy/lib/code-review.js) on
+// the file as it stood at that commit, and says whether Verse flagged the same spot (a finding within 3 lines). It prints
+// Verse's catch rate and each finding Verse missed: a real one becomes a rule plus a case in tools/review.test.mjs, a wrong
 // one from the extra is noted and dropped. It only prints; nothing is written. Needs the gh available in the session.
 //   --all   also list nitpicks and trivial findings (left out of the rate by default)
 import { execFileSync } from 'node:child_process';
@@ -30,7 +30,7 @@ export function parseExtra(body) {
 }
 export const counts = (sev) => !['nitpick', 'trivial'].includes(sev); // what the catch rate is about
 
-// did Void flag this spot? any bug, risk or style finding within WINDOW lines
+// did Verse flag this spot? any bug, risk or style finding within WINDOW lines
 export function caughtBy(findings, line, window = WINDOW) {
   return findings.find((f) => f.kind !== 'note' && Math.abs(f.line - line) <= window) || null;
 }
@@ -53,7 +53,7 @@ export function learnFromPr(pr, comments, fileAt) {
 }
 
 export const VOID_BOT = 'github-actions[bot]';
-// Void's own closer read, checked the same way as the extras (2026-10-10): a claim that a name is missing ("not defined",
+// Verse's own closer read, checked the same way as the extras (2026-10-10): a claim that a name is missing ("not defined",
 // "not imported", ReferenceError) when the file at that commit imports or declares it, or a claim about the "[redacted]" mask, is
 // a false finding. lib/review-api.js dropPhantoms() takes these out of every closer read now; this counts the ones that reached
 // past PRs and how many the filter removes, so the number exists from here on.
@@ -134,6 +134,39 @@ export function placeBySymbol(paragraph, added, files) {
   }
   return null;
 }
+// Unquoted symbols in high-density clusters (asked by Verse: "Modify the 'review-learn' logic so it can trigger on unquoted symbols that
+// appear in high-density clusters"): a finding often names its code without backticks (initQueue, row_count, saveAll()). Two or more
+// such names that each sit in one file's added lines and land within CLUSTER lines of each other are a cluster; the finding is placed at
+// the cluster's first line. Only when the quoted symbols (placeBySymbol) found nothing, so a backticked name still decides first.
+export const CLUSTER = 12;
+export function unquotedSymbols(paragraph) {
+  const out = [];
+  for (const m of String(paragraph || '').replace(/`[^`]*`/g, ' ').matchAll(/(?<![\w$.\/])([a-z][a-z0-9]*[A-Z][\w$]*|[a-z][a-z0-9]*(?:_[a-z0-9]+)+|[A-Za-z_$][\w$]*(?=\(\)))(?![\w$])/g)) {
+    const s = m[1]; if (s.length < 4 || SYMBOL_STOP.has(s.toLowerCase()) || FILE_EXT.test(s) || out.includes(s)) continue; out.push(s);
+  }
+  return out;
+}
+export function placeByCluster(paragraph, added, files, window = CLUSTER) {
+  const syms = unquotedSymbols(paragraph); if (syms.length < 2) return null;
+  const res = syms.map((sym) => [sym, new RegExp('(?<![\\w$.])' + sym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\w$])')]);
+  let best = null;
+  for (const f of files) {
+    const hits = []; // [line, symbol] for each symbol's lines in this file
+    for (const [sym, re] of res) for (const [n, t] of added[f] || []) if (re.test(t)) hits.push([n, sym]);
+    hits.sort((a, b) => a[0] - b[0]);
+    for (let i = 0; i < hits.length; i++) {
+      const inWin = hits.filter(([n]) => n >= hits[i][0] && n <= hits[i][0] + window), distinct = [...new Set(inWin.map((h) => h[1]))];
+      if (distinct.length >= 2 && (!best || distinct.length > best.symbols.length || (distinct.length === best.symbols.length && f === best.path && hits[i][0] < best.line))) best = { path: f, line: hits[i][0], symbols: distinct };
+    }
+  }
+  if (!best) return null;
+  const others = files.filter((f) => f !== best.path && placeByClusterIn(syms, added[f], window)); // a cluster in two files decides nothing
+  return others.length ? null : { path: best.path, line: best.line, symbol: best.symbols[0], cluster: best.symbols };
+}
+function placeByClusterIn(syms, rows, window) {
+  const hits = []; for (const sym of syms) { const re = new RegExp('(?<![\\w$.])' + sym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\w$])'); for (const [n, t] of rows || []) if (re.test(t)) hits.push([n, sym]); }
+  return hits.some(([n, s]) => hits.some(([m, o]) => o !== s && Math.abs(m - n) <= window));
+}
 const PRAISE = /\b(?:correctly|is fine|looks fine|is sound|is good|good practice|well handled|no bug|no issue|not a bug|is acceptable|is correct)\b/i;
 // a paragraph with no claim in it: the closer read saying it has read, that there is nothing, or what kind of file this is. Neither placed
 // nor unplaced: listed under `empty`, out of every count (2026-10-10)
@@ -150,13 +183,13 @@ export function lessonsIn(pr, body, fileNames, sha, fileAt, ranges = {}, added =
     const lm = shaped ? [null, String(shaped.line)] : p.match(/\bLine\s+(\d{1,5})\b/i) || p.match(/\.[a-z]{1,5}:(\d{1,5})\b/i);
     // no line named: the symbol it quotes places it, when exactly one added hunk carries that symbol (2026-10-10); a paragraph
     // that quotes symbols but none of them lands in one file is counted as unplaced, one with neither line nor symbol is not a finding
-    const bySym = placeBySymbol(p, added, files);
+    const bySym = placeBySymbol(p, added, files) || placeByCluster(p, added, files);
     // the finding's own sentence: the first line that is not a heading, without the "Line N (file):" lead
     const body0 = p.split('\n').map((l) => l.trim()).filter((l) => l && !/^#{1,6}\s/.test(l) && !/^\*\*[^*]{2,40}\*\*:?$/.test(l))[0] || '';
     const sentence = shaped ? shaped.sentence.split(/(?<=[.!?])\s/)[0].slice(0, 160)
       : body0.replace(/\*\*/g, '').replace(/^[\s*-]+/, '').replace(/^(?:bug|security|performance|readability|risk)\b[^:]*:\s*/i, '').replace(/^Line\s+\d+\s*(?:\([^)]*\))?\s*[:,]?\s*/i, '').trim().split(/(?<=[.!?])\s/)[0].slice(0, 160);
     if (isEmptyClaim(sentence)) { if (sentence) out.push({ pr, sentence, empty: true }); continue; } // no claim: not a lesson, counted apart
-    if (!lm && !bySym && !symbolsIn(p).length) continue;
+    if (!lm && !bySym && !symbolsIn(p).length && unquotedSymbols(p).length < 2) continue;
     if (!lm && !bySym) { out.push({ pr, line: 0, sentence, placed: false }); continue; }
     let line = lm ? +lm[1] : bySym.line;
     const named = files.filter((f) => (shaped && shaped.file && (f === shaped.file || f.endsWith('/' + shaped.file) || f.split('/').pop() === shaped.file.split('/').pop())) || p.includes(f) || p.includes(f.split('/').pop()));
@@ -208,7 +241,7 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
   for (const n of prs.sort((a, b) => a - b)) {
     let comments = []; try { comments = JSON.parse(gh(`repos/${repo}/pulls/${n}/comments?per_page=100`)); } catch (_) { continue; }
     rows = rows.concat(learnFromPr(n, comments, fileAt));
-    try { // Void's own closer read on that PR (the last void-review comment), against the files at the PR's head
+    try { // Verse's own closer read on that PR (the last void-review comment), against the files at the PR's head
       const issue = JSON.parse(gh(`repos/${repo}/issues/${n}/comments?per_page=100`)).filter((c) => c.user && c.user.login === VOID_BOT && String(c.body || '').startsWith('<!-- void-review -->')).pop();
       if (issue) {
         const pull = JSON.parse(gh(`repos/${repo}/pulls/${n}`)), filesApi = JSON.parse(gh(`repos/${repo}/pulls/${n}/files?per_page=100`)), files = filesApi.map((f) => f.filename);
@@ -223,14 +256,14 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
     rulesFlagged: ls.rulesFlagged, closerFound: ls.closerFound, unplaced: ls.unplaced, empty: ls.empty, bySymbol: ls.bySymbol, falseDropped: dropped.length, learned, learnedFromExtras, extrasFindings: rows.length, extrasRate: s.rate };
   if (statsPath) writeFileSync(statsPath, JSON.stringify(stats, null, 2) + '\n');
   if (process.argv.includes('--json')) { console.log(JSON.stringify({ ...s, rows, closerRead: { claims: phantoms.length, false: falsePh.length, dropped: dropped.length, phantoms }, lessons: { ...ls }, stats }, null, 1)); process.exit(0); }
-  console.log(`Void's review against the extras, merged PRs #${Math.min(...prs)}-#${Math.max(...prs)}: ${s.findings} findings by ${EXTRA}`);
-  console.log(s.rate == null ? 'nothing Void could review yet' : `Void flagged ${s.caught} of ${s.scored} (${s.rate}%) of the ones that count (nitpicks and trivial left out); ${s.notReviewable} were in files Void does not review`);
+  console.log(`Verse's review against the extras, merged PRs #${Math.min(...prs)}-#${Math.max(...prs)}: ${s.findings} findings by ${EXTRA}`);
+  console.log(s.rate == null ? 'nothing Verse could review yet' : `Verse flagged ${s.caught} of ${s.scored} (${s.rate}%) of the ones that count (nitpicks and trivial left out); ${s.notReviewable} were in files Verse does not review`);
   const list = process.argv.includes('--all') ? rows.filter((r) => r.reviewed && !r.caught) : s.missed;
   if (list.length) console.log('\nMissed (each is a rule to teach lib/code-review.js, or a wrong call by the extra):');
   for (const r of list) console.log(`  #${r.pr} ${r.path}:${r.line} [${r.severity}] ${r.title}`);
-  console.log(`\nVoid's closer read on the same PRs: ${phantoms.length} claim(s) that a name is missing or that the mask is a bug; ${falsePh.length} false (the file imports or declares the name, or it is the mask); dropPhantoms removes ${dropped.length} of those`);
+  console.log(`\nVerse's closer read on the same PRs: ${phantoms.length} claim(s) that a name is missing or that the mask is a bug; ${falsePh.length} false (the file imports or declares the name, or it is the mask); dropPhantoms removes ${dropped.length} of those`);
   for (const r of falsePh) console.log(`  #${r.pr} ${r.files.map((f) => f.split('/').pop()).join(',')}: ${r.claim}`);
-  console.log(`\nLessons from Void's closer read (the extras are silent): it named a line ${ls.closerFound} time(s) the rules could be checked on (${ls.bySymbol} placed by the symbol it quoted); the rules had flagged ${ls.rulesFlagged} of them within ${WINDOW} lines; ${ls.unplaced} could not be placed on one file; ${ls.empty} paragraph(s) made no claim (counted apart)`);
+  console.log(`\nLessons from Verse's closer read (the extras are silent): it named a line ${ls.closerFound} time(s) the rules could be checked on (${ls.bySymbol} placed by the symbol it quoted); the rules had flagged ${ls.rulesFlagged} of them within ${WINDOW} lines; ${ls.unplaced} could not be placed on one file; ${ls.empty} paragraph(s) made no claim (counted apart)`);
   for (const l of lessons.filter((x) => !x.placed && !x.empty)) console.log(`  unplaced #${l.pr} line ${l.line}: ${l.sentence}`);
   for (const l of lessons.filter((x) => x.empty)) console.log(`  empty #${l.pr}: ${l.sentence}`);
   if (ls.candidates.length) console.log('Candidate cases (each a rule to teach lib/code-review.js, with the id it would need):');

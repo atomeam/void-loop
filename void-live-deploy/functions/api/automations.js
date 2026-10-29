@@ -1,4 +1,4 @@
-// Void's own automations (lib/automations.js, lib/automations-run.js): the owner's "when this happens, do that" rules.
+// Verse's own automations (lib/automations.js, lib/automations-run.js): the owner's "when this happens, do that" rules.
 // GET -> { rules, runs, templates, repos } · POST { rule, rotate? } makes or replaces one (a webhook rule's secret is
 // returned once) · POST { id, run: true, event? } runs one now · PATCH { id, enabled } · DELETE { id } — all owner token.
 import { ownerOk } from '../../lib/guard.js';
@@ -10,9 +10,10 @@ const guard = (fn) => async (ctx) => {
   if (!(await ownerOk(ctx.request, ctx.env))) return new Response('no', { status: 401 });
   try { return await fn(ctx); } catch (e) { return new Response('automations error', { status: 500 }); }
 };
-const view = async (env) => ({ ...(await A.list(env)), templates: TEMPLATES, repos: repoList(env), github: !!env.GITHUB_TOKEN });
+const view = async (env, opts) => ({ ...(await A.list(env, opts)), templates: TEMPLATES, repos: repoList(env), github: !!env.GITHUB_TOKEN });
 
-export const onRequestGet = guard(async ({ env }) => Response.json(await view(env)));
+// GET ?rule=<id> narrows the runs to that rule's 100 newest (the approve card reads a night of runs); without it, the 30 newest across all rules
+export const onRequestGet = guard(async ({ request, env }) => Response.json(await view(env, { rule: new URL(request.url).searchParams.get('rule') || '' })));
 
 export const onRequestPost = guard(async ({ request, env }) => {
   const b = await body(request);

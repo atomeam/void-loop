@@ -1,4 +1,4 @@
-"""Row 13: entering your own Void + personal look. Apply to void.html (python tools\\entry_look_patch.py)."""
+"""Row 13: entering your own Verse + personal look. Apply to void.html (python tools\\entry_look_patch.py)."""
 import pathlib
 f = pathlib.Path(__file__).resolve().parent.parent / 'void.html'
 s = f.read_text(encoding='utf-8'); nl = '\r\n' if '\r\n' in s else '\n'; s = s.replace('\r\n', '\n')
@@ -22,7 +22,7 @@ b = '<div id="stage"'
 assert s.count(b) == 1
 s = s.replace(b, '<div id="void-glow"></div><canvas id="void-stars"></canvas>\n  ' + b, 1)
 js = r'''
-    // row 13: entering your own Void (silent, first time something is kept) + personal look
+    // row 13: entering your own Verse (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
     const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1 };
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };

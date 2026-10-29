@@ -1,5 +1,5 @@
 /**
- * Void's own automations ("when this happens, do that"): the owner's rules, run by Void itself on Cloudflare, so no
+ * Verse's own automations ("when this happens, do that"): the owner's rules, run by Verse itself on Cloudflare, so no
  * outside automation service's monthly cap can stop one halfway (2026-10-09: a capped connector stopped a push mid-way).
  * This file is the pure half: what a rule may say, how a trigger's data fills it in, and the steps it turns into. No
  * network, no D1: tools/automations.test.mjs runs it in node. lib/automations-run.js does the D1 and the calls.
@@ -16,7 +16,7 @@
  *   do          1 to MAX_STEPS steps, run in order; the first that fails stops the rest
  * Steps (any string field may use {{event.a.b}}, filled from the event; a missing field fills as empty):
  *   { action: 'note', text }                                    writes one line to the run log, nothing else
- *   { action: 'queue.add', ask, target? }                       a job in Void's build queue (as the owner's POST /api/queue)
+ *   { action: 'queue.add', ask, target? }                       a job in Verse's build queue (as the owner's POST /api/queue)
  *   { action: 'github.comment', repo, issue, body }             a comment on an issue or pull request
  *   { action: 'github.pr', repo, base?, branch, title, body?, files: [{ path, content }] }
  *                                                               commits the files to a new branch and opens a pull request
@@ -96,7 +96,7 @@ export function safeUrl(u) {
   return true;
 }
 
-/** is this a rule Void will keep? { ok, errors: [text], rule: the normalized rule } (env decides the allowed repos) */
+/** is this a rule Verse will keep? { ok, errors: [text], rule: the normalized rule } (env decides the allowed repos) */
 export function validate(input, env) {
   const errors = [], bad = (m) => errors.push(m);
   if (!isObj(input)) return { ok: false, errors: ['a rule is an object'], rule: null };
@@ -121,7 +121,7 @@ export function validate(input, env) {
     const at = 'step ' + (i + 1) + ': ';
     if (!isObj(s) || !ACTIONS.includes(s.action)) return bad(at + 'action is one of: ' + ACTIONS.join(', '));
     const text = (k, need, max = MAX_TEXT) => { const v = str(s[k]); if (need && !v.trim()) bad(at + k + ' is needed'); if (v.length > max) bad(at + k + ' is too long'); return v; };
-    const fixedRepo = () => { const r = str(s.repo).toLowerCase(); if (templated(r) || !repos.includes(r)) bad(at + 'repo must be one Void may touch (' + repos.join(', ') + ')'); return r; };
+    const fixedRepo = () => { const r = str(s.repo).toLowerCase(); if (templated(r) || !repos.includes(r)) bad(at + 'repo must be one Verse may touch (' + repos.join(', ') + ')'); return r; };
     if (s.action === 'note') rule.do.push({ action: 'note', text: text('text', true, 500) });
     else if (s.action === 'queue.add') rule.do.push({ action: 'queue.add', ask: text('ask', true, 200), target: text('target', false, 40) || 'next' });
     else if (s.action === 'github.comment') {
@@ -186,7 +186,7 @@ export function watchRule(watch, tell = 'note', every = DEFAULT_EVERY) {
 /** three rules to start from (the card offers them; each is valid as it stands) */
 export const TEMPLATES = [
   { name: 'Webhook to the build queue', when: { on: 'webhook' }, do: [{ action: 'queue.add', ask: 'from a webhook: {{event.ask}}', target: 'hook' }] },
-  { name: 'Comment on a pull request', when: { on: 'webhook', match: { action: 'labeled' } }, do: [{ action: 'github.comment', repo: 'atomeam/void-loop', issue: '{{event.pull_request.number}}', body: 'Void saw this pull request labelled {{event.label.name}}.' }] },
-  { name: 'Every morning, a note', when: { on: 'schedule', every: 1440 }, do: [{ action: 'note', text: 'Void was here at {{event.at}}' }] },
-  { name: 'Open a pull request with a file', when: { on: 'manual' }, do: [{ action: 'github.pr', repo: 'atomeam/void-loop', base: 'main', branch: 'void/automation-note', title: 'A note from Void', body: 'Opened by a Void automation.', files: [{ path: 'domains/automation-note.md', content: 'Written by a Void automation.\n' }] }] },
+  { name: 'Comment on a pull request', when: { on: 'webhook', match: { action: 'labeled' } }, do: [{ action: 'github.comment', repo: 'atomeam/void-loop', issue: '{{event.pull_request.number}}', body: 'Verse saw this pull request labelled {{event.label.name}}.' }] },
+  { name: 'Every morning, a note', when: { on: 'schedule', every: 1440 }, do: [{ action: 'note', text: 'Verse was here at {{event.at}}' }] },
+  { name: 'Open a pull request with a file', when: { on: 'manual' }, do: [{ action: 'github.pr', repo: 'atomeam/void-loop', base: 'main', branch: 'void/automation-note', title: 'A note from Verse', body: 'Opened by a Verse automation.', files: [{ path: 'domains/automation-note.md', content: 'Written by a Verse automation.\n' }] }] },
 ];

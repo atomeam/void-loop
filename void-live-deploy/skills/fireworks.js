@@ -1,16 +1,16 @@
 /**
- * fireworks skill — a cooperative card game in the style of Hanabi, you and Void on the same side (skills/fireworks-rules.js):
- * "play fireworks", "play hanabi", "a co-op game". You see Void's cards but not your own; Void sees yours but not its own.
- * Tap one of your cards to play or discard it, or one of Void's to tell it a colour or a number. Each seat moves only its
- * own cards; Void's every choice says why. The table stands in the void in 3D (mini/fireworks.js) with this card beside it.
+ * fireworks skill — a cooperative card game in the style of Hanabi, you and Verse on the same side (skills/fireworks-rules.js):
+ * "play fireworks", "play hanabi", "a co-op game". You see Verse's cards but not your own; Verse sees yours but not its own.
+ * Tap one of your cards to play or discard it, or one of Verse's to tell it a colour or a number. Each seat moves only its
+ * own cards; Verse's every choice says why. The table stands in the void in 3D (mini/fireworks.js) with this card beside it.
  */
 import * as F from './fireworks-rules.js';
 import { lift3d } from './lift3d.js';
 
 export function fireworksOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)\s+(?:a\s+)?(?:game\s+of\s+)?(?:fireworks|hanabi)(?:\s+(?:card\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
-  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game(?:\s+with\s+(?:me|void|you))?$|^(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game$|^(?:a\s+)?game\s+of\s+(?:fireworks|hanabi)$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)\s+(?:a\s+)?(?:game\s+of\s+)?(?:fireworks|hanabi)(?:\s+(?:card\s+)?game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game(?:\s+with\s+(?:me|(?:verse|void)|you))?$|^(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game$|^(?:a\s+)?game\s+of\s+(?:fireworks|hanabi)$|^hanabi(?:\s+(?:card\s+|board\s+)?game)?$/.test(t)) return { kind: 'game' };
   return null;
 }
 export const HEX = ['#e2453c', '#efc23a', '#3fae5a', '#3d7fe0', '#eceae4'];
@@ -22,13 +22,13 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card fireworks-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(440px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Fireworks</span><span class="g-sub">co-op · you and Void together</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Fireworks</span><span class="g-sub">co-op · you and Verse together</span></div>';
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const table = document.createElement('div'); table.className = 'fw-table'; table.style.cssText = 'background:#14181f;border-radius:12px;padding:8px';
   const mk = (cls) => { const d = document.createElement('div'); d.className = cls; d.style.cssText = 'display:flex;gap:5px;justify-content:center;margin:5px 0'; return d; };
   const voidRow = mk('fw-void'), rowsRow = mk('fw-rows'), youRow = mk('fw-you');
   const cap = (t) => { const d = document.createElement('div'); d.style.cssText = 'font-size:11px;color:var(--muted,#8a8a8a);text-align:center'; d.textContent = t; return d; };
-  table.append(cap('Void’s hand (you can see it, Void can’t)'), voidRow, cap('The fireworks'), rowsRow, cap('Your hand (only what Void has told you)'), youRow); wrap.appendChild(table);
+  table.append(cap('Verse’s hand (you can see it, Verse can’t)'), voidRow, cap('The fireworks'), rowsRow, cap('Your hand (only what Verse has told you)'), youRow); wrap.appendChild(table);
   const status = document.createElement('div'); status.className = 'g-status fw-status'; status.setAttribute('aria-live', 'polite'); status.style.display = 'block';
   const tokens = document.createElement('div'); tokens.style.cssText = 'font-size:12px;margin:4px 0';
   const bar = document.createElement('div'); bar.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;min-height:34px';
@@ -66,13 +66,13 @@ function mount(th, stageApi) {
     }
     if (mine && sel && sel.side === 'void' && v.hints > 0) {
       const c = v.theirs[sel.k];
-      bar.append(btn('Tell Void its ' + F.COLORS[c.c] + ' cards', 'fw-hint-color', () => done(F.hint(th.state, { color: c.c }))),
-        btn('Tell Void its ' + (c.r + 1) + 's', 'fw-hint-rank', () => done(F.hint(th.state, { rank: c.r }))));
+      bar.append(btn('Tell Verse its ' + F.COLORS[c.c] + ' cards', 'fw-hint-color', () => done(F.hint(th.state, { color: c.c }))),
+        btn('Tell Verse its ' + (c.r + 1) + 's', 'fw-hint-rank', () => done(F.hint(th.state, { rank: c.r }))));
     }
     const newB = btn('New game', 'fw-new', () => { clearTimeout(timers.get(th)); th.state = F.create(); sel = null; save(); paint(); });
     bar.append(newB);
     status.textContent = s.over ? ({ perfect: 'A perfect show: 25!', boom: 'Three mistakes: the show is over at ' + v.score + '.', deck: 'The deck ran out: you scored ' + v.score + ' together.' })[s.over]
-      : mine ? (sel ? (sel.side === 'you' ? 'Play or discard that card?' : 'Tell Void about its cards?') : 'Your turn: tap one of your cards, or one of Void’s to give a hint') : 'Void is thinking…';
+      : mine ? (sel ? (sel.side === 'you' ? 'Play or discard that card?' : 'Tell Verse about its cards?') : 'Your turn: tap one of your cards, or one of Verse’s to give a hint') : 'Verse is thinking…';
     log.textContent = '';
     for (const l of s.log.slice(-12).reverse()) { const line = document.createElement('div'); line.textContent = l.who + ' ' + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; line.appendChild(w); } log.appendChild(line); }
   }
@@ -90,7 +90,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'fireworks');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'fireworks'; }
   api.summon('fireworks', { state: F.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 50 });
-  api.say('Fireworks · you and Void on the same side · you see Void’s cards, not your own');
+  api.say((/hanabi/i.test(String(text)) ? 'Fireworks, our version of Hanabi' : 'Fireworks') + ' · you and Verse on the same side · you see Verse’s cards, not your own');
   return 'fireworks';
 }
 

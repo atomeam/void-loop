@@ -1,0 +1,1307 @@
+{
+ "at": "2026-10-14T04:10:55.612Z",
+ "judged": 743,
+ "ungrounded": 125,
+ "skills": {
+  "weather": {
+   "judged": 30,
+   "ungrounded": 3
+  },
+  "worldtime": {
+   "judged": 75,
+   "ungrounded": 3
+  },
+  "define": {
+   "judged": 31,
+   "ungrounded": 2
+  },
+  "words": {
+   "judged": 39,
+   "ungrounded": 2
+  },
+  "translate": {
+   "judged": 27,
+   "ungrounded": 0
+  },
+  "country": {
+   "judged": 32,
+   "ungrounded": 2
+  },
+  "distance": {
+   "judged": 19,
+   "ungrounded": 0
+  },
+  "place": {
+   "judged": 4,
+   "ungrounded": 0
+  },
+  "calendar": {
+   "judged": 11,
+   "ungrounded": 2
+  },
+  "tip": {
+   "judged": 16,
+   "ungrounded": 10
+  },
+  "recipe": {
+   "judged": 6,
+   "ungrounded": 4
+  },
+  "util": {
+   "judged": 19,
+   "ungrounded": 2
+  },
+  "news": {
+   "judged": 6,
+   "ungrounded": 3
+  },
+  "book": {
+   "judged": 4,
+   "ungrounded": 0
+  },
+  "show": {
+   "judged": 1,
+   "ungrounded": 1
+  },
+  "sport": {
+   "judged": 4,
+   "ungrounded": 4
+  },
+  "holidays": {
+   "judged": 3,
+   "ungrounded": 3
+  },
+  "work": {
+   "judged": 2,
+   "ungrounded": 2
+  },
+  "local-inference": {
+   "judged": 3,
+   "ungrounded": 1
+  },
+  "make": {
+   "judged": 13,
+   "ungrounded": 2
+  },
+  "connect4": {
+   "judged": 5,
+   "ungrounded": 2
+  },
+  "air": {
+   "judged": 7,
+   "ungrounded": 0
+  },
+  "uv": {
+   "judged": 8,
+   "ungrounded": 1
+  },
+  "loan": {
+   "judged": 8,
+   "ungrounded": 0
+  },
+  "pollen": {
+   "judged": 9,
+   "ungrounded": 0
+  },
+  "fuel": {
+   "judged": 7,
+   "ungrounded": 0
+  },
+  "quake": {
+   "judged": 3,
+   "ungrounded": 0
+  },
+  "joke": {
+   "judged": 6,
+   "ungrounded": 3
+  },
+  "part": {
+   "judged": 2,
+   "ungrounded": 0
+  },
+  "figure": {
+   "judged": 3,
+   "ungrounded": 0
+  },
+  "crypto": {
+   "judged": 3,
+   "ungrounded": 1
+  },
+  "countdown": {
+   "judged": 9,
+   "ungrounded": 0
+  },
+  "spanish": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "nutrition": {
+   "judged": 18,
+   "ungrounded": 3
+  },
+  "rack": {
+   "judged": 3,
+   "ungrounded": 0
+  },
+  "dark-look": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "light-look": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "aggravation": {
+   "judged": 4,
+   "ungrounded": 1
+  },
+  "mancala": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "layer": {
+   "judged": 5,
+   "ungrounded": 5
+  },
+  "sleep": {
+   "judged": 12,
+   "ungrounded": 2
+  },
+  "savings": {
+   "judged": 12,
+   "ungrounded": 0
+  },
+  "pregnancy": {
+   "judged": 14,
+   "ungrounded": 0
+  },
+  "ovulation": {
+   "judged": 16,
+   "ungrounded": 0
+  },
+  "period": {
+   "judged": 15,
+   "ungrounded": 2
+  },
+  "home": {
+   "judged": 16,
+   "ungrounded": 0
+  },
+  "walls": {
+   "judged": 16,
+   "ungrounded": 1
+  },
+  "grades": {
+   "judged": 6,
+   "ungrounded": 0
+  },
+  "room": {
+   "judged": 12,
+   "ungrounded": 2
+  },
+  "heart": {
+   "judged": 14,
+   "ungrounded": 1
+  },
+  "growth": {
+   "judged": 5,
+   "ungrounded": 1
+  },
+  "sorry": {
+   "judged": 1,
+   "ungrounded": 1
+  },
+  "intent": {
+   "judged": 17,
+   "ungrounded": 0
+  },
+  "monopoly": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "battleship": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "gears": {
+   "judged": 4,
+   "ungrounded": 2
+  },
+  "moon": {
+   "judged": 4,
+   "ungrounded": 2
+  },
+  "actions": {
+   "judged": 3,
+   "ungrounded": 1
+  },
+  "proposal": {
+   "judged": 4,
+   "ungrounded": 2
+  },
+  "tictactoe": {
+   "judged": 3,
+   "ungrounded": 3
+  },
+  "memory": {
+   "judged": 10,
+   "ungrounded": 5
+  },
+  "ringer": {
+   "judged": 3,
+   "ungrounded": 1
+  },
+  "quiz": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "services": {
+   "judged": 2,
+   "ungrounded": 1
+  },
+  "challenge": {
+   "judged": 4,
+   "ungrounded": 2
+  },
+  "lock": {
+   "judged": 4,
+   "ungrounded": 1
+  },
+  "forge": {
+   "judged": 10,
+   "ungrounded": 0
+  },
+  "watch": {
+   "judged": 5,
+   "ungrounded": 0
+  },
+  "goal": {
+   "judged": 2,
+   "ungrounded": 0
+  },
+  "sky": {
+   "judged": 5,
+   "ungrounded": 4
+  },
+  "moontonight": {
+   "judged": 5,
+   "ungrounded": 4
+  },
+  "suntimes": {
+   "judged": 4,
+   "ungrounded": 4
+  },
+  "aurora-tonight": {
+   "judged": 5,
+   "ungrounded": 3
+  },
+  "constellation": {
+   "judged": 6,
+   "ungrounded": 6
+  },
+  "meteors": {
+   "judged": 5,
+   "ungrounded": 2
+  },
+  "eclipse": {
+   "judged": 7,
+   "ungrounded": 0
+  },
+  "splat": {
+   "judged": 7,
+   "ungrounded": 2
+  },
+  "inventory": {
+   "judged": 4,
+   "ungrounded": 0
+  },
+  "pdf-card": {
+   "judged": 9,
+   "ungrounded": 2
+  },
+  "othello": {
+   "judged": 1,
+   "ungrounded": 0
+  },
+  "routine": {
+   "judged": 5,
+   "ungrounded": 0
+  },
+  "together": {
+   "judged": 3,
+   "ungrounded": 3
+  },
+  "breath": {
+   "judged": 6,
+   "ungrounded": 1
+  },
+  "draw": {
+   "judged": 5,
+   "ungrounded": 2
+  }
+ },
+ "asks": [
+  {
+   "ask": "calculate a 20% tip on 45",
+   "skill": "tip",
+   "missing": [
+    "calculate",
+    "45"
+   ]
+  },
+  {
+   "ask": "word count of the quick brown fox jumps",
+   "skill": "util",
+   "missing": [
+    "brown",
+    "fox",
+    "jump"
+   ]
+  },
+  {
+   "ask": "what is a 20% tip on 45",
+   "skill": "tip",
+   "missing": [
+    "45"
+   ]
+  },
+  {
+   "ask": "how do i make guacamole",
+   "skill": "recipe",
+   "missing": [
+    "guacamole"
+   ]
+  },
+  {
+   "ask": "latest news",
+   "skill": "news",
+   "missing": [
+    "latest"
+   ]
+  },
+  {
+   "ask": "breaking news",
+   "skill": "news",
+   "missing": [
+    "break"
+   ]
+  },
+  {
+   "ask": "technology news",
+   "skill": "news",
+   "missing": [
+    "technology"
+   ]
+  },
+  {
+   "ask": "chicken recipes",
+   "skill": "recipe",
+   "missing": [
+    "chicken",
+    "recip"
+   ]
+  },
+  {
+   "ask": "tv show severance",
+   "skill": "show",
+   "missing": [
+    "severance"
+   ]
+  },
+  {
+   "ask": "nba team celtics",
+   "skill": "sport",
+   "missing": [
+    "nba",
+    "celtic"
+   ]
+  },
+  {
+   "ask": "public holidays in japan",
+   "skill": "holidays",
+   "missing": [
+    "japan"
+   ]
+  },
+  {
+   "ask": "18% tip on 64 dollars",
+   "skill": "tip",
+   "missing": [
+    "64",
+    "dollar"
+   ]
+  },
+  {
+   "ask": "find me work as a designer",
+   "skill": "work",
+   "missing": [
+    "designer"
+   ]
+  },
+  {
+   "ask": "check ledger drift",
+   "skill": "local-inference",
+   "missing": [
+    "ledger",
+    "drift"
+   ]
+  },
+  {
+   "ask": "what did void get wrong",
+   "skill": "make",
+   "missing": [
+    "wrong"
+   ]
+  },
+  {
+   "ask": "clear calender",
+   "skill": "calendar",
+   "missing": [
+    "clear",
+    "calender"
+   ]
+  },
+  {
+   "ask": "delete all my events",
+   "skill": "calendar",
+   "missing": [
+    "delete",
+    "event"
+   ]
+  },
+  {
+   "ask": "how strong is the sun in LA",
+   "skill": "uv",
+   "missing": [
+    "sun"
+   ]
+  },
+  {
+   "ask": "make me laugh",
+   "skill": "joke",
+   "missing": [
+    "laugh"
+   ]
+  },
+  {
+   "ask": "remote jobs for designers",
+   "skill": "work",
+   "missing": [
+    "job",
+    "designer"
+   ]
+  },
+  {
+   "ask": "split $85 three ways with 20% tip",
+   "skill": "tip",
+   "missing": [
+    "85",
+    "three",
+    "way"
+   ]
+  },
+  {
+   "ask": "upcoming holidays",
+   "skill": "holidays",
+   "missing": [
+    "upcom"
+   ]
+  },
+  {
+   "ask": "public holidays in germany",
+   "skill": "holidays",
+   "missing": [
+    "germany"
+   ]
+  },
+  {
+   "ask": "tip 20% on $45",
+   "skill": "tip",
+   "missing": [
+    "45"
+   ]
+  },
+  {
+   "ask": "split $120 four ways with 18% tip",
+   "skill": "tip",
+   "missing": [
+    "120",
+    "four",
+    "way"
+   ]
+  },
+  {
+   "ask": "nba team lakers",
+   "skill": "sport",
+   "missing": [
+    "nba",
+    "laker"
+   ]
+  },
+  {
+   "ask": "what stadium do the packers play in",
+   "skill": "sport",
+   "missing": [
+    "stadium",
+    "packer"
+   ]
+  },
+  {
+   "ask": "is it going to rain today",
+   "skill": "weather",
+   "missing": [
+    "rain"
+   ]
+  },
+  {
+   "ask": "tip on $64 at 20%",
+   "skill": "tip",
+   "missing": [
+    "64"
+   ]
+  },
+  {
+   "ask": "what is 15% tip on $82",
+   "skill": "tip",
+   "missing": [
+    "82"
+   ]
+  },
+  {
+   "ask": "reverse the word hello",
+   "skill": "util",
+   "missing": [
+    "word",
+    "hello"
+   ]
+  },
+  {
+   "ask": "recipe for banana bread",
+   "skill": "recipe",
+   "missing": [
+    "banana",
+    "bread"
+   ]
+  },
+  {
+   "ask": "nfl team packers",
+   "skill": "sport",
+   "missing": [
+    "nfl",
+    "packer"
+   ]
+  },
+  {
+   "ask": "chicken curry recipe",
+   "skill": "recipe",
+   "missing": [
+    "chicken",
+    "curry"
+   ]
+  },
+  {
+   "ask": "tell me a dad joke",
+   "skill": "joke",
+   "missing": [
+    "dad"
+   ]
+  },
+  {
+   "ask": "what language do they speak in brazil",
+   "skill": "country",
+   "missing": [
+    "language",
+    "they",
+    "speak",
+    "brazil"
+   ]
+  },
+  {
+   "ask": "how much is a 15% tip on 60",
+   "skill": "tip",
+   "missing": [
+    "60"
+   ]
+  },
+  {
+   "ask": "convert 9am est to pst",
+   "skill": "worldtime",
+   "missing": [
+    "convert",
+    "est",
+    "pst"
+   ]
+  },
+  {
+   "ask": "tell me something funny",
+   "skill": "joke",
+   "missing": [
+    "funny"
+   ]
+  },
+  {
+   "ask": "what is 1 bitcoin in dollars",
+   "skill": "crypto",
+   "missing": [
+    "1",
+    "dollar"
+   ]
+  },
+  {
+   "ask": "jet lag from la to london",
+   "skill": "worldtime",
+   "missing": [
+    "jet",
+    "lag"
+   ]
+  },
+  {
+   "ask": "words that rhyme with cat",
+   "skill": "words",
+   "missing": [
+    "word",
+    "rhyme"
+   ]
+  },
+  {
+   "ask": "define the word paradigm",
+   "skill": "define",
+   "missing": [
+    "define",
+    "word"
+   ]
+  },
+  {
+   "ask": "how many people live in nigeria",
+   "skill": "country",
+   "missing": [
+    "people",
+    "live"
+   ]
+  },
+  {
+   "ask": "definition of the word cynical",
+   "skill": "define",
+   "missing": [
+    "definition",
+    "word"
+   ]
+  },
+  {
+   "ask": "tip on 64 dollars",
+   "skill": "tip",
+   "missing": [
+    "64",
+    "dollar"
+   ]
+  },
+  {
+   "ask": "bring the clock to the front",
+   "skill": "layer",
+   "missing": [
+    "clock"
+   ]
+  },
+  {
+   "ask": "send it to the back",
+   "skill": "layer",
+   "missing": [
+    "back"
+   ]
+  },
+  {
+   "ask": "move the timer behind everything",
+   "skill": "layer",
+   "missing": [
+    "timer",
+    "behind",
+    "everyth"
+   ]
+  },
+  {
+   "ask": "put the sticky note in front of everything",
+   "skill": "layer",
+   "missing": [
+    "sticky",
+    "note",
+    "everyth"
+   ]
+  },
+  {
+   "ask": "send this to the back",
+   "skill": "layer",
+   "missing": [
+    "back"
+   ]
+  },
+  {
+   "ask": "how much sleep does a teenager need",
+   "skill": "sleep",
+   "missing": [
+    "teenager"
+   ]
+  },
+  {
+   "ask": "how much sleep does a 70 year old need",
+   "skill": "sleep",
+   "missing": [
+    "70",
+    "year"
+   ]
+  },
+  {
+   "ask": "my period came today",
+   "skill": "period",
+   "missing": [
+    "came"
+   ]
+  },
+  {
+   "ask": "remove my last period",
+   "skill": "period",
+   "missing": [
+    "remove"
+   ]
+  },
+  {
+   "ask": "maintenance calories",
+   "skill": "nutrition",
+   "missing": [
+    "maintenance"
+   ]
+  },
+  {
+   "ask": "how much protein does a 70 year old need",
+   "skill": "nutrition",
+   "missing": [
+    "70",
+    "year"
+   ]
+  },
+  {
+   "ask": "daily water intake",
+   "skill": "nutrition",
+   "missing": [
+    "daily",
+    "intake"
+   ]
+  },
+  {
+   "ask": "how much wallpaper do i need for a 10x12 bedroom with 9 foot ceilings",
+   "skill": "walls",
+   "missing": [
+    "bedroom",
+    "foot",
+    "ceiling"
+   ]
+  },
+  {
+   "ask": "shopping list for a 12x14 bedroom makeover",
+   "skill": "room",
+   "missing": [
+    "shopp",
+    "list",
+    "makeover"
+   ]
+  },
+  {
+   "ask": "materials for a 11x13 nursery makeover",
+   "skill": "room",
+   "missing": [
+    "material",
+    "nursery",
+    "makeover"
+   ]
+  },
+  {
+   "ask": "what should my heart rate be when exercising",
+   "skill": "heart",
+   "missing": [
+    "exercis"
+   ]
+  },
+  {
+   "ask": "should i bring a jacket",
+   "skill": "weather",
+   "missing": [
+    "jacket"
+   ]
+  },
+  {
+   "ask": "what should i wear today",
+   "skill": "weather",
+   "missing": [
+    "wear"
+   ]
+  },
+  {
+   "ask": "sorry board game",
+   "skill": "sorry",
+   "missing": [
+    "board"
+   ]
+  },
+  {
+   "ask": "make one gear turn twice as fast",
+   "skill": "gears",
+   "missing": [
+    "twice",
+    "fast"
+   ]
+  },
+  {
+   "ask": "mystery gears",
+   "skill": "gears",
+   "missing": [
+    "mystery"
+   ]
+  },
+  {
+   "ask": "what causes the phases of the moon",
+   "skill": "moon",
+   "missing": [
+    "caus"
+   ]
+  },
+  {
+   "ask": "mystery moon",
+   "skill": "moon",
+   "missing": [
+    "mystery"
+   ]
+  },
+  {
+   "ask": "action log",
+   "skill": "actions",
+   "missing": [
+    "log"
+   ]
+  },
+  {
+   "ask": "can you turn this email into a proposal?",
+   "skill": "proposal",
+   "missing": [
+    "email"
+   ]
+  },
+  {
+   "ask": "turn this into a proposal: we need our Shopify orders copied into a sheet without duplicates",
+   "skill": "proposal",
+   "missing": [
+    "shopify",
+    "order",
+    "copi",
+    "sheet",
+    "without",
+    "duplicat"
+   ]
+  },
+  {
+   "ask": "tic tac toe against void",
+   "skill": "tictactoe",
+   "missing": [
+    "against"
+   ]
+  },
+  {
+   "ask": "play noughts and crosses",
+   "skill": "tictactoe",
+   "missing": [
+    "nought",
+    "cross"
+   ]
+  },
+  {
+   "ask": "i want to play tic tac toe against the computer",
+   "skill": "tictactoe",
+   "missing": [
+    "against",
+    "computer"
+   ]
+  },
+  {
+   "ask": "shoot marbles",
+   "skill": "ringer",
+   "missing": [
+    "shoot"
+   ]
+  },
+  {
+   "ask": "remember that I prefer tabs over spaces",
+   "skill": "memory",
+   "missing": [
+    "prefer",
+    "tab",
+    "spac"
+   ]
+  },
+  {
+   "ask": "please remember that my standup is at 9:30 every day",
+   "skill": "memory",
+   "missing": [
+    "standup",
+    "9",
+    "30",
+    "every",
+    "day"
+   ]
+  },
+  {
+   "ask": "forget that I prefer tabs over spaces",
+   "skill": "memory",
+   "missing": [
+    "forget",
+    "prefer",
+    "tab",
+    "spac"
+   ]
+  },
+  {
+   "ask": "remember: the staging key lives in the team vault",
+   "skill": "memory",
+   "missing": [
+    "stag",
+    "liv",
+    "team",
+    "vault"
+   ]
+  },
+  {
+   "ask": "void, remember that I like my reports short",
+   "skill": "memory",
+   "missing": [
+    "report",
+    "short"
+   ]
+  },
+  {
+   "ask": "what's for sale",
+   "skill": "services",
+   "missing": [
+    "sale"
+   ]
+  },
+  {
+   "ask": "turn the questions i missed into a five-minute challenge",
+   "skill": "challenge",
+   "missing": [
+    "question",
+    "miss",
+    "five",
+    "minute",
+    "challenge"
+   ]
+  },
+  {
+   "ask": "challenge me on the ones i missed",
+   "skill": "challenge",
+   "missing": [
+    "challenge",
+    "miss"
+   ]
+  },
+  {
+   "ask": "show the moving parts of a lock",
+   "skill": "lock",
+   "missing": [
+    "mov",
+    "part"
+   ]
+  },
+  {
+   "ask": "what can you do now that you couldn't last week",
+   "skill": "growth",
+   "missing": [
+    "couldnt"
+   ]
+  },
+  {
+   "ask": "play agravation",
+   "skill": "aggravation",
+   "missing": [
+    "agravation"
+   ]
+  },
+  {
+   "ask": "show me the stars",
+   "skill": "sky",
+   "missing": [
+    "star"
+   ]
+  },
+  {
+   "ask": "night sky",
+   "skill": "sky",
+   "missing": [
+    "night"
+   ]
+  },
+  {
+   "ask": "planetarium",
+   "skill": "sky",
+   "missing": [
+    "planetarium"
+   ]
+  },
+  {
+   "ask": "what do i see in the night sky",
+   "skill": "sky",
+   "missing": [
+    "night"
+   ]
+  },
+  {
+   "ask": "how much of the moon is lit tonight",
+   "skill": "moontonight",
+   "missing": [
+    "lit"
+   ]
+  },
+  {
+   "ask": "moonrise tonight",
+   "skill": "moontonight",
+   "missing": [
+    "moonrise"
+   ]
+  },
+  {
+   "ask": "next first quarter moon",
+   "skill": "moontonight",
+   "missing": [
+    "quarter"
+   ]
+  },
+  {
+   "ask": "current moon phase",
+   "skill": "moontonight",
+   "missing": [
+    "current"
+   ]
+  },
+  {
+   "ask": "what time is sunrise and sunset",
+   "skill": "suntimes",
+   "missing": [
+    "time"
+   ]
+  },
+  {
+   "ask": "how long is the day today",
+   "skill": "suntimes",
+   "missing": [
+    "day"
+   ]
+  },
+  {
+   "ask": "length of day",
+   "skill": "suntimes",
+   "missing": [
+    "length",
+    "day"
+   ]
+  },
+  {
+   "ask": "when does the sun come up",
+   "skill": "suntimes",
+   "missing": [
+    "sun",
+    "come"
+   ]
+  },
+  {
+   "ask": "can i see the northern lights",
+   "skill": "aurora-tonight",
+   "missing": [
+    "northern",
+    "light"
+   ]
+  },
+  {
+   "ask": "what is the kp index right now",
+   "skill": "aurora-tonight",
+   "missing": [
+    "index"
+   ]
+  },
+  {
+   "ask": "aurora alert",
+   "skill": "aurora-tonight",
+   "missing": [
+    "alert"
+   ]
+  },
+  {
+   "ask": "where is Orion",
+   "skill": "constellation",
+   "missing": [
+    "orion"
+   ]
+  },
+  {
+   "ask": "find the southern cross",
+   "skill": "constellation",
+   "missing": [
+    "southern",
+    "cros"
+   ]
+  },
+  {
+   "ask": "is cassiopeia visible tonight",
+   "skill": "constellation",
+   "missing": [
+    "cassiopeia",
+    "visible"
+   ]
+  },
+  {
+   "ask": "where is ursa major",
+   "skill": "constellation",
+   "missing": [
+    "ursa",
+    "major"
+   ]
+  },
+  {
+   "ask": "when can i see lyra",
+   "skill": "constellation",
+   "missing": [
+    "lyra"
+   ]
+  },
+  {
+   "ask": "identify that constellation",
+   "skill": "constellation",
+   "missing": [
+    "identify"
+   ]
+  },
+  {
+   "ask": "meteor showers this month",
+   "skill": "meteors",
+   "missing": [
+    "month"
+   ]
+  },
+  {
+   "ask": "are there meteor showers this week",
+   "skill": "meteors",
+   "missing": [
+    "week"
+   ]
+  },
+  {
+   "ask": "load a 3dgs scan",
+   "skill": "splat",
+   "missing": [
+    "3",
+    "dg",
+    "scan"
+   ]
+  },
+  {
+   "ask": "gaussian splatting viewer",
+   "skill": "splat",
+   "missing": [
+    "gaussian",
+    "splatt"
+   ]
+  },
+  {
+   "ask": "is it morning or evening in Mumbai",
+   "skill": "worldtime",
+   "missing": [
+    "morn",
+    "even"
+   ]
+  },
+  {
+   "ask": "another way to say tired",
+   "skill": "words",
+   "missing": [
+    "another",
+    "way"
+   ]
+  },
+  {
+   "ask": "pdf reader",
+   "skill": "pdf-card",
+   "missing": [
+    "reader"
+   ]
+  },
+  {
+   "ask": "search a pdf",
+   "skill": "pdf-card",
+   "missing": [
+    "search"
+   ]
+  },
+  {
+   "ask": "are you good at four in a row",
+   "skill": "connect4",
+   "missing": [
+    "row"
+   ]
+  },
+  {
+   "ask": "what's your elo at connect four",
+   "skill": "connect4",
+   "missing": [
+    "elo"
+   ]
+  },
+  {
+   "ask": "what are they doing?",
+   "skill": "together",
+   "missing": [
+    "they"
+   ]
+  },
+  {
+   "ask": "what will they do together",
+   "skill": "together",
+   "missing": [
+    "they",
+    "together"
+   ]
+  },
+  {
+   "ask": "what are the two of them doing",
+   "skill": "together",
+   "missing": [
+    "them"
+   ]
+  },
+  {
+   "ask": "simpson's paradox",
+   "skill": "make",
+   "missing": [
+    "simpson",
+    "paradox"
+   ]
+  },
+  {
+   "ask": "guided breathing exercise",
+   "skill": "breath",
+   "missing": [
+    "guid",
+    "exercise"
+   ]
+  },
+  {
+   "ask": "open a canvas",
+   "skill": "draw",
+   "missing": [
+    "canva"
+   ]
+  },
+  {
+   "ask": "sketch pad",
+   "skill": "draw",
+   "missing": [
+    "sketch",
+    "pad"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,62 @@
+{
+  "algo": "sha256",
+  "kind": "void-monthly-notes",
+  "run": "010",
+  "slug": "void-monthly-email-capture",
+  "status": "specified",
+  "hold": true,
+  "optin": "double",
+  "popup": false,
+  "vendor_script": false,
+  "checkout": "separate",
+  "route": "/notes",
+  "index": "noindex",
+  "head": {
+    "canonical": "{\"algo\":\"sha256\",\"claims\":5,\"kind\":\"void-monthly-notes\",\"optin\":\"double\",\"popup\":false}",
+    "sha256": "ac754fc6aa91043ded5eac43b59e5a0f4ced05c60b573661e957c0391c9cd728"
+  },
+  "body_sha256": "c96508e20d610915815f5594ad38a23a9c3bfd49a64af74d934578a822866488",
+  "offer": {
+    "id": "offer#010",
+    "canonical": "offer#010|kind:void-monthly-notes|cadence:monthly|purpose:product-notes-only|checkout:separate|popup:deny|precheck:deny|bundle:deny|optin:double|write:hold-until-confirm|hash:sha256|seal:human",
+    "sha256": "f8b9c2128680c2a71c885a7687e2bb1257f76c868a10cc27dc012aa81e4f419c"
+  },
+  "page": {
+    "id": "page#capture",
+    "canonical": "page#capture|route:/notes|index:noindex|vendor-script:deny|popup:deny|tracking-pixel:deny|exec:allowlist-only",
+    "sha256": "1daf19755b6378ddd2ea734f9f5f7cd48697fd43c2b885eb6cc6113726e89836"
+  },
+  "pending_request": {
+    "id": "request#pending",
+    "canonical": "request#pending|purpose:void-monthly-notes|state:hold|optin:unconfirmed",
+    "sha256": "a2bbeb03829e949da5291358ac0cb95b846da3b890a983a02e260b4f7231bc02",
+    "note": "Not included in body_sha256. Preview receipts stay in state hold."
+  },
+  "claims": [
+    {
+      "id": "claim#purpose",
+      "canonical": "claim#purpose|text:Void Monthly notes are one email per month about sealed product changes. This is not product access and not a paid checkout.",
+      "sha256": "4580c70e9b8bf6a27924ede7bc492c34d8e7dd306647b68f467e69b91b004639"
+    },
+    {
+      "id": "claim#consent",
+      "canonical": "claim#consent|text:Consent is an unchecked box plus a later confirm click on an address only that person controls.",
+      "sha256": "dd1ed66a9718343b91d61dc6bcfd412de1e2cabf31bfac54d1670220ef718fd7"
+    },
+    {
+      "id": "claim#not-access",
+      "canonical": "claim#not-access|text:Signing this list does not create a Void session, a passkey, or a $49 grant.",
+      "sha256": "2dde5046ffdac6d245222781857cb4515e575c47c25af9a62c7d323d89f6d95e"
+    },
+    {
+      "id": "claim#withdraw",
+      "canonical": "claim#withdraw|text:Withdraw is as easy as subscribe: one link in every send, honored without a login wall.",
+      "sha256": "9c7fa5c9a401173ea7c5a71ca0f7da49c9ca6f03a5149c75aa8811bacc62e28d"
+    },
+    {
+      "id": "claim#hold",
+      "canonical": "claim#hold|text:Until a human seals this surface and wires a worker, submit writes a local Hold receipt and does not POST.",
+      "sha256": "989f66c95795c4ee40398757b652698e988d6382fb5d98fd6f344d205142635c"
+    }
+  ]
+}

@@ -6,8 +6,9 @@
  * to detect / mitigate / resolve worked out, impact, a timeline, the cause (or "not known yet"), next steps with owners,
  * and a live Markdown copy to paste wherever the team keeps them. Blameless: it asks what happened and what will change,
  * never who is at fault (the postmortem culture in Google's SRE book). Nothing is sent anywhere; the draft stays in this
- * browser (a2m.void.incident.v1) until "clear".
+ * browser (a2m.void.incident.v1) until "clear". "what broke lately": the incidents the browser suite wrote (/incidents.json).
  */
+import { clean } from '../lib/ask-text.js';
 const KEY = 'a2m.void.incident.v1';
 export const SEVERITY = [
   ['SEV1', 'critical: the service is down or data is at risk for many people'],
@@ -17,7 +18,7 @@ export const SEVERITY = [
 ];
 export const STATUS = ['investigating', 'mitigated', 'resolved'];
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 const WHAT = '(?:incident\\s+(?:brief|report|review|summary|write-?up)|post-?mortem|post[\\s-]incident\\s+review|outage\\s+(?:report|brief|summary|write-?up))';
 const ASK_RE = new RegExp('^(?:please\\s+)?(?:(?:help\\s+me\\s+)?(?:write|draft|start|make|create|do|open)\\s+(?:me\\s+)?(?:an?\\s+|the\\s+|our\\s+)?)?' + WHAT + '(?:\\s+template)?(?:\\s+(?:for|about|on)\\s+(.+?))?(?:\\s*:\\s*(.+))?$', 'i');
 /** { title } when the ask wants an incident brief (title from "for the login outage" or after a colon), else null. */
@@ -68,6 +69,13 @@ export function briefMarkdown(s) {
 
 const blank = (title) => ({ title: title || '', status: 'investigating', severity: '', started: '', detected: '', mitigated: '', resolved: '', impact: '', cause: '', timeline: [{ at: '', what: '' }], next: [{ what: '', owner: '', due: '' }] });
 function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); return s && typeof s === 'object' && Array.isArray(s.timeline) && Array.isArray(s.next) ? s : null; } catch (_) { return null; } }
+/** keep a drafted brief (the pulse card drafts one when the arrows' rhythm turns irregular, asked by Verse) unless the person already has one with real content in it; true when kept. */
+export function keepDraft(s) {
+  const have = load();
+  if (have && (have.impact || have.cause || (have.title && have.title !== s.title))) return false;
+  save({ ...blank(s.title), ...s });
+  return load() != null;
+}
 function save(s) { try { if (JSON.stringify(s) === JSON.stringify(blank(''))) localStorage.removeItem(KEY); else localStorage.setItem(KEY, JSON.stringify(s)); } catch (_) {} } // an empty form leaves nothing behind
 
 const IN = 'font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 8px;box-sizing:border-box';
@@ -86,7 +94,33 @@ function formHtml(esc, s) {
     + '<div style="font-size:12px;color:#8a8a92;margin-top:8px">next steps</div>' + rows(s.next, 'next', [['what', 'what will change'], ['owner', 'owner', 'text', '0 1 120px'], ['due', 'due', 'date', '0 0 150px']]) + '<button type="button" data-add="next">add a step</button>';
 }
 
+// what broke lately (asked by Verse, four times: an incident entry whenever a 3D suite check fails): the list verify.yml writes to
+// /incidents.json (tools/incident-log.mjs), newest first, each with its failed checks, the commit and the run, and the brief one tap away
+const LATELY_RE = /^(?:what(?:'s|\s+has|\s+is)?\s+)?(?:broke|is\s+broken|failed|went\s+wrong|has\s+(?:broken|failed))(?:\s+(?:lately|recently|today|this\s+week|on\s+main|in\s+(?:void|(?:verse|v01d)|verse)))?$|^(?:(?:show|list)\s+(?:me\s+)?)?(?:the\s+)?(?:recent\s+|latest\s+|last\s+|(?:verse|void)\s+|(?:verse|v01d)\s+|my\s+)?incidents?(?:\s+(?:log|list|history))?$|^what\s+broke\s+lately$/i;
+export const latelyOf = (text) => LATELY_RE.test(CLEAN(text)) && !incidentOf(text);
+export function incidentsHtml(esc, list) {
+  const L = Array.isArray(list) ? list : [];
+  const when = (at) => String(at || '').slice(0, 16).replace('T', ' ') + ' UTC';
+  return '<h2>What broke lately</h2><div class="sub">every red browser suite on main, newest first · written by the suite itself</div>'
+    + (L.length ? L.slice(0, 10).map((i) => '<div style="margin:10px 0;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><b>' + esc(when(i.at)) + '</b> · ' + esc(String(i.sha || '').slice(0, 7))
+        + (i.run ? ' · <a href="' + esc(i.run) + '" target="_blank" rel="noopener">the run</a>' : '')
+        + ' · ' + (i.closedAt ? 'fixed after ' + esc(String(i.minutes)) + ' min' + (i.closedBy ? ' by ' + esc(String(i.closedBy).slice(0, 7)) : '') : 'not marked fixed yet') + '<br><span style="color:#8a8a92">' + esc(String(i.checks.length) + ' failed: ') + '</span>' + i.checks.slice(0, 6).map((c) => esc(c)).join('<span style="color:#8a8a92"> · </span>')
+        + (i.checks.length > 6 ? '<span style="color:#8a8a92"> · and ' + (i.checks.length - 6) + ' more</span>' : '')
+        + '<br><a href="#" data-ask="' + esc('incident brief: ' + String(i.checks[0] || 'the suite').slice(0, 80)) + '">write the incident brief</a></div>').join('')
+      : '<p>Nothing has broken on main since this log began. The brief is still here: "write an incident brief".</p>')
+    + '<div class="src">Source: /incidents.json (tools/incident-log.mjs, from verify.yml). Check names and commits only; nothing about you.</div>';
+}
+async function lately(api) {
+  const { showPage, esc } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>What broke lately</h2><div class="sub">reading the log…</div>'; });
+  let list = [];
+  try { const r = await fetch('/incidents.json', { cache: 'no-cache' }); if (r.ok) list = (await r.json()).incidents || []; } catch (_) {}
+  el.innerHTML = incidentsHtml(esc, list);
+  return 'incident';
+}
+
 async function run(text, api) {
+  if (latelyOf(text)) return lately(api);
   const hit = incidentOf(text);
   if (!hit) return 'none';
   const { showPage, esc } = api;
@@ -123,9 +157,9 @@ async function run(text, api) {
 
 export default {
   name: 'incident',
-  examples: ['write an incident brief', 'incident report for the login outage', 'postmortem template', 'write a postmortem for the checkout outage', 'post-incident review', 'incident brief: payments down'],
+  examples: ['write an incident brief', 'incident report for the login outage', 'postmortem template', 'write a postmortem for the checkout outage', 'post-incident review', 'incident brief: payments down', 'what broke lately', 'recent incidents'],
   nearMisses: ['what is an incident', 'incident at work', 'police incident report near me', 'what is a postmortem', 'post mortem examination'],
   incidentOf,
-  match(lower, text) { return !!incidentOf(text); },
+  match(lower, text) { return !!incidentOf(text) || latelyOf(text); },
   run,
 };

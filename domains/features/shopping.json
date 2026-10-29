@@ -1,0 +1,230 @@
+{
+ "floor": "shopping",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "amazon.com": {
+   "sources": [
+    "https://www.amazon.com/",
+    "https://www.amazon.com/gp/help/customer/display.html",
+    "https://www.aboutamazon.com/news/retail/how-to-use-amazon-shopping-ai-assistant",
+    "https://aboutamazon.com/news/retail/amazon-shopping-features-rufus-lens"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Product search",
+     "detail": "Search hundreds of millions of products with autocomplete and spelling fixes",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "store.js shows only Verse's own products"
+    },
+    {
+     "group": "core",
+     "name": "Departments and filters",
+     "detail": "Category browse, filters by brand, price, rating, Prime, delivery date",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Product page",
+     "detail": "Images, video, price, variants, specs, bullets, Q&A",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/store.js and the /store page: Verse's own store from lib/store.js, buy links to live Gumroad listings only"
+    },
+    {
+     "group": "core",
+     "name": "Ratings and reviews",
+     "detail": "Stars, written and photo reviews, AI review summary",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Cart and checkout",
+     "detail": "Cart, saved for later, one-click buy, addresses, payment methods",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "store.js hands checkout to Gumroad"
+    },
+    {
+     "group": "core",
+     "name": "Orders and tracking",
+     "detail": "Order history, live delivery tracking with map",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Returns and refunds",
+     "detail": "Online returns with drop-off options",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Delivery options",
+     "detail": "Same/next day, choose a day, lockers, pickup",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Wish lists and registries",
+     "detail": "Multiple lists, shared lists, baby and wedding registries",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/list.js shopping list on the stage"
+    },
+    {
+     "group": "power",
+     "name": "Subscribe & Save",
+     "detail": "Recurring deliveries with discount",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Price history and alerts",
+     "detail": "Rufus 30/90/365-day price history, price alerts (app)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/watch.js \"alert me when the price on <url> drops below 50\""
+    },
+    {
+     "group": "power",
+     "name": "Deals",
+     "detail": "Today's Deals, Lightning Deals, coupons",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Compare products",
+     "detail": "Compare similar items table",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/compare/ compares Verse with rival sites, not products"
+    },
+    {
+     "group": "power",
+     "name": "Rufus shopping assistant",
+     "detail": "Ask questions about products and orders",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Visual search (Lens)",
+     "detail": "Search by photo or barcode",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Buy again and recommendations",
+     "detail": "Recent purchases and personalised suggestions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Gift options",
+     "detail": "Gift wrap, gift receipt, gift cards",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share product and list",
+     "detail": "Share links, shared lists",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app and Alexa ordering",
+     "detail": "App, voice reorder, delivery notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Accessible site",
+     "detail": "Screen reader support, accessibility help line",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Prime",
+     "detail": "Free fast delivery, Prime Video, Music, deals, Rufus auto-buy",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Sponsored products (ads)",
+     "detail": "Paid placement in results",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "product search across open catalogues with links to sellers",
+  "a price watch on any product link (watch.js already does the alert)",
+  "wish list kept on the device",
+  "compare two products side by side",
+  "Verse store page"
+ ],
+ "verse_extra": [
+  "the store sells only what is live, no dark patterns",
+  "price alert on any shop's link, not just one store"
+ ],
+ "first_page": "Shopping list and price watch page /shop/ for people who buy across many stores. First: paste product links from any shop into a list kept on the device (title, image and price read from the page's public metadata), set a price to wait for (existing watch), compare two side by side, share the list by link. Will not build: a catalogue, checkout, payments, reviews or delivery tracking (money stays out).",
+ "auto": {
+  "queued": [
+   {
+    "target": "feature:amazon-com-00694bb6",
+    "feature": "Product search",
+    "host": "amazon.com",
+    "at": "2026-10-26",
+    "id": "mvoxkjn0"
+   },
+   {
+    "target": "feature:amazon-com-10408b2b",
+    "feature": "Departments and filters",
+    "host": "amazon.com",
+    "at": "2026-10-26",
+    "id": "mvoxkk1v"
+   },
+   {
+    "target": "feature:amazon-com-292bb8bb",
+    "feature": "Ratings and reviews",
+    "host": "amazon.com",
+    "at": "2026-10-26",
+    "id": "mvp4ahwz"
+   }
+  ]
+ }
+}

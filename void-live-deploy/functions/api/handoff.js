@@ -1,4 +1,4 @@
-// Void handoff: agents and people drop a file or report, get a link back.
+// Verse handoff: agents and people drop a file or report, get a link back.
 // POST /api/handoff  (Authorization: Bearer <HANDOFF_TOKEN>)  {name, author?, body, job?} -> {id, url, expires}
 // job (optional): a build-queue target like sale:<id>. The handoff's url is appended to that job ("reply received:
 // <url>") with one execution record (kind sale.reply) — this is how a buyer's emailed reply reaches their job

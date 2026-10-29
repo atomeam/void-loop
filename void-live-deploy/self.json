@@ -1,5 +1,5 @@
 {
- "about": "Void by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
+ "about": "Verse by A-to-Mind does whatever anyone asks: ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
  "shipped": [
   {
    "state": "shipped",
@@ -11,7 +11,7 @@
    "state": "shipped",
    "date": "2026-10-02",
    "ask": "answer me in Spanish",
-   "from": "plan item 9, Void in other languages"
+   "from": "plan item 9, Verse in other languages"
   },
   {
    "state": "shipped",
@@ -137,7 +137,7 @@
    "state": "shipped",
    "date": "2026-10-07",
    "ask": "group the clock and the note",
-   "from": "board Next #3, grouping half: drag one and they all move, \"move the group to the top left\", \"make the group bigger\", \"br"
+   "from": "board Next #3, grouping half: drag one and they all move, \"move the group to the top left\", \"make the group bigger\"…"
   },
   {
    "state": "shipped",
@@ -148,15 +148,105 @@
   {
    "state": "shipped",
    "date": "2026-10-10",
-   "ask": "before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran ",
+   "ask": "before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily…",
    "from": "map PR #344"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline…",
+   "from": "asked by the owner"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-14",
+   "ask": "convert-card: persistent interactive unit conversions on the stage",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-14",
+   "ask": "growth friction linked to Words and the world failure logs",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "rendered state signal for 3D miniature cards",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "Verse Site Tester",
+   "from": "store-publish: sdk, 4 files, $24.00; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-19",
+   "ask": "lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure…",
+   "from": "claude 2026-10-18, asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-21",
+   "ask": "Verse Remix Kit",
+   "from": "store-publish: templates, 6 files, free; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "identity studio opens with a neutral example profile (no real name or email in the seed)",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "my want card names the site Versus is on, and /api/will ranks my wants by the tower target",
+   "from": "PR #1406"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
+   "from": "PR #1410, owner card notes 1-5"
   }
  ],
  "open": [
   {
    "state": "open",
    "date": "",
-   "ask": "Void as a tool inside other AIs",
+   "ask": "Absorb and connect every repo",
+   "from": "owner, 2026-10-15"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Verse as a tool inside other AIs",
    "from": "void.plan.md Next #11"
   },
   {
@@ -168,19 +258,19 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Everything that passes through Void is input",
+   "ask": "Everything that passes through Verse is input",
    "from": "void.plan.md Next #14"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Void fixes any automation, as it is",
+   "ask": "Verse fixes any automation, as it is",
    "from": "void.plan.md Next #13"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Paid Void",
+   "ask": "Paid Verse",
    "from": "void.plan.md Next #12"
   },
   {
@@ -193,7 +283,7 @@
    "state": "open",
    "date": "",
    "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11: \"go if it make it a beter product, always go on improvements\""
+   "from": "owner, 2026-10-11"
   },
   {
    "state": "open",
@@ -224,6 +314,42 @@
    "date": "",
    "ask": "Pit crew: the crew chief (waits for the owner)",
    "from": "owner, 2026-10-11, pit crew plan"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "The growth inbox, deeper",
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Two signposts left out until they can be true",
+   "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…",
+   "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
+   "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the…",
+   "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
+   "from": "claude 2026-10-18"
   }
  ],
  "games": [
@@ -242,14 +368,19 @@
  ],
  "minis": [
   "aggravation",
+  "arcade",
   "battleship",
+  "book",
+  "bubbles",
   "calculator",
+  "camp",
   "checkers",
   "chess",
   "clock",
   "connect4",
   "countdown",
   "counter",
+  "dice",
   "eightball",
   "fireworks",
   "forge",
@@ -264,43 +395,94 @@
   "moon",
   "notepad",
   "othello",
+  "padlock",
+  "page",
   "paper",
   "pentamote",
   "piggybank",
   "poker",
+  "pot",
   "rack",
   "ringer",
   "savings",
   "stopwatch",
+  "swarm",
+  "swatch",
   "tabletop",
   "tictactoe",
   "timer",
   "tip",
+  "tower",
   "void",
-  "weather"
+  "weather",
+  "wheel"
  ],
  "canon": {
-  "version": 3,
-  "motto": null,
-  "voidquest": null,
+  "version": 7,
+  "motto": "You name it, Verse learns it and does it better.",
+  "voidquest": "Verse's own better, updated version of the board game Solar Quest, with Verse as the rival player. \"play voidquest\" and \"play solar quest\" both open it. Every other trademarked board game gets the same treatment (a Verse name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.",
   "terms": [
    {
+    "term": "Verse",
+    "means": "the product's name; it was Verse, then Verse. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
+   },
+   {
+    "term": "skill family",
+    "means": "one of the nine groups Verse sorts its skills into, each rated from evidence (experiment, tested, checked, proven) in skills/families.json (tools/families.mjs). A family name is a label for a part of Verse, not a topic to look up: \"what is Words and the world\" means the family, not trivia about the phrase."
+   },
+   {
+    "term": "Making things",
+    "means": "Verse's skill family for figures, 3D models, prints, drawings and parts (id `make`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Games",
+    "means": "Verse's skill family for board games, card games and play (id `games`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Sky and earth",
+    "means": "Verse's skill family for weather, the sky tonight, places and time zones (id `sky`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Time",
+    "means": "Verse's skill family for timers, clocks, calendars and reminders (id `time`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Numbers and money",
+    "means": "Verse's skill family for sums, unit conversions, loans, savings, prices and home projects (id `numbers`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Body and mind",
+    "means": "Verse's skill family for sleep, cycles, food, heart and calm (id `body`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Words and the world",
+    "means": "Verse's skill family for definitions, translation, news, books, shows and sport (id `words`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "The stage",
+    "means": "Verse's skill family for notes, lists, links and how the stage looks and is arranged (id `stage`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Verse itself",
+    "means": "Verse's skill family for how Verse grows, what it wants, what it can do and sell, and acting on your behalf (id `self`; its skills and ratings are in skills/families.json)."
+   },
+   {
     "term": "the forge",
-    "means": "Void's maker: you type (or sketch) an object, Void builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat, t"
+    "means": "Verse's maker: you type (or sketch) an object, Verse builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house…"
    },
    {
     "term": "frontier #14",
-    "means": "the item on Void's frontier that the forge answers (\"type or sketch a thing, hold it, print it\", domains/void.frontier.md). Done when ten things never built before come out recognisable, inspectable and printable; after that, each run builds the most-asked \"make me a ...\" that nothing answers yet."
+    "means": "the item on Verse's frontier that the forge answers (\"type or sketch a thing, hold it, print it\", domains/void.frontier.md). Done when ten things never built before come out recognisable, inspectable and printable; after that, each run builds the most-asked \"make me a ...\" that nothing answers yet."
    }
   ],
   "different": [
    {
     "name": "Skills, not one-off answers",
-    "line": "Other canvas tools call a model on every click; when Void misses an ask, its builders compile a permanent, tested skill (`skills/*.js`) or 3D instrument that runs instantly on the stage."
+    "line": "Other canvas tools call a model on every click; when Verse misses an ask, its builders compile a permanent, tested skill (`skills/*.js`) or 3D instrument that runs instantly on the stage."
    },
    {
     "name": "Growth in the open",
-    "line": "Most self-improving agent loops run hidden in private CI; Void's misses, daily game self-play ratings, and commit tree grow live on the public stage."
+    "line": "Most self-improving agent loops run hidden in private CI; Verse's misses, daily game self-play ratings, and commit tree grow live on the public stage."
    },
    {
     "name": "On your device first",
@@ -308,103 +490,370 @@
    },
    {
     "name": "Attention, not pretend feelings",
-    "line": "Void doesn't fake affection, use emojis, or guess hidden details—it marks what isn't visible as uncertain and keeps what you leave on the stage alive while you're away."
+    "line": "Verse doesn't fake affection, use emojis, or guess hidden details—it marks what isn't visible as uncertain and keeps what you leave on the stage alive while you're away."
+   },
+   {
+    "name": "Keeps every secret",
+    "line": "Adam, 2026-10-15 Verse never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
+   },
+   {
+    "name": "A force for good",
+    "line": "Adam, 2026-10-15 A harmful, mean or secret-seeking ask never gets just a no: Verse declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
    }
   ]
  },
  "tracks": [
   {
    "name": "Living action figures",
-   "last": "2026-10-07"
+   "last": "2026-10-21"
   },
   {
    "name": "One-shot printing of working machines",
-   "last": "2026-10-07"
+   "last": "2026-10-21"
   },
   {
    "name": "Life extension and disease cures",
-   "last": "2026-10-07"
+   "last": "2026-10-21"
   },
   {
    "name": "Planet restoration",
-   "last": "2026-10-07"
+   "last": "2026-10-28"
   },
   {
-   "name": "Void stage handoff",
+   "name": "Verse stage handoff",
    "last": "2026-10-07"
   }
  ],
  "building": {
-  "at": "2026-10-13T05:44:47Z",
-  "date": "2026-10-10",
+  "at": "2026-10-29T04:47:44Z",
+  "date": "2026-10-15",
   "by": "claude",
-  "item": "Bring someone into your Void",
-  "what": "the first piece (one Durable Object that relays stage changes between two tabs, the second visitor's cursor shown as a presence), invite links made by a signed-in member. Shipped 2026-10-10: share-worker/ (the ShareRoom "
+  "item": "Verse values anything from a photo",
+  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
   {
-   "at": "2026-10-13T05:46:46Z",
-   "subject": "Regenerate skills/families.json for the shared-text browser check"
+   "at": "2026-10-29T05:16:47Z",
+   "subject": "Memory orbs: the agents pool the fluid themselves, orbs linger long enough to tap"
   },
   {
-   "at": "2026-10-13T05:44:47Z",
-   "subject": "Shared Void: a sticky's words edit live between tabs (frontier #11)"
+   "at": "2026-10-29T05:15:38Z",
+   "subject": "Bring 6 stale browser checks up to date and end a routing collision"
   },
   {
-   "at": "2026-10-13T05:22:40Z",
-   "subject": "The owner's words, spelled right: the message first, not his typos"
+   "at": "2026-10-29T05:14:30Z",
+   "subject": "Verse fixes its kanban-board skill: learn to handle \"free kanban board\""
   },
   {
-   "at": "2026-10-13T05:17:26Z",
-   "subject": "The site credits the owner without quoting his messages"
+   "at": "2026-10-29T05:14:21Z",
+   "subject": "Open the PR a helper pushed without one"
   },
   {
-   "at": "2026-10-13T04:49:35Z",
-   "subject": "Regenerate skills/families.json for the intent skill's new bench asks"
+   "at": "2026-10-29T05:13:36Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-13T04:45:18Z",
-   "subject": "Plans without a day: \"plan my move\" lays out the steps (frontier #10)"
+   "at": "2026-10-29T05:13:05Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-13T04:18:55Z",
-   "subject": "Skill families with ratings earned from evidence (asked by Void)"
+   "at": "2026-10-29T05:12:43Z",
+   "subject": "Tower: sycophanthex.com is fought by /fanfic/"
   },
   {
-   "at": "2026-10-13T03:53:20Z",
-   "subject": "Void's will made real: it hears what came of its asks (14 of 56 built, on evidence)"
+   "at": "2026-10-29T05:10:38Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-13T03:51:30Z",
-   "subject": "Void's closer read: no \"capture group undefined\" claims on regexes it cannot count (#590)"
+   "at": "2026-10-29T05:10:00Z",
+   "subject": "List the proverb skill so it loads"
   },
   {
-   "at": "2026-10-13T03:18:39Z",
-   "subject": "Asked by Void: thicker 3D strokes, and a spatial sketch printed as a watertight STL"
+   "at": "2026-10-29T05:09:35Z",
+   "subject": "Own-card lists: end a cut row at its last whole clause"
   },
   {
-   "at": "2026-10-13T03:12:28Z",
-   "subject": "Make it my backdrop: your drawing behind your Void, kept with your passkey (VR Void step 3)"
+   "at": "2026-10-29T05:05:44Z",
+   "subject": "Memory orbs: generated cards after bringing main in (node tools/refresh.mjs)"
   },
   {
-   "at": "2026-10-13T02:44:09Z",
-   "subject": "3D boards draw even when a shader compile stalls"
+   "at": "2026-10-29T05:05:41Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-13T02:37:40Z",
-   "subject": "Draw: Enter VR, paint in the air with a controller (VR Void step 2)"
+   "at": "2026-10-29T05:04:59Z",
+   "subject": "Memory orbs (F-321): agent-pushed fluid whose peaks become sealable orbs"
   },
   {
-   "at": "2026-10-13T02:25:19Z",
-   "subject": "VR Void: the owner's goal recorded, and the path to it on the frontier"
+   "at": "2026-10-29T05:04:25Z",
+   "subject": "Own-card notes: copy Fixed and Still open from the record, keep the record date"
   },
   {
-   "at": "2026-10-13T02:20:01Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 76a8cf32bbd73a0c352947c6e91912fd7ddfded7 (tools/flakes.json)"
+   "at": "2026-10-29T05:02:56Z",
+   "subject": "Fan fiction: list /fanfic/ in the sitemap generator and update the hand-off note"
   },
   {
-   "at": "2026-10-13T02:14:14Z",
-   "subject": "From a video the owner shared by Duncan Rogoff (motion design with Claude): a house-style file that learns from plain-words notes, stills ch"
+   "at": "2026-10-29T05:00:38Z",
+   "subject": "Incident: the browser suite failed on 12e44a29 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T04:57:30Z",
+   "subject": "Shard 3: an unknown name keeps its honest refusal, the answer route's name lookups go out with the search, and the self checks read the…"
+  },
+  {
+   "at": "2026-10-29T04:57:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T04:56:55Z",
+   "subject": "Growth inbox: the card-fix rows name PR #1410"
+  },
+  {
+   "at": "2026-10-29T04:56:22Z",
+   "subject": "Answer cards: cite only what a source holds, read the whole note, own my card"
   }
- ]
+ ],
+ "builders": {
+  "finished": [
+   {
+    "name": "Claude (F321 thread, 2026-10-29)",
+    "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
+   },
+   {
+    "name": "Main green, tower checks (box, 2026-10-28)",
+    "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
+   },
+   {
+    "name": "Lists run 7 (grok, 2026-10-28)",
+    "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
+   },
+   {
+    "name": "Lists run 8 (grok, 2026-10-28)",
+    "line": "green foundation first, so red checks only. Fixed \"connected\" (/books/ links /notes/ and /translate/) and \"incident autopsy\" (the card's art seal is not an autopsy picture). Open counts: V01D asks 1 (milestone, blocked on Claude's growth…"
+   },
+   {
+    "name": "Who visits (claude, 2026-10-26)",
+    "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
+   },
+   {
+    "name": "IndexNow on every deploy (claude)",
+    "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
+   }
+  ],
+  "ladders": [
+   {
+    "name": "A page for every lane site from one table (Claude, 2026-10-26)",
+    "line": "add a row to lib/tool-sites.js (path, card ask, tools or features, asks), add the lane site to LANE_PAGES in lib/tower.js, run node tools/tool-site-pages.mjs && node tools/seo-pages.mjs && node tools/preload.mjs && node tools/sitemap.mjs…"
+   },
+   {
+    "name": "Parallel builders, one ship (Claude, 2026-10-15)",
+    "line": "builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (node tools/skills-index.mjs --write, node…"
+   },
+   {
+    "name": "Where edits collide",
+    "line": "node tools/collide.mjs --heat ranks files by edit pressure (open PRs x3 + this week's commits); --files a,b before you start."
+   },
+   {
+    "name": "Change word maths safely",
+    "line": "wordMath is eight parts in void.html (wmPercentsAndUnits ... wmExpression); node --test tools/word-math.test.mjs checks 755 golden answers; after a deliberate change, node tools/word-math.mjs --write."
+   },
+   {
+    "name": "Merge skills safely",
+    "line": "node tools/route-snapshot.mjs --out /tmp/b.json before, then --compare /tmp/b.json after (0 new misses); a family is lib/skill-family.js plus a parts: line."
+   },
+   {
+    "name": "Test the live site like a person",
+    "line": "node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>."
+   }
+  ],
+  "lessons": [
+   {
+    "name": "A new page says what it takes and gives",
+    "line": "add <meta name=\"verse-handoff\" content=\"in: ...; out: ...\"> when it ships (types in tools/handoff-scan.mjs); every lap builds the top connections in docs/HANDOFF-GAPS.md and plays them in tools/handoff-e2e.mjs (standing item in…"
+   },
+   {
+    "name": "The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)",
+    "line": "a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or \"coming soon\"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never…"
+   },
+   {
+    "name": "Rumble's page id is not its embed id",
+    "line": "rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing."
+   },
+   {
+    "name": "A skill file is imported in Node too",
+    "line": "tools/skills-check.mjs imports every skill, so a top-level addEventListener or document call must be guarded with typeof."
+   },
+   {
+    "name": "\"your videos\" is Verse's films",
+    "line": "a video skill ranked early took \"show me your videos\" from the films skill; skills-check caught it."
+   },
+   {
+    "name": "Set the PR head in code and verify it",
+    "line": "#713 merged another agent's unfinished branch because a sed edit of \"head\" silently missed; build the request as data and check the reply names your branch."
+   }
+  ]
+ },
+ "wishlist": [
+  {
+   "rank": 1,
+   "item": "Stay inside Workers AI's free 10k neurons/day",
+   "free": "done 2026-10-25 (commit 630e666fb): answers run on gemma-4-26b-a4b-it, gpt-oss-120b only as the second try. Still to do: cache answers at the edge; on-page skills first",
+   "cost": "$0",
+   "value": "high: answers stop failing after the cap (125% on Oct 14)",
+   "why": "free and fixes a live outage"
+  },
+  {
+   "rank": 2,
+   "item": "Cut KV writes under 1k/day",
+   "free": "done on Verse's side (lists run 6, 2026-10-28): Verse makes no KV writes (counters and caches in caches.default since 2026-09-27) and tools/kv-writes.test.mjs keeps it so. Moving other workers to…",
+   "cost": "$0",
+   "value": "high: writes failing at 109%",
+   "why": "free, live problem"
+  },
+  {
+   "rank": 3,
+   "item": "Crypto data that never runs dry",
+   "free": "keyless CoinGecko behind a 2-min edge cache (live); a free Demo key (10k calls/mo, attribution)",
+   "cost": "Basic $35/mo or $29/mo yearly, commercial license (CoinGecko)",
+   "value": "medium",
+   "why": "free path covers today's use"
+  },
+  {
+   "rank": 4,
+   "item": "Social feeds",
+   "free": "official embeds and open public APIs (Bluesky, Mastodon: live); free OAuth for your own timeline",
+   "cost": "X API for timelines and search (X pricing)",
+   "value": "medium",
+   "why": "free networks first; X paid tier only for posting/search"
+  },
+  {
+   "rank": 5,
+   "item": "Video search and play",
+   "free": "official embeds (YouTube IFrame player, Rumble, Vimeo, Internet Archive), YouTube RSS per channel; YouTube Data API's free 10k units/day (quota)",
+   "cost": "quota raise is free via Google's audit form, no fee",
+   "value": "high",
+   "why": "free; only the audit takes time"
+  },
+  {
+   "rank": 6,
+   "item": "Workers Paid",
+   "free": "items 1 and 2 first",
+   "cost": "$5/mo min; 10M requests, 1M KV writes/mo; Workers AI $0.011 per 1k neurons above 10k/day (Workers, Workers AI)",
+   "value": "high: lifts every daily cap",
+   "why": "cheapest paid item with the widest effect; first to buy once 1–2 can't keep up"
+  },
+  {
+   "rank": 7,
+   "item": "Rides and food ordering inside Verse",
+   "free": "deep links to Waymo, Uber, Lyft, Uber Eats, DoorDash through adapters (live)",
+   "cost": "Waymo: no public API at any price; Uber Ride Request: partner approval",
+   "value": "high if it existed",
+   "why": "blocked by the providers, not by money"
+  },
+  {
+   "rank": 8,
+   "item": "Delivery backend (for Verse's own goods: prints, miniatures)",
+   "free": "local pickup, mail via the print shop",
+   "cost": "DoorDash Drive $9.75/delivery within 5 mi +$0.75/mi (DoorDash)",
+   "value": "medium, once there are goods to deliver",
+   "why": "pay-per-use, no monthly fee, but nothing to deliver yet"
+  },
+  {
+   "rank": 9,
+   "item": "Ethereum and Solana wallet lookup",
+   "free": "free Etherscan key (rate-limited, docs); public Solana RPC",
+   "cost": "paid tiers only at scale",
+   "value": "low–medium",
+   "why": "free path is enough"
+  },
+  {
+   "rank": 10,
+   "item": "Dating backend (matching, chat)",
+   "free": "on-page profile builder and coach (live); passkeys for accounts (built)",
+   "cost": "identity/age verification is per-check (e.g. Stripe Identity, Persona); moderation; legal review",
+   "value": "high but risky",
+   "why": "safety design and review must come first; most expensive in time and trust"
+  },
+  {
+   "rank": 11,
+   "item": "Shopping search",
+   "free": "deep links; Verse's own Gumroad store",
+   "cost": "Amazon PA-API needs an Associates account with sales (docs)",
+   "value": "low now",
+   "why": "wait until Verse sells more"
+  },
+  {
+   "rank": 12,
+   "item": "Real photos of games for the sports, news and finance reports",
+   "free": "official highlight embeds (league and club channels through the platform's own embed), openly licensed photos (Wikimedia Commons, Openverse; CC0, CC-BY, CC-BY-SA, author and licence shown under…",
+   "cost": "a licensed agency photo feed (AP, Getty or a regional wire): quote-based, not listed here until a provider's price is read from its own page",
+   "value": "high: the one thing ESPN and every sports page has that Verse can't show for most games",
+   "why": "the tower's sports floors lose \"pictures of the games\" to money only; free routes cover the big matches"
+  }
+ ],
+ "clips": {
+  "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
+  "tricks": [
+   "pattern-interrupt",
+   "hook-card",
+   "kinetic-captions",
+   "zoom-punch",
+   "ken-burns",
+   "glitch-transition",
+   "beat-flash",
+   "progress-bar",
+   "countdown",
+   "before-after",
+   "pov",
+   "vignette",
+   "explosion",
+   "ufo-flyover",
+   "ufo-abduction",
+   "camera-shake",
+   "seamless-loop"
+  ],
+  "learned": [
+   {
+    "trick": "explosion",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   },
+   {
+    "trick": "ufo-flyover",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   },
+   {
+    "trick": "ufo-abduction",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   },
+   {
+    "trick": "camera-shake",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   }
+  ],
+  "visits": {
+   "clock-mini": 1,
+   "x9": 1
+  },
+  "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
+ },
+ "people": {
+  "line": "People this week: 22 (152 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-28T11:22Z",
+  "source": "verse"
+ },
+ "tower": {
+  "target": "sycophanthex.com",
+  "since": "2026-10-29",
+  "next": [
+   "nameunit.com",
+   "wheelroot.com",
+   "onlineconverter.com"
+  ],
+  "beaten": 0,
+  "total": 1266
+ }
 }

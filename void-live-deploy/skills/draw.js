@@ -1,5 +1,5 @@
 /**
- * draw skill - a drawing card where you describe a brush in words and Void makes it.
+ * draw skill - a drawing card where you describe a brush in words and Verse makes it.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "let me draw", "open a canvas", "sketch pad", "make a brush like dry charcoal", "new brush: soft watercolor".
  * Not a shelf of fixed brushes with sliders: say what you want ("dry charcoal that
@@ -71,6 +71,7 @@ export function drawOf(text) {
   const brush = t.match(/^(?:make|create|give me|new)\s+(?:me\s+)?(?:a\s+)?(?:brush|pen)\s*(?:like|that is|that's|:)?\s*(.+)$/) || t.match(/^(?:make|create|new)\s+(?:me\s+)?(?:a\s+)?(.+?)\s+brush$/);
   if (brush) { const b = brushFrom(brush[1]); return b ? { brush: b } : null; }
   if (/^(?:let me |i want to |can i |let'?s )?(?:draw|sketch|doodle|paint)(?: something| with me| a picture)?$/.test(t)) return { brush: null };
+  if (/^(?:make|create|draw|sketch|doodle|paint)(?: a | an )?(?:(?:2d|3d|simple|quick) )?(?:sketch|drawing|picture|doodle) of (.+)$/.test(t)) return { brush: null };
   if (/^(?:open |show me |give me |start )?(?:a |the |my )?(?:canvas|drawing pad|drawing board|sketch ?pad|sketchbook|doodle pad|paint app|drawing app)$/.test(t)) return { brush: null };
   return null;
 }
@@ -118,7 +119,7 @@ export function layerCommand(text, names) {
   let m;
   if ((m = new RegExp('^(?:new|add)(?: a)? (?:3d|3-d|three[ -]d|vr|space) layer(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^(?:new|add)(?: a)? layer(?: (?:for|called|named))?(?: ' + L + ')? in (?:3d|3-d|space|vr)$').exec(t))) return { op: 'add', name: bare(m[1] || '') || '3d ' + (names.length + 1), space: true };
   if ((m = new RegExp('^(?:new|add)(?: a)? layer(?:s)?(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^add ' + L + ' (?:on|as) (?:a )?new layer$').exec(t))) return { op: 'add', name: bare(m[1] || '') || 'layer ' + (names.length + 1) };
-  if (/^(?:make|set|use|put)\s+(?:it|this|my drawing|the drawing|this drawing)\s+(?:as\s+)?(?:my|the)\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$|^(?:make\s+(?:it\s+)?)?my\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$/.test(t)) return { op: 'backdrop' };
+  if (/^(?:make|set|use|put)\s+(?:it|this|my drawing|the drawing|this drawing)\s+(?:as\s+)?(?:my|the)\s+(?:(?:void|verse)'?s?\s+)?(?:backdrop|background|wallpaper)$|^(?:make\s+(?:it\s+)?)?my\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$/.test(t)) return { op: 'backdrop' };
   if ((m = new RegExp('^(?:make|set) ' + L + ' (thicker|fatter|bolder|thinner|slimmer|finer)$').exec(t))) return one('thick', m[1], { by: /thicker|fatter|bolder/.test(m[2]) ? 1.5 : 1 / 1.5 });
   if (/^(?:3d\s+)?print\s+(?:it|this)$|^(?:save|export|download)\s+(?:it|this)\s+as\s+(?:an?\s+)?stl$/.test(t)) return { op: 'print', i: -1 };
   if ((m = new RegExp('^(?:3d\\s+)?print ' + L + '$').exec(t)) || (m = new RegExp('^(?:save|export|download) ' + L + ' as (?:an? )?stl$').exec(t))) return one('print', m[1]);
@@ -151,7 +152,7 @@ export function layerCommand(text, names) {
 }
 /** a brush's tube radius in space: half its size in pixels, at the scale the camera sees the middle of the scene (pixels per unit). Pure. */
 export function tubeRadius(sizePx, pxPerUnit) { return Math.round(Math.max(0.5, sizePx / 2) / Math.max(1, pxPerUnit) * 10000) / 10000; }
-/** close a tube's two open ends (Void asked: a spatial sketch as an STL): a fan from each end ring's centre, wound to face out
+/** close a tube's two open ends (Verse asked: a spatial sketch as an STL): a fan from each end ring's centre, wound to face out
  *  (away from the next ring in). P: flat positions, I: indices, laid out as rings of radial+1 vertices, tubular+1 rings. Pure. */
 export function capTube(P, I, radial, tubular) {
   const pos = Array.from(P), idx = Array.from(I), per = radial + 1;
@@ -230,7 +231,7 @@ function run(text, api) {
   if (q.brush) { brushes = brushes.filter((x) => x.name !== q.brush.name).concat([q.brush]); keep(brushes); }
   let cur = q.brush || brushes[brushes.length - 1] || brushFrom('pencil'), color = (q.brush && q.brush.color) || '#111111';
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Draw</h2><div class="sub">Describe a brush in your own words and Void makes it: "dry charcoal that catches the paper grain", "thick wet ink", "faint pencil".</div>' // void-review: ok (fixed text; the brush row below is built with esc)
+    p.innerHTML = '<h2>Draw</h2><div class="sub">Describe a brush in your own words and Verse makes it: "dry charcoal that catches the paper grain", "thick wet ink", "faint pencil".</div>' // void-review: ok (fixed text; the brush row below is built with esc)
       + '<div class="vdraw"><canvas width="900" height="600" style="width:100%;touch-action:none;background:#fbfaf6;border-radius:10px;cursor:crosshair"></canvas>'
       + '<form class="vd-make" style="display:flex;gap:6px;margin:8px 0"><input class="vd-words" placeholder="describe a brush, or tell the layers what to do…" aria-label="describe a brush, or tell the layers what to do" style="flex:1;font:inherit;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit"><button type="submit">Make it</button></form>'
       + '<div class="vd-said sub" aria-live="polite"></div><div class="vd-layers" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;align-items:center"></div><div class="vd-steady sub"></div><div class="vd-brushes" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div>'
@@ -269,7 +270,7 @@ function run(text, api) {
       const src = backdropSrc(); if (!src) return 'That picture is too big to keep as a backdrop.';
       if (!layers.some((x) => !x.hidden && x.c.getContext('2d').getImageData(0, 0, cv.width, cv.height).data.some((v, i) => i % 4 === 3 && v > 0))) return 'Draw something first: the canvas is empty.';
       window.dispatchEvent(new CustomEvent('void-backdrop', { detail: { src } }));
-      return 'Your drawing is now your Void\'s backdrop, kept with your Void (signed in, it follows you to your other devices). Say "remove my backdrop" to take it off.';
+      return 'Your drawing is now your Verse\'s backdrop, kept with your Verse (signed in, it follows you to your other devices). Say "remove my backdrop" to take it off.';
     }
     if (c.op === 'missing') return 'There is no layer called "' + c.name + '". The layers are: ' + layers.map((x) => x.name).join(', ') + '.';
     if (c.op === 'cannot') return 'Cannot do that: ' + c.why + '.';
@@ -298,7 +299,7 @@ function run(text, api) {
       layers = layers.filter((x) => x !== L); for (const x of layers) if (x.clipTo === L) x.clipTo = T; if (A === L) A = T; return named(L) + ' is merged into ' + named(T) + '.'; }
     return '';
   };
-  // a 3D layer (frontier 25): its strokes are tubes in a scene of their own, rendered by Void's one WebGL renderer
+  // a 3D layer (frontier 25): its strokes are tubes in a scene of their own, rendered by Verse's one WebGL renderer
   // (skills/scene3d.js, loaded only when a 3D layer is made) into the layer's own canvas, so it stacks, hides, fades,
   // clips and blends like any other layer. A drag paints on the plane through the middle of the scene, facing you; Turn spins it.
   let E3 = null, turning = false, spin = null;
@@ -335,7 +336,7 @@ function run(text, api) {
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color), roughness: 0.45 + cur.grain * 0.45, metalness: 0, envMapIntensity: 0.3, transparent: cur.flow < 0.45, opacity: Math.min(1, Math.max(0.15, cur.flow * 2.2)) }); // dabs overlap and build up on paper; a tube is one pass, so flow counts double
     const mesh = new THREE.Mesh(geo, mat); mesh.userData = { pts: pts.slice(), size }; return mesh;
   };
-  // Void asked (2026-10-12): "a 'thickness' parameter to the spatial paint skill" and "convert a spatial sketch into an STL file"
+  // Verse asked (2026-10-12): "a 'thickness' parameter to the spatial paint skill" and "convert a spatial sketch into an STL file"
   const thicken = (L, by) => {
     let n = 0;
     for (const o of L.space.group.children) { const u = o.userData; if (!u || !u.pts) continue;
@@ -353,7 +354,7 @@ function run(text, api) {
     const a = document.createElement('a'); a.download = 'void-' + L.name.replace(/[^a-z0-9]+/gi, '-') + '.stl'; a.href = URL.createObjectURL(new Blob([buf], { type: 'model/stl' })); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     return named(L) + ' is saved as an STL, ' + model.size.map((v) => Math.round(v)).join(' × ') + ' mm: ' + (check.closed ? 'watertight' : 'not watertight') + (check.supports ? ', it needs supports' : '') + ', about ' + check.grams + ' g of PLA.';
   };
-  // Enter VR (frontier 25, the owner: "we are working towards a fully working VR Void"): the 3D layer's scene goes into a headset
+  // Enter VR (frontier 25, the owner: "we are working towards a fully working VR Verse"): the 3D layer's scene goes into a headset
   // session of its own renderer (so the page's miniatures keep theirs), standing in front of you at chest height, about a metre
   // and a half across; holding a controller's trigger paints a tube where the controller is, in the brush and colour on the
   // card; leaving VR brings the layer back to the card as it was turned. The button shows only where the browser offers VR.
@@ -408,8 +409,8 @@ function run(text, api) {
     S.live = tubeOf(S, S.pts); S.group.add(S.live); renderSpace(L); compose();
   };
   // "make it my backdrop" (frontier 25, step 3): the picture as it shows now, every visible layer, 3D ones as they are turned,
-  // goes behind your Void (void.html keeps it in the look, which your passkey syncs). Transparent stays transparent: the strokes
-  // float on your Void's own colour. Too big to sync, it is drawn smaller until it fits.
+  // goes behind your Verse (void.html keeps it in the look, which your passkey syncs). Transparent stays transparent: the strokes
+  // float on your Verse's own colour. Too big to sync, it is drawn smaller until it fits.
   const backdropSrc = () => {
     compose();
     for (let w = cv.width; w >= 240; w = Math.round(w * 0.75)) {
@@ -491,7 +492,7 @@ function run(text, api) {
 
 export default {
   name: 'draw',
-  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush'],
+  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush', 'make a 2d sketch of a tree'],
   nearMisses: ['draw a cat', 'what is charcoal', 'how do i draw a horse', 'paint my wall', 'make a cube'],
   drawOf, brushFrom,
   match(lower, text) { return !!drawOf(text || lower); },

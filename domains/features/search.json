@@ -1,0 +1,206 @@
+{
+ "floor": "search",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "google.com": {
+   "sources": [
+    "https://www.google.com/",
+    "https://support.google.com/websearch/",
+    "https://support.google.com/websearch/answer/16011537",
+    "https://support.google.com/websearch/answer/2466433",
+    "https://www.google.com/search/howsearchworks/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Web results",
+     "detail": "Ranked links from an index of hundreds of billions of pages",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Verse answers asks; it has no web index or result list"
+    },
+    {
+     "group": "core",
+     "name": "Direct answers",
+     "detail": "Featured snippets and quick answers (\"who wrote hamlet\")",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "functions/api/answer.js: any ask no skill covers is answered by the free Workers AI model with a Wikipedia source cited when one matches, plain Wikipedia extract without a model"
+    },
+    {
+     "group": "core",
+     "name": "AI Overviews",
+     "detail": "Generated summary with source links on top of results",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "functions/api/answer.js: any ask no skill covers is answered by the free Workers AI model with a Wikipedia source cited when one matches, plain Wikipedia extract without a model"
+    },
+    {
+     "group": "core",
+     "name": "AI Mode",
+     "detail": "Conversational search with follow-ups and query fan-out",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the answer engine answers one ask; no follow-up thread"
+    },
+    {
+     "group": "core",
+     "name": "Knowledge panels",
+     "detail": "Entity cards: people, places, companies, with facts and images",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/country.js (Wikidata), define.js (Wiktionary), sport.js team cards"
+    },
+    {
+     "group": "core",
+     "name": "Autocomplete",
+     "detail": "Query suggestions as you type",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/recent.js shows recent asks on the empty box"
+    },
+    {
+     "group": "core",
+     "name": "Spelling correction",
+     "detail": "\"Did you mean\"",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "define.js is typo-tolerant"
+    },
+    {
+     "group": "core",
+     "name": "Verticals",
+     "detail": "Images, News, Videos, Shopping, Maps, Books, Flights, Finance tabs",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "video.js, news.js, place.js, crypto.js each answer their kind"
+    },
+    {
+     "group": "core",
+     "name": "Tools: calculator, converter, timer, translate, weather, time, dictionary",
+     "detail": "Built-in answer tools",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Verse pages /calculator/, /convert/, /stopwatch/, /translate/, /weather/, /time/, define.js"
+    },
+    {
+     "group": "power",
+     "name": "Search operators",
+     "detail": "\"quotes\", -exclude, site:, filetype:, before:/after:, OR",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Search tools",
+     "detail": "Time range, verbatim, region filters",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Advanced search",
+     "detail": "Form for all operators",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Image search and Lens",
+     "detail": "Search by image, reverse image, text in images",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Circle to Search / multisearch",
+     "detail": "Search what is on screen, image plus text",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "SafeSearch",
+     "detail": "Filter explicit results",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Search history and personalisation",
+     "detail": "My Activity, personal results",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "About this result",
+     "detail": "Source info and why shown",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Sports, stocks, flights cards",
+     "detail": "Live data cards in results",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "sport.js team card, markets.js crypto board"
+    },
+    {
+     "group": "sharing",
+     "name": "Share results and AI Mode threads",
+     "detail": "Share links",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Google app, voice search, Discover feed",
+     "detail": "App, voice input, feed",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Voice search, screen-reader results, high contrast",
+     "detail": "Accessible results",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Google AI Pro/Ultra in AI Mode",
+     "detail": "Higher model limits, Deep Search",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "a results list of web links beside the answer (keyless: Wikipedia search, Marginalia, Mojeek or DuckDuckGo instant answers)",
+  "follow-up questions on the same answer",
+  "sources shown with date",
+  "operators like site: and quotes",
+  "image search"
+ ],
+ "verse_extra": [
+  "an ask becomes a working tool card, not a link (timer, converter, chess)",
+  "no tracking, no ads in results"
+ ],
+ "first_page": "Search page /search/ for people who want an answer and the sources behind it. First: \"who wrote hamlet\" shows Verse's answer with its citations and, below, ten web results from keyless open indexes (Wikipedia search plus one open web index), a link to the matching Verse tool when one exists, follow-up asks on the same page, and site:/\"quotes\" passed through. Will not build: its own crawler, image search, ads or personal history."
+}

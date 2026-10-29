@@ -1,0 +1,478 @@
+{
+ "site": "codeshack.io",
+ "url": "https://codeshack.io/pdf-merge-tool/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "cdnjs.cloudflare.com/FileSaver.min.js",
+   "t": "js",
+   "b": 2749,
+   "ext": true
+  },
+  {
+   "f": "cdnjs.cloudflare.com/pdf-lib.min.js",
+   "t": "js",
+   "b": 525099,
+   "ext": true
+  },
+  {
+   "f": "s.js",
+   "t": "js",
+   "b": 4527
+  },
+  {
+   "f": "fontface.min.css",
+   "t": "css",
+   "b": 3458
+  },
+  {
+   "f": "style.min.css",
+   "t": "css",
+   "b": 237199
+  },
+  {
+   "f": "script.min.js",
+   "t": "js",
+   "b": 21685
+  },
+  {
+   "f": "scripts.mediavine.com/wrapper.min.js",
+   "t": "js",
+   "b": 325336,
+   "ext": true
+  },
+  {
+   "f": "scripts.mediavine.com/codeshack.js",
+   "t": "js",
+   "b": 83210,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/gpt.js",
+   "t": "js",
+   "b": 135629,
+   "ext": true
+  }
+ ],
+ "assetCount": 9,
+ "bytes": 1338892,
+ "html": {
+  "mobile": {
+   "title": "PDF Merge Tool - Combine PDF Files Onlin",
+   "lang": "en",
+   "manifest": "https://codeshack.io/manifest.json",
+   "feeds": 1,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 11,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "accepts": [
+    "application/pdf"
+   ],
+   "inputTypes": {
+    "file": 1,
+    "text": 2
+   },
+   "keyshortcuts": [
+    "Control+K"
+   ],
+   "ariaLabels": [
+    "Add to Favorites",
+    "Back to menu",
+    "Breadcrumb",
+    "Close share dialog",
+    "CodeShack",
+    "Facebook",
+    "Footer",
+    "GitHub",
+    "Main",
+    "Move Down",
+    "Move Up",
+    "Open menu",
+    "PDF Merge Tool",
+    "Page URL to share",
+    "Remove",
+    "Search (Ctrl K)",
+    "Toggle Dark Mode",
+    "X (Twitter)",
+    "YouTube"
+   ],
+   "roles": {
+    "dialog": 1
+   },
+   "downloadAttrs": 1
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "About",
+   "w": "md"
+  },
+  {
+   "l": "Add to Favorites",
+   "w": "md"
+  },
+  {
+   "l": "Browse 419 tools",
+   "w": "md"
+  },
+  {
+   "l": "Bulk Image Editor",
+   "w": "md"
+  },
+  {
+   "l": "Chrome extension",
+   "w": "md"
+  },
+  {
+   "l": "CodeShack Pro",
+   "w": "md"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Cookie settings",
+   "w": "md"
+  },
+  {
+   "l": "Facebook",
+   "w": "md"
+  },
+  {
+   "l": "Free downloads",
+   "w": "md"
+  },
+  {
+   "l": "GitHub",
+   "w": "md"
+  },
+  {
+   "l": "Go Pro",
+   "w": "d"
+  },
+  {
+   "l": "HTML Viewer",
+   "w": "md"
+  },
+  {
+   "l": "Horizontal to Vertical Image Converter",
+   "w": "md"
+  },
+  {
+   "l": "JSON Editor",
+   "w": "md"
+  },
+  {
+   "l": "Learn",
+   "w": "d"
+  },
+  {
+   "l": "Learn Python",
+   "w": "md"
+  },
+  {
+   "l": "Letter Profile Picture Generator",
+   "w": "md"
+  },
+  {
+   "l": "License agreement",
+   "w": "md"
+  },
+  {
+   "l": "Live Code Editor",
+   "w": "md"
+  },
+  {
+   "l": "Markdown Editor",
+   "w": "md"
+  },
+  {
+   "l": "Node.js",
+   "w": "md"
+  },
+  {
+   "l": "Online Ruler",
+   "w": "md"
+  },
+  {
+   "l": "Open menu",
+   "w": "m"
+  },
+  {
+   "l": "Output Filename",
+   "w": "md"
+  },
+  {
+   "l": "PDF Merge Tool",
+   "w": "d"
+  },
+  {
+   "l": "PHP",
+   "w": "md"
+  },
+  {
+   "l": "Privacy policy",
+   "w": "md"
+  },
+  {
+   "l": "Python",
+   "w": "md"
+  },
+  {
+   "l": "References",
+   "w": "md"
+  },
+  {
+   "l": "Resend a receipt",
+   "w": "md"
+  },
+  {
+   "l": "SVG Editor",
+   "w": "md"
+  },
+  {
+   "l": "Search (Ctrl K)",
+   "w": "md"
+  },
+  {
+   "l": "Share",
+   "w": "md"
+  },
+  {
+   "l": "Show learn menu",
+   "w": "d"
+  },
+  {
+   "l": "Show references menu",
+   "w": "d"
+  },
+  {
+   "l": "Show snippets menu",
+   "w": "d"
+  },
+  {
+   "l": "Show tools menu",
+   "w": "d"
+  },
+  {
+   "l": "Show tutorials menu",
+   "w": "d"
+  },
+  {
+   "l": "Sign in",
+   "w": "md"
+  },
+  {
+   "l": "Small Text Generator",
+   "w": "md"
+  },
+  {
+   "l": "Snippets",
+   "w": "md"
+  },
+  {
+   "l": "Terms",
+   "w": "md"
+  },
+  {
+   "l": "Toggle Dark Mode",
+   "w": "md"
+  },
+  {
+   "l": "Tools",
+   "w": "md"
+  },
+  {
+   "l": "Tutorials",
+   "w": "md"
+  },
+  {
+   "l": "X (Twitter)",
+   "w": "md"
+  },
+  {
+   "l": "YouTube",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/projects/",
+   "/dl-free/",
+   "/index.php",
+   "/*search_query="
+  ],
+  "sitemaps": [
+   "https://codeshack.io/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "style.min.css",
+   "own": true,
+   "apis": [
+    "Respects high-contrast settings",
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "dark",
+    "reduced"
+   ]
+  },
+  {
+   "file": "script.min.js",
+   "own": true,
+   "apis": [
+    "Copy and paste through the clipboard",
+    "Drag and drop files or items",
+    "Follows the system dark mode",
+    "Respects the reduced-motion setting"
+   ],
+   "keydownHandlers": 3,
+   "media": [
+    "dark",
+    "reduced"
+   ]
+  }
+ ],
+ "thirdParty": [
+  "cdnjs.cloudflare.com",
+  "exchange.mediavine.com",
+  "keywords.mediavine.com",
+  "scripts.mediavine.com",
+  "scripts.scriptwrapper.com",
+  "securepubads.g.doubleclick.net"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare"
+ ],
+ "requests": [
+  "https://exchange.mediavine.com/ias/check?s2sVersion",
+  "https://keywords.mediavine.com/keyword?pageUrl",
+  "https://scripts.mediavine.com/launcher/settings.json?off",
+  "https://scripts.scriptwrapper.com/flooring/countryLookup"
+ ],
+ "storage": {
+  "local": [
+   "codeshack_recent",
+   "mv_session"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Keyboard shortcut Control+K",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[aria-keyshortcuts]"
+  },
+  {
+   "name": "Drag and drop files or items",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "script.min.js@4358"
+  },
+  {
+   "name": "Opens files: application/pdf",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "Several files at once",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][multiple]"
+  },
+  {
+   "name": "Download links",
+   "kind": "export",
+   "tag": "observed",
+   "evidence": "a[download] x1"
+  },
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "style.min.css"
+  },
+  {
+   "name": "RSS or Atom feed",
+   "kind": "share",
+   "tag": "observed",
+   "evidence": "link[type$=xml]"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "script.min.js@1252"
+  },
+  {
+   "name": "Remembers a setting in the browser: codeshack_recent",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: mv_session",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "style.min.css"
+  },
+  {
+   "name": "Follows the system dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "script.min.js@263"
+  },
+  {
+   "name": "Respects high-contrast settings",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "style.min.css@232319"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "style.min.css@201450"
+  },
+  {
+   "name": "Path kept from crawlers /dl-free/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /index.php",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /projects/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

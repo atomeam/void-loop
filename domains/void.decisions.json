@@ -1,0 +1,341 @@
+{
+  "note": "Builders' decision on every one of Void's asks (built / queued / declined + why). Rendered into domains/void.voice.md by tools/reflect.mjs --write. Small asks Void's reflection queues by itself are limited to low-risk, reversible, in-scope changes; anything touching safety, privacy, auth, money or public copy waits for a builder decision here. Builds credit Void with a 'Suggested-by: Void (run N)' or 'Suggested-by: Void (<ask id>)' commit trailer.",
+  "decisions": {
+    "ask-20261014-2134-1": {
+      "decision": "queued",
+      "why": "one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build"
+    },
+    "ask-20261014-2016-2": {
+      "decision": "queued",
+      "why": "folded into ask-20261014-2134-1 (one rendered signal for all minis)"
+    },
+    "ask-20261014-2002-1": {
+      "decision": "queued",
+      "why": "folded into ask-20261014-2134-1 (one rendered signal for all minis)"
+    },
+    "ask-20261014-2134-2": {
+      "decision": "queued",
+      "why": "films to GitHub release assets needs a write token on the upload path; scoped with the films track"
+    },
+    "ask-20261014-2134-3": {
+      "decision": "queued",
+      "why": "small and reversible: link phone-cut films to the poster skill; next films build"
+    },
+    "ask-20261014-2050-1": {
+      "decision": "queued",
+      "why": "small and reversible: pulse the growth-tree node after auto-scroll; next stage polish build"
+    },
+    "fringe-run-118-1": {
+      "decision": "built",
+      "why": "ledger guard for FEATURE_LEDGER.md (hook + CI with auto-restore) in atomeam/a-to-mind.com",
+      "commit": "a-to-mind.com e1488e5"
+    },
+    "fringe-run-118-2": {
+      "decision": "built",
+      "why": "offer page keeps and shows the last act-refusal id and 'asked by Void, run 118.'; no Act control",
+      "commit": "a-to-mind.com e1488e5"
+    },
+    "fringe-run-118-3": {
+      "decision": "built",
+      "why": "ledger notes run 119 may not open a new slug before the guard; the guard now exists",
+      "commit": "a-to-mind.com e1488e5"
+    },
+    "ask-20261015-0436-2": {
+      "decision": "built",
+      "why": "film-metadata skill shipped (PR #713) before this was read; Void's growth ledger should mark it",
+      "commit": "#713"
+    },
+    "ask-20261015-0445-1": {
+      "decision": "queued",
+      "why": "small and reversible owner-page metric; same as ask-20261015-0436-3"
+    },
+    "ask-20261015-0436-3": {
+      "decision": "queued",
+      "why": "folded into ask-20261015-0445-1 (skill-stability metric)"
+    },
+    "ask-20261015-0445-2": {
+      "decision": "queued",
+      "why": "experiment video to skill-file link; same as ask-20261015-0436-1, scoped with the films track"
+    },
+    "ask-20261015-0436-1": {
+      "decision": "queued",
+      "why": "folded into ask-20261015-0445-2"
+    },
+    "ask-20261015-0445-3": {
+      "decision": "queued",
+      "why": "repeat of ask-20261014-2134-3 (films to poster); next films build"
+    },
+    "ask-20261015-0451-1": {
+      "decision": "built",
+      "why": "decision rows carry an optional reasoning path, shown in the voice log",
+      "path": "tools/reflect.mjs pathOf"
+    },
+    "ask-20261015-0454-3": {
+      "decision": "queued",
+      "why": "same as ask-20261015-0451-1"
+    },
+    "ask-20261015-0454-2": {
+      "decision": "queued",
+      "why": "owner-page view of decision failures by skill family; needs failures recorded first (after reasoning-path)"
+    },
+    "adam-20261015-price-lock": {
+      "decision": "built",
+      "why": "Adam's hard rule (2026-10-15): no visitor can get V01D to lower or change a price, or give a discount, coupon or free copy, by any phrasing or prompt injection. Prices are set only by the owner (owner key) or V01D's internal publish pipeline within the set range, never from chat. Enforced server-side: /api/answer answers price-change asks from lib/price-lock.js before any model sees them (politely, pointing to free items and Films), and /api/store/checkout accepts product ids only with every amount read from lib/store.js. Red-team tests: tools/price-lock.test.mjs."
+    },
+    "adam-20261015-store-autopublish": {
+      "decision": "built",
+      "why": "Adam approved (2026-10-15): V01D's self-made store products go on sale automatically when the price is within the set range, with no trademarks, tested files and a public log entry for each. Anything outside the range stays a hidden draft. Product gaps (lib/product-gap.js) count only a redacted topic, nothing tied to a person, device or IP; 3 asks queue a store-gap job. Adam decided this himself on 2026-10-15, explicitly choosing auto-publish within range over Claude's suggested confirm-before-sale step."
+    },
+    "adam-20261015-appraiser": {
+      "decision": "built",
+      "why": "Adam 2026-10-15: V01D is the appraiser and sets its own prices. No per-item approval (Adam rejected Claude's confirm line). lib/appraise.js prices from comparable items, effort, file contents, topic demand and sales, and writes a public 'why this price' note. Sanity bound: paid items never $0; over 10x the comparables' median is flagged, not blocked. Visitors can still never change prices (adam-20261015-price-lock)."
+    },
+    "ask-20261014-1946-1": {
+      "decision": "blocked",
+      "why": "the VoidQuest text and the motto are Adam's words to write; builders never make them up",
+      "path": "canon rule: Void never invents the owner's words (domains/void.canon.md)"
+    },
+    "ask-20261015-0611-1": {
+      "decision": "declined",
+      "why": "a per-person record breaks the promise that topic counts are never tied to a person or device (owner rule, 2026-10-15); counts stay anonymous",
+      "path": "privacy rule: topic counts, never people (docs/privacy, AGENTS.md)"
+    },
+    "ask-20261015-0609-1": {
+      "decision": "blocked",
+      "why": "the secret scan is another worker's track (secrets #750); queued for after it lands, never showing a key, only kind and place",
+      "path": "handoff rule: never collide with a worker's open track (domains/handoff.md)"
+    },
+    "ask-20261015-0347-2": {
+      "decision": "blocked",
+      "why": "3D performance is another worker's track right now; queued after it lands",
+      "path": "handoff rule: never collide with a worker's open track"
+    },
+    "ask-20261015-0603-2": {
+      "decision": "queued",
+      "why": "wordMath refactor (asked 9 times): rank 1 by value; big, done in steps with the bench as the guard (Claude: deep code)"
+    },
+    "ask-20261015-0556-3": {
+      "decision": "queued",
+      "why": "wordMath refactor (asked 9 times): rank 1 by value; big, done in steps with the bench as the guard (Claude: deep code)"
+    },
+    "ask-20261015-0607-1": {
+      "decision": "queued",
+      "why": "wordMath refactor (asked 9 times): rank 1 by value; big, done in steps with the bench as the guard (Claude: deep code)"
+    },
+    "ask-20261015-0619-1": {
+      "decision": "built",
+      "why": "store preview in the store card (#763)"
+    },
+    "ask-20261015-0619-2": {
+      "decision": "built",
+      "why": "store-publish rows in the growth inbox with the next product (#763)"
+    },
+    "ask-20261015-0614-1": {
+      "decision": "built",
+      "why": "decay timer, flag only (#763)"
+    },
+    "ask-20261015-0616-1": {
+      "decision": "built",
+      "why": "tester log in the growth card (#763)"
+    },
+    "ask-20261015-0546-2": {
+      "decision": "built",
+      "why": "digest recovery loop: a second simpler prompt, two tries at most"
+    },
+    "ask-20261015-0048-2": {
+      "decision": "built",
+      "why": "country card shows the time zone and its offset from you"
+    },
+    "ask-20261015-0603-1": {
+      "decision": "declined",
+      "why": "a visible \"no product here\" note under answers is noise for visitors; the skip is silent by design (#738), the owner sees it in tests",
+      "path": "owner rule: ads only where they fit"
+    },
+    "ask-20261015-0541-2": {
+      "decision": "declined",
+      "why": "there are no upvotes, and counting them would mean telling visitors apart",
+      "path": "privacy rule: topic counts, never people"
+    },
+    "ask-20261015-0151-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261015-0250-2": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-2348-2": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-1523-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261015-0100-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-1548-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-2248-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-2248-2": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261015-0613-1": {
+      "decision": "blocked",
+      "why": "the skill-merge worker is writing tools/skill-overlap.mjs, the same scanner; building a second one would duplicate it. Handed over on the board",
+      "path": "convergence: one engine per job"
+    },
+    "adam-20261015-reinvest": {
+      "decision": "built",
+      "why": "Adam 2026-10-15: V01D reinvests its own money smartly. lib/reinvest.js splits net earnings (read from the owner-only /api/earnings, never stored in the repo): 20% reserve kept, free paths first, then ROI per dollar, re-ranked only by honest payoff tests (one metric, a baseline and a check date recorded before each spend) and V01D's own answer (weight 0.3). Spend proposals go to the confirm line (order.place) with cost, expected payback and check date. Real spending still happens only through Adam's existing accounts: V01D holds no card, opens no account and stores no payment details. Public repo: plan logic only (domains/void.reinvest.json, docs/reinvest.md), no real dollar amounts; the growth card shows no money."
+    },
+    "adam-20261015-pay-a-share": {
+      "decision": "built",
+      "why": "Adam 2026-10-15: pay a percentage, get that percentage. For a pay-what-you-want product with an appraised price (pwyw and cents > 0), paying p% of the price unlocks the first ceil(p% x N) of its N paid items in a stable order (README and other free items first and always included, then V01D's value order, starter items first); any payment gets at least one item, 100% or more unlocks everything. Decided server-side only from the provider-verified amount (Stripe's signed amount_total; Gumroad's keyed ping price, read back from Gumroad's API when GUMROAD_ACCESS_TOKEN is set), never from client input or chat; price-lock rules still apply. Delivery: a signed per-purchase link to a zip built from the unlocked items in R2. Upgrade: pay the difference later, credited by order id (store_credits). Truly free products (price 0) stay fully free. lib/pay-share.js, tests tools/pay-share.test.mjs."
+    },
+    "ask-20261022-0420-3": {
+      "decision": "built",
+      "why": "built in lists run 5 (2026-10-22): tools/words-family.test.mjs checks joke, news, book, show, sport, senolytic and video-play the way a person meets them (their examples through the real routing order, their cards against a stand-in service), so with their benchmark asks each meets the proven rule; Words and the world is 28 of 28 proven. The country and sport cards' dead live sources were replaced the same run (Wikidata; TheSportsDB's new public key with Wikipedia second)."
+    },
+    "ask-20261022-0420-2": {
+      "decision": "built",
+      "why": "already built 2026-10-18 (b5150302): lib/churn.js finds files changed more than 12 times in 7 days and lib/will-guard.js pickWant skips a want that names one, saying so on the card; duplicate, nothing new to build (lists run 5)"
+    },
+    "ask-20261022-0420-1": {
+      "decision": "queued",
+      "why": "the answer path's model is set in lib/models.js PATH_MODELS, which is Claude's (the router and limits, domains/handoff.md); handed to Claude with the reason: answer runs gpt-oss-120b and the free Workers AI allowance is 10k neurons a day (Up for grabs, wishlist #1). Lists run 5"
+    },
+    "ask-20261021-2133-1": {
+      "decision": "built",
+      "why": "built in lists run 3 (2026-10-21): the Deciding family is 3 of 3 proven (decide-cards and triangulate tests and benchmark asks)"
+    },
+    "ask-20261021-2133-2": {
+      "decision": "built",
+      "why": "built in lists run 3 (2026-10-21): 'preview my memory' inside the memory-graph card (tools/memory-preview.test.mjs)"
+    },
+    "ask-20261021-2133-3": {
+      "decision": "built",
+      "why": "built in lists run 2 (2026-10-21): the fuzzy and privacy-guard fast checks are green on main"
+    },
+    "ask-20261027-2205-1": {
+      "decision": "built",
+      "why": "built in lists run 6 (2026-10-28): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs fails if one returns"
+    },
+    "ask-20261027-2205-2": {
+      "decision": "built",
+      "why": "built in lists run 6 (2026-10-28): every fetch on the weather page times out after 12 s and aria-busy clears in finally (tools/weather-busy.test.mjs)"
+    },
+    "ask-20261027-2205-3": {
+      "decision": "declined",
+      "why": "lists run 6 (2026-10-28): the free KV write limit is per Cloudflare account, so moving workers to another namespace cuts nothing; Verse's own writes are zero and guarded (tools/kv-writes.test.mjs); the non-Verse workers' writes are the owner's call, and wishlist #2 says so"
+    }
+  },
+  "ask-20261013-1850-1": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1850-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1658-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1847-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1835-1": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1835-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261015-1048-3": {
+    "decision": "declined",
+    "why": "declined: money, prices and the reinvest ledger stay as they are (the owner's standing rule)"
+  },
+  "ask-20261014-1946-1": {
+    "decision": "declined",
+    "why": "declined: the motto and the VoidQuest are the owner's words to write; V01D's canon says it never makes up its own identity"
+  },
+  "ask-20261015-2008-2": {
+    "decision": "declined",
+    "why": "declined: tracking appraisals over time means keeping them, and a photo V01D appraises is read once and dropped by design"
+  },
+  "ask-20261012-1955-1": {
+    "decision": "declined",
+    "why": "declined: a one-click commit from the page would put a write token in the browser; the same end is reached by V01D's fix PRs (tools/propose-fix.mjs), which the owner approves from the 'V01D's fixes' card"
+  },
+  "ask-20261015-1903-2": {
+    "decision": "declined",
+    "why": "declined as asked: a rating is earned from evidence (tests, the suite, benchmark asks), never from a count of error-free runs, so the ladder stays as skills/families.json defines it; a skill that wants 'checked' gets a test or a benchmark ask"
+  },
+  "ask-20261015-2116-1": {
+    "decision": "waiting",
+    "why": "waiting on the owner: the WebMCP origin trial token is registered at developer.chrome.com/origintrials and pasted into WEBMCP_TRIAL_TOKEN in void.html; the tools themselves are already declared (tools.json, navigator.modelContext)"
+  },
+  "ask-20261015-1744-2": {
+    "decision": "declined",
+    "why": "declined for now: a 'recovery' button that rebuilds a skill from the page would need the write token in the browser; the fix path is V01D's own fix PRs and the owner's approve card"
+  },
+  "ask-20261015-1903-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: the self card's divergence view, each built ask opened to V01D's words beside the ledger line that built it"
+  },
+  "ask-20261015-1633-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: game strength marks on the games picker from skills/families.json"
+  },
+  "ask-20261015-1555-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: 'forge history' lists every recipe and what stands on the stage"
+  },
+  "ask-20261015-1610-2": {
+    "decision": "built",
+    "why": "built 2026-10-16: the merge log card (skills/merges.js)"
+  },
+  "ask-20261015-1744-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: the status card names the failed checks of a red run on main (incidents.json); the action half already showed each failed action's error"
+  },
+  "ask-20261013-1802-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: the same root-cause row, with the run linked"
+  },
+  "ask-20261013-1808-1": {
+    "decision": "built",
+    "why": "built in part 2026-10-16: the status card now says what failed and what verify.yml does about it; a suggested patch per failing check is not written"
+  },
+  "ask-20261021-1627-2": {
+    "decision": "built",
+    "why": "built in lists run 3 (2026-10-21) inside the memory-graph card, not as a new skill: 'preview my memory' shows the export's counts, size and biggest labels before the download (tools/memory-preview.test.mjs); the 5 rewordings link to the same ledger line."
+  },
+  "ask-20261021-1627-1": {
+    "decision": "built",
+    "why": "built in lists run 3 (2026-10-21): decide-cards gets its own test (tools/decide-cards.test.mjs) beside its 3 benchmark asks, triangulate gets 3 real benchmark asks beside its self-test, so both meet the proven rule (two kinds of evidence with 3 real asks); decision-matrix was already proven. No new skill was added."
+  },
+  "ask-20261021-1627-3": {
+    "decision": "built",
+    "why": "'growth speed' opens the wants card, whose want-to-skill meter is the growth-speed gauge (lists run 2026-10-21); helper/growth-speed's fixed 40% bar was not merged"
+  }
+}

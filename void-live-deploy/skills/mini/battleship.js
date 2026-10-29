@@ -1,7 +1,7 @@
 /**
  * battleship miniature — the classic folding case standing in the void: your ocean lies flat with your grey ships on it
- * and Void's pegs where it has fired, and your target board stands upright behind it with your own pegs (white for a miss,
- * red for a hit). A ship you sink shows on the target board. Void's fleet is never in `data` (the card sends only rules
+ * and Verse's pegs where it has fired, and your target board stands upright behind it with your own pegs (white for a miss,
+ * red for a hit). A ship you sink shows on the target board. Verse's fleet is never in `data` (the card sends only rules
  * view()), so it can't be drawn. Built from code. A tap on the upright board presses the card's target cell.
  * data: { own: { ships: [{ name, cells, sunk }], shotsAt: { cell: 'miss'|'hit'|'sunk' } }, target: { shots, sunk: [{ cells }] }, onTap(selector) }
  */

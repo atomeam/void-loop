@@ -11,7 +11,7 @@ export const NONE = 'none';
 export const CLEF_TIMEOUT_MS = 3000;
 
 const ABOUT = {
-  self: 'About Void itself: what it can do, its menu, its board, what it wants',
+  self: 'About Verse itself: what it can do, its menu, its board, what it wants',
   act: 'Doing something for the person in the world: sending a message or email, booking, buying, paying, scheduling',
 };
 // the one question: which skill should take this ask, or none of them
@@ -19,7 +19,7 @@ export function skillQuestion(skills = SKILLS) {
   const criteria = {};
   for (const [k, s] of Object.entries(skills)) criteria[k] = ABOUT[k] || 'Puts or does this on the screen, e.g. ' + (s.examples || []).slice(0, 3).map((e) => '"' + e + '"').join(', ');
   criteria[NONE] = 'A question to answer in words (facts, explanations, advice, history), or anything none of the others does';
-  return { skill: { type: 'choice', instructions: 'Void is a blank screen that answers asks. Which of its skills should handle this ask? Pick none when the person wants an answer in words rather than a thing made or done.', criteria } };
+  return { skill: { type: 'choice', instructions: 'Verse is a blank screen that answers asks. Which of its skills should handle this ask? Pick none when the person wants an answer in words rather than a thing made or done.', criteria } };
 }
 
 // the chosen option and its probability, from whatever shape the answer carries (choice + a probability per option + confidence)
@@ -50,6 +50,16 @@ export async function clefRoute(env, ask, { question = skillQuestion() } = {}) {
   } catch (e) {
     return { kind: 'fallback', why: /timeout/.test(String(e && e.message)) ? 'timeout' : 'model error', ms: Date.now() - t0 };
   } finally { clearTimeout(t); }
+}
+
+// Yes/no calls (frontier #10): the same model on one choice between yes and no about a short text, e.g. whether a goal is a
+// daily practice (lib/plan.js PRACTICE_ASK). { yes: true | false, p } or, on any failure, { yes: null, why }: never a guess.
+export function yesNoQuestion(instructions) {
+  return { skill: { type: 'choice', instructions, criteria: { yes: 'Yes, it is', no: 'No, it is not' } } };
+}
+export async function clefYesNo(env, text, instructions) {
+  const r = await clefRoute(env, text, { question: yesNoQuestion(instructions) });
+  return r.kind === 'skill' ? { yes: r.skill === 'yes', p: r.p, ms: r.ms } : { yes: null, why: r.why, ms: r.ms };
 }
 
 // Where Clef routes (frontier #9, Route bench run 38428528839, 2026-10-13): Clef-flash 290/306 right against the embedding

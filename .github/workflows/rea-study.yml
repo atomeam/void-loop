@@ -1,0 +1,35 @@
+# REA study (owner, 2026-10-15: "Verse should be able to reverse engineer everything"): runs every study the owner filed
+# (`node tools/rea-study.mjs --ask <url> "question"`, kept in Verse's private memory) through REA's passive web analysis on
+# GitHub's network, and writes the findings back to that private memory. This repo's logs are public, so the run prints
+# counts only: no URL, no question, no finding. Manual only (no timer); nothing is written to the repo.
+name: REA study
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 5 * * *' # daily: study the parity picks the loop made (passive, private findings)
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rea-study
+  cancel-in-progress: false
+
+jobs:
+  study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Study what the owner filed (findings to Verse's private memory)
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          # the loop's parity picks get a study first (tools/loop-study.mjs: counts only in this public log)
+          node tools/loop-study.mjs --n 6 | tee -a "$GITHUB_STEP_SUMMARY" || true
+          node tools/rea-study.mjs --run | tee -a "$GITHUB_STEP_SUMMARY"

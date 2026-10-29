@@ -20,6 +20,15 @@ test('parseArgs takes the kind, what changed and the flags, and refuses what it 
   assert.ok(!steps(parseArgs(['grow', 'x']))[1][1][1].includes('--show'), 'and only when given');
 });
 
+test('--job: a queue job id goes on the PR body as its last line; a bad id is refused; the steps stay the same', () => {
+  const a = parseArgs(['build', 'the tide card', '--job', 'mgw1x2y3']);
+  assert.equal(a.job, 'mgw1x2y3');
+  assert.ok(prBody(a).endsWith('\nJob: mgw1x2y3'), 'the last line is the Job: line');
+  assert.ok(!prBody(parseArgs(['build', 'x'])).includes('Job:'), 'and only with --job');
+  for (const bad of ['', 'abc', 'ABCD1234', '../x', 'a'.repeat(17)]) assert.match(parseArgs(['build', 'x', '--job', bad]).error || '', /--job/, bad);
+  assert.deepEqual(steps(a).map((s) => s[0]), steps(parseArgs(['build', 'x'])).map((s) => s[0]), 'no step is added for it: the move happens inside the pull request step');
+});
+
 test('the log line has the log\'s own shape', () => {
   assert.equal(logLine({ by: 'claude', kind: 'fix', log: 'the timer  no longer\nstops' }, new Date('2026-10-11T02:00:00.123Z')), '2026-10-11T02:00:00Z | claude | fix | the timer no longer stops');
 });
@@ -46,4 +55,35 @@ test('--dry runs nothing', () => {
   const r = spawnSync(process.execPath, [fileURLToPath(new URL('./finish.mjs', import.meta.url)), 'build', 'x', '--dry'], { encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /\[8\/8\] pull request/);
+});
+
+test('the --try ask has to be answered by a skill: nothing logged, a page error or the generic answer stop the finish', async () => {
+  const { tryProblem } = await import('./finish.mjs');
+  assert.equal(tryProblem('> open the book\n  by: skill:guide\n  shows: The Verse Book'), '');
+  assert.match(tryProblem('> open the book\n  by: (nothing logged)\n  shows:'), /nothing answered/);
+  assert.match(tryProblem('> x\n  by: (no note)\n  shows:'), /nothing answered/);
+  assert.match(tryProblem('> cat\n  by: article\n  shows: Cat'), /generic answer \(article\)/);
+  assert.match(tryProblem('> zz\n  by: miss\n  shows:'), /generic answer/);
+  assert.match(tryProblem('> x\n  by: skill:timer\n  shows: 5:00\n  ERROR: boom'), /threw an error/);
+  assert.match(tryProblem(''), /nothing answered/);
+});
+
+test('--evolve names what to build next: it fills the PR\'s Evolve heading and is kept for the growth inbox; without it the heading stays empty', () => {
+  const a = parseArgs(['build', 'x', '--evolve', 'a tide card for the harbour; a spectator mode']);
+  assert.equal(a.evolve, 'a tide card for the harbour; a spectator mode');
+  assert.match(prBody(a), /## Evolve\n- a tide card for the harbour\n- a spectator mode/);
+  assert.match(prBody(parseArgs(['build', 'x'])), /## Evolve\n- $/m);
+});
+
+test('the --try check: an answer has to be about the ask, not only an answer (owner, 2026-10-23: "checks the result ... to see if it even does what you expect")', async () => {
+  const { tryProblem, askWords, offTopic } = await import('./finish.mjs');
+  assert.deepEqual(askWords('draw a cartoon cat'), ['cat']);
+  assert.deepEqual(askWords("what's new"), []);
+  const lump = '> draw a toon cat\n  by: skill:cartoon\n  said: Cartoon Lump · a bright rubbery cartoon lump trips, bows, and throws a pie\n  shows: Cartoon Lump / a bright rubbery cartoon lump trips';
+  assert.match(tryProblem(lump), /not about what was asked.*"cat"/);
+  const cat = '> draw a cartoon cat\n  by: skill:cartoon\n  said: Drawing a cartoon cat.\n  shows: Cartoon cat\n  pictures: a 2D cartoon of cat';
+  assert.equal(tryProblem(cat), '');
+  assert.equal(offTopic('> make the clocks bigger\n  by: skill:stage-style\n  shows: Clock'), '', 'a plural ask matches its singular');
+  assert.equal(offTopic("> what's new\n  by: skill:showcase\n  shows: Built while you were away"), '', 'no content words: nothing to hold it to');
+  assert.equal(offTopic('> show me the vibe\n  by: skill:x\n  shows: Mood board', 'mood'), '', '--about names what the right answer shows');
 });

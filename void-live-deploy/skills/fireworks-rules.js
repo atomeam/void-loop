@@ -1,10 +1,10 @@
 /**
- * fireworks-rules — a cooperative card game in the style of Hanabi, you and Void on the same side, in plain JS (no DOM).
+ * fireworks-rules — a cooperative card game in the style of Hanabi, you and Verse on the same side, in plain JS (no DOM).
  * After Poker on Adam's list (2026-10-08): shared agency. Together you build five firework rows (red, yellow, green, blue,
  * white), each from 1 up to 5, sharing 8 hint tokens and 3 mistakes. The twist that makes it about coordination: you can
- * see Void's cards but not your own, and Void can see yours but not its own. You learn your hand only from hints.
+ * see Verse's cards but not your own, and Verse can see yours but not its own. You learn your hand only from hints.
  * The seats stay separate: each seat plays or discards only its own cards; a hint is information, never a move made for
- * the other seat. Void's choices (and the hints it gives you) each say why, from what it can see.
+ * the other seat. Verse's choices (and the hints it gives you) each say why, from what it can see.
  *
  *   create({ seed }) -> state      play(s, k) / discard(s, k) / hint(s, { color } | { rank }) -> s   (for the seat to act)
  *   voidAct(s) -> s      view(s, side) -> what that side may see      score(s) -> 0..25
@@ -28,7 +28,7 @@ export function create({ seed = (Math.random() * 4294967296) >>> 0 } = {}) {
 }
 export const score = (s) => s.rows.reduce((a, b) => a + b, 0);
 const playable = (s, card) => s.rows[card.c] === card.r;
-const say = (s, p, text, why) => { s.log.push({ who: p === 'you' ? 'You' : 'Void', text, ...(why ? { why } : {}) }); if (s.log.length > 120) s.log.splice(0, s.log.length - 120); };
+const say = (s, p, text, why) => { s.log.push({ who: p === 'you' ? 'You' : 'Verse', text, ...(why ? { why } : {}) }); if (s.log.length > 120) s.log.splice(0, s.log.length - 120); };
 
 function draw(s, p) { if (s.deck.length) s.hands[p].push({ ...s.deck.shift(), known: { c: null, r: null } }); }
 function endTurn(s) {
@@ -63,7 +63,7 @@ export function hint(s0, h, why) {
   for (const i of which) { if (h.color != null) hand[i].known.c = h.color; else hand[i].known.r = h.rank; }
   s.hints--;
   const what = h.color != null ? COLORS[h.color] : String(h.rank + 1) + 's';
-  say(s, p, 'told ' + (q === 'you' ? 'you' : 'Void') + ': card' + (which.length > 1 ? 's ' : ' ') + which.map((i) => i + 1).join(', ') + (which.length > 1 ? ' are ' : ' is ') + what, why);
+  say(s, p, 'told ' + (q === 'you' ? 'you' : 'Verse') + ': card' + (which.length > 1 ? 's ' : ' ') + which.map((i) => i + 1).join(', ') + (which.length > 1 ? ' are ' : ' is ') + what, why);
   return endTurn(s);
 }
 
@@ -75,7 +75,7 @@ export function view(s, side) {
   };
 }
 
-// Void's turn, from view('void') only (it can't see its own cards): play a card hints have shown to fit; else tell you
+// Verse's turn, from view('void') only (it can't see its own cards): play a card hints have shown to fit; else tell you
 // about a card of yours that fits now; else discard its oldest card it knows nothing about; else give any useful hint.
 export function voidAct(s0) {
   if (s0.over || s0.turn !== 'void') return s0;

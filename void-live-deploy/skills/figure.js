@@ -7,10 +7,11 @@
  * "download motelet" (or the STL button under it) saves the same body as a print file, in the pose it has on the stage.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), stageKinds }. No network, no libraries.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+import { cleanLower } from '../lib/ask-text.js';
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
-const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden)\s+)*(chair|cup|mug|book|lamp)(?:\s+(?:on|to)\s+the\s+stage)?$/;
-const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is)\s+)?(?:motelet|(?:a|the|one)\s+figure)(?:\s+(?:on|to)\s+the\s+stage)?$/;
+const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden|low poly)\s+)*(chair|cup|mug|book|lamp|wolf|fox|dog)(?:\s+(?:on|to)\s+the\s+stage)?$/;
+const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is|sculpt)\s+)?(?:motelet|(?:a|the|one)\s+(?:figure|bust))(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure|book|lamp))(?:\s+(?:around|round))?$/;
 // a figure that sits: "a figure that sits on the chair", "motelet sitting on the chair", "seat the figure" (miss board)
 const SIT_RE = /^(?:please\s+)?(?:(?:summon|show|bring|make|put|get|seat)\s+(?:me\s+)?)?(?:a|the|one)?\s*(?:little\s+)?(?:figure|motelet)(?:\s+that)?\s+(?:sits?|sitting|seated)(?:\s+(?:down\s+)?(?:on|upon|in)(?:\s+(?:the|a))?\s*(?:chair|seat))?$|^seat\s+(?:the\s+)?(?:figure|motelet)(?:\s+(?:on\s+)?(?:the\s+)?(?:chair|seat))?$/;
@@ -29,7 +30,7 @@ const NAME_RE = /^(?:my\s+name\s+is|my\s+name's|i'?m|i\s+am|call\s+me|it'?s|this
 const NOT_NAMES = new Set(['clear', 'menu', 'undo', 'close', 'help', 'hi', 'hello', 'hey', 'yes', 'no', 'ok', 'okay', 'thanks', 'stop', 'quiet', 'nothing', 'nevermind', 'motelet', 'fine', 'good', 'here', 'back']);
 export function nameOf(text, original) {
   const t = CLEAN(text); let m = t.match(NAME_RE), raw = null;
-  // a bare word is a name only when written like one ("Sam"): lowercase "weather" stays an ask for the rest of Void
+  // a bare word is a name only when written like one ("Sam"): lowercase "weather" stays an ask for the rest of Verse
   if (m) raw = m[1]; else if (/^[a-z][a-z'-]{1,19}$/.test(t) && !NOT_NAMES.has(t) && /^[A-Z]/.test(String(original || '').trim())) raw = t;
   if (!raw) return null;
   const src = String(original || raw).trim().replace(/[?!.]+$/, ''), tail = src.slice(src.length - raw.length); // keep the person's own capitals
@@ -41,7 +42,8 @@ export function parseAsk(text) {
   const t = CLEAN(text);
   let m;
   if (FORGET_RE.test(t)) return { act: 'forget' };
-  if ((m = t.match(OBJECT_RE))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
+  // the animals are the low poly ones only ("low poly dog"): a plain "bring a dog" or "summon a fox" is a living figure (skills/figures.js)
+  if ((m = t.match(OBJECT_RE)) && (!/^(?:wolf|fox|dog)$/.test(m[1]) || /\blow poly\b/.test(t))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
   if (FIGURE_RE.test(t)) return { act: 'figure' };
   if (SIT_RE.test(t)) return { act: 'sit' };
   if (SPIN_RE.test(t)) return { act: 'spin', what: (t.match(/chair|cup|mug|book|lamp/) || [''])[0].replace('mug', 'cup') };

@@ -1,0 +1,167 @@
+{
+ "floor": "tildegit",
+ "verse_page": "/g/",
+ "researched": "2026-10-25",
+ "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+ "sites": {
+  "tildegit.org": {
+   "sources": [
+    "https://tildegit.org/",
+    "https://tilde.team/~kst/git/grm.tilde/file/TUTORIAL.html",
+    "https://docs.server.camp/en/services/forgejo/"
+   ],
+   "features": [
+    {
+     "name": "Git repositories over HTTPS and SSH",
+     "detail": "a Gitea-family forge for the tildeverse",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/g/ holds snippets in a link; no git repositories"
+    },
+    {
+     "name": "Code browser with syntax highlighting",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "renderCode: line numbers and colouring (lib/gist.js)"
+    },
+    {
+     "name": "Issues with labels and milestones",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Pull requests with review",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "diff of an edited copy only"
+    },
+    {
+     "name": "Wiki per repository",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Releases",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "User accounts and organisations",
+     "detail": "register (tilde community members)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no accounts by design"
+    },
+    {
+     "name": "Stars, watches, forks",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "\"Edit a copy\" is a fork of a gist; no stars"
+    },
+    {
+     "name": "Explore and code search",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Project boards",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Mirrors and migration from other forges",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Webhooks",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "SSH / GPG keys, 2FA",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "RSS / Atom feeds of activity",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "CI (Actions) and package registry",
+     "detail": "available in Forgejo/Gitea if enabled (unconfirmed for this instance)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Bot wall (Anubis)",
+     "detail": "visitors pass a proof-of-work check first",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Verse loads straight away (a lack on the site's side, listed for completeness)"
+    }
+   ]
+  }
+ },
+ "verse_extra": [
+  "No account or bot wall",
+  "Gist in the link, nothing stored",
+  "Passphrase lock",
+  "What-changed view",
+  "Download files"
+ ],
+ "gaps": [
+  "Git repositories over HTTPS and SSH",
+  "Issues with labels and milestones",
+  "Pull requests with review",
+  "User accounts and organisations",
+  "Code browser with syntax highlighting",
+  "Wiki per repository",
+  "Releases",
+  "Explore and code search",
+  "Project boards",
+  "Mirrors and migration from other forges",
+  "Webhooks",
+  "SSH / GPG keys, 2FA",
+  "RSS / Atom feeds of activity",
+  "CI (Actions) and package registry",
+  "Stars, watches, forks"
+ ],
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "tildegit.org": {
+    "url": "https://tildegit.org/",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "robots",
+     "why": "robots.txt disallows the page for every crawler"
+    },
+    "features": []
+   }
+  }
+ }
+}

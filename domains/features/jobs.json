@@ -1,0 +1,550 @@
+{
+ "floor": "jobs",
+ "verse_page": "/jobs/",
+ "researched": "2026-10-26",
+ "sites": {
+  "linkedin.com/jobs": {
+   "sources": [
+    "https://www.linkedin.com/jobs/",
+    "https://www.linkedin.com/help/linkedin/answer/110912",
+    "https://www.linkedin.com/help/linkedin/topics/6058/6059",
+    "https://www.linkedin.com/premium/products/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Job search",
+     "detail": "Keyword and location search over millions of listings",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/jobs/: keyword, place, region, category, tag, type, level, salary and date over remote listings from Remotive, Jobicy and Himalayas; remote jobs only, far fewer than LinkedIn, whose search /jobs/ opens with the same words"
+    },
+    {
+     "group": "core",
+     "name": "Filters",
+     "detail": "Date posted, experience level, job type, remote/hybrid/on-site, company, industry, salary, Easy Apply, under 10 applicants",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/jobs/: region (where you may work from), place, category, tag, type, level, minimum yearly salary, posted within, source, with a salary only, visa sponsorship mentioned; sort newest, salary, company, title"
+    },
+    {
+     "group": "core",
+     "name": "Job detail page",
+     "detail": "Description, company, salary range, applicants count, skills match, how you connect",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "each card shows title, company, where, type, level, salary, time zones, tags and a short excerpt; the whole description is on the original posting"
+    },
+    {
+     "group": "core",
+     "name": "Easy Apply",
+     "detail": "Apply in a few steps with LinkedIn profile and saved resume",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "by design: Verse holds no profile or CV; Apply opens the original posting (said on the page)"
+    },
+    {
+     "group": "core",
+     "name": "Apply on company site",
+     "detail": "Link out to employer ATS",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "work.js links each job to its listing"
+    },
+    {
+     "group": "core",
+     "name": "Saved jobs",
+     "detail": "Save and come back; My Jobs tracks saved, applied, in progress, archived",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Save on any card; Saved jobs panel kept in this browser"
+    },
+    {
+     "group": "core",
+     "name": "Job alerts",
+     "detail": "Daily/weekly email and push alerts for a saved search (about 10 for free)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a saved search shows how many jobs are new since the last visit and marks them, device notifications when allowed, and an RSS feed (Jobicy listings); no email"
+    },
+    {
+     "group": "core",
+     "name": "Profile and resume",
+     "detail": "Profile as CV, uploaded resumes, Open to Work signal",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "by design: no profile, nothing about the visitor on a server"
+    },
+    {
+     "group": "power",
+     "name": "Recommended jobs",
+     "detail": "Jobs matched to profile and activity, \"top job picks\"",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Skills match and qualification check",
+     "detail": "How your skills match the posting",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Company pages and Life tab",
+     "detail": "Company info, employees, jobs, insights",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Salary insights",
+     "detail": "Salary ranges by title and place",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "salary on each listing that gives one, as posted and as a year; highest paid first and a minimum; /jobs/salary/"
+    },
+    {
+     "group": "power",
+     "name": "Network connections at company",
+     "detail": "See who you know and alumni",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Application tracking",
+     "detail": "Status of applications, viewed by employer notices",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "tracker with stages saved, applied, interview, offer, rejected, withdrawn; applied and next-step dates, notes, CSV export and import, next steps as a calendar file; on the device"
+    },
+    {
+     "group": "power",
+     "name": "Interview prep",
+     "detail": "Practice questions and AI feedback",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "AI job search",
+     "detail": "Search in natural language (\"remote marketing jobs at climate startups\")",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "work.js reads a plain-words ask"
+    },
+    {
+     "group": "power",
+     "name": "Job scam caution",
+     "detail": "Verification badges on companies and recruiters",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"A listing is the poster’s: check the company yourself before you send anything.\" on every page"
+    },
+    {
+     "group": "sharing",
+     "name": "Share a job",
+     "detail": "Share listing in messages or a post; refer a friend",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Share link carries the whole search; each listing links to its posting"
+    },
+    {
+     "group": "sharing",
+     "name": "Message recruiters",
+     "detail": "InMail and messages",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app",
+     "detail": "App with alerts and Easy Apply",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Accessible site",
+     "detail": "Screen reader, keyboard nav",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "labelled controls, 24 px targets at 390 px, focus outlines, status lines announced"
+    },
+    {
+     "group": "paid",
+     "name": "Premium Career",
+     "detail": "Applicant insights, InMail credits, who viewed profile, top applicant jobs, AI writing help",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ],
+   "use": {
+    "how": "open this search on LinkedIn Jobs (/jobs/search/?keywords=&location=&f_WT=2), labelled partly confirmed",
+    "not": "no API for outsiders; never logged into or scraped"
+   }
+  },
+  "jobicy.com": {
+   "sources": [
+    "https://jobicy.com/"
+   ],
+   "use": {
+    "source": "https://github.com/Jobicy/remote-jobs-api",
+    "api": "GET https://jobicy.com/api/jobs (count up to 200, geo, industry, tag)",
+    "terms": "keep Jobicy as the source and its canonical url; never present listings as your own; no automated sync more often than once an hour; cache",
+    "verse_uses": "yes: a source of /api/jobs (1 h edge cache) and the daily snapshot; the only source in the RSS feed; search link unconfirmed"
+   },
+   "features": [
+    {
+     "group": "core",
+     "name": "Remote jobs by region (geo)",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/jobs/regions/"
+    },
+    {
+     "group": "core",
+     "name": "Industry filter",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Category filter"
+    },
+    {
+     "group": "core",
+     "name": "Job level",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Level filter"
+    },
+    {
+     "group": "core",
+     "name": "Salary when given",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "salary on cards, minimum filter"
+    },
+    {
+     "group": "core",
+     "name": "RSS feeds",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "RSS feed of any search (Jobicy listings)"
+    },
+    {
+     "group": "core",
+     "name": "Job alerts by email",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "saved searches with new-since-last-visit, no email"
+    }
+   ]
+  },
+  "workingnomads.com": {
+   "sources": [
+    "https://workingnomads.com/"
+   ],
+   "use": {
+    "api": "none found",
+    "verse_uses": "search link only (unconfirmed pattern); no data used"
+   },
+   "features": [
+    {
+     "group": "core",
+     "name": "Curated remote jobs by category",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Category filter, /jobs/categories/"
+    },
+    {
+     "group": "core",
+     "name": "Email job alerts",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "alerts on the device and an RSS feed, no email (/jobs/alerts/)"
+    },
+    {
+     "group": "core",
+     "name": "Saved jobs",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Save"
+    },
+    {
+     "group": "core",
+     "name": "Search by keyword",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Keyword"
+    }
+   ]
+  },
+  "arbeitnow.com": {
+   "sources": [
+    "https://arbeitnow.com/"
+   ],
+   "use": {
+    "api": "https://www.arbeitnow.com/api/job-board-api (keyless)",
+    "terms": "no API terms found; the site terms allow personal, non-commercial viewing only",
+    "verse_uses": "not used as a source (terms not confirmed); search link only, unconfirmed"
+   },
+   "features": [
+    {
+     "group": "core",
+     "name": "Jobs in Germany",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/jobs/europe/ region Germany (remote jobs you may do from Germany)"
+    },
+    {
+     "group": "core",
+     "name": "Visa sponsorship filter",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Visa sponsorship mentioned (read from the listing text)"
+    },
+    {
+     "group": "core",
+     "name": "Remote filter",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Work from"
+    },
+    {
+     "group": "core",
+     "name": "English-speaking jobs",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "partial: listings are mostly in English; no language filter"
+    },
+    {
+     "group": "core",
+     "name": "German and English site",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the page in German on a German browser"
+    }
+   ]
+  },
+  "himalayas.app": {
+   "sources": [
+    "https://himalayas.app/"
+   ],
+   "use": {
+    "source": "https://github.com/Himalayas-App/remote-jobs-api, https://himalayas.app/docs/remote-jobs-api",
+    "api": "GET https://himalayas.app/jobs/api (limit 20, offset), /jobs/api/search",
+    "terms": "credit Himalayas wherever shown; Apply goes to applicationLink; never pass jobs on to other boards, aggregators, Google Jobs or LinkedIn Jobs, through feeds or JobPosting data; data refreshed every 24 h",
+    "verse_uses": "yes: a source of /api/jobs (24 h edge cache, 20 newest) and the daily snapshot (200); not in the RSS feed; no JobPosting; search link partly confirmed"
+   },
+   "features": [
+    {
+     "group": "core",
+     "name": "Salary data on listings",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "salary on cards, as a year"
+    },
+    {
+     "group": "core",
+     "name": "Salary filter",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Minimum salary a year, /jobs/salary/"
+    },
+    {
+     "group": "core",
+     "name": "Seniority filter",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Level"
+    },
+    {
+     "group": "core",
+     "name": "Time zone restrictions",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Time zones on cards"
+    },
+    {
+     "group": "core",
+     "name": "Company profiles",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "partial: /jobs/companies/ lists each company's jobs; no profile pages"
+    }
+   ]
+  },
+  "remotive.com": {
+   "sources": [
+    "https://remotive.com/"
+   ],
+   "use": {
+    "source": "https://github.com/remotive-com/remote-jobs-api",
+    "api": "GET https://remotive.com/api/remote-jobs (category, company_name, search, limit)",
+    "terms": "link back to the Remotive URL AND name Remotive; do not submit its jobs to third-party sites (Google Jobs, LinkedIn Jobs...); never show them to collect sign-ups or emails; a couple of calls a day, more than 2 a minute blocked; listings 24 h late",
+    "verse_uses": "yes: a source of /api/jobs (12 h edge cache) and the daily snapshot; not in the RSS feed; search link unconfirmed"
+   },
+   "features": [
+    {
+     "group": "core",
+     "name": "Categories",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/jobs/categories/ with counts"
+    },
+    {
+     "group": "core",
+     "name": "Keyword search",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Keyword"
+    },
+    {
+     "group": "core",
+     "name": "Job type",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Job type"
+    },
+    {
+     "group": "core",
+     "name": "Curated listings",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "partial: Verse shows Remotive’s own curated listings, credited"
+    }
+   ]
+  },
+  "remoteok.com": {
+   "sources": [
+    "https://remoteok.com/"
+   ],
+   "use": {
+    "api": "https://remoteok.com/api (keyless)",
+    "terms": "reportedly in the API answer: a followed link back and Remote OK named; logo not to be used; not read first-hand by this builder",
+    "verse_uses": "not used as a source (terms not confirmed first-hand); search link unconfirmed"
+   },
+   "features": [
+    {
+     "group": "core",
+     "name": "Tags",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/jobs/tags/ tag cloud with counts"
+    },
+    {
+     "group": "core",
+     "name": "Salary on listings",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "salary on cards"
+    },
+    {
+     "group": "core",
+     "name": "Sort by salary or date",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Sort"
+    },
+    {
+     "group": "core",
+     "name": "RSS and JSON feeds",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "RSS feed of any search (Jobicy listings)"
+    }
+   ]
+  },
+  "weworkremotely.com": {
+   "sources": [
+    "https://weworkremotely.com/"
+   ],
+   "use": {
+    "api": "RSS feeds per category (not used)",
+    "verse_uses": "search link only (unconfirmed pattern); no data used"
+   },
+   "features": [
+    {
+     "group": "core",
+     "name": "Categories",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Category filter"
+    },
+    {
+     "group": "core",
+     "name": "Top remote companies",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/jobs/companies/ with job counts"
+    },
+    {
+     "group": "core",
+     "name": "Job alerts",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "saved searches on the device"
+    },
+    {
+     "group": "core",
+     "name": "Saved jobs",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Save"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "search across several keyless job sources (Remotive, Arbeitnow, Himalayas, USAJOBS)",
+  "filters: remote, type, posted date, salary",
+  "saved jobs and an application tracker on the device",
+  "saved searches with \"new since you last looked\"",
+  "job detail view"
+ ],
+ "verse_extra": [
+  "no account, no tracking, no fake scam score",
+  "remote jobs from a plain-words ask"
+ ],
+ "first_page": "Jobs page /jobs/ for job seekers who want listings without a profile. First: one search across keyless public job feeds with filters (remote, type, date, salary when given), a detail view, save and a tracker (saved, applied, interview, offer) kept on the device, and saved searches that mark what is new. Will not build: profiles, Easy Apply, recruiter messaging or paid insights. Built 2026-10-26."
+}

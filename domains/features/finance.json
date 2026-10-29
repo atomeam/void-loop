@@ -1,0 +1,4779 @@
+{
+ "floor": "finance",
+ "verse_page": "/markets/",
+ "researched": "2026-10-25",
+ "sites": {
+  "finance.yahoo.com": {
+   "sources": [
+    "https://finance.yahoo.com/",
+    "https://help.yahoo.com/kb/market-data-research-tools-yahoo-finance-sln24381.html",
+    "https://help.yahoo.com/kb/SLN36623.html",
+    "https://help.yahoo.com/kb/SLN29117.html",
+    "https://help.yahoo.com/kb/yahoo-finance-plus"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Quote page",
+     "detail": "Price, change, day range, 52-week range, volume, market cap, P/E, EPS, dividend, for stocks, ETFs, funds, indices, FX, futures, crypto",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/: price, change, previous close, open, day range, 52-week range, volume, market cap (crypto only) for shares, ETFs, indices, currency pairs and coins; no P/E, EPS, dividend or futures"
+    },
+    {
+     "group": "core",
+     "name": "Interactive chart",
+     "detail": "Price chart with ranges 1D to max, line/candle, comparisons",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/: line chart 1D, 5D, 1M, 6M, YTD, 1Y, 5Y, Max with a hover and arrow-key readout and a two-symbol comparison; no candles or indicators"
+    },
+    {
+     "group": "core",
+     "name": "Market overview",
+     "detail": "Indices, top gainers/losers, most active, trending tickers, sectors",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/: a strip of indices, bitcoin, ether and EUR/USD and the top three gainers and losers among twelve large US stocks; no sectors, most active or trending; plus the Verse reports daily wrap; /markets/caps/ ranks the 50 largest coins by market cap"
+    },
+    {
+     "group": "core",
+     "name": "Watchlists",
+     "detail": "Lists of symbols with live prices, multiple lists, columns",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/markets/: a watchlist kept on the device (20 symbols), refreshed every minute while the page is open, last prices offline, a link that carries the list; one list, no custom columns"
+    },
+    {
+     "group": "core",
+     "name": "Portfolios",
+     "detail": "Holdings with lots, cost basis, day and total gain, import/link brokerage",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Financial news",
+     "detail": "News per ticker and market, Yahoo Finance originals and partner feeds",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/ Verse reports: a daily market wrap and a 'why is X moving' line written from the price data (a validated draft, polished by the free model, no cause claimed, labelled with its sources and time); no headlines or partner feeds (no free feed is permitted for this use)"
+    },
+    {
+     "group": "core",
+     "name": "Financial statements",
+     "detail": "Income statement, balance sheet, cash flow, annual/quarterly",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Statistics and profile",
+     "detail": "Valuation measures, margins, ownership, company profile and executives",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Historical data",
+     "detail": "Daily/weekly/monthly OHLC history table with download (CSV)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/: the close on any day back to 1990 (Close on a day) and the chart to Max; no table or CSV download"
+    },
+    {
+     "group": "core",
+     "name": "Search by name or ticker",
+     "detail": "Autocompleting symbol search",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/: a ticker, or one of about 60 company names, indices, 30 coins and the ECB currency pairs; no full-text search of every listed company"
+    },
+    {
+     "group": "core",
+     "name": "Currency converter",
+     "detail": "FX rates and conversion",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/ links to /convert/ and shows any ECB currency pair with its rate chart"
+    },
+    {
+     "group": "power",
+     "name": "Stock screener",
+     "detail": "Prebuilt screeners and custom saved screeners by filters",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/markets/screener/: filters over a small fixed universe (12 large US stocks, 4 indices, 30 coins) by the move, distance from the high and volume against average, with a chart and a watchlist star on every row; not every listed company"
+    },
+    {
+     "group": "power",
+     "name": "Price alerts",
+     "detail": "Alerts when a symbol crosses a price or moves by percent",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Analyst estimates and ratings",
+     "detail": "EPS/revenue estimates, recommendation trends, price targets",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Earnings calendar",
+     "detail": "Earnings, IPO, splits and economic events calendars",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Options chain",
+     "detail": "Calls and puts by expiry with greeks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Holders",
+     "detail": "Major, institutional and insider holders, insider transactions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Compare symbols",
+     "detail": "Overlay several tickers on one chart",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/markets/: Compare with another symbol draws both as percent change over the chosen range"
+    },
+    {
+     "group": "power",
+     "name": "Technical indicators",
+     "detail": "Moving averages, RSI, MACD, Bollinger on chart",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Conversations",
+     "detail": "Per-ticker community message board",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share quote or article",
+     "detail": "Share links to quotes, charts and stories",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/markets/: Copy link carries the symbol, range and day; the watchlist link carries the list"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app and widgets",
+     "detail": "App with watchlist widget, notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Data tables",
+     "detail": "Statements and history as readable tables",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Premium portfolio analytics",
+     "detail": "Performance trends, returns and risk analysis (Bronze)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Fair value and research reports",
+     "detail": "Morningstar ratings, analyst research, model portfolios (Silver)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Advanced charts and smart screeners",
+     "detail": "25+ chart types, Smart Money and Top Holdings screeners, 40+ years downloadable history (Gold)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Ad-free",
+     "detail": "Ads removed on paid tiers",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "historical data table with CSV download",
+  "portfolio with cost basis and gain",
+  "per-ticker headlines and partner news (no free feed is permitted for this use; Verse reports covers what the data shows)",
+  "price alerts",
+  "financial statements, P/E and other fundamentals (no free, reliable, permitted source)",
+  "company market-cap ranking and a screener over every listed company (no free keyless source for share counts or the full list)"
+ ],
+ "verse_extra": [
+  "read-only Bitcoin address lookup (mempool.space)",
+  "refuses seed phrases and never holds keys",
+  "no ads",
+  "data source and delay said on every quote",
+  "close on any chosen day",
+  "works with the last saved prices offline",
+  "Verse reports: a daily wrap and a data-only 'why is it moving' line, validated so it never invents a number or a cause",
+  "/markets/caps/: the 50 largest coins by market cap, sortable, with 24h and 7d moves, volume and a 7d chart (coins only: no free source for company market caps)",
+  "/markets/screener/: a screener over a small, plainly labelled universe"
+ ],
+ "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "stockq.org": {
+    "url": "https://www.stockq.org/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.stockq.org/",
+     "https://m.stockq.org/taiwan/gas-price.php"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "波羅的海指數 恐慌指數 邪惡指數 替代能源 羅傑斯指數 REITs",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"reit\""
+     },
+     {
+      "name": "MSCI指數 農產品 全球匯率 債券指數 CDS信用違約交換 指數期貨",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"msci\", \"cds\""
+     },
+     {
+      "name": "AA級公司債指數",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "BBB級公司債指數",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"bbb\""
+     },
+     {
+      "name": "BC綜合公債券指數",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "吉利美GNMA債券",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"gnma\""
+     },
+     {
+      "name": "房利美FNMA債券",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"fnma\""
+     },
+     {
+      "name": "房地美FHLMC債券",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"fhlmc\""
+     },
+     {
+      "name": "上海A股",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "上海B股",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words"
+     },
+     {
+      "name": "Wordle",
+      "detail": "a pricing row on /taiwan/gas-price.php",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"wordle\""
+     },
+     {
+      "name": "BNT疫苗",
+      "detail": "a pricing row on /taiwan/gas-price.php",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"bnt\""
+     },
+     {
+      "name": "StockQ 全球股市指數 © All rights reserved",
+      "detail": "a pricing row on /taiwan/gas-price.php",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"stockq\", \"right\", \"reserv\""
+     }
+    ]
+   },
+   "stooq.com": {
+    "url": "https://stooq.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "robots.txt asks robots not to read it",
+    "features": []
+   },
+   "macrotrends.net": {
+    "url": "https://www.macrotrends.net/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "companiesmarketcap.com": {
+    "url": "https://companiesmarketcap.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://companiesmarketcap.com/",
+     "https://companiesmarketcap.com/companies-with-lowest-pb-ratio/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Largest Companies by Marketcap",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"company\"; not \"largest\", \"marketcap\""
+     },
+     {
+      "name": "DISCLAIMER",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"disclaimer\""
+     },
+     {
+      "name": "Links",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"link\""
+     },
+     {
+      "name": "Companies ranked by lowest P/B ratio",
+      "detail": "a heading on /companies-with-lowest-pb-ratio/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"company\"; not \"rank\", \"lowest\", \"ratio\""
+     },
+     {
+      "name": "Close Ad X",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"close\""
+     }
+    ]
+   },
+   "stockanalysis.com": {
+    "url": "https://stockanalysis.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://stockanalysis.com/",
+     "https://stockanalysis.com/news/amazon-16-billion-german-investment/",
+     "https://stockanalysis.com/help/",
+     "https://stockanalysis.com/support/",
+     "https://stockanalysis.com/about/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Search for a stock to start your analysis",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"search\", \"start\", \"analysi\""
+     },
+     {
+      "name": "The Complete Toolkit for Smarter Stock Research",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"complete\", \"toolkit\", \"smarter\""
+     },
+     {
+      "name": "Top Gainers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\"; not \"gainer\""
+     },
+     {
+      "name": "Top Losers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\"; not \"loser\""
+     },
+     {
+      "name": "Stock Market News",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\", \"market\", \"new\""
+     },
+     {
+      "name": "Consumer sentiment edges down in October, close to record lows",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"down\"; not \"consumer\", \"sentiment\", \"edge\""
+     },
+     {
+      "name": "National deficit balloons to $2T, up 12% YoY",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"national\", \"deficit\", \"balloon\", \"12\""
+     },
+     {
+      "name": "Industrial production rose 0.7% in September, Federal Reserve reports",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"industrial\", \"production\", \"rose\", \"0\""
+     },
+     {
+      "name": "Partner News",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"new\"; not \"partner\""
+     },
+     {
+      "name": "Recent IPOs",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"recent\", \"ipo\""
+     },
+     {
+      "name": "Upcoming IPOs",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"upcom\", \"ipo\""
+     },
+     {
+      "name": "Sources & Further Reading",
+      "detail": "a heading on /news/amazon-16-billion-german-investment/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"source\", \"read\"; not \"further\""
+     },
+     {
+      "name": "Related News",
+      "detail": "a heading on /news/amazon-16-billion-german-investment/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"relat\", \"new\""
+     },
+     {
+      "name": "Help Center",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"help\", \"center\""
+     },
+     {
+      "name": "General",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"general\""
+     },
+     {
+      "name": "Stock Analysis Pro",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"analysi\", \"pro\""
+     },
+     {
+      "name": "Newsletter",
+      "detail": "a heading on /help/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"newsletter\""
+     },
+     {
+      "name": "Get Support",
+      "detail": "a heading on /support/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"support\""
+     },
+     {
+      "name": "What sets us apart",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"what\", \"set\", \"apart\""
+     },
+     {
+      "name": "Our Team",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"our\", \"team\""
+     },
+     {
+      "name": "Kris Gunnars",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"kri\", \"gunnar\""
+     },
+     {
+      "name": "Orn Orri Olafsson",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"orn\", \"orri\", \"olafsson\""
+     },
+     {
+      "name": "Aubrey Wood",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"aubrey\", \"wood\""
+     },
+     {
+      "name": "Lincoln Olson",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"lincoln\", \"olson\""
+     },
+     {
+      "name": "Gabe Dunsmith",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"gabe\", \"dunsmith\""
+     },
+     {
+      "name": "Kendal March",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"kendal\", \"march\""
+     },
+     {
+      "name": "Kyle Vallans",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"kyle\", \"vallan\""
+     },
+     {
+      "name": "John Fraser-LeBlanc",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"john\", \"fraser\", \"leblanc\""
+     },
+     {
+      "name": "Vyomesh Kumar",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"vyomesh\", \"kumar\""
+     },
+     {
+      "name": "Company",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"company\""
+     },
+     {
+      "name": "What to do next",
+      "detail": "a heading on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"what\", \"next\""
+     },
+     {
+      "name": "Accurate data on 130,000+ global stocks, ETFs and funds",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"data\"; not \"accurate\", \"130\", \"000+\""
+     },
+     {
+      "name": "Powerful stock screener with hundreds of filters",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"powerful\", \"screener\", \"hundr\""
+     },
+     {
+      "name": "Decades of financials, statistics and interactive charts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\"; not \"decade\", \"statistic\", \"interactive\""
+     },
+     {
+      "name": "Analyst ratings, price targets and forecasts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"analyst\", \"rating\", \"target\""
+     },
+     {
+      "name": "Watchlists, portfolios and custom price alerts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"watchlist\", \"portfolio\", \"price\"; not \"custom\""
+     },
+     {
+      "name": "LinkedIn",
+      "detail": "a list item on /about/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"linkedin\""
+     },
+     {
+      "name": "Send Message",
+      "detail": "a button on /support/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"send\", \"message\""
+     },
+     {
+      "name": "Symbol",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"symbol\""
+     },
+     {
+      "name": "AIOK",
+      "detail": "a pricing row on /",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"aiok\""
+     }
+    ]
+   },
+   "finviz.com": {
+    "url": "https://finviz.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://finviz.com/",
+     "https://finviz.com/elite",
+     "https://finviz.com/index/SPX?p=d",
+     "https://finviz.com/index/COMP?p=d",
+     "https://finviz.com/index/DJI?p=d",
+     "https://finviz.com/stock?t=IWM&p=d"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Smarter, Faster Stock Research Starts with Elite",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"smarter\", \"faster\", \"research\""
+     },
+     {
+      "name": "Gain Clarity in Financial Markets",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\", \"market\"; not \"gain\", \"clarity\""
+     },
+     {
+      "name": "Interactive Multi-layout Charts",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"chart\"; not \"interactive\", \"multi\", \"layout\""
+     },
+     {
+      "name": "Award-Winning Screener with Unmatched Filtering, Charting, and Views",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"award\", \"winn\", \"screener\", \"unmatch\""
+     },
+     {
+      "name": "Real-time Data Included in Every Elite Plan",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"time\", \"data\"; not \"real\", \"includ\""
+     },
+     {
+      "name": "Deep Insights into Every ETF Including Holdings and More",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"every\", \"etf\"; not \"deep\", \"insight\""
+     },
+     {
+      "name": "Unlimited Email Alerts and Push Notifications",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"unlimit\", \"email\", \"alert\", \"push\""
+     },
+     {
+      "name": "Export Financial Data and Build Automated Workflow",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\", \"data\"; not \"export\", \"build\""
+     },
+     {
+      "name": "Become an Elite Investor",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"become\", \"elite\", \"investor\""
+     },
+     {
+      "name": "Subscribe to Elite",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"subscribe\", \"elite\""
+     },
+     {
+      "name": "Elite Yearly",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"elite\", \"yearly\""
+     },
+     {
+      "name": "Becoming a Subscriber",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"becom\", \"subscriber\""
+     },
+     {
+      "name": "Managing Your Subscription",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"manag\", \"subscription\""
+     },
+     {
+      "name": "Refund Policy",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"refund\", \"policy\""
+     },
+     {
+      "name": "Data and Tickers",
+      "detail": "a heading on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"data\"; not \"ticker\""
+     },
+     {
+      "name": "$SPX",
+      "detail": "a heading on /index/SPX?p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"spx\""
+     },
+     {
+      "name": "S&P 500",
+      "detail": "a heading on /index/SPX?p=d",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"500\""
+     },
+     {
+      "name": "$COMP",
+      "detail": "a heading on /index/COMP?p=d",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"comp\""
+     },
+     {
+      "name": "Nasdaq Composite Index",
+      "detail": "a heading on /index/COMP?p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"nasdaq\"; not \"composite\", \"index\""
+     },
+     {
+      "name": "$DJI",
+      "detail": "a heading on /index/DJI?p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"dji\""
+     },
+     {
+      "name": "Dow Jones Industrial Average",
+      "detail": "a heading on /index/DJI?p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"dow\", \"jone\"; not \"industrial\", \"average\""
+     },
+     {
+      "name": "IWM",
+      "detail": "a heading on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"iwm\""
+     },
+     {
+      "name": "iShares Russell 2000 Index Fund",
+      "detail": "a heading on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"ishare\", \"russell\", \"2000\", \"index\""
+     },
+     {
+      "name": "Institutional Ownership",
+      "detail": "a heading on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"institutional\", \"ownership\""
+     },
+     {
+      "name": "Log in with your free Finviz account",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"account\"; not \"log\", \"finviz\""
+     },
+     {
+      "name": "Free Elite trial",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"elite\", \"trial\""
+     },
+     {
+      "name": "Monthly — $39.50 USD / month",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"usd\"; not \"monthly\", \"39\", \"50\""
+     },
+     {
+      "name": "Annual — $299.50 USD / year",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"usd\"; not \"annual\", \"299\", \"50\""
+     },
+     {
+      "name": "On the Pricing page, click “Try Elite for Free”",
+      "detail": "a list item on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"pric\"; not \"click\", \"try\", \"elite\""
+     },
+     {
+      "name": "Elite Account",
+      "detail": "a button on /elite",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"account\"; not \"elite\""
+     },
+     {
+      "name": "Annual billing Save 37%",
+      "detail": "a button on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"annual\", \"bill\", \"save\", \"37\""
+     },
+     {
+      "name": "Monthly billing",
+      "detail": "a button on /elite",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"monthly\", \"bill\""
+     },
+     {
+      "name": "Candle - TA",
+      "detail": "a button on /index/SPX?p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"candle\""
+     },
+     {
+      "name": "Full Chart",
+      "detail": "a button on /index/SPX?p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"chart\"; not \"full\""
+     },
+     {
+      "name": "Show All",
+      "detail": "a button on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"show\""
+     },
+     {
+      "name": "Open in Screener",
+      "detail": "a button on /stock?t=IWM&p=d",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"open\"; not \"screener\""
+     },
+     {
+      "name": "Advancing 37.1% (2081) Declining (3255) 58.0%",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"1\"; not \"advanc\", \"37\", \"2081\""
+     },
+     {
+      "name": "market_sentiment - Market Sentiment Price Chart",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\", \"price\", \"chart\"; not \"sentiment\""
+     },
+     {
+      "name": "Ticker",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"ticker\""
+     },
+     {
+      "name": "A AIOK",
+      "detail": "a pricing row on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"aiok\""
+     }
+    ]
+   },
+   "barchart.com": {
+    "url": "https://www.barchart.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.barchart.com/",
+     "https://www.barchart.com/education/site-features",
+     "https://www.barchart.com/solutions/market-category/cash-commodities",
+     "https://www.barchart.com/solutions/data/agindex",
+     "https://www.barchart.com/stocks/price-surprises/bullish?orderBy=standardDeviation&orderDir=desc",
+     "https://www.barchart.com/stocks/performance/price-change/advances?orderBy=priceChange&orderDir=desc",
+     "https://www.barchart.com/stocks/most-active/price-volume-leaders?orderBy=priceVolume&orderDir=desc"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Markets Today",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"today\""
+     },
+     {
+      "name": "Major Markets Overview",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"major\", \"overview\""
+     },
+     {
+      "name": "Stock Market Leaders",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\", \"market\"; not \"leader\""
+     },
+     {
+      "name": "Most Popular ETF Funds",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"etf\"; not \"popular\", \"fund\""
+     },
+     {
+      "name": "My Watchlist",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"watchlist\""
+     },
+     {
+      "name": "BARCHART FREE NEWSLETTERS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"barchart\", \"newsletter\""
+     },
+     {
+      "name": "The Barchart Brief",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"barchart\", \"brief\""
+     },
+     {
+      "name": "Barchart Expert Deep Dives",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"barchart\", \"expert\", \"deep\", \"dive\""
+     },
+     {
+      "name": "S&P Sectors Market Map",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"sector\", \"map\""
+     },
+     {
+      "name": "Top 100 Stocks",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\", \"100\", \"stock\""
+     },
+     {
+      "name": "Major Market Indices",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\", \"indice\"; not \"major\""
+     },
+     {
+      "name": "Site Education",
+      "detail": "a heading on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"education\""
+     },
+     {
+      "name": "Barchart Trading Tip",
+      "detail": "a heading on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"trad\"; not \"barchart\", \"tip\""
+     },
+     {
+      "name": "More Resources",
+      "detail": "a heading on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"resource\""
+     },
+     {
+      "name": "Physical Commodities",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"physical\", \"commodity\""
+     },
+     {
+      "name": "Explore our Global Market Data Coverage",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"explore\", \"our\", \"global\""
+     },
+     {
+      "name": "How We Work With You",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"work\"; not \"how\""
+     },
+     {
+      "name": "Benchmarking & Price Validation",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"benchmark\", \"validation\""
+     },
+     {
+      "name": "Smarter Procurement Timing",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"smarter\", \"procurement\", \"timing\""
+     },
+     {
+      "name": "Supply-Demand Awareness",
+      "detail": "a heading on /solutions/market-category/cash-commodities",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"supply\", \"demand\", \"aware\""
+     },
+     {
+      "name": "Barchart Grain Prices & Yield Forecasts",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"barchart\", \"grain\", \"yield\""
+     },
+     {
+      "name": "Empowering Your Decisions with Data Insights",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"data\"; not \"empower\", \"decision\", \"insight\""
+     },
+     {
+      "name": "Software",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"software\""
+     },
+     {
+      "name": "Market Data",
+      "detail": "a heading on /solutions/data/agindex",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\", \"data\""
+     },
+     {
+      "name": "Bullish Price Surprises For All US Exchanges",
+      "detail": "a heading on /stocks/price-surprises/bullish?orderBy=standardDeviation&orderDir=desc",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"bullish\", \"surprise\", \"exchange\""
+     },
+     {
+      "name": "All US Exchanges Price Change Advances",
+      "detail": "a heading on /stocks/performance/price-change/advances?orderBy=priceChange&orderDir=desc",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\"; not \"exchange\", \"change\", \"advance\""
+     },
+     {
+      "name": "All US Exchanges Price Volume Leaders",
+      "detail": "a heading on /stocks/most-active/price-volume-leaders?orderBy=priceVolume&orderDir=desc",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"price\", \"volume\"; not \"exchange\", \"leader\""
+     },
+     {
+      "name": "MSFT +3.43 (+0.66%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"msft\", \"3\", \"43\", \"0\""
+     },
+     {
+      "name": "GOOGL -4.01 (-1.24%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"1\"; not \"googl\", \"4\", \"01\""
+     },
+     {
+      "name": "CVX +6.53 (+2.88%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"6\"; not \"cvx\", \"53\", \"2\""
+     },
+     {
+      "name": "KO -2.63 (-2.76%)",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"2\", \"63\", \"76\""
+     },
+     {
+      "name": "How to Use Barchart Like a Pro (29:43)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"how\", \"barchart\", \"like\", \"pro\""
+     },
+     {
+      "name": "How to Navigate Barchart.com | Quick Start Guide (6:12)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"com\"; not \"how\", \"navigate\", \"barchart\""
+     },
+     {
+      "name": "Using Barchart Tools to Find Interesting Stocks (8:00)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"barchart\", \"find\", \"interest\""
+     },
+     {
+      "name": "Find Winning Trades In Pre-Market & Post-Market (7:08)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"trade\", \"pre\"; not \"find\", \"winn\""
+     },
+     {
+      "name": "Top 5 Tools Every Trader & Investor Should Know (2:37)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\", \"5\", \"every\"; not \"trader\""
+     },
+     {
+      "name": "A Beginner's Guide to ETFs (6:44)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"etf\", \"6\"; not \"beginner\", \"guide\""
+     },
+     {
+      "name": "Top 5 Best Indicators for Traders and Investors (4:36)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\", \"5\"; not \"best\", \"indicator\""
+     },
+     {
+      "name": "Symbol Notes (8:43)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"symbol\"; not \"note\", \"8\", \"43\""
+     },
+     {
+      "name": "How to Find Gaps on Barchart (6:15)",
+      "detail": "a list item on /education/site-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"how\", \"find\", \"gap\", \"barchart\""
+     }
+    ]
+   },
+   "investing.com": {
+    "url": "https://www.investing.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "tradingview.com": {
+    "url": "https://www.tradingview.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.tradingview.com/",
+     "https://www.tradingview.com/pricing/?source=header_go_pro_button&feature=start_free_trial",
+     "https://www.tradingview.com/markets/cryptocurrencies/prices-all/",
+     "https://www.tradingview.com/symbols/NASDAQ-ANTHROPIC/",
+     "https://www.tradingview.com/symbols/NASDAQ-OPENAI/",
+     "https://www.tradingview.com/symbols/NASDAQ-ANDURIL/",
+     "https://www.tradingview.com/symbols/NASDAQ-REVOLUT/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Where the world does markets",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"where\", \"world\", \"doe\""
+     },
+     {
+      "name": "Supercharged Supercharts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"supercharg\", \"superchart\""
+     },
+     {
+      "name": "Market summary",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"summary\""
+     },
+     {
+      "name": "Bitcoin dominance",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"bitcoin\"; not \"dominance\""
+     },
+     {
+      "name": "Featured IPOs",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"featur\", \"ipo\""
+     },
+     {
+      "name": "Community ideas",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"community\", \"idea\""
+     },
+     {
+      "name": "Indicators and strategies",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"indicator\", \"strategy\""
+     },
+     {
+      "name": "Top stories",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"top\"; not \"story\""
+     },
+     {
+      "name": "US stocks",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\""
+     },
+     {
+      "name": "Community trends",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"community\", \"trend\""
+     },
+     {
+      "name": "Trade ideas",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"trade\"; not \"idea\""
+     },
+     {
+      "name": "Highest volume stocks",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"volume\", \"stock\"; not \"highest\""
+     },
+     {
+      "name": "Most volatile stocks",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"volatile\""
+     },
+     {
+      "name": "Stock gainers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"gainer\""
+     },
+     {
+      "name": "Stock losers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\"; not \"loser\""
+     },
+     {
+      "name": "Earnings Calendar",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"earn\", \"calendar\""
+     },
+     {
+      "name": "US stocks news",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"stock\", \"new\""
+     },
+     {
+      "name": "Crypto",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"crypto\""
+     },
+     {
+      "name": "Crypto gainers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"crypto\"; not \"gainer\""
+     },
+     {
+      "name": "Crypto losers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"crypto\"; not \"loser\""
+     },
+     {
+      "name": "Crypto news",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"crypto\", \"new\""
+     },
+     {
+      "name": "Futures and commodities",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"future\", \"commodity\""
+     },
+     {
+      "name": "Energy futures",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"energy\", \"future\""
+     },
+     {
+      "name": "Metals futures",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"metal\", \"future\""
+     },
+     {
+      "name": "Futures news",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"new\"; not \"future\""
+     },
+     {
+      "name": "Forex and currencies",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"currency\"; not \"forex\""
+     },
+     {
+      "name": "Forex performance",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"forex\", \"performance\""
+     },
+     {
+      "name": "Forex news",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"new\"; not \"forex\""
+     },
+     {
+      "name": "Economy",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"economy\""
+     },
+     {
+      "name": "Global inflation map",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"global\", \"inflation\", \"map\""
+     },
+     {
+      "name": "Economic Calendar",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"economic\", \"calendar\""
+     },
+     {
+      "name": "Trading and brokers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"trad\"; not \"broker\""
+     },
+     {
+      "name": "Free, until you’re ready",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"until\", \"ready\""
+     },
+     {
+      "name": "Plans for every level of ambition",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"every\"; not \"plan\", \"level\", \"ambition\""
+     },
+     {
+      "name": "Global markets in your hand",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"market\"; not \"global\", \"hand\""
+     },
+     {
+      "name": "On every street",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"every\"; not \"street\""
+     },
+     {
+      "name": "Say hello, Wall St✌️",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"say\", \"hello\", \"wall\""
+     },
+     {
+      "name": "On any device",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"device\""
+     },
+     {
+      "name": "Love in every #TradingView",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"every\"; not \"love\", \"tradingview\""
+     },
+     {
+      "name": "Gift a subscription",
+      "detail": "a heading on /pricing/?source=header_go_pro_button&feature=start_free_trial",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"gift\", \"subscription\""
+     }
+    ]
+   },
+   "marketwatch.com": {
+    "url": "https://www.marketwatch.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "robots.txt asks robots not to read it",
+    "features": []
+   },
+   "google.com": {
+    "url": "https://www.google.com/finance/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.google.com/finance/",
+     "https://about.google/products/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Helpful products, built with you in mind",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"helpful\", \"product\", \"built\", \"mind\""
+     },
+     {
+      "name": "Search in new ways",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"search\", \"way\""
+     },
+     {
+      "name": "Chat with Gemini, your personal AI assistant",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"chat\", \"gemini\", \"personal\", \"assistant\""
+     },
+     {
+      "name": "Get more done with Android and Pixel",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"done\", \"android\", \"pixel\""
+     },
+     {
+      "name": "Try new AI products and experiments",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"try\", \"product\", \"experiment\""
+     },
+     {
+      "name": "Flow",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"flow\""
+     },
+     {
+      "name": "Discover more ways to use AI in our products",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"discover\", \"way\", \"our\", \"product\""
+     },
+     {
+      "name": "Google products",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"google\", \"product\""
+     },
+     {
+      "name": "Filter by",
+      "detail": "a heading on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"filter\""
+     },
+     {
+      "name": "Product support",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"product\", \"support\""
+     },
+     {
+      "name": "Google Store",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"google\", \"store\""
+     },
+     {
+      "name": "Google Account",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"account\"; not \"google\""
+     },
+     {
+      "name": "Accessibility support",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"accessibility\", \"support\""
+     },
+     {
+      "name": "Android",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"android\""
+     },
+     {
+      "name": "Chrome",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"chrome\""
+     },
+     {
+      "name": "Gemini",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"gemini\""
+     },
+     {
+      "name": "Gmail",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"gmail\""
+     },
+     {
+      "name": "Google Calendar",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"google\", \"calendar\""
+     },
+     {
+      "name": "Google Docs",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"google\", \"doc\""
+     },
+     {
+      "name": "Google Maps",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"google\", \"map\""
+     },
+     {
+      "name": "Google Photos",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"google\", \"photo\""
+     },
+     {
+      "name": "Google Play",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"google\", \"play\""
+     },
+     {
+      "name": "Pixel",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"pixel\""
+     },
+     {
+      "name": "YouTube",
+      "detail": "a list item on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"youtube\""
+     },
+     {
+      "name": "Latin America",
+      "detail": "a button on /finance/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"latin\", \"america\""
+     },
+     {
+      "name": "add Create a portfolio",
+      "detail": "a button on /finance/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"add\", \"portfolio\"; not \"create\""
+     },
+     {
+      "name": "% Change",
+      "detail": "a button on /finance/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"change\""
+     },
+     {
+      "name": "Prev Close",
+      "detail": "a button on /finance/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"prev\", \"close\""
+     },
+     {
+      "name": "Mkt Cap",
+      "detail": "a button on /finance/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"cap\"; not \"mkt\""
+     },
+     {
+      "name": "list View all lists",
+      "detail": "a button on /finance/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"list\"; not \"view\""
+     },
+     {
+      "name": "3 sites",
+      "detail": "a button on /finance/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"3\", \"site\""
+     },
+     {
+      "name": "Play silent looping video Pause silent looping video",
+      "detail": "a button on /products/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"play\", \"silent\", \"loop\", \"video\""
+     },
+     {
+      "name": "Symbols",
+      "detail": "a pricing row on /finance/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"symbol\""
+     },
+     {
+      "name": "SIXE Energy",
+      "detail": "a pricing row on /finance/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"sixe\", \"energy\""
+     },
+     {
+      "name": "SIXR Staples",
+      "detail": "a pricing row on /finance/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"sixr\", \"staple\""
+     },
+     {
+      "name": "SIXC Communications",
+      "detail": "a pricing row on /finance/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"sixc\", \"communication\""
+     },
+     {
+      "name": "SIXY Discretionary",
+      "detail": "a pricing row on /finance/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows none of its words; not \"sixy\", \"discretionary\""
+     },
+     {
+      "name": "SIXM Financials",
+      "detail": "a pricing row on /finance/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\"; not \"sixm\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "波羅的海指數 恐慌指數 邪惡指數 替代能源 羅傑斯指數 REITs",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "MSCI指數 農產品 全球匯率 債券指數 CDS信用違約交換 指數期貨",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "AA級公司債指數",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "BBB級公司債指數",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "BC綜合公債券指數",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "吉利美GNMA債券",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "房利美FNMA債券",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "房地美FHLMC債券",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "上海A股",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "上海B股",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "Wordle",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "BNT疫苗",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "StockQ 全球股市指數 © All rights reserved",
+    "sites": [
+     "stockq.org"
+    ]
+   },
+   {
+    "name": "DISCLAIMER",
+    "sites": [
+     "companiesmarketcap.com"
+    ]
+   },
+   {
+    "name": "National deficit balloons to $2T, up 12% YoY",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Industrial production rose 0.7% in September, Federal Reserve reports",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Recent IPOs",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Upcoming IPOs",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Help Center",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "General",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Newsletter",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Get Support",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "What sets us apart",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Our Team",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Kris Gunnars",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Orn Orri Olafsson",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Aubrey Wood",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Lincoln Olson",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Gabe Dunsmith",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Kendal March",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Kyle Vallans",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "John Fraser-LeBlanc",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Vyomesh Kumar",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "What to do next",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "LinkedIn",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Send Message",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "AIOK",
+    "sites": [
+     "stockanalysis.com"
+    ]
+   },
+   {
+    "name": "Award-Winning Screener with Unmatched Filtering, Charting, and Views",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Unlimited Email Alerts and Push Notifications",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Become an Elite Investor",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Subscribe to Elite",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Elite Yearly",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Becoming a Subscriber",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Managing Your Subscription",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Refund Policy",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "$SPX",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "$DJI",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "IWM",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "iShares Russell 2000 Index Fund",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Institutional Ownership",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Free Elite trial",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Annual billing Save 37%",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Monthly billing",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Candle - TA",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Show All",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "Ticker",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "A AIOK",
+    "sites": [
+     "finviz.com"
+    ]
+   },
+   {
+    "name": "BARCHART FREE NEWSLETTERS",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "The Barchart Brief",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Barchart Expert Deep Dives",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Site Education",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "More Resources",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Physical Commodities",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Smarter Procurement Timing",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Supply-Demand Awareness",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Software",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "MSFT +3.43 (+0.66%)",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "KO -2.63 (-2.76%)",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "How to Use Barchart Like a Pro (29:43)",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "How to Find Gaps on Barchart (6:15)",
+    "sites": [
+     "barchart.com"
+    ]
+   },
+   {
+    "name": "Supercharged Supercharts",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Featured IPOs",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Community ideas",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Indicators and strategies",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Community trends",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Earnings Calendar",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Futures and commodities",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Energy futures",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Metals futures",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Forex performance",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Economy",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Global inflation map",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Economic Calendar",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Free, until you’re ready",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Say hello, Wall St✌️",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Gift a subscription",
+    "sites": [
+     "tradingview.com"
+    ]
+   },
+   {
+    "name": "Helpful products, built with you in mind",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Search in new ways",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Chat with Gemini, your personal AI assistant",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Get more done with Android and Pixel",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Try new AI products and experiments",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Flow",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Discover more ways to use AI in our products",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Google products",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Filter by",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Product support",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Google Store",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Accessibility support",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Android",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Chrome",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Gemini",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Gmail",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Google Calendar",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Google Docs",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Google Maps",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Google Photos",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Google Play",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Pixel",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "YouTube",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Latin America",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "% Change",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "3 sites",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "Play silent looping video Pause silent looping video",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "SIXE Energy",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "SIXR Staples",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "SIXC Communications",
+    "sites": [
+     "google.com"
+    ]
+   },
+   {
+    "name": "SIXY Discretionary",
+    "sites": [
+     "google.com"
+    ]
+   }
+  ],
+  "queued": [
+   {
+    "target": "feature:companiesmarketcap-c-b38ba761",
+    "feature": "DISCLAIMER",
+    "host": "companiesmarketcap.com",
+    "at": "2026-10-26",
+    "id": "mvpkt1u7"
+   }
+  ]
+ },
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "barchart.com": {
+    "url": "https://www.barchart.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Keys handled: Escape, Enter, ArrowLeft, ArrowUp, ArrowRight, ArrowDown",
+      "detail": "shortcut, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/angular-P2S2TZJH.js@243542"
+     },
+     {
+      "name": "Keys handled: NYSE, date, growth1y, growth5y, Range, OHLC, Renko, Baseline",
+      "detail": "shortcut, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@798683"
+     },
+     {
+      "name": "Keys handled: brightness, ArrowUp, ArrowDown, Tab, Enter",
+      "detail": "shortcut, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@430722"
+     },
+     {
+      "name": "Download links",
+      "detail": "export, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[download] x2"
+     },
+     {
+      "name": "Exports a file named like true",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@1604689"
+     },
+     {
+      "name": "Exports as image/png",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@1899481"
+     },
+     {
+      "name": "Print button",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@2311894"
+     },
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/global-styles-KZZHXL65.css"
+     },
+     {
+      "name": "Embeds account.anonymised.io",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds consentcdn.cookiebot.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds headway-widget.net",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds www.youtube.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "API call api.anonymised.io/v2/debug?aav",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.anonymised.io/v3/anon/interest-scores?aav",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.anonymised.io/v3/interest-scores?aav",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.anonymised.io/v3/public/pps?aav",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.id5-sync.com/analytics/336/id5-api-js",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.intentiq.[token]?ABTestingConfigurationSource&abtg&at&dpi&dpn&gdpr&",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call id5-sync.com/api/config/prebid",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call id5-sync.com/gm/v3",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API path /api/v1",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@1385405"
+     },
+     {
+      "name": "API path /api/v1/quotes/get",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@1384917"
+     },
+     {
+      "name": "API path /api/v1/screeners",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@2050801"
+     },
+     {
+      "name": "API path /api/v1/user/hydrate",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@2788268"
+     },
+     {
+      "name": "API path /api/v1/watchlist",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@563816"
+     },
+     {
+      "name": "API path /api/v1/watchlist/batch",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@563442"
+     },
+     {
+      "name": "API path /api/v1/watchlist/replace",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@563628"
+     },
+     {
+      "name": "API path /api/v2/watchlists",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@2375137"
+     },
+     {
+      "name": "API path /data/widget/price-surprises",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@3966"
+     },
+     {
+      "name": "API path /export/image",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@2550456"
+     },
+     {
+      "name": "API path /share",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@2049772"
+     },
+     {
+      "name": "API path /share/news",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@1128175"
+     },
+     {
+      "name": "API path /socket.io",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/global-4GCQTWBD.js@236764"
+     },
+     {
+      "name": "API path [token]",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@989785"
+     },
+     {
+      "name": "Feature flag allowMutatingData",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@16804"
+     },
+     {
+      "name": "Feature flag allowOutsidePlotInteraction",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@262603"
+     },
+     {
+      "name": "Feature flag allowOverlap",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@74067"
+     },
+     {
+      "name": "Feature flag allowPointSelect",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@188394"
+     },
+     {
+      "name": "Feature flag allowTraversingTree",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@428894"
+     },
+     {
+      "name": "Feature flag bsEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/angular-P2S2TZJH.js@279778"
+     },
+     {
+      "name": "Feature flag buttonsEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@611141"
+     },
+     {
+      "name": "Feature flag disableExpiredAsterisk",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@757892"
+     },
+     {
+      "name": "Feature flag disableInteraction",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@546854"
+     },
+     {
+      "name": "Feature flag disableMouse",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@235292"
+     },
+     {
+      "name": "Feature flag disablePointer",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@235324"
+     },
+     {
+      "name": "Feature flag disableTouch",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@235308"
+     },
+     {
+      "name": "Feature flag enableMouseTracking",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@188464"
+     },
+     {
+      "name": "Feature flag enableSimulation",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@355318"
+     },
+     {
+      "name": "Feature flag panningEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@72469"
+     },
+     {
+      "name": "Feature flag showBullets",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@546683"
+     },
+     {
+      "name": "Feature flag showButtons",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@546668"
+     },
+     {
+      "name": "Feature flag showCheckbox",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@188423"
+     },
+     {
+      "name": "Feature flag showDelay",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@19197"
+     },
+     {
+      "name": "Feature flag showEmpty",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@73298"
+     },
+     {
+      "name": "Feature flag showExpandLink",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@123955"
+     },
+     {
+      "name": "Feature flag showFirstLabel",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@73311"
+     },
+     {
+      "name": "Feature flag showFullPath",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@425129"
+     },
+     {
+      "name": "Feature flag showGoToLatest",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@1066697"
+     },
+     {
+      "name": "Feature flag showInLegend",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/app-YSNNN4EA.js@580784"
+     },
+     {
+      "name": "Feature flag showLastLabel",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@73329"
+     }
+    ]
+   },
+   "companiesmarketcap.com": {
+    "url": "https://companiesmarketcap.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Download links",
+      "detail": "export, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[download] x1"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Embeds [token].safeframe.googlesyndication.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds [token].safeframe.googlesyndication.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds resources.infolinks.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds router.infolinks.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds s.seedtag.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds scripts.opti-digital.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds sync.connectad.io",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds u-las.4dex.io",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "API call api.btloader.com/country?o",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/exd?cv&sid&tid&upapi",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.id5-sync.com/analytics/1189/pbjs",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&fbp&gdpr&gdpr_consent&gpp",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gdpr_consent&iiqidtype&iiqloc",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call ex.ingage.tech/v1/openrtb",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call fastlane.rubiconproject.com/a/api/fastlane.json?account_id&alt_size_ids",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Input of type search",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=search] x1"
+     },
+     {
+      "name": "Keeps a database in the browser: 1",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "indexedDB"
+     },
+     {
+      "name": "Remembers a setting in the browser: BT_AA_DETECTION",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: BT_device",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: BT_tpc",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: UUID-ae6dd7anadbac",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: Y21haXNha3RhLm8",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _GESPSK-crwdcntrl.net",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _cc_id",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _cc_id_update_ts",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _gppHash",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _iiq_ch",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _iiq_fdata",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _iiq_fdata_270675768",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _iiq_fdata_768420746",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _iiq_sync_270675768",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _iiq_sync_768420746",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _li_duid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _pubcid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _pubcid_exp",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: aps:[token]:deviceSignal/sua",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: aps:[token]:idVendors/enabled",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: aps:[token]:sessionMarker/marker",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: btUserCountry",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: btUserCountryExpiry",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: btUserIsFromRestrictedCountry",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: cto_bidid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: cto_bundle",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_cached_consent_data",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_cached_consent_data_exp",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_cst",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_exp",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_extensions",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_last",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_privacy",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_privacy_exp",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_v2_6067566412713894",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_v2_8755025021015689",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: id5id_v2_signature",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: il_cuid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     }
+    ]
+   },
+   "finviz.com": {
+    "url": "https://finviz.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "URL parameter ?confirm",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9913.v1.7e44384b.js@81799"
+     },
+     {
+      "name": "URL parameter ?generate",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "5716.v1.7918fbe3.js@78506"
+     },
+     {
+      "name": "URL parameter ?index",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "5441.v1.1db84f0b.js@41936"
+     },
+     {
+      "name": "URL parameter ?settings",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@250435"
+     },
+     {
+      "name": "URL parameter ?sidebar",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@250417"
+     },
+     {
+      "name": "URL parameter ?source",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9245.v1.a5484ae4.js@94815"
+     },
+     {
+      "name": "URL parameter ?t",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@200630"
+     },
+     {
+      "name": "Drag and drop files or items",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "8932.v1.a3d3dc12.js@17885"
+     },
+     {
+      "name": "Paste images or text straight in",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "8932.v1.a3d3dc12.js@18632"
+     },
+     {
+      "name": "Embeds account.anonymised.io",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds ads.pubmatic.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds eb2.3lift.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds google-bidout-d.openx.net",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds gum.criteo.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds js-sec.indexww.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds onetag-sys.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds ssum.casalemedia.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds static.dtasrvr.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds sync.sparteo.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds uat5-a.investingchannel.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds www.googletagmanager.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "API call a.ad.gt/api/v1/collect",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.anonymised.io/v3/anon/interest-scores?aav",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.anonymised.io/v3/interest-scores?aav",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/country?o",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/exd?cv&sid&tid&upapi",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.id5-sync.com/analytics/1118/id5-api-js",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.id5-sync.com/analytics/1732/id5-api-js",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API path /api/alerts/ticker",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9245.v1.a5484ae4.js@137550"
+     },
+     {
+      "name": "API path /api/auth/google-one-tap",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "google_one_tap.v1.4bb072ef.js@1273"
+     },
+     {
+      "name": "API path /api/auto_save",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@188629"
+     },
+     {
+      "name": "API path /api/idea_delete",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@200782"
+     },
+     {
+      "name": "API path /api/idea_save",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@207024"
+     },
+     {
+      "name": "API path /api/ideas_load",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@204059"
+     },
+     {
+      "name": "API path /api/indices_data",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "5836.v1.a226df8a.js@14491"
+     },
+     {
+      "name": "API path /api/knowledge-base",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "5836.v1.a226df8a.js@10383"
+     },
+     {
+      "name": "API path /api/map_perf",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@1827"
+     },
+     {
+      "name": "API path /api/map_perf_groups${window.location.search}",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@2141"
+     },
+     {
+      "name": "API path /api/map_perf_screener",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@2014"
+     },
+     {
+      "name": "API path /api/map_sparklines",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "5716.v1.7918fbe3.js@89588"
+     },
+     {
+      "name": "API path /api/maps/counts",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@1891"
+     },
+     {
+      "name": "API path /api/market_sentiment${e}",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "2389.v1.364e3b8b.js@10580"
+     },
+     {
+      "name": "API path /api/newsletter/widget",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9913.v1.7e44384b.js@80934"
+     },
+     {
+      "name": "API path /api/portfolio_data",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@17123"
+     },
+     {
+      "name": "API path /api/portfolio_entry",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9913.v1.7e44384b.js@107210"
+     },
+     {
+      "name": "API path /api/portfolio_settings",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9913.v1.7e44384b.js@109090"
+     },
+     {
+      "name": "API path /api/portfolio_tickers",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9913.v1.7e44384b.js@108879"
+     },
+     {
+      "name": "API path /api/related-tickers",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@16995"
+     },
+     {
+      "name": "API path /api/set_cookie",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@17599"
+     },
+     {
+      "name": "API path /api/settings_submit",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "4482.v1.da33d88e.js@110157"
+     },
+     {
+      "name": "API path /api/stocks-why-moving/${e}",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "4446.v1.e35d2f8a.js@10591"
+     },
+     {
+      "name": "API path /api/stocks-why-moving/rate",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "4446.v1.e35d2f8a.js@13425"
+     },
+     {
+      "name": "API path /api/stocks-why-moving/rating/${e}",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "4446.v1.e35d2f8a.js@13175"
+     },
+     {
+      "name": "API path /api/suggestions",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@16659"
+     },
+     {
+      "name": "API path /api/suggestions/tickers",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@16821"
+     },
+     {
+      "name": "API path /api/ticker-flags",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@18746"
+     },
+     {
+      "name": "API path /api/tools_state",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3838.v1.415c3a28.js@524751"
+     },
+     {
+      "name": "API path /api/user-page-settings/${e}",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@18519"
+     },
+     {
+      "name": "API path /api/user-table-settings/${e}",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3826.v1.1a9495d5.js@18289"
+     }
+    ]
+   },
+   "investing.com": {
+    "url": "https://www.investing.com/",
+    "scanned": "2026-10-26",
+    "features": []
+   },
+   "macrotrends.net": {
+    "url": "https://www.macrotrends.net/",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "anti-bot",
+     "why": "a bot challenge stood in front of the page"
+    },
+    "features": [
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "v1"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "v1@216251"
+     },
+     {
+      "name": "Path kept from crawlers /Secure_Server/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /dev/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /labs/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /pma/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /sandbox/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /search/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /series/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /stats/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /stocks/stock-comparison",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /test/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   },
+   "stockanalysis.com": {
+    "url": "https://stockanalysis.com/",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "anti-bot",
+     "why": "a bot challenge stood in front of the page"
+    },
+    "features": [
+     {
+      "name": "Embeds www.googletagmanager.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Widget combobox",
+      "detail": "setting, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[role=combobox] x2"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "v1"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "v1@152657"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Skip to content link",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[href^=\"#main\"]"
+     },
+     {
+      "name": "Path kept from crawlers /e/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /p/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /sitemaps/ (37 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "stockq.org": {
+    "url": "https://www.stockq.org/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Section /commodity/ (37 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /fundcategory/ (131 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /funds/ (2429 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /future/ (47 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /index/ (540 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /stock/ (1391 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /taiwan/ (31 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /tv/ (46 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "stooq.com": {
+    "url": "https://stooq.com/",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "robots",
+     "why": "robots.txt disallows the page for every crawler"
+    },
+    "features": []
+   }
+  }
+ }
+}

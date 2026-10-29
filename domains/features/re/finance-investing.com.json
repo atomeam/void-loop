@@ -1,0 +1,51 @@
+{
+ "site": "www.investing.com",
+ "url": "https://www.investing.com/",
+ "scanned": "2026-10-26",
+ "status": 307,
+ "assetCount": 0,
+ "bytes": 0,
+ "html": {
+  "mobile": {
+   "title": "Just a moment...",
+   "lang": "en-us",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "ariaLabels": [
+    "Cloudflare, opens in a new tab",
+    "Privacy, opens in a new tab"
+   ],
+   "noscript": true
+  },
+  "desktop": {
+   "title": "",
+   "lang": ""
+  }
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "thirdParty": [
+  "brunhild.challenges.cloudflare.com",
+  "challenges.cloudflare.com"
+ ],
+ "services": [
+  "Cloudflare"
+ ],
+ "requests": [
+  "https://brunhild.challenges.cloudflare.[token].2.1.1-_0.PECW43h4o.[token]",
+  "https://challenges.cloudflare.[token].3.1.1-MnRPSMVpbrXpe2e.vb.DXxwvvOE1k.u.UJXJTQVlSGMNtVWd.[token].8.[token].[token].["
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}

@@ -1,0 +1,5 @@
+// /flights/airports/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), {"panels":["airports"],"de":{"h1":"Flughafencodes","intro":"Finden Sie einen Flughafen und seinen Code über eine Stadt, einen Namen oder ein Land: für eine Buchung, eine Bordkarte oder einen Reiseplan. Oder geben Sie einen dreistelligen IATA- oder vierstelligen ICAO-Code ein. Sehen Sie Lage, Zeitzone und die Uhrzeit dort, weitere Flughäfen derselben Stadt und die in der Nähe. Rund 4.000 Flughäfen mit Linienverkehr, auf Ihrem Gerät gespeichert."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/airports/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

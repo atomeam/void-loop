@@ -1,4 +1,4 @@
-// node --test tools/share.test.mjs: bring someone into your Void (frontier #11, first piece). One Durable Object per invite
+// node --test tools/share.test.mjs: bring someone into your Verse (frontier #11, first piece). One Durable Object per invite
 // relays stage changes between the tabs on it, and each tab shows the others' cursors as a faint presence.
 // lib/share.js is the room (who is in it, what may pass, how fast); share-worker/index.js is the Durable Object around it;
 // functions/api/share/ makes an invite (a signed-in member only) and hands a tab's WebSocket to the room.
@@ -102,7 +102,7 @@ test('an invite is made for a signed-in member only', async () => {
   assert.equal(typeof j.live, 'boolean');
 });
 
-test('a tab joins a room only with a real invite, from Void itself, by WebSocket; without the relay it is told so', async () => {
+test('a tab joins a room only with a real invite, from Verse itself, by WebSocket; without the relay it is told so', async () => {
   const room = await mintRoom(SECRET);
   const ws = (r, origin = 'https://a-to-mind.com', up = 'websocket') => new Request('https://a-to-mind.com/api/share/' + r, { headers: { upgrade: up, origin } });
   const forwarded = [];
@@ -118,7 +118,7 @@ test('a tab joins a room only with a real invite, from Void itself, by WebSocket
   assert.deepEqual(forwarded, ['id:' + room], 'one Durable Object per invite');
 });
 
-test('Void\'s guard hands an upgraded WebSocket through untouched', async () => {
+test('Verse\'s guard hands an upgraded WebSocket through untouched', async () => {
   resetGuard();
   const up = { status: 101, webSocket: {}, headers: new Headers() };
   const out = await guard({ request: new Request('https://a-to-mind.com/api/share/x'), env: {}, next: async () => up });
@@ -126,7 +126,7 @@ test('Void\'s guard hands an upgraded WebSocket through untouched', async () => 
 });
 
 test('"invite someone" is the ask; sharing a card stays the share skill', () => {
-  for (const a of ['invite someone', 'invite a friend', 'Invite someone into my Void', 'bring someone in', 'bring a friend into my void', 'share my void live'])
+  for (const a of ['invite someone', 'invite a friend', 'Invite someone into my Verse', 'bring someone in', 'bring a friend into my void', 'share my void live'])
     assert.ok(inviteSkill.match(a.toLowerCase(), a), a);
   for (const a of ['share this card', 'who invented the telephone', 'invite', 'how do i invite someone to a zoom call', 'send an invite to the party'])
     assert.ok(!inviteSkill.match(a.toLowerCase(), a), a);
@@ -224,4 +224,27 @@ test('a sticky\'s words pass too: plain text under the thing\'s key, cut to TEXT
   B.edited('k3x9q2ab.0', 'buy milk and eggs');
   assert.deepEqual(seenB, [['text', 'k3x9q2ab.0', 'buy milk']]);
   assert.deepEqual(seenA, [['text', 'k3x9q2ab.0', 'buy milk and eggs']]);
+});
+
+test('a public room (owner, 2026-10-23: the is-it crowd): joined by name without a signature, 150 at once, the crowd\'s moves only', async () => {
+  const { publicRoom, PUBLIC_ROOMS } = await import('../void-live-deploy/lib/share.js');
+  assert.deepEqual(publicRoom('public-is-it'), { id: 'is-it', max: 150 }); assert.ok(Object.isFrozen(PUBLIC_ROOMS));
+  for (const bad of ['public-chat', 'public-', 'is-it', 'public-__proto__', 'public-constructor', '', null]) assert.equal(publicRoom(bad), null, String(bad));
+  assert.deepEqual(clean(JSON.stringify({ t: 'cursor', x: 0.2, y: 0.3, flag: 'CA' })), { t: 'cursor', x: 0.2, y: 0.3, flag: 'CA' });
+  assert.deepEqual(clean(JSON.stringify({ t: 'cursor', x: 0.2, y: 0.3, flag: '<b>' })), { t: 'cursor', x: 0.2, y: 0.3 }, 'a flag is two capital letters or nothing');
+  assert.deepEqual(clean(JSON.stringify({ t: 'ripple', x: 2, y: 0.5 })), { t: 'ripple', x: 1, y: 0.5 });
+  assert.deepEqual(clean(JSON.stringify({ t: 'stamp', x: 0.1, y: 0.1, flag: 'DE' })), { t: 'stamp', x: 0.1, y: 0.1, flag: 'DE' });
+  assert.equal(clean(JSON.stringify({ t: 'stamp', x: 0.1, y: 0.1 })), null, 'a stamp needs a flag');
+  assert.equal(clean(JSON.stringify({ t: 'stamp', x: 0.1, y: 0.1, flag: 'usa' })), null);
+  const r = Room.forPublic('public-is-it'); assert.equal(r.max, 150); assert.equal(Room.forPublic('public-nope'), null);
+  const a = peer(), b = peer(); const ia = r.join(a.send), ib = r.join(b.send);
+  assert.equal(r.message(ia, JSON.stringify({ t: 'cursor', x: 0.5, y: 0.5, flag: 'FR' })), 1); assert.deepEqual(b.got.at(-1), { t: 'cursor', x: 0.5, y: 0.5, flag: 'FR', from: ia });
+  assert.equal(r.message(ia, JSON.stringify({ t: 'summon', ask: 'a clock' })), 0, 'a stranger puts nothing on anyone\'s stage');
+  assert.equal(r.message(ia, JSON.stringify({ t: 'text', key: 'abc.1', text: 'hi' })), 0, 'no words pass in a public room');
+  assert.equal(r.message(ib, JSON.stringify({ t: 'ripple', x: 0.4, y: 0.4 })), 1);
+  const full = Room.forPublic('public-is-it'); for (let i = 0; i < 150; i++) assert.ok(full.join(() => {})); assert.equal(full.join(() => {}), null, 'the 151st waits');
+  // the route: a public name is let through to the relay without a signature; an unknown public name is a 404; the invite path is unchanged
+  const ws = (room) => connect({ env: { SALT: SECRET, SHARE: { idFromName: (n) => n, get: () => ({ fetch: async () => new Response('relay', { status: 200 }) }) } }, params: { room }, request: new Request('https://a-to-mind.com/api/share/' + room, { headers: { upgrade: 'websocket' } }) });
+  assert.equal(await (await ws('public-is-it')).text(), 'relay'); assert.equal((await ws('public-chat')).status, 404);
+  const env2 = { SALT: SECRET }; assert.equal((await connect({ env: env2, params: { room: 'public-is-it' }, request: new Request('https://a-to-mind.com/api/share/public-is-it', { headers: { upgrade: 'websocket' } }) })).status, 503, 'no binding: not switched on yet');
 });

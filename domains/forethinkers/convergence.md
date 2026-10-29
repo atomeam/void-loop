@@ -49,6 +49,15 @@ nodes:
     date: 2026-10-01
     tracks: [life-extension]
     claim: "Phase-2 RCT (n=31): intermittent dasatinib+quercetin achieved ≥1-stage fibrosis improvement without MASH worsening in 47% vs 7% placebo (P=0.02); MASH resolution 53% vs 7%. snRNA-seq showed lower senescence and fibrosis signatures. Hypothesis-generating (small n). Nature Metabolism 1 Oct 2026; NCT05506488."
+  - id: blood-methylation-senescence-score
+    kind: shared-part
+    status: established
+    part: blood DNA-methylation score of senescence burden (p16, p14, p21) for picking senolytic trial participants
+    title: "Methylation-associated Gene Expression (MaGE): a non-invasive, in vivo measure of cellular senescence"
+    url: https://doi.org/10.64898/2026.09.29.26364335
+    date: 2026-10-01
+    tracks: [life-extension]
+    claim: "medRxiv preprint (Simpson ... LeBrasseur, Chandra; PMID 42856468). Elastic-net blood methylation proxies of p16INK4a, p14ARF and p21CIP1 expression, trained in Mayo MOA-2 and applied to 18,859 Generation Scotland volunteers: 45 Bonferroni-significant associations across 18 incident diseases and mortality; MaGE-p16 mortality HR 1.38 per SD (1.28-1.49). Weights not public as of 2026-10-14 (code on GitHub, coefficient files absent). Registry pass 2026-10-14: one senolytic trial enriches by burden, NCT07270120 (Ohio State, D+Q in SPMS, p16INK4a above cohort median, phase 1 single arm, n=30, not yet recruiting); no burden-selected trial has a primary result."
   - id: senolytic-burden-selects-responders
     kind: shared-part
     status: established
@@ -75,7 +84,16 @@ nodes:
     url: https://doi.org/10.1126/science.adx7825
     date: 2025-10-23
     tracks: [planet-restoration]
-    claim: "Science 390:361 (Manzello et al.): SST at or above 31 C for 40.7 days on average; 97.8-100% of A. palmata and A. cervicornis dead in the Keys and Dry Tortugas by March 2024 (52,356 colonies), 37.9% offshore southeast Florida. Gene banks prevented extirpation (Conserv Biol doi 10.1111/cobi.70168). Durusdinium elkhorn +1.9 C ED50 (Coral Reefs doi 10.1007/s00338-025-02652-7). First permitted cross-border outplant (Florida x Honduras) July 2025; Dry Tortugas side-by-side trial April 2026."
+    claim: "Science 390:361 (Manzello et al.): SST at or above 31 C for 40.7 days on average; 97.8-100% of A. palmata and A. cervicornis dead in the Keys and Dry Tortugas by March 2024 (52,356 colonies), 37.9% offshore southeast Florida. Gene banks prevented extirpation (Conserv Biol doi 10.1111/cobi.70168). Durusdinium elkhorn +1.9 C ED50 (Coral Reefs doi 10.1007/s00338-025-02652-7). First permitted cross-border outplant (Florida x Honduras) July 2025; Dry Tortugas side-by-side trial April 2026. Heat-dose ruler 2026-10-14 (NOAA CRW single-pixel): Key Biscayne 2025 peak DHW 7.07 (Baker: not a hard test); Dry Tortugas Nursery 2026 peak DHW 13.70 vs 2023 kill dose 14.35; six-month survival split still unpublished."
+  - id: florida-flonduran-heat-dose
+    kind: shared-part
+    status: established
+    part: NOAA CRW heat-dose table for Flonduran trial sites (Key Biscayne, Dry Tortugas) vs 2023 kill summers
+    title: "NOAA Coral Reef Watch Florida 5 km single-pixel virtual stations"
+    url: https://coralreefwatch.noaa.gov/product/vs_single_pixel_exp/florida_keys.php
+    date: 2026-10-14
+    tracks: [planet-restoration]
+    claim: "Single-pixel DHW files read 2026-10-14 (series through 2026-10-13). Key Biscayne Cluster peak DHW 7.07 in 2025 (never crossed CRW severe line of 8) vs 10.45 in 2026; Dry Tortugas Nursery peak 13.70 in 2026 vs 14.35 in 2023. Baker (WLRN 8 Jul 2026) called 2025 not a hard test. Regenerable CSV in domains/forethinkers/experiments/florida-heat-dose-2023-2026.csv. Dry Tortugas six-month Flonduran vs Florida-only survival still unpublished."
   - id: offline-character-mind-module
     kind: shared-part
     status: established
@@ -85,6 +103,15 @@ nodes:
     date: 2026-10-07
     tracks: [living-figures]
     claim: "54 x 54 x 13 mm, 17.1 g, 0.5 W idle / 1.5 W full load, wake word + ASR + Qwen2.5-0.5B + TTS with no cloud; 359.8 ms first token and 10.32 tokens/s (M5Stack model page, accessed 2026-10-07). Answers toy problem 1 at the part level. Too large for a 38 mm body, so the mind lives in the figure's home base; that layout is the next bench test."
+  - id: toy-mind-long-context-prefix-cache
+    kind: shared-part
+    status: established
+    part: 1,024-token context and cached fixed prefix on the AX630C toy mind
+    title: "Qwen2.5-HA-0.5B-Instruct (qwen2.5-ha-0.5b-ctx-ax630c)"
+    url: https://docs.m5stack.com/en/stackflow/models/qwen2.5-ha-0.5b-instruct
+    date: 2026-10-15
+    tracks: [living-figures]
+    claim: "Accessed 2026-10-15. AX630C runs a 1,024-token build at 533.19 ms first token and 9.76 tokens/s (smart-home fine-tune; M5Stack benchmark table). Axera's AX630C Qwen3-VL-2B build runs a 2,047-token maximum (Hugging Face AXERA-TECH). ax-llm (AX630C, SDK >= 3.0.0) caches several prompt prefixes and reuses the longest match (docs/multi_slot_kv_cache.md, 2026-06-12). So a character sheet plus a ~200-token kid memory file fits as one cached prefix stored on the module's eMMC. Open: a general character build at 1,024 tokens, benched."
   - id: slicer-slot-3mf-layout
     kind: shared-part
     status: established
@@ -118,13 +145,16 @@ nodes:
   - id: stage-figure
     kind: void-stage
     status: hypothesis
-    part: little 3D figure inhabiting the current Void
+    part: little 3D figure inhabiting the current Verse
     tracks: [living-figures, void-stage]
     claim: Search pops a small 3D version that uses what is already on stage and leaves when thrown off with the mouse. Motelet does this on main (void-live-deploy/skills/figure.js, 2026-10-07); stays hypothesis here until a dated public page describes it.
 ```
 
 ## Cycle log
 
+- 2026-10-15 02:12 ET. Toy-mind-long-context-prefix-cache established: the AX630C toy mind runs a 1,024-token build (533 ms first token) and Axera's runtime caches fixed prefixes, so the kid-memory file fits beside the conversation (living-figures open question 2, partly answered). Corrected Babaru: its maker's shop no longer promises offline operation (read 2026-10-15). Folded the unmerged batch-fetch fix from forethinkers/cycle-2026-10-14-2014 (its PR #700 merged without it). Least-recently-advanced track was living figures (last 2026-10-07 20:14).
+- 2026-10-14 20:14 ET. Florida-flonduran-heat-dose established from NOAA CRW single-pixel stations (Key Biscayne, Dry Tortugas Nursery, Carysfort, Looe Key): Key Biscayne 2025 peak DHW 7.07 (soft exam; Baker WLRN 8 Jul 2026), Dry Tortugas 2026 peak DHW 13.70 ≈ that site's 2023 kill dose of 14.35. No earlier forethinkers branches or open think-tank PRs to fold. Least-recently-advanced track was planet-restoration (last 2026-10-07 18:07). Survival split for open question 4 still unpublished.
+- 2026-10-14 14:13 ET. Blood-methylation-senescence-score established (MaGE, medRxiv 1 Oct 2026, doi 10.64898/2026.09.29.26364335): a standard blood array gives a p16 burden score that predicts mortality in 18,859 people. Registry pass of 115 senolytic records found one burden-enriched trial (NCT07270120, not yet recruiting) and no burden-selected primary result. No earlier think-tank branches or PRs to fold; the even-hour runs from 2026-10-08 to 2026-10-14 08:07 failed on the box (Node 22 symlinks, node_modules and the test browser were wiped again) and left no work behind.
 - 2026-10-07 20:14 ET. Printed-motor-waves-arm established (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, doi 10.1002/admt.70994): a motor printed in every element but its magnets drives a waving arm and a multi-legged walking robot, 7.62 N mm/A, 28.2% efficiency. The figure-joint node stays hypothesis with a narrower gap: toy size, toy battery, toy-safe surface heat. Logged the AIM 2023 single-print coil-plus-gripper and the UC San Diego one-print pneumatic walker as the two earlier routes. No earlier think-tank branches or PRs to fold.
 - 2026-10-07 18:07 ET. Florida-acropora-functional-extinction established (Manzello et al. Science 23 Oct 2025): the 2023 heatwave killed 97.8-100% of Keys Acropora, answering planet-restoration question 3. Logged gene banks (Muller et al. Conserv Biol 2025), Durusdinium +1.9 C elkhorn (Coral Reefs 2025), the Baker et al. Science AGF forum, and the Flonduran field trials (Miami July 2025, Dry Tortugas April 2026). No earlier think-tank branches or PRs to fold.
 - 2026-10-07 16:20 ET. Senolytic-burden-selects-responders established (Farr et al. Nat Med 2024; Aging Cell 2025 p16 variant 5). Live ClinicalTrials.gov pass: no senolytic MASH replication registered, NCT05506488 has no posted results, three prospective GLP-1 DNAm-age trials read out Apr-Dec 2027. Registry API is browser-readable, so a live trial-watch card is buildable. Stale 14:16 worktree removed (its PR #158 had merged).
@@ -136,4 +166,4 @@ nodes:
 - 2026-10-03 06:12 ET. Figure-scale-benchtop-magnetize established. MIT hard magnet is Sr-ferrite at 1.5 T (Canada et al. VPP 2026); bonded Neo needs 3-4 T (Magnequench); Mag-Instruments PM reaches 4 T at dia 1.25 cm sample OD. Export-to-print stays blocked on format. Figure-joint link stays hypothesis.
 - 2026-10-03 04:04 ET. Magnetize-outside-printer established from Sloma et al. 2025 (7 T impulse on FDM NdFeB) plus MIT News 2026-02-18 (magnetize is post-print; in-print is next). Figure-joint link stays hypothesis. Export-to-print stays blocked on main.
 - 2026-10-03 seed. Only the MIT linear motor is established. Figure-joint link is a hypothesis. Export-to-print is blocked.
-- 2026-10-03 build (PR #40, not a research cycle): the stage-figure node has a working ask in Void ("a chair" then "summon motelet": it sits; a cup: it holds it; thrown off the screen it leaves), browser-tested. Export-to-print now has a browser-tested STL download (Motelet, Linemote-1); still not slicer-tested or printed, so it stays blocked.
+- 2026-10-03 build (PR #40, not a research cycle): the stage-figure node has a working ask in Verse ("a chair" then "summon motelet": it sits; a cup: it holds it; thrown off the screen it leaves), browser-tested. Export-to-print now has a browser-tested STL download (Motelet, Linemote-1); still not slicer-tested or printed, so it stays blocked.

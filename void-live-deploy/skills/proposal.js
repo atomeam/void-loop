@@ -1,6 +1,6 @@
 /**
  * proposal skill — "turn this into a proposal" on a pasted customer request (frontier build order step 3, first piece).
- * Void drafts an editable proposal card: what they asked for, what we would do, scope, a price line left blank for the
+ * Verse drafts an editable proposal card: what they asked for, what we would do, scope, a price line left blank for the
  * owner (prices stay manual), timeline, next step. Every field is edited in place and kept with the card; Copy and
  * Download .md work; nothing is sent. Send asks the confirm line (one plain line, Yes / No) and records a stubbed
  * execution record, by design, until sending is connected. The draft comes from /api/answer mode 'proposal'
@@ -71,7 +71,7 @@ function mount(th, stageApi) {
     btn('Copy', 'proposal-copy', async () => { let ok = false; try { await navigator.clipboard.writeText(md()); ok = true; } catch (_) {} status.textContent = ok ? 'copied as Markdown' : 'select the text and copy'; }),
     btn('Download .md', 'proposal-download', () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md()], { type: 'text/markdown' })); a.download = fileNameOf(th.fields); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); status.textContent = 'downloaded ' + a.download; }),
     btn('Send to the customer', 'proposal-send', () => {
-      if (!ownerToken()) { status.textContent = 'Sending is the owner\'s, and it stops on the confirm line. Unlock Void first.'; return; }
+      if (!ownerToken()) { status.textContent = 'Sending is the owner\'s, and it stops on the confirm line. Unlock Verse first.'; return; }
       if (!addressIn(to.value).to) { status.textContent = 'Add the customer\'s address first.'; to.focus(); return; }
       status.textContent = 'asking the confirm line…';
       // the exact draft rides the ask: the fingerprint covers it, so the yes is on this text and no other

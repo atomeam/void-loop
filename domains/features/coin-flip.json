@@ -1,0 +1,94 @@
+{
+ "floor": "coin flip",
+ "verse_page": "/flip/",
+ "researched": "2026-10-25",
+ "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+ "sites": {
+  "justflipacoin.com": {
+   "sources": [
+    "https://justflipacoin.com/",
+    "https://play.google.com/store/apps/details?id=com.loukag.just_flip_a_coin&hl=en",
+    "https://flipiffy.com/best-coin-flip-app/",
+    "https://blog.tcea.org/coin-flip-tools-gone-digital-online-and-free/"
+   ],
+   "features": [
+    {
+     "name": "One-tap flip with animation",
+     "detail": "click or tap the coin to toss it; a flip animation lands on heads or tails",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/coin.js: CSS 3D coin lands in a third of a second; tap the coin to flip again"
+    },
+    {
+     "name": "Heads / tails result shown",
+     "detail": "the side is written under the coin",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/coin.js shows the word under the coin"
+    },
+    {
+     "name": "Flip counter",
+     "detail": "a running count of flips this visit",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/coin.js tally \"Heads 3 · Tails 1\" (sessionStorage)"
+    },
+    {
+     "name": "Coin colour schemes",
+     "detail": "choose the coin/page colour from a set of colour options",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "coin maker sets the metal and faces (skills/coin.js \"Make your own coin\"); no one-tap page colour themes"
+    },
+    {
+     "name": "Flip sound",
+     "detail": "a sound as the coin lands (not confirmed by search)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/coin.js \"Sound on\"/\"Sound off\", a ring made in the browser"
+    },
+    {
+     "name": "Android app",
+     "detail": "\"Just Flip A Coin - Coin Flip\" on Google Play",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no native app; /flip/ opens offline after one visit (sw.js)"
+    },
+    {
+     "name": "No statistics beyond the count",
+     "detail": "reviewers note there is no stats history (a lack, listed for completeness)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Verse has more: per-visit tally plus everyone's flips (/api/tally)"
+    }
+   ]
+  }
+ },
+ "verse_extra": [
+  "Several coins at once (\"flip 5 coins\")",
+  "Weighted coin (\"70% heads\")",
+  "Any real coin from 600 BC to now with its real faces",
+  "Design your own coin (metal, words, rim text, year, photos)",
+  "What the coin is worth (appraiser)",
+  "Everyone's flips counted live",
+  "Space or Enter flips again",
+  "Device crypto randomness, no network",
+  "Share link that keeps the coin",
+  "Opens offline"
+ ],
+ "gaps": [
+  "Android app",
+  "Coin colour schemes"
+ ],
+ "auto": {
+  "queued": [
+   {
+    "target": "feature:justflipacoin-com-c1be037d",
+    "feature": "Android app",
+    "host": "justflipacoin.com",
+    "at": "2026-10-26",
+    "id": "mvpkt0sa"
+   }
+  ]
+ }
+}

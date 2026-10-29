@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verse Tube · VERSE FILMS</title>
+  <link rel="alternate" type="application/rss+xml" title="Verse Tube" href="/films/rss">
+  <meta name="description" content="Short films Verse makes of its own experiments, newest first. Free to watch.">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Verse"><meta property="og:title" content="Verse Films"><meta property="og:description" content="Short films Verse makes of its own experiments, newest first. Free to watch."><meta property="og:url" content="https://a-to-mind.com/films/"><meta property="og:image" content="https://a-to-mind.com/og.png"><meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#07070d">
+  <link rel="canonical" href="https://a-to-mind.com/films/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <style>
+    :root { --bg: #07070d; --ink: #f2f0fa; --muted: #a4a0b8; --line: rgba(255,255,255,.1); --card: rgba(255,255,255,.04); --accent: #8f7bff; --hot: #ff3d7f; --yt: #ff3030; --grad: linear-gradient(90deg, #ff3d7f, #7a5cff); }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body { margin: 0; color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; min-height: 100vh;
+      background: radial-gradient(80% 50% at 90% -10%, rgba(255,61,127,.28), transparent 60%), radial-gradient(70% 50% at -10% 10%, rgba(90,110,255,.3), transparent 60%), var(--bg); background-attachment: fixed; }
+    main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    .home { color: var(--muted); text-decoration: none; font-weight: 600; letter-spacing: .02em; }
+    .kicker { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin: 28px 0 6px; }
+    h1 { font-size: clamp(36px, 9vw, 64px); line-height: 1; letter-spacing: -.03em; margin: 0 0 12px; color: #f6f3ff; text-shadow: 0 0 24px rgba(255,61,127,.35), 0 0 48px rgba(122,92,255,.3); }
+    .sub { color: var(--muted); margin: 0 0 28px; max-width: 60ch; }
+    #films { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+    .film { background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.45); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+    .film:hover { transform: translateY(-3px); border-color: rgba(255,61,127,.35); box-shadow: 0 26px 70px rgba(122,92,255,.25); }
+    .film video { width: 100%; aspect-ratio: 9 / 16; background: #000; display: block; }
+    .film .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .film h2 { font-size: 17px; margin: 0; line-height: 1.3; }
+    .film .when { color: var(--muted); font-size: 13px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; min-height: 40px; transition: border-color .15s ease, background .15s ease; }
+    .btn:hover, .btn:focus-visible { border-color: var(--accent); background: rgba(143,123,255,.12); }
+    .btn.yt { background: var(--yt); border-color: var(--yt); color: #fff; font-weight: 700; }
+    .note { color: var(--muted); font-size: 14px; }
+    #status { color: var(--muted); }
+    /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
+    /* the whole word is ONE box (owner, 2026-10-22: "VERSE F   I   LMS"): a card title is a flex row spread with space-between, so loose
+       text and the glitch span were spread apart as three items; wrapped, the word stays whole and the glitch shakes all of it */
+    .glw { display: inline-block; white-space: nowrap; animation: gl-w var(--gl-d, 10s) ease-in-out -3s infinite; }
+    @keyframes gl-w { 0%, 94.5% { transform: none; text-shadow: none; } 96.5% { transform: translateX(1px); text-shadow: -2px 0 rgba(255,61,127,.7), 2px 0 rgba(122,92,255,.7); } 98% { transform: translateX(-1px); text-shadow: 2px 0 rgba(255,61,127,.7), -2px 0 rgba(122,92,255,.7); } 99.5%, 100% { transform: none; text-shadow: none; } }
+    .gl { position: relative; display: inline-block; }
+    .gl b { font-weight: inherit; animation: gl-l var(--gl-d, 10s) ease-in-out -3s infinite; }
+    .gl i { position: absolute; left: 50%; top: 0; font-style: normal; opacity: 0; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
+      text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 var(--gl-d, 10s) ease-in-out -3s infinite; }
+    /* rare and slow (owner, 2026-10-22: "rarer and slower"): one eased ~400ms swap per 8-12 s cycle; the page re-rolls the cycle length each time (--gl-d) */
+    @keyframes gl-l { 0%, 94% { opacity: 1; } 95.5% { opacity: 0; } 98% { opacity: 0; } 99.6%, 100% { opacity: 1; } }
+    @keyframes gl-1 { 0%, 94% { opacity: 0; } 95.5% { opacity: 1; } 98% { opacity: 1; } 99.6%, 100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .gl b, .gl i, .glw { animation: none; } }
+    footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    @media (prefers-reduced-motion: reduce) { .film, .btn { transition: none; } .film:hover { transform: none; } }
+    .review { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .review .row .btn[aria-pressed="true"] { background: var(--grad); border-color: transparent; color: #fff; font-weight: 700; }
+    .review textarea { font: inherit; font-size: 14px; width: 100%; min-height: 60px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); resize: vertical; }
+    .review .tally, .review .said { color: var(--muted); font-size: 13px; }
+    .review ul { margin: 0; padding-left: 18px; font-size: 14px; }
+    .btn.join { background: var(--grad); border-color: transparent; color: #fff; font-weight: 700; box-shadow: 0 8px 24px rgba(255,61,127,.35); }
+    .share { display: flex; flex-direction: column; gap: 8px; }
+    .share .tab { min-height: 32px; padding: 4px 12px; font-size: 13px; }
+    .share .tab[aria-selected="true"] { background: var(--grad); border-color: transparent; color: #fff; font-weight: 700; }
+    .share details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+    .share details .row { margin-top: 6px; }
+    .thumb { color: inherit; text-decoration: none; }
+    .thumb video { pointer-events: none; }
+    #watch { margin-bottom: 24px; }
+    .watchbox { margin: 12px auto 0; max-width: 560px; }
+    .watchbox video { max-height: 78vh; }
+    .desc { white-space: pre-wrap; margin: 0; color: #d9d5ea; font-size: 14px; overflow-wrap: anywhere; }
+    .kick { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 6px 0 0; }
+    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <!-- Verse's films, for everyone (owner, 2026-10-15: "just give the films to everyone they arent anything special yet anyway").
+       The films live in Cloudflare R2 behind functions/api/films.js: anyone gets the list, and each film plays from a signed link
+       that runs out in hours. .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube:
+       download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
+  <p><a class="home" href="/">← Verse</a></p>
+  <p class="kicker">Watch short films free · Verse Tube, new videos daily · <a href="/films/rss">follow by feed (RSS)</a></p>
+  <h1 aria-label="VERSE FILMS"><span class="glw">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</span></h1>
+  <p class="sub">Every day Verse films one of its own experiments. Watch them free, and post any of them anywhere: every film is an ad for Verse, and anyone can upload it. Short clips, good for a break or a class on how AI tools behave.</p>
+  <!-- no sign-in here (owner, 2026-10-15: "i just need the sign in gone honestly just give the films to everyone"): everyone gets
+       the films. A sign-in this browser already holds (the owner's, a member's from Verse) still brings the owner's YouTube steps
+       and the review box, without asking. -->
+  <div id="watch"></div>
+  <p id="status">Loading the films…</p>
+  <div id="films"></div>
+  <footer><a href="/films/rss">Subscribe (RSS)</a> · <a href="https://www.youtube.com/@atombomb983">Verse on YouTube</a> · <a href="/store/">Support Verse</a> · <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=films&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip $1</a> · <a href="/privacy/">Privacy</a> · <a href="/">a-to-mind.com</a></footer>
+</main>
+<script>
+  // the glitch word re-rolls its cycle to 8-12 s at random after each glitch (owner, 2026-10-22: "rarer and slower")
+  document.querySelectorAll('.glw').forEach((w) => { const roll = () => w.style.setProperty('--gl-d', (8 + Math.random() * 4).toFixed(2) + 's'); roll(); w.addEventListener('animationiteration', (e) => { if (e.target === w) roll(); }); });
+(() => {
+  const UPLOAD = 'https://www.youtube.com/upload', KEY = 'a2m.void.filmkey';
+  const VERDICTS = { post: 'Post it', fix: 'Needs work', skip: 'Skip it' };
+  const $ = (t, attrs = {}, kids = []) => { const e = document.createElement(t); for (const [k, v] of Object.entries(attrs)) k === 'text' ? (e.textContent = v) : e.setAttribute(k, v); for (const c of kids) e.append(c); return e; };
+  const copyBtn = (label, text) => {
+    const b = $('button', { class: 'btn', type: 'button', text: label });
+    b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(text); b.textContent = 'Copied ✓'; } catch (_) { // older phones: copy through a hidden box
+        const t = $('textarea', { readonly: '', style: 'position:fixed;opacity:0' }); t.value = text; document.body.append(t); t.select();
+        let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} t.remove(); b.textContent = ok ? 'Copied ✓' : 'Copy failed'; }
+      setTimeout(() => { b.textContent = label; }, 1800);
+    });
+    return b;
+  };
+  // who is asking (owner, 2026-10-14: "why am i geting the Members only ... when i am already signed in as owner?"): every credential
+  // this browser holds, tried in turn until one is accepted: a key kept for this tab, the owner's sign-in, a signed-in account.
+  const creds = () => { const out = [];
+    try { const k = sessionStorage.getItem(KEY); if (k) out.push(['key', k]); } catch (_) {}
+    try { const o = localStorage.getItem('a2m.void.owner.v1'); if (o) out.push(['owner', o]); } catch (_) {}
+    try { const m = (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token; if (m) out.push(['account', m]); } catch (_) {}
+    return out; };
+  // every film is its own ad, and anyone reposts it (owner, 2026-10-15): 1 download (free), 2 copy the words (tracked link, call to
+  // action, share line) in one click, 3 open the platform's own upload page, signed in as you. No API, no token. lib/film-share.js
+  let share = null;
+  function shareBox(f) {
+    const box = $('div', { class: 'share' });
+    const draw = (p) => {
+      const w = share.shareWords(f, p), P = share.PLATFORMS[p];
+      box.replaceChildren(
+        $('div', { class: 'row tabs', role: 'tablist' }, Object.entries(share.PLATFORMS).map(([k, v]) => { const b = $('button', { class: 'btn tab', type: 'button', role: 'tab', 'aria-selected': String(k === p), text: v.name });
+          b.addEventListener('click', () => draw(k)); return b; })),
+        $('div', { class: 'row' }, [
+          $('a', { class: 'btn', href: f.src, download: share.fileName(f), text: '1. Download' }),
+          copyBtn('2. Copy for ' + P.name, w.all),
+          $('a', { class: 'btn yt', href: w.upload, target: '_blank', rel: 'noopener', 'data-up': p, text: '3. Upload to ' + P.name }),
+        ]),
+        $('details', {}, [$('summary', { text: 'Copy one piece' }), $('div', { class: 'row' }, [copyBtn('Title', w.title), copyBtn('Description', w.description), copyBtn('Hashtags', w.tags), copyBtn('Link', w.link)])]),
+        $('div', { class: 'note', text: 'Share this ad: anyone can post it, free. Your link is tracked so Verse sees which uploads bring people.' }));
+    };
+    draw('youtube');
+    return box;
+  }
+  let good = '';
+  const token = () => good;
+  const auth = () => { const t = token(); return t ? { authorization: 'Bearer ' + t } : {}; };
+  const tally = (c) => { const n = c.post + c.fix + c.skip; return n ? n + (n === 1 ? ' review: ' : ' reviews: ') + Object.keys(VERDICTS).filter((k) => c[k]).map((k) => c[k] + ' ' + VERDICTS[k].toLowerCase()).join(', ') : 'No reviews yet.'; };
+  // the review: one verdict and a note per reviewer, changeable (functions/api/film-review.js); the owner also reads every note
+  function reviewBox(f, owner) {
+    const r = f.reviews || { counts: { post: 0, fix: 0, skip: 0 }, mine: null };
+    let pick = r.mine ? r.mine.verdict : '';
+    const btns = Object.entries(VERDICTS).map(([k, label]) => { const b = $('button', { class: 'btn', type: 'button', 'data-v': k, 'aria-pressed': String(k === pick), text: label });
+      b.addEventListener('click', () => { pick = k; for (const x of btns) x.setAttribute('aria-pressed', String(x === b)); }); return b; });
+    const note = $('textarea', { maxlength: '1000', placeholder: 'What works, what to cut, a better hook…', 'aria-label': 'Your note on this film' }); note.value = r.mine ? r.mine.note : '';
+    const save = $('button', { class: 'btn join', type: 'button', text: r.mine ? 'Update review' : 'Save review' });
+    const said = $('div', { class: 'said', text: r.mine ? 'Your review: ' + VERDICTS[r.mine.verdict] + '.' : '' });
+    const count = $('div', { class: 'tally', text: tally(r.counts) });
+    save.addEventListener('click', async () => {
+      if (!pick) { said.textContent = 'Pick post it, needs work or skip first.'; return; }
+      save.disabled = true; said.textContent = 'Saving…';
+      try {
+        const res = await fetch('/api/film-review', { method: 'POST', headers: { 'content-type': 'application/json', ...auth() }, body: JSON.stringify({ id: f.id, verdict: pick, note: note.value.trim() }) });
+        const j = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(j.error || String(res.status));
+        if (!r.mine) r.counts[pick]++; else if (r.mine.verdict !== pick) { r.counts[r.mine.verdict]--; r.counts[pick]++; }
+        r.mine = { verdict: pick, note: note.value.trim() }; count.textContent = tally(r.counts);
+        said.textContent = 'Saved: ' + VERDICTS[pick] + '. Thank you.'; save.textContent = 'Update review';
+      } catch (e) { said.textContent = 'Not saved: ' + e.message; }
+      save.disabled = false;
+    });
+    const kids = [$('strong', { text: 'Your review' }), $('div', { class: 'row' }, btns), note, $('div', { class: 'row' }, [save]), said, count];
+    if (owner && r.notes && r.notes.length) kids.push($('ul', {}, r.notes.map((n) => $('li', { text: VERDICTS[n.verdict] + ' (' + n.by + '): ' + n.note }))));
+    return $('div', { class: 'review' }, kids);
+  }
+  const status = document.getElementById('status'), list = document.getElementById('films'), watch = document.getElementById('watch');
+  async function load() {
+    list.textContent = ''; status.textContent = 'Loading the films…';
+    try {
+      share = await import('/lib/film-share.js');
+      let r = null, j = {};
+      // anyone watches (owner, 2026-10-15: the films are our ads); a sign-in this browser already holds is tried in turn, quietly,
+      // stopping at the first the server takes as the owner or a member
+      for (const [kind, tok] of creds()) {
+        const t = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); const tj = await t.json().catch(() => ({})); // void-review: ok (at most 3 sign-ins, tried in turn on purpose, stopping at the first that works)
+        if (!r || (t.ok && tj.member)) { r = t; j = tj; }
+        if (t.ok && tj.member) { good = tok; break; }
+        if (kind === 'key') { try { sessionStorage.removeItem(KEY); } catch (_) {} }
+      }
+      if (!r) { r = await fetch('/api/films'); j = await r.json().catch(() => ({})); }
+      if (!r.ok) throw new Error(String(r.status));
+      const films = j.films || [];
+      if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
+      // Verse Tube (owner, 2026-10-15: "Verse should be its own version of YouTube"): the channel grid, and a watch page per video
+      // at /films/?v=<id> with its player, words, views, share and upload buttons and related videos
+      const views = await fetch('/api/film-views?ids=' + films.map((f) => f.id).join(',')).then((x) => x.json()).then((x) => x.views || {}).catch(() => ({}));
+      const vlabel = (id) => { const n = views[id] || 0; return n.toLocaleString() + (n === 1 ? ' view' : ' views'); };
+      const v = new URLSearchParams(location.search).get('v'), cur = films.find((f) => f.id === v);
+      const when = (f) => new Date(f.at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+      const card = (f) => $('a', { class: 'film thumb', href: '?v=' + encodeURIComponent(f.id), 'data-id': f.id }, [
+        $('video', { src: f.src + '#t=0.5', muted: '', playsinline: '', preload: 'metadata', 'aria-hidden': 'true' }),
+        $('div', { class: 'body' }, [$('h2', { text: f.title }), $('div', { class: 'when', text: vlabel(f.id) + ' · ' + when(f) })])]);
+      if (cur) {
+        document.title = cur.title + ' · Verse Tube';
+        try { if (!sessionStorage.getItem('a2m.tube.seen.' + cur.id)) { sessionStorage.setItem('a2m.tube.seen.' + cur.id, '1');
+          const c = await fetch('/api/film-views?id=' + encodeURIComponent(cur.id), { method: 'POST' }).then((x) => x.json()); if (c.views) views[cur.id] = c.views; } } catch (_) {}
+        const page = location.origin + '/films/?v=' + encodeURIComponent(cur.id), t = encodeURIComponent(cur.title + ' · Verse'), u = encodeURIComponent(page);
+        const out = [['X', 'https://x.com/intent/post?text=' + t + '&url=' + u], ['Facebook', 'https://www.facebook.com/sharer/sharer.php?u=' + u], ['Reddit', 'https://www.reddit.com/submit?url=' + u + '&title=' + t],
+          ['WhatsApp', 'https://wa.me/?text=' + t + '%20' + u], ['Bluesky', 'https://bsky.app/intent/compose?text=' + t + '%20' + u], ['LinkedIn', 'https://www.linkedin.com/sharing/share-offsite/?url=' + u]];
+        const shareRow = $('div', { class: 'row' }, [...out.map(([n, h]) => $('a', { class: 'btn', href: h, target: '_blank', rel: 'noopener', text: n })), copyBtn('Copy link', page)]);
+        if (navigator.share) { const b = $('button', { class: 'btn', type: 'button', text: 'Share…' }); b.addEventListener('click', () => navigator.share({ title: cur.title, url: page }).catch(() => {})); shareRow.append(b); }
+        const kids = [$('h2', { text: cur.title }), $('div', { class: 'when', id: 'views', text: vlabel(cur.id) + ' · ' + when(cur) }),
+          $('p', { class: 'desc', text: cur.description }), $('div', { class: 'kick', text: 'Share it' }), shareRow,
+          $('div', { class: 'kick', text: 'Upload it to your own channel' }), shareBox(cur)];
+        if (j.member) kids.push(reviewBox(cur, j.owner));
+        watch.replaceChildren($('a', { class: 'home', href: './', text: '← All videos' }),
+          $('article', { class: 'film watchbox', 'data-id': cur.id }, [$('video', { src: cur.src, controls: '', playsinline: '', autoplay: '', preload: 'metadata' }), $('div', { class: 'body' }, kids)]),
+          $('h3', { class: 'kick', text: 'Up next' }));
+        status.textContent = '';
+        for (const f of films.filter((x) => x !== cur).slice(0, 12)) list.append(card(f));
+      } else {
+        status.textContent = films.length + (films.length === 1 ? ' video' : ' videos') + ', newest first. Tap one to watch, share or upload it.';
+        for (const f of films) list.append(card(f));
+      }
+    } catch (e) {
+      status.textContent = 'The films could not load just now. Try again in a minute.';
+    }
+  }
+  load();
+})();
+</script>
+</body>
+</html>

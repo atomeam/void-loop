@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-196 WebGPU Embedding Lattice Mind</title>
+<style>
+  :root {
+    --hue: 200;
+    --sat: 60%;
+    --contrast: 1;
+    --blur: 0px;
+    --scale: 1;
+  }
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: hsl(var(--hue), 30%, 8%);
+    color: #eee;
+    font-family: system-ui, sans-serif;
+    filter: contrast(var(--contrast)) blur(var(--blur));
+    transform: scale(var(--scale));
+    transform-origin: center;
+  }
+  canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block; touch-action: none;
+  }
+  #hud {
+    position: absolute; top: 10px; left: 10px; z-index: 10;
+    background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 8px;
+    font-size: 12px; pointer-events: none;
+  }
+  .orb {
+    position: absolute; pointer-events: auto;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; text-align: center; padding: 4px;
+    background: hsla(var(--orb-hue, 180), 70%, 50%, 0.7);
+    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(4px);
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease-out, filter 0.2s;
+    cursor: grab;
+    min-width: 60px; min-height: 60px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .orb:active { cursor: grabbing; }
+  #seal-btn {
+    position: absolute; bottom: 10px; right: 10px; z-index: 10;
+    padding: 8px 16px; background: #333; color: #fff; border: none; border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">F-196 Embedding Lattice Mind | energy: <span id="e">0</span> | peaks: <span id="p">0</span> | <span id="status">init</span></div>
+<button id="seal-btn">Seal</button>
+<script>
+// F-196: WebGPU Embedding Lattice Mind (Canvas2D primary, WebGPU path noted)
+// Novel: multi-channel field (energy + 4D embedding), worker semantic interpreter (attention/cosine), generative morphing spatial text orbs
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const hudE = document.getElementById('e');
+const hudP = document.getElementById('p');
+const hudS = document.getElementById('status');
+
+let W = 0, H = 0, GW = 80, GH = 50;
+let field = null; // Float32Array of channels: 0=energy, 1-4=embedding
+const CH = 5;
+let orbs = [];
+let pointer = {x:0, y:0, vx:0, vy:0, down:false};
+let orient = {beta:0, gamma:0};
+let thought = [0,0,0,0];
+let sealed = null;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  if (!field) field = new Float32Array(GW * GH * CH);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Pointer
+canvas.addEventListener('pointerdown', e => { pointer.down = true; updatePtr(e); });
+canvas.addEventListener('pointermove', e => updatePtr(e));
+canvas.addEventListener('pointerup', () => pointer.down = false);
+function updatePtr(e) {
+  const r = canvas.getBoundingClientRect();
+  const nx = (e.clientX - r.left) / r.width;
+  const ny = (e.clientY - r.top) / r.height;
+  pointer.vx = nx - pointer.x; pointer.vy = ny - pointer.y;
+  pointer.x = nx; pointer.y = ny;
+}
+
+// Orientation
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    orient.beta = (e.beta || 0) / 90;
+    orient.gamma = (e.gamma || 0) / 90;
+  });
+}
+
+// Deposit
+function deposit() {
+  if (!pointer.down && Math.hypot(pointer.vx, pointer.vy) < 0.001) return;
+  const ix = Math.floor(pointer.x * (GW-1));
+  const iy = Math.floor(pointer.y * (GH-1));
+  if (ix<0||iy<0||ix>=GW||iy>=GH) return;
+  const idx = (iy*GW + ix) * CH;
+  field[idx] = Math.min(1, field[idx] + 0.3);
+  // embedding from velocity + orient bias
+  const emb = [
+    pointer.vx * 2 + orient.gamma * 0.2,
+    pointer.vy * 2 + orient.beta * 0.2,
+    Math.sin(Date.now()*0.001)*0.1,
+    Math.cos(Date.now()*0.001)*0.1
+  ];
+  const n = Math.hypot(...emb) || 1;
+  for (let c=1;c<CH;c++) field[idx+c] = emb[c-1]/n * 0.5 + field[idx+c]*0.5;
+}
+
+// Diffuse / decay
+function step() {
+  const next = new Float32Array(field.length);
+  const tilt = orient.gamma * 0.01;
+  for (let y=1; y<GH-1; y++) for (let x=1; x<GW-1; x++) {
+    const i = (y*GW + x)*CH;
+    for (let c=0;c<CH;c++) {
+      let s = field[i+c]*0.6
+        + field[i-CH+c]*0.1 + field[i+CH+c]*0.1
+        + field[i-GW*CH+c]*0.1 + field[i+GW*CH+c]*0.1;
+      if (c===0) s *= 0.98; // decay energy
+      else s = s*0.99 + tilt*(c%2?1:-1)*0.001;
+      next[i+c] = Math.max(-1, Math.min(1, s));
+    }
+  }
+  field = next;
+}
+
+// Render
+function render() {
+  const img = ctx.createImageData(W, H);
+  const data = img.data;
+  let maxE = 0;
+  for (let py=0; py<H; py+=2) for (let px=0; px<W; px+=2) {
+    const fx = Math.floor(px / W * GW);
+    const fy = Math.floor(py / H * GH);
+    const i = (fy*GW + fx)*CH;
+    const e = field[i];
+    maxE = Math.max(maxE, e);
+    const emb = [field[i+1], field[i+2], field[i+3], field[i+4]];
+    const hue = 180 + emb[0]*60 + emb[1]*40;
+    const [r,g,b] = hslToRgb(hue, 0.6, 0.2 + e*0.6);
+    for (let dy=0; dy<2 && py+dy<H; dy++) for (let dx=0; dx<2 && px+dx<W; dx++) {
+      const o = ((py+dy)*W + (px+dx))*4;
+      data[o]=r; data[o+1]=g; data[o+2]=b; data[o+3]=255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  hudE.textContent = maxE.toFixed(2);
+  // morph chrome
+  document.documentElement.style.setProperty('--hue', 180 + thought[0]*40);
+  document.documentElement.style.setProperty('--contrast', 1 + Math.abs(thought[1])*0.3);
+  document.documentElement.style.setProperty('--blur', Math.abs(thought[2])*2 + 'px');
+}
+
+function hslToRgb(h,s,l) {
+  h = ((h%360)+360)%360 / 360;
+  const a = s*Math.min(l,1-l);
+  const f = n => { const k=(n+h*12)%12; return l - a*Math.max(-1,Math.min(k-3,9-k,1)); };
+  return [f(0)*255, f(8)*255, f(4)*255];
+}
+
+// Orbs
+function updateOrbs(peaks) {
+  while (orbs.length < peaks.length) {
+    const el = document.createElement('div');
+    el.className = 'orb';
+    el.textContent = '…';
+    document.body.appendChild(el);
+    orbs.push({el, x:0.5, y:0.5, tx:0.5, ty:0.5, emb:[0,0,0,0], text:''});
+  }
+  peaks.forEach((pk, i) => {
+    if (i >= orbs.length) return;
+    const o = orbs[i];
+    o.tx = pk.x; o.ty = pk.y; o.emb = pk.emb; o.text = pk.text;
+    o.x += (o.tx - o.x)*0.08; o.y += (o.ty - o.y)*0.08;
+    o.el.style.left = (o.x * 100) + '%';
+    o.el.style.top = (o.y * 100) + '%';
+    const sc = 0.8 + pk.e * 1.5;
+    const rot = pk.emb[0]*30;
+    o.el.style.transform = `translate(-50%,-50%) scale(${sc}) rotateZ(${rot}deg)`;
+    o.el.style.setProperty('--orb-hue', 180 + pk.emb[1]*80);
+    o.el.textContent = pk.text;
+  });
+  // hide extras
+  for (let i=peaks.length; i<orbs.length; i++) orbs[i].el.style.opacity = '0.2';
+  hudP.textContent = peaks.length;
+}
+
+// Worker for semantic interpretation
+const workerCode = `
+let samples = [];
+self.onmessage = e => {
+  const {field, GW, GH, CH} = e.data;
+  // sample high energy cells
+  samples = [];
+  for (let i=0; i<field.length; i+=CH) {
+    if (field[i] > 0.15) {
+      samples.push({
+        e: field[i],
+        emb: [field[i+1], field[i+2], field[i+3], field[i+4]],
+        x: ((i/CH)%GW)/GW,
+        y: Math.floor((i/CH)/GW)/GH
+      });
+    }
+  }
+  // simple clustering by cosine
+  const peaks = [];
+  const used = new Set();
+  samples.sort((a,b)=>b.e-a.e);
+  for (const s of samples.slice(0,40)) {
+    if (used.has(s)) continue;
+    let cx=s.x, cy=s.y, ce=s.e, cemb=s.emb.slice();
+    let count=1;
+    used.add(s);
+    for (const o of samples) {
+      if (used.has(o)) continue;
+      const sim = cemb.reduce((a,v,i)=>a+v*o.emb[i],0);
+      if (sim > 0.6) {
+        cx += o.x; cy += o.y; ce += o.e;
+        for(let k=0;k<4;k++) cemb[k] += o.emb[k];
+        count++; used.add(o);
+      }
+    }
+    if (count>1 || ce>0.3) {
+      cx/=count; cy/=count; ce/=count;
+      for(let k=0;k<4;k++) cemb[k]/=count;
+      const texts = ['flow','still','curve','pulse','drift','echo','void','spark','wave','node'];
+      const ti = Math.abs(Math.floor(cemb[0]*5 + cemb[1]*3)) % texts.length;
+      const text = texts[ti] + ' ' + (count>2?'cluster':'seed');
+      peaks.push({x:cx, y:cy, e:ce, emb:cemb, text});
+    }
+  }
+  self.postMessage({peaks: peaks.slice(0,8), thought: cemb || [0,0,0,0]});
+};
+`;
+const worker = new Worker(URL.createObjectURL(new Blob([workerCode])));
+let lastPeaks = [];
+worker.onmessage = e => {
+  lastPeaks = e.data.peaks || [];
+  thought = e.data.thought || thought;
+  hudS.textContent = 'live';
+};
+
+function loop() {
+  deposit();
+  step();
+  render();
+  if (Math.random() < 0.1) { // ~6Hz sample
+    worker.postMessage({field: field.slice(), GW, GH, CH});
+  }
+  updateOrbs(lastPeaks);
+  requestAnimationFrame(loop);
+}
+loop();
+
+// Seal
+document.getElementById('seal-btn').onclick = () => {
+  try {
+    const summary = {thought, peaks: lastPeaks.length, t: Date.now()};
+    localStorage.setItem('f196-seal', JSON.stringify(summary));
+    hudS.textContent = 'sealed';
+  } catch(e) { hudS.textContent = 'seal fail'; }
+};
+// Load
+try {
+  const s = localStorage.getItem('f196-seal');
+  if (s) { sealed = JSON.parse(s); hudS.textContent = 'restored'; }
+} catch(e){}
+
+// Note: full WebGPU compute path would use storage buffers for the multi-channel field
+// and a compute shader for diffusion; this Canvas2D version is the runnable core.
+// WebXR extension would map peaks to XR anchors.
+</script>
+</body>
+</html>

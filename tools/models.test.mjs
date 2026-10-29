@@ -5,8 +5,8 @@ import * as router from '../void-live-deploy/lib/router.js';
 import { MODEL as reviewModel } from '../void-live-deploy/lib/review-api.js';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 
-test('every path resolves to a Workers AI chat model', () => {
-  assert.deepEqual([...PATHS].sort(), ['answer', 'figurescript', 'review', 'will']);
+test('every path resolves to a Workers AI model', () => {
+  assert.deepEqual([...PATHS].sort(), ['answer', 'art', 'digest', 'figurescript', 'merge', 'review', 'translate', 'vision', 'will']);
   for (const p of PATHS) assert.match(models(p), /^@cf\/[\w.-]+\/[\w.-]+$/, p);
   assert.throws(() => models('nope'));
   // a path may run on the bake-off's winner (PATH_MODELS, tools/model-switch.mjs); FREE_MODEL stays the fallback and a real model id

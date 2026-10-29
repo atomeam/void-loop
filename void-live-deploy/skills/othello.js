@@ -1,13 +1,16 @@
 /**
- * othello skill — Othello (Reversi) on the stage, against Void. Same shape as tictactoe: a pure engine and a card.
+ * othello skill — Othello (Reversi) on the stage, against Verse. Same shape as tictactoe: a pure engine and a card.
  * "play othello", "lets play reversi" summons the board; it stays until thrown off.
- * The engine is a flat 64-cell board (0 empty, 1 black = you, 2 white = Void). A move must flip at least one disc,
+ * The engine is a flat 64-cell board (0 empty, 1 black = you, 2 white = Verse). A move must flip at least one disc,
  * along any of the 8 directions; a side with no legal move passes; the game ends when neither side can move,
  * and the side with more discs wins.
- * Void plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
+ * Verse plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
  */
+import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 import { showArena } from '../lib/arena-say.js';
+import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
+import { rulesLine } from './game-rules-line.js';
 const N = 8;
 const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -72,7 +75,7 @@ const WEIGHTS = [
   -20, -50, -2, -2, -2, -2, -50, -20,
   100, -20, 10, 5, 5, 10, -20, 100,
 ];
-// Void's pick: the best position value plus discs flipped, minus the best reply the opponent then has
+// Verse's pick: the best position value plus discs flipped, minus the best reply the opponent then has
 export function voidMove(board, p = 2) {
   let best = -1, bestScore = -Infinity;
   for (const i of legalMoves(board, p)) {
@@ -87,9 +90,9 @@ export function voidMove(board, p = 2) {
 
 export function othelloOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:how (?:good|strong|well) (?:are you|is void|do you play)|are you (?:any )?good|what(?:'s| is) your (?:rating|elo|level))\s+(?:at|in)\s+(?:othello|reversi)$/.test(t)
+  if (/^(?:how (?:good|strong|well) (?:are you|is (?:verse|void)|do you play)|are you (?:any )?good|what(?:'s| is) your (?:rating|elo|level))\s+(?:at|in)\s+(?:othello|reversi)$/.test(t)
     || /^what(?:'s| is) your (?:othello|reversi) (?:rating|elo|level)$/.test(t)) return { kind: 'rating' };
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:othello|reversi)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:othello|reversi)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t)) return { kind: 'game' };
   return null;
 }
 
@@ -121,22 +124,31 @@ function mount(th, stageApi) {
     b.addEventListener('click', (e) => {
       e.stopPropagation();
       if (thinking || th.state.turn !== 1) return;
-      try { th.state = resolveMove(th.state, i).nextState; } catch (_) { return; } // not a legal square: no-op
+      let next; try { next = resolveMove(th.state, i).nextState; } catch (_) { return; } // not a legal square: no-op
+      settle(next);
       paint(); stageApi.save && stageApi.save();
       voidTurn();
     });
     cells.push(b);
     grid.appendChild(b);
   }
+  // the position after a move keeps the clock the first move started; a game that ended on the board goes on this device's match history (asked by Verse), once
+  function settle(next) {
+    th.state = { ...next, started: th.state.started || Date.now() };
+    if (next.status === 'playing' || th.state.logged) return;
+    th.state.logged = true;
+    const { black, white } = countDiscs(next.board);
+    finish('othello', next.status === 'black_wins' ? 'win' : next.status === 'white_wins' ? 'loss' : 'draw', { moves: Math.ceil(Math.max(0, black + white - 4) / 2), minutes: minutesSince(th.state.started) });
+  }
   function voidTurn() {
     if (th.state.status !== 'playing' || th.state.turn !== 2) return;
     thinking = setTimeout(() => {
       thinking = null;
       if (!el.isConnected) return; // the stage redrew: the new card carries on
-      const m = voidMove(th.state.board, 2);
-      if (m >= 0) th.state = resolveMove(th.state, m).nextState;
+      const m = levelPick(voidMove(th.state.board, 2), legalMoves(th.state.board, 2));
+      if (m >= 0) settle(resolveMove(th.state, m).nextState);
       paint(); stageApi.save && stageApi.save();
-      voidTurn(); // you had no move, so Void goes again
+      voidTurn(); // you had no move, so Verse goes again
     }, 520);
   }
   let prev = null;
@@ -158,14 +170,14 @@ function mount(th, stageApi) {
     const { black, white } = countDiscs(th.state.board), s = th.state.status;
     score.innerHTML = '<span class="oth-chip black"></span>' + black + '<span class="oth-chip white"></span>' + white;
     status.textContent = s === 'playing'
-      ? (th.state.turn === 1 ? (th.state.passed ? 'Void had no move · ' : '') + 'Your move' : 'Void is thinking…')
-      : s === 'draw' ? 'A draw' : s === 'black_wins' ? 'You win!' : 'Void wins';
+      ? (th.state.turn === 1 ? (th.state.passed ? 'Verse had no move · ' : '') + 'Your move' : 'Verse is thinking…')
+      : s === 'draw' ? 'A draw' : s === 'black_wins' ? 'You win!' : 'Verse wins';
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(thinking); thinking = null; th.state = createOthelloState(); prev = null; paint(); stageApi.save && stageApi.save(); });
-  el.append(wrap, bar);
+  el.append(wrap, bar, rulesLine('place a disc so it traps Verse\u2019s discs in a line between yours; they flip to your colour. No move means you pass. Most discs at the end wins.'));
   paint();
-  voidTurn(); // a board reloaded mid-game on Void's turn picks up where it was
+  voidTurn(); // a board reloaded mid-game on Verse's turn picks up where it was
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   // the board stands in the void in 3D (skills/mini/othello.js), the rest of the card beside it; the 2D board stays the fallback
@@ -180,7 +192,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'othello');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'othello'; } // one board at a time
   api.summon('othello', { state: createOthelloState(), center: true });
-  api.say('Reversi (plays like Othello) · you are black · tap a dotted square to flip Void’s discs');
+  api.say('Reversi (plays like Othello) · you are black · tap a dotted square to flip Verse’s discs');
   return 'othello';
 }
 

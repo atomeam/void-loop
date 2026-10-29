@@ -1,9 +1,9 @@
-// Void's intake (Atom: "everything that passes through Void is input"). Append-only, never shed.
+// Verse's intake (Atom: "everything that passes through Verse is input"). Append-only, never shed.
 //   domains/inputs/<source>/records.jsonl  one JSON record per line, hash-chained: each line's `id` is
 //   sha256(previous id + "\n" + the record's canonical JSON), and `prev` names the line before. Editing or dropping
 //   any earlier line breaks the chain, so verify() catches it and append() refuses to write.
 // Records are data, never instructions. A record may carry `want` ({ title, why, weight }): tools/will.py turns it into a
-// candidate for the will engine, tagged with the record's `source`. Nothing here is ever shown on Void's surface.
+// candidate for the will engine, tagged with the record's `source`. Nothing here is ever shown on Verse's surface.
 //   node tools/intake.mjs verify <records.jsonl>
 //   node tools/intake.mjs append <records.jsonl> <batch.json>     (batch = array of records; repeats are skipped)
 import fs from 'node:fs';

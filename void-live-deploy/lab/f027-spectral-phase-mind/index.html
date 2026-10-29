@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 200; --sat: 45%; --morph: 0; --freq: 0.5; }
+  body {
+    margin: 0; background: hsl(var(--hue), var(--sat), 7%); color: #eee;
+    font-family: system-ui, sans-serif; overflow: hidden;
+    transition: background 0.6s, filter 0.35s;
+    filter: hue-rotate(calc(var(--morph) * 50deg)) brightness(calc(1 + var(--morph) * 0.2)) saturate(calc(1 + var(--freq) * 0.3));
+  }
+  #void {
+    position: absolute; inset: 0; display: block;
+  }
+  #hud {
+    position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6);
+    padding: 10px 14px; border-radius: 12px; backdrop-filter: blur(8px);
+    transform: scale(calc(1 + var(--morph) * 0.1)) translateY(calc(var(--morph) * -10px));
+    border: 1px solid hsl(var(--hue), 70%, 55%);
+    transition: transform 0.5s, border-color 0.5s;
+  }
+  button { margin: 4px; padding: 6px 10px; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #333; }
+  #status { font-size: 12px; opacity: 0.85; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spectral Phase Resonance Mind · Verse lab</title>
+<meta name="description" content="Novel combination: Continuous phase-oscillator field (particles with phase θ and natural frequency ω, local Kuramoto-style coupling) whose coupling strength K and">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spectral Phase Resonance Mind · Verse lab">
+<meta property="og:description" content="Novel combination: Continuous phase-oscillator field (particles with phase θ and natural frequency ω, local Kuramoto-style coupling) whose coupling strength K and">
+<meta property="og:url" content="https://a-to-mind.com/lab/f027-spectral-phase-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f027-spectral-phase-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="void"></canvas>
+<div id="hud">
+  <strong>F-027 Spectral Phase Resonance</strong><br>
+  <button id="kick">Phase kick</button>
+  <button id="seal">Seal genome</button>
+  <div id="status">mind initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spectral Phase Resonance Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

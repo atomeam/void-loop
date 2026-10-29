@@ -13,8 +13,9 @@
  * Empty surface stays empty: an ask on an empty stage only says so.
  */
 import { KIND_WORDS } from './layer.js';
+import { clean } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 const LOW = (s) => CLEAN(s).toLowerCase();
 const QUOTE = /^["'“‘](.+)["'”’]$/;
 const unquote = (s) => { const t = CLEAN(s); const m = QUOTE.exec(t); return m ? m[1].trim() : t; };
@@ -78,7 +79,7 @@ export function labelOf(text) {
   // free-floating label
   if ((m = /^(?:add|make|put|create|write|place|drop)\s+(?:a\s+)?(?:label|caption)\s+(?:that\s+says|saying|reading|which\s+says|with\s+the\s+words?|:)\s*(.+)$/i.exec(raw))
     || (m = /^(?:add|make|put|create|place)\s+(?:a\s+)?(?:label|caption)\s+(["'“‘].+["'”’])$/i.exec(raw))
-    || (m = /^(?:write|put)\s+(["'“‘].+["'”’])\s+on\s+the\s+(?:stage|void|screen)$/i.exec(raw))) {
+    || (m = /^(?:write|put)\s+(["'“‘].+["'”’])\s+on\s+the\s+(?:stage|(?:verse|void)|screen)$/i.exec(raw))) {
     const tx = labelText(m[1]); return tx ? { op: 'free', text: tx } : null;
   }
   // remove labels
@@ -215,6 +216,7 @@ function pulse(root, fromId, toId) {
   const a = dot.animate([{ transform: 'translate(' + x1 + 'px,' + y1 + 'px)', opacity: 0.2 }, { transform: 'translate(' + x2 + 'px,' + y2 + 'px)', opacity: 1, offset: 0.85 }, { transform: 'translate(' + x2 + 'px,' + y2 + 'px)', opacity: 0 }], { duration: 900, easing: 'ease-in-out' });
   a.onfinish = () => dot.remove();
 }
+import { note as notePulse } from '../lib/pulse.js';
 let lastStage = null; // the page's stageApi, kept from the last decorate(); outputs arrive as 'void:output' events
 function onOutput(e) {
   const st = lastStage, d = e && e.detail;
@@ -223,6 +225,7 @@ function onOutput(e) {
   if (!took.length) return;
   if (st.save) st.save();
   if (st.render) st.render();
+  for (const id of took) notePulse(d.id, id); // the pulse is recorded the moment it is added, not when a poll looks (lib/pulse.js; asked by Verse)
   requestAnimationFrame(() => { for (const id of took) pulse(st.stage, d.id, id); });
 }
 if (typeof document !== 'undefined' && !globalThis.__voidLivingArrows) { globalThis.__voidLivingArrows = true; document.addEventListener('void:output', onOutput); }
@@ -239,6 +242,25 @@ function boxOf(root, t) {
   const el = root.querySelector('[data-id="' + (typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(t.id) : String(t.id)) + '"]');
   if (!el) return null;
   return { el, x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth || 1, h: el.offsetHeight || 1 };
+}
+// Ghosting on restore (asked by Verse, twice: "a 'visual ghosting' effect for labels and arrows during stage restoration to make memory recovery
+// feel intentional"): the first time labels and arrows are drawn in the moments after a page load, they come back as ghosts (faint, blurred,
+// dashed) and settle solid over about a second. Anything labelled later in the visit appears at once. Nothing moves under reduced motion.
+export const GHOST_WINDOW_MS = 6000, GHOST_MS = 1100;
+let ghostAt = null; // when the restore's ghosts began (performance.now()), or -1 once decided there is none
+const GHOST_CSS = '@keyframes void-ghost-in{from{opacity:.12;filter:blur(2px)}to{opacity:1;filter:none}}'
+  + '.void-ghost{animation:void-ghost-in ' + GHOST_MS + 'ms ease-out both}.void-arrows.void-ghost line{stroke-dasharray:4 5}'
+  + '@media (prefers-reduced-motion:reduce){.void-ghost{animation:none}.void-arrows.void-ghost line{stroke-dasharray:none}}';
+/** true while a page is still restoring its stage: the first drawing of annotations within GHOST_WINDOW_MS of load. Pure. */
+export const restoring = (sinceLoadMs, already) => !already && sinceLoadMs >= 0 && sinceLoadMs < GHOST_WINDOW_MS;
+function ghost(root) {
+  const now = typeof performance !== 'undefined' ? performance.now() : Infinity;
+  const nodes = [...root.querySelectorAll('.void-annot, .void-label')]; if (!nodes.length || ghostAt === -1) return;
+  if (ghostAt === null) { if (!restoring(now, false)) { ghostAt = -1; return; } ghostAt = now;
+    if (!document.getElementById('void-ghost-css')) { const st = document.createElement('style'); st.id = 'void-ghost-css'; st.textContent = GHOST_CSS; document.head.appendChild(st); }
+    setTimeout(() => { ghostAt = -1; for (const n of root.querySelectorAll('.void-ghost')) n.classList.remove('void-ghost'); }, GHOST_MS + 150); }
+  // a redraw during the fade (decorate draws the annotations afresh) carries on from where the fade is, never from the start
+  for (const n of nodes) { n.classList.add('void-ghost'); n.style.animationDelay = -Math.round(now - ghostAt) + 'ms'; }
 }
 export function decorate(st) {
   if (st && st.things) lastStage = st;
@@ -284,9 +306,10 @@ export function decorate(st) {
     tag.className = 'void-annot void-tag';
     tag.dataset.for = t.id;
     tag.textContent = (t.label || '') + (t.locked ? (t.label ? ' · ' : '') + 'locked' : '');
-    tag.style.cssText = 'position:absolute;left:' + B.x + 'px;top:' + Math.max(0, B.y - 20) + 'px;font-size:11px;letter-spacing:.04em;color:var(--muted, rgba(255,255,255,0.6));pointer-events:none;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis';
+    tag.style.cssText = 'position:absolute;left:' + B.x + 'px;top:' + Math.max(0, B.y - 20) + 'px;font-size:11px;letter-spacing:.04em;color:var(--muted, rgba(255,255,255,0.6));pointer-events:none;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis'; // ellipsis-ok: drawn picture or short label, the full text is on the card
     root.appendChild(tag);
   }
+  ghost(root);
 }
 
 // A free-floating label: just the words on the stage, draggable and throwable like anything else.
@@ -383,7 +406,7 @@ async function run(text, api) {
     if (!!t.locked === hit.on) { say(nameOf(t) + (hit.on ? ' is already locked' : ' is not locked')); return 'label'; }
     snap();
     if (hit.on) t.locked = true; else delete t.locked;
-    say(hit.on ? 'locked ' + nameOf(t) + ' · arrows bring it nothing until you unlock it' : 'unlocked ' + nameOf(t));
+    say(hit.on ? 'locked ' + nameOf(t) + ' · it stays put and arrows bring it nothing until you unlock it' : 'unlocked ' + nameOf(t));
     return done();
   }
   if (hit.op === 'show') {

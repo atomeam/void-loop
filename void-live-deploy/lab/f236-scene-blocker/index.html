@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{--bg:#04040a;--ink:#e9e6ff;--dim:#8f8aa8;--acc:#b9a6ff;--line:#22203a}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:14px 18px 4px}h1{font-size:18px;margin:0;font-weight:600;letter-spacing:.02em}header p{margin:4px 0 0;color:var(--dim);font-size:13px}
+main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:14px;padding:12px 18px 18px}
+@media(max-width:820px){main{grid-template-columns:minmax(0,1fr);padding:10px}}
+section{min-width:0}
+textarea{width:100%;min-height:260px;background:#0b0a16;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;font:13px/1.5 ui-monospace,Menlo,monospace;resize:vertical}
+button{background:#15122a;color:var(--ink);border:1px solid #3a3360;border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer;min-height:40px}
+button:hover,button:focus-visible{border-color:var(--acc);outline:none}button.on{background:#2a2250}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+#stagewrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#000;aspect-ratio:16/9}
+#stage{width:100%;height:100%;display:block}
+#hud{position:absolute;left:10px;top:8px;font-size:12px;color:#d8d0ff;text-shadow:0 1px 2px #000;pointer-events:none}
+#plan{width:100%;max-width:340px;aspect-ratio:10/7;border:1px solid var(--line);border-radius:10px;background:#07060f;display:block}
+#why{font-size:12.5px;color:var(--dim);margin-top:8px}#why b{color:var(--ink)}
+.bar{height:6px;border-radius:3px;background:var(--acc);display:inline-block;vertical-align:middle;margin-left:6px}
+#strip{display:flex;gap:8px;overflow-x:auto;padding:8px 0}
+.shot{flex:0 0 auto;width:200px;background:#0b0a16;border:1px solid var(--line);border-radius:8px;padding:4px;cursor:pointer}
+.shot.cur{border-color:var(--acc)}.shot canvas{width:100%;display:block;border-radius:5px}
+.shot div{font-size:11.5px;color:var(--dim);padding:3px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#err{color:#ff9fb5;font-size:12.5px;min-height:1em}
+.sr{position:absolute;left:-9999px}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Scene Blocker · Verse lab</title>
+<meta name="description" content="Write a short scene in plain text. A local, rule-based director lays out the set, blocks the actors beat by beat, chooses a camera for every beat from about 20">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Scene Blocker · Verse lab">
+<meta property="og:description" content="Write a short scene in plain text. A local, rule-based director lays out the set, blocks the actors beat by beat, chooses a camera for every beat from about 20">
+<meta property="og:url" content="https://a-to-mind.com/lab/f236-scene-blocker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f236-scene-blocker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<header><h1>Scene Blocker</h1><p>Write a scene. A local director lays out the set, blocks the actors and picks every camera, and shows why.</p></header>
+<main>
+<section>
+<label for="script" class="sr">Scene script</label>
+<textarea id="script" spellcheck="false"></textarea>
+<div class="row"><button id="block">Block the scene</button><button id="play">Play</button><button id="mode" aria-pressed="false">Director: smart</button></div>
+<div class="row"><button id="png">Save storyboard</button><button id="share">Copy share link</button></div>
+<div id="err" role="status"></div>
+<canvas id="plan" width="340" height="238" aria-label="Top-down plan with camera"></canvas>
+<div id="why" aria-live="polite"></div>
+</section>
+<section>
+<div id="stagewrap"><canvas id="stage" width="1280" height="720" aria-label="Scene camera view"></canvas><div id="hud"></div></div>
+<div id="strip" aria-label="Storyboard"></div>
+</section>
+</main>
+<script src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

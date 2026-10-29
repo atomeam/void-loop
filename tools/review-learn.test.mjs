@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseExtra, caughtBy, learnFromPr, summary, langOfPath, EXTRA, closerReadOf, phantomsIn, lessonsIn, hunkRanges, lessonSummary, slugFor, addedLines, symbolsIn, placeBySymbol, isEmptyClaim } from './review-learn.mjs';
+import { parseExtra, caughtBy, learnFromPr, summary, langOfPath, EXTRA, closerReadOf, phantomsIn, lessonsIn, hunkRanges, lessonSummary, slugFor, addedLines, symbolsIn, placeBySymbol, isEmptyClaim, unquotedSymbols, placeByCluster } from './review-learn.mjs';
 
 test('the extra reviewer\'s severity and title are read from both of its formats', () => {
   assert.deepEqual(parseExtra('**🗄️ Data Integrity & Integration** | **🟡 Minor** | **⚡ Quick win**\n\n**Reject invalid estimates instead of changing them.**\n\nIf a participant…'),
@@ -10,18 +10,18 @@ test('the extra reviewer\'s severity and title are read from both of its formats
   assert.equal(parseExtra('**🔴 Critical**\n\nplain words first line').title, 'plain words first line');
 });
 
-test('Void caught a spot when it flagged something within 3 lines, notes aside', () => {
+test('Verse caught a spot when it flagged something within 3 lines, notes aside', () => {
   const f = [{ line: 10, kind: 'risk', rule: 'a' }, { line: 30, kind: 'note', rule: 'n' }];
   assert.equal(caughtBy(f, 12).rule, 'a');
   assert.equal(caughtBy(f, 14), null);
   assert.equal(caughtBy(f, 30), null);
 });
 
-test('each extra finding on a merged PR is checked against Void\'s review of the file at that commit', () => {
+test('each extra finding on a merged PR is checked against Verse\'s review of the file at that commit', () => {
   const file = "const a = 1;\nconst l = JSON.parse(localStorage.getItem('k') || '[]').filter((x) => x);\nconst b = 2;\n";
   const comments = [
     { user: { login: EXTRA }, path: 'x.js', original_line: 2, original_commit_id: 's1', body: '_⚠️ Potential issue_\n\n**Validate the shape.**' },
-    { user: { login: EXTRA }, path: 'x.js', original_line: 40, original_commit_id: 's1', body: '**🟡 Minor**\n\n**Something Void cannot see.**' },
+    { user: { login: EXTRA }, path: 'x.js', original_line: 40, original_commit_id: 's1', body: '**🟡 Minor**\n\n**Something Verse cannot see.**' },
     { user: { login: EXTRA }, path: 'notes.md', original_line: 3, original_commit_id: 's1', body: '**🟡 Minor**\n\n**Docs.**' },
     { user: { login: EXTRA }, path: 'x.js', original_line: 2, original_commit_id: 's1', body: '_🧹 Nitpick_\n\n**Style.**' },
     { user: { login: EXTRA }, in_reply_to_id: 1, path: 'x.js', original_line: 2, body: 'reply' },
@@ -34,14 +34,14 @@ test('each extra finding on a merged PR is checked against Void\'s review of the
   assert.equal(rows[2].reviewed, false);
   const s = summary(rows);
   assert.deepEqual([s.findings, s.scored, s.caught, s.rate, s.notReviewable], [4, 2, 1, 50, 1]);
-  assert.equal(s.missed[0].title, 'Something Void cannot see.');
+  assert.equal(s.missed[0].title, 'Something Verse cannot see.');
   assert.equal(summary([]).rate, null);
   assert.equal(langOfPath('a/b.MJS'), 'javascript');
   assert.equal(langOfPath('README.md'), null);
 });
 
-test("Void's own closer read: a 'not defined' claim about a name the file imports, or a claim about the mask, counts as a false finding the filter removes", () => {
-  const body = "<!-- void-review -->\n### Void's review\n\n#### A closer read\n\n* **Line 149 (answer.js):** `redact` is not defined in `answer.js`. This will cause a ReferenceError.\n\n* **Line 3 (answer.js):** `frobnicate` is not defined.\n\n* **Line 28:** `TOKEN` is assigned using `[redacted]`, which is not a valid value.\n\n**Not blocking:** none.\n\n<sub>Reviewed</sub>";
+test("Verse's own closer read: a 'not defined' claim about a name the file imports, or a claim about the mask, counts as a false finding the filter removes", () => {
+  const body = "<!-- void-review -->\n### Verse's review\n\n#### A closer read\n\n* **Line 149 (answer.js):** `redact` is not defined in `answer.js`. This will cause a ReferenceError.\n\n* **Line 3 (answer.js):** `frobnicate` is not defined.\n\n* **Line 28:** `TOKEN` is assigned using `[redacted]`, which is not a valid value.\n\n**Not blocking:** none.\n\n<sub>Reviewed</sub>";
   const fileAt = (p, sha) => (p.endsWith('answer.js') && sha === 'sha1' ? "import { redact } from '../../lib/automation-fix.js';\nexport async function onRequestPost() {}\n" : 'const TOKEN = 1;');
   const rows = phantomsIn(254, body, ['void-live-deploy/functions/api/answer.js', 'tools/x.mjs'], 'sha1', fileAt);
   assert.equal(rows.length, 3);
@@ -109,4 +109,18 @@ test("no claim, no count: 'I have reviewed', 'Bugs: None' and 'the provided diff
     [[true, false, 0, 'I have reviewed the diff.'], [false, true, 2, '`frob` doubles without a guard.'], [false, true, 3, 'The return could be inline.'], [true, false, 0, 'Bugs: None.']]);
   const sum = lessonSummary(rows);
   assert.deepEqual([sum.closerFound, sum.unplaced, sum.empty], [2, 0, 2]);
+});
+
+test('unquoted symbols in a tight cluster place a finding (asked by Verse)', () => {
+  const files = [
+    { filename: 'a.js', patch: '@@ -1 +1,6 @@\n x();\n+function loadRows(n) {\n+  const row_count = n;\n+  return saveAll(row_count);\n+}\n+let other = 1;' },
+    { filename: 'b.js', patch: '@@ -1 +1,2 @@\n y();\n+const loadRows = 2;' },
+  ];
+  const added = addedLines(files), fs = ['a.js', 'b.js'];
+  assert.deepEqual(unquotedSymbols('loadRows reads row_count and calls saveAll() without a guard; `quoted_one` ignored'), ['loadRows', 'row_count', 'saveAll']);
+  const hit = placeByCluster('loadRows reads row_count and passes it to saveAll() unchecked.', added, fs);
+  assert.equal(hit.path, 'a.js'); assert.equal(hit.line, 2); assert.deepEqual(hit.cluster, ['loadRows', 'row_count', 'saveAll']);
+  assert.equal(placeByCluster('loadRows alone is odd.', added, fs), null, 'one name is not a cluster');
+  assert.equal(placeByCluster('row_count and saveAll() are far apart.', { 'a.js': [[1, 'row_count'], [90, 'saveAll()']] }, ['a.js']), null, 'a wide spread is not a cluster');
+  assert.equal(placeByCluster('loadRows and row_count again.', { 'a.js': [[1, 'loadRows row_count']], 'b.js': [[5, 'loadRows row_count']] }, fs), null, 'a cluster in two files decides nothing');
 });

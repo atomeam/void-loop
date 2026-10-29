@@ -88,7 +88,7 @@ test('forge: the STL is the model, binary, millimetres, Z up, every facet with a
     const m = F.build(k), buf = F.stl(m), dv = new DataView(buf), n = m.indices.length / 3;
     assert.equal(buf.byteLength, 84 + 50 * n);
     assert.equal(dv.getUint32(80, true), n);
-    assert.match(String.fromCharCode(...new Uint8Array(buf, 0, 40)), /^Void forge: /);
+    assert.match(String.fromCharCode(...new Uint8Array(buf, 0, 40)), /^Verse forge: /);
     assert.doesNotMatch(String.fromCharCode(...new Uint8Array(buf, 0, 5)), /^solid/, 'binary STL never starts with "solid" (slicers would read it as ASCII)');
     let maxZ = 0, minZ = Infinity;
     for (let t = 0; t < n; t++) {
@@ -117,10 +117,10 @@ test('forge: the second four read as themselves (teapot spout and handle, house 
   const T = F.build('tree').positions; let wide = 0, trunk = 0;
   for (let i = 0; i < T.length; i += 3) { const r = Math.hypot(T[i], T[i + 2]); if (T[i + 1] > 90 && r > 40) wide++; if (T[i + 1] > 20 && T[i + 1] < 45 && r < 13) trunk++; }
   assert.ok(wide > 100 && trunk > 50, 'a wide canopy over a narrow trunk (' + wide + ', ' + trunk + ')');
-  assert.equal(Object.keys(F.THINGS).length, 10, 'ten things, the number #14 asks for');
+  assert.equal(Object.keys(F.THINGS).length, 16, 'the ten things #14 asks for, the person (a figure as a recipe), and the five a camp can raise (hut, wall, well, bridge, tower; lib/rts.js BUILDS)');
 });
 
-// Void's ask (2026-10-10): "a link between the forge and print-file so I can verify an object's geometry before the print
+// Verse's ask (2026-10-10): "a link between the forge and print-file so I can verify an object's geometry before the print
 // command is issued". Before a file goes out, the STL bytes are read back and held to the model: the facet count, the
 // file's length, every number finite, its extent the model's size, and the mesh a slicer takes as it is (printCheck.ok).
 test('forge: before printing, the STL is read back and held to the model; every thing passes', () => {
@@ -154,10 +154,31 @@ test('forge: "print it" and the Print button only download a file that passed; a
   URL.createObjectURL = () => 'blob:x'; URL.revokeObjectURL = () => {};
   try {
     await forge.run('print it', { stage: { things: () => ({ t1: th }), selected: () => 't1' }, say, summon() {} });
-    assert.equal(downloads, 1); assert.match(said.at(-1), /^Checked and downloading void-rocket\.stl/);
+    assert.equal(downloads, 1); assert.match(said.at(-1), /^Checked and downloading void-rocket-[0-9a-f]{8}\.stl/);
     const m = F.build('rocket');
     assert.equal(printOrRefuse(m, say, () => ({ ok: false, problems: ['open edges: 12 (a slicer may need to mend it)'], triangles: 0 })), false);
     assert.equal(downloads, 1, 'nothing downloaded');
     assert.match(said.at(-1), /^Not printed: the rocket's file did not pass its check · open edges: 12/);
   } finally { delete globalThis.document; URL.createObjectURL = realURL.create; URL.revokeObjectURL = realURL.revoke; }
+});
+
+test('recipe versioning (asked by Verse twice): every recipe has a stable id that changes with the recipe, and the STL file name carries it', () => {
+  const ids = Object.keys(F.THINGS).map((k) => F.recipeId(k));
+  assert.ok(ids.every((id) => /^[0-9a-f]{8}$/.test(id)), ids.join(','));
+  assert.equal(new Set(ids).size, ids.length, 'no two recipes share an id');
+  assert.equal(F.recipeId('vase'), F.recipeId('vase'), 'the same recipe, the same id');
+  assert.equal(F.recipeId('nothing'), null);
+  assert.equal(F.build('vase').id, F.recipeId('vase'));
+  assert.equal(fileName('vase'), 'void-vase-' + F.recipeId('vase') + '.stl');
+  assert.equal(fileName('mug'), 'void-mug.stl', 'a thing with no recipe here has no id to carry');
+  // a changed recipe is a new id: the same hashing over a recipe with one radius moved
+  const t = F.THINGS.vase, s1 = JSON.stringify({ key: 'vase', k: t.k, cell: t.cell, shapes: t.shapes }), s2 = s1.replace(/"r":\[42,46,42\]/, '"r":[43,46,42]');
+  assert.notEqual(s1, s2); const fnv = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
+  assert.equal(fnv(s1), F.recipeId('vase')); assert.notEqual(fnv(s2), F.recipeId('vase'));
+});
+
+test('forge history (asked by Verse twice): "forge history" and "what can you make" list the recipes; other asks are untouched', () => {
+  for (const a of ['forge history', 'what can you make', 'What can you 3D print for me?', 'show me the forge gallery', 'forge recipes']) assert.deepEqual(forgeOf(a), { list: true }, a);
+  for (const a of ['what can you do', 'make me a coffee', 'history of the forge in england', 'what can you make of this']) assert.ok(!forgeOf(a) || !forgeOf(a).list, a);
+  assert.deepEqual(forgeOf('make me a rocket'), { make: 'rocket' });
 });

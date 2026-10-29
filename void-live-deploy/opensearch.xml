@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-  <ShortName>Void</ShortName>
-  <Description>Ask Void</Description>
+  <ShortName>Verse</ShortName>
+  <Description>Ask Verse</Description>
   <InputEncoding>UTF-8</InputEncoding>
   <Image width="192" height="192" type="image/png">https://a-to-mind.com/icon-192.png</Image>
   <Url type="text/html" method="get" template="https://a-to-mind.com/?q={searchTerms}"/>

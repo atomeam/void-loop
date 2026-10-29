@@ -1,5 +1,5 @@
 // void-review: skip-file (its rules contain the very patterns they look for)
-// Void reviews code. Shared by the page (instant checks) and /api/answer mode 'review' (the deeper read by the model).
+// Verse reviews code. Shared by the page (instant checks) and /api/answer mode 'review' (the deeper read by the model).
 // Someone pastes code and asks for a review: the quick checks below run in the browser at once (bugs, security holes, risky
 // habits, with line numbers), then the model reads the whole thing. Keys and passwords in the paste are masked before
 // anything is shown, logged or sent (redact, lib/automation-fix.js). The checks are tuned to say nothing rather than
@@ -9,7 +9,7 @@ import { redact, envName } from './automation-fix.js';
 // "review my code", "code review", "check this script", "what's wrong with my function", "is this query safe", "find bugs in this"
 const NOUN = '(?:code|script|function|snippet|program|pull\\s+request|pr|diff|class|method|query|sql|component|module|file|regex|github\\s+action|(?:ci|actions?|github)\\s+workflow|workflow\\s+(?:file|ya?ml))'; // "audit my github actions", "check this ci workflow"
 const ASKS = [
-  new RegExp('^(?:please\\s+|pls\\s+|hey\\s+void,?\\s+)?(?:(?:can|could|would|will)\\s+you\\s+)?(?:please\\s+)?(?:do\\s+a\\s+)?(?:code[- ]?review|review|critique|audit|lint|look\\s+over|go\\s+over|sanity[- ]check|check|proofread|improve|refactor|clean\\s+up|find\\s+(?:the\\s+)?bugs?\\s+in|spot\\s+(?:the\\s+)?bugs?\\s+in)\\s+(?:of\\s+)?(?:my|this|the|these|that|our|a|some|following)?\\s*(?:[\\w#+.-]+\\s+){0,2}?' + NOUN + 's?\\b', 'i'),
+  new RegExp('^(?:please\\s+|pls\\s+|hey\\s+(?:verse|void),?\\s+)?(?:(?:can|could|would|will)\\s+you\\s+)?(?:please\\s+)?(?:do\\s+a\\s+)?(?:code[- ]?review|review|critique|audit|lint|look\\s+over|go\\s+over|sanity[- ]check|check|proofread|improve|refactor|clean\\s+up|find\\s+(?:the\\s+)?bugs?\\s+in|spot\\s+(?:the\\s+)?bugs?\\s+in)\\s+(?:of\\s+)?(?:my|this|the|these|that|our|a|some|following)?\\s*(?:[\\w#+.-]+\\s+){0,2}?' + NOUN + 's?\\b', 'i'),
   /^(?:code[- ]?review|review\s+(?:please|pls|this|it))\b/i,
   /^(?:lint|critique|audit)\s+(?:this|it|that)\s*:\s*\S/i,
   /^(?:check|review|lint|audit)\s+(?:my|this|the)\s+(?:python|py|javascript|js|typescript|ts|sql|bash|shell|go|golang|rust|java|php|ruby|c\+\+|c#|swift|kotlin)\s*:\s*\S/i, // "check my python: <code>" // "lint this: var x = 1" (a colon and something after it, so "audit this" alone stays a word ask)
@@ -22,7 +22,10 @@ const ASKS = [
 const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|morse|country|qr|coupon|gift|access|bar|cheat|tax|airport|iata|swift|sort|colou?r|hex|status|referral|invite|invitation|verification|confirmation|security|activation|redeem|voucher|pin|source\s+of)\s+codes?\b|\bcode\s+of\s+conduct\b|\bda\s+vinci\s+code\b/i;
 
 export function isReviewAsk(text) {
-  const s = String(text || '').trim(), first = s.split('\n')[0].replace(/\s*⏎.*$/, '').slice(0, 300);
+  const s = String(text || '').trim();
+  let first = s.split('\n')[0].replace(/\s*⏎.*$/, '').slice(0, 300);
+  // a long pasted paragraph is judged by its opening sentence, so "is my code ok?" deep in prose isn't a review ask
+  if (first.length > 160) first = first.split(/(?<=[.!?])\s+/)[0];
   if (NOT_CODE.test(first)) return false;
   if (ASKS.some((re) => re.test(first))) return true;
   // "review this python:" with the paste on the next lines: the first line asks for a review, names a language and ends at the colon
@@ -54,7 +57,7 @@ export function looksLikeCode(code, lang) {
   if (!lang && langOf(s) === 'yaml') lang = 'yaml'; // a pasted workflow or manifest counts as YAML even when the ask doesn't say so
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
-  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE|GRANT|REVOKE)\b/.test(s)) n++;
+  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|(?:verse|void)|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE|GRANT|REVOKE)\b/.test(s)) n++;
   if (/^\s*print\s+['"]/m.test(s)) n++; // Python 2's print 'x'
   if (/^\s*(?:FROM|RUN|COPY|ADD|ENV|ARG|EXPOSE|CMD|ENTRYPOINT|WORKDIR|USER|HEALTHCHECK)\s+\S/m.test(s)) n++; // a Dockerfile instruction (upper case, as written)
   if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]+:(?:\s|$)/m.test(s)) n++; // key: value
@@ -83,7 +86,7 @@ export function langOf(code) {
   if (/^\s*(?:def|class)\s+\w+.*:\s*$|^\s*(?:import\s+\w+|from\s+[\w.]+\s+import)\b|^\s*(?:elif|except|try)\b.*:\s*$|\bprint\(|\bself\.|\bNone\b|\bTrue\b|\bFalse\b/m.test(s) && !/[{};]\s*$/m.test(s)) return 'python';
   if (/^\s*package\s+\w+|\bfunc\s+\w*\s*\(|:=/m.test(s) && !/\bfunction\b|=>/.test(s)) return 'go';
   if (/\bfn\s+\w+\s*\(|\blet\s+mut\b|\bimpl\b|println!/.test(s)) return 'rust';
-  if (/\bpublic\s+(?:static\s+)?(?:class|void|int|string|String)\b|System\.out\.|Console\.Write/.test(s)) return /Console\.|\bstring\b|\busing\s+System/.test(s) ? 'csharp' : 'java';
+  if (/\bpublic\s+(?:static\s+)?(?:class|(?:verse|void)|int|string|String)\b|System\.out\.|Console\.Write/.test(s)) return /Console\.|\bstring\b|\busing\s+System/.test(s) ? 'csharp' : 'java';
   if (/^\s*#include\b|\bstd::|\bprintf\s*\(|\bint\s+main\s*\(/m.test(s)) return 'c';
   if (/^\s*(?:def\s+\w+|end|puts\s)/m.test(s) && /^\s*end\s*$/m.test(s)) return 'ruby';
   if (/^\s*<(?:!doctype|html|div|body|head|p|span|a|ul|li|form|input|button|section|main)\b/im.test(s) && !/\bfunction\b|=>/.test(s.replace(/<script[\s\S]*?<\/script>/gi, ''))) return 'html';
@@ -232,7 +235,7 @@ export function jsCodeOnly(t) {
       let j = i + 1; while (j < t.length && t[j] !== c && (c === '`' || t[j] !== '\n')) j += t[j] === '\\' ? 2 : 1;
       blank(Math.min(j + 1, t.length)); last = c; continue;
     }
-    if (c === '/' && (/[(,=:[!&|?{};>+\-*%~^]/.test(last) || last === '' || /\b(?:return|typeof|case|in|of|delete|void|throw)\s*$/.test(out.slice(-14)))) {
+    if (c === '/' && (/[(,=:[!&|?{};>+\-*%~^]/.test(last) || last === '' || /\b(?:return|typeof|case|in|of|delete|(?:verse|void)|throw)\s*$/.test(out.slice(-14)))) {
       let j = i + 1, cls = false;
       while (j < t.length && t[j] !== '\n' && (cls || t[j] !== '/')) { if (t[j] === '\\') j++; else if (t[j] === '[') cls = true; else if (t[j] === ']') cls = false; j++; }
       if (t[j] === '/') { j++; while (/[a-z]/.test(t[j] || '')) j++; blank(j); last = '/'; continue; }
@@ -394,7 +397,7 @@ const RULES = [
     'java.util.Random (and System.Random) is predictable: anyone who sees a few values can work out the next ones, so tokens, passwords and codes made with it can be guessed. Use SecureRandom (RandomNumberGenerator in C#)'],
   ['c-unsafe-string', 'risk', ['c'], (m) => /\b(?:gets|strcpy|strcat|sprintf)\s*\(/.test(m),
     'gets, strcpy, strcat and sprintf write without checking the size of the buffer, so a long input overflows it (a crash, or a way in for an attacker). Use fgets(buf, sizeof buf, stdin), snprintf, or copy with an explicit length.'],
-  ['unwrap', 'style', ['rust'], (m) => /\.unwrap\s*\(\s*\)/.test(m),
+  ['unwrap', 'risk', ['rust'], (m) => /\.unwrap\s*\(\s*\)/.test(m),
     'unwrap() panics (crashes the program) when the value is None or an Err. Handle it with match / if let, pass it up with ?, or use expect("why this cannot fail").'],
   // thin-area probes: using a value after it was moved, indexing a vec! literal past its end
   ['rust-moved-use', 'bug', ['rust'], (m, r, x) => {
@@ -578,7 +581,7 @@ const RULES = [
   ['gha-unpinned-action', 'risk', ['yaml'], (m, r) => { const k = r.match(/^\s*(?:-\s+)?uses:\s*["']?([\w.-]+)\/[\w./-]+@([\w./-]+)/); if (!k || /^[0-9a-f]{40}$/.test(k[2])) return false;
       return /^(?:main|master|dev|develop|head|latest)$/i.test(k[2]) || !/^(?:actions|github)$/i.test(k[1]); },
     'this action is pinned to a tag or a branch, and whoever controls that repository can move it to new code that then runs with your secrets. Pin third-party actions to a full commit SHA (uses: owner/action@<40-character sha> # v1.2.3)'],
-  ['gha-prt-checkout', 'risk', ['yaml'], (m, r, x) => /^\s*(?:-\s+)?ref:\s*["']?\$\{\{\s*(?:github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref)\b/.test(r) && /^\s*(?:-\s+)?pull_request_target\b/m.test(x.prev()),
+  ['gha-prt-checkout', 'risk', ['yaml'], (m, r, x) => /^\s*(?:-\s+)?ref:\s*["']?\$\{\{\s*(?:github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref)\b/.test(r) && (/^\s*(?:-\s+)?pull_request_target\b/m.test(x.prev()) || /^\s*["']?on["']?\s*:[^\n#]*\bpull_request_target\b/m.test(x.all())), // "  pull_request_target:", "on: pull_request_target", "on: [push, pull_request_target]"
     'a pull_request_target workflow runs with your secrets and a write token, and this step checks out the pull request\'s own code, so anyone who opens a PR can run their code with them. Build PR code under the pull_request event instead'],
   ['gha-write-all', 'risk', ['yaml'], (m, r) => /^\s*permissions:\s*["']?write-all\b/.test(r),
     'write-all gives every step a token that can push code, change releases and edit issues. Grant only what the job needs: permissions: contents: read, plus the one write it uses'],
@@ -586,7 +589,7 @@ const RULES = [
     'the script prints a secret. GitHub masks secrets it knows in the log, but a changed or partial value slips through. Pass it through env: and never print it'],
   ['yaml-privileged', 'risk', ['yaml'], (m) => /^\s*(?:-\s+)?privileged:\s*true\b/.test(m),
     'privileged: true gives the container root on the host machine: a bug in it becomes a way out of the container. Grant only the capabilities it needs (securityContext.capabilities.add)'],
-  ['cs-async-void', 'bug', ['csharp'], (m) => /\basync\s+void\s+\w+\s*\((?![^)]*EventArgs)/.test(m),
+  ['cs-async-void', 'bug', ['csharp'], (m) => /\basync\s+(?:verse|void)\s+\w+\s*\((?![^)]*EventArgs)/.test(m),
     'async void can\'t be awaited, and an exception in it crashes the process instead of reaching the caller. Return Task: async Task Save() (async void is only for event handlers)'],
   ['cs-sync-over-async', 'risk', ['csharp'], (m) => /\w+Async\([^()]*(?:\([^()]*\)[^()]*)*\)\s*\.\s*(?:Result\b|Wait\(\s*\)|GetAwaiter\(\s*\)\s*\.\s*GetResult\(\s*\))/.test(m),
     'blocking on an async call (.Result / .Wait()) can deadlock in UI and ASP.NET code and ties up a thread while it waits. await it instead: var r = await client.GetAsync(url)'],
@@ -638,6 +641,21 @@ const RULES = [
     'the arrow function has a { } body but no return, so every result is undefined (map gives [undefined, …], filter keeps nothing). Return the value, or drop the braces: x => x * 2'],
   ['open-redirect', 'risk', JS, (m) => /\bres\.redirect\(\s*(?:\d{3}\s*,\s*)?req\.(?:query|params|body)\b/.test(m),
     'redirecting to a URL taken from the request lets anyone send your users to their site from a link on yours (an open redirect, used in phishing). Only redirect to paths you know, or check the target is on your own site'],
+  ['malloc-unchecked', 'risk', ['c'], (m, r, x) => {
+    // p = malloc(…) and the next lines write through p before any check that it is NULL
+    const a = m.match(/\b([A-Za-z_]\w*)\s*=\s*(?:\([^)]*\)\s*)?(?:malloc|calloc|realloc)\s*\(/), v = a && a[1];
+    if (!v) return false;
+    const rest = m.slice(a.index + a[0].length).split(';').slice(1).filter((t) => t.trim()); // "p = malloc(n); p[0] = 1;" pasted on one line
+    for (const n of [...rest, x.next(1), x.next(2), x.next(3)]) {
+      if (!n.trim()) continue; // a comment line is blank once masked: look past it
+      if (new RegExp('\\bif\\b[^;{]*\\b' + v + '\\b|\\b' + v + '\\s*[!=]=\\s*NULL|\\bassert\\s*\\([^)]*\\b' + v + '\\b').test(n)) return false;
+      if (new RegExp('\\b' + v + '\\s*\\[|\\*\\s*' + v + '\\b|\\b' + v + '\\s*->|\\b(?:mem(?:cpy|set|move)|str(?:n?cpy|n?cat))\\s*\\(\\s*' + v + '\\b').test(n)) return true;
+    }
+    return false;
+  },
+    'malloc, calloc and realloc return NULL when memory runs out, and writing through a NULL pointer crashes (or worse). Check it first: if (p == NULL) { … handle it … }.'],
+  ['php-loose-hash-compare', 'risk', ['php'], (m) => /(?<![=!<>])[=!]=(?!=)/.test(m) && /\$\w*(?:hash|passw(?:or)?d|pwd|token|secret|signature|digest|hmac|md5|sha1?)\w*|\b(?:md5|sha1|hash|hash_hmac|crypt)\s*\(/i.test(m) && !/\bhash_equals\s*\(|\bpassword_verify\s*\(/.test(m),
+    'PHP\'s == compares strings that look like numbers as numbers, so two different hashes such as "0e462…" and "0e830…" are equal (magic hashes) and a wrong password or token can pass. Use hash_equals($known, $given) for hashes and tokens (it is also timing-safe), password_verify() for passwords, and === elsewhere.'],
   ['format-string', 'risk', ['c'], (m) => /\b(?:printf\s*\(\s*|fprintf\s*\(\s*[\w>.-]+\s*,\s*|syslog\s*\(\s*[\w|]+\s*,\s*)(?!")[A-Za-z_][\w.>-]*\s*\)/.test(m),
     'the text is used as the format: a % in it (from a user) reads or writes memory it should not (a format-string bug). Print it through a fixed format: printf("%s", text)'],
   ['ts-any', 'style', ['typescript'], (m) => /(?::\s*any\b(?!\s*[\w$])|\bas\s+any\b|<any>)/.test(m),
@@ -685,7 +703,7 @@ const RULES = [
     'a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared.'],
   ['plain-http', 'risk', ['*'], (m, r) => /(?<!xmlns(?::[\w-]+)?=)['"`]http:\/\/(?!localhost\b|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|[\w-]+\.local\b|[\w.-]*example\.(?:com|org|net)\b|(?:www\.)?w3\.org\b|schemas\.(?:microsoft\.com|openxmlformats\.org)\/)[\w-]+\.[\w.-]+/.test(r), // XML namespace and package-type names are identifiers, never fetched
     'an http:// address sends data unencrypted, so it can be read or changed on the way. Use https:// if the server supports it.'],
-  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a query awaited inside a loop runs once per item (N+1); the
+  // taught by Verse's closer read (tools/review-learn.mjs, PR #273): a query awaited inside a loop runs once per item (N+1); the
   // same PR's DB.batch(list.map((r) => DB.prepare(…))) is the shape to keep, so .map and batches are not loops here
   ['query-in-loop', 'risk', JS, (m, r, x) => {
     // the SQL literal is read as written (the masked line hides string contents); the loop shape on the masked line
@@ -707,10 +725,10 @@ const RULES = [
     }
     return false; },
     'a query runs once per loop turn (one for every item): slow, and a cap on the loop becomes a cap on the database. Collect what you need and run one query (WHERE id IN (…)), or build the statements and run them as one batch (DB.batch(list.map(…)), Promise.all) and await once.'],
-  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a WHERE pasted from a joined list breaks when the list is empty
+  // taught by Verse's closer read (tools/review-learn.mjs, PR #273): a WHERE pasted from a joined list breaks when the list is empty
   ['where-join-empty', 'risk', JS, (m, r) => /\bWHERE\s*(?:['"`]\s*\+\s*|\$\{\s*)[\w$.]+\.join\s*\(/i.test(r) && !/\?\s*['"`]\s*WHERE\b|\.length\s*\?|\bwhere\s*\?|\?\s*\(?\s*['"`]\s*WHERE/i.test(r),
     'the WHERE is built from a list that can be empty: then the SQL ends in WHERE with nothing after it (a syntax error), or the query runs without the filter you meant. Guard it: (clauses.length ? " WHERE " + clauses.join(" AND ") : "").'],
-  // taught by Void's closer read (tools/review-learn.mjs, PR #258): splitting a string only to count the pieces builds an array for nothing
+  // taught by Verse's closer read (tools/review-learn.mjs, PR #258): splitting a string only to count the pieces builds an array for nothing
   ['split-to-count', 'style', JS, (m) => /\.split\(\s*(['"`])(?:\\n|\\t|[^'"`\\]{1,2})\1\s*\)\s*\.length\b/.test(m) && !/\.length\s*(?:[=!]==?|[<>]=?)\s*\d/.test(m),
     'splitting just to count makes a whole array of pieces. Count the separators instead: (s.match(/\\n/g) || []).length, plus one if you counted pieces.'],
   ['todo', 'note', ['*'], (m, r) => /\b(?:TODO|FIXME|HACK|XXX)\b/.test(r),
@@ -737,7 +755,8 @@ const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
 // Files a pull-request review does not read: generated or copied files (vendored libraries under void-live-deploy/vendor/ too:
 // someone else's minified build, added unchanged, run 58), data, and tests (their fixtures are bad code on purpose:
 // planted fake keys, planted TODOs). Test names in every language this repo writes: test_*, *_test.py|js|mjs, *.test.js|mjs.
-export const REVIEW_SKIP = /^(?:void-live-deploy\/(?:index|void)\.html|void-live-deploy\/vendor\/.*|tools\/(?:bench|grown|fringe)(?:\.best)?\.json|.*\.(?:json|md|txt|lock|svg|png|jpg|gif|ico|woff2?)|(?:.*\/)?(?:test_[^/]*|[^/]*_test\.(?:py|m?js)|[^/]*\.test\.m?js))$/;
+// archive/repos holds the early builds of Verse imported with their history (owner, 2026-10-21): kept as a record, not code the site runs.
+export const REVIEW_SKIP = /^(?:archive\/repos\/.*|void-live-deploy\/(?:index|(?:verse|void))\.html|void-live-deploy\/vendor\/.*|tools\/(?:bench|grown|fringe)(?:\.best)?\.json|.*\.(?:json|md|txt|lock|svg|png|jpg|gif|ico|woff2?)|(?:.*\/)?(?:test_[^/]*|[^/]*_test\.(?:py|m?js)|[^/]*\.test\.m?js))$/;
 export const skippedInReview = (path) => REVIEW_SKIP.test(String(path || ''));
 // The line numbers (1-based) inside <textarea> and <pre> blocks of an HTML page, open and close lines included: they hold
 // text to show (sample code, a snippet to copy), not code the page runs, so a pull-request review leaves them out.
@@ -758,8 +777,8 @@ export function textLines(src) {
 export const KIND_WORD = { bug: 'bug', risk: 'risk', style: 'style', note: 'note' };
 
 // The quick checks: [{ line, kind, rule, message, text }] most serious first, at most `max`. `text` is the line as written, keys masked.
-// The rules Void's review learned from other reviews (tools/review-learn.mjs): first from the extras (CodeRabbit, until it stopped
-// reviewing this repo on 2026-10-10: under 10 stars), then from Void's own closer read, which is the lesson source now. The weekly
+// The rules Verse's review learned from other reviews (tools/review-learn.mjs): first from the extras (CodeRabbit, until it stopped
+// reviewing this repo on 2026-10-10: under 10 stars), then from Verse's own closer read, which is the lesson source now. The weekly
 // stats (review-stats.json, shown on /code-review/) count them; a new learned rule adds a line here.
 export const LEARNED = [
   { rule: 'json-array-shape', from: 'extras', pr: 142 },
@@ -800,14 +819,15 @@ export function ruleReview(code, opts = {}) {
       // filters to added lines afterwards, so a first hit on an old line must not hide the new ones)
       const same = opts.collapse !== false && found.find((f) => f.rule === id && (kind === 'style' || kind === 'note'));
       if (same) { same.also = (same.also || 0) + 1; continue; }
-      found.push({ line: i + 1, kind, rule: id, message, text: redact(r.trim()).slice(0, 160) });
+      const whole = redact(r.trim()); // a line longer than 160 shows its start and says so: `more`, and the page's peek button shows the rest (asked by Verse)
+      found.push({ line: i + 1, kind, rule: id, message, text: whole.slice(0, 160), ...(whole.length > 160 ? { more: true } : {}) });
     }
   }
   found.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.line - b.line);
   return { lang, findings: found.slice(0, opts.max || 25), lines: rawLines.length };
 }
 
-// Fixes Void can make by itself because they never change what correct code means. Each works on the masked line (strings and
+// Fixes Verse can make by itself because they never change what correct code means. Each works on the masked line (strings and
 // comments blanked, same length), so a match inside a string is never touched, and edits the raw line at the same position.
 // Returns { code, changes: [{ line, rule, what }] }; code is unchanged when nothing applied.
 export function autoFix(code, opts = {}) {
@@ -852,5 +872,5 @@ export function findingsText(res) {
   return res.findings.map((f) => 'line ' + f.line + ' [' + f.kind + '] ' + f.message + (f.also ? ' (and ' + f.also + ' more like it)' : '')).join('\n');
 }
 
-export const REVIEW_SYSTEM = 'You are Void, doing a code review for the person who pasted this code. Be the reviewer a careful senior engineer would be: find what is actually wrong before anything cosmetic. In order: bugs (wrong results, crashes, off-by-one, unhandled cases, race conditions), security holes (injection, XSS, secrets, unsafe deserialisation, missing auth checks), data loss, then performance, then readability. For each point give the line number, what is wrong in one plain sentence, why it matters, and the fix as a short corrected code block. You are also given the results of quick pattern checks: confirm the real ones, drop any that are wrong in context, and add what they missed. Never invent problems: if the code is fine, say so plainly and stop. Do not rewrite the whole program unless asked; do not lecture; no headings beyond a short list. Plain language for someone who may be learning. Keys, tokens and passwords appear as [redacted]: never ask for them. Keep it under 450 words.';
+export const REVIEW_SYSTEM = 'You are Verse, doing a code review for the person who pasted this code. Be the reviewer a careful senior engineer would be: find what is actually wrong before anything cosmetic. In order: bugs (wrong results, crashes, off-by-one, unhandled cases, race conditions), security holes (injection, XSS, secrets, unsafe deserialisation, missing auth checks), data loss, then performance, then readability. For each point give the line number, what is wrong in one plain sentence, why it matters, and the fix as a short corrected code block. You are also given the results of quick pattern checks: confirm the real ones, drop any that are wrong in context, and add what they missed. Never invent problems: if the code is fine, say so plainly and stop. Do not rewrite the whole program unless asked; do not lecture; no headings beyond a short list. Plain language for someone who may be learning. Keys, tokens and passwords appear as [redacted]: never ask for them. Keep it under 450 words.';
 export { redact };

@@ -339,13 +339,16 @@ export function brainMesh(R, seed, cells = 72) {
  * and a coat drawn from the seed (tabby stripes, calico or dog patches, agouti brown). Facing +x, feet on y = -0.95R.
  * Parts: body (torso, neck, head), four legs (pivot at the hip or shoulder) and the tail (pivot at its root).
  */
-export const CREATURE_KINDS = ['cat', 'dog', 'mouse', 'rabbit', 'monkey'];
+export const CREATURE_KINDS = ['cat', 'dog', 'mouse', 'rabbit', 'monkey', 'horse', 'donkey'];
 const COATS = {
   cat: [['#d9893c', 'tabby'], ['#8a8a8a', 'tabby'], ['#2a2724', 'solid'], ['#f1ece4', 'solid'], ['#7a6048', 'tabby'], ['#efe7dc', 'calico']],
   dog: [['#c49a63', 'solid'], ['#2b2522', 'solid'], ['#7a4a2a', 'solid'], ['#f0ebe2', 'patches'], ['#d8b07a', 'patches'], ['#3a3330', 'tan']],
   mouse: [['#8d8378', 'solid'], ['#6e5a48', 'solid'], ['#eeeae4', 'solid'], ['#a4998c', 'solid']],
   rabbit: [['#8a6e52', 'agouti'], ['#efebe5', 'solid'], ['#8f8a86', 'agouti'], ['#4a3a2e', 'solid']],
   monkey: [['#8a6a48', 'face'], ['#6e5a44', 'face'], ['#a08868', 'face'], ['#4e3e30', 'face']],
+  // a horse's real coats: bay, chestnut, black, grey, palomino, and a pinto's patches; a donkey's grey, brown and dark
+  horse: [['#6e3f22', 'solid'], ['#9a5a2e', 'solid'], ['#231d1a', 'solid'], ['#b8b2aa', 'solid'], ['#d6b46e', 'solid'], ['#f0ebe2', 'patches']],
+  donkey: [['#8e8780', 'solid'], ['#6e5a48', 'solid'], ['#4a4038', 'solid'], ['#a39b92', 'solid']],
 };
 export function CREATURE(R, seed, kind) {
   const rnd = mulberry32(seed), u = (a, b) => a + (b - a) * rnd(), jit = (v, k = 0.08) => v * u(1 - k, 1 + k);
@@ -355,6 +358,10 @@ export function CREATURE(R, seed, kind) {
     mouse:  { len: 0.5, leg: 0.12, tr: 0.17, head: 0.12, muz: 0.11, neck: 0.04, tail: 0.85, tailR: 0.016, legR: 0.03, ear: 'round', earL: 0.1 },
     rabbit: { len: 0.62, leg: 0.22, tr: 0.27, head: 0.15, muz: 0.06, neck: 0.06, tail: 0.1, tailR: 0.075, legR: 0.06, ear: 'long', earL: 0.45 },
     monkey: { len: 0.6, leg: 0.4, tr: 0.21, head: 0.2, muz: 0.03, neck: 0.06, tail: 0.9, tailR: 0.035, legR: 0.055, ear: 'side', earL: 0.07, lift: 0.15 },
+    // a horse stands tall on long legs, deep in the chest, with a long neck and a long muzzle; a donkey is shorter in the leg,
+    // heavier in the head, with long upright ears (owner's misses, 2026-10-13: "make a real horse", "make a real donkey")
+    horse:  { len: 1.2, leg: 0.95, tr: 0.36, head: 0.2, muz: 0.3, neck: 0.48, tail: 0.65, tailR: 0.08, legR: 0.09, ear: 'up', earL: 0.13 },
+    donkey: { len: 1.0, leg: 0.68, tr: 0.33, head: 0.21, muz: 0.28, neck: 0.32, tail: 0.5, tailR: 0.04, legR: 0.08, ear: 'up', earL: 0.3 },
   }[kind] || null;
   if (!sp) return null;
   const len = jit(sp.len), leg = jit(sp.leg), tr = jit(sp.tr, 0.12), hr = jit(sp.head, 0.06), muz = jit(sp.muz, 0.12), legR = jit(sp.legR, 0.1);
@@ -368,7 +375,9 @@ export function CREATURE(R, seed, kind) {
   shapes.push({ part: 'body', type: 'capsule', a: P(front * 0.75, ty + tr * 0.25, 0), b: neckTop, ra: X(tr * 0.55), rb: X(hr * 0.75), k: X(0.08) });
   shapes.push({ part: 'body', type: 'ellipsoid', c: hc, r: [X(hr * (kind === 'dog' ? 1.05 : 1)), X(hr * 0.92), X(hr * 0.9)], k: X(0.06) });
   const muzTip = [hc[0] + X(hr * 0.75 + muz), hc[1] - X(hr * (kind === 'mouse' ? 0.15 : 0.3)), 0];
-  shapes.push({ part: 'body', type: 'capsule', a: [hc[0] + X(hr * 0.4), hc[1] - X(hr * 0.2), 0], b: muzTip, ra: X(hr * (kind === 'dog' ? 0.5 : 0.45)), rb: X(hr * (kind === 'mouse' ? 0.12 : 0.3)), k: X(0.05) });
+  const equine = kind === 'horse' || kind === 'donkey'; // a broad, blunt muzzle, never a point, and a mane along the neck
+  shapes.push({ part: 'body', type: 'capsule', a: [hc[0] + X(hr * 0.4), hc[1] - X(hr * 0.2), 0], b: muzTip, ra: X(hr * (equine ? 0.62 : kind === 'dog' ? 0.5 : 0.45)), rb: X(hr * (equine ? 0.5 : kind === 'mouse' ? 0.12 : 0.3)), k: X(equine ? 0.08 : 0.05) });
+  if (equine) shapes.push({ part: 'body', type: 'capsule', a: [neckTop[0] - X(hr * 0.1), neckTop[1] + X(hr * 0.55), 0], b: P(front * 0.45, ty + tr * 0.95, 0), ra: X(kind === 'horse' ? 0.06 : 0.045), rb: X(0.04), k: X(0.05) });
   for (const zs of [-1, 1]) { // ears
     const base = [hc[0] - X(hr * 0.15), hc[1] + X(hr * 0.7), X(zs * hr * 0.5)];
     if (sp.ear === 'point') shapes.push({ part: 'body', type: 'capsule', a: base, b: [base[0] + X(0.01), base[1] + X(sp.earL), base[2] + X(zs * 0.03)], ra: X(hr * 0.38), rb: X(0.008), k: X(0.03) });

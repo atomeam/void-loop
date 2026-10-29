@@ -1,6 +1,6 @@
 /**
- * figures3d — Void's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
- * so the empty page loads no 3D code at all. On first use it loads the bundled three.js (/vendor/three-r180, shared with scene3d.js) and puts one transparent
+ * figures3d — Verse's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
+ * so the empty page loads no 3D code at all. On first use it loads the bundled three.js (/vendor/three-r180a, shared with scene3d.js) and puts one transparent
  * WebGL canvas behind the cards, over the black stage. Pointer events pass through to the cards; the page asks this layer
  * whether a figure is under the pointer, and only then does a click, wheel or pinch go to the figure.
  *
@@ -22,11 +22,17 @@
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
 import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS, foodMesh, lifeMesh } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
+// the shared 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Verse, ask-20261015-0347-2): low-poly keeps every figure at its
+// light tier and draws at 1x. Read here, not imported: scene3d.js is the miniatures' engine and is absent where they are off.
+const DETAIL_KEY = 'a2m.void.3d.v1';
+let autoLow = false; // the miniature governor's own low step, told by its void:3d-detail event
+function lowPoly() { let v = null; try { v = localStorage.getItem(DETAIL_KEY); } catch (_) {} return v === 'low' || (v !== 'full' && autoLow); }
+if (typeof document !== 'undefined') document.addEventListener('void:3d-detail', (e) => { autoLow = !!(e.detail && e.detail.auto); });
 import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
 export { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey };
 export const THREE_VERSION = '0.180.0';
-export const THREE_URL = '/vendor/three-r180/build/three.module.min.js'; // the same bundled copy scene3d.js uses: one three.js on the page
+export const THREE_URL = '/vendor/three-r180a/build/three.module.min.js'; // the same bundled copy scene3d.js uses: one three.js on the page
 export const MOTION_KEY = 'a2m.void.motion.v1';
 const PALETTE = [0x9d8cff, 0x6ee7c8, 0xffa98a, 0x7cc4ff, 0xff8fc7, 0xc6f27a];
 const R = 28;            // body radius in CSS px: a figure is about 80 px tall on the stage
@@ -49,7 +55,9 @@ export function makeBrain(spec = {}, rng = Math.random) {
   return { id: spec.id || 'fig_' + Math.random().toString(36).slice(2, 8), x: spec.x ?? 200, y: spec.y ?? 200, vx: 0, vy: 0,
     tx: spec.x ?? 200, ty: spec.y ?? 200, mode: 'idle', modeT: 0.6 + rng() * 1.2, act: 'look', yaw: 0, lookX: 0, lookY: 0,
     blinkT: 0, nextBlink: 1.5 + rng() * 3, bob: rng() * 6.28, hop: 0, spin: 0, noticed: false, wave: 0, slide: 0, t: 0,
-    script, body, react: null, reactId: null, reactT: 0, chasedOff: false, pace: +spec.pace || 1 }; // pace: this individual's walking speed
+    script, body, react: null, reactId: null, reactT: 0, chasedOff: false, pace: +spec.pace || 1, // pace: this individual's walking speed
+    // the RTS world (lib/rts.js): a node's loads left and what it yields; a villager's load on its back
+    left: spec.res && Number.isFinite(+spec.res.left) ? Math.max(0, Math.floor(+spec.res.left)) : null, res: (spec.res && spec.res.kind) || null, carry: typeof spec.carry === 'string' ? spec.carry : null, delivered: 0 };
 }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function insideAny(x, y, rects, pad = 0) {
@@ -130,13 +138,26 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         }
       }
     }
+    // the RTS world (lib/rts.js): a villager with a load on its back carries it to the camp before anything else
+    if (f.carry && world.camp && f.mode !== 'deliver' && !f.together) { f.mode = 'deliver'; f.modeT = 60; f.react = null; f.reactId = null; }
     // Next #20: react to a nearby figure when the script says so (cursor notice still wins above).
-    const near = f.together ? null : pickNearbyReaction(f, world.others || [], NOTICE * 1.15);
+    const near = f.together || f.mode === 'deliver' ? null : pickNearbyReaction(f, world.others || [], NOTICE * 1.15);
     if (near && (!f.react || f.reactId !== near.other.id || f.react !== near.react)) {
       f.react = near.react; f.reactId = near.other.id; f.reactT = 2.4 + rng() * 1.6;
       if (near.react === 'greet' || near.react === 'argue') { f.mode = near.react; f.hop = 1; f.wave = 1; f.act = 'wave'; }
-      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team' || near.react === 'eat') {
+      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team' || near.react === 'eat' || near.react === 'gather') {
         f.mode = near.react; f.modeT = 3;
+      }
+    }
+    if (f.mode === 'deliver') { // walk the load to the camp; there it goes into the stock (skills/rts.js hears void:rts-deliver)
+      const c = world.camp;
+      if (!c || !f.carry) { f.mode = 'idle'; f.modeT = 0.6; }
+      else {
+        const dx0 = c.x - f.x, dy0 = c.y - f.y, dist = Math.hypot(dx0, dy0) || 1;
+        if (dist < R * 1.8) {
+          f.delivered = (f.delivered || 0) + 1; f.lastDelivered = f.carry; f.carry = null; f.mode = 'idle'; f.modeT = 0.8; f.hop = 1; f.act = 'look';
+          if (world.onDeliver) world.onDeliver(f, f.lastDelivered);
+        } else { f.tx = c.x; f.ty = c.y; f.vx = dx0 / dist * SPEED; f.vy = dy0 / dist * SPEED; wantYaw = clamp(dx0 / 180, -0.7, 0.7); }
       }
     }
     if (f.react && f.reactT > 0) f.reactT -= dt;
@@ -149,16 +170,16 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
         if (f.act === 'wave') f.wave = Math.max(f.wave, 0.6);
       }
-    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team' || f.mode === 'eat') {
+    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team' || f.mode === 'eat' || f.mode === 'gather') {
       const o = (world.others || []).find((x) => x && x.id === f.reactId && !x.chasedOff && !x.eaten);
-      if (f.mode === 'eat' && o) f.reactT = Math.max(f.reactT, 0.5); // a hunter does not give up on food it can see
+      if ((f.mode === 'eat' || f.mode === 'gather') && o) f.reactT = Math.max(f.reactT, 0.5); // a hunter does not give up on food it can see; nor a villager on work
       if (!o || f.reactT <= 0) { f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.react = null; f.reactId = null; }
       else {
         const dx0 = o.x - f.x, dy0 = o.y - f.y, dist = Math.hypot(dx0, dy0) || 1;
         let tx = o.x, ty = o.y, spd = SPEED;
         if (f.mode === 'flee') { tx = f.x - dx0; ty = f.y - dy0; spd = SPEED * 1.25; }
         else if (f.mode === 'chase') { spd = SPEED * 1.45; }
-        else if (f.mode === 'eat') { spd = SPEED * 1.15; } // a steady, single-minded walk to the food
+        else if (f.mode === 'eat' || f.mode === 'gather') { spd = SPEED * 1.15; } // a steady, single-minded walk to the food, or the work
         else if (f.mode === 'team') { // stick near, not on top
           if (dist < R * 2.2) { tx = f.x; ty = f.y; }
           else { tx = o.x - (dx0 / dist) * R * 2; ty = o.y - (dy0 / dist) * R * 2; }
@@ -169,6 +190,11 @@ export function stepFigure(f, dt, world, rng = Math.random) {
           o.chasedOff = true; f.mode = 'idle'; f.modeT = 1.2; f.react = null; f.reactId = null; f.hop = 1; f.wave = 1;
         } else if (f.mode === 'eat' && dist < R * 1.3) { // reached the food: eat it (it shrinks away where it lies)
           o.eaten = true; o.chasedOff = true; f.ate = (f.ate || 0) + 1; f.mode = 'idle'; f.modeT = 1.6; f.react = null; f.reactId = null; f.hop = 1; f.act = 'look';
+        } else if (f.mode === 'gather' && dist < R * 1.6) { // reached the node: one load on the back (lib/rts.js); an empty node is gone
+          if (o.left == null) o.left = 8; // a node built before its loads were known (an older saved tree): a full one
+          o.left -= 1; f.carry = o.res || 'wood'; f.gathered = (f.gathered || 0) + 1;
+          if (o.left <= 0) { o.eaten = true; o.chasedOff = true; }
+          f.mode = 'idle'; f.modeT = 0.4; f.react = null; f.reactId = null; f.hop = 1; f.act = 'look';
         } else {
           f.tx = tx; f.ty = ty;
           const gx = f.tx - f.x, gy = f.ty - f.y, gd = Math.hypot(gx, gy) || 1;
@@ -253,7 +279,14 @@ function worldNow() {
   }
   const st = document.getElementById('stage'), sr = st ? st.getBoundingClientRect() : { bottom: innerHeight - 72 };
   const m = R + 16;
-  return { bounds: { l: m, t: R * 2.2, r: Math.max(m + 1, innerWidth - m), b: Math.max(R * 2.2 + 1, sr.bottom - m - 10) }, rects: ui.rects };
+  // a grounded scene (the RTS world: a backdrop, a world or a camp; skills/rts.js sets v-grounded): the figures keep to the ground band, the
+  // lower part of the stage, like units on a map; the camp is where a carried load goes
+  const grounded = document.documentElement.classList.contains('v-grounded'), bottom = Math.max(R * 2.2 + 1, sr.bottom - m - 10);
+  const top = grounded ? Math.max(R * 2.2, Math.min(bottom - R * 3, sr.bottom * 0.55)) : R * 2.2;
+  const campEl = grounded ? document.querySelector('#stage .thing.camp') : null, cr = campEl && campEl.getBoundingClientRect();
+  const camp = cr && cr.width ? { x: cr.left + cr.width / 2, y: cr.top + cr.height / 2, id: campEl.dataset.id } : null;
+  return { bounds: { l: m, t: top, r: Math.max(m + 1, innerWidth - m), b: bottom }, rects: ui.rects.filter((r) => !(camp && r.l <= camp.x && r.r >= camp.x && r.t <= camp.y && r.b >= camp.y)), camp,
+    onDeliver: (f, res) => { try { document.dispatchEvent(new CustomEvent('void:rts-deliver', { detail: { id: f.id, res, camp: camp && camp.id } })); } catch (_) {} } };
 }
 // screen px -> world units (world z = 0 plane maps 1:1 to CSS px at zoom 1; y up)
 const toWorld = (x, y) => ({ x: x - innerWidth / 2, y: innerHeight / 2 - y });
@@ -278,7 +311,9 @@ export function mountStage3D() {
     try {
       renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power', premultipliedAlpha: true });
     } catch (e) { canvas.remove(); mountP = null; throw e; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const ratio = () => (lowPoly() ? 1 : Math.min(window.devicePixelRatio || 1, 1.5)); // full-screen layer: 1.5x is sharp and a 3x phone no longer draws 4x the pixels (perf, 2026-10-15); low-poly draws at 1x
+    renderer.setPixelRatio(ratio());
+    document.addEventListener('void:3d-detail', () => { renderer.setPixelRatio(ratio()); if (stage && stage.onResize) stage.onResize(); requestRender(); }); // "low poly 3d" / "full 3d": pixels now, tiers settle one figure a frame
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -313,7 +348,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, together: f.brain.together ? f.brain.together.kind + ' ' + f.brain.together.t.toFixed(1) : null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null, held: !!f.brain.held, flying: !!f.toss })), grab: ui.grab ? { id: ui.grab.f.brain.id, moved: ui.grab.moved } : null };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, carry: f.brain.carry || null, left: f.brain.left ?? null, delivered: f.brain.delivered || 0, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, together: f.brain.together ? f.brain.together.kind + ' ' + f.brain.together.t.toFixed(1) : null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null, held: !!f.brain.held, flying: !!f.toss })), grab: ui.grab ? { id: ui.grab.f.brain.id, moved: ui.grab.moved } : null };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
@@ -485,7 +520,7 @@ function bubbleTexture(line) {
     if (lines.length <= 3) break;
   }
   let shown = lines.slice(0, 3);
-  if (lines.length > 3) shown[2] = shown[2].replace(/\s*\S*$/, '') + '…';
+  if (lines.length > 3) shown[2] = shown[2].replace(/\s*\S*$/, '') + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
   const lh = size * 1.18, midY = (Tp + B) / 2, startY = midY - (shown.length - 1) * lh / 2;
   shown.forEach((ln, i) => g.fillText(ln, W / 2, startY + i * lh));
   const tex = new T.CanvasTexture(c); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 4; return tex;
@@ -752,7 +787,7 @@ function poseLife(f, still) {
   if (L.kind === 'flower') f.parts.body.rotation.set(0, 0, still ? 0 : Math.sin(b.t * 0.9) * 0.04); // a slight sway in the air
   if (L.fly && !still) f.obj.position.y += Math.sin(b.t * 5) * 3;
 }
-const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature, monkey: buildCreature, bone: buildFood, cheese: buildFood, carrot: buildFood, banana: buildFood, fish: buildLife, shark: buildLife, bee: buildLife, flower: buildLife };
+const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature, monkey: buildCreature, horse: buildCreature, donkey: buildCreature, bone: buildFood, cheese: buildFood, carrot: buildFood, banana: buildFood, fish: buildLife, shark: buildLife, bee: buildLife, flower: buildLife };
 // run a thing's conditions for one frame and show the result: rain, snow and lightning, a darkening cloud, melting ice,
 // a flower growing under the rain. Returns true while something is visibly happening.
 function stepElement(f, dt, now, still, others) {
@@ -852,7 +887,7 @@ function trisOf(f) { return Math.round(f.parts.geos.reduce((n, g) => n + (g.inde
 // the tier one figure should have now: one step toward its target per call; null when it is already there
 function nextTier(f, zoomId, zoomTo) {
   if (f.leaving || !sdfBody(f.spec)) return null;
-  const have = f.spec.detail | 0, want = zoomId === f.brain.id ? tierForZoom(zoomTo) : 0;
+  const have = f.spec.detail | 0, want = zoomId === f.brain.id && !lowPoly() ? tierForZoom(zoomTo) : 0; // low-poly: every figure stays at its light tier
   return want === have ? null : want < have ? want : have + 1;
 }
 function retier(f, t, now) {
@@ -950,7 +985,7 @@ export function meet(idA, idB, kind, secs) {
   return true;
 }
 /** Where every figure is and the live conditions it has ({ id: { x, y, nature, adv } }), so the page can keep them for the next visit (and advance() can carry on from there). */
-export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null, adv: f.advSeen || null }; return out; }
+export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null, adv: f.advSeen || null, left: f.brain.left ?? null, carry: f.brain.carry || null }; return out; }
 /** Write a world snapshot onto the stage things ({ id: thing }): each figure's own place (`at`) and live conditions. A thing advance() has just moved
  *  (its `adv` stamp) keeps advance's place until the 3D layer has taken it (w.adv matches). Returns how many places were written. */
 export function foldWorld(things, snap) {
@@ -960,6 +995,8 @@ export function foldWorld(things, snap) {
     if (t.adv && w.adv !== t.adv) continue;
     if (Number.isFinite(w.x) && Number.isFinite(w.y)) { t.at = { x: w.x, y: w.y }; n += 1; }
     if (w.nature) t.nature = w.nature;
+    if (w.left != null && t.res) t.res = { ...t.res, left: w.left }; // a node's loads left (lib/rts.js)
+    if ('carry' in w) { if (w.carry) t.carry = w.carry; else delete t.carry; }
   }
   return n;
 }
@@ -1134,6 +1171,8 @@ function frame(ts) {
   for (const [id, f] of figures) {
     if (f.leaving && now - f.leaving > 300) { disposeFigure(f); figures.delete(id); continue; }
     if (f.brain.chasedOff && !f.leaving) { // Next #20: a chase that caught this figure sends them off
+      // eaten food and an emptied node leave the stage for good (they came back on the next render before: the page only deleted a thrown figure)
+      if (f.brain.eaten) { try { document.dispatchEvent(new CustomEvent('void:figure-thrown', { detail: { id } })); } catch (_) {} }
       if (still) { disposeFigure(f); figures.delete(id); continue; }
       f.leaving = now; f.brain.chasedOff = false;
     }
@@ -1160,8 +1199,10 @@ function frame(ts) {
   stage.dirty = false;
   const empty = !figures.size && !extras.size;
   if (!figures.size) { ui.zoom = ui.zoomTo = 1; ui.zoomId = null; }
-  stage.canvas.style.opacity = empty ? '0' : '1';
-  stage.canvas.style.zIndex = ui.zoom > 1.05 ? '2' : '0'; // zoomed in, the figure comes in front of the cards; the ask box stays on top
+  // style writes only when they change: writing them every frame dirtied style on the whole page 60 times a second
+  const op = empty ? '0' : '1', zi = ui.zoom > 1.05 ? '2' : '0';
+  if (stage.canvas.style.opacity !== op) stage.canvas.style.opacity = op;
+  if (stage.canvas.style.zIndex !== zi) stage.canvas.style.zIndex = zi; // zoomed in, the figure comes in front of the cards; the ask box stays on top
   if (moving && !empty) stage.raf = requestAnimationFrame(frame);
   else stage.last = 0;
 }

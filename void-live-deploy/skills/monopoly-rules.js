@@ -1,19 +1,19 @@
 /**
  * monopoly-rules — a property-trading board game with Monopoly's rules, in plain JS (no DOM, no three.js), shared by the
  * card (skills/monopoly.js), its 3D board and the tests. Asked for by Adam, 2026-10-08, as the next game: it is the first
- * one where money and ownership persist across a long run of turns, and where Void plays seats of its own.
+ * one where money and ownership persist across a long run of turns, and where Verse plays seats of its own.
  * The rules and numbers are the classic ones; the street names, the cards' wording and the look are our own.
  *
  * What a seat can do is what the rules allow, and every act is named for what it is:
  *  - a roll moves you; landing can force things you did not choose (rent, tax, a card, jail): the log says "forced"
  *  - buying is always the buyer's own choice (Buy / Don't buy); nothing is bought automatically
- *  - a trade is an offer the other seat accepts or declines; Void says why
- *  - Void's seats choose like players (no peeking at the dice or the decks) and record why each choice was made
+ *  - a trade is an offer the other seat accepts or declines; Verse says why
+ *  - Verse's seats choose like players (no peeking at the dice or the decks) and record why each choice was made
  *
  *   create({ voids = 1, seed }) -> state      roll(s) -> s      buy(s, yes) -> s      build(s, i) -> s      endTurn(s) -> s
- *   payJail(s) -> s      offer(s, { space, cash }) -> { s, accepted, why }      voidTurn(s) -> s (one whole Void turn)
+ *   payJail(s) -> s      offer(s, { space, cash }) -> { s, accepted, why }      voidTurn(s) -> s (one whole Verse turn)
  *   rentFor(s, i, diceSum) -> number      canBuild(s, p, i) -> bool      worth(s, p) -> number
- *   answer(s, yes) -> s      your answer to an offer Void made you (s.proposal): nothing moves until you answer
+ *   answer(s, yes) -> s      your answer to an offer Verse made you (s.proposal): nothing moves until you answer
  * Not yet: auctions, mortgages, house shortages.
  */
 export const START_MONEY = 1500, GO_PAY = 200, JAIL = 10, GO_TO_JAIL = 30, JAIL_FINE = 50;
@@ -72,7 +72,7 @@ export function create({ voids = 1, seed = (Math.random() * 4294967296) >>> 0 } 
     players: [{ name: 'You', seat: 'you', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false }],
     owner: {}, houses: {}, turn: 0, phase: 'roll', dice: null, doubles: 0, pending: null, proposal: null, rng: seed >>> 0, moves: 0, log: [], winner: null,
   };
-  for (let k = 0; k < n; k++) s.players.push({ name: n === 1 ? 'Void' : 'Void ' + (k + 1), seat: 'void', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false });
+  for (let k = 0; k < n; k++) s.players.push({ name: n === 1 ? 'Verse' : 'Verse ' + (k + 1), seat: 'void', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false });
   s.decks = { chance: shuffled(s, CHANCE.length), chest: shuffled(s, CHEST.length) };
   return s;
 }
@@ -80,11 +80,47 @@ export function create({ voids = 1, seed = (Math.random() * 4294967296) >>> 0 } 
 const say = (s, p, text, extra = {}) => { s.log.push({ who: p == null ? null : s.players[p].name, text, ...extra }); if (s.log.length > 200) s.log.splice(0, s.log.length - 200); };
 export const owned = (s, p) => Object.keys(s.owner).map(Number).filter((i) => s.owner[i] === p);
 export const hasSet = (s, p, g) => GROUP[g].every((i) => s.owner[i] === p);
-export function worth(s, p) { return s.players[p].money + owned(s, p).reduce((a, i) => a + SPACES[i].p + (s.houses[i] || 0) * (SPACES[i].h || 0), 0); }
+export function worth(s, p) { return s.players[p].money + owned(s, p).reduce((a, i) => a + (s.mortgaged && s.mortgaged[i] ? SPACES[i].p / 2 : SPACES[i].p) + (s.houses[i] || 0) * (SPACES[i].h || 0), 0); }
+// mortgage: the bank lends half the price; the deed collects no rent until it is paid back with 10% on top
+export const mortgageValue = (i) => Math.floor((SPACES[i].p || 0) / 2);
+export const unmortgageCost = (i) => Math.ceil(mortgageValue(i) * 1.1);
+export function canMortgage(s, p, i) { const sp = SPACES[i]; return buyable(i) && s.owner[i] === p && !(s.mortgaged && s.mortgaged[i]) && !(sp.g && GROUP[sp.g].some((j) => s.houses[j])); }
+export function canUnmortgage(s, p, i) { return s.owner[i] === p && !!(s.mortgaged && s.mortgaged[i]) && s.players[p].money >= unmortgageCost(i); }
+export function mortgage(s0, i) {
+  const s = clone(s0), p = s.turn; if (s.players[p].out || !canMortgage(s, p, i)) return s0;
+  s.mortgaged = s.mortgaged || {}; s.mortgaged[i] = true; s.players[p].money += mortgageValue(i);
+  say(s, p, 'mortgaged ' + SPACES[i].n + ' for ' + mortgageValue(i)); return s;
+}
+export function unmortgage(s0, i) {
+  const s = clone(s0), p = s.turn; if (s.players[p].out || !canUnmortgage(s, p, i)) return s0;
+  delete s.mortgaged[i]; s.players[p].money -= unmortgageCost(i);
+  say(s, p, 'paid off the mortgage on ' + SPACES[i].n + ' for ' + unmortgageCost(i)); return s;
+}
+// a player's holdings grouped by colour set (stations and utilities as their own groups), for the always-visible panel
+export function holdings(s, p) {
+  const out = [];
+  const add = (key, label, ids) => { const mine = ids.filter((i) => s.owner[i] === p); if (mine.length) out.push({ key, label, of: ids.length, full: mine.length === ids.length, items: mine.map((i) => ({ i, n: SPACES[i].n, houses: s.houses[i] || 0, mortgaged: !!(s.mortgaged && s.mortgaged[i]) })) }); };
+  for (const g of Object.keys(GROUP)) add(g, g.replace('light', 'light ').replace('dark', 'dark '), GROUP[g]);
+  add('station', 'stations', SPACES.map((x, i) => (x.t === 'station' ? i : -1)).filter((i) => i >= 0));
+  add('utility', 'utilities', SPACES.map((x, i) => (x.t === 'utility' ? i : -1)).filter((i) => i >= 0));
+  return out;
+}
+// a deed in the shared card shape (kind, game, title, fields), so the card binder can store it like any other card
+export function deedCard(s, i, names = null) {
+  const sp = SPACES[i], n = names ? names[i] : sp.n, o = s.owner[i];
+  const fields = [['Price', sp.p], ['Mortgage value', mortgageValue(i)]];
+  if (sp.t === 'street') { ['Rent', 'With 1 house', 'With 2 houses', 'With 3 houses', 'With 4 houses', 'With a hotel'].forEach((l, k) => fields.push([l, sp.r[k]])); fields.push(['House cost', sp.h]); fields.push(['Rent doubles', 'when one player owns the whole set']); }
+  if (sp.t === 'station') fields.push(['Rent', '25 with one station, doubling for each more']);
+  if (sp.t === 'utility') fields.push(['Rent', '4 times the dice, or 10 times with both']);
+  if (o != null) fields.push(['Owner', s.players[o].name]);
+  if (s.mortgaged && s.mortgaged[i]) fields.push(['State', 'mortgaged: no rent until paid off for ' + unmortgageCost(i)]);
+  return { kind: 'deed', game: 'property', id: 'deed-' + i, title: n, color: sp.g || sp.t, fields };
+}
+
 
 export function rentFor(s, i, sum = 7) {
   const sp = SPACES[i], o = s.owner[i];
-  if (o == null) return 0;
+  if (o == null || (s.mortgaged && s.mortgaged[i])) return 0; // a mortgaged deed collects no rent
   if (sp.t === 'station') return 25 * 2 ** (owned(s, o).filter((j) => SPACES[j].t === 'station').length - 1);
   if (sp.t === 'utility') return sum * (owned(s, o).filter((j) => SPACES[j].t === 'utility').length === 2 ? 10 : 4);
   const h = s.houses[i] || 0;
@@ -101,13 +137,15 @@ function pay(s, p, amount, to = null, why = '') {
     while ((s.houses[i] || 0) > 0 && pl.money < 0) { s.houses[i]--; pl.money += SPACES[i].h / 2; say(s, p, 'sold a house on ' + SPACES[i].n + ' for ' + SPACES[i].h / 2 + ' to pay' + (why ? ' ' + why : ''), { forced: true }); }
   }
   if (pl.money >= 0) return;
+  for (const i of owned(s, p)) { if (pl.money >= 0) break; if (!(s.mortgaged && s.mortgaged[i])) { s.mortgaged = s.mortgaged || {}; s.mortgaged[i] = true; pl.money += mortgageValue(i); say(s, p, 'mortgaged ' + SPACES[i].n + ' for ' + mortgageValue(i) + ' to pay' + (why ? ' ' + why : ''), { forced: true }); } }
+  if (pl.money >= 0) return;
   pl.out = true;
-  for (const i of owned(s, p)) { if (to != null) s.owner[i] = to; else delete s.owner[i]; delete s.houses[i]; }
+  for (const i of owned(s, p)) { if (to != null) s.owner[i] = to; else { delete s.owner[i]; if (s.mortgaged) delete s.mortgaged[i]; } delete s.houses[i]; }
   if (to != null) s.players[to].money += pl.money; // the creditor gets what was left (the debt beyond it is lost)
   pl.money = 0;
   say(s, p, 'is out: could not pay' + (why ? ' ' + why : ''), { forced: true });
   const left = s.players.map((x, k) => (x.out ? -1 : k)).filter((k) => k >= 0);
-  // the game is over when one seat is left, or when you are out (the Void seats don't play on without you): the richest left wins
+  // the game is over when one seat is left, or when you are out (the Verse seats don't play on without you): the richest left wins
   if (left.length === 1 || s.players[0].out) { s.winner = left.sort((a, b) => worth(s, b) - worth(s, a))[0]; s.phase = 'over'; say(s, s.winner, 'wins'); }
 }
 
@@ -212,7 +250,7 @@ export function endTurn(s0) {
   return s;
 }
 
-// ---- Void's seats: it chooses like a player and says why (the why goes in the log and to Void's reflections) ----
+// ---- Verse's seats: it chooses like a player and says why (the why goes in the log and to Verse's reflections) ----
 const RESERVE = 150;
 function setsWouldComplete(s, p, i) { const g = SPACES[i].g; return !!g && GROUP[g].every((j) => j === i || s.owner[j] === p); }
 export function voidWantsToBuy(s, p, i) {
@@ -224,7 +262,7 @@ export function voidWantsToBuy(s, p, i) {
   if (left >= RESERVE) return { yes: true, why: 'it can afford it and keep ' + left + ' in reserve' };
   return { yes: false, why: 'buying would leave only ' + left + ', under its ' + RESERVE + ' reserve' };
 }
-// one whole turn for the Void seat whose turn it is: jail, roll, buy, build, end
+// one whole turn for the Verse seat whose turn it is: jail, roll, buy, build, end
 export function voidTurn(s0) {
   let s = clone(s0);
   const p = s.turn;
@@ -256,7 +294,7 @@ export function voidTurn(s0) {
   return s;
 }
 
-// Void starts a trade when you hold the one street it needs to finish a set: an offer, open until you answer it
+// Verse starts a trade when you hold the one street it needs to finish a set: an offer, open until you answer it
 function propose(s, p) {
   if (s.proposal || s.players[0].out) return;
   const cash = s.players[p].money;
@@ -265,7 +303,7 @@ function propose(s, p) {
     if (mine.length !== GROUP[g].length - 1 || yours.length !== 1 || s.houses[yours[0]]) continue;
     const i = yours[0], price = Math.ceil(SPACES[i].p * 1.8 / 10) * 10;
     if (cash - price < RESERVE) continue;
-    s.proposal = { from: p, space: i, cash: price, why: 'it would complete its ' + g + ' set, so it is worth more to Void than its ' + SPACES[i].p + ' price' };
+    s.proposal = { from: p, space: i, cash: price, why: 'it would complete its ' + g + ' set, so it is worth more to Verse than its ' + SPACES[i].p + ' price' };
     say(s, p, 'offered you ' + price + ' for ' + SPACES[i].n, { why: s.proposal.why });
     return;
   }
@@ -280,7 +318,7 @@ export function answer(s0, yes) {
   return s;
 }
 
-// a trade is an offer: you offer cash for one of a Void seat's properties; Void accepts or declines and says why
+// a trade is an offer: you offer cash for one of a Verse seat's properties; Verse accepts or declines and says why
 export function offer(s0, { space, cash }) {
   const i = Number(space), c = Math.floor(Number(cash) || 0), me = s0.turn, o = s0.owner[i];
   if (s0.players[me].seat !== 'you' || o == null || s0.players[o].seat !== 'void' || s0.players[o].out || c <= 0 || c > s0.players[me].money)

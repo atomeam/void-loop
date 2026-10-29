@@ -1,0 +1,12 @@
+{
+  "slug": "local-scalar-tick-stub",
+  "family": "interval timing",
+  "run": 78,
+  "date": "2026-10-06",
+  "emit": false,
+  "seal": null,
+  "href_allowlist": [],
+  "page": "proposed-scalar-tick.html",
+  "worker": "tick-worker.js",
+  "status": "candidate"
+}

@@ -1,7 +1,10 @@
 /**
  * words skill — synonyms, opposites, rhymes and spelling, from Datamuse (no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "synonym for happy", "another word for big", "opposite of cold", "what rhymes with orange", "how do you spell necessary".
+ * "synonym for happy", "another word for big", "opposite of cold", "what rhymes with orange", "how do you spell necessary",
+ * "5 letter words starting with cr", "words ending in ology", "anagram of listen", "unscramble tlesi".
+ * Asked by Verse (ask-20261014-1548-1): an unscrambled or pattern word is a tap away from a picture of it: each word in the
+ * list runs "cartoon version of a <word>" (skills/cartoon.js: a cartoon figure on the stage), so the words get a visual context.
  */
 // "plural of cactus": English rules plus the common irregulars, no network needed
 const IRREGULAR = { cactus: 'cacti (or cactuses)', fungus: 'fungi', nucleus: 'nuclei', radius: 'radii', stimulus: 'stimuli', syllabus: 'syllabi (or syllabuses)',
@@ -51,7 +54,55 @@ export function wordsOf(text) {
   if (m) return { kind: 'plural', word: m[1] };
   m = t.match(/^(?:how\s+(?:do\s+(?:you|i)|to)\s+spell|spell|spelling\s+of|is\s+it\s+spelled)\s+([a-z']{2,30})$/);
   if (m) return { kind: 'spell', word: m[1] };
+  // letter patterns: "5 letter words starting with cr", "6 letter words ending in ing", "words that start with xyl"
+  m = t.match(/^(?:(?:give\s+me|list|find|show\s+me|what\s+are)\s+)?(?:some\s+|all\s+|the\s+)?(?:(\d{1,2}|three|four|five|six|seven|eight|nine|ten)[- ]letter\s+)?words?\s+(?:that\s+)?(?:(?:start|starts|starting|begin|begins|beginning)\s+with\s+([a-z]{1,10})(?:\s+and\s+(?:end|ends|ending)\s+(?:with|in)\s+([a-z]{1,10}))?|(?:end|ends|ending)\s+(?:with|in)\s+([a-z]{1,10}))$/);
+  if (m) {
+    const n = m[1] ? NUMS[m[1]] || +m[1] : 0, pre = m[2] || '', suf = m[3] || m[4] || '';
+    if (n && (n < 2 || n > 15 || pre.length + suf.length >= n)) return null;
+    return { kind: 'pat', word: t, sp: n ? pre + '?'.repeat(n - pre.length - suf.length) + suf : pre + '*' + suf, n, pre, suf };
+  }
+  // anagrams: "anagram of listen", "unscramble tlesi", "unscramble the letters rtae"
+  m = t.match(/^(?:(?:what(?:['’]?s| is| are)\s+)?(?:an?\s+|the\s+)?anagrams?\s+(?:of|for)|unscramble(?:\s+the\s+(?:letters|word))?)\s+([a-z]{3,10})$/);
+  if (m && m[1] !== 'my') return { kind: 'ana', word: m[1] };
   return null;
+}
+const NUMS = { three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+/** the ask that draws a word (the cartoon skill), or '' for a word that is not plain letters. Pure. */
+export const pictureAsk = (w) => (/^[a-z]{2,20}$/.test(String(w || '')) ? 'cartoon version of ' + (/^[aeiou]/.test(w) ? 'an ' : 'a ') + w : '');
+const wordLink = (w, esc) => { const a = pictureAsk(w); return a ? '<a href="#" class="word-pic" data-ask="' + esc(a) + '" style="color:inherit;text-decoration:none;border-bottom:1px dotted rgba(150,175,255,.5)">' + esc(w) + '</a>' : esc(w); };
+const sorted = (w) => w.toLowerCase().split('').sort().join('');
+/** the words in a list made of exactly the letters of `letters` (not the letters themselves), each once, in list order. Pure. */
+export function anagramsIn(list, letters) {
+  const key = sorted(letters), seen = new Set([letters.toLowerCase()]);
+  return (list || []).filter((w) => { const x = String(w).toLowerCase(); if (seen.has(x) || !/^[a-z]+$/.test(x) || sorted(x) !== key) return false; seen.add(x); return true; });
+}
+// letter patterns and anagrams, from Datamuse's spelled-like search (sp=, with ? for one letter and * for any): an anagram is
+// looked up as every word of its length starting with each of its letters, then kept when it uses exactly those letters
+async function listRun(q, api) {
+  const { showPage, esc } = api, up = (x) => x.toUpperCase();
+  const title = q.kind === 'ana' ? 'Anagrams of ' + up(q.word)
+    : (q.n ? q.n + '-letter words' : 'Words') + (q.pre ? ' starting with ' + up(q.pre) : '') + (q.suf ? (q.pre ? ' and' : '') + ' ending in ' + up(q.suf) : '');
+  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">…</div>'; });
+  const src = '<div class="src">Source: <a href="https://www.datamuse.com/api/" target="_blank" rel="noopener">Datamuse</a> (common English words)</div>';
+  const get = (sp, max) => fetch('https://api.datamuse.com/words?max=' + max + '&sp=' + encodeURIComponent(sp)).then((x) => x.json()).then((r) => (r || []).map((x) => x.word));
+  try {
+    let list;
+    if (q.kind === 'ana') {
+      const firsts = Array.from(new Set(q.word.split('')));
+      list = anagramsIn((await Promise.all(firsts.map((c) => get(c + '?'.repeat(q.word.length - 1), 1000).catch(() => [])))).flat(), q.word);
+    } else {
+      const re = new RegExp('^' + q.sp.replace(/\?/g, '[a-z]').replace(/\*/g, '[a-z]*') + '$');
+      list = Array.from(new Set((await get(q.sp, 80)).filter((w) => re.test(w)))).slice(0, 60);
+    }
+    if (!api._pageStill(el)) return 'words';
+    el.innerHTML = '<h2>' + esc(title) + '</h2>' + (list.length ? '<p style="font-size:18px;line-height:1.7">' + list.map((w) => wordLink(w, esc)).join(' · ') + '</p><p style="color:#8a8a8a">Tap a word for a cartoon of it on the stage.</p>'
+      : '<p>' + (q.kind === 'ana' ? 'No common English word uses exactly the letters ' + esc(up(q.word)) + '.' : 'I didn\'t find common words like that.') + '</p>') + src;
+    return 'words'; // an empty list is still an answer: no common word fits
+  } catch (_) {
+    if (!api._pageStill(el)) return 'none';
+    el.innerHTML = '<h2>' + esc(title) + '</h2><p>The word service didn\'t answer just now. Ask again in a moment.</p>';
+    return 'none';
+  }
 }
 async function run(text, api) {
   const { showPage, esc } = api;
@@ -67,6 +118,7 @@ async function run(text, api) {
     showPage((p) => { p.innerHTML = '<h2>Plural of “' + esc(q.word) + '”</h2><div style="font-size:30px;font-weight:300;margin:6px 0">' + esc(pl) + '</div>'; });
     return 'words';
   }
+  if (q.kind === 'pat' || q.kind === 'ana') return listRun(q, api);
   const title = { syn: 'Words for “' + q.word + '”', ant: 'Opposites of “' + q.word + '”', rhy: 'Rhymes with “' + q.word + '”', spell: q.word }[q.kind];
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">…</div>'; });
   const src = '<div class="src">Source: <a href="https://www.datamuse.com/api/" target="_blank" rel="noopener">Datamuse</a></div>';
@@ -96,8 +148,8 @@ async function run(text, api) {
 }
 export default {
   name: 'words',
-  examples: ['synonym for happy', 'opposite of cold', 'what rhymes with orange', 'how do you spell necessary', 'plural of cactus'],
-  nearMisses: ['define happy', 'what is a synonym', 'what is a plural', 'spell check my essay', 'weather in Paris'],
+  examples: ['synonym for happy', 'opposite of cold', 'what rhymes with orange', 'how do you spell necessary', 'plural of cactus', '5 letter words starting with cr', 'unscramble tlesi'],
+  nearMisses: ['define happy', 'what is a synonym', 'what is a plural', 'spell check my essay', 'weather in Paris', 'what is an anagram', 'sentences starting with and'],
   match(lower, text) { return !!wordsOf(text); },
   run
 };

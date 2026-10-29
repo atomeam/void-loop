@@ -11,7 +11,7 @@ function placeOf(text) {
     || t.match(/^(.+?)\s+(?:street\s+)?map$/i);
   if (!m) return null;
   const p = m[1].replace(/^(the\s+)/i, '').trim();
-  if (!p || /^(everything|the map|you|i|my \w+)$/i.test(p)) return null;
+  if (!p || /^(everything|the map|you|i|my \w+|(?:(?:show|open|give|draw)(?: me)? )?(?:the |your |(?:verse|void)'?s |(?:verse|v01d)'?s )?(?:code |import |skill )?dependenc(?:y|ies))$/i.test(p)) return null; // "dependency map" is the deps card, not a street map
   // "area of a circle with radius 5": geometry, not a neighbourhood
   if (/^(?:a|an|the)?\s*\d+(?:\.\d+)?\s*(?:ft|feet|m|in|cm)?\s*(?:by|x|×)\s*\d/i.test(p)) return null; // "area of a 10 by 12 rectangle"
   if (/^(?:a|an|the)?\s*(?:circle|triangle|rectangle|square|sphere|cylinder|cone|cube|trapezoid|parallelogram|polygon|hexagon|pentagon|ellipse|rhombus)\b/i.test(p)) return null;

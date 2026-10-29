@@ -1,0 +1,27 @@
+# Playbook: a field mind on the shared kit
+
+What starts it: an idea for a small simulated field with a tiny local mind (the owner's list F-020..F-035, "all of Grok's ideas are to be added to Verse", 2026-10-17; and the owner, 2026-10-18: "all of groks builds should be what v01ds engine is built on": every draft in atomeam/a-to-mind.com `drafts/` (the F0xx minds and the frontier experiments) lands on this kit, grouped by theme, one pure law module per theme with each draft as a named variant that cites its F-id), or a miniature or figure that should think a little for itself ("the tiny minds can go into the tiny figures", owner, 2026-10-17).
+
+The pieces already there: `lib/field-kit.js` (pure: seeded `rng`, grids, particles, `entropy`, `occupancyEntropy`, `morphOf`/`morphCss`, `mutate`/`evolveStep`, `audioMap`, `seal`), `lib/field-stage.js` (the Canvas2D card: `mountField`, `fieldSkill`), `lib/field-worker.js` (`spawnMind`: a Worker that imports your pure module, the page when Workers are blocked).
+
+Steps:
+1. Brief first: who it is for, who does it best and how (look it up), what the first version does, what it will not build.
+2. Write the law as pure functions in `lib/field-<name>.js`: `create(seed)`, `step(s, dt, input)`, `metrics(s)` giving `{ entropy, activity, consensus, cx, cy }` each 0..1, and, if it thinks slowly, one synchronous exported function the Worker can call by name (`evolveFlow`, `evolveSwarm`). No DOM, no clock, no `Math.random`. Cap particle or agent counts (700 and 240 so far).
+3. `node tools/new-skill.mjs <name> --ask "..." --near "..."`, then rewrite the skill as `export default fieldSkill({ name, words, examples, nearMisses, idea, say })`. Own controls and background thinking go in `idea.mount(ctx)`, which returns `{ dispose() }`.
+4. Unit test the law with numbers (`tools/field-<name>.test.mjs`, `node --test`): seeded determinism, bounds, a fitness that rewards what it says, a step that never gets worse.
+5. One browser section in `tools/test_void.mjs`, run alone: `node tools/heavy.mjs node tools/test_void.mjs --only "<title>"`. Test the card with Worker and Web Audio deleted by an init script (`fresh("delete window.Worker; delete window.AudioContext;")`): the mind must fall back to `main` and still run.
+6. A `docs/MAP.md` line, then `node tools/finish.mjs grow ...` (say "asked by Owner").
+
+Mistakes already made:
+- `th.state` is saved by the stage with `JSON.stringify`; typed arrays in it would be written out each save. `mountField` now defines it non-enumerable; keep handles (Workers, closures) in the state or the hook, never on `th` itself.
+- A Blob module Worker needs an absolute URL for its import (`spawnMind` resolves it); the CSP allows `worker-src blob:`.
+- Under `prefers-reduced-motion` the card runs no loop, so a hook must not rely on the loop to notice the card has left: check `el.isConnected` on its own timer, and do not evolve while `still()`.
+- A seal stores facts only (params and metrics), never the pointer's path.
+- Several drafts on one theme (2026-10-18, attention: `lib/field-attention.js`): one module, each draft a named variant with its own create/step, and top-level `create(seed, { variant })`/`step`/`metrics` that dispatch on `s.variant`; a Law button swaps `th.state` (it stays non-enumerable). Tag every slow thought with its variant and drop an answer whose variant is no longer the card's, or a lattice genome lands on particles.
+- An injected source (a pointer, a typed word) must outweigh the law's own pull down, or it vanishes: under a growth bell a cell above the bell loses `rate / 2` a step, so a source of less than that leaves a dark moat, not a lit spot. Check it with numbers (`consensus` above 0.5 at the source) before drawing it.
+- Several drafts with one theme go in ONE law module as named variants on one state shape (`lib/field-nca.js`: `VARIANTS`, `create(seed, variant)`), with one card that has a picker; wrap `fieldSkill(...)`'s `run` so the ask's words choose the variant (`skills/nca-mind.js`).
+- A draft's law is often a flat sheet after a few hundred steps (logistic growth with no decay, a Laplacian missing its centre term). Before building the card, run every variant 400 steps in node and print `metrics`; fix the law, and say in a comment what the draft did and why it changed.
+- A random neural rule mostly dies out or fills the grid. Search offline with the same mind and ship the best as a starter (`STARTER` in `lib/field-nca.js`), as trained NCAs ship weights.
+- Measure activity over two steps, not one: otherwise the mind rewards a rule that flashes the card every frame.
+- Controls an idea adds in `idea.mount` must stop `pointerdown` from reaching the stage themselves (the stage's own loop ran before they existed): otherwise the press starts a drag of the card and the click never lands (swarm mind's Law button, 2026-10-18).
+- Several drafts can share one law module as named variants with the same `create/step/metrics` shape and one `evolve` function that takes the variant's name (`lib/field-swarm.js`): one card, one Worker, a Law button to switch. A rollout judges a genome against a synthetic pointer (an orbit round where the person last pointed), never a replay of their path.

@@ -3,11 +3,29 @@
  * Empty surface stays empty; the count is an outcome card that stays on the stage (stageKinds), copyable as
  * plain text, until it's thrown off. A second named countdown (new year plus a birthday) gets its own card.
  */
+// "january 1st", "the 1st of march", "jan 2nd", "dec 25th" read as "january 1", "march 1", "january 2", "december 25" (owner, 2026-10-18)
+const ABBR = { jan: 'january', feb: 'february', mar: 'march', apr: 'april', jun: 'june', jul: 'july', aug: 'august', sep: 'september', sept: 'september', oct: 'october', nov: 'november', dec: 'december' };
+export function plainDate(s) {
+  return String(s || '')
+    .replace(/\b(?:the\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+of\s+([a-z]{3,9})\b/gi, '$2 $1')
+    .replace(/\b([a-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)\b/gi, '$1 $2')
+    .replace(/\b(jan|feb|mar|apr|jun|jul|aug|sept?|oct|nov|dec)\.?(?=\s+\d)/gi, (m, a) => ABBR[a.toLowerCase()]);
+}
+// "show the countdown", "show the days until a date", "show the countdown to christmas" (one countdown with show-countdown,
+// 2026-10-22): the plain countdown ask they mean ("days until new year" when no day is named), or null. Pure.
+export function showAskOf(text) {
+  const sh = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^please /, '');
+  if (/^show (?:the )?countdown$|^show the days until a date$/.test(sh)) return 'days until new year';
+  const st = sh.match(/^show (?:the |a |my )?countdown (?:to|until|till) (.+)$/);
+  if (!st) return null;
+  for (const ask of ['countdown to ' + st[1], 'days until ' + st[1]]) if (countdownOf(ask)) return ask;
+  return null;
+}
 export function countdownOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const t = plainDate(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
   if (/^(?:how many )?(?:days|weeks) until new year$/i.test(t)) return { kind: 'newyear' };
   if (/^days until (?:jan(?:uary)?\.?\s+1|january 1)$/i.test(t)) return { kind: 'newyear' };
-  const m = t.match(/^(?:how many )?(?:days|weeks) until ([a-z]+\s+\d{1,2})$/i);
+  const m = t.match(/^(?:how many )?(?:days|weeks) (?:until|till|to) (?:the )?([a-z]+\s+\d{1,2})$/i);
   if (m && realDay(m[1])) return { kind: 'named', label: m[1] };
   // "days until valentines day": named days the holiday list doesn't answer (christmas and halloween stay with it)
   const v = t.match(/^(?:how many )?(?:days|weeks) (?:until|till|to) (.+)$/i);

@@ -1,0 +1,156 @@
+{
+  "floor": "weather",
+  "verse_page": "/weather/ (and the stage weather skill, skills/weather.js)",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "weather.gov": {
+      "sources": [
+        "https://www.weather.gov/",
+        "https://www.weather.gov/wrn/hourly-weather-graph",
+        "https://www.weather.gov/dlh/GetyourHourlyWeatherForecastfromNWS",
+        "https://www.weather.gov/chs/forecast",
+        "https://www.weather.gov/dvn/Area_Forecast_Discussion",
+        "https://www.weather.gov/phi/briefing",
+        "https://atlas.niu.edu/klot/lot2/Media/EM/Fall2015/Services_and_Products_Handout.pdf"
+      ],
+      "features": [
+        {
+          "name": "Forecast by city or ZIP",
+          "detail": "point forecast for a 1.5 mile square",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "weather/index.html place box \"Look\""
+        },
+        {
+          "name": "7-day forecast",
+          "detail": "text and icons, day and night",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"7 days ahead\""
+        },
+        {
+          "name": "Hourly weather graph",
+          "detail": "temperature, wind chill, heat index, dew point, wind, gusts, rain chance, rain and snow amounts, sky cover, humidity, out to 7 days",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "stage weather card (skills/weather.js graph): temperature and chance of rain hour by hour to 7 days, each midnight named, the hour now marked; no wind, dew point or sky cover lines; /weather/ unchanged"
+        },
+        {
+          "name": "Tabular forecast",
+          "detail": "hour-by-hour table",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "stage weather card: the next 8 hours from the hour now in one scrolling row, and the 7-day graph; no hour-by-hour table"
+        },
+        {
+          "name": "Current conditions",
+          "detail": "temperature, humidity, wind, barometer, dew point, visibility, wind chill, station and time",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "stage weather card: temperature, feels like, wind, humidity, pressure (hPa or inHg), visibility and dew point now; no station name (Open-Meteo is a model, not a station)"
+        },
+        {
+          "name": "Hazard alerts (watches, warnings)",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Alerts\" from api.weather.gov"
+        },
+        {
+          "name": "Radar",
+          "detail": "local and national loops",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Radar\" from radar.weather.gov"
+        },
+        {
+          "name": "Satellite imagery",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Area forecast discussion",
+          "detail": "forecasters' reasoning and confidence",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Detailed text forecast",
+          "detail": "the forecaster-written paragraph for each period",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "numbers and icons only"
+        },
+        {
+          "name": "Air quality",
+          "detail": "",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "stage skill skills/air.js (US AQI); not on /weather/"
+        },
+        {
+          "name": "Hurricanes, severe storms, fire, marine, aviation, rivers",
+          "detail": "NHC, SPC and specialist forecasts",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Climate and past weather (NOWData)",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Weather safety information",
+          "detail": "Weather-Ready Nation advice",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Spanish pages",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "English only"
+        },
+        {
+          "name": "Public API (api.weather.gov)",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "Verse reads it; offers no API of its own"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Worldwide forecasts (Open-Meteo), not only the US",
+    "°F and °C side by side",
+    "Sunrise and sunset",
+    "Opens offline with the last forecast",
+    "\"Weather here\" from your location",
+    "Copy link and Share",
+    "Rain or frost coming offers a reminder timer (skills/weather.js)"
+  ],
+  "gaps": [
+    "Hourly weather graph",
+    "Current conditions",
+    "Satellite imagery",
+    "Area forecast discussion",
+    "Detailed text forecast",
+    "Hurricanes, severe storms, fire, marine, aviation, rivers",
+    "Climate and past weather (NOWData)",
+    "Weather safety information",
+    "Spanish pages",
+    "Public API (api.weather.gov)",
+    "Tabular forecast",
+    "Air quality"
+  ]
+}

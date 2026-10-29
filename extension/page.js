@@ -1,7 +1,7 @@
-// The two functions the extension runs inside a tab, and only after you point Void at it (Alt+Shift+V or the right-click menu).
+// The two functions the extension runs inside a tab, and only after you point Verse at it (Alt+Shift+V or the right-click menu).
 // Each runs alone in the page (chrome.scripting.executeScript copies the function, not this file), so neither uses anything outside itself.
 
-// B1: what Void may see of the tab: its title, address, the text you selected, and which box you were typing in. Nothing else of the page.
+// B1: what Verse may see of the tab: its title, address, the text you selected, and which box you were typing in. Nothing else of the page.
 function voidReadTab() {
   const el = document.activeElement;
   const fieldOf = (e) => {
@@ -18,10 +18,19 @@ function voidReadTab() {
   const field = fieldOf(el);
   // remembered in the extension's own world in this page (pages can't see it), so a draft goes to the box you were in
   window.__voidField = field ? el : null;
-  return { title: document.title.slice(0, 200), url: location.href.slice(0, 500), selection: selection.trim().slice(0, 5000), field };
+  // the context check (lib/context-check.js): what kind of page this mostly is, as counts only (characters of text, large pictures
+  // on screen, table rows and cells); Verse decides text / image / table from these and the tab card suggests one skill
+  let content = null;
+  try {
+    const shown = (e) => !!(e.offsetWidth || e.offsetHeight || e.getClientRects().length);
+    content = { text: (document.body && document.body.innerText || '').replace(/\s+/g, ' ').trim().length,
+      images: [...document.images].filter((i) => i.naturalWidth >= 200 && i.naturalHeight >= 200 && shown(i)).length,
+      rows: document.querySelectorAll('table tr').length, cells: document.querySelectorAll('table td, table th').length };
+  } catch (_) {}
+  return { title: document.title.slice(0, 200), url: location.href.slice(0, 500), selection: selection.trim().slice(0, 5000), field, content };
 }
 
-// "draft for me: proposal" (sends it to Void): the text of the thread you are reading, once, when you press it. Gmail keeps the
+// "draft for me: proposal" (sends it to Verse): the text of the thread you are reading, once, when you press it. Gmail keeps the
 // open thread in its main region; any other page gives its body. The box you are writing in is left out (that is your reply).
 function voidReadThread() {
   const root = document.querySelector('[role="main"]') || document.body;
@@ -33,7 +42,7 @@ function voidReadThread() {
   return text ? { ok: true, text } : { ok: false, why: 'no-text' };
 }
 
-// B2: put Void's draft into the box you were typing in, the way typing would. It never presses send, submits a form or clicks anything.
+// B2: put Verse's draft into the box you were typing in, the way typing would. It never presses send, submits a form or clicks anything.
 function voidPutDraft(text) {
   const live = (e) => e && e.isConnected && (e.isContentEditable || (/^(?:textarea|input)$/i.test(e.tagName) && !e.disabled && !e.readOnly));
   const el = live(document.activeElement) ? document.activeElement : live(window.__voidField) ? window.__voidField : null;
@@ -54,9 +63,21 @@ function voidPutDraft(text) {
 
 // B3: one step you said yes to, on a site you allowed: fill a field with text, or click a button, each named by its visible
 // label. It never submits a form or presses Enter: a field is filled the way typing would fill it, and a button that would
-// submit its form is refused (you press it yourself). Two elements matching the label is a refusal too: it acts on one thing.
+// submit its form is refused (you press it yourself), and so is a button that deletes something or moves money (Delete, Pay,
+// Transfer, in a few languages). Two elements matching the label is a refusal too: it acts on one thing.
 function voidAct(step) {
   const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  // defined in here, not at the top: executeScript sends only this function's own source to the page
+  const RISKY = new RegExp('(?<!\\p{L})(?:' + [
+    'delete', 'remove', 'erase', 'discard', 'destroy', 'wipe', 'trash', 'empty trash', 'unsubscribe', 'cancel subscription', 'deactivate', 'close account',
+    'pay', 'payment', 'pay now', 'purchase', 'buy', 'buy now', 'checkout', 'check out', 'place order', 'order now', 'complete order', 'submit order',
+    'transfer', 'send money', 'send payment', 'withdraw', 'donate',
+    'supprimer', 'effacer', 'payer', 'acheter', 'commander', 'virement', 'transférer', // French
+    'löschen', 'entfernen', 'bezahlen', 'zahlen', 'kaufen', 'bestellen', 'überweisen', // German
+    'eliminar', 'borrar', 'pagar', 'comprar', 'transferir', // Spanish, Portuguese
+    'elimina', 'cancella', 'paga', 'acquista', 'compra', 'excluir', 'apagar', // Italian, Portuguese
+    'verwijderen', 'betalen', 'kopen', // Dutch
+  ].join('|') + ')(?!\\p{L})', 'iu');
   const want = norm(step && step.label);
   if (!want || !step || (step.action !== 'fill' && step.action !== 'click')) return { ok: false, why: 'bad-step' };
   const shown = (e) => !!(e.offsetWidth || e.offsetHeight || e.getClientRects().length) && getComputedStyle(e).visibility !== 'hidden';
@@ -71,8 +92,8 @@ function voidAct(step) {
     ? [...document.querySelectorAll('textarea, input, [contenteditable=""], [contenteditable="true"]')].filter((e) => e.isContentEditable || e.tagName === 'TEXTAREA' || /^(?:text|search|email|url|tel|)$/i.test(e.getAttribute('type') || ''))
     : [...document.querySelectorAll('button, [role="button"], input[type="button"]')];
   const usable = pool.filter((e) => shown(e) && !e.disabled && !e.readOnly);
-  // "the box you were in" (box: 'mine', a reply or a proposal Void drafted for that box): first the very box you were typing in
-  // when you pointed Void at the page, if it is still there; mail apps re-draw their compose box, so then the compose box by its
+  // "the box you were in" (box: 'mine', a reply or a proposal Verse drafted for that box): first the very box you were typing in
+  // when you pointed Verse at the page, if it is still there; mail apps re-draw their compose box, so then the compose box by its
   // shape: a multi-line box you can type in (a textarea, a contenteditable, role=textbox), never a search box, never a one-line
   // field like To or Subject. Its label is only a hint (it differs by language and by mail app): it breaks a tie between two.
   let el = null;
@@ -99,6 +120,9 @@ function voidAct(step) {
     el = hits[0];
   }
   if (step.action === 'click') {
+    // a button that deletes something or moves money is refused too, whatever label it was asked by: many apps delete or pay
+    // with a plain button, no form to submit. Every name it has counts (its text, aria-label, title, id), in a few languages.
+    if (labelOf(el).some((n) => RISKY.test(n))) return { ok: false, why: 'destructive' };
     const submits = el.tagName === 'BUTTON' ? (el.getAttribute('type') || 'submit').toLowerCase() === 'submit' && !!el.form : false;
     if (submits) return { ok: false, why: 'submits' };
     el.click();

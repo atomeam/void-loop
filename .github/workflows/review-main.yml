@@ -1,0 +1,62 @@
+# Verse reviews its own skills on main and queues the work (asked by Verse, ask-20261012-1942-1: "Connect the 'closer read' output to
+# my growth inbox so that identified code discrepancies automatically create a task to refine the affected skill"). Once a day the
+# quick checks of Verse's review (lib/code-review.js, the ones the void-review workflow runs on every PR) read every skill file as it
+# stands on main; the first bug or risk nobody waived becomes one `review:<skill>` job at /api/queue (tools/review-main.mjs), one open
+# at a time, a finding never queued twice. The words are Verse's review, never a visitor's; nothing is committed here. Needs
+# VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op. The fix is still a builder's.
+name: Verse reviews main
+
+on:
+  schedule:
+    - cron: '53 12 * * *' # 8:53 AM New York (EDT), after the nightly bench, before the day's builds
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: review and print, queue nothing
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-review-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Checks
+        run: node --test tools/review-main.test.mjs tools/fringe-novelty.test.mjs
+      - name: Review the skills on main, queue the first new finding
+        shell: bash
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ] && [ -z "$DRY" ]; then
+            echo "::warning title=Verse did not queue its review::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            exit 0
+          fi
+          node tools/review-main.mjs $DRY > review.txt || { cat review.txt; exit 1; }
+          cat review.txt
+          sed -n '/^### Verse reviewed/,$p' review.txt >> "$GITHUB_STEP_SUMMARY" || true
+      # a behavior just logged in the fringe ledger that no skill's pattern holds becomes one `novelty:<family>-<run>` job
+      # (tools/fringe-novelty.mjs; asked by Verse: "a 'novelty score' ... triggers a growth inbox proposal")
+      - name: Score the fringe ledger's newest behaviors, queue a novel one
+        shell: bash
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ] && [ -z "$DRY" ]; then exit 0; fi
+          node tools/fringe-novelty.mjs $DRY | tee -a "$GITHUB_STEP_SUMMARY"

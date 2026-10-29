@@ -1,0 +1,58 @@
+{
+  "slug": "agentic-personalization-with-hold-gate",
+  "run": "023",
+  "algo": "sha256",
+  "infer": false,
+  "persist": "hold",
+  "apply": "hold",
+  "body": {
+    "sha256": "5a23154c90f1189957805d93196bba71f18f81bbb53d4c213dc62a2133f8bba8",
+    "note": "Three facet lines joined by LF, trailing LF."
+  },
+  "facets": [
+    {
+      "id": "focus",
+      "canonical": "facet#focus|id:focus|values:ledger,pricing,notes|default:none",
+      "sha256": "d6f4e15240db5d799d4026c3bb7bf2b55bfa05cef20abeabbd71ad81b6f4a84e",
+      "values": ["ledger", "pricing", "notes"],
+      "default": "none"
+    },
+    {
+      "id": "output",
+      "canonical": "facet#output|id:output|values:file,preview,quote|default:none",
+      "sha256": "8a7f03a1f6a1cd34c87f0918de4baf75cef2297c8356ff23875ddede773aa4eb",
+      "values": ["file", "preview", "quote"],
+      "default": "none"
+    },
+    {
+      "id": "risk",
+      "canonical": "facet#risk|id:risk|values:hold-first,read-only,attest-only|default:none",
+      "sha256": "185cc37fb72afe90b0b2041a3a9f9cd78cdb8e9c95702231a4e5762edf26b7e2",
+      "values": ["hold-first", "read-only", "attest-only"],
+      "default": "none"
+    }
+  ],
+  "dest": [
+    {
+      "id": "ledger",
+      "title": "Promise ledger census",
+      "tools": "file.read,http.read,model.call",
+      "writes": "deny",
+      "budget.maxTokens": 5000
+    },
+    {
+      "id": "pricing",
+      "title": "Void Monthly rate card",
+      "tools": "http.read,model.call",
+      "writes": "deny",
+      "budget.maxTokens": 5000
+    },
+    {
+      "id": "notes",
+      "title": "Notes list read",
+      "tools": "file.read,model.call",
+      "writes": "deny",
+      "budget.maxTokens": 5000
+    }
+  ]
+}

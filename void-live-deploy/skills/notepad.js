@@ -22,6 +22,16 @@ export function textOf(raw) {
   return m ? m[1].trim() : '';
 }
 
+/** the line an ask adds under what is already there ("add to the notepad: the vet called", "notepad add call the vet",
+ *  "append X to the notepad"), or ''. Other kinds hand their words over the same way (lib/bridges.js). Pure. */
+export function appendOf(raw) {
+  const t = String(raw || '').trim();
+  const m = t.match(/^(?:add|append|put)\s+(?:to|in|on)\s+(?:the\s+|my\s+)?notepad\s*:\s*([\s\S]+)$/i)
+    || t.match(/^notepad\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i)
+    || t.match(/^(?:append|add)\s+([\s\S]+?)\s+(?:to|in|on)\s+(?:the\s+|my\s+)?notepad\s*[.!]?\s*$/i);
+  return m ? m[1].trim() : '';
+}
+
 export const wantsClear = (lower) => /^(clear|empty)\s+(the\s+)?notepad\s*[.!]?\s*$/.test(lower);
 
 export const wantsRemove = (lower) => /^(remove|delete|get\s+rid\s+of|hide)\s+(the\s+)?notepad\s*[.!]?\s*$/.test(lower)
@@ -30,7 +40,7 @@ export const wantsRemove = (lower) => /^(remove|delete|get\s+rid\s+of|hide)\s+(t
 /** the plain asks the skill takes before the page's own parser (a colour, a place or anything else goes on to the page's
  *  shared targeting, which reaches `ensure`). Pure. */
 export const plainNotepad = (lower, raw = lower) => !/\b(remove|delete|get\s+rid|hide|clear|empty)\b/.test(lower)
-  && (/^(a\s+)?notepad(\s+please)?\s*[.!]?$/.test(lower) || /^notepad\s*:\s*\S/i.test(raw) || /^\s*write\s+(?:in|on)\s+(?:the\s+)?notepad\s+\S/i.test(raw)
+  && (!!appendOf(raw) || /^(a\s+)?notepad(\s+please)?\s*[.!]?$/.test(lower) || /^notepad\s*:\s*\S/i.test(raw) || /^\s*write\s+(?:in|on)\s+(?:the\s+)?notepad\s+\S/i.test(raw)
     || /^(?:please\s+)?(?:open|make|add|create|give\s+me|new)\s+(?:me\s+)?(?:a\s+|the\s+|my\s+)?(?:new\s+)?notepad\s*[.!]?$/.test(lower));
 
 const pads = (stageApi) => Object.values(stageApi.things()).filter((t) => t && t.kind === 'notepad');
@@ -46,6 +56,16 @@ export function ensure(stageApi, seed = '') {
     things[note.id] = note;
   } else if (seed) note.text = seed;
   stageApi.select(note.id);
+  return note;
+}
+
+/** one more line under what the notepad holds (a new notepad when there is none); the pad is picked and drawn again */
+export function append(stageApi, line) {
+  const words = String(line || '').trim();
+  if (!words) return null;
+  const note = ensure(stageApi);
+  note.text = (note.text ? note.text.replace(/\s+$/, '') + '\n' : '') + words;
+  stageApi.save(); stageApi.render();
   return note;
 }
 
@@ -86,6 +106,9 @@ function mount(th, stageApi) {
   }).catch(() => padHost.remove());
   el.appendChild(title);
   el.appendChild(area);
+  // the full notes page: many notes, rich text, search and history (owner, 2026-10-25: "why are you not linking the cards to the pages?")
+  const full = document.createElement('a'); full.className = 'vc-page'; full.href = '/notes/'; full.textContent = 'Open the full Notes page →'; full.style.cssText = 'display:inline-block;margin:8px 0 2px;font-size:13px;font-weight:600';
+  full.addEventListener('pointerdown', (e) => e.stopPropagation()); el.appendChild(full);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
 }
@@ -109,6 +132,8 @@ export function ask(lower, text, stageApi) {
     stageApi.save(); stageApi.render();
     return 'notepad-cleared';
   }
+  const more = appendOf(text);
+  if (more) { append(stageApi, more); return 'notepad'; }
   if (wantsCreate(lower, text)) {
     ensure(stageApi, textOf(text));
     stageApi.save(); stageApi.render();
@@ -119,7 +144,7 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'notepad',
-  examples: ['open a notepad', 'notepad: buy bread', 'write in the notepad call the vet'],
+  examples: ['open a notepad', 'notepad: buy bread', 'write in the notepad call the vet', 'add to the notepad: the vet called back'],
   nearMisses: ['sticky note buy milk', 'take notes'],
   match(lower, text) { return plainNotepad(lower, text); },
   async run(text, api) { const d = ask(String(text || '').toLowerCase(), text, api.stage); return d && d !== 'no notepad' ? 'notepad' : 'none'; },

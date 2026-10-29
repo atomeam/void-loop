@@ -1,0 +1,52 @@
+# Verse's daily ad batch (owner, 2026-10-15: "strengthen that to be a powerhouse ad plus ad revenue monster"; "plus promotes itself").
+# tools/clips.mjs plans the day (3 moments, picked by deep-link performance in domains/void.clips.json), films the live site in
+# headless Chrome, renders 9:16 Shorts with its tricks library in ffmpeg (no Workers AI), and writes manifest.json with each clip's
+# words per platform. The batch is kept as a draft release; posting is by hand (or tools/youtube.mjs when YT_UPLOAD is 1).
+name: Verse clips
+
+on:
+  schedule:
+    - cron: '17 14 * * *' # daily, about 10 AM ET
+  workflow_dispatch:
+
+permissions:
+  contents: write # the batch's draft release  void-review: ok (releases need contents: write)
+
+concurrency:
+  group: clips
+  cancel-in-progress: false
+
+jobs:
+  clips:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Chromium, ffmpeg and fonts
+        run: |
+          npx playwright-core install --with-deps chromium
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null
+          echo "CHROME=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Plan and render the day
+        run: node tools/clips.mjs render --out media/clips | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Keep the batch as a draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          d=$(date -u +%Y%m%d)
+          gh release create "clips-$d-${{ github.run_attempt }}" media/clips/*.mp4 media/clips/manifest.json --draft --title "Verse clips $d" --notes "Daily ad batch: words per platform in manifest.json. Posting: drafts unless an account is connected."
+      # every ad clip is on the films page too, where anyone can download it and upload it (owner, 2026-10-15)
+      - name: Put each clip in Verse FILMS
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          set -o pipefail
+          for id in $(jq -r '.clips[].id' media/clips/manifest.json); do
+            jq --arg id "$id" '.clips[] | select(.id == $id) | (.words.youtube // .platforms.youtube // .youtube // {}) as $w | { title: ($w.title // $id), description: ($w.description // ""), tags: ($w.hashtags // []) }' media/clips/manifest.json > "media/clips/$id.words.json"
+            node tools/film-post.mjs "media/clips/$id.mp4" "media/clips/$id.words.json" --id "$id" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          done

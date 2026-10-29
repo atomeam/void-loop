@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Void Code Review: instant code review for every pull request</title>
-  <meta name="description" content="Void reviews a whole pull request in about a second: 130 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, and a merge gate. Free GitHub Action; Code Review Pro (on its own, or in Void Pro) adds an AI closer read.">
+  <title>Verse Code Review: instant code review for every pull request</title>
+  <meta name="description" content="Verse reviews a whole pull request in about a second: 130 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, and a merge gate. Free GitHub Action; Code Review Pro (on its own, or in Verse Pro) adds an AI closer read.">
   <link rel="canonical" href="https://a-to-mind.com/code-review/">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
-  <meta property="og:title" content="Void Code Review">
+  <meta property="og:title" content="Verse Code Review">
   <meta property="og:description" content="A whole pull request reviewed in about a second. Bugs, security risks, one-click fixes, a merge gate. Free GitHub Action; Pro adds an AI closer read.">
   <meta property="og:url" content="https://a-to-mind.com/code-review/">
   <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -16,15 +16,15 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Void Code Review",
+    "name": "Verse Code Review",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "GitHub Actions, any browser",
     "url": "https://a-to-mind.com/code-review/",
-    "description": "Instant code review for pull requests: 130 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, a merge gate, and an AI closer read with Void Pro.",
+    "description": "Instant code review for pull requests: 130 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, a merge gate, and an AI closer read with Verse Pro.",
     "publisher": { "@type": "Organization", "name": "A-to-Mind", "url": "https://a-to-mind.com/" },
     "offers": [
       { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
-      { "@type": "Offer", "name": "Void Pro (includes Code Review Pro)", "url": "https://moonbeam846.gumroad.com/l/yinmj" }
+      { "@type": "Offer", "name": "Verse Pro (includes Code Review Pro)", "url": "https://moonbeam846.gumroad.com/l/yinmj" }
     ]
   }
   </script>
@@ -61,12 +61,13 @@
     #keys li { font-family: ui-monospace, monospace; font-size: 13px; }
     #newkey { word-break: break-all; }
   </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
-  <p><a href="/">&larr; Void · A-to-Mind</a></p>
+  <p><a href="/">&larr; Verse · A-to-Mind</a></p>
   <h1>Code review that finishes before you switch tabs.</h1>
-  <p class="lead">Void reviews every pull request the moment it opens: the bugs, security holes and risky habits in the lines you added, each one on its line with a one-click fix where a safe one exists, and a merge gate that holds a PR until they're fixed.</p>
+  <p class="lead">Verse reviews every pull request the moment it opens: the bugs, security holes and risky habits in the lines you added, each one on its line with a one-click fix where a safe one exists, and a merge gate that holds a PR until they're fixed.</p>
   <div class="stats">
     <div class="stat"><b>~1 s</b><span>for a whole pull request</span></div>
     <div class="stat"><b>130</b><span>checks: 32 bugs, 73 risks, 25 style</span></div>
@@ -100,7 +101,7 @@ jobs:
       - uses: atomeam/void-loop/review@main
         with:
           gate: 'true'                               # fail the check on bugs and risks
-          void-key: ${{ secrets.VOID_REVIEW_KEY }}   # Void Pro: the closer read (optional)</pre>
+          void-key: ${{ secrets.VOID_REVIEW_KEY }}   # Verse Pro: the closer read (optional)</pre>
   <p class="muted">A line that is right as written can say so with a <code>void-review: ok</code> comment, and the gate leaves it out.</p>
 
   <h2 id="pro">Plans</h2>
@@ -125,21 +126,30 @@ jobs:
         <li>No account: your license key is your key</li>
       </ul>
       <a class="buy primary" id="sbuy" href="#pro" hidden rel="noopener">Buy Code Review Pro</a>
-      <p class="muted" id="ssoon">Opening soon on its own. It is in Void Pro today.</p>
+      <p class="muted" id="ssoon">Opening soon on its own. It is in Verse Pro today.</p>
     </div>
     <div class="plan">
-      <h3>Void Pro</h3>
-      <div class="price" id="price">Paid Void</div>
+      <h3>Verse Pro</h3>
+      <div class="price" id="price">Paid Verse</div>
       <ul>
         <li>Code Review Pro included, up to 5 keys</li>
-        <li>Plus everything else paid Void adds: more model answers, private skills, a higher cap on actions you confirm</li>
+        <li>Plus everything else paid Verse adds: more model answers, private skills, a higher cap on actions you confirm</li>
       </ul>
-      <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" rel="noopener">Get Void Pro</a>
+      <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" rel="noopener">Get Verse Pro</a>
     </div>
   </div>
 
   <h2>Your review keys</h2>
-  <div id="keyarea"><p class="muted">Checking whether you are signed in to Void…</p></div>
+  <div id="keyarea"><p class="muted">Checking whether you are signed in to Verse…</p></div>
+
+  <section id="support">
+  <h2>Something broke?</h2>
+  <p class="muted">If you pay for Code Review Pro or Verse Pro, tell the owner here. You get a ticket number, and the answer shows up below when it is ready. Paste your review key or license key, or stay signed in to Verse; a key you paste is only sent with this report.</p>
+  <input id="supkey" type="password" autocomplete="off" placeholder="your review key or license key (not needed when signed in)" aria-label="your review key or license key" style="width:100%;max-width:560px">
+  <textarea id="supwhat" maxlength="2000" rows="4" placeholder="What broke? What did you expect?" aria-label="what broke" style="width:100%;max-width:560px;margin-top:6px"></textarea>
+  <p><button id="supsend" type="button">Send to the owner</button> <button id="supmine" type="button">My reports</button></p>
+  <div id="supout" role="status"></div>
+  </section>
 
   <h2>The API</h2>
   <pre>curl -s https://a-to-mind.com/api/review \
@@ -147,18 +157,21 @@ jobs:
   -H "authorization: Bearer $VOID_REVIEW_KEY" \
   -d '{"code": "if (x = 5) { go() }"}'</pre>
   <p class="muted">Leave out the authorization line for the free checks.</p>
-  <p class="muted">Send <code>{"code": …}</code> or a unified diff as <code>{"diff": …}</code> (then only the added lines are checked, with the new file's line numbers). You get <code>findings</code> (line, kind, rule, message) and, with a Code Review Pro license key (or a key from Void Pro), the closer read in <code>answer</code>.</p>
+  <p class="muted">Send <code>{"code": …}</code> or a unified diff as <code>{"diff": …}</code> (then only the added lines are checked, with the new file's line numbers). You get <code>findings</code> (line, kind, rule, message) and, with a Code Review Pro license key (or a key from Verse Pro), the closer read in <code>answer</code>.</p>
 
   <section id="mcp">
   <h2>From your AI (MCP)</h2>
-  <p class="muted">Void is an MCP server at <code>https://a-to-mind.com/api/mcp</code>, so Claude, ChatGPT or any agent can call the review itself. In Claude Code:</p>
+  <p class="muted">Verse is an MCP server at <code>https://a-to-mind.com/api/mcp</code>, so Claude, ChatGPT or any agent can call the review itself. In Claude Code:</p>
   <pre>claude mcp add --transport http void https://a-to-mind.com/api/mcp \
   --header "Authorization: Bearer $VOID_REVIEW_KEY"</pre>
   <p class="muted">Or in any client's config:</p>
   <pre>{ "mcpServers": { "void": { "type": "http", "url": "https://a-to-mind.com/api/mcp",
   "headers": { "Authorization": "Bearer YOUR_REVIEW_KEY" } } } }</pre>
-  <p class="muted">The tools: <code>review_code</code> (the instant checks, free), <code>review_code_closer</code> (the instant checks plus the closer read when the key is a Code Review Pro license key or a key from Void Pro; without one, the instant checks), <code>moon_phase</code> and <code>meteor_showers</code>. Leave out the header for the free tools. The same list is in <a href="/tools.json">/tools.json</a>.</p>
+  <p class="muted">The tools: <code>ask_void</code> (ask Verse anything in plain words: its answer, with the pages it drew on; free, up to 12 a minute), <code>review_code</code> (the instant checks, free), <code>review_code_closer</code> (the instant checks plus the closer read when the key is a Code Review Pro license key or a key from Verse Pro; without one, the instant checks), <code>moon_phase</code> and <code>meteor_showers</code>; the tools Verse runs on its own pages: <code>seo_audit</code> (a page's HTML: title, description, canonical, JSON-LD, h1, share card, internal links, how hard the description reads), <code>readability</code> (reading ease and grade, and what a proofread would fix) and <code>colour_contrast</code> (the WCAG ratio of two colours and the levels it passes); <code>drive_time</code> (how long the drive is between two places, from a live routing service with no live traffic); a tool for each of Verse's most proven read-only skills that answer in words (<span id="skill-tools"><code>skill_constellation</code>, <code>skill_country</code>, <code>skill_define</code>, <code>skill_eclipse</code>, <code>skill_film_metadata</code>, <code>skill_joke</code>, <code>skill_recipe</code>, <code>skill_swaps</code>, <code>skill_translate</code>, <code>skill_words</code></span>: each answered the way <code>ask_void</code> is, with a link to the skill itself); and <code>skill_health</code>, <code>skill_discovery</code> (which skills Verse has, by family, with each family's share of them) (how far each of Verse's skills is checked, family by family). Leave out the header for the free tools. The same list is in <a href="/tools.json">/tools.json</a>.</p>
   </section>
+<!-- offers -->
+<p class="muted offers">More ways Verse helps: <a href="/one-time-fix/">One-Time Fix</a> (one broken automation, diagnosed and repaired, with proof it runs again); <a href="/keep-it-running/">Keep-It-Running Plan</a> (your automations watched around the clock, repairs when something breaks, a monthly plain-words report); <a href="/full-stack-audit/">Full Stack Audit</a> (a top-to-bottom review of every automation you have, with a written repair plan ranked by priority); <a href="/first-automation-setup/">First Automation Setup</a> (your first automation built for you, end to end, from the task you do by hand); or <a href="/fix/">look your error up free</a>.</p>
+<!-- /offers -->
 </main>
 <script>
 (function () {
@@ -169,14 +182,14 @@ jobs:
   var auth = function (h) { h = h || {}; h['content-type'] = 'application/json'; if (me && me.token) h.authorization = 'Bearer ' + me.token; return h; };
 
   // the reviewer's own scoreboard (review-stats.json, written weekly by .github/workflows/watchdog.yml from tools/review-learn.mjs):
-  // how many of the findings Void's closer read made this month its rules had already flagged, and how many rules were learned from it
+  // how many of the findings Verse's closer read made this month its rules had already flagged, and how many rules were learned from it
   fetch('/review-stats.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (st) {
     if (!st || typeof st.closerFound !== 'number') return;
     var l = document.getElementById('learning');
-    l.textContent = 'This month Void\'s rules caught ' + st.rulesFlagged + ' of ' + st.closerFound + ' findings its closer read made; ' + st.learned + ' rule' + (st.learned === 1 ? '' : 's') + ' learned from it' + (st.falseDropped ? ', ' + st.falseDropped + ' false claim' + (st.falseDropped === 1 ? '' : 's') + ' of its own filtered out' : '') + '.';
+    l.textContent = 'This month Verse\'s rules caught ' + st.rulesFlagged + ' of ' + st.closerFound + ' findings its closer read made; ' + st.learned + ' rule' + (st.learned === 1 ? '' : 's') + ' learned from it' + (st.falseDropped ? ', ' + st.falseDropped + ' false claim' + (st.falseDropped === 1 ? '' : 's') + ' of its own filtered out' : '') + '.';
     l.hidden = false;
   }).catch(function (e) { console.warn('[code-review] the scoreboard line could not load', e); }); // the line simply stays hidden
-  // buying while signed in carries your Void's id, so the purchase unlocks that Void
+  // buying while signed in carries your Verse's id, so the purchase unlocks that Verse
   if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
   fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
     if (!o || !o.standalone || !/^https:\/\//.test(o.standalone.url)) return;
@@ -208,14 +221,14 @@ jobs:
           d.appendChild(el('span', null, f.message)); out.appendChild(d);
         });
       })
-      .catch(function () { took.textContent = 'could not reach Void just now'; });
+      .catch(function () { took.textContent = 'could not reach Verse just now'; });
   });
 
   var area = document.getElementById('keyarea');
   function keys() {
     area.textContent = '';
     if (!me || !me.token) {
-      var p = el('p', 'muted'); p.appendChild(document.createTextNode('Sign in to Void first: open '));
+      var p = el('p', 'muted'); p.appendChild(document.createTextNode('Sign in to Verse first: open '));
       var a = el('a', null, 'a-to-mind.com'); a.href = '/'; p.appendChild(a);
       p.appendChild(document.createTextNode(' and say "sign in" (a passkey, no password). Then come back here for your key.'));
       area.appendChild(p); return;
@@ -223,7 +236,7 @@ jobs:
     fetch('/api/review', { headers: auth() }).then(function (r) { return r.json().then(function (j) { return [r.status, j]; }); }).then(function (x) {
       var s = x[0], j = x[1];
       if (s !== 200) { area.appendChild(el('p', 'muted', s === 401 ? 'Your sign-in has expired: sign in again at a-to-mind.com.' : 'Keys are unavailable right now.')); return; }
-      if (j.tier !== 'paid') { area.appendChild(el('p', 'muted', 'You are signed in on the free plan. Keys here come with Void Pro; Code Review Pro bought on its own needs no key from this page (its license key is the key).')); return; }
+      if (j.tier !== 'paid') { area.appendChild(el('p', 'muted', 'You are signed in on the free plan. Keys here come with Verse Pro; Code Review Pro bought on its own needs no key from this page (its license key is the key).')); return; }
       var ul = el('ul'); ul.id = 'keys';
       (j.keys || []).forEach(function (k) {
         var li = el('li', null, k.prefix + '…  made ' + String(k.at).slice(0, 10) + ' · ' + (k.total || 0) + ' closer reads ');
@@ -249,6 +262,31 @@ jobs:
     }).catch(function () { area.appendChild(el('p', 'muted', 'Keys are unavailable right now.')); });
   }
   keys();
+
+  // the support desk (functions/api/support.js): someone who pays says what broke and reads the owner's answer
+  var supout = document.getElementById('supout');
+  var supauth = function () { var k = document.getElementById('supkey').value.trim(), h = { 'content-type': 'application/json' }; if (k) h.authorization = 'Bearer ' + k; else if (me && me.token) h.authorization = 'Bearer ' + me.token; return h; };
+  var supsay = function (t) { supout.textContent = ''; supout.appendChild(el('p', 'muted', t)); };
+  document.getElementById('supsend').addEventListener('click', function () {
+    var what = document.getElementById('supwhat').value.trim();
+    if (what.length < 3) { supsay('Say what broke first.'); return; }
+    fetch('/api/support', { method: 'POST', headers: supauth(), body: JSON.stringify({ what: what }) }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); }).then(function (x) {
+      if (x.s === 201) { document.getElementById('supwhat').value = ''; supsay('Sent as ' + x.j.id + '. The owner answers here; press My reports to see it.'); }
+      else supsay(x.s === 401 ? 'That key is not a paying one (or you are not signed in to a paid Verse).' : (x.j && x.j.error) || 'Could not send it just now.');
+    }).catch(function () { supsay('Could not reach Verse just now.'); });
+  });
+  document.getElementById('supmine').addEventListener('click', function () {
+    fetch('/api/support', { headers: supauth() }).then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); }).then(function (j) {
+      supout.textContent = '';
+      if (!j.tickets.length) { supsay('No reports yet.'); return; }
+      j.tickets.forEach(function (t) {
+        var p = el('p'); p.appendChild(el('strong', null, t.id + ' · ' + (t.status === 'open' ? 'waiting for the owner' : 'answered')));
+        p.appendChild(el('div', 'muted', t.what));
+        if (t.answer) p.appendChild(el('div', null, 'Answer: ' + t.answer));
+        supout.appendChild(p);
+      });
+    }).catch(function () { supsay('Paste a paying key, or sign in to a paid Verse, to see your reports.'); });
+  });
 })();
 </script>
 </body>

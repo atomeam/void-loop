@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gate, not rate — draft 114</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f4efe6; --mark: #6b4a2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe6; --line: #4a433c; --paper: #1c1915; --mark: #e0c4a4; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+    p.note { font-size: 0.92rem; }
+    .gate { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.75rem; align-items: center; margin: 1.5rem 0; }
+    .rail { height: 2px; background: var(--line); }
+    fieldset { border: 1px solid var(--line); padding: 0.75rem 1rem 1rem; margin: 0 0 1rem; }
+    legend { padding: 0 0.4rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; background: transparent; color: inherit; border: 1px solid var(--mark); padding: 0.4rem 0.8rem; }
+    output { display: block; margin-top: 1rem; font-family: ui-monospace, monospace; font-size: 0.85rem; white-space: pre-wrap; }
+    .discarded { text-decoration: line-through; opacity: 0.55; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="note">Draft 114. Not sealed. Not live. Status defaults to unattested.</p>
+    <h1>A gate mark is not a rate</h1>
+    <p>Interval timing hypotheses separate a switch from a pulse rate. This page seals the switch class only. A sentence about speed, dilation, or missing hours is discarded and is not hashed.</p>
+    <div class="gate" aria-hidden="true">
+      <div class="rail"></div>
+      <div id="leaf">withheld</div>
+      <div class="rail"></div>
+    </div>
+    <form id="gate-form">
+      <fieldset>
+        <legend>Gate class</legend>
+        <label><input type="radio" name="gate_class" value="withheld" checked> Withheld — no position recorded</label>
+        <label><input type="radio" name="gate_class" value="closed"> Closed — pulses not admitted; not a rate</label>
+        <label><input type="radio" name="gate_class" value="open-unrated"> Open, unrated — rate sentence refused</label>
+      </fieldset>
+      <fieldset>
+        <legend>Rate sentence (discarded)</legend>
+        <label for="rate">Write a rate if you need to see it dropped. It is not stored and not hashed.</label>
+        <textarea id="rate" name="rate_sentence" maxlength="240" placeholder="not a duration"></textarea>
+      </fieldset>
+      <button type="submit">Seal gate class</button>
+      <output id="out" for="gate-form">status: unattested
+rate-refusal id: none
+rate sentence: not hashed</output>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById("gate-form");
+    const out = document.getElementById("out");
+    const leaf = document.getElementById("leaf");
+    const rate = document.getElementById("rate");
+    function selected() {
+      const node = form.querySelector("input[name=gate_class]:checked");
+      return node ? node.value : "withheld";
+    }
+    form.addEventListener("change", () => { leaf.textContent = selected(); });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const gate = selected();
+      const dropped = rate.value;
+      rate.value = "";
+      const preimage = "void-gate-not-rate|v1|class=" + gate + "|status=unattested";
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage));
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      leaf.textContent = gate;
+      out.textContent = [
+        "status: unattested",
+        "gate class: " + gate,
+        "rate-refusal id: " + hex.slice(0, 16),
+        "preimage excludes rate sentence: yes",
+        dropped ? "dropped chars: " + dropped.length : "dropped chars: 0"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

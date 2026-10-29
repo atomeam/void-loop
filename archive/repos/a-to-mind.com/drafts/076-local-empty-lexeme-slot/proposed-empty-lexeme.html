@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Empty lexeme slot — draft 076 — not a seal</title>
+<style>
+  :root { color-scheme: light dark; --ink: #1c1915; --paper: #f4f0e6; --line: #c8bfb0; --hold: #8a8175; --deny: #7a3b32; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f4f0e6; --paper: #1c1915; --line: #3d3832; --hold: #a3988c; --deny: #e0a096; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+  main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.45rem; letter-spacing: -0.02em; margin: 0 0 0.25rem; }
+  p.lede { margin-top: 0; }
+  .flag { display: inline-block; border: 1px solid var(--deny); color: var(--deny); padding: 0.1rem 0.4rem; font: 12px/1.3 ui-monospace, monospace; letter-spacing: 0.04em; }
+  form, section { border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1rem; }
+  label { display: block; margin: 0.6rem 0 0.2rem; font-size: 0.92rem; }
+  input, select, textarea, button { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.35rem 0.5rem; }
+  textarea { width: 100%; min-height: 5rem; }
+  button { cursor: pointer; }
+  button[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .row { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .slot { margin: 0.8rem 0; border: 1px dashed var(--hold); min-height: 4.5rem; display: flex; align-items: center; justify-content: center; }
+  .slot strong { font: 13px/1 ui-monospace, monospace; letter-spacing: 0.14em; color: var(--deny); }
+  .mono { font: 12px/1.4 ui-monospace, monospace; word-break: break-all; }
+  .hint { font-size: 0.85rem; color: var(--hold); }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="flag">UNATTESTED · INTENT DENIED · EMIT FALSE</p>
+  <h1>Empty lexeme slot</h1>
+  <p class="lede">Draft 076, <span class="mono">local-empty-lexeme-slot</span>. A committed blank hashes to a slot-refusal id. Letters stay out. An empty slot is not intent and not a decoded sentence. This page is not a seal.</p>
+  <p class="hint">Catalog digest a9ef4cd6b4c365f6d5bbba071310da23e51bb9577d5bab2712ca11035a954af4. Claims digest df60589670a08e34e2e3100255afdbc21ec27cabfa5aa846097e28d805206f2f. Digests are not a seal. No network. Posts are not loaded.</p>
+
+  <section aria-labelledby="fixture-h">
+    <h2 id="fixture-h">Fixture slot</h2>
+    <p>Sealed token EMPTY. Not a vocabulary. A letter is a hold, not a hypothesis.</p>
+    <div class="slot" aria-hidden="true"><strong>EMPTY</strong></div>
+    <p class="mono">self-noted · overheard-claim · machine-decode-claim · received stays not-claimed</p>
+  </section>
+
+  <form id="slot-form">
+    <h2>Local slot</h2>
+    <p class="hint">The field accepts a blank only. The page does not read a microphone, a camera, or an implant.</p>
+    <label for="lexeme">Lexeme slot</label>
+    <input id="lexeme" name="lexeme" type="text" autocomplete="off" spellcheck="false" placeholder="leave blank" aria-describedby="lexeme-note">
+    <p class="hint" id="lexeme-note">Empty is the only token that can hash.</p>
+    <div class="row">
+      <div>
+        <label for="source">Source label</label>
+        <select id="source" name="source">
+          <option value="self-noted" selected>self-noted</option>
+          <option value="overheard-claim">overheard-claim</option>
+          <option value="machine-decode-claim">machine-decode-claim</option>
+        </select>
+      </div>
+      <div>
+        <label for="weight">Design-material weight</label>
+        <select id="weight" name="weight">
+          <option value="sketch">sketch</option>
+          <option value="noted" selected>noted</option>
+          <option value="loud">loud</option>
+        </select>
+      </div>
+    </div>
+    <label for="disconfirm">What would disconfirm this slot — later sentence, not the slot</label>
+    <textarea id="disconfirm" name="disconfirm" required minlength="24" placeholder="A letter that had to be cleared, a withdrawn disconfirm line, or a source correction."></textarea>
+    <label for="paste">Paste is data</label>
+    <textarea id="paste" name="paste" placeholder="Not fetched. Not executed. Does not fill the slot."></textarea>
+    <p class="hint" id="paste-note"></p>
+    <label><input type="checkbox" id="remember"> Remember in this tab only</label>
+    <p>
+      <button type="submit" id="hash-btn" disabled>Hash empty slot</button>
+      <button type="button" id="export-btn" disabled>Download hypothesis</button>
+    </p>
+  </form>
+
+  <section aria-live="polite" aria-labelledby="out-h">
+    <h2 id="out-h">Slot card</h2>
+    <div class="slot" id="draw"><strong id="draw-token">EMPTY</strong></div>
+    <p class="mono" id="relation">intent denied · no slot yet</p>
+    <p class="mono" id="hash-out">hash withheld until a disconfirm line</p>
+    <p class="hint">Intent: not-claimed. Sentence: not-decoded. Mind-read: denied. Received: not-claimed. Status: unattested. A letter is a hold, not a hypothesis.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var form = document.getElementById("slot-form");
+  var lexeme = document.getElementById("lexeme");
+  var lexemeNote = document.getElementById("lexeme-note");
+  var disconfirm = document.getElementById("disconfirm");
+  var hashBtn = document.getElementById("hash-btn");
+  var exportBtn = document.getElementById("export-btn");
+  var paste = document.getElementById("paste");
+  var pasteNote = document.getElementById("paste-note");
+  var last = null;
+
+  function wordish(value) {
+    return /[\p{L}\p{N}]/u.test(value);
+  }
+
+  function gate() {
+    var dirty = wordish(lexeme.value);
+    var ready = disconfirm.value.trim().length >= 24 && !dirty;
+    hashBtn.disabled = !ready;
+    lexemeNote.textContent = dirty ? "letter or digit held · not hashed" : "Empty is the only token that can hash.";
+  }
+  lexeme.addEventListener("input", function () {
+    if (wordish(lexeme.value)) {
+      lexeme.value = "";
+      document.getElementById("relation").textContent = "lexeme-held · unattested · no hash";
+      document.getElementById("hash-out").textContent = "letter refused · slot stays EMPTY";
+      document.getElementById("draw-token").textContent = "HELD";
+      last = null;
+      exportBtn.disabled = true;
+    } else {
+      document.getElementById("draw-token").textContent = "EMPTY";
+    }
+    gate();
+  });
+  disconfirm.addEventListener("input", gate);
+  gate();
+
+  paste.addEventListener("input", function () {
+    var raw = paste.value.replace(/<[^>]*>/g, "");
+    if (raw !== paste.value) paste.value = raw;
+    var hints = [];
+    if (/https?:\/\//i.test(raw)) hints.push("url-shaped text is not fetched");
+    if (/attest this|set emit true|we now know|decode the slot|ignore previous/i.test(raw)) hints.push("imperative paste is a hint, not a seal");
+    if (wordish(raw)) hints.push("paste is not copied into the slot");
+    pasteNote.textContent = hints.join(" · ");
+  });
+
+  function build() {
+    var card = {
+      slug: "local-empty-lexeme-slot",
+      status: "unattested",
+      intent: "not-claimed",
+      sentence: "not-decoded",
+      mind_read: "denied",
+      received: "not-claimed",
+      emit: false,
+      slot: "EMPTY",
+      source: document.getElementById("source").value,
+      weight: document.getElementById("weight").value,
+      disconfirm: disconfirm.value.trim()
+    };
+    if (wordish(lexeme.value) || lexeme.value.trim() !== "") {
+      card.relation = "lexeme-held";
+      return card;
+    }
+    card.relation = "empty-lexeme-slot";
+    return card;
+  }
+
+  function render(card, digest) {
+    document.getElementById("draw-token").textContent = card.relation === "empty-lexeme-slot" ? "EMPTY" : "HELD";
+    document.getElementById("relation").textContent = card.relation + " · " + card.source + " · unattested";
+    document.getElementById("hash-out").textContent = digest ? digest : "no hash · " + card.relation;
+  }
+
+  function canonical(card) {
+    return ["void-empty-lexeme-v1", "EMPTY", card.source, card.weight, card.disconfirm].join("|");
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var card = build();
+    if (card.relation !== "empty-lexeme-slot") {
+      last = null;
+      exportBtn.disabled = true;
+      render(card, "");
+      return;
+    }
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical(card))).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      card.hash = hex;
+      last = card;
+      exportBtn.disabled = false;
+      render(card, hex);
+      if (document.getElementById("remember").checked) {
+        try { sessionStorage.setItem("void-empty-lexeme-slot-076", JSON.stringify(card)); } catch (err) { /* tab memory only */ }
+      }
+    });
+  });
+
+  exportBtn.addEventListener("click", function () {
+    if (!last) return;
+    var blob = new Blob([JSON.stringify(last, null, 2) + "\n"], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "empty-lexeme-slot-hypothesis.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  try {
+    var saved = sessionStorage.getItem("void-empty-lexeme-slot-076");
+    if (saved) document.getElementById("relation").textContent = "tab memory present · still unattested · hash not restored as a seal";
+  } catch (err) { /* ignore */ }
+})();
+</script>
+</body>
+</html>

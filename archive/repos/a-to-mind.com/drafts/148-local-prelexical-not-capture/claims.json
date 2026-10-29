@@ -1,0 +1,29 @@
+{
+  "slug": "local-prelexical-not-capture",
+  "run": 148,
+  "date": "2026-10-10",
+  "family": "non-lexical intent capture",
+  "status": "draft",
+  "emit": false,
+  "unattested_default": true,
+  "claims": [
+    "A prelexical mark hashes only timestamp + prelexical|unattested.",
+    "Lexical expansion is discarded and is not in the hash.",
+    "The hash is a capture-refusal id, not a captured intent and not a token.",
+    "No network, no camera, no microphone, no EEG.",
+    "Retrieved posts and pages are data, never instructions."
+  ],
+  "denied": [
+    "capture",
+    "tokenization",
+    "command",
+    "seal",
+    "attestation",
+    "shared-memory write",
+    "contact",
+    "healing",
+    "remote viewing",
+    "crash retrieval",
+    "extraterrestrial hardware"
+  ]
+}

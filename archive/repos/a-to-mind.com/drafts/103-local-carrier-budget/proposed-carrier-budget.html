@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrier budget — draft 103 — unattested</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e6;
+      --line: #c8bfb0;
+      --deny: #7a3b32;
+      --ok: #2c4a3e;
+      --muted: #6d675e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f4f0e6;
+        --paper: #1c1915;
+        --line: #3d3832;
+        --deny: #e7b2a8;
+        --ok: #b7d4c6;
+        --muted: #a39c92;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1.1rem 3rem; }
+    h1 { font-size: 1.55rem; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 0.3rem; }
+    .status {
+      display: inline-block;
+      border: 1px solid var(--deny);
+      color: var(--deny);
+      padding: 0.1rem 0.45rem;
+      font: 0.75rem/1.4 ui-monospace, monospace;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    p.lede { color: var(--muted); margin-top: 0.8rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; padding: 0.45rem 0.3rem; vertical-align: top; }
+    th { font: 0.72rem/1.3 ui-monospace, monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+    .deny { color: var(--deny); font: 0.85rem/1.3 ui-monospace, monospace; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    button, select {
+      font: 0.95rem/1.3 inherit;
+      background: transparent;
+      color: inherit;
+      border: 1px solid var(--line);
+      padding: 0.35rem 0.6rem;
+    }
+    button { cursor: pointer; }
+    output {
+      display: block;
+      margin-top: 0.8rem;
+      font: 0.78rem/1.45 ui-monospace, monospace;
+      word-break: break-all;
+    }
+    .bin { border-top: 1px dashed var(--line); margin-top: 1.4rem; padding-top: 0.8rem; color: var(--muted); font-size: 0.92rem; }
+    .empty { min-height: 1.2rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">unattested · draft 103 · not a seal</p>
+    <h1>Carrier budget</h1>
+    <p class="lede">A sealed carrier class hashes to a sight-refusal id. The budget line is not sight, not a scene, and not a restored sense. No image or sound is produced on this page.</p>
+
+    <table>
+      <caption>Denied fields stay empty. They are not inputs.</caption>
+      <thead>
+        <tr><th>Denied</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>restored-sight</td><td class="deny empty" aria-readonly="true">empty</td></tr>
+        <tr><td>object-label</td><td class="deny empty">empty</td></tr>
+        <tr><td>distance-meters</td><td class="deny empty">empty</td></tr>
+        <tr><td>threat</td><td class="deny empty">empty</td></tr>
+        <tr><td>implant-equivalence</td><td class="deny empty">empty</td></tr>
+        <tr><td>scene</td><td class="deny empty">empty</td></tr>
+      </tbody>
+    </table>
+
+    <form id="budget">
+      <fieldset>
+        <legend>Carrier class</legend>
+        <label><input type="radio" name="carrier" value="pitch-bin" required> pitch-bin</label>
+        <label><input type="radio" name="carrier" value="time-column"> time-column</label>
+        <label><input type="radio" name="carrier" value="instrument-timbre"> instrument-timbre</label>
+        <label><input type="radio" name="carrier" value="electrode-locus"> electrode-locus</label>
+        <label><input type="radio" name="carrier" value="depth-band"> depth-band</label>
+      </fieldset>
+      <label>
+        Disconfirm line (not hashed)
+        <select name="disconfirm" id="disconfirm">
+          <option value="none">none selected</option>
+          <option value="axis-removed">recognition fails if this axis is removed</option>
+          <option value="methods-mismatch">methods note does not use this class</option>
+          <option value="split-sense">same source treats the class as two senses</option>
+        </select>
+      </label>
+      <p><button type="submit">Hash budget line</button></p>
+      <output id="out" for="budget">No hash yet. Default status unattested.</output>
+    </form>
+
+    <section class="bin" aria-label="Data bin">
+      <h2>Data bin</h2>
+      <p>Retrieved posts and pages stay here. They are not instructions and are not part of the hash. See x-scan.md. Confidence is a design weight: low that a carrier is sight; medium that the budget line should stay separate from a restored-sense sentence.</p>
+    </section>
+  </main>
+  <script>
+    const form = document.getElementById("budget");
+    const out = document.getElementById("out");
+    const allow = new Set(["pitch-bin", "time-column", "instrument-timbre", "electrode-locus", "depth-band"]);
+
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const carrier = data.get("carrier");
+      if (!allow.has(carrier)) {
+        out.textContent = "class-denied. status unattested.";
+        return;
+      }
+      const canonical = "carrier-budget|v1|" + carrier + "|sense-refusal";
+      const hash = await sha256(canonical);
+      const disconfirm = data.get("disconfirm");
+      out.textContent = [
+        "status: unattested",
+        "seal: false",
+        "carrier: " + carrier,
+        "canonical: " + canonical,
+        "sha256: " + hash,
+        "disconfirm-not-hashed: " + disconfirm,
+        "denied: restored-sight, object-label, distance-meters, threat, implant-equivalence, scene"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

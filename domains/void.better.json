@@ -1,0 +1,91 @@
+{
+ "at": "2026-10-28T13:35:04.910Z",
+ "score": 76,
+ "parts": {
+  "self": 95,
+  "asks": 91,
+  "friction": 93,
+  "bench": 99,
+  "probes": 0
+ },
+ "families": [
+  {
+   "id": "body",
+   "health": 100
+  },
+  {
+   "id": "decide",
+   "health": 100
+  },
+  {
+   "id": "games",
+   "health": 98
+  },
+  {
+   "id": "life",
+   "health": 100
+  },
+  {
+   "id": "make",
+   "health": 83
+  },
+  {
+   "id": "numbers",
+   "health": 87
+  },
+  {
+   "id": "safety-play",
+   "health": 100
+  },
+  {
+   "id": "self",
+   "health": 96
+  },
+  {
+   "id": "sky",
+   "health": 93
+  },
+  {
+   "id": "stage",
+   "health": 97
+  },
+  {
+   "id": "time",
+   "health": 85
+  },
+  {
+   "id": "words",
+   "health": 89
+  }
+ ],
+ "facts": {
+  "week": 147,
+  "owner": 8,
+  "askedBuilt": 40,
+  "medianLagDays": 0.3,
+  "open": 3,
+  "oldestOpenDays": 0.6,
+  "skills": 352,
+  "failing": 7,
+  "unsure": 37,
+  "benchScore": 2345,
+  "benchTotal": 2368,
+  "probeFixes": 0
+ },
+ "trend": {
+  "score": 76,
+  "day": 0,
+  "week": -1,
+  "weakest": "probes",
+  "at": "2026-10-28T13:35:04.910Z",
+  "frictionWeek": -9
+ },
+ "summary": "better: 76 of 100 (level since yesterday) (down 1 on the week); weakest: probes",
+ "means": {
+  "self": "the share of this week's ledger lines that do not cite the owner (Verse driving its own changes)",
+  "asks": "how fast Verse's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",
+  "friction": "skills failing the bench or barely checked, against all skills (skills/families.json)",
+  "bench": "the everyday benchmark's score on main (tools/bench.misses.json)",
+  "probes": "fixes this week that came from Verse's own probes"
+ }
+}

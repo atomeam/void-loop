@@ -1,0 +1,79 @@
+{
+  "floor": "colour codes",
+  "verse_page": "/color/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "hexcolor16.com": {
+      "sources": [
+        "https://hexcolor16.com/ff5733",
+        "https://hexcolor16.com/"
+      ],
+      "features": [
+        {
+          "name": "15 colour models",
+          "detail": "incl. CIELab, Oklab, OKLCH",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Verse took the same 15 models (lib/tower.js learned line; color/index.html model rows)"
+        },
+        {
+          "name": "VGA 16-colour palette",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"The 16 VGA colours\""
+        },
+        {
+          "name": "Random colour",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Random colour"
+        },
+        {
+          "name": "Shade and tint ramps",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "tints, shades, tones"
+        },
+        {
+          "name": "Harmonies / schemes",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "six harmonies"
+        },
+        {
+          "name": "Colour-blindness simulation (unconfirmed)",
+          "detail": "how the colour looks with protanopia etc.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "How it looks with colour blindness: protanopia, deuteranopia, tritanopia (Machado 2009) and achromatopsia"
+        },
+        {
+          "name": "CSS usage examples (unconfirmed)",
+          "detail": "snippets for background, text, border",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "CSS: background with readable text colour, text, border and a custom property using the colour"
+        },
+        {
+          "name": "Pages for every hex code",
+          "detail": "one page per colour, linkable",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/color/?c=ff5733"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "WCAG contrast for text on the colour",
+    "Nearest name by eye",
+    "Opens offline; no ads, analytics or web fonts",
+    "Download JSON and CSV"
+  ],
+  "gaps": []
+}

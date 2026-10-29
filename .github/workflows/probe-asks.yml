@@ -1,0 +1,82 @@
+# Verse writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md). Once a day Verse's own model
+# writes 25 asks for the skill family it is least proven in (or the one named), the everyday benchmark runs them on the real page
+# (tools/bench.mjs --probe, outside services stubbed) and the misses are queued for the builders at /api/queue as `probe:` jobs,
+# at most 2 open at once (tools/probe-asks.mjs). The probe is Verse's; the fix is still a builder's (step 3 is next). The asks are
+# Verse's own words and never a visitor's; none are committed: the job summary carries them as quoted data only. Needs
+# VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
+name: Verse probes itself
+
+on:
+  schedule:
+    - cron: '23 */4 * * *' # every 4 hours (owner, 2026-10-19: "upgrades extremely often"), feeding propose-fix's next runs
+  workflow_dispatch:
+    inputs:
+      family:
+        description: the family to probe (an id from void-live-deploy/skills/families.json); empty = the least proven one
+        type: string
+        default: ''
+      dry:
+        description: write and probe, queue nothing
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-probe-asks
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Checks
+        run: node --test tools/probe-asks.test.mjs
+      - name: npm ci
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Sync void.html copies (what the benchmark serves)
+        run: |
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+      - name: Verse writes, the benchmark probes, the misses are queued
+        shell: bash
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          FAMILY: ${{ inputs.family }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ]; then
+            echo "::warning title=Verse did not probe itself::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            exit 0
+          fi
+          args=($DRY); [ -n "$FAMILY" ] && args+=(--family "$FAMILY")
+          code=0; node tools/probe-asks.mjs "${args[@]}" > probe.txt || code=$?
+          sed -n '/^### Verse probed/,$p' probe.txt >> "$GITHUB_STEP_SUMMARY" || true
+          tail -n 40 probe.txt
+          case $code in
+            0) ;;
+            3) echo "::warning title=Verse wrote no asks::the site could not be reached or Verse's model did not answer; it runs again tomorrow" ;;
+            *) echo "::warning title=The probe did not run::see the lines above" ;;
+          esac

@@ -1,4 +1,4 @@
-// The board for the hourly run: Void's real misses, newest first, minus the ones already beaten or benched.
+// The board for the hourly run: Verse's real misses, newest first, minus the ones already beaten or benched.
 // Reads the owner-only GET /api/misses (D1 void_misses + old KV rows) with VOID_MISSES_TOKEN (= the Pages READ_TOKEN),
 // or a JSON file of the same rows. It only prints: misses are what people typed, so they never get written into this
 // (public) repo; a run adds the ask it beat to tools/grown.json by hand, after reading it.

@@ -1,4 +1,4 @@
-// POST /api/share (Bearer session) -> { room, link, live }: an invite into your Void (frontier #11). Signed-in members only:
+// POST /api/share (Bearer session) -> { room, link, live }: an invite into your Verse (frontier #11). Signed-in members only:
 // a stranger can't make rooms. The room is a random name signed with SALT (lib/share.js), so nothing is stored to make one.
 // live = the relay (the SHARE Durable Object, share-worker/) is bound; without it, tabs in one browser still share.
 import { mintRoom, inviteLink } from '../../../lib/share.js';

@@ -1,7 +1,7 @@
-// Summon by intent (frontier #10): an outcome with a deadline becomes a build order of asks Void already answers.
+// Summon by intent (frontier #10): an outcome with a deadline becomes a build order of asks Verse already answers.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import skill, { intentOf, deadlineOf, stepsFor, planOf } from '../void-live-deploy/skills/intent.js';
+import skill, { intentOf, deadlineOf, stepsFor, planOf, openPlanOf, planWords } from '../void-live-deploy/skills/intent.js';
 import countdown from '../void-live-deploy/skills/countdown.js';
 
 const FRI = new Date(2026, 9, 9); // Friday, October 9 2026
@@ -50,7 +50,7 @@ test('steps are worked back from the day, the goal last on it', () => {
   assert.ok(tight.every((x) => iso(x.date) === '2026-10-09'));
 });
 
-test('the plan is asks Void already answers, a draft only when someone is named', () => {
+test('the plan is asks Verse already answers, a draft only when someone is named', () => {
   const p = planOf('I need to prepare a talk by next week and tell Sam', FRI);
   assert.deepEqual(p.asks.map((a) => a.piece), ['countdown', 'checklist', 'calendar', 'draft']);
   assert.equal(p.asks[0].ask, 'days until prepare a talk on october 16');
@@ -109,4 +109,41 @@ test('a plan asked for without a day: the steps as an undated checklist, and how
 test('no step says "and": the list ask splits on it, so a step would come out as two items', () => {
   for (const goal of ['ship it', 'write the report', 'give the talk', 'be ready for the exam', 'move', 'plan the party', 'do the thing'])
     for (const s of stepsFor(goal, new Date(2026, 9, 20), FRI)) if (s.text !== goal) assert.ok(!/\band\b/.test(s.text), goal + ': ' + s.text);
+});
+
+// the ways people ask for a plan (probed 2026-10-14, 14 of 20 went to an article): each reads as the plan it means
+test('plan asks said other ways: "i need a plan to", "create a study plan for", "X, make me a plan", "plan a party" plan the same way', () => {
+  const open = (a) => (openPlanOf(a) || {}).goal;
+  assert.equal(open('i need a plan to learn japanese'), 'learn japanese');
+  assert.equal(open("what's a good plan to learn italian"), 'learn italian');
+  assert.equal(open('come up with a plan to learn photography'), 'learn photography');
+  assert.equal(open('give me a step by step plan to learn chess'), 'learn chess');
+  assert.equal(open('i want to learn piano, make me a plan'), 'learn piano');
+  assert.equal(open('plan for learning to code'), 'learn to code');
+  assert.equal(open('a plan to learn to draw'), 'learn to draw');
+  assert.equal(open('make a practice plan for guitar'), 'practise guitar');
+  assert.equal(open('make a plan for learning the violin'), 'learn the violin');
+  assert.equal(planOf('create a study plan for my chemistry exam').goal, 'be ready for my chemistry exam');
+  assert.equal(planOf('help me plan a road trip').goal, 'my road trip');
+  assert.equal(planWords('plan a birthday party'), 'plan my birthday party');
+  // still left alone: no plan asked for, a day's plan, and fitness (health stays off the engine)
+  for (const a of ['i plan to go to bed', 'plan my day', 'what is the plan for today', 'write me a plan to start running', 'i need a plan to lose weight', 'what is a plan'])
+    assert.ok(!openPlanOf(a) && !planOf(a), a);
+});
+
+// Plan history (asked by Verse): the last few distinct plans this browser made, listed and restored, so a wipe is never total.
+import { historyAskOf, withPlanKept, restoredThings, PLANS_MAX } from '../void-live-deploy/skills/intent.js';
+test('plan history: the asks, the kept list (one per goal, newest first, five at most) and a restore with fresh ids', () => {
+  assert.deepEqual(historyAskOf('plan history'), { kind: 'list' }); assert.deepEqual(historyAskOf('show me my plans'), { kind: 'list' }); assert.deepEqual(historyAskOf('my past plans'), { kind: 'list' });
+  assert.deepEqual(historyAskOf('restore the last plan'), { kind: 'restore', n: 1 }); assert.deepEqual(historyAskOf('restore plan 2'), { kind: 'restore', n: 2 });
+  assert.deepEqual(historyAskOf('bring back my plan to learn spanish'), { kind: 'restore', goal: 'learn spanish' });
+  for (const a of ['plan my move', 'history of rome', 'restore factory settings', 'my plans for the weekend are', 'restore']) assert.equal(historyAskOf(a), null, a);
+  assert.ok(skill.match('plan history', 'plan history') && skill.examples.includes('plan history'));
+  const e = (goal, at) => ({ goal, at, pieces: ['list'], things: [{ id: 'list_1', kind: 'list', x: 24, y: 56 }] });
+  let L = []; for (const g of ['a', 'b', 'c', 'd', 'e', 'f']) L = withPlanKept(L, e(g, g));
+  assert.deepEqual(L.map((p) => p.goal), ['f', 'e', 'd', 'c', 'b']); assert.equal(L.length, PLANS_MAX);
+  L = withPlanKept(L, e('d', 'again')); assert.deepEqual(L.map((p) => p.goal), ['d', 'f', 'e', 'c', 'b']); assert.equal(L[0].at, 'again');
+  const r = restoredThings({ goal: 'x', things: [{ id: 'list_1', kind: 'list', x: 24, y: 56, group: 'old' }, { id: 'timer_1', kind: 'timer', x: 300, y: 56, group: 'old' }] });
+  assert.equal(r.length, 2); assert.notEqual(r[0].id, 'list_1'); assert.equal(r[0].group, r[1].group); assert.notEqual(r[0].group, 'old'); assert.equal(r[0].x, 24); assert.equal(r[1].kind, 'timer');
+  assert.deepEqual(restoredThings(null), []);
 });

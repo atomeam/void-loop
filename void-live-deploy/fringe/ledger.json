@@ -1,0 +1,318 @@
+{
+ "note": "The fringe ledger's published families for the \"fringe to skill\" card (tools/fringe.mjs --publish, from tools/fringe.json): each family's live drafts, its research notes newest first, what its runs were built toward (near) and the core skills its notes name.",
+ "families": [
+  {
+   "family": "opt-in-gesture",
+   "runs": 1,
+   "drafts": [
+    {
+     "id": "opt-in-gesture-6",
+     "run": 73,
+     "at": "2026-10-10",
+     "label": "How small a button",
+     "sub": "Tap the targets as fast as you can; Fitts's law predicts your time from size and distance."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "correlation-view",
+   "runs": 2,
+   "drafts": [
+    {
+     "id": "correlation-view-6",
+     "run": 72,
+     "at": "2026-10-10",
+     "label": "The link turns over",
+     "sub": "Inside every group more x goes with more y; pooled, the line can slope the other way."
+    },
+    {
+     "id": "correlation-view",
+     "run": 7,
+     "at": "2026-10-02",
+     "label": "Verse growth",
+     "sub": "The benchmark score round by round, and what moved it."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "human-machine-co-agency",
+   "runs": 1,
+   "drafts": [
+    {
+     "id": "human-machine-co-agency-8",
+     "run": 71,
+     "at": "2026-10-10",
+     "label": "Its side of the table",
+     "sub": "Answer only the green dots. Does sharing the task with Verse slow you on its side?"
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "quiet-signal-filter",
+   "runs": 2,
+   "drafts": [
+    {
+     "id": "quiet-signal-filter-5",
+     "run": 70,
+     "at": "2026-10-10",
+     "label": "When did it start",
+     "sub": "Paste a series of numbers; a cumulative-sum test finds when a small lasting change began."
+    },
+    {
+     "id": "quiet-signal-filter",
+     "run": 5,
+     "at": "2026-10-02",
+     "label": "Quiet filter",
+     "sub": "Paste headlines; the loud ones fade, the quiet signal stays."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "non-lexical-intent",
+   "runs": 1,
+   "drafts": [
+    {
+     "id": "non-lexical-intent-5",
+     "run": 69,
+     "at": "2026-10-10",
+     "label": "Do they know",
+     "sub": "Only how the answer arrives: the pause, the um. How sure do they sound?"
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "interval-timing",
+   "runs": 2,
+   "drafts": [
+    {
+     "id": "interval-timing-8",
+     "run": 68,
+     "at": "2026-10-10",
+     "label": "Hold the lamp",
+     "sub": "Hold for as long as the lamp was lit. Longer times drift more, in proportion."
+    },
+    {
+     "id": "interval-timing",
+     "run": 2,
+     "at": "2026-10-02",
+     "label": "Timing game",
+     "sub": "How well do you feel time pass? Stop the clock by feel."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "attention",
+   "runs": 1,
+   "drafts": [
+    {
+     "id": "attention-7",
+     "run": 67,
+     "at": "2026-10-10",
+     "label": "The pointing arrow",
+     "sub": "An arrow hints where a star will appear. Sometimes it lies. How much does a hint steer you?"
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "sensory-substitution",
+   "runs": 1,
+   "drafts": [
+    {
+     "id": "sensory-substitution-7",
+     "run": 66,
+     "at": "2026-10-09",
+     "label": "Count the flashes",
+     "sub": "One flash or two? The beeps are not a clue, and they still change what you see."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "miss-board",
+   "runs": 2,
+   "drafts": [
+    {
+     "id": "miss-board-4",
+     "run": 65,
+     "at": "2026-10-09",
+     "label": "What it hasn't heard yet",
+     "sub": "How much of what people will ask has Verse already seen? Good and Turing's estimate."
+    },
+    {
+     "id": "miss-board",
+     "run": 4,
+     "at": "2026-10-02",
+     "label": "Miss board",
+     "sub": "Asks Verse could not answer yet, and what it learned from them."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "anomalous-event-timeline",
+   "runs": 2,
+   "drafts": [
+    {
+     "id": "anomalous-event-timeline-4",
+     "run": 64,
+     "at": "2026-10-09",
+     "label": "Odd moments",
+     "sub": "Log each odd moment; over days it asks whether they come in bursts more than chance would."
+    },
+    {
+     "id": "anomalous-event-timeline",
+     "run": 6,
+     "at": "2026-10-02",
+     "label": "UAP timeline",
+     "sub": "Public steps in US UAP disclosure, each with its confidence. Releases are events; the cases stay unresolved."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "weak-signal-hypothesis-ledger",
+   "runs": 2,
+   "drafts": [
+    {
+     "id": "weak-signal-hypothesis-ledger-7",
+     "run": 59,
+     "at": "2026-10-08",
+     "label": "One in a hundred",
+     "sub": "A positive test, an alarm, a strong hunch: how likely is the thing behind it, really?"
+    },
+    {
+     "id": "weak-signal-hypothesis-ledger",
+     "run": 1,
+     "at": "2026-10-02",
+     "label": "Hypothesis ledger",
+     "sub": "Weak signals held as hypotheses, each with its confidence and source."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  },
+  {
+   "family": "private-incubation-log",
+   "runs": 2,
+   "drafts": [
+    {
+     "id": "private-incubation-log-6",
+     "run": 54,
+     "at": "2026-10-08",
+     "label": "The wrong lead",
+     "sub": "Three words, one word that goes with all of them. Some come with a misleading hint."
+    },
+    {
+     "id": "private-incubation-log",
+     "run": 9,
+     "at": "2026-10-03",
+     "label": "Idea vault",
+     "sub": "Seal a half-formed idea; it comes back to you later. Kept on this device only."
+    }
+   ],
+   "hypothesis": "",
+   "behavior": "",
+   "findings": [],
+   "failures": [],
+   "next": [],
+   "combines": [],
+   "near": [],
+   "skills": [],
+   "noted": 0
+  }
+ ]
+}

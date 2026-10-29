@@ -1,4 +1,4 @@
-// The fix pages: one page per common automation error (Zapier, Make, n8n, Power Automate, GitHub Actions), each answering it properly, with Void's free
+// The fix pages: one page per common automation error (Zapier, Make, n8n, Power Automate, GitHub Actions), each answering it properly, with Verse's free
 // diagnosis one tap away and the One-Time Fix for when it should just be done. People search the exact error text;
 // these pages are where they land. Data: tools/fix-pages.json (claims paraphrased from each platform's own help
 // center, linked on the page). Writes void-live-deploy/fix/index.html and fix/<slug>/index.html.
@@ -16,7 +16,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const fix = productById('one-time-fix');
 const BUY = 'https://moonbeam846.gumroad.com/l/' + fix.gumroad.slug;
 
-/** what a person would type into Void about this error; must be something Void's fixer takes. Pure. */
+/** what a person would type into Verse about this error; must be something Verse's fixer takes. Pure. */
 export function askOf(p) {
   if (p.ask) return p.ask;
   const err = p.error.split(' · ').filter((x) => !/^(Zap |run on hold|Zapier has)/.test(x)).join(' ');
@@ -80,19 +80,20 @@ ${JSON.stringify(ld, null, 2)}
   <style>
     ${STYLE}
   </style>
+  <script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
-  <p><a href="/">&larr; Void &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
+  <p><a href="/">&larr; Verse &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
 `;
 }
 
 function helpBoxes(ask) {
   return `  <div class="help">
     <div class="box">
-      <h2>Still stuck? Ask Void, free</h2>
-      <p>Paste the error and what the automation does. Void names the likely cause and the fix, in seconds, no account.</p>
-      <a class="btn" data-fix="ask" href="/?q=${encodeURIComponent(ask)}">Ask Void about this error</a>
+      <h2>Still stuck? Ask Verse, free</h2>
+      <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
+      <a class="btn" data-fix="ask" href="/?q=${encodeURIComponent(ask)}">Ask Verse about this error</a>
     </div>
     <div class="box">
       <h2>Or have it fixed: <span id="fix-price">${esc(fix.price)}</span></h2>
@@ -100,7 +101,7 @@ function helpBoxes(ask) {
       <a class="btn solid" id="fix-buy" data-fix="buy" href="${BUY}" rel="noopener">Get the One-Time Fix</a>
     </div>
   </div>
-  <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>.</p>
+  <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>. Several workflows breaking? The <a href="/full-stack-audit/">Full Stack Audit</a> reviews them all. Want them watched so this does not happen again? The <a href="/keep-it-running/">Keep-It-Running Plan</a>.</p>
 `;
 }
 
@@ -139,7 +140,7 @@ export function hubOf(pages) {
   const platforms = [...new Set(pages.map((p) => p.platform))]; // in the order the data lists them
   const named = platforms.length > 1 ? platforms.slice(0, -1).join(', ') + ' and ' + platforms[platforms.length - 1] : platforms.join('');
   const title = 'Fix a broken automation: ' + named + ' errors, explained';
-  const desc = 'The errors that stop ' + named + ' automations, each with what it means and the steps to fix it. Ask Void free, or have it fixed.';
+  const desc = 'The errors that stop ' + named + ' automations, each with what it means and the steps to fix it. Ask Verse free, or have it fixed.';
   const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description: desc, url: SITE + '/fix/',
     hasPart: pages.map((p) => ({ '@type': 'TechArticle', headline: p.title, url: SITE + '/fix/' + p.slug + '/' })) };
   const group = (name) => pages.filter((p) => p.platform === name)
@@ -164,7 +165,7 @@ export function build() {
   const pages = JSON.parse(readFileSync(resolve(root, 'tools/fix-pages.json'), 'utf8'));
   const out = new Map([['void-live-deploy/fix/index.html', hubOf(pages)]]);
   for (const p of pages) {
-    if (!isFixAsk(askOf(p))) throw new Error('Void would not take the ask for ' + p.slug + ': ' + askOf(p));
+    if (!isFixAsk(askOf(p))) throw new Error('Verse would not take the ask for ' + p.slug + ': ' + askOf(p));
     out.set('void-live-deploy/fix/' + p.slug + '/index.html', pageOf(p));
   }
   return { pages, out };

@@ -93,3 +93,35 @@ export function arrange(cards, area, opts = {}) {
   }
   return moves;
 }
+
+/**
+ * Where a floating panel (the "look what I made" walkthrough, skills/showcase.js) goes so it never covers an open card or the ask bar
+ * (owner, 2026-10-18: the walkthrough opened over the dragon card, hiding its text and buttons). Pure: rectangles in, one spot out.
+ *   view { w, h }: the viewport; top: the first free y (below any header); floor: the y where the ask bar starts;
+ *   avoid: [{ x, y, w, h }] what must stay visible (the open card, the step's things); heightAt(w): the panel's height at width w;
+ *   maxW (720), sideW (420), minSide (260): the full and side widths; margin (12) between the panel and everything; gutter (16) at the screen edges.
+ * Tries, in order: above the ask bar when nothing is open; beside the open things (the wider side); above them (docked at the top);
+ * between them and the ask bar; and when none of those has room, mode 'modal': centred between top and floor, for a layer that dims the stage.
+ * Returns { mode: 'bottom' | 'side' | 'top' | 'modal', x, y, w, h, maxH }: h never passes maxH, the height there is (the panel scrolls past it).
+ */
+export function dockPanel({ view, top = 0, floor, avoid = [], heightAt = () => 120, maxW = 720, sideW = 420, minSide = 260, margin = 12, gutter = 16 } = {}) {
+  const vw = Math.max(0, +(view && view.w) || 0), vh = Math.max(0, +(view && view.h) || 0), fl = Math.min(vh, Number.isFinite(+floor) ? +floor : vh);
+  const room = Math.max(0, fl - margin - (top + margin)), full = Math.max(0, Math.min(maxW, vw - 2 * gutter));
+  const boxes = (avoid || []).filter((r) => r && r.w > 0 && r.h > 0)
+    .map((r) => ({ x: Math.max(0, r.x), y: Math.max(0, r.y), r: Math.min(vw, r.x + r.w), b: Math.min(vh, r.y + r.h) })).filter((r) => r.r > r.x && r.b > r.y);
+  const out = (mode, x, y, w, h, maxH) => ({ mode, x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(Math.min(h, maxH)), maxH: Math.round(maxH) });
+  const center = (w) => (vw - w) / 2, hFull = heightAt(full);
+  if (!boxes.length) { const h = Math.min(hFull, room); return out('bottom', center(full), fl - margin - h, full, h, room); }
+  const U = boxes.reduce((u, r) => ({ x: Math.min(u.x, r.x), y: Math.min(u.y, r.y), r: Math.max(u.r, r.r), b: Math.max(u.b, r.b) }));
+  // beside the open things: the wider free side, anywhere between top and floor
+  const right = vw - gutter - (U.r + margin), left = U.x - margin - gutter;
+  if (Math.max(right, left) >= minSide) {
+    const w = Math.min(sideW, Math.max(right, left)), h = heightAt(w);
+    if (h <= room) return out('side', right >= left ? U.r + margin : U.x - margin - w, Math.min(Math.max(top + margin, U.y), fl - margin - h), w, h, room);
+  }
+  const above = U.y - margin - (top + margin), below = fl - margin - (U.b + margin);
+  if (above >= hFull) return out('top', center(full), top + margin, full, hFull, above); // docked at the top
+  if (below >= hFull) return out('bottom', center(full), fl - margin - hFull, full, hFull, below); // between them and the ask bar
+  const h = Math.min(hFull, room);
+  return out('modal', center(full), top + margin + (room - h) / 2, full, h, room);
+}

@@ -1,0 +1,2922 @@
+{
+ "floor": "travel",
+ "verse_page": "/flights/",
+ "researched": "2026-10-26",
+ "sites": {
+  "google.com/travel/flights": {
+   "sources": [
+    "https://www.google.com/travel/flights",
+    "https://support.google.com/travel/",
+    "https://www.slashgear.com/1583729/google-flights-search-features/",
+    "https://tomsguide.com/how-to/google-flights-has-a-new-tool-to-find-you-the-cheapest-airfare-every-time"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Flight search",
+     "detail": "One-way, round trip, multi-city; passengers, cabin class; airports or cities",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/ takes the airports (city, name, code, city codes), dates, one way or return, passengers and cabin and opens the same search on Google Flights, Skyscanner, Kayak, Momondo and Expedia; no fares of its own: Verse has no paid fare feed"
+    },
+    {
+     "group": "core",
+     "name": "Results across airlines and agencies",
+     "detail": "Best and cheapest flights, price, duration, stops, emissions",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "no fare feed: the results are the providers' (said on the first screen)"
+    },
+    {
+     "group": "core",
+     "name": "Filters",
+     "detail": "Stops, airlines, bags, price, times, connecting airports, duration",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs fare results"
+    },
+    {
+     "group": "core",
+     "name": "Sort",
+     "detail": "By price, departure, arrival, duration, emissions",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs fare results"
+    },
+    {
+     "group": "core",
+     "name": "Booking options",
+     "detail": "List of airlines/agencies to book with; links out",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "links out to six providers and an airline's own site"
+    },
+    {
+     "group": "core",
+     "name": "Fare details",
+     "detail": "Fare class, baggage, legroom, wifi, aircraft",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs a fare feed"
+    },
+    {
+     "group": "power",
+     "name": "Date grid",
+     "detail": "Cheapest fare for each departure/return date pair",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs a fare feed"
+    },
+    {
+     "group": "power",
+     "name": "Price graph",
+     "detail": "Fares across months",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a chart of the fares the visitor recorded, not market prices"
+    },
+    {
+     "group": "power",
+     "name": "Price insights",
+     "detail": "Low/typical/high vs history, cheapest time to book",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the lowest seen and the change since the last fare, from the visitor's own log"
+    },
+    {
+     "group": "power",
+     "name": "Track prices",
+     "detail": "Email alerts for a route or exact itinerary (any dates or set dates)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/ price tracker: fares recorded on the device, lowest seen, a watch target with a notification while the tab is open, CSV export and import"
+    },
+    {
+     "group": "power",
+     "name": "Explore map",
+     "detail": "Cheapest destinations from an airport on a map, flexible trips (\"a weekend in November\")",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/routes/: airports within a flight time (range, not a timetable) and /flights/map/"
+    },
+    {
+     "group": "power",
+     "name": "Price guarantee (select US)",
+     "detail": "Refund the difference if price drops after booking",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "a booking promise; Verse sells nothing"
+    },
+    {
+     "group": "power",
+     "name": "Emissions estimates",
+     "detail": "CO2 per flight vs typical",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/co2/ and the route facts: CO2 per seat by cabin, return and passengers, with the method written out"
+    },
+    {
+     "group": "power",
+     "name": "Nearby airports",
+     "detail": "Include airports within a radius",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "chips under the route and /flights/airports/: airports within 150 km, other airports of a city (NYC, LON ...)"
+    },
+    {
+     "group": "power",
+     "name": "Hotels and vacation rentals",
+     "detail": "Google Hotels in the same travel product",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "a different floor; no hotel feed"
+    },
+    {
+     "group": "power",
+     "name": "Trip context",
+     "detail": "Destination time, weather, currency",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "distance, flight time, time difference and local arrival on the route"
+    },
+    {
+     "group": "sharing",
+     "name": "Share itinerary",
+     "detail": "Share a flight result link",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/trip/ share link that carries the trip, and a calendar file"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile web",
+     "detail": "Responsive web; no separate app",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "built at 390 px"
+    },
+    {
+     "group": "accessibility",
+     "name": "Keyboard and screen reader",
+     "detail": "Accessible results list",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "labelled controls, a combobox for airports, 44 px targets"
+    }
+   ]
+  },
+  "tripwaffle.com": {
+   "sources": [
+    "https://tripwaffle.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Turn forwarded booking emails into an itinerary",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/trip/ reads a pasted confirmation (flight numbers, airports, dates, times, booking reference); no inbox, no forwarding address"
+    },
+    {
+     "group": "core",
+     "name": "Day-by-day timeline",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/trip/ your flights in order with waits"
+    },
+    {
+     "group": "core",
+     "name": "Layover and connection checks",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "too short, tight, long, overnight, airport change, break in the route"
+    },
+    {
+     "group": "core",
+     "name": "Calendar export",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": ".ics with UTC times"
+    },
+    {
+     "group": "core",
+     "name": "Share a trip",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a link that carries the trip"
+    },
+    {
+     "group": "core",
+     "name": "Works offline",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "kept on the device"
+    },
+    {
+     "group": "core",
+     "name": "Accounts and shared editing",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs accounts and a server; Verse keeps no accounts"
+    },
+    {
+     "group": "core",
+     "name": "Flight alerts and delay notices",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs a live flight-status feed"
+    }
+   ]
+  },
+  "aruljohn.com": {
+   "sources": [
+    "https://aruljohn.com/airport-codes/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search by airport code, city or country",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/airports/"
+    },
+    {
+     "group": "core",
+     "name": "IATA and ICAO codes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "both searched and shown"
+    },
+    {
+     "group": "core",
+     "name": "Airport details",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "position, time zone and local time, size"
+    },
+    {
+     "group": "core",
+     "name": "Nearby airports",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "within 200 km"
+    },
+    {
+     "group": "core",
+     "name": "Whole list of the world's airports",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "about 4,000 airports with scheduled service, not heliports and small fields"
+    }
+   ]
+  },
+  "clock7.com": {
+   "sources": [
+    "https://www.clock7.com/flight-calculator/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Flight duration between two cities",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/time/"
+    },
+    {
+     "group": "core",
+     "name": "Local arrival time",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "in the destination's zone, with daylight saving on the date"
+    },
+    {
+     "group": "core",
+     "name": "Time zone difference",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/time/"
+    },
+    {
+     "group": "core",
+     "name": "Date line crossing",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "from the great-circle path"
+    },
+    {
+     "group": "core",
+     "name": "Layover and total journey",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a stop and a wait, whole journey"
+    }
+   ]
+  },
+  "airmilescalculator.com": {
+   "sources": [
+    "https://www.airmilescalculator.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Distance in miles, km and nautical miles",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/distance/"
+    },
+    {
+     "group": "core",
+     "name": "Estimated flight time",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "typical time, method named"
+    },
+    {
+     "group": "core",
+     "name": "Time difference",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "with daylight saving"
+    },
+    {
+     "group": "core",
+     "name": "Flown distance versus great circle",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a routing allowance (50, 100 or 125 km), not historical flights"
+    },
+    {
+     "group": "core",
+     "name": "Multi-leg trips",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a chain of airports with a total"
+    },
+    {
+     "group": "core",
+     "name": "Per-route pages for every pair",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "the pair is chosen in the page; no page per pair"
+    }
+   ]
+  },
+  "gcmap.com": {
+   "sources": [
+    "https://www.gcmap.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Great circle map of a route",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/map/ draws each great-circle leg over Natural Earth 1:110m coastlines (public domain, 11 KB, offline) on a 30-degree grid"
+    },
+    {
+     "group": "core",
+     "name": "Chained routes written as a line of codes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "JFK-LHR-SIN, dash or space"
+    },
+    {
+     "group": "core",
+     "name": "Distance of each leg and the total",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "km and miles and flight time"
+    },
+    {
+     "group": "core",
+     "name": "Airport information",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "name, city, country and zone for each airport on the route"
+    },
+    {
+     "group": "core",
+     "name": "Map image or embed export",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "no image export yet"
+    }
+   ]
+  },
+  "co2.myclimate.org": {
+   "sources": [
+    "https://co2.myclimate.org/en/flight_calculators/new",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "CO2 per passenger for a route",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/co2/"
+    },
+    {
+     "group": "core",
+     "name": "Cabin class",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "economy, premium economy, business, first"
+    },
+    {
+     "group": "core",
+     "name": "Return trip and passengers",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "both"
+    },
+    {
+     "group": "core",
+     "name": "Method explained",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "written out with its range"
+    },
+    {
+     "group": "core",
+     "name": "Offsetting and payment",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "Verse sells nothing and takes no payment"
+    }
+   ]
+  },
+  "flightconnections.com": {
+   "sources": [
+    "https://www.flightconnections.com/",
+    "WebSearch 2026-10-26"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Direct flights from an airport",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/routes/ lists nonstop routes and their airlines from OpenFlights (ODbL), as of June 2014 and labelled may be out of date; no current schedule"
+    },
+    {
+     "group": "core",
+     "name": "Destinations within a flight time",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/routes/ shows what a flight of that length could reach, labelled range, not a timetable"
+    },
+    {
+     "group": "core",
+     "name": "Route map",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/flights/map/ for chains the visitor types"
+    },
+    {
+     "group": "core",
+     "name": "Filter by country and airport size",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flights/routes/"
+    },
+    {
+     "group": "core",
+     "name": "Prices on the map (premium)",
+     "detail": "",
+     "paid": false,
+     "verse": "skipped",
+     "verse_evidence": "needs a fare feed"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "live fares (no feed)",
+  "flight status and live map (OpenSky terms unverified)",
+  "destination photos with credit (lib/free-pics.js, server side; not wired)",
+  "current nonstop routes (the bundled OpenFlights routes stop in June 2014)"
+ ],
+ "verse_extra": [
+  "the destination's local time, forecast, currency and country facts by asking",
+  "ride and food deep links once you land (skills/rides.js)"
+ ],
+ "first_page": "Flights: /flights/ (search across providers, route facts, price log, itineraries) and one page per lane site under /flights/ (trip, airports, time, distance, map, co2, routes). All on the device from an OurAirports list (public domain). Will not build: live fares or a fare scrape (no keyless fare source; money stays out), booking, accounts, hotels. Flight status and a live map are a later step through OpenSky: its terms and limits were not verified in this session (the sandbox cannot reach it), so it is not built.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "tripwaffle.com": {
+    "url": "https://tripwaffle.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://tripwaffle.com/",
+     "https://tripwaffle.com/faq/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Calmer travel, zero effort",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"calmer\", \"travel\", \"zero\", \"effort\""
+     },
+     {
+      "name": "Forward any booking",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"forward\", \"book\""
+     },
+     {
+      "name": "Add your bookings",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"add\"; not \"book\""
+     },
+     {
+      "name": "We fill in the rest",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"fill\", \"rest\""
+     },
+     {
+      "name": "Travel happy",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"travel\", \"happy\""
+     },
+     {
+      "name": "Mailbox magic",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"mailbox\", \"magic\""
+     },
+     {
+      "name": "Bulk import",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bulk\", \"import\""
+     },
+     {
+      "name": "TripIt vs TripWaffle",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"tripit\", \"tripwaffle\""
+     },
+     {
+      "name": "Live flight tracking",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"flight\"; not \"live\", \"track\""
+     },
+     {
+      "name": "Live alerts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"live\", \"alert\""
+     },
+     {
+      "name": "Live tracking",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"live\", \"track\""
+     },
+     {
+      "name": "Delay recovered",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"delay\", \"recover\""
+     },
+     {
+      "name": "Check-in links",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"check\", \"link\""
+     },
+     {
+      "name": "Know your flight",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"flight\"; not \"know\""
+     },
+     {
+      "name": "Route reliability",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"route\"; not \"reliability\""
+     },
+     {
+      "name": "Luggage risk",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"luggage\", \"risk\""
+     },
+     {
+      "name": "Aircraft details",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"aircraft\", \"detail\""
+     },
+     {
+      "name": "Codeshare detection",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"codeshare\", \"detection\""
+     },
+     {
+      "name": "Jetlag forecast",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"jetlag\", \"forecast\""
+     },
+     {
+      "name": "Drive time",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"drive\", \"time\""
+     },
+     {
+      "name": "Things to see and eat",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"thing\", \"see\", \"eat\""
+     },
+     {
+      "name": "Discover places",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"discover\", \"place\""
+     },
+     {
+      "name": "Interesting eats",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"interest\", \"eat\""
+     },
+     {
+      "name": "Place Ideas",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"place\", \"idea\""
+     },
+     {
+      "name": "Works with Claude and ChatGPT",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"work\", \"claude\", \"chatgpt\""
+     },
+     {
+      "name": "Reviews",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"review\""
+     },
+     {
+      "name": "Share your trip",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"share\"; not \"trip\""
+     },
+     {
+      "name": "Trip sharing",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"shar\"; not \"trip\""
+     },
+     {
+      "name": "Live status link",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"live\", \"statu\", \"link\""
+     },
+     {
+      "name": "Public trip link",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"public\", \"trip\", \"link\""
+     },
+     {
+      "name": "Trips for others",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"trip\", \"other\""
+     },
+     {
+      "name": "Stays and destinations",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"stay\", \"destination\""
+     },
+     {
+      "name": "Stay details",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"stay\", \"detail\""
+     },
+     {
+      "name": "Safety info",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"safety\", \"info\""
+     },
+     {
+      "name": "Visa & passport",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"visa\", \"passport\""
+     },
+     {
+      "name": "Power adapter",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"power\"; not \"adapter\""
+     },
+     {
+      "name": "Common phrases",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"common\", \"phrase\""
+     },
+     {
+      "name": "Currency calc",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"currency\", \"calc\""
+     },
+     {
+      "name": "Smart packing",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"smart\", \"pack\""
+     },
+     {
+      "name": "Your map and lifetime stats",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"map\", \"lifetime\", \"stat\""
+     }
+    ]
+   },
+   "aruljohn.com": {
+    "url": "https://aruljohn.com/airport-codes/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://aruljohn.com/airport-codes/",
+     "https://aruljohn.com/gas/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Airport Code Database IATA and ICAO 🛩️",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"airport\"; not \"code\", \"database\", \"iata\""
+     },
+     {
+      "name": "United States of America 🇺🇸",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"unit\", \"state\", \"america\""
+     },
+     {
+      "name": "Afghanistan 🇦🇫",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"afghanistan\""
+     },
+     {
+      "name": "Albania 🇦🇱",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"albania\""
+     },
+     {
+      "name": "Algeria 🇩🇿",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"algeria\""
+     },
+     {
+      "name": "American Samoa 🇦🇸",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"american\", \"samoa\""
+     },
+     {
+      "name": "Angola 🇦🇴",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"angola\""
+     },
+     {
+      "name": "Anguilla 🇦🇮",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"anguilla\""
+     },
+     {
+      "name": "Antarctica 🇦🇶",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"antarctica\""
+     },
+     {
+      "name": "Antigua and Barbuda 🇦🇬",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"antigua\", \"barbuda\""
+     },
+     {
+      "name": "Argentina 🇦🇷",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"argentina\""
+     },
+     {
+      "name": "Armenia 🇦🇲",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"armenia\""
+     },
+     {
+      "name": "Aruba 🇦🇼",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"aruba\""
+     },
+     {
+      "name": "Australia 🇦🇺",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"australia\""
+     },
+     {
+      "name": "Austria 🇦🇹",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"austria\""
+     },
+     {
+      "name": "Azerbaijan 🇦🇿",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"azerbaijan\""
+     },
+     {
+      "name": "Bahamas 🇧🇸",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bahama\""
+     },
+     {
+      "name": "Bahrain 🇧🇭",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bahrain\""
+     },
+     {
+      "name": "Bangladesh 🇧🇩",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bangladesh\""
+     },
+     {
+      "name": "Barbados 🇧🇧",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"barbado\""
+     },
+     {
+      "name": "Belarus 🇧🇾",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"belaru\""
+     },
+     {
+      "name": "Belgium 🇧🇪",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"belgium\""
+     },
+     {
+      "name": "Belize 🇧🇿",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"belize\""
+     },
+     {
+      "name": "Benin 🇧🇯",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"benin\""
+     },
+     {
+      "name": "Bermuda 🇧🇲",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bermuda\""
+     },
+     {
+      "name": "Bhutan 🇧🇹",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bhutan\""
+     },
+     {
+      "name": "Bolivia 🇧🇴",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bolivia\""
+     },
+     {
+      "name": "Bosnia and Herzegovina 🇧🇦",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bosnia\", \"herzegovina\""
+     },
+     {
+      "name": "Botswana 🇧🇼",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"botswana\""
+     },
+     {
+      "name": "Brazil 🇧🇷",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"brazil\""
+     },
+     {
+      "name": "British Indian Ocean Territory 🇮🇴",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"british\", \"indian\", \"ocean\", \"territory\""
+     },
+     {
+      "name": "British Virgin Islands 🇻🇬",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"british\", \"virgin\", \"island\""
+     },
+     {
+      "name": "Brunei 🇧🇳",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"brunei\""
+     },
+     {
+      "name": "Bulgaria 🇧🇬",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"bulgaria\""
+     },
+     {
+      "name": "Burkina Faso 🇧🇫",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"burkina\", \"faso\""
+     },
+     {
+      "name": "Burma",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"burma\""
+     },
+     {
+      "name": "Burundi 🇧🇮",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"burundi\""
+     },
+     {
+      "name": "Cambodia 🇰🇭",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"cambodia\""
+     },
+     {
+      "name": "Cameroon 🇨🇲",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"cameroon\""
+     },
+     {
+      "name": "Canada 🇨🇦",
+      "detail": "a heading on /airport-codes/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"canada\""
+     }
+    ]
+   },
+   "clock7.com": {
+    "url": "https://www.clock7.com/flight-calculator/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://clock7.com/flight-calculator/",
+     "https://clock7.com/faq.html",
+     "https://clock7.com/docs/",
+     "https://clock7.com/about"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Flight Duration Calculator",
+      "detail": "a heading on /flight-calculator/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"flight\"; not \"duration\", \"calculator\""
+     },
+     {
+      "name": "🛬 Popular flight routes & durations",
+      "detail": "a heading on /flight-calculator/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"flight\", \"route\"; not \"popular\", \"duration\""
+     },
+     {
+      "name": "🎓 How to use the Flight Duration Calculator",
+      "detail": "a heading on /flight-calculator/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"how\", \"flight\"; not \"duration\", \"calculator\""
+     },
+     {
+      "name": "❓ Common questions about flight time",
+      "detail": "a heading on /flight-calculator/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"flight\"; not \"common\", \"question\", \"about\""
+     },
+     {
+      "name": "More Clock7 World Clock Tools",
+      "detail": "a heading on /flight-calculator/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"clock7\", \"world\", \"clock\""
+     },
+     {
+      "name": "General Questions",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"general\", \"question\""
+     },
+     {
+      "name": "Alarm Clock",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"alarm\", \"clock\""
+     },
+     {
+      "name": "Timer & Specialized Timers",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"timer\", \"specializ\""
+     },
+     {
+      "name": "Pomodoro & Focus Tools",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"pomodoro\", \"focu\""
+     },
+     {
+      "name": "Stopwatch",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"stopwatch\""
+     },
+     {
+      "name": "World Clock & Global Tools",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"world\", \"clock\", \"global\""
+     },
+     {
+      "name": "Holidays & Calendar",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"holiday\", \"calendar\""
+     },
+     {
+      "name": "Technical Issues",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"technical\", \"issue\""
+     },
+     {
+      "name": "PWA & Installation",
+      "detail": "a heading on /faq.html",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"pwa\", \"installation\""
+     },
+     {
+      "name": "📚 Documentation",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"documentation\""
+     },
+     {
+      "name": "Popular Guides",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"popular\", \"guide\""
+     },
+     {
+      "name": "All Tools",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words"
+     },
+     {
+      "name": "Countdown Timer",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"countdown\", \"timer\""
+     },
+     {
+      "name": "Pomodoro Timer",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"pomodoro\", \"timer\""
+     },
+     {
+      "name": "World Clock",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"world\", \"clock\""
+     },
+     {
+      "name": "Holiday Calendar",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"holiday\", \"calendar\""
+     },
+     {
+      "name": "Embed Tools",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"embed\""
+     },
+     {
+      "name": "Share Links",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"share\"; not \"link\""
+     },
+     {
+      "name": "How to Use",
+      "detail": "a heading on /docs/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "Verse's page shows \"how\""
+     },
+     {
+      "name": "The Story Behind Clock7",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"story\", \"behind\", \"clock7\""
+     },
+     {
+      "name": "Our Core Principles",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"our\", \"core\", \"principle\""
+     },
+     {
+      "name": "Instant & Lightweight",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"instant\", \"lightweight\""
+     },
+     {
+      "name": "Absolute Privacy",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"absolute\", \"privacy\""
+     },
+     {
+      "name": "Truly Global",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"truly\", \"global\""
+     },
+     {
+      "name": "Completely Free",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"completely\""
+     },
+     {
+      "name": "Works Everywhere",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"work\", \"everywhere\""
+     },
+     {
+      "name": "Community-Driven",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"community\", \"driven\""
+     },
+     {
+      "name": "Comprehensive Feature Suite",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"comprehensive\", \"feature\", \"suite\""
+     },
+     {
+      "name": "Explore Our Tools",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"explore\", \"our\""
+     },
+     {
+      "name": "Timer Suite",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"timer\", \"suite\""
+     },
+     {
+      "name": "Focus & Productivity",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"focu\", \"productivity\""
+     },
+     {
+      "name": "World Clock & Travel",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"world\", \"clock\", \"travel\""
+     },
+     {
+      "name": "Holidays & Planning",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "Verse's page shows none of its words; not \"holiday\", \"plann\""
+     },
+     {
+      "name": "Experience Clock7 Today",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"today\"; not \"experience\", \"clock7\""
+     },
+     {
+      "name": "Quick Timer (1-60 minutes)",
+      "detail": "a list item on /docs/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "Verse's page shows \"1\"; not \"quick\", \"timer\", \"60\""
+     }
+    ]
+   },
+   "airmilescalculator.com": {
+    "url": "https://www.airmilescalculator.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "gcmap.com": {
+    "url": "https://www.gcmap.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "did not load (page.goto: net::ERR_CONNECTION_REFUSED at https://www.gcmap.com/)",
+    "features": []
+   },
+   "co2.myclimate.org": {
+    "url": "https://co2.myclimate.org/en/flight_calculators/new",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "robots.txt asks robots not to read it",
+    "features": []
+   },
+   "flightconnections.com": {
+    "url": "https://www.flightconnections.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.flightconnections.com/"
+    ],
+    "method": "heuristic",
+    "features": []
+   }
+  },
+  "gaps": [
+   {
+    "name": "Calmer travel, zero effort",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Forward any booking",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "We fill in the rest",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Travel happy",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Mailbox magic",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Bulk import",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "TripIt vs TripWaffle",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Live alerts",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Live tracking",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Delay recovered",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Check-in links",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Luggage risk",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Aircraft details",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Codeshare detection",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Jetlag forecast",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Drive time",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Things to see and eat",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Discover places",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Interesting eats",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Place Ideas",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Works with Claude and ChatGPT",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Reviews",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Live status link",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Public trip link",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Trips for others",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Stays and destinations",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Stay details",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Safety info",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Visa & passport",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Common phrases",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Currency calc",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Smart packing",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "Your map and lifetime stats",
+    "sites": [
+     "tripwaffle.com"
+    ]
+   },
+   {
+    "name": "United States of America 🇺🇸",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Afghanistan 🇦🇫",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Albania 🇦🇱",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Algeria 🇩🇿",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "American Samoa 🇦🇸",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Angola 🇦🇴",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Anguilla 🇦🇮",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Antarctica 🇦🇶",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Antigua and Barbuda 🇦🇬",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Argentina 🇦🇷",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Armenia 🇦🇲",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Aruba 🇦🇼",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Australia 🇦🇺",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Austria 🇦🇹",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Azerbaijan 🇦🇿",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bahamas 🇧🇸",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bahrain 🇧🇭",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bangladesh 🇧🇩",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Barbados 🇧🇧",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Belarus 🇧🇾",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Belgium 🇧🇪",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Belize 🇧🇿",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Benin 🇧🇯",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bermuda 🇧🇲",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bhutan 🇧🇹",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bolivia 🇧🇴",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bosnia and Herzegovina 🇧🇦",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Botswana 🇧🇼",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Brazil 🇧🇷",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "British Indian Ocean Territory 🇮🇴",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "British Virgin Islands 🇻🇬",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Brunei 🇧🇳",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Bulgaria 🇧🇬",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Burkina Faso 🇧🇫",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Burma",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Burundi 🇧🇮",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Cambodia 🇰🇭",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Cameroon 🇨🇲",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "Canada 🇨🇦",
+    "sites": [
+     "aruljohn.com"
+    ]
+   },
+   {
+    "name": "More Clock7 World Clock Tools",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "General Questions",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Alarm Clock",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Timer & Specialized Timers",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Pomodoro & Focus Tools",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Stopwatch",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "World Clock & Global Tools",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Holidays & Calendar",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Technical Issues",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "PWA & Installation",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "📚 Documentation",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Popular Guides",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "All Tools",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Countdown Timer",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Pomodoro Timer",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "World Clock",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Holiday Calendar",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Embed Tools",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "The Story Behind Clock7",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Our Core Principles",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Instant & Lightweight",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Absolute Privacy",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Truly Global",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Completely Free",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Works Everywhere",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Community-Driven",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Comprehensive Feature Suite",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Explore Our Tools",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Timer Suite",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Focus & Productivity",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "World Clock & Travel",
+    "sites": [
+     "clock7.com"
+    ]
+   },
+   {
+    "name": "Holidays & Planning",
+    "sites": [
+     "clock7.com"
+    ]
+   }
+  ],
+  "queued": []
+ },
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "airmilescalculator.com": {
+    "url": "https://www.airmilescalculator.com/",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "anti-bot",
+     "why": "a bot challenge stood in front of the page"
+    },
+    "features": [
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "v1"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "v1@163129"
+     }
+    ]
+   },
+   "aruljohn.com": {
+    "url": "https://aruljohn.com/airport-codes/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "RSS or Atom feed",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[type$=xml]"
+     },
+     {
+      "name": "Embeds app.grow.me",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "API call api.grow.[token]",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.grow.me/grow-widget-versions",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.grow.me/location-privacy-info",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "aj.js@18685"
+     },
+     {
+      "name": "Input of type search",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=search] x1"
+     },
+     {
+      "name": "Remembers a setting in the browser: growMeSnowplowUserInfo",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: mv_session",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "aj.css"
+     },
+     {
+      "name": "Section /blog/ (331 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /coupons/ (2 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /gas/ (85 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /jobs/ (41 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /phone/ (15 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "clock7.com": {
+    "url": "https://clock7.com/flight-calculator/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "URL parameter ?cab",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "flight-calculator.js@35443"
+     },
+     {
+      "name": "URL parameter ?date",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "flight-calculator.js@35177"
+     },
+     {
+      "name": "URL parameter ?from",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "flight-calculator.js@34868"
+     },
+     {
+      "name": "URL parameter ?stop",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "flight-calculator.js@35353"
+     },
+     {
+      "name": "URL parameter ?time",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "flight-calculator.js@35265"
+     },
+     {
+      "name": "URL parameter ?to",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "flight-calculator.js@34888"
+     },
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer.css"
+     },
+     {
+      "name": "Install prompt (beforeinstallprompt)",
+      "detail": "pwa, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "load-header-footer.js"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "flight-calculator.js@34321"
+     },
+     {
+      "name": "Full screen mode",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "load-header-footer.js@5229"
+     },
+     {
+      "name": "Widget menu",
+      "detail": "setting, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[role=menu] x6"
+     },
+     {
+      "name": "Input of type date",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=date] x1"
+     },
+     {
+      "name": "Input of type time",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=time] x1"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer.css@6720"
+     },
+     {
+      "name": "Path kept from crawlers /.git/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /.htaccess",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /README.md",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /aqi/cache/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /error_log",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /force-reload.php",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /phpMyAdmin/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   },
+   "co2.myclimate.org": {
+    "url": "https://co2.myclimate.org/en/flight_calculators/new",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "robots",
+     "why": "robots.txt disallows the page for every crawler"
+    },
+    "features": []
+   },
+   "flightconnections.com": {
+    "url": "https://www.flightconnections.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "cdn.flightconnections.com/validity_datepicker.min.css"
+     },
+     {
+      "name": "Embeds www.googletagmanager.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "API call site-config.com/v2/abr",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API path /oauth",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "cdn.flightconnections.com/forms.min.js@4247"
+     },
+     {
+      "name": "API path /v2/abr",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "cdn.flightconnections.com/before_pubfig.js@44929"
+     },
+     {
+      "name": "Feature flag disableNavWhenOutOfRange",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "cdn.flightconnections.com/datepicker.min.js@617"
+     },
+     {
+      "name": "Feature flag showDatesOverlay",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "cdn.flightconnections.com/mapbasics.min.js@31885"
+     },
+     {
+      "name": "Feature flag showOtherMonths",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "cdn.flightconnections.com/mapbasics.min.js@233709"
+     },
+     {
+      "name": "Feature flag showOtherYears",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "cdn.flightconnections.com/datepicker.min.js@529"
+     },
+     {
+      "name": "Feature flag usePopup",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "cdn.flightconnections.com/forms.min.js@12146"
+     },
+     {
+      "name": "Full screen mode",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "cdn.flightconnections.com/mapbasics.min.js@204887"
+     },
+     {
+      "name": "Widget slider",
+      "detail": "setting, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[role=slider] x20"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x3"
+     },
+     {
+      "name": "Uses the location",
+      "detail": "input, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "cdn.flightconnections.com/leaflet.min.js@32570"
+     },
+     {
+      "name": "Remembers a setting in the browser: [token]",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: aws_waf_referrer",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: awswaf_token_refresh_timestamp",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: fs.adb",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: fs.cdi",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: fs.cfc",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: multiple_airlines",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Language versions: 60 (x-default, en, en-au, en-ca, en-ee, en-gb)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Uses Maps",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script hosts"
+     }
+    ]
+   },
+   "gcmap.com": {
+    "url": "https://www.gcmap.com/",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "unreachable",
+     "why": "page.goto: net::ERR_CONNECTION_REFUSED at https://www.gcmap.com/ Call log: - navigating to \"https://"
+    },
+    "features": []
+   },
+   "tripwaffle.com": {
+    "url": "https://tripwaffle.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "styles.min.css"
+     },
+     {
+      "name": "API call tripwaffle.com/api/home-panel.php",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call tripwaffle.com/api/scraper-beacon.php",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "Feature flag usePopup",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "apple-signin.js@911"
+     },
+     {
+      "name": "Widget menu",
+      "detail": "setting, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[role=menu] x1"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "tailwind.css"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "styles.min.css@19052"
+     },
+     {
+      "name": "Path kept from crawlers /admin/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /api/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /dashboard/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /discover/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /event/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /import/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /settings/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /signin/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /trip/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /unsubscribe/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,5 @@
+// /jobs/categories/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), {"panels":["categories","search","saved","alerts","tracker","feed","sources"],"de":{"h1":"Remote-Jobs nach Kategorie","intro":"Remote-Jobs nach Kategorie, von Softwareentwicklung und Design bis Kundenservice, Marketing, Vertrieb, Finanzen, Text und Daten, jeweils mit der Zahl offener Jobs. Wählen Sie eine, fügen Sie ein Stichwort oder einen Ort hinzu und speichern Sie die Suche, um beim nächsten Mal Neues zu sehen."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/jobs/categories/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

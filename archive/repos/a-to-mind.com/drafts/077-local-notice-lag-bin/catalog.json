@@ -1,0 +1,16 @@
+{
+  "slug": "local-notice-lag-bin",
+  "run": "077",
+  "date": "2026-10-06",
+  "status": "unattested",
+  "emit": false,
+  "lags": ["unclocked", "seemed-soon", "seemed-late", "seemed-after", "declined"],
+  "report_sources": ["self-noted", "overheard-claim", "paper-claim"],
+  "weights": ["sketch", "noted", "loud"],
+  "signal_source": "not-named",
+  "present": "not-raw",
+  "sender": "not-claimed",
+  "diagnosis": "denied",
+  "clock": "denied",
+  "note": "Catalog is a sealed label set. It is not a timer and not a seal."
+}

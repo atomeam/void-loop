@@ -1,0 +1,213 @@
+{
+ "floor": "social",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "reddit.com": {
+   "sources": [
+    "https://www.reddit.com/",
+    "https://support.reddithelp.com/hc/en-us",
+    "https://redditinc.com/policies/content-policy",
+    "https://www.reddit.com/answers/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Communities (subreddits)",
+     "detail": "Topic communities with rules, wiki, sidebar, flairs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skills/social.js: public posts from X, Bluesky and Mastodon by link or handle through official embeds and open APIs (no login, nothing stored); no Reddit"
+    },
+    {
+     "group": "core",
+     "name": "Home and Popular feeds",
+     "detail": "Feed from joined communities; Popular and All",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "social.js shows a Bluesky or Mastodon author feed"
+    },
+    {
+     "group": "core",
+     "name": "Sort",
+     "detail": "Best, Hot, New, Top (hour..all time), Rising, Controversial",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Posts",
+     "detail": "Text, link, image, video, gallery, poll posts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Threaded comments",
+     "detail": "Nested replies, collapse, sort comments",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Voting and karma",
+     "detail": "Up/down votes, karma",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Join/leave communities",
+     "detail": "Follow communities, follow users",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Search",
+     "detail": "Search posts, communities, comments, people",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Profiles",
+     "detail": "User posts, comments, saved, hidden",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Custom feeds",
+     "detail": "Group communities into a curated feed",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Save and hide",
+     "detail": "Saved posts and comments",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Chat and DMs",
+     "detail": "Direct chat, group chat, community chat channels",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Moderation tools",
+     "detail": "Mod queue, AutoModerator, removal reasons, mod log",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Flairs and filters",
+     "detail": "Post/user flair, filter by flair",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Reddit Answers",
+     "detail": "AI answers summarising Reddit discussions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Translation",
+     "detail": "Machine translation of posts",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/translate.js translates text you give it"
+    },
+    {
+     "group": "power",
+     "name": "NSFW and content controls",
+     "detail": "Content filters, muted communities, blocks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Cross-network public posts",
+     "detail": "Reddit is Reddit only",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "social.js reads X, Bluesky and Mastodon"
+    },
+    {
+     "group": "sharing",
+     "name": "Share and crosspost",
+     "detail": "Share links, embed posts, crosspost",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app",
+     "detail": "Apps with notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Alt text, screen reader, reduce motion",
+     "detail": "Accessibility settings",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Reddit Premium",
+     "detail": "Ad-free, Premium avatar gear (discontinued for new buyers)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Reddit Pro and ads",
+     "detail": "Tools and ads for businesses",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "read a subreddit with sort (public JSON/RSS, keyless) in the same feed card",
+  "a merged feed of followed handles and communities on the device",
+  "threaded comment view",
+  "search across networks",
+  "save posts on the device"
+ ],
+ "verse_extra": [
+  "one feed across X, Bluesky and Mastodon",
+  "no login, nothing stored"
+ ],
+ "first_page": "Feed page /feed/ for readers who follow people across networks. First: follow Bluesky and Mastodon handles and subreddits (public feeds, keyless), merged into one time-ordered feed with sort, a threaded view for one post, saved posts and follows kept on the device, and a link that holds the whole follow list. Will not build: posting, voting, chat, moderation or an account."
+}

@@ -1,0 +1,147 @@
+{
+ "site": "wekan.fi",
+ "url": "https://wekan.fi/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "bootstrap.min.css",
+   "t": "css",
+   "b": 194901,
+   "map": true
+  }
+ ],
+ "assetCount": 1,
+ "bytes": 194901,
+ "html": {
+  "mobile": {
+   "title": "WeKan ® — Open-Source kanban",
+   "lang": "",
+   "manifest": null,
+   "feeds": 1,
+   "appleTouch": true,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "App",
+   "w": "md"
+  },
+  {
+   "l": "Awards",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "md"
+  },
+  {
+   "l": "Docs",
+   "w": "md"
+  },
+  {
+   "l": "FLOSS Developers Only",
+   "w": "md"
+  },
+  {
+   "l": "Home",
+   "w": "md"
+  },
+  {
+   "l": "Install",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "Private Paid Commercial Support",
+   "w": "md"
+  },
+  {
+   "l": "SaaS",
+   "w": "md"
+  },
+  {
+   "l": "Sponsor",
+   "w": "md"
+  },
+  {
+   "l": "Sponsors",
+   "w": "md"
+  },
+  {
+   "l": "Status",
+   "w": "md"
+  },
+  {
+   "l": "Success",
+   "w": "md"
+  },
+  {
+   "l": "Upgrade",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "bootstrap.min.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "getbootstrap.com",
+   "file": "bootstrap.min.css",
+   "at": 43
+  }
+ ],
+ "thirdParty": [
+  "getbootstrap.com"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "bootstrap.min.css"
+  },
+  {
+   "name": "RSS or Atom feed",
+   "kind": "share",
+   "tag": "observed",
+   "evidence": "link[type$=xml]"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "bootstrap.min.css@2181"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+# CANDIDATE. Do not rename this file to _headers.
+# Cloudflare Pages applies a file named _headers. This name is intentional.
+# status:candidate hold:true sealed:false
+# No Content-Security-Policy is emitted until a human seals the bytes in issue 40.
+# https://github.com/atomeam/a-to-mind.com/issues/40
+#
+# After seal, add only on named HTML paths, in the same commit as the sealed value:
+# /sealed-path
+#   Content-Security-Policy: <exact sealed bytes>
+#   X-Robots-Tag: noindex
+# Do not set Content-Security-Policy-Report-Only.
+# Do not set report-uri. Do not set report-to. Do not set Reporting-Endpoints.
+# Do not add a meta http-equiv Content-Security-Policy.

@@ -1,4 +1,4 @@
-# Void explainers: toy specs (build input)
+# Verse explainers: toy specs (build input)
 
 Status: approved build input by Adam, 2026-10-09, not implemented features. Companion to `domains/void.learning.md`
 (the observation contract, the quiz, the five-minute challenge). Frontier item #17 (`domains/void.frontier.md`).

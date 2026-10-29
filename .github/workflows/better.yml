@@ -1,0 +1,47 @@
+# Is Verse getting better? Once a day tools/better.mjs measures five parts from the repo's own evidence (lib/better.js), appends
+# the row to void-live-deploy/void.better.json (the growth card's "Better:" line) and writes today's row with its trend to
+# domains/void.better.json (the builders, tools/will.py's boost, tools/pit-crew.mjs); the pit crew's dry run then lists Verse's
+# small asks in domains/void.pit-crew.json. Counts only, no network, no secret, no spend (#906 and the better-score branch, one tool).
+name: Better
+
+on:
+  schedule:
+    - cron: '51 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: better
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the rows on main
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Unit tests
+        run: node --test tools/better.test.mjs tools/pit-crew.test.mjs
+      - name: Measure and write today's row
+        run: node tools/better.mjs --write | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Pit crew dry run (Verse's small asks, nothing queued)
+        run: node tools/pit-crew.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Commit what changed
+        run: |
+          git add void-live-deploy/void.better.json domains/void.better.json domains/void.pit-crew.json
+          git diff --staged --quiet && { echo "nothing changed"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Better: today's measure and the pit crew's list (counts only)"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

@@ -9,6 +9,7 @@
  * challenge draws with too.
  */
 
+import { record, readLog, writeLog, entryOf, rateWords } from '../lib/practice.js';
 const NUMBER_WORDS = {
   a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
   eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20,
@@ -216,7 +217,7 @@ function mount(th, stageApi) {
         clearInterval(el._tickInterval);
         th.running = false; th.remaining = 0; th.startedAt = 0;
         stageApi.save();
-        stageApi.say('timer done');
+        stageApi.say(th.goal && !th.answered ? 'timer done · did this session meet the goal "' + th.goal + '"? tap yes or not yet' : 'timer done');
         stageApi.emit(th, { event: 'done', text: (th.label ? th.label : 'the timer') + ' is done' }); // to whatever its arrows point at
       }
     }, 250);
@@ -224,6 +225,36 @@ function mount(th, stageApi) {
 
   // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
   stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
+
+  // a practice timer from a plan (lib/practice.js, asked by Verse): at 0:00 it asks whether the session met the goal, logs the
+  // answer as that goal's success_rate and last_tested, and says how the goal is going
+  const askMet = () => {
+    if (!th.goal || th.answered || th.running || th.remaining > 0) return;
+    const box = document.createElement('div');
+    box.className = 'practice-met';
+    box.dataset.goal = th.goal;
+    box.style.cssText = 'position:absolute;left:0;top:100%;margin-top:4px;white-space:nowrap;font:13px/1.2 system-ui,sans-serif;display:flex;gap:6px;align-items:center;padding:4px 8px;border-radius:10px;background:rgba(20,20,28,.92)';
+    el.style.zIndex = '30'; // above what the plan laid out next to it, so the answer can be tapped
+    const q = document.createElement('span'); q.textContent = 'Met the goal?'; q.style.opacity = '.7'; box.appendChild(q);
+    for (const [label, met] of [['yes', true], ['not yet', false]]) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = label; b.dataset.met = met ? 'yes' : 'no';
+      b.style.cssText = 'font:inherit;padding:2px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:transparent;color:inherit;cursor:pointer';
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        let words = '';
+        try { const log = record(readLog(localStorage), th.goal, met); writeLog(localStorage, log); words = rateWords(entryOf(log, th.goal)); } catch (_) {}
+        th.answered = met ? 'met' : 'not yet'; stageApi.save();
+        box.textContent = words ? 'Logged: ' + words : 'Logged here only';
+        stageApi.say('"' + th.goal + '": ' + (met ? 'met' : 'not yet') + (words ? ' · ' + words : ''));
+      });
+      box.appendChild(b);
+    }
+    for (const ev of ['pointerdown', 'mousedown', 'touchstart']) box.addEventListener(ev, (e) => e.stopPropagation()); // a tap on a button is not a drag of the timer
+    el.appendChild(box);
+  };
+  askMet();
+  if (th.running) { const w = setInterval(() => { if (!el.isConnected) return clearInterval(w); if (!th.running && th.remaining <= 0) { clearInterval(w); askMet(); } }, 500); }
 
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

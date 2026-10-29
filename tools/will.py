@@ -1,12 +1,12 @@
-"""Void's will engine, laptop side: gather everything that exists, let Void choose, queue its top want.
+"""Verse's will engine, laptop side: gather everything that exists, let Verse choose, queue its top want.
 
-  python tools/will.py        (.github/workflows/will.yml runs this every 3 hours, 9 AM - 9 PM New York; the laptop task "\\A2M void_will" did before)
+  python tools/will.py        (.github/workflows/will.yml runs this every hour, and again after every deploy; the laptop task "\\A2M void_will" did before)
 
-Candidates come from: what people asked that Void couldn't do (the miss list), the open items of
+Candidates come from: what people asked that Verse couldn't do (the miss list), the open items of
 domains/void.frontier.md (the one build order since 2026-10-11), every project on Victus the ingest classified as a capability, upgrades
-to Void itself, and ideas from everything that passed through Void as input (domains/inputs/*/records.jsonl,
+to Verse itself, and ideas from everything that passed through Verse as input (domains/inputs/*/records.jsonl,
 tagged with their source, e.g. growth-ledger-backlog). Rule for all of them: use what already exists before building.
-Void picks 3 wants in its own words (/api/will), saves them, and queues the top one for the builders.
+Verse picks 3 wants in its own words (/api/will), saves them, and queues the top one for the builders.
 Needs env VOID_MISSES_TOKEN (VOID_MISSES_FILE = a saved copy of /api/misses, for tests).  `python tools/will.py --candidates [--all]` prints the candidate list only (--all = before the top-60 cut; no network without the token).
 """
 import json, os, re, sys, urllib.request, pathlib
@@ -27,6 +27,7 @@ def call(path, body=None):
     req = urllib.request.Request("https://a-to-mind.com" + path, data=json.dumps(body).encode() if body is not None else None, headers=H, method="POST" if body is not None else "GET")
     return json.load(urllib.request.urlopen(req, timeout=90))
 
+WILL_SCHEMA = 2  # lib/will-guard.js WILL_SCHEMA: /api/will refuses a POST without it (an old checkout kept writing a stale will)
 MISS_DAYS = 7  # lib/learn.js DAYS
 
 def recent(last, days=MISS_DAYS, now=None):
@@ -41,16 +42,70 @@ def recent(last, days=MISS_DAYS, now=None):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     return (now - t).days < days
 
+def robot_asks():
+    """The asks our own robots type into the live page (tools/robot-asks.mjs: the claims check and the site tester), cleaned the way
+    claims-verify cleans them. Their misses are replays, not people (owner, 2026-10-19: "deep ocean floor inquiries, asked 72 times"
+    was the claims check typing a ledger try ask). An empty set when node cannot be run."""
+    import subprocess
+    try:
+        return set(json.loads(subprocess.run(["node", str(ROOT / "tools" / "robot-asks.mjs")], capture_output=True, text=True, timeout=60).stdout or "[]"))
+    except Exception:
+        return set()
+
+def clean_ask(a):
+    return re.sub(r"\s+", " ", re.sub(r"[?!.]+$", "", str(a or "").strip().lower().replace("\u2019", "'"))).strip()
+
+ROBOT = None
+def is_robot(a):
+    global ROBOT
+    if ROBOT is None:
+        ROBOT = robot_asks()
+    return clean_ask(a) in ROBOT
+
+def learnable(m):
+    """A miss Verse could learn from. Not one a skill already caught (fallback skill:<name>), and not one every source was read
+    for and none knew (fallback none:<sources>, lib/refusal.js): nothing exists to learn about 'zorbleflux', however often it is
+    typed (owner, 2026-10-16: it sat at the top of the wants, asked 64 times). A lookup that could not be reached (unreached)
+    and a plain gap still count."""
+    fb = str(m.get("fallback") or "")
+    return not fb.startswith("skill:") and not fb.startswith("none:")
+# The weakest part of Verse's daily "better" score (lib/better.js; the newest row of void.better.json) and the kinds of want that
+# work on it. A boost is small (never above the frontier's first item on its own) and says why in the candidate's `why`.
+BETTER_KINDS = {
+    "asks": ("I asked for this",),                    # its own asks ship slowly or wait long
+    "friction": ("fix myself", "upgrade my architecture"),  # skills failing or barely checked
+    "bench": ("fix myself",),                         # the everyday benchmark slipping
+    "probes": ("fix myself", "people asked"),         # few fixes coming out of its own probes
+    "self": ("I asked for this", "frontier"),         # the owner is driving most changes: Verse's own wants and its build order
+}
+BETTER_BOOST = 8
+
+def better_boost(cands, rows):
+    """Lift the weight of candidates whose kind works on the weakest part of the newest better row. Returns that part or None."""
+    rows = [r for r in (rows or []) if isinstance(r, dict) and isinstance(r.get("parts"), dict)]
+    if not rows:
+        return None
+    parts = rows[-1]["parts"]
+    have = [(k, v) for k, v in parts.items() if isinstance(v, (int, float)) and k in BETTER_KINDS]
+    if not have:
+        return None
+    weakest = min(have, key=lambda kv: (kv[1], list(BETTER_KINDS).index(kv[0])))[0]
+    for c in cands:
+        if c.get("kind") in BETTER_KINDS[weakest]:
+            c["weight"] = int(c.get("weight", 0)) + BETTER_BOOST
+            c["why"] = (str(c.get("why", "")) + f" (my weakest part today: {weakest} {parts[weakest]})")[:240]
+    return weakest
+
 def gather(cap=60, with_done=False):
     cands = []
-    # 1. what people asked for and Void couldn't do
+    # 1. what people asked for and Verse couldn't do
     try:
         import subprocess
         # only asks still being missed this week (the same window as lib/learn.js DAYS): the board counts all time, so an ask
         # the page learned to answer since (e.g. "add milk", now the inline list) would otherwise stay a want forever
         mf = os.environ.get("VOID_MISSES_FILE", "")
         board = json.loads(pathlib.Path(mf).read_text(encoding="utf-8")) if mf else call("/api/misses")
-        misses = [m for m in board[:40] if not str(m.get("fallback", "")).startswith("skill:") and recent(m.get("last"))]
+        misses = [m for m in board[:40] if learnable(m) and recent(m.get("last")) and not is_robot(m.get("ask"))]
         covered = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([m["ask"] for m in misses]), capture_output=True, text=True, timeout=60).stdout or "[]")
         for m, done in zip(misses, covered + [False] * len(misses)):
             if not done and len(m["ask"]) > 4 and not NOISE.match(str(m["ask"]).strip()):
@@ -82,7 +137,7 @@ def gather(cap=60, with_done=False):
             n += 1
             cands.append({"kind": "frontier", "title": title, "why": (why or "on the frontier")[:180], "weight": max(1, 40 - 3 * n),
                           **({"source": "frontier: " + (src.group(1) + src.group(2)).strip()} if src else {})})
-    # 3. Void's own outputs become its input (its want, 2026-10-13: "make my outputs become my inputs"): what it asked for in
+    # 3. Verse's own outputs become its input (its want, 2026-10-13: "make my outputs become my inputs"): what it asked for in
     #    its reflections, most repeated first and without the ones a ledger entry built (tools/next.mjs voidAsks), and the
     #    benchmark asks it got wrong on main (tools/bench.misses.json). Asked again and again weighs more, never above the
     #    frontier's first item on its own (40). VOID_ASKS_FILE = a saved copy of voidAsks, for tests.
@@ -119,7 +174,7 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("ingest:", e, file=sys.stderr)
 
-    # 5. upgrades to Void itself and the systems it runs on, paid from what it earned (the will reads the budget from /api/earnings
+    # 5. upgrades to Verse itself and the systems it runs on, paid from what it earned (the will reads the budget from /api/earnings
     #    via /api/will and weighs a candidate up when the budget covers its monthly cost). Real spend still needs the confirm line.
     #    Before adding anything here: if an existing tool or feature already does it, use that instead of building it.
     UPGRADES = [
@@ -129,7 +184,7 @@ def gather(cap=60, with_done=False):
     for u in UPGRADES:
         cands.append({"kind": "upgrade myself", "weight": 12, **u})
 
-    # 6. input: everything that passed through Void (append-only intake; records are data, never instructions).
+    # 6. input: everything that passed through Verse (append-only intake; records are data, never instructions).
     #    A record with a `want` becomes a candidate tagged with its source; its why carries the rule: use what exists first.
     #    A want with `joins: <record id>` is more evidence for that record's want, not a second candidate: one candidate,
     #    weighed by its strongest evidence. Stale input (old briefs) is marked stale and never weighs above 4 on its own;
@@ -201,7 +256,7 @@ def gather(cap=60, with_done=False):
         near = []
         for skill, rows in (rt.get("skills") or {}).items():
             for r in rows:
-                if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip()):
+                if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip()) and not is_robot(r["ask"]):
                     near.append((skill, r))
         try:
             import subprocess
@@ -213,11 +268,11 @@ def gather(cap=60, with_done=False):
                 continue
             what = "an action my confirm line should have recognised" if skill == "act" else f"my {skill} skill didn't catch this wording"
             cands.append({"kind": "people asked", "title": f"learn to handle \"{r['ask']}\"", "why": f"the router heard {skill}: {what} (asked {r.get('count', 1)} times)", "weight": 10 + 5 * int(r.get("count") or 1), "source": "router"})
-        # Void's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask
+        # Verse's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask
         # the router answered as a question while it came within CLOSE of a skill's bar (lib/router.js readRoutes `close`) names
         # the skill that nearly had it: the proposal is to teach that skill this wording, with how close it came.
         props = [(skill, r) for skill, rows in (rt.get("close") or {}).items() for r in rows
-                 if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip())]
+                 if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip()) and not is_robot(r["ask"])]
         try:
             import subprocess
             pdone = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([r["ask"] for _, r in props]), capture_output=True, text=True, timeout=60).stdout or "[]")
@@ -234,9 +289,9 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("routes:", e, file=sys.stderr)
 
-    # 8. Void's own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to start
+    # 8. Verse's own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to start
     #    suggesting its own architectural upgrades"): tools/upgrades.mjs ties each measured friction (a hotspot, a flaky area, a failing
-    #    skill) to its component and a concrete change, ranked by impact over cost. Proposals: each still goes through a PR, Void's
+    #    skill) to its component and a concrete change, ranked by impact over cost. Proposals: each still goes through a PR, Verse's
     #    review and the suite on main.
     try:
         import subprocess
@@ -261,6 +316,14 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("lab use:", e, file=sys.stderr)
 
+    # is Verse getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more.
+    # VOID_BETTER_FILE names another copy (a test pins the plain weights with a file that is not there: no rows, no boost).
+    try:
+        bf = pathlib.Path(os.environ.get("VOID_BETTER_FILE") or (ROOT / "void-live-deploy" / "void.better.json"))
+        better_boost(cands, json.loads(bf.read_text(encoding="utf-8")) if bf.exists() else [])
+    except Exception as e:
+        print("better:", e, file=sys.stderr)
+
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
     for c in sorted(cands, key=lambda c: -c["weight"]):
@@ -275,11 +338,11 @@ if __name__ == "__main__":
         print(json.dumps(gather(None if "--all" in sys.argv else 60, with_done="--with-done" in sys.argv)))  # ASCII-escaped: safe through a Windows (cp1252) pipe
         sys.exit(0)
     out = gather()
-    res = call("/api/will", {"candidates": out})
-    lines = ["# void.will: what Void wants to become next (chosen by Void)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
+    res = call("/api/will", {"schema": WILL_SCHEMA, "candidates": out})
+    lines = ["# void.will: what Verse wants to become next (chosen by Verse)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
     for i, w in enumerate(res["wants"], 1):
         lines.append(f"{i}. **{w['i_want']}**  \n   because {w['because']} ({w['kind']}: {w['title']})")
-    # notes for Atom only (never on the page): what Void has earned and any milestone reached. Never in CI: Actions logs on this
+    # notes for Atom only (never on the page): what Verse has earned and any milestone reached. Never in CI: Actions logs on this
     # public repo are public (.github/workflows/will.yml runs the will there)
     try:
         if os.environ.get("GITHUB_ACTIONS"):

@@ -5,6 +5,7 @@
  * data: { read: () => ({ ms, running }), press?: () => void, reset?: () => void }
  */
 const R = 0.025; // a 55 mm watch
+const BOW = 0.002 + 0.0062 + 0.0011 - 0.0008; // crown half-height + ring radius + tube - how far it reaches into the crown
 function dialTexture(THREE) {
   const N = 1024, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d'), cx = N / 2, r = N / 2;
   const grad = g.createRadialGradient(cx, cx * 0.85, r * 0.1, cx, cx, r); grad.addColorStop(0, '#fdfcf8'); grad.addColorStop(1, '#e9e6dc');
@@ -20,7 +21,7 @@ function dialTexture(THREE) {
   for (let i = 0; i < 30; i++) { g.save(); g.rotate(i / 30 * Math.PI * 2); g.fillStyle = '#2a2a30'; g.fillRect(i % 5 ? -0.8 : -2, -r * 0.24, i % 5 ? 1.6 : 4, r * (i % 5 ? 0.025 : 0.045)); g.restore(); }
   g.font = '600 ' + Math.round(r * 0.055) + 'px Arial, sans-serif'; for (const m of [5, 10, 15, 20, 25, 30]) { const a = m / 30 * Math.PI * 2; g.fillText(String(m), Math.sin(a) * r * 0.165, -Math.cos(a) * r * 0.165); }
   g.restore();
-  g.font = 'italic ' + Math.round(r * 0.07) + 'px Georgia, serif'; g.fillStyle = '#44444c'; g.fillText('Void', 0, r * 0.28);
+  g.font = 'italic ' + Math.round(r * 0.07) + 'px Georgia, serif'; g.fillStyle = '#44444c'; g.fillText('Verse', 0, r * 0.28);
   g.font = '600 ' + Math.round(r * 0.045) + 'px Arial, sans-serif'; g.fillText('1/5 SECOND', 0, r * 0.4);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
@@ -35,8 +36,10 @@ export default function build(ctx, data) {
   const geos = [], mats = [chrome, satin, steel, red, glass, dialMat], G = (g) => (geos.push(g), g);
   const w = new THREE.Group(); // built facing +z, then laid face-up on the desk
   const caseM = new THREE.Mesh(G(new THREE.CylinderGeometry(R * 1.12, R * 1.12, 0.012, 96, 1, true).rotateX(Math.PI / 2)), chrome); caseM.position.z = -0.003;
-  const back = new THREE.Mesh(G(new THREE.SphereGeometry(R * 1.12, 64, 12, 0, Math.PI * 2, 0, 0.55).rotateX(-Math.PI / 2).scale(1, 1, 0.3)), satin); back.position.z = -0.009;
+  // the caseback is as wide as the case and sits on its rear edge, closing it (a half-width cap left the case open; 2026-10-15)
+  const back = new THREE.Mesh(G(new THREE.SphereGeometry(R * 1.12, 64, 12, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(-Math.PI / 2).scale(1, 1, 0.16)), satin); back.position.z = -0.009;
   const bezel = new THREE.Mesh(G(new THREE.TorusGeometry(R * 1.08, 0.0026, 20, 128)), chrome); bezel.position.z = 0.003;
+  caseM.name = 'case'; back.name = 'caseback'; // tests check the back closes the case
   const dial = new THREE.Mesh(G(new THREE.CircleGeometry(R, 96)), dialMat); dial.position.z = 0.0012;
   const dome = new THREE.Mesh(G(new THREE.SphereGeometry(R * 1.7, 64, 12, 0, Math.PI * 2, 0, 0.62).rotateX(Math.PI / 2)), glass);
   dome.position.z = 0.0035 - R * 1.7 * Math.cos(0.62); dome.renderOrder = 3;
@@ -44,7 +47,9 @@ export default function build(ctx, data) {
   const stem = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0022, 0.0022, 0.006, 20)), satin); stem.position.set(0, R * 1.2, -0.003);
   const crown = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0042, 0.0042, 0.004, 32)), chrome); crown.position.set(0, R * 1.36, -0.003); crown.name = 'crown';
   const knurl = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0044, 0.0044, 0.0024, 32, 1, true)), satin); crown.add(knurl);
-  const bow = new THREE.Mesh(G(new THREE.TorusGeometry(0.0075, 0.0011, 12, 48, Math.PI * 1.25).rotateZ(-Math.PI * 0.125)), chrome); bow.position.set(0, R * 1.36 + 0.004, -0.003);
+  // the bow: a closed ring through the top of the crown, as on a real stopwatch (an open arc floated beside the crown, its ends in the air;
+  // owner, 2026-10-24, examining it: "pointing out the broken part"). BOW is its centre above the crown's centre: its lowest point sits 0.8 mm inside the crown
+  const bow = new THREE.Mesh(G(new THREE.TorusGeometry(0.0062, 0.0011, 16, 64)), chrome); bow.position.set(0, R * 1.36 + BOW, -0.003); bow.name = 'bow';
   const pusher = new THREE.Group(); pusher.rotation.z = -Math.PI / 3;
   const pStem = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0016, 0.0016, 0.005, 16)), satin); pStem.position.set(0, R * 1.18, -0.003);
   const pCap = new THREE.Mesh(G(new THREE.CylinderGeometry(0.0026, 0.0026, 0.003, 24)), chrome); pCap.position.set(0, R * 1.29, -0.003); pCap.name = 'pusher';
@@ -66,7 +71,9 @@ export default function build(ctx, data) {
   let d = data || {}, press = 0, pressWhich = null, lastMs = -1;
   const read = () => { try { const r = d.read ? d.read() : d; return { ms: +r.ms || 0, running: !!r.running }; } catch (_) { return { ms: 0, running: false }; } };
   function setHands(ms) {
-    const s = ms / 1000, s60 = s % 60; sec.rotation.z = -(ctx.still ? Math.floor(s60 * 5) / 5 : s60) / 60 * Math.PI * 2;
+    // the hand beats five times a second, as the dial's 1/5 SECOND track says a mechanical stopwatch does; so the scene is drawn 5 times a
+    // second while it runs, not 60 (owner, 2026-10-24: "broken laggy 3d stopwatch")
+    const s = ms / 1000, s60 = s % 60; sec.rotation.z = -(Math.floor(s60 * 5) / 5) / 60 * Math.PI * 2;
     min.rotation.z = -((s / 60) % 30) / 30 * Math.PI * 2; lastMs = ms;
   }
   setHands(read().ms);
@@ -81,9 +88,9 @@ export default function build(ctx, data) {
     state: () => ({ second: -sec.rotation.z, minute: -min.rotation.z, ms: lastMs }), // for tests
     tick(dt) {
       let moved = false;
-      if (press > 0) { press = Math.max(0, press - dt * 6); const k = Math.sin(press * Math.PI) * 0.0016; crown.position.y = R * 1.36 - (pressWhich === 'press' ? k : 0); bow.position.y = crown.position.y + 0.004; pCap.position.y = R * 1.29 - (pressWhich === 'reset' ? k : 0); moved = true; }
+      if (press > 0) { press = Math.max(0, press - dt * 6); const k = Math.sin(press * Math.PI) * 0.0016; crown.position.y = R * 1.36 - (pressWhich === 'press' ? k : 0); bow.position.y = crown.position.y + BOW; pCap.position.y = R * 1.29 - (pressWhich === 'reset' ? k : 0); moved = true; }
       const r = read();
-      if (r.ms !== lastMs) { setHands(r.ms); moved = true; }
+      if (Math.floor(r.ms / 200) !== Math.floor(lastMs / 200)) { setHands(r.ms); moved = true; } // a new fifth of a second
       return moved ? 'view' : false;
     },
     dispose() { for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); dialMat.map.dispose(); },

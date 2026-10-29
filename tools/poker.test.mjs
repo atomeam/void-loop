@@ -16,14 +16,14 @@ test('hands rank in the right order, with kickers, and the ace plays low in a wh
   assert.equal(P.compare(r(['A♠', 'A♥', 'K♦', '7♣', '3♥']), r(['A♦', 'A♣', 'K♥', '7♥', '3♠'])), 0);
 });
 
-test('incomplete information: you see your cards and the board, never Void\'s until a showdown', () => {
+test('incomplete information: you see your cards and the board, never Verse\'s until a showdown', () => {
   const s = P.create({ seed: 4 });
   const v = P.view(s, 'you');
   assert.equal(v.mine.length, 2); assert.equal(v.theirs, null); assert.deepEqual(v.board, []);
   assert.equal(v.pot, 15); assert.equal(v.stacks.you + v.stacks.void + v.pot, 1000);
 });
 
-test('Void\'s estimate uses only what it can see: the same cards and board give the same estimate whatever you hold', () => {
+test('Verse\'s estimate uses only what it can see: the same cards and board give the same estimate whatever you hold', () => {
   let seed = 1; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
   const aces = P.equity(hand('A♠', 'A♥'), [], 800, rnd), junk = P.equity(hand('7♣', '2♦'), [], 800, rnd);
   assert.ok(aces > 0.78 && aces < 0.9, 'pocket aces win about 85% against a random hand: ' + aces);
@@ -31,7 +31,7 @@ test('Void\'s estimate uses only what it can see: the same cards and board give 
   const a = P.create({ seed: 9 }), b = P.create({ seed: 9 });
   b.cards.you = a.cards.void.includes(c('A♠')) ? hand('K♦', 'K♣') : hand('A♠', 'A♣'); // you hold something else entirely
   const toVoid = (s) => (s.toAct === 'void' ? s : P.act(s, s.toAct === 'you' ? P.legal(s).includes('call') ? 'call' : 'check' : 'check'));
-  const lastVoid = (s) => s.log.filter((l) => l.who === 'Void' && l.why).at(-1);
+  const lastVoid = (s) => s.log.filter((l) => l.who === 'Verse' && l.why).at(-1);
   const va = lastVoid(P.voidAct(toVoid(a))), vb = lastVoid(P.voidAct(toVoid(b)));
   assert.equal(va.text, vb.text); assert.equal(va.why, vb.why);
   assert.match(va.why, /to win/);
@@ -46,7 +46,7 @@ test('betting: blinds, call, check closes the round, the flop comes, a fold give
   assert.equal(s.result.winner, 'void'); assert.equal(s.stacks.void, 510); assert.equal(s.stacks.you, 490);
 });
 
-test('a whole session plays out: chips are never made or lost, and every Void choice says why', () => {
+test('a whole session plays out: chips are never made or lost, and every Verse choice says why', () => {
   let s = P.create({ seed: 13, stack: 200 });
   for (let k = 0; k < 3000 && !s.over; k++) {
     if (s.result) { s = P.deal(s); continue; }
@@ -54,5 +54,5 @@ test('a whole session plays out: chips are never made or lost, and every Void ch
     const L = P.legal(s); s = P.act(s, L.includes('check') ? 'check' : 'call');
     assert.equal(s.stacks.you + s.stacks.void + s.pot, 400);
   }
-  for (const l of s.log.filter((x) => x.who === 'Void' && /folds|checks|calls|bets|raises/.test(x.text))) assert.ok(l.why, l.text);
+  for (const l of s.log.filter((x) => x.who === 'Verse' && /folds|checks|calls|bets|raises/.test(x.text))) assert.ok(l.why, l.text);
 });

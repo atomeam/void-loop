@@ -1,0 +1,145 @@
+# Verse films its own experiments (owner, 2026-10-14: "Verse should use my Youtube channel to make its own Videos"). Step 1 of the
+# broadcast loop: tools/record.mjs opens a lab experiment in a real browser, runs it, and films it with the run's own words from
+# the fringe ledger as a caption. Each film is then posted as a GitHub Release (an MP4 and a text file with its title, description
+# and tags), so the owner can watch it and upload it in YouTube Studio by hand (owner, 2026-10-14: review each video before it goes
+# up; "all we need is the videos"). The automatic upload (tools/youtube.mjs) runs only when the repo variable YT_UPLOAD is 1.
+name: Verse records itself
+
+on:
+  schedule:
+    - cron: '41 15 * * *' # daily: three films
+  # and whenever Verse ships something (owner, 2026-10-15: "let Verse make films whenever it wants or does anything"): after each
+  # deploy of main, one film of an experiment never filmed before, or none (a deploy never re-films an old one)
+  workflow_run:
+    workflows: ['Verse deploy']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      id:
+        description: A lab experiment to film (empty = the newest not filmed yet)
+        default: ''
+        type: string
+      count:
+        description: How many films to make, each a different experiment (when no id is given)
+        default: '3'
+        type: string
+
+permissions:
+  contents: write # the film's draft release (gh release create / edit --draft); nothing else is written  void-review: ok (releases need contents: write)
+
+concurrency:
+  group: record # one recording at a time, none dropped
+  cancel-in-progress: false
+
+jobs:
+  record:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25 # several films a run
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Install Chromium and the ffmpeg Playwright films with
+        run: |
+          npx playwright-core install --with-deps chromium ffmpeg
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      # a new experiment each time (owner, 2026-10-15: "these 3 are the same vid"): the films already made are the film-* release
+      # tags, drafts included, and tools/record.mjs picks the newest experiment not among them
+      - name: Film it
+        id: film
+        env:
+          ID: ${{ inputs.id }}
+          COUNT: ${{ github.event_name == 'workflow_run' && '1' || inputs.count || '3' }}
+          ONLY_NEW: ${{ github.event_name == 'workflow_run' && '--only-new' || '' }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          export VOID_FILMED="$(gh release list --limit 300 --json tagName --jq '.[].tagName | select(startswith("film-"))' | tr '\n' ' ')"
+          node tools/record.mjs $ID --count "$COUNT" $ONLY_NEW --seconds 20 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "made=$(ls media/*.json 2>/dev/null | wc -l)" >> "$GITHUB_OUTPUT"
+      # MP4 for phones and YouTube (Playwright films in WebM), 15% faster so no moment drags (the edit: tools/record.mjs), with its own
+      # score (no film is silent any more), and the words
+      # to paste into YouTube Studio
+      - name: Make the MP4 and the words to paste
+        if: steps.film.outputs.made != '0'
+        run: |
+          sudo apt-get install -y -qq ffmpeg >/dev/null
+          for m in media/*.json; do
+            b="${m%.json}"
+            # the film's own score (tools/film-sound.mjs): a short piece picked by the film's id, at the cut's length (15% faster than the take)
+            dur="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$b.webm")"
+            # beat-locked cuts (tools/record.mjs waits for the score's beats before each scene change, and flashes one magenta sync frame): the video's clock starts a little after the recorder's, found from that frame, so the score starts that much into itself
+            skew="$(node tools/film-sound.mjs --skew "$m" "$b.webm")"
+            len="$(awk -v d="$dur" -v k="$skew" 'BEGIN{printf "%.2f", d/1.15 + k}')"
+            node tools/film-sound.mjs "$b.m4a" --seconds "$len" --seed "$(basename "$b")"
+            ffmpeg -loglevel error -y -i "$b.webm" -ss "$skew" -i "$b.m4a" -map 0:v -map 1:a -vf "setpts=PTS/1.15,scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -c:a aac -b:a 160k -shortest -movflags +faststart "$b.mp4"
+            node -e 'const m=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));process.stdout.write("TITLE\n"+m.title+"\n\nDESCRIPTION\n"+m.description+"\n\nTAGS\n"+(m.tags||[]).join(", ")+"\n")' "$m" > "$b.txt"
+          done
+      # one draft release per film: a private copy only people with write access to the repo can see (the films are for people
+      # who pay, owner 2026-10-14: "just put void films right onto the sight , with only paid access")
+      - name: Keep the film as a draft release
+        if: steps.film.outputs.made != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for m in media/*.json; do
+            b="${m%.json}"; id="$(basename "$b")"
+            tag="film-$(date -u +%Y%m%d)-$id-r${{ github.run_number }}"
+            gh release create "$tag" "$b.mp4" "$b.txt" --draft --title "Film: $id ($(date -u +%Y-%m-%d))" --notes-file "$b.txt"
+            echo "${tag#film-}" > "$b.siteid"
+          done
+      # on the site for members (functions/api/films.js, stored in Cloudflare R2): https://a-to-mind.com/films/
+      - name: Put the film on the site for members
+        if: steps.film.outputs.made != '0'
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: set -o pipefail; for m in media/*.json; do b="${m%.json}"; node tools/film-post.mjs "$b.mp4" "$m" --id "$(cat "$b.siteid")" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; done
+      # films posted before this were public releases: put each on the site, then make its release a draft (nothing is deleted)
+      - name: Move the older public films onto the site
+        if: steps.film.outputs.made != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          set -o pipefail
+          for tag in $(gh release list --limit 100 --json tagName,isDraft --jq '.[] | select(.isDraft | not) | .tagName | select(startswith("film-"))'); do
+            d="old/$tag"; mkdir -p "$d"
+            gh release download "$tag" --dir "$d" --pattern '*.mp4' --pattern '*.txt'
+            node tools/film-post.mjs "$(ls "$d"/*.mp4 | head -1)" "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            gh release edit "$tag" --draft=true
+          done
+      # every film's words in today's name (owner, 2026-10-14: "it shoud say Verse everywhere"): tools/film-post.mjs brands them Verse
+      - name: Refresh every film's words on the site
+        if: steps.film.outputs.made != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          set -o pipefail
+          for tag in $(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("film-"))'); do
+            d="words/$tag"; mkdir -p "$d"
+            gh release download "$tag" --dir "$d" --pattern '*.txt' --clobber
+            node tools/film-post.mjs --words-only "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+      # optional: straight to Verse's channel (tools/youtube.mjs refuses any other), only when the repo variable YT_UPLOAD is 1 and
+      # the owner's YouTube OAuth client is in the repo secrets. Private unless the repo variable YT_PRIVACY says otherwise.
+      - name: Upload to Verse's YouTube channel
+        if: vars.YT_UPLOAD == '1' && steps.film.outputs.made != '0'
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PRIVACY: ${{ vars.YT_PRIVACY }}
+        # pipefail: a refused upload turns the run red (through tee it showed green); the film is still kept as the artifact below
+        run: set -o pipefail; for m in media/*.json; do node tools/youtube.mjs "$m" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: void-recording
+          path: media/
+          retention-days: 14

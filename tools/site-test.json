@@ -1,0 +1,305 @@
+{
+  "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (V01D or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to V01D's own, for new wordings. teach lists wordings V01D missed, each filed once to be taught. priority: features tested first, the least-checked skills from the growth page friction line (2026-10-15: video-play had no checks).",
+  "limits": {
+    "fpsMin": 5,
+    "loadMs": 1200,
+    "statsIdleMs": 500
+  },
+  "cases": [
+    {
+      "ask": "what are you?",
+      "expect": {
+        "text": "Verse"
+      }
+    },
+    {
+      "ask": "play voidquest",
+      "expect": {
+        "selector": ".voidquest-card"
+      },
+      "fps": true
+    },
+    {
+      "ask": "play solarquest",
+      "expect": {
+        "selector": ".voidquest-card"
+      }
+    },
+    {
+      "ask": "what can I buy",
+      "expect": {
+        "text": "store|buy|\\$"
+      }
+    },
+    {
+      "ask": "show me your videos",
+      "expect": {
+        "text": "film|video"
+      }
+    },
+    {
+      "ask": "play chess",
+      "fps": true
+    },
+    {
+      "ask": "my actions"
+    },
+    {
+      "ask": "air quality in Tokyo"
+    },
+    {
+      "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list",
+      "expect": {
+        "text": "News about me"
+      },
+      "note": "weak-answer queue (paraphrase): a pasted note about V01D's own systems got only a list of run times; it should answer the substance, times as an aside"
+    },
+    {
+      "ask": "put on lofi hip hop pls"
+    },
+    {
+      "ask": "find the book the left hand of dakrness"
+    },
+    {
+      "ask": "bokos like dune"
+    },
+    {
+      "ask": "yo automations"
+    },
+    {
+      "ask": "yo new automation"
+    },
+    {
+      "ask": "what time is it in tokyo"
+    },
+    {
+      "ask": "weather in boston"
+    },
+    {
+      "ask": "convert 5 miles to km"
+    },
+    {
+      "ask": "play connect four"
+    },
+    {
+      "ask": "set a timer for 5 minutes"
+    },
+    {
+      "ask": "what is 17 times 23"
+    },
+    {
+      "ask": "play reversi"
+    },
+    {
+      "ask": "show me the night sky"
+    },
+    {
+      "ask": "is waymo in austin"
+    },
+    {
+      "ask": "how much do i need to save a month to have 1 million in 30 years at 7%"
+    },
+    {
+      "ask": "draw a line"
+    },
+    {
+      "ask": "show the days until a date"
+    },
+    {
+      "ask": "living spatial cards mind"
+    },
+    {
+      "ask": "bluesky feed of jay.bsky.team"
+    },
+    {
+      "ask": "bench icon"
+    },
+    {
+      "ask": "drag friction"
+    },
+    {
+      "ask": "which games do you know"
+    },
+    {
+      "ask": "what do you get if you merge a pizza and a black hole"
+    },
+    {
+      "ask": "is unwrap risky in rust"
+    },
+    {
+      "ask": "are you web4"
+    },
+    {
+      "ask": "toss it off the screen"
+    },
+    {
+      "ask": "what are the figures doing"
+    },
+    {
+      "ask": "longevity trial watch"
+    },
+    {
+      "ask": "find a rumble video about bitcoin"
+    },
+    {
+      "ask": "what rhymes with orange"
+    },
+    {
+      "ask": "closer on the figure"
+    },
+    {
+      "ask": "turn the questions i missed into a five-minute challenge"
+    },
+    {
+      "ask": "test me on that"
+    },
+    {
+      "ask": "yo bitcoin price"
+    },
+    {
+      "ask": "icebreakers about hiking"
+    },
+    {
+      "ask": "send it away"
+    },
+    {
+      "ask": "attention field"
+    },
+    {
+      "ask": "swarm mind"
+    },
+    {
+      "ask": "set my ambition temperature for the podcast"
+    },
+    {
+      "ask": "dyslexia friendly font"
+    },
+    {
+      "ask": "flip this card"
+    },
+    {
+      "ask": "weave a constellation called night ops"
+    },
+    {
+      "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25"
+    },
+    {
+      "ask": "decision matrix for whether to move to Berlin"
+    },
+    {
+      "ask": "favorite this"
+    },
+    {
+      "ask": "echo this"
+    },
+    {
+      "ask": "approve later: keep morning-digest running every 2 hours"
+    },
+    {
+      "ask": "fly around"
+    },
+    {
+      "ask": "habit ring for write, walk, sleep"
+    },
+    {
+      "ask": "keep this idea: a stage that remembers | why: it makes coming back feel like home"
+    },
+    {
+      "ask": "play a local audio file"
+    },
+    {
+      "ask": "find me a sci-fi film from the 80s"
+    },
+    {
+      "ask": "films by Kurosawa"
+    },
+    {
+      "ask": "film metadata for Ikiru"
+    },
+    {
+      "ask": "yo film metadata for ikiru"
+    },
+    {
+      "ask": "yo find me a sci-fi film from the 80s"
+    },
+    {
+      "ask": "find me a sci-fi film from the 80s pls"
+    },
+    {
+      "ask": "yo films by kurosawa"
+    },
+    {
+      "ask": "films by kurosawa pls"
+    },
+    {
+      "ask": "fimls by kurosawa"
+    },
+    {
+      "ask": "film metadata for ikiru pls"
+    },
+    {
+      "ask": "film meatdata for ikiru"
+    },
+    {
+      "ask": "add task call mum friday high priority 30 min"
+    },
+    {
+      "ask": "dim the void"
+    },
+    {
+      "ask": "arcade games"
+    },
+    {
+      "ask": "my photos"
+    },
+    {
+      "ask": "contéstame en español"
+    },
+    {
+      "ask": "start despacito",
+      "taught": "video-play"
+    },
+    {
+      "ask": "yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "taught": "digest"
+    },
+    {
+      "ask": "can we play despacito",
+      "taught": "video-play"
+    },
+    {
+      "ask": "yo play despacito",
+      "taught": "video-play"
+    },
+    {
+      "ask": "yo what does ephemeral mean",
+      "taught": "define"
+    },
+    {
+      "ask": "what did this video teach? pls",
+      "taught": "digest"
+    },
+    {
+      "ask": "yo watch the apollo 11 landing",
+      "taught": "video-play"
+    }
+  ],
+  "candidates": [],
+  "games": {
+    "solarquest": "voidquest",
+    "solar quest": "voidquest",
+    "othello": "reversi",
+    "stratego": "fog of v01d"
+  },
+  "teach": [],
+  "priority": [
+    "skill:video-play",
+    "skill:book",
+    "skill:define",
+    "skill:digest",
+    "skill:film-metadata",
+    "skill:aurora-tonight",
+    "skill:automations",
+    "skill:cartoon"
+  ]
+}

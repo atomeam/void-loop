@@ -13,7 +13,8 @@ export const SOURCES = [
 export function magnetizeOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:please\s+)?(?:show\s+)?(?:me\s+)?the magnetize step$/i.test(t)) return true;
-  if (/^(?:how do I|how to) magnetize a printed motor$/i.test(t)) return true;
+  if (/^(?:how do I|how to) (?:magnetize (?:a printed motor|this|it)(?: part)?|use the magnets)$/i.test(t)) return true;
+  if (/^how do (?:magnets|magnetism) work in (?:motors|motor)$/i.test(t)) return true;
   if (/^magnetize a printed motor$/i.test(t)) return true;
   if (/^figure-scale benchtop magnetize$/i.test(t)) return true;
   return false;
@@ -47,7 +48,7 @@ async function run(text, api) {
 
 export default {
   name: 'magnetize',
-  examples: ['show the magnetize step', 'how do I magnetize a printed motor', 'magnetize a printed motor', 'figure-scale benchtop magnetize'],
+  examples: ['show the magnetize step', 'how do I magnetize a printed motor', 'how do i magnetize this?', 'how do i magnetize this part', 'magnetize a printed motor', 'figure-scale benchtop magnetize', 'how do i use the magnets?'],
   nearMisses: ['what is a magnet', 'show the map', 'weather in Kyoto', 'make a motor'],
   magnetizeOf,
   magnetizeCard,

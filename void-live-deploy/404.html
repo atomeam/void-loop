@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Not here · Verse</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#050505">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <!-- Cloudflare Pages serves this file, with status 404, for any path that has no file and no function (_routes.json).
+       Without it Pages would answer every missing path with the homepage and a 200 (a soft 404). It stays one honest page:
+       no redirect, no countdown, no cookie, and the missing path is shown as text only, never sent anywhere.
+       Every link below is a page that exists in void-live-deploy (tools/well-known.test.mjs checks it). -->
+  <style>
+    :root { --bg: #050505; --ink: #f2f4fb; --ink-2: #c3c8d8; --ink-3: #8e94a8; --key: 158 178 255; --warm: 255 170 214; --teal: 92 232 205;
+      --glass: linear-gradient(165deg, rgb(40 46 70 / .80), rgb(16 18 28 / .88)); --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font); display: grid; place-items: center; min-height: 100vh; min-height: 100dvh; padding: 24px 16px; overflow-x: hidden; }
+    /* the void: a dark centre ringed by a faint glow, held still (no motion, nothing to load) */
+    body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(circle at 50% 38%, #000 0 70px, rgb(var(--key) / .16) 92px, rgb(var(--warm) / .05) 150px, transparent 260px),
+        radial-gradient(ellipse 60% 18% at 50% 92%, rgb(var(--key) / .08), transparent 70%); }
+    main { position: relative; z-index: 1; width: min(560px, 100%); text-align: center; }
+    .code { font-size: 13px; letter-spacing: .2em; color: var(--ink-3); margin: 0 0 8px; }
+    h1 { font-size: clamp(26px, 6vw, 34px); font-weight: 300; letter-spacing: -.02em; margin: 0 0 8px; }
+    .path { color: var(--ink-3); font: 13px ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; margin: 0 0 28px; min-height: 1em; }
+    form { display: flex; gap: 8px; padding: 8px; border-radius: 18px; background: var(--glass);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / .10), inset 0 -1px 0 rgb(0 0 0 / .4), 0 2px 2px rgb(0 0 0 / .4), 0 18px 40px -12px rgb(0 0 0 / .7), 0 80px 160px -40px rgb(var(--key) / .14);
+      border: 1px solid rgb(var(--key) / .22); }
+    form:focus-within { border-color: rgb(var(--key) / .6); }
+    label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--ink); font: 17px var(--font); padding: 10px 12px; outline: none; }
+    input::placeholder { color: var(--ink-3); }
+    button { flex: none; min-width: 44px; min-height: 44px; border: 0; border-radius: 12px; background: rgb(var(--key)); color: #0b0d16; font: 600 15px var(--font); padding: 0 16px; cursor: pointer; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid rgb(var(--key)); outline-offset: 2px; }
+    nav { margin-top: 28px; }
+    nav p { color: var(--ink-3); font-size: 13px; margin: 0 0 10px; }
+    nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    nav a { display: inline-block; min-height: 44px; line-height: 44px; padding: 0 14px; border-radius: 12px; color: var(--ink-2); text-decoration: none; border: 1px solid rgb(255 255 255 / .08); background: rgb(255 255 255 / .03); }
+    nav a:hover { color: var(--ink); border-color: rgb(var(--key) / .4); }
+    @media (max-width: 420px) { input { font-size: 16px; } }
+    @media (forced-colors: active) { body::before { display: none; } }
+  </style>
+</head>
+<body>
+<main>
+  <p class="code">404</p>
+  <h1>Nothing lives at this address.</h1>
+  <p class="path" id="path"></p>
+  <form action="/" method="get" role="search">
+    <label for="q">Ask Verse</label>
+    <input id="q" name="q" type="text" maxlength="500" autocomplete="off" enterkeyhint="go" placeholder="Ask Verse for what you were looking for" autofocus>
+    <button type="submit">Ask</button>
+  </form>
+  <nav aria-label="Pages that exist">
+    <p>Or go to a page that exists:</p>
+    <ul>
+      <li><a href="/">Verse</a></li>
+      <li><a href="/films/">Films</a></li>
+      <li><a href="/store/">Store</a></li>
+      <li><a href="/fix/">Fix an automation</a></li>
+      <li><a href="/code-review/">Code review</a></li>
+      <li><a href="/privacy/">Privacy</a></li>
+    </ul>
+  </nav>
+</main>
+<script>document.getElementById('path').textContent = location.pathname.slice(0, 200);
+// autofocus is ignored on a phone (Chromium with mobile emulation, Safari on iOS), so the ask box is focused here too: the one thing to do on this page is ask
+var q = document.getElementById('q'); if (q && document.activeElement !== q) q.focus();</script>
+</body>
+</html>

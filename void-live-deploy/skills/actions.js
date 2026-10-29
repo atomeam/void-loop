@@ -1,12 +1,12 @@
 /**
  * actions skill — the execution record as a card (frontier build order step 2; lib/actions.js keeps one record per action
- * Void takes or stubs: owner, kind, ref, state running → done | failed | stubbed, result or error; /api/actions serves
+ * Verse takes or stubs: owner, kind, ref, state running → done | failed | stubbed, result or error; /api/actions serves
  * them to the owner). The card lists the newest 30 records with a mark per state, a tally line, a switch to see only what
  * failed, Show more for the next 30, and Refresh; it keeps itself live (skills/live.js, every minute) so a record that
- * is running settles on screen by itself. Nothing here takes an action; it only shows what Void did. Owner-only: without
+ * is running settles on screen by itself. Nothing here takes an action; it only shows what Verse did. Owner-only: without
  * the owner's key or session the card says so and fetches nothing.
  * "my actions", "show my actions", "action log", "the execution record", "what actions did you take". "what did you do today" stays
- * with the today skill (Void's recent actions from this device's loop log); this card is the server-side record.
+ * with the today skill (Verse's recent actions from this device's loop log); this card is the server-side record.
  */
 import { keepLive } from './live.js';
 
@@ -17,7 +17,7 @@ const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || (JSON
 
 export function actionsOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+|void'?s\s+|your\s+)?(?:actions|action log|action record|execution record)$|^(?:show\s+)?(?:me\s+)?the\s+(?:action log|execution record|record of (?:your )?actions)$|^what actions (?:did you take|have you taken)$|^(?:show\s+)?(?:me\s+)?(?:the\s+)?record of (?:what you did|your actions)$/.test(t)) return { open: true };
+  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+|(?:verse|void)'?s\s+|your\s+)?(?:actions|action log|action record|execution record)$|^(?:show\s+)?(?:me\s+)?the\s+(?:action log|execution record|record of (?:your )?actions)$|^what actions (?:did you take|have you taken)$|^(?:show\s+)?(?:me\s+)?(?:the\s+)?record of (?:what you did|your actions)$/.test(t)) return { open: true };
   return null;
 }
 
@@ -32,7 +32,7 @@ export function tallyText(n) {
   const parts = [];
   if (n.done) parts.push(n.done + ' done');
   if (n.failed) parts.push(n.failed + ' failed');
-  if (n.stubbed) parts.push(n.stubbed + ' stubbed (nothing left Void)');
+  if (n.stubbed) parts.push(n.stubbed + ' stubbed (nothing left Verse)');
   if (n.running) parts.push(n.running + ' still running or never reported back');
   return parts.length ? parts.join(' · ') : 'No actions recorded yet. Every automation step writes one when it runs.';
 }
@@ -57,7 +57,7 @@ function mount(th, stageApi) {
   card.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(460px, calc(100vw - 20px))';
   const head = el('div'); head.className = 'g-head';
   const title = el('span', null, 'Actions'); title.className = 'g-title';
-  const sub = el('span', null, 'everything Void did, with its record'); sub.className = 'g-sub';
+  const sub = el('span', null, 'everything Verse did, with its record'); sub.className = 'g-sub';
   head.append(title, sub);
   const status = el('div', 'margin-top:6px;' + MUTED); status.className = 'actions-status g-status'; status.setAttribute('aria-live', 'polite');
   const list = el('div', 'display:grid;gap:4px;margin-top:10px;font-size:13px'); list.className = 'actions-list';
@@ -68,7 +68,7 @@ function mount(th, stageApi) {
   const tok = ownerToken();
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
-  if (!tok) { status.textContent = 'The record is for the owner and paid members. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
+  if (!tok) { status.textContent = 'The record is for the owner and paid members. Unlock Verse first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
 
   let rows = [], onlyFailed = false, more = true;
   const paint = () => {
@@ -81,7 +81,7 @@ function mount(th, stageApi) {
   };
   const get = async (limit, offset) => {
     const r = await fetch('/api/actions?limit=' + limit + '&offset=' + offset, { headers: { authorization: 'Bearer ' + tok } });
-    if (!r.ok) throw new Error(r.status === 401 ? 'only the owner and paid members can read the record' : r.status === 503 ? 'no database behind this copy of Void' : 'the record answered ' + r.status);
+    if (!r.ok) throw new Error(r.status === 401 ? 'only the owner and paid members can read the record' : r.status === 503 ? 'no database behind this copy of Verse' : 'the record answered ' + r.status);
     const data = await r.json().catch(() => ({}));
     return Array.isArray(data.actions) ? data.actions : [];
   };
@@ -112,7 +112,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'actions');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
   else api.summon('actions', { center: true });
-  api.say('Actions · every action Void takes has its record: done, failed, stubbed, or still running');
+  api.say('Actions · every action Verse takes has its record: done, failed, stubbed, or still running');
   return 'actions';
 }
 

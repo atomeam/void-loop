@@ -1,0 +1,1413 @@
+{
+ "floor": "podcasts",
+ "verse_page": "/podcasts/",
+ "researched": "2026-10-25",
+ "sites": {
+  "podcasts.apple.com": {
+   "sources": [
+    "https://podcasts.apple.com/",
+    "https://support.apple.com/118668",
+    "https://support.apple.com/en-gb/HT204207",
+    "https://support.apple.com/en-us/HT201859",
+    "https://apps.apple.com/hk/app/apple-podcasts/id525463029?l=en-GB"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search and browse directory",
+     "detail": "Millions of shows by name, topic, person; categories and charts",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ searches Apple's free iTunes directory (no key) and lists charts by country and category; any RSS link can be pasted"
+    },
+    {
+     "group": "core",
+     "name": "Show pages",
+     "detail": "Description, episodes, ratings and reviews, related shows",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ show page: cover, author, description, episodes with dates, lengths and notes, follow, share, play latest, unplayed filter and sort. No ratings, reviews or related shows",
+     "shows": "Play latest"
+    },
+    {
+     "group": "core",
+     "name": "Play episodes",
+     "detail": "Stream with seek, skip back 15 / forward 30",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ player: play/pause, seek, back 15, forward 30, streaming straight from the publisher"
+    },
+    {
+     "group": "core",
+     "name": "Follow shows",
+     "detail": "Follow; new episodes appear and can auto-download",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ follows kept on the device (60 at most), a New episodes list refreshed after load, OPML import and export. No auto-download"
+    },
+    {
+     "group": "core",
+     "name": "Up Next queue",
+     "detail": "Queue, reorder, continue where you left off",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ queue: add, move up and down, remove, plays on when an episode ends"
+    },
+    {
+     "group": "core",
+     "name": "Playback speed",
+     "detail": "0.5x to 2x",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ speed 0.5x to 3x kept between visits"
+    },
+    {
+     "group": "core",
+     "name": "Resume position",
+     "detail": "Remembers where you stopped across devices",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ the place in every episode kept on this device and resumed; not synced across devices"
+    },
+    {
+     "group": "core",
+     "name": "Transcripts",
+     "detail": "Read-along transcripts, search in transcript, tap a line to jump",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ transcripts named by a feed (WebVTT, SubRip, JSON, HTML, text) with search and tap-a-line to jump; Verse Out Loud's own whole transcript"
+    },
+    {
+     "group": "core",
+     "name": "Charts",
+     "detail": "Top shows and episodes by country and category",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ top podcasts by country (18) and category (19), Apple's public chart feeds"
+    },
+    {
+     "group": "power",
+     "name": "Chapters",
+     "detail": "Chapter markers with art",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ chapters from the feed (Podcast Namespace JSON or Podlove inline), tap to jump, current one highlighted. No chapter art"
+    },
+    {
+     "group": "power",
+     "name": "Sleep timer",
+     "detail": "Stop after time or end of episode",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ sleep timer: 5 to 60 minutes or end of episode"
+    },
+    {
+     "group": "power",
+     "name": "Played/unplayed and filters",
+     "detail": "Mark played, hide played, sort",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ played and started marks, mark played or unplayed, unplayed-only filter, newest or oldest first"
+    },
+    {
+     "group": "power",
+     "name": "Downloads management",
+     "detail": "Auto-download, storage limits, remove after play",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/podcasts/ Downloads: save episodes for offline in the Cache API (150 MB an episode, 1 GB in all, only where the publisher allows a web page to read its audio), list and remove. No auto-download, no remove-after-play"
+    },
+    {
+     "group": "power",
+     "name": "Enhance dialogue",
+     "detail": "Voice boost",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Add by RSS URL",
+     "detail": "Follow any show by feed URL (desktop/app)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ paste any https RSS link; read once by /api/podcasts (SSRF-safe, size and time capped)"
+    },
+    {
+     "group": "power",
+     "name": "Ratings and reviews",
+     "detail": "Rate shows, write reviews",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Video podcasts",
+     "detail": "Play video episodes",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share episode at timestamp",
+     "detail": "Share an episode or a moment",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/podcasts/ share link to a show, an episode and a moment (?show= ?feed= &ep= &t=), word-only share text"
+    },
+    {
+     "group": "sharing",
+     "name": "Share transcript quote",
+     "detail": "Share a quote with link to the moment",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Offline downloads",
+     "detail": "Listen offline",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/podcasts/ saved episodes play offline from this device; the page itself opens offline"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "CarPlay, Watch, HomePod, Siri",
+     "detail": "Play anywhere by voice",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Transcripts and VoiceOver",
+     "detail": "Transcripts for hearing access, screen-reader player",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "whole transcript on the card, wrapping at any width"
+    },
+    {
+     "group": "paid",
+     "name": "Apple Podcasts Subscriptions",
+     "detail": "Paid shows and channels: ad-free, bonus, early access",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "video podcasts",
+  "enhance dialogue (voice boost)",
+  "auto-download and remove after play",
+  "transcript quote sharing",
+  "ratings and reviews",
+  "CarPlay, Watch, HomePod, Siri",
+  "cross-device sync of follows and places (export OPML instead)",
+  "a live look at Apple's directory shapes (built against fixtures)"
+ ],
+ "verse_extra": [
+  "Verse makes its own podcast with a full transcript",
+  "jump to a moment from a line of the transcript",
+  "follows, places, queue and speed kept on the device with no account",
+  "OPML import and export of follows",
+  "Verse Out Loud pinned first, with its whole transcript"
+ ],
+ "first_page": "Podcast player page /podcasts/ for listeners who want any show without an account. First: search shows (iTunes Search, keyless) or paste an RSS link, episode list read from the feed through a small edge proxy, a player with speed, skip 15/30, resume position and a follow list kept on the device; Verse Out Loud pinned first. Will not build: paid subscriptions, recommendations, ratings or cross-device sync.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "podcastindex.org": {
+    "url": "https://podcastindex.org/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "player.fm": {
+    "url": "https://player.fm/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "listennotes.com": {
+    "url": "https://www.listennotes.com/",
+    "scanned": "2026-10-26",
+    "pages": [],
+    "problem": "answered 403",
+    "features": []
+   },
+   "podchaser.com": {
+    "url": "https://www.podchaser.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.podchaser.com/",
+     "https://www.podchaser.com/about/company"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Find Podcasts. Access Audiences. Drive Results",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"find\", \"podcast\"; not \"access\", \"audience\""
+     },
+     {
+      "name": "Search and browse over 6.2 million podcasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"search\"; not \"browse\", \"over\", \"6\""
+     },
+     {
+      "name": "Discover episodes on your favorite topics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"episode\"; not \"discover\", \"favorite\", \"topic\""
+     },
+     {
+      "name": "Meet the people behind your favorite podcasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"meet\", \"people\", \"behind\", \"favorite\""
+     },
+     {
+      "name": "Podcast playlists handpicked by real people",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"playlist\", \"handpick\", \"real\""
+     },
+     {
+      "name": "Boost your next campaign with podcast sponsors and advertiser tracking",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"next\", \"podcast\"; not \"boost\", \"campaign\""
+     },
+     {
+      "name": "Podchaser is the #1 podcast intelligence engine",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"1\", \"podcast\"; not \"podchaser\", \"intelligence\""
+     },
+     {
+      "name": "Discover Opportunities",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"discover\", \"opportunity\""
+     },
+     {
+      "name": "Plan with Precision",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"plan\", \"precision\""
+     },
+     {
+      "name": "Drive Results",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"drive\", \"result\""
+     },
+     {
+      "name": "Find the best podcasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"find\", \"podcast\"; not \"best\""
+     },
+     {
+      "name": "Valuable Pro Insights",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"valuable\", \"pro\", \"insight\""
+     },
+     {
+      "name": "See who is on which podcasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"see\", \"which\", \"podcast\"; not \"who\""
+     },
+     {
+      "name": "Track the latest mentions",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"latest\"; not \"track\", \"mention\""
+     },
+     {
+      "name": "See what you can do with Podchaser",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"see\", \"what\"; not \"podchaser\""
+     },
+     {
+      "name": "Find podcasts that match your goals",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"find\", \"podcast\"; not \"match\", \"goal\""
+     },
+     {
+      "name": "Simplify campaign building and execution",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"build\"; not \"simplify\", \"campaign\", \"execution\""
+     },
+     {
+      "name": "Direct access to podcast contacts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"direct\", \"podcast\"; not \"access\", \"contact\""
+     },
+     {
+      "name": "Track mentions, sponsorships, and credits",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"track\", \"mention\", \"sponsorship\", \"credit\""
+     },
+     {
+      "name": "The only podcast API you’ll ever need",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"only\", \"podcast\", \"ever\"; not \"api\""
+     },
+     {
+      "name": "Powerful podcast insights and contacts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"powerful\", \"insight\", \"contact\""
+     },
+     {
+      "name": "The People Powering Podcast Intelligence",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"people\", \"power\", \"intelligence\""
+     },
+     {
+      "name": "Our Story",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"our\", \"story\""
+     },
+     {
+      "name": "Unlocking Millions of Podcasts Every Month",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\", \"every\"; not \"unlock\", \"million\""
+     },
+     {
+      "name": "Search and Discovery",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"search\"; not \"discovery\""
+     },
+     {
+      "name": "Audience Intelligence",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"audience\", \"intelligence\""
+     },
+     {
+      "name": "Campaign Planning",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"campaign\", \"plann\""
+     },
+     {
+      "name": "Sponsorship Tracking",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"sponsorship\", \"track\""
+     },
+     {
+      "name": "Monitoring and Alerts",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"monitor\", \"alert\""
+     },
+     {
+      "name": "Host, Guest, & Crew Credits",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"host\", \"guest\", \"crew\", \"credit\""
+     },
+     {
+      "name": "Chart Rankings",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"chart\"; not \"rank\""
+     },
+     {
+      "name": "API Access",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"api\", \"access\""
+     },
+     {
+      "name": "Built with Love by Podcast Enthusiasts",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"built\", \"podcast\"; not \"love\", \"enthusiast\""
+     },
+     {
+      "name": "Global Team of Rockstars",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"global\", \"team\", \"rockstar\""
+     },
+     {
+      "name": "Leadership & Passion",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"leadership\", \"passion\""
+     },
+     {
+      "name": "Unlock more with Podchaser Pro",
+      "detail": "a heading on /about/company",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"unlock\", \"podchaser\", \"pro\""
+     },
+     {
+      "name": "Creator profiles Verify credentials and contributions to podcasting",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"creator\", \"profile\", \"verify\", \"credential\""
+     },
+     {
+      "name": "Podcasts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\""
+     },
+     {
+      "name": "Best Podcasts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"best\""
+     },
+     {
+      "name": "New Podcasts",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\""
+     }
+    ]
+   },
+   "podbean.com": {
+    "url": "https://www.podbean.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.podbean.com/",
+     "https://www.podbean.com/podcast-hosting-features",
+     "https://www.podbean.com/new-features",
+     "https://www.podbean.com/podcast-hosting-pricing",
+     "https://www.podbean.com/how-to-start-a-podcast",
+     "https://www.podbean.com/how-to-monetize-a-podcast",
+     "https://www.podbean.com/how-to-promote-your-podcast"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Your Podcast Hosting and Monetizing Platform",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"host\", \"monetiz\", \"platform\""
+     },
+     {
+      "name": "From podcast newbie to professional podcaster",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"newbie\", \"professional\", \"podcaster\""
+     },
+     {
+      "name": "Create and publish your podcast like a pro",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"publish\", \"podcast\"; not \"create\", \"like\""
+     },
+     {
+      "name": "Grow your podcast, be heard everywhere",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"grow\", \"podcast\"; not \"heard\", \"everywhere\""
+     },
+     {
+      "name": "Turn your passion into a new income stream",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"stream\"; not \"turn\", \"passion\", \"income\""
+     },
+     {
+      "name": "Empower your podcast with Podbean AI",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"empower\", \"podbean\""
+     },
+     {
+      "name": "AI Audio Optimization",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"audio\"; not \"optimization\""
+     },
+     {
+      "name": "AI Content Assistant",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"content\", \"assistant\""
+     },
+     {
+      "name": "AI Podcast Creator",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"creator\""
+     },
+     {
+      "name": "Unlock a beautiful, professional, and customizable podcast website",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"unlock\", \"beautiful\", \"professional\", \"customizable\""
+     },
+     {
+      "name": "Comprehensive podcast analytics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"comprehensive\", \"analytic\""
+     },
+     {
+      "name": "Podbean App simplifying your podcasting",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"podbean\", \"simplify\""
+     },
+     {
+      "name": "Record from Anywhere",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"record\", \"anywhere\""
+     },
+     {
+      "name": "Edit Like Magic",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"edit\", \"like\", \"magic\""
+     },
+     {
+      "name": "Make It Uniquely Yours",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"your\"; not \"make\", \"uniquely\""
+     },
+     {
+      "name": "Publish & Manage with Ease",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"publish\"; not \"manage\", \"ease\""
+     },
+     {
+      "name": "Download it now",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"download\"; not \"now\""
+     },
+     {
+      "name": "Secure, Scalable Podcast Hosting Solution",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"secure\", \"scalable\", \"host\""
+     },
+     {
+      "name": "We’re helping podcasters of all genres and sizes",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"size\"; not \"help\", \"podcaster\", \"genre\""
+     },
+     {
+      "name": "Featured Podcasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"featur\""
+     },
+     {
+      "name": "Get the help you need, right when you need it",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"help\", \"need\", \"right\", \"when\""
+     },
+     {
+      "name": "Tutorials",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"tutorial\""
+     },
+     {
+      "name": "Webinars",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"webinar\""
+     },
+     {
+      "name": "Help Center",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"help\", \"center\""
+     },
+     {
+      "name": "How to start a podcast",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"how\", \"start\""
+     },
+     {
+      "name": "Start a podcast today. It’s FREE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"start\", \"today\""
+     },
+     {
+      "name": "Exclusive Podcast Hosting Features",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"exclusive\", \"host\", \"feature\""
+     },
+     {
+      "name": "Podcast publishing made simple",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\", \"publish\"; not \"made\", \"simple\""
+     },
+     {
+      "name": "Publish with Ease",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"publish\"; not \"ease\""
+     },
+     {
+      "name": "Unlimited Audio & Video Hosting",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"audio\"; not \"unlimit\", \"video\", \"host\""
+     },
+     {
+      "name": "Scheduled Publishing",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"publish\"; not \"schedul\""
+     },
+     {
+      "name": "Cover Art Creator",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"cover\", \"art\", \"creator\""
+     },
+     {
+      "name": "Blog to Podcast with AI Voice",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"blog\", \"voice\""
+     },
+     {
+      "name": "Video to Podcast",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"video\""
+     },
+     {
+      "name": "Grow with distribution, interactivity, and more",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"grow\"; not \"distribution\", \"interactivity\""
+     },
+     {
+      "name": "All Destination Podcast Distribution",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"destination\", \"distribution\""
+     },
+     {
+      "name": "Embeddable Players",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"embeddable\", \"player\""
+     },
+     {
+      "name": "Social Media Auto Sharing",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"shar\"; not \"social\", \"media\", \"auto\""
+     },
+     {
+      "name": "Interact with Your Audience",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"interact\", \"audience\""
+     },
+     {
+      "name": "Podbean App",
+      "detail": "a heading on /podcast-hosting-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"podbean\""
+     }
+    ]
+   },
+   "castbox.fm": {
+    "url": "https://castbox.fm/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://castbox.fm/",
+     "https://castbox.fm/castbox-story/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Over 259,000,000 Volumes of Audio Content Listen Free, Download Free",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"over\", \"259\", \"000\", \"volume\""
+     },
+     {
+      "name": "The Joe Rogan Experience",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"joe\", \"rogan\", \"experience\""
+     },
+     {
+      "name": "Casefile True Crime",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"true\", \"crime\"; not \"casefile\""
+     },
+     {
+      "name": "Crime Junkie",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"crime\"; not \"junkie\""
+     },
+     {
+      "name": "New Heights with Jason & Travis Kelce",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"height\", \"jason\", \"travi\", \"kelce\""
+     },
+     {
+      "name": "Fantasy Footballers - Fantasy Football Podcast",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"fantasy\", \"footballer\", \"football\""
+     },
+     {
+      "name": "Up First from NPR",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"first\"; not \"npr\""
+     },
+     {
+      "name": "The Ben Shapiro Show",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"show\"; not \"ben\", \"shapiro\""
+     },
+     {
+      "name": "The Daily",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"daily\""
+     },
+     {
+      "name": "Dateline NBC",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"dateline\", \"nbc\""
+     },
+     {
+      "name": "The Dr. Phil Podcast",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"phil\""
+     },
+     {
+      "name": "Sword and Scale",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"sword\", \"scale\""
+     },
+     {
+      "name": "Last Podcast On The Left",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"last\", \"left\""
+     },
+     {
+      "name": "Call Her Daddy",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"call\", \"her\", \"daddy\""
+     },
+     {
+      "name": "Serial",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"serial\""
+     },
+     {
+      "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"favorite\", \"murder\", \"karen\", \"kilgariff\""
+     },
+     {
+      "name": "The Castbox story",
+      "detail": "a heading on /castbox-story/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"castbox\", \"story\""
+     },
+     {
+      "name": "Discover the World’s Best Podcasts",
+      "detail": "a heading on /castbox-story/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"podcast\"; not \"discover\", \"world\", \"best\""
+     },
+     {
+      "name": "Get the App",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words"
+     },
+     {
+      "name": "For Podcasters",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"podcaster\""
+     },
+     {
+      "name": "Top Shows",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"top\", \"show\""
+     },
+     {
+      "name": "Listen",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"listen\""
+     },
+     {
+      "name": "About Castbox",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows \"about\"; not \"castbox\""
+     },
+     {
+      "name": "Newsroom",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"newsroom\""
+     },
+     {
+      "name": "FAQs",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"faq\""
+     },
+     {
+      "name": "Connect",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"connect\""
+     },
+     {
+      "name": "Telegram",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"telegram\""
+     },
+     {
+      "name": "Facebook",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"facebook\""
+     },
+     {
+      "name": "Twitter",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"twitter\""
+     },
+     {
+      "name": "Instagram",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"instagram\""
+     },
+     {
+      "name": "[email]",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"contact\", \"castbox\""
+     },
+     {
+      "name": "Our Mission",
+      "detail": "a list item on /castbox-story/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"our\", \"mission\""
+     },
+     {
+      "name": "Partners",
+      "detail": "a list item on /castbox-story/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/podcasts/?show=verse&ep=ep1 shows none of its words; not \"partner\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "Meet the people behind your favorite podcasts",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Discover Opportunities",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Plan with Precision",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Drive Results",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Valuable Pro Insights",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Track mentions, sponsorships, and credits",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Our Story",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Audience Intelligence",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Campaign Planning",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Sponsorship Tracking",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Monitoring and Alerts",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Host, Guest, & Crew Credits",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "API Access",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Global Team of Rockstars",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Leadership & Passion",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Unlock more with Podchaser Pro",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "Creator profiles Verify credentials and contributions to podcasting",
+    "sites": [
+     "podchaser.com"
+    ]
+   },
+   {
+    "name": "AI Content Assistant",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Unlock a beautiful, professional, and customizable podcast website",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Record from Anywhere",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Edit Like Magic",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Get the help you need, right when you need it",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Tutorials",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Webinars",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Help Center",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Cover Art Creator",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Embeddable Players",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Interact with Your Audience",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Podbean App",
+    "sites": [
+     "podbean.com"
+    ]
+   },
+   {
+    "name": "Over 259,000,000 Volumes of Audio Content Listen Free, Download Free",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "The Joe Rogan Experience",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "New Heights with Jason & Travis Kelce",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "The Daily",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Dateline NBC",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Sword and Scale",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Call Her Daddy",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Serial",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "My Favorite Murder with Karen Kilgariff and Georgia Hardstark",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "The Castbox story",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Get the App",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "For Podcasters",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Listen",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Newsroom",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "FAQs",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Connect",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Telegram",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Facebook",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Twitter",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Instagram",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "[email]",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Our Mission",
+    "sites": [
+     "castbox.fm"
+    ]
+   },
+   {
+    "name": "Partners",
+    "sites": [
+     "castbox.fm"
+    ]
+   }
+  ],
+  "queued": [
+   {
+    "target": "feature:podchaser-com-d04309ea",
+    "feature": "Meet the people behind your favorite podcasts",
+    "host": "podchaser.com",
+    "at": "2026-10-26",
+    "id": "mvop09tv"
+   },
+   {
+    "target": "feature:podchaser-com-c1360975",
+    "feature": "Discover Opportunities",
+    "host": "podchaser.com",
+    "at": "2026-10-26",
+    "id": "mvop0asl"
+   },
+   {
+    "target": "feature:podchaser-com-c86b8e98",
+    "feature": "Plan with Precision",
+    "host": "podchaser.com",
+    "at": "2026-10-26",
+    "id": "mvop0beq"
+   }
+  ]
+ }
+}

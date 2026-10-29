@@ -1,0 +1,523 @@
+{
+ "floor": "automation",
+ "verse_page": "/ledger/",
+ "researched": "2026-10-29",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "zapier.com": {
+   "url": "https://zapier.com/",
+   "scanned": "2026-10-29",
+   "leader": true,
+   "pages": [
+    "https://zapier.com/",
+    "https://zapier.com/ai",
+    "https://zapier.com/blog/ai-orchestration/",
+    "https://zapier.com/blog/zapier-copilot-guide/",
+    "https://zapier.com/blog/zapier-ai-guide/",
+    "https://zapier.com/blog/zapier-mcp-guide/",
+    "https://zapier.com/resources/guides/how-to-implement-ai-orchestration-in-3-phases"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Welcome to automation in the agentic era",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"welcome\", \"automation\", \"agentic\", \"era\""
+    },
+    {
+     "name": "TRUSTED BY THE WORLD’S BEST COMPANIES",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"trust\", \"world\", \"best\", \"company\""
+    },
+    {
+     "name": "Build anywhere. Run on Zapier. Govern in one place",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"build\", \"anywhere\", \"run\", \"zapier\""
+    },
+    {
+     "name": "Start building anywhere",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"start\", \"build\", \"anywhere\""
+    },
+    {
+     "name": "Run workflows reliably on Zapier",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"run\", \"workflow\", \"reliably\", \"zapier\""
+    },
+    {
+     "name": "Deterministic",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"deterministic\""
+    },
+    {
+     "name": "Deterministic + AI",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"deterministic\""
+    },
+    {
+     "name": "Deterministic + agent",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"deterministic\", \"agent\""
+    },
+    {
+     "name": "Fully agentic",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"fully\", \"agentic\""
+    },
+    {
+     "name": "Ticket intake",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"ticket\", \"intake\""
+    },
+    {
+     "name": "Govern in one place",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"govern\", \"place\""
+    },
+    {
+     "name": "Built for everyone, from the Fortune 500 to first-time founders",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"built\", \"everyone\", \"fortune\", \"500\""
+    },
+    {
+     "name": "Security built into every workflow",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/ledger/ shows \"every\"; not \"security\", \"built\", \"workflow\""
+    },
+    {
+     "name": "SOC 2 Type II & SOC 3",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/ledger/ shows \"type\"; not \"soc\", \"2\", \"3\""
+    },
+    {
+     "name": "GDPR & CCPA",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"gdpr\", \"ccpa\""
+    },
+    {
+     "name": "SSO + user provisioning",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"sso\", \"user\", \"provision\""
+    },
+    {
+     "name": "AI model opt-out",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"model\", \"opt\", \"out\""
+    },
+    {
+     "name": "Observability",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"observability\""
+    },
+    {
+     "name": "Platform controls",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"platform\", \"control\""
+    },
+    {
+     "name": "Go from AI to ROI",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"roi\""
+    },
+    {
+     "name": "Your AI tools. 9,000+ apps. One system",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"9\", \"000+\", \"app\", \"system\""
+    },
+    {
+     "name": "AI tools built for risk aware teams",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"built\", \"risk\", \"aware\", \"team\""
+    },
+    {
+     "name": "Your tools. IT's rules",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"rule\""
+    },
+    {
+     "name": "Turn workarounds into workflows",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"turn\", \"workaround\", \"workflow\""
+    },
+    {
+     "name": "No AI hype here. Just results",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"hype\", \"here\", \"just\", \"result\""
+    },
+    {
+     "name": "AI that drives real outcomes",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"drive\", \"real\", \"outcome\""
+    },
+    {
+     "name": "AI Lead Qualification",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"lead\", \"qualification\""
+    },
+    {
+     "name": "Lead Capture Automation",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"lead\", \"capture\", \"automation\""
+    },
+    {
+     "name": "Support Ticket Triage",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"support\", \"ticket\", \"triage\""
+    },
+    {
+     "name": "AI Social Publishing",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"social\", \"publish\""
+    },
+    {
+     "name": "MCP Research Assistant",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"mcp\", \"research\", \"assistant\""
+    },
+    {
+     "name": "Support Email Agent",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"support\", \"email\", \"agent\""
+    },
+    {
+     "name": "One governed connection for every AI agent",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/ledger/ shows \"every\"; not \"govern\", \"connection\", \"agent\""
+    },
+    {
+     "name": "Auth is managed",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/ledger/ shows \"auth\"; not \"manag\""
+    },
+    {
+     "name": "Actions are auditable",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"action\", \"auditable\""
+    },
+    {
+     "name": "IT keeps control",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"keep\", \"control\""
+    },
+    {
+     "name": "Reliability is built in",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"reliability\", \"built\""
+    },
+    {
+     "name": "Build in AI. Run on Zapier. Govern from one place",
+     "detail": "a heading on /ai",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"build\", \"run\", \"zapier\", \"govern\""
+    },
+    {
+     "name": "What is AI orchestration? A guide to intelligent systems",
+     "detail": "a heading on /blog/ai-orchestration/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/ledger/ shows none of its words; not \"what\", \"orchestration\", \"guide\", \"intelligent\""
+    },
+    {
+     "name": "How AI orchestration works",
+     "detail": "a heading on /blog/ai-orchestration/",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/ledger/ shows \"how\", \"work\"; not \"orchestration\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Welcome to automation in the agentic era",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "TRUSTED BY THE WORLD’S BEST COMPANIES",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Build anywhere. Run on Zapier. Govern in one place",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Start building anywhere",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Run workflows reliably on Zapier",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Deterministic",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Deterministic + AI",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Deterministic + agent",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Fully agentic",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Ticket intake",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Govern in one place",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Built for everyone, from the Fortune 500 to first-time founders",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "GDPR & CCPA",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "SSO + user provisioning",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "AI model opt-out",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Observability",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Platform controls",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Go from AI to ROI",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Your AI tools. 9,000+ apps. One system",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "AI tools built for risk aware teams",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Your tools. IT's rules",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Turn workarounds into workflows",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "No AI hype here. Just results",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "AI that drives real outcomes",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "AI Lead Qualification",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Lead Capture Automation",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Support Ticket Triage",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "AI Social Publishing",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "MCP Research Assistant",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Support Email Agent",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Actions are auditable",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "IT keeps control",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Reliability is built in",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "Build in AI. Run on Zapier. Govern from one place",
+   "sites": [
+    "zapier.com"
+   ]
+  },
+  {
+   "name": "What is AI orchestration? A guide to intelligent systems",
+   "sites": [
+    "zapier.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-29",
+  "queued": []
+ }
+}

@@ -1,0 +1,81 @@
+{
+  "algo": "sha256",
+  "kind": "view-transitions",
+  "run": "014",
+  "slug": "view-transitions-api",
+  "status": "specified",
+  "seal": "human",
+  "motion": "opt-in",
+  "scope": "same-document",
+  "cross_doc": false,
+  "spa_hijack": false,
+  "cookie": false,
+  "analytics": false,
+  "names": {
+    "allow": ["vt-pane"],
+    "root": "none",
+    "type": "pane-swap",
+    "max_ms": 240,
+    "canonical": "names#014|allow:vt-pane|root:none|max-ms:240|type:pane-swap",
+    "sha256": "d6c9cd68a46d679141334ef0e910927497114eec7c3955a2709a1d5f4d891ba3"
+  },
+  "copy": [
+    {
+      "id": "plan",
+      "canonical": "copy#pane-plan|text:Plan stays on the table until a human seals the write.",
+      "sha256": "ee0e3e5c59e797f537003214eed037ff5a4462061d68090274a6b561ec4b4754",
+      "text": "Plan stays on the table until a human seals the write."
+    },
+    {
+      "id": "ledger",
+      "canonical": "copy#pane-ledger|text:The ledger records sealed rows. Unsealed drafts are not history.",
+      "sha256": "f1badfe826cf616217e0fb111858a4db015fd51fcf6c5c1019632aec7db1675e",
+      "text": "The ledger records sealed rows. Unsealed drafts are not history."
+    }
+  ],
+  "head": {
+    "compact": "{\"algo\":\"sha256\",\"kind\":\"view-transitions\",\"scope\":\"same-document\",\"cross_doc\":false,\"motion\":\"opt-in\"}",
+    "sha256": "cef154b3548d87b0aaff242e0ab879dc29f3baa11068271d52fc6341e02652ba"
+  },
+  "claims": [
+    {
+      "id": "vt",
+      "canonical": "vt#014|kind:view-transitions|scope:same-document|cross-doc:deny|motion:opt-in|hash:sha256|seal:human",
+      "sha256": "039e8c61f9221a4b10b7179b7b5db2d327743ff175f4154917fc74cf9a058ded"
+    },
+    {
+      "id": "default",
+      "canonical": "claim#default|text:View transitions are off until Allow. Instant DOM swap is the published path.",
+      "sha256": "bef4414981f0eb604154495008ed4276873aacef81d1243d0cc4f1c7c557f5c4"
+    },
+    {
+      "id": "scope",
+      "canonical": "claim#scope|text:Only same-document pane swaps on attested names. Cross-document navigation auto is denied.",
+      "sha256": "251491add4135b7556c5f0af5293d7d0999c4d174b10ab48e08728c23529e2f5"
+    },
+    {
+      "id": "motion",
+      "canonical": "claim#motion|text:Transitions run only after Allow and only when prefers-reduced-motion is no-preference.",
+      "sha256": "6cdd3351f48de5a8cd13c889d45ff69603c6ec29eb852a3c2b1846fbf8ca264d"
+    },
+    {
+      "id": "names",
+      "canonical": "claim#names|text:Only the allowlisted name vt-pane may be assigned. Root snapshots are named none.",
+      "sha256": "3e0cbb6c24319e09ed1ce5c425732dd9ffcfd2abd4a4657176b58ebfca37d8e3"
+    },
+    {
+      "id": "once",
+      "canonical": "claim#once|text:Swap animation is a single 240ms cross-fade. Reveals, slides, and shared-element morphs are denied.",
+      "sha256": "0c8d70eeb5d429051013d1a1f9a5b1710903b970f56e86e7459f536a1971d546"
+    },
+    {
+      "id": "page",
+      "canonical": "page#vt|route:draft|index:noindex|cookie:deny|analytics:deny|spa-hijack:deny",
+      "sha256": "8af023c03aa1e4bfd6c0e9b46a023b487abd73b76553b925d33d17a75511f954"
+    }
+  ],
+  "body": {
+    "note": "SHA-256 of the seven canonical lines joined by LF, with a trailing LF",
+    "sha256": "f584de33cdbec577b3f4701627aa05cc2f1956dd782cd2b94a793c8ca0c203fd"
+  }
+}

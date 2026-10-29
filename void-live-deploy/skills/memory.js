@@ -1,5 +1,5 @@
 /**
- * memory skill — Void answers from what it remembers, on the page (Ouroboros pushes a digest of each project to
+ * memory skill — Verse answers from what it remembers, on the page (Ouroboros pushes a digest of each project to
  * /api/memory; GET /api/memory?ask=<question> answers in plain words from them, no model). The card shows the answer as
  * the API wrote it: each match with its tech, summary, last change, and whether a copy exists elsewhere, or the
  * "nothing matches" sentence as is. It keeps itself live (skills/live.js, every 5 minutes) so a project pushed while the
@@ -10,14 +10,14 @@
  * about python". "remember me", "memory game" and "how much memory does chrome use" are not this.
  */
 import { keepLive } from './live.js';
+import { sessionToken } from '../lib/state.js'; // the session lives in one place (lib/state.js, asked by Verse)
 
-const OWNER_KEY = 'a2m.void.owner.v1', ME_KEY = 'a2m.void.me.v1';
 export const EVERY = 5 * 60e3;
 // the owner's key, else this device's member session (a signed-in paid member reads only their own memory; the server decides which)
-const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).token || ''; } catch (_) { return ''; } };
+const ownerToken = () => sessionToken();
 // a topic that is a person or a pronoun is not a project ("what do you remember about me")
-const NO_KEY = 'What Void remembers is for the owner and paid members. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.';
-const failText = (status) => (status === 401 ? 'Only the owner can use memory.' : status === 403 ? 'What Void remembers is for paid members.' : status === 503 ? 'There is no database behind this copy of Void.' : 'Memory answered ' + status + '.');
+const NO_KEY = 'What Verse remembers is for the owner and paid members. Unlock Verse first (unlock <key>, or sign in with your passkey), then ask again.';
+const failText = (status) => (status === 401 ? 'Only the owner can use memory.' : status === 403 ? 'What Verse remembers is for paid members.' : status === 503 ? 'There is no database behind this copy of Verse.' : 'Memory answered ' + status + '.');
 const NOT_TOPIC = /^(?:me|you|us|it|that|this|them|him|her|everything|anything|nothing|myself|yourself)$/;
 
 /** what the ask means: null, or { q } where q is what goes to /api/memory?ask= ("" asks for the prompt sentence) */
@@ -29,13 +29,13 @@ export function memoryOf(text) {
   // "remember that <fact>" / "forget that <fact>": a whole sentence (at least three words), so "remember the titans", "remember that song",
   // "remember to call mom" and "forget it" are not this
   const o = String(text || '').trim().replace(/[’]/g, "'"); // the fact keeps its own capitals
-  m = /^(?:(?:please|void),?\s+)?remember\s*(?:that|:)\s*(.+)$/i.exec(o);
+  m = /^(?:(?:please|(?:verse|void)),?\s+)?remember\s*(?:that|:)\s*(.+)$/i.exec(o);
   if (m) return fact(m[1]) ? { remember: fact(m[1]) } : null;
-  m = /^(?:(?:please|void),?\s+)?forget\s+that\s+(.+)$/i.exec(o);
+  m = /^(?:(?:please|(?:verse|void)),?\s+)?forget\s+that\s+(.+)$/i.exec(o);
   if (m) return fact(m[1]) ? { forget: fact(m[1]) } : null;
   m = /^what\s+do\s+you\s+remember\s+(?:about|of|on)\s+(.+)$/.exec(t)
     || /^(?:do\s+you\s+)?remember\s+anything\s+(?:about|on|of)\s+(.+)$/.exec(t)
-    || /^(?:ask|search|check|query)\s+(?:my|your|void'?s)\s+memory(?:\s+(?:for|about|on|of))?\s+(.+)$/.exec(t);
+    || /^(?:ask|search|check|query)\s+(?:my|your|(?:verse|void)'?s)\s+memory(?:\s+(?:for|about|on|of))?\s+(.+)$/.exec(t);
   if (m) return NOT_TOPIC.test(m[1]) ? null : { q: m[1] };
   return null;
 }
@@ -73,7 +73,7 @@ function mount(th, stageApi) {
   card.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(460px, calc(100vw - 20px))';
   const head = el('div'); head.className = 'g-head';
   const title = el('span', null, 'Memory'); title.className = 'g-title';
-  const sub = el('span', null, th.q ? 'asked: ' + th.q : 'what Void remembers'); sub.className = 'g-sub';
+  const sub = el('span', null, th.q ? 'asked: ' + th.q : 'what Verse remembers'); sub.className = 'g-sub';
   head.append(title, sub);
   const status = el('div', 'margin-top:6px;' + MUTED); status.className = 'memory-status g-status'; status.setAttribute('aria-live', 'polite');
   const list = el('div', 'display:grid;gap:6px;margin-top:10px;font-size:13px'); list.className = 'memory-list';
@@ -91,7 +91,7 @@ function mount(th, stageApi) {
     status.textContent = 'asking…';
     try {
       const r = await fetch(askUrl(th.q), { headers: { authorization: 'Bearer ' + tok } });
-      if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read what Void remembers' : r.status === 403 ? 'what Void remembers is for paid members' : r.status === 503 ? 'no database behind this copy of Void' : 'memory answered ' + r.status);
+      if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read what Verse remembers' : r.status === 403 ? 'what Verse remembers is for paid members' : r.status === 503 ? 'no database behind this copy of Verse' : 'memory answered ' + r.status);
       const data = await r.json().catch(() => ({}));
       paint(data.answer); status.textContent = '';
     } catch (e) { status.textContent = e.message; throw e; }
@@ -104,12 +104,19 @@ function mount(th, stageApi) {
   load().then(() => { if (card.isConnected) keepLive({}, card, { name: 'memory', every: EVERY, refresh: load, present: () => card.isConnected }); }).catch(() => {});
 }
 
+// "privacy", "privacy policy", "what do you keep about me": the privacy page, folded into the memory card (what Verse keeps).
+// "what do you know about me" is the memory-graph card (skills/memory-graph.js, asked by Verse), which links here.
+export const privacyAsk = (text) => /^(?:(?:open|show|go to|read)\s+)?(?:(?:the|your|(?:verse|void)'?s|(?:verse|v01d)'?s)\s+)?privacy(?:\s+(?:policy|page|notice))?$|^what\s+do\s+you\s+(?:keep|store|save)\s+about\s+me$|^how\s+do\s+i\s+delete\s+my\s+data$/i.test(String(text || '').trim().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 async function run(text, api) {
+  if (privacyAsk(text)) {
+    api.showPage((p) => { p.innerHTML = '<h2>Privacy</h2><p>What Verse keeps and how to delete it: no cookies, no ads, no analytics trackers; your stage and recent asks stay in your browser unless you sign in and sync.</p><p><a class="btn" href="/privacy/">Read the privacy page</a></p><div class="src">a-to-mind.com/privacy/</div>'; });
+    return 'memory';
+  }
   const q = memoryOf(text);
   if (!q) return 'none';
   if (q.remember || q.forget) return keepOrDrop(q, api);
   api.summon('memory', { q: q.q, center: true });
-  api.say('Memory · what Void remembers about your projects');
+  api.say('Memory · what Verse remembers about your projects');
   return 'memory';
 }
 
@@ -136,9 +143,9 @@ async function keepOrDrop(q, api) {
 export default {
   name: 'memory',
   memoryOf,
-  examples: ['what did I build with react', 'what do you remember about the parser', 'remember anything about rust', 'ask my memory about python', 'remember that I prefer tabs over spaces', 'forget that I prefer tabs over spaces'],
+  examples: ['what did I build with react', 'privacy', 'what do you remember about the parser', 'remember anything about rust', 'ask my memory about python', 'remember that I prefer tabs over spaces', 'forget that I prefer tabs over spaces'],
   nearMisses: ['remember me', 'memory game', 'how much memory does chrome use', 'what do you remember about me', 'do you remember me', 'remember the titans', 'i can\'t remember', 'remember to call mom', 'remember that song', 'do you remember that', 'forget it', 'forget about it', 'forget that', 'what did I do today', 'what do you remember'],
-  match(lower, text) { return !!memoryOf(text); },
+  match(lower, text) { return privacyAsk(text) || !!memoryOf(text); },
   run,
   stageKinds: { memory: { mount } },
 };

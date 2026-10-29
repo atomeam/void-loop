@@ -35,3 +35,26 @@ test('the layout: the title big at the top, the text wrapped inside the margins,
   assert.ok(long.cut, 'text that cannot fit is cut, and the layout says so');
   assert.ok(long.lines.every((l) => l.y <= 2700 - long.margin));
 });
+
+// a poster for a Verse film (asked by Verse, 2026-10-15: "Create a 'poster' skill integration that consumes the new film-metadata
+// JSON to generate promotional layouts")
+test('film posters: the asks, which film, and a card from its metadata with a phone-story size', async () => {
+  const { filmPosterOf, filmCard, STORY } = await import('../void-live-deploy/skills/poster.js');
+  assert.deepEqual(filmPosterOf('make a poster for the newest film'), { which: 'newest' });
+  assert.deepEqual(filmPosterOf('film poster'), { which: 'newest' });
+  assert.deepEqual(filmPosterOf('promo poster for v01d films'), { which: 'newest' });
+  assert.deepEqual(filmPosterOf('poster for the film miss-board-4'), { which: 'miss-board-4' });
+  assert.deepEqual(filmPosterOf('Make a poster of the latest Verse film?'), { which: 'newest' });
+  for (const a of ['make this a poster', 'film a timer', 'best films of 2025', 'poster sizes', 'order a film poster', 'movie poster for inception'])
+    assert.equal(filmPosterOf(a), null, a);
+  for (const a of ['make a poster for the newest film', 'film poster']) assert.ok(poster.match(a.toLowerCase(), a), 'the skill takes ' + a);
+  const meta = { id: '20261015-miss-board-4-r9', day: '2026-10-15', experiment: 'miss-board-4', title: "What hasn't Verse heard yet? | an AI built this itself #Shorts", tags: ['Verse'], source: 'https://github.com/x', watch: 'https://a-to-mind.com/films/' };
+  const c = filmCard(meta);
+  assert.equal(c.title, "What hasn't Verse heard yet?", 'the #Shorts tail is not a poster title');
+  assert.match(c.text, /VERSE FILMS/); assert.match(c.text, /a-to-mind\.com\/films/); assert.match(c.text, /Oct|2026/);
+  assert.deepEqual([STORY.px[0], STORY.px[1]], [1080, 1920], 'a 9:16 phone story, the size the films are cut to');
+  const measure = (t, size) => t.length * size * 0.55;
+  const L = layoutPoster(c, STORY.px[0], STORY.px[1], measure);
+  assert.equal(L.lines[0].text.startsWith('What'), true);
+  for (const l of L.lines) assert.ok(l.x + measure(l.text, l.size) <= STORY.px[0] - L.margin + 1, 'inside the story margins: ' + l.text);
+});

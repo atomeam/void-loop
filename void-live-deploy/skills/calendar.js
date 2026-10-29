@@ -8,7 +8,8 @@
  */
 import { show3d } from './calendar3d.js';
 import { countdownOf } from './countdown.js';
-const KEY = 'a2m.void.agenda.v1';
+import { mirror } from '../lib/chat-calendar.js';
+import * as A from '../lib/agenda.js';
 const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 
 function gated(text) {
@@ -105,6 +106,7 @@ export function parseCalendar(text) {
   }
   // an add needs a when in it: "call Sam next Tuesday at 4", "dentist Oct 12 at 3pm", "gym at 7pm", "pay rent in 3 days"
   if (/^(?:what|whats|who|whos|why|how|hows|when|whens|where|wheres|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
+  if (/^(?:the\s+|today'?s\s+|live\s+)?[\w .'-]{0,40}\b(?:scores?|league\s+table|standings)(?:\s+(?:today|tonight|now|live|yesterday))?$/i.test(t)) return null; // the scores skill ("premier league scores today" is not an event)
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
   if (/^(?:the\s+|today'?s\s+)?(?:\w+\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill ("tech news today" is not an event)
   if (/\b(hours?\s+between|days?\s+between|time\s+difference|how\s+many\s+(hours|days)|how\s+long\s+until)\b/i.test(t)) return null; // world time and the calculator answer these
@@ -118,13 +120,13 @@ export function parseCalendar(text) {
   return { kind: 'add', title: w.title, at: w.at, allDay: w.allDay, raw: t };
 }
 
+// one store: the /calendar/ page's (lib/agenda.js), so the card, the page and chat edits ("move the dentist to Tuesday") show the same events
+const ONE_DAY = 864e5;
+/** what is coming up, as rows { id, title, at, allDay }: from an hour ago (a day for an all-day one) to a year on, repeats included */
 function load() {
-  try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (_) { return []; }
+  const now = Date.now();
+  return A.rowsOf(A.events(), new Date(now - ONE_DAY), new Date(now + 400 * ONE_DAY)).filter((r) => new Date(r.at).getTime() + (r.allDay ? ONE_DAY : 36e5) >= now);
 }
-function save(rows) {
-  try { localStorage.setItem(KEY, JSON.stringify(rows)); } catch (_) {}
-}
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
 function fmtWhen(iso) {
   const at = new Date(iso);
@@ -133,8 +135,7 @@ function fmtWhen(iso) {
 
 function draw(el, api) {
   const { esc } = api;
-  const now = Date.now();
-  const rows = load().filter((r) => new Date(r.at).getTime() + 60 * 60 * 1000 >= now).sort((a, b) => a.at.localeCompare(b.at)).slice(0, 8);
+  const rows = load().slice(0, 8);
   let body;
   if (!rows.length) {
     body = '<div class="sub">Nothing coming up. Type something like "call Sam next Tuesday at 4".</div>';
@@ -158,12 +159,12 @@ async function run(text, api) {
     return 'calendar';
   }
   if (q.kind === 'clear') {
-    const n = load().length;
+    const n = A.events().length;
     if (!n) { if (api.say) api.say('your calendar is already empty'); return 'calendar'; }
     const el = showPage((p) => { p.innerHTML = '<h2>Clear your calendar?</h2><div class="sub">' + n + ' event' + (n === 1 ? '' : 's')
       + ' saved in this browser. This can\'t be undone.</div><button type="button" class="tr-copy cal-clear" style="margin-top:12px">clear all ' + n + '</button>'; });
     const b = el.querySelector('.cal-clear');
-    if (b) b.addEventListener('click', () => { save([]); draw(el, api); if (api.say) api.say('calendar cleared'); if (api.summon) api.summon('calendar', { hide: true }); });
+    if (b) b.addEventListener('click', () => { A.write([]); draw(el, api); if (api.say) api.say('calendar cleared'); if (api.summon) api.summon('calendar', { hide: true }); });
     return 'calendar';
   }
   if (q.kind === 'when') {
@@ -171,10 +172,12 @@ async function run(text, api) {
     return 'calendar';
   }
   if (q.kind === 'add') {
-    const rows = load();
-    rows.push({ id: uid(), title: q.title.slice(0, 160), at: q.at.toISOString(), text: q.raw.slice(0, 200) });
-    save(rows);
-    if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()));
+    // into the Calendar page's own events, read by the page's quickAdd (length, repeat, reminder) and said in words so a wrong reading shows;
+    // when the page reads nothing from it the card's own reading is kept as it is (an hour, or all day)
+    const S = A.read(); let line = '';
+    try { const m = mirror(S, q.raw || q.title, new Date(), navigator.language || 'en'); if (m) { A.write(m.store.events); line = m.line; } } catch (_) {}
+    if (!line) { const dup = S.events.some((e) => e.title.toLowerCase() === q.title.toLowerCase() && Math.abs(new Date(e.start) - q.at) < 6e4); if (!dup) A.write(A.withNew(S.events, { title: q.title.slice(0, 160), at: q.at, allDay: q.allDay })); }
+    if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()) + (line ? ' (in the Calendar page: ' + line + ')' : ''));
   }
   if (api.summon) api.summon('calendar'); // the card on the stage (mount below)
   if (q.kind === 'show') show3d(api); // and the 3D wall calendar; an add only says so (the card shows it)
@@ -184,10 +187,7 @@ async function run(text, api) {
 // the card on the stage (moved out of void.html in cleanup step 6): upcoming events from this browser's agenda, a day
 // header for each day, × to take one off (undo brings it back)
 function mount(th, stageApi) {
-  let list = load();
-  if (!Array.isArray(list)) list = [];
-  const now = Date.now();
-  const up = list.filter((e) => e && e.at && new Date(e.at).getTime() + (e.allDay ? 864e5 : 36e5) >= now).sort((a, b) => a.at.localeCompare(b.at));
+  const up = load();
   const el = document.createElement('div');
   el.className = 'thing calendar-card';
   el.dataset.id = th.id;
@@ -212,7 +212,7 @@ function mount(th, stageApi) {
     const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'remove ' + (ev.title || 'event'));
     x.className = 'cal-x';
     x.addEventListener('pointerdown', (e) => e.stopPropagation());
-    x.addEventListener('click', () => { stageApi.snapshot(); save(list.filter((e) => e.id !== ev.id)); stageApi.render(); });
+    x.addEventListener('click', () => { stageApi.snapshot(); A.write(A.withoutRow(A.events(), ev.id)); stageApi.render(); });
     row.appendChild(when); row.appendChild(what); row.appendChild(x); el.appendChild(row);
   });
   stageApi.bindDrag(el, th);

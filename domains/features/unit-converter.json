@@ -1,0 +1,433 @@
+{
+ "floor": "unit converter",
+ "verse_page": "/convert/",
+ "researched": "2026-10-25",
+ "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+ "sites": {
+  "unitconverters.net": {
+   "sources": [
+    "https://www.unitconverters.net/",
+    "https://www.unitconverters.net/length-converter.html",
+    "https://www.unitconverters.net/temperature-converter.html"
+   ],
+   "features": [
+    {
+     "name": "Common converters",
+     "detail": "length, temperature, area, volume, weight, time",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "convert/index.html Kind select: Length, Weight and mass, Temperature, Volume, Area, Time"
+    },
+    {
+     "name": "Speed, pressure, energy, power, force, angle, fuel consumption, data storage",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Kind select lists each"
+    },
+    {
+     "name": "Many units per kind",
+     "detail": "long unit lists per converter (e.g. length has dozens incl. historic units)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "495 units in 52 kinds: length adds dm, pm, angstrom, hand, US survey foot, fathom, link, rod, chain, league, cable, parsec, megametre; mass, volume, area, speed, time, pressure, energy and power each gain theirs (lib/units.js)"
+    },
+    {
+     "name": "Engineering converters",
+     "detail": "acceleration, angular velocity, density, specific volume, moment of inertia, torque",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Acceleration, Angular velocity, Density, Specific volume, Torque, Moment of inertia kinds (lib/units.js, group engineering)"
+    },
+    {
+     "name": "Heat converters",
+     "detail": "thermal conductivity plus fuel efficiency, thermal expansion, thermal resistance, specific heat, heat flux density, heat transfer coefficient",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "thermal conductivity plus specific heat capacity, heat flux density, heat transfer coefficient; fuel efficiency is the common Fuel kind"
+    },
+    {
+     "name": "Fluids converters",
+     "detail": "flow rate plus mass and mole flow, concentration, viscosity (dynamic and kinematic), surface tension, permeability",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "flow rate plus mass flow rate, dynamic and kinematic viscosity, molar concentration"
+    },
+    {
+     "name": "Sound converter",
+     "detail": "sound level units",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Light converters",
+     "detail": "illuminance plus luminance, luminous intensity, digital image resolution, frequency to wavelength",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "illuminance plus luminance; frequency on its own kind"
+    },
+    {
+     "name": "Electricity converters",
+     "detail": "charge plus current, voltage (electric potential), resistance, resistivity, conductance, capacitance, inductance, field strength, charge densities",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "charge plus current, voltage, resistance, resistivity, conductance, conductivity, capacitance, inductance, electric field strength"
+    },
+    {
+     "name": "Magnetism converters",
+     "detail": "flux density plus magnetomotive force, field strength, magnetic flux",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "flux density plus field strength, magnetic flux, magnetomotive force"
+    },
+    {
+     "name": "Radiology converters",
+     "detail": "absorbed dose, radioactivity, radiation exposure, equivalent dose",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "absorbed dose, radioactivity and radiation exposure (C/kg, roentgen)"
+    },
+    {
+     "name": "Other converters",
+     "detail": "metric prefixes, data transfer rate, typography, lumber volume, molar mass, number bases",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "metric prefixes, data transfer rate and typography kinds on /convert/; number bases on /base-converter/; no lumber volume or molar mass"
+    },
+    {
+     "name": "Periodic table",
+     "detail": "an element table among the tools",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none on /convert/"
+    },
+    {
+     "name": "One page per unit pair with a conversion table",
+     "detail": "e.g. inch to cm page with a table of common values",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a pair (?q=1 Nm to lbf ft) shows a table of 15 common values from 0.01 to 10000 below the converter"
+    },
+    {
+     "name": "Formula for each pair",
+     "detail": "how to convert, written out",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Pick a second unit ... for the formula from one to the other\""
+    }
+   ]
+  }
+ },
+ "verse_extra": [
+  "Swap the two units",
+  "Type in any box and every unit follows",
+  "Exact fractions from definitions, precision chosen 3 to 15 digits",
+  "Type a conversion in words (\"5 km to miles\")",
+  "Link that carries the setting",
+  "Works offline; nothing sent"
+ ],
+ "gaps": [
+  "Other converters",
+  "Sound converter",
+  "Periodic table"
+ ],
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "convertlive.com": {
+    "url": "https://convertlive.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://convertlive.com/"
+    ],
+    "method": "model",
+    "features": [
+     {
+      "name": "Acceleration converter",
+      "detail": "Acceleration converter Metres per second squared Feet per second squared g-units",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"acceleration\", \"converter\""
+     },
+     {
+      "name": "Angle converter",
+      "detail": "Angle converter Degrees Radians Mils (NATO) Degrees Cycles Degrees Cycles Radians More units",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"angle\", \"converter\""
+     },
+     {
+      "name": "Area converter",
+      "detail": "Area converter Square feet Square metres Square kilometres Square miles Square miles Square metres Square centimetres Square inches More units",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"area\", \"converter\""
+     },
+     {
+      "name": "Currency converter",
+      "detail": "Currency converter American Dollars Euro British Pounds American Dollars Japanese Yen American Dollars American Dollars Chinese Yuan",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"converter\"; not \"currency\""
+     },
+     {
+      "name": "Data size converter",
+      "detail": "Data size converter Megabytes Megabits Megabytes Gigabytes Kilobytes Megabytes Gigabytes Megabytes More units",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"data\", \"converter\"; not \"size\""
+     },
+     {
+      "name": "Energy converter",
+      "detail": "Energy converter Joules Kilocalories Kilocalories Calories British thermal units Kilowatt hours Kilowatt hours Kilojoules More units",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"energy\", \"converter\""
+     },
+     {
+      "name": "Force converter",
+      "detail": "Force converter Kiloponds Newtons Pascals per square metre Pound-force Pound-force Joules per metre Kiloponds Joules per metre",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"force\", \"converter\""
+     },
+     {
+      "name": "Length converter",
+      "detail": "Length converter Meters Feet Miles Kilometres Inches Centimetres Yards Meters",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"length\", \"converter\""
+     },
+     {
+      "name": "Power converter",
+      "detail": "Power converter Kilowatts Horsepower British thermal units per hour Kilowatts Kilocalories per hour Joules per second Horsepower Watts",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"power\", \"converter\""
+     },
+     {
+      "name": "Pressure converter",
+      "detail": "Pressure converter Megapascals kgf/cm² Physical atmospheres Bars Physical atmospheres Pounds per square inch Pounds per square inch Bars More units",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"pressure\", \"converter\""
+     },
+     {
+      "name": "Speed converter",
+      "detail": "Speed converter Kilometres per hour Miles per hour Miles per hour Knots Kilometres per hour Metres per second Feet per second Miles per hour",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"speed\", \"converter\""
+     },
+     {
+      "name": "Time converter",
+      "detail": "Time converter Years Seconds Weeks Years Days Months Milliseconds Seconds",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"time\", \"converter\""
+     },
+     {
+      "name": "Torque converter",
+      "detail": "Torque converter Newton metres Pound-force feet Dyne centimetres Kilonewton metres Newton metres Kilogram-force metres",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"torque\", \"converter\""
+     },
+     {
+      "name": "Volume converter",
+      "detail": "Volume converter Liters Milliliters Gallons (US - Liquid) Liters Barrels (US - Liquid) Liters Milliliters Fluid ounces (US) More units",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"volume\", \"converter\""
+     },
+     {
+      "name": "Weight converter",
+      "detail": "Weight converter Pounds Kilos Kilonewtons (mass) Kilos Milligrams Grams Kilos Pounds",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"weight\", \"converter\""
+     },
+     {
+      "name": "Bright color theme",
+      "detail": "Theme ☀ Bright color Dark color",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/convert/ shows none of its words; not \"bright\", \"color\", \"theme\""
+     },
+     {
+      "name": "Dark color theme",
+      "detail": "Theme ☀ Bright color Dark color",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/convert/ shows none of its words; not \"dark\", \"color\", \"theme\""
+     }
+    ]
+   },
+   "convertunits.com": {
+    "url": "https://convertunits.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.convertunits.com/"
+    ],
+    "method": "model",
+    "features": [
+     {
+      "name": "measurement unit converter",
+      "detail": "ConvertUnits.com provides an online conversion calculator for all types of measurement units.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"unit\", \"converter\"; not \"measurement\""
+     },
+     {
+      "name": "metric conversion tables",
+      "detail": "You can find metric conversion tables for SI units, as well as English units, currency, and other data.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"metric\", \"conversion\"; not \"table\""
+     },
+     {
+      "name": "convert length units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"length\", \"unit\""
+     },
+     {
+      "name": "convert area units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"area\", \"unit\""
+     },
+     {
+      "name": "convert mass units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"mass\", \"unit\""
+     },
+     {
+      "name": "convert pressure units",
+      "detail": "Type in unit symbols, abbreviations, or full names for units of length, area, mass, pressure, and other types.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"pressure\", \"unit\""
+     },
+     {
+      "name": "convert currency",
+      "detail": "You can find metric conversion tables for SI units, as well as English units, currency, and other data.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"convert\"; not \"currency\""
+     },
+     {
+      "name": "convert time units",
+      "detail": "Metric System length weight time electric current temperature amount of substance luminous intensity acceleration angle area capacitance density dynamic viscosity electric charge electric conductance ",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"time\", \"unit\""
+     },
+     {
+      "name": "convert salary",
+      "detail": "convert salary to hourly convert hourly to annual",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"convert\"; not \"salary\""
+     },
+     {
+      "name": "convert chemistry units",
+      "detail": "Examples include moles, grams Ni3S2 to moles, grams Gadolinium to moles, grams Acridine to moles, moles Mg3N2 to grams, moles Tellurium to grams moles, Calcium Silicate to grams",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"convert\", \"unit\"; not \"chemistry\""
+     },
+     {
+      "name": "calculate date difference",
+      "detail": "number of days between April 24th, 1982 and October 26th, 2026",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/convert/ shows none of its words; not \"calculate\", \"date\", \"difference\""
+     },
+     {
+      "name": "calculate days in year",
+      "detail": "how many days in a year",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"year\"; not \"calculate\", \"day\""
+     },
+     {
+      "name": "calculate days in month",
+      "detail": "how many days in October",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/convert/ shows none of its words; not \"calculate\", \"day\", \"month\""
+     },
+     {
+      "name": "count specific weekdays",
+      "detail": "how many Mondays in 2026 how many Tuesdays in 2026 how many Wednesdays in 2026 how many Thursdays in 2026 how many Fridays in 2026 how many Saturdays in 2026 how many Sundays in 2026",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"specific\"; not \"count\", \"weekday\""
+     },
+     {
+      "name": "Sag Calculator",
+      "detail": "Sag Calculator cc/rev to gpm Calculator Aviation Fuel Weight Calculator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/convert/ shows \"calculator\"; not \"sag\""
+     },
+     {
+      "name": "Aviation Fuel Weight Calculator",
+      "detail": "Sag Calculator cc/rev to gpm Calculator Aviation Fuel Weight Calculator",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/convert/ shows \"fuel\", \"weight\", \"calculator\"; not \"aviation\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "Bright color theme",
+    "sites": [
+     "convertlive.com"
+    ]
+   },
+   {
+    "name": "Dark color theme",
+    "sites": [
+     "convertlive.com"
+    ]
+   },
+   {
+    "name": "calculate date difference",
+    "sites": [
+     "convertunits.com"
+    ]
+   },
+   {
+    "name": "calculate days in month",
+    "sites": [
+     "convertunits.com"
+    ]
+   }
+  ],
+  "queued": [
+   {
+    "target": "feature:convertlive-com-e9d52132",
+    "feature": "Bright color theme",
+    "host": "convertlive.com",
+    "at": "2026-10-29",
+    "id": "mvswwxvd"
+   },
+   {
+    "target": "feature:convertlive-com-f78edf99",
+    "feature": "Dark color theme",
+    "host": "convertlive.com",
+    "at": "2026-10-29",
+    "id": "mvswwyjf"
+   }
+  ]
+ }
+}

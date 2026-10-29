@@ -6,6 +6,7 @@
  * next step and links the magnetize step, Pentamote-1 (with its moving miniature) and Linemote-1. Original wording only.
  * "can you 3d print a motor", "printed motor", "printed robot arm".
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const STEPS = [
   { head: 'A twitch', date: '2026-02-18', line: 'A linear motor printed in one go from all five material classes (insulator, conductor, soft and hard magnetic, flexible) moved 318 µm back and forth at 41.6 Hz. It needed one step after printing: magnetizing.',
     name: 'MIT News; Virtual and Physical Prototyping', href: 'https://doi.org/10.1080/17452759.2026.2613185' },
@@ -16,7 +17,7 @@ export const STEPS = [
 ];
 export const NEXT_LINE = 'Next: a printed motor small and cool enough to wave a toy figure’s arm.';
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const PRINTED = '(?:3d[\\s-]?print(?:ed)?|print(?:ed)?)';
 const ASK_RE = new RegExp('^(?:'
   + '(?:can|could)\\s+(?:you|i|we|someone)\\s+(?:3d\\s+)?print\\s+(?:a|an)\\s+(?:electric\\s+)?motor'
@@ -31,7 +32,7 @@ export function printedMotorHtml(esc) {
     + '<div class="printedmotor-mini" style="height:180px;margin:8px 0 4px"></div>'
     + STEPS.map((s, i) => '<p><b>' + (i + 1) + '. ' + esc(s.head) + '</b> · ' + esc(s.line) + ' <span style="color:#8a8a92;font-size:12px">· <a href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> (' + esc(s.date) + ')</span></p>').join('')
     + '<p><b>' + esc(NEXT_LINE) + '</b></p>'
-    + '<p style="color:#8a8a92;font-size:13px">The printed hard magnets still need <a href="#" data-ask="show the magnetize step">the magnetize step</a>. Void’s own designs, both untested: <a href="#" data-ask="pentamote-1">Pentamote-1</a>, a five-material motor body with a slicer-ready file, shown above, and <a href="#" data-ask="summon linemote-1">Linemote-1</a>, a finger-scale actuator.</p>'
+    + '<p style="color:#8a8a92;font-size:13px">The printed hard magnets still need <a href="#" data-ask="show the magnetize step">the magnetize step</a>. Verse’s own designs, both untested: <a href="#" data-ask="pentamote-1">Pentamote-1</a>, a five-material motor body with a slicer-ready file, shown above, and <a href="#" data-ask="summon linemote-1">Linemote-1</a>, a finger-scale actuator.</p>'
     + '<div class="src">Dated sources: ' + STEPS.map((s) => '<a href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> (' + esc(s.date) + ')').join(' · ') + '. Lab results, not products.</div>';
 }
 

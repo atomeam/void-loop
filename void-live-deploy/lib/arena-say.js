@@ -77,6 +77,21 @@ export function showArena(api, url, game) {
     const delta = arenaDelta(a && a.history); // day over day, from the daily run's history
     el.querySelector('[data-arena-delta]').textContent = delta ? 'Day over day: ' + delta + '.' : '';
     el.querySelector('[data-arena-trend]').innerHTML = arenaTrend(a && a.history); // void-review: ok: arenaTrend writes only day labels it built and numbers
+    arenaNoteForm(el, api, game, a); // asked by Verse, 2026-10-16: write down why a self-play run failed or worked
     api.say('');
   });
+}
+
+/** under the card: one box and a button; the note goes to the notepad as "self-play connect four, Oct 16: rated 1609 (+62 since Oct 10). Why: <your words>" */
+function arenaNoteForm(el, api, game, a) {
+  if (!el || !api.stage || el.querySelector('[data-arena-note]')) return;
+  const form = document.createElement('form'); form.setAttribute('data-arena-note', ''); form.style.cssText = 'display:flex;gap:6px;margin-top:10px';
+  const box = document.createElement('input'); box.type = 'text'; box.placeholder = 'why did it fail or win? your note'; box.maxLength = 300; box.setAttribute('aria-label', 'note on this self-play run'); box.style.cssText = 'flex:1;font:inherit;padding:4px 8px';
+  const go = document.createElement('button'); go.type = 'submit'; go.textContent = 'to notepad';
+  form.append(box, go);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    import('../skills/notepad.js').then((n) => import('./bridges.js').then((b) => { n.append(api.stage, b.arenaNoteLine(game, a, arenaDelta(a && a.history)) + box.value.trim()); box.value = ''; api.say('in the notepad'); })).catch(() => {});
+  });
+  el.appendChild(form);
 }

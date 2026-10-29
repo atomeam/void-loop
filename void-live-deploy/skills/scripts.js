@@ -11,13 +11,16 @@ export const KNOWN_ACTIONS = [
   'look', 'twirl', 'wave', 'stir', 'rumble', 'puff', 'pace', 'sit', 'hop', 'bow',
   'spin', 'sniff', 'glow', 'point', 'orbit', 'read', 'nod',
 ];
+import { yieldOf, fullStock } from '../lib/rts.js'; // the RTS world: what a node yields, a camp's stock (pure)
+
 /** How one figure responds when another tagged figure is nearby (Next #20). */
-export const KNOWN_REACTS = ['greet', 'follow', 'chase', 'flee', 'argue', 'team', 'eat'];
+export const KNOWN_REACTS = ['greet', 'follow', 'chase', 'flee', 'argue', 'team', 'eat', 'gather'];
 /** Role tags a script may claim; others match against these in reactsTo. */
 export const KNOWN_TAGS = [
   'police', 'troublemaker', 'animal', 'person', 'place', 'object', 'idea', 'sprite', 'chef', 'friend',
-  'zombie', 'brain', 'cat', 'mouse', 'dog', 'bone', 'fish', 'cheese', 'rabbit', 'carrot', 'monkey', 'banana', 'shark', 'bee', 'flower', 'food',
+  'zombie', 'brain', 'cat', 'mouse', 'dog', 'bone', 'fish', 'cheese', 'rabbit', 'carrot', 'monkey', 'banana', 'shark', 'bee', 'flower', 'food', 'horse', 'donkey',
   'cloud', 'sun', 'fire', 'ice', 'water',
+  'tree', 'wood', 'rock', 'stone', 'villager', 'camp', // the RTS world (lib/rts.js): the nodes, the villagers who gather them, the camp they carry to
 ];
 
 /** Map fancy script actions onto the visual acts the #17 brain already knows how to play. */
@@ -58,6 +61,8 @@ export const NATURES = [
   [/\b(rabbits?|bunny|bunnies|hares?)\b/i, ['rabbit'], { carrot: 'eat', dog: 'flee' }],
   [/\bcarrots?\b/i, ['carrot', 'food'], {}],
   [/\b(monkeys?|apes?|chimps?)\b/i, ['monkey'], { banana: 'eat' }],
+  [/\b(horses?|ponies|pony|foals?|stallions?|mares?)\b/i, ['horse'], { carrot: 'eat', dog: 'flee' }],
+  [/\b(donkeys?|burros?|mules?)\b/i, ['donkey'], { carrot: 'eat', dog: 'flee' }],
   [/\bbananas?\b/i, ['banana', 'food'], {}],
   [/\bsharks?\b/i, ['shark'], { fish: 'eat' }],
   [/\b(bees?|bumblebees?)\b/i, ['bee'], { flower: 'follow' }],
@@ -67,6 +72,12 @@ export const NATURES = [
   [/\b(fires?|campfires?|bonfires?|flames?)\b/i, ['fire'], {}],
   [/\b(ice|ice\s?cubes?|icebergs?|ice\s?blocks?)\b/i, ['ice'], {}],
   [/\b(sea|ocean|lake|pond|puddle)\b/i, ['water'], {}],
+  // the RTS world (owner, 2026-10-16; lib/rts.js): a tree is wood and a rock is stone (the food things above are food); a villager
+  // gathers any of them and carries each load to the camp
+  [/\b(trees?|oaks?|pines?|birch(?:es)?|forest|woods)\b/i, ['tree', 'wood'], {}],
+  [/\b(rocks?|stones?|boulders?|ore|quarry)\b/i, ['rock', 'stone'], {}],
+  [/\b(villagers?|workers?|woodcutters?|lumberjacks?|farmers?|settlers?|gatherers?|miners?|peasants?)\b/i, ['person', 'villager'], { wood: 'gather', stone: 'gather', food: 'gather' }],
+  [/\b(camps?|base|settlement|town\s?cent(?:er|re))\b/i, ['camp'], {}],
 ];
 
 // Conditions: some things act only when the conditions are right. A cloud gathers water from the air (faster over a
@@ -123,7 +134,7 @@ export const CONDITIONS = {
 export const AWAY_MIN_MS = 60e3; // under a minute away there is nothing to tell
 export const AWAY_MAX_MS = 24 * 36e5; // a day is as far as the world is replayed
 export const AWAY_STEP_S = 5; // seconds per simulated step
-export const WALK_PX_S = { zombie: 14, cat: 60, dog: 70, mouse: 55, rabbit: 50, monkey: 45, shark: 40, fish: 30, bee: 80 }; // how fast each walks
+export const WALK_PX_S = { zombie: 14, cat: 60, dog: 70, mouse: 55, rabbit: 50, monkey: 45, shark: 40, fish: 30, bee: 80, villager: 42 }; // how fast each walks
 const NEAR_PX = 24, FLEE_SEES_PX = 300;
 const paceOf = (seed) => { let h = (Number(seed) || 0) >>> 0; h = Math.imul(h ^ (h >>> 16), 2246822507) >>> 0; h = Math.imul(h ^ (h >>> 13), 3266489909) >>> 0; return 0.9 + 0.2 * (((h ^ (h >>> 16)) >>> 0) / 4294967296); };
 const kindOfThing = (t) => String((t && (t.kindOf || t.kind)) || '');
@@ -134,7 +145,7 @@ export function awayText(ms) {
   const h = Math.round(m / 60);
   return h < 48 ? (h === 1 ? '1 hour' : h + ' hours') : Math.round(h / 24) + ' days';
 }
-const REACTION_WORDS = { eat: 'found', follow: 'found', chase: 'caught' };
+const REACTION_WORDS = { eat: 'found', follow: 'found', chase: 'caught', gather: 'gathered' };
 export function advance(things, ms, opts = {}) {
   const list = Array.isArray(things) ? things.filter((t) => t && t.id != null) : [];
   const away = Math.max(0, Math.min(AWAY_MAX_MS, Math.floor(Number(ms) || 0)));
@@ -149,6 +160,13 @@ export function advance(things, ms, opts = {}) {
   const pos = new Map(list.map((t) => [t.id, placeOf(t)]));
   const moved = new Set(), gone = new Set(), done = new Set(), reacted = [];
   const tagsOf = (id) => nat.get(id).tags;
+  // the RTS world (lib/rts.js): what each node has left, what each villager carries, and each camp's stock, carried on from the things
+  const loads = new Map(), stock = new Map(), carry = new Map();
+  for (const t of list) {
+    const y = yieldOf(tagsOf(t.id)); if (y) loads.set(t.id, t.res && Number.isFinite(+t.res.left) ? Math.max(0, Math.floor(+t.res.left)) : y.units);
+    if (tagsOf(t.id).includes('camp')) stock.set(t.id, fullStock(t.stock));
+    if (t.carry && typeof t.carry === 'string') carry.set(t.id, t.carry);
+  }
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const walk = (id, from, to, step, away_) => { // one step toward (or away from) a point, kept on the stage
     const d = dist(from, to); if (d < 1e-9) return from;
@@ -184,21 +202,35 @@ export function advance(things, ms, opts = {}) {
         const d = dist(me, pos.get(o.id)); if (d < cd) { cd = d; chaser = o; }
       }
       if (chaser) { pos.set(a.id, walk(a.id, me, pos.get(chaser.id), step, true)); continue; }
-      // otherwise go for the nearest thing it reacts to
+      // otherwise go for the nearest thing it reacts to; a villager with a load on its back goes to the camp first (lib/rts.js)
       let goal = null, how = null, gd = Infinity;
-      for (const o of list) {
+      if (carry.get(a.id)) {
+        for (const o of list) { if (gone.has(o.id) || !stock.has(o.id)) continue; const d = dist(me, pos.get(o.id)); if (d < gd) { gd = d; goal = o; how = 'deliver'; } }
+        if (!goal) carry.delete(a.id); // no camp to carry to: the load is set down where it stands
+      }
+      if (!goal) for (const o of list) {
         if (o === a || gone.has(o.id) || done.has(a.id + '>' + o.id)) continue;
         const r = Object.entries(rx).find(([tg, v]) => v !== 'flee' && tagsOf(o.id).includes(tg));
         if (!r) continue;
+        if (r[1] === 'gather' && (!(loads.get(o.id) > 0) || !stock.size)) continue; // nothing left on it, or no camp to carry to
         const d = dist(me, pos.get(o.id)); if (d < gd) { gd = d; goal = o; how = r[1]; }
       }
       if (!goal) continue;
       const near = Math.max(NEAR_PX, step);
       if (gd <= near) {
         pos.set(a.id, { ...pos.get(goal.id) }); moved.add(a.id); // it ends beside what it caught or found
-        done.add(a.id + '>' + goal.id);
-        reacted.push({ id: a.id, kind: kindOfThing(a), what: REACTION_WORDS[how] || 'found', with: kindOfThing(goal) });
-        if (how === 'eat') gone.add(goal.id);
+        if (how === 'deliver') { // one load into the camp's stock
+          const res = carry.get(a.id); carry.delete(a.id);
+          const s = stock.get(goal.id); s[res] = (s[res] || 0) + 1;
+          reacted.push({ id: a.id, kind: kindOfThing(a), what: 'gathered', with: res });
+        } else if (how === 'gather') { // one load off the node; an empty node is gone
+          const y = yieldOf(tagsOf(goal.id)); carry.set(a.id, (y && y.res) || 'wood');
+          loads.set(goal.id, loads.get(goal.id) - 1); if (loads.get(goal.id) <= 0) gone.add(goal.id);
+        } else {
+          done.add(a.id + '>' + goal.id);
+          reacted.push({ id: a.id, kind: kindOfThing(a), what: REACTION_WORDS[how] || 'found', with: kindOfThing(goal) });
+          if (how === 'eat') gone.add(goal.id);
+        }
       } else pos.set(a.id, walk(a.id, me, pos.get(goal.id), step, false));
     }
   }
@@ -212,7 +244,9 @@ export function advance(things, ms, opts = {}) {
   changes.push(...reacted);
   const groups = new Map();
   for (const c of changes) { const key = c.kind + '|' + c.what + '|' + (c.with || ''); const g = groups.get(key) || { ...c, n: 0 }; g.n += 1; groups.set(key, g); }
-  const parts = [...groups.values()].map((g) => (g.n > 1 ? g.n + ' ' + g.kind + 's ' : 'the ' + g.kind + ' ') + g.what + (g.with ? ' the ' + g.with : ''));
+  const parts = [...groups.values()].map((g) => (g.what === 'gathered'
+    ? 'the ' + g.kind + (g.n > 1 ? 's' : '') + ' gathered ' + g.n + ' ' + g.with // "the villagers gathered 14 wood"
+    : (g.n > 1 ? g.n + ' ' + g.kind + 's ' : 'the ' + g.kind + ' ') + g.what + (g.with ? ' the ' + g.with : '')));
   const note = parts.length ? 'While you were away (' + awayText(away) + '): ' + parts.join(', ') + '.' : '';
   return {
     things: list.map((t) => {
@@ -220,6 +254,9 @@ export function advance(things, ms, opts = {}) {
       if (cur.has(t.id)) out.nature = cur.get(t.id);
       if (moved.has(t.id)) { const p = pos.get(t.id); out.at = { x: Math.round(p.x), y: Math.round(p.y) }; }
       if (gone.has(t.id)) out.gone = true;
+      if (loads.has(t.id)) out.res = { kind: (t.res && t.res.kind) || (yieldOf(tagsOf(t.id)) || {}).res, left: loads.get(t.id) };
+      if (stock.has(t.id)) out.stock = { ...stock.get(t.id) };
+      if (carry.has(t.id)) out.carry = carry.get(t.id); else if (t.carry) out.carry = null;
       return out;
     }),
     changes, note,
@@ -350,7 +387,7 @@ export function pickReaction(selfScript, otherScript) {
 }
 
 // two things of the same nature (both zombies, both cats): their nature tags overlap, 'food' aside
-const NATURE_TAGS = new Set(NATURES.flatMap(([, t]) => t).filter((t) => t !== 'food'));
+const NATURE_TAGS = new Set(NATURES.flatMap(([, t]) => t).filter((t) => t !== 'food' && !FALLBACKS[t])); // a body tag (person, place) is not a kind: a zombie still chases a man
 function sameKind(a, b) { const ta = (a && a.tags) || [], tb = new Set((b && b.tags) || []); return ta.some((t) => NATURE_TAGS.has(t) && tb.has(t)); }
 /**
  * Among nearby others, pick the best (nearest) reaction target.
@@ -366,8 +403,9 @@ export function pickNearbyReaction(self, others, maxDist = 220) {
     const react = pickReaction(self.script, o.script);
     if (!react) continue;
     if ((react === 'chase' || react === 'eat') && sameKind(self.script, o.script)) continue; // a zombie does not hunt a zombie
-    if (d > (react === 'eat' ? maxDist * 5 : maxDist)) continue; // food is smelled from across the stage: a hunter finds it
-    const rank = react === 'eat' ? 0 : 1; // hunger first: food in reach beats a nearer chase
+    if (react === 'gather' && (o.left != null && o.left <= 0)) continue; // a node with nothing left on it
+    if (d > (react === 'eat' || react === 'gather' ? maxDist * 5 : maxDist)) continue; // food is smelled from across the stage: a hunter finds it; a villager sees work the same way
+    const rank = react === 'eat' || react === 'gather' ? 0 : 1; // hunger first: food in reach beats a nearer chase; work before greetings
     if (!best || rank < best.rank || (rank === best.rank && d < best.d)) best = { other: o, react, d, rank };
   }
   return best ? { other: best.other, react: best.react } : null;

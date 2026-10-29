@@ -1,12 +1,12 @@
-// Passkeys for Void (plan item 6): no passwords, no email, nothing on the surface. The person asks Void
+// Passkeys for Verse (plan item 6): no passwords, no email, nothing on the surface. The person asks Verse
 // ("remember me", "sign in", "sign out", "forget me") and the page runs one of these steps.
 // POST { step: 'create-options' }            -> { publicKey }  creation options (JSON form, WebAuthn L3 parseCreationOptionsFromJSON)
-//                                                with a Bearer session: adds a passkey to that Void instead of making a new one
+//                                                with a Bearer session: adds a passkey to that Verse instead of making a new one
 // POST { step: 'create', credential }        -> { token, userId, credentialId }  (credential = PublicKeyCredential.toJSON())
 // POST { step: 'get-options' }               -> { publicKey }  request options (discoverable: no allowCredentials)
 // POST { step: 'get', credential }           -> { token, userId }  | 404 { error: 'unknown passkey', credentialId }
 // POST { step: 'sign-out' }  (Bearer)        -> ends that session
-// POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session, synced byte, tier row, code review key and public /@name page of that Void -> { userId, credentialIds }
+// POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session, synced byte, tier row, code review key and public /@name page of that Verse -> { userId, credentialIds }
 // POST { step: 'tier' }      (Bearer)        -> { tier: 'free' | 'paid' }  (plan item 12; no row or a read error = free)
 // POST { step: 'owner' }   (Bearer key or owner session) -> 200 { owner: true, renewed? } | 401. No D1 needed.
 // POST { step: 'owner-bind', credentialId } (Bearer READ_TOKEN only) -> that passkey becomes the owner's login.
@@ -46,7 +46,7 @@ async function createOptions(request, env) {
   const challenge = await mintChallenge(env, me ? 'add' : 'create', userId);
   return good({ publicKey: {
     rp: { id: r.id, name: RP_NAME },
-    user: { id: userId, name: 'My Void', displayName: 'My Void' },
+    user: { id: userId, name: 'My Verse', displayName: 'My Verse' },
     challenge,
     pubKeyCredParams: ALGS.map((alg) => ({ type: 'public-key', alg })),
     timeout: CHALLENGE_TTL_MS,
@@ -65,7 +65,7 @@ async function create(request, env, b) {
   let v;
   try { v = await verifyRegistration({ credential: cred, expectedChallenge: ch.challenge, origins: r.origins, rpId: r.id }); } catch (e) { return bad(400, 'passkey not verified: ' + e.message); }
   const me = await session(request, env);
-  // 'add' (another passkey for a Void you're signed in to) needs that same session; 'create' makes a new Void
+  // 'add' (another passkey for a Verse you're signed in to) needs that same session; 'create' makes a new Verse
   if (ch.kind === 'add' ? !me || me.userId !== ch.userId : !!me) return bad(400, 'passkey not verified: session changed');
   const now = new Date().toISOString();
   const stmts = [env.DB.prepare('INSERT INTO void_passkeys (id, user_id, public_key, alg, sign_count, transports, backed_up, at, used) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
@@ -103,9 +103,12 @@ async function get(request, env, b) {
 
 // Owner login (2026-10-03). Only the owner key itself (READ_TOKEN, constant-time) can bind a passkey as the owner's login: a stranger
 // can never promote their own passkey, and a copied owner session can't make itself permanent.
-async function ownerFor(env, credentialId) {
+export async function ownerFor(env, credentialId) {
   try {
-    const row = await env.DB.prepare('SELECT id FROM void_owner_passkeys WHERE id = ?').bind(credentialId).first();
+    // the owner is an account, not one device (owner, 2026-10-14: "build me into it so I stop having to struggle to access my own
+    // site"): a passkey is the owner's when it, or any passkey on the same account, was bound. Adding a passkey to an account needs
+    // that account's own session, so this never lets a stranger in.
+    const row = await env.DB.prepare('SELECT o.id FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE o.id = ? OR p.user_id = (SELECT user_id FROM void_passkeys WHERE id = ?) LIMIT 1').bind(credentialId, credentialId).first();
     return row ? await mintOwnerSession(env, credentialId) : null;
   } catch (_) { return null; } // fails closed: not the owner
 }
@@ -151,7 +154,7 @@ async function forget(request, env) {
     env.DB.prepare('DELETE FROM void_sessions WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_accounts WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_review_keys WHERE user_id = ?').bind(me.userId), // its code review keys stop working
-    env.DB.prepare('DELETE FROM void_pages WHERE user_id = ?').bind(me.userId), // a public /@name page goes too: nothing of a forgotten Void stays up
+    env.DB.prepare('DELETE FROM void_pages WHERE user_id = ?').bind(me.userId), // a public /@name page goes too: nothing of a forgotten Verse stays up
   ]);
   return good({ ok: true, userId: me.userId, credentialIds: ids, rpId: rp(env).id });
 }

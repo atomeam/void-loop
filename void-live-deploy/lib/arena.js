@@ -1,4 +1,4 @@
-// arena — Void plays its games against itself (frontier #5). Two versions of the Connect Four engine (skills/connect4-rules.js),
+// arena — Verse plays its games against itself (frontier #5). Two versions of the Connect Four engine (skills/connect4-rules.js),
 // each a look-ahead depth and a set of evaluation weights, play each other with colours swapped every game and a short random
 // opening from a seed (so a deterministic engine does not replay one game). The stronger one is kept; ratings come from the
 // games (a performance rating against a fixed anchor), not from a claim. Pure, no DOM, no network.

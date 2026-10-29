@@ -1,0 +1,41 @@
+# Suggested-by: Void (run 118). Catches API writers that skip local hooks.
+name: ledger-guard
+on:
+  push:
+    branches: [master]
+    paths: [FEATURE_LEDGER.md, .github/workflows/ledger-guard.yml, tools/check-ledger.sh, .githooks/**]
+permissions:
+  contents: write
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+      - name: Check ledger
+        id: check
+        run: |
+          git show HEAD~1:FEATURE_LEDGER.md > /tmp/prev.md 2>/dev/null || : > /tmp/prev.md
+          bash tools/check-ledger.sh FEATURE_LEDGER.md /tmp/prev.md
+        continue-on-error: true
+      - name: Auto-restore last good ledger
+        if: steps.check.outcome == 'failure'
+        run: |
+          for c in $(git log --format=%H -50 -- FEATURE_LEDGER.md | tail -n +2); do
+            git show "$c:FEATURE_LEDGER.md" > /tmp/L || continue
+            if bash tools/check-ledger.sh /tmp/L; then
+              bad=$(git show HEAD:FEATURE_LEDGER.md)
+              cp /tmp/L FEATURE_LEDGER.md
+              { echo; echo "## Guard restore ($(date -u +%F))"; echo; echo "Ledger guard restored this file from ${c:0:7} after ${GITHUB_SHA:0:7} broke it. Content that commit wrote is in its diff; re-add it with git on disk."; } >> FEATURE_LEDGER.md
+              git config user.name ledger-guard; git config user.email ledger-guard@users.noreply.github.com
+              git commit -am "ledger-guard: restore FEATURE_LEDGER.md from ${c:0:7}" -m "Suggested-by: Void (run 118)"
+              git pull --rebase && git push
+              break
+            fi
+          done
+      - name: Fail loudly
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::error::FEATURE_LEDGER.md was blanked or lost sections at $GITHUB_SHA (auto-restore attempted)"
+          exit 1

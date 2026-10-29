@@ -1,0 +1,52 @@
+{
+ "name": "lines",
+ "title": "Lines",
+ "about": "Pieces slide along straight lines on a board, and never farther than their Speed.",
+ "rules": [
+  {
+   "id": "lines-straight",
+   "source": "lines set",
+   "layer": 1,
+   "when": "move",
+   "if": [
+    {
+     "fact": "moveDx",
+     "cmp": "ne",
+     "value": 0
+    },
+    {
+     "fact": "moveDy",
+     "cmp": "ne",
+     "value": 0
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "a piece slides along a straight line"
+    }
+   ]
+  },
+  {
+   "id": "lines-reach",
+   "source": "lines set",
+   "layer": 1,
+   "when": "move",
+   "if": [
+    {
+     "fact": "moveDistance",
+     "cmp": "gt",
+     "value": {
+      "fact": "cardSpeed"
+     }
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "a piece moves at most its Speed in squares"
+    }
+   ]
+  }
+ ]
+}

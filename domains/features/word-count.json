@@ -1,0 +1,132 @@
+{
+  "floor": "word count",
+  "verse_page": "/word-count/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "wordcounter.net": {
+      "sources": [
+        "https://wordcounter.net/",
+        "https://www.vefogix.com/blogs/best-word-counter-tools/"
+      ],
+      "features": [
+        {
+          "name": "Live word and character count",
+          "detail": "counts update as you type",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "word-count/index.html \"0 words · 0 characters\", input listener"
+        },
+        {
+          "name": "Details: sentences, paragraphs",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "stats list: Sentences, Paragraphs"
+        },
+        {
+          "name": "Reading level",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "stats list \"Reading level\" (Flesch-Kincaid grade)"
+        },
+        {
+          "name": "Reading and speaking time with set words-per-minute",
+          "detail": "reading and speaking time, with the words-per-minute adjustable in settings",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Settings: reading and speaking speed in words a minute, kept on the device"
+        },
+        {
+          "name": "Keyword density panel (1, 2 and 3 word phrases)",
+          "detail": "top keywords and phrases with counts and percentages; option to include common words",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Words, Two-word phrases and Three-word phrases lists with counts and shares (lib/wordcount.js phrases)"
+        },
+        {
+          "name": "Auto-save",
+          "detail": "saves the document every 30 seconds",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "localStorage a2m.void.wordcount.v1 \"Saved on this device (auto-save)\""
+        },
+        {
+          "name": "Activity / earlier versions",
+          "detail": "go back to earlier saved versions of the document",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Earlier versions: one kept each minute of writing and before a big change or Clear, the last 30, on this device, each with Restore (lib/wordcount.js keepVersion)"
+        },
+        {
+          "name": "Word / character goals",
+          "detail": "set a target (e.g. 500 words) and be told when you reach it; goals shareable or embeddable",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Goal: a number of words or characters, a progress bar, how many to go and Goal reached; kept on the device and carried as ?goal=500 or ?goal=2000c"
+        },
+        {
+          "name": "Grammar and spelling check",
+          "detail": "automatic grammar and spelling correction",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "browser spellcheck only (textarea spellcheck=\"true\")"
+        },
+        {
+          "name": "Read aloud (proofread)",
+          "detail": "text-to-speech reads the document back",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Read aloud / Stop with a speed choice, the selection or all of it, in the browser voice (speechSynthesis)"
+        },
+        {
+          "name": "Case changes",
+          "detail": "upper, lower, title case",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "buttons UPPERCASE / lowercase / Title Case"
+        },
+        {
+          "name": "Settings: font size, display options",
+          "detail": "adjust editor appearance and which panels show",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Settings: text size Small to Larger"
+        },
+        {
+          "name": "Pages estimate",
+          "detail": "how many pages the text fills (not confirmed by search)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Pages (single-spaced, 500 words) and Pages (double-spaced, 250 words)"
+        },
+        {
+          "name": "Social media character limits",
+          "detail": "how the text fits X, Facebook, etc. (seen on look-alike sites; unconfirmed on wordcounter.net)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Fits in: X post, SMS, search title, meta description, Instagram, LinkedIn, YouTube title, TikTok, Facebook, with how many left or over"
+        },
+        {
+          "name": "Browser extension",
+          "detail": "count words on any page",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Sentence counting that does not stop at Mr., U.S. or 3.5",
+    "Characters without spaces",
+    "Copy link that carries the text (?t=)",
+    "Nothing sent anywhere; works offline",
+    "\"Rehearse it\": a countdown of its speaking time on /stopwatch/"
+  ],
+  "gaps": [
+    "Grammar and spelling check",
+    "Browser extension"
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "floor": "colour",
+  "verse_page": "/color/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "color-hex.com": {
+      "sources": [
+        "https://www.color-hex.com/color/ff5733",
+        "https://www.color-hex.com/"
+      ],
+      "features": [
+        {
+          "name": "Colour models on the colour page",
+          "detail": "RGB, HSL, HSV, CMYK and more, each value listed",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "15 models (RGB, HSL, HSV / HSB, HWB, CMYK, Hunter Lab, Oklab, OKLCH, ...)"
+        },
+        {
+          "name": "Colour name",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "nearest name by eye (CIE Lab)"
+        },
+        {
+          "name": "Shades and tints",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Monochromatic tints, Shades, Tones"
+        },
+        {
+          "name": "Schemes",
+          "detail": "complementary, analogous, triadic",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Schemes: Complement, Analog, Split, Triad, ..."
+        },
+        {
+          "name": "Related colours",
+          "detail": "similar colours to browse",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "swatches click through; no \"similar colours\" list"
+        },
+        {
+          "name": "Palettes that use the colour",
+          "detail": "community palettes containing it",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Palettes made from it: eight palettes of five built around the colour (monochrome, analogous, complementary, triadic, pastel, muted, with neutrals, bold contrast), each starting with it (lib/palettes.js); made by rules, not a community"
+        },
+        {
+          "name": "Create and save palettes (account)",
+          "detail": "members make, name and save palettes; likes and comments",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Your palette: add colours, name and save palettes on this device (no account), edit, copy as CSS variables, paint the wheel with one"
+        },
+        {
+          "name": "Popular / latest palettes",
+          "detail": "browse community palettes",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Colour picker",
+          "detail": "pick a colour visually",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "input type=\"color\" beside the text box"
+        },
+        {
+          "name": "Colour names list",
+          "detail": "browse named colours",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "148 CSS names understood; no browse list"
+        },
+        {
+          "name": "Web-safe colours",
+          "detail": "the 216 web-safe colours",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "The 216 web-safe colours, opened on tap, with the nearest web-safe colour to this one (lib/palettes.js WEB_SAFE)"
+        },
+        {
+          "name": "Text preview on the colour",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "WCAG contrast block shows text on it"
+        },
+        {
+          "name": "Random colour",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Random colour"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "WCAG AA and AAA for text on the colour",
+    "Download JSON and CSV",
+    "Make a gradient from it; paint the wheel in its shades",
+    "No ads, analytics or web fonts; offline"
+  ],
+  "gaps": [
+    "Popular / latest palettes",
+    "Related colours",
+    "Colour names list"
+  ]
+}

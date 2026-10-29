@@ -16,18 +16,22 @@ import { ownerOk } from '../../lib/guard.js';
 import { grantStandingSpend } from '../../lib/router.js';
 import { track } from '../../lib/actions.js';
 import { sendProposal } from '../../lib/email-send.js';
+import { keepGoing } from '../../lib/keep-going.js';
+import * as autos from '../../lib/automations-run.js';
 import {
   EVENT_REQUESTED, EVENT_DECISION, POLICY_VERSION, GATED, ORG_ID, WORKFLOW_ID, CONFIRM_TTL_MS,
   isGated, fingerprint, confirmLine, budgetImpact, checkDecision,
 } from '../../lib/approval-core.js';
 
 // toolName -> async (args, env) => result. Empty until a connector ships: an approved action with no
-// executor is recorded as approved-but-not-run and Void says the service isn't connected yet.
+// executor is recorded as approved-but-not-run and Verse says the service isn't connected yet.
 export const executors = {
   // a standing spend on a stronger model (STANDING.md): recorded only here, after the yes; the router pays only from earnings
   'models.spend': (args, env, rec) => grantStandingSpend(args, env, rec),
   // the proposal's send (lib/email-send.js): dry run until EMAIL_LIVE=send, sender on the domain, daily cap
   'proposal.send': (args, env) => sendProposal(args, env),
+  // a lasting task: the yes puts an automation on the clock (or off it); the clock then runs it with nobody here (lib/keep-going.js)
+  'automation.keep': (args, env) => keepGoing(args, env, autos),
 };
 
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)

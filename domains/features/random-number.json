@@ -1,0 +1,264 @@
+{
+ "floor": "random number",
+ "verse_page": "/random/",
+ "researched": "2026-10-25",
+ "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+ "sites": {
+  "random.org": {
+   "sources": [
+    "https://www.random.org/",
+    "https://www.random.org/integers/",
+    "https://www.random.org/integer-sets/",
+    "https://www.random.org/clients/http/api/",
+    "https://www.random.org/widgets/",
+    "https://www.random.org/app/",
+    "https://hosted.random.org/",
+    "https://apps.apple.com/us/app/random-org/id641621861"
+   ],
+   "features": [
+    {
+     "name": "Integer generator: count, min, max",
+     "detail": "1 to 10,000 integers between -1e9 and 1e9",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "random/index.html From / To / How many (up to 10,000)"
+    },
+    {
+     "name": "Columns",
+     "detail": "arrange the integers in N columns",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "random/index.html \"Columns in a line 1..10\""
+    },
+    {
+     "name": "Base 2 / 8 / 10 / 16",
+     "detail": "write the numbers in binary, octal, decimal or hex",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "random/index.html \"Base decimal binary octal hex\""
+    },
+    {
+     "name": "Plain-text or HTML output",
+     "detail": "format=plain for scripts",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Copy and Copy link; no plain-text endpoint for scripts"
+    },
+    {
+     "name": "Repeatable randomisation (persistent identifier / date)",
+     "detail": "rnd=id.<x> or date.<iso> gives the same draw again",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "random/index.html \"public, checkable draw\": the drand round is in the link and re-derives the numbers"
+    },
+    {
+     "name": "True randomness from atmospheric noise",
+     "detail": "numbers from radio noise, not a PRNG",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "device crypto.getRandomValues, or the public drand beacon (true randomness from a distributed beacon, not atmospheric noise)"
+    },
+    {
+     "name": "Sequence generator / randomizer",
+     "detail": "shuffle every integer in a range into a random order",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "\"no repeats\" with How many = the whole range gives a shuffled sequence; no dedicated sequence control"
+    },
+    {
+     "name": "Integer sets",
+     "detail": "several sets of non-repeating integers, optionally sorted",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "\"no repeats\" and \"sorted\" for one set; no multiple sets at once"
+    },
+    {
+     "name": "List randomizer",
+     "detail": "shuffle a pasted list",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "random/index.html \"Pick from a list or shuffle it\": Pick one / Shuffle all"
+    },
+    {
+     "name": "Gaussian generator",
+     "detail": "numbers from a normal distribution with mean and deviation",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no distribution choice on /random/"
+    },
+    {
+     "name": "Decimal fractions",
+     "detail": "random decimals with chosen decimal places",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Decimals: 1 to 10 places, each step of the range equally likely, written exactly (?dec=4)"
+    },
+    {
+     "name": "Raw bytes download",
+     "detail": "random bytes as a file",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "String generator",
+     "detail": "random strings from chosen character sets",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "random strings live on /password/, not on /random/"
+    },
+    {
+     "name": "Password generator",
+     "detail": "random passwords",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/password/ (Verse page)"
+    },
+    {
+     "name": "Dice roller",
+     "detail": "roll up to six dice with dice faces",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "dice are answered on the stage (chance skill, skills/calc-more.js note); /random/ has no dice view"
+    },
+    {
+     "name": "Coin flipper with 100 world coins",
+     "detail": "flip a coin chosen from 100 real coins",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/flip/ coin picker of real coins (skills/coin.js)"
+    },
+    {
+     "name": "Playing card shuffler",
+     "detail": "shuffle decks and turn cards over one at a time",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Shuffle and deal playing cards: 1 to 8 decks, jokers, dealt round 1 to 8 hands or turned over one at a time, with the cards left"
+    },
+    {
+     "name": "Lotto quick pick",
+     "detail": "quick picks for 150+ named lotteries",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a link like ?n=6&unique=1&min=1&max=49 makes a lottery line; no named lottery list"
+    },
+    {
+     "name": "Keno / bingo cards",
+     "detail": "quick picks for keno and printable bingo cards",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Calendar dates and clock times",
+     "detail": "random dates in a range, random times of day",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Random dates and times: a date range, dates, dates and times or times of day, weekdays only, sorted, copy"
+    },
+    {
+     "name": "Geographic coordinates",
+     "detail": "random points on Earth",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Bitmaps and audio noise",
+     "detail": "random bitmap images and audio noise files",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Third-Party Draw Service",
+     "detail": "certified prize draws with a public record of the result",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "public, checkable drand draw anyone can re-derive; no organiser account or certificate"
+    },
+    {
+     "name": "Multi-round giveaways",
+     "detail": "paid giveaway service with several rounds and public records",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "JSON-RPC / HTTP API with quota",
+     "detail": "free quota and paid API plans, signed results",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no public random-number API endpoint"
+    },
+    {
+     "name": "Web widgets",
+     "detail": "embed a generator on your own site",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no embed snippet"
+    },
+    {
+     "name": "Mobile app with unlockable randomizers",
+     "detail": "official app; some randomizers unlocked for a fee",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no native app; page works offline"
+    },
+    {
+     "name": "Statistics on the generator",
+     "detail": "real-time statistics on the bits served",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "none"
+    }
+   ]
+  }
+ },
+ "verse_extra": [
+  "A public draw anyone can re-check from its drand round in the link",
+  "Unbiased by rejection sampling, explained on the page",
+  "Previous numbers shown (\"Before: ...\")",
+  "Copy link that holds the whole setting",
+  "Opens offline after one visit",
+  "No ads or trackers"
+ ],
+ "gaps": [
+  "True randomness from atmospheric noise",
+  "Sequence generator / randomizer",
+  "Integer sets",
+  "Dice roller",
+  "Lotto quick pick",
+  "Third-Party Draw Service",
+  "Gaussian generator",
+  "Raw bytes download",
+  "Keno / bingo cards",
+  "Geographic coordinates",
+  "Bitmaps and audio noise",
+  "Web widgets",
+  "Statistics on the generator",
+  "Plain-text or HTML output",
+  "String generator",
+  "Multi-round giveaways",
+  "JSON-RPC / HTTP API with quota",
+  "Mobile app with unlockable randomizers"
+ ],
+ "auto": {
+  "queued": [
+   {
+    "target": "feature:random-org-dac2f8d3",
+    "feature": "Gaussian generator",
+    "host": "random.org",
+    "at": "2026-10-27",
+    "id": "mvqun5gh"
+   },
+   {
+    "target": "feature:random-org-99750ba1",
+    "feature": "Raw bytes download",
+    "host": "random.org",
+    "at": "2026-10-27",
+    "id": "mvqun67s"
+   }
+  ]
+ }
+}

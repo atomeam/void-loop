@@ -1,5 +1,5 @@
 /**
- * mancala skill — Kalah on the stage, against Void.
+ * mancala skill — Kalah on the stage, against Verse.
  * Contract, same as tictactoe.js and othello.js: { name, mancalaOf, createMancalaState, resolveMove,
  * legalMoves, voidMove, examples, nearMisses, match, run, stageKinds }.
  * "play mancala", "kalah", "let's play mancala".
@@ -8,14 +8,15 @@
  * seed in the other side's store. A side that runs out of seeds ends the game: the rest go to
  * whoever still has pit seeds, and the bigger store wins.
  *
- * Pit numbering: 0-5 are yours along the bottom (left to right), 6-11 are Void's along the top (right to left). Stores are [you, Void].
+ * Pit numbering: 0-5 are yours along the bottom (left to right), 6-11 are Verse's along the top (right to left). Stores are [you, Verse].
  */
+import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 
 const SEEDS = 4;
 const PITS = 12;
-// counter-clockwise round the board: your row left to right, your store (right), Void's row right to left
-// (6 is top right, 11 top left, so 11 - i sits across from pit i), Void's store (left), back to your pit 0
+// counter-clockwise round the board: your row left to right, your store (right), Verse's row right to left
+// (6 is top right, 11 top left, so 11 - i sits across from pit i), Verse's store (left), back to your pit 0
 const RING = [
   [0, 1, 2, 3, 4, 5, 'S', 6, 7, 8, 9, 10, 11],
   [6, 7, 8, 9, 10, 11, 'N', 0, 1, 2, 3, 4, 5],
@@ -26,7 +27,7 @@ export function createMancalaState() {
   return { pits: new Array(PITS).fill(SEEDS), store: [0, 0], turn: 0, over: false, result: null };
 }
 
-/** Your pits are 0-5, Void's are 6-11. */
+/** Your pits are 0-5, Verse's are 6-11. */
 export function owns(player, pit) { return player === 0 ? pit >= 0 && pit <= 5 : pit >= 6 && pit <= 11; }
 
 /** The pit across from this one, for a capture. */
@@ -63,7 +64,7 @@ function settle(state) {
 export function resolveMove(state, pit) {
   if (state.over) throw new Error('game over');
   const player = state.turn;
-  if (!owns(player, pit)) throw new Error(`pit ${pit} is not ${player === 0 ? 'yours' : "Void's"}`);
+  if (!owns(player, pit)) throw new Error(`pit ${pit} is not ${player === 0 ? 'yours' : "Verse's"}`);
   const sown = state.pits[pit];
   if (sown < 1) throw new Error(`pit ${pit} is empty`);
 
@@ -110,7 +111,7 @@ export function search(state, player, depth) {
   return best === -1e9 ? evaluate(state, player) : best;
 }
 
-/** Void's pit, or -1 when it has to pass. Only valid on Void's turn. */
+/** Verse's pit, or -1 when it has to pass. Only valid on Verse's turn. */
 export function voidMove(state, depth = 3) {
   if (state.over || state.turn !== 1) return -1;
   const moves = legalMoves(state, 1);
@@ -127,7 +128,7 @@ export function voidMove(state, depth = 3) {
 
 export function mancalaOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+)?(?:mancala|kalah)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game', label: 'Mancala' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+)?(?:mancala|kalah)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t)) return { kind: 'game', label: 'Mancala' };
   return null;
 }
 
@@ -175,8 +176,8 @@ function mount(th, stageApi) {
     cells.push(b);
     return b;
   }
-  // Void's store on your left, yours on your right; both span the two rows.
-  // Top row is Void's pits 11-6 read right to left (counter-clockwise sowing), bottom row is yours 0-5.
+  // Verse's store on your left, yours on your right; both span the two rows.
+  // Top row is Verse's pits 11-6 read right to left (counter-clockwise sowing), bottom row is yours 0-5.
   const voidPits = [11, 10, 9, 8, 7, 6].map(pitButton);
   const yourPits = [0, 1, 2, 3, 4, 5].map(pitButton);
   grid.append(stores[1], ...voidPits, stores[0], ...yourPits);
@@ -184,20 +185,20 @@ function mount(th, stageApi) {
   const fill = (node, n, max, tall) => { node.innerHTML = '<span class="mc-seeds">' + seedsHTML(n, max, tall) + '</span><b class="mc-n">' + n + '</b>'; };
   function paint() {
     const s = th.state;
-    voidPits.forEach((vp, n) => { const i = 11 - n; fill(vp, s.pits[i] || 0, 14); vp.disabled = true; vp.setAttribute('aria-label', `Void pit ${6 - n}: ${s.pits[i] || 0} seeds`); });
+    voidPits.forEach((vp, n) => { const i = 11 - n; fill(vp, s.pits[i] || 0, 14); vp.disabled = true; vp.setAttribute('aria-label', `Verse pit ${6 - n}: ${s.pits[i] || 0} seeds`); });
     yourPits.forEach((yp, n) => { fill(yp, s.pits[n] || 0, 14); yp.disabled = s.over || s.turn !== 0 || !s.pits[n]; yp.setAttribute('aria-label', `your pit ${n + 1}: ${s.pits[n] || 0} seeds`); });
     fill(stores[0], s.store[0], 30, true); fill(stores[1], s.store[1], 30, true);
     stores[0].setAttribute('aria-label', `your store: ${s.store[0]}`);
-    stores[1].setAttribute('aria-label', `Void store: ${s.store[1]}`);
+    stores[1].setAttribute('aria-label', `Verse store: ${s.store[1]}`);
     status.textContent = s.over
-      ? (s.result === 'you_win' ? `You win ${s.store[0]}–${s.store[1]}!` : s.result === 'void_wins' ? `Void wins ${s.store[1]}–${s.store[0]}` : `Drawn ${s.store[0]}–${s.store[1]}`)
-      : (s.turn === 0 ? 'Your move · tap one of your pits' : 'Void is thinking…');
+      ? (s.result === 'you_win' ? `You win ${s.store[0]}–${s.store[1]}!` : s.result === 'void_wins' ? `Verse wins ${s.store[1]}–${s.store[0]}` : `Drawn ${s.store[0]}–${s.store[1]}`)
+      : (s.turn === 0 ? 'Your move · tap one of your pits' : 'Verse is thinking…');
   }
-  // Void replies on a short delay so the card reads as a turn, not a jump.
+  // Verse replies on a short delay so the card reads as a turn, not a jump.
   function schedule() {
     setTimeout(function tick() {
       if (!el.isConnected || th.state.over || th.state.turn !== 1) return;
-      const m = voidMove(th.state);
+      const m = levelPick(voidMove(th.state), legalMoves(th.state, 1));
       if (m >= 0) { try { th.state = resolveMove(th.state, m).nextState; paint(); stageApi.save && stageApi.save(); } catch (_) { /* raced */ } }
       if (!th.state.over && th.state.turn === 1) setTimeout(tick, 650);
     }, 600);
@@ -253,7 +254,7 @@ export default {
     // Emptying a side sweeps the rest to the store that side emptied into.
     const sweepPits = blank(); sweepPits[0] = 1; sweepPits[1] = 2;
     const sweep = resolveMove(at(sweepPits, [10, 5]), 0);
-    const gift = blank(); gift[6] = 1; gift[8] = 2; gift[10] = 3; gift[4] = 5; // Void's 6 -> 7 captures your 5 across
+    const gift = blank(); gift[6] = 1; gift[8] = 2; gift[10] = 3; gift[4] = 5; // Verse's 6 -> 7 captures your 5 across
     let threw = false;
     try { resolveMove(open, 6); } catch (_) { threw = true; }
     const ok = open.pits.every((v) => v === 4) && open.store[0] === 0 && open.store[1] === 0

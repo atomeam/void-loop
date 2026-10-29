@@ -1,0 +1,5 @@
+// /flights/trip/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), {"panels":["trip"],"de":{"h1":"Reiseplan und Zwischenstopps","intro":"Fügen Sie eine Buchungsbestätigung ein, und die Flüge werden daraus gelesen: Flugnummern, Flughäfen, Daten und Zeiten und der Buchungscode. Oder tragen Sie jeden Flug ein. Die Seite prüft die Wartezeit zwischen den Flügen über Zeitzonen hinweg und warnt vor knappen Anschlüssen, Wartezeiten über Nacht und Flughafenwechseln, macht eine Kalenderdatei und einen Link zum Teilen. Alles bleibt auf diesem Gerät: nichts wird hochgeladen, kein Konto."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/trip/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

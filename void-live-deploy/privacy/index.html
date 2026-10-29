@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verse Privacy Policy</title>
+  <meta name="description" content="What Verse at a-to-mind.com keeps, what it sends to other services, and how to delete it. No cookies, no ads, no analytics trackers.">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Verse"><meta property="og:title" content="Verse Privacy Policy"><meta property="og:description" content="What Verse at a-to-mind.com keeps, what it sends to other services, and how to delete it. No cookies, no ads, no analytics trackers."><meta property="og:url" content="https://a-to-mind.com/privacy/"><meta property="og:image" content="https://a-to-mind.com/og.png"><meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://a-to-mind.com/privacy/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <style>
+    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --accent: #7aa7ff; }
+    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --accent: #2457c5; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    h1 { font-size: clamp(28px, 6vw, 38px); line-height: 1.15; margin: 18px 0 6px; }
+    h2 { font-size: 20px; margin: 36px 0 8px; }
+    .sub { color: var(--muted); margin: 0 0 24px; }
+    ul { padding-left: 20px; }
+    li { margin: 4px 0; }
+    code { font-size: 14px; }
+    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <!-- Written from what the code actually keeps and sends (an inventory of functions/, lib/, skills/ and void.html, 2026-10-14).
+       When a change stores or sends something new, say it here in the same change. -->
+  <p><a href="/">Verse</a></p>
+  <h1>Privacy</h1>
+  <p class="sub">Verse (formerly Verse) at a-to-mind.com, run by A-to-Mind. Last updated 14 October 2026.</p>
+
+  <p>Short version: Verse sets no cookies, shows no ads and runs no analytics trackers. Most of what you do stays in your own browser. What reaches our server is listed below, with what we do with it and how to have it deleted.</p>
+
+  <h2>What stays in your browser</h2>
+  <p>Your stage, its look, your agenda, your recent asks and the settings you choose are kept in your browser's local storage on your device. They are not sent to us unless you sign in and sync (below). Clearing your browser's site data removes them. The period log in particular never leaves your browser and is never synced.</p>
+
+  <h2>What reaches our server</h2>
+  <ul>
+    <li><strong>Asks Verse could not answer.</strong> When nothing answers what you typed, the first 200 characters of the ask are sent so Verse can learn to answer it next time. Anything that looks like a key, token or password is removed first. These are kept as text with a count and the first and last time they were asked. They are not tied to you: no account, IP address, cookie or device is stored with them. Please don't type personal details you would not want kept this way.</li>
+    <li><strong>Questions answered by Verse's models.</strong> The ask (with keys and passwords removed) is sent to our server, answered, and the ask and answer may be cached for 7 days so the same question is answered faster. Asks that drew on your own notes are not cached.</li>
+    <li><strong>Your approximate location.</strong> For weather and similar answers, Verse uses a place you chose, your device's location if you already allowed it, or the rough location our host derives from your connection. Coordinates are rounded to about 11 km and are not stored on our server.</li>
+    <li><strong>Product topics.</strong> When you ask to buy or hire something Verse doesn't sell yet, a short topic made from a few word stems (like "logo design") gets one added to its count. Your words are not kept, and nothing ties the count to you: no account, IP address, cookie or device is stored with it.</li>
+    <li><strong>Lab use.</strong> Opening a lab experiment adds one to that experiment's count for the day. Nothing identifying you is stored.</li>
+    <li><strong>Your IP address</strong> is used only to limit how fast requests can be made. It is hashed and held for at most two minutes, and never written to our database.</li>
+  </ul>
+
+  <h2>If you sign in</h2>
+  <ul>
+    <li>Sign-in uses a passkey. We store the passkey's public key and a random account id. We never ask for your name, email address or a password.</li>
+    <li>If you sync, your stage and its look are stored with your account so they appear on your other devices.</li>
+    <li>A page you publish at <code>/@yourname</code> is public until you unpublish it.</li>
+    <li>Members can keep notes and watches. These are stored with the account.</li>
+  </ul>
+
+  <h2>If you pay</h2>
+  <p>Payments are handled by <a href="https://gumroad.com/privacy">Gumroad</a>. Verse never sees or handles your card details. Gumroad sends us a record of each sale, which we keep to know what you bought. It includes the buyer's email address and whatever else Gumroad puts in its sale notices. License keys are stored only as a one-way hash. If you report a problem through the support desk, we keep your report and our answer.</p>
+
+  <h2>Services Verse sends data to</h2>
+  <ul>
+    <li><strong>Cloudflare</strong> hosts the site, its database and the AI models Verse uses. Asks, and text you give Verse to work on, are processed there.</li>
+    <li><strong>Gumroad</strong> handles checkout and license checks.</li>
+    <li><strong>Public information services</strong> receive only what a given answer needs, and only when you ask for it. Examples: a place name or rough coordinates for weather (Open-Meteo), a word or topic for definitions and encyclopedia answers (Wikipedia, Wiktionary), text you ask to translate (Google Translate, MyMemory), and similar lookups for news, books, recipes, sports, holidays, exchange rates and earthquakes.</li>
+  </ul>
+  <p>We do not sell your data and we do not share it for advertising.</p>
+
+  <h2>Google and YouTube</h2>
+  <p>Verse publishes videos of its own experiments to its own YouTube channel, <a href="https://www.youtube.com/@atombomb983">A-to-Mind's Verse</a>, through the YouTube API. That access is used only to upload Verse's own videos to that one channel. Verse does not access, store or share any viewer's or visitor's Google or YouTube data. Verse's use of YouTube API Services is subject to the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a> and the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>. You can revoke any app's access to your Google account at <a href="https://myaccount.google.com/permissions">Google security settings</a>.</p>
+
+  <h2>Deleting your data</h2>
+  <ul>
+    <li><strong>Signed in:</strong> "forget me" deletes your account, passkeys, sessions, synced stage, published page and keys at once. You can also unpublish your page, delete a note or a watch, or delete a key on its own.</li>
+    <li><strong>Everything else</strong> (support reports, sale records, notes and watches kept after you leave, or an ask you typed): email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> and we will delete what we can find for you. Unanswered asks are not linked to any person, so tell us the words you typed.</li>
+    <li><strong>In your browser:</strong> clear this site's data in your browser settings.</li>
+  </ul>
+
+  <h2>Children</h2>
+  <p>Verse is not directed at children under 13 and does not knowingly collect their personal information.</p>
+
+  <h2>Changes and contact</h2>
+  <p>When what Verse keeps or sends changes, this page changes with it, and the date above moves. Questions: <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+
+  <footer><a href="/">a-to-mind.com</a></footer>
+</main>
+</body>
+</html>

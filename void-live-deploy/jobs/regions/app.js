@@ -1,0 +1,5 @@
+// /jobs/regions/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), {"panels":["regions","search","saved","alerts","tracker","feed","sources"],"preset":{"region":"worldwide"},"de":{"h1":"Remote-Jobs nach Region","intro":"Remote-Jobs danach geordnet, von wo aus Sie arbeiten dürfen: überall, USA, Europa, Großbritannien, Deutschland, Lateinamerika, Asien und mehr, mit Branche, Stufe, Art und Gehalt, wenn es angegeben ist. Jede Suche hat einen RSS-Feed für Ihren Reader, ohne Konto."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/jobs/regions/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

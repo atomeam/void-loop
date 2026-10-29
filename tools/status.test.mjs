@@ -5,7 +5,7 @@ import { statusOf, ping, checkSkills, checkBrowser, statusHtml, SOURCES } from '
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';');
 
 test('status asks open the check; other "status" phrases stay with their own answers', () => {
-  for (const t of ['void status', 'system status', 'status', 'is void working', 'Is Void down?', 'health check', 'are the sources up', 'check yourself']) assert.ok(statusOf(t), t);
+  for (const t of ['void status', 'system status', 'status', 'is void working', 'Is Verse down?', 'health check', 'are the sources up', 'check yourself']) assert.ok(statusOf(t), t);
   for (const t of ['what is my status', 'status of my order', 'relationship status', 'flight status', 'status quo', 'check the weather']) assert.ok(!statusOf(t), t);
 });
 
@@ -40,7 +40,7 @@ test('the browser checks read storage, WebGL, the offline layer and the connecti
   assert.match(html, /2 of 3 load; not loading: b/); assert.match(html, /Not checked: this browser is offline/);
 });
 
-test('Void\'s own build: the newest checks and deploy on main, from GitHub\'s public API; failed, passed, running or unknown', async () => {
+test('Verse\'s own build: the newest checks and deploy on main, from GitHub\'s public API; failed, passed, running or unknown', async () => {
   const { buildRun, buildState, buildFailed, BUILD, REPO } = await import('../void-live-deploy/skills/status.js');
   const runs = (r) => async (u) => ({ ok: true, status: 200, json: async () => ({ workflow_runs: r ? [r] : [] }), url: u });
   const seen = [];
@@ -67,10 +67,75 @@ test('for the owner, the card opens by itself only when a run on main failed; th
   assert.equal(await autoOpen(open, { fetchFn: gh('failure'), store: S, now: 700000 }), true); assert.equal(opened, 1); assert.equal(reads, 4);
 });
 
-test('the card shows Void\'s own build with a link to a failed run, escaped', async () => {
+test('the card shows Verse\'s own build with a link to a failed run, escaped', async () => {
   const { statusHtml } = await import('../void-live-deploy/skills/status.js');
   const h = statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '', [{ name: 'Checks on main', state: 'failed', note: 'failed (failure) on <b>', url: 'https://github.com/x' }, { name: 'Deploy', state: 'passed', note: 'passed' }]);
-  assert.match(h, /Void’s own build · <span style="color:#e0584a">something on main failed<\/span>/);
+  assert.match(h, /Verse’s own build · <span style="color:#e0584a">something on main failed<\/span>/);
   assert.match(h, /Checks on main<\/td><td[^>]*>failed \(failure\) on &#60;b&#62; · <a href="https:\/\/github.com\/x"/);
-  assert.ok(!/Void’s own build/.test(statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '')), 'no build, no section');
+  assert.ok(!/Verse’s own build/.test(statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '')), 'no build, no section');
+});
+
+test('paying users who said it broke: read with the owner key only, shown on the card, and they open it', async () => {
+  const { supportState, statusHtml, autoOpen } = await import('../void-live-deploy/skills/status.js');
+  const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const fetchFn = async (u) => u === '/api/support' ? new Response(JSON.stringify({ open: 1, tickets: [{ id: 'S-1A2B3C4D', status: 'open', where: 'action', at: '2026-10-14T03:00:00Z', what: '<img src=x> broke' }] })) : new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: 'success', head_sha: 'abc' }] }));
+  assert.equal(await supportState(fetchFn, ''), null, 'no owner key, nothing read');
+  const s = await supportState(fetchFn, 'owner');
+  assert.equal(s.open, 1);
+  const h = statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '', null, s);
+  assert.match(h, /1 waiting on you/); assert.ok(!h.includes('<img'), 'a report is escaped');
+  // the build passed, but a report waits: the card opens (the owner's key comes from localStorage in a browser)
+  globalThis.localStorage = { getItem: () => 'owner' };
+  try { let opened = false; assert.equal(await autoOpen(async () => { opened = true; }, { fetchFn, store: null }), true); assert.ok(opened); }
+  finally { delete globalThis.localStorage; }
+});
+
+// news about Verse's own systems, pasted in (tester's weak-answer queue, paraphrased): the substance first, the time math as an aside
+test('a pasted update about my own routine is news about me, not a time list', async () => {
+  const { newsOf, takeOf } = await import('../void-live-deploy/skills/status.js');
+  const paste = 'update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list';
+  assert.equal(newsOf(paste), true);
+  const n = takeOf(paste); assert.equal(n.part, 'routine'); assert.ok(n.take.some((x) => /piles up/.test(x)));
+  assert.match(n.aside, /^That is 8 runs a day: 3:17 AM, 6:17 AM/);
+  for (const not of ['what routine runs every 3 hours at 3:17 am for void', 'add milk to my list', 'a new routine: i run every day at 6, can you track it', 'set a new routine for my mornings every day', 'void status', 'flight status'])
+    assert.equal(newsOf(not), false, not);
+  let html = ''; const out = await (await import('../void-live-deploy/skills/status.js')).default.run(paste, { showPage: (b) => { const p = {}; b(p); html = p.innerHTML; return p; }, esc: (s) => String(s) });
+  assert.equal(out, 'self-news'); assert.match(html, /News about me/); assert.ok(html.indexOf('My take') < html.indexOf('runs a day'));
+});
+
+// the other half of Verse's ask (five times): an action Verse took for the owner that failed opens the status card by itself
+test('a failed action in the last day opens the status card for the owner and is listed on it; old or done ones are not', async () => {
+  const { failedActions, autoOpen, statusHtml } = await import('../void-live-deploy/skills/status.js');
+  const now = Date.parse('2026-10-15T12:00:00Z');
+  const rows = [{ id: 'a1', kind: 'email.send', ref: 'to jane', state: 'failed', error: 'SMTP refused', started: '2026-10-15T11:00:00Z', finished: '2026-10-15T11:00:02Z' },
+    { id: 'a2', kind: 'order.place', ref: '', state: 'done', result: 'ok', started: '2026-10-15T10:00:00Z', finished: '2026-10-15T10:00:01Z' },
+    { id: 'a3', kind: 'watch.check', ref: 'Oslo', state: 'failed', error: 'old', started: '2026-10-13T10:00:00Z', finished: '2026-10-13T10:00:01Z' }];
+  const fetchFn = async (u) => /\/api\/actions/.test(String(u)) ? new Response(JSON.stringify({ actions: rows }), { status: 200 })
+    : /api\.github\.com/.test(String(u)) ? new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: 'success', head_sha: 'abc1234', created_at: '2026-10-15T11:50:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200 })
+    : new Response(JSON.stringify({ open: 0, tickets: [] }), { status: 200 });
+  const f = await failedActions(fetchFn, 'owner', now);
+  assert.deepEqual(f.map((a) => a.id), ['a1']); assert.equal(f[0].error, 'SMTP refused'); assert.equal(f[0].at, '2026-10-15 11:00');
+  assert.equal(await failedActions(fetchFn, '', now), null, 'a visitor has no key and sees nothing');
+  assert.equal(await failedActions(async () => new Response('no', { status: 401 }), 'owner', now), null);
+  const h = statusHtml((x) => String(x), { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '', null, null, f);
+  assert.match(h, /1 failed in the last day/); assert.match(h, /email\.send/); assert.match(h, /SMTP refused/);
+  assert.match(statusHtml((x) => String(x), { ok: 1, total: 1, missing: [] }, [], null, '', null, null, []), /none failed in the last day/);
+  globalThis.localStorage = { getItem: () => 'owner' };
+  try { let opened = false; assert.equal(await autoOpen(async () => { opened = true; }, { fetchFn, store: null, now }), true); assert.ok(opened, 'a green build, no report, one failed action: the card opens'); }
+  finally { delete globalThis.localStorage; }
+});
+
+test('status: a red check on main names what failed (asked by Verse: the root cause, from incidents.json), and only a red one', async () => {
+  const { causesOf, withCauses } = await import('../void-live-deploy/skills/status.js');
+  const rows = [{ name: 'Checks on main', state: 'failed', sha: '60e2e47', note: 'failed' }, { name: 'Deploy', state: 'passed', sha: '60e2e47', note: 'passed' }];
+  const inc = [{ sha: '60e2e47f458e', suite: 'browser suite on main', checks: ['Four in a Row on a phone: the 3D frame fits'] }, { sha: 'ad536f3', checks: ['other'] }];
+  const out = causesOf(rows, inc);
+  assert.deepEqual(out[0].checks, ['Four in a Row on a phone: the 3D frame fits']); assert.equal(out[0].suite, 'browser suite on main'); assert.equal(out[1].checks, undefined);
+  assert.equal(causesOf(rows, [])[0].checks, undefined, 'no incident for that sha: no cause claimed');
+  const got = await withCauses(rows, async (u) => { assert.equal(u, '/incidents.json'); return Response.json(inc); });
+  assert.equal(got[0].checks.length, 1);
+  assert.deepEqual(await withCauses([{ state: 'passed' }], async () => { throw new Error('never called'); }), [{ state: 'passed' }], 'nothing red, nothing fetched');
+  const esc = (x) => String(x);
+  const { statusHtml } = await import('../void-live-deploy/skills/status.js');
+  assert.match(statusHtml(esc, { ok: 1, total: 1, missing: [], error: null }, [], [], '', out, null, null), /What failed:<\/b> Four in a Row on a phone/);
 });

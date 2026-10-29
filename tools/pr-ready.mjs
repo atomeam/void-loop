@@ -5,12 +5,12 @@
 // 'resolve' (2026-10-10): GitHub reports the PR dirty (it conflicts with main). A conflicted PR gets no pull_request runs at all,
 //   so a labelled one would sit silently forever; resolveMain below merges main into it for the bot.
 // Ship now, test after (Adam, 2026-10-09: nothing waits). Ready means, on the PR's current head: the void-review check
-//   passed (Void's own review, seconds: no bugs or risks in the added lines, .github/workflows/void-review.yml) and no check
+//   passed (Verse's own review, seconds: no bugs or risks in the added lines, .github/workflows/void-review.yml) and no check
 //   that already finished has failed (test-and-deploy, bench). Nothing else is waited on: not the suite, not the benchmark.
 //   The full suite runs on every head of main (verify.yml, verify-main), and a failure there reverts the merge and
 //   redeploys.
-// Void's review is the main one; every other reviewer is an extra (Adam, 2026-10-09). CodeRabbit is never waited on and
-//   never blocks: what it has found on this head is reported in `extra`, and a finding Void missed is a rule to teach
+// Verse's review is the main one; every other reviewer is an extra (Adam, 2026-10-09). CodeRabbit is never waited on and
+//   never blocks: what it has found on this head is reported in `extra`, and a finding Verse missed is a rule to teach
 //   code-review.js (domains/void.frontier.md #1), not a reason to hold a merge.
 export const CR = 'coderabbitai[bot]';
 const OK = ['success', 'skipped', 'neutral'];
@@ -25,9 +25,12 @@ export function readiness(gh, repo, pr) {
   const runs = [latest('test-and-deploy'), latest('bench'), latest('void-review')].filter(Boolean);
   const failed = runs.find((r) => r.status === 'completed' && !OK.includes(r.conclusion) && r.conclusion !== 'cancelled');
   if (failed) return { ...base, state: 'stop', why: `${failed.name} ${failed.conclusion}: ${failed.html_url}` };
-  // the one wait: Void's own review, which reports in seconds (a PR from before that check falls back on the suite)
+  // the one wait: Verse's own review, which reports in seconds (a PR from before that check falls back on the suite)
   const gate = runs.find((r) => r.name === 'void-review') || runs.find((r) => r.name === 'test-and-deploy');
-  if (!gate || gate.status !== 'completed' || gate.conclusion !== 'success') return { ...base, state: 'wait', why: (gate ? gate.name : 'void-review') + ' not finished' };
+  // no review run at all on this head: a PR opened or pushed with the workflow's token (Verse's own PRs: grow-self, propose-fix) starts
+  // no pull_request run, so it would wait forever; noReview tells automerge.mjs to dispatch Verse's review on it (2026-10-23, #1289 sat 40 min)
+  if (!gate) { const quiet = Date.now() - Date.parse(p.updated_at || 0) > 180000; return { ...base, state: 'wait', why: 'void-review never started on this head', noReview: quiet, branch: p.head && p.head.ref }; }
+  if (gate.status !== 'completed' || gate.conclusion !== 'success') return { ...base, state: 'wait', why: gate.name + ' not finished' };
   // the extras: whatever CodeRabbit has posted by now is reported, never waited on and never a stop
   const reviews = (gh(`repos/${repo}/pulls/${pr}/reviews?per_page=100`) || []).filter((r) => r.user && r.user.login === CR && r.commit_id === sha);
   const rc = gh(`repos/${repo}/pulls/${pr}/comments?per_page=100`) || [];
@@ -38,7 +41,7 @@ export function readiness(gh, repo, pr) {
   const found = reviews.map((r) => +((r.body || '').match(/Actionable comments posted:\s*(\d+)/) || [0, 0])[1]).reduce((a, b) => a + b, 0);
   const threadsHere = rc.filter((c) => !c.in_reply_to_id && c.user && c.user.login === CR && (c.original_commit_id || c.commit_id) === sha).length;
   const extra = found || open.length ? `CodeRabbit (extra): ${Math.max(found, threadsHere)} finding(s) on ${sha.slice(0, 7)}, ${open.length} thread(s) unanswered` : '';
-  return { ...base, state: 'merge', why: "Void found no bugs or risks and nothing failed (the suite runs on main after the deploy)", extra };
+  return { ...base, state: 'merge', why: "Verse found no bugs or risks and nothing failed (the suite runs on main after the deploy)", extra };
 }
 
 // The bot merges main into a conflicted PR (automerge.yml, for PRs labelled automerge from this repository only).
@@ -48,12 +51,12 @@ export function readiness(gh, repo, pr) {
 // run its own copy). The branch is checked out detached in its own worktree, main merged with tools/merge-main.mjs (the
 // append-only records settle by keeping both sides), and the merge commit pushed to the branch: never a force-push, so a branch
 // that moved in the meantime refuses the push and the next wake tries again. A push made with the workflow's token starts no
-// pull_request run, so Void's review is dispatched on the new head by hand (void-review.yml workflow_dispatch, input pr); its
+// pull_request run, so Verse's review is dispatched on the new head by hand (void-review.yml workflow_dispatch, input pr); its
 // finish wakes automerge.yml, which then merges the PR. A conflict outside the append-only files comes back as one comment on
 // the PR naming the files (the same comment is never posted twice), and the bot tries again whenever main moves.
 export const CONFLICT_MARK = '<!-- void-automerge: conflict -->', ACTIONS_BOT = 'github-actions[bot]';
 export function conflictNote(files) {
-  return CONFLICT_MARK + '\nVoid automerge: this PR conflicts with main in ' + files.map((f) => '`' + f + '`').join(', ') + ', and GitHub runs no checks on a conflicted PR. '
+  return CONFLICT_MARK + '\nVerse automerge: this PR conflicts with main in ' + files.map((f) => '`' + f + '`').join(', ') + ', and GitHub runs no checks on a conflicted PR. '
     + 'The bot merges main into labelled PRs itself and settles the append-only records (tools/merge-main.mjs), but these files need a person: '
     + 'run `node tools/merge-main.mjs` on the branch, resolve them, push. It tries again whenever main moves.';
 }

@@ -1,0 +1,175 @@
+{
+  "floor": "random user",
+  "verse_page": "/random-user/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "randomuser.me": {
+      "sources": [
+        "https://randomuser.me/",
+        "https://randomuser.me/documentation",
+        "https://publicapi.dev/random-user-api",
+        "https://pkg.go.dev/github.com/grokify/go-randomuser"
+      ],
+      "features": [
+        {
+          "name": "Up to 5,000 users per request",
+          "detail": "results=",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "How many (1 to 5000, lib/fakeuser.js people())"
+        },
+        {
+          "name": "Gender filter",
+          "detail": "gender=female|male",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Gender Either / Female / Male"
+        },
+        {
+          "name": "Nationalities",
+          "detail": "21 nationalities (AU, BR, CA, CH, DE, DK, ES, FI, FR, GB, IE, IN, IR, MX, NL, NO, NZ, RS, TR, UA, US)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "all 21 (AU, BR, CA, CH, DE, DK, ES, FI, FR, GB, IE, IN, IR, MX, NL, NO, NZ, RS, TR, UA, US) plus JP, lib/fakeuser.js NATS; ?nat=tr,nl"
+        },
+        {
+          "name": "Seed",
+          "detail": "the same seed gives the same users",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Seed / New seed"
+        },
+        {
+          "name": "Pagination",
+          "detail": "page= with a seed for the next batch",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Previous / Page / Next on /random-user/ and ?page=: the next batch from the same seed (lib/fakeuser.js people({ page }))"
+        },
+        {
+          "name": "Include / exclude fields",
+          "detail": "inc= and exc=",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Fields checkboxes (lib/fakeuser.js FIELDS)"
+        },
+        {
+          "name": "Formats",
+          "detail": "JSON, pretty JSON, CSV, YAML, XML",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Format JSON / CSV / YAML / XML / SQL inserts"
+        },
+        {
+          "name": "Download",
+          "detail": "dl= downloads the file",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Download"
+        },
+        {
+          "name": "Password options",
+          "detail": "password=charsets,length range (special, upper, lower, number)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Passwords: choose A-Z, a-z, 0-9, !@# and a length range; ?password=upper,number,10-12 as randomuser.me takes it (lib/fakeuser.js password)"
+        },
+        {
+          "name": "Login hashes",
+          "detail": "uuid, salt, md5, sha1, sha256",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "id field; no salt or hashes"
+        },
+        {
+          "name": "Name title",
+          "detail": "Mr, Ms, Mrs, Miss",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "title field (Mr, Ms, Mrs, Miss)"
+        },
+        {
+          "name": "Registered date and age",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "registered and registeredAge fields (after the 18th birthday, within 20 years)"
+        },
+        {
+          "name": "Phone and cell",
+          "detail": "two numbers per person",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "phone and cell (second phone) fields, both in the fiction ranges where a country has one"
+        },
+        {
+          "name": "National ID",
+          "detail": "id name and value (SSN, NINO, ...)",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Location with timezone offset and description",
+          "detail": "street, city, state, country, postcode, coordinates, timezone",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "street, city, state, postcode, country, latitude, longitude, timezone"
+        },
+        {
+          "name": "Profile photos (large, medium, thumbnail)",
+          "detail": "portrait photos",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "drawn initials by design, never a real face"
+        },
+        {
+          "name": "noinfo",
+          "detail": "drop the info block",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "page JSON via ?fmt=json; no info toggle"
+        },
+        {
+          "name": "JSONP callback",
+          "detail": "callback= for old clients",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "API versions",
+          "detail": "1.0 to 1.4 kept for old code",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "one version"
+        },
+        {
+          "name": "A public JSON API endpoint",
+          "detail": "https://randomuser.me/api/",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "/random-user/?...&fmt=json renders on the page; no /api endpoint"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "SQL inserts",
+    "Phone numbers in ranges reserved for fiction",
+    "Emails at example.com",
+    "Ages that match birthdays",
+    "Made on the device, offline",
+    "Copy link holds the setting"
+  ],
+  "gaps": [
+    "Profile photos (large, medium, thumbnail)",
+    "A public JSON API endpoint",
+    "National ID",
+    "JSONP callback",
+    "API versions",
+    "Login hashes",
+    "noinfo"
+  ]
+}

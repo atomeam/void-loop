@@ -2,7 +2,7 @@
  * lift3d — stand an existing 2D game card's board in the void as a 3D board, with the rest of the card (status, buttons,
  * rules) as a separate panel beside it (skills/side-card.js). Not a skill: othello.js, tictactoe.js, mancala.js and
  * aggravation.js import it. The game keeps its rules and its 2D board exactly as they were: the 2D board just hides, and
- *  - a tap on the 3D board clicks the 2D element it names (so every rule, turn lock and Void reply runs unchanged),
+ *  - a tap on the 3D board clicks the 2D element it names (so every rule, turn lock and Verse reply runs unchanged),
  *  - any change the game paints on the 2D board re-sends `snapshot()` to the 3D board.
  * Where WebGL can't run (or the tests switch 3D off) the miniature never loads and the card stays exactly as it was.
  *
@@ -22,7 +22,7 @@ function flatNote(el, kind, stageApi) {
   n.style.cssText = 'margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(255,190,120,.08);border:1px solid rgba(255,190,120,.25)';
   const line = document.createElement('div'); line.textContent = 'Playing on the flat board: the 3D board stopped last time, so this one always works.';
   const detail = document.createElement('div'); detail.style.cssText = 'margin-top:4px;font-size:11px;opacity:.75;user-select:text';
-  if (c) detail.textContent = 'What happened (send this to Void’s builders): ' + [c.why, c.gpu && 'graphics: ' + c.gpu, c.ua].filter(Boolean).join(' · ');
+  if (c) detail.textContent = 'What happened (send this to Verse’s builders): ' + [c.why, c.gpu && 'graphics: ' + c.gpu, c.ua].filter(Boolean).join(' · ');
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'Try 3D again'; again.style.marginTop = '6px';
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); guard.retry(kind); stageApi.render && stageApi.render(); });
@@ -32,7 +32,7 @@ function flatNote(el, kind, stageApi) {
 export function lift3d(th, stageApi, el, { kind, board, title, W, H, snapshot, label }) {
   if (!stageApi.miniature || typeof document === 'undefined') return;
   if (guard.isOff(kind)) { flatNote(el, kind, stageApi); return; } // it crashed here before: the flat board, which always works
-  // every lifted board fits the screen it opens on (owner, 2026-10-11: "things should smartly try to autofit in Void"):
+  // every lifted board fits the screen it opens on (owner, 2026-10-11: "things should smartly try to autofit in Verse"):
   // the same proportions, narrower on a phone, and moved left if it would run off the right edge
   const vw = typeof innerWidth === 'number' ? innerWidth : 1200, fit = Math.min(1, (vw - 20) / W);
   if (fit < 1) { W = Math.max(240, Math.round(W * fit)); H = Math.round(H * fit); }
@@ -70,7 +70,7 @@ export function lift3d(th, stageApi, el, { kind, board, title, W, H, snapshot, l
   }
   el.appendChild(view);
   if (up.has(key)) lift(); // already 3D: no flash of the flat board on a re-render
-  // the game repaints its 2D board after every move (its own, Void's, a new game): follow it
+  // the game repaints its 2D board after every move (its own, Verse's, a new game): follow it
   const obs = new MutationObserver(() => { if (mini) mini.update(data()); });
   obs.observe(board, { subtree: true, childList: true, attributes: true, characterData: true });
   stageApi.miniature(view, kind, data(), { key, label: label || ('3D ' + title + ' board: tap to play; drag to look around'), maxPolar: 1.2, minPolar: 0.12 })

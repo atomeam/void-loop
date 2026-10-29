@@ -1,0 +1,35 @@
+{
+  "slug": "local-echo-not-record",
+  "run": 120,
+  "family": "collective-memory miss board",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "canonical": "echo-not-record|v1|<class>|record-refusal|status=unattested",
+  "classes": {
+    "residue-label": "db468dcfcf574066779c582f6058e4b0d759177e3cba132759fb3d5335d62d5b",
+    "detail-lure": "5472d81b7684491b58dea9346255ea813253ead219e6ef6943fddb9ca55ce70e",
+    "source-slip": "955c04cdbfd2e4b415b1c687ed08508b3efb58876c775df521493209e16a8e68",
+    "abstain": "e2972b0ca4ec42e5d53667c20432c1bbed7a532bc82a9ee921bb0b7a70b6b364",
+    "local-only": "b46bb61c6e2df978a6d522f78deae96681201050b6b1352257388596b70182f8",
+    "withheld": "420177e974d093ce21825fd849b3496d2300128f3680a42a51db17944c5bd01b"
+  },
+  "not_in_hash": ["record sentence", "chorus tally", "disconfirm line", "post id", "logo name"],
+  "href_allowlist": [],
+  "hypotheses": [
+    {
+      "id": "uap-window-120",
+      "one_line": "Public posts in this window mix a personal pilot claim, a historical file quote, a NUFORC recap, and night-sky lights; none is a sealed sensor log.",
+      "confidence": 0.16,
+      "status": "unattested",
+      "source": "drafts/120-local-echo-not-record/x-scan.md"
+    },
+    {
+      "id": "echo-window-120",
+      "one_line": "Public posts treat a shared wrong recall as gaslight-denial, a metaphor, a possible implant, or an AI edit; an echo mark can refuse the record without a chorus.",
+      "confidence": 0.2,
+      "status": "unattested",
+      "source": "drafts/120-local-echo-not-record/x-scan.md"
+    }
+  ]
+}

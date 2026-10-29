@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,.6); padding:12px; border-radius:8px; max-width:320px; }
+button { margin:4px; padding:6px 12px; background:#2a2a4a; color:#fff; border:1px solid #6a6aff; cursor:pointer; }
+#status { font-size:12px; margin-top:8px; }
+.limb { position:absolute; width:80px; height:40px; background:rgba(100,150,255,.4); border:2px solid #6af; border-radius:6px; pointer-events:none; transition:transform .05s linear; display:flex; align-items:center; justify-content:center; font-size:11px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand MLP Physical UI Arena · Verse lab</title>
+<meta name="description" content="Novel combination deliberately branching from the recent residual-density / causal-lattice / intent-flow / recurrent-constraint / acoustic-softbody /">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand MLP Physical UI Arena · Verse lab">
+<meta property="og:description" content="Novel combination deliberately branching from the recent residual-density / causal-lattice / intent-flow / recurrent-constraint / acoustic-softbody /">
+<meta property="og:url" content="https://a-to-mind.com/lab/f252-webxr-hand-mlp-physical-ui-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f252-webxr-hand-mlp-physical-ui-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <h3>F252 WebXR Hand MLP Physical UI Arena</h3>
+  <button id="xrBtn">Enter WebXR (Hand)</button>
+  <button id="orientBtn">Enable Orientation</button>
+  <button id="sealBtn">Seal Champion Genome</button>
+  <div id="status">CPU path · 4 agents · hand → MLP → spring-mass DOM limbs</div>
+  <div id="fitness"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand MLP Physical UI Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

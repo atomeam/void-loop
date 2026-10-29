@@ -28,7 +28,7 @@ function dialTexture(THREE, label) {
   g.fillStyle = '#1f1a16'; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.font = '600 ' + Math.round(R * 0.19) + 'px Georgia, "Times New Roman", serif';
   for (let i = 1; i <= 12; i++) { const a = (i / 12) * Math.PI * 2; g.fillText(String(i), Math.sin(a) * R * 0.68, -Math.cos(a) * R * 0.68 + R * 0.012); }
-  g.font = 'italic ' + Math.round(R * 0.075) + 'px Georgia, serif'; g.fillStyle = '#5a4a3a'; g.fillText('Void', 0, -R * 0.33);
+  g.font = 'italic ' + Math.round(R * 0.075) + 'px Georgia, serif'; g.fillStyle = '#5a4a3a'; g.fillText('Verse', 0, -R * 0.33);
   if (label) { g.font = '600 ' + Math.round(R * 0.072) + 'px Georgia, serif'; g.fillStyle = '#3b3028'; g.fillText(String(label).toUpperCase().slice(0, 18), 0, R * 0.36); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
@@ -56,7 +56,9 @@ export default function build(ctx, data) {
     const dialMat = new THREE.MeshPhysicalMaterial({ map: dialTexture(THREE, label), roughness: 0.42, clearcoat: 0.5, clearcoatRoughness: 0.2 }); mats.push(dialMat); texs.push(dialMat.map);
     // case: a turned drum with a rolled bezel at the front and a domed back
     const drum = new THREE.Mesh(G(new THREE.CylinderGeometry(DIAL_R * 1.1, DIAL_R * 1.1, 0.028, 96, 1, true).rotateX(Math.PI / 2)), brass); drum.position.z = -0.006;
-    const back = new THREE.Mesh(G(new THREE.SphereGeometry(DIAL_R * 1.1, 64, 16, 0, Math.PI * 2, 0, 0.5).rotateX(-Math.PI / 2).scale(1, 1, 0.35)), darkBrass); back.position.z = -0.02;
+    // the back closes the drum: a shallow dome as wide as the case, its rim on the drum's rear edge (it was a small cap floating
+    // 14 mm behind an open drum, so from behind the clock read as a hollow ring with the hands showing through; owner, 2026-10-15)
+    const back = new THREE.Mesh(G(new THREE.SphereGeometry(DIAL_R * 1.1, 64, 12, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(-Math.PI / 2).scale(1, 1, 0.2)), darkBrass); back.position.z = -0.02;
     const bezel = new THREE.Mesh(G(new THREE.TorusGeometry(DIAL_R * 1.06, 0.0042, 24, 128)), brass); bezel.position.z = 0.008;
     const dial = new THREE.Mesh(G(new THREE.CircleGeometry(DIAL_R, 96)), dialMat); dial.position.z = 0.004;
     const dome = new THREE.Mesh(G(new THREE.SphereGeometry(DIAL_R * 1.6, 64, 16, 0, Math.PI * 2, 0, 0.68).rotateX(Math.PI / 2)), glass);
@@ -78,6 +80,7 @@ export default function build(ctx, data) {
     const cap = new THREE.Mesh(G(new THREE.SphereGeometry(0.0022, 16, 12)), brass); cap.position.z = 0.0068; cap.scale.z = 0.5;
     for (const m of [drum, back, bezel, ring, crown, hourM, minM, secM, cap]) { m.castShadow = true; m.receiveShadow = true; }
     dial.receiveShadow = true;
+    drum.name = 'case'; back.name = 'caseback'; // tests check the back closes the case
     grp.add(drum, back, bezel, dial, dome, ring, crown, hourM, minM, secM, cap);
     return { grp, hourM, minM, secM, tz: null, off: 0, offAt: 0 };
   }
@@ -109,8 +112,10 @@ export default function build(ctx, data) {
     tick() {
       if (at) return false; // a fixed moment does not move
       const now = Date.now();
-      if (ctx.still) { const sec = Math.floor(now / 1000); if (sec === lastSec) return false; lastSec = sec; } // tick once a second, no sweep
-      setHands(now); return 'view';
+      // a mechanical sweep: 8 beats a second, as a 28,800 bph movement does, so the case redraws 8 times a second, not 60
+      // (the 60 fps sweep kept a phone's GPU busy for as long as the card was open; owner, 2026-10-15: "the 3d was still choppy")
+      const beat = ctx.still ? Math.floor(now / 1000) : Math.floor(now / 125); if (beat === lastSec) return false; lastSec = beat;
+      setHands(ctx.still ? now : beat * 125); return 'view';
     },
     dispose() { for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); for (const t of texs) t.dispose(); },
   };

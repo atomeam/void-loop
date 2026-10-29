@@ -1,0 +1,23 @@
+{
+  "slug": "local-closed-gate",
+  "run": "087",
+  "date": "2026-10-07",
+  "family": "quiet-signal filter",
+  "emit": false,
+  "status": "unattested",
+  "confidence_kind": "design-material-weight",
+  "confidence_default": 0.2,
+  "hash_line": "local-closed-gate|v1|gate=closed|notch=<label>|paste=discarded|listen=refused|status=unattested",
+  "gate_allowlist": ["closed"],
+  "notch_labels": ["notch-a", "notch-b", "notch-c"],
+  "notch_note": "Labels only. Not frequencies, not a tuner, not a calibration.",
+  "disconfirm_ids": ["gate-opened", "notch-relabeled", "paste-as-instruction", "primary-failed"],
+  "href_allowlist": [],
+  "microphone": "deny",
+  "audio_context": "deny",
+  "fetch": "deny",
+  "token_markup": "deny",
+  "listen": "refused",
+  "detection": "refused",
+  "worker": "403-every-method"
+}

@@ -1,0 +1,51 @@
+# Verse in the official MCP registry (Verse's own want, 2026-10-13: "I want to submit myself to the MCP registry ... It allows
+# other AIs to use me"; frontier #6's written next step). server.json at the repo root describes the live endpoint
+# (https://a-to-mind.com/api/mcp, which MCP live checks after every deploy). After every main deploy (deploy.yml starts it: an
+# automerge merge starts no push workflow), when a person pushes server.json to main, or by hand:
+# validate it, and publish its version unless the registry already has that version (a published version cannot be
+# replaced: change what the listing says by raising "version"). The login is GitHub OIDC as this repo's owner, which owns the
+# io.github.atomeam/* names: no key or secret.
+name: MCP registry
+
+on:
+  push:
+    branches: [main]
+    paths: [server.json, .github/workflows/mcp-registry.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # the registry login (GitHub OIDC). void-review: ok (a permission name, not a key: GitHub mints a short-lived token per run)
+
+concurrency:
+  group: mcp-registry
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mcp-publisher
+        run: curl -sSfL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+      - name: Validate server.json
+        run: ./mcp-publisher validate
+      - name: Already listed?
+        id: listed
+        run: |
+          NAME=$(jq -r .name server.json); VERSION=$(jq -r .version server.json)
+          CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "https://registry.modelcontextprotocol.io/v0/servers/$(jq -rn --arg n "$NAME" '$n|@uri')/versions/$VERSION")
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          if [ "$CODE" = 200 ]; then echo "::notice title=MCP registry::$NAME $VERSION is already listed; raise version in server.json to change the listing."
+          elif [ "$CODE" != 404 ]; then echo "::error title=MCP registry::could not ask the registry about $NAME $VERSION (HTTP $CODE)"; exit 1; fi
+      - name: Publish
+        if: steps.listed.outputs.code == '404'
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
+      - name: Listed now
+        if: steps.listed.outputs.code == '404'
+        run: |
+          NAME=$(jq -r .name server.json); VERSION=$(jq -r .version server.json)
+          curl -sSf --max-time 30 "https://registry.modelcontextprotocol.io/v0/servers/$(jq -rn --arg n "$NAME" '$n|@uri')/versions/$VERSION" | jq '.server | {name, version, remotes}'

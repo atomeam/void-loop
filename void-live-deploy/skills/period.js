@@ -1,5 +1,5 @@
 /**
- * period skill - a period log kept in your own Void (this browser only), and the predictions it unlocks
+ * period skill - a period log kept in your own Verse (this browser only), and the predictions it unlocks
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "my period started today", "my period started on october 1", "log my period on sept 3", "show my period log",
  * "how long is my cycle", "is my period late", "remove my last period", "clear my period log".

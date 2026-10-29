@@ -2,10 +2,12 @@
  * tictactoe skill — the first board game as a real skill (countdown's shape, not make's iframe).
  * "lets play tic tac toe" summons an interactive board on the stage; it stays until thrown off.
  * The engine is a flat 9-element board; the canvas maps it to a 3x3 grid of cells.
- * You are X and Void is O: after each tap Void answers with its best move (full minimax, so it never loses).
+ * You are X and Verse is O: after each tap Verse answers with its best move (full minimax, so it never loses).
  * The status line calls the result. New game resets.
  */
+import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
+import { rulesLine } from './game-rules-line.js';
 
 export function createTicTacToeState() {
   return {
@@ -47,7 +49,7 @@ export function resolveMove(state, index) {
   };
 }
 
-// Void's move: full minimax over the flat board (9 squares, so it is instant). Wins fast, loses slow; ties go to the lowest index.
+// Verse's move: full minimax over the flat board (9 squares, so it is instant). Wins fast, loses slow; ties go to the lowest index.
 export function bestMove(state) {
   const me = state.currentPlayer, other = me === 'X' ? 'O' : 'X';
   const score = (board, player, depth) => {
@@ -77,7 +79,7 @@ export function bestMove(state) {
 
 export function tictactoeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:(?:3d|3-d|three[\s-]?d)\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?(?:\s+(?:with|against|vs\.?|versus)\s+(?:void|me|you|the\s+computer|a\.?i\.?))?$/i.test(t)) return { kind: 'game' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:(?:3d|3-d|three[\s-]?d)\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?(?:\s+(?:with|against|vs\.?|versus)\s+(?:void|verse|me|you|the\s+computer|a\.?i\.?))?$/i.test(t)) return { kind: 'game' };
   return null;
 }
 
@@ -102,7 +104,11 @@ function mount(th, stageApi) {
   const status = document.createElement('div'); status.className = 'g-status'; status.setAttribute('aria-live', 'polite');
   const again = document.createElement('button');
   again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
-  bar.append(status, again);
+  const undoB = document.createElement('button'); undoB.type = 'button'; undoB.className = 'g-btn ttt-undo'; undoB.textContent = 'Take back';
+  bar.append(status, again, undoB);
+  const past = []; // the board before each of your moves, so a take-back undoes your move and Verse's answer together
+  undoB.addEventListener('pointerdown', (e) => e.stopPropagation());
+  undoB.addEventListener('click', (e) => { e.stopPropagation(); if (!past.length) return; th.state = past.pop(); paint(); stageApi.save && stageApi.save(); });
   const cells = [];
   for (let i = 0; i < 9; i++) {
     const b = document.createElement('button');
@@ -112,15 +118,15 @@ function mount(th, stageApi) {
     b.addEventListener('pointerdown', (e) => e.stopPropagation());
     b.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (th.state.currentPlayer !== 'X') return; // Void is answering
+      if (th.state.currentPlayer !== 'X') return; // Verse is answering
       try {
-        th.state = resolveMove(th.state, i).nextState;
+        const before = th.state; th.state = resolveMove(th.state, i).nextState; past.push(before);
         paint();
       } catch (_) { return; /* occupied cell or finished game: no-op */ }
       const was = th.state;
       if (was.status === 'playing') setTimeout(() => {
         if (th.state !== was) return; // new game or board gone in the meantime
-        const m = bestMove(was);
+        const m = levelPick(bestMove(was), was.board.map((v, i) => (v === null ? i : null)));
         if (m !== null) { th.state = resolveMove(was, m).nextState; paint(); stageApi.save && stageApi.save(); }
       }, 420);
     });
@@ -137,12 +143,13 @@ function mount(th, stageApi) {
       cells[i].classList.toggle('win', !!(line && line.includes(i)));
       cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (v || 'empty'));
     }
+    undoB.disabled = !past.length || th.state.currentPlayer !== 'X';
     const s = th.state.status;
-    status.textContent = s === 'playing' ? (th.state.currentPlayer === 'X' ? 'Your move' : 'Void is thinking…') : s === 'draw' ? 'A draw. Void never loses.' : s === 'X_wins' ? 'You win!' : 'Void wins this one.';
+    status.textContent = s === 'playing' ? (th.state.currentPlayer === 'X' ? 'Your move' : 'Verse is thinking…') : s === 'draw' ? 'A draw. Verse never loses.' : s === 'X_wins' ? 'You win!' : 'Verse wins this one.';
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
-  again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); paint(); stageApi.save && stageApi.save(); });
-  el.append(wrap, bar);
+  again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); past.length = 0; paint(); stageApi.save && stageApi.save(); });
+  el.append(wrap, bar, rulesLine('take turns placing X and O; three in a row across, down or diagonally wins. A full board with no line is a draw.'));
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

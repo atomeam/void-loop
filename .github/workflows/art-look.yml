@@ -1,0 +1,37 @@
+# See the picture the Art Forge paints for one subject (functions/api/card-art.js), from GitHub's network, for builders whose machine can't
+# reach a-to-mind.com: the picture goes to the branch art-look (one commit, replaced each run: art.jpg and art.json without the picture), so a
+# builder can `git fetch origin art-look` and look at it (owner, 2026-10-23: check the result itself, not its name). Manual only; asks the forge
+# once (it returns the kept picture when one exists); main is never written.
+name: Art look
+
+on:
+  workflow_dispatch:
+    inputs:
+      subject:
+        description: the subject to paint (as typed)
+        required: true
+        type: string
+      kind:
+        description: cartoon, or a card kind (animal, place, thing...)
+        default: cartoon
+        type: string
+
+permissions:
+  contents: write # the art-look branch only
+
+jobs:
+  look:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Paint and print
+        env:
+          SUBJECT: ${{ inputs.subject }}
+          KIND: ${{ inputs.kind }}
+        run: |
+          body=$(jq -nc --arg s "$SUBJECT" --arg k "$KIND" '{subject:$s,kind:$k}')
+          curl -sS -m 90 -X POST https://a-to-mind.com/api/card-art -H 'content-type: application/json' -H 'origin: https://a-to-mind.com' -d "$body" > art.json
+          jq -c 'del(.img)' art.json | tee meta.json
+          mkdir out && cd out && jq -r '.img // ""' ../art.json | sed 's/^data:image\/[a-z]*;base64,//' | base64 -d > art.jpg || true
+          cp ../meta.json art.json && git init -q && git checkout -q -b art-look && git add . && git -c user.name=art-look -c user.email=art-look@users.noreply.github.com commit -qm "Art look: $SUBJECT ($KIND)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" art-look

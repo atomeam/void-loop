@@ -10,7 +10,7 @@ const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || ''; }
 
 export function automationsOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+)?(?:void\s+)?(?:automations?|zaps|workflows? i (?:made|set up))$|^(?:new|make|create|add)\s+(?:an?\s+)?automation$|^(?:my\s+)?automation\s+rules$|^what\s+automations\s+(?:do\s+i\s+have|are\s+(?:on|running))$/.test(t)) return { open: true };
+  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+)?(?:(?:void|verse)\s+)?(?:automations?|zaps|workflows? i (?:made|set up))$|^(?:new|make|create|add)\s+(?:an?\s+)?automation$|^(?:my\s+)?automation\s+rules$|^what\s+automations\s+(?:do\s+i\s+have|are\s+(?:on|running))$|^yo\s+automations?$/.test(t)) return { open: true };
   return null;
 }
 
@@ -48,7 +48,7 @@ function mount(th, stageApi) {
   const tok = ownerToken();
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
-  if (!tok) { status.textContent = 'Automations are the owner’s. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
+  if (!tok) { status.textContent = 'Automations are the owner’s. Unlock Verse first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
 
   let data = null;
   const call = async (method, body) => {
@@ -98,7 +98,7 @@ function mount(th, stageApi) {
       const sw = stop(el('input')); sw.type = 'checkbox'; sw.checked = r.enabled; sw.className = 'automations-switch'; sw.setAttribute('aria-label', 'switch ' + r.name + ' on or off');
       sw.addEventListener('change', () => act('PATCH', { id: r.id, enabled: sw.checked }, sw.checked ? 'switching on…' : 'switching off…'));
       top.append(sw, el('strong', 'flex:1', r.name));
-      top.append(btn('Run now', 'automations-run', () => act('POST', { id: r.id, run: true }, 'running ' + r.name + '…')), btn('Delete', 'automations-delete', () => { if (confirm('Delete "' + r.name + '"?')) act('DELETE', { id: r.id }, 'deleting…'); }));
+      top.append(btn('Run now', 'automations-run', () => act('POST', { id: r.id, run: true }, 'running ' + r.name + '…')), btn('Delete', 'automations-delete', () => { if (confirm('Delete "' + r.name + '"?')) act('DELETE', { id: r.id }, 'deleting…'); })); // ellipsis-ok: progress text, not a cut
       row.append(top, el('div', 'margin-top:4px;' + MUTED, describe(r) + (r.when.on === 'webhook' ? ' (' + location.origin + '/api/hook/' + r.id + ')' : '')));
       const ol = el('ol', 'margin:6px 0 0 18px;padding:0'); for (const s of r.do) ol.append(el('li', null, stepText(s)));
       row.append(ol); list.append(row);
@@ -119,14 +119,14 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'automations');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
   else api.summon('automations', { center: true });
-  api.say('Automations · when this happens, do that · Void runs them itself');
+  api.say('Automations · when this happens, do that · Verse runs them itself');
   return 'automations';
 }
 
 export default {
   name: 'automations',
   automationsOf,
-  examples: ['my automations', 'show my automations', 'automations', 'new automation', 'zaps'],
+  examples: ['my automations', 'show my automations', 'automations', 'new automation', 'zaps', 'yo automations', 'yo automation'],
   nearMisses: ['what is automation', 'home automation', 'automation jobs', 'automate my life', 'zap the bug'],
   match(lower, text) { return !!automationsOf(text); },
   run,

@@ -4,8 +4,9 @@
  * network URLs, so it stays valid offline. Empty stage stays empty.
  */
 import { stage3mf } from './print-file.js';
+import { cleanLower } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 export function downloadPrintOf(text) {
   const t = CLEAN(text);
@@ -13,6 +14,7 @@ export function downloadPrintOf(text) {
   if (/^(?:please\s+)?download the print file offline$/.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?save the print file for offline$/.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?get the print file$/.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?get me the (?:3mf|print file) for the (?:\w+)$/.test(t)) return { what: 'stage' };
   return null;
 }
 
@@ -24,6 +26,17 @@ export function offlinePackage(bytes) {
   const offline = targets.length > 0 && targets.every((t) => t.startsWith('/')) && text.includes('3D/3dmodel.model') && !/Target="https?:/i.test(text);
   return { ok: offline, offline, published: false, html: '' };
 }
+
+// The stage readiness manifest (asked by Verse, ask-20261014-2156-1) and the print gate (ask-20261014-2156-2): every 3D miniature
+// says when its first frame is drawn (skills/scene3d.js: data-rendered on its wrap, aria-busy on its canvas). This reads them all
+// into one object, also offered as window.voidStageReadiness() for outside checks; the print file waits while one is still drawing.
+export function readiness(root) {
+  const canvases = root && root.querySelectorAll ? [...root.querySelectorAll('canvas[aria-busy]')] : [];
+  const cards = canvases.map((c) => { const w = c.closest ? c.closest('[data-rendered], [data-mini], .mini, div') : null; return { kind: (w && w.dataset && (w.dataset.kind || w.dataset.mini)) || null, rendered: c.getAttribute('aria-busy') === 'false' || !!(w && w.dataset && w.dataset.rendered === 'true') }; });
+  const rendered = cards.filter((c) => c.rendered).length;
+  return { total: cards.length, rendered, pending: cards.length - rendered, ready: rendered === cards.length, cards };
+}
+if (typeof window !== 'undefined' && typeof document !== 'undefined') window.voidStageReadiness = () => readiness(document);
 
 function save3mf(bytes) {
   const blob = new Blob([bytes], { type: 'model/3mf' });
@@ -39,6 +52,8 @@ function save3mf(bytes) {
 async function run(text, api) {
   const hit = downloadPrintOf(text);
   if (!hit) return 'none';
+  const ready = typeof document !== 'undefined' ? readiness(document) : { ready: true };
+  if (!ready.ready) { if (api.say) api.say('a figure is still drawing · try again in a moment'); return 'print-download'; }
   const things = api.stage && api.stage.things ? api.stage.things() : {};
   const file = stage3mf(things);
   if (!file || !offlinePackage(file).ok) {
@@ -52,10 +67,11 @@ async function run(text, api) {
 
 export default {
   name: 'print-download',
-  examples: ['download the print file', 'download the print file offline', 'save the print file for offline', 'get the print file'],
+  examples: ['download the print file', 'download the print file offline', 'save the print file for offline', 'get the print file', 'get me the 3mf for the rotor'],
   nearMisses: ['export a print file', 'download motelet', 'download a 3mf of the stage', 'what is a slicer'],
   downloadPrintOf,
   offlinePackage,
+  readiness,
   match(lower, text) { return !!downloadPrintOf(text); },
   run,
   suite() {

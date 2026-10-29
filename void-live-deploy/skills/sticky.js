@@ -97,13 +97,14 @@ function mount(th, stageApi) {
   el.style.top = th.y + 'px';
   if (th.color) el.style.backgroundColor = th.color; // the colour only: the paper's glue strip and curl are background images
   el.style.rotate = tiltOf(th.id) + 'deg'; // a real note never sits square; each keeps its own tilt
+  if (th.role === 'note' || th.role === 'draft') el.dataset.role = th.role; // a plan's note or unsent draft: a tab says so (void.html)
   el.textContent = th.text || '';
   el.contentEditable = 'true';
   el.spellcheck = false;
   if (stageApi.selected() === th.id) el.style.outline = '1px solid rgba(0,0,0,0.25)';
   // it just heard something down an arrow: one soft glow, so the change is seen
   if (th.heard && Date.now() - th.heard < 1500 && typeof el.animate === 'function') { delete th.heard; el.animate([{ boxShadow: '0 0 0 0 rgba(255,255,255,0)' }, { boxShadow: '0 0 0 6px rgba(255,255,255,.55)' }, { boxShadow: '0 0 0 0 rgba(255,255,255,0)' }], { duration: 1100, easing: 'ease-out' }); } // once
-  el.addEventListener('input', () => { th.text = el.textContent || ''; stageApi.save(); if (stageApi.edited) stageApi.edited(th); }); // a shared Void sees the words (frontier #11)
+  el.addEventListener('input', () => { th.text = el.textContent || ''; stageApi.save(); if (stageApi.edited) stageApi.edited(th); }); // a shared Verse sees the words (frontier #11)
   el.addEventListener('pointerdown', () => { stageApi.select(th.id); });
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

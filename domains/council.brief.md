@@ -7,7 +7,7 @@ CONFIRMED; CLAIM and OPEN stay hypotheses. The same items, filterable, are the r
 
 ## How the hourly job runs (Adam)
 
-Every hour at :41 the "Void hourly growth" routine runs, in order: fix main if red or a watchdog issue is open; beat new
+Every hour at :41 the "Verse hourly growth" routine runs, in order: fix main if red or a watchdog issue is open; beat new
 board misses into `tools/grown.json`; a benchmark round in `tools/bench.json` with the floor raised in
 `tools/bench.best.json`; then the **fringe step on top of all that**: one family not used in the last six runs, built as a
 hidden draft in `drafts/fringe/`, recorded in `tools/fringe.json` with sources, confidence and sha256, `emit` false. Then

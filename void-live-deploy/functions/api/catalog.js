@@ -1,4 +1,4 @@
-// Atom's Gumroad products, as Void knows them (plan item 12). The page asks for this only when someone asks for something a
+// Atom's Gumroad products, as Verse knows them (plan item 12). The page asks for this only when someone asks for something a
 // product covers; nothing about it is ever shown on the empty surface.
 // GET                              -> { products: [{ slug, name, price_cents, currency, recurrence, url, available }], refreshed, source }
 //                                     refreshed from moonbeam846.gumroad.com when older than 6 hours (merged: nothing is ever dropped)

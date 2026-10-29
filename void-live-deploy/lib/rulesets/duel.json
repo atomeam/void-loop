@@ -1,0 +1,397 @@
+{
+ "name": "duel",
+ "title": "The Verse duel",
+ "about": "Two sides, a Root each, a Treasury, two actions a turn. Any idea may be summoned for a price; attacks are paid for in coins; the side that neutralises the other Root wins, or has more Power after 12 turns.",
+ "rules": [
+  {
+   "id": "duel-base-income",
+   "source": "Verse duel",
+   "layer": 2,
+   "when": "turnStart",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "income",
+     "add": 2
+    }
+   ]
+  },
+  {
+   "id": "duel-card-income",
+   "source": "Verse duel",
+   "layer": 2,
+   "when": "turnStart",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "income",
+     "add": {
+      "fact": "myIncome"
+     }
+    }
+   ]
+  },
+  {
+   "id": "duel-two-actions",
+   "source": "Verse duel",
+   "layer": 2,
+   "when": "turnStart",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "actions",
+     "add": 2
+    }
+   ]
+  },
+  {
+   "id": "duel-turn-limit",
+   "source": "Verse duel",
+   "layer": 3,
+   "when": "turnStart",
+   "if": [
+    {
+     "fact": "turn",
+     "cmp": "gte",
+     "value": 12
+    }
+   ],
+   "then": [
+    {
+     "do": "win",
+     "who": "power",
+     "why": "power"
+    }
+   ]
+  },
+  {
+   "id": "duel-summon-price",
+   "source": "Verse duel",
+   "layer": 2,
+   "when": "summon",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "cost",
+     "add": {
+      "fact": "cardBulk",
+      "over": 4
+     },
+     "min": 1
+    }
+   ]
+  },
+  {
+   "id": "duel-summon-on-own",
+   "source": "Verse duel",
+   "layer": 1,
+   "when": "summon",
+   "if": [
+    {
+     "fact": "parentIsMine",
+     "cmp": "eq",
+     "value": 0
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "a card is summoned onto one of your own cards"
+    }
+   ]
+  },
+  {
+   "id": "duel-summon-open-arrow",
+   "source": "Verse duel",
+   "layer": 1,
+   "when": "summon",
+   "if": [
+    {
+     "fact": "slotOpen",
+     "cmp": "eq",
+     "value": 0
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "that arrow is not open"
+    }
+   ]
+  },
+  {
+   "id": "duel-any-idea",
+   "source": "Verse duel",
+   "layer": 2,
+   "when": "summon",
+   "then": [
+    {
+     "do": "allow",
+     "reason": "any idea may be summoned"
+    }
+   ]
+  },
+  {
+   "id": "duel-needs-action",
+   "source": "Verse duel",
+   "layer": 1,
+   "when": [
+    "summon",
+    "attack"
+   ],
+   "if": [
+    {
+     "fact": "actionsLeft",
+     "cmp": "lte",
+     "value": 0
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "no actions are left this turn"
+    }
+   ]
+  },
+  {
+   "id": "duel-spend-action",
+   "source": "Verse duel",
+   "layer": 3,
+   "when": [
+    "summon",
+    "attack"
+   ],
+   "then": [
+    {
+     "do": "gain",
+     "resource": "actions",
+     "n": -1
+    }
+   ]
+  },
+  {
+   "id": "duel-turn-ends",
+   "source": "Verse duel",
+   "layer": 3,
+   "when": [
+    "summon",
+    "attack"
+   ],
+   "if": [
+    {
+     "fact": "actionsLeft",
+     "cmp": "lte",
+     "value": 0
+    }
+   ],
+   "then": [
+    {
+     "do": "endTurn"
+    }
+   ],
+   "dependsOn": [
+    "duel-spend-action"
+   ]
+  },
+  {
+   "id": "duel-attack-total",
+   "source": "Verse duel",
+   "layer": 2,
+   "when": "attack",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "attack",
+     "add": {
+      "fact": "cardPower"
+     }
+    },
+    {
+     "do": "modify",
+     "stat": "attack",
+     "add": {
+      "fact": "cardSupport"
+     }
+    },
+    {
+     "do": "modify",
+     "stat": "attack",
+     "add": {
+      "fact": "pledge"
+     }
+    }
+   ]
+  },
+  {
+   "id": "duel-defence-total",
+   "source": "Verse duel",
+   "layer": 2,
+   "when": "attack",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "defense",
+     "add": {
+      "fact": "otherResistance"
+     }
+    },
+    {
+     "do": "modify",
+     "stat": "defense",
+     "add": {
+      "fact": "otherSupport"
+     }
+    },
+    {
+     "do": "modify",
+     "stat": "defense",
+     "add": {
+      "fact": "answer"
+     }
+    }
+   ]
+  },
+  {
+   "id": "duel-attack-with-own",
+   "source": "Verse duel",
+   "layer": 1,
+   "when": "attack",
+   "if": [
+    {
+     "fact": "cardIsMine",
+     "cmp": "eq",
+     "value": 0
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "you attack with one of your own cards"
+    }
+   ]
+  },
+  {
+   "id": "duel-attacker-awake",
+   "source": "Verse duel",
+   "layer": 1,
+   "when": "attack",
+   "if": [
+    {
+     "fact": "cardNeutralised",
+     "cmp": "eq",
+     "value": 1
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "a neutralised card cannot attack"
+    }
+   ]
+  },
+  {
+   "id": "duel-attack-an-enemy",
+   "source": "Verse duel",
+   "layer": 1,
+   "when": "attack",
+   "if": [
+    {
+     "fact": "otherIsMine",
+     "cmp": "eq",
+     "value": 1
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "you attack an enemy card"
+    }
+   ]
+  },
+  {
+   "id": "duel-target-awake",
+   "source": "Verse duel",
+   "layer": 1,
+   "when": "attack",
+   "if": [
+    {
+     "fact": "otherNeutralised",
+     "cmp": "eq",
+     "value": 1
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "that card is already neutralised"
+    }
+   ]
+  },
+  {
+   "id": "duel-neutralise",
+   "source": "Verse duel",
+   "layer": 3,
+   "when": "attack",
+   "if": [
+    {
+     "fact": "attack",
+     "cmp": "gt",
+     "value": {
+      "fact": "defense"
+     }
+    }
+   ],
+   "then": [
+    {
+     "do": "neutralise"
+    }
+   ]
+  },
+  {
+   "id": "duel-root-falls",
+   "source": "Verse duel",
+   "layer": 3,
+   "when": "attack",
+   "if": [
+    {
+     "fact": "attack",
+     "cmp": "gt",
+     "value": {
+      "fact": "defense"
+     }
+    },
+    {
+     "fact": "otherIsRoot",
+     "cmp": "eq",
+     "value": 1
+    }
+   ],
+   "then": [
+    {
+     "do": "win",
+     "who": "mover",
+     "why": "root"
+    }
+   ],
+   "dependsOn": [
+    "duel-neutralise"
+   ]
+  },
+  {
+   "id": "duel-pass-banks",
+   "source": "Verse duel",
+   "layer": 3,
+   "when": "pass",
+   "then": [
+    {
+     "do": "gain",
+     "resource": "coins",
+     "n": 2
+    },
+    {
+     "do": "endTurn"
+    }
+   ]
+  }
+ ]
+}

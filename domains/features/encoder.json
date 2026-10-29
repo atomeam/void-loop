@@ -1,0 +1,123 @@
+{
+ "floor": "encoder",
+ "verse_page": "/base64/",
+ "researched": "2026-10-25",
+ "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+ "sites": {
+  "base64encode.org": {
+   "sources": [
+    "https://www.base64encode.org/",
+    "https://www.base64decode.org/"
+   ],
+   "features": [
+    {
+     "name": "Encode text to Base64",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Text box encodes as you type"
+    },
+    {
+     "name": "Decode Base64 (sister site base64decode.org)",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Base64 box decodes as you type"
+    },
+    {
+     "name": "Destination character set",
+     "detail": "dozens of character sets (UTF-8, ISO-8859, Windows code pages, ...)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Character set\" with 44 sets both ways"
+    },
+    {
+     "name": "Newline separator LF / CRLF",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Newline LF (Unix) / CRLF (Windows)"
+    },
+    {
+     "name": "Encode each line separately",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Encode each line separately\""
+    },
+    {
+     "name": "Split into 76-character lines (MIME)",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Lines of 76 (MIME)\""
+    },
+    {
+     "name": "URL-safe encoding",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Alphabet Base64URL (- _)"
+    },
+    {
+     "name": "Live mode",
+     "detail": "encode while typing",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "always live"
+    },
+    {
+     "name": "Encode files",
+     "detail": "upload a file (size cap around 100 MB+) and download the result",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"A file to Base64\": any size, read in slices, never uploaded"
+    },
+    {
+     "name": "Download the result",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Download / Download file"
+    },
+    {
+     "name": "Sister encoders (URL encode/decode)",
+     "detail": "the same publisher runs urlencoder.org / urldecoder.org (not confirmed by search)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no percent-encoding page (skills only use encodeURIComponent internally)"
+    },
+    {
+     "name": "Guides and examples",
+     "detail": "articles explaining Base64",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "footer explains the RFC 4648 rules; no guide pages"
+    }
+   ]
+  }
+ },
+ "verse_extra": [
+  "Bytes in hex view",
+  "Padding switch",
+  "data: URL in and out",
+  "Names the wrong character instead of guessing",
+  "Nothing uploaded; offline",
+  "Copy link"
+ ],
+ "gaps": [
+  "Sister encoders (URL encode/decode)",
+  "Guides and examples"
+ ],
+ "auto": {
+  "queued": [
+   {
+    "target": "feature:base64encode-org-80e5908f",
+    "feature": "Sister encoders (URL encode/decode)",
+    "host": "base64encode.org",
+    "at": "2026-10-26",
+    "id": "mvpkt1c5"
+   }
+  ]
+ }
+}

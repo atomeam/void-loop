@@ -1,0 +1,190 @@
+{
+ "site": "www.macrotrends.net",
+ "url": "https://www.macrotrends.net/",
+ "scanned": "2026-10-26",
+ "status": 307,
+ "blocked": {
+  "kind": "anti-bot",
+  "why": "a bot challenge stood in front of the page"
+ },
+ "assets": [
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "challenges.cloudflare.com/api.js",
+   "t": "js",
+   "b": 86732,
+   "ext": true
+  },
+  {
+   "f": "v1",
+   "t": "js",
+   "b": 247554
+  }
+ ],
+ "assetCount": 5,
+ "bytes": 335159,
+ "html": {
+  "mobile": {
+   "title": "Just a moment...",
+   "lang": "en-us",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "ariaLabels": [
+    "Cloudflare, opens in a new tab",
+    "Privacy, opens in a new tab"
+   ],
+   "noscript": true
+  },
+  "desktop": {}
+ },
+ "robots": {
+  "disallow": [
+   "/stocks/stock-comparison",
+   "/search/",
+   "/series/",
+   "/test/",
+   "/dev/",
+   "/sandbox/",
+   "/pma/",
+   "/stats/",
+   "/Secure_Server/",
+   "/labs/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "v1",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "dark",
+    "reduced"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "www.cloudflare.com",
+   "file": "v1",
+   "at": 154016
+  }
+ ],
+ "thirdParty": [
+  "brunhild.challenges.cloudflare.com",
+  "challenges.cloudflare.com",
+  "www.cloudflare.com"
+ ],
+ "services": [
+  "Cloudflare"
+ ],
+ "requests": [
+  "https://brunhild.challenges.cloudflare.[token].2.1.[token].7Q2k6TJE2jebYa",
+  "https://challenges.cloudflare.[token].3.1.[token].OvfPmyZCh2kNbqKZmqPkH4xrhuU0y.[token].[token].Z1I5NPtB0chWsYAS.[token]",
+  "https://challenges.cloudflare.[token].c58kRJ.[token].3.1.[token].[token].sR.[token].[token]..CJ07dZJ9.[token].1cb3mEIq3_"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "v1"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "v1@216251"
+  },
+  {
+   "name": "Path kept from crawlers /Secure_Server/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /dev/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /labs/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /pma/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /sandbox/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /search/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /series/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /stats/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /stocks/stock-comparison",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /test/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

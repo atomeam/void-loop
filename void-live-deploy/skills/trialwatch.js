@@ -6,6 +6,7 @@
  * browser; with the network off the card shows that last snapshot and its date. The honest companion to the senolytic
  * MASH card. "trial watch", "longevity trials", "is anyone repeating the senolytic liver trial".
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const API = 'https://clinicaltrials.gov/api/v2/studies/';
 export const SNAP_KEY = 'a2m.trialwatch.v1';
 export const WATCH = [
@@ -15,7 +16,7 @@ export const WATCH = [
   { topic: 'Rapamycin', ids: ['NCT06727305', 'NCT07191353'] },
 ];
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ASK_RE = /^(?:(?:show(?:\s+me)?|open|check)\s+(?:the\s+)?)?(?:(?:longevity\s+)?trial\s+watch|longevity\s+trials|longevity\s+trial\s+watch)$|^(?:is\s+anyone|is\s+anybody|has\s+anyone)\s+(?:repeating|replicating|redoing)\s+the\s+senolytic\s+(?:liver|mash|nash)\s+trial$/;
 export function trialwatchOf(text) { return ASK_RE.test(CLEAN(text)); }
 
@@ -58,7 +59,7 @@ export function changes(prev, next) {
   }
   return out;
 }
-/** of two kept checks ({ at, rows }), the newer real one, or null: this browser's last check and Void's own daily one (served at
+/** of two kept checks ({ at, rows }), the newer real one, or null: this browser's last check and Verse's own daily one (served at
  * /trialwatch.json by tools/trial-changes.mjs); one with no rows or no readable date is not a check. Pure. */
 export function newerSnap(a, b) {
   const ok = (s) => !!(s && s.rows && typeof s.rows === 'object' && Object.keys(s.rows).length && !isNaN(Date.parse(s.at)));
@@ -72,7 +73,7 @@ function saveSnap(s) { try { localStorage.setItem(SNAP_KEY, JSON.stringify(s)); 
 const when = (iso) => { const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); };
 export function trialwatchHtml(esc, data, from) {
   const head = from === 'live' ? 'Checked live from ClinicalTrials.gov on ' + when(data.at) : from === 'snapshot' ? 'ClinicalTrials.gov could not be reached; showing the last check, from ' + when(data.at)
-    : from === 'daily' ? 'ClinicalTrials.gov could not be reached from here; showing Void\'s own daily check, from ' + when(data.at) : '';
+    : from === 'daily' ? 'ClinicalTrials.gov could not be reached from here; showing Verse\'s own daily check, from ' + when(data.at) : '';
   return '<h2>Longevity trial watch</h2><div class="sub">' + esc(head) + '</div>'
     + WATCH.map((w) => '<h3 style="margin:14px 0 4px;font-size:15px">' + esc(w.topic) + '</h3>'
       + (w.note ? '<p>' + esc(w.note) + '</p>' : '')
@@ -91,7 +92,7 @@ async function run(text, api) {
   try { data = await check(); } catch (_) { data = null; }
   const live = data && Object.keys(data.rows).length > 0;
   if (live) { saveSnap({ at: data.at, rows: data.rows }); el.innerHTML = trialwatchHtml(esc, data, 'live'); return 'trialwatch'; }
-  // the registry is out of reach from this browser: the newer of its own last check and Void's daily one (the trial watch workflow)
+  // the registry is out of reach from this browser: the newer of its own last check and Verse's daily one (the trial watch workflow)
   const mine = loadSnap(), daily = await fetch('/trialwatch.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const snap = newerSnap(mine, daily);
   if (snap) { el.innerHTML = trialwatchHtml(esc, snap, snap === mine ? 'snapshot' : 'daily'); return 'trialwatch'; }

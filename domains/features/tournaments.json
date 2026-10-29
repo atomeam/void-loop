@@ -1,0 +1,234 @@
+{
+ "floor": "tournaments",
+ "verse_page": "/tournaments/",
+ "researched": "2026-10-28",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "yunite.xyz": {
+   "url": "https://yunite.xyz/",
+   "scanned": "2026-10-28",
+   "leader": true,
+   "pages": [
+    "https://yunite.xyz/",
+    "https://yunite.xyz/changelog/february-5-2021",
+    "https://yunite.xyz/docs"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Developers & API​",
+     "detail": "a heading on /changelog/february-5-2021",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"developer\", \"api\""
+    },
+    {
+     "name": "Welcome to Yunite",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"welcome\", \"yunite\""
+    },
+    {
+     "name": "Fortnite Registration",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"fortnite\", \"registration\""
+    },
+    {
+     "name": "Tournaments",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tournaments/ shows \"tournament\""
+    },
+    {
+     "name": "Custom Games",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"custom\", \"game\""
+    },
+    {
+     "name": "Creative Games",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"creative\", \"game\""
+    },
+    {
+     "name": "Item Shop",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"item\", \"shop\""
+    },
+    {
+     "name": "Twitch Verification",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"twitch\", \"verification\""
+    },
+    {
+     "name": "Support System",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"support\", \"system\""
+    },
+    {
+     "name": "Rank System",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"rank\", \"system\""
+    },
+    {
+     "name": "Text triggers",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"text\", \"trigger\""
+    },
+    {
+     "name": "Role Combiner",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"role\", \"combiner\""
+    },
+    {
+     "name": "Cross Server Role Sync",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"cross\", \"server\", \"role\", \"sync\""
+    },
+    {
+     "name": "Scheduled Permissions",
+     "detail": "a heading on /docs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/tournaments/ shows none of its words; not \"schedul\", \"permission\""
+    },
+    {
+     "name": "Our tournament system comes with a Developer API (see below)",
+     "detail": "a list item on /changelog/february-5-2021",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/tournaments/ shows \"tournament\"; not \"our\", \"system\", \"come\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Developers & API​",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Welcome to Yunite",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Fortnite Registration",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Custom Games",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Creative Games",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Item Shop",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Twitch Verification",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Support System",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Rank System",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Text triggers",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Role Combiner",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Cross Server Role Sync",
+   "sites": [
+    "yunite.xyz"
+   ]
+  },
+  {
+   "name": "Scheduled Permissions",
+   "sites": [
+    "yunite.xyz"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-28",
+  "queued": [
+   {
+    "target": "feature:yunite-xyz-b0979f7e",
+    "feature": "Developers & API​",
+    "host": "yunite.xyz",
+    "at": "2026-10-28",
+    "id": "mvri6vwm"
+   },
+   {
+    "target": "feature:yunite-xyz-c905f5ad",
+    "feature": "Welcome to Yunite",
+    "host": "yunite.xyz",
+    "at": "2026-10-28",
+    "id": "mvri6wo7"
+   },
+   {
+    "target": "feature:yunite-xyz-1f220f16",
+    "feature": "Fortnite Registration",
+    "host": "yunite.xyz",
+    "at": "2026-10-28",
+    "id": "mvri6xjk"
+   }
+  ]
+ }
+}

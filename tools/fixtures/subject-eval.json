@@ -1,0 +1,1014 @@
+[
+ {
+  "ask": "albert einstein",
+  "wiki": {
+   "search": [
+    {
+     "title": "Albert Einstein",
+     "description": "German-born theoretical physicist (1879-1955)",
+     "extract": "Albert Einstein (born 14 March 1879) was a German-born theoretical physicist who developed the theory of relativity."
+    }
+   ]
+  },
+  "model": "Albert Einstein (born 14 March 1879) was a German-born theoretical physicist who developed the theory of relativity. [1]",
+  "expect": {
+   "title": "Albert Einstein",
+   "type": "Person",
+   "theme": "portrait",
+   "adds": true,
+   "sources": 1,
+   "badges": [
+    "1879"
+   ],
+   "motif": "portrait"
+  }
+ },
+ {
+  "ask": "ada lovelace",
+  "wiki": {
+   "search": [
+    {
+     "title": "Ada Lovelace",
+     "description": "English mathematician (1815-1852)",
+     "extract": "Ada Lovelace (born 10 December 1815) was an English mathematician and writer, known for her work on Charles Babbage's Analytical Engine."
+    }
+   ]
+  },
+  "model": "Ada Lovelace (born 10 December 1815) was an English mathematician and writer, known for her work on Charles Babbage's Analytical Engine. [1]",
+  "expect": {
+   "title": "Ada Lovelace",
+   "type": "Person",
+   "theme": "portrait",
+   "adds": true,
+   "badges": [
+    "1815"
+   ],
+   "motif": "portrait"
+  }
+ },
+ {
+  "ask": "serena williams",
+  "wiki": {
+   "search": [
+    {
+     "title": "Serena Williams",
+     "description": "American tennis player (born 1981)",
+     "extract": "Serena Williams (born September 26, 1981) is an American former professional tennis player."
+    }
+   ]
+  },
+  "model": "Serena Williams (born September 26, 1981) is an American former professional tennis player. [1]",
+  "expect": {
+   "title": "Serena Williams",
+   "type": "Person",
+   "theme": "portrait",
+   "badges": [
+    "1981"
+   ],
+   "motif": "portrait"
+  }
+ },
+ {
+  "ask": "the beatles",
+  "wiki": {
+   "search": [
+    {
+     "title": "The Beatles",
+     "description": "English rock band",
+     "extract": "The Beatles were an English rock band formed in Liverpool in 1960. The group, whose best-known line-up comprised John Lennon, Paul McCartney, George Harrison and Ringo Starr, are regarded as the most influential band of all time."
+    }
+   ]
+  },
+  "model": "The Beatles were an English rock band formed in Liverpool in 1960. The group, whose best-known line-up comprised John Lennon, Paul McCartney, George Harrison and Ringo Starr, are regarded as the most influential band of all time. [1]",
+  "expect": {
+   "title": "The Beatles",
+   "type": "Band",
+   "badges": [
+    "1960"
+   ],
+   "theme": "sleeve"
+  }
+ },
+ {
+  "ask": "bohemian rhapsody",
+  "wiki": {
+   "search": [
+    {
+     "title": "Bohemian Rhapsody",
+     "description": "1975 song by Queen",
+     "extract": "\"Bohemian Rhapsody\" is a song by the British rock band Queen, released in 1975 on the album A Night at the Opera."
+    }
+   ]
+  },
+  "model": "\"Bohemian Rhapsody\" is a song by the British rock band Queen, released in 1975 on the album A Night at the Opera. [1]",
+  "expect": {
+   "title": "Bohemian Rhapsody",
+   "type": "Song",
+   "theme": "sleeve",
+   "badges": [
+    "1975"
+   ]
+  }
+ },
+ {
+  "ask": "abbey road",
+  "wiki": {
+   "search": [
+    {
+     "title": "Abbey Road",
+     "description": "1969 album by the Beatles",
+     "extract": "Abbey Road is the eleventh studio album by the English rock band the Beatles, released on 26 September 1969."
+    }
+   ]
+  },
+  "model": "Abbey Road is the eleventh studio album by the English rock band the Beatles, released on 26 September 1969. [1]",
+  "expect": {
+   "title": "Abbey Road",
+   "type": "Album",
+   "theme": "sleeve",
+   "badges": [
+    "1969"
+   ]
+  }
+ },
+ {
+  "ask": "the godfather",
+  "wiki": {
+   "search": [
+    {
+     "title": "The Godfather",
+     "description": "1972 film directed by Francis Ford Coppola",
+     "extract": "The Godfather is a 1972 American crime film directed by Francis Ford Coppola from a screenplay by Mario Puzo and Coppola."
+    }
+   ]
+  },
+  "model": "The Godfather is a 1972 American crime film directed by Francis Ford Coppola from a screenplay by Mario Puzo and Coppola. [1]",
+  "expect": {
+   "title": "The Godfather",
+   "type": "Film",
+   "theme": "cinema",
+   "badges": [
+    "1972",
+    "Francis Ford Coppola"
+   ]
+  }
+ },
+ {
+  "ask": "pride and prejudice",
+  "wiki": {
+   "search": [
+    {
+     "title": "Pride and Prejudice",
+     "description": "1813 novel by Jane Austen",
+     "extract": "Pride and Prejudice is an 1813 novel of manners written by Jane Austen."
+    }
+   ]
+  },
+  "model": "Pride and Prejudice is an 1813 novel of manners written by Jane Austen. [1]",
+  "expect": {
+   "title": "Pride and Prejudice",
+   "type": "Book",
+   "theme": "plain",
+   "badges": [
+    "1813"
+   ]
+  }
+ },
+ {
+  "ask": "tetris",
+  "wiki": {
+   "search": [
+    {
+     "title": "Tetris",
+     "description": "1985 video game",
+     "extract": "Tetris is a puzzle video game created in 1985 by Alexey Pajitnov."
+    }
+   ]
+  },
+  "model": "Tetris is a puzzle video game created in 1985 by Alexey Pajitnov. [1]",
+  "expect": {
+   "title": "Tetris",
+   "type": "Game",
+   "theme": "plain",
+   "badges": [
+    "1985"
+   ]
+  }
+ },
+ {
+  "ask": "paris",
+  "wiki": {
+   "search": [
+    {
+     "title": "Paris",
+     "description": "Capital of France",
+     "extract": "Paris is the capital and most populous city of France, with a population of 2.1 million in the city proper."
+    }
+   ]
+  },
+  "model": "Paris is the capital and most populous city of France, with a population of 2.1 million in the city proper. [1]",
+  "expect": {
+   "title": "Paris",
+   "type": "Place",
+   "theme": "postcard"
+  }
+ },
+ {
+  "ask": "mount everest",
+  "wiki": {
+   "search": [
+    {
+     "title": "Mount Everest",
+     "description": "Highest mountain on Earth",
+     "extract": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas on the border of Nepal and China."
+    }
+   ]
+  },
+  "model": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas on the border of Nepal and China. [1]",
+  "expect": {
+   "title": "Mount Everest",
+   "type": "Place",
+   "theme": "postcard",
+   "motif": "mountain"
+  }
+ },
+ {
+  "ask": "snow leopard",
+  "wiki": {
+   "search": [
+    {
+     "title": "Snow leopard",
+     "description": "Large cat native to the mountains of Central Asia",
+     "extract": "The snow leopard is a large cat native to the mountain ranges of Central and South Asia, a species of the genus Panthera."
+    }
+   ]
+  },
+  "model": "The snow leopard is a large cat native to the mountain ranges of Central and South Asia, a species of the genus Panthera. [1]",
+  "expect": {
+   "title": "Snow leopard",
+   "type": "Creature",
+   "theme": "specimen",
+   "badges": [
+    "Panthera"
+   ]
+  }
+ },
+ {
+  "ask": "okapi",
+  "wiki": {
+   "search": [
+    {
+     "title": "Okapi",
+     "description": "Species of mammal in the giraffe family",
+     "extract": "The okapi is an artiodactyl mammal native to the Democratic Republic of the Congo, a species in the giraffe family."
+    }
+   ]
+  },
+  "model": "The okapi is an artiodactyl mammal native to the Democratic Republic of the Congo, a species in the giraffe family. [1]",
+  "expect": {
+   "title": "Okapi",
+   "type": "Creature",
+   "theme": "specimen"
+  }
+ },
+ {
+  "ask": "komodo dragon",
+  "wiki": {
+   "search": [
+    {
+     "title": "Komodo dragon",
+     "description": "Species of lizard",
+     "extract": "The Komodo dragon is a large reptile of the genus Varanus endemic to the Indonesian islands of Komodo, Rinca, Flores and Gili Motang."
+    }
+   ]
+  },
+  "model": "The Komodo dragon is a large reptile of the genus Varanus endemic to the Indonesian islands of Komodo, Rinca, Flores and Gili Motang. [1]",
+  "expect": {
+   "title": "Komodo dragon",
+   "type": "Creature",
+   "theme": "specimen",
+   "badges": [
+    "Varanus"
+   ]
+  }
+ },
+ {
+  "ask": "pizza",
+  "wiki": {
+   "search": [
+    {
+     "title": "Pizza",
+     "description": "Italian dish",
+     "extract": "Pizza is an Italian dish consisting of a flat base of leavened wheat dough topped with tomato and cheese, originating from Naples in Italy."
+    }
+   ]
+  },
+  "model": "Pizza is an Italian dish consisting of a flat base of leavened wheat dough topped with tomato and cheese, originating from Naples in Italy. [1]",
+  "expect": {
+   "title": "Pizza",
+   "type": "Food",
+   "theme": "specimen"
+  }
+ },
+ {
+  "ask": "boeing 747",
+  "wiki": {
+   "search": [
+    {
+     "title": "Boeing 747",
+     "description": "American wide-body airliner",
+     "extract": "The Boeing 747 is a large, long-range wide-body airliner designed and manufactured by Boeing Commercial Airplanes in the United States."
+    }
+   ]
+  },
+  "model": "The Boeing 747 is a large, long-range wide-body airliner designed and manufactured by Boeing Commercial Airplanes in the United States. [1]",
+  "expect": {
+   "title": "Boeing 747",
+   "type": "Vehicle",
+   "theme": "plain"
+  }
+ },
+ {
+  "ask": "zeus",
+  "wiki": {
+   "search": [
+    {
+     "title": "Zeus",
+     "description": "Ancient Greek god of the sky",
+     "extract": "Zeus is the sky and thunder god in ancient Greek religion and mythology, the god of sky and thunder, king of the gods on Mount Olympus."
+    }
+   ]
+  },
+  "model": "Zeus is the sky and thunder god in ancient Greek religion and mythology, the god of sky and thunder, king of the gods on Mount Olympus. [1]",
+  "expect": {
+   "title": "Zeus",
+   "type": "Myth",
+   "theme": "collectible",
+   "adds": true
+  }
+ },
+ {
+  "ask": "pythagorean theorem",
+  "wiki": {
+   "search": [
+    {
+     "title": "Pythagorean theorem",
+     "description": "Relation between the sides of a right triangle",
+     "extract": "In mathematics, the Pythagorean theorem is a fundamental relation in Euclidean geometry between the three sides of a right triangle."
+    }
+   ]
+  },
+  "model": "In mathematics, the Pythagorean theorem is a fundamental relation in Euclidean geometry between the three sides of a right triangle. [1]",
+  "expect": {
+   "type": "Concept",
+   "theme": "plain"
+  }
+ },
+ {
+  "ask": "world war ii",
+  "wiki": {
+   "search": [
+    {
+     "title": "World War II",
+     "description": "1939-1945 global war",
+     "extract": "World War II was a global conflict that lasted from 1939 to 1945, the deadliest war in history, a war involving the Allies and the Axis."
+    }
+   ]
+  },
+  "model": "World War II was a global conflict that lasted from 1939 to 1945, the deadliest war in history, a war involving the Allies and the Axis. [1]",
+  "expect": {
+   "type": "Event",
+   "theme": "plain",
+   "badges": [
+    "1939"
+   ]
+  }
+ },
+ {
+  "ask": "apple inc",
+  "wiki": {
+   "search": [
+    {
+     "title": "Apple Inc.",
+     "description": "American technology company",
+     "extract": "Apple Inc. is an American multinational technology company headquartered in Cupertino, California, founded in 1976."
+    }
+   ]
+  },
+  "model": "Apple Inc. is an American multinational technology company headquartered in Cupertino, California, founded in 1976. [1]",
+  "expect": {
+   "type": "Organisation",
+   "theme": "plain",
+   "badges": [
+    "1976"
+   ]
+  }
+ },
+ {
+  "ask": "manchester united",
+  "wiki": {
+   "search": [
+    {
+     "title": "Manchester United F.C.",
+     "description": "English football club",
+     "extract": "Manchester United Football Club is a professional football club based in Old Trafford, Greater Manchester, established in 1878."
+    }
+   ]
+  },
+  "model": "Manchester United Football Club is a professional football club based in Old Trafford, Greater Manchester, established in 1878. [1]",
+  "expect": {
+   "type": "Team|Organisation",
+   "theme": "plain"
+  }
+ },
+ {
+  "ask": "happy time harry",
+  "wiki": {
+   "search": [
+    {
+     "title": "Happy Harry's",
+     "description": "American drugstore chain",
+     "extract": "Happy Harry's was an American drugstore chain founded by Harry Levin in 1962 in Newark, Delaware, and merged into Walgreens beginning in 2006."
+    }
+   ],
+   "redirect": {
+    "to": "List of Aqua Teen Hunger Force characters",
+    "tofragment": "Happy Time Harry"
+   },
+   "pages": {
+    "List of Aqua Teen Hunger Force characters": "Lead of the list.\n\n== Frylock ==\nFrylock is the leader of the trio.\n\n== Happy Time Harry ==\nHappy Time Harry is a bitter, nihilistic action-figure doll voiced by David Cross. He debuts in the first season episode \"Dumber Dolls\", in which Frylock buys him for Meatwad as a cheap substitute for Jiggle Billy.\n\n== Ignignokt ==\nIgnignokt is a Mooninite who torments the trio with his partner Err."
+   }
+  },
+  "model": "Happy Time Harry is a bitter, nihilistic action-figure doll voiced by David Cross [1]. He debuts in the first season episode \"Dumber Dolls\", when Frylock buys him for Meatwad [1]. It cost $4.99 at a store [1].",
+  "expect": {
+   "title": "Happy Time Harry",
+   "type": "Character",
+   "adds": true,
+   "sources": 1,
+   "notMotif": "clock",
+   "motif": "doll",
+   "theme": "collectible",
+   "badges": [
+    "David Cross",
+    "Dumber Dolls"
+   ],
+   "notice": true,
+   "body": "David Cross",
+   "notBody": "4\\.99|store",
+   "about": "harry doll"
+  }
+ },
+ {
+  "ask": "sideshow raheem",
+  "wiki": {
+   "search": [
+    {
+     "title": "Sideshow Bob",
+     "description": "Fictional character in The Simpsons",
+     "extract": "Robert Underdunk Terwilliger Sr., better known as Sideshow Bob, is a recurring character in The Simpsons."
+    }
+   ],
+   "redirect": {
+    "to": "List of recurring The Simpsons characters",
+    "tofragment": "Sideshow Raheem"
+   },
+   "pages": {
+    "List of recurring The Simpsons characters": "Lead.\n\n== Sideshow Mel ==\nMel is Bob's assistant.\n\n== Sideshow Raheem ==\nSideshow Raheem is a carnival performer who appears now and then in Springfield, voiced by Hank Azaria.\n\n== Snake Jailbird ==\nSnake is a criminal."
+   }
+  },
+  "model": "Sideshow Raheem is a carnival performer who appears now and then in Springfield, voiced by Hank Azaria [1].",
+  "expect": {
+   "title": "Sideshow Raheem",
+   "type": "Character",
+   "theme": "collectible",
+   "badges": [
+    "Hank Azaria"
+   ],
+   "notice": true,
+   "sources": 1,
+   "liveExpect": {
+    "type": "Answer",
+    "about": "raheem"
+   }
+  }
+ },
+ {
+  "ask": "orangutan opening",
+  "wiki": {
+   "search": [
+    {
+     "title": "Orangutan",
+     "description": "Genus of apes",
+     "extract": "Orangutans are great apes native to the rainforests of Indonesia and Malaysia."
+    }
+   ],
+   "redirect": {
+    "to": "List of chess openings",
+    "tofragment": "Orangutan Opening"
+   },
+   "pages": {
+    "List of chess openings": "Lead.\n\n== Sokolsky Opening ==\nThe Sokolsky Opening begins 1.b4.\n\n== Orangutan Opening ==\nThe Orangutan Opening, also called the Polish Opening, begins with the move 1.b4 and was played by Tartakower in New York in 1924.\n\n== Bird Opening ==\n1.f4."
+   }
+  },
+  "model": "The Orangutan Opening, also called the Polish Opening, begins with 1.b4 [1].",
+  "expect": {
+   "title": "Orangutan Opening",
+   "type": "Concept",
+   "theme": "plain",
+   "sources": 1,
+   "notMotif": "clock",
+   "liveTitle": "Sokolsky Opening"
+  }
+ },
+ {
+  "ask": "champagne supernova track",
+  "wiki": {
+   "search": [],
+   "fts": [
+    {
+     "title": "Morning Glory track listing",
+     "sectiontitle": "Champagne Supernova",
+     "snippet": "<span class=\"searchmatch\">Champagne</span> <span class=\"searchmatch\">Supernova</span> track"
+    }
+   ],
+   "pages": {
+    "Morning Glory track listing": "Lead.\n\n== Hello ==\nThe opener.\n\n== Champagne Supernova ==\nChampagne Supernova is a song by Oasis, the fourth track, released in 1995.\n\n== Don't Look Back in Anger ==\nThe fifth."
+   }
+  },
+  "model": "Champagne Supernova is a song by Oasis, the closing track, released in 1995 [1].",
+  "expect": {
+   "title": "Champagne Supernova",
+   "type": "Song",
+   "sources": 1,
+   "badges": [
+    "1995"
+   ]
+  }
+ },
+ {
+  "ask": "ignignokt",
+  "wiki": {
+   "search": [],
+   "fts": [
+    {
+     "title": "List of Aqua Teen Hunger Force characters",
+     "sectiontitle": "Ignignokt",
+     "snippet": "<span class=\"searchmatch\">Ignignokt</span> is a Mooninite"
+    }
+   ],
+   "pages": {
+    "List of Aqua Teen Hunger Force characters": "Lead.\n\n== Happy Time Harry ==\nA doll.\n\n== Ignignokt ==\nIgnignokt is a Mooninite who torments the trio with his partner Err, voiced by Dave Willis.\n\n== Err ==\nA Mooninite."
+   }
+  },
+  "model": "Ignignokt is a Mooninite who torments the trio with his partner Err, voiced by Dave Willis [1].",
+  "expect": {
+   "title": "Ignignokt",
+   "type": "Character",
+   "theme": "collectible",
+   "badges": [
+    "Dave Willis"
+   ],
+   "notice": true
+  }
+ },
+ {
+  "ask": "albert eintsein",
+  "wiki": {
+   "search": [
+    {
+     "title": "Albert Einstein",
+     "description": "German-born theoretical physicist (1879-1955)",
+     "extract": "Albert Einstein (born 14 March 1879) was a German-born theoretical physicist who developed the theory of relativity."
+    }
+   ],
+   "suggestion": "albert einstein"
+  },
+  "model": "Albert Einstein (born 14 March 1879) was a German-born theoretical physicist who developed the theory of relativity. [1]",
+  "expect": {
+   "guess": true,
+   "about": "einstein"
+  }
+ },
+ {
+  "ask": "the great wall of chinna",
+  "wiki": {
+   "search": [
+    {
+     "title": "Great Wall of China",
+     "description": "Series of fortifications in China",
+     "extract": "The Great Wall of China is a series of fortifications built across the historical northern borders of ancient Chinese states."
+    }
+   ]
+  },
+  "model": "The Great Wall of China is a series of fortifications built across the historical northern borders of ancient Chinese states. [1]",
+  "expect": {
+   "guess": true,
+   "about": "great wall"
+  }
+ },
+ {
+  "ask": "blorptastic quibble frobnitz",
+  "wiki": {
+   "search": []
+  },
+  "model": "I do not have information regarding \"blorptastic quibble frobnitz\". It is not contained within the provided sources.",
+  "expect": {
+   "title": "blorptastic quibble frobnitz",
+   "type": "Not found",
+   "adds": false,
+   "sources": 0,
+   "notMotif": "clock",
+   "about": "blorptastic frobnitz",
+   "noGuessLine": true
+  }
+ },
+ {
+  "ask": "harry's happy hour",
+  "wiki": {
+   "search": [
+    {
+     "title": "Happy Harry's",
+     "description": "American drugstore chain",
+     "extract": "Happy Harry's was an American drugstore chain founded by Harry Levin in 1962 and merged into Walgreens beginning in 2006."
+    }
+   ]
+  },
+  "model": "I do not have information about \"harry's happy hour\"; it may refer to Happy Harry's, a drugstore chain, but this is not contained within the provided sources.",
+  "expect": {
+   "type": "Not found",
+   "adds": false,
+   "sources": 0,
+   "didYouMean": "Happy Harry's"
+  }
+ },
+ {
+  "ask": "jon f kenedy",
+  "wiki": {
+   "search": [
+    {
+     "title": "John F. Kennedy",
+     "description": "35th president of the United States",
+     "extract": "John F. Kennedy was the 35th president of the United States."
+    }
+   ]
+  },
+  "model": "I couldn't find any information about \"jon f kenedy\" in the provided sources.",
+  "expect": {
+   "type": "Not found",
+   "adds": false,
+   "sources": 0,
+   "didYouMean": "John F. Kennedy"
+  }
+ },
+ {
+  "ask": "great barrier reef australia",
+  "wiki": {
+   "search": [
+    {
+     "title": "Great Barrier Reef",
+     "description": "World's largest coral reef system",
+     "extract": "The Great Barrier Reef is the world's largest coral reef system, off the coast of Queensland, Australia, a coral sea region."
+    }
+   ],
+   "commons": [
+    {
+     "file": "Great_Barrier_Reef_aerial.jpg",
+     "artist": "Jane Diver",
+     "about": "Great Barrier Reef aerial coral Australia"
+    }
+   ]
+  },
+  "model": "The Great Barrier Reef is the world's largest coral reef system, off the coast of Queensland, Australia, a coral sea region. [1]",
+  "expect": {
+   "title": "Great Barrier Reef",
+   "type": "Place",
+   "photo": true
+  }
+ },
+ {
+  "ask": "african forest elephant species",
+  "wiki": {
+   "search": [
+    {
+     "title": "African forest elephant",
+     "description": "Species of elephant",
+     "extract": "The African forest elephant is a species of elephant native to the humid tropical forests of West and Central Africa, a species of the genus Loxodonta."
+    }
+   ],
+   "commons": [
+    {
+     "file": "African_forest_elephant.jpg",
+     "artist": "Sam Ranger",
+     "about": "African forest elephant Loxodonta"
+    }
+   ]
+  },
+  "model": "The African forest elephant is a species of elephant native to the humid tropical forests of West and Central Africa, a species of the genus Loxodonta. [1]",
+  "expect": {
+   "title": "African forest elephant",
+   "type": "Creature",
+   "photo": true
+  }
+ },
+ {
+  "ask": "marie curie physicist chemist",
+  "wiki": {
+   "search": [
+    {
+     "title": "Marie Curie",
+     "description": "Polish-French physicist and chemist (1867-1934)",
+     "extract": "Marie Curie (born 7 November 1867) was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity."
+    }
+   ],
+   "commons": [
+    {
+     "file": "Marie_Curie_portrait.jpg",
+     "artist": "Someone",
+     "about": "Marie Curie physicist chemist portrait"
+    }
+   ]
+  },
+  "model": "Marie Curie (born 7 November 1867) was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity. [1]",
+  "expect": {
+   "title": "Marie Curie",
+   "type": "Person",
+   "photo": false,
+   "motif": "portrait"
+  }
+ },
+ {
+  "ask": "red panda",
+  "wiki": {
+   "search": [
+    {
+     "title": "Red panda",
+     "description": "Small mammal native to the Himalayas",
+     "extract": "The red panda is a small mammal native to the eastern Himalayas and southwestern China, a species of the genus Ailurus."
+    }
+   ]
+  },
+  "model": "The red panda is a small mammal native to the eastern Himalayas and southwestern China, a species of the genus Ailurus. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "panda"
+  }
+ },
+ {
+  "ask": "blue whale",
+  "wiki": {
+   "search": [
+    {
+     "title": "Blue whale",
+     "description": "Species of baleen whale",
+     "extract": "The blue whale is a marine mammal and a baleen whale of the genus Balaenoptera, the largest animal known to have existed."
+    }
+   ]
+  },
+  "model": "The blue whale is a marine mammal and a baleen whale of the genus Balaenoptera, the largest animal known to have existed. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "whale"
+  }
+ },
+ {
+  "ask": "green turtle",
+  "wiki": {
+   "search": [
+    {
+     "title": "Green sea turtle",
+     "description": "Species of large sea turtle",
+     "extract": "The green sea turtle is a species of large sea turtle of the family Cheloniidae, found in tropical and subtropical seas."
+    }
+   ]
+  },
+  "model": "The green sea turtle is a species of large sea turtle of the family Cheloniidae, found in tropical and subtropical seas. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "turtle"
+  }
+ },
+ {
+  "ask": "black widow",
+  "wiki": {
+   "search": [
+    {
+     "title": "Latrodectus",
+     "description": "Genus of spiders",
+     "extract": "Latrodectus is a genus of spiders, commonly called black widows, a species of venomous spider found in temperate and tropical regions."
+    }
+   ]
+  },
+  "model": "Latrodectus is a genus of spiders, commonly called black widows, a species of venomous spider found in temperate and tropical regions. [1]",
+  "expect": {
+   "type": "Creature",
+   "notMotif": "clock",
+   "about": "widow"
+  }
+ },
+ {
+  "ask": "golden gate bridge",
+  "wiki": {
+   "search": [
+    {
+     "title": "Golden Gate Bridge",
+     "description": "Suspension bridge in San Francisco",
+     "extract": "The Golden Gate Bridge is a suspension bridge spanning the Golden Gate strait, the mile-wide channel between San Francisco Bay and the Pacific Ocean."
+    }
+   ]
+  },
+  "model": "The Golden Gate Bridge is a suspension bridge spanning the Golden Gate strait, the mile-wide channel between San Francisco Bay and the Pacific Ocean. [1]",
+  "expect": {
+   "type": "Place",
+   "notMotif": "clock",
+   "about": "gate"
+  }
+ },
+ {
+  "ask": "white house",
+  "wiki": {
+   "search": [
+    {
+     "title": "White House",
+     "description": "Residence of the president of the United States",
+     "extract": "The White House is the official residence and workplace of the president of the United States, located in Washington, D.C."
+    }
+   ]
+  },
+  "model": "The White House is the official residence and workplace of the president of the United States, located in Washington, D.C. [1]",
+  "expect": {
+   "type": "Place",
+   "notMotif": "clock",
+   "about": "house"
+  }
+ },
+ {
+  "ask": "orange juice",
+  "wiki": {
+   "search": [
+    {
+     "title": "Orange juice",
+     "description": "Liquid extract of the orange fruit",
+     "extract": "Orange juice is a liquid extract of the orange tree fruit, produced by squeezing or reaming oranges, a popular beverage."
+    }
+   ]
+  },
+  "model": "Orange juice is a liquid extract of the orange tree fruit, produced by squeezing or reaming oranges, a popular beverage. [1]",
+  "expect": {
+   "type": "Food",
+   "notMotif": "clock",
+   "about": "juice"
+  }
+ },
+ {
+  "ask": "how to bake bread",
+  "wiki": {
+   "search": [
+    {
+     "title": "Bread",
+     "description": "Food made of flour and water",
+     "extract": "Bread is a staple food prepared from a dough of flour and water, usually by baking."
+    }
+   ]
+  },
+  "model": "Mix flour, water, salt and yeast, knead, let it rise, then bake at 230 C for 30 minutes [1].",
+  "expect": {
+   "theme": "",
+   "guess": false,
+   "notFound": false,
+   "about": "bread"
+  }
+ },
+ {
+  "ask": "snake jailbird",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "cletus spuckler",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "lindsey naegle",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "disco stu",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "superintendent chalmers",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "sideshow mel",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "kirk van houten",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "rainier wolfcastle",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "itchy and scratchy",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "noOffTopic": true
+  }
+ },
+ {
+  "ask": "frylock",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "meatwad",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ },
+ {
+  "ask": "master shake",
+  "liveOnly": true,
+  "wiki": {},
+  "model": "",
+  "expect": {
+   "type": "Character",
+   "theme": "collectible",
+   "notice": true
+  }
+ }
+]

@@ -9,10 +9,11 @@
 import * as R from './ringer-rules.js';
 import { marbleLook } from './figures.js';
 import { lift3d } from './lift3d.js';
+import { rulesLine } from './game-rules-line.js';
 
 export function ringerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new|shoot)?\s*(?:(?:a|some)\s+)?(?:game\s+of\s+)?(?:ringer(?:\s+marbles)?|marbles(?:\s+ringer)?)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t) ? { kind: 'ringer' } : null;
+  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new|shoot)?\s*(?:(?:a|some)\s+)?(?:game\s+of\s+)?(?:ringer(?:\s+marbles)?|marbles(?:\s+ringer)?)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t) ? { kind: 'ringer' } : null;
 }
 
 const loops = new Map(); // th.id -> the frame loop stepping a roll, so a re-render never runs two
@@ -99,7 +100,7 @@ function mount(th, stageApi) {
       g.beginPath(); g.moveTo(x0, y0); g.lineTo(x0 + Math.cos(s.angle) * len, y0 - Math.sin(s.angle) * len); g.stroke(); g.setLineDash([]);
     }
   }
-  el.append(wrap, controls, status);
+  el.append(wrap, controls, status, rulesLine('aim and flick your shooter to knock marbles out of the ring; each marble out is a point, most points wins.'));
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

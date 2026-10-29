@@ -1,0 +1,913 @@
+{
+ "floor": "recipes",
+ "verse_page": "void-live-deploy/recipes/index.html",
+ "researched": "2026-10-25",
+ "sites": {
+  "allrecipes.com": {
+   "sources": [
+    "https://www.allrecipes.com/",
+    "https://www.just-food.com/news/usa-allrecipes-com-keeps-folks-healthy-organized-with-nutritional-analysis-true-recipe-scaling-automated-shopping-lists",
+    "https://apify.com/parseforge/allrecipes-scraper"
+   ],
+   "features": [
+    {
+     "name": "Search by dish name",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:86 search box \"A dish, or ingredients with commas\""
+    },
+    {
+     "name": "Ingredient search, include and exclude",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: By ingredient (include), and \"without eggs\" in the search or the Without box (exclude); lib/kitchen.js askOf, fits",
+     "shows": "\"without\" any ingredient"
+    },
+    {
+     "name": "Scale servings (1/2x, 1x, 2x)",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:108 servings stepper scales every quantity"
+    },
+    {
+     "name": "US / metric",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:119 US / Metric toggle (cups to ml, °F to °C)"
+    },
+    {
+     "name": "Star ratings and written reviews",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own 1 to 5 stars and notes per recipe, on this device (#stars, #myNote); no public reviews"
+    },
+    {
+     "name": "Cook photos ('I made it')",
+     "detail": "community photos of the dish",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Nutrition facts per serving",
+     "detail": "calories, fat, carbs, protein, sodium, full label",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: recipes/index.html #nutri: kcal, protein, fat, carbs per serving, said as an estimate from N of M ingredients (lib/kitchen.js nutritionOf; tools/kitchen.test.mjs)",
+     "shows": "Nutrition per serving"
+    },
+    {
+     "name": "Save recipes into collections",
+     "detail": "account recipe box",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save on a recipe, into a collection (new or existing); the Saved pane lists by collection (recipes/index.html #saveBtn, #coll, #savedPane)",
+     "shows": "save recipes into collections"
+    },
+    {
+     "name": "Shopping list / add to grocery cart",
+     "detail": "send ingredients to Instacart / Walmart",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a shopping list that collects from several recipes at their servings and units, kept on the device (#toList, #listPane), and a Find link per item to a store's own search; no cart is filled"
+    },
+    {
+     "name": "Prep, cook and total time, yield",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a total time on the built-in recipes and a time filter; the catalogue gives no times"
+    },
+    {
+     "name": "Recipe photos and video",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/recipes/index.html:103 recipe photo; void-live-deploy/recipes/index.html:198 link out to the source video when TheMealDB has one"
+    },
+    {
+     "name": "Browse by category, cuisine, occasion, diet",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: Browse by cuisine (28), category (14), diet (Diets pane), occasion (breakfast, quick weeknight, starters, dessert, sides, meat-free, vegan, seafood) and time (under 15, 30, 45, 60 minutes; over the recipes whose time is known: the built-in, saved and opened ones, as the catalogue gives none) (lib/kitchen.js OCCASIONS, byTime; tools/kitchen.test.mjs)"
+    },
+    {
+     "name": "Submit your own recipe",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own recipes by pasted text, a link or a photo, kept in My recipes on this device; not published to other people"
+    },
+    {
+     "name": "Cook mode (screen stays on)",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:129 \"Step mode\": one step at a time, large type, screen kept on (wakeLock :287)"
+    },
+    {
+     "name": "Jump to recipe and print",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:123 Print"
+    },
+    {
+     "name": "Reader tips and tweaks in reviews",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Meal planning",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Plan for a day on a recipe (#planDay), a Meal plan pane for the next 7 days (#planPane); the week goes on the shopping list at its servings and onto the Calendar page as all-day meals (lib/kitchen.js nextDays, withPlanned)",
+     "shows": "Meal plan"
+    }
+   ]
+  },
+  "yummly.com": {
+   "sources": [
+    "https://www.yummly.com/",
+    "https://apple.co/3x0Ru7U",
+    "https://apkmirror.com/apk/yummly/yummly-recipes-shopping-list/yummly-recipes-shopping-list-8-0-release"
+   ],
+   "features": [
+    {
+     "name": "Diet preferences",
+     "detail": "vegetarian, keto, paleo, low FODMAP shape recommendations",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Diets pane: vegetarian, vegan, gluten-free, dairy-free, egg-free, nut-free, kept for every search (lib/kitchen.js DIETS)",
+     "shows": "Diets and allergies \\(vegetarian, vegan"
+    },
+    {
+     "name": "Allergy exclusions",
+     "detail": "recipes with your allergens left out",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: gluten-, dairy-, egg- and nut-free filters and any ingredient in Without (lib/kitchen.js containsOf, fits)",
+     "shows": "gluten-free, dairy-free, egg-free, nut-free"
+    },
+    {
+     "name": "Search filters",
+     "detail": "time, course, cuisine, occasion, diet, allergy, nutrition",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet and allergy filters and without; no time, cuisine or course filter"
+    },
+    {
+     "name": "Shopping list from any recipe",
+     "detail": "one tap, suggestions, grocery ordering in the US",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Add to shopping list on any recipe, built in or from TheMealDB (#toList)",
+     "shows": "A shopping list collects from several recipes"
+    },
+    {
+     "name": "Meal planner with calendar and cooking reminders",
+     "detail": "",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a 7-day meal plan that goes onto the Calendar page; no cooking reminders"
+    },
+    {
+     "name": "Guided recipes with video and timers",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: guided step mode with timers and voice; no video"
+    },
+    {
+     "name": "Smart thermometer",
+     "detail": "food and oven temperature alerts (hardware sold separately)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Saved collections",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save into collections (#coll, #savedPane)",
+     "shows": "save recipes into collections"
+    },
+    {
+     "name": "Personal recommendations",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Nutrition per serving",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    }
+   ]
+  },
+  "tasty.co": {
+   "sources": [
+    "https://tasty.co/",
+    "https://www.bluestacks.com/campaign/com.buzzfeed.tasty/en",
+    "https://www.retaildive.com/news/walmart-cooks-up-shoppable-recipes-with-buzzfeeds-tasty-videos/561300/"
+   ],
+   "features": [
+    {
+     "name": "Short overhead recipe videos",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/recipes/index.html:198 link out to the source video when TheMealDB has one"
+    },
+    {
+     "name": "Step-by-step mode",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:129 \"Step mode\": one step at a time, large type, screen kept on (wakeLock :287)"
+    },
+    {
+     "name": "Filters: diet, difficulty, time, cuisine, occasion",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet, allergy, cuisine, category, occasion and time filters; no difficulty"
+    },
+    {
+     "name": "Search by ingredients",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:91 \"By ingredient\" (include only, up to 5; no exclude)"
+    },
+    {
+     "name": "My Recipes cookbook",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Saved recipes, in collections, open offline (the recipe is kept with it)",
+     "shows": "save recipes into collections"
+    },
+    {
+     "name": "Suggestions by time of day, weekday and holiday",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: occasions (breakfast, weeknight, ...); not chosen for you by the hour"
+    },
+    {
+     "name": "Hide meat recipes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Vegetarian in the Diets pane, or \"vegetarian\" in the search, leaves out recipes with meat or fish",
+     "shows": "vegetarian"
+    },
+    {
+     "name": "US and metric side by side",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:119 US / Metric toggle (cups to ml, °F to °C)"
+    },
+    {
+     "name": "Ingredients to a grocery cart (Walmart)",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: each item still to buy on the shopping list has a Find link to a store's own search (Walmart, Instacart, Amazon Fresh, Target, Tesco, Ocado, Sainsbury's, REWE, Amazon Fresh DE/UK; the country's own first), opening in a new tab; links only, nothing is sent and no cart is filled (lib/kitchen.js STORES, storeLink; tools/kitchen.test.mjs)"
+    },
+    {
+     "name": "Tips and 'tried it' ratings",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    }
+   ]
+  },
+  "cookpad.com": {
+   "sources": [
+    "https://cookpad.com/",
+    "https://apps.apple.com/hk/app/cookpad-recipes-homemade-food/id585332633?l=en-GB"
+   ],
+   "features": [
+    {
+     "name": "Post your own recipes, public or private",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: private only: kept on this device (My recipes); sharing a recipe is a link that carries it"
+    },
+    {
+     "name": "Cooksnaps",
+     "detail": "photo of a dish you cooked from someone's recipe",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Save into themed folders",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: collections you name (#coll New collection…)",
+     "shows": "save recipes into collections"
+    },
+    {
+     "name": "Import a recipe from Instagram or TikTok",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "2026-10-25: not built: a social video has no recipe data to read; a recipe page's link, pasted text and a photo of a card are (Import pane)"
+    },
+    {
+     "name": "Photo of a handwritten recipe or cookbook page to a digital recipe",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Import > From a photo: shrunk in the browser, read by a vision model on Verse's server (6 a minute, dropped after), the text put in a box to check, then Import text makes it a recipe in My recipes (functions/api/recipeimport.js POST, lib/recipeimport.js parseRecipeText; tools/recipeimport.test.mjs); the pane says plainly where the photo goes"
+    },
+    {
+     "name": "AI recipe assistant for writing recipes",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Premium: popular-first search, unlimited saves, advanced filters",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Ad-free",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html carries no ads"
+    }
+   ]
+  },
+  "epicurious.com": {
+   "sources": [
+    "https://www.epicurious.com/",
+    "https://apps.apple.com/gb/app/epicurious/id312101965",
+    "https://mobilesyrup.com/2014/01/21/epicurious-for-ios-receives-design-overhaul-lets-you-talk-to-your-recipes/"
+   ],
+   "features": [
+    {
+     "name": "Subscription for full access",
+     "detail": "about 4.99/month or 39.99/year",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html is free without sign-in"
+    },
+    {
+     "name": "Recipe box",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Saved recipes in collections, with your stars and notes",
+     "shows": "save recipes into collections"
+    },
+    {
+     "name": "Voice-controlled cook mode",
+     "detail": "move between steps by voice",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Voice in step mode: say next, back, repeat, start timer, stop timer, ingredients, close (English and German); the step is read aloud and listening pauses while it is; uses the browser's own speech recognition and says before it is switched on that some browsers send the audio to their maker; no Voice button where the browser has none (lib/kitchen.js voiceCommand; tools/kitchen.test.mjs)"
+    },
+    {
+     "name": "Shopping list synced with the web",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a kept shopping list from several recipes, on this device only (no sync)"
+    },
+    {
+     "name": "Filters (holiday, simple cooking, diet...)",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet and allergy filters, occasions and time; no holiday filter"
+    },
+    {
+     "name": "Reviews and 'would make again' %",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    }
+   ]
+  },
+  "delish.com": {
+   "sources": [
+    "https://www.delish.com/",
+    "https://www.aol.com/introducing-delish-unlimited-access-membership-193000584.html",
+    "https://www.hearstmagazinesinternational.com/news/delish-debuts-new-app/"
+   ],
+   "features": [
+    {
+     "name": "Membership for unlimited recipes",
+     "detail": "2 free recipes / 30 days; 4.99/month digital",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html is free and unlimited"
+    },
+    {
+     "name": "Save recipes to My Recipes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save (#saveBtn), the Saved pane",
+     "shows": "save recipes into collections"
+    },
+    {
+     "name": "Recipe videos and vertical video feed",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/recipes/index.html:198 link out to the source video when TheMealDB has one"
+    },
+    {
+     "name": "Hands-free cook mode with one-tap timers",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Step mode keeps the screen on, one large step, one-tap timers, and now voice commands and the step read aloud"
+    },
+    {
+     "name": "Daily dinner finder quiz",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Members' newsletter",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    }
+   ]
+  },
+  "bbcgoodfood.com": {
+   "sources": [
+    "https://www.bbcgoodfood.com/",
+    "https://apps.apple.com/tm/app/id533785308",
+    "https://www.isubscribe.co.uk/Good-Food-Magazine-Subscription.cfm"
+   ],
+   "features": [
+    {
+     "name": "Nutrition per serving",
+     "detail": "kcal, fat, saturates, carbs, sugars, fibre, protein, salt",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: kcal, protein, fat, carbs per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
+    },
+    {
+     "name": "Saved recipes and collections, synced",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: saved recipes and collections on this device; not synced across devices"
+    },
+    {
+     "name": "Meal plans",
+     "detail": "",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own 7-day meal plan; no ready-made plans"
+    },
+    {
+     "name": "Shopping list tool",
+     "detail": "",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: the shopping list collects from several recipes, ticked in the shop, copied as text (#listPane)",
+     "shows": "A shopping list collects from several recipes"
+    },
+    {
+     "name": "Step-by-step videos",
+     "detail": "",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/recipes/index.html:198 link out to the source video when TheMealDB has one"
+    },
+    {
+     "name": "Cook mode",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:129 \"Step mode\": one step at a time, large type, screen kept on (wakeLock :287)"
+    },
+    {
+     "name": "Ratings",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe, not a public rating"
+    },
+    {
+     "name": "Collections by theme (healthy, budget, batch cooking)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Magazine subscription",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    }
+   ]
+  },
+  "simplyrecipes.com": {
+   "sources": [
+    "https://www.simplyrecipes.com/",
+    "https://recipe-master-api-trnk.onrender.com/save-recipes-from/simplyrecipes"
+   ],
+   "features": [
+    {
+     "name": "Jump to recipe",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html shows the recipe first"
+    },
+    {
+     "name": "Print",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:123 Print"
+    },
+    {
+     "name": "Ratings",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe"
+    },
+    {
+     "name": "Step photos",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Nutrition facts",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
+    },
+    {
+     "name": "Save via account (MyRecipes)",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save with no account, on this device (#saveBtn)",
+     "shows": "save recipes into collections"
+    }
+   ]
+  },
+  "food52.com": {
+   "sources": [
+    "https://food52.com/",
+    "https://d3.harvard.edu/platform-digit/submission/food52-makes-every-food-enthusiast-feel-like-emeril/index.html"
+   ],
+   "features": [
+    {
+     "name": "Community-submitted recipes",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Recipe contests with voting",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Hotline: ask cooks a question",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Bookmark recipes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Save (#saveBtn)",
+     "shows": "save recipes into collections"
+    },
+    {
+     "name": "Comments on recipes",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Shop (cookware)",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    }
+   ]
+  },
+  "seriouseats.com": {
+   "sources": [
+    "https://www.seriouseats.com/",
+    "https://en.wikipedia.org/wiki/Serious_Eats"
+   ],
+   "features": [
+    {
+     "name": "Technique explainers (why it works)",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Equipment reviews and gear awards",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Ratings",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe"
+    },
+    {
+     "name": "Nutrition facts",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
+    },
+    {
+     "name": "Print",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:123 Print"
+    }
+   ]
+  },
+  "skinnytaste.com": {
+   "sources": [
+    "https://www.skinnytaste.com/",
+    "https://www.skinnytaste.com/7-day-healthy-meal-plan-august-23-29"
+   ],
+   "features": [
+    {
+     "name": "Macros on every recipe",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: protein, fat and carbs per serving on every recipe the table can read (#nutri)",
+     "shows": "kcal, protein, fat, carbs"
+    },
+    {
+     "name": "WW points",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Free weekly meal plan with shopping list",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own week planned and sent to the shopping list in one tap; no ready-made plan"
+    },
+    {
+     "name": "Diet and appliance tags (air fryer, keto, gluten-free)",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: diet tags under each recipe (vegetarian, vegan, gluten-free, ...; #tags); no appliance or keto tags"
+    },
+    {
+     "name": "Paid meal plans (Relish+), printed planner",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    }
+   ]
+  },
+  "recipetineats.com": {
+   "sources": [
+    "https://www.recipetineats.com/",
+    "https://help.bootstrapped.ventures/docs/wp-recipe-maker/wprm-interactions/"
+   ],
+   "features": [
+    {
+     "name": "Adjustable servings",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:108 servings stepper scales every quantity"
+    },
+    {
+     "name": "US / metric",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:119 US / Metric toggle (cups to ml, °F to °C)"
+    },
+    {
+     "name": "Recipe video",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "void-live-deploy/recipes/index.html:198 link out to the source video when TheMealDB has one"
+    },
+    {
+     "name": "Print",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:123 Print"
+    },
+    {
+     "name": "Ratings and comments",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars and notes per recipe, not public"
+    },
+    {
+     "name": "Cook mode",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:129 \"Step mode\": one step at a time, large type, screen kept on (wakeLock :287)"
+    },
+    {
+     "name": "Recipe notes, storage and make-ahead",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own notes per recipe (#myNote)"
+    }
+   ]
+  },
+  "budgetbytes.com": {
+   "sources": [
+    "https://www.budgetbytes.com/",
+    "https://www.budgetbytes.com/category/extra-bytes/budget-friendly-meal-prep",
+    "https://shop.budgetbytes.com/products/10-dinners-monthly-meal-plan-volume-1"
+   ],
+   "features": [
+    {
+     "name": "Cost per recipe and per serving",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a cost per serving and for the recipe on every recipe the table can read (#cost): a rough estimate from typical US supermarket prices per kilogram, said as one and from how many ingredients (lib/kitchen.js costOf, pricePerKg; tools/kitchen.test.mjs); not the recipe author's own costing, not in other currencies"
+    },
+    {
+     "name": "Meal prep collections",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Weekly meal plans (Budget Bytes+)",
+     "detail": "",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own weekly plan, free; no ready-made plans"
+    },
+    {
+     "name": "Step photos",
+     "detail": "",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no control on void-live-deploy/recipes/index.html"
+    },
+    {
+     "name": "Servings scaling and print",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:108 servings stepper scales every quantity; void-live-deploy/recipes/index.html:123 Print"
+    }
+   ]
+  },
+  "minimalistbaker.com": {
+   "sources": [
+    "https://minimalistbaker.com/",
+    "https://minimalistbaker.com/recipes/30-minutes-or-less/page/9/"
+   ],
+   "features": [
+    {
+     "name": "Diet browsing (vegan, gluten-free)",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: Vegan, gluten-free and four more in the Diets pane, and in the search (\"vegan pancakes\")",
+     "shows": "Diets and allergies \\(vegetarian, vegan"
+    },
+    {
+     "name": "10 ingredients / 1 bowl / 30 minutes filters",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: a 30-minute filter over known times; no ingredient-count filter"
+    },
+    {
+     "name": "Recipe card scaling 1x 2x 3x",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:108 servings stepper scales every quantity"
+    },
+    {
+     "name": "Nutrition",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "2026-10-25: per serving, an estimate (#nutri)",
+     "shows": "Nutrition per serving"
+    },
+    {
+     "name": "Ratings",
+     "detail": "",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "2026-10-25: your own stars per recipe"
+    },
+    {
+     "name": "Print",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/recipes/index.html:123 Print"
+    }
+   ]
+  }
+ },
+ "union_gaps": [
+  "SKIPPED ON PURPOSE (2026-10-25): public ratings, reviews, cook tips and photos (your own stars and notes are built, 2026-10-25): allrecipes.com, epicurious.com, tasty.co, bbcgoodfood.com, recipetineats.com, simplyrecipes.com, minimalistbaker.com, seriouseats.com -- needs stored strangers' text and pictures, moderation and a way to take them down, which is not cheap or safe to bolt on; your own stars and notes stay on the device",
+  "Browse by holiday and by difficulty (cuisine, category, diet, occasion and time are built, 2026-10-25): allrecipes.com, tasty.co, yummly.com, bbcgoodfood.com, minimalistbaker.com",
+  "Inline step videos (Verse only links out): tasty.co, yummly.com, delish.com, bbcgoodfood.com, recipetineats.com",
+  "Cost per serving in your currency and from your own prices (a rough US estimate is built, 2026-10-25): budgetbytes.com",
+  "Post your own recipe, cooksnaps: cookpad.com, allrecipes.com, food52.com",
+  "Import a recipe from a social video (a recipe page's link, pasted text and a photo of a card are built, 2026-10-25): cookpad.com",
+  "Recommendations by time of day or taste: tasty.co, yummly.com, delish.com (dinner quiz)",
+  "Technique explainers and equipment reviews: seriouseats.com",
+  "Q&A / comments: food52.com, recipetineats.com",
+  "Smart thermometer: yummly.com (hardware, paid)",
+  "Fill a grocery cart for you (store search links are built, 2026-10-25; a cart needs each store's own partner account): tasty.co, allrecipes.com"
+ ],
+ "verse_extra": [
+  "Free and unlimited with no sign-in, no ads, no paywall (delish.com, epicurious.com, bbcgoodfood.com app gate recipes)",
+  "A dozen classics built in that work offline (recipes/index.html:97)",
+  "Search by what is in the fridge on the same box (recipes/index.html:91)",
+  "Scaling handles fractions, mixed numbers and ranges; °F to °C and inches to cm too (lib/recipes.js:37, :67)",
+  "Timers found in the step text, tap to count down (recipes/index.html:150)",
+  "Tick what you have, copy only what is left to buy (recipes/index.html:121)",
+  "Share link keeps servings and units (recipes/index.html:122)",
+  "German page words for German browsers (lib/recipes.js:183)"
+ ]
+}

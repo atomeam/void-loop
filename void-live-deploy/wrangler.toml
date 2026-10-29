@@ -34,3 +34,9 @@ binding = "AI"
 # VOID_ANSWER_MODELS  off = /api/answer answers from the open web and fixes from rules (no Workers AI, no D1 writes).
 #   Unset = models on: the free model named in lib/models.js (Gemma 4 26B today) with the router (lib/router.js) in front.
 #   VOID_ROUTER_TUNE   JSON thresholds, e.g. {"skillMin":0.72,"hardMin":0.6}  (tune from GET /api/routes scores)
+
+# Void's films for people who pay (functions/api/films.js; owner, 2026-10-14). The bucket was made once with
+#   npx wrangler r2 bucket create void-films
+[[r2_buckets]]
+binding = "FILMS"
+bucket_name = "void-films"

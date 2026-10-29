@@ -1,6 +1,6 @@
 /**
  * throw-off skill — figures-first dismiss
- * Click a Void object or person to pick it up. A throw (fast release, or
+ * Click a Verse object or person to pick it up. A throw (fast release, or
  * already off the stage) tosses it like a park guest and it is gone.
  * A slow drop sets it back down. Nothing is published.
  */

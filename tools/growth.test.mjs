@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { growthOf, ordered, summary, growthHtml, loadLedger, suite } from '../void-live-deploy/skills/growth.js';
+import { growthOf, ordered, summary, growthHtml, loadLedger, suite, testCandidates, unstableFamilies, heatHtml, stabilitySeries, sparkSvg, stabilityHtml, DEGRADE } from '../void-live-deploy/skills/growth.js';
 import { entryProblem, ledgerProblems, appendTo, LEDGER } from './grow.mjs';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 test('"growth" and its plain phrasings summon the ledger; growth as a topic stays a topic', () => {
-  for (const t of ['growth', 'Growth', 'growth?', 'void growth', "Void's growth", 'show growth', 'show me the growth ledger', 'summon growth', 'how have you grown', 'how has void grown', "what's new with void", 'your growth'])
+  for (const t of ['growth', 'Growth', 'growth?', 'void growth', "Verse's growth", 'show growth', 'show me the growth ledger', 'summon growth', 'how have you grown', 'how has void grown', "what's new with void", 'your growth'])
     assert.ok(growthOf(t), t);
   for (const t of ['economic growth', 'growth rate of india', 'growth mindset', 'hair growth', 'what is growth', 'population growth', 'how do plants grow', 'growth hormone', 'grow a tree'])
     assert.equal(growthOf(t), false, t);
@@ -66,7 +66,7 @@ test('grow.mjs: entries are checked, appended one per line, and the real ledger 
   assert.ok(suite().ok);
 });
 
-test('velocity (asked by Void, 2026-10-12): new or better changes this week against the week before, and whether that is speeding up, steady, slowing or stalled', async () => {
+test('velocity (asked by Verse, 2026-10-12): new or better changes this week against the week before, and whether that is speeding up, steady, slowing or stalled', async () => {
   const { velocity, growthHead } = await import('../void-live-deploy/skills/growth.js');
   const now = Date.parse('2026-10-12T12:00:00Z'), d = (n, kind = 'grow') => ({ at: new Date(now - n * 864e5).toISOString(), kind, what: 'x' });
   assert.deepEqual(velocity([d(1), d(2), d(3, 'build'), d(9)], now), { week: 3, before: 1, trend: 'speeding up' });
@@ -75,4 +75,86 @@ test('velocity (asked by Void, 2026-10-12): new or better changes this week agai
   assert.equal(velocity([d(8), d(9)], now).trend, 'stalled');
   assert.equal(velocity([d(1, 'fix'), d(2, 'idea'), d(8)], now).week, 0, 'fixes and ideas are not new skills');
   assert.match(growthHead(esc, [d(1), d(9)], now), /This week 1 new or better, the week before 1: steady/);
+});
+
+test('the Site Test card suggests what to test next: the lowest-rated skills, failing first, each with its own ask (asked by Verse, 2026-10-17)', () => {
+  const fam = { families: [
+    { name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] },
+    { name: 'Words and the world', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }, { name: 'poster', tier: 'tested' }, { name: 'quiet', tier: 'experiment' }] },
+  ] };
+  const guide = { pages: [{ kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 5 minutes'] }, { kind: 'skill', name: 'define', examples: ['define hubris'] }, { kind: 'skill', name: 'poster', examples: ['make a poster'] }, { kind: 'chapter', name: 'quiet' }] };
+  const c = testCandidates(fam, guide);
+  assert.deepEqual(c.map((x) => x.name), ['timer', 'define', 'poster'], 'failing first, then experiment before tested; a skill with no ask in the book is left out (quiet), proven and passing ones never appear (clock)');
+  assert.equal(c[0].ask, 'set a timer for 5 minutes'); assert.equal(c[0].failing, 1); assert.equal(c[1].family, 'Words and the world');
+  assert.equal(testCandidates(fam, guide, 1).length, 1);
+  assert.deepEqual(testCandidates(null, null), []); assert.deepEqual(testCandidates(fam, null), []);
+});
+
+test('the Site Test heat map ranks families least stable first: failing skills, then unsure ones (tested, experiment or weathered) (asked by Verse)', () => {
+  const today = Date.parse('2026-10-17T12:00:00Z');
+  const fam = { families: [
+    { name: 'Body and mind', skills: [{ name: 'heart', tier: 'proven', last_tested: '2026-10-17' }, { name: 'sleep', tier: 'proven', last_tested: '2026-10-16' }] },
+    { name: 'Time', skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'], last_tested: '2026-10-17' }, { name: 'clock', tier: 'proven', last_tested: '2026-10-17' }] },
+    { name: 'Words and the world', skills: [{ name: 'define', tier: 'experiment', last_tested: '2026-10-17' }, { name: 'poster', tier: 'proven', last_tested: '2026-09-01' }, { name: 'book', tier: 'proven', last_tested: '2026-10-17' }] },
+    { name: 'Empty', skills: [] },
+  ] };
+  const r = unstableFamilies(fam, today);
+  assert.deepEqual(r.map((x) => x.name), ['Time', 'Words and the world', 'Body and mind'], 'failing first, then by heat; a family with no skills is left out');
+  assert.deepEqual([r[0].failing, r[0].unsure, r[0].n], [1, 0, 2]); assert.deepEqual([r[1].failing, r[1].unsure], [0, 2], 'an experiment and a skill untested since September are unsure');
+  assert.equal(r[2].heat, 0); assert.ok(r[0].heat > r[1].heat);
+  const esc = (s) => String(s).replace(/</g, '&lt;'), html = heatHtml(esc, [{ name: '<b>x', n: 2, failing: 1, unsure: 0, heat: 1 }]);
+  assert.match(html, /data-family="&lt;b>x"/); assert.match(html, /1 failing · 0 of 2 unsure/); assert.equal(heatHtml(esc, []), '');
+});
+
+test('the stability trend: a point a day per family from void.better.json, today from families.json lowered by recent failures on main (asked by Verse)', () => {
+  const now = Date.parse('2026-10-17T20:00:00Z');
+  const fam = { families: [{ id: 'time', name: 'Time', skills: [{ name: 'timer', tier: 'proven' }, { name: 'clock', tier: 'proven' }] }, { id: 'words', name: 'Words <b>', skills: [{ name: 'define', tier: 'proven' }] }] };
+  const rows = [{ at: '2026-10-15T09:00:00Z', families: [{ id: 'time', health: 70 }] }, { at: '2026-10-16T09:00:00Z', families: [{ id: 'time', health: 60 }, { id: 'words', health: 90 }] }, { at: '2026-10-16T18:00:00Z', families: [{ id: 'time', health: 80 }] }, { at: '2026-10-17T09:00:00Z', families: [{ id: 'time', health: 1 }] }];
+  const a = { recent: [{ at: '2026-10-17T19:00:00Z', checks: [{ family: 'time' }, { family: 'time' }] }, { at: '2026-10-10T00:00:00Z', checks: [{ family: 'words' }] }] };
+  const s = stabilitySeries(rows, fam, a, now), time = s.find((x) => x.id === 'time'), words = s.find((x) => x.id === 'words');
+  assert.deepEqual(time.points.map((p) => p.day + ':' + p.health), ['2026-10-15:70', '2026-10-16:80', '2026-10-17:' + (100 - 2 * DEGRADE)], 'a day keeps its last row; today comes from families.json, two recent failures off');
+  assert.equal(time.drop, 2 * DEGRADE); assert.equal(words.drop, 0, 'a failure a week old costs nothing'); assert.equal(words.points.length, 2);
+  assert.equal(stabilitySeries(rows, fam, { recent: [{ at: '2026-10-17T19:00:00Z', checks: Array(20).fill({ family: 'time' }) }] }, now).find((x) => x.id === 'time').drop, 30, 'capped');
+  assert.match(sparkSvg(time.points), /<polyline points="3\.0,[\d.]+ 36\.0,[\d.]+ 69\.0,[\d.]+"/); assert.equal(sparkSvg([]), '');
+  const html = stabilityHtml((x) => String(x).replace(/</g, '&lt;'), s); assert.match(html, /Words &lt;b>/); assert.match(html, /−10 from 2 recent failures/); assert.match(html, /\(\+10\)/);
+});
+
+test('"what just shipped?" is about Verse (it came back as a Wikipedia line about the Just Cause games, 2026-10-19), and real shipping questions are left alone', () => {
+  for (const q of ['what just shipped?', 'what shipped today', 'what did you just ship', 'what have you just built', 'what has shipped recently']) assert.equal(growthOf(q), true, q);
+  for (const q of ['what shipped to my order', 'where did my package ship', 'what have you built', 'when does the iphone ship']) assert.equal(growthOf(q), false, q);
+});
+
+test('the tester card names each run\'s failed asks as asks to tap, not only "64 of 74" (owner, 2026-10-19)', async () => {
+  const { testerRows } = await import('../void-live-deploy/skills/growth.js');
+  const rows = testerRows({ runs: [{ at: '2026-10-19T04:58:40Z', passed: 1, of: 2, kind: 'grow', note: 'n', failed: [{ ask: 'what are you?', why: 'missing text /Verse/' }] }, { at: '2026-10-18T04:58:40Z', passed: 2, of: 2, kind: 'grow', note: 'n' }] });
+  assert.deepEqual(rows[0].failed, [{ ask: 'what are you?', why: 'missing text /Verse/' }]);
+  assert.deepEqual(rows[1].failed, []);
+});
+
+test('growth entries (owner, 2026-10-28): a branch writes its own file, the fold adds each once in time order and removes the files', async () => {
+  const { mkdtempSync, writeFileSync: w, readFileSync: r, readdirSync, mkdirSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os'), { join } = await import('node:path');
+  const { entryName, entryText, foldInto, writesEntryFile } = await import('./grow.mjs'), { fold } = await import('./growth-fold.mjs');
+  assert.equal(writesEntryFile({ branch: 'box/x', env: {} }), true);
+  assert.equal(writesEntryFile({ branch: 'main', env: {} }), false);
+  assert.equal(writesEntryFile({ branch: 'HEAD', env: {} }), false);
+  assert.equal(writesEntryFile({ branch: 'box/x', env: { GROWTH_LEDGER: '1' } }), false);
+  assert.equal(writesEntryFile({ branch: 'box/x', args: ['--ledger'], env: {} }), false);
+  assert.equal(writesEntryFile({ branch: 'main', args: ['--entry'], env: {} }), true);
+  const a = { at: '2026-10-28T20:00:00Z', by: 'box', kind: 'build', what: 'a' }, b = { at: '2026-10-28T19:00:00Z', by: 'grok', kind: 'fix', what: 'b' };
+  assert.match(entryName(a), /^20261028T200000Z-box-[0-9a-f]{8}\.json$/);
+  assert.notEqual(entryName(a), entryName({ ...a, what: 'other' }));
+  const base = '[\n  {"at": "2026-10-01T00:00:00Z", "by": "x", "kind": "grow", "what": "old"}\n]\n';
+  const once = foldInto(base, [a, b]);
+  assert.deepEqual(JSON.parse(once).map((e) => e.what), ['old', 'b', 'a']);
+  assert.equal(foldInto(once, [a, b]), once);
+  const d = mkdtempSync(join(tmpdir(), 'gfold-')), dir = join(d, 'entries'), led = join(d, 'ledger.json');
+  mkdirSync(dir); w(led, base); w(join(dir, entryName(a)), entryText(a)); w(join(dir, entryName(b)), entryText(b)); w(join(dir, 'README.md'), 'x');
+  assert.deepEqual(fold({ ledger: led, dir, dry: true }), { folded: 2, files: 2 });
+  assert.equal(r(led, 'utf8'), base);
+  assert.deepEqual(fold({ ledger: led, dir }), { folded: 2, files: 2 });
+  assert.equal(JSON.parse(r(led, 'utf8')).length, 3);
+  assert.deepEqual(readdirSync(dir), ['README.md']);
+  w(join(dir, 'bad.json'), '{"what": 1}');
+  assert.throws(() => fold({ ledger: led, dir }), /bad\.json/);
 });

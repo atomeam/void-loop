@@ -1,7 +1,7 @@
 /**
  * routine — frontier #13's first piece. "call this my morning" keeps the last few asks (the ones the ask box already remembers
  * for its hints) as a routine named "morning" in this browser; "my morning" asks them again, in order, exactly as if typed.
- * "my routines" lists them, "forget my morning" drops one. A routine is only asks Void already answers, so it can do nothing
+ * "my routines" lists them, "forget my morning" drops one. A routine is only asks Verse already answers, so it can do nothing
  * typing them could not; it stays in this browser unless its owner offers it. The pure half (the ask, the pick, the store) is
  * lib/routines.js. The second piece: "offer my morning as Sam" sends only that routine's asks and the name Sam chose to a list
  * the site's owner reviews (lib/shared-routines.js, /api/routines); "routines from others" shows the approved ones, and
@@ -9,6 +9,7 @@
  * says "offered routines" to see what waits and approve or reject each one.
  */
 import { routineAsk, pick, load, save, remove, recentAsks, MAX_ASKS } from '../lib/routines.js';
+import { skillOf } from '../lib/routine-skill.js';
 import { offerAsk, othersAsk, cleanOffer, takeAsk, findShared, takeName, pendingAsk } from '../lib/shared-routines.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
@@ -66,7 +67,7 @@ const ownerKey = () => { try { return (typeof localStorage !== 'undefined' && lo
 // the owner's card: each offer that waits, its asks, and Approve / Reject (POST /api/routines with the owner's key)
 async function pending(api, log) {
   const tok = ownerKey();
-  if (!tok) { card(api, 'Offered routines are the owner\'s to review', [], 'Unlock Void first (unlock <key>), then ask again.'); log('pending-locked'); return 'routine'; }
+  if (!tok) { card(api, 'Offered routines are the owner\'s to review', [], 'Unlock Verse first (unlock <key>), then ask again.'); log('pending-locked'); return 'routine'; }
   let list = null;
   try { const r = await fetch('/api/routines?pending=1', { headers: { authorization: 'Bearer ' + tok } }); if (r.ok) list = await r.json(); } catch (_) {}
   if (!Array.isArray(list)) { card(api, 'Could not read offered routines', [], 'The key was refused or the list is unreachable. Try again in a minute.'); log('pending-failed'); return 'routine'; }
@@ -74,7 +75,7 @@ async function pending(api, log) {
   showPage((p) => {
     p.innerHTML = '<h2>' + esc(list.length ? 'Offered routines (' + list.length + ')' : 'No offered routines waiting') + '</h2>' // void-review: ok: every value goes through esc()
       + list.map((r, i) => '<div class="routine-offer" data-i="' + i + '"><b>' + esc(r.name) + '</b> by ' + esc(r.author) + '<ol>' + r.asks.map((a) => '<li>' + esc(a) + '</li>').join('') + '</ol>'
-        + '<button type="button" data-yes>Approve</button> <button type="button" data-no>Reject</button> <span class="sub" data-said></span></div>').join('')
+        + '<button type="button" data-yes>Approve</button> <button type="button" data-no>Reject</button> <button type="button" data-forge>Forge into a skill</button> <span class="sub" data-said></span></div>').join('')
       + '<div class="sub" data-routine-foot>' + esc(list.length ? 'Approved ones show to everyone under "routines from others", with the author\'s name.' : 'When someone offers a routine, it waits here.') + '</div>';
     p.querySelectorAll('.routine-offer').forEach((row) => {
       const r = list[+row.dataset.i], said = row.querySelector('[data-said]');
@@ -87,6 +88,15 @@ async function pending(api, log) {
       };
       row.querySelector('[data-yes]').addEventListener('click', () => decide(true));
       row.querySelector('[data-no]').addEventListener('click', () => decide(false));
+      // one click (asked by Verse): the offer becomes a skill file to commit; the file is made here, from the offer, and downloaded
+      row.querySelector('[data-forge]').addEventListener('click', () => {
+        const k = skillOf(r);
+        if (k.error) { said.textContent = 'not forged: ' + k.error; return; }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([k.source], { type: 'text/javascript' })); a.download = k.name + '.js';
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        said.textContent = 'forged ' + k.name + '.js · approve it first, then in the repo: node tools/routine-skill.mjs ' + r.id + ' (says "' + k.phrase + '")';
+      });
     });
   });
   log('pending'); return 'routine';

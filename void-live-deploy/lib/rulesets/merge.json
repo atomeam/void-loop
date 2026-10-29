@@ -1,0 +1,111 @@
+{
+ "name": "merge",
+ "title": "Merge",
+ "about": "Two of your cards become one. The result is as strong as the stronger parent plus half the weaker, never past 12, and it keeps both parents' income.",
+ "rules": [
+  {
+   "id": "merge-both-mine",
+   "source": "merge set",
+   "layer": 1,
+   "when": "merge",
+   "if": [
+    {
+     "fact": "otherIsMine",
+     "cmp": "eq",
+     "value": 0
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "both cards must be yours"
+    }
+   ]
+  },
+  {
+   "id": "merge-power",
+   "source": "merge set",
+   "layer": 2,
+   "when": "merge",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "power",
+     "add": {
+      "fact": "maxPower"
+     }
+    },
+    {
+     "do": "modify",
+     "stat": "power",
+     "add": {
+      "fact": "minPower",
+      "over": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "merge-resistance",
+   "source": "merge set",
+   "layer": 2,
+   "when": "merge",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "resistance",
+     "add": {
+      "fact": "maxResistance"
+     }
+    },
+    {
+     "do": "modify",
+     "stat": "resistance",
+     "add": {
+      "fact": "minResistance",
+      "over": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "merge-income",
+   "source": "merge set",
+   "layer": 2,
+   "when": "merge",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "income",
+     "add": {
+      "fact": "sumIncome"
+     }
+    }
+   ]
+  },
+  {
+   "id": "merge-ceiling",
+   "source": "merge set",
+   "layer": 2,
+   "when": "merge",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "power",
+     "add": 0,
+     "max": 12
+    },
+    {
+     "do": "modify",
+     "stat": "resistance",
+     "add": 0,
+     "max": 12
+    }
+   ],
+   "dependsOn": [
+    "merge-power",
+    "merge-resistance"
+   ]
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 /**
- * growth-tree — the layout of Void's growth tree (frontier #3), with no three.js: the growth ledger (void.growth.json) in,
+ * growth-tree — the layout of Verse's growth tree (frontier #3), with no three.js: the growth ledger (void.growth.json) in,
  * one branch per entry out. The miniature (skills/mini/growthtree.js) poses from this and nothing else; the tests
  * (tools/growth-tree.test.mjs) check it on a fixture ledger.
  *
@@ -73,7 +73,7 @@ export function layout(list, { until, tracks, building, wants, commits } = {}) {
     b.profile = b.profile.map(([f, r]) => [Math.round(f * 1e4) / 1e4, Math.round(r * 1e6) / 1e6]);
   }
   // what is not grown yet, as faint shoots off the real wood (never its parents, never in its thickness): the think tank's
-  // open tracks, the claim being built now, and Void's wants as buds. Seeded by their own words, so they stay put from day to
+  // open tracks, the claim being built now, and Verse's wants as buds. Seeded by their own words, so they stay put from day to
   // day. A want follows its life: a bud while only wanted, the glowing shoot once a claim on the frontier is building it, and
   // nothing at all once its grow line is in the ledger (it is a real branch then).
   const ghosts = [], all = chronological(list), building0 = building && building.what ? building : null;
@@ -153,7 +153,7 @@ export function wantState(want, entries, building) {
   return 'bud';
 }
 
-// leaves are real leaves, coloured by the season of their entry's date (northern hemisphere: Void lives in New York); the
+// leaves are real leaves, coloured by the season of their entry's date (northern hemisphere: Verse lives in New York); the
 // kind is shown by a berry in the card's colour instead. `pick` (0..1) chooses within the season, so a crown is mottled.
 const SEASON = {
   spring: ['#9cc65a', '#86b84a', '#a9cf6a'], summer: ['#3f7a2c', '#4a8a34', '#356b26'],
@@ -194,23 +194,20 @@ const WEEK_ORDER = ['grow', 'build', 'fix', 'retire', 'finding', 'idea'];
 // Markdown, clipped
 /** the owner's words as some older ledger lines quoted them, and as the site shows them: his meaning, spelled right (the
  *  owner, 2026-10-13: "the message is more important than crediting me", and pasting his typos read as ridicule). */
-export const OWNER_WORDS = {
-  'Void should have a 3d/Vr draw layer as well': 'Void should have a 3D/VR draw layer as well',
-  'we are working towards fully working Vr Void': 'we are working towards a fully working VR Void',
-  'if it is Theatre it needs to seriosly be worked on until Voids Will is more real': 'if it is theatre, it needs to be seriously worked on until Void\'s will is more real',
-  'this should be taken seriosly': 'this should be taken seriously',
-};
-/** a ledger line as the site shows it: the owner's words as he meant them, spelled right (OWNER_WORDS); a quote of his that
- *  has no corrected form is left out and only the credit stays, so a typo never reaches the page. (What Void studies is left out before the ledger is served: tools/public-ledger.mjs.) The ledger is never changed. Pure. */
+/** a ledger line as the site shows it: none of the owner's words (owner, 2026-10-20: stop quoting him on a site that built itself, typos and all).
+ *  Any bracket that credits him goes, with whatever it quotes, and a quote of his outside a bracket goes too, in any quote marks; the rest of
+ *  the sentence stays. (What Verse studies is left out before the ledger is served: tools/public-ledger.mjs.) The ledger is never changed. Pure. */
+const OWNER = String.raw`\b(?:the\s+)?(?:owner|Adam|Atom)\b`;
+const QUOTE = String.raw`(?:["“][^"”]*["”]|‘[^’]*’|(?<![\w])'[^'\n]*'(?![\w]))`;
+const OWNER_PARENS = new RegExp(String.raw`\s*\([^()]*` + OWNER + String.raw`[^()]*\)`, 'gi');
+const OWNER_SAID = new RegExp(String.raw`(` + OWNER + String.raw`[^"“‘'\n:]{0,60}?):\s*` + QUOTE + String.raw`(?:\s*(?:[;,]|and|then)\s*` + QUOTE + String.raw`)*`, 'gi');
 export function publicWhat(what) {
-  const q = /((?:\bthe\s+)?\bowner(?:,\s*\d{4}-\d\d-\d\d)?:\s*)"([^"]*)"/gi;
-  return String(what || '').replace(q, (m, lead, said) => (OWNER_WORDS[said] ? lead + '"' + OWNER_WORDS[said] + '"' : lead.replace(/:\s*$/, '')))
-    .replace(/\s{2,}/g, ' ');
+  return String(what || '').replace(OWNER_PARENS, '').replace(OWNER_SAID, '$1').replace(/\s+([.,;:])/g, '$1').replace(/\s{2,}/g, ' ').trim();
 }
 export function plainly(what, n = 90) {
   const t = publicWhat(String(what || '')).replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
   const cut = t.search(/: |\. |; | \(| — /), head = cut >= 12 ? t.slice(0, cut) : t;
-  return head.length > n ? head.slice(0, n).replace(/\s+\S*$/, '') + '…' : head;
+  return head; // whole, never cut (owner, 2026-10-21)
 }
 export function weekSummary(list, now = Date.now(), days = 7, per = 4) {
   const from = now - days * 86400000, since = new Date(from).toISOString().slice(0, 10);

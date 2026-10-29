@@ -3,6 +3,8 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "recipe for pancakes", "pancake recipe", "recipes with chicken".
  */
+import { bandMini } from '../lib/card-mini.js';
+import { swapAsk } from './swaps.js'; // "how to make buttermilk" is a pantry swap, not a dish
 export function dishOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   let m = t.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || t.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
@@ -39,6 +41,7 @@ async function run(text, api) {
       + (m.strMealThumb ? '<img alt="" src="' + esc(m.strMealThumb) + '/preview">' : '')
       + '<div class="sub" style="margin-top:8px">Ingredients</div><ul>' + ing.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
       + '<div class="sub">Steps</div><ol>' + steps.map((x) => '<li style="margin:3px 0">' + esc(x) + '</li>').join('') + '</ol>' + src(m.idMeal);
+    bandMini(api, el, 'pot', { dish: m.strMeal, n: ing.length }, '3D pot on a cutting board with the recipe card for ' + m.strMeal); // owner, 2026-10-25: "3d figure if possible"
     return 'recipe';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
@@ -51,6 +54,6 @@ export default {
   examples: ['recipe for pancakes', 'lasagna recipe', 'recipes with chicken', 'how do i make guacamole'],
   nearMisses: ['recipe for disaster meaning', 'what is a recipe', 'who invented pizza', 'how do i make money', 'how to make friends'],
   // a question about recipes ("what is a recipe") is not a request for one
-  match(lower, text) { return !!dishOf(text) && !/\bdisaster\b|\bsuccess\b/i.test(text) && !/^(?:what|who|why|when|where|is|are|define|meaning)\b/i.test(String(text).trim()); },
+  match(lower, text) { return !!dishOf(text) && !swapAsk(text) && !/\bdisaster\b|\bsuccess\b/i.test(text) && !/^(?:what|who|why|when|where|is|are|define|meaning)\b/i.test(String(text).trim()); },
   run
 };

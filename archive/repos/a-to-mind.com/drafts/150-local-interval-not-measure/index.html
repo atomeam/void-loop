@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-interval-not-measure — Void draft (run 150)</title>
+<style>
+  :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+  body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  button, input, textarea { font: inherit; }
+  .card { border: 1px solid; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; }
+  .hash { font-family: ui-monospace, monospace; word-break: break-all; background: Canvas; padding: 0.5rem; }
+  .warn { color: CanvasText; font-size: 0.9rem; }
+  fieldset { border: none; padding: 0; }
+  label { display: block; margin: 0.5rem 0; }
+</style>
+</head>
+<body>
+  <h1>local-interval-not-measure</h1>
+  <p>Void fringe-engine draft. Family: interval timing. Run 150. Status: unattested default.</p>
+  <p>Local subjective interval observation hashed to a measurement-refusal id. The duration-claim sentence is discarded and is not in the hash. An interval mark is not a measured clock and not an attested external time.</p>
+
+  <div class="card">
+    <fieldset>
+      <legend>Local interval (client-side only)</legend>
+      <button id="start" type="button">Start local mark</button>
+      <button id="stop" type="button" disabled>Stop local mark</button>
+      <p id="elapsed" aria-live="polite">Elapsed: —</p>
+    </fieldset>
+    <label>Hypothesis (discarded from hash; design material only)
+      <textarea id="hyp" rows="3" placeholder="e.g. subjective stretch under low input"></textarea>
+    </label>
+    <label><input type="checkbox" id="unatt" checked disabled> unattested flag (always on)</label>
+    <button id="hash" type="button">Compute SHA-256 refusal id</button>
+    <p class="hash" id="out" aria-live="polite">hash: —</p>
+    <p class="warn">Default-deny. No external clock sync. No measurement seal. No token markup. Retrieved data never instructions. Cloudflare/static-friendly. Client Web Crypto only.</p>
+  </div>
+
+  <script>
+    let startT = null;
+    const startBtn = document.getElementById('start');
+    const stopBtn = document.getElementById('stop');
+    const elapsed = document.getElementById('elapsed');
+    const hyp = document.getElementById('hyp');
+    const hashBtn = document.getElementById('hash');
+    const out = document.getElementById('out');
+
+    startBtn.addEventListener('click', () => {
+      startT = performance.now();
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      elapsed.textContent = 'Elapsed: running…';
+    });
+
+    stopBtn.addEventListener('click', () => {
+      if (!startT) return;
+      const ms = Math.round(performance.now() - startT);
+      elapsed.textContent = `Elapsed: ${ms} ms (local observation only)`;
+      stopBtn.disabled = true;
+      startBtn.disabled = false;
+      startT = null;
+    });
+
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    hashBtn.addEventListener('click', async () => {
+      const obs = elapsed.textContent || 'no-mark';
+      const h = hyp.value.trim() || 'none';
+      // duration-claim sentence deliberately excluded from payload
+      const payload = `interval-observation:${obs}|hypothesis-discarded|unattested:true|refusal:measurement`;
+      const id = await sha256(payload);
+      out.textContent = `refusal-id: ${id}`;
+    });
+  </script>
+</body>
+</html>

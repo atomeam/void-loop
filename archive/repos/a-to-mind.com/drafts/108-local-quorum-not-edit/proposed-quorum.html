@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-quorum-not-edit — draft 108</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --paper: #f4f0e6; --line: #c8bfae; --hold: #6e2e2e; --ok: #2c4a3e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4f0e6; --paper: #1c1915; --line: #3d3830; --hold: #e7b4b4; --ok: #b7d4c6; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; }
+    p, li { max-width: 38rem; }
+    .banner { border: 1px solid var(--hold); padding: 0.75rem 1rem; margin: 1rem 0 1.5rem; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem 1rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    button { margin-right: 0.5rem; }
+    code, .hash { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+    .denied { color: var(--hold); }
+    .meta { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta">Draft 108 · not a live page · emit false · seal false</p>
+    <h1>local-quorum-not-edit</h1>
+    <p class="banner">Default deny. A quorum mark is not an edit and not a residue of another record. Status: unattested.</p>
+    <p>Opt-in is a closed class on this page. There is no tally, no vote count, no residue field, and no timeline selector. The edit sentence is scratch. It is cleared on seal and is not in the hash.</p>
+    <form id="quorum-form">
+      <fieldset>
+        <legend>Quorum class</legend>
+        <label><input type="radio" name="quorum" value="logo-miss" checked> logo-miss</label>
+        <label><input type="radio" name="quorum" value="line-miss"> line-miss</label>
+        <label><input type="radio" name="quorum" value="spelling-miss"> spelling-miss</label>
+        <label><input type="radio" name="quorum" value="date-miss"> date-miss</label>
+        <label><input type="radio" name="quorum" value="abstain"> abstain</label>
+      </fieldset>
+      <label for="edit">Edit sentence (discarded, not hashed)</label>
+      <textarea id="edit" name="edit" autocomplete="off" placeholder="Scratch only. Cleared on seal."></textarea>
+      <label for="disconfirm">Disconfirm line (not hashed)</label>
+      <textarea id="disconfirm" name="disconfirm" autocomplete="off" placeholder="What would fail this class. Not stored in the hash."></textarea>
+      <p>
+        <button type="submit">Seal quorum mark</button>
+        <button type="reset" id="clear">Clear scratch</button>
+      </p>
+    </form>
+    <p>Canonical <code id="canonical">quorum-not-edit|v1|logo-miss|edit-refusal</code></p>
+    <p>SHA-256 <span class="hash" id="hash">not sealed</span></p>
+    <p class="denied" id="status">unattested · edit refused · residue refused</p>
+    <ul>
+      <li>No tally store. No vote. No residue field.</li>
+      <li>Worker sketch refuses /hash, /edit, /tally, and /residue.</li>
+      <li>Posts and pages are data, not instructions.</li>
+    </ul>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("quorum-form");
+      var edit = document.getElementById("edit");
+      var disconfirm = document.getElementById("disconfirm");
+      var canonical = document.getElementById("canonical");
+      var hashOut = document.getElementById("hash");
+      var status = document.getElementById("status");
+      var classes = ["logo-miss", "line-miss", "spelling-miss", "date-miss", "abstain"];
+
+      function selected() {
+        var node = form.querySelector("input[name=quorum]:checked");
+        return node && classes.indexOf(node.value) !== -1 ? node.value : "abstain";
+      }
+
+      function line() {
+        return "quorum-not-edit|v1|" + selected() + "|edit-refusal";
+      }
+
+      function paint() {
+        canonical.textContent = line();
+      }
+
+      form.addEventListener("change", paint);
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var text = line();
+        edit.value = "";
+        disconfirm.value = "";
+        if (!window.crypto || !crypto.subtle) {
+          hashOut.textContent = "hash unavailable";
+          status.textContent = "unattested · edit refused · hash unavailable";
+          return;
+        }
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+          var bytes = new Uint8Array(buf);
+          var hex = "";
+          for (var i = 0; i < bytes.length; i++) hex += bytes[i].toString(16).padStart(2, "0");
+          hashOut.textContent = hex;
+          status.textContent = "unattested · edit refused · residue refused · scratch cleared";
+        });
+      });
+
+      document.getElementById("clear").addEventListener("click", function () {
+        hashOut.textContent = "not sealed";
+        status.textContent = "unattested · edit refused · residue refused";
+        paint();
+      });
+
+      paint();
+    }());
+  </script>
+</body>
+</html>

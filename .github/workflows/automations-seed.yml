@@ -1,0 +1,34 @@
+# Verse's seeded automations (automations/*.json) put on the site through POST /api/automations (tools/automations-seed.mjs), so
+# every rule passes the engine's own checks. Owner, 2026-10-14: "make sure Verse has 10 new automations hourly so that it starts
+# to really utilize all it can to progress". The same id replaces a rule, so a run changes nothing when nothing changed. The deploy
+# starts it after every main deploy (an automerge merge starts no push workflow), and it can be run by hand.
+# Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it the run says so and stops green.
+name: Automations seed
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: automations-seed
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the rules
+        run: node tools/automations-seed.mjs --check
+      - name: Seed them on the site
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ]; then echo "VOID_OWNER_TOKEN is not set: nothing seeded" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          set -o pipefail; node tools/automations-seed.mjs 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"

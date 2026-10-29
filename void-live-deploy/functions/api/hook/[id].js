@@ -1,4 +1,4 @@
-// A webhook into one of Void's automations: POST /api/hook/<rule id> with the rule's secret in the x-void-hook header
+// A webhook into one of Verse's automations: POST /api/hook/<rule id> with the rule's secret in the x-void-hook header
 // (or ?key= for senders that cannot set headers); the JSON body is the event. Wrong or missing secret = 403, the same
 // answer as a rule that does not exist, so the endpoint never says which rules are there. A rule that has run its
 // RUN_CAP_DAY times a day from webhooks answers 429 with the reason, so a looping sender knows to stop knocking.

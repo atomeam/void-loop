@@ -1,0 +1,737 @@
+{
+ "at": "2026-10-26T11:02:54.174Z",
+ "note": "one polite request per source; no keys, no picture bytes",
+ "sources": {
+  "commons": {
+   "name": "Wikimedia Commons",
+   "state": "works",
+   "why": "",
+   "query": "football",
+   "status": 200,
+   "ms": 553,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "batchcomplete",
+    "continue",
+    "query"
+   ],
+   "resultShape": null,
+   "found": 10,
+   "accepted": 9,
+   "refused": {
+    "marked non-free or with personality rights": 1
+   },
+   "licenceShapes": [
+    {
+     "licRaw": "Public domain",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "thumb.wikimedia.org",
+     "taken": "1872-02-24"
+    },
+    {
+     "licRaw": "Public domain",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "thumb.wikimedia.org",
+     "taken": "2009-02-08"
+    },
+    {
+     "licRaw": "CC BY-SA 3.0",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "upload.wikimedia.org",
+     "taken": "2014-01-09"
+    }
+   ]
+  },
+  "openverse": {
+   "name": "Openverse",
+   "state": "works",
+   "why": "",
+   "query": "football",
+   "status": 200,
+   "ms": 273,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "result_count",
+    "page_count",
+    "page_size",
+    "page",
+    "results"
+   ],
+   "resultShape": {
+    "path": "$.results",
+    "n": 10,
+    "keys": [
+     "id",
+     "title",
+     "indexed_on",
+     "foreign_landing_url",
+     "url",
+     "creator",
+     "creator_url",
+     "license",
+     "license_version",
+     "license_url",
+     "provider",
+     "source",
+     "category",
+     "filesize",
+     "filetype",
+     "tags",
+     "attribution",
+     "fields_matched",
+     "mature",
+     "height",
+     "width",
+     "thumbnail",
+     "detail_url",
+     "related_url",
+     "unstable__sensitivity"
+    ],
+    "rights": {
+     "license": "\"by\"",
+     "license_version": "\"2.0\"",
+     "license_url": "\"https://creativecommons.org/licenses/by/2.0/\""
+    }
+   },
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC BY",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC BY",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC BY-SA",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    }
+   ]
+  },
+  "nasa": {
+   "name": "NASA Image and Video Library",
+   "state": "works",
+   "why": "",
+   "query": "moon",
+   "status": 200,
+   "ms": 334,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "collection"
+   ],
+   "resultShape": {
+    "path": "$.collection.items",
+    "n": 10,
+    "keys": [
+     "href",
+     "data",
+     "links"
+    ],
+    "rights": {}
+   },
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images-assets.nasa.gov",
+     "taken": "2009-09-24"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images-assets.nasa.gov",
+     "taken": "2010-09-10"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images-assets.nasa.gov",
+     "taken": "2025-03-12"
+    }
+   ]
+  },
+  "loc": {
+   "name": "Library of Congress",
+   "state": "works",
+   "why": "",
+   "query": "baseball",
+   "status": 200,
+   "ms": 352,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "breadcrumbs",
+    "content",
+    "context",
+    "description",
+    "expert_resources",
+    "facet_trail",
+    "facet_views",
+    "facets",
+    "featured_items",
+    "form_facets",
+    "image_url",
+    "manifest",
+    "next",
+    "next_sibling",
+    "options",
+    "pages",
+    "pagination",
+    "portal",
+    "portal_label",
+    "previous",
+    "previous_sibling",
+    "results",
+    "search",
+    "shards",
+    "site_type",
+    "timestamp",
+    "title",
+    "type",
+    "views"
+   ],
+   "resultShape": {
+    "path": "$.breadcrumbs",
+    "n": 3,
+    "keys": [
+     "Library of Congress"
+    ],
+    "rights": {}
+   },
+   "found": 7,
+   "accepted": 4,
+   "refused": {
+    "a logo, sponsor or advertising category": 1,
+    "no \"no known restrictions\" statement": 1,
+    "its words suggest children, a school or something unsuitable": 1
+   },
+   "licenceShapes": [
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1911-01-01"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1915-01-01"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1913-01-01"
+    }
+   ],
+   "rightsFields": {
+    "access_restricted": "false",
+    "unrestricted": "true",
+    "item.rights_advisory": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\"",
+    "item.rights_information": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\""
+   },
+   "itemKeys": [
+    "call_number",
+    "contributors",
+    "control_number",
+    "created",
+    "created_published",
+    "created_published_date",
+    "creators",
+    "date",
+    "digital_id",
+    "display_offsite",
+    "format",
+    "formats",
+    "genre",
+    "id",
+    "language",
+    "link",
+    "marc",
+    "medium",
+    "medium_brief",
+    "mediums",
+    "modified",
+    "notes",
+    "number_former_id",
+    "other_control_numbers",
+    "part_of",
+    "repository",
+    "reproduction_number",
+    "resource_links",
+    "rights_advisory",
+    "rights_information",
+    "service_low",
+    "service_medium",
+    "sort_date",
+    "source_collection",
+    "source_created",
+    "source_modified",
+    "subject_headings",
+    "subjects",
+    "summary",
+    "thumb_gallery",
+    "title"
+   ]
+  },
+  "met": {
+   "name": "The Met Collection",
+   "state": "works",
+   "why": "",
+   "query": "horse",
+   "status": 200,
+   "ms": 391,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "total",
+    "objectIDs"
+   ],
+   "resultShape": null,
+   "found": 3,
+   "accepted": 3,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images.metmuseum.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images.metmuseum.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "images.metmuseum.org",
+     "taken": ""
+    }
+   ]
+  },
+  "aic": {
+   "name": "Art Institute of Chicago",
+   "state": "works",
+   "why": "",
+   "query": "horse",
+   "status": 200,
+   "ms": 271,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "preference",
+    "pagination",
+    "data",
+    "info",
+    "config"
+   ],
+   "resultShape": {
+    "path": "$.data",
+    "n": 10,
+    "keys": [
+     "_score",
+     "id",
+     "title",
+     "thumbnail",
+     "date_display",
+     "artist_display",
+     "is_public_domain",
+     "artist_title",
+     "image_id"
+    ],
+    "rights": {
+     "date_display": "\"340-330 BCE\"",
+     "image_id": "\"d8fab7c6-8cc9-1c02-18db-0f198775ccc9\""
+    }
+   },
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "www.artic.edu",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "www.artic.edu",
+     "taken": "1880"
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "www.artic.edu",
+     "taken": ""
+    }
+   ]
+  },
+  "cleveland": {
+   "name": "Cleveland Museum of Art",
+   "state": "works",
+   "why": "",
+   "query": "horse",
+   "status": 200,
+   "ms": 1011,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "info",
+    "data"
+   ],
+   "resultShape": {
+    "path": "$.data",
+    "n": 10,
+    "keys": [
+     "id",
+     "accession_number",
+     "share_license_status",
+     "tombstone",
+     "current_location",
+     "title",
+     "creation_date",
+     "creation_date_earliest",
+     "creation_date_latest",
+     "artists_tags",
+     "culture",
+     "technique",
+     "support_materials",
+     "department",
+     "collection",
+     "type",
+     "measurements",
+     "dimensions",
+     "state_of_the_work",
+     "edition_of_the_work",
+     "copyright",
+     "inscriptions",
+     "exhibitions",
+     "provenance",
+     "find_spot",
+     "related_works",
+     "former_accession_numbers",
+     "did_you_know",
+     "early_education_description",
+     "artlens_description",
+     "description",
+     "external_resources",
+     "citations",
+     "url",
+     "images",
+     "alternate_images",
+     "creditline",
+     "image_credit",
+     "sketchfab_id",
+     "sketchfab_url"
+    ],
+    "rights": {
+     "share_license_status": "\"CC0\"",
+     "creation_date": "\"c. 1896–1908\"",
+     "creation_date_earliest": "1896",
+     "creation_date_latest": "1908",
+     "copyright": "null",
+     "images": "{\"annotation\":null,\"web\":{\"url\":\"https://openaccess-cdn.clevelandart.org/1928.8/1928.8_web.jpg\",\"width\":\"900\",\"height\":\"711\",\"filesize\":\"190928\",\"filename\":\"192",
+     "alternate_images": "[{\"web\":{\"url\":\"https://openaccess-cdn.clevelandart.org/1928.8/1928.8_alt0_web.jpg\",\"width\":\"900\",\"height\":\"743\",\"filesize\":\"202756\"},\"print\":{\"url\":\"https://op",
+     "image_credit": "null",
+     "accession_date": "\"1928-01-06T00:00:00\"",
+     "sortable_date": "1896",
+     "date_added_to_oa": "null",
+     "date_text": "\"c. 1896–1908\"",
+     "has_conservation_images": "false",
+     "updated_at": "\"2026-10-16 18:36:03.057000\""
+    }
+   },
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "openaccess-cdn.clevelandart.org",
+     "taken": "1896"
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "openaccess-cdn.clevelandart.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC0",
+     "licVersion": "",
+     "licUrl": "",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "openaccess-cdn.clevelandart.org",
+     "taken": ""
+    }
+   ]
+  },
+  "smithsonian": {
+   "name": "Smithsonian Open Access",
+   "state": "needs key",
+   "why": "needs SMITHSONIAN_API_KEY"
+  },
+  "europeana": {
+   "name": "Europeana",
+   "state": "needs key",
+   "why": "needs EUROPEANA_API_KEY"
+  },
+  "flickr": {
+   "name": "Flickr",
+   "state": "needs key",
+   "why": "needs FLICKR_API_KEY"
+  },
+  "pexels": {
+   "name": "Pexels",
+   "state": "needs key",
+   "why": "needs PEXELS_API_KEY"
+  },
+  "pixabay": {
+   "name": "Pixabay",
+   "state": "needs key",
+   "why": "needs PIXABAY_API_KEY"
+  },
+  "unsplash": {
+   "name": "Unsplash",
+   "state": "needs key",
+   "why": "needs UNSPLASH_ACCESS_KEY"
+  },
+  "archive": {
+   "name": "Internet Archive",
+   "state": "works",
+   "why": "",
+   "query": "football",
+   "status": 200,
+   "ms": 550,
+   "via": "primary",
+   "rate": {},
+   "topKeys": [
+    "responseHeader",
+    "response"
+   ],
+   "resultShape": {
+    "path": "$.response.docs",
+    "n": 10,
+    "keys": [
+     "date",
+     "identifier",
+     "licenseurl",
+     "subject",
+     "title"
+    ],
+    "rights": {
+     "date": "\"2010-12-04T00:00:00Z\"",
+     "licenseurl": "\"https://creativecommons.org/publicdomain/zero/1.0/\""
+    }
+   },
+   "found": 10,
+   "accepted": 9,
+   "refused": {
+    "a logo, sponsor or advertising category": 1
+   },
+   "licenceShapes": [
+    {
+     "licRaw": "",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "archive.org",
+     "taken": "2010-12-04"
+    },
+    {
+     "licRaw": "",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "archive.org",
+     "taken": "2009-09-16"
+    },
+    {
+     "licRaw": "",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "archive.org",
+     "taken": "2009-08-19"
+    }
+   ]
+  }
+ },
+ "rejectionLogic": {
+  "namedPlayer": {
+   "accepted": [
+    {
+     "source": "commons",
+     "licence": "by-sa",
+     "archive": true
+    },
+    {
+     "source": "commons",
+     "licence": "pd",
+     "archive": true
+    },
+    {
+     "source": "commons",
+     "licence": "by-sa",
+     "archive": true
+    },
+    {
+     "source": "commons",
+     "licence": "by-sa",
+     "archive": true
+    },
+    {
+     "source": "commons",
+     "licence": "by",
+     "archive": true
+    }
+   ],
+   "report": [
+    {
+     "source": "commons",
+     "found": 10,
+     "kept": 9,
+     "refused": {
+      "a logo, sponsor or advertising category": 1
+     }
+    }
+   ]
+  },
+  "stadium": {
+   "accepted": 3,
+   "report": [
+    {
+     "source": "commons",
+     "found": 10,
+     "kept": 5,
+     "refused": {
+      "its words are not about sport": 2,
+      "nothing in its words matches the search": 1,
+      "not an open licence": 2
+     }
+    }
+   ]
+  },
+  "Wembley": {
+   "accepted": 3,
+   "report": [
+    {
+     "source": "commons",
+     "found": 10,
+     "kept": 10,
+     "refused": {}
+    }
+   ]
+  }
+ }
+}

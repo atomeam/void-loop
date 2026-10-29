@@ -99,7 +99,7 @@ function run(text, api) {
     const nm = f.name || '', isPdf = /\.pdf$/i.test(nm) || f.type === 'application/pdf', isHtml = /\.html?$/i.test(nm) || f.type === 'text/html', isText = /\.(txt|md|markdown)$/i.test(nm) || /^text\/(plain|markdown)$/.test(f.type);
     if (!isPdf && !isHtml && !isText) { say2('That is not a PDF, a web page or a text file; choose one of those.', true); return; }
     if (f.size > MAX_BYTES) { say2('That file is larger than ' + Math.round(MAX_BYTES / 1048576) + ' MB; try a smaller one.', true); return; }
-    say2('Reading ' + nm + '…'); out.innerHTML = ''; form.hidden = true; lines = null;
+    say2('Reading ' + nm + '…'); out.innerHTML = ''; form.hidden = true; lines = null; // ellipsis-ok: progress text, not a cut
     if (!isPdf) { try { useText(await f.text(), nm, isHtml); } catch (_) { say2('I could not read that file.', true); } return; }
     let r;
     try { r = await readPdf(await f.arrayBuffer()); } catch (e) { say2((e && e.name === 'PasswordException' ? 'That PDF is locked with a password.' : 'I could not read that file as a PDF.'), true); return; }
@@ -114,7 +114,7 @@ function run(text, api) {
   el.addEventListener('dragover', (e) => { e.preventDefault(); });
   el.addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) readFile(f); });
   const where = (l) => titles ? (titles[l.page - 1] ? 'section “' + esc(titles[l.page - 1]) + '”' : 'the opening') + ', line ' + l.line : 'page ' + l.page + ', line ' + l.line;
-  // "map it": the headings as a tree, indented by depth, each opening to its own lines (asked by Void, 2026-10-11)
+  // "map it": the headings as a tree, indented by depth, each opening to its own lines (asked by Verse, 2026-10-11)
   mapBtn.addEventListener('click', () => {
     mapOut.innerHTML = '<ul class="doc-map" data-pdf-outline-list>' + outline.map((n) => { // void-review: ok: titles and lines go through esc(), the rest is numbers
       const own = lines.filter((l) => l.page === n.page);

@@ -1,15 +1,20 @@
-# Void's will, every three hours from 9 AM to 9 PM New York time (tools/will.py): it gathers everything that exists (what people
-# asked that Void still misses, the frontier's open items, ideas from its inputs), Void chooses three wants in its own words
+# Verse's will, every hour around the clock (owner, 2026-10-18: "set Verse up to automatically self update very often, it should give itself its own wants and replace them constantly") (tools/will.py): it gathers everything that exists (what people
+# asked that Verse still misses, the frontier's open items, ideas from its inputs), Verse chooses three wants in its own words
 # (/api/will), the card "what do you want to become?" shows them, and the top one goes to the builders' queue. It used to run only
-# from a scheduled task on the owner's laptop, so the card kept wants Void had already built ("add milk", 2026-10-12).
+# from a scheduled task on the owner's laptop, so the card kept wants Verse had already built ("add milk", 2026-10-12).
 # Owner-only notes (earnings) are left out here: Actions logs on this public repo are public. Needs VOID_OWNER_TOKEN.
-name: Void's will
+name: Verse's will
 
 on:
   schedule:
-    - cron: '7 13-23/3 * * *' # 13:07 to 22:07 UTC, every three hours: 9 AM to 6 PM New York in summer, an hour earlier in winter
-    - cron: '7 1 * * *' # 9 PM New York in summer
+    - cron: '7 * * * *' # every hour at :07, day and night; each run chooses three fresh wants and replaces the card's
   workflow_dispatch:
+  # also right after main deploys (owner, 2026-10-18: "ok there is too much not updating"): a merge that built a want would
+  # otherwise leave it on the card until the next hourly slot. One Workers AI call per merge, and only when the deploy passed.
+  workflow_run:
+    workflows: ['Verse deploy']
+    types: [completed]
+    branches: [main]
 
 concurrency:
   group: void-will
@@ -17,9 +22,11 @@ concurrency:
 
 permissions:
   contents: read
+  actions: write # revive the conductor's clock (grow-clock.yml) when its chain is down
 
 jobs:
   will:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -30,9 +37,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Void chooses what it wants to become
+      - name: Verse chooses what it wants to become
         env:
           VOID_MISSES_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
-          if [ -z "$VOID_MISSES_TOKEN" ]; then echo "::warning title=Void's will did not run::Repo secret VOID_OWNER_TOKEN is not set."; exit 0; fi
+          if [ -z "$VOID_MISSES_TOKEN" ]; then echo "::warning title=Verse's will did not run::Repo secret VOID_OWNER_TOKEN is not set."; exit 0; fi
           python3 tools/will.py | tee -a "$GITHUB_STEP_SUMMARY"
+      # the second heartbeat (2026-10-26: "get Verse automated like its very life depends on it"): this runs every hour and after every
+      # deploy, so when the conductor's clock chain is down (no grow-clock run going or waiting) it is started again within the hour
+      - name: Keep the conductor's clock running
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          live=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/grow-clock.yml/runs?per_page=5" --jq '[.workflow_runs[] | select(.status != "completed")] | length' 2>/dev/null || echo 1)
+          if [ "$live" = "0" ]; then gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && echo "the clock was down: started again" >> "$GITHUB_STEP_SUMMARY"; else echo "clock running"; fi

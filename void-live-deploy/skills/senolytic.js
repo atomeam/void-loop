@@ -5,6 +5,7 @@
  * they do not prove a treatment. Neighbouring results are linked as context, not as the same claim. No cure claim.
  * "senolytics for fatty liver", "dasatinib quercetin mash trial".
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const SOURCES = [
   { date: '2026-10-01', name: 'Nature Metabolism (the trial report)', href: null },
   { date: 'registered', name: 'ClinicalTrials.gov NCT05506488', href: 'https://clinicaltrials.gov/study/NCT05506488' },
@@ -12,7 +13,7 @@ export const SOURCES = [
   { date: '2026-05-19', name: 'Nature Communications (semaglutide and epigenetic aging)', href: null },
 ];
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ASK_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's|what about)\s+(?:the\s+)?)?(?:senolytics?|senolytic\s+(?:drugs?|therapy|treatment)|dasatinib\s+(?:and|\+|&)?\s*quercetin|d\s*\+\s*q)\s+(?:for|in|and)\s+(?:fatty\s+liver(?:\s+disease)?|mash|nash|masld|liver\s+fibrosis|the\s+liver)(?:\s+trial)?$|^(?:the\s+)?(?:senolytic\s+(?:liver|mash|nash)\s+trial|dasatinib\s+(?:and\s+|\+\s*)?quercetin\s+(?:mash|nash|liver)\s+trial|mash\s+senolytic\s+trial)$/;
 
 export function senolyticOf(text) { return ASK_RE.test(CLEAN(text)); }

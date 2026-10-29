@@ -1,4 +1,4 @@
-// shared routines — frontier #13's second piece: a routine can spread between Voids. "offer my morning as Sam" sends that
+// shared routines — frontier #13's second piece: a routine can spread between Verses. "offer my morning as Sam" sends that
 // routine's asks (only them: at most four, short, refused when one holds a secret) with the display name the person chose, to a
 // list the owner reviews; nothing is shown to anyone until the owner approves it. "routines from others" shows the approved
 // ones with their author. Nothing else about the person is sent or kept: no account, no address, no browser details.
@@ -9,7 +9,7 @@ export const TABLE = 'CREATE TABLE IF NOT EXISTS void_routines (id TEXT PRIMARY 
 export const MAX_ASKS = 4, MAX_ASK = 120, MAX_SHOWN = 50;
 const NAME_RE = /^[a-z][a-z0-9' -]{1,30}$/;
 const AUTHOR_RE = /^[A-Za-z0-9][A-Za-z0-9 .'_-]{0,29}$/;
-const NOT_AUTHORS = /^(?:void|the void|owner|admin|a-to-mind|atomind)$/i; // a name that would read as Void's own voice
+const NOT_AUTHORS = /^(?:verse|void|the (?:verse|void)|owner|admin|a-to-mind|atomind)$/i; // a name that would read as Verse's own voice
 
 const flat = (s) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -41,7 +41,7 @@ export function offerAsk(text, saved = {}) {
 
 /** "routines from others", "other people's routines", "shared routines". Pure. */
 export function othersAsk(text) {
-  const t = flat(text).toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '');
+  const t = flat(text).toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '');
   return /^(?:show(?: me)? |see |list )?(?:(?:the )?routines (?:from|by|of) (?:others|other people)|other (?:people'?s|voids'?) routines|others'? routines|(?:the )?shared routines|routines (?:others|other people) (?:shared|offered))$/.test(t);
 }
 

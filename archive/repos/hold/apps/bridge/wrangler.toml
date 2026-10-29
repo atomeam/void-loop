@@ -1,0 +1,25 @@
+name = "a-to-mind-bridge"
+main = "src/worker.ts"
+compatibility_date = "2026-09-11"
+workers_dev = false
+
+[[d1_databases]]
+binding = "BRIDGE_DB"
+database_name = "aether-bridge-db"
+database_id = "f29243db-5b7a-407b-aa38-64091c1e0676"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "EVIDENCE"
+bucket_name = "aether-logs"
+
+[vars]
+WORKER_ROLE = "executor"
+AG_TOS_OK = "0"
+CRA_SRP_LIVE = "0"
+ENABLE_CRA_COMPLIANCE = "true"
+ENABLE_AG_SCORING = "true"
+POLICY_ACTOR = "policy:auto"
+
+[triggers]
+crons = ["* * * * *"]

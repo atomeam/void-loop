@@ -6,8 +6,9 @@
  * Empty surface stays empty: grouping adds nothing to the stage, and an ask on an empty stage only says so.
  */
 import { KIND_WORDS } from './layer.js';
+import { cleanLower } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const GROUP_NOUN = String.raw`(?:the\s+|my\s+|this\s+|that\s+)?(?:group|grouped\s+(?:things|ones|stuff|items)|bunch|cluster)`;
 const EVERYTHING = /^(?:everything|all|all of (?:it|them)|them(?: all)?|these|those|all of these|all of those|the lot|it all|all things|all the things|everything on the stage)$/;
 
@@ -83,7 +84,7 @@ export function groupOf(text) {
 }
 
 function placeOf(rest) {
-  const r = rest.replace(/\s+(?:of\s+the\s+(?:screen|stage|page|void))$/, '').trim();
+  const r = rest.replace(/\s+(?:of\s+the\s+(?:screen|stage|page|(?:verse|void)))$/, '').trim();
   const corner = [['top left', /^(?:top[\s-]*left|left[\s-]*top|upper[\s-]*left)(?:\s+corner)?$/], ['top right', /^(?:top[\s-]*right|right[\s-]*top|upper[\s-]*right)(?:\s+corner)?$/],
     ['bottom left', /^(?:bottom[\s-]*left|left[\s-]*bottom|lower[\s-]*left)(?:\s+corner)?$/], ['bottom right', /^(?:bottom[\s-]*right|right[\s-]*bottom|lower[\s-]*right)(?:\s+corner)?$/]].find(([, re]) => re.test(r));
   if (corner) return corner[0];

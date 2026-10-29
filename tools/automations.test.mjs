@@ -1,4 +1,4 @@
-// Void's own automations (lib/automations.js, lib/automations-run.js, functions/api/automations.js, functions/api/hook/[id].js):
+// Verse's own automations (lib/automations.js, lib/automations-run.js, functions/api/automations.js, functions/api/hook/[id].js):
 // what a rule may say, how event data fills it (and can never widen it), the GitHub calls a run makes, the run log, and
 // who may make, run or trigger a rule. node --test tools/automations.test.mjs
 import { test } from 'node:test';
@@ -22,7 +22,7 @@ test('a rule: the templates are valid, and the basics are checked', () => {
 });
 
 test('a rule can only reach what the owner allows: repos, branches under void/, no workflow files, public https', () => {
-  assert.match(R.validate(pr({ repo: 'someone/else' }), env0).errors.join(' '), /repo must be one Void may touch/);
+  assert.match(R.validate(pr({ repo: 'someone/else' }), env0).errors.join(' '), /repo must be one Verse may touch/);
   assert.match(R.validate(pr({ repo: '{{event.repo}}' }), env0).errors.join(' '), /repo must be/, 'event data never picks the repo');
   assert.ok(R.validate(pr({ repo: 'atomeam/other' }), { AUTOMATION_REPOS: 'atomeam/void-loop, atomeam/other' }).ok, 'the owner can allow more');
   for (const branch of ['main', 'feature/x', 'void/../main', 'void/a..b', 'void/x.lock', 'void/']) assert.ok(!R.validate(pr({ branch }), env0).ok, branch);
@@ -82,6 +82,7 @@ function fakeEnv(extra = {}) {
       if (/FROM void_automations WHERE enabled = 1/.test(sql)) return { results: t.void_automations.filter((r) => r.enabled) };
       if (/GROUP BY rule_id/.test(sql)) { const m = {}; for (const r of t.void_automation_runs) if (!m[r.rule_id] || r.at > m[r.rule_id]) m[r.rule_id] = r.at; return { results: Object.entries(m).map(([rule_id, at]) => ({ rule_id, at })) }; }
       if (/FROM void_automations/.test(sql)) return { results: t.void_automations };
+      if (/FROM void_automation_runs WHERE rule_id = \?/.test(sql)) return { results: [...t.void_automation_runs].reverse().filter((r) => r.rule_id === a[0]).slice(0, 100) };
       if (/FROM void_automation_runs/.test(sql)) return { results: [...t.void_automation_runs].reverse() };
       throw new Error('unexpected all ' + sql);
     },
@@ -282,4 +283,23 @@ test('redact/answer: a pasted config with a literal key is still masked, its env
   assert.match(r, /API_KEY=\[redacted\]/);
   assert.match(r, /client_secret: "\[redacted\]"/);
   assert.match(r, /token = process\.env\.ZAP_TOKEN/);
+});
+
+test('list with a rule: only that rule\'s runs, newest first, up to 100 (the approve card reads a night of runs); without it the 30 newest across all rules, as before', async () => {
+  const { env } = fakeEnv();
+  const a = await A.save(env, { name: 'a', when: { on: 'manual' }, do: [{ action: 'note', text: 'a' }] });
+  const b = await A.save(env, { name: 'b', when: { on: 'manual' }, do: [{ action: 'note', text: 'b' }] });
+  const ra = (await A.get(env, a.rule.id)).rule, rb = (await A.get(env, b.rule.id)).rule;
+  for (let i = 0; i < 40; i++) { await A.run(env, ra, {}, 'manual'); await A.run(env, rb, {}, 'manual'); }
+  const all = await A.list(env);
+  assert.equal(all.runs.length, 30, 'the default path is unchanged');
+  const only = await A.list(env, { rule: a.rule.id });
+  assert.equal(only.runs.length, 40); assert.ok(only.runs.every((r) => r.rule === a.rule.id), 'only that rule');
+  assert.ok(only.runs.every((r, i) => !i || r.at <= only.runs[i - 1].at), 'newest first');
+  assert.equal(only.rules.length, 2, 'the rules are still all listed');
+  assert.equal((await A.list(env, { rule: 'no-such-rule' })).runs.length, 0);
+  const req = (q) => new Request('https://a-to-mind.com/api/automations' + q, { headers: { authorization: 'Bearer owner-key' } });
+  const viaApi = await (await api.onRequestGet({ request: req('?rule=' + a.rule.id), env })).json();
+  assert.equal(viaApi.runs.length, 40); assert.ok(viaApi.runs.every((r) => r.rule === a.rule.id), 'GET ?rule=<id> narrows the runs');
+  assert.equal((await (await api.onRequestGet({ request: req(''), env })).json()).runs.length, 30);
 });

@@ -1,5 +1,1 @@
-{
-  "version": 1,
-  "include": ["/api/*", "/tools.json", "/@*"],
-  "exclude": []
-}
+{"version": 1, "include": ["/api/*", "/tools.json", "/@*", "/c/*", "/films/rss", "/is-it/*", "/boards/t/*", "/gen/*"], "exclude": []}

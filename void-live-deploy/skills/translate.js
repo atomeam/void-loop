@@ -2,6 +2,8 @@
  * translate skill — Google gtx, MyMemory fallback, no key
  * Contract: { name, examples, match(lower, text), run(text, api) }
  */
+import { bandMini } from '../lib/card-mini.js';
+import { isIt } from './is-it.js';
 const LANGS = {
   english:'en', spanish:'es', french:'fr', german:'de', italian:'it', portuguese:'pt', dutch:'nl',
   russian:'ru', ukrainian:'uk', polish:'pl', czech:'cs', greek:'el', turkish:'tr', arabic:'ar',
@@ -19,12 +21,14 @@ function parse(text) {
   if (m) return { q: m[1], from: m[2], to: m[3] };
   m = t.match(new RegExp('^how\\s+(?:do|would)\\s+(?:you|i|we)\\s+say\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
+  // "is it christmas in french": a yes-or-no day question asked for its word in that language (skills/is-it.js), not a phrase to translate
+  if (isIt(t)) return null;
   // "the longest word in english", "most common letter in english": a question about the language, not a translation
   if (/^(?:what\s+is\s+)?(?:the\s+)?(?:longest|shortest|most\s+common|hardest|oldest|newest|first|last)\s+\w+(?:\s+\w+)?\s+in\s+/i.test(t)) return null;
   m = t.match(new RegExp('^what\\s+is\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'))
    || t.match(new RegExp('^["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
-  m = t.match(new RegExp('^(' + LANG_RE + ')\\s+for\\s+["“]?(.+?)["”]?$', 'i'));
+  m = t.match(new RegExp('^(?:what(?:[\'’]?s|\\s+is)\\s+)?(?:the\\s+)?(' + LANG_RE + ')\\s+(?:word\\s+)?for\\s+["“]?(.+?)["”]?$', 'i'));
   if (m) return { q: m[2], to: m[1] };
   return null;
 }
@@ -54,8 +58,9 @@ async function run(text, api) {
     if (!out) throw 0;
     el.innerHTML = '<div class="sub">' + esc(p.q) + ' · ' + esc(p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase()) + '</div>'
       + '<div class="tr-out" style="font-size:40px;font-weight:300;line-height:1.2;margin:8px 0">' + esc(out) + '</div>'
-      + '<button type="button" class="tr-copy" aria-label="copy the translation">copy</button>'
+      + '<button type="button" class="tr-copy" aria-label="copy the translation">copy</button> <a class="tr-full" href="/translate/?q=' + encodeURIComponent(p.q) + '&to=' + encodeURIComponent(to) + '" style="margin-left:8px">open the translator (100 languages, listen, speak, camera)</a>'
       + '<div class="src">Source: ' + (via === 'google' ? '<a href="https://translate.google.com/" target="_blank" rel="noopener">Google Translate</a>' : '<a href="https://mymemory.translated.net/" target="_blank" rel="noopener">MyMemory</a>') + '</div>';
+    bandMini(api, el, 'bubbles', { from: p.q, to: out, lang: p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase() }, '3D speech bubbles: ' + p.q + ' and ' + out); // owner, 2026-10-25: "3d figure if possible"
     const btn = el.querySelector('.tr-copy');
     if (btn) btn.addEventListener('click', async () => {
       let ok = false;

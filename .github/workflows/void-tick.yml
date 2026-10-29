@@ -1,9 +1,14 @@
-# The clock for Void's own automations (lib/automations.js, functions/api/automations/tick.js): every 15 minutes it asks
-# a-to-mind.com to run the scheduled rules that are due. Void decides what is due; this only knocks. A Cloudflare cron
+# The clock for Verse's own automations (lib/automations.js, functions/api/automations/tick.js): every 15 minutes it asks
+# a-to-mind.com to run the scheduled rules that are due. Verse decides what is due; this only knocks. A Cloudflare cron
 # Worker is the long-term home for the knock (no GitHub in the loop); the route stays the same, so that swap only changes
 # who calls it. Needs the repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
-# About 1 Actions minute an hour (GitHub may run a scheduled job late or skip one when busy; a rule is due 3 minutes early).
-name: Void's clock
+#
+# GitHub ran the '*/15' schedule about once every five hours (2026-10-14: 21 runs in four days), so the ten hourly rules ran
+# four times a day. Now one run keeps the clock itself: it knocks every 15 minutes for about five and a half hours, then
+# starts the next run (a workflow_dispatch from GITHUB_TOKEN does start a run). The schedule stays as the restart if a chain
+# ever breaks; the concurrency group keeps it to one running clock and at most one waiting. Actions minutes are free for a
+# public repo.
+name: Verse's clock
 
 on:
   schedule:
@@ -14,14 +19,16 @@ concurrency:
   group: void-tick
   cancel-in-progress: false
 
-permissions: {}
+permissions:
+  actions: write
 
 jobs:
   tick:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 345
     steps:
-      - name: Run the scheduled automations that are due
+      - name: Run the scheduled automations that are due, every 15 minutes
+        id: clock
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
@@ -29,6 +36,19 @@ jobs:
             echo "::notice title=Clock not running::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set, so no scheduled automation runs."
             exit 0
           fi
-          code=$(curl -sS -o tick.json -w '%{http_code}' -X POST -H "authorization: Bearer $VOID_OWNER_TOKEN" https://a-to-mind.com/api/automations/tick) || code=000
-          if [ "$code" != "200" ]; then echo "::warning title=Tick refused::a-to-mind.com answered $code"; head -c 300 tick.json 2>/dev/null; echo; exit 0; fi
-          node -e "const t=require('./tick.json'); console.log(t.at + ': ' + t.checked + ' rule(s) on, ' + t.ran.length + ' ran'); for (const r of t.ran) console.log((r.ok ? 'ok ' : 'failed ') + r.id + (r.skipped ? ' (' + r.skipped + ')' : ''))" | tee -a "$GITHUB_STEP_SUMMARY"
+          knock() {
+            code=$(curl -sS -m 60 -o tick.json -w '%{http_code}' -X POST -H "authorization: Bearer $VOID_OWNER_TOKEN" https://a-to-mind.com/api/automations/tick) || code=000
+            if [ "$code" != "200" ]; then echo "::warning title=Tick refused::a-to-mind.com answered $code"; head -c 300 tick.json 2>/dev/null; echo; return 0; fi
+            node -e "const t=require('./tick.json'); console.log(t.at + ': ' + t.checked + ' rule(s) on, ' + t.ran.length + ' ran'); for (const r of t.ran) console.log((r.ok ? 'ok ' : 'failed ') + r.id + (r.skipped ? ' (' + r.skipped + ')' : ''))" | tee -a "$GITHUB_STEP_SUMMARY" || true
+          }
+          for i in $(seq 1 22); do
+            knock
+            if [ "$i" -lt 22 ]; then sleep 900; fi
+          done
+          echo "chain=yes" >> "$GITHUB_OUTPUT"
+      # only after a full run with the secret set: a run without it, a failure or a cancel ends the chain (the schedule restarts it)
+      - name: Start the next clock run
+        if: steps.clock.outputs.chain == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run void-tick.yml --repo "$GITHUB_REPOSITORY" --ref main || echo "::warning title=Clock chain broke::the next run did not start; the schedule restarts it"

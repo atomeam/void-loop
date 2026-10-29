@@ -1,0 +1,75 @@
+{
+  "algo": "sha256",
+  "kind": "variable-font-kinetic",
+  "run": "013",
+  "slug": "variable-font-kinetic-headline",
+  "status": "specified",
+  "seal": "human",
+  "motion": "opt-in",
+  "loop": false,
+  "split_text": false,
+  "cookie": false,
+  "analytics": false,
+  "font": {
+    "family": "Source Serif 4",
+    "axes": ["wght", "opsz"],
+    "custom_axes": "deny",
+    "rest": { "wght": 500, "opsz": 32 },
+    "settle": { "wght": 600, "opsz": 36 },
+    "max_ms": 600
+  },
+  "copy": {
+    "canonical": "copy#h1|text:The room stays empty until you seal the run.",
+    "sha256": "e37130099214c9e7b2192881708e789dd2754d3b4293ba84a0b6b871c2e28097",
+    "text": "The room stays empty until you seal the run."
+  },
+  "pose": {
+    "canonical": "pose#013|rest:wght500,opsz32|settle:wght600,opsz36|ms:600|loop:deny",
+    "sha256": "b9db4fc0d839ed08dd46a4e71fbcad771705bfdae10c1231ced215819f945f66"
+  },
+  "head": {
+    "compact": "{\"algo\":\"sha256\",\"kind\":\"variable-font-kinetic\",\"motion\":\"opt-in\",\"loop\":false,\"split_text\":false}",
+    "sha256": "1e3daf8fb4e97d64c5e0f872e3c16b415f3da8667adec34f238fdb5a6bef6deb"
+  },
+  "claims": [
+    {
+      "id": "headline",
+      "canonical": "headline#013|kind:variable-font-kinetic|motion:opt-in|loop:deny|split-text:deny|hash:sha256|seal:human",
+      "sha256": "b9e957b283b9fe5dd69369d4bcb5bba5adb115e05a0cf531996370ae5965634b"
+    },
+    {
+      "id": "rest",
+      "canonical": "claim#rest|text:The rest pose is Source Serif 4 weight 500 optical-size 32. That is the published headline.",
+      "sha256": "5e07a35c90613e020802b9d48e02f1f2cb2f20ad06c0775d02ec5a3901bcbe41"
+    },
+    {
+      "id": "axes",
+      "canonical": "claim#axes|text:Only registered axes wght and opsz may move. Custom axes are denied.",
+      "sha256": "fe5e0e8e1747b9b1c752b70e14947b35218c42fd3e4f6ad19bfd9f92009b3ab3"
+    },
+    {
+      "id": "motion",
+      "canonical": "claim#motion|text:Axis motion runs only after an explicit Allow control and only when prefers-reduced-motion is no-preference.",
+      "sha256": "d34a1663b7912af13c127fcbb991357bba31e77f150fb44545d3a907790f8d9f"
+    },
+    {
+      "id": "once",
+      "canonical": "claim#once|text:Motion is a single settle of at most 600ms. Loops, scroll timelines, and pointer tracking are denied.",
+      "sha256": "6ca4fbeddbe064aefce2a5b37398ddd5eaee2b35f976c84e95542d4463293235"
+    },
+    {
+      "id": "copy",
+      "canonical": "claim#copy|text:The headline remains one text node. Split-letter markup is denied.",
+      "sha256": "63a6f87368387bd282efe4b7f8d3ebc59c8daf5389e7786b75ff4a0f1510ba1c"
+    },
+    {
+      "id": "page",
+      "canonical": "page#headline|route:draft|index:noindex|cookie:deny|analytics:deny|font:source-serif-4-opsz-wght",
+      "sha256": "8003a80943f30c2f5f59b90f0c32883832961aae5be8983fe566c8ad9f088f33"
+    }
+  ],
+  "body": {
+    "note": "SHA-256 of the seven canonical lines joined by LF, with a trailing LF",
+    "sha256": "71c2a608a82abb0038fe19ef793186b7c1f2db0fef5e4e221325e6ec0400ec3e"
+  }
+}

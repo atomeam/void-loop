@@ -11,6 +11,16 @@ export const PLAN_SYSTEM = 'You turn one personal goal into a short checklist. A
   + 'if the goal needs it, make the first step "Talk to a professional". When the goal is a skill practised a little each day, '
   + 'you may answer {"steps": [...], "timer": N} instead, N the whole minutes of one practice session (5 to 60). You may also add '
   + '"note": one short encouraging line to keep in mind (at most 12 words).';
+// the yes/no call Clef makes beside the plan (lib/clef.js clefYesNo): a timer fits a daily practice, not a project done once
+export const PRACTICE_ASK = 'Is this goal a skill the person practises a little each day (a language, an instrument, drawing, a sport, fitness), rather than a project done once (a garden, a move, a trip)?';
+/** the engine's timer, unless Clef said the goal is not a daily practice; Clef failing or off leaves it as the engine said */
+export const keepTimer = (timer, daily) => (daily && daily.yes === false ? null : timer);
+// the second call: a skill to learn (an instrument, a language, a craft), rather than a project, opens with finding a teacher
+export const LEARN_ASK = 'Is this goal a new skill the person wants to learn (a language, an instrument, a craft, a sport), rather than a project or a task to finish?';
+export const LEARN_STEP = 'Find a teacher or a course';
+const TAUGHT = /\b(?:teachers?|tutors?|courses?|class(?:es)?|lessons?|coach(?:es)?|instructors?|school)\b/i;
+/** the steps, opened with LEARN_STEP when Clef said it is a skill to learn and no step already finds teaching; a full plan stays */
+export const withLearnStep = (steps, learn) => (learn && learn.yes === true && steps.length < PLAN_MAX && !steps.some((s) => TAUGHT.test(s)) ? [LEARN_STEP, ...steps] : steps);
 export const NOTE_MAX = 80;
 export const TIMER_MIN = 5, TIMER_MAX = 60;
 

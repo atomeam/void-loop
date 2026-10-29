@@ -5,15 +5,22 @@
  * "download motelet" stays with the figure skill (STL of that one body).
  */
 import { bodyFor } from './figure.js';
+import { clean } from '../lib/ask-text.js';
+import { add as recordPrint, storeOf } from '../lib/prints.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 
 export function printFileOf(text) {
   const t = CLEAN(text);
   if (/^(?:please\s+)?export\s+a\s+print\s+file$/i.test(t)) return { what: 'stage' };
-  if (/^(?:please\s+)?export\s+the\s+stage(?:\s+as\s+(?:a\s+)?3mf)?$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?export\s+the\s+stage(?:\s+as\s+(?:a\s+)?(3mf|stl))?$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?export\s+as\s+(?:a\s+)?(3mf|stl)$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?print\s+.+\s+as\s+(?:a\s+)?(3mf|stl)$/i.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?(?:save|download)\s+(?:a\s+)?(?:3mf|print\s+file)(?:\s+of\s+the\s+stage)?$/i.test(t)) return { what: 'stage' };
-  if (/^(?:please\s+)?print\s+file\s+for\s+the\s+slicer$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?(?:need\s+a\s+)?(?:3d\s+)?print\s+file\s+for\s+(?:the\s+)?(?:slicer|[\w\s]+)$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?(?:get|show me)\s+the\s+(?:3mf|stl)\s+for\s+[\w\s]+$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?how\s+(?:to\s+)?(?:do\s+i\s+)?print\s+[\w\s]+$/i.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?print\s+[\w\s]+\s+file$/i.test(t)) return { what: 'stage' };
   return null;
 }
 
@@ -117,7 +124,7 @@ export function stage3mf(things) {
   ]);
 }
 
-/** Before the stage's print file is handed over (Void's ask: check the held file's integrity before finalizing): open the
+/** Before the stage's print file is handed over (Verse's ask: check the held file's integrity before finalizing): open the
  *  package just built and hold it to the triangles it came from. A whole zip (its end record, every local header where the
  *  directory says), each part's bytes matching their CRC-32 and size, the three parts a slicer needs, and a model with one
  *  triangle per stage triangle, every coordinate a number, every corner a vertex that exists, no triangle collapsed to a
@@ -193,13 +200,15 @@ async function run(text, api, verify = verify3mf) {
     return 'print-file';
   }
   save3mf(file);
+  // the print ledger (lib/prints.js, asked by Verse: print-file feeds the inventory): the file that left, so "what have I printed" knows it
+  try { if (storeOf()) recordPrint(storeOf(), { kind: '3mf', file: 'void-stage.3mf', label: 'The stage', triangles: v.triangles, figures: Object.values(things).filter((t) => t && t.kind === 'fig3d').length }); } catch (_) {}
   if (api.say) api.say('Checked: void-stage.3mf · ' + Object.values(things).filter((t) => t && t.kind === 'fig3d').length + ' on the stage · ' + v.triangles + ' triangles, every part whole');
   return 'print-file';
 }
 
 export default {
   name: 'print-file',
-  examples: ['export a print file', 'export the stage as 3mf', 'download a 3mf of the stage', 'save a print file', 'print file for the slicer'],
+  examples: ['export a print file', 'export the stage as 3mf', 'export as stl', 'download a 3mf of the stage', 'save a print file', 'print file for the slicer', 'print file for gear assembly', 'how to print a bolt', 'print this as stl', 'get the stl for the motor', 'need a 3d print file for a bracket', 'print the motor file'],
   nearMisses: ['download motelet', 'summon motelet', 'export a csv', 'what is a slicer'],
   printFileOf,
   stageTriangles,

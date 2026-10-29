@@ -1,0 +1,1171 @@
+{
+ "site": "companiesmarketcap.com",
+ "url": "https://companiesmarketcap.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "a.amxrtb.com/cframe.js",
+   "t": "js",
+   "b": 14439,
+   "ext": true
+  },
+  {
+   "f": "a.amxrtb.com/cframe.js",
+   "t": "js",
+   "b": 14439,
+   "ext": true
+  },
+  {
+   "f": "a.amxrtb.com/cframe.js",
+   "t": "js",
+   "b": 14439,
+   "ext": true
+  },
+  {
+   "f": "ads.pubmatic.com/userSync.js",
+   "t": "js",
+   "b": 11177,
+   "ext": true
+  },
+  {
+   "f": "agent.intentiq.com/IIQAgent.js",
+   "t": "js",
+   "b": 165317,
+   "ext": true
+  },
+  {
+   "f": "ajs-assets.ftstatic.com/ftUtils.js",
+   "t": "js",
+   "b": 105421,
+   "ext": true
+  },
+  {
+   "f": "btloader.com/tag",
+   "t": "js",
+   "b": 235398,
+   "ext": true
+  },
+  {
+   "f": "c.amazon-adsystem.com/apstag.js",
+   "t": "js",
+   "b": 372701,
+   "ext": true
+  },
+  {
+   "f": "c.amazon-adsystem.com/aps_csm.js",
+   "t": "js",
+   "b": 6482,
+   "ext": true
+  },
+  {
+   "f": "cdn.ampproject.org/amp4ads-v0.mjs",
+   "t": "js",
+   "b": 200765,
+   "ext": true
+  },
+  {
+   "f": "cdn.ampproject.org/amp-ad-exit-0.1.mjs",
+   "t": "js",
+   "b": 15070,
+   "ext": true
+  },
+  {
+   "f": "cdn.ampproject.org/amp-analytics-0.1.mjs",
+   "t": "js",
+   "b": 96801,
+   "ext": true
+  },
+  {
+   "f": "cdn.ampproject.org/amp-fit-text-0.1.mjs",
+   "t": "js",
+   "b": 5139,
+   "ext": true
+  },
+  {
+   "f": "cdn.ampproject.org/amp-form-0.1.mjs",
+   "t": "js",
+   "b": 41185,
+   "ext": true
+  },
+  {
+   "f": "cdn.fuseplatform.net/IIQUniversalID.js",
+   "t": "js",
+   "b": 211553,
+   "ext": true
+  },
+  {
+   "f": "cdn.fuseplatform.net/prebid-9.53.[token].js",
+   "t": "js",
+   "b": 543022,
+   "ext": true
+  },
+  {
+   "f": "cdn.fuseplatform.net/fuse.js",
+   "t": "js",
+   "b": 530928,
+   "ext": true
+  },
+  {
+   "f": "cdn.id5-sync.com/id5-api.js",
+   "t": "js",
+   "b": 120304,
+   "ext": true
+  },
+  {
+   "f": "cdn.id5-sync.com/id5PrebidModule.js",
+   "t": "js",
+   "b": 102362,
+   "ext": true
+  },
+  {
+   "f": "cdn.jsdelivr.net/banner.js",
+   "t": "js",
+   "b": 7324,
+   "ext": true
+  },
+  {
+   "f": "ced-ns.sascdn.com/cmp.js",
+   "t": "js",
+   "b": 24804,
+   "ext": true
+  },
+  {
+   "f": "ced-ns.sascdn.com/cmp.js",
+   "t": "js",
+   "b": 24804,
+   "ext": true
+  },
+  {
+   "f": "cmp.inmobi.com/choice.js",
+   "t": "js",
+   "b": 7698,
+   "ext": true
+  },
+  {
+   "f": "cmp.inmobi.com/cmp2.js",
+   "t": "js",
+   "b": 504369,
+   "ext": true
+  },
+  {
+   "f": "bt-replacement.css",
+   "t": "css",
+   "b": 7251
+  },
+  {
+   "f": "clever_ads.js",
+   "t": "js",
+   "b": 117
+  },
+  {
+   "f": "style.css",
+   "t": "css",
+   "b": 40397
+  },
+  {
+   "f": "account.js",
+   "t": "js",
+   "b": 5407
+  },
+  {
+   "f": "script.js",
+   "t": "js",
+   "b": 14050
+  },
+  {
+   "f": "tableScript.js",
+   "t": "js",
+   "b": 3120
+  },
+  {
+   "f": "config.aps.amazon-adsystem.[token]",
+   "t": "js",
+   "b": 8463,
+   "ext": true
+  },
+  {
+   "f": "content.quantcount.com/adchoices.css",
+   "t": "css",
+   "b": 3632,
+   "ext": true
+  },
+  {
+   "f": "creative-measurement.quantcount.com/viewabilitylib.js",
+   "t": "js",
+   "b": 45007,
+   "ext": true
+  },
+  {
+   "f": "csync.smartadserver.com/CookieSync.min.js",
+   "t": "js",
+   "b": 75330,
+   "ext": true
+  },
+  {
+   "f": "csync.smartadserver.com/CookieSync.min.js",
+   "t": "js",
+   "b": 75330,
+   "ext": true
+  },
+  {
+   "f": "csync.smartadserver.com/TemplatePool.min.js",
+   "t": "js",
+   "b": 382605,
+   "ext": true
+  },
+  {
+   "f": "csync.smartadserver.com/TemplatePool.min.js",
+   "t": "js",
+   "b": 382605,
+   "ext": true
+  },
+  {
+   "f": "d-code.liadm.com/did-004d.min.js",
+   "t": "js",
+   "b": 161603,
+   "ext": true
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "eus.rubiconproject.com/usync.js",
+   "t": "js",
+   "b": 46893,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 11550,
+   "ext": true
+  },
+  {
+   "f": "fw.adsafeprotected.com/amtjs",
+   "t": "js",
+   "b": 324860,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 2355,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 4157,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 4181,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 3096,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 47,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 2355,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 47,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 1661,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 47,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 1369,
+   "ext": true
+  },
+  {
+   "f": "image6.pubmatic.com/PugMaster",
+   "t": "js",
+   "b": 47,
+   "ext": true
+  },
+  {
+   "f": "jsconfig.adsafeprotected.com/amtjs",
+   "t": "js",
+   "b": 8988,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63401,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/ufs_web_display.js",
+   "t": "js",
+   "b": 246218,
+   "ext": true
+  },
+  {
+   "f": "resources.infolinks.com/frame_content.js",
+   "t": "js",
+   "b": 6126,
+   "ext": true
+  },
+  {
+   "f": "resources.infolinks.com/frame_inplace.js",
+   "t": "js",
+   "b": 5300,
+   "ext": true
+  },
+  {
+   "f": "resources.infolinks.com/ice.js",
+   "t": "js",
+   "b": 244293,
+   "ext": true
+  },
+  {
+   "f": "resources.infolinks.com/in_place.js",
+   "t": "js",
+   "b": 49099,
+   "ext": true
+  },
+  {
+   "f": "resources.infolinks.com/rpt.js",
+   "t": "js",
+   "b": 3642,
+   "ext": true
+  },
+  {
+   "f": "resources.infolinks.com/infolinks_main.js",
+   "t": "js",
+   "b": 5857,
+   "ext": true
+  },
+  {
+   "f": "resources.omni-sync.io/iqusync-1.46.min.js",
+   "t": "js",
+   "b": 1155,
+   "ext": true
+  },
+  {
+   "f": "resources.omni-sync.io/load-1.3.js",
+   "t": "js",
+   "b": 3046,
+   "ext": true
+  },
+  {
+   "f": "router.infolinks.com/gsd",
+   "t": "js",
+   "b": 323,
+   "ext": true
+  },
+  {
+   "f": "router.infolinks.com/l",
+   "t": "js",
+   "b": 303,
+   "ext": true
+  },
+  {
+   "f": "router.infolinks.com/lcmanage",
+   "t": "js",
+   "b": 283,
+   "ext": true
+  },
+  {
+   "f": "rt.marphezis.com/client.js",
+   "t": "js",
+   "b": 19063,
+   "ext": true
+  },
+  {
+   "f": "rt3085.infolinks.com/dcl.htm",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "rt3085.infolinks.com/getads.htm",
+   "t": "js",
+   "b": 2183,
+   "ext": true
+  },
+  {
+   "f": "s.cdn.gcprivacy.net/gcid_s.min.js",
+   "t": "js",
+   "b": 27204,
+   "ext": true
+  },
+  {
+   "f": "secure.cdn.fastclick.net/pubcid.min.js",
+   "t": "js",
+   "b": 68276,
+   "ext": true
+  }
+ ],
+ "assetCount": 102,
+ "bytes": 7379060,
+ "html": {
+  "mobile": {
+   "title": "Companies ranked by Market Cap - Compani",
+   "lang": "en-US",
+   "manifest": "https://companiesmarketcap.com/img/icons/manifest.json",
+   "hreflang": [
+    "de",
+    "fr",
+    "en-US",
+    "en-IE",
+    "en-IN",
+    "en-GB",
+    "en-CA",
+    "en-AU",
+    "en-NZ",
+    "en-HK",
+    "en-SG"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 5,
+    "twitter": false,
+    "themeColor": true,
+    "appleCapable": false
+   },
+   "iframes": [
+    "7ea9014d382cef89adc99ac11fcf5d66.safeframe.googlesyndication.com",
+    "companiesmarketcap.com",
+    "companiesmarketcap.com",
+    "companiesmarketcap.com",
+    "7ea9014d382cef89adc99ac11fcf5d66.safeframe.googlesyndication.com",
+    "www.google.com",
+    "companiesmarketcap.com",
+    "s.amazon-adsystem.com",
+    "cm.g.doubleclick.net",
+    "7ea9014d382cef89adc99ac11fcf5d66.safeframe.googlesyndication.com",
+    "u-las.4dex.io",
+    "s.seedtag.com",
+    "scripts.opti-digital.com",
+    "sync.connectad.io"
+   ],
+   "inputTypes": {
+    "email": 1,
+    "search": 1,
+    "text": 1
+   },
+   "textareas": 1,
+   "forms": 1,
+   "ariaLabels": [
+    "Advertisement",
+    "Company name, ticker...",
+    "Toggle navigation"
+   ],
+   "downloadAttrs": 1
+  },
+  "desktop": {
+   "iframes": [
+    "companiesmarketcap.com",
+    "companiesmarketcap.com",
+    "companiesmarketcap.com",
+    "companiesmarketcap.com",
+    "companiesmarketcap.com",
+    "companiesmarketcap.com",
+    "www.google.com",
+    "s.amazon-adsystem.com",
+    "router.infolinks.com",
+    "resources.infolinks.com",
+    "cm.g.doubleclick.net",
+    "e586d3744f325c22a32ba79c0a8d67cd.safeframe.googlesyndication.com"
+   ],
+   "inputTypes": {
+    "email": 1,
+    "search": 1
+   }
+  }
+ },
+ "controls": [
+  {
+   "l": "Close Ad X",
+   "w": "md"
+  },
+  {
+   "l": "ETFs",
+   "w": "d"
+  },
+  {
+   "l": "Global ranking",
+   "w": "d"
+  },
+  {
+   "l": "Next 100❯",
+   "w": "md"
+  },
+  {
+   "l": "Ranking by categories",
+   "w": "d"
+  },
+  {
+   "l": "Ranking by countries",
+   "w": "d"
+  },
+  {
+   "l": "Toggle navigation",
+   "w": "m"
+  }
+ ],
+ "manifest": {
+  "name": "App",
+  "display": "",
+  "displayOverride": [],
+  "orientation": "",
+  "scope": "",
+  "icons": 6,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": null,
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "robots": {
+  "disallow": [
+   "/gotopage/",
+   "/annual-reports/",
+   "/annual-reports-10k/",
+   "/annual-reports-20f/",
+   "/quarterly-reports-10q/",
+   "/financial-statements/",
+   "/half-year-reports/",
+   "/quarterly-reports/",
+   "/financial-reports/",
+   "/sustainability-reports/",
+   "/esg-reports/",
+   "/investor-presentations/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "account.js",
+   "own": true,
+   "keys": [
+    "Enter@1485"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "script.js",
+   "own": true,
+   "keydownHandlers": 1
+  }
+ ],
+ "hosts": [
+  {
+   "host": "companiesmarketcap.com",
+   "file": "script.js",
+   "at": 2824
+  }
+ ],
+ "thirdParty": [
+  "a.amxrtb.com",
+  "a.teads.tv",
+  "ab.dns-finder.com",
+  "ad-delivery.net",
+  "ad.doubleclick.net",
+  "ads-24789.iionads.com",
+  "ads.pubmatic.com",
+  "ads.servenobid.com",
+  "agen-assets.ftstatic.com",
+  "agent.intentiq.com",
+  "ajs-assets.ftstatic.com",
+  "apewisdom.io",
+  "api.btloader.com",
+  "api.id5-sync.com",
+  "api.intentiq.com",
+  "bcp.crwdcntrl.net",
+  "btloader.com",
+  "c.amazon-adsystem.com",
+  "cdn.ampproject.org",
+  "cdn.api.btloader.com",
+  "cdn.fuseplatform.net",
+  "cdn.id5-sync.com",
+  "cdn.jsdelivr.net",
+  "ced-ns.sascdn.com",
+  "cmp.inmobi.com",
+  "config.aps.amazon-adsystem.com",
+  "content.quantcount.com",
+  "creative-measurement.quantcount.com",
+  "csync.smartadserver.com",
+  "d-code.liadm.com",
+  "d9.flashtalking.com",
+  "data.ad-score.com",
+  "direct.adsrvr.org",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "eus.rubiconproject.com",
+  "ex.ingage.tech",
+  "exchange.cootlogix.com",
+  "exchange.kueezrtb.com",
+  "fast.nexx360.io",
+  "fastlane.rubiconproject.com",
+  "fonts.googleapis.com",
+  "fw.adsafeprotected.com",
+  "googleads4.g.doubleclick.net",
+  "grid-bidder.criteo.com",
+  "gum.criteo.com",
+  "hb-api.omnitagjs.com",
+  "hbopenbid.pubmatic.com",
+  "htlb.casalemedia.com",
+  "i.connectad.io",
+  "ib.adnxs.com",
+  "id.a-mx.com",
+  "id5-sync.com",
+  "ids.api.gcprivacy.id",
+  "idx.liadm.com",
+  "image6.pubmatic.com",
+  "jsconfig.adsafeprotected.com",
+  "lb.eu-1-id5-sync.com",
+  "lbs.eu-1-id5-sync.com",
+  "mp.4dex.io"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://a.teads.tv/hb/bid-request",
+  "https://ab.dns-finder.com/meta/dns",
+  "https://ad-delivery.net/px.gif?ch&e",
+  "https://ad.doubleclick.net/favicon.ico?ad&ad_box_&adnet&e&showad&size",
+  "https://ads-24789.iionads.com/hb",
+  "https://ads.servenobid.com/adreq?cb",
+  "https://agen-assets.ftstatic.com/display/7892524/5957048.json",
+  "https://apewisdom.io/c/",
+  "https://api.btloader.com/country?o",
+  "https://api.btloader.com/exd?cv&sid&tid&upapi",
+  "https://api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+  "https://api.id5-sync.com/analytics/1189/pbjs",
+  "https://api.intentiq.[token]?at&cttl&dpi&dpn&fbp&gdpr&gdpr_consent&gpp",
+  "https://api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gdpr_consent&iiqidtype&iiqlocalstorageenabled",
+  "https://bcp.crwdcntrl.net/6/map?xcid",
+  "https://c.amazon-adsystem.com/bao-csm/aps-comm/aps_csm.js",
+  "https://cdn.api.btloader.com/device?fullVersionList&orgid&upapi",
+  "https://cdn.fuseplatform.net/telemetry/noconsent?account&adserver&bp&browser&bs&cmpj&cookie&cwvRep",
+  "https://cdn.fuseplatform.net/telemetry/noconsent?account&adserver&bp&browser&bs&cookie&device&e",
+  "https://cdn.jsdelivr.net/gh/prebid/currency-file@1/latest.json?date",
+  "https://cmp.inmobi.[token].com/choice.js?tag_version",
+  "https://cmp.inmobi.[token].json",
+  "https://cmp.inmobi.com/geoip",
+  "https://d9.flashtalking.com/lgc",
+  "https://data.ad-score.com/data/cors?callback&en&pid&pm_ct&pm_pl&pm_st&pm_td&tt",
+  "https://direct.adsrvr.org/bid/bidder/publift",
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://ex.ingage.tech/v1/openrtb",
+  "https://exchange.cootlogix.[token]",
+  "https://exchange.kueezrtb.[token]",
+  "https://fast.nexx360.io/booster",
+  "https://fastlane.rubiconproject.com/a/api/fastlane.json?account_id&alt_size_ids&eid_pubcid.org&gdpr&l_pb_bid_id&m_ch_mob",
+  "https://googleads4.g.doubleclick.net/pcs/view?adurl&arae&cbvp&cisv&cstd&ctpt&fbs_aeid&ftch",
+  "https://googleads4.g.doubleclick.net/pcs/view?adurl&arae&cisv&cstd&ctpt&dett&dtpt&fbs_aeid",
+  "https://grid-bidder.criteo.[token]?av&cb&lsavail&networkId&profileId&wv",
+  "https://gum.criteo.com/sid/json?bundle&cw&domain&gdpr&lsw&origin&topUrl",
+  "https://gum.criteo.com/sid/json?cw&domain&gdpr&lsw&origin&topUrl",
+  "https://hb-api.omnitagjs.com/hb-api/prebid/v1?CanonicalUrl&PageReferrer&PageUrl&RefererUrl",
+  "https://hbopenbid.pubmatic.com/translator?gzip&source",
+  "https://htlb.casalemedia.com/openrtb/pbjs?s"
+ ],
+ "storage": {
+  "local": [
+   "BT_AA_DETECTION",
+   "BT_device",
+   "BT_tpc",
+   "UUID-ae6dd7anadbac",
+   "Y21haXNha3RhLm8",
+   "_GESPSK-crwdcntrl.net",
+   "_cc_id",
+   "_cc_id_update_ts",
+   "_gppHash",
+   "_iiq_ch",
+   "_iiq_fdata",
+   "_iiq_fdata_270675768",
+   "_iiq_fdata_768420746",
+   "_iiq_sync_270675768",
+   "_iiq_sync_768420746",
+   "_li_duid",
+   "_pubcid",
+   "_pubcid_exp",
+   "aps:[token]:deviceSignal/sua",
+   "aps:[token]:idVendors/enabled",
+   "aps:[token]:sessionMarker/marker",
+   "btUserCountry",
+   "btUserCountryExpiry",
+   "btUserIsFromRestrictedCountry",
+   "cto_bidid",
+   "cto_bundle",
+   "id5id",
+   "id5id_cached_consent_data",
+   "id5id_cached_consent_data_exp",
+   "id5id_cst",
+   "id5id_exp",
+   "id5id_extensions",
+   "id5id_last",
+   "id5id_privacy",
+   "id5id_privacy_exp",
+   "id5id_v2_6067566412713894",
+   "id5id_v2_8755025021015689",
+   "id5id_v2_signature",
+   "il_cuid",
+   "loglevel"
+  ],
+  "session": [
+   "BT_sid",
+   "Y21haXNha3RhLm9z"
+  ],
+  "idb": [
+   "1"
+  ]
+ },
+ "candidates": [
+  {
+   "name": "Download links",
+   "kind": "export",
+   "tag": "observed",
+   "evidence": "a[download] x1"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Embeds [token].safeframe.googlesyndication.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds [token].safeframe.googlesyndication.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds resources.infolinks.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds router.infolinks.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds s.seedtag.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds scripts.opti-digital.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds sync.connectad.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds u-las.4dex.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call api.btloader.com/country?o",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/exd?cv&sid&tid&upapi",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.id5-sync.com/analytics/1189/pbjs",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&fbp&gdpr&gdpr_consent&gpp",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gdpr_consent&iiqidtype&iiqloc",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call ex.ingage.tech/v1/openrtb",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call fastlane.rubiconproject.com/a/api/fastlane.json?account_id&alt_size_ids",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Input of type search",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=search] x1"
+  },
+  {
+   "name": "Keeps a database in the browser: 1",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "indexedDB"
+  },
+  {
+   "name": "Remembers a setting in the browser: BT_AA_DETECTION",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: BT_device",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: BT_tpc",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: UUID-ae6dd7anadbac",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: Y21haXNha3RhLm8",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _GESPSK-crwdcntrl.net",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _cc_id",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _cc_id_update_ts",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _gppHash",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _iiq_ch",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _iiq_fdata",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _iiq_fdata_270675768",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _iiq_fdata_768420746",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _iiq_sync_270675768",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _iiq_sync_768420746",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _li_duid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _pubcid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _pubcid_exp",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: aps:[token]:deviceSignal/sua",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: aps:[token]:idVendors/enabled",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: aps:[token]:sessionMarker/marker",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: btUserCountry",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: btUserCountryExpiry",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: btUserIsFromRestrictedCountry",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: cto_bidid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: cto_bundle",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_cached_consent_data",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_cached_consent_data_exp",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_cst",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_exp",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_extensions",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_last",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_privacy",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_privacy_exp",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_v2_6067566412713894",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_v2_8755025021015689",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: id5id_v2_signature",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: il_cuid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  }
+ ]
+}

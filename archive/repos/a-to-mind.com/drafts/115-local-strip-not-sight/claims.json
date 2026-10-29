@@ -1,0 +1,18 @@
+{
+  "slug": "local-strip-not-sight",
+  "run": 115,
+  "family": "sensory substitution",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "hypothesis": "A strip mark is not sight and not a recovered scene.",
+  "confidence": 0.24,
+  "confidence_note": "design-material weight, not a measurement",
+  "hash_preimage": "void-strip-not-sight|v1|class=<id>|status=unattested",
+  "excluded_from_hash": ["sight_sentence", "scene_gloss", "pitch", "loudness", "object_name"],
+  "classes": [
+    {"id": "withheld", "label": "Withheld", "note": "No strip is recorded."},
+    {"id": "blank", "label": "Blank", "note": "Strip hypothesized empty. Not a dark scene."},
+    {"id": "marked", "label": "Marked", "note": "A cell is filled. Object name and sight sentence refused."}
+  ]
+}

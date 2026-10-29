@@ -1,0 +1,18 @@
+{
+  "slug": "attested-strict-transport-security",
+  "run": "045",
+  "status": "candidate-only",
+  "emit": false,
+  "host": "a-to-mind.com",
+  "header_name": "Strict-Transport-Security",
+  "live_header": null,
+  "proposed_if_emit": "max-age=300",
+  "forbidden_until_separate_seal": [
+    "includeSubDomains",
+    "preload"
+  ],
+  "preload_list_membership": "unattested",
+  "http_responses": "must-not-send",
+  "badge": false,
+  "notes": "Candidate catalog. Not a live header. Token preload is not list membership."
+}

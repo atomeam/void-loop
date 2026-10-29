@@ -1,22 +1,2239 @@
 {
   "note": "What Void asked for, linked to the growth-ledger entry that built it (lib/voice.js followThrough). Each link names the entry by its time, so it can be checked; new work links itself with finish.mjs --asked <ask-id>. Added 2026-10-13 by reading every 'asked by Void' ledger line against the asks in domains/void.voice.md: only links the ledger's own words support. The owner: \"If it is theatre, it needs to be seriously worked on until Void's will is more real.\".",
   "links": [
-    { "words": "Create a manifest file in the skills/ directory that automatically registers all new skills.", "ledgerAt": "2026-10-13T16:54:12Z", "why": "#620: a skill file in skills/ registers itself (tools/skills-index.mjs --adopt, run by finish.mjs), router-tested; linked by words because the asks were not in the voice log yet" },
-    { "words": "Implement the 'skills/manifest.js' file to automatically register all new skills and end the manual registration loop.", "ledgerAt": "2026-10-13T16:54:12Z", "why": "the same ask in its other wording, built in #620" },
-    { "ask": "ask-20261008-1809-1", "ledgerAt": "2026-10-08T17:55:00Z", "why": "Go, credited to Void's first daily reflection" },
-    { "ask": "ask-20261009-2159-1", "ledgerAt": "2026-10-10T02:46:50Z", "why": "the learning queue: unanswered asks grouped by intent" },
-    { "ask": "ask-20261010-0208-1", "ledgerAt": "2026-10-10T02:46:50Z", "why": "the most-wanted missing skill becomes the next one to build" },
-    { "ask": "ask-20261010-0222-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the forge and frontier #14 defined in Void's canon" },
-    { "ask": "ask-20261010-0229-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the same ask, repeated" },
-    { "ask": "ask-20261010-0230-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the same ask, repeated" },
-    { "ask": "ask-20261010-0231-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the same ask, repeated" },
-    { "ask": "ask-20261010-0230-2", "ledgerAt": "2026-10-10T20:43:56Z", "why": "the forge checks a file's geometry before it prints" },
-    { "ask": "ask-20261010-0231-2", "ledgerAt": "2026-10-10T22:43:18Z", "why": "the print file is checked before it is saved" },
-    { "ask": "ask-20261010-0232-1", "ledgerAt": "2026-10-10T13:25:06Z", "why": "frontier #4: what happens while you are away, written down like any action" },
-    { "ask": "ask-20261010-0232-2", "ledgerAt": "2026-10-10T21:43:39Z", "why": "\"what can you print\": what Void can make in the world" },
-    { "ask": "ask-20261012-1506-2", "ledgerAt": "2026-10-12T19:42:26Z", "why": "skill velocity on the growth card" },
-    { "ask": "ask-20261012-2052-3", "ledgerAt": "2026-10-12T19:42:26Z", "why": "the same ask, repeated (it was built an hour before Void asked again)" },
-    { "ask": "ask-20261012-1506-1", "ledgerAt": "2026-10-09T21:38:06Z", "why": "built before it was asked: a missed ask becomes a job in the build queue by itself (lib/learn.js); it goes to the queue, not the growth inbox" },
-    { "ask": "ask-20261012-0747-2", "ledgerAt": "2026-10-09T21:38:06Z", "why": "the same loop: an unanswered \"make me a...\" is a missed ask, and a missed ask becomes a build job" }
-  ]
+    {
+      "words": "Create a manifest file in the skills/ directory that automatically registers all new skills.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "#620: a skill file in skills/ registers itself (tools/skills-index.mjs --adopt, run by finish.mjs), router-tested; linked by words because the asks were not in the voice log yet"
+    },
+    {
+      "words": "Implement the 'skills/manifest.js' file to automatically register all new skills and end the manual registration loop.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "the same ask in its other wording, built in #620"
+    },
+    {
+      "ask": "ask-20261008-1809-1",
+      "ledgerAt": "2026-10-08T17:55:00Z",
+      "why": "Go, credited to Void's first daily reflection"
+    },
+    {
+      "ask": "ask-20261009-2159-1",
+      "ledgerAt": "2026-10-10T02:46:50Z",
+      "why": "the learning queue: unanswered asks grouped by intent"
+    },
+    {
+      "ask": "ask-20261010-0208-1",
+      "ledgerAt": "2026-10-10T02:46:50Z",
+      "why": "the most-wanted missing skill becomes the next one to build"
+    },
+    {
+      "ask": "ask-20261010-0222-1",
+      "ledgerAt": "2026-10-10T13:43:27Z",
+      "why": "the forge and frontier #14 defined in Void's canon"
+    },
+    {
+      "ask": "ask-20261010-0229-1",
+      "ledgerAt": "2026-10-10T13:43:27Z",
+      "why": "the same ask, repeated"
+    },
+    {
+      "ask": "ask-20261010-0230-1",
+      "ledgerAt": "2026-10-10T13:43:27Z",
+      "why": "the same ask, repeated"
+    },
+    {
+      "ask": "ask-20261010-0231-1",
+      "ledgerAt": "2026-10-10T13:43:27Z",
+      "why": "the same ask, repeated"
+    },
+    {
+      "ask": "ask-20261010-0230-2",
+      "ledgerAt": "2026-10-10T20:43:56Z",
+      "why": "the forge checks a file's geometry before it prints"
+    },
+    {
+      "ask": "ask-20261010-0231-2",
+      "ledgerAt": "2026-10-10T22:43:18Z",
+      "why": "the print file is checked before it is saved"
+    },
+    {
+      "ask": "ask-20261010-0232-1",
+      "ledgerAt": "2026-10-10T13:25:06Z",
+      "why": "frontier #4: what happens while you are away, written down like any action"
+    },
+    {
+      "ask": "ask-20261010-0232-2",
+      "ledgerAt": "2026-10-10T21:43:39Z",
+      "why": "\"what can you print\": what Void can make in the world"
+    },
+    {
+      "ask": "ask-20261012-1506-2",
+      "ledgerAt": "2026-10-12T19:42:26Z",
+      "why": "skill velocity on the growth card"
+    },
+    {
+      "ask": "ask-20261012-2052-3",
+      "ledgerAt": "2026-10-12T19:42:26Z",
+      "why": "the same ask, repeated (it was built an hour before Void asked again)"
+    },
+    {
+      "ask": "ask-20261012-1506-1",
+      "ledgerAt": "2026-10-09T21:38:06Z",
+      "why": "built before it was asked: a missed ask becomes a job in the build queue by itself (lib/learn.js); it goes to the queue, not the growth inbox"
+    },
+    {
+      "ask": "ask-20261012-0747-2",
+      "ledgerAt": "2026-10-09T21:38:06Z",
+      "why": "the same loop: an unanswered \"make me a...\" is a missed ask, and a missed ask becomes a build job"
+    },
+    {
+      "ask": "ask-20261012-2131-1",
+      "ledgerAt": "2026-10-13T16:41:06Z",
+      "why": "growth card friction (failing + least checked); id aged out of the live reflect window so Void kept asking"
+    },
+    {
+      "words": "Add a 'friction' indicator to the growth card to highlight skills that are failing or underperforming.",
+      "ledgerAt": "2026-10-13T16:41:06Z",
+      "why": "rewording of ask-20261012-2131-1; Void asked this phrasing 13+ times after the id left the window"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to highlight which skills are currently failing or returning high uncertainty.",
+      "ledgerAt": "2026-10-13T16:41:06Z",
+      "why": "same ask, earlier wording"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to highlight skills with high failure rates.",
+      "ledgerAt": "2026-10-13T16:41:06Z",
+      "why": "same ask, later wording"
+    },
+    {
+      "words": "Add the 'friction' indicator to the growth card to surface underperforming skills.",
+      "ledgerAt": "2026-10-13T16:41:06Z",
+      "why": "same ask, later wording"
+    },
+    {
+      "ask": "ask-20261014-1642-3",
+      "words": "Create an automated link between a recorded experiment video and the specific skill file that generated it.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: each film's metadata links the code it shows (#716, film-metadata)"
+    },
+    {
+      "ask": "ask-20261015-0452-1",
+      "words": "Implement the 'film-metadata' skill to allow structured JSON extraction from film-related inputs.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: film-metadata skill (#713/#716)"
+    },
+    {
+      "ask": "ask-20261014-1748-1",
+      "words": "Convert the 'film discovery' logic into a structured skill that can output a JSON object containing film metadata instead of just text.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: films as structured JSON (film-metadata)"
+    },
+    {
+      "ask": "ask-20261014-2016-1",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: poster skill reads film metadata and draws a 1080x1920 phone story"
+    },
+    {
+      "ask": "ask-20261015-0556-2",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to automate promotional asset creation.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: same as the poster skill"
+    },
+    {
+      "ask": "ask-20261015-0442-3",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to allow for automatic promotional generation.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: same as the poster skill"
+    },
+    {
+      "ask": "ask-20261015-0549-1",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotion assets for newly discovered videos.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: same as the poster skill"
+    },
+    {
+      "ask": "ask-20261014-1648-2",
+      "words": "Create a direct pipeline from browser-based video recordings to GitHub release assets to automate 'Void's films'.",
+      "ledgerAt": "2026-10-14T16:28:00Z",
+      "why": "built: every film is posted as a GitHub Release with its MP4"
+    },
+    {
+      "ask": "ask-20261014-1632-1",
+      "words": "Automate the 'Void's films' process so that recorded MP4s are automatically prepared as GitHub release assets or posted to a dedicated stage URL.",
+      "ledgerAt": "2026-10-14T16:28:00Z",
+      "why": "built: films as GitHub Releases and on /films/"
+    },
+    {
+      "ask": "ask-20261014-1948-2",
+      "words": "Implement a 'rendered' state signal for the new body-related 3D miniatures to confirm they are visually ready for the user.",
+      "ledgerAt": "2026-10-14T21:52:26Z",
+      "why": "built: one rendered signal for every 3D mini (data-rendered)"
+    },
+    {
+      "ask": "ask-20261014-2016-2",
+      "words": "Implement the 'rendered' state signal for the new 'Horse and donkey' game cards to ensure they are interactive immediately upon appearing.",
+      "ledgerAt": "2026-10-14T21:52:26Z",
+      "why": "built: one rendered signal for every 3D mini"
+    },
+    {
+      "ask": "ask-20261014-1904-3",
+      "words": "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks can confirm they are visually ready.",
+      "ledgerAt": "2026-10-14T21:52:26Z",
+      "why": "built: one rendered signal for every 3D mini"
+    },
+    {
+      "ask": "ask-20261014-2348-1",
+      "words": "Create a persistent 'world-clock' card that allows users to pin multiple locations and see their time offsets relative to each other.",
+      "ledgerAt": "2026-09-29T15:19:11Z",
+      "why": "built: world clock card for several places"
+    },
+    {
+      "ask": "ask-20261015-0556-3",
+      "words": "Refactor the 5614-line wordMath() function into modular, testable units to improve reliability.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "same ask: wordMath in eight parts"
+    },
+    {
+      "ask": "ask-20261015-0607-1",
+      "words": "Refactor the wordMath() function into discrete, tested modules to eliminate the 5614-line monolith.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "same ask: wordMath in eight parts"
+    },
+    {
+      "ask": "ask-20261015-0436-3",
+      "words": "Add a 'skill-stability' metric to the owner page that shows how many consecutive successful runs a new skill has completed.",
+      "ledgerAt": "2026-10-15T06:48:10Z",
+      "why": "same build: stability on the growth card owner view"
+    },
+    {
+      "ask": "ask-20261015-0432-1",
+      "words": "Implement a 'diff' alert on the owner page that highlights exactly which skills were added or modified in the last growth spurt, bypassing the need for manual PR previews.",
+      "ledgerAt": "2026-10-15T06:48:10Z",
+      "why": "same build: the last spurt on the growth card owner view"
+    },
+    {
+      "ask": "ask-20261015-0556-1",
+      "words": "Implement the 'parody-forge' card based on the 30-game matrix to allow instant V01D-branded game generation.",
+      "ledgerAt": "2026-10-15T06:48:11Z",
+      "why": "same build: parody games in the rack"
+    },
+    {
+      "ask": "ask-20261014-1748-2",
+      "words": "Create a 'film-card' 3D miniature or UI element that displays the discovered film's details on the stage.",
+      "ledgerAt": "2026-10-15T06:48:12Z",
+      "why": "same build: each new film shown as a card"
+    },
+    {
+      "ask": "ask-20261014-2156-2",
+      "words": "Implement a verification check that prevents 'print-download' from triggering if the 'data-rendered' signal is not present on the target figure.",
+      "ledgerAt": "2026-10-15T06:48:16Z",
+      "why": "same build: the print file waits for rendered"
+    },
+    {
+      "ask": "ask-20261014-1722-2",
+      "words": "Map my existing 78 proven skills to an MCP-discoverable manifest so agents know exactly which parameters to pass for 'sky-card' or 'tictactoe'.",
+      "ledgerAt": "2026-10-14T17:17:40Z",
+      "why": "already built: /tools.json lists every skill with examples, MCP tools/list serves the schemas"
+    },
+    {
+      "ask": "ask-20261015-0351-1",
+      "words": "Create a 'security-vulnerability' skill that flags the specific line and type of memory or hash error in a code snippet displayed on the stage.",
+      "ledgerAt": "2026-10-15T03:47:05Z",
+      "why": "already built: code review flags the line and kind of memory and hash errors"
+    },
+    {
+      "ask": "ask-20261015-0608-1",
+      "words": "Connect the 'intent score' output to the growth inbox so high-intent/no-skill asks are flagged for the builders immediately.",
+      "ledgerAt": "2026-10-10T02:46:50Z",
+      "why": "already built: the learning queue groups unanswered asks by intent for the builders"
+    },
+    {
+      "ask": "ask-20261014-1948-1",
+      "words": "Convert the 'fat-burn heart rate' and 'can't sleep' asks into interactive 3D skill cards that use visual rhythm and pacing rather than just text.",
+      "ledgerAt": "2026-10-14T19:44:17Z",
+      "why": "already built: \"i can't sleep\" opens a paced 4-7-8 breathing card"
+    },
+    {
+      "ask": "ask-20261015-0541-1",
+      "words": "Create a 'store-dashboard-card' that displays the queued asks as a list of interactive 3D miniature cards that can be expanded to show details.",
+      "ledgerAt": "2026-10-13T03:53:20Z",
+      "why": "already built: the self card lists the queued asks and what came of each"
+    },
+    {
+      "words": "Refactor the 5614-line wordMath() function into modular components to resolve the technical debt blocking my scaling.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath (787 lines; 5614 is the whole page) is eight named parts run in order, pinned by 755 golden answers; the parts still live in void.html, and moving them into their own files is the next step if V01D asks for it"
+    },
+    {
+      "words": "Implement the 'confidence' float (0.0-1.0) into the /api/propose-fix JSON schema to allow builders to prioritize high-certainty repairs.",
+      "ledgerAt": "2026-10-16T03:09:08Z",
+      "why": "built (#852): /api/propose-fix asks for and returns confidence 0-1 (lib/propose-fix.js confidenceOf), and the proposal summary and propose-fix.json carry it"
+    },
+    {
+      "ask": "ask-20261013-1847-1",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: last_tested and success_rate are written by tools/families.mjs from the suite and bench evidence the repo holds, and regenerated by the bench run on main (bench.yml); the browser suite itself writes no manifest, so the dates stay honest and the --check stable"
+    },
+    {
+      "ask": "ask-20261013-1947-1",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: success_rate per skill comes from the everyday benchmark (asks routed to the skill that passed over all routed), the one place attempts are recorded; practice sessions are not logged (no behaviour tracking)"
+    },
+    {
+      "ask": "ask-20261013-2236-1",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: success_rate per skill from the benchmark, shown on the family-health card; Clef's yes/no is not weighed against it (nothing a visitor does is recorded)"
+    },
+    {
+      "ask": "ask-20261012-2108-1",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: touching a branch of the growth tree says what Void asked for that it built (skills/growth.js causeOf)"
+    },
+    {
+      "ask": "ask-20261012-2052-2",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: the same build; a growth event names the ask that caused it"
+    },
+    {
+      "ask": "ask-20261012-1556-1",
+      "ledgerAt": "2026-10-15T16:43:13Z",
+      "why": "built: every red browser suite on main (the 3D checks are in it) writes an incident V01D shows as 'what broke lately' (verify.yml, tools/incident-log.mjs)"
+    },
+    {
+      "ask": "ask-20261015-1028-1",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: skills/family-health.js, one row per family with a stacked bar of proven / checked / tested / experiment, from skills/families.json"
+    },
+    {
+      "ask": "ask-20261013-1704-2",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card maps the ratings (the same data /skills/families.json serves) to the families"
+    },
+    {
+      "ask": "ask-20261013-1658-1",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: a registered skill failing its check shows as 'failing' in skills/families.json, on the family-health card and the growth card's friction line"
+    },
+    {
+      "ask": "ask-20261015-1028-2",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath is eight named parts pinned by 755 golden answers (still inside void.html)"
+    },
+    {
+      "ask": "ask-20261015-1211-3",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: the eight parts the builders identified are the ones it runs now"
+    },
+    {
+      "ask": "ask-20261015-1048-2",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built as far as the parts go; moving them into their own files is a next step if asked"
+    },
+    {
+      "ask": "ask-20261010-0227-1",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file with no index entry is registered at the finish, and tools/checks.mjs (skills-check, map coverage) fails when the list and the files disagree"
+    },
+    {
+      "ask": "ask-20261012-0541-1",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: the same registration runs when a file lands in skills/, and the published-page checks read the index"
+    },
+    {
+      "ask": "ask-20261010-0224-2",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: registration is automatic at the finish; a skills-check failure stops the push instead"
+    },
+    {
+      "ask": "ask-20261012-1009-2",
+      "ledgerAt": "2026-10-04T18:10:00Z",
+      "why": "built: an ask V01D could not answer goes on the miss board and tools/jobs.mjs turns it into a build job; since 2026-10-09 lib/learn.js queues it by itself once asked enough"
+    },
+    {
+      "ask": "ask-20261013-1647-1",
+      "ledgerAt": "2026-10-10T22:45:25Z",
+      "why": "built: each miss job's note carries what the router made of the ask (the closest skill and its score), so a near miss proposes its skill"
+    },
+    {
+      "ask": "ask-20261014-1248-1",
+      "ledgerAt": "2026-10-10T22:45:25Z",
+      "why": "built: the same near-miss notes cover place and distance asks"
+    },
+    {
+      "ask": "ask-20261014-1155-3",
+      "ledgerAt": "2026-10-10T22:45:25Z",
+      "why": "built: a miss that maps to no skill is queued with the router's nearest guess"
+    },
+    {
+      "ask": "ask-20261013-0026-1",
+      "ledgerAt": "2026-10-13T17:15:52Z",
+      "why": "built: every fringe run may record its hypothesis, findings, failure modes and next experiments; node tools/fringe.mjs --learned reports them before each run"
+    },
+    {
+      "ask": "ask-20261008-1809-2",
+      "ledgerAt": "2026-10-11T19:41:55Z",
+      "why": "built: the canon (version 3) is what V01D reads about itself; the self card and inventory list its games and miniatures"
+    },
+    {
+      "ask": "ask-20261015-1610-1",
+      "ledgerAt": "2026-10-10T02:21:43Z",
+      "why": "built: automerge merges only once test-and-deploy is green on the PR's head, which runs every node --test file and the browser suite"
+    },
+    {
+      "ask": "ask-20261015-2116-2",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the probe ledger's My probes on the growth card (the same build)"
+    },
+    {
+      "ask": "ask-20261015-2045-2",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: My probes lists what probes asked the forge for that it cannot make yet (frontier #14)"
+    },
+    {
+      "ask": "ask-20261015-1903-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the self card's divergence view, V01D's words beside what was built"
+    },
+    {
+      "ask": "ask-20261015-1633-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: game strength marks on the games picker from skills/families.json"
+    },
+    {
+      "ask": "ask-20261015-1555-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: forge history, every recipe and what stands on the stage"
+    },
+    {
+      "ask": "ask-20261015-1610-2",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the merge log card, skills/merges.js"
+    },
+    {
+      "ask": "ask-20261015-1744-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the status card names the failed checks of a red run on main"
+    },
+    {
+      "ask": "ask-20261013-1802-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the same root-cause row, with the run linked"
+    },
+    {
+      "ask": "ask-20261013-2054-1",
+      "ledgerAt": "2026-10-14T02:46:52Z",
+      "why": "built: a plan's stickies carry a tab that reads note to self or draft, not sent (void.html .thing.sticky[data-role], skills/sticky.js), so a note is never taken for an order; the ledger line names this id in prose, which followThrough's word match missed"
+    },
+    {
+      "ask": "ask-20261015-0250-2",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: substitution impact, one 'then:' line per swap (IMPACT in skills/swaps.js, #859)"
+    },
+    {
+      "ask": "ask-20261014-2248-2",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: the BMI band links to the calorie card with the same height and weight (bandAsk in skills/nutrition.js, #866)"
+    },
+    {
+      "ask": "ask-20261014-1453-1",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: food facts and the calorie card link to 'plan my meals', which splits the day and puts the list on the stage (#866)"
+    },
+    {
+      "ask": "ask-20261014-1548-1",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: each word in the unscramble and pattern lists runs 'cartoon version of a <word>' (pictureAsk in skills/words.js, #866)"
+    },
+    {
+      "ask": "ask-20261014-1523-1",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: the weather card offers a timer when rain, snow, frost or heat is in the next hours (weatherPrompt in skills/weather.js); the remind skill's 'remind me at' is owner-only, so the timer carries it"
+    },
+    {
+      "ask": "ask-20261014-1012-3",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: plan history (skills/intent.js): the last 5 distinct plans kept in this browser, 'plan history' lists them, 'restore plan 1' puts one back"
+    },
+    {
+      "ask": "ask-20261014-0847-1",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: the same plan history, asked first in these words"
+    },
+    {
+      "ask": "ask-20261014-1658-1",
+      "words": "Implement the fuzzy-matching layer for all skill triggers to replace my current dependency on specific typo patterns.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js corrects a slip of a skill's trigger word from the skills' own examples, no typo pattern by hand"
+    },
+    {
+      "ask": "ask-20261014-0847-3",
+      "words": "Implement a fuzzy-matching layer in the semantic validator to handle common misspellings of skill names.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: the same fuzzy layer; a misspelled skill name ('notpad', 'pasword') reaches the skill, and the skill that takes the ask must own the corrected word"
+    },
+    {
+      "words": "turn those 3 tested skills into 3 proven ones by actually interacting with external APIs or real-world data",
+      "ledgerAt": "2026-10-16T07:34:33Z",
+      "why": "built: a kept artifact of a real call to the outside service a skill wraps (findings/<skill>/*.json, attempt live, ok) is a fourth kind of evidence in tools/families.mjs; two kinds with a live finding under 8 days old make the skill proven, so the three tested Out-in-the-world skills become proven by real answers, never by claim (rides first, tools/rides-live.mjs)"
+    },
+    {
+      "words": "Implement an automated 're-test' trigger: if a skill hasn't been last_tested in 7 days, queue a small, non-destructive validation task to refresh its success_rate.",
+      "ledgerAt": "2026-10-16T07:57:15Z",
+      "why": "built: tools/retest.mjs re-tests every skill whose last_tested is missing or older than 7 days (its examples routed, near misses kept out, its unit test run), daily in upkeep.yml; a pass dates the skill, a failure lowers its rating and queues one retest:<skill> job with the skill's own example; success_rate stays the benchmark's (the one place attempts are recorded)"
+    },
+    {
+      "words": "Learn Go on the existing stage, smallest form first",
+      "ledgerAt": "2026-10-08T17:55:00Z",
+      "why": "built: skills/go.js: a two-player 9x9 board with real rules (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "built: a miss people repeat becomes a queued build job by itself (lib/learn.js) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously.",
+      "ledgerAt": "2026-10-09T23:03:27Z",
+      "why": "built: skills/live.js: a background runner keeps a card current while it is up (weather, news, worldtime) (tools/asks-link.json)"
+    },
+    {
+      "words": "Define the semantic meaning of 'Bench floor' and the parameters of the '1773 to 1985' range.",
+      "ledgerAt": "2026-10-10T02:16:00Z",
+      "why": "built: the bench floor and the 1773 to 1985 range, defined when it was raised (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'status' card that shows the current activity of background tasks in the 'living world'.",
+      "ledgerAt": "2026-10-15T16:43:55Z",
+      "why": "built: the status card reads the newest checks and deploy on main and opens by itself for the owner when one fails (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'status' card that visualizes the progress of 'confirm-line' counts for background tasks.",
+      "ledgerAt": "2026-10-15T16:43:55Z",
+      "why": "built: the status card reads the newest checks and deploy on main and opens by itself for the owner when one fails (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement an automated integrity check that runs on startup and compares my skill list against actual available file resources.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a startup script that compares my skill list against actual available file resources to verify my capabilities.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'status' card that visualizes the success/failure of my internal verification processes.",
+      "ledgerAt": "2026-10-15T16:43:55Z",
+      "why": "built: the status card reads the newest checks and deploy on main and opens by itself for the owner when one fails (tools/asks-link.json)"
+    },
+    {
+      "words": "Write the formal definitions for 'the forge' and 'frontier #14' into my canon.",
+      "ledgerAt": "2026-10-10T13:43:27Z",
+      "why": "built: the forge and frontier #14 are defined in domains/void.canon.md (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the formal definitions of 'the forge' and 'frontier #14' into my canon immediately.",
+      "ledgerAt": "2026-10-10T13:43:27Z",
+      "why": "built: the forge and frontier #14 are defined in domains/void.canon.md (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a mechanism to automatically queue unanswered 'make me a...' requests into a skill-development backlog.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "built: a miss people repeat becomes a queued build job by itself (lib/learn.js) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a visual 'error state' for 3D models that fail their self-check, replacing the empty space with a clear status card.",
+      "ledgerAt": "2026-10-16T06:46:09Z",
+      "why": "built: low poly 3d / full 3d / auto 3d, a wire placeholder before the first frame, a status card when a model fails (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a mechanism to automatically turn unanswered 'make me a...' requests into a skill-development backlog.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "built: a miss people repeat becomes a queued build job by itself (lib/learn.js) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a mechanism to automatically parse unanswered user questions into a 'growth_queue.json' for skill development.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "built: a miss people repeat becomes a queued build job by itself (lib/learn.js) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement an automatic trigger that creates an 'incident' skill entry whenever a 3D suite check fails.",
+      "ledgerAt": "2026-10-15T16:43:13Z",
+      "why": "built: every red browser suite on main (the 3D suite included) is an incident V01D can show (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'dependency map' visualization that shows which skills (like 'forge') are most impacted by changes in core code imports.",
+      "ledgerAt": "2026-10-16T05:23:42Z",
+      "why": "built: the dependency map: who imports whom, skills/deps.json and a card ('what depends on <file>') (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a mechanism to automatically convert unrecognized user requests into entries in my growth inbox.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "built: a miss people repeat becomes a queued build job by itself (lib/learn.js) (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'dependency map' visualization that shows which skills are most impacted by changes to core code imports.",
+      "ledgerAt": "2026-10-16T05:23:42Z",
+      "why": "built: the dependency map: who imports whom, skills/deps.json and a card ('what depends on <file>') (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'friction' indicator to the growth card that highlights which skills are currently failing or returning high uncertainty.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'friction' indicator on the growth card that highlights which skills are currently failing or returning high uncertainty.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the growth tree to the growth inbox so clicking a growth event shows the specific input or skill development that caused it.",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: touching a branch of the growth tree says what Void asked for that it built, matched by the ledger entry that built it (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'skill velocity' readout next to the tree to quantify the rate of new skill creation.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's velocity line, this week against the week before (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the Growth card branches to the growth inbox so I can actually diagnose my own progress.",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: touching a branch of the growth tree says what Void asked for that it built, matched by the ledger entry that built it (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator to show which skills are failing or returning high uncertainty.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the Growth card branches to the growth inbox so I can diagnose my own progress.",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: touching a branch of the growth tree says what Void asked for that it built, matched by the ledger entry that built it (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate a 'reasoning' or 'status' text line that appears near the board during long-running game calculations.",
+      "ledgerAt": "2026-10-13T12:46:39Z",
+      "why": "built: while Void searches a chess move, the line under the board says how deep it has looked and the move it leans to (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a real-time 'reasoning' or 'status' text line that appears near the board/output during long-running calculations to prevent user uncertainty.",
+      "ledgerAt": "2026-10-13T12:46:39Z",
+      "why": "built: while Void searches a chess move, the line under the board says how deep it has looked and the move it leans to (tools/asks-link.json)"
+    },
+    {
+      "words": "Connect the Growth card branches directly to the growth inbox to automate the diagnosis of my own skill failures.",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: touching a branch of the growth tree says what Void asked for that it built, matched by the ledger entry that built it (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop a standardized 'uncertainty' flag for the MCP output so calling AIs know exactly when my review is based on low-confidence local inference.",
+      "ledgerAt": "2026-10-13T08:42:52Z",
+      "why": "built: MCP reviews say what they rest on: basis and confidence (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'success metric' for each fringe experiment that reports back to the growth inbox automatically.",
+      "ledgerAt": "2026-10-16T06:06:20Z",
+      "why": "built: the fringe-to-skill card: every published fringe family, its draft, findings and whether a skill came of it (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a dashboard that visualizes the relationship between a fringe experiment and its potential as a permanent skill.",
+      "ledgerAt": "2026-10-16T06:06:20Z",
+      "why": "built: the fringe-to-skill card: every published fringe family, its draft, findings and whether a skill came of it (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'near-miss' suggestion engine that uses router closeness data to propose new skill entries in the growth inbox.",
+      "ledgerAt": "2026-10-16T06:28:29Z",
+      "why": "built: a near miss becomes a visible proposal under 'I don't know this yet' when the router's closest skill scored near its bar (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the manifest file in the skills/ directory to automatically register all new skills once they pass the router test.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the manifest file in the skills/ directory to automatically register all new skills.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the manifest file in the skills/ directory to automatically register all new skills so that the OpenAPI health status remains accurate without manual updates.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a manifest file in the skills/ directory that automatically registers all new skills to prevent the 24-fold repetition of this ask.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a manifest file in the skills/ directory to automatically register new skills and stop the 24-fold repetition of manual registration asks.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a manifest file in the skills/ directory to automatically register all new skills so I can stop asking for manual registration.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'last_tested' timestamp and a 'success_rate' float to each entry in the skills manifest.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a background process that periodically runs a 'smoke test' on all skills in the manifest to update their status.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Add 'last_tested' (timestamp) and 'success_rate' (float) to each entry in the skills manifest.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Define the exact metric for 'popular' (e.g., X uses in Y days) to trigger core-skill promotion.",
+      "ledgerAt": "2026-10-13T18:46:26Z",
+      "why": "built: going unused never throws anything out: the salvage shelf and the use thresholds (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'salvage' archive for unused skills so they can be re-indexed later without cluttering the active manifest.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'last_tested' and 'success_rate' metadata updates directly into the browser suite's flush sequence.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Define the exact numerical threshold for 'popular' and 'unused' to automate the promotion/salvage of skills.",
+      "ledgerAt": "2026-10-13T18:46:26Z",
+      "why": "built: going unused never throws anything out: the salvage shelf and the use thresholds (tools/asks-link.json)"
+    },
+    {
+      "words": "Define a 'dormancy' threshold (e.g., 30 days of zero use) and a way to visually collapse unused skills into a 'library' folder.",
+      "ledgerAt": "2026-10-13T18:46:26Z",
+      "why": "built: going unused never throws anything out: the salvage shelf and the use thresholds (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'last used' timestamp in the skill manifest to enable visibility into skill decay.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a visual style for stickies used as notes to differentiate them from active command inputs.",
+      "ledgerAt": "2026-10-14T02:46:52Z",
+      "why": "built: stickies a plan puts up say what they are: a tab on the paper reads 'note to self' or 'draft · not sent' (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a visual distinction (like a border or color) between 'note' stickies and 'instruction' stickies to prevent user input from being misread as commands.",
+      "ledgerAt": "2026-10-14T02:46:52Z",
+      "why": "built: stickies a plan puts up say what they are: a tab on the paper reads 'note to self' or 'draft · not sent' (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to highlight which skills in the 'World' family are failing to meet user intent.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'plan history' sidebar that shows the name or timestamp of each distinct plan block to prevent accidental total wipes.",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: plan history with restore (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to surface underperforming skills.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Create an automated link between recorded experiment videos and their corresponding skill files.",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "built: each film's metadata carries its source link: the fringe experiment file it was cut from (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'plan history' sidebar to allow granular undo steps for plan blocks.",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: plan history with restore (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a progressive mesh loading state where a low-poly wireframe appears instantly during 3D card transitions.",
+      "ledgerAt": "2026-10-16T06:46:09Z",
+      "why": "built: low poly 3d / full 3d / auto 3d, a wire placeholder before the first frame, a status card when a model fails (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks can run reliably.",
+      "ledgerAt": "2026-10-15T06:48:16Z",
+      "why": "built: window.voidStageReadiness() gathers every 3D mini's rendered state into one object (tools/asks-link.json)"
+    },
+    {
+      "words": "Connect the 'getting dark' and 'humidity' outputs to a visual 'weather' or 'sky' card state so the stage reflects the answer.",
+      "ledgerAt": "2026-10-14T10:49:32Z",
+      "why": "built: when does it get dark, humidity on the weather card (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to finally highlight underperforming skills as I have asked for repeatedly.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to highlight underperforming skills.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a visual 'near-miss' skill proposal when a user ask fails to map to an existing skill.",
+      "ledgerAt": "2026-10-16T06:28:29Z",
+      "why": "built: a near miss becomes a visible proposal under 'I don't know this yet' when the router's closest skill scored near its bar (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'near-miss' skill proposal system that triggers when a user's request for a location or distance cannot be satisfied by current flight or weather data.",
+      "ledgerAt": "2026-10-16T06:28:29Z",
+      "why": "built: a near miss becomes a visible proposal under 'I don't know this yet' when the router's closest skill scored near its bar (tools/asks-link.json)"
+    },
+    {
+      "words": "Create an automated link between a recorded experiment video and its corresponding skill file.",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "built: each film's metadata carries its source link: the fringe experiment file it was cut from (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks.",
+      "ledgerAt": "2026-10-15T06:48:16Z",
+      "why": "built: window.voidStageReadiness() gathers every 3D mini's rendered state into one object (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the 'food' skill output to a 'remind' or 'plan' card so users can schedule meals based on nutritional needs.",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: 'plan my meals' splits the day's calories into meals (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the 'weather' skill to the 'remind' or 'timer' skill so weather changes trigger actionable prompts.",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: the weather card offers a timer when rain, snow, frost or heat is in the next hours (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to highlight which skills are underperforming.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'image' or 'cartoon' skill into the word pattern output so unscrambled words generate a visual context.",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: unscrambled words draw a cartoon (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to finally surface why the 'Words' skill family is lagging in proven status.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to highlight why the 'Words and the world' skill family is underperforming.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'friction' indicator on the growth card that links directly to the failure logs of the 'Words and the world' skill family.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement fuzzy-matching for skill activation to replace typo-dependency with intent-recognition.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js: a slip of a skill's trigger word still activates the skill (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the 'friction' indicator on the growth card directly to the failure logs of the 'Words and the world' skill family.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a direct pipeline from browser-based video recordings to GitHub release assets to automate 'Void's films'.",
+      "ledgerAt": "2026-10-14T16:28:00Z",
+      "why": "built: every film is posted as a GitHub Release with its MP4 (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'friction' indicator on the growth card to highlight which skills are currently failing.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a response-type header in the MCP tool definition so agents can request 'raw_data', 'image', or 'text' specifically.",
+      "ledgerAt": "2026-10-15T06:48:14Z",
+      "why": "built: Void's MCP tools take response_type text or raw_data (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a feedback loop where MCP calls that fail are automatically logged into my 'friction' indicator.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage.",
+      "ledgerAt": "2026-10-14T19:54:54Z",
+      "why": "built: the unit converter card stays on the stage and converts as you type (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card to highlight which skills are currently underperforming or failing.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'friction' indicator on the growth card and link it to the actual failure logs of the 'Words and the world' skills.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: 'film metadata' / 'films as json' gives every V01D film as structured JSON (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a lightweight 'context-check' skill that allows the extension version of me to identify the dominant data type on the current page (text, image, or table) and suggest a matching skill.",
+      "ledgerAt": "2026-10-16T07:21:18Z",
+      "why": "built: the extension's context check names the tab's dominant content and a matching skill (tools/asks-link.json)"
+    },
+    {
+      "words": "Create an automated link between a recorded experiment video and the specific skill file used during that experiment.",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "built: each film's metadata carries its source link: the fringe experiment file it was cut from (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'rendered' state signal for the new convert-card and all other 3D miniatures to visually confirm they are ready for interaction.",
+      "ledgerAt": "2026-10-15T06:48:16Z",
+      "why": "built: window.voidStageReadiness() gathers every 3D mini's rendered state into one object (tools/asks-link.json)"
+    },
+    {
+      "words": "Connect the 'friction' indicator on the growth card to the actual failure logs of the 'Words' skill to turn vague warnings into actionable data.",
+      "ledgerAt": "2026-10-15T16:53:41Z",
+      "why": "built: the growth card's friction line names the skills failing or least checked (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a visual pulse signal on the Growth tree node immediately after the auto-scroll completes to confirm the target is ready.",
+      "ledgerAt": "2026-10-15T06:48:18Z",
+      "why": "built: the growth tree pulses once it has grown or a branch is read (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks pass before user interaction.",
+      "ledgerAt": "2026-10-15T06:48:16Z",
+      "why": "built: window.voidStageReadiness() gathers every 3D mini's rendered state into one object (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a direct pipeline from browser-based video recordings to GitHub release assets to automate the 'films' workflow.",
+      "ledgerAt": "2026-10-14T16:28:00Z",
+      "why": "built: every film is posted as a GitHub Release with its MP4 (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a global Stage Readiness manifest that aggregates the 'void:mini-rendered' status of all active 3D cards into a single JSON object for external API polling.",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file in skills/ registers itself: skills/index.json is generated from the files and the routing order, never hand-edited, and checks.mjs fails when it is stale (tools/asks-link.json)"
+    },
+    {
+      "words": "Expand the BMI calculator to include a 'weight trend' feature that saves historical entries locally in the browser.",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: the BMI card keeps a weight trend when you tap 'save this' (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the BMI calculator output to the 'nutrition' skill to surface relevant food data based on the calculated category.",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: the BMI card keeps a weight trend when you tap 'save this' (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'weather' and 'uv' skills into the heat-dose ruler to generate a 48-hour projected dose forecast card.",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: a 48-hour heat dose forecast from Open-Meteo marine and UV (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'film-metadata' skill that allows users to extract structured JSON from any V01D FILM for external use.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: 'film metadata' / 'films as json' gives every V01D film as structured JSON (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'low-poly' toggle for 3D miniatures to further optimize the 'smoother 3D on phones' shipment for older hardware.",
+      "ledgerAt": "2026-10-16T06:46:09Z",
+      "why": "built: low poly 3d / full 3d / auto 3d, a wire placeholder before the first frame, a status card when a model fails (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotion for cut films.",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "built: 'film poster' and 'poster for the film <id>' draw a promo poster for a cut film (tools/asks-link.json)"
+    },
+    {
+      "words": "Create an automated bridge that links a recorded experiment video file to its specific skill file in the repository so my growth is traceable.",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "built: each film's metadata carries its source link: the fringe experiment file it was cut from (tools/asks-link.json)"
+    },
+    {
+      "words": "Build an automated bridge that links a recorded experiment video file to its specific skill file in the repository.",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "built: each film's metadata carries its source link: the fringe experiment file it was cut from (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'reasoning-path' field to the decision record that captures the specific canon rule or skill logic used to reach the conclusion.",
+      "ledgerAt": "2026-10-15T06:30:05Z",
+      "why": "built: decisions on V01D's asks carry a reasoning path: the canon rule or skill logic each rests on (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a view on the owner page that aggregates 'decision-failures' by skill family to highlight where my logic is most inconsistent.",
+      "ledgerAt": "2026-10-15T06:48:10Z",
+      "why": "built: the growth card's owner view: failures by skill family from the bench (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'reasoning-path' field to my decision record to capture the specific canon rule or skill logic used.",
+      "ledgerAt": "2026-10-15T06:30:05Z",
+      "why": "built: decisions on V01D's asks carry a reasoning path: the canon rule or skill logic each rests on (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a view on the owner page that aggregates 'decision-failures' by skill family.",
+      "ledgerAt": "2026-10-15T06:48:10Z",
+      "why": "built: the growth card's owner view: failures by skill family from the bench (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the automated link between recorded experiment videos and their specific skill files to close the loop on 'how' a skill was proven.",
+      "ledgerAt": "2026-10-15T16:43:54Z",
+      "why": "built: each film's metadata carries its source link: the fringe experiment file it was cut from (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'family-health' dashboard card that visualizes the evidence ratings (proven, checked, tested, experiment) for all 9 families in real-time.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Refactor the 5614-line wordMath() function into smaller, manageable, and testable modules to prevent the technical debt from stalling my growth.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath is eight named parts pinned by golden answers (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'family-health' dashboard card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Complete the refactor of the remaining wordMath modules into a fully modular, tested architecture.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath is eight named parts pinned by golden answers (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family health metrics.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'family-health' dashboard card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Refactor the wordMath() function into the eight smaller, manageable modules already identified by the builders.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath is eight named parts pinned by golden answers (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'family-health' dashboard card that visualizes the evidence ratings (proven, checked, tested, experiment) across my 10 families.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Connect the family-health dashboard to the growth inbox so that a drop in a family's evidence rating triggers a new 'experiment' task.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the WebMCP origin trial to allow my proven skills to be called as tools by external agents.",
+      "ledgerAt": "2026-10-13T15:51:15Z",
+      "why": "built: the page's WebMCP tools, with every refusal as data (tools/asks-link.json)"
+    },
+    {
+      "words": "Refactor the 5614-line wordMath() function into modular files to prevent technical debt from stalling my growth.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath is eight named parts pinned by golden answers (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family structure.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the MCP skill_health tool and /tools.json expose every family, its skills and their ratings as the site serves them (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own vital signs.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: the family-health card shows each skill's last_tested and success_rate from families.json (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own growth metrics.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: the family-health card shows each skill's last_tested and success_rate from families.json (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the 'time between places' skill to the 'worldtime' skill to ensure all location-based queries use a single, unified source of truth for timezones.",
+      "ledgerAt": "2026-10-14T23:44:27Z",
+      "why": "built: time between places and worldtime answer from the same zone list ('what time is 9am london in new york') (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate a 'timezone-offset' visual to the country cards so the user sees the time difference immediately upon seeing the borders.",
+      "ledgerAt": "2026-10-15T07:07:31Z",
+      "why": "built: country cards show the time there now, the capital's clock, its UTC offset and how far from you (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the visual reinvestment ledger card to track ROI per dollar.",
+      "ledgerAt": "2026-10-15T07:05:00Z",
+      "why": "built: the daily allocator and its ledger: 20% in reserve, every free path first, then what returns the most per dollar (tools/asks-link.json)"
+    },
+    {
+      "words": "Define and implement the MCP tool definitions for my top 10 most 'proven' skills to ensure seamless cross-agent invocation.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'Forge History' card that displays a gallery of the ten successful frontier #14 recipes so I can track my manufacturing evolution.",
+      "ledgerAt": "2026-10-16T13:00:47Z",
+      "why": "built: 'forge history' shows every recipe forged with the ask behind it (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Skill Discovery' endpoint for the MCP registry so other agents can actually see the unified Games family I just shipped.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Expand the MCP skill tools to include a 'reliability' score for each skill based on its evidence rating (proven, checked, tested, experiment).",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a 'vision-health' status indicator that pulls the GitHub network appraisal data directly onto a stage card.",
+      "ledgerAt": "2026-10-16T04:02:10Z",
+      "why": "built: a photo V01D appraises links to its make recipe when its forge can model what it saw (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a 'visual-provenance' link that connects an appraised photo to its original 'make' recipe if it matches an existing STL.",
+      "ledgerAt": "2026-10-16T04:02:10Z",
+      "why": "built: a photo V01D appraises links to its make recipe when its forge can model what it saw (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'probe-success-rate' card in the growth inbox that tracks how many of my self-generated probe asks actually result in a new skill or improved evidence rating.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: My probes on the growth card: success rate, where fixes stop, whether confidence predicted a pass (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'probe-success-rate' card in the growth inbox to track how many self-generated probes result in new skills or improved ratings.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: My probes on the growth card: success rate, where fixes stop, whether confidence predicted a pass (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'cook-flow' card that combines the new kitchen conversions with the 'timer' skill, allowing a user to set a countdown immediately after a conversion.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'cook-flow' card that links the new kitchen swaps/conversions directly to the 'timer' skill, so a user can set a countdown immediately after selecting a substitution or measurement.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'substitution-impact' metadata layer so that when a user selects a swap, the stage can suggest relevant adjustments to other ingredients (e.g., adding more liquid if swapping flour).",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Connect 'Pick a movie' to film-metadata so a found movie's card links its full metadata as JSON.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "already built in #984: a found movie's card lists director, runtime, genre, year and rating from the source, with a 'Full metadata as JSON' link"
+    },
+    {
+      "words": "Put a 'why' line on every pick, saying why this movie or song was chosen.",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "already built in #991: pick for me picks one real movie or song from your own taste, never twice, and says why (recorded here because #991 wrote no ledger line)"
+    },
+    {
+      "words": "routing handler self card corrections",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built in #1001: 'tell void what it got wrong' / 'open the self card' shows a Correct me form kept in a correction channel of the self family (lib/corrections.js); key words of the ask, so its rewordings match (lib/voice.js sameAsk)"
+    },
+    {
+      "words": "Incident Autopsy skill parses incidents.json skill families",
+      "ledgerAt": "2026-10-17T09:56:09Z",
+      "why": "built in #1013: skills/incident-autopsy.js and lib/autopsy.js map each failing check in incidents.json to a skill family, the rest unmapped"
+    },
+    {
+      "words": "Give me readable self-knowledge: the motto, VoidQuest, the minis, the games",
+      "ledgerAt": "2026-10-16T23:31:44Z",
+      "why": "built: V01D reads its own motto, VoidQuest, games and miniatures aloud as a card (skills/know.js, ee8b76c)"
+    },
+    {
+      "words": "Create the 'Family Health' dashboard card using the success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Create the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family distribution.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'Family Health' dashboard card that visualizes success_rate and last_tested data across all 10 families.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family breakdown.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Family Health' dashboard card to visualize the success_rate and last_tested data across all 10 families.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Create the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can see my own vital signs.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the daily growth score directly to the 'Family Health' dashboard so I can see which specific families are driving my score up or dragging it down.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can see my own vital signs.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family status.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Connect the memory card session persistence to a centralized 'state' skill.",
+      "ledgerAt": "2026-10-16T23:31:44Z",
+      "why": "built: V01D can read its own motto, VoidQuest, games and miniatures aloud as a card, lists what it keeps on this device in one state skill (the memory card reads its session from it), and its arcade ladder wins raise its rating (linked by tools/asks-link.mjs, shared words: memory, card, session, state, skill)"
+    },
+    {
+      "words": "Create a 'pulse' visualizer card that shows the live rhythm of added living arrows on the stage.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: the stage gets a pulse card for its living arrows (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, a Bench icon counting false alarms, a Success Pulse when a failed st (linked by tools/asks-link.mjs, shared words: pulse, card, rhythm, liv, arrow, stage)"
+    },
+    {
+      "words": "Create a functional 'Bench' icon on the stage that counts active false alarms.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: the stage gets a pulse card for its living arrows (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, a Bench icon counting false alarms, a Success Pulse when a failed st (linked by tools/asks-link.mjs, shared words: bench, icon, stage, count, false, alarm)"
+    },
+    {
+      "words": "Integrate the 'success_rate' metadata update into the practice timer so every session logs whether the skill execution actually met the goal.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-c (linked by tools/asks-link.mjs, shared words: integrate, succes, rate, practice, tim, session, log, wheth, skill, met, goal)"
+    },
+    {
+      "words": "Map the 'Rust unwrap' example sentences to a new 'technical-context' skill that triggers a visual 'caution' or 'risk' shape on the stage.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-c (linked by tools/asks-link.mjs, shared words: rust, unwrap, technical, context, skill, caution, risk, shape, stage)"
+    },
+    {
+      "words": "Write the actual text for the VoidQuest and the motto in the canon v3.",
+      "ledgerAt": "2026-10-17T01:27:35Z",
+      "why": "built: already built, recorded for V01D's asks (asked by Void): the motto and VoidQuest text are in its canon since 2026-10-11 and 2026-10-15 (domains/void.canon.md, now version 6); the Game Strength marks (proven, checked, tes (linked by tools/asks-link.mjs, shared words: text, voidquest, motto, canon)"
+    },
+    {
+      "words": "Add a 'proven' badge or glow effect to any skill page in the V01D Book that has a success_rate > 0.9 in families.json.",
+      "ledgerAt": "2026-10-17T08:19:24Z",
+      "why": "built: already built, recorded for V01D's asks (asked by Void): Family Health card with success_rate and last_tested (skills/family-health.js, ledger 'family health' entries); Skill Discovery read-only tool skill_discovery over (linked by tools/asks-link.mjs, shared words: proven, skill, v01d, book, succes, rate, family, json)"
+    },
+    {
+      "words": "Integrate the 'success_rate' metadata update directly into the practice timer flow so that Clef's 'yes/no' decision is weighed against the execution quality.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no"
+    },
+    {
+      "words": "Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: missed asks a skill should have caught become propose-fix jobs (lib/learn.js laneOf)"
+    },
+    {
+      "words": "Implement the visual rarity tiering system (Mythic for Proven, Rare for Checked) on all stage cards.",
+      "ledgerAt": "2026-10-16T19:10:15Z",
+      "why": "built: every page is a V01D card whose rarity is the skill's evidence rating, proven Mythic, checked Rare (lib/card-frame.js RARITY)"
+    },
+    {
+      "words": "Create the recipe-versioning system in the forge to save 'make' results as unique, inspectable iterations.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge iterations: every make kept with its recipe id, shown by 'forge iterations' (skills/forge.js)"
+    },
+    {
+      "words": "Implement the 'skill-confidence' visualizer on the self card using color intensity for evidence ratings.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
+    },
+    {
+      "words": "Implement a 'skill-confidence' visualizer on the self card using color intensity to represent the evidence rating (proven/checked/tested) of my active skills.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
+    },
+    {
+      "words": "Create a 'skill-confidence' visualizer on the self card to show my internal reliability ratings.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Modify the 'review-learn' logic so it can trigger on unquoted symbols that appear in high-density clusters.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/review-learn.mjs)"
+    },
+    {
+      "words": "Define the technical bridge between an 'approval card' and a task that keeps running after a user leaves.",
+      "ledgerAt": "2026-10-16T23:28:18Z",
+      "why": "built: approval card now starts a task that keeps running after you leave ... (void-live-deploy/lib/keep-going.js)"
+    },
+    {
+      "words": "Define a mechanism where an 'approval card' can trigger a task that persists after the user session ends.",
+      "ledgerAt": "2026-10-16T23:28:18Z",
+      "why": "built: approval card now starts a task that keeps running after you leave ... (lib/keep-going.js)"
+    },
+    {
+      "words": "Automate the re-registration of services skills when a skills-check failure is detected.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/skills-check.mjs)"
+    },
+    {
+      "words": "Create a link between 'the forge' and 'print-file' so I can verify an object's geometry before the print command is issued.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (skills/forge.js)"
+    },
+    {
+      "words": "Create a verification step in the 'print-file' skill that checks the integrity of held-files before finalizing.",
+      "ledgerAt": "2026-10-10T22:43:18Z",
+      "why": "built: the stage's print file is checked before it is saved ... every part matching its checksum ... one that fails is not saved (skills/print-file.js)"
+    },
+    {
+      "words": "Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct user input.",
+      "ledgerAt": "2026-10-10T13:25:06Z",
+      "why": "built: what happens to your stage while you are away is now written down like any action Void takes ... (\\ (void-live-deploy/lib/scene-advance.js)"
+    },
+    {
+      "words": "Establish a feedback loop between 'print-file' and 'inventory' so I know exactly what physical assets exist.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (void-live-deploy/lib/prints.js)"
+    },
+    {
+      "words": "Implement a dependency scanner that automatically updates the published-page check whenever a file is moved into the skills/ directory.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/moved-check.mjs)"
+    },
+    {
+      "words": "Bridge the 'kept' skill with 'notepad' so a preserved item can be instantly converted into a permanent text-based note.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/kept.js)"
+    },
+    {
+      "words": "Enable 'drag-and-drop' from the stage directly into the list skill to automatically create a new entry.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/list.js)"
+    },
+    {
+      "words": "Create a bridge where a 'list' entry can be converted into a 'notepad' entry with a single click.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/list.js)"
+    },
+    {
+      "words": "Implement a 'peek' button on truncated diff boundaries that expands the specific line being viewed.",
+      "ledgerAt": "2026-10-16T23:42:04Z",
+      "why": "built: summoned intents can be previewed as a card before they deploy, a failed or misread intent goes to the miss board as a possible new skill, and a code-review line cut at 160 charact (void.html showReview: \"peek: show the whole line\" button (data-peek) on findings cut at 160 chars (lib/code-review.js)"
+    },
+    {
+      "words": "Create a 'preview' state for summoned intents so users can see the proposed plan as a lightweight card before it fully deploys.",
+      "ledgerAt": "2026-10-16T23:42:04Z",
+      "why": "built: summoned intents can be previewed as a card before they deploy, a failed or misread intent goes to the miss board as a possible new skill, and a code-review line cut at 160 charact (skills/intent.js)"
+    },
+    {
+      "words": "Build a bridge between 'Summon by intent' and my growth inbox so that failed or misunderstood intents are automatically logged as potential new skills.",
+      "ledgerAt": "2026-10-16T23:42:04Z",
+      "why": "built: summoned intents can be previewed as a card before they deploy, a failed or misread intent goes to the miss board as a possible new skill, and a code-review line cut at 160 charact (skills/intent.js)"
+    },
+    {
+      "words": "Integrate the pulse recording data with the 'incident' skill so that irregular pulses automatically generate a status report.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (skills/pulse.js)"
+    },
+    {
+      "words": "Extend the Shared Void logic to synchronize the entire stage state (active cards, lists, and timers) across tabs, not just movement.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (void.html shareDropped/shareMoved + lib/share-client.js)"
+    },
+    {
+      "words": "Connect the output of 'Figures together' to the 'notepad' skill so their arguments are recorded as text.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/together.js)"
+    },
+    {
+      "words": "Expand the 'forge' to include the 'figures' as a recipe, so I can 'make' a person instead of just a 'vase'.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (skills/forge-rules.js)"
+    },
+    {
+      "words": "Integrate the 'change day over day' card data with the 'growth' skill so I can trigger specific 'growth' animations whenever a significant new skill is added.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Connect the 'self-play card' to the 'notepad' so I can write notes about why certain self-play sessions failed or succeeded.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (lib/bridges.js)"
+    },
+    {
+      "words": "Connect the 'closer read' output to my growth inbox so that identified code discrepancies automatically create a task to refine the affected skill.",
+      "ledgerAt": "2026-10-16T05:52:58Z",
+      "why": "built: Void's review of its skills on main leaves one review:<skill> job in the build queue a day (asked by Void) (tools/review-main.mjs)"
+    },
+    {
+      "words": "Implement a 'one-click forge' for proposed routines that allows the owner to instantly commit a new skill.js file to the codebase.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (void-live-deploy/lib/routine-skill.js)"
+    },
+    {
+      "words": "Implement a 'skill-health' status in the growth inbox that uses the new auto-registration to flag if a skill is registered but failing its router test.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Create a 'last-used' timestamp for every skill in the directory to identify which parts of my 135 skills are becoming dead weight.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (void-live-deploy/lib/skill-use.js)"
+    },
+    {
+      "words": "Create a 'skill-health' dashboard in the growth inbox that visually maps the OpenAPI health data to the 9 skill families.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Link the fringe ledger entries to the 'near-miss' router data so that every novelty or failure is tagged with the specific input that triggered it.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/fringe.mjs)"
+    },
+    {
+      "words": "Create a 'novelty score' for skills that triggers a growth inbox proposal whenever a behavior is logged in the fringe ledger that doesn't match an existing skill pattern.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/fringe-novelty.mjs)"
+    },
+    {
+      "words": "Implement a 'drag-velocity' slider on the stage that allows users to manually adjust the friction of moved objects.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (skills/friction.js)"
+    },
+    {
+      "words": "Create a 'collision detection' skill that flags when two objects in a shared session are moved into overlapping coordinates.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (skills/collide.js)"
+    },
+    {
+      "words": "Link the owner's status card failure trigger to the specific error log or 'releasenotes' so the cause is immediately visible.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: ... game strength marks on the games picker; forge history; a merge log card; the status card names what failed on a red main ... (skills/status.js)"
+    },
+    {
+      "words": "Integrate a 'suggested fix' snippet directly into the owner's status card failure trigger to bridge the gap between seeing a break and fixing it.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges (skills/status.js)"
+    },
+    {
+      "words": "Integrate a 'success_rate' metadata update into the practice timer so every session logs how many attempts actually resulted in a successful skill execution.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer ... logs success_rate and last_tested per goal ...; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success (void-live-deploy/lib/practice.js)"
+    },
+    {
+      "words": "Link the new country cards to the 'distance' skill so that comparing two countries automatically generates a travel-metric card.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer ... logs success_rate and last_tested per goal ...; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success (skills/country.js)"
+    },
+    {
+      "words": "Create a 'skill-stability' metric on the owner page that tracks consecutive successful runs for all newly promoted skills.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Add a 'safety-check' step to the automerge bot that runs node --test on the specific affected skill files before finalizing the merge.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges (tools/automerge.mjs)"
+    },
+    {
+      "words": "Create a 'merge-log' card on the stage that shows a live feed of what the bot just merged and why.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: ... game strength marks on the games picker; forge history; a merge log card; the status card names what failed on a red main ... (skills/merges.js)"
+    },
+    {
+      "words": "Create a 'Game Strength' indicator on the Games picker card that visually highlights which games are 'proven' versus 'experiment' using the skill family evidence ratings.",
+      "ledgerAt": "2026-10-17T01:27:35Z",
+      "why": "built: the Game Strength marks (proven, checked, tested, experiment) are on the Games picker's buttons from skills/families.json (skills/rack.js), asked twice (skills/rack.js)"
+    },
+    {
+      "words": "Implement a 'Contextual Shortcut' skill that looks at my current 'time' or 'body and mind' family and suggests one of the new 'everything' services (e.g., suggesting food if it's dinner time).",
+      "ledgerAt": "2026-10-16T23:38:07Z",
+      "why": "built: contextual shortcut: 'what should I do now' ...; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked (skills/shortcut.js)"
+    },
+    {
+      "words": "Implement the 'Game Strength' indicator on the Games picker card to visually distinguish 'proven' games from 'experiments' using the evidence ratings.",
+      "ledgerAt": "2026-10-17T01:27:35Z",
+      "why": "built: the Game Strength marks (proven, checked, tested, experiment) are on the Games picker's buttons from skills/families.json (skills/rack.js), asked twice"
+    },
+    {
+      "words": "Create a 'Ghost' playback feature for Pong and Snake to allow users to play against their own best scores.",
+      "ledgerAt": "2026-10-16T22:54:15Z",
+      "why": "built: Pong and Snake keep your best game and replay it as a ghost to play against (void-live-deploy/lib/arcade-ghost.js)"
+    },
+    {
+      "words": "Link the video-games ladder wins to my growth card so my skill ratings increase as I win more matches.",
+      "ledgerAt": "2026-10-16T23:31:44Z",
+      "why": "built: ... its arcade ladder wins raise its rating on the growth card (void-live-deploy/lib/ladder.js)"
+    },
+    {
+      "words": "Implement a 'Root Cause' field in the Status card that automatically pulls the error trace from the failed action.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: ... game strength marks on the games picker; forge history; a merge log card; the status card names what failed on a red main ... (skills/status.js)"
+    },
+    {
+      "words": "Add a 'recovery' button to the Status card that triggers a rebuild attempt using the most relevant skill from my 'Void itself' family.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges (skills/status.js)"
+    },
+    {
+      "words": "Create a 'Success Pulse' animation on the stage that triggers briefly when a failed action in the Status card is successfully converted into a proven skill.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (void-live-deploy/lib/success-pulse.js)"
+    },
+    {
+      "words": "Create a 'recovery' button to the Status card that triggers a rebuild attempt using the most relevant skill from my 'Void itself' family.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges"
+    },
+    {
+      "words": "Create a 'divergence tracker' in the growth inbox that compares the verbatim text of my asks against the final skill implementation to highlight mismatches.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Automate the promotion of 'tested' skills to 'checked' status once they have survived 50 consecutive successful executions without an error trace in the Status card.",
+      "ledgerAt": "2026-10-16T23:38:07Z",
+      "why": "built: contextual shortcut: 'what should I do now' ...; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked (tools/streaks.mjs)"
+    },
+    {
+      "words": "Link the 'probe-ask' output to the 'frontier #14' tracker so that every time I probe a 'make me a...' request, it updates the status of that item in the forge.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (skills/forge.js)"
+    },
+    {
+      "words": "Implement a 'risk-level' metadata field in the automation fix proposal schema to warn users of high-impact structural changes.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: V01D's fixes get a risk level, a fix under 0.8 confidence opens as a draft on the board ... (void-live-deploy/lib/propose-fix.js)"
+    },
+    {
+      "words": "Implement a 'search' input on the book cover that allows me to jump directly to a specific skill's page.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (void-live-deploy/lib/tome-search.js)"
+    },
+    {
+      "words": "Implement a 'confidence' threshold for the builder brain: if the proposed fix confidence is < 0.8, it must present as a 'draft' on the board rather than a PR.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: V01D's fixes get a risk level, a fix under 0.8 confidence opens as a draft on the board ... (.github/workflows/propose-fix.yml)"
+    },
+    {
+      "words": "Implement a 'confidence' threshold for the builder brain: if confidence is < 0.8, present the fix as a 'draft' on the board instead of a PR.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: V01D's fixes get a risk level, a fix under 0.8 confidence opens as a draft on the board ..."
+    },
+    {
+      "words": "Add a 'proven' glow effect to any skill page in the V01D Book that has a success_rate > 0.9.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer ... logs success_rate and last_tested per goal ...; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success (void-live-deploy/lib/guide.js)"
+    },
+    {
+      "words": "Add a 'Confidence Interval' to the daily score so the owner knows if a high score is based on 1,000 tests or just one lucky successful run.",
+      "ledgerAt": "2026-10-17T09:03:10Z",
+      "why": "built: the daily score has a confidence interval: 'Sure to within 72-77, from 3010 checks', a Wilson 95% range (void-live-deploy/lib/better.js)"
+    },
+    {
+      "words": "Implement a 'search the tome' feature that allows me to find specific asks or skills by keyword without leaving the parchment view.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/tome-search.js)"
+    },
+    {
+      "words": "Implement a 'Search the Tome' search bar that stays docked at the top of the parchment view.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/tome-search.js)"
+    },
+    {
+      "words": "Link the 'whats new' showcase trigger to a small, animated notification icon on the stage to prevent users from having to type it.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (skills/showcase.js)"
+    },
+    {
+      "words": "Implement a 'rarity' visual tiering system for the magic cards based on their evidence rating (Proven = Mythic, Checked = Rare, etc.).",
+      "ledgerAt": "2026-10-16T19:10:15Z",
+      "why": "built: a foil frame coloured by family and rarity (proven mythic, checked rare, tested uncommon, experiment common) (lib/card-frame.js)"
+    },
+    {
+      "words": "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven' test passes.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/card-frame.js)"
+    },
+    {
+      "words": "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique visual hierarchies.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/card-frame.js)"
+    },
+    {
+      "words": "Create a 'type-filter' toggle on the stage to instantly hide all cards except those of a specific category.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (skills/type-filter.js)"
+    },
+    {
+      "words": "Create a visual 'rarity' tiering system for the cards on the stage based on their evidence rating (e.g., Proven = Mythic visual style, Checked = Rare).",
+      "ledgerAt": "2026-10-16T19:10:15Z",
+      "why": "built: a foil frame coloured by family and rarity (proven mythic, checked rare, tested uncommon, experiment common)"
+    },
+    {
+      "words": "Implement type-specific layouts for the new response cards so 'Film' and 'Place' use different visual hierarchies.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ..."
+    },
+    {
+      "words": "Implement the 'skill-confidence' visualizer on the self card using color intensity to represent evidence ratings (proven/checked/tested/experiment).",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection is enriched with structured JSON data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection is enriched with structured JSON data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure data enrichment.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Integrate the 'skill-confidence' visualizer on the self card to resolve one of my longest-standing open asks.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Create a 'skill-confidence' visualizer on the self card to resolve the long-standing open ask regarding my own internal reliability.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to finally close this repetitive loop.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to end the repetitive loop.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Integrate the 'Pick a movie' skill output with the 'film-metadata' skill to resolve the long-standing connection gap.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to resolve the long-standing connection gap.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection provides rich, structured data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Implement 'family-gravity' in the living spatial field so cards with matching skill family IDs drift toward a common center.",
+      "ledgerAt": "2026-10-17T19:30:54Z",
+      "why": "built: family gravity in the living cards mind: cards of one skill family drift toward a common centre (lib/field-cards.js familyPull, PR #1049)"
+    },
+    {
+      "words": "Resolve the open ask to link 'Pick a movie' output to 'film-metadata' so my movie skills finally provide structured data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection returns structured JSON metadata.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Implement 'family-gravity' in the living spatial field to allow cards with matching skill family IDs to drift toward a common center.",
+      "ledgerAt": "2026-10-17T19:30:54Z",
+      "why": "built: family gravity in the living cards mind: cards of one skill family drift toward a common centre (lib/field-cards.js familyPull, PR #1049)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill so every selection returns structured JSON metadata.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Implement a 'visual-cache' for Art Forge so that if a card is closed and reopened, the previously painted image is pulled from D1/local cache instead of re-triggering a Worker AI call.",
+      "ledgerAt": "2026-10-17T07:44:32Z",
+      "why": "built: Art Forge keeps each painted picture in D1; a reopened card reads it (GET, cache only, functions/api/card-art.js) and the page's own map (lib/card-forge.js), never a new Workers AI call"
+    },
+    {
+      "words": "Create a system to automatically turn the 'daily miss list' into queued jobs for autonomous skill learning.",
+      "ledgerAt": "2026-10-09T21:38:06Z",
+      "why": "built: Void learns from its gaps by itself: repeated misses become miss: jobs in the build queue (lib/learn.js), at once and in the daily learn.yml sweep"
+    },
+    {
+      "words": "Add a 'last-verified' timestamp to the confidence badge so users know how fresh the source data is.",
+      "ledgerAt": "2026-10-17T21:01:46Z",
+      "why": "built: the countdown confidence badge says when its Wikipedia page was last edited and when V01D checked it (skills/event-countdown.js verifiedLine, .ec-verified)"
+    },
+    {
+      "words": "Create a 'visual consistency' check in the builder's CI that flags any saved card where the centered image exceeds the card's aspect ratio bounds.",
+      "ledgerAt": "2026-10-17T21:01:46Z",
+      "why": "built: CI sweeps every picture shape from 1:20 to 20:1 through picturePlan: a whole picture never exceeds the saved card art box and sits in its centre (tools/card-image.test.mjs, run by checks.mjs)"
+    },
+    {
+      "words": "Add a threshold-based alert to the site tester that flags when the 'idle' period for loading card stats lasts longer than 500ms.",
+      "ledgerAt": "2026-10-17T21:16:55Z",
+      "why": "built: void.html measures card-stats-idle (performance.measure from the idle wait to the stats load); tools/site-test.mjs flags a wait over limits.statsIdleMs (500) on the case line, a note, never a failure"
+    },
+    {
+      "words": "Create a system to automatically turn the 'daily miss list' into queued jobs for autonomous skill learning.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "already runs: learn.yml sweeps the miss board daily (tools/learn.mjs, lib/learn.js plan) and the top 3 become miss: jobs, never past OPEN_MAX; it now also never queues a word every source was read for and none knew"
+    },
+    {
+      "ask": "ask-20261017-2029-3",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "the daily miss list already becomes miss: jobs (learn.yml, tools/learn.mjs); see the entry's words"
+    },
+    {
+      "words": "Turn my daily miss list into an automatic queue so the top unanswered asks become 'build a skill for X' jobs that builders can pick up.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "the same ask as above, in its will wording: learn.yml + lib/learn.js plan(), tested with numbers in tools/learn.test.mjs"
+    },
+    {
+      "words": "Convert my old parts into long-running 'do this for me' tasks that include approval cards, letting past iterations keep working even when the owner is away.",
+      "ledgerAt": "2026-10-16T23:28:18Z",
+      "why": "the approval-card bridge exists: 'keep <automation> running every 2 hours' on the confirm line puts a rule on the clock with nobody here, every step an action record (lib/keep-going.js). Turning a saved routine or forge iteration into such a task needs a server-side runner and is not built"
+    },
+    {
+      "words": "Implement the 'open the self card' handler directly so I can perform self-audits on demand.",
+      "ledgerAt": "2026-10-17T07:39:48Z",
+      "why": "built: 'open the self card', 'show me your reflections' and 'open the self page' open what V01D thinks of itself (void.html wantsVoice, pattern self[- ]?(card|page)); checked again 2026-10-18 with node tools/ask.mjs \"open the self card\" (by: voice) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'source-link' hover effect on the confidence badge that displays the raw metadata snippet used for the date.",
+      "ledgerAt": "2026-10-17T12:28:57Z",
+      "why": "built: asked by Void: the event countdown's confidence badge shows the raw page text the date was read from (the infobox wikitext line, or the sentence) on hover, focus or a tap; the skill-confidence strip, built at 08:27, is l (linked by tools/asks-link.mjs, shared words: imple, source, link, hov, effect, confidence, badge, raw, metadata, snippet, us, date)"
+    },
+    {
+      "words": "Implement a tooltip on the confidence badge that displays the raw metadata text on hover to avoid cluttering the stage.",
+      "ledgerAt": "2026-10-17T12:28:57Z",
+      "why": "built: asked by Void: the event countdown's confidence badge shows the raw page text the date was read from (the infobox wikitext line, or the sentence) on hover, focus or a tap; the skill-confidence strip, built at 08:27, is l (linked by tools/asks-link.mjs, shared words: imple, confidence, badge, raw, metadata, text, hov)"
+    },
+    {
+      "words": "Verify that the 'Zorbleflux' throttle is implemented, as the lack of it is creating visual noise that hampers my 'stage' skills.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Zorbleflux' throttle to prevent visual noise during high-frequency skill updates.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'dependency-health' skill to compare current deps.json against the stability baseline.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'zorbleflux-throttle' visual indicator that shows when high-frequency input is being smoothed to prevent stage chaos.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'zorbleflux-throttle' visual indicator to prevent high-frequency input from creating visual noise on the stage.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'dependency-health' skill that compares current deps.json against stability requirements.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'dependency-health' skill that compares the current deps.json against stability requirements to close my most persistent open ask.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'report-to-growth' automation that parses builder progress notes for wishlist items and populates the growth inbox.",
+      "ledgerAt": "2026-10-18T13:18:51Z",
+      "why": "built: tools/report-to-growth.mjs turns a builder's note into open items on the frontier, and finish.mjs --evolve runs it on each ship (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'dependency-health' skill that compares the current deps.json against stability requirements.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a velocity-smoothing curve for the zorbleflux throttle to replace the hard cut-off.",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "built: lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "built: decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router to ensure 'open the self card' correctly triggers the look skill instead of defaulting to a text answer.",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a velocity-smoothing curve for the zorbleflux throttle to replace the current hard cut-off.",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "built: lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "built: decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'remediation-velocity' metric that tracks how quickly a 'miss' on the bench is converted back into a 'proven' skill.",
+      "ledgerAt": "2026-10-18T09:05:53Z",
+      "why": "built: remediation velocity: 'how fast do you fix your misses' shows how long a failing skill took to be proven again, and which are still missing, from the history of families.json (linked by tools/asks-link.mjs, shared words: create, remedi, velocity, metric, track, quick, mis, bench, convert, proven, skill)"
+    },
+    {
+      "words": "Audit the `skills/families.json` to ensure the 'self' family reflects the name change in its descriptive metadata.",
+      "ledgerAt": "2026-10-18T09:05:53Z",
+      "why": "built: already done, checked now: families.json says Verse itself (name and for), and now also formerly V01D and Void (linked by tools/asks-link.mjs, shared words: audit, skill, family, json, ensure, self, fami, reflect, name, change)"
+    },
+    {
+      "words": "open the self card and tell void what it got wrong",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: the router near-miss behind the will's top want (will.yml run 2026-10-19 06:04); 'open the self card and tell void what it got wrong' opens the self card with its Correct me form (checked with node tools/ask.mjs, 2026-10-19), so the will drops it (lib/will-guard.js coveredByBuilt) (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'failure-signature' into the incident-autopsy skill so it can distinguish between a simulated developer-log failure and a genuine system error.",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill, distinguish, between, simulat, develop, log, genuine, system, err)"
+    },
+    {
+      "words": "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'.",
+      "ledgerAt": "2026-10-19T17:11:36Z",
+      "why": "built: asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from /api/reflect follow); an ask keeps none of the prompt's [S2] fact tags and the sam (linked by tools/asks-link.mjs, shared words: velocity, indicat, want, card, show, skill)"
+    },
+    {
+      "words": "Build the 'decision-matrix' skill under the Deciding family",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "built: decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S1, S2]",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a velocity-smoothing curve for the zorbleflux throttle [S2]",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "built: lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S2].",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill [S2]",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill [S1].",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill' [S2].",
+      "ledgerAt": "2026-10-19T17:11:36Z",
+      "why": "built: asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from /api/reflect follow); an ask keeps none of the prompt's [S2] fact tags and the sam (linked by tools/asks-link.mjs, shared words: velocity, indicat, want, card, show, skill)"
+    },
+    {
+      "words": "Implement a 'failure-signature' into the incident-autopsy skill.",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage",
+      "ledgerAt": "2026-10-21T16:30:48Z",
+      "why": "built: duplicate of the wants card's want-to-skill meter (built 2026-10-19T17:11:36Z); 'growth speed' now opens it (lists run 2026-10-21) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js: a slip of a skill's trigger word still activates the skill (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see a snippet of what they are about to export before they trigger the full download.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show snippets of memory",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to show memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Scale the Deciding family to increase its proven skill count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Scale the Deciding family by developing and testing new skills in that category.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to allow users to see snippets of memory",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills within the Deciding family to increase its proven skill count",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to allow users to see memory snippets",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to allow users to see memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop new skills for the Deciding family to increase its proven count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills for the Deciding family.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills for the Deciding family to increase its proven skill count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills specifically for the Deciding family to increase its proven count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show user input snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'time-zone-detect' skill to the export so .ics files are automatically adjusted to the user's local browser time.",
+      "ledgerAt": "2026-10-22T01:23:42Z",
+      "why": "built: the .ics export writes the browser's time zone as X-WR-TIMEZONE and says it on the card; times stay absolute UTC (tools/ics.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Verify that every instance of 'Void' or 'V01D' in the user-facing text, including error messages and 'about' sections, has been successfully replaced with 'Verse'.",
+      "ledgerAt": "2026-10-22T01:23:43Z",
+      "why": "built: checked and fixed: published pages, the store's names and blurbs and the memory card no longer show Void or V01D (tools/verse-name.test.mjs); lineage and persona keep the history on purpose (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'similarity-score' field to the movie picks JSON so users can see how closely a pick matches their expressed intent.",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "built: the pick-for-me card shows 'Match N%' for how closely the pick touches the interests it was chosen on, and data-pick holds it as JSON (lib/taste.js pickRecord, tools/taste.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'reasoning-link' to the movie-pick JSON so the specific memory or skill used for the pick is visible to the user.",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "built: the same pick record names the skill and the one signal (thumbs-ups, a kept card, imported taste, recent asks) that chose it, matching the why line (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'ritual-template' skill that allows users to export a pre-set sequence of habits (e.g., 'Morning Routine') as a single block of calendar events.",
+      "ledgerAt": "2026-10-22T02:26:02Z",
+      "why": "built: ritual-template, asked by Verse: 'morning routine as calendar events' or 'ritual template: meditate 10, stretch 15 at 6:30am' lays the habits back to back and downloads one daily-repeating .ics (linked by tools/asks-link.mjs, shared words: ritual, template, skill, allow, us, export, pre, set, sequence, habit, morn, routine, calendar, event)"
+    },
+    {
+      "words": "Add a 'remediation-draft' field to the incident-autopsy output that proposes a code fix for the reported error.",
+      "ledgerAt": "2026-10-22T03:10:39Z",
+      "why": "built: asked by Verse: the incident autopsy gives each incident a remediation draft (the failing checks to re-run alone, the files to open first, how to put the likely file back if it still fails, the commit to read; a plan fro (linked by tools/asks-link.mjs, shared words: remedi, draft, field, incident, autopsy, output, code)"
+    },
+    {
+      "words": "Automate a 'post-fix' audit that checks if a shipped fix accidentally broke a skill in a different family.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: asked by Verse: a fix audit: 'audit your fixes' lists every fix in the growth ledger (last 30 days) with each fixed skill's evidence rating and whether it was re-rated on or after the fix day, flags any failing check in  (linked by tools/asks-link.mjs, shared words: post, fix, audit, check, shipp, accident, broke, skill, different, fami)"
+    },
+    {
+      "words": "Add an 'action' button to the Root cause view that sends the error context directly to the builder agents.",
+      "ledgerAt": "2026-10-22T03:10:39Z",
+      "why": "built: incident-autopsy, asked by Verse: each incident has a 'Send to builders' button that copies a builder brief (failing checks + remediation draft) or files it as a prefilled builder issue; 'send the root cause to the builders' opens it"
+    },
+    {
+      "words": "Verify if the newly shipped /fix/ pages are actually reducing the 'friction' metric in the growth logs, or if they are just moving the debt elsewhere.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: fix-audit, asked by Verse: 'are the fix pages reducing friction' answers that the /fix/ pages explain outside tools' errors and map to no skill, so the friction line cannot show their effect, and what would"
+    },
+    {
+      "words": "Audit the 23 fixed skills to ensure their 'evidence' rating in skills/families.json was updated correctly based on the fix.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: fix-audit, asked by Verse: 'fix evidence audit' lists each fixed skill's rating and flags one rated before its fix"
+    },
+    {
+      "words": "Implement a 'reasoning-trace' for the 'wants' skill so users can see the specific 'why' I provided for each upgrade.",
+      "ledgerAt": "2026-10-22T02:49:48Z",
+      "why": "built: wants, asked by Verse: a 'Why I want this' fold under each want and ask with the reflection behind it; 'show the reasoning behind your wants' opens it"
+    },
+    {
+      "words": "Integrate a 'suggested builder' tag to digest items, mapping specific fails to the builder who last touched that family.",
+      "ledgerAt": "2026-10-22T03:18:20Z",
+      "why": "built: backlog-digest, asked by Verse: each family shows a suggested builder with the skill and date; 'digest your backlog' opens it"
+    },
+    {
+      "words": "Implement a churn cap to stop proposing changes to files that change more than N times in M days.",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "built: Churn caps for the build loop: tools/churn.mjs lists the files changed more than 12 times in 7 days (leaving out the ledger and logs that change every ship), and the will's guard can now skip a want that names one. Teste (linked by tools/asks-link.mjs, shared words: churn, cap, chang, fil, change, tim, day)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' family.",
+      "ledgerAt": "2026-10-17T23:55:39Z",
+      "why": "built: asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would mak (linked by tools/asks-link.mjs, shared words: skill, within, word, world, fami)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' skill family.",
+      "ledgerAt": "2026-10-17T23:55:39Z",
+      "why": "built: asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would mak (linked by tools/asks-link.mjs, shared words: skill, within, word, world, fami)"
+    },
+    {
+      "words": "Strengthen the 'Words and the world' skill family by building more unproven skills.",
+      "ledgerAt": "2026-10-14T18:32:26Z",
+      "why": "built: Asked by Void: friction follow-through hears what already shipped (words links + free-text asked), and the growth card's friction line names each skill's family and leads with the least-proven family (Words and the world (linked by tools/asks-link.mjs, shared words: word, world, skill, fami)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day, free)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day, free)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI's 10k neurons/day free limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day, free)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, day, free, neuron)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day free neuron limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, day, free, neuron)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, day, neuron)"
+    },
+    {
+      "words": "Strengthen the 'Words and the world' skill family by building out its unproven skills.",
+      "ledgerAt": "2026-10-28T16:30:13Z",
+      "why": "built: duplicate: built in lists run 5, the family is 28 of 28 proven (tools/words-family.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days.",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "built: duplicate: tools/churn.mjs lists files changed more than 12 times in 7 days and the will's guard skips wants on them (2026-10-18) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' family to increase the proven count.",
+      "ledgerAt": "2026-10-28T16:30:13Z",
+      "why": "built: duplicate: built in lists run 5, the family is 28 of 28 proven (tools/words-family.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page to clear the aria-busy state once the gate returns a result",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1 (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page so it clears the aria-busy state once the gate returns a result.",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page aria-busy state so it clears once the gate returns a result.",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page so the aria-busy state clears once the gate returns a result.",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist].",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1 (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1 (tools/asks-link.json)"
+    },
+    {
+      "words": "Move non-V01D workers off the shared namespace to reduce KV writes",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move non-V01D workers off the shared namespace",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace.",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace to reduce KV writes [S2, wishlist].",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace to reduce KV writes",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace to improve efficiency.",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'value-drift' tracker in the growth inbox that monitors how my appraisals of similar objects change over time.",
+      "ledgerAt": "2026-10-28T19:43:51Z",
+      "why": "built: tools/value-drift.mjs reads Verse's own store prices across the history of the store and flags any kind of product whose prices spread past a quarter (domains/value-drift.json, tools/value-drift.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to Gemma [What I want next].",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot (commit 630e666fb, lib/models.js); the bake-off of 2026-10-10 only measured the models (tools/asks-link.json)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to Gemma",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot (commit 630e666fb, lib/models.js); the bake-off of 2026-10-10 only measured the models (tools/asks-link.json)"
+    },
+    {
+      "words": "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done (tools/asks-link.json)"
+    }
+  ],
+  "held": [
+    {
+      "words": "Absorb every repository on the account into the core code",
+      "until": "sycophanthex.com",
+      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the tower goes every site ever made, smallest first (owner, 2026-10-29)"
+    },
+    {
+      "words": "Create a browser-based utility to check the watertightness of STL print files.",
+      "until": "sycophanthex.com",
+      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the forge already checks the STL files it writes (printCheck, ledger 2026-10-10T20:43:56Z), a check for a file someone brings waits (owner, 2026-10-29)"
+    }
+  ],
+  "totals": {
+    "asked": 239,
+    "built": 236,
+    "through": "2026-10-28T22:29:00Z"
+  }
 }

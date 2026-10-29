@@ -5,7 +5,8 @@
  * The STL is built here from plain boxes and two round mount holes (millimetres, ASCII STL). No network, no libraries.
  * Linemote-1 is an original design and an untested one: the page says so. Not a body, not a wearable, not medical.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+import { clean } from '../lib/ask-text.js';
+const CLEAN = clean; // shared: lib/ask-text.js
 
 export function wantsLinemote(text) {
   const t = CLEAN(text).toLowerCase();

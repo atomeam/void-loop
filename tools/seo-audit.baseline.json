@@ -1,0 +1,12 @@
+{
+ "pages": 113,
+ "defects": 7,
+ "notes": 100,
+ "byKind": {
+  "h1": 3,
+  "duplicate": 2,
+  "canonical": 2
+ },
+ "orphans": 8,
+ "toOffers": 28
+}

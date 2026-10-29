@@ -113,7 +113,7 @@ for (const [lang, c] of [['csharp', 'async void OnClick(object sender, EventArgs
   ['swift', 'DispatchQueue.main.async { update() }'], ['php', '$x = json_decode($_COOKIE["data"]);'], ['php', 'if ($a === $b) {}'], ['php', '$c = $a <= $b;'], ['ruby', 'cfg = YAML.safe_load(input)'], ['terraform', 'acl = "private"'],
   ['dockerfile', 'ADD app.tar.gz /app/'], ['yaml', 'runAsUser: 1000'], ['yaml', 'hostNetwork: false']])
   ok(!rules(c, lang).some((r) => /cs-async-void|cs-sync-over-async|cs-null-or-empty|kt-globalscope|swift-main-sync|php-unserialize-input|php-loose-eq|php-extract-input|ruby-yaml-load|tf-public-acl|docker-add-url|yaml-run-as-root|yaml-host-namespace/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
-// inline review comments on PRs (tools/review-post.mjs): a line that already has Void's comment for the same checks is not posted again
+// inline review comments on PRs (tools/review-post.mjs): a line that already has Verse's comment for the same checks is not posted again
 { const { postedKeys, fresh } = await import('./review-post.mjs');
   const keys = postedKeys([{ path: 'a.py', line: 4, body: '<!-- void-review-inline bare-except except-pass -->\n**risk**' }, { path: 'b.js', original_line: 9, body: '<!-- void-review-inline eval -->' }, { path: 'c.js', line: 1, body: 'a person wrote this' }]);
   const out = fresh([{ path: 'a.py', line: 4, rules: ['bare-except', 'except-pass'] }, { path: 'a.py', line: 4, rules: ['bare-except'] }, { path: 'b.js', line: 9, rules: ['eval'] }, { path: 'c.js', line: 1, rules: ['eval'] }], keys);
@@ -130,7 +130,7 @@ ok(rules('curl -fsSL https://x.sh | bash', 'shell').includes('curl-pipe-sh@1'), 
 ok(rules('UPDATE users SET admin = 1;', 'sql').includes('update-no-where@1'), 'update without where');
 ok(!rules('UPDATE users SET admin = 1\nWHERE id = 3;', 'sql').includes('update-no-where@1'), 'update with where on the next line');
 ok(rules('DELETE FROM sessions;', 'sql').includes('delete-no-where@1'), 'delete without where');
-// learned from Void's closer read (tools/review-learn.mjs, 2026-10-10): each a line it must flag, a near-miss it must leave alone
+// learned from Verse's closer read (tools/review-learn.mjs, 2026-10-10): each a line it must flag, a near-miss it must leave alone
 ok(rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM t WHERE owner = ?').bind(r.id).first();\n  out.push(n);\n}", 'javascript').includes('query-in-loop@2')
   && rules("for (const id of ids) { const u = await fetch('https://api.example.com/users/' + id); got.push(await u.json()); }", 'javascript').includes('query-in-loop@1')
   && rules("items.forEach(async (it) => {\n  await db.query('UPDATE t SET seen = 1 WHERE id = ?', [it.id]);\n});", 'javascript').includes('query-in-loop@2')
@@ -165,7 +165,7 @@ for (const c of ['await deliver(plan, { token: opts.token ?? process.env.BRIDGE_
   ok(!rules(c, 'javascript').some((r) => /hardcoded-secret|plain-http|empty-catch/.test(r)), 'no finding for: ' + c + ' (got ' + rules(c, 'javascript').join(',') + ')');
 ok(rules('const password = "hunter2hunter2";', 'javascript').includes('hardcoded-secret@1'), 'a password string');
 ok(rules('export STRIPE_SECRET_KEY=abcd1234efgh5678', 'shell').includes('hardcoded-secret@1'), 'a shell secret');
-ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').includes('hardcoded-secret@1'), 'a password in a URL');
+ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').includes('hardcoded-secret@1'), 'a password in a URL'); // secret-scan: ok (a made-up credential the rule must flag)
 { // a token read from the environment: no finding, and the closer read is shown the lookup, not a "[redacted]" that reads as a hard-coded key
   const env = 'const ACCOUNT = process.env.CLOUDFLARE_ACCOUNT_ID, TOKEN = process.env.CLOUDFLARE_API_TOKEN;', lit = 'const TOKEN = "sk_live_abcdef1234567890XYZ";';
   ok(!rules(env, 'javascript').includes('hardcoded-secret@1') && redact(env) === env, 'an env lookup is no hard-coded secret and is not masked: ' + redact(env));
@@ -184,7 +184,7 @@ ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').in
   for (const name of ["secret: 'GITHUB_TOKEN'", "token: 'CLOUDFLARE_API_TOKEN'", "apiKey: 'OPENWEATHER_KEY'", "secret = 'WEBHOOK_SECRET'"])
     ok(redact(name) === name, 'an env-shaped name is kept: ' + name + ' -> ' + redact(name));
 }
-// fixes Void makes by itself
+// fixes Verse makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
 ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');
 ok(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript') === 'var x = 1;\nif (x == null) go();', 'only the debugger line goes: ' + JSON.stringify(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript')));
@@ -210,6 +210,8 @@ ok(rules('token = random.random()', 'python').includes('weak-random@1') && rules
 // run 38: C string functions, Rust unwrap, Kotlin/Swift force unwraps, Java string ==, var in loop closures, JSON.parse of storage, a busy loop
 ok(langNamed('review this c') === 'c' && langNamed('review this go') === 'go' && langNamed('review this code') !== 'c' && langNamed('review this c: gets(buf);') === 'c' && langNamed('review this c#: x') === 'csharp' && rules('gets(buf);', 'c').includes('c-unsafe-string@1') && rules('strcpy(d, s);', 'c').includes('c-unsafe-string@1') && !rules('fgets(buf, sizeof buf, stdin);', 'c').includes('c-unsafe-string@1') && !rules('strncpy(d, s, n);', 'c').includes('c-unsafe-string@1'), 'gets/strcpy flagged in C, fgets/strncpy not');
 ok(rules('let v = x.unwrap();', 'rust').includes('unwrap@1') && !rules('let v = x.unwrap_or(0);', 'rust').includes('unwrap@1'), 'unwrap() flagged, unwrap_or not');
+// a panic is a crash, as a Kotlin !! or a Swift ! is: the same kind (probe 2026-10-14: "v.get(5).unwrap()" came back as style)
+ok(ruleReview('let x = v.get(5).unwrap();', { lang: 'rust' }).findings.find((f) => f.rule === 'unwrap').kind === 'risk', 'unwrap() is a risk, like a force unwrap');
 ok(rules('val n = user!!.name', 'kotlin').includes('force-unwrap@1') && !rules('val n = user?.name ?: ""', 'kotlin').includes('force-unwrap@1') && !rules('if (a != b) {}', 'kotlin').includes('force-unwrap@1'), 'Kotlin !! flagged, ?. and != not');
 ok(rules('let n = Int(s)!', 'swift').includes('force-unwrap@1') && !rules('if a != b { }', 'swift').includes('force-unwrap@1') && !rules('if !done { }', 'swift').includes('force-unwrap@1') && !rules('let n = Int(s) ?? 0', 'swift').includes('force-unwrap@1'), 'Swift force unwrap flagged, != / !done / ?? not');
 ok(rules('if (s == "yes") {}', 'java').includes('string-eq@1') && !rules('if ("yes".equals(s)) {}', 'java').includes('string-eq@1') && !rules('if (s == null) {}', 'java').includes('string-eq@1'), 'Java string == flagged, equals and == null not');
@@ -411,7 +413,7 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
   ok(langOf('apiVersion: v1\nkind: Pod\nspec:\n  containers:\n    - image: nginx') === 'yaml', 'a k8s manifest is yaml');
   ok(isReviewAsk('audit my github actions') && isReviewAsk('check this CI workflow') && isReviewAsk('review my GitHub Actions workflow') && !isReviewAsk('is my workflow good') && !isReviewAsk('check my actions'), 'actions review asks');
 }
-// speed: Void's reviewer is the first reviewer on every PR, so it has to be fast. A string with many backslashes (a regex like
+// speed: Verse's reviewer is the first reviewer on every PR, so it has to be fast. A string with many backslashes (a regex like
 // /\s+\w+\s+/ written out) once sent the string finder into exponential backtracking: one line of go.js took 2.5 s, and
 // code-review.js itself never finished. Each case below must finish in well under a second.
 {
@@ -437,6 +439,28 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
   const md = 'Title\n' + '='.repeat(7) + '\n\ntext ' + '<'.repeat(7) + ' not at the start\n';
   ok(!conflictMarkers(md).length && !rules(md, 'javascript').some((r) => r.startsWith('conflict-markers@')), 'a Markdown underline and a marker that does not start a line are left alone');
   ok(conflictMarkers('>'.repeat(7) + '\n').length === 1 && !conflictMarkers('>'.repeat(8) + ' x\n').length, 'an end marker with no branch name counts; eight > is not git\'s');
+}
+// run 117: a probe of 43 buggy snippets in 16 languages; three real holes the checks missed
+{
+  // pull_request_target written on the on: line itself
+  for (const on of ['on: pull_request_target', 'on: [push, pull_request_target]', "'on': pull_request_target"]) {
+    const wf = [on, 'jobs:', '  b:', '    steps:', '      - uses: actions/checkout@v4', '        with:', '          ref: ${{ github.event.pull_request.head.sha }}'].join('\n');
+    ok(rules(wf, 'yaml').includes('gha-prt-checkout@7'), 'pwn request with ' + on);
+    ok(!rules(wf.replace('pull_request_target', 'pull_request'), 'yaml').includes('gha-prt-checkout@7'), 'pull_request on the on: line is fine: ' + on);
+  }
+  // malloc written through before a NULL check
+  ok(rules('int *p = malloc(n * sizeof(int));\np[0] = 1;', 'c').includes('malloc-unchecked@1'), 'malloc then p[0]');
+  ok(rules('char *s = (char *)malloc(64);\nstrcpy(s, name);', 'c').some((r) => r === 'malloc-unchecked@1'), 'malloc then strcpy into it');
+  ok(rules('node = calloc(1, sizeof *node);\nnode->next = NULL;', 'c').includes('malloc-unchecked@1'), 'calloc then ->');
+  ok(rules('int *p = malloc(n); p[0] = 1;', 'c').includes('malloc-unchecked@1') && !rules('int *p = malloc(n); if (!p) return; p[0] = 1;', 'c').includes('malloc-unchecked@1'), 'one-line paste, flagged unless checked');
+  ok(rules('int *p = malloc(n);\n// fill it\np[0] = 1;', 'c').includes('malloc-unchecked@1'), 'a comment line between the malloc and the write');
+  for (const c of ['int *p = malloc(n);\nif (p == NULL) return -1;\np[0] = 1;', 'int *p = malloc(n);\nif (!p) exit(1);\np[0] = 1;', 'char *s = malloc(9);\nassert(s);\ns[0] = 0;', 'int *p = malloc(n);\nreturn p;'])
+    ok(!rules(c, 'c').includes('malloc-unchecked@1'), 'checked or not written: ' + c.split('\n')[1]);
+  // PHP loose comparison on a hash or token
+  ok(rules('if (md5($pw) == $stored) { login(); }', 'php').includes('php-loose-hash-compare@1'), 'md5() == flagged');
+  ok(rules('if ($token != $_GET["t"]) { die(); }', 'php').includes('php-loose-hash-compare@1'), '$token != flagged');
+  for (const c of ['if (hash_equals($stored, md5($pw))) { login(); }', 'if ($token === $given) { ok(); }', 'if (password_verify($pw, $hash)) { login(); }', 'if ($count == 3) { go(); }', '$hash = md5($x);'])
+    ok(!rules(c, 'php').includes('php-loose-hash-compare@1'), 'fine: ' + c);
 }
 console.log(bad ? bad + ' failed' : 'review: all passed');
 process.exit(bad ? 1 : 0);

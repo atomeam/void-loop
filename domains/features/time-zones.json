@@ -1,0 +1,233 @@
+{
+  "floor": "time zones",
+  "verse_page": "/time/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "timeanddate.com": {
+      "sources": [
+        "https://www.timeanddate.com/",
+        "https://www.timeanddate.com/worldclock/japan/tokyo",
+        "https://www.timeanddate.com/worldclock/setpersonal.html",
+        "https://www.timeanddate.com/worldclock/meeting-help.html",
+        "https://timeanddate.com/worldclock/advmeeting.html",
+        "https://timeanddate.com/worldclock/fixedform.html?p1=793",
+        "https://globaledge.msu.edu/global-resources/resource/1035"
+      ],
+      "features": [
+        {
+          "name": "City page: current time and date",
+          "detail": "time, date, zone, UTC offset",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/time/?c=Tokyo"
+        },
+        {
+          "name": "DST change dates",
+          "detail": "next clock change for the city",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Next clock change under the clock (date, forward or back, how far, the wall times either side) and on each world clock; a zone that keeps one offset says so (lib/zones.js nextChange)"
+        },
+        {
+          "name": "World clock",
+          "detail": "many cities, sortable",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"World clock\" with \"Add a city\""
+        },
+        {
+          "name": "Personal world clock",
+          "detail": "choose your own cities",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "cities kept on this device"
+        },
+        {
+          "name": "Time zone converter",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Time zone converter\""
+        },
+        {
+          "name": "Meeting planner",
+          "detail": "best time across zones",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Meeting planner\" with working-hours colours"
+        },
+        {
+          "name": "Event time announcer",
+          "detail": "one event in many cities, shareable",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Event announcer\" Copy event link"
+        },
+        {
+          "name": "Sunrise, sunset, day length, twilight",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Sun and moon today\""
+        },
+        {
+          "name": "Moon phases and moonrise",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Sun and moon today; skills/moon.js"
+        },
+        {
+          "name": "Eclipses and night sky",
+          "detail": "eclipse paths and visible planets",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none on /time/"
+        },
+        {
+          "name": "Weather and 14-day forecast",
+          "detail": "weather on each city page",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "on /weather/ (7 days), not on /time/"
+        },
+        {
+          "name": "Historic weather and climate",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Date to date duration",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Date to date\""
+        },
+        {
+          "name": "Add / subtract days, business days",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Add business days to the From date\""
+        },
+        {
+          "name": "Weekday and week number calculators",
+          "detail": "",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "date maths on the stage (skills/date-calc.js); not on /time/"
+        },
+        {
+          "name": "Time duration calculator",
+          "detail": "hours and minutes between times",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none on /time/"
+        },
+        {
+          "name": "Countdown timers to events",
+          "detail": "",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "stage countdown skills and /is-it/; not on /time/"
+        },
+        {
+          "name": "Calendars (printable, by country, with holidays)",
+          "detail": "",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "stage calendar and holidays skills; no printable calendar"
+        },
+        {
+          "name": "Public holidays database",
+          "detail": "holidays for every country",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "skills/holidays.js (Nager.Date); business days ignore holidays"
+        },
+        {
+          "name": "Time zone map and abbreviations",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Distance between cities",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Tide tables",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Timer, stopwatch, alarm clock",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/stopwatch/"
+        },
+        {
+          "name": "Clock widgets for websites",
+          "detail": "free embeddable clocks",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Apps (world clock, countdown, meeting planner)",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none; /time/ opens offline"
+        },
+        {
+          "name": "Ad-free subscription",
+          "detail": "paid supporter plan",
+          "paid": true,
+          "verse": "has",
+          "verse_evidence": "Verse has no ads"
+        },
+        {
+          "name": "Time and Date APIs",
+          "detail": "paid data APIs",
+          "paid": true,
+          "verse": "missing",
+          "verse_evidence": "none"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Golden hour and all three twilights",
+    "Opens offline, no time service asked",
+    "Event link that shows each city and the reader's own time",
+    "24-hour switch",
+    "Copy link of the whole setting"
+  ],
+  "gaps": [
+    "Weather and 14-day forecast",
+    "Calendars (printable, by country, with holidays)",
+    "Public holidays database",
+    "Eclipses and night sky",
+    "Historic weather and climate",
+    "Time duration calculator",
+    "Time zone map and abbreviations",
+    "Distance between cities",
+    "Tide tables",
+    "Clock widgets for websites",
+    "Apps (world clock, countdown, meeting planner)",
+    "Weekday and week number calculators",
+    "Countdown timers to events",
+    "Time and Date APIs"
+  ]
+}
