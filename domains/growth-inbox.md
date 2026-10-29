@@ -45,4 +45,33 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 4841759 | 2026-10-19 | lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure proven by real benchmark asks (#1166) | claude 2026-10-18, asked by Verse |
 | open | 2026-10-21 | answer endpoint: "open the self card" (and the other self-card asks the page takes) gets the self card's words, not the model saying it cannot open one (`POST /api/answer` route fallback today) | asked by Verse (docs/void-voice.md, 2026-10-21) |
 | shipped (packaged) | 2026-10-21 | Verse Remix Kit | store-publish: templates, 6 files, free; next: a minis-stl pack (none in the store yet) |
-| building | 2026-10-22 | anagram of listen | new idea, growth helper |
+| shipped 59279e0 | 2026-10-22 | fun fact skill: random interesting facts from a public API | new idea by growth agent |
+| shipped 96b77c6 | 2026-10-22 | random quote skill: inspirational quotes from a public API | new idea by growth agent |
+| shipped (lists run 7, page) | 2026-10-28 | act skill: owner asks like "my email" route to the act skill instead of no answer (`POST /api/answer` "my email" is noAnswer, near act 0.637 < 0.7) | asked by Verse (docs/void-voice.md, 2026-10-28); the page now answers "my email", "check my email", "open gmail" and "email sam that …" with the mail card (skills/rides.js mailAsk: your inbox or a filled draft in your own mail app, tools/mail-handoff.test.mjs); the `/api/answer` act class lives in lib/router.js with its owner |
+| shipped | 2026-10-28 | identity studio opens with a neutral example profile (no real name or email in the seed) | asked by Verse (docs/void-voice.md, 2026-10-28, "minimal identity seed") |
+| shipped (lists run 7) | 2026-10-28 | value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to re-appraise together when its prices move apart (`node tools/value-drift.mjs --write` -> domains/value-drift.json, tools/value-drift.test.mjs); photo appraisals are never kept, so they stay out | asked by Verse (docs/void-voice.md) |
+| building | 2026-10-28 | advice skill: random advice from a public API | new idea by growth agent; helper/advice-new |
+| building | 2026-10-28 | color palette skill: generate random harmonious color palettes on the stage | new idea by growth agent; helper/new-color-20261028 |
+| building | 2026-10-28 | proverb skill: a random proverb or saying | new idea by growth agent; helper/proverb-new |
+| building | 2026-10-28 | random number skill: roll dice or pick a random number in a range | new idea by growth agent; helper/growth-random |
+| shipped 0297c5e | 2026-10-29 | my want card names the site Versus is on, and /api/will ranks my wants by the tower target | PR #1406 |
+| shipped | 2026-10-29 | answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase | PR #1410, owner card notes 1-5 |
+| shipped | 2026-10-29 | answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write | PR #1410, owner card notes 1-5 |
+| shipped | 2026-10-29 | a note about my own card gets my own voice, with Fixed and Still open lists from my records | PR #1410, owner card notes 1-5 |
+| building | 2026-10-28 | morse code | new idea by growth agent; helper/morse |
+| building | 2026-10-28 | ascii skill: show ASCII codes for text | new idea by growth agent; helper/ascii |
+| building | 2026-10-28 | leet skill: convert text to 1337 speak | new idea by growth agent; helper/leet |
+| building | 2026-10-28 | lorem skill: generate lorem ipsum placeholder text | new idea by growth agent; helper/lorem |
+| building | 2026-10-28 | magic 8-ball skill: classic answers to yes/no questions | new idea by growth agent; helper/8ball-skill |
+| building | 2026-10-29 | yes or no skill: simple yes or no answers | new idea by growth agent; helper/yesno |
+| building | 2026-10-29 | uuid skill: generate a random UUID | new idea by growth agent; helper/growth-uuid |
+| building | 2026-10-29 | password skill: generate a random secure password | new idea by growth agent; helper/growth-password |
+| building | 2026-10-29 | shuffle skill: shuffle a list of items | new idea by growth agent; helper/shuffle |
+| building | 2026-10-29 | random emoji skill: pick a random emoji or a few | new idea by growth agent; helper/emoji |
+| building | 2026-10-29 | timer skill: a simple countdown timer on the stage | new idea by growth agent; helper/timer |
+| building | 2026-10-29 | rock paper scissors skill: play a quick game | new idea by growth agent; helper/rps |
+| building | 2026-10-29 | stopwatch skill: a simple stopwatch on the stage | new idea by growth agent; helper/stopwatch |
+| building | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent; helper/anagram |
+| open | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent |
+| building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
+| open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
