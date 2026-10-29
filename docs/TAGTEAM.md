@@ -26,3 +26,5 @@ Open work:
 - Podcasts (functions/api/podcasts.js, lib/podcasts.js, podcasts/index.html; the function was reserved for Claude): live /api/podcasts answered 502 because Apple's directory did not answer the Worker, and Cloudflare covers a Function's 502 with its own HTML page. Now every Apple ask sends a `VerseBot/1.0` user agent; when Apple fails, search and charts fall back to fyyd.de (free, keyless), and the answer carries `source: 'fyyd'` and a `note` that the page shows above the list (`srcNote`). A real failure is a 503 with the JSON reason, and the page falls back to asking Apple from the browser whenever the server says `kind: 'away'`. Test: the last test in tools/podcasts.test.mjs.
 - music-de: music-de.test passes 3/3 on main; the extra period is already gone, so nothing changed.
 - claude-brain: the SDK is in devDependencies and the lockfile, and the test runs 4/4 with nothing skipped. Nothing changed.
+
+- 2026-10-29T07:39Z verse-loop (verse): task, Queue job mvoxd09y (versus: magicchecker.com): Versus: magic; all checks green; branch loop/20261029-073906
