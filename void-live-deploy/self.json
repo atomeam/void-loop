@@ -545,16 +545,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T06:51:29Z",
-   "subject": "Loop: resume early when its own code changed after the failures that paused it"
+   "at": "2026-10-29T06:52:13Z",
+   "subject": "Verse's will: hourly from the conductor's clock, and started by every main deploy"
   },
   {
    "at": "2026-10-29T06:51:20Z",
    "subject": "Fan fiction: find, link, CSV export, keyboard shortcuts and German on the index"
-  },
-  {
-   "at": "2026-10-29T06:48:23Z",
-   "subject": "Money/GPA asks the page's calc can answer no longer wait for all 309 skills (watchdog #110)"
   },
   {
    "at": "2026-10-29T06:47:46Z",
@@ -623,6 +619,10 @@
   {
    "at": "2026-10-29T06:28:06Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:27:50Z",
+   "subject": "CSP smoke: a ! Name line in _headers drops the earlier header, as Cloudflare does"
   }
  ],
  "builders": {

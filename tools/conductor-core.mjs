@@ -103,6 +103,13 @@ export function growDue({ exists, busy, lastRunMs, now }) {
   return !!exists && !busy && now - (lastRunMs || 0) >= GROW_EVERY_H * H;
 }
 
+/** should the conductor start Verse's will (will.yml) this tick: its '7 * * * *' schedule fired every 4 to 6 hours (75 scheduled runs in
+ *  2 weeks, 2026-10-29) and a deploy that automerge starts fires no workflow_run, so the will kept old wants for hours. The clock keeps
+ *  the hour instead: a run when the last one (any trigger) is an hour old, never while one runs or waits. Pure. */
+export const WILL_EVERY_H = 1;
+export function willDue({ exists, busy, lastRunMs, now }) {
+  return !!exists && !busy && now - (lastRunMs || 0) >= WILL_EVERY_H * H;
+}
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */
 export function lapDue({ exists, busy, started, paused, lastRunMs, now }) {
