@@ -100,11 +100,13 @@ test('the rendered count is the page after its scripts ran, not its shell; a pag
   const shell = '<html><body><div id="app"></div><script src="/app.js"></script></body></html>';
   const built = '<html><body><div id="app"><nav>' + Array.from({ length: 8 }, (_, i) => '<a href="/p' + i + '">p</a>').join('') + '</nav><input name="q"><button>Go</button></div></body></html>';
   let closed = 0, routed = 0;
-  const browser = (fail) => ({ newContext: async () => ({ close: async () => { closed++; }, newPage: async () => ({ route: async () => { routed++; }, goto: async () => { if (fail) throw new Error('timeout'); }, waitForLoadState: async () => {}, content: async () => built }) }) });
+  const browser = (fail, at = 'https://x.com/', html = built) => ({ newContext: async () => ({ close: async () => { closed++; }, newPage: async () => ({ route: async () => { routed++; }, goto: async () => { if (fail) throw new Error('timeout'); }, url: () => at, waitForLoadState: async () => {}, content: async () => html }) }) });
   assert.equal(controlsOf(shell).total, 0);
   assert.equal(await renderedControls(browser(false), 'https://x.com/'), 10);
-  assert.equal(await renderedControls(browser(true), 'https://x.com/'), null);
-  assert.equal(closed, 2); assert.equal(routed, 2);
+  assert.equal(await renderedControls(browser(true, 'about:blank'), 'https://x.com/'), null, 'it never left about:blank: not rendered');
+  assert.equal(await renderedControls(browser(true), 'https://x.com/'), 10, 'the load event timed out but the page was built: its controls count');
+  assert.equal(await renderedControls(browser(true, 'https://x.com/', shell), 'https://x.com/'), null, 'timed out with nothing built: not rendered');
+  assert.equal(closed, 4); assert.equal(routed, 4);
   const keep = process.env.VOID_TEST_BROWSER; process.env.VOID_TEST_BROWSER = '/no/such/browser';
   try { if (!fs.existsSync('/opt/pw-browsers/chromium')) assert.equal(await openBrowser(), null, 'no browser: the raw count stands'); } finally { if (keep === undefined) delete process.env.VOID_TEST_BROWSER; else process.env.VOID_TEST_BROWSER = keep; }
 });
