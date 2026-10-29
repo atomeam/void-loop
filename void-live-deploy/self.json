@@ -545,6 +545,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T13:24:50Z",
+   "subject": "void: ask for every module the ask libs import at once, not one level at a time behind the skill files"
+  },
+  {
+   "at": "2026-10-29T13:23:06Z",
+   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
+  },
+  {
+   "at": "2026-10-29T13:17:09Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T13:15:33Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T13:08:36Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T13:08:14Z",
    "subject": "test: christmas countdown check reads the seconds in either of its two reads (a read on the minute has none)"
   },
@@ -599,30 +619,6 @@
   {
    "at": "2026-10-29T12:17:41Z",
    "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T12:15:33Z",
-   "subject": "add yesno skill: yes or no answers"
-  },
-  {
-   "at": "2026-10-29T12:12:16Z",
-   "subject": "Naming gate: read a page after its own fetch answers; resize-image says it compresses"
-  },
-  {
-   "at": "2026-10-29T12:09:37Z",
-   "subject": "Verse Brain: F215's codec retina gardener is the 16th organ"
-  },
-  {
-   "at": "2026-10-29T12:08:15Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T12:08:14Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T12:07:42Z",
-   "subject": "3D miniatures: a reframe frees the old ground only after the compile in flight settles"
   }
  ],
  "builders": {

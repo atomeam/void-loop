@@ -5499,7 +5499,12 @@ say('nothing selected to remove');
     // (bugs, security holes, risky habits, with line numbers), then the model's closer read is added under them. Without code yet,
     // Verse asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
     const reviewReady = lazyLib('/lib/code-review.js');
+    // the four libs and every module they import, all asked for at once: imported level by level, each level queued behind the skill files
+    // the lanes had in flight (approval-core -> keep-going -> automations -> watch; on a busy page the gated check waited 3.3 s for the fourth level)
+    // ask-libs: tools/preload.mjs /lib/approval-core.js /lib/gumroad.js /lib/automation-fix.js /lib/code-review.js
+    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/code-review.js'];
     const warmLibs = () => {
+      for (const p of ASK_LIB_GRAPH) import(p).catch(() => null);
       const libs = Promise.allSettled([approvalReady(), storeReady(), fixReady(), reviewReady()]);
       if (!skillsLoaded && !askLibsHold) askLibsHold = Promise.race([libs, new Promise((r) => setTimeout(r, 1500))]).then(() => { askLibsHold = null; });
       for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
