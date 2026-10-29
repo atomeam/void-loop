@@ -545,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:21:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:21:04Z",
    "subject": "random skill: take only the bare dice notation the stage's chance cards leave (d20, 2d6), crypto rolls, order file, family, map line, test"
   },
@@ -618,10 +622,6 @@
   },
   {
    "at": "2026-10-29T15:09:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:09:09Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
