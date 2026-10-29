@@ -273,9 +273,10 @@ function warmUp(h) {
   let settled = false;
   const finish = () => { if (settled) return; settled = true; clearTimeout(bound); uploadTextures(h, () => { h.compiling = false; h.dirty = true; wake(); }); };
   const bound = setTimeout(() => { console.warn('[miniature ' + h.kind + '] compile still running after ' + COMPILE_BOUND_MS + ' ms: drawing anyway'); finish(); }, COMPILE_BOUND_MS);
-  Promise.all([r.compileAsync(h.scene, h.camera), extra.children.length ? r.compileAsync(extra, h.camera, h.scene) : null])
-    .catch((e) => console.warn('[miniature ' + h.kind + '] compile', e))
-    .finally(finish);
+  const p = Promise.all([r.compileAsync(h.scene, h.camera), extra.children.length ? r.compileAsync(extra, h.camera, h.scene) : null])
+    .catch((e) => console.warn('[miniature ' + h.kind + '] compile', e));
+  h.compileP = p; // dispose() waits on it before freeing materials (see there)
+  p.finally(() => { if (h.compileP === p) h.compileP = null; finish(); });
 }
 // Textures go to the GPU one per frame before the first draw. The first draw used to upload them all at once: the chess set's
 // nine 2k textures held the main thread for seconds in one task (cleanup step 5, 2026-10-11), the freeze when a 3D game opened.
@@ -523,10 +524,17 @@ async function mountFresh(host, kind, data, opts, key) {
     dispose() {
       if (h.disposed) return; h.disposed = true; if (live.get(key) === h) live.delete(key);
       if (h.wire) { h.wire.stop(true); h.wire = null; }
-      try { h.inst && h.inst.dispose && h.inst.dispose(); } catch (_) {}
-      if (controls) controls.dispose(); for (const c of h.contacts) c.dispose(); if (h.ground) h.ground.dispose(); if (h.ro) h.ro.disconnect(); if (h.io) h.io.disconnect();
-      scene.traverse((o) => { if (o.isMesh && !o.userData.shared) { o.geometry && o.geometry.dispose(); } });
+      if (controls) controls.dispose(); if (h.ro) h.ro.disconnect(); if (h.io) h.io.disconnect();
       wrap.remove();
+      // three's compileAsync checks each material's program on a timer until it is ready; a material freed under it threw "reading
+      // 'isReady'" from that timer (the gear explainer unmounted mid-compile, browser shard 3, 2026-10-29). So the GPU side waits for a
+      // compile still in flight; the miniature is already gone from the page and from live
+      const free = () => {
+        try { h.inst && h.inst.dispose && h.inst.dispose(); } catch (_) {}
+        for (const c of h.contacts) c.dispose(); if (h.ground) h.ground.dispose();
+        scene.traverse((o) => { if (o.isMesh && !o.userData.shared) { o.geometry && o.geometry.dispose(); } });
+      };
+      if (h.compileP && !h.E.lost) h.compileP.then(free, free); else free();
     },
   };
   h.g2d = canvas.getContext('2d');
