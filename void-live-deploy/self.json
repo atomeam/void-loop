@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:52:41Z",
+   "subject": "Close an incident when the shards it failed pass on a later commit"
+  },
+  {
+   "at": "2026-10-29T15:48:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:48:26Z",
    "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
   },
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T15:27:32Z",
    "subject": "feat(brain): organ 17, F453's L-system plant grown toward attention"
-  },
-  {
-   "at": "2026-10-29T15:27:20Z",
-   "subject": "Stability gauge: say \"at least\" when incidents.json is full, and how many checks failed"
-  },
-  {
-   "at": "2026-10-29T15:27:17Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
