@@ -111,11 +111,11 @@ export async function onRequestPost({ request, env }) {
     // the execution record (lib/actions.js): written before the job is queued; no record, no job
     await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
       await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(id, w.title, target, 'queued', ('Verse chose this: ' + w.because + skippedNote(skipped)).slice(0, 300), at, at).run();
+        .bind(id, w.title, target, 'queued', ('Verse chose this: ' + w.because + skippedNote(skipped, chosenWant.overCap)).slice(0, 300), at, at).run();
       return 'queued ' + id + ': ' + w.title;
     });
     queued = id;
     if (lap) await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('lap', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(lap)).run();
   }
-  return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}) });
+  return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}), ...(chosenWant.overCap ? { overCap: chosenWant.overCap } : {}) });
 }

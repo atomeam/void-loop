@@ -7,11 +7,14 @@
  * Tilt leans the whole flow, the pointer adds energy, and the field's entropy and swirl colour the card's own chrome (never the page).
  * A mind of 6 genomes evolves every 2 s in a Worker, or on the page when Workers are blocked. The law is lib/field-fluid-orbs.js (pure,
  * tools/field-fluid-orbs.test.mjs); the card is lib/field-stage.js; it is a Mind Field mode. The pointer's path is never kept.
+ * When Verse has its shared field (skills/field.js), live orbs are written into it and a seal is also sealed there (lib/orb-field.js,
+ * tools/orb-field.test.mjs): the orbs are the field's episodic memory. Without it, nothing changes.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { fieldSkill, keepSeal } from '../lib/field-stage.js';
 import { spawnMind } from '../lib/field-worker.js';
 import * as F from '../lib/field-fluid-orbs.js';
+import { fieldLink } from '../lib/orb-field.js';
 
 const NAME = 'agent-fluid-memory-orbs';
 const SAY = 'Memory orbs (F-321): small agents push a fluid, and where it pools a memory orb is born · tap an orb to seal it, Recall brings the last one back';
@@ -51,13 +54,18 @@ function mount({ el, q, th, cv, still, redraw }) {
 
   const els = new Map(); // orb id -> its element
   let pop = null, busy = false; // the mind's population (a recalled seal resets it) and whether a generation is out
+  let field = null, fieldBusy = false; // the shared field's adapter once it answers (null: no field here, the orbs keep their own state)
+  el.dataset.field = 'checking';
+  fieldLink().then((f) => { if (!el.isConnected) return; field = f; el.dataset.field = f ? 'on' : 'off'; th.state.fielded = !!f; });
   const sealOne = async (o) => {
     try {
       const s = th.state, { hash, snap } = await F.sealOrb(s, o), m = F.metrics(s);
       const rec = { hash, idea: NAME, ts: Date.now(), params: { kind: 'orb', gen: s.gen || 0 }, metrics: m, orb: snap };
+      const inField = field ? await field.seal(s, o).catch(() => null) : null; // the field seals its own copy; the SHA-256 seal stands either way
+      if (inField) { rec.field = inField; el.dataset.fieldGenome = inField.genomeId; }
       tabSeals.push(rec); if (tabSeals.length > 20) tabSeals.shift();
       const r = await keepSeal(rec); o.sealed = hash;
-      sealed.textContent = 'Orb sealed ' + hash.slice(0, 12) + ' (SHA-256 of the density around it and the agents\' genome, no pointer path) · ' + r.kept + ' kept on ' + r.where;
+      sealed.textContent = 'Orb sealed ' + hash.slice(0, 12) + ' (SHA-256 of the density around it and the agents\' genome, no pointer path) · ' + r.kept + ' kept on ' + r.where + (inField ? ' · in the shared field as ' + inField.genomeId : '');
       el.dataset.orbSeal = hash.slice(0, 12); el.dataset.orbSeals = String((+el.dataset.orbSeals || 0) + 1);
     } catch (_) { sealed.textContent = 'Could not seal this orb here.'; }
   };
@@ -94,6 +102,7 @@ function mount({ el, q, th, cv, still, redraw }) {
     const o = F.loadOrb(th.state, rec.orb, rec.hash), again = F.sealOrbSync(th.state, o).hash;
     sealed.textContent = 'Recalled orb ' + rec.hash.slice(0, 12) + (again === rec.hash ? ' · it seals to the same SHA-256' : ' · its hash changed') + ' · its genome seeds the mind';
     el.dataset.recalled = rec.hash.slice(0, 12); el.dataset.recallSame = String(again === rec.hash); pop = null; redraw();
+    if (field) field.sync(th.state).catch(() => {}); // the recalled memory is back in the shared field too
   });
 
   const mind = spawnMind(new URL('../lib/field-fluid-orbs.js', import.meta.url).href, 'evolveOrbs', F.evolveOrbs);
@@ -107,7 +116,11 @@ function mount({ el, q, th, cv, still, redraw }) {
   };
   show();
   const timer = setInterval(() => { if (!el.isConnected) { dispose(); return; } show(); think(); }, F.MIND_EVERY * 1000);
-  function dispose() { clearInterval(timer); try { mind.close(); } catch (_) { /* gone */ } SYNC.delete(cv); }
+  const toField = setInterval(() => { // live orbs into the shared field, a pass at a time
+    if (!field || fieldBusy || still() || document.hidden || !el.isConnected) return; fieldBusy = true;
+    field.sync(th.state).catch(() => {}).finally(() => { fieldBusy = false; });
+  }, 500);
+  function dispose() { clearInterval(timer); clearInterval(toField); try { mind.close(); } catch (_) { /* gone */ } if (field) field.close().catch(() => {}); SYNC.delete(cv); }
   return { dispose };
 }
 
@@ -131,7 +144,7 @@ const idea = {
   metrics: (s) => F.metrics(s),
   params: (s) => F.params(s),
   vars: (s, m) => F.chromeOf(m),
-  status: (s, m) => 'F-321 · gen ' + (s.gen || 0) + ' · fitness ' + (s.fit || 0).toFixed(2) + ' · ' + m.orbs + (m.orbs === 1 ? ' orb' : ' orbs') + ' · swirl ' + m.vorticity.toFixed(2) + ' · entropy ' + m.entropy.toFixed(2) + ' · ' + (s.minded || 'starting'),
+  status: (s, m) => 'F-321 · gen ' + (s.gen || 0) + ' · fitness ' + (s.fit || 0).toFixed(2) + ' · ' + m.orbs + (m.orbs === 1 ? ' orb' : ' orbs') + ' · swirl ' + m.vorticity.toFixed(2) + ' · entropy ' + m.entropy.toFixed(2) + ' · ' + (s.minded || 'starting') + (s.fielded ? ' · in the shared field' : ''),
   mount,
   draw(g, s, W, H) {
     const im = densityImage(s);
