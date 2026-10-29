@@ -103,6 +103,7 @@ for (const [name, file] of [
   ['matchgfx', 'matchgfx.test.mjs'],
   ['podcasts', 'podcasts.test.mjs'],
   ['boards', 'boards.test.mjs'],
+  ['fanfic', 'fanfic.test.mjs'],
   ['music-tools', 'music-tools.test.mjs'],
   ['flights', 'flights.test.mjs'],
   ['job-board', 'job-board.test.mjs'],

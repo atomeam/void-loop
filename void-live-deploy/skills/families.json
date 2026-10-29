@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 3,
-  "tested": 36,
+  "tested": 35,
   "checked": 17,
   "proven": 298
  },
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 1,
-    "tested": 13,
+    "tested": 12,
     "checked": 2,
     "proven": 36
    },
@@ -380,13 +380,6 @@
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
-    },
-    {
-     "name": "agent-fluid-memory-orbs",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "its tests"
     },
     {
      "name": "doodle-mind",
@@ -3188,9 +3181,9 @@
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 19 browser-suite mentions, 11 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "its tests",
+     "why": "a self-test, 17 browser-suite mentions, 11 real asks in the benchmark",
+     "last_tested": "2026-10-27",
+     "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 10
     },
