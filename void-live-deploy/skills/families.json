@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 3,
   "tested": 39,
-  "checked": 17,
+  "checked": 18,
   "proven": 298
  },
  "families": [
@@ -26,7 +26,7 @@
    "count": {
     "experiment": 1,
     "tested": 13,
-    "checked": 2,
+    "checked": 3,
     "proven": 36
    },
    "skills": [
@@ -347,6 +347,13 @@
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
+    },
+    {
+     "name": "verse-brain",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
     },
     {
      "name": "rts",
