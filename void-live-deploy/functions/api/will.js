@@ -16,6 +16,7 @@ import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
 import { tower, towerLine, towerArgs } from '../../lib/tower.js';
 import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLine } from '../../lib/lap.js';
+import { hotOf } from '../../lib/churn.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
@@ -90,7 +91,10 @@ export async function onRequestPost({ request, env }) {
   // the guard on the build loop (lib/will-guard.js): a want whose earlier jobs were set aside or failed twice in 14 days waits, and the next want is queued;
   // a history that cannot be read means no guard, never no will
   let rows = []; if (!open) { try { rows = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN ('set aside','failed') AND COALESCE(updated, at) > ?").bind(sinceOf()).all()).results) || []; } catch (_) { rows = []; } }
-  let chosenWant = pickWant(will.wants, rows); skipped = chosenWant.skipped;
+  // churn caps (lib/churn.js): a want whose reason names a file changed more than 12 times in 7 days waits; the list is /churn.json, written by the deploy
+  // from git. A list that cannot be read, or is older than the window, means no churn cap, never no will.
+  let hot = []; if (!open) { try { hot = hotOf(await (await env.ASSETS.fetch(new Request(new URL('/churn.json', request.url)))).json(), Date.parse(at)); } catch (_) { hot = []; } }
+  let chosenWant = pickWant(will.wants.map((w, i) => ({ ...w, why: [wants[i] && wants[i].c.why, wants[i] && wants[i].i_want].filter(Boolean).join(' ') })), rows, undefined, hot); skipped = chosenWant.skipped;
   // the full-cycle lap (lib/lap.js): each item in turn is upgraded, then new features (the will's own wants) until the lap's quota,
   // then the next lap over the bigger set. The position is kept in void_kv 'lap', so an interruption resumes. A lap that cannot be read
   // means the will as before, never no will.
