@@ -8,9 +8,11 @@
 //   node tools/verse-job.mjs <job id> [--dry] [--force]    needs VOID_OWNER_TOKEN; the lap needs what verse-loop.yml gives it
 // Never fails the workflow for a job's own failure: the queue holds the result. Playbook: docs/playbooks/conductor.md.
 import { spawnSync } from 'node:child_process';
+import { readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { kindOf, triesOf, withTries } from './conductor-core.mjs';
+import { SURFACES } from './lap-items.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEXT_MAX = 1800;
@@ -30,11 +32,29 @@ export const GUIDE = Object.freeze({
   auto: 'Build this small automation, tested.',
 });
 
-/** The task text a lap gets for a job: its kind, its words, what the kind needs, capped. Pure. */
-export function taskText(job) {
+/** Where a lap want's item lives and the smallest step that counts (2026-10-29: the will's "Overhaul surface:ask" want gave the coder no
+ *  file, and it spent all 30 turns on "search ." and "search vo" without an edit, twice). An overhaul or upgrade names an item
+ *  (lib/lap.js); this names its files and the facts the lap measures it by (tools/lap-items.mjs), so the coder starts reading, not
+ *  hunting. '' for any other job. skills: the skill file names (no .js). Pure. */
+export function startHere(job, skills = []) {
+  const m = /^(?:overhaul|upgrade)\s+(surface|skill|tool|doc):([\w.-]+)/i.exec(String(job.ask || '').trim());
+  if (!m) return '';
+  const group = m[1].toLowerCase(), name = m[2], surface = group === 'surface' && SURFACES.find(([n]) => n === name);
+  const parts = group === 'surface' ? (surface ? skills.filter((s) => surface[1].test(s)) : []) : group === 'skill' ? [name] : [];
+  const files = group === 'tool' ? ['tools/' + name] : group === 'doc' ? ['docs/' + name] : parts.slice(0, 6).map((s) => 'void-live-deploy/skills/' + s + '.js');
+  if (!files.length) return '';
+  const before = /\(before: ([^)]*)\)/.exec(String(job.note || '')), untested = before && /\btests 0\b/.test(before[1]) && parts[0];
+  return ['Start here: ' + group + ':' + name + ' is ' + files.join(', ') + (parts.length > files.length ? ' and ' + (parts.length - files.length) + ' more' : '') + '. Read these first; do not search the whole repo.',
+    before && 'It is measured by: ' + before[1] + '. Ship when one of these rises and none falls.',
+    untested && 'The smallest step that counts: tools/' + untested + '.test.mjs, a node:test file that imports the skill and checks its match() takes its examples and refuses its nearMisses.',
+  ].filter(Boolean).join(' ');
+}
+
+/** The task text a lap gets for a job: its kind, its words, where to start, what the kind needs, capped. Pure. */
+export function taskText(job, skills = []) {
   const kind = kindOf(job.target), note = String(job.note || '').replace(/^claimed by [^·]*·?\s*/i, '').replace(/\btries \d+\s*·?\s*/g, '').trim();
   const head = `Queue job ${job.id} (${kind}${job.target && job.target.includes(':') ? ': ' + String(job.target).split(':').slice(1).join(':') : ''}): ${String(job.ask || '').trim()}`;
-  return [head, note && 'Note: ' + note.slice(0, 600), GUIDE[kind] || 'Do this, small and tested.'].filter(Boolean).join('\n\n').slice(0, TEXT_MAX);
+  return [head.slice(0, 400), startHere(job, skills), note && 'Note: ' + note.slice(0, 600), GUIDE[kind] || 'Do this, small and tested.'].filter(Boolean).join('\n\n').slice(0, TEXT_MAX);
 }
 
 /** The lap's result: the last line of its output that is a JSON object, else null. Pure. */
@@ -71,7 +91,8 @@ export async function runJob(id, { dry = false, force = false, env = process.env
   if (!job) return { error: open.status === 200 ? 'job ' + id + ' is not open' : 'the queue answered ' + open.status };
   if (job.state !== 'building' && !force) return { error: 'job ' + id + ' is ' + job.state + ', not claimed' };
   const bin = env.VERSE_LOOP_BIN || resolve(HERE, 'verse-loop.mjs');
-  const r = spawnSync(process.execPath, [bin, '--once', ...(dry ? ['--dry-run'] : []), '--task', taskText(job)], { cwd, env, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 55 * 60 * 1000 });
+  let skills = []; try { skills = readdirSync(resolve(cwd, 'void-live-deploy/skills')).filter((f) => /\.js$/.test(f) && !/\.test\.js$/.test(f)).map((f) => f.replace(/\.js$/, '')); } catch (_) { /* no map, the job's words alone */ }
+  const r = spawnSync(process.execPath, [bin, '--once', ...(dry ? ['--dry-run'] : []), '--task', taskText(job, skills)], { cwd, env, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 55 * 60 * 1000 });
   const report = lastJson(r.stdout) || (r.error ? { outcome: 'error', why: String(r.error.message || r.error) } : null);
   const patch = settle(report, job);
   if (!dry) { const p = await call(env, 'PATCH', { id: job.id, state: patch.state, note: patch.note }); if (p.status !== 200) return { job, report, patch, error: 'the queue refused the result (' + p.status + ')' }; }
