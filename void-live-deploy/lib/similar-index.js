@@ -586,6 +586,17 @@ export default {
      "competitive minds",
      "resonance seeking agents"
     ]
+   },
+   {
+    "name": "agent-fluid-memory-orbs",
+    "examples": [
+     "memory orbs",
+     "agent fluid memory orbs",
+     "fluid memory orbs",
+     "show me the memory orbs",
+     "agent fluid",
+     "fluid orbs"
+    ]
    }
   ],
   "tilt-arena": [

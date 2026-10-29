@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (F321 thread) · claude/f321-fluid-orbs · F321 agent-fluid memory orbs as a Mind Field mode: lib/field-fluid-orbs.js (a stable-fluids field that small evolved agents push, density peaks become sealable DOM memory orbs), skills/fluid-orbs-mind.js, drafts/F321-webgpu-agent-fluid-memory-orbs/ · 2026-10-29 04:55 UTC
 - Claude (lab session) · lab-experiments · the lab repo's hourly experiments live at /lab/<slug>/ with a gallery, headless-tested, broken ones queued in domains/lab.broken.md (tools/lab-import.mjs, lab-probe.mjs, lab-sync.mjs, lab-sync.yml) · 2026-10-29
 - Grok Bot (box, easy floors) · box/paint-rebuild, then box/tower-plan · /paint/ rebuilt against the colour-by-number leaders (library with categories, zoom and pan, number highlight, hints, autosave, completion reveal, photo import, phone layout), then the easiest-10 queue at the head of docs/NEXT.md and the Versus card generated from it · 2026-10-28 23:10 UTC
 - Grok Bot (prodpolish) · box/prodpolish · gate honesty: Amazon and YouTube un-beaten (far-future floors with gaps and plans), scripted journeys with negative controls (lib/tower-controls.js, lib/tower-journeys.js, tools/tower-journeys.mjs), the false-pass fixtures (tools/tower-falsepass.test.mjs), tools/no-mock.mjs, docs/GATE-STANDARDS.md; next /paint/ and the handoff scan · 2026-10-28 22:18
