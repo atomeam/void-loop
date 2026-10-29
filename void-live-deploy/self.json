@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,36 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:40:19Z",
+   "subject": "Verse loop tests: clear the owner token in the no-key cases"
+  },
+  {
+   "at": "2026-10-29T06:38:04Z",
+   "subject": "toolkit test: build the skill path so the tower-self scan does not read the skills folder"
+  },
+  {
+   "at": "2026-10-29T06:33:27Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:33:10Z",
+   "subject": "Coder on Verse's own model: the loop tests and the API list catch up with #1439"
+  },
+  {
+   "at": "2026-10-29T06:32:36Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:32:28Z",
+   "subject": "Fan fiction: keep the index steady while the archive is read"
+  },
+  {
    "at": "2026-10-29T06:32:26Z",
    "subject": "Stage links follow the colour, gradient and wheel open on the page"
+  },
+  {
+   "at": "2026-10-29T06:32:15Z",
+   "subject": "Verse's coder: older results cut short, so the token cap lasts the turns"
   },
   {
    "at": "2026-10-29T06:31:47Z",
@@ -595,34 +623,6 @@
   {
    "at": "2026-10-29T06:21:13Z",
    "subject": "Versus card: say \"default bar\" where the site turned the gate away; /fanfic/ opens offline, loads faster, 0 design defects"
-  },
-  {
-   "at": "2026-10-29T06:19:21Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:19:12Z",
-   "subject": "Colour page: its stage card opens the colour you have open"
-  },
-  {
-   "at": "2026-10-29T06:14:30Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T06:13:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:10:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:10:26Z",
-   "subject": "shared-field: reset clears the writer names and the ready flag"
-  },
-  {
-   "at": "2026-10-29T06:08:58Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
