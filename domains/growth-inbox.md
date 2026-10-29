@@ -59,3 +59,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped | 2026-10-29 | answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write | PR #1410, owner card notes 1-5 |
 | shipped | 2026-10-29 | a note about my own card gets my own voice, with Fixed and Still open lists from my records | PR #1410, owner card notes 1-5 |
 | building | 2026-10-28 | morse code | new idea by growth agent; helper/morse |
+| building | 2026-10-28 | ascii skill: show ASCII codes for text | new idea by growth agent; helper/ascii |
