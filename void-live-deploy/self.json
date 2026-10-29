@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:15:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:14:11Z",
+   "subject": "password skill: take the asks util leaves, crypto with no bias, order file, family, map line, test"
+  },
+  {
    "at": "2026-10-29T15:14:06Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -553,12 +561,20 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-29T15:13:06Z",
+   "subject": "Paid members: a pre-launch pilot at /members/?pilot, so a paid account proves the idea path on the live site before go-live"
+  },
+  {
    "at": "2026-10-29T15:12:02Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:11:22Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:10:57Z",
+   "subject": "Paid members: check the idea limit inside the insert, so sends at the same moment cannot pass it"
   },
   {
    "at": "2026-10-29T15:10:31Z",
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T15:05:20Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:05:02Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:04:44Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:04:22Z",
-   "subject": "Answer cards for notes about my own card: no denial, no blame for a site's block, each fix's status"
-  },
-  {
-   "at": "2026-10-29T15:02:55Z",
-   "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
   }
  ],
  "builders": {
