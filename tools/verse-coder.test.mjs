@@ -163,6 +163,38 @@ test('finish waits for the target check, and a diff that does not apply comes ba
   assert.equal(r.outcome, 'done', r.why); assert.deepEqual(r.files.sort(), ['README.md', 'src/add.mjs']);
 });
 
+test('replace swaps exact text with no diff to line up: once, not twice, not missing; a new file; the same guards as edit', async () => {
+  const s = repo();
+  const r = await run(s, [
+    call('edit', { diff: FIX.replace('return a - b', 'return b - a') }),
+    call('replace', { path: 'src/add.mjs', old: 'return a-b;', new: 'return a + b;' }),
+    call('replace', { path: 'src/add.mjs', old: 'a', new: 'x' }),
+    call('replace', { path: 'tools/add.test.mjs', old: '  assert.equal(add(2, 2), 4);\n', new: '' }),
+    call('replace', { path: '.github/workflows/ci.yml', old: 'on: push', new: 'on: [push]' }),
+    call('replace', { path: 'src/none.mjs', old: 'x', new: 'y' }),
+    call('replace', { path: 'src/add.mjs', old: 'return a - b;', new: 'return a + b;' }),
+    call('replace', { path: 'src/sub.mjs', old: '', new: 'export const sub = (a, b) => a - b;\n' }),
+    call('check', { name: 'add' }), call('finish', { summary: 'add adds' })]);
+  assert.match(r.log[0].result, /does not apply: .*use replace/s, 'a failed diff points at replace');
+  assert.match(r.log[1].result, /^no match: "old" is not in src\/add\.mjs/);
+  assert.match(r.log[2].result, /is in src\/add\.mjs \d+ times/);
+  assert.match(r.log[3].result, /refused: this edit weakens tools\/add\.test\.mjs \(fewer assertions/);
+  assert.match(r.log[4].result, /refused: \.github\/workflows\/ci\.yml is a workflow/);
+  assert.match(r.log[5].result, /no such file: src\/none\.mjs/);
+  assert.equal(r.log[6].result, 'applied to src/add.mjs');
+  assert.equal(r.log[7].result, 'applied to src/sub.mjs');
+  assert.equal(r.outcome, 'done', r.why + JSON.stringify(r.log));
+  assert.deepEqual(r.files.sort(), ['src/add.mjs', 'src/sub.mjs']);
+  assert.equal(readFileSync(join(s.work, 'tools/add.test.mjs'), 'utf8'), ADD_TEST, 'the test is as it was');
+  assert.equal(readFileSync(join(s.work, '.github/workflows/ci.yml'), 'utf8'), 'on: push\n');
+  assert.equal(trailOf([{ tool: 'replace', path: 'a.js', result: 'no match: "old" is not in a.js as written' }]), 'replace a.js: no match: "old" is not in a.js as written');
+  // a replace at a cap is put back like an edit, a new file included
+  const t = repo();
+  const c = await run(t, [call('replace', { path: 'src/add.mjs', old: 'a - b', new: 'a + b' }), call('replace', { path: 'src/new.mjs', old: '', new: 'x\n' }), call('list')], { limits: { turns: 3 } });
+  assert.equal(c.outcome, 'turn-cap');
+  assert.match(readFileSync(join(t.work, 'src/add.mjs'), 'utf8'), /a - b/); assert.ok(!existsSync(join(t.work, 'src/new.mjs')));
+});
+
 test('the reply parser: plain JSON, args nested, a fenced diff, junk', () => {
   assert.deepEqual(parseAction('{"tool":"read","path":"a"}'), { tool: 'read', path: 'a' });
   assert.equal(parseAction('Sure: {"tool":"read","args":{"path":"b {x}"}}').path, 'b {x}');
