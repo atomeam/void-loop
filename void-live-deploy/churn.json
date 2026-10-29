@@ -1,5 +1,5 @@
 {
- "at": "2026-10-29T15:00:03.542Z",
+ "at": "2026-10-29T15:05:34.705Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -10,11 +10,11 @@
   },
   {
    "file": "tools/tower-probes.mjs",
-   "changes": 85
+   "changes": 87
   },
   {
    "file": "void-live-deploy/sw.js",
-   "changes": 69
+   "changes": 70
   },
   {
    "file": "domains/handoff.md",
@@ -34,15 +34,15 @@
   },
   {
    "file": "void-live-deploy/lib/seo.js",
-   "changes": 40
+   "changes": 41
   },
   {
    "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 39
+   "changes": 40
   },
   {
    "file": "void-live-deploy/skills/tower.js",
-   "changes": 39
+   "changes": 38
   },
   {
    "file": "domains/tower-self.json",
@@ -51,6 +51,10 @@
   {
    "file": "void-live-deploy/lib/guard.js",
    "changes": 25
+  },
+  {
+   "file": "tools/bench.json",
+   "changes": 24
   },
   {
    "file": "tools/openapi-check.mjs",
@@ -69,7 +73,7 @@
    "changes": 23
   },
   {
-   "file": "tools/bench.json",
+   "file": "tools/card-cycle.json",
    "changes": 23
   },
   {
@@ -77,7 +81,7 @@
    "changes": 23
   },
   {
-   "file": "tools/tower.test.mjs",
+   "file": "tools/grow-self.state.json",
    "changes": 23
   },
   {
@@ -85,15 +89,11 @@
    "changes": 23
   },
   {
-   "file": "tools/card-cycle.json",
-   "changes": 22
-  },
-  {
-   "file": "tools/grow-self.state.json",
-   "changes": 22
-  },
-  {
    "file": "void-live-deploy/lib/card-frame.js",
+   "changes": 23
+  },
+  {
+   "file": "tools/tower.test.mjs",
    "changes": 22
   },
   {

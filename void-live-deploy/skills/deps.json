@@ -2523,6 +2523,13 @@
    "tests": 1
   },
   {
+   "file": "lib/drawing-drills.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/empty-state.js",
    "skills": 0,
    "direct": 0,
@@ -5394,6 +5401,10 @@
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
+  },
+  "lib/drawing-drills.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/drive.js": {
    "imports": [],
