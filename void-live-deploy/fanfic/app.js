@@ -172,7 +172,7 @@ function setPage(n, push) {
 const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'gate', 'gone'];
 const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice' };
 // what the view on screen hands to the other pages (owner, 2026-10-29: "all the pages are supposed to be able to work together"): the chapter
-// being read, or the draft in the Writing Room; the index and the lists hand nothing. A link carries at most LINK_MAX encoded characters (a longer
+// being read, the draft in the Writing Room, or chapter 1 typed in the post form (the stage card's "Post a story" lands there); the index and the lists hand nothing. A link carries at most LINK_MAX encoded characters (a longer
 // address is refused by the edge), so the translator gets the opening of a long chapter (it takes 5,000 characters) and the word counter opens
 // only when the whole text fits; the story page and the room already count the words of a long one.
 const LINK_MAX = 12000;
@@ -187,7 +187,7 @@ function show(id, title) {
   for (const v of VIEWS) $(v).classList.toggle('on', v === id);
   for (const a of document.querySelectorAll('.nav a')) { if (a.dataset.v === NAV[id]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
   const t = (title ? title + ' · ' : '') + 'Fan fiction · Verse'; document.title = german ? DE.deTitle(t) : t;
-  handing = id === 'room' ? () => draft().text : null; drawRelated();
+  handing = id === 'room' ? () => draft().text : id === 'post' ? () => $('stForm').elements.text.value : null; drawRelated();
 }
 const fail = (node, e) => say(node, e && e.message ? e.message.replace(/^./, (c) => c.toUpperCase()) + '.' : 'Something went wrong. Try again.', 'bad');
 

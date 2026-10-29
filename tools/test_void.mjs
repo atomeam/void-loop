@@ -5652,11 +5652,19 @@ try {
     const answer = await F.p.$eval(card + ' .vb-said', (e) => e.textContent);
     await F.ask('tell me about knights', 700); const fromStage = await F.p.$eval(card, (e) => ({ said: e.querySelector('.vb-said').textContent, wants: +(e.dataset.wants || 0) })).catch(() => null);
     await until(async () => (await read()).chosen >= 3, 8000).catch(() => {});
-    await F.p.click(card + ' .vb-good'); await until(async () => (await F.p.$eval(card, (e) => e.dataset.saved).catch(() => '')) === 'true', 4000).catch(() => {});
-    const mind = await F.p.$eval(card, (e) => ({ episodes: +(e.dataset.episodes || 0), procedures: +(e.dataset.procedures || 0), saved: e.dataset.saved, semantic: +(e.dataset.semantic || 0) }));
+    await F.p.click(card + ' .vb-good'); await until(async () => (await F.p.$eval(card, (e) => e.dataset.saved + e.dataset.held).catch(() => '')) === 'truetrue', 4000).catch(() => {});
+    const mind = await F.p.$eval(card, (e) => ({ episodes: +(e.dataset.episodes || 0), procedures: +(e.dataset.procedures || 0), saved: e.dataset.saved, held: e.dataset.held, semantic: +(e.dataset.semantic || 0) }));
+    const thinking = await F.p.$eval(card, (e) => ({ ideas: [...e.querySelectorAll('.vb-orb[data-organ="concepts"]')].map((o) => o.dataset.key).sort(), concepts: +(e.dataset.concepts || 0) }));
     await F.p.reload(); await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     await until(async () => (await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none')) !== 'none', 6000).catch(() => {});
     const keptAfter = await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none');
+    // what it was thinking comes back too (asked 2026-10-29: a reload started it cold): the same ideas as orbs, its spotlight and its goals
+    await until(async () => (await F.p.$eval(card, (e) => e.dataset.restored).catch(() => 'none')) !== 'none', 6000).catch(() => {});
+    const back = await F.p.$eval(card, (e) => ({ restored: e.dataset.restored, ideas: [...e.querySelectorAll('.vb-orb[data-organ="concepts"]')].map((o) => o.dataset.key).sort(), concepts: +(e.dataset.concepts || 0),
+      wants: +(e.dataset.wants || 0), said: e.querySelector('.vb-said').textContent })).catch(() => null);
+    check('verse brain working memory: what it was thinking survives a full reload, kept through the shared field on this device: the same ideas come back as orbs, with its spotlight and its goals',
+      mind.held === 'true' && !!back && /workspace/.test(back.restored) && /attention/.test(back.restored) && back.concepts >= thinking.concepts && thinking.concepts >= 3
+      && thinking.ideas.every((k) => back.ideas.includes(k)) && back.ideas.includes('w:romance') && back.wants >= 1 && /^(Back from before the reload|From the stage): /.test(back.said), JSON.stringify({ mind, thinking, back }));
     // the shared field: a slot written at skills/field.js (where the memory orbs write) is felt by the brain, which publishes its own ideas there
     await F.p.evaluate(async () => { const Fd = await import('/skills/field.js'); Fd.init(); const L = Fd.layout, who = 'agent-fluid-memory-orbs', c = Fd.provenanceOf(who);
       Fd.writeRegion(L.pos + 3 * 200, 3, [0.3, 0.4, 0], who); Fd.writeRegion(L.act + 200, 1, [0.9], who); Fd.writeRegion(L.prov + 200, 1, [c], who); }).catch(() => {});
