@@ -197,13 +197,15 @@
    "at": "2026-10-29"
   },
   "aconvert.com": {
-   "bytes": 645123,
-   "controls": 65,
+   "bytes": 645113,
+   "controls": 71,
    "scripts": 6,
    "styles": 3,
    "nodes": 285,
    "routes": 33,
-   "weight": 676473,
+   "htmlControls": 65,
+   "counted": "rendered",
+   "weight": 676463,
    "at": "2026-10-29"
   },
   "activecommunityhaarlem.nl": {
@@ -226,11 +228,13 @@
   },
   "advancedscoreboard.com": {
    "bytes": 934612,
-   "controls": 72,
+   "controls": 79,
    "scripts": 43,
    "styles": 31,
    "nodes": 891,
    "routes": 5,
+   "htmlControls": 72,
+   "counted": "rendered",
    "weight": 1032022,
    "at": "2026-10-29"
   },
@@ -250,11 +254,13 @@
   },
   "agechecker.net": {
    "bytes": 1213772,
-   "controls": 58,
+   "controls": 60,
    "scripts": 6,
    "styles": 5,
    "nodes": 714,
    "routes": 22,
+   "htmlControls": 58,
+   "counted": "rendered",
    "weight": 1243912,
    "at": "2026-10-29"
   },
@@ -293,13 +299,15 @@
    "at": "2026-10-29"
   },
   "airwheel.net": {
-   "bytes": 635773,
-   "controls": 183,
+   "bytes": 636183,
+   "controls": 191,
    "scripts": 8,
    "styles": 3,
    "nodes": 818,
    "routes": 10,
-   "weight": 664953,
+   "htmlControls": 183,
+   "counted": "rendered",
+   "weight": 665363,
    "at": "2026-10-29"
   },
   "ajaxpickering.ca": {
@@ -458,13 +466,15 @@
    "at": "2026-10-29"
   },
   "arcticfoxhaircolor.com": {
-   "bytes": 533523,
-   "controls": 75,
+   "bytes": 533521,
+   "controls": 119,
    "scripts": 16,
    "styles": 12,
    "nodes": 633,
    "routes": 8,
-   "weight": 575853,
+   "htmlControls": 75,
+   "counted": "rendered",
+   "weight": 575851,
    "at": "2026-10-29"
   },
   "arfonts.net": {
@@ -478,13 +488,15 @@
    "at": "2026-10-29"
   },
   "arkencounter.com": {
-   "bytes": 1582122,
-   "controls": 71,
+   "bytes": 1582162,
+   "controls": 100,
    "scripts": 24,
    "styles": 9,
    "nodes": 357,
    "routes": 966,
-   "weight": 2116692,
+   "htmlControls": 71,
+   "counted": "rendered",
+   "weight": 2116732,
    "at": "2026-10-29"
   },
   "aruljohn.com": {
@@ -516,6 +528,8 @@
    "styles": 5,
    "nodes": 2401,
    "routes": 10,
+   "htmlControls": 24,
+   "counted": "rendered",
    "weight": 1088538,
    "at": "2026-10-29"
   },
@@ -564,13 +578,15 @@
    "at": "2026-10-29"
   },
   "base64.guru": {
-   "bytes": 412680,
+   "bytes": 413253,
    "controls": 163,
    "scripts": 4,
    "styles": 1,
    "nodes": 534,
    "routes": 135,
-   "weight": 493520,
+   "htmlControls": 163,
+   "counted": "rendered",
+   "weight": 494093,
    "at": "2026-10-29"
   },
   "base64encode.org": {
@@ -665,11 +681,13 @@
   },
   "bestfonts.pro": {
    "bytes": 403956,
-   "controls": 97,
+   "controls": 137,
    "scripts": 6,
    "styles": 1,
    "nodes": 541,
    "routes": 3427,
+   "htmlControls": 97,
+   "counted": "rendered",
    "weight": 2134866,
    "at": "2026-10-29"
   },
@@ -795,11 +813,13 @@
   },
   "brandcolors.net": {
    "bytes": 362294,
-   "controls": 20,
+   "controls": 3802,
    "scripts": 6,
    "styles": 1,
    "nodes": 189,
    "routes": 692,
+   "htmlControls": 20,
+   "counted": "rendered",
    "weight": 722184,
    "at": "2026-10-29"
   },
@@ -1010,13 +1030,15 @@
    "at": "2026-10-29"
   },
   "caffmoscommunity.com": {
-   "bytes": 1550922,
-   "controls": 65,
+   "bytes": 1550981,
+   "controls": 151,
    "scripts": 26,
    "styles": 18,
-   "nodes": 429,
-   "routes": 41,
-   "weight": 1627712,
+   "nodes": 431,
+   "routes": 42,
+   "htmlControls": 67,
+   "counted": "rendered",
+   "weight": 1628291,
    "at": "2026-10-29"
   },
   "cagliaricalcio.com": {
@@ -1206,13 +1228,15 @@
    "at": "2026-10-29"
   },
   "calculatorian.com": {
-   "bytes": 1093502,
+   "bytes": 1093501,
    "controls": 134,
    "scripts": 12,
    "styles": 10,
    "nodes": 320,
    "routes": 91,
-   "weight": 1166202,
+   "htmlControls": 134,
+   "counted": "rendered",
+   "weight": 1166201,
    "at": "2026-10-29"
   },
   "calculatorlib.com": {
@@ -1236,13 +1260,15 @@
    "at": "2026-10-29"
   },
   "calculoexato.com.br": {
-   "bytes": 1632456,
+   "bytes": 1634636,
    "controls": 51,
    "scripts": 16,
    "styles": 2,
    "nodes": 338,
    "routes": 122,
-   "weight": 1728836,
+   "htmlControls": 51,
+   "counted": "rendered",
+   "weight": 1731016,
    "at": "2026-10-29"
   },
   "calculojuridico.com.br": {
@@ -1342,13 +1368,15 @@
    "at": "2026-10-29"
   },
   "cashconverters.co.uk": {
-   "bytes": 2713411,
-   "controls": 121,
+   "bytes": 2714484,
+   "controls": 239,
    "scripts": 24,
    "styles": 3,
    "nodes": 545,
    "routes": 185,
-   "weight": 2859361,
+   "htmlControls": 121,
+   "counted": "rendered",
+   "weight": 2860434,
    "at": "2026-10-29"
   },
   "cashconverters.com.au": {
@@ -1460,13 +1488,15 @@
    "at": "2026-10-29"
   },
   "checkeremail.com": {
-   "bytes": 864577,
-   "controls": 32,
+   "bytes": 865362,
+   "controls": 39,
    "scripts": 18,
    "styles": 3,
    "nodes": 228,
    "routes": 144,
-   "weight": 974857,
+   "htmlControls": 32,
+   "counted": "rendered",
+   "weight": 975642,
    "at": "2026-10-29"
   },
   "chexlow.com": {
@@ -1626,13 +1656,15 @@
    "at": "2026-10-29"
   },
   "codicefiscaleonline.com": {
-   "bytes": 824147,
+   "bytes": 825364,
    "controls": 19,
    "scripts": 8,
    "styles": 1,
    "nodes": 287,
    "routes": 4,
-   "weight": 845017,
+   "htmlControls": 19,
+   "counted": "rendered",
+   "weight": 846234,
    "at": "2026-10-29"
   },
   "codmunity.gg": {
@@ -1681,11 +1713,13 @@
   },
   "color-hex.org": {
    "bytes": 376656,
-   "controls": 87,
+   "controls": 90,
    "scripts": 5,
    "styles": 5,
    "nodes": 360,
    "routes": 69,
+   "htmlControls": 87,
+   "counted": "rendered",
    "weight": 424756,
    "at": "2026-10-29"
   },
@@ -1710,13 +1744,15 @@
    "at": "2026-10-29"
   },
   "color-register.org": {
-   "bytes": 1037686,
-   "controls": 54,
+   "bytes": 1038407,
+   "controls": 67,
    "scripts": 30,
    "styles": 14,
    "nodes": 442,
    "routes": 6916,
-   "weight": 4560106,
+   "htmlControls": 54,
+   "counted": "rendered",
+   "weight": 4560827,
    "at": "2026-10-29"
   },
   "color.com": {
@@ -1736,6 +1772,8 @@
    "styles": 4,
    "nodes": 390,
    "routes": 228,
+   "htmlControls": 138,
+   "counted": "rendered",
    "weight": 586324,
    "at": "2026-10-29"
   },
@@ -1864,13 +1902,15 @@
    "at": "2026-10-29"
   },
   "coloradosos.gov": {
-   "bytes": 1540108,
+   "bytes": 1540318,
    "controls": 70,
    "scripts": 8,
    "styles": 5,
    "nodes": 317,
    "routes": 5555,
-   "weight": 4336778,
+   "htmlControls": 70,
+   "counted": "rendered",
+   "weight": 4336988,
    "at": "2026-10-29"
   },
   "coloradosprings.gov": {
@@ -1941,6 +1981,8 @@
    "styles": 2,
    "nodes": 505,
    "routes": 11184,
+   "htmlControls": 71,
+   "counted": "rendered",
    "weight": 5851348,
    "at": "2026-10-29"
   },
@@ -1987,13 +2029,15 @@
    "at": "2026-10-29"
   },
   "colordrop.io": {
-   "bytes": 505931,
-   "controls": 135,
+   "bytes": 509879,
+   "controls": 235,
    "scripts": 6,
    "styles": 2,
-   "nodes": 1670,
+   "nodes": 1714,
    "routes": 16,
-   "weight": 542631,
+   "htmlControls": 135,
+   "counted": "rendered",
+   "weight": 547019,
    "at": "2026-10-29"
   },
   "colorearm.com": {
@@ -2045,6 +2089,8 @@
    "styles": 8,
    "nodes": 800,
    "routes": 22,
+   "htmlControls": 128,
+   "counted": "rendered",
    "weight": 504384,
    "at": "2026-10-29"
   },
@@ -2090,11 +2136,13 @@
   },
   "colorindesign.ru": {
    "bytes": 107600,
-   "controls": 13,
+   "controls": 14,
    "scripts": 9,
    "styles": 7,
    "nodes": 163,
    "routes": 4,
+   "htmlControls": 13,
+   "counted": "rendered",
    "weight": 129230,
    "at": "2026-10-29"
   },
@@ -2129,23 +2177,27 @@
    "at": "2026-10-29"
   },
   "coloringhome.com": {
-   "bytes": 166615,
+   "bytes": 168971,
    "controls": 96,
    "scripts": 7,
    "styles": 4,
    "nodes": 349,
    "routes": 60,
-   "weight": 214105,
+   "htmlControls": 96,
+   "counted": "rendered",
+   "weight": 216461,
    "at": "2026-10-29"
   },
   "coloringnation.com": {
-   "bytes": 166615,
+   "bytes": 168971,
    "controls": 96,
    "scripts": 7,
    "styles": 4,
    "nodes": 349,
    "routes": 60,
-   "weight": 214105,
+   "htmlControls": 96,
+   "counted": "rendered",
+   "weight": 216461,
    "at": "2026-10-29"
   },
   "colorjigsaw.com": {
@@ -2155,17 +2207,21 @@
    "styles": 2,
    "nodes": 230,
    "routes": 6,
+   "htmlControls": 19,
+   "counted": "rendered",
    "weight": 101096,
    "at": "2026-10-29"
   },
   "colorlib.com": {
-   "bytes": 952743,
+   "bytes": 953960,
    "controls": 97,
    "scripts": 6,
    "styles": 2,
    "nodes": 629,
    "routes": 2,
-   "weight": 972033,
+   "htmlControls": 97,
+   "counted": "rendered",
+   "weight": 973250,
    "at": "2026-10-29"
   },
   "colorline.com": {
@@ -2239,13 +2295,15 @@
    "at": "2026-10-29"
   },
   "colormatters.com": {
-   "bytes": 530628,
-   "controls": 161,
+   "bytes": 530568,
+   "controls": 162,
    "scripts": 22,
    "styles": 19,
    "nodes": 868,
    "routes": 111,
-   "weight": 638808,
+   "htmlControls": 161,
+   "counted": "rendered",
+   "weight": 638748,
    "at": "2026-10-29"
   },
   "colormemine.com": {
@@ -2260,11 +2318,13 @@
   },
   "colormind.io": {
    "bytes": 233264,
-   "controls": 39,
+   "controls": 43,
    "scripts": 6,
    "styles": 12,
    "nodes": 311,
    "routes": 5,
+   "htmlControls": 39,
+   "counted": "rendered",
    "weight": 250874,
    "at": "2026-10-29"
   },
@@ -2287,6 +2347,8 @@
    "styles": 42,
    "nodes": 513,
    "routes": 15,
+   "htmlControls": 72,
+   "counted": "rendered",
    "weight": 714750,
    "at": "2026-10-29"
   },
@@ -2297,6 +2359,8 @@
    "styles": 2,
    "nodes": 425,
    "routes": 13,
+   "htmlControls": 64,
+   "counted": "rendered",
    "weight": 348383,
    "at": "2026-10-29"
   },
@@ -2353,6 +2417,8 @@
    "styles": 1,
    "nodes": 234,
    "routes": 28,
+   "htmlControls": 72,
+   "counted": "rendered",
    "weight": 67281,
    "at": "2026-10-29"
   },
@@ -2387,13 +2453,15 @@
    "at": "2026-10-29"
   },
   "communities-ni.gov.uk": {
-   "bytes": 692096,
-   "controls": 117,
+   "bytes": 692129,
+   "controls": 119,
    "scripts": 6,
    "styles": 8,
    "nodes": 570,
    "routes": 3,
-   "weight": 711296,
+   "htmlControls": 117,
+   "counted": "rendered",
+   "weight": 711329,
    "at": "2026-10-29"
   },
   "communityadvocate.com": {
@@ -2447,22 +2515,26 @@
    "at": "2026-10-29"
   },
   "communitycollegejobs.com": {
-   "bytes": 780313,
-   "controls": 91,
+   "bytes": 780393,
+   "controls": 111,
    "scripts": 16,
    "styles": 15,
-   "nodes": 395,
+   "nodes": 396,
    "routes": 500,
-   "weight": 1066263,
+   "htmlControls": 92,
+   "counted": "rendered",
+   "weight": 1066353,
    "at": "2026-10-29"
   },
   "communitydns.net": {
    "bytes": 101000,
-   "controls": 7,
+   "controls": 23,
    "scripts": 3,
    "styles": 2,
    "nodes": 108,
    "routes": 3,
+   "htmlControls": 7,
+   "counted": "rendered",
    "weight": 109580,
    "at": "2026-10-29"
   },
@@ -2539,13 +2611,15 @@
    "at": "2026-10-29"
   },
   "communityos.org": {
-   "bytes": 452476,
+   "bytes": 453049,
    "controls": 45,
    "scripts": 4,
    "styles": 5,
    "nodes": 176,
    "routes": 20,
-   "weight": 472236,
+   "htmlControls": 45,
+   "counted": "rendered",
+   "weight": 472809,
    "at": "2026-10-29"
   },
   "communityphone.org": {
@@ -2611,13 +2685,15 @@
    "at": "2026-10-29"
   },
   "compressnow.com": {
-   "bytes": 228199,
+   "bytes": 228207,
    "controls": 20,
    "scripts": 3,
    "styles": 1,
    "nodes": 138,
    "routes": 9,
-   "weight": 240079,
+   "htmlControls": 20,
+   "counted": "rendered",
+   "weight": 240087,
    "at": "2026-10-29"
   },
   "compresspng.com": {
@@ -2661,13 +2737,15 @@
    "at": "2026-10-29"
   },
   "confirmation.community": {
-   "bytes": 761165,
-   "controls": 41,
+   "bytes": 761185,
+   "controls": 42,
    "scripts": 31,
    "styles": 22,
    "nodes": 329,
    "routes": 18,
-   "weight": 835455,
+   "htmlControls": 41,
+   "counted": "rendered",
+   "weight": 835475,
    "at": "2026-10-29"
   },
   "consciouscommunitymagazine.com": {
@@ -2722,11 +2800,13 @@
   },
   "convertcart.com": {
    "bytes": 741819,
-   "controls": 11,
+   "controls": 104,
    "scripts": 19,
    "styles": 11,
    "nodes": 359,
    "routes": 5,
+   "htmlControls": 11,
+   "counted": "rendered",
    "weight": 785909,
    "at": "2026-10-29"
   },
@@ -2881,6 +2961,8 @@
    "styles": 1,
    "nodes": 64,
    "routes": 8,
+   "htmlControls": 14,
+   "counted": "rendered",
    "weight": 25118,
    "at": "2026-10-29"
   },
@@ -2953,13 +3035,15 @@
    "at": "2026-10-29"
   },
   "coreldrawdesign.com": {
-   "bytes": 1696025,
-   "controls": 82,
+   "bytes": 1696646,
+   "controls": 85,
    "scripts": 16,
    "styles": 9,
    "nodes": 952,
    "routes": 20,
-   "weight": 1747545,
+   "htmlControls": 82,
+   "counted": "rendered",
+   "weight": 1748166,
    "at": "2026-10-29"
   },
   "corhexa.com": {
@@ -3139,13 +3223,15 @@
    "at": "2026-10-29"
   },
   "cube.community": {
-   "bytes": 598434,
-   "controls": 56,
+   "bytes": 598610,
+   "controls": 61,
    "scripts": 7,
    "styles": 10,
    "nodes": 544,
    "routes": 28,
-   "weight": 631874,
+   "htmlControls": 56,
+   "counted": "rendered",
+   "weight": 632050,
    "at": "2026-10-29"
   },
   "cultofcalcio.com": {
@@ -3170,11 +3256,13 @@
   },
   "custompricecalculator.com": {
    "bytes": 429788,
-   "controls": 29,
+   "controls": 44,
    "scripts": 30,
    "styles": 29,
    "nodes": 799,
    "routes": 5,
+   "htmlControls": 29,
+   "counted": "rendered",
    "weight": 500278,
    "at": "2026-10-29"
   },
@@ -3185,17 +3273,21 @@
    "styles": 4,
    "nodes": 763,
    "routes": 50,
+   "htmlControls": 114,
+   "counted": "rendered",
    "weight": 240314,
    "at": "2026-10-29"
   },
   "dafont.com": {
-   "bytes": 639897,
-   "controls": 71,
+   "bytes": 641218,
+   "controls": 177,
    "scripts": 18,
    "styles": 3,
-   "nodes": 262,
+   "nodes": 271,
    "routes": 9,
-   "weight": 683017,
+   "htmlControls": 71,
+   "counted": "rendered",
+   "weight": 684428,
    "at": "2026-10-29"
   },
   "dailydicenetwork.uk": {
@@ -3275,6 +3367,8 @@
    "styles": 1,
    "nodes": 163,
    "routes": 6,
+   "htmlControls": 28,
+   "counted": "rendered",
    "weight": 90621,
    "at": "2026-10-29"
   },
@@ -3324,11 +3418,13 @@
   },
   "dentally.com": {
    "bytes": 1045803,
-   "controls": 90,
+   "controls": 99,
    "scripts": 12,
    "styles": 26,
    "nodes": 925,
    "routes": 274,
+   "htmlControls": 90,
+   "counted": "rendered",
    "weight": 1216053,
    "at": "2026-10-29"
   },
@@ -3348,11 +3444,13 @@
   },
   "devrandom.be": {
    "bytes": 530262,
-   "controls": 17,
+   "controls": 21,
    "scripts": 4,
    "styles": 2,
    "nodes": 143,
    "routes": 2,
+   "htmlControls": 17,
+   "counted": "rendered",
    "weight": 540692,
    "at": "2026-10-29"
   },
@@ -3485,13 +3583,15 @@
    "at": "2026-10-29"
   },
   "dicetower.com": {
-   "bytes": 348876,
-   "controls": 81,
+   "bytes": 346032,
+   "controls": 80,
    "scripts": 6,
    "styles": 3,
-   "nodes": 429,
+   "nodes": 403,
    "routes": 37,
-   "weight": 383666,
+   "htmlControls": 80,
+   "counted": "rendered",
+   "weight": 380562,
    "at": "2026-10-29"
   },
   "dicezone.uk": {
@@ -3519,13 +3619,15 @@
    "at": "2026-10-29"
   },
   "diffen.com": {
-   "bytes": 529926,
+   "bytes": 530647,
    "controls": 55,
    "scripts": 3,
    "styles": 1,
    "nodes": 188,
    "routes": 48,
-   "weight": 561806,
+   "htmlControls": 55,
+   "counted": "rendered",
+   "weight": 562527,
    "at": "2026-10-29"
   },
   "differ.blog": {
@@ -3568,13 +3670,15 @@
    "at": "2026-10-29"
   },
   "diffusionbee.com": {
-   "bytes": 1119565,
+   "bytes": 1120286,
    "controls": 27,
    "scripts": 8,
    "styles": 2,
    "nodes": 266,
    "routes": 4,
-   "weight": 1140225,
+   "htmlControls": 27,
+   "counted": "rendered",
+   "weight": 1140946,
    "at": "2026-10-29"
   },
   "distancescalculator.com": {
@@ -3604,6 +3708,8 @@
    "styles": 1,
    "nodes": 861,
    "routes": 6,
+   "htmlControls": 34,
+   "counted": "rendered",
    "weight": 1023964,
    "at": "2026-10-29"
   },
@@ -3654,6 +3760,8 @@
    "styles": 2,
    "nodes": 287,
    "routes": 628,
+   "htmlControls": 38,
+   "counted": "rendered",
    "weight": 1265137,
    "at": "2026-10-29"
   },
@@ -3669,11 +3777,13 @@
   },
   "drawnames.com": {
    "bytes": 178410,
-   "controls": 57,
+   "controls": 73,
    "scripts": 6,
    "styles": 2,
    "nodes": 815,
    "routes": 304,
+   "htmlControls": 57,
+   "counted": "rendered",
    "weight": 350560,
    "at": "2026-10-29"
   },
@@ -3756,6 +3866,8 @@
    "styles": 4,
    "nodes": 149,
    "routes": 338,
+   "htmlControls": 36,
+   "counted": "rendered",
    "weight": 251653,
    "at": "2026-10-29"
   },
@@ -3839,13 +3951,15 @@
    "at": "2026-10-29"
   },
   "ecommunity.com": {
-   "bytes": 788278,
-   "controls": 76,
+   "bytes": 788277,
+   "controls": 83,
    "scripts": 9,
    "styles": 3,
    "nodes": 388,
    "routes": 2,
-   "weight": 811158,
+   "htmlControls": 76,
+   "counted": "rendered",
+   "weight": 811157,
    "at": "2026-10-29"
   },
   "ediblecommunities.com": {
@@ -3875,6 +3989,8 @@
    "styles": 6,
    "nodes": 498,
    "routes": 19,
+   "htmlControls": 39,
+   "counted": "rendered",
    "weight": 552861,
    "at": "2026-10-29"
   },
@@ -3919,13 +4035,15 @@
    "at": "2026-10-29"
   },
   "emojiall.com": {
-   "bytes": 752244,
-   "controls": 96,
+   "bytes": 752964,
+   "controls": 131,
    "scripts": 6,
    "styles": 2,
    "nodes": 432,
    "routes": 651,
-   "weight": 1094064,
+   "htmlControls": 96,
+   "counted": "rendered",
+   "weight": 1094784,
    "at": "2026-10-29"
   },
   "emojicombos.com": {
@@ -3951,13 +4069,15 @@
    "at": "2026-10-29"
   },
   "emojigraph.org": {
-   "bytes": 523424,
+   "bytes": 524145,
    "controls": 65,
    "scripts": 3,
    "styles": 3,
    "nodes": 281,
    "routes": 26,
-   "weight": 545234,
+   "htmlControls": 65,
+   "counted": "rendered",
+   "weight": 545955,
    "at": "2026-10-29"
   },
   "emojiguide.com": {
@@ -4068,11 +4188,13 @@
   },
   "epoch.com": {
    "bytes": 2051900,
-   "controls": 29,
+   "controls": 34,
    "scripts": 7,
    "styles": 3,
    "nodes": 182,
    "routes": 12,
+   "htmlControls": 29,
+   "counted": "rendered",
    "weight": 2073720,
    "at": "2026-10-29"
   },
@@ -4088,11 +4210,13 @@
   },
   "epochteca.com": {
    "bytes": 946300,
-   "controls": 51,
+   "controls": 68,
    "scripts": 25,
    "styles": 12,
    "nodes": 721,
    "routes": 7,
+   "htmlControls": 51,
+   "counted": "rendered",
    "weight": 1007010,
    "at": "2026-10-29"
   },
@@ -4185,6 +4309,8 @@
    "styles": 28,
    "nodes": 342,
    "routes": 3,
+   "htmlControls": 51,
+   "counted": "rendered",
    "weight": 1051957,
    "at": "2026-10-29"
   },
@@ -4239,13 +4365,15 @@
    "at": "2026-10-29"
   },
   "fakemailgenerator.com": {
-   "bytes": 410357,
-   "controls": 18,
+   "bytes": 410353,
+   "controls": 19,
    "scripts": 9,
    "styles": 4,
    "nodes": 121,
    "routes": 3,
-   "weight": 431067,
+   "htmlControls": 18,
+   "counted": "rendered",
+   "weight": 431063,
    "at": "2026-10-29"
   },
   "fantacalcio.it": {
@@ -4263,13 +4391,15 @@
    "at": "2026-10-29"
   },
   "fasterwheeler.com": {
-   "bytes": 1241447,
+   "bytes": 1242159,
    "controls": 77,
    "scripts": 10,
    "styles": 1,
    "nodes": 471,
    "routes": 111,
-   "weight": 1321657,
+   "htmlControls": 77,
+   "counted": "rendered",
+   "weight": 1322369,
    "at": "2026-10-29"
   },
   "fdjunited.com": {
@@ -4313,6 +4443,8 @@
    "styles": 12,
    "nodes": 705,
    "routes": 22,
+   "htmlControls": 174,
+   "counted": "rendered",
    "weight": 547293,
    "at": "2026-10-29"
   },
@@ -4566,6 +4698,8 @@
    "styles": 5,
    "nodes": 227,
    "routes": 19,
+   "htmlControls": 27,
+   "counted": "rendered",
    "weight": 733213,
    "at": "2026-10-29"
   },
@@ -4694,13 +4828,15 @@
    "at": "2026-10-29"
   },
   "gigacalculator.com": {
-   "bytes": 946645,
+   "bytes": 946637,
    "controls": 149,
    "scripts": 10,
    "styles": 4,
    "nodes": 572,
    "routes": 102,
-   "weight": 1023365,
+   "htmlControls": 149,
+   "counted": "rendered",
+   "weight": 1023357,
    "at": "2026-10-29"
   },
   "github.com": {
@@ -4716,13 +4852,15 @@
    "at": "2026-10-29"
   },
   "gmgcolor.com": {
-   "bytes": 3895501,
-   "controls": 78,
+   "bytes": 3896718,
+   "controls": 88,
    "scripts": 13,
    "styles": 7,
    "nodes": 376,
    "routes": 5,
-   "weight": 3927761,
+   "htmlControls": 78,
+   "counted": "rendered",
+   "weight": 3928978,
    "at": "2026-10-29"
   },
   "gocolors.com": {
@@ -4788,13 +4926,15 @@
    "at": "2026-10-29"
   },
   "graphjson.com": {
-   "bytes": 1693822,
+   "bytes": 1694543,
    "controls": 69,
    "scripts": 20,
    "styles": 2,
    "nodes": 617,
    "routes": 205,
-   "weight": 1842492,
+   "htmlControls": 69,
+   "counted": "rendered",
+   "weight": 1843213,
    "at": "2026-10-29"
   },
   "greenwichcommunitydirectory.org.uk": {
@@ -4830,23 +4970,27 @@
    "at": "2026-10-29"
   },
   "healthexpertsociety.com": {
-   "bytes": 331861,
+   "bytes": 331864,
    "controls": 51,
    "scripts": 2,
    "styles": 5,
    "nodes": 428,
    "routes": 30,
-   "weight": 355141,
+   "htmlControls": 51,
+   "counted": "rendered",
+   "weight": 355144,
    "at": "2026-10-29"
   },
   "heritageunits.com": {
-   "bytes": 3681655,
-   "controls": 22,
+   "bytes": 3682376,
+   "controls": 49,
    "scripts": 14,
    "styles": 9,
    "nodes": 182,
    "routes": 14,
-   "weight": 3718475,
+   "htmlControls": 22,
+   "counted": "rendered",
+   "weight": 3719196,
    "at": "2026-10-29"
   },
   "hex-rays.com": {
@@ -4880,13 +5024,15 @@
    "at": "2026-10-29"
   },
   "hexabyte.se": {
-   "bytes": 336064,
-   "controls": 75,
+   "bytes": 335835,
+   "controls": 94,
    "scripts": 50,
-   "styles": 62,
-   "nodes": 961,
+   "styles": 60,
+   "nodes": 959,
    "routes": 5,
-   "weight": 448174,
+   "htmlControls": 75,
+   "counted": "rendered",
+   "weight": 447925,
    "at": "2026-10-29"
   },
   "hexagon.com": {
@@ -4906,6 +5052,8 @@
    "styles": 24,
    "nodes": 251,
    "routes": 2,
+   "htmlControls": 17,
+   "counted": "rendered",
    "weight": 293138,
    "at": "2026-10-29"
   },
@@ -4930,13 +5078,15 @@
    "at": "2026-10-29"
   },
   "hexcol.com": {
-   "bytes": 646701,
-   "controls": 91,
+   "bytes": 646695,
+   "controls": 95,
    "scripts": 11,
    "styles": 3,
    "nodes": 561,
    "routes": 3357,
-   "weight": 2352811,
+   "htmlControls": 91,
+   "counted": "rendered",
+   "weight": 2352805,
    "at": "2026-10-29"
   },
   "hexcolor16.com": {
@@ -4952,13 +5102,15 @@
    "at": "2026-10-29"
   },
   "hexcolorpicker.io": {
-   "bytes": 813198,
-   "controls": 95,
+   "bytes": 813241,
+   "controls": 0,
    "scripts": 10,
    "styles": 3,
    "nodes": 417,
    "routes": 4,
-   "weight": 839368,
+   "htmlControls": 95,
+   "counted": "rendered",
+   "weight": 839411,
    "at": "2026-10-29"
   },
   "hexcore.ru": {
@@ -4985,11 +5137,13 @@
   },
   "hexen.ai": {
    "bytes": 275469,
-   "controls": 23,
+   "controls": 26,
    "scripts": 5,
    "styles": 5,
    "nodes": 246,
    "routes": 0,
+   "htmlControls": 23,
+   "counted": "rendered",
    "weight": 287929,
    "at": "2026-10-29"
   },
@@ -5010,16 +5164,20 @@
    "styles": 1,
    "nodes": 190,
    "routes": 16,
+   "htmlControls": 38,
+   "counted": "rendered",
    "weight": 371202,
    "at": "2026-10-29"
   },
   "hexlet.io": {
    "bytes": 1801158,
-   "controls": 41,
+   "controls": 56,
    "scripts": 7,
    "styles": 27,
    "nodes": 419,
    "routes": 24,
+   "htmlControls": 41,
+   "counted": "rendered",
    "weight": 1831348,
    "at": "2026-10-29"
   },
@@ -5076,6 +5234,8 @@
    "styles": 4,
    "nodes": 731,
    "routes": 72,
+   "htmlControls": 121,
+   "counted": "rendered",
    "weight": 171225,
    "at": "2026-10-29"
   },
@@ -5213,13 +5373,15 @@
    "at": "2026-10-29"
   },
   "html-color-codes.info": {
-   "bytes": 1550631,
-   "controls": 31,
+   "bytes": 1852702,
+   "controls": 35,
    "scripts": 20,
    "styles": 5,
    "nodes": 299,
    "routes": 10,
-   "weight": 1598621,
+   "htmlControls": 31,
+   "counted": "rendered",
+   "weight": 1900692,
    "at": "2026-10-29"
   },
   "htmlcolorcodes.com": {
@@ -5265,13 +5427,15 @@
    "at": "2026-10-29"
   },
   "hyemoji.com": {
-   "bytes": 1929738,
-   "controls": 78,
+   "bytes": 1930003,
+   "controls": 0,
    "scripts": 17,
    "styles": 5,
    "nodes": 274,
    "routes": 30,
-   "weight": 1981478,
+   "htmlControls": 78,
+   "counted": "rendered",
+   "weight": 1981743,
    "at": "2026-10-29"
   },
   "hyperunit.xyz": {
@@ -5298,11 +5462,13 @@
   },
   "icalculator.com": {
    "bytes": 245223,
-   "controls": 58,
+   "controls": 61,
    "scripts": 8,
    "styles": 2,
    "nodes": 200,
    "routes": 10,
+   "htmlControls": 58,
+   "counted": "rendered",
    "weight": 268223,
    "at": "2026-10-29"
   },
@@ -5326,22 +5492,26 @@
    "at": "2026-10-29"
   },
   "igfonts.io": {
-   "bytes": 852301,
-   "controls": 11,
+   "bytes": 853021,
+   "controls": 12,
    "scripts": 20,
    "styles": 5,
    "nodes": 132,
    "routes": 1,
-   "weight": 894121,
+   "htmlControls": 11,
+   "counted": "rendered",
+   "weight": 894841,
    "at": "2026-10-29"
   },
   "illicitencounters.com": {
    "bytes": 332655,
-   "controls": 21,
+   "controls": 24,
    "scripts": 11,
    "styles": 4,
    "nodes": 215,
    "routes": 3,
+   "htmlControls": 21,
+   "counted": "rendered",
    "weight": 358305,
    "at": "2026-10-29"
   },
@@ -5396,6 +5566,8 @@
    "styles": 1,
    "nodes": 241,
    "routes": 0,
+   "htmlControls": 31,
+   "counted": "rendered",
    "weight": 56949,
    "at": "2026-10-29"
   },
@@ -5473,11 +5645,13 @@
   },
   "informunity.ru": {
    "bytes": 1718134,
-   "controls": 66,
+   "controls": 84,
    "scripts": 27,
    "styles": 3,
    "nodes": 484,
    "routes": 6,
+   "htmlControls": 66,
+   "counted": "rendered",
    "weight": 1779974,
    "at": "2026-10-29"
   },
@@ -5566,6 +5740,8 @@
    "styles": 11,
    "nodes": 431,
    "routes": 19,
+   "htmlControls": 27,
+   "counted": "rendered",
    "weight": 935883,
    "at": "2026-10-29"
   },
@@ -5656,11 +5832,13 @@
   },
   "json-schema.org": {
    "bytes": 860316,
-   "controls": 60,
+   "controls": 61,
    "scripts": 18,
    "styles": 3,
    "nodes": 364,
    "routes": 13,
+   "htmlControls": 60,
+   "counted": "rendered",
    "weight": 906456,
    "at": "2026-10-29"
   },
@@ -5695,6 +5873,8 @@
    "styles": 2,
    "nodes": 277,
    "routes": 3,
+   "htmlControls": 45,
+   "counted": "rendered",
    "weight": 588720,
    "at": "2026-10-29"
   },
@@ -5722,11 +5902,13 @@
   },
   "justfont.com": {
    "bytes": 370220,
-   "controls": 35,
+   "controls": 36,
    "scripts": 3,
    "styles": 9,
    "nodes": 286,
    "routes": 30,
+   "htmlControls": 35,
+   "counted": "rendered",
    "weight": 394080,
    "at": "2026-10-29"
   },
@@ -5773,13 +5955,15 @@
    "at": "2026-10-29"
   },
   "keydifferences.com": {
-   "bytes": 1304696,
-   "controls": 67,
+   "bytes": 1304758,
+   "controls": 70,
    "scripts": 22,
    "styles": 11,
    "nodes": 280,
    "routes": 1171,
-   "weight": 1936996,
+   "htmlControls": 67,
+   "counted": "rendered",
+   "weight": 1937058,
    "at": "2026-10-29"
   },
   "khanacademy.org": {
@@ -5796,21 +5980,25 @@
   },
   "kingdraw.cn": {
    "bytes": 866445,
-   "controls": 34,
+   "controls": 44,
    "scripts": 22,
    "styles": 6,
    "nodes": 303,
    "routes": 0,
+   "htmlControls": 34,
+   "counted": "rendered",
    "weight": 913475,
    "at": "2026-10-29"
   },
   "kingdraw.com": {
    "bytes": 866445,
-   "controls": 34,
+   "controls": 44,
    "scripts": 22,
    "styles": 6,
    "nodes": 303,
    "routes": 0,
+   "htmlControls": 34,
+   "counted": "rendered",
    "weight": 913475,
    "at": "2026-10-29"
   },
@@ -5908,11 +6096,13 @@
   },
   "koanruler.com": {
    "bytes": 502057,
-   "controls": 79,
+   "controls": 97,
    "scripts": 9,
    "styles": 4,
    "nodes": 366,
    "routes": 52,
+   "htmlControls": 79,
+   "counted": "rendered",
    "weight": 549717,
    "at": "2026-10-29"
   },
@@ -5923,6 +6113,8 @@
    "styles": 21,
    "nodes": 746,
    "routes": 95,
+   "htmlControls": 146,
+   "counted": "rendered",
    "weight": 1015405,
    "at": "2026-10-29"
   },
@@ -5971,6 +6163,8 @@
    "styles": 3,
    "nodes": 411,
    "routes": 35,
+   "htmlControls": 131,
+   "counted": "rendered",
    "weight": 2168253,
    "at": "2026-10-29"
   },
@@ -6066,11 +6260,13 @@
   },
   "loanwisecalculatoreasy.com": {
    "bytes": 29876,
-   "controls": 19,
+   "controls": 37,
    "scripts": 2,
    "styles": 2,
    "nodes": 216,
    "routes": 1,
+   "htmlControls": 19,
+   "counted": "rendered",
    "weight": 36536,
    "at": "2026-10-29"
   },
@@ -6327,6 +6523,8 @@
    "styles": 2,
    "nodes": 197,
    "routes": 375,
+   "htmlControls": 62,
+   "counted": "rendered",
    "weight": 530272,
    "at": "2026-10-29"
   },
@@ -6389,13 +6587,15 @@
    "at": "2026-10-29"
   },
   "mazegenerator.net": {
-   "bytes": 396884,
+   "bytes": 397457,
    "controls": 17,
    "scripts": 4,
    "styles": 1,
    "nodes": 101,
    "routes": 0,
-   "weight": 405894,
+   "htmlControls": 17,
+   "counted": "rendered",
+   "weight": 406467,
    "at": "2026-10-29"
   },
   "mconvert.net": {
@@ -6447,13 +6647,15 @@
    "at": "2026-10-29"
   },
   "millwallcommunity.org.uk": {
-   "bytes": 2940381,
-   "controls": 168,
+   "bytes": 2942322,
+   "controls": 258,
    "scripts": 24,
    "styles": 15,
-   "nodes": 693,
-   "routes": 67,
-   "weight": 3028811,
+   "nodes": 714,
+   "routes": 68,
+   "htmlControls": 171,
+   "counted": "rendered",
+   "weight": 3031462,
    "at": "2026-10-29"
   },
   "minacolor.com": {
@@ -6580,11 +6782,13 @@
   },
   "mundicolor.es": {
    "bytes": 901352,
-   "controls": 55,
+   "controls": 58,
    "scripts": 15,
    "styles": 3,
    "nodes": 302,
    "routes": 12,
+   "htmlControls": 55,
+   "counted": "rendered",
    "weight": 940372,
    "at": "2026-10-29"
   },
@@ -6599,13 +6803,15 @@
    "at": "2026-10-29"
   },
   "mycolor.space": {
-   "bytes": 790586,
+   "bytes": 791307,
    "controls": 17,
    "scripts": 11,
    "styles": 6,
    "nodes": 101,
    "routes": 2,
-   "weight": 814596,
+   "htmlControls": 17,
+   "counted": "rendered",
+   "weight": 815317,
    "at": "2026-10-29"
   },
   "mymemory.translated.net": {
@@ -6661,13 +6867,14 @@
    "at": "2026-10-29"
   },
   "name-generator.org.uk": {
-   "bytes": 8167856,
+   "bytes": 8151774,
    "controls": 102,
    "scripts": 20,
    "styles": 2,
    "nodes": 374,
    "routes": 432,
-   "weight": 8427596,
+   "counted": "unrendered",
+   "weight": 8411514,
    "at": "2026-10-29"
   },
   "namegenerator.com": {
@@ -6739,13 +6946,15 @@
    "at": "2026-10-29"
   },
   "ndscalc.ru": {
-   "bytes": 837781,
-   "controls": 6,
+   "bytes": 838338,
+   "controls": 7,
    "scripts": 10,
    "styles": 1,
    "nodes": 80,
    "routes": 0,
-   "weight": 858581,
+   "htmlControls": 6,
+   "counted": "rendered",
+   "weight": 859138,
    "at": "2026-10-29"
   },
   "neofortunereelsspace.nl": {
@@ -6760,6 +6969,18 @@
    "nodes": 1804,
    "routes": 10,
    "weight": 1095214,
+   "at": "2026-10-29"
+  },
+  "neuralframes.com": {
+   "bytes": 418343,
+   "controls": 83,
+   "scripts": 29,
+   "styles": 140,
+   "nodes": 1077,
+   "routes": 1,
+   "htmlControls": 77,
+   "counted": "rendered",
+   "weight": 487613,
    "at": "2026-10-29"
   },
   "nnamdicenter.org": {
@@ -6859,6 +7080,8 @@
    "styles": 4,
    "nodes": 245,
    "routes": 51,
+   "htmlControls": 60,
+   "counted": "rendered",
    "weight": 283704,
    "at": "2026-10-29"
   },
@@ -6899,13 +7122,15 @@
    "at": "2026-10-29"
   },
   "online-calculator.com": {
-   "bytes": 1173255,
+   "bytes": 1173305,
    "controls": 78,
    "scripts": 9,
    "styles": 1,
    "nodes": 384,
    "routes": 100,
-   "weight": 1245095,
+   "htmlControls": 78,
+   "counted": "rendered",
+   "weight": 1245145,
    "at": "2026-10-29"
   },
   "online-convert.com": {
@@ -6972,23 +7197,27 @@
    "at": "2026-10-29"
   },
   "onlinepasswordgenerator.ru": {
-   "bytes": 608272,
-   "controls": 14,
+   "bytes": 608260,
+   "controls": 23,
    "scripts": 10,
    "styles": 1,
    "nodes": 105,
    "routes": 4,
-   "weight": 631322,
+   "htmlControls": 14,
+   "counted": "rendered",
+   "weight": 631310,
    "at": "2026-10-29"
   },
   "onlinetonegenerator.com": {
-   "bytes": 1185416,
-   "controls": 38,
+   "bytes": 1186129,
+   "controls": 37,
    "scripts": 11,
    "styles": 4,
    "nodes": 165,
    "routes": 21,
-   "weight": 1219566,
+   "htmlControls": 38,
+   "counted": "rendered",
+   "weight": 1220279,
    "at": "2026-10-29"
   },
   "onlinevideoconverter.to": {
@@ -7026,13 +7255,15 @@
    "at": "2026-10-29"
   },
   "openspeedtest.com": {
-   "bytes": 264623,
+   "bytes": 264607,
    "controls": 25,
    "scripts": 9,
    "styles": 5,
    "nodes": 221,
    "routes": 9,
-   "weight": 289333,
+   "htmlControls": 25,
+   "counted": "rendered",
+   "weight": 289317,
    "at": "2026-10-29"
   },
   "opensystemscommunity.nl": {
@@ -7040,13 +7271,15 @@
    "at": "2026-10-29"
   },
   "opentimestamps.org": {
-   "bytes": 2074443,
-   "controls": 68,
+   "bytes": 2072405,
+   "controls": 64,
    "scripts": 7,
    "styles": 2,
-   "nodes": 366,
+   "nodes": 338,
    "routes": 1,
-   "weight": 2092603,
+   "htmlControls": 64,
+   "counted": "rendered",
+   "weight": 2090285,
    "at": "2026-10-29"
   },
   "opportunitiesforyoungkenyans.co.ke": {
@@ -7183,11 +7416,13 @@
   },
   "passwordboss.com": {
    "bytes": 359854,
-   "controls": 102,
+   "controls": 106,
    "scripts": 39,
    "styles": 58,
    "nodes": 1201,
    "routes": 9,
+   "htmlControls": 102,
+   "counted": "rendered",
    "weight": 454364,
    "at": "2026-10-29"
   },
@@ -7242,13 +7477,15 @@
    "at": "2026-10-29"
   },
   "pdfcompressor.com": {
-   "bytes": 693363,
-   "controls": 14,
+   "bytes": 693360,
+   "controls": 30,
    "scripts": 11,
    "styles": 3,
    "nodes": 174,
    "routes": 16,
-   "weight": 725103,
+   "htmlControls": 14,
+   "counted": "rendered",
+   "weight": 725100,
    "at": "2026-10-29"
   },
   "pdfconverteronline.com": {
@@ -7291,13 +7528,15 @@
    "at": "2026-10-29"
   },
   "penguinrandomhouseaudio.com": {
-   "bytes": 645489,
-   "controls": 15,
+   "bytes": 645493,
+   "controls": 150,
    "scripts": 69,
    "styles": 22,
    "nodes": 251,
    "routes": 6,
-   "weight": 788999,
+   "htmlControls": 15,
+   "counted": "rendered",
+   "weight": 789003,
    "at": "2026-10-29"
   },
   "penguinrandomhousehighereducation.com": {
@@ -7443,13 +7682,15 @@
    "at": "2026-10-29"
   },
   "politicalcompass.org": {
-   "bytes": 3955366,
+   "bytes": 3956087,
    "controls": 143,
    "scripts": 26,
    "styles": 1,
    "nodes": 768,
    "routes": 77,
-   "weight": 4053546,
+   "htmlControls": 143,
+   "counted": "rendered",
+   "weight": 4054267,
    "at": "2026-10-29"
   },
   "pomodorotimer.online": {
@@ -7463,13 +7704,15 @@
    "at": "2026-10-29"
   },
   "portchecker.co": {
-   "bytes": 243012,
+   "bytes": 243027,
    "controls": 18,
    "scripts": 6,
    "styles": 3,
    "nodes": 187,
    "routes": 6,
-   "weight": 259882,
+   "htmlControls": 18,
+   "counted": "rendered",
+   "weight": 259897,
    "at": "2026-10-29"
   },
   "practicalcaravan.com": {
@@ -7695,6 +7938,8 @@
    "styles": 1,
    "nodes": 210,
    "routes": 14,
+   "htmlControls": 39,
+   "counted": "rendered",
    "weight": 51430,
    "at": "2026-10-29"
   },
@@ -7717,6 +7962,8 @@
    "styles": 39,
    "nodes": 395,
    "routes": 5,
+   "htmlControls": 51,
+   "counted": "rendered",
    "weight": 568490,
    "at": "2026-10-29"
   },
@@ -7775,13 +8022,15 @@
    "at": "2026-10-29"
   },
   "randomhousebooks.com": {
-   "bytes": 507406,
-   "controls": 21,
+   "bytes": 507407,
+   "controls": 106,
    "scripts": 68,
    "styles": 23,
    "nodes": 275,
    "routes": 6,
-   "weight": 649156,
+   "htmlControls": 21,
+   "counted": "rendered",
+   "weight": 649157,
    "at": "2026-10-29"
   },
   "randomlists.com": {
@@ -7817,13 +8066,15 @@
    "at": "2026-10-29"
   },
   "randomus.ru": {
-   "bytes": 1877284,
-   "controls": 57,
+   "bytes": 1877234,
+   "controls": 64,
    "scripts": 8,
    "styles": 3,
    "nodes": 376,
    "routes": 24,
-   "weight": 1909044,
+   "htmlControls": 57,
+   "counted": "rendered",
+   "weight": 1908994,
    "at": "2026-10-29"
   },
   "randomuser.me": {
@@ -7839,13 +8090,15 @@
    "at": "2026-10-29"
   },
   "randomvideochat.me": {
-   "bytes": 1201629,
-   "controls": 10,
+   "bytes": 1201687,
+   "controls": 11,
    "scripts": 22,
    "styles": 4,
    "nodes": 258,
    "routes": 12,
-   "weight": 1254209,
+   "htmlControls": 10,
+   "counted": "rendered",
+   "weight": 1254267,
    "at": "2026-10-29"
   },
   "rangen.co.uk": {
@@ -7879,6 +8132,8 @@
    "styles": 4,
    "nodes": 316,
    "routes": 16,
+   "htmlControls": 45,
+   "counted": "rendered",
    "weight": 502509,
    "at": "2026-10-29"
   },
@@ -7975,13 +8230,15 @@
    "at": "2026-10-29"
   },
   "regexone.com": {
-   "bytes": 934805,
-   "controls": 94,
+   "bytes": 935536,
+   "controls": 93,
    "scripts": 13,
    "styles": 4,
    "nodes": 322,
    "routes": 32,
-   "weight": 980025,
+   "htmlControls": 94,
+   "counted": "rendered",
+   "weight": 980756,
    "at": "2026-10-29"
   },
   "remoteok.com": {
@@ -8029,13 +8286,15 @@
    "at": "2026-10-29"
   },
   "resizepixel.com": {
-   "bytes": 1389589,
-   "controls": 45,
+   "bytes": 1390302,
+   "controls": 50,
    "scripts": 9,
    "styles": 2,
    "nodes": 161,
    "routes": 600,
-   "weight": 1709199,
+   "htmlControls": 45,
+   "counted": "rendered",
+   "weight": 1709912,
    "at": "2026-10-29"
   },
   "responsivedesignchecker.com": {
@@ -8045,6 +8304,8 @@
    "styles": 3,
    "nodes": 158,
    "routes": 1,
+   "htmlControls": 32,
+   "counted": "rendered",
    "weight": 394564,
    "at": "2026-10-29"
   },
@@ -8125,13 +8386,15 @@
    "at": "2026-10-29"
   },
   "runitonce.com": {
-   "bytes": 1250580,
-   "controls": 174,
+   "bytes": 1251661,
+   "controls": 175,
    "scripts": 17,
    "styles": 3,
    "nodes": 822,
    "routes": 112,
-   "weight": 1348800,
+   "htmlControls": 174,
+   "counted": "rendered",
+   "weight": 1349881,
    "at": "2026-10-29"
   },
   "runity.ru": {
@@ -8186,11 +8449,13 @@
   },
   "sciwheel.com": {
    "bytes": 944272,
-   "controls": 46,
+   "controls": 57,
    "scripts": 24,
    "styles": 3,
    "nodes": 621,
    "routes": 5,
+   "htmlControls": 46,
+   "counted": "rendered",
    "weight": 1000982,
    "at": "2026-10-29"
   },
@@ -8245,13 +8510,15 @@
    "at": "2026-10-29"
   },
   "seriouswheels.com": {
-   "bytes": 576656,
-   "controls": 72,
+   "bytes": 576655,
+   "controls": 73,
    "scripts": 11,
    "styles": 5,
    "nodes": 273,
    "routes": 0,
-   "weight": 601386,
+   "htmlControls": 72,
+   "counted": "rendered",
+   "weight": 601385,
    "at": "2026-10-29"
   },
   "serverdiscounter.com": {
@@ -8261,6 +8528,8 @@
    "styles": 2,
    "nodes": 43,
    "routes": 53,
+   "htmlControls": 3,
+   "counted": "rendered",
    "weight": 251268,
    "at": "2026-10-29"
   },
@@ -8353,6 +8622,8 @@
    "styles": 1,
    "nodes": 159,
    "routes": 12,
+   "htmlControls": 25,
+   "counted": "rendered",
    "weight": 204994,
    "at": "2026-10-29"
   },
@@ -8387,23 +8658,27 @@
    "at": "2026-10-29"
   },
   "sketch.io": {
-   "bytes": 425841,
-   "controls": 45,
+   "bytes": 426333,
+   "controls": 48,
    "scripts": 8,
    "styles": 3,
    "nodes": 324,
    "routes": 50,
-   "weight": 470081,
+   "htmlControls": 45,
+   "counted": "rendered",
+   "weight": 470573,
    "at": "2026-10-29"
   },
   "sketch.london": {
-   "bytes": 4567829,
-   "controls": 71,
+   "bytes": 4570356,
+   "controls": 178,
    "scripts": 15,
    "styles": 4,
    "nodes": 1581,
    "routes": 13,
-   "weight": 4620139,
+   "htmlControls": 71,
+   "counted": "rendered",
+   "weight": 4622666,
    "at": "2026-10-29"
   },
   "sketchapp.com": {
@@ -8418,11 +8693,13 @@
   },
   "sketchbook.com": {
    "bytes": 3308552,
-   "controls": 37,
+   "controls": 38,
    "scripts": 34,
    "styles": 37,
    "nodes": 507,
    "routes": 129,
+   "htmlControls": 37,
+   "counted": "rendered",
    "weight": 3446122,
    "at": "2026-10-29"
   },
@@ -8514,11 +8791,13 @@
   },
   "slackcommunity.com": {
    "bytes": 2726572,
-   "controls": 36,
+   "controls": 181,
    "scripts": 19,
    "styles": 6,
    "nodes": 280,
    "routes": 98,
+   "htmlControls": 36,
+   "counted": "rendered",
    "weight": 2816372,
    "at": "2026-10-29"
   },
@@ -8529,6 +8808,8 @@
    "styles": 1,
    "nodes": 319,
    "routes": 30,
+   "htmlControls": 58,
+   "counted": "rendered",
    "weight": 104198,
    "at": "2026-10-29"
   },
@@ -8623,27 +8904,33 @@
    "styles": 1,
    "nodes": 281,
    "routes": 110,
+   "htmlControls": 45,
+   "counted": "rendered",
    "weight": 394318,
    "at": "2026-10-29"
   },
   "speedcheckerapi.com": {
-   "bytes": 316131,
+   "bytes": 320508,
    "controls": 45,
    "scripts": 8,
    "styles": 1,
    "nodes": 281,
    "routes": 110,
-   "weight": 389941,
+   "htmlControls": 45,
+   "counted": "rendered",
+   "weight": 394318,
    "at": "2026-10-29"
   },
   "speedtest.com.sg": {
-   "bytes": 622604,
-   "controls": 10,
+   "bytes": 623325,
+   "controls": 13,
    "scripts": 6,
    "styles": 2,
    "nodes": 155,
    "routes": 3,
-   "weight": 637654,
+   "htmlControls": 10,
+   "counted": "rendered",
+   "weight": 638375,
    "at": "2026-10-29"
   },
   "speedtest.net": {
@@ -8690,31 +8977,37 @@
   },
   "speedtest.ru": {
    "bytes": 724221,
-   "controls": 10,
+   "controls": 14,
    "scripts": 27,
    "styles": 1,
    "nodes": 190,
    "routes": 5,
+   "htmlControls": 10,
+   "counted": "rendered",
    "weight": 782621,
    "at": "2026-10-29"
   },
   "speedtest.sg": {
-   "bytes": 622604,
-   "controls": 10,
+   "bytes": 623325,
+   "controls": 13,
    "scripts": 6,
    "styles": 2,
    "nodes": 155,
    "routes": 3,
-   "weight": 637654,
+   "htmlControls": 10,
+   "counted": "rendered",
+   "weight": 638375,
    "at": "2026-10-29"
   },
   "speedtest.vn": {
    "bytes": 747391,
-   "controls": 69,
+   "controls": 75,
    "scripts": 17,
    "styles": 8,
    "nodes": 441,
    "routes": 16,
+   "htmlControls": 69,
+   "counted": "rendered",
    "weight": 793801,
    "at": "2026-10-29"
   },
@@ -8750,11 +9043,13 @@
   },
   "sponsorunited.com": {
    "bytes": 1823032,
-   "controls": 100,
+   "controls": 186,
    "scripts": 24,
    "styles": 8,
    "nodes": 1046,
    "routes": 773,
+   "htmlControls": 100,
+   "counted": "rendered",
    "weight": 2267992,
    "at": "2026-10-29"
   },
@@ -8827,13 +9122,15 @@
    "at": "2026-10-29"
   },
   "steamcommunity.com": {
-   "bytes": 645660,
-   "controls": 110,
+   "bytes": 645657,
+   "controls": 227,
    "scripts": 32,
    "styles": 16,
    "nodes": 375,
    "routes": 10,
-   "weight": 718410,
+   "htmlControls": 110,
+   "counted": "rendered",
+   "weight": 718407,
    "at": "2026-10-29"
   },
   "stockanalysis.com": {
@@ -8956,31 +9253,37 @@
   },
   "streamingunity.dog": {
    "bytes": 289351,
-   "controls": 40,
+   "controls": 64,
    "scripts": 6,
    "styles": 4,
    "nodes": 397,
    "routes": 4,
+   "htmlControls": 40,
+   "counted": "rendered",
    "weight": 307321,
    "at": "2026-10-29"
   },
   "streamingunity.fun": {
    "bytes": 289351,
-   "controls": 40,
+   "controls": 64,
    "scripts": 6,
    "styles": 4,
    "nodes": 397,
    "routes": 4,
+   "htmlControls": 40,
+   "counted": "rendered",
    "weight": 307321,
    "at": "2026-10-29"
   },
   "streamingunity.win": {
    "bytes": 289351,
-   "controls": 40,
+   "controls": 64,
    "scripts": 6,
    "styles": 4,
    "nodes": 397,
    "routes": 4,
+   "htmlControls": 40,
+   "counted": "rendered",
    "weight": 307321,
    "at": "2026-10-29"
   },
@@ -9031,13 +9334,15 @@
    "at": "2026-10-29"
   },
   "suncommunitynews.com": {
-   "bytes": 886498,
-   "controls": 49,
+   "bytes": 887071,
+   "controls": 238,
    "scripts": 47,
    "styles": 16,
    "nodes": 845,
    "routes": 21,
-   "weight": 999448,
+   "htmlControls": 49,
+   "counted": "rendered",
+   "weight": 1000021,
    "at": "2026-10-29"
   },
   "supercolorapp.com": {
@@ -9120,11 +9425,13 @@
   },
   "syncsketch.dev": {
    "bytes": 348657,
-   "controls": 19,
+   "controls": 65,
    "scripts": 15,
    "styles": 4,
    "nodes": 187,
    "routes": 4,
+   "htmlControls": 19,
+   "counted": "rendered",
    "weight": 382527,
    "at": "2026-10-29"
   },
@@ -9153,13 +9460,15 @@
    "at": "2026-10-29"
   },
   "tallycount.app": {
-   "bytes": 2204182,
-   "controls": 27,
+   "bytes": 2204670,
+   "controls": 44,
    "scripts": 6,
    "styles": 1,
    "nodes": 301,
    "routes": 8,
-   "weight": 2223192,
+   "htmlControls": 27,
+   "counted": "rendered",
+   "weight": 2223680,
    "at": "2026-10-29"
   },
   "tasty.co": {
@@ -9185,13 +9494,15 @@
    "at": "2026-10-29"
   },
   "teamcolorcodes.com": {
-   "bytes": 349008,
-   "controls": 108,
+   "bytes": 349009,
+   "controls": 119,
    "scripts": 11,
    "styles": 2,
    "nodes": 435,
    "routes": 4,
-   "weight": 377358,
+   "htmlControls": 108,
+   "counted": "rendered",
+   "weight": 377359,
    "at": "2026-10-29"
   },
   "teampassword.com": {
@@ -9232,11 +9543,13 @@
   },
   "testandcalc.com": {
    "bytes": 664937,
-   "controls": 76,
+   "controls": 77,
    "scripts": 7,
    "styles": 5,
    "nodes": 323,
    "routes": 296,
+   "htmlControls": 76,
+   "counted": "rendered",
    "weight": 830167,
    "at": "2026-10-29"
   },
@@ -9251,13 +9564,15 @@
    "at": "2026-10-29"
   },
   "testerhome.com": {
-   "bytes": 2140317,
-   "controls": 227,
+   "bytes": 2140316,
+   "controls": 229,
    "scripts": 7,
    "styles": 3,
    "nodes": 718,
    "routes": 138,
-   "weight": 2230497,
+   "htmlControls": 227,
+   "counted": "rendered",
+   "weight": 2230496,
    "at": "2026-10-29"
   },
   "testerup.com": {
@@ -9484,11 +9799,13 @@
   },
   "ti84calc.com": {
    "bytes": 1546314,
-   "controls": 31,
+   "controls": 35,
    "scripts": 13,
    "styles": 3,
    "nodes": 201,
    "routes": 6,
+   "htmlControls": 31,
+   "counted": "rendered",
    "weight": 1577324,
    "at": "2026-10-29"
   },
@@ -9521,13 +9838,15 @@
    "at": "2026-10-29"
   },
   "timeclockwizard.com": {
-   "bytes": 1003146,
+   "bytes": 1003867,
    "controls": 44,
    "scripts": 23,
    "styles": 40,
    "nodes": 796,
    "routes": 4,
-   "weight": 1059106,
+   "htmlControls": 44,
+   "counted": "rendered",
+   "weight": 1059827,
    "at": "2026-10-29"
   },
   "timer365.com": {
@@ -9537,6 +9856,8 @@
    "styles": 1,
    "nodes": 342,
    "routes": 27,
+   "htmlControls": 47,
+   "counted": "rendered",
    "weight": 260216,
    "at": "2026-10-29"
   },
@@ -9616,11 +9937,13 @@
   },
   "tm.community": {
    "bytes": 1893780,
-   "controls": 17,
+   "controls": 18,
    "scripts": 14,
    "styles": 72,
    "nodes": 360,
    "routes": 3,
+   "htmlControls": 17,
+   "counted": "rendered",
    "weight": 1926880,
    "at": "2026-10-29"
   },
@@ -9661,13 +9984,15 @@
    "at": "2026-10-29"
   },
   "top-password.com": {
-   "bytes": 647147,
-   "controls": 84,
+   "bytes": 647868,
+   "controls": 85,
    "scripts": 5,
    "styles": 3,
    "nodes": 261,
    "routes": 376,
-   "weight": 847757,
+   "htmlControls": 84,
+   "counted": "rendered",
+   "weight": 848478,
    "at": "2026-10-29"
   },
   "topcommunityshop.nl": {
@@ -9706,11 +10031,13 @@
   },
   "trackdiff.com": {
    "bytes": 795114,
-   "controls": 23,
+   "controls": 26,
    "scripts": 8,
    "styles": 4,
    "nodes": 218,
    "routes": 8,
+   "htmlControls": 23,
+   "counted": "rendered",
    "weight": 817294,
    "at": "2026-10-29"
   },
@@ -9830,11 +10157,13 @@
   },
   "typo3.community": {
    "bytes": 1112984,
-   "controls": 82,
+   "controls": 88,
    "scripts": 6,
    "styles": 4,
    "nodes": 522,
    "routes": 1,
+   "htmlControls": 82,
+   "counted": "rendered",
    "weight": 1130704,
    "at": "2026-10-29"
   },
@@ -9843,22 +10172,26 @@
    "at": "2026-10-29"
   },
   "ufonts.com": {
-   "bytes": 757476,
-   "controls": 90,
+   "bytes": 757547,
+   "controls": 93,
    "scripts": 13,
    "styles": 3,
    "nodes": 251,
    "routes": 9,
-   "weight": 790486,
+   "htmlControls": 90,
+   "counted": "rendered",
+   "weight": 790557,
    "at": "2026-10-29"
   },
   "uixcolors.com": {
    "bytes": 857357,
-   "controls": 56,
+   "controls": 60,
    "scripts": 47,
    "styles": 4,
    "nodes": 533,
    "routes": 626,
+   "htmlControls": 56,
+   "counted": "rendered",
    "weight": 1269687,
    "at": "2026-10-29"
   },
@@ -9884,11 +10217,13 @@
   },
   "unit.no": {
    "bytes": 1468776,
-   "controls": 26,
+   "controls": 35,
    "scripts": 15,
    "styles": 3,
    "nodes": 296,
    "routes": 1,
+   "htmlControls": 26,
+   "counted": "rendered",
    "weight": 1502236,
    "at": "2026-10-29"
   },
@@ -9924,11 +10259,13 @@
   },
   "unitbv.ro": {
    "bytes": 437603,
-   "controls": 129,
+   "controls": 252,
    "scripts": 35,
    "styles": 22,
    "nodes": 883,
    "routes": 60,
+   "htmlControls": 129,
+   "counted": "rendered",
    "weight": 546433,
    "at": "2026-10-29"
   },
@@ -10050,21 +10387,25 @@
   },
   "united-hoster.de": {
    "bytes": 839273,
-   "controls": 156,
+   "controls": 180,
    "scripts": 19,
    "styles": 4,
    "nodes": 694,
    "routes": 53,
+   "htmlControls": 156,
+   "counted": "rendered",
    "weight": 910713,
    "at": "2026-10-29"
   },
   "united-kiosk.de": {
    "bytes": 210689,
-   "controls": 93,
+   "controls": 117,
    "scripts": 14,
    "styles": 9,
    "nodes": 514,
    "routes": 39,
+   "htmlControls": 93,
+   "counted": "rendered",
    "weight": 263329,
    "at": "2026-10-29"
   },
@@ -10121,13 +10462,15 @@
    "at": "2026-10-29"
   },
   "uniteddiversity.coop": {
-   "bytes": 4109466,
+   "bytes": 4110554,
    "controls": 66,
    "scripts": 12,
    "styles": 5,
    "nodes": 418,
    "routes": 4,
-   "weight": 4139646,
+   "htmlControls": 66,
+   "counted": "rendered",
+   "weight": 4140734,
    "at": "2026-10-29"
   },
   "uniteddomains.com": {
@@ -10220,13 +10563,15 @@
    "at": "2026-10-29"
   },
   "unitedpatriotnews.com": {
-   "bytes": 1519590,
+   "bytes": 1519592,
    "controls": 96,
    "scripts": 23,
    "styles": 24,
    "nodes": 492,
    "routes": 4,
-   "weight": 1572510,
+   "htmlControls": 96,
+   "counted": "rendered",
+   "weight": 1572512,
    "at": "2026-10-29"
   },
   "unitedperfumes.com": {
@@ -10346,13 +10691,15 @@
    "at": "2026-10-29"
   },
   "uniteforliteracy.com": {
-   "bytes": 1009091,
-   "controls": 24,
+   "bytes": 1010308,
+   "controls": 583,
    "scripts": 6,
    "styles": 12,
    "nodes": 302,
    "routes": 3,
-   "weight": 1025611,
+   "htmlControls": 24,
+   "counted": "rendered",
+   "weight": 1026828,
    "at": "2026-10-29"
   },
   "unitel.bo": {
@@ -10432,6 +10779,8 @@
    "styles": 5,
    "nodes": 85,
    "routes": 5,
+   "htmlControls": 10,
+   "counted": "rendered",
    "weight": 644341,
    "at": "2026-10-29"
   },
@@ -10496,22 +10845,26 @@
    "at": "2026-10-29"
   },
   "unitool.ai": {
-   "bytes": 1302402,
-   "controls": 31,
+   "bytes": 1302662,
+   "controls": 133,
    "scripts": 49,
    "styles": 11,
    "nodes": 308,
    "routes": 150,
-   "weight": 1478482,
+   "htmlControls": 31,
+   "counted": "rendered",
+   "weight": 1478742,
    "at": "2026-10-29"
   },
   "unitpay.ru": {
    "bytes": 4188601,
-   "controls": 85,
+   "controls": 87,
    "scripts": 12,
    "styles": 5,
    "nodes": 512,
    "routes": 8,
+   "htmlControls": 85,
+   "counted": "rendered",
    "weight": 4221721,
    "at": "2026-10-29"
   },
@@ -10606,13 +10959,15 @@
    "at": "2026-10-29"
   },
   "unityroom.com": {
-   "bytes": 1238893,
-   "controls": 226,
+   "bytes": 1239016,
+   "controls": 227,
    "scripts": 11,
    "styles": 2,
    "nodes": 1059,
    "routes": 140,
-   "weight": 1341483,
+   "htmlControls": 226,
+   "counted": "rendered",
+   "weight": 1341606,
    "at": "2026-10-29"
   },
   "upcolorado.com": {
@@ -10626,13 +10981,15 @@
    "at": "2026-10-29"
   },
   "uphex.com": {
-   "bytes": 407430,
+   "bytes": 410109,
    "controls": 31,
    "scripts": 6,
    "styles": 5,
    "nodes": 468,
-   "routes": 437,
-   "weight": 642610,
+   "routes": 443,
+   "htmlControls": 31,
+   "counted": "rendered",
+   "weight": 648289,
    "at": "2026-10-29"
   },
   "upmedicalcouncil.org": {
@@ -10712,6 +11069,8 @@
    "styles": 17,
    "nodes": 625,
    "routes": 667,
+   "htmlControls": 81,
+   "counted": "rendered",
    "weight": 4487936,
    "at": "2026-10-29"
   },
@@ -10751,11 +11110,13 @@
   },
   "videounit.net": {
    "bytes": 69646,
-   "controls": 12,
+   "controls": 13,
    "scripts": 1,
    "styles": 2,
    "nodes": 254,
    "routes": 0,
+   "htmlControls": 12,
+   "counted": "rendered",
    "weight": 74186,
    "at": "2026-10-29"
   },
@@ -10801,11 +11162,13 @@
   },
   "w3counter.com": {
    "bytes": 358544,
-   "controls": 28,
+   "controls": 46,
    "scripts": 11,
    "styles": 4,
    "nodes": 262,
    "routes": 6,
+   "htmlControls": 28,
+   "counted": "rendered",
    "weight": 386164,
    "at": "2026-10-29"
   },
@@ -10830,13 +11193,15 @@
    "at": "2026-10-29"
   },
   "watercalculator.org": {
-   "bytes": 1179261,
+   "bytes": 1180040,
    "controls": 43,
    "scripts": 11,
    "styles": 12,
    "nodes": 214,
    "routes": 9,
-   "weight": 1207901,
+   "htmlControls": 43,
+   "counted": "rendered",
+   "weight": 1208680,
    "at": "2026-10-29"
   },
   "weartesters.com": {
@@ -10931,13 +11296,15 @@
    "at": "2026-10-29"
   },
   "whatismyip.org": {
-   "bytes": 1058370,
-   "controls": 33,
+   "bytes": 1059105,
+   "controls": 44,
    "scripts": 7,
    "styles": 8,
    "nodes": 242,
    "routes": 3,
-   "weight": 1076290,
+   "htmlControls": 33,
+   "counted": "rendered",
+   "weight": 1077025,
    "at": "2026-10-29"
   },
   "wheel-size.com": {
@@ -10965,13 +11332,15 @@
    "at": "2026-10-29"
   },
   "wheelfunrentals.com": {
-   "bytes": 1022908,
-   "controls": 40,
+   "bytes": 1024125,
+   "controls": 41,
    "scripts": 26,
    "styles": 8,
    "nodes": 328,
    "routes": 5,
-   "weight": 1080688,
+   "htmlControls": 40,
+   "counted": "rendered",
+   "weight": 1081905,
    "at": "2026-10-29"
   },
   "wheelgroup.uk": {
@@ -11003,6 +11372,8 @@
    "styles": 1,
    "nodes": 146,
    "routes": 0,
+   "htmlControls": 29,
+   "counted": "rendered",
    "weight": 27521,
    "at": "2026-10-29"
   },
@@ -11059,6 +11430,8 @@
    "styles": 1,
    "nodes": 59,
    "routes": 0,
+   "htmlControls": 6,
+   "counted": "rendered",
    "weight": 112094,
    "at": "2026-10-29"
   },
@@ -11069,6 +11442,8 @@
    "styles": 2,
    "nodes": 99,
    "routes": 0,
+   "htmlControls": 14,
+   "counted": "rendered",
    "weight": 16681,
    "at": "2026-10-29"
   },
@@ -11230,11 +11605,13 @@
   },
   "worldsmostethicalcompanies.com": {
    "bytes": 1792341,
-   "controls": 29,
+   "controls": 40,
    "scripts": 17,
    "styles": 12,
    "nodes": 654,
    "routes": 1,
+   "htmlControls": 29,
+   "counted": "rendered",
    "weight": 1833381,
    "at": "2026-10-29"
   },
@@ -11334,13 +11711,15 @@
    "at": "2026-10-29"
   },
   "zcashcommunity.com": {
-   "bytes": 1536336,
-   "controls": 59,
+   "bytes": 1536333,
+   "controls": 55,
    "scripts": 25,
    "styles": 21,
    "nodes": 689,
    "routes": 9,
-   "weight": 1597726,
+   "htmlControls": 59,
+   "counted": "rendered",
+   "weight": 1597723,
    "at": "2026-10-29"
   },
   "zigwheels.com": {
@@ -11360,6 +11739,8 @@
    "styles": 1,
    "nodes": 46,
    "routes": 3,
+   "htmlControls": 16,
+   "counted": "rendered",
    "weight": 116159,
    "at": "2026-10-29"
   },
