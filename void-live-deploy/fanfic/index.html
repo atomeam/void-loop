@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fan fiction: stories posted on open boards, no account · Verse</title>
+<meta name="description" content="An open writing community where people post what they write. Fandom boards anyone can start, stories as threads, a Writing Room that keeps drafts on your device. No seeded stories, no accounts.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Fan fiction · Verse">
+<meta property="og:description" content="Fandom and genre boards anyone can start, stories posted as threads, a Writing Room on your device. No accounts.">
+<meta property="og:url" content="https://a-to-mind.com/fanfic/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/fanfic/ (owner, 2026-10-29: "build the page"): a writing archive that only reads the anonymous boards (GET /api/boards);
+     posting happens on /boards/ through its own form and bot check, the Writing Room stays on this device (lib/fanfic.js, fanfic/app.js) */
+  :root { color-scheme: light dark; --bg: #f3f1f8; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; --green: #3d7a1c; --pin: #fff6c8; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --green: #8fcf5f; --pin: #2d2840; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 14px 16px 60px; }
+  h1 { font-size: 24px; margin: 0 0 2px; font-weight: 700; overflow-wrap: anywhere; }
+  .sub { font-size: 15px; color: var(--soft); margin: 0 0 10px; max-width: 46em; }
+  h2 { font-size: 17px; font-weight: 700; margin: 26px 0 6px; scroll-margin-top: 12px; }
+  a { color: var(--accent); }
+  input, textarea, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  textarea { min-height: 260px; resize: vertical; line-height: 1.6; }
+  input:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; }
+  button.go, .btn.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .row > input, .row > select { flex: 1 1 160px; width: auto; }
+  #period { flex: 0 1 220px; }
+  .crumbs { font-size: 14px; display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; } .crumbs a { min-height: 32px; display: inline-flex; align-items: center; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.2em; } .note.bad { color: var(--bad); }
+  .badge { font-size: 11px; font-weight: 700; border: 1px solid currentColor; border-radius: 6px; padding: 0 5px; margin-left: 6px; vertical-align: 2px; color: var(--soft); white-space: nowrap; }
+  .badge.adult { color: var(--bad); } .badge.new { color: var(--accent); }
+  .panel { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; margin: 10px 0; }
+  .empty { border: 1px dashed var(--line); border-radius: 14px; padding: 22px 18px; text-align: center; color: var(--soft); }
+  .empty p { margin: 0 0 10px; } .empty .big { font-size: 18px; color: var(--ink); font-weight: 600; }
+  /* pinned notices: Verse's own words, folded */
+  .pins { display: grid; gap: 8px; }
+  details.pin { border: 1px solid var(--line); border-radius: 12px; background: var(--box); padding: 4px 14px; }
+  details.pin > summary { cursor: pointer; font-weight: 600; min-height: 40px; display: flex; align-items: center; gap: 8px; list-style: none; }
+  details.pin > summary::-webkit-details-marker { display: none; }
+  details.pin > summary::before { content: '📌'; font-size: 14px; }
+  details.pin .by { font-size: 12px; font-weight: 400; color: var(--soft); margin-left: auto; }
+  details.pin ul, details.pin ol { margin: 4px 0 10px; padding-left: 20px; font-size: 15px; } details.pin p { font-size: 15px; margin: 4px 0 10px; }
+  /* fandom chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .chips button[aria-pressed=true] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); }
+  .chips small { color: inherit; opacity: .75; }
+  /* the topic list: a table on wide screens, stacked rows on a phone */
+  table.topics { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 6px; }
+  table.topics th { text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--soft); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  table.topics td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.topics td.num, table.topics th.num { text-align: right; white-space: nowrap; }
+  table.topics td.when { white-space: nowrap; color: var(--soft); font-size: 13px; }
+  table.topics a.t { font-weight: 600; text-decoration: none; color: var(--ink); overflow-wrap: anywhere; }
+  table.topics tr.unread a.t { color: var(--accent); }
+  table.topics .ex { display: block; font-size: 13px; color: var(--soft); margin-top: 2px; overflow-wrap: anywhere; }
+  table.topics .bd { font-size: 12px; color: var(--soft); text-decoration: none; }
+  .au { color: var(--green); font-weight: 600; overflow-wrap: anywhere; } .au .trip { font-weight: 400; }
+  @media (max-width: 640px) {
+    table.topics thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    table.topics, table.topics tbody, table.topics tr, table.topics td { display: block; width: auto; }
+    table.topics tr { border-bottom: 1px solid var(--line); padding: 10px 0; }
+    table.topics td { border: 0; padding: 1px 0; text-align: left !important; }
+    table.topics td.c-replies, table.topics td.c-author, table.topics td.when { display: inline; font-size: 13px; }
+    table.topics td.c-replies::after, table.topics td.c-author::after { content: ' · '; color: var(--soft); }
+    table.topics td.c-replies::before { content: 'Replies '; color: var(--soft); }
+    table.topics td.when::before { content: 'Last post '; }
+  }
+  .pages { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; align-items: center; }
+  .pages [aria-current] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); }
+  /* search results */
+  ul.res { list-style: none; margin: 8px 0 0; padding: 0; } ul.res li { border-top: 1px solid var(--line); padding: 8px 0; overflow-wrap: anywhere; } ul.res li small { display: block; color: var(--soft); font-size: 13px; }
+  /* the Writing Room */
+  .room { display: grid; gap: 10px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--soft); }
+  .stats b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .field { display: block; margin: 0; } .field > span { display: block; font-size: 13px; color: var(--soft); margin: 0 0 2px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } @media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+  dl.gl { margin: 6px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 15px; }
+  dl.gl dt { font-weight: 700; } dl.gl dd { margin: 0; color: var(--ink); }
+  @media (max-width: 640px) { dl.gl { grid-template-columns: 1fr; gap: 0; } dl.gl dd { margin-bottom: 8px; } }
+  .gate { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; background: var(--box); margin: 8px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 30px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/fanfic/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Fan fiction: stories on open boards","url":"https://a-to-mind.com/fanfic/","description":"An open writing community where people post what they write: fandom and genre boards anyone can start, stories as threads with replies, pinned guides, paging and a period filter, search, a writing glossary and a Writing Room that keeps drafts, word count, reading time and a writing streak on your device. No seeded stories, no accounts.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"fan fiction, fanfic archive, post a story, writing community, anonymous writing board, word count, writing streak","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Boards","item":"https://a-to-mind.com/boards/"},{"@type":"ListItem","position":3,"name":"Fan fiction","item":"https://a-to-mind.com/fanfic/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main id="top">
+  <nav class="crumbs" aria-label="Where you are"><a href="/">Verse</a><a href="/boards/">Boards</a><a href="/fanfic/" aria-current="page">Fan fiction</a><a href="/boards/rules/">Rules</a></nav>
+  <h1>Archive Descriptions &amp; Stories</h1>
+  <p class="sub">An open writing community where people post what they write. No seeded stories, no accounts, just boards.</p>
+  <nav class="row" aria-label="On this page"><a class="btn go" href="#room">Writing Room</a><a class="btn" href="#search">Search</a><a class="btn" href="#glossary">Writing Glossary</a><a class="btn" id="startBoard" href="/boards/?new=1&amp;fic=1#new">Start a fandom board</a></nav>
+
+  <h2 id="pinsH">Pinned notices</h2>
+  <div class="pins" aria-labelledby="pinsH">
+    <details class="pin"><summary>How to format chapters <span class="by">Verse</span></summary>
+      <ol>
+        <li>Start a story as a new thread on its fandom board. The subject is the story's title; put the rating, the characters and a one-line summary at the top of the first post.</li>
+        <li>Post each next chapter as a reply in the same thread, starting with its number and name, like <b>Chapter 2: The Long Way Round</b>.</li>
+        <li>One post holds up to 4,000 characters and 120 lines. The Writing Room cuts a longer chapter into parts at paragraph breaks for you, so nothing is lost.</li>
+        <li>Leave a blank line between paragraphs. A line that starts with &gt; shows as a quote, and [spoiler]words[/spoiler] hides words until tapped.</li>
+        <li>Want later chapters to show they are yours? Post as name#password: the board shows your name and a mark only that password makes (a tripcode). The password is never kept.</li>
+      </ol>
+    </details>
+    <details class="pin"><summary>Report spam or abuse here <span class="by">Verse</span></summary>
+      <p>Every post on every board has a Report button. Three reports from different people hide a post until it is looked at. Use it for spam, flooding, personal information about anyone, a story on the wrong board or with the wrong rating, and anything illegal. For a takedown or anything urgent, write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+    </details>
+    <details class="pin"><summary>Writing rules and guidelines <span class="by">Verse</span></summary>
+      <ul>
+        <li>The <a href="/boards/rules/">board rules</a> apply here: anything legal, no doxxing, illegal content removed and reported.</li>
+        <li>Adult stories go only on boards marked 18+. Sexual content involving anyone under 18 is never allowed, in any fandom, whatever the canon says.</li>
+        <li>Post your own writing. Credit a co-writer, a beta reader or a prompt you answered.</li>
+        <li>Tag what a reader would want warned about (major character death, violence, self-harm) at the top of the first post.</li>
+        <li>Be kind in replies. Critique the story, never the writer.</li>
+      </ul>
+    </details>
+  </div>
+
+  <h2 id="topicsH">Fandom and genre boards</h2>
+  <p class="note">Each board here was started by someone who wanted it. A story is a thread; its chapters are the replies.</p>
+  <div class="chips" id="fandoms" role="group" aria-label="Show topics from"></div>
+  <div class="gate" id="adultGate" hidden><span id="adultSay"></span><button type="button" id="adultYes">I am 18 or older: show them</button></div>
+  <div class="row" id="topicTools">
+    <label class="vh" for="period">Show topics from</label>
+    <select id="period"><option value="all">All topics</option><option value="today">Today</option><option value="week">This week</option></select>
+    <button type="button" id="markRead">Mark all read</button>
+  </div>
+  <p class="note" id="tNote" role="status">Reading the boards…</p>
+  <table class="topics" id="topics" hidden>
+    <thead><tr><th scope="col">Topics</th><th scope="col" class="num">Replies</th><th scope="col">Author</th><th scope="col">Last post</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <nav class="pages" id="pages" aria-label="Pages of topics" hidden></nav>
+  <div class="empty" id="empty" hidden>
+    <p class="big">An open room for stories. Post your first thread to begin.</p>
+    <p id="emptyMore">Start a board for your fandom or genre, then post a story to it. You can write it in the Writing Room first.</p>
+    <div class="row" style="justify-content:center"><a class="btn go" id="emptyGo" href="/boards/?new=1&amp;fic=1#new">Start a fandom board</a><a class="btn" href="#room">Open the Writing Room</a></div>
+  </div>
+
+  <h2 id="search">Search</h2>
+  <form id="sf" role="search" class="row" autocomplete="off">
+    <label class="vh" for="sq">Search every fandom board</label>
+    <input type="search" id="sq" placeholder="Search stories and chapters" maxlength="200" enterkeyhint="search">
+    <button type="submit" class="go">Search</button>
+  </form>
+  <p class="note" id="sNote" role="status"></p>
+  <ul class="res" id="sres" hidden></ul>
+
+  <h2 id="room">Writing Room</h2>
+  <p class="note">Your drafts stay on this device. Nothing here is sent anywhere until you post it to a board yourself.</p>
+  <section class="panel room" aria-labelledby="room">
+    <div class="row" style="margin:0">
+      <label class="vh" for="drafts">Your drafts</label>
+      <select id="drafts"></select>
+      <button type="button" id="newDraft">New draft</button>
+      <button type="button" id="delDraft">Delete draft</button>
+    </div>
+    <div class="two">
+      <label class="field"><span>Title</span><input id="dTitle" maxlength="100" placeholder="Untitled story"></label>
+      <label class="field"><span>Board to post to</span><select id="dBoard"><option value="">Choose a fandom board</option></select></label>
+    </div>
+    <label class="field"><span>Your story</span><textarea id="dText" placeholder="Start writing. It saves as you type, on this device only."></textarea></label>
+    <div class="stats" id="stats" aria-live="polite"><span><b id="sWords">0</b> words</span><span id="sRead">nothing yet</span><span><b id="sChars">0</b> characters</span><span id="sParts"></span><span>Streak <b id="sStreak">0</b> days</span><span>Today <b id="sToday">0</b> words</span></div>
+    <div class="row" style="margin:0">
+      <button type="button" class="go" id="post">Post to board</button>
+      <button type="button" id="export">Export .txt</button>
+      <button type="button" id="copy">Copy text</button>
+      <button type="button" id="share">Share link</button>
+    </div>
+    <p class="note" id="rNote" role="status"></p>
+  </section>
+  <div class="gate" id="shared" hidden><span id="sharedSay"></span><button type="button" class="go" id="sharedKeep">Keep it in my Writing Room</button><button type="button" id="sharedNo">No thanks</button></div>
+
+  <h2 id="glossary">Writing Glossary</h2>
+  <dl class="gl">
+    <dt>AU</dt><dd>Alternate universe: the characters you know, put in a different world or a different turn of events.</dd>
+    <dt>Canon</dt><dd>What the original book, show or game says happened.</dd>
+    <dt>Headcanon</dt><dd>Something you believe about a character that canon never says.</dd>
+    <dt>OC</dt><dd>Original character: one you made up and added to someone else's world.</dd>
+    <dt>One-shot</dt><dd>A complete story in one chapter.</dd>
+    <dt>Drabble</dt><dd>A very short story, traditionally exactly 100 words.</dd>
+    <dt>WIP</dt><dd>Work in progress: a story still being written, chapter by chapter.</dd>
+    <dt>Beta reader</dt><dd>Someone who reads a draft before it is posted and helps fix it.</dd>
+    <dt>Ship</dt><dd>A pairing of two characters you want together; an OTP is your one true pairing.</dd>
+    <dt>Slow burn</dt><dd>A relationship that takes a long time to happen.</dd>
+    <dt>Fluff</dt><dd>Light, warm, happy writing. Angst is its opposite: pain and longing.</dd>
+    <dt>Hurt/comfort</dt><dd>One character is hurt and another looks after them.</dd>
+    <dt>Crossover</dt><dd>Characters from two or more stories meet.</dd>
+    <dt>Fix-it</dt><dd>A story that changes something in canon the writer did not like.</dd>
+    <dt>Prompt</dt><dd>An idea or line someone offers for others to write from.</dd>
+    <dt>Rating</dt><dd>Who the story is for. Here a board is either work-safe or 18+, and adult stories go only on 18+ boards.</dd>
+  </dl>
+
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/boards/">Boards</a> <a href="/word-count/">Word count</a> <a href="/notes/">Notes</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>
+    <p>Stories here are posts on Verse's <a href="/boards/">anonymous boards</a> and follow <a href="/boards/rules/">the rules</a>. Takedown requests and reports of illegal content: <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+    <p>No accounts. The Writing Room, what you have read and your 18+ answer are kept on this device only. <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
+  </footer>
+</main>
+<script type="module" src="/fanfic/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

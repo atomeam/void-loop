@@ -18,6 +18,12 @@
     const size = (n) => (n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB');
     const link = (b, t, no) => '/boards/?b=' + b + (t ? '&t=' + t : '') + (no ? '#p' + no : '');
     const code = (q.get('b') || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 10), tno = +(q.get('t') || 0) || 0;
+    // the Writing Room's hand-off (/fanfic/, lib/fanfic.js HANDOFF): a story waits on this device and fills this board's own form, one part at a
+    // time; the visitor reads it over and posts each part through the same bot check and rates as any post. Nothing is posted for them.
+    const FIC = 'a2m.void.fanfic.post.v1', ficGet = () => { try { const h = JSON.parse(localStorage.getItem(FIC) || 'null'); return h && Array.isArray(h.parts) && Date.now() - (h.at || 0) < 6 * 3600e3 && h.i < h.parts.length ? h : null; } catch (_) { return null; } };
+    const ficSet = (h) => { try { if (h && h.i < h.parts.length) localStorage.setItem(FIC, JSON.stringify(h)); else localStorage.removeItem(FIC); } catch (_) {} };
+    const ficFor = (b, t) => { const h = ficGet(); return h && h.b === b && (t ? h.t === t : !h.t) ? h : null; };
+    const ficFill = (f, b, t) => { const h = ficFor(b, t); if (!h) return; if (!t) f.elements.sub.value = h.sub || ''; f.elements.body.value = h.parts[h.i]; f.dataset.fic = String(h.i); f.querySelector('.note').textContent = 'From your Writing Room: part ' + (h.i + 1) + ' of ' + h.parts.length + '. Read it over, then post.' + (h.parts.length > 1 && !t ? ' The next parts follow as replies.' : ''); };
 
     // ---- the bot check: Turnstile when the site has it, else a proof of work done in the background ----
     let cfg = null; const cfgP = api('?config').then((c) => (cfg = c)).catch(() => (cfg = {}));
@@ -171,7 +177,9 @@
           if (!r.ok) { bot.reset(); throw new Error(r.say || 'not posted'); }
           me.name = f.elements.name.value.split('#')[0]; (me.mine[b] = me.mine[b] || []).push(r.no); me.mine[b] = me.mine[b].slice(-300);
           if (!t || /\bwatch\b/i.test(data.options)) watchSet(b, r.thread, data.sub || B.excerpt(data.body, 60), true);
+          const fh = f.dataset.fic != null && ficFor(b, t); delete f.dataset.fic; if (fh) { fh.i++; if (!t) fh.t = r.thread; ficSet(fh); }
           keep(); f.reset(); f.elements.name.value = me.name; bot.reset(); note.textContent = 'Posted: No. ' + r.no;
+          if (t && fh) ficFill(f, b, t); // the next part of the story waits in the reply form
           if (!t) location.href = link(b, r.thread); else { await update(true); const n = $('p' + r.no); if (n) n.scrollIntoView({ block: 'center' }); }
         } catch (err) { note.textContent = err.message; note.classList.add('bad'); }
         finally { send.disabled = false; }
@@ -203,6 +211,7 @@
       if (q.get('new') === '1' || location.hash === '#new') { $('new').open = true; }
       const pre = q.get('code') && document.querySelector('#starters a[data-code="' + CSS.escape(q.get('code')) + '"]'); // a starter link fills the form, so the link restores it
       if (pre && $('new').open) { $('nCode').value = pre.dataset.code; $('nTitle').value = q.get('title') || pre.dataset.title; $('nAbout').value = pre.dataset.about; }
+      if (q.get('fic') === '1' && $('new').open) { $('nCode').value = 'fic'; $('nAbout').value = 'Fan fiction: '; const tx = document.querySelector('input[name=nMode][value=text]'); if (tx) tx.checked = true; const fn = el('p', 'note', 'A fandom board for /fanfic/: keep the code starting with fic (like ficpotter) or the line saying fan fiction, and it shows there. Text only suits stories: threads run to 1,000 posts and need no picture.'); $('nNote').before(fn); } // from /fanfic/'s "Start a fandom board"
       const r = await api(''); const list = (r.boards || []).filter((x) => !$('sfw').checked || !x.nsfw);
       const by = { active: (a, b) => b.last - a.last, new: (a, b) => b.created - a.created, posts: (a, b) => b.posts - a.posts, code: (a, b) => a.code.localeCompare(b.code) }[sort] || ((a, b) => b.last - a.last);
       list.sort(by); const ul = $('boards'); ul.replaceChildren();
@@ -256,6 +265,7 @@
       crumbs([['All boards', '/boards/'], ['/' + bd.code + '/', link(bd.code)], ['Rules', '/boards/rules/']]);
       for (const [id, v, h] of [['tCat', 'cat', link(bd.code)], ['tIdx', 'idx', link(bd.code) + '&page=1'], ['tArc', 'arc', link(bd.code) + '&archive=1']]) { $(id).href = h; if (v === view) $(id).setAttribute('aria-current', 'page'); }
       $('newT').hidden = bd.locked; $('newT').onclick = () => { postForm($('threadForm'), bd.code, bd, 0); $('threadForm').querySelector('textarea').focus(); };
+      if (!bd.locked && q.get('compose') === '1' && ficFor(bd.code, 0)) { const f = postForm($('threadForm'), bd.code, bd, 0); ficFill(f, bd.code, 0); f.scrollIntoView({ block: 'start' }); }
       $('catTools').hidden = view !== 'cat'; $('cat').hidden = view !== 'cat'; $('idx').hidden = view !== 'idx'; $('arc').hidden = view !== 'arc';
       if (view === 'cat') {
         const draw = () => { const qq = $('cq').value.trim(), list = B.order(r.threads, $('csort').value).filter((t) => !qq || B.matches(qq, t)); const g = $('cat'); g.replaceChildren();
@@ -296,6 +306,7 @@
       if (closed) $('tNotice').replaceChildren(el('p', 'notice', op.archived ? 'This thread is in the archive: read only.' : 'This thread is locked: no new replies.'));
       replyTo = closed ? null : (n) => { if (!$('replyForm').firstChild) postForm($('replyForm'), bd.code, bd, tno); $('replyBar').hidden = true; const ta = $('replyForm').querySelector('textarea'); const at = ta.selectionStart || ta.value.length; const ins = '>>' + n + '\n'; ta.value = ta.value.slice(0, at) + ins + ta.value.slice(at); ta.focus(); ta.selectionStart = ta.selectionEnd = at + ins.length; ta.scrollIntoView({ block: 'center' }); };
       $('replyBar').hidden = !!closed; $('replyOpen').onclick = () => { postForm($('replyForm'), bd.code, bd, tno); $('replyBar').hidden = true; $('replyForm').querySelector('textarea').focus(); };
+      if (!closed && ficFor(bd.code, tno)) { const f = postForm($('replyForm'), bd.code, bd, tno); ficFill(f, bd.code, tno); $('replyBar').hidden = true; }
       const k = bd.code + '/' + tno, wb = $('watchBtn'), drawW = () => { wb.textContent = me.watch[k] ? 'Unwatch' : 'Watch'; wb.setAttribute('aria-pressed', me.watch[k] ? 'true' : 'false'); };
       wb.onclick = () => { watchSet(bd.code, tno, op.sub || B.excerpt(op.body, 60), !me.watch[k], tState.last); drawW(); }; drawW();
       $('posts').replaceChildren(); add(r.posts); reload = () => update(true);
