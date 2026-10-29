@@ -388,7 +388,7 @@
    "chapter": "make",
    "name": "converter",
    "title": "Converter",
-   "line": "\"mp4 to mp3\", \"file converter\", \"cut mp3\", \"merge audio\", \"change gif speed\", \"epub to txt\", \"add image to pdf\"",
+   "line": "A card that opens the file converter on the tool the ask names",
    "examples": [
     "mp4 to mp3",
     "file converter",

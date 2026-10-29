@@ -1,8 +1,9 @@
 /**
- * converter skill: "mp4 to mp3", "file converter", "cut mp3", "merge audio", "change gif speed", "epub to txt", "add image to pdf" (2026-10-29,
- * assimilates onlineconverter.com). A card that opens the file converter (/converter/) on the tool the ask names (lib/converter-ask.js). The page
- * lists all 106 tools onlineconverter.com lists, each with Verse's honest status (here, on another Verse page, in part, or not on Verse yet), and
- * does the ones it can on this device. This file stays light: the stage loads every skill at start, so the converter itself is not imported.
+ * converter skill - a card that opens the file converter (/converter/) on the tool the ask names.
+ * "mp4 to mp3", "file converter", "cut mp3", "merge audio", "change gif speed", "epub to txt", "add image to pdf" (2026-10-29, assimilates
+ * onlineconverter.com; lib/converter-ask.js). The page lists all 106 tools onlineconverter.com lists, each with Verse's honest status (here, on
+ * another Verse page, in part, or not on Verse yet), and does the ones it can on this device. This file stays light: the stage loads every skill
+ * at start, so the converter itself is not imported.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { converterAskOf } from '../lib/converter-ask.js';

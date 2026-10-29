@@ -70,9 +70,9 @@ export const CATALOG = Object.freeze([
   tool('Document', 'PPTX to Video', 'no', { note: NO_VIDEO }),
   tool('Document', 'Split PDF', 'verse', { href: '/pdf/?tool=split', note: 'On Verse PDF tools.' }),
   UNIT('Area', '/convert/?k=area'), tool('Unit', 'Currency', 'verse', { href: '/markets/?s=EURUSD', note: 'On Verse markets, at the European Central Bank rates.' }),
-  UNIT('Length / Distance', '/convert/?k=length'), UNIT('Speed', '/convert/?k=speed'), UNIT('Temperature', '/convert/?k=temperature'), UNIT('Time', '/convert/?k=time'),
+  UNIT('Length / Distance', '/convert/?k=length'), UNIT('Speed', '/convert/?k=speed'), UNIT('Temperature', '/convert/?k=temperature'), UNIT('Time', '/convert/?k=time'), // void-review: ok (k= names a unit kind on /convert/, not a key)
   tool('Unit', 'Time Zone', 'verse', { href: '/time/', note: 'On the Verse time zone converter.' }),
-  UNIT('Volume / Capacity', '/convert/?k=volume'), UNIT('Weight / Mass', '/convert/?k=mass'),
+  UNIT('Volume / Capacity', '/convert/?k=volume'), UNIT('Weight / Mass', '/convert/?k=mass'), // void-review: ok (k= names a unit kind on /convert/, not a key)
 ].map(Object.freeze));
 
 export const toolOf = (id) => CATALOG.find((t) => t.id === id) || null;
