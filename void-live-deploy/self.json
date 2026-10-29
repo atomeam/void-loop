@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T13:08:14Z",
+   "subject": "test: christmas countdown check reads the seconds in either of its two reads (a read on the minute has none)"
+  },
+  {
+   "at": "2026-10-29T13:05:55Z",
+   "subject": "Incident: the browser suite failed on 96ff5182 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T13:03:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T12:58:11Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T12:07:42Z",
    "subject": "3D miniatures: a reframe frees the old ground only after the compile in flight settles"
-  },
-  {
-   "at": "2026-10-29T12:04:39Z",
-   "subject": "Naming audit: fail only on drift, not on gaps the gate already records"
-  },
-  {
-   "at": "2026-10-29T11:52:59Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T11:50:16Z",
-   "subject": "Subject eval: 54 of 54 live"
   }
  ],
  "builders": {
