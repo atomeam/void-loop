@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Social · Verse</title>
+<meta name="description" content="Communities on Verse, Reddit style: a feed sorted hot, new or top, posts and threaded comments, up and down votes, following, saved posts, search, reports and an RSS feed per community. No account; what you follow stays on your device. English and German.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Social · Verse">
+<meta property="og:description" content="Communities with a feed sorted hot, new or top, threaded comments, votes, following and RSS per community. No account.">
+<meta property="og:url" content="https://a-to-mind.com/social/">
+<meta property="og:image" content="https://a-to-mind.com/og/social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Social on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Social · Verse">
+<meta name="twitter:description" content="Communities with a feed sorted hot, new or top, threaded comments, votes, following and RSS per community. No account.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/social.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 4px; } h3 { font-size: 16px; margin: 2px 0 4px; }
+  .top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .top h1 { flex: 1 1 auto; margin: 0; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 6px 0; }
+  button, input, textarea, select { font: inherit; color: inherit; } button, .btn { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; min-width: 40px; background: var(--card); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: inherit; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=url], input[type=search], input[type=email], textarea, select { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; width: 100%; max-width: 100%; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); margin: 0; flex: 0 0 auto; }
+  .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go { color: #0b0a10; } }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 80vh; } #related { min-height: 190px; } [hidden] { display: none !important; }
+  .live { min-height: 1.4em; font-size: 14px; margin: 6px 0; color: var(--soft); }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+  .notice { background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; margin: 8px 0 12px; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 8px 0; font-size: 14px; } .field label { color: var(--soft); font-size: 13px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .row input[type=search], .row input[type=text] { flex: 1 1 180px; width: auto; }
+  .chk { display: flex; gap: 8px; align-items: center; min-height: 40px; font-size: 14px; } .soft { color: var(--soft); font-size: 13px; }
+  main #app { min-height: 100vh; } .feed { min-height: 70vh; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; } .tabs button[aria-current=page] { background: var(--accent); color: #fff; border-color: var(--accent); } @media (prefers-color-scheme: dark) { .tabs button[aria-current=page] { color: #0b0a10; } } #s-create { margin-left: auto; }
+  .chip { min-height: 36px; padding: 2px 12px; font-size: 14px; } .chip[aria-pressed=true] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, transparent); font-weight: 600; } .sorts select { width: auto; }
+  .card { display: flex; gap: 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 10px 12px 6px 6px; margin: 10px 0; } .card.op { padding-top: 12px; } .cmain { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+  .vote { display: flex; flex-direction: column; align-items: center; gap: 0; flex: 0 0 auto; } .vb { min-width: 36px; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--soft); font-size: 15px; } .vb.on { color: var(--accent); } .score { font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .meta { font-size: 13px; color: var(--soft); } .meta a { color: inherit; font-weight: 600; display: inline-block; min-height: 24px; } .nsfw { color: var(--bad); font-weight: 700; }
+  .card h3 a { color: inherit; text-decoration: none; display: inline-block; min-height: 24px; } .excerpt { color: var(--soft); font-size: 14px; margin: 2px 0 4px; } .thumb { max-width: 140px; height: auto; border-radius: 8px; display: block; margin: 4px 0; } .full { max-width: 100%; height: auto; border-radius: 10px; }
+  .acts { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 4px; } .acts button, .acts .btn { min-height: 32px; padding: 2px 10px; font-size: 13px; }
+  .pbody { margin: 6px 0; } .pbody .gt { color: #3f7d20; } @media (prefers-color-scheme: dark) { .pbody .gt { color: #8fd16b; } } .pbody a { color: var(--accent); } .pbody .sp { background: var(--ink); color: var(--ink); } .pbody .sp:hover { color: var(--bg); } .pbody code { font-family: ui-monospace, monospace; font-size: 14px; }
+  .comments, .kids { list-style: none; margin: 0; padding: 0; } .kids { margin-left: 14px; padding-left: 8px; border-left: 2px solid var(--line); } .cm { margin: 6px 0; } .crow { display: flex; gap: 6px; } .cm.flash > .crow { background: color-mix(in srgb, var(--accent) 14%, transparent); border-radius: 10px; }
+  .tog { min-height: 32px; } .compose { margin: 8px 0; } .compose textarea { min-height: 72px; } .botbox { min-height: 1.4em; margin: 4px 0; }
+  .blist { list-style: none; padding: 0; margin: 6px 0; } .blist li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); } .blist li a { color: inherit; min-height: 24px; display: inline-block; } .blist li button { margin-left: auto; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1>Social</h1><button id="share-page" type="button">Share</button></div>
+  <p class="intro">Communities with a feed sorted hot, new or top, posts and threaded comments, votes, following and an RSS feed for each community. No account: the communities you follow stay on this device.</p>
+  <div id="app"></div>
+  <!-- asks -->
+  <!-- /asks -->
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer>Posts and comments are public, on Verse's own boards: the same rules, reports, rate limits and bans apply (<a href="/boards/rules">rules</a>). A vote is kept as one row per post per connection under a keyed hash of the address, never the address. What you follow, save or hide stays in this browser. No account, no ads, no tracking.</footer>
+</main>
+<script type="module" src="/social/app.js"></script>
+<script src="/visit.js" defer></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER)</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chat · Verse</title>
+<meta name="description" content="Private chats by invite link, end to end encrypted in your browser: groups, pictures, read receipts, voice and video calls straight between browsers, search across your chats. No account, no phone number, English and German.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Chat · Verse">
+<meta property="og:description" content="Private chats by invite link, end to end encrypted in your browser: groups, pictures, read receipts, voice and video calls. No account, no phone number.">
+<meta property="og:url" content="https://a-to-mind.com/chat/">
+<meta property="og:image" content="https://a-to-mind.com/og/chat.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Chat on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chat · Verse">
+<meta name="twitter:description" content="Private chats by invite link, end to end encrypted in your browser: groups, pictures, read receipts, voice and video calls. No account, no phone number.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/chat.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; --mine: #e6ddff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; --mine: #2a1f52; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 4px; }
+  .top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; } .top h1 { flex: 1 1 auto; margin: 0; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 6px 0; }
+  button, input, textarea { font: inherit; color: inherit; } button, .btn { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; min-width: 40px; background: var(--card); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, .btn:focus-within, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=url], input[type=search], textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; width: 100%; max-width: 100%; }
+  .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } @media (prefers-color-scheme: dark) { .go { color: #0b0a10; } }
+  .bad-b { border-color: var(--bad); color: var(--bad); }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 80vh; } #related { min-height: 190px; }
+  .live { min-height: 1.4em; font-size: 14px; margin: 6px 0; color: var(--soft); }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 8px 0; font-size: 14px; } .field label { color: var(--soft); font-size: 13px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .row.tight { flex-wrap: nowrap; margin: 0; } .row input { flex: 1 1 180px; width: auto; }
+  .soft { color: var(--soft); font-size: 13px; } .pick { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .chats { list-style: none; margin: 4px 0; padding: 0; } .chats li { margin: 0; }
+  .chatrow { width: 100%; display: grid; grid-template-columns: 1fr auto; grid-template-areas: "t m" "p b"; gap: 0 8px; text-align: left; border-radius: 12px; margin: 4px 0; padding: 8px 12px; justify-content: stretch; }
+  .ct { grid-area: t; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cp { grid-area: p; color: var(--soft); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .cm { grid-area: m; color: var(--soft); font-size: 12px; } .badge { grid-area: b; background: var(--accent); color: #fff; border-radius: 999px; padding: 0 8px; font-size: 12px; justify-self: end; } @media (prefers-color-scheme: dark) { .badge { color: #0b0a10; } }
+  .chead { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 8px; } .ctitle { flex: 1 1 150px; min-width: 0; } .ctitle h2 { margin: 0; overflow-wrap: anywhere; } .ctitle .soft { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .msgs { list-style: none; margin: 8px 0; padding: 4px 2px; height: 56vh; min-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+  .msg { max-width: 82%; align-self: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 14px 14px 14px 4px; padding: 6px 10px; overflow-wrap: anywhere; } .msg.mine { align-self: flex-end; background: var(--mine); border-radius: 14px 14px 4px 14px; }
+  .msg img { display: block; max-width: 100%; height: auto; border-radius: 10px; margin: 2px 0; } .msg a { color: var(--accent); }
+  .who { display: block; font-size: 12px; font-weight: 600; color: var(--accent); } .txt { white-space: pre-wrap; display: block; } .quote { display: block; border-left: 3px solid var(--accent); padding-left: 6px; font-size: 13px; color: var(--soft); margin-bottom: 2px; }
+  .meta { display: flex; gap: 6px; align-items: center; justify-content: flex-end; font-size: 11px; color: var(--soft); } .tick.read { color: var(--accent); font-weight: 700; } .rep { min-height: 24px; min-width: 24px; padding: 0 6px; border: 0; background: transparent; font-size: 14px; }
+  .day, .sys { align-self: center; font-size: 12px; color: var(--soft); background: color-mix(in srgb, var(--line) 50%, transparent); border-radius: 999px; padding: 2px 10px; text-align: center; }
+  .compose { border-top: 1px solid var(--line); padding-top: 8px; } .compose textarea { resize: none; min-height: 44px; max-height: 140px; flex: 1 1 auto; } .replying { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--soft); margin-bottom: 6px; } .replying span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .callbar { border: 2px solid var(--accent); border-radius: 14px; padding: 10px 12px; margin: 8px 0; background: var(--card); display: flex; flex-direction: column; gap: 4px; }
+  .vids { display: grid; grid-template-columns: 1fr; gap: 6px; position: relative; } .vids video { width: 100%; max-height: 50vh; background: #000; border-radius: 10px; } .vids video.me { position: absolute; right: 8px; bottom: 8px; width: 30%; border: 2px solid #fff; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1>Chat</h1><button id="share-page" type="button">Share</button></div>
+  <p class="intro">Private chats by invite link, end to end encrypted in your browser: groups, pictures, read receipts, and voice and video calls straight between browsers. No account, no phone number.</p>
+  <div id="app"></div>
+  <!-- asks -->
+  <!-- /asks -->
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer>Messages are sealed in your browser with a key that lives only in the invite link after the #; Verse's relay keeps the sealed messages 7 days (pictures 3) so the others can fetch them, and cannot read them. Calls go straight between browsers through free public STUN servers and may fail behind strict networks (no TURN relay: it costs money). Your chats are kept on this device. No account, no ads.</footer>
+</main>
+<script type="module" src="/chat/app.js"></script>
+<script src="/visit.js" defer></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER)</script>
+</body>
+</html>

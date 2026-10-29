@@ -323,6 +323,48 @@ export const PROBES = Object.freeze({
     facts: [['a board list', /\bboards?\b/i], ['a catalog', /\bcatalog\b/i], ['an archive', /\barchive\b/i], ['replies and quotes', /\brepl(?:y|ies)\b|>>\d/i], ['greentext', /\bgreentext\b/i], ['tripcodes', /\btripcodes?\b/i],
       ['sage', /\bsage\b/i], ['spoilers', /\bspoilers?\b/i], ['search', /\bsearch\b/i], ['a thread watcher', /\bwatch(?:er|ing)?\b/i], ['rules', /\brules\b/i], ['picture posts', /\bpictures?\b|\bimages?\b/i], ['work-safe and 18+ boards', /\b18\+|\bNSFW\b|\bwork[\s-]?safe\b|safe for work/i], ['make your own board', /\bmake (?:a|the first|your) board\b/i]],
   },
+  // chat, email and social (owner, 2026-10-26: three giant floors with no Verse page): each judged on Verse alone (WhatsApp Web, Gmail and Reddit answer a
+  // stranger with a sign-in wall or a feed the gate cannot ask the same question of).
+  // chat: WhatsApp Web. The question is the page itself: a new visitor must be able to start an encrypted chat with no account and no phone number, join by
+  // a link, and be told plainly where calls can fail. The aspects are read off the same first screen.
+  chat: {
+    site: 'https://web.whatsapp.com/', verse: '/chat/',
+    ask: { verse: '/chat/' },
+    truth: [['start a chat', /\bNew chat\b/], ['join with an invite link', /Join with a link/i], ['end to end encrypted, said', /end to end encrypted/i], ['no account and no phone number', /no account, no phone number/i], ['where calls can fail, said', /TURN/]],
+    askParts: { groups: [['a chat with a name for a group', /Name of the chat/i], ['an invite link for the people in it', /invite link/i]], media: [['pictures', /\bpictures\b/i], ['sealed like the words', /sealed messages|pictures 3/i]], calls: [['voice and video calls', /voice and video calls/i], ['straight between browsers', /straight between browsers/i], ['the limit said (no TURN relay)', /TURN relay/i]] },
+    // what WhatsApp Web shows (domains/features/chat.json): one-to-one and group chats, end-to-end encryption, pictures, read receipts, voice and video calls, chat search,
+    // invite links, replies; the best add no phone number and no account, chats kept on the device
+    facts: [['groups', /\bgroups?\b/i], ['end to end encryption', /end to end encrypted/i], ['pictures', /\bpictures\b/i], ['read receipts', /read receipts/i], ['voice calls', /\bvoice\b/i], ['video calls', /\bvideo\b/i], ['chat search', /Search your chats/i], ['invite links', /invite link/i], ['no phone number', /no phone number/i], ['no account', /no account/i], ['kept on this device', /on this device/i]],
+  },
+  // email: Gmail. Verse has no mailbox (it neither sends nor receives mail, and says so on the first screen), so "sending and receiving" has no check here and stays
+  // unverified: it is never counted as beaten. The question is a newsletter checked at /email/?tab=check&sample=1: what its headers say (SPF, DKIM, DMARC
+  // passed, the Return-Path on another domain), where to unsubscribe (one click offered), and its spam score.
+  email: {
+    site: 'https://mail.google.com/', verse: '/email/',
+    ask: { verse: '/email/?tab=check&sample=1' },
+    truth: [['SPF passed', /SPF\s*pass/], ['DKIM passed', /DKIM\s*pass/], ['DMARC passed', /DMARC\s*pass/], ['the Return-Path on another domain said', /Return-Path \(bounces\) is example-esp\.com/], ['one-click unsubscribe found', /one-click unsubscribe offered/], ['a spam score', /Its spam score: \d/], ['no mailbox, said', /cannot send or receive email/]],
+    askParts: {},
+    // spam filtering and search, asked at addresses of their own: a junk draft put in the link must be called likely junk with its reasons named; a search in the link
+    // must find the sample by its sender with Gmail's operators
+    pageParts: {
+      'spam filtering': { verse: '/email/?tab=write&subject=' + encodeURIComponent('URGENT!!! YOU HAVE WON') + '&body=' + encodeURIComponent('CLICK HERE to claim $5000 now. Act now! https://bit.ly/x'), items: [['a junk draft called likely junk', /likely junk/], ['its reasons named', /SHORT_LINK/], ['the shouting subject named', /SUBJ_ALL_CAPS/], ['a received mail scored too', /Check a message/]] },
+      search: { verse: '/email/?tab=read&sample=1&q=' + encodeURIComponent('from:shop'), items: [['Gmail\'s operators', /from:, to:, cc:, subject:, has:attachment/], ['is:junk', /is:junk/], ['the match counted', /\b1 message\b/], ['the message found', /Our autumn menu is here/]] },
+    },
+    // what Gmail shows (domains/features/email.json): compose, templates, reading mail, search with operators, spam and phishing warnings, unsubscribe, attachments; the
+    // best add a draft that opens in the mail you already use, everything on the device, no account
+    facts: [['write a mail', /\bWrite\b/], ['templates', /template/i], ['open in your mail', /Open in my mail app/i], ['read mail files', /\.eml/], ['search with operators', /has:attachment/], ['spam check', /spam/i], ['headers: SPF, DKIM, DMARC', /SPF[\s\S]{0,40}DKIM/], ['unsubscribe', /unsubscribe/i], ['attachments', /\battachment/i], ['remote pictures blocked', /remote pictures blocked/i], ['on this device', /this device/i]],
+  },
+  // social: Reddit. The question is the page itself: a feed in hot, new and top, communities to follow, a post to make, comments in a tree. The posts are Verse's own
+  // boards' (live data), so the truth asks only for what the page must offer with or without posts.
+  social: {
+    site: 'https://www.reddit.com/', verse: '/social/',
+    ask: { verse: '/social/' },
+    truth: [['hot, new and top', /\bHot\b[\s\S]{0,20}\bNew\b[\s\S]{0,20}\bTop\b/], ['communities', /\bCommunities\b/], ['a post to make', /Create post/], ['votes said', /One vote per post/i], ['no account', /No account/i]],
+    askParts: { feed: [['a home feed', /\bHome\b/], ['popular', /\bPopular\b/], ['hot, new and top', /\bHot\b[\s\S]{0,20}\bNew\b[\s\S]{0,20}\bTop\b/]], following: [['follow communities', /\bfollow\b/i], ['kept on this device', /on this device/i]], 'posting and replies': [['create a post', /Create post/], ['threaded comments', /threaded comments/i], ['votes', /\bvotes?\b/i]] },
+    // what Reddit shows (domains/features/social.json): communities, home and popular feeds, sort by hot, new and top, posts, threaded comments, votes, joining
+    // communities, search, saved posts; the best add RSS per community and no account
+    facts: [['communities', /\bCommunities\b/], ['a home feed', /\bHome\b/], ['popular', /\bPopular\b/], ['sort hot, new, top', /\bHot\b[\s\S]{0,20}\bNew\b[\s\S]{0,20}\bTop\b/], ['posts', /Create post/], ['threaded comments', /threaded comments/i], ['votes', /\bvotes?\b/i], ['following', /\bfollow/i], ['search', /\bSearch\b/], ['saved posts', /\bSaved\b/], ['RSS', /\bRSS\b/], ['18+ kept apart', /18\+/], ['no account', /no account/i]],
+  },
   'random generators': {
     site: 'https://perchance.org/', verse: '/generators/',
     // the question: the fantasy-name generator at seed 7 (the link reproduces it). Any correct answer is a list of at least five names, each one
