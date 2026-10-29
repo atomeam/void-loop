@@ -4428,6 +4428,10 @@ say('nothing selected to remove');
     const SKILLS_INDEX_URL = '/skills/index.json';
     let learnedSkills = [], skillsLoaded = false, skillSlots = null;
     const SKILL_LANES = 24; // modules requested at once: enough to fill a fast link, few enough that the top-ranked skills arrive first
+    // set at the first sign of an ask (warmLibs below): no lane starts another skill file until the four libs every ask waits on are in, at most
+    // 1.5 s. Asked for after the lanes were full, they queued behind every skill file requested meanwhile (watchdog #110, 2026-10-29: on the
+    // slow-link check all four money asks logged after 4 s, the three calc ones about 1.5 s after the calc's own 2.5 s wait)
+    let askLibsHold = null;
     async function loadLearnedSkills() {
       let index = null;
       try {
@@ -4462,7 +4466,7 @@ say('nothing selected to remove');
       // edge copy of its code can never outlive that: a plain reload brings the current card (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card")
       const LIVE_SKILLS = new Set(['tower']);
       let nextIdx = 0;
-      const lane = async () => { while (nextIdx < index.length) { const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js' + (LIVE_SKILLS.has(index[i]) ? '?live=' + Math.floor(Date.now() / 300000) : '')).catch(() => null)); } };
+      const lane = async () => { while (nextIdx < index.length) { if (askLibsHold) await askLibsHold; if (nextIdx >= index.length) break; const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js' + (LIVE_SKILLS.has(index[i]) ? '?live=' + Math.floor(Date.now() / 300000) : '')).catch(() => null)); } };
       await Promise.all(Array.from({ length: SKILL_LANES }, lane));
       // once all are in, everything is registered in index order, exactly as when they loaded all at once
       for (const slot of skillSlots) {
@@ -5495,7 +5499,10 @@ say('nothing selected to remove');
     // (bugs, security holes, risky habits, with line numbers), then the model's closer read is added under them. Without code yet,
     // Verse asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
     const reviewReady = lazyLib('/lib/code-review.js');
-    const warmLibs = () => { approvalReady(); storeReady(); fixReady(); reviewReady(); for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
+    const warmLibs = () => {
+      const libs = Promise.allSettled([approvalReady(), storeReady(), fixReady(), reviewReady()]);
+      if (!skillsLoaded && !askLibsHold) askLibsHold = Promise.race([libs, new Promise((r) => setTimeout(r, 1500))]).then(() => { askLibsHold = null; });
+      for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
     for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.addEventListener(ev, warmLibs, { capture: true, passive: true });
     { const sp = new URLSearchParams(location.search); if (sp.get('q') || sp.get('ask')) warmLibs(); else skillsReady.then(warmLibs); }
     let pendingReview = null;
