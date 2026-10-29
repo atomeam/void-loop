@@ -86,7 +86,8 @@ export function makeAdapter(field, { N, D }) {
 }
 
 /** the shared field, when Verse has one: feature-detects skills/field.js and answers null (never throws) when it is not there. */
-export async function connectField({ load = () => import('../skills/field.js'), device = null } = {}) {
+const FIELD_URL = new URL('../skills/field.js', import.meta.url).href; // looked up when asked, so a page without the file never breaks
+export async function connectField({ load = () => import(FIELD_URL), device = null } = {}) {
   let mod;
   try { mod = await load(); } catch (_) { return null; } // no field.js yet: the orbs keep their own state, as they always have
   if (mod && !isField(mod) && isField(mod.default)) mod = mod.default;
