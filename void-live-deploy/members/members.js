@@ -1,5 +1,6 @@
 // /members/ (functions/api/members.js, lib/members.js): what paid Verse gives, the idea form for members, their ideas and the wall.
-// The tier comes from the server; this page only shows what /api/members says.
+// The perks come from lib/members.js itself, so the page reads right even when the API is out; the tier comes from the server only.
+import { perks as perksOf, LIVE, BUY } from '/lib/members.js';
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 let me = null; try { me = JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null'); } catch (_) { me = null; }
@@ -19,13 +20,17 @@ function ideas(list) {
   }
 }
 
+function showPerks(list) {
+  const ul = $('perks'); ul.textContent = '';
+  for (const p of list) { const li = el('li'); li.append(el('b', null, p.title), el('span', null, p.text)); ul.append(li); }
+}
+showPerks(perksOf(LIVE));
+$('buy').href = buyLink(BUY);
+
 async function load() {
   let j = null;
   try { j = await (await fetch('/api/members', { headers: auth(), cache: 'no-store' })).json(); } catch (_) { j = null; }
-  const perks = (j && j.perks) || [];
-  const ul = $('perks'); ul.textContent = '';
-  for (const p of perks) { const li = el('li'); li.append(el('b', null, p.title), el('span', null, p.text)); ul.append(li); }
-  $('buy').href = buyLink((j && j.buy) || $('buy').href);
+  if (j && Array.isArray(j.perks) && j.perks.length) showPerks(j.perks);
   if (me && me.userId) $('how').textContent = 'You are signed in, so joining unlocks this Verse.';
   const paid = j && j.signedIn && j.tier === 'paid';
   if (paid) { $('buy').hidden = true; $('how').textContent = 'You are a member. Thank you for building Verse.'; }
