@@ -17091,59 +17091,66 @@
   "travel: aruljohn.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 117,
-    "best": 605,
-    "evidence": "Verse (/flights/airports/) 117 ms to the load event (median of 3, phone width) vs aruljohn.com 605 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:18:36.170Z"
+    "verse": 157,
+    "best": 535,
+    "evidence": "Verse (/flights/airports/) 157 ms to the load event (median of 3, phone width) vs aruljohn.com 535 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/airports/) 3 of 3 loads answered vs aruljohn.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:18:36.170Z"
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/airports/) 0 px sideways overflow at 390 px vs aruljohn.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:18:36.170Z"
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/flights/airports/) 0 unnamed controls or images vs aruljohn.com 3 unnamed controls or images",
-    "at": "2026-10-28T13:18:36.170Z"
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flights/airports/) 1 (1: the page shows itself again with the network cut) vs aruljohn.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:18:36.170Z"
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flights/airports/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs aruljohn.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:18:36.170Z"
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 9531,
     "evidence": "Verse (/flights/airports/) 0 design defects vs aruljohn.com 9531 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), aruljohn.com (0 low-contrast texts, 9531 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:18:36.170Z"
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/airports/) 4 of 4 right against the worked-out answer; judged against the standard, not aruljohn.com (the site is not asked)",
-    "at": "2026-10-28T13:18:36.170Z",
+    "at": "2026-10-29T03:05:28.835Z",
     "of": 4
    },
    "code lookup": {
@@ -17151,7 +17158,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/airports/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:18:36.170Z",
+    "at": "2026-10-29T03:05:28.835Z",
     "of": 2,
     "part": true
    },
@@ -17160,7 +17167,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/airports/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:18:36.170Z",
+    "at": "2026-10-29T03:05:28.835Z",
     "of": 1,
     "part": true
    },
@@ -17169,7 +17176,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/airports/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:18:36.170Z",
+    "at": "2026-10-29T03:05:28.835Z",
     "of": 3,
     "part": true
    },
@@ -17178,7 +17185,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/airports/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:18:36.170Z",
+    "at": "2026-10-29T03:05:28.835Z",
     "of": 1,
     "part": true
    },
@@ -17187,66 +17194,82 @@
     "verse": 12,
     "best": 5,
     "evidence": "Verse (/flights/airports/) 12 of 12 things a full answer shows vs aruljohn.com 5 of 12 things a full answer shows (Verse lacks: none; site lacks: the position, the time zone, nearby airports, other airports of the city, fly from or to here, works offline, no account)",
-    "at": "2026-10-28T13:18:36.170Z",
-    "of": 12
+    "at": "2026-10-29T03:05:28.835Z",
+    "of": 12,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 11,
+    "best": 6,
+    "evidence": "Verse (/flights/airports/) 11 of 11 wider-use points (docs/WIDER-USE.md) vs aruljohn.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T03:05:28.835Z",
+    "siteRead": true
    }
   },
   "travel: clock7.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 134,
-    "best": 557,
-    "evidence": "Verse (/flights/time/) 134 ms to the load event (median of 3, phone width) vs clock7.com 557 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:13:14.891Z"
+    "verse": 149,
+    "best": 596,
+    "evidence": "Verse (/flights/time/) 149 ms to the load event (median of 3, phone width) vs clock7.com 596 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/flights/time/) 3 of 3 loads answered vs clock7.com 1 of 3 loads answered",
-    "at": "2026-10-28T13:13:14.891Z"
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 80,
     "evidence": "Verse (/flights/time/) 0 px sideways overflow at 390 px vs clock7.com 80 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:13:14.891Z"
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/time/) 0 unnamed controls or images vs clock7.com 0 unnamed controls or images",
-    "at": "2026-10-28T13:13:14.891Z"
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flights/time/) 1 (1: the page shows itself again with the network cut) vs clock7.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:13:14.891Z"
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/time/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs clock7.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:13:14.891Z"
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 26,
     "evidence": "Verse (/flights/time/) 0 design defects vs clock7.com 26 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), clock7.com (10 low-contrast texts, 15 small tap targets, layout shift 0.20)",
-    "at": "2026-10-28T13:13:14.891Z"
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/time/) 4 of 4 right against the worked-out answer; judged against the standard, not clock7.com (the site is not asked)",
-    "at": "2026-10-28T13:13:14.891Z",
+    "at": "2026-10-29T03:06:21.695Z",
     "of": 4
    },
    "flight duration": {
@@ -17254,7 +17277,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/time/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:13:14.891Z",
+    "at": "2026-10-29T03:06:21.695Z",
     "of": 2,
     "part": true
    },
@@ -17263,7 +17286,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/time/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:13:14.891Z",
+    "at": "2026-10-29T03:06:21.695Z",
     "of": 2,
     "part": true
    },
@@ -17272,7 +17295,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/time/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:13:14.891Z",
+    "at": "2026-10-29T03:06:21.695Z",
     "of": 2,
     "part": true
    },
@@ -17281,7 +17304,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/time/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:13:14.891Z",
+    "at": "2026-10-29T03:06:21.695Z",
     "of": 1,
     "part": true
    },
@@ -17290,7 +17313,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/time/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:13:14.891Z",
+    "at": "2026-10-29T03:06:21.695Z",
     "of": 2,
     "part": true
    },
@@ -17299,8 +17322,17 @@
     "verse": 12,
     "best": 2,
     "evidence": "Verse (/flights/time/) 12 of 12 things a full answer shows vs clock7.com 2 of 12 things a full answer shows (Verse lacks: none; site lacks: from and to, a departure date, flight duration, local arrival time, the time difference, a layover, the whole journey, daylight saving on the date, works offline, no account)",
-    "at": "2026-10-28T13:13:14.891Z",
-    "of": 12
+    "at": "2026-10-29T03:06:21.695Z",
+    "of": 12,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 7,
+    "evidence": "Verse (/flights/time/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs clock7.com 7 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T03:06:21.695Z",
+    "siteRead": true
    }
   },
   "travel: airmilescalculator.com": {
@@ -19787,54 +19819,59 @@
   },
   "nameunit": {
    "speed": {
-    "verdict": "worse",
-    "verse": 209,
-    "best": 176,
-    "evidence": "Verse (/hosting/) 209 ms to the load event (median of 3, phone width) vs nameunit.com 176 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T19:53:54.413Z",
-    "was": "equal-and-better"
+    "verdict": "equal-and-better",
+    "verse": 134,
+    "best": 206,
+    "evidence": "Verse (/hosting/) 134 ms to the load event (median of 3, phone width) vs nameunit.com 206 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 loads answered vs nameunit.com 3 of 3 loads answered",
-    "at": "2026-10-28T19:53:54.413Z"
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "better",
     "verse": 0,
     "best": 176,
     "evidence": "Verse (/hosting/) 0 px sideways overflow at 390 px vs nameunit.com 176 px sideways overflow at 390 px",
-    "at": "2026-10-28T19:53:54.413Z"
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 43,
     "evidence": "Verse (/hosting/) 0 unnamed controls or images vs nameunit.com 43 unnamed controls or images",
-    "at": "2026-10-28T19:53:54.413Z"
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/hosting/) 1 (1: the page shows itself again with the network cut) vs nameunit.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T19:53:54.413Z"
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/hosting/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs nameunit.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T19:53:54.413Z"
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/hosting/) 8 of 8 right against the worked-out answer; judged against the standard, not nameunit.com (the site is not asked)",
-    "at": "2026-10-28T19:53:54.413Z",
+    "at": "2026-10-29T03:04:37.539Z",
     "of": 8
    },
    "design polish": {
@@ -19842,15 +19879,16 @@
     "verse": 0,
     "best": 18,
     "evidence": "Verse (/hosting/) 0 design defects vs nameunit.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), nameunit.com (0 low-contrast texts, 18 small tap targets, layout shift 0.03)",
-    "at": "2026-10-28T19:53:54.413Z"
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    },
    "domain search": {
-    "verdict": "worse",
-    "verse": 2,
-    "best": 3,
-    "evidence": "Verse (/hosting/) 2 of 3 shown for the question (Verse lacks: availability result); judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:53:54.413Z",
-    "of": 3,
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+    "at": "2026-10-29T03:04:37.539Z",
+    "of": 4,
     "part": true
    },
    "tiered plans": {
@@ -19858,7 +19896,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:53:54.413Z",
+    "at": "2026-10-29T03:04:37.539Z",
     "of": 4,
     "part": true
    },
@@ -19867,7 +19905,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:53:54.413Z",
+    "at": "2026-10-29T03:04:37.539Z",
     "of": 4,
     "part": true
    },
@@ -19876,7 +19914,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:53:54.413Z",
+    "at": "2026-10-29T03:04:37.539Z",
     "of": 3,
     "part": true
    },
@@ -19885,17 +19923,26 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:53:54.413Z",
+    "at": "2026-10-29T03:04:37.539Z",
     "of": 3,
     "part": true
    },
    "completeness": {
     "verdict": "better",
-    "verse": 17,
-    "best": 1,
-    "evidence": "Verse (/hosting/) 17 of 17 things a full answer shows vs nameunit.com 1 of 17 things a full answer shows (Verse lacks: none; site lacks: domain search, tiered plans, Small, Medium, Large, bandwidth, monthly transfer, vCPUs, memory, SLA, NGINX, Caddy, TLS 1.3, no account, works offline, back to Verse)",
-    "at": "2026-10-28T19:53:54.413Z",
-    "of": 17
+    "verse": 19,
+    "best": 2,
+    "evidence": "Verse (/hosting/) 19 of 19 things a full answer shows vs nameunit.com 2 of 19 things a full answer shows (Verse lacks: none; site lacks: domain search, tiered plans, labelled as the rival's, Small, Medium, Large, bandwidth, monthly transfer, vCPUs, memory, SLA, NGINX, Caddy, TLS 1.3, no account, works offline, back to Verse, Name unit - Support / Kundeservice)",
+    "at": "2026-10-29T03:04:37.539Z",
+    "of": 19,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 3,
+    "evidence": "Verse (/hosting/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs nameunit.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T03:04:37.539Z",
+    "siteRead": true
    }
   },
   "novelcrafter": {
