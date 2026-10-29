@@ -2889,6 +2889,7 @@ say('nothing selected to remove');
     async function showArticle(query, fromAnswer = false) {
       const topic = topicFrom(query);
       lookedIn = [];
+      let named = false; // Wikipedia named a page for this topic (its search, the person search or the page that bears the name)
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(topic) + '</h2><div class="sub">…</div>'; });
       try {
         // "who is X" means a person: among the first five results, the first whose Wikidata description reads like a person
@@ -2928,6 +2929,7 @@ say('nothing selected to remove');
             } catch (_) {}
           }
         }
+        named = !!hit;
         if (!hit) throw new Error('none');
         const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title.replace(/ /g, '_')));
         const j = await r.json();
@@ -3049,8 +3051,10 @@ say('nothing selected to remove');
           return 'wiktionary';
         } catch (__) {
           if (vpageEl !== el) return 'none';
-          // a name no article holds may sit in a section of a list page: the answer route reads it, or says it found nothing
-          if (!fromAnswer && lookedIn.includes('wikipedia')) { const NA = await import('/lib/no-answer.js').catch(() => null); if (NA && NA.isNameAsk(topic) && vpageEl === el) return showAnswer(topic); }
+          // a name no article holds may sit in a section of a list page: the answer route reads it, or says it found nothing. Only when
+          // Wikipedia named a page: its section lookup reads the same search, so when the search named nothing there is no section to
+          // read, and the model would only guess; the honest "I don't know this yet" stays, with the sources it read (lib/refusal.js)
+          if (!fromAnswer && named && lookedIn.includes('wikipedia')) { const NA = await import('/lib/no-answer.js').catch(() => null); if (NA && NA.isNameAsk(topic) && vpageEl === el) return showAnswer(topic); }
           el.innerHTML = '<h2>' + esc(topic) + '</h2><p>' + (lookedIn.length ? 'I don\'t know this yet. I\'ve noted it, so I can learn it.' : 'I couldn\'t look this up just now: none of my sources answered. I\'ve noted it; try again in a moment.') + '</p>';
           return 'none';
         }

@@ -55,6 +55,9 @@ async function sha(s) {
 const UA = { 'user-agent': 'Verse/1.0 (https://a-to-mind.com; atom@a-to-mind.com)' };
 async function sources(ask) {
   const q = ask.replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
+  // a name's section lookups (below) need only the ask, so they go out with the search, not after the summaries: two round trips to
+  // Wikipedia before the answer, not four (the router runs beside them and must not be waited on, tools/test_void.mjs "router: it runs while")
+  const name = isNameAsk(q), looks = name ? sectionLookups(q) : null;
   const s = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&srsearch=' + encodeURIComponent(q), { headers: UA }).then((r) => r.json()).catch(() => null);
   const hits = (s && s.query && s.query.search) || [];
   // the three summaries are fetched together, not one after another (perf pass 2026-10-16: two round trips to Wikipedia saved
@@ -69,7 +72,7 @@ async function sources(ask) {
   // its own: the summaries above hold only fuzzy neighbours (Happy Harry's). When none holds every word of the ask, read the redirect's section, or the
   // full-text search's section hit, and put that first (lib/no-answer.js)
   // Wikipedia itself says where a name lives: a redirect into a section of a list page leads, even when the list's lead mentions the name in passing (Frylock, Meatwad); the full-text section search only when nothing matches
-  if (isNameAsk(q)) { const sec = await sectionSource(q, !sourcesMatch(q, out)); if (sec) out.unshift(sec); }
+  if (name) { const sec = await sectionSource(q, !sourcesMatch(q, out), looks); if (sec) out.unshift(sec); }
   // the page whose own title holds most of the ask's words leads ("marie curie physicist chemist" is Marie Curie, not Pierre Curie, whom the search ranked first); a tie keeps the search's order
   const need = askWords(q), over = (x) => { const t = new Set(String(x.title || '').toLowerCase().match(/[a-z0-9]+/g) || []); return need.filter((w) => t.has(w) || t.has(w + 's') || t.has(w.replace(/s$/, ''))).length; };
   out.map((x, i) => [x, i]).sort((a, b) => over(b[0]) - over(a[0]) || a[1] - b[1]).forEach(([x], i) => { out[i] = x; });
@@ -84,13 +87,21 @@ async function picFor(env, lead) {
     return { url: p.thumb || p.url, alt: String(p.alt || lead.name).slice(0, 140), credit: [{ t: 'Photo: ' }, p.credit.author ? (p.authorUrl ? { t: p.credit.author, href: p.authorUrl } : { t: p.credit.author }) : { t: 'author not stated' }, { t: ', ' }, { t: p.credit.licence, href: p.credit.licenceUrl }, { t: ', via ' }, { t: p.credit.source, href: p.credit.sourceUrl }], archive: true, source: p.source };
   } catch (_) { return null; }
 }
-async function sectionSource(q, textSearch = true) {
+// the two lookups that say where a name lives: the redirect of its title and the full-text section search. Both are started at once and
+// read only when needed (the section search only when the summaries hold no page that names the ask). Never rejects.
+function sectionLookups(q) {
+  const get = (u) => { try { return fetch(u(), { headers: UA }).then((r) => r.json()).catch(() => null); } catch (_) { return Promise.resolve(null); } };
+  const title = q.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+  return {
+    red: get(() => WIKI + '&action=query&redirects=1&titles=' + encodeURIComponent(title)),
+    fts: get(() => WIKI + '&action=query&list=search&srlimit=5&srprop=snippet|sectiontitle&srsearch=' + encodeURIComponent('"' + q + '"')),
+  };
+}
+async function sectionSource(q, textSearch, looks) {
   try {
-    const title = q.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
-    const red = await fetch(WIKI + '&action=query&redirects=1&titles=' + encodeURIComponent(title), { headers: UA }).then((r) => r.json()).catch(() => null);
-    let hit = listRedirect(red);
+    let hit = listRedirect(await looks.red);
     if (!hit && textSearch) {
-      const fts = await fetch(WIKI + '&action=query&list=search&srlimit=5&srprop=snippet|sectiontitle&srsearch=' + encodeURIComponent('"' + q + '"'), { headers: UA }).then((r) => r.json()).catch(() => null);
+      const fts = await looks.fts;
       hit = sectionHit(fts && fts.query && fts.query.search, q);
     }
     if (!hit || !hit.section) return null; // a redirect with no section is an ordinary article: the search already holds it
