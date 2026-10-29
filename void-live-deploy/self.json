@@ -525,13 +525,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-15T00:00:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T05:25:34Z",
+   "subject": "Verse Brain: the frontier drafts as one mind on one shared field"
+  },
+  {
+   "at": "2026-10-29T05:20:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T05:20:04Z",
    "subject": "Green the fast checks that fail on main"
@@ -603,14 +611,6 @@
   {
    "at": "2026-10-29T05:00:38Z",
    "subject": "Incident: the browser suite failed on 12e44a29 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T04:57:30Z",
-   "subject": "Shard 3: an unknown name keeps its honest refusal, the answer route's name lookups go out with the search, and the self checks read the…"
-  },
-  {
-   "at": "2026-10-29T04:57:21Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
