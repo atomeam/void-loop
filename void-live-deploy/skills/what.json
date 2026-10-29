@@ -156,6 +156,7 @@
  "know": "Verse's self-knowledge, readable: \"what is voidquest\", \"which games do you know\", \"which miniatures do you…",
  "label": "Labels and arrows on the stage",
  "layer": "\"bring the clock to the front\", \"send the note to the back\", \"send it to the back\"",
+ "leet": "Convert text to 1337 speak",
  "light-look": "\"make my void light\": uses the look already stored at a2m.void.look.v1 (void.html applyLook)",
  "link": "One link card on the stage: a pasted url, \"add a link https://...\", \"link card https://...\", \"remove the link\"",
  "list": "The checklist on the stage: \"make a list\", \"list: eggs, milk\", \"a shopping list with eggs, milk and bread\"…",
