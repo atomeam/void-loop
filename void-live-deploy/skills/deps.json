@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 951,
+ "counted": 953,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 59,
-   "direct": 50,
-   "dependants": 65,
+   "skills": 60,
+   "direct": 51,
+   "dependants": 66,
    "tests": 6
   },
   {
@@ -1642,6 +1642,13 @@
   },
   {
    "file": "lib/skill-use.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/sprite-sheet.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -8584,6 +8591,12 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/sprite-sheet.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/sprite-sheet.js"
+   ]
+  },
   "lib/stage-camera.js": {
    "imports": [],
    "importedBy": [
@@ -8705,6 +8718,7 @@
     "skills/safety-kit.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
+    "skills/sprite-sheet.js",
     "skills/stage-export.js",
     "skills/stage-fx.js",
     "skills/stage-image.js",
@@ -12894,6 +12908,13 @@
   },
   "skills/sports-browse.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/sprite-sheet.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/sprite-sheet.js"
+   ],
    "importedBy": []
   },
   "skills/stage-arrange.js": {
