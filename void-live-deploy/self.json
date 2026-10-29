@@ -545,8 +545,44 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:52:36Z",
+   "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
+  },
+  {
+   "at": "2026-10-29T15:48:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:48:26Z",
+   "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
+  },
+  {
+   "at": "2026-10-29T15:44:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:41:49Z",
+   "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
+  },
+  {
+   "at": "2026-10-29T15:40:03Z",
+   "subject": "Put the reply section in void.html, the page the deploy copies"
+  },
+  {
+   "at": "2026-10-29T15:36:15Z",
+   "subject": "Queue ignores a shell control count under 2"
+  },
+  {
+   "at": "2026-10-29T15:35:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:34:04Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:33:45Z",
+   "subject": "MultiVerse, with a capital V (owner's spelling); the stage's source void.html carries the rename and both copies match it"
   },
   {
    "at": "2026-10-29T15:33:37Z",
@@ -569,6 +605,10 @@
    "subject": "Put \"Reply to what I said, or correct me\" on every card"
   },
   {
+   "at": "2026-10-29T15:29:47Z",
+   "subject": "Name the membership Multiverse: a Verse of your own (owner: something better than Paid Verse)"
+  },
+  {
    "at": "2026-10-29T15:29:16Z",
    "subject": "STL design doc: name held files by their branch so doc drift stays clean"
   },
@@ -583,46 +623,6 @@
   {
    "at": "2026-10-29T15:27:32Z",
    "subject": "feat(brain): organ 17, F453's L-system plant grown toward attention"
-  },
-  {
-   "at": "2026-10-29T15:27:20Z",
-   "subject": "Stability gauge: say \"at least\" when incidents.json is full, and how many checks failed"
-  },
-  {
-   "at": "2026-10-29T15:27:17Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:25:37Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:25:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:24:56Z",
-   "subject": "Main health: a real-pages spec for /learn-to-draw/ (begin, draw a stroke, Done scores it, share), and the stale parity pages and deps map…"
-  },
-  {
-   "at": "2026-10-29T15:24:48Z",
-   "subject": "STL checker: design and test plan (page held until sycophanthex.com is assimilated)"
-  },
-  {
-   "at": "2026-10-29T15:22:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:22:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:21:37Z",
-   "subject": "Merge Verse: the board takes the room above the ask bar, so New game is never under it"
-  },
-  {
-   "at": "2026-10-29T15:21:22Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -861,9 +861,9 @@
   "target": "sycophanthex.com",
   "since": "2026-10-29",
   "next": [
-   "jobicy.com",
-   "workingnomads.com",
-   "arbeitnow.com"
+   "serverdiscounter.com",
+   "howsecureismypassword.net",
+   "wheeloutlet.com"
   ],
   "beaten": 0,
   "total": 1266
