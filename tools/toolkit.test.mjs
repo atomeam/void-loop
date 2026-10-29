@@ -205,7 +205,7 @@ test('the unit converter\'s card opens on the conversion shown there, as the car
   assert.match(src, /return cardAsk\(\+fmt\(v, 15\), words\(st\.from\), st\.to \? words\(st\.to\) : null, answer\);/);
 });
 
-test('the calculator\'s card works out the sum in the box, and the stopwatch\'s card is a timer of the countdown\'s length', async () => {
+test('the calculator\'s card works out the sum in the box (or the sum that gave the answer in it), and the stopwatch\'s card is a timer of the countdown\'s length', async () => {
   const C = await import('../void-live-deploy/lib/calculator.js'), K = await import('../void-live-deploy/skills/calc.js');
   for (const [sum, want] of [['2×(3+4)', 'calculator 2*(3+4)'], ['1000÷8−2', 'calculator 1000/8-2'], ['17% of 240', 'calculator 17% of 240'], ['(1.5+2.25)*4=', 'calculator (1.5+2.25)*4']]) {
     const ask = C.cardAsk(sum); assert.equal(ask, want);
@@ -213,12 +213,17 @@ test('the calculator\'s card works out the sum in the box, and the stopwatch\'s 
     assert.equal(await firstSkill(ask), null, 'no skill takes it before the stage calculator: ' + ask);
   }
   for (const sum of ['sin(30)', 'π*2', 'Ans+1', '5!', '', '2+']) assert.equal(C.cardAsk(sum), '', 'a sum the card cannot work out the same way: the example: ' + sum);
+  const h = C.remember([], '(3+4)*5', 35);
+  assert.equal(C.boxAsk('35', h, true), 'calculator (3+4)*5', 'just after =, the card takes the sum, not the bare answer');
+  assert.equal(C.boxAsk('35', h, false), 'calculator 35', 'a number typed in the box stays that number');
+  assert.equal(C.boxAsk('2+3', h, true), 'calculator 2+3', 'a new sum in the box is the card');
+  assert.equal(C.boxAsk('36', C.remember([], 'Ans+1', 36), true, { ans: 36 }), 'calculator 36', 'a sum the card cannot work out the same way gives the answer');
   const S = await import('../void-live-deploy/lib/stopwatch.js'), T = await import('../void-live-deploy/skills/timer.js');
   for (const ms of [30000, 45000, 60000, 90000, 120000, 300000, 600000, 1500000, 3600000, 5400000, 86400000]) {
     const ask = S.timerAsk(ms); assert.equal(await firstSkill(ask), 'timer', 'the stage gives it to the timer: ' + ask); assert.equal(T.parseDuration(ask), ms, 'the same length: ' + ask);
   }
   for (const ms of [0, 500, 90500, 86401000, NaN]) assert.equal(S.timerAsk(ms), '');
   const calc = fs.readFileSync(new URL('../void-live-deploy/calculator/index.html', import.meta.url), 'utf8'), sw = fs.readFileSync(new URL('../void-live-deploy/stopwatch/index.html', import.meta.url), 'utf8');
-  assert.match(calc, /mountRelated\(document\.getElementById\('related'\), '\/calculator\/', \[\], \{ card: \(\) => cardAsk\(ex\.value, \{ deg, ans, mem \}\) \}\)/, 'the page gives its card the box');
+  assert.match(calc, /mountRelated\(document\.getElementById\('related'\), '\/calculator\/', \[\], \{ card: \(\) => boxAsk\(ex\.value, hist, done, \{ deg, ans, mem \}\) \}\)/, 'the page gives its card the box and the sum that gave it');
   assert.match(sw, /mountRelated\(document\.getElementById\('related'\), '\/stopwatch\/', \[\], \{ card: \(\) => \(tab === 'cd' \? timerAsk\(cd\.total\) : ''\) \}\)/, 'the countdown gives its card its length');
 });
