@@ -93,7 +93,7 @@
   label.f { display: block; margin: 0 0 16px; } label.f > span, .f > legend { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); margin: 0 0 6px; padding: 0; }
   label.f small, .f small { display: block; color: var(--ink-3); font-size: 12px; margin-top: 4px; }
   fieldset.f { border: 0; margin: 0 0 16px; padding: 0; min-width: 0; }
-  input[type=text], input[type=search], select, textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 12px;
+  input[type=text], input[type=search], input[type=number], select, textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 12px;
     padding: 10px 14px; min-height: 46px; width: 100%; box-sizing: border-box; transition: border-color .2s, box-shadow .2s; }
   input::placeholder, textarea::placeholder { color: #6c7286; }
   input:focus, select:focus, textarea:focus { outline: none; border-color: rgb(var(--key) / .7); box-shadow: 0 0 0 3px rgb(var(--key) / .16); }
@@ -105,7 +105,7 @@
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
   .radios { display: flex; flex-wrap: wrap; gap: 10px; }
   .radios label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line-2); border-radius: 999px; cursor: pointer; font-size: 14px; }
-  .radios input { accent-color: rgb(var(--key)); width: 24px; height: 24px; margin: 0; }
+  .radios input { accent-color: rgb(var(--key)); width: 24px; height: 24px; margin: 0; flex: none; }
   .radios label:has(input:checked) { border-color: rgb(var(--key) / .6); background: rgb(var(--key) / .1); }
   .say { font-size: 14px; color: var(--ink-2); min-height: 1.4em; margin: 10px 0 0; } .say.bad { color: var(--bad); } .say.good { color: var(--good); }
   .bot { font-size: 13px; color: var(--ink-3); margin: 0 0 14px; min-height: 1.3em; }
@@ -258,6 +258,7 @@
       <a href="/fanfic/?v=recent" data-go data-v="recent" aria-keyshortcuts="r">Most recent</a>
       <a href="/fanfic/?v=search" data-go data-v="search" aria-keyshortcuts="/">Search</a>
       <a href="/fanfic/?v=authors" data-go data-v="authors">Authors</a>
+      <a href="/fanfic/?v=series" data-go data-v="series">Series</a>
       <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink" aria-keyshortcuts="w">Writing Room</a>
       <a href="/fanfic/?v=glossary" data-go data-v="glossary">Writing Glossary</a>
       <a href="/fanfic/?notice=rules" data-go data-v="notice">Rules</a>
@@ -312,6 +313,7 @@
         <details class="fgen"><summary><span>Genres:</span><span id="fGenresSay">any</span></summary><p class="quiet">A story shows when it has every genre ticked.</p><div class="radios" id="fGenres"></div></details>
         <label class="chk"><input type="checkbox" id="fNoWarn"> Hide stories with warnings</label>
         <p class="fby" id="fBy" hidden>Stories by <b id="fByName"></b> <button type="button" id="fByAll">Show every author</button></p>
+        <p class="fby" id="fSeries" hidden>The series <b id="fSeriesName"></b> by <b id="fSeriesBy"></b><span>, in part order</span> <button type="button" id="fSeriesAll">Show every story</button></p>
         <nav class="az" id="fAz" aria-label="Titles A to Z"><span class="azl">Titles A to Z</span></nav>
       </div>
       <table class="list" aria-labelledby="latestH" id="latest">
@@ -377,6 +379,18 @@
     </div>
   </section>
 
+  <section class="view" id="series" aria-labelledby="seriesH">
+    <h2 id="seriesH" class="h1">Series</h2>
+    <p class="lead">Stories a writer tells in parts, A to Z. Open a series to read its parts in order.</p>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="seriesListH">Series A to Z</h2><span class="quiet" id="seriesSay"></span></div>
+      <table class="list authors" aria-labelledby="seriesListH">
+        <thead><tr><th>Series</th><th class="hide-s">Writer</th><th class="num">Parts</th><th>Last post</th></tr></thead>
+        <tbody id="seriesRows"></tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- a random story: the view shows only while one is picked, or when there is none to pick -->
   <section class="view" id="random" aria-labelledby="randomH">
     <div class="glass empty"><div class="orb" aria-hidden="true"></div><p class="big" id="randomH">Random story</p><p id="randomSay"></p><div class="acts"><a class="btn go" href="/fanfic/?new=story" data-go>Post a story</a><a class="btn" href="/fanfic/" data-go>Back to the index</a></div></div>
@@ -436,6 +450,10 @@
       <div class="two">
         <label class="f"><span>Rating</span><select name="rating" required><option value="">Choose a rating</option></select><small>Readers filter the archive by it.</small></label>
         <label class="f"><span>Characters</span><input type="text" name="characters" maxlength="260" placeholder="Up to 6 names, split by commas"><small>Readers find stories by the people in them.</small></label>
+      </div>
+      <div class="two">
+        <label class="f"><span>Series</span><input type="text" name="series" maxlength="40" placeholder="Not in a series"><small>Optional. Give your stories the same series name to read them as one series.</small></label>
+        <label class="f"><span>Part in the series</span><input type="number" name="part" min="1" max="999" step="1" inputmode="numeric" placeholder="1"><small>Needed with a series name. Readers get the parts in this order.</small></label>
       </div>
       <fieldset class="f"><legend>Status</legend><div class="radios"><label><input type="radio" name="status" value="In progress" checked> In progress: more chapters to come</label><label><input type="radio" name="status" value="Complete"> Complete: a one-shot, or every chapter is here</label></div><small>A later chapter can mark the story Complete.</small></fieldset>
       <fieldset class="f"><legend>Genres (up to 3)</legend><div class="radios" id="stGenres"></div></fieldset>
@@ -558,7 +576,7 @@
         <dt>How do I post a story?</dt><dd>Choose <a href="/fanfic/?new=story" data-go>Post a story</a>. Pick its fandom and its rating, give it a title and a short summary, and write or paste chapter 1. <a href="/fanfic/?notice=format" data-go>How to format chapters</a> has the details.</dd>
         <dt>How do I add the next chapter?</dt><dd>Open the story and choose <b>Add the next chapter</b>. Only the device that posted the story shows that button.</dd>
         <dt>Do I need an account?</dt><dd>No. Your drafts, what you have read and your 18+ answer are kept on this device. Stories you post carry a mark made on this device, so readers can tell your stories from a writer with the same pen name.</dd>
-        <dt>How do I find a story?</dt><dd>On the index, type in <b>Find a story</b>, use the filters or Titles A to Z, or open <a href="/fanfic/?v=authors" data-go>Authors</a>, <a href="/fanfic/?v=search" data-go>Search</a> or <a href="/fanfic/?v=random" data-go>Random story</a>.</dd>
+        <dt>How do I find a story?</dt><dd>On the index, type in <b>Find a story</b>, use the filters or Titles A to Z, or open <a href="/fanfic/?v=authors" data-go>Authors</a>, <a href="/fanfic/?v=series" data-go>Series</a>, <a href="/fanfic/?v=search" data-go>Search</a> or <a href="/fanfic/?v=random" data-go>Random story</a>.</dd>
         <dt>Something here breaks the rules. What do I do?</dt><dd>Read <a href="/fanfic/?notice=report" data-go>Report spam or abuse here</a>.</dd>
         <dt>Where can I ask something else?</dt><dd>Ask on Verse's <a href="/boards/">open boards</a> (the forums every story here is posted to), or write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</dd>
       </dl></div>

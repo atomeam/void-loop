@@ -217,7 +217,7 @@ test('story details: a known rating, at most 3 known genres, at most 6 character
   assert.deepEqual(d.warnings, ['Violence']); assert.equal(F.cleanDetails({ rating: 'Explicit' }).rating, '', 'an unknown rating is none');
   const body = F.withSummary('About it.', 'The story.', { rating: 'Mature', genres: ['Angst'], characters: 'Ana', warnings: ['Dark themes'] });
   assert.equal(body, 'Warnings: Dark themes\nGenres: Angst\nCharacters: Ana\nRated: Mature\nSummary: About it.\n\nThe story.', 'the rating last, so names end at a label');
-  assert.deepEqual(F.readSummary(body), { summary: 'About it.', text: 'The story.', details: { rating: 'Mature', genres: ['Angst'], characters: ['Ana'], warnings: ['Dark themes'], status: '' } });
+  assert.deepEqual(F.readSummary(body), { summary: 'About it.', text: 'The story.', details: { rating: 'Mature', genres: ['Angst'], characters: ['Ana'], warnings: ['Dark themes'], status: '', series: '', part: 0 } });
   assert.deepEqual(F.readSummary(F.withSummary('', 'Just text.', { rating: 'General' })), { summary: '', text: 'Just text.', details: { ...F.cleanDetails({}), rating: 'General' } });
   assert.equal(F.withSummary('About it.', 'The story.', {}), F.withSummary('About it.', 'The story.'), 'no details, the body is as before');
   const posts = F.chapterPosts(1, '', Array.from({ length: 14 }, (_, i) => 'Para ' + i + ' ' + 'word '.repeat(150).trim()).join('\n\n'), 'S.', { rating: 'Teen', genres: ['Drama'], characters: 'Ana', warnings: ['Violence'] });
@@ -321,7 +321,7 @@ test('a story is in progress or complete: said on chapter 1, or by a later chapt
   const most = { status: 'In progress', rating: 'Mature', genres: ['Hurt/Comfort', 'Friendship', 'Adventure'], warnings: F.WARNINGS, characters: ['a', 'b', 'c', 'd', 'e'].map((x) => x.repeat(40)).join(',') };
   const lines = F.detailLines(most).trim(); assert.ok(lines.length <= 300, 'the longest details fit the catalog excerpt: ' + lines.length);
   assert.equal(F.topicOf({ no: 1, body: (lines + '\n\nSummary: s\n\nText').replace(/\s+/g, ' ').slice(0, 300), name: 'n' }, { code: 'ficx', title: 'X' }).rating, 'Mature');
-  const list = [{ ...flat }, { ...flat, no: 2, status: 'Complete' }, { ...flat, no: 3, status: '' }];
+  const list = [{ ...flat }, { ...flat, no: 2, status: 'Complete' }, { ...flat, no: 3, status: '', series: '', part: 0 }];
   assert.deepEqual(F.filterStories(list, { status: 'Complete' }).map((t) => t.no), [2]);
   assert.deepEqual(F.filterStories(list, { status: 'In progress' }).map((t) => t.no), [1]);
   const hits = [{ board: 'ficx', thread: 1, trip: 'aa', body: last[0] }, { board: 'ficx', thread: 3, trip: 'bb', body: last[0] }, { board: 'ficx', thread: 1, trip: 'aa', body: 'Status: Complete' }, { board: 'ficx', thread: 3, trip: 'aa', body: 'Chapter 2, continued Status: Complete' }];
@@ -346,3 +346,24 @@ test('a review can give 1 to 5 stars: the story averages them, the writer\'s own
   assert.deepEqual(s.stars, { avg: 3.7, n: 3 }, 'the writer\'s own stars do not count; (5 + 4 + 2) / 3 = 3.7');
 });
 
+test('a series: a name and a part on chapter 1, read back from the post and from the catalog excerpt, listed per writer and read in part order', () => {
+  assert.deepEqual([F.cleanDetails({ series: 'Long Road' }).series, F.cleanDetails({ series: 'Long Road', part: 0 }).part, F.cleanDetails({ series: 'Long Road', part: 1000 }).part, F.cleanDetails({ part: 2 }).part], ['', 0, 0, 0], 'a series needs both a name and a part from 1 to 999');
+  const d = { series: 'The Long, Long Road', part: 2, rating: 'Teen', status: 'In progress', characters: 'Ana, Bo' };
+  const body = F.withSummary('About it.', 'The story.', d);
+  assert.ok(body.startsWith('Series: The Long, Long Road, part 2\nStatus: In progress\n'), body);
+  const back = F.readSummary(body).details; assert.equal(back.series, 'The Long, Long Road'); assert.equal(back.part, 2);
+  const flat = F.topicOf({ no: 1, body: body.replace(/\s+/g, ' ').slice(0, 300), name: 'Ink', trip: 'aa', at: 5 }, { code: 'ficx', title: 'X' });
+  assert.deepEqual([flat.series, flat.part, flat.status, flat.rating, flat.characters], ['The Long, Long Road', 2, 'In progress', 'Teen', ['Ana', 'Bo']], 'the one-line catalog excerpt keeps the series');
+  assert.equal(F.detailsLine(back), 'Part 2 of The Long, Long Road · In progress · Rated Teen · Characters: Ana, Bo');
+  // the longest details, a series too, still fit the catalog's 300 characters: the series takes its room from the character names
+  const most = { series: 'S'.repeat(40), part: 999, status: 'In progress', rating: 'Mature', genres: ['Hurt/Comfort', 'Friendship', 'Adventure'], warnings: F.WARNINGS, characters: ['a', 'b', 'c', 'd', 'e'].map((x) => x.repeat(40)).join(',') };
+  const lines = F.detailLines(most).trim(); assert.ok(lines.length <= 300, 'fits: ' + lines.length);
+  assert.equal(F.topicOf({ no: 1, body: (lines + '\n\nSummary: s\n\nText').replace(/\s+/g, ' ').slice(0, 300), name: 'n' }, { code: 'ficx', title: 'X' }).part, 999);
+  const t = (no, author, trip, series, part, at) => ({ no, author, trip, series, part, at, bumped: at, title: 'T' + no });
+  const list = [t(1, 'Ink', 'aa', 'Long Road', 2, 10), t(2, 'Ink', 'aa', 'long road', 1, 20), t(3, 'Ink', 'zz', 'Long Road', 1, 30), t(4, 'Ink', 'aa', '', 0, 40)];
+  const all = F.seriesOf(list);
+  assert.equal(all.length, 2, 'a namesake writing a series of the same name is a series of its own');
+  assert.deepEqual(all.map((x) => [x.name, x.parts, x.last]), [['Long Road', 2, 20], ['Long Road', 1, 30]]);
+  assert.deepEqual(F.inPartOrder(F.filterStories(list, { series: all[0].key })).map((x) => x.no), [2, 1], 'one series, part 1 first');
+  assert.equal(F.seriesKey(list[3]), '', 'a story in no series has no key');
+});

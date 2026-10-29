@@ -173,8 +173,8 @@ function setPage(n, push) {
 }
 
 // ---- views ----
-const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'authors', 'random', 'gate', 'gone'];
-const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice', authors: 'authors', random: 'index' };
+const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'authors', 'series', 'random', 'gate', 'gone'];
+const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice', authors: 'authors', series: 'series', random: 'index' };
 // what the view on screen hands to the other pages (owner, 2026-10-29: "all the pages are supposed to be able to work together"): the chapter
 // being read, the draft in the Writing Room, or chapter 1 typed in the post form (the stage card's "Post a story" lands there); the index and the lists hand nothing. A link carries at most LINK_MAX encoded characters (a longer
 // address is refused by the edge), so the translator gets the opening of a long chapter (it takes 5,000 characters) and the word counter opens
@@ -230,9 +230,10 @@ const findQ = () => (new URLSearchParams(location.search).get('find') || '').sli
 const filtersQ = () => { const q = new URLSearchParams(location.search);
   return { sort: F.SORTS[q.get('sort')] ? q.get('sort') : 'recent', rating: (q.get('rated') || '').slice(0, 20), genres: (q.get('genre') || '').split(',').filter(Boolean).slice(0, 15),
     characters: (q.get('char') || '').slice(0, 120), noWarnings: q.get('nowarn') === '1', letter: (q.get('letter') || '').slice(0, 1), by: (q.get('by') || '').slice(0, 120),
-    status: F.STATUSES.includes(q.get('status')) ? q.get('status') : '' }; };
-const filtering = (f) => !!(f.rating || f.genres.length || f.characters.trim() || f.noWarnings || f.letter || f.by || f.status);
-const indexList = () => { if (!idx) return []; const f = filtersQ(); return F.sortStories(F.filterStories(F.findIn(idx.list, findQ()), f), f.sort); };
+    status: F.STATUSES.includes(q.get('status')) ? q.get('status') : '', series: (q.get('series') || '').slice(0, 200) }; };
+const filtering = (f) => !!(f.rating || f.genres.length || f.characters.trim() || f.noWarnings || f.letter || f.by || f.status || f.series);
+// one series reads in part order unless a sort is chosen
+const indexList = () => { if (!idx) return []; const f = filtersQ(), got = F.filterStories(F.findIn(idx.list, findQ()), f); return f.series && f.sort === 'recent' ? F.inPartOrder(got) : F.sortStories(got, f.sort); };
 function drawIndexList() {
   if (!idx) return;
   const q = findQ().trim(), f = filtersQ(); drawFilters(f);
@@ -266,8 +267,13 @@ function drawFilters(f) {
   $('fGenresSay').textContent = f.genres.length ? f.genres.join(', ') : 'any';
   // one author's stories (a pen name in a row, or a row of the Authors list, opens them): the name shows, with a way back to every author
   $('fBy').hidden = !f.by; const who = $('fByName'); who.textContent = f.by.replace(/!.*/, ''); who.translate = false;
+  // one series (its name on a story, or a row of the Series list, opens it): its name and writer show, with a way back to every story
+  const one = f.series && idx ? idx.list.find((t) => F.seriesKey(t) === f.series) : null;
+  $('fSeries').hidden = !f.series; const sn = $('fSeriesName'); sn.textContent = one ? one.series : f.series.replace(/^.*~/, ''); sn.translate = false;
+  const sw = $('fSeriesBy'); sw.textContent = one ? one.author : f.series.replace(/[!~].*/, ''); sw.translate = false;
 }
 $('fByAll').onclick = () => setFilter('by', '');
+$('fSeriesAll').onclick = () => setFilter('series', '');
 $('find').addEventListener('input', () => {
   const u = new URLSearchParams(location.search), v = $('find').value.slice(0, 100);
   if (v.trim()) u.set('find', v); else u.delete('find'); u.delete('page');
@@ -315,6 +321,23 @@ async function viewAuthors() {
   }));
 }
 
+// the Series list: every series A to Z, its writer, how many parts are posted and its newest post; a name opens the series in part order
+async function viewSeries() {
+  show('series', 'Series');
+  const rows = $('seriesRows'); rows.replaceChildren(quietRow('Opening the archive…', 4));
+  let a; try { a = await archive(); } catch (e) { rows.replaceChildren(quietRow(e.message, 4)); return; }
+  const list = F.seriesOf(shown(a.topics));
+  $('seriesSay').textContent = list.length ? list.length.toLocaleString() + (list.length === 1 ? ' series' : ' series') + ' posted here.' : '';
+  if (!list.length) { rows.replaceChildren(quietRow('No series yet. A writer starts one by giving a story a series name and a part number.', 4)); return; }
+  rows.replaceChildren(...list.map((x) => {
+    const tr = el('tr'), main = el('td', 'm'), who = el('td', 'who hide-s'), n = el('td', 'num', String(x.parts)), when = el('td', 'when');
+    const a = link(x.name, href({ series: x.key }), 't'); a.translate = false; main.append(a);
+    const pen = link(x.author, href({ by: F.authorKey(x) })); pen.translate = false; who.append(pen);
+    n.dataset.l = 'Parts'; when.dataset.l = 'Last post'; when.append(timeEl(x.last));
+    tr.append(main, who, n, when); return tr;
+  }));
+}
+
 // Random story: one of the stories this device may see, picked at random; the address becomes that story's, so Back returns to where you were
 async function viewRandom() {
   show('random', 'Random story');
@@ -357,9 +380,10 @@ async function viewStory(code, no, chap) {
   if (b.nsfw) by.append(el('span', 'tag adult', '18+'));
   const det = F.detailsLine(s.details); $('storyDetails').textContent = det; $('storyDetails').hidden = !det;
   $('storySum').textContent = s.summary; $('storySum').hidden = !s.summary;
-  const facts = [['Rated', s.details.rating ? s.details.rating + (b.nsfw ? ' · 18+' : '') : b.nsfw ? '18+' : 'All ages'], ...(s.details.status ? [['Status', s.details.status]] : []), ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
+  const facts = [['Rated', s.details.rating ? s.details.rating + (b.nsfw ? ' · 18+' : '') : b.nsfw ? '18+' : 'All ages'], ...(s.details.status ? [['Status', s.details.status]] : []),
+    ...(s.details.part ? [['Series', 'Part ' + s.details.part + ' of ' + s.details.series, href({ series: F.seriesKey({ ...s.details, author: s.author, trip: s.trip }) })]] : []), ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
     ['Reading time', F.readLabel(s.words)], ['Reviews', String(s.reviews.length)], ...(s.stars.n ? [['Stars', '★ ' + s.stars.avg + ' of 5 from ' + s.stars.n + (s.stars.n === 1 ? ' rating' : ' ratings')]] : []), ['Published', date(s.published)], ['Updated', date(s.updated)]];
-  $('storyInfo').replaceChildren(...facts.map(([k, v]) => { const d = el('div'); d.append(el('dt', '', k), el('dd', '', v)); return d; }));
+  $('storyInfo').replaceChildren(...facts.map(([k, v, to]) => { const d = el('div'), dd = el('dd'); if (to) { const a = link(v, to); a.translate = false; dd.append(a); } else dd.textContent = v; d.append(el('dt', '', k), dd); return d; }));
   // the chapter shown, and the chapter list
   const n = Math.max(1, Math.min(s.chapters.length, +chap || 1)), c = s.chapters[n - 1], sel = $('tocSel');
   handing = () => (c ? c.text : ''); drawRelated();
@@ -459,6 +483,7 @@ async function viewPost(pick) {
   if (!form.elements.pen.value) form.elements.pen.value = me.pen || '';
   detailFields(form);
   const details = () => ({ rating: form.elements.rating.value, characters: form.elements.characters.value, status: (form.querySelector('input[name=status]:checked') || {}).value || '',
+    series: form.elements.series.value, part: form.elements.part.value,
     genres: [...form.querySelectorAll('input[name=genre]:checked')].map((c) => c.value), warnings: [...form.querySelectorAll('input[name=warning]:checked')].map((c) => c.value) });
   const parts = () => F.chapterPosts(1, '', form.elements.text.value, form.elements.summary.value, details()).length;
   counter(form, 'text', parts);
@@ -471,6 +496,7 @@ async function viewPost(pick) {
     if (!b) { say(note, 'Choose a fandom first.', 'bad'); sel.focus(); return; }
     if (!title) { say(note, 'Give the story a title.', 'bad'); form.elements.title.focus(); return; }
     if (!d.rating) { say(note, 'Choose a rating, so readers know what to expect.', 'bad'); form.elements.rating.focus(); return; }
+    if (d.series.trim() && !F.cleanDetails(d).part) { say(note, 'Give the part number this story is in its series, from 1 to 999.', 'bad'); form.elements.part.focus(); return; }
     if (!F.words(text)) { say(note, 'Write or paste chapter 1 first.', 'bad'); form.elements.text.focus(); return; }
     me.pen = F.penName(form.elements.pen.value); keep();
     const s = sig(b, title, text, summary, me.pen, d);
@@ -654,6 +680,7 @@ async function route() {
   if (f) return viewForum(f);
   if (v === 'recent') return viewRecent();
   if (v === 'authors') return viewAuthors();
+  if (v === 'series') return viewSeries();
   if (v === 'random') return viewRandom();
   if (v === 'search') return viewSearch((q.get('q') || '').slice(0, 200));
   if (v === 'room' || /^#room=/.test(location.hash)) return viewRoom();

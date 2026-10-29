@@ -116,6 +116,13 @@ export const DICT = {
   'Picking a story…': 'Eine Geschichte wird ausgewählt…',
   'Random story picks one of the stories posted here. There are none yet, so there is nothing to pick.': 'Zufällige Geschichte wählt eine der hier veröffentlichten Geschichten. Es gibt noch keine, also gibt es nichts zu wählen.',
   'Stories by': 'Geschichten von', Signed: 'Signiert', 'Show every author': 'Alle Autor:innen zeigen',
+  Series: 'Reihen', 'Series A to Z': 'Reihen von A bis Z', Writer: 'Autor:in', Parts: 'Teile', 'Part in the series': 'Teil der Reihe', 'Not in a series': 'In keiner Reihe',
+  'Optional. Give your stories the same series name to read them as one series.': 'Freiwillig. Gib deinen Geschichten denselben Reihennamen, damit man sie als eine Reihe liest.',
+  'Needed with a series name. Readers get the parts in this order.': 'Nötig mit einem Reihennamen. Lesende bekommen die Teile in dieser Reihenfolge.',
+  'Give the part number this story is in its series, from 1 to 999.': 'Gib an, welcher Teil der Reihe diese Geschichte ist, von 1 bis 999.',
+  'The series': 'Die Reihe', ', in part order': ', nach Teilen geordnet', 'Show every story': 'Alle Geschichten zeigen',
+  'Stories a writer tells in parts, A to Z. Open a series to read its parts in order.': 'Geschichten, die eine Person in Teilen erzählt, von A bis Z. Öffne eine Reihe, um ihre Teile der Reihe nach zu lesen.',
+  'No series yet. A writer starts one by giving a story a series name and a part number.': 'Noch keine Reihen. Eine Reihe beginnt, wenn eine Geschichte einen Reihennamen und eine Teilnummer bekommt.',
   'Help desk: questions and answers': 'Hilfe: Fragen und Antworten', 'How do I post a story?': 'Wie veröffentliche ich eine Geschichte?',
   'How do I add the next chapter?': 'Wie füge ich das nächste Kapitel hinzu?', 'Do I need an account?': 'Brauche ich ein Konto?',
   'How do I find a story?': 'Wie finde ich eine Geschichte?', 'Something here breaks the rules. What do I do?': 'Hier verstößt etwas gegen die Regeln. Was tue ich?',
@@ -131,7 +138,7 @@ export const DICT = {
 // text made from numbers and names: the English shape on the left, the German on the right
 const PATTERNS = [
   [/^Chapter (\d+)$/, 'Kapitel $1'], [/^Chapter (\d+) of (\d+)$/, 'Kapitel $1 von $2'], [/^Chapter (\d+): /, 'Kapitel $1: '], [/^Page (\d+) of (\d+)$/, 'Seite $1 von $2'],
-  [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^★ (\d(?:\.\d)?) of 5 from (\d+) ratings?$/, '★ $1 von 5 aus $2 Bewertung(en)'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
+  [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^★ (\d(?:\.\d)?) of 5 from (\d+) ratings?$/, '★ $1 von 5 aus $2 Bewertung(en)'], [/^(\d+) series posted here\.$/, '$1 Reihe(n) hier veröffentlicht.'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
   [/^(\d[\d,.]*) words?$/, '$1 Wörter'], [/^(\d+) min read$/, '$1 Min. Lesezeit'], [/^No story matches "(.*)"\.$/, 'Keine Geschichte passt zu „$1“.'],
   [/^Exported (\d+) stor(?:y|ies)\.$/, '$1 Geschichte(n) exportiert.'], [/^(\d[\d,.]*) authors? ha(?:s|ve) posted here\.$/, '$1 Autor:innen haben hier veröffentlicht.'], [/^No stories in (.*) yet\. Post the first one\.$/, 'Noch keine Geschichten in $1. Veröffentliche die erste.'],
 ];
