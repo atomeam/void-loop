@@ -537,13 +537,41 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T08:56:12Z",
+   "subject": "A made password goes to the strength checker in memory, never in the address"
+  },
+  {
+   "at": "2026-10-29T08:53:38Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site; next randomarea.com"
+  },
+  {
+   "at": "2026-10-29T08:51:04Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com"
+  },
+  {
+   "at": "2026-10-29T08:51:01Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-10-29T08:50:34Z",
+   "subject": "Verse fixes its gradient skill: learn to handle \"gradient from blue to neon pink\""
+  },
+  {
+   "at": "2026-10-29T08:49:20Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T08:46:49Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T08:43:48Z",
    "subject": "Regenerate the generated files after the merge"
@@ -595,34 +623,6 @@
   {
    "at": "2026-10-29T08:31:17Z",
    "subject": "Random page: preload the card module"
-  },
-  {
-   "at": "2026-10-29T08:30:02Z",
-   "subject": "Better at toolkit, flights, verse brain and 2 more: 14 more ways of asking answered right — new phrases: “what tools do you have” now…"
-  },
-  {
-   "at": "2026-10-29T08:27:11Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:26:59Z",
-   "subject": "Random number page: stage card uses the page's range, and links back"
-  },
-  {
-   "at": "2026-10-29T08:24:25Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T08:22:55Z",
-   "subject": "seo-audit: /fanfic/rss is a function route"
-  },
-  {
-   "at": "2026-10-29T08:19:30Z",
-   "subject": "Fan fiction: a feed of the newest stories at /fanfic/rss"
-  },
-  {
-   "at": "2026-10-29T08:17:57Z",
-   "subject": "Refresh the translate parity evidence for the card import"
   }
  ],
  "builders": {
