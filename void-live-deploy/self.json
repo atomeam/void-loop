@@ -542,13 +542,29 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T17:08:21Z",
+   "subject": "Map: name the edge cache live check (tool and workflow from #1580), so map-coverage is green on main"
+  },
+  {
+   "at": "2026-10-29T17:08:07Z",
+   "subject": "Send \"random band name\" to the name generators, not to fake people"
+  },
+  {
+   "at": "2026-10-29T17:08:07Z",
+   "subject": "Browser suite: the paid lines read MultiVerse after #1567"
+  },
+  {
+   "at": "2026-10-29T17:06:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T17:06:26Z",
    "subject": "Main green: 5 browser checks that the reply section, the MultiVerse rename and the pinned target made red"
@@ -570,6 +586,10 @@
    "subject": "Edge cache live check: a repeat ask must be a HIT, personal and signed asks never"
   },
   {
+   "at": "2026-10-29T16:57:57Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:56:05Z",
    "subject": "Versus check: a pinned target's score line says \"now assimilating\""
   },
@@ -582,7 +602,15 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-29T16:47:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:44:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:43:54Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -600,34 +628,6 @@
   {
    "at": "2026-10-29T16:39:39Z",
    "subject": "brain-gardener: check collapse on a brain that collapses when only watched"
-  },
-  {
-   "at": "2026-10-29T16:34:49Z",
-   "subject": "converter: assimilate onlineconverter.com as /converter/"
-  },
-  {
-   "at": "2026-10-29T16:31:30Z",
-   "subject": "Keep every proven skill's flavor line unique once the lore runs out; regenerate parity and hand-off gaps"
-  },
-  {
-   "at": "2026-10-29T16:29:52Z",
-   "subject": "Weather: an ask with no place in it is the forecast for here"
-  },
-  {
-   "at": "2026-10-29T16:28:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:26:17Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:25:27Z",
-   "subject": "Place replies kept before cards had a family, once, from the loop log"
-  },
-  {
-   "at": "2026-10-29T16:24:24Z",
-   "subject": "test(answer-honesty): read the tower target from the record"
   }
  ],
  "builders": {
