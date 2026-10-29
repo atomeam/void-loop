@@ -1618,95 +1618,114 @@
   "gradient": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 162,
-    "best": 475,
-    "evidence": "Verse (/gradient/) 162 ms to the load event (median of 3, phone width) vs colorzilla.com 475 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-26T13:10:15.234Z"
+    "verse": 178,
+    "best": 438,
+    "evidence": "Verse (/gradient/) 178 ms to the load event (median of 3, phone width) vs colorzilla.com 438 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/gradient/) 3 of 3 loads answered vs colorzilla.com 3 of 3 loads answered",
-    "at": "2026-10-26T13:10:15.234Z"
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    },
    "mobile": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": 554,
-    "evidence": "Verse (/gradient/) 0 px sideways overflow at 390 px vs colorzilla.com 554 px sideways overflow at 390 px",
-    "at": "2026-10-26T13:10:15.234Z"
+    "best": 0,
+    "evidence": "Verse (/gradient/) 0 px sideways overflow at 390 px vs colorzilla.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/gradient/) 0 unnamed controls or images vs colorzilla.com 2 unnamed controls or images",
-    "at": "2026-10-26T13:10:15.234Z"
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/gradient/) 1 (1: the page shows itself again with the network cut) vs colorzilla.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-26T13:10:15.234Z"
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/gradient/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colorzilla.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-26T13:10:15.234Z"
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 9,
-    "best": 54,
-    "evidence": "Verse (/gradient/) 9 design defects vs colorzilla.com 54 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.00), colorzilla.com (28 low-contrast texts, 26 small tap targets, layout shift 0.00)",
-    "at": "2026-10-26T13:10:15.234Z"
+    "best": 47,
+    "evidence": "Verse (/gradient/) 9 design defects vs colorzilla.com 47 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.00), colorzilla.com (28 low-contrast texts, 19 small tap targets, layout shift 0.00)",
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    },
    "stops with opacity": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/gradient/) 2 of 2 shown vs colorzilla.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T13:10:15.234Z",
+    "at": "2026-10-29T03:16:16.383Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "import css": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T13:10:15.234Z",
+    "at": "2026-10-29T03:16:16.383Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "presets": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-26T13:10:15.234Z",
+    "at": "2026-10-29T03:16:16.383Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 15,
     "best": 14,
     "evidence": "Verse (/gradient/) 15 of 17 things a full answer shows vs colorzilla.com 14 of 17 things a full answer shows (Verse lacks: Orientation, Colour format; site lacks: conic, text contrast, Colour format)",
-    "at": "2026-10-26T13:10:15.234Z",
-    "of": 17
+    "at": "2026-10-29T03:16:16.383Z",
+    "of": 17,
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/gradient/) 2 of 2 right against the worked-out answer; judged against the standard, not colorzilla.com (the site is not asked)",
-    "at": "2026-10-26T13:10:15.234Z",
+    "at": "2026-10-29T03:16:16.383Z",
     "of": 2
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 9,
+    "best": 4,
+    "evidence": "Verse (/gradient/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs colorzilla.com 4 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T03:16:16.383Z",
+    "siteRead": true
    }
   },
   "wheel": {
@@ -3087,59 +3106,66 @@
   "travel": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 154,
-    "best": 814,
-    "evidence": "Verse (/flights/) 154 ms to the load event (median of 3, phone width) vs Google Flights 814 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:19:01.571Z"
+    "verse": 183,
+    "best": 813,
+    "evidence": "Verse (/flights/) 183 ms to the load event (median of 3, phone width) vs Google Flights 813 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/) 3 of 3 loads answered vs Google Flights 3 of 3 loads answered",
-    "at": "2026-10-28T13:19:01.571Z"
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/) 0 px sideways overflow at 390 px vs Google Flights 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:19:01.571Z"
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/) 0 unnamed controls or images vs Google Flights 0 unnamed controls or images",
-    "at": "2026-10-28T13:19:01.571Z"
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flights/) 1 (1: the page shows itself again with the network cut) vs Google Flights 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:19:01.571Z"
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flights/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Flights 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:19:01.571Z"
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 12,
     "evidence": "Verse (/flights/) 0 design defects vs Google Flights 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Flights (0 low-contrast texts, 12 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:19:01.571Z"
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/flights/) 5 of 5 right against the worked-out answer; judged against the standard, not Google Flights (the site is not asked)",
-    "at": "2026-10-28T13:19:01.571Z",
+    "at": "2026-10-29T03:15:24.368Z",
     "of": 5
    },
    "search across providers": {
@@ -3147,7 +3173,7 @@
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/flights/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:01.571Z",
+    "at": "2026-10-29T03:15:24.368Z",
     "of": 7,
     "part": true
    },
@@ -3156,7 +3182,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:01.571Z",
+    "at": "2026-10-29T03:15:24.368Z",
     "of": 4,
     "part": true
    },
@@ -3165,7 +3191,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:19:01.571Z",
+    "at": "2026-10-29T03:15:24.368Z",
     "of": 4,
     "part": true
    },
@@ -3174,8 +3200,17 @@
     "verse": 22,
     "best": 2,
     "evidence": "Verse (/flights/) 22 of 25 things a full answer shows vs Google Flights 2 of 25 things a full answer shows (Verse lacks: Emissions estimates, Trip context, Mobile web; site lacks: nearby airports, one way or return, passengers, cabin class, search on several providers, distance, flight time, time difference, CO2, price tracking, a price target, an itinerary, layover warnings, a calendar file, on your device, works offline, no account, no ads, a share link, Emissions estimates, Trip context, Share itinerary, Mobile web)",
-    "at": "2026-10-28T13:19:01.571Z",
-    "of": 25
+    "at": "2026-10-29T03:15:24.368Z",
+    "of": 25,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8.5,
+    "best": 3.5,
+    "evidence": "Verse (/flights/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs Google Flights 3.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T03:15:24.368Z",
+    "siteRead": true
    }
   },
   "jobs": {
@@ -19868,10 +19903,10 @@
   "nameunit": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 144,
-    "best": 212,
-    "evidence": "Verse (/hosting/) 144 ms to the load event (median of 3, phone width) vs nameunit.com 212 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-29T03:10:32.968Z",
+    "verse": 176,
+    "best": 160,
+    "evidence": "Verse (/hosting/) 176 ms to the load event (median of 3, phone width) vs nameunit.com 160 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    },
    "reliability": {
@@ -19879,7 +19914,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 loads answered vs nameunit.com 3 of 3 loads answered",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    },
    "mobile": {
@@ -19887,7 +19922,7 @@
     "verse": 0,
     "best": 176,
     "evidence": "Verse (/hosting/) 0 px sideways overflow at 390 px vs nameunit.com 176 px sideways overflow at 390 px",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    },
    "accessibility": {
@@ -19895,7 +19930,7 @@
     "verse": 0,
     "best": 43,
     "evidence": "Verse (/hosting/) 0 unnamed controls or images vs nameunit.com 43 unnamed controls or images",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    },
    "offline": {
@@ -19903,7 +19938,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/hosting/) 1 (1: the page shows itself again with the network cut) vs nameunit.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    },
    "sharing": {
@@ -19911,7 +19946,7 @@
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/hosting/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs nameunit.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    },
    "accuracy": {
@@ -19919,7 +19954,7 @@
     "verse": 8,
     "best": 8,
     "evidence": "Verse (/hosting/) 8 of 8 right against the worked-out answer; judged against the standard, not nameunit.com (the site is not asked)",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "of": 8
    },
    "design polish": {
@@ -19927,7 +19962,7 @@
     "verse": 0,
     "best": 18,
     "evidence": "Verse (/hosting/) 0 design defects vs nameunit.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), nameunit.com (0 low-contrast texts, 18 small tap targets, layout shift 0.03)",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    },
    "domain search": {
@@ -19935,7 +19970,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "of": 4,
     "part": true
    },
@@ -19944,7 +19979,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "of": 4,
     "part": true
    },
@@ -19953,7 +19988,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "of": 4,
     "part": true
    },
@@ -19962,7 +19997,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "of": 3,
     "part": true
    },
@@ -19971,7 +20006,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "of": 3,
     "part": true
    },
@@ -19980,7 +20015,7 @@
     "verse": 19,
     "best": 2,
     "evidence": "Verse (/hosting/) 19 of 19 things a full answer shows vs nameunit.com 2 of 19 things a full answer shows (Verse lacks: none; site lacks: domain search, tiered plans, labelled as the rival's, Small, Medium, Large, bandwidth, monthly transfer, vCPUs, memory, SLA, NGINX, Caddy, TLS 1.3, no account, works offline, back to Verse, Name unit - Support / Kundeservice)",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "of": 19,
     "siteRead": true
    },
@@ -19989,7 +20024,7 @@
     "verse": 8,
     "best": 3,
     "evidence": "Verse (/hosting/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs nameunit.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-29T03:10:32.968Z",
+    "at": "2026-10-29T03:14:28.818Z",
     "siteRead": true
    }
   },
