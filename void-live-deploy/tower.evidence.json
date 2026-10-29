@@ -107,66 +107,74 @@
   "is it": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 110,
-    "best": 268,
-    "evidence": "Verse (/is-it/christmas) 110 ms to the load event (median of 3, phone width) vs isitchristmas.com 268 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T12:59:56.039Z"
+    "verse": 137,
+    "best": 226,
+    "evidence": "Verse (/is-it/christmas) 137 ms to the load event (median of 3, phone width) vs isitchristmas.com 226 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 0 px sideways overflow at 390 px vs isitchristmas.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 0 unnamed controls or images vs isitchristmas.com 0 unnamed controls or images",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/is-it/christmas) 3 of 3 loads answered vs isitchristmas.com 3 of 3 loads answered",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 1 (1: the page shows itself again with the network cut) vs isitchristmas.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/is-it/christmas) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs isitchristmas.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "local language": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/is-it/christmas) 1 (1: a German browser gets German) vs isitchristmas.com 0 (1: a German browser gets German)",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "big answer": {
     "verdict": "better",
     "verse": 205,
     "best": 160,
     "evidence": "Verse (/is-it/christmas) 205 px, the largest text on the first screen vs isitchristmas.com 160 px, the largest text on the first screen",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/is-it/christmas) 1 of 1 right against the worked-out answer; judged against the standard, not isitchristmas.com (the site is not asked)",
-    "at": "2026-10-28T12:59:56.039Z",
+    "at": "2026-10-29T02:18:11.216Z",
     "of": 1
    },
    "completeness": {
@@ -174,91 +182,110 @@
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/is-it/christmas) 4 of 10 things a full answer shows vs isitchristmas.com 1 of 10 things a full answer shows (Verse lacks: Answer in the visitor's language, Works with JavaScript off, Live crowd of visitors' flags, Turn your own flag, Country legend on hover, RSS feed; site lacks: which day it is about, how long until it, the date itself, Answer in the visitor's language, Works with JavaScript off, Live crowd of visitors' flags, Turn your own flag, Country legend on hover, RSS feed)",
-    "at": "2026-10-28T12:59:56.039Z",
-    "of": 10
+    "at": "2026-10-29T02:18:11.216Z",
+    "of": 10,
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/is-it/christmas) 0 design defects vs isitchristmas.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), isitchristmas.com (0 low-contrast texts, 3 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T12:59:56.039Z"
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8.5,
+    "best": 5.5,
+    "evidence": "Verse (/is-it/christmas) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs isitchristmas.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:18:11.216Z",
+    "siteRead": true
    }
   },
   "coin flip": {
    "speed": {
     "verdict": "worse",
-    "verse": 583,
-    "best": 327,
-    "evidence": "Verse (/flip/) 583 ms to the load event (median of 3, phone width) vs justflipacoin.com 327 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T20:03:59.698Z",
-    "was": "equal-and-better"
+    "verse": 229,
+    "best": 211,
+    "evidence": "Verse (/flip/) 229 ms to the load event (median of 3, phone width) vs justflipacoin.com 211 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:20:30.052Z",
+    "was": "equal-and-better",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 px sideways overflow at 390 px vs justflipacoin.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T20:03:59.698Z"
+    "at": "2026-10-29T02:20:30.052Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flip/) 0 unnamed controls or images vs justflipacoin.com 0 unnamed controls or images",
-    "at": "2026-10-28T20:03:59.698Z"
+    "at": "2026-10-29T02:20:30.052Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 loads answered vs justflipacoin.com 3 of 3 loads answered",
-    "at": "2026-10-28T20:03:59.698Z"
+    "at": "2026-10-29T02:20:30.052Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 (1: the page shows itself again with the network cut) vs justflipacoin.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T20:03:59.698Z"
+    "at": "2026-10-29T02:20:30.052Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs justflipacoin.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T20:03:59.698Z"
+    "at": "2026-10-29T02:20:30.052Z",
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 7,
     "best": 4,
     "evidence": "Verse (/flip/) 7 of 7 things a full answer shows vs justflipacoin.com 4 of 7 things a full answer shows (Verse lacks: none; site lacks: a running count, Flip counter, Flip sound)",
-    "at": "2026-10-28T20:03:59.698Z",
-    "of": 7
+    "at": "2026-10-29T02:20:30.052Z",
+    "of": 7,
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 4,
-    "best": 12,
-    "evidence": "Verse (/flip/) 4 design defects vs justflipacoin.com 12 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.24), justflipacoin.com (3 low-contrast texts, 9 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T20:03:59.698Z"
+    "best": 11,
+    "evidence": "Verse (/flip/) 4 design defects vs justflipacoin.com 11 design defects: Verse (0 low-contrast texts, 3 small tap targets, layout shift 0.21), justflipacoin.com (2 low-contrast texts, 9 small tap targets, layout shift 0.00)",
+    "at": "2026-10-29T02:20:30.052Z",
+    "siteRead": true
    },
    "flip history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 0 of 1 shown (Verse lacks: none; site lacks: a running count)",
-    "at": "2026-10-28T20:03:59.698Z",
+    "at": "2026-10-29T02:20:30.052Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flip/) 3 of 3 right against the worked-out answer; judged against the standard, not justflipacoin.com (the site is not asked)",
-    "at": "2026-10-28T20:03:59.698Z",
+    "at": "2026-10-29T02:20:30.052Z",
     "of": 3
    },
    "flip animation": {
@@ -266,9 +293,18 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flip/) 1 of 1 shown vs justflipacoin.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-28T20:03:59.698Z",
+    "at": "2026-10-29T02:20:30.052Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 5.5,
+    "best": 5,
+    "evidence": "Verse (/flip/) 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs justflipacoin.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:20:30.052Z",
+    "siteRead": true
    }
   },
   "random number": {
@@ -18719,68 +18755,84 @@
   "emojis": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 170,
-    "best": 552,
-    "evidence": "Verse (/emojis/) 170 ms to the load event (median of 3, phone width) vs emojitracker.com 552 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:00:50.964Z"
+    "verse": 147,
+    "best": 481,
+    "evidence": "Verse (/emojis/) 147 ms to the load event (median of 3, phone width) vs emojitracker.com 481 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:00:50.964Z"
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:00:50.964Z"
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    },
    "accessibility": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 0,
-    "best": 0,
-    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 0 unnamed controls or images",
-    "at": "2026-10-28T13:00:50.964Z"
+    "best": 1,
+    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 1 unnamed controls or images",
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/emojis/) 1 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:00:50.964Z"
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/emojis/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:00:50.964Z"
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 9,
     "best": 9,
     "evidence": "Verse (/emojis/) 9 of 9 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
-    "at": "2026-10-28T13:00:50.964Z",
+    "at": "2026-10-29T02:18:48.360Z",
     "of": 9
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), emojitracker.com (0 low-contrast texts, 0 small tap targets, layout shift 0.65)",
-    "at": "2026-10-28T13:00:50.964Z"
+    "best": 3,
+    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), emojitracker.com (0 low-contrast texts, 2 small tap targets, layout shift 0.61)",
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 17,
     "best": 0,
     "evidence": "Verse (/emojis/) 17 of 22 things a full answer shows vs emojitracker.com 0 of 22 things a full answer shows (Verse lacks: its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, a share link for it; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse, the picked emoji, named, its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, everyone today, a share link for it, the stage bridge, the copy format picker)",
-    "at": "2026-10-28T13:00:50.964Z",
-    "of": 22
+    "at": "2026-10-29T02:18:48.360Z",
+    "of": 22,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 6.5,
+    "best": 5,
+    "evidence": "Verse (/emojis/) 6.5 of 11 wider-use points (docs/WIDER-USE.md) vs emojitracker.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:18:48.360Z",
+    "siteRead": true
    }
   },
   "tournaments": {
