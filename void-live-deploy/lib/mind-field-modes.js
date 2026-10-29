@@ -14,6 +14,10 @@ export const MODES = [
   { id: 'living-cards-mind', name: 'Cards', title: 'Living cards', ask: 'living cards mind', words: ['cards', 'card', 'living cards'], about: 'the cards move like a living field' },
   { id: 'agent-fluid-memory-orbs', name: 'Orbs', title: 'Memory orbs (fluid)', ask: 'memory orbs', words: ['orbs', 'memory orbs', 'fluid', 'fluid orbs', 'memory'], about: 'small agents push a fluid; where it pools a memory orb is born, and you can seal one and recall it (F-321)' }
 ];
+/** Verse Brain, where every mode joins as one mind (skills/verse-brain.js; owner, 2026-10-29: "combine all the builds into one entity").
+ *  Not a mode of the family (it keeps its own skill): it is the last choice on every mode's switcher, and its own card opens any mode beside
+ *  it. Each open mode is felt by the brain through the shared field (lib/mode-field.js). */
+export const BRAIN = { id: 'verse-brain', name: 'Brain', title: 'Verse Brain (all of them as one)', ask: 'verse brain', about: 'every open mode felt in one workspace, with the memory orbs' };
 export const MODE_IDS = MODES.map((m) => m.id);
 export const isMode = (id) => MODE_IDS.includes(String(id || ''));
 

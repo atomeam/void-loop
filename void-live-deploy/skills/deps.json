@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 947,
+ "counted": 948,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -52,6 +52,13 @@
    "tests": 1
   },
   {
+   "file": "lib/shared-field.js",
+   "skills": 21,
+   "direct": 2,
+   "dependants": 22,
+   "tests": 1
+  },
+  {
    "file": "lib/keeper.js",
    "skills": 20,
    "direct": 0,
@@ -82,9 +89,16 @@
   {
    "file": "lib/mind-field-modes.js",
    "skills": 20,
-   "direct": 1,
-   "dependants": 21,
+   "direct": 2,
+   "dependants": 22,
    "tests": 2
+  },
+  {
+   "file": "lib/mode-field.js",
+   "skills": 20,
+   "direct": 0,
+   "dependants": 21,
+   "tests": 1
   },
   {
    "file": "lib/field-stage.js",
@@ -983,13 +997,6 @@
    "tests": 0
   },
   {
-   "file": "lib/shared-field.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/template-list.js",
    "skills": 2,
    "direct": 1,
@@ -1232,7 +1239,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/a11y-modes.js",
@@ -1498,7 +1505,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/health-habits.js",
@@ -2426,6 +2433,13 @@
   },
   {
    "file": "lib/empty-state.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/fanfic-de.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4203,7 +4217,8 @@
   },
   "lib/brain-field.js": {
    "imports": [
-    "lib/brain-workspace.js"
+    "lib/brain-workspace.js",
+    "lib/mind-field-modes.js"
    ],
    "importedBy": [
     "skills/verse-brain.js"
@@ -5229,6 +5244,10 @@
     "skills/fakeuser.js"
    ]
   },
+  "lib/fanfic-de.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/fanfic.js": {
    "imports": [
     "lib/boards.js"
@@ -5397,6 +5416,8 @@
    "imports": [
     "lib/field-kit.js",
     "lib/motion-throttle.js",
+    "lib/shared-field.js",
+    "lib/mode-field.js",
     "lib/mind-field-modes.js"
    ],
    "importedBy": [
@@ -6634,8 +6655,10 @@
   "lib/mind-field-modes.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-field.js",
     "lib/field-stage.js",
-    "skills/mind-field-mode.js"
+    "skills/mind-field-mode.js",
+    "skills/verse-brain.js"
    ],
    "reachedBy": [
     "skills/agent-fluid-memory-orbs.js",
@@ -6655,14 +6678,41 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
     "skills/tilt-mode.js",
-    "skills/vector-field-mind.js",
-    "skills/verse-brain.js"
+    "skills/vector-field-mind.js"
    ]
   },
   "lib/misskey.js": {
    "imports": [],
    "importedBy": [
     "functions/api/misses.js"
+   ]
+  },
+  "lib/mode-field.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/field-stage.js"
+   ],
+   "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
+    "skills/attention-field-mind.js",
+    "skills/doodle-mind.js",
+    "skills/echo-field.js",
+    "skills/flow-canvas.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
+    "skills/living-cards-mind.js",
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
+    "skills/swarm-mind.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js",
+    "skills/vector-field-mind.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/models.js": {
@@ -8226,8 +8276,30 @@
   "lib/shared-field.js": {
    "imports": [],
    "importedBy": [
+    "lib/field-stage.js",
     "skills/field.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
+    "skills/attention-field-mind.js",
+    "skills/doodle-mind.js",
+    "skills/echo-field.js",
+    "skills/flow-canvas.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
+    "skills/living-cards-mind.js",
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
+    "skills/swarm-mind.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js",
+    "skills/vector-field-mind.js"
    ]
   },
   "lib/shared-routines.js": {
@@ -13203,6 +13275,7 @@
     "lib/brain.js",
     "lib/brain-workspace.js",
     "lib/brain-bridge.js",
+    "lib/mind-field-modes.js",
     "lib/brain-store.js",
     "lib/shared-field.js",
     "lib/brain-field.js"

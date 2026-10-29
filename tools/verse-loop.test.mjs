@@ -46,7 +46,7 @@ else if (k !== 'workflow run' && k !== 'issue close' && k !== 'run view') consol
 }
 const ghCalls = (s) => (existsSync(join(s.dir, 'gh-calls.jsonl')) ? readFileSync(join(s.dir, 'gh-calls.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)) : []);
 const setGh = (s, fixtures) => writeFileSync(join(s.dir, 'gh.json'), JSON.stringify(fixtures));
-const NO_KEYS = { CLOUDFLARE_API_TOKEN: '', OPENROUTER_API_KEY: '', GROQ_API_KEY: '', GEMINI_API_KEY: '', CEREBRAS_API_KEY: '', VERSE_CODER_SCRIPT: '' };
+const NO_KEYS = { CLOUDFLARE_API_TOKEN: '', OPENROUTER_API_KEY: '', GROQ_API_KEY: '', GEMINI_API_KEY: '', CEREBRAS_API_KEY: '', VERSE_CODER_SCRIPT: '', VOID_OWNER_TOKEN: '' }; // the automerge job carries the real owner token: no test reads it
 const env = (s, agentCmd) => ({ ...process.env, VERSE_LOOP_GH: s.gh, VERSE_LOOP_AGENT_CMD: agentCmd, GIT_TERMINAL_PROMPT: '0' });
 
 test('flags', () => {
@@ -177,7 +177,7 @@ test('negative controls: a change that breaks a green check, a no-op, a key, a d
 
   s = sandbox({ red: ['alpha'] });
   r = await lap(parseArgs(['--dry-run']), { cwd: s.work, env: { ...env(s, ''), ...NO_KEYS }, log: quiet });
-  assert.equal(r.outcome, 'idle'); assert.match(r.why, /coder needs one model key in the environment: CLOUDFLARE_API_TOKEN/);
+  assert.equal(r.outcome, 'idle'); assert.match(r.why, /coder needs one model key in the environment: VOID_OWNER_TOKEN \(Verse's own model, \/api\/coder\), CLOUDFLARE_API_TOKEN/);
   assert.deepEqual(r.task, { kind: 'fix', check: 'alpha' }, 'red: Verse takes the check');
 });
 
@@ -224,7 +224,8 @@ writeFileSync(out + '/propose-fix.patch', 'diff --git a/${file} b/${file}\\n--- 
   if (file !== 'void-live-deploy/skills/calc.js') { mkdirSync(join(s.work, file, '..'), { recursive: true }); writeFileSync(join(s.work, file), 'export const match = /calc/;\n'); }
   sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'brain'); sh(s.work, 'push', '-q', 'origin', 'main');
 }
-const verseEnv = (s) => ({ ...env(s, ''), ...NO_KEYS, VOID_OWNER_TOKEN: 'test-token-not-real' });
+// VOID_SITE on a closed local port: the owner token also gives the coder Verse's own model (/api/coder), and no test reaches the live site
+const verseEnv = (s) => ({ ...env(s, ''), ...NO_KEYS, VOID_OWNER_TOKEN: 'test-token-not-real', VOID_SITE: 'http://127.0.0.1:9' });
 
 test('the free brain: a confident patch ships with automerge; under the bar it is retried, then dropped and logged, never waiting for a person; exit 3 moves on to NEXT; a patch outside the skill is refused', async () => {
   let s = sandbox(); fakeVerse(s);
@@ -249,7 +250,8 @@ test('the free brain: a confident patch ships with automerge; under the bar it i
 
   s = sandbox(); fakeVerse(s, { exit: 3 });
   r = await lap(parseArgs([]), { cwd: s.work, env: verseEnv(s), log: quiet });
-  assert.equal(r.outcome, 'idle', 'no probe job, and no model key for NEXT'); assert.match(r.why, /coder needs one model key/);
+  assert.equal(r.outcome, 'idle', 'no probe job; NEXT goes to the coder on Verse\'s own model, out of reach here, so nothing ships');
+  assert.match(r.why, /Verse's coder: no model answered \(verse /);
   assert.equal(r.task.kind, 'next', 'exit 3 moves the lap on to docs/NEXT.md');
 
   s = sandbox(); fakeVerse(s, { file: 'tools/other.js' });
