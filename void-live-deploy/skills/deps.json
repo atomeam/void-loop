@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 61,
+   "dependants": 62,
    "tests": 6
   },
   {
@@ -545,7 +545,7 @@
    "file": "lib/field-resonance.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 1
   },
   {
@@ -1067,18 +1067,18 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-workspace.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
    "file": "lib/automations.js",
    "skills": 1,
    "direct": 0,
    "dependants": 10,
    "tests": 3
-  },
-  {
-   "file": "lib/brain-workspace.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 10,
-   "tests": 1
   },
   {
    "file": "lib/boards.js",
@@ -1093,6 +1093,55 @@
    "direct": 0,
    "dependants": 6,
    "tests": 0
+  },
+  {
+   "file": "lib/brain-creature.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-gardener.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-hearing.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-mind.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
+   "file": "lib/brain-organs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-painter.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-synapses.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/scores.js",
@@ -1112,55 +1161,6 @@
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-creature.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-gardener.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-hearing.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-mind.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-organs.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-painter.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-synapses.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 4,
    "tests": 1
   },
@@ -1247,6 +1247,27 @@
    "direct": 1,
    "dependants": 3,
    "tests": 1
+  },
+  {
+   "file": "lib/brain-bridge.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 9
   },
   {
    "file": "lib/compose.js",
@@ -1361,13 +1382,6 @@
    "tests": 2
   },
   {
-   "file": "lib/brain-bridge.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-field.js",
    "skills": 1,
    "direct": 1,
@@ -1375,18 +1389,11 @@
    "tests": 2
   },
   {
-   "file": "lib/brain-store.js",
+   "file": "lib/brain-host.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/brain.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 8
   },
   {
    "file": "lib/calc-more.js",
@@ -4330,6 +4337,7 @@
   "lib/brain-bridge.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4344,6 +4352,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4367,6 +4376,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4379,6 +4389,19 @@
     "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain.js",
+    "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
+   ]
+  },
+  "lib/brain-host.js": {
+   "imports": [
+    "lib/brain.js",
+    "lib/brain-store.js",
+    "lib/brain-bridge.js"
+   ],
+   "importedBy": [
     "skills/verse-brain.js"
    ]
   },
@@ -4397,6 +4420,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-mind.js",
     "skills/verse-brain.js"
    ]
@@ -4418,6 +4442,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-organs.js",
     "skills/verse-brain.js"
    ]
@@ -4432,11 +4457,15 @@
     "lib/brain-organs.js",
     "lib/brain.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
    ]
   },
   "lib/brain-store.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4450,6 +4479,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-mind.js",
     "skills/verse-brain.js"
    ]
@@ -4469,6 +4499,9 @@
     "lib/brain-synapses.js",
     "lib/brain.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
    ]
   },
   "lib/brain.js": {
@@ -4484,6 +4517,7 @@
     "lib/brain-gardener.js"
    ],
    "importedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -5563,6 +5597,7 @@
    ],
    "reachedBy": [
     "lib/brain-field.js",
+    "lib/brain-host.js",
     "lib/field-vector-worker.js",
     "lib/orb-field.js",
     "lib/tilt-arena-idea.js",
@@ -5619,6 +5654,7 @@
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-mind.js",
     "lib/brain.js",
     "skills/mind-field-mode.js",
@@ -13660,6 +13696,7 @@
     "lib/brain.js",
     "lib/brain-workspace.js",
     "lib/brain-bridge.js",
+    "lib/brain-host.js",
     "lib/mind-field-modes.js",
     "lib/brain-store.js",
     "lib/shared-field.js",
