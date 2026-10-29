@@ -253,6 +253,21 @@ export function storiesCsv(topics, origin = '') {
   return rows.map((r) => r.map(cell).join(',')).join('\r\n') + '\r\n';
 }
 
+// the archive's feed (sycophanthex.com lists its most recent stories and offers them by feed): /fanfic/rss, functions/fanfic/rss.js. The newest
+// stories first, at most `max`, adult fandoms' stories left out (a feed reader asks nobody whether they are 18), each item linking its story page.
+const xml = (s) => String(s == null ? '' : s).replace(/[<>&'"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
+/** the stories as an RSS 2.0 document, newest post first. An empty list is a channel with no items. Pure. */
+export function storiesRss(topics, origin = '', max = 50) {
+  const list = (topics || []).filter((t) => !t.nsfw).slice().sort((a, b) => (b.bumped || b.at || 0) - (a.bumped || a.at || 0)).slice(0, max);
+  const items = list.map((t) => {
+    const link = origin + '/fanfic/?f=' + encodeURIComponent(t.board) + '&s=' + t.no, when = t.bumped || t.at;
+    return '<item><title>' + xml(t.title + ' (' + t.fandom + ')') + '</title><link>' + xml(link) + '</link><guid isPermaLink="false">' + xml(t.board + '/' + t.no) + '</guid>'
+      + (when ? '<pubDate>' + new Date(when).toUTCString() + '</pubDate>' : '') + '<dc:creator>' + xml(t.author || 'Anonymous') + '</dc:creator><description>' + xml(t.summary || '') + '</description></item>';
+  }).join('');
+  return '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Fan fiction · Verse</title><link>' + xml(origin + '/fanfic/')
+    + '</link><description>The newest stories in Verse\'s open fan fiction archive, every fandom.</description><language>en</language>' + items + '</channel></rss>';
+}
+
 // the catalog's filters and sorts (sycophanthex.com browses by rating, genre, character and warning, and lists titles A to Z or most recent):
 // they combine, and the page keeps them in its address so a filtered list can be shared
 export const SORTS = Object.freeze({ recent: 'Most recent post', newest: 'Newest stories', title: 'Title, A to Z', replies: 'Most replies' });

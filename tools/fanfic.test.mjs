@@ -137,7 +137,11 @@ test('the page shows only real posts, posts only through the boards, and is dark
   const calls = [...js.matchAll(/fetch\(([^,)]+)/g)].map((m) => m[1].trim());
   assert.deepEqual([...new Set(calls)], ['API + qs'], 'one fetch, to the boards API');
   assert.match(js, /API = '\/api\/boards'/);
-  assert.ok(!fs.existsSync(path.join(root, 'functions', 'api', 'fanfic.js')) && !fs.existsSync(path.join(root, 'functions', 'fanfic')), 'no endpoint of its own');
+  assert.ok(!fs.existsSync(path.join(root, 'functions', 'api', 'fanfic.js')), 'no endpoint of its own');
+  // the one function under /fanfic/ is the read-only feed: it reads the boards' own GET handler and takes no post
+  assert.deepEqual(fs.readdirSync(path.join(root, 'functions', 'fanfic')), ['rss.js']);
+  const feed = read('functions', 'fanfic', 'rss.js');
+  assert.ok(!/onRequest(?:Post|Put|Delete|Patch)?\b(?!Get)/.test(feed.replace(/onRequestGet/g, '')) && !/fetch\(/.test(feed) && /from '\.\.\/api\/boards\/\[\[path\]\]\.js'/.test(feed), 'the feed only reads the boards');
   assert.match(html, /An open room for stories\. Post your first thread to begin\./);
   assert.match(html, /Archive Descriptions &amp; Stories/);
   for (const s of ['Writing Room', 'Search', 'Writing Glossary', 'How to format chapters', 'Report spam or abuse here', 'Writing rules &amp; guidelines'])
@@ -277,4 +281,23 @@ test('the archive has Authors, Help and Random story, with the help desk as a pi
   assert.match(app, /\['help', 'Help desk: questions and answers'\]/);
   const de = fs.readFileSync(path.join(root, 'lib', 'fanfic-de.js'), 'utf8');
   for (const s of ['Random story', 'Help desk: questions and answers', 'Show every author', 'Authors A to Z']) assert.ok(de.includes("'" + s + "'"), 'German for ' + s);
+});
+
+test('the feed lists the newest stories first, links each story, escapes what readers wrote and leaves adult fandoms out', async () => {
+  const t = (no, bumped, extra = {}) => ({ board: 'ficx', fandom: 'X & Y', no, title: 'T' + no, author: 'a', summary: 's', bumped, at: bumped, ...extra });
+  const rss = F.storiesRss([t(1, 1e12), t(2, 2e12, { title: '<b>"Q"</b>', author: 'P&Q' }), t(3, 3e12, { nsfw: true })], 'https://x.test');
+  assert.match(rss, /^<\?xml version="1.0" encoding="UTF-8"\?><rss version="2.0"/);
+  assert.ok(rss.indexOf('ficx/2') < rss.indexOf('ficx/1'), 'newest first');
+  assert.ok(!rss.includes('ficx/3'), 'no adult fandom in a shared feed');
+  assert.ok(rss.includes('<link>https://x.test/fanfic/?f=ficx&amp;s=2</link>'));
+  assert.ok(rss.includes('&lt;b&gt;&quot;Q&quot;&lt;/b&gt; (X &amp; Y)') && rss.includes('<dc:creator>P&amp;Q</dc:creator>'));
+  assert.ok(!/<item>/.test(F.storiesRss([], 'https://x.test')), 'an empty archive is a feed with no items');
+  assert.equal((F.storiesRss(Array.from({ length: 80 }, (_, i) => t(i + 1, i + 1)), '').match(/<item>/g) || []).length, 50);
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8');
+  assert.match(html, /<link rel="alternate" type="application\/rss\+xml"[^>]*href="\/fanfic\/rss">/);
+  assert.match(html, /Most recent[\s\S]*RSS/);
+  const { onRequestGet } = await import('../void-live-deploy/functions/fanfic/rss.js');
+  const r = await onRequestGet({ env: {}, request: new Request('https://a-to-mind.com/fanfic/rss') });
+  assert.equal(r.headers.get('content-type'), 'application/rss+xml; charset=utf-8');
+  assert.ok(!/<item>/.test(await r.text()), 'no boards here: an empty feed, never an error');
 });
