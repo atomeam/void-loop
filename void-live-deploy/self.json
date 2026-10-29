@@ -545,6 +545,54 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T11:44:39Z",
+   "subject": "Error garden check: a weed is any count of 2 or more, not 2-9"
+  },
+  {
+   "at": "2026-10-29T11:43:21Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T11:36:18Z",
+   "subject": "Verse Brain: when a tune ends, the card says how many notes it heard and guessed right"
+  },
+  {
+   "at": "2026-10-29T11:33:00Z",
+   "subject": "Traffic: who visited a-to-mind.com, counts only"
+  },
+  {
+   "at": "2026-10-29T11:18:04Z",
+   "subject": "/fanfic/: count real reads of each story (hits)"
+  },
+  {
+   "at": "2026-10-29T11:17:45Z",
+   "subject": "Verse Brain: Play a tune lets anyone watch Hearing work with no microphone"
+  },
+  {
+   "at": "2026-10-29T11:00:55Z",
+   "subject": "Shard 4: the brain bridge check opens its second page on the stage's own origin, and the memory orbs check expects the shared field"
+  },
+  {
+   "at": "2026-10-29T10:56:57Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T10:55:41Z",
+   "subject": "fanfic: a row whose story read fails shows no figures instead of an unhandled rejection"
+  },
+  {
+   "at": "2026-10-29T10:51:18Z",
+   "subject": "fanfic: catalog rows show each story's chapters, words, reviews and stars"
+  },
+  {
+   "at": "2026-10-29T10:48:24Z",
+   "subject": "Incident: the browser suite failed on 8aa556a5 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T10:48:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T10:47:59Z",
    "subject": "Shard 4: the memory orbs and Verse Brain checks match what Verse now does"
   },
@@ -575,54 +623,6 @@
   {
    "at": "2026-10-29T10:21:00Z",
    "subject": "Incident: the browser suite failed on fbf2a008 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T10:16:11Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T10:10:48Z",
-   "subject": "Fan fiction: writing challenges with a last day, signed entries and winners"
-  },
-  {
-   "at": "2026-10-29T09:57:59Z",
-   "subject": "Incident: the browser suite failed on b9dde86e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T09:53:42Z",
-   "subject": "verse brain: painter organ draft (F322), not yet measured against random search"
-  },
-  {
-   "at": "2026-10-29T09:43:13Z",
-   "subject": "Fan fiction: the footer link rows are tap targets before the page script runs"
-  },
-  {
-   "at": "2026-10-29T09:41:49Z",
-   "subject": "Verse fixes its recipe skill: learn to handle \"best way to make pasta carbonara\""
-  },
-  {
-   "at": "2026-10-29T09:40:26Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T09:40:02Z",
-   "subject": "verse brain: prove Listen end to end with a hummed tune in a fake microphone"
-  },
-  {
-   "at": "2026-10-29T09:36:47Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T09:33:40Z",
-   "subject": "Refresh the stale seo and parity files main left behind"
-  },
-  {
-   "at": "2026-10-29T09:29:42Z",
-   "subject": "brain-hearing: walk count keys with Object.keys, not for...in"
-  },
-  {
-   "at": "2026-10-29T09:28:16Z",
-   "subject": "Fan fiction: rec lists you share by link"
   }
  ],
  "builders": {
@@ -853,8 +853,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 22 (152 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-10-28T11:22Z",
+  "line": "People this week: 30 (227 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-29T11:33Z",
   "source": "verse"
  },
  "tower": {
