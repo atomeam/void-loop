@@ -2439,6 +2439,13 @@
    "tests": 1
   },
   {
+   "file": "lib/fanfic-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/fantasy.js",
    "skills": 0,
    "direct": 0,
@@ -5236,6 +5243,10 @@
    "importedBy": [
     "skills/fakeuser.js"
    ]
+  },
+  "lib/fanfic-de.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/fanfic.js": {
    "imports": [
