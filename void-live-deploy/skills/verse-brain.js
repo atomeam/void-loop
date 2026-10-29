@@ -18,6 +18,7 @@ import { fieldSkill } from '../lib/field-stage.js';
 import * as B from '../lib/brain.js';
 import { GW, GH, RG, RH, KIND, REGIONS_X, REGIONS_Y } from '../lib/brain-workspace.js';
 import { hostBrain } from '../lib/brain-bridge.js';
+import { MODES, BRAIN } from '../lib/mind-field-modes.js';
 import { loadKept, keep, forget } from '../lib/brain-store.js';
 import * as Field from '../lib/shared-field.js';
 import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
@@ -210,6 +211,8 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 const idea = {
   id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · eleven organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
+  // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
+  modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
   params: (s) => B.params(s.b),
   how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. Every action is imagined before it is taken, and checked against moments it remembers.'
 };

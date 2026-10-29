@@ -63,3 +63,23 @@ test('the card says in words what the brain feels in the field and whose it is, 
   assert.match(line, new RegExp('It holds ' + link.held + ' of its own idea')); assert.ok(!line.includes('verse brain'), 'its own slots are not listed as felt');
   assert.match(fieldSays({ held: {} }, 0, 0), /nothing from other cards yet/); assert.match(fieldSays({ held: { x: 1 } }, 1, 0), /feels 1 memory from other cards: x \(1\)\.$/);
 });
+
+test('every Mind Field mode joins the brain: its card\'s own numbers in one slot, felt and named, freed when it leaves', async () => {
+  const { linkMode } = await import('../void-live-deploy/lib/mode-field.js');
+  Field.reset(); orb(0, 0.1, 0.1, 0.9); const swarm = linkMode(Field, 'swarm-mind'), flow = linkMode(Field, 'vector-field-mind');
+  assert.ok(swarm.write({ entropy: 0.4, activity: 0.6, consensus: 0.3, cx: 0.7, cy: 0.2 }, { over: true }));
+  assert.ok(flow.write({ entropy: 0.2, activity: 0, consensus: 0.9, cx: 0.5, cy: 0.5 }, {}));
+  assert.notEqual(swarm.slot, flow.slot); assert.notEqual(swarm.slot, 0, 'an orb\'s slot is never taken');
+  assert.equal(Field.readRegion(L.prov, 1)[0], Field.provenanceOf('agent-fluid-memory-orbs'));
+  const p = Field.readRegion(L.pos + 3 * swarm.slot, 2); assert.ok(Math.abs(p[0] - 0.7) < 1e-6 && Math.abs(p[1] - 0.2) < 1e-6, 'it sits where the card\'s field attends');
+  const e = Field.readRegion(L.emb + L.D * swarm.slot, 6); assert.ok(Math.abs(e[1] - 0.6) < 1e-6 && e[5] === 1, 'its embedding is the card\'s own numbers');
+  const link = linkBrain(Field), felt = feltFrom(Field, link.code);
+  assert.equal(felt.length, 2, 'the orb and the active swarm are felt; a still flow field (activity 0) is not');
+  const b = B.createBrain(11), quiet = B.createBrain(11), mem = (x) => { let t = 0; for (const v of x.ws.layers.memory) t += v; return t; };
+  for (let i = 0; i < 20; i++) { B.stepBrain(b, { field: felt }); B.stepBrain(quiet, {}); }
+  assert.ok(mem(b) > mem(quiet), 'the modes are laid into its memory layer');
+  assert.match(fieldSays(Field.census(), felt.length, 0), /feels 2 memories from other cards: .*Memory orbs \(1\)/); assert.match(fieldSays(Field.census(), felt.length, 0), /Swarm \(1\)/);
+  const again = linkMode(Field, 'swarm-mind'); again.write({ activity: 0.5, cx: 0.1, cy: 0.1 }); assert.equal(again.slot, swarm.slot, 'a reopened card takes its own slot back');
+  swarm.close(); flow.close(); assert.equal(Field.census().held['swarm-mind'], undefined); assert.equal(Field.readRegion(L.prov + flow.slot, 1)[0], 0, 'closing frees it');
+  assert.ok(!JSON.stringify(Field.census()).match(/over|pointer/), 'numbers only');
+});
