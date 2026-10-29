@@ -545,8 +545,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T16:06:24Z",
-   "subject": "Refresh generated files after the main merge: families, guide, self, hand-off gaps"
+   "at": "2026-10-29T16:05:25Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T16:04:16Z",
@@ -593,12 +593,20 @@
    "subject": "team chat: mark Verse's review false positives with their reasons; drop 'password' from the invite text"
   },
   {
+   "at": "2026-10-29T15:53:27Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:53:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:53:20Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:52:41Z",
+   "subject": "Close an incident when the shards it failed pass on a later commit"
   },
   {
    "at": "2026-10-29T15:52:36Z",
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T15:48:26Z",
    "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
-  },
-  {
-   "at": "2026-10-29T15:44:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:43:09Z",
-   "subject": "Versus job mvoxd09y: a tower-self reason is cut at a whole word (clipWords), so \"niche professional servic)\" cannot come back; main merged…"
   }
  ],
  "builders": {
