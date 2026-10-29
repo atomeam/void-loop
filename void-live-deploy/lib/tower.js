@@ -364,4 +364,9 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
-export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead)' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+// a held site says why it is not surpassed, so "16 of 16 aspects ahead, 0 surpassed" explains itself (owner's card, 2026-10-29)
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+/** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
+ *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
+ *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */
+export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null];

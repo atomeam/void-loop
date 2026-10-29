@@ -37,6 +37,20 @@
   .siblings a { display:inline-block; padding:8px 4px; min-height:24px; min-width:24px; }
   footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
   footer a, .siblings a { color:#cfc6ff; }
+  .badge { display:inline-block; font-size:12px; border-radius:999px; padding:2px 9px; margin:0 0 6px; border:1px solid var(--line); }
+  .badge.won { background:#173222; color:#b9f3cc; border-color:#2d6b45; }
+  .badge.wip { background:#2e2614; color:#f3dfa6; border-color:#6b5a2d; }
+  .meter { height:6px; background:#22212f; border-radius:3px; overflow:hidden; margin:4px 0 8px; }
+  .meter i { display:block; height:100%; background:var(--accent); }
+  .gaps { margin:4px 0 8px 18px; padding:0; color:var(--soft); font-size:13px; }
+  details { margin:8px 0 0; }
+  summary { cursor:pointer; color:#cfc6ff; font-size:14px; min-height:24px; }
+  .tl { list-style:none; margin:8px 0 0; padding:0 0 0 12px; border-left:2px solid var(--line); font-size:13px; color:var(--soft); }
+  .tl li { margin:0 0 8px; }
+  .tl b { color:var(--ink); font-weight:600; margin-right:6px; }
+  .tl .k { color:var(--quiet); font-size:11px; text-transform:uppercase; letter-spacing:.04em; margin-right:6px; }
+  .tl a { color:#cfc6ff; }
+  select { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:34px; }
   [hidden] { display:none !important; }
 </style><script src="/visit.js" defer></script>
 
@@ -46,6 +60,8 @@
 <link rel="modulepreload" href="/lib/gate-badge.js">
 <link rel="modulepreload" href="/lib/tower-controls.js">
 <link rel="modulepreload" href="/lib/tower-journeys.js">
+<link rel="modulepreload" href="/lib/tower-weight.js">
+<link rel="modulepreload" href="/lib/obituary.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -54,7 +70,10 @@
   <p class="sub">A respectful archive of every tool Verse has surpassed: their history, their contribution, and the sovereign studio that carries their work forward. No ads, works offline.</p>
   <div class="row">
     <label><span>Search memorials</span><input id="q" type="text" aria-label="Search memorials" placeholder="colorzilla"></label>
+    <label><span>Show</span><select id="show" aria-label="Which memorials to show"><option value="">All</option><option value="beaten">Beaten in every way</option><option value="in progress">In progress</option></select></label>
   </div>
+  <p class="note" id="tally"></p>
+  <p class="note">A memorial says "beaten" only when Verse passed every aspect of the tower gate with evidence AND matches every feature on the original's inventory (docs/PARITY), with nothing missing, half-built or not yet compared. Until then it is "in progress", with the match and what is still to build.</p> <!-- void-review: ok (page prose, not code: docs/PARITY is the folder of feature inventories) -->
   <div id="list">Reading the conquered ledger…</div>
   <p class="note">Every defeated target is rendered here from the live Tower evidence. Their history is preserved, free of clutter and commercial distraction.</p>
   <nav class="siblings" aria-label="Use together with">
@@ -67,43 +86,77 @@
 </main>
 <script type="module">
   import { tower } from '/lib/tower.js';
+  import { obituaryStatus, siteSlug, hasMemorial } from '/lib/obituary.js';
   const $ = (id) => document.getElementById(id);
-  const esc = (s) => String(s == null ? '' : s);
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  let all = [];
+  const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
+  let all = [], parity = {};
   async function draw() {
-    const [inv, ev] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json')]);
+    const [inv, ev, par] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/parity.json')]);
     const t = tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, null);
-    all = (t.floors || []).filter((f) => f.beaten);
-    render($('q').value);
+    parity = (par && par.sites) || {};
+    all = (t.floors || []).filter((f) => hasMemorial(f)).map((f) => { const slug = siteSlug(f.site); return Object.assign(f, { slug, status: obituaryStatus(f, parity[slug] || null) }); });
+    const won = all.filter((f) => f.status.beaten).length;
+    $('tally').textContent = all.length + ' memorials: ' + won + ' beaten in every way, ' + (all.length - won) + ' in progress.';
+    render();
   }
-  function render(q) {
-    const w = (q || '').trim().toLowerCase();
-    const list = all.filter((f) => !w || (f.site + ' ' + f.id + ' ' + (f.learned || '')).toLowerCase().includes(w));
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const link = (href, text) => { const a = el('a', '', text); a.href = href; if (/^https?:/.test(href)) a.rel = 'noopener'; return a; };
+  async function timeline(f, box) {
+    const h = await get('/history/' + f.slug + '.json');
+    box.textContent = '';
+    if (!h || !h.events || !h.events.length) { box.appendChild(el('p', 'note', 'No history written yet.')); return; }
+    const ol = el('ol', 'tl');
+    for (const e of h.events) {
+      const li = el('li');
+      li.appendChild(el('span', 'k', e.k));
+      if (e.y && !String(e.t).startsWith(String(e.y))) li.appendChild(el('b', '', String(e.y)));
+      li.appendChild(document.createTextNode(e.t + ' '));
+      if (e.s) { li.appendChild(document.createTextNode('(')); li.appendChild(link(e.s, 'source')); li.appendChild(document.createTextNode(')')); }
+      ol.appendChild(li);
+    }
+    box.appendChild(ol);
+    if (h.snaps && h.snaps.length) {
+      const p = el('p', 'note', 'Archived copies: ');
+      h.snaps.forEach(([y, u], i) => { if (i) p.appendChild(document.createTextNode(' · ')); p.appendChild(link(u, String(y))); });
+      box.appendChild(p);
+    }
+    const doc = el('p', 'note', 'Full history with every source: '); doc.appendChild(link(REPO + 'docs/HISTORY/' + f.slug + '.md', 'docs/HISTORY/' + f.slug + '.md')); box.appendChild(doc);
+  }
+  function render() {
+    const w = ($('q').value || '').trim().toLowerCase(), show = $('show').value;
+    const list = all.filter((f) => (!show || f.status.state === show) && (!w || (f.site + ' ' + f.id + ' ' + (f.learned || '')).toLowerCase().includes(w)));
     const box = $('list');
     while (box.firstChild) box.removeChild(box.firstChild);
-    if (!list.length) { const p = document.createElement('p'); p.className = 'note'; p.textContent = 'No memorials match.'; box.appendChild(p); return; }
+    if (!list.length) { box.appendChild(el('p', 'note', 'No memorials match.')); return; }
     for (const f of list) {
-      const card = document.createElement('section');
-      card.className = 'card';
-      const h = document.createElement('h2'); h.textContent = f.site + ' (' + f.id + ')'; card.appendChild(h);
-      const obit = document.createElement('div'); obit.className = 'obit';
-      const legacy = document.createElement('p'); legacy.textContent = 'The Legacy: ' + (f.learned || (f.site + ' served its users until Verse surpassed it.')); obit.appendChild(legacy);
-      const passing = document.createElement('p'); passing.textContent = 'The Passing: Superseded by the sovereign Verse studio at ' + (f.page || '/') + ', measured ' + f.n + ' of ' + f.m + ' aspects ahead.'; obit.appendChild(passing);
-      const tribute = document.createElement('p'); tribute.textContent = 'Our Tribute: Honored here for pioneering its corner of the web. Its work lives on, accelerated, inside Verse.'; obit.appendChild(tribute);
-      if (f.page) {
-        const link = document.createElement('p');
-        const a = document.createElement('a'); a.href = f.page; a.textContent = 'Verse studio';
-        link.textContent = 'Lineage: ' + f.site + ' to ';
-        link.appendChild(a);
-        link.appendChild(document.createTextNode('.'));
-        obit.appendChild(link);
+      const s = f.status;
+      const card = el('section', 'card');
+      card.appendChild(el('h2', '', f.site + ' (' + f.id + ')'));
+      card.appendChild(el('span', 'badge ' + (s.beaten ? 'won' : 'wip'), s.beaten ? 'Beaten in every way' : 'In progress: ' + s.pct + '% of its features matched'));
+      if (!s.beaten) {
+        const m = el('div', 'meter'); m.setAttribute('role', 'img'); m.setAttribute('aria-label', s.pct + '% matched'); const bar = el('i'); bar.style.width = s.pct + '%'; m.appendChild(bar); card.appendChild(m);
+        card.appendChild(el('p', 'note', 'Not beaten yet: ' + s.why.join(', ') + '.'));
+        if (s.gaps.length) { const ul = el('ul', 'gaps'); for (const g of s.gaps.slice(0, 8)) ul.appendChild(el('li', '', g)); if (s.gaps.length > 8) ul.appendChild(el('li', '', 'and ' + (s.gaps.length - 8) + ' more')); card.appendChild(ul); }
       }
+      const obit = el('div', 'obit');
+      obit.appendChild(el('p', '', 'The Legacy: ' + (f.learned || (f.site + ' served its users until Verse surpassed it.'))));
+      obit.appendChild(el('p', '', s.beaten
+        ? 'The Passing: Superseded by the sovereign Verse studio at ' + (f.page || '/') + ', measured ' + f.n + ' of ' + f.m + ' aspects ahead.'
+        : 'The Passing (not yet): the Verse studio at ' + (f.page || '/') + ' is measured ' + f.n + ' of ' + f.m + ' aspects ahead, and has ' + s.pct + '% of its features. It is superseded when the rest are built.'));
+      obit.appendChild(el('p', '', 'Our Tribute: Honored here for pioneering its corner of the web. Its work lives on, accelerated, inside Verse.'));
+      if (f.page) { const p = el('p', '', 'Lineage: ' + f.site + ' to '); p.appendChild(link(f.page, 'Verse studio')); p.appendChild(document.createTextNode('.')); obit.appendChild(p); }
+      const inv = el('p', '', 'Feature inventory: '); inv.appendChild(link(REPO + 'docs/PARITY/' + f.slug + '.md', 'every feature of ' + f.site + ', compared')); obit.appendChild(inv);
       card.appendChild(obit);
+      const d = el('details'); const sum = el('summary', '', 'History of ' + f.site + ((parity[f.slug] && parity[f.slug].events) ? ' (' + parity[f.slug].events + ' cited events)' : '')); d.appendChild(sum);
+      const tl = el('div', '', 'Opening the timeline…'); d.appendChild(tl);
+      d.addEventListener('toggle', () => { if (d.open && !d.dataset.done) { d.dataset.done = '1'; timeline(f, tl); } });
+      card.appendChild(d);
       box.appendChild(card);
     }
   }
-  $('q').addEventListener('input', (e) => render(e.target.value));
+  $('q').addEventListener('input', render);
+  $('show').addEventListener('change', render);
   draw();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>

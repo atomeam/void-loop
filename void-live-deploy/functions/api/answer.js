@@ -25,7 +25,8 @@ import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, pai
 import { nearOf } from '../../lib/near-miss.js';
 import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
+import { isSelfAsk, isOwnCardNote, readSelf, selfFacts, SELF_RULE, OWN_CARD_RULE } from '../../lib/self-context.js';
+import { ASK_MAX, QUERY_MAX, supportedOnly, hasCorrection, CORRECTION_RULE, ACT_RULE, FILLER_RULE, dropUnbackedActs, dropFiller } from '../../lib/answer-honesty.js';
 import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '../../lib/draft.js';
 import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
@@ -47,14 +48,15 @@ const MODEL = models('answer');
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const TTL_DAYS = 7, RL_MAX = 12;
-const norm = (t) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
+// an ask is read whole up to ASK_MAX (lib/answer-honesty.js): at 300 a status note was cut mid-word and answered from the cut
+const norm = (t, n = ASK_MAX) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n);
 async function sha(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 32);
 }
 const UA = { 'user-agent': 'Verse/1.0 (https://a-to-mind.com; atom@a-to-mind.com)' };
 async function sources(ask) {
-  const q = ask.replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
+  const q = String(ask).slice(0, QUERY_MAX).replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
   const s = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&srsearch=' + encodeURIComponent(q), { headers: UA }).then((r) => r.json()).catch(() => null);
   const hits = (s && s.query && s.query.search) || [];
   // the three summaries are fetched together, not one after another (perf pass 2026-10-16: two round trips to Wikipedia saved
@@ -394,13 +396,14 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
   // an ask about Verse itself is answered from its own facts, which change with every ship: never from the 7-day cache
-  const self = isSelfAsk(ask) && !isPaste(ask); // a long paste that mentions Verse is still a paste, not a question about Verse (owner, 2026-10-16)
+  // a note about one of Verse's own cards is about Verse even when it is long (owner, 2026-10-29)
+  const self = isSelfAsk(ask) && !isPaste(ask) || isOwnCardNote(ask); // a long paste that mentions Verse is still a paste, not a question about Verse (owner, 2026-10-16)
   // what this person told Verse (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
   const told = self ? null : await toldMe(request, env, ask);
   try {
     const hit = masked || self || told ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
     // an answer cached before sources were filtered is filtered on the way out (lib/cite.js)
-    if (hit && !isNoAnswer(hit.answer)) { const c = keepCited(hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }); } // a refusal cached before this check is not served again
+    if (hit && !isNoAnswer(hit.answer)) { const c = keepCited(dropFiller(dropUnbackedActs(hit.answer)) || hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }); } // a refusal cached before this check is not served again
   } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
 
@@ -471,7 +474,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const clefP = clefOn(env) ? clefRoute(env, ask) : Promise.resolve(null);
   // an ask about Verse itself reads Verse's own facts instead of Wikipedia (lib/self-context.js)
   let selfP = self ? readSelf(env, origin) : null;
-  let src = self ? [] : await sources(ask);
+  // a paste is summarised from its own words (PASTE_RULE): a Wikipedia search on it only finds pages it never mentions
+  let src = self || isPaste(ask) ? [] : await sources(ask);
   const srcAt = Date.now();
   const route = await settle(routeP, t0 + BUDGET_MS);
   // the skill the ask nearly was (lib/near-miss.js, asked by Verse): the page offers that skill's first example when it ends up with no answer
@@ -485,11 +489,13 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const lead = !self && !told && src.length && isNameAsk(ask) && sourcesMatch(ask, [src[0]]) ? src[0] : null; // the first source holds the ask itself: its description types the card (lib/subject-kinds.js)
   const sectioned = !self && src.length && /\u00a7/.test(src[0].title || '');
   const SECTION_RULE = 'Source [1] is the section of a list page that is about the thing asked: answer from it, say only what its text says (no episode, price, date or actor it does not name), and cite [1].';
+  // what an answer may claim, on every path (lib/answer-honesty.js): the correction wins, no claimed write, no filler
+  const honest = (hasCorrection(ask) ? ' ' + CORRECTION_RULE : '') + ' ' + ACT_RULE + ' ' + FILLER_RULE;
   const messages = self ? [
-    { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE },
+    { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE + (isOwnCardNote(ask) ? ' ' + OWN_CARD_RULE : '') + honest },
     { role: 'user', content: `Question: ${ask}\n\nFacts about Verse:\n${facts || '(my facts could not be read just now)'}` },
   ] : [
-    { role: 'system', content: ANSWER_SYSTEM + (sectioned ? ' ' + SECTION_RULE : '') + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') },
+    { role: 'system', content: ANSWER_SYSTEM + (sectioned ? ' ' + SECTION_RULE : '') + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') + honest },
     { role: 'user', content: `Question: ${ask}\n\n` + (told ? `What you told me:\n${told.map((l) => '- ' + l).join('\n')}\n\n` : '') + `Sources:\n${ctx}` },
   ];
   let answer = '', model = MODEL, outcome = route.kind === 'fallback' ? route.why : 'default', would = null;
@@ -548,8 +554,10 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     }
   }
   log({ model });
-  // only the sources the answer cited go on the card (lib/cite.js); its [n] markers are renumbered to match
-  ({ answer, sources: pub } = keepCited(answer, pub));
+  // no claimed write and no filler (lib/answer-honesty.js); then only the sources the answer cited, and whose fetched text holds the
+  // sentence that cites them, go on the card (lib/cite.js renumbers the [n] markers to match)
+  answer = dropFiller(dropUnbackedActs(answer)) || answer;
+  ({ answer, sources: pub } = supportedOnly(answer, src, pub));
   // a refusal ("I do not have information ...") is not an answer: nothing is cached or labelled as one, and the page gets the closest guess to offer as a question
   if (!self && !told && isNoAnswer(answer)) return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, ...(guessOf(src) ? { guess: guessOf(src) } : {}), route: route.kind, ...nearOut });
   if (sectioned && src[0] && answer) answer = grounded(answer, src[0].text); // a list-page section: only what its text says

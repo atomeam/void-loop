@@ -6,6 +6,7 @@
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
 import { knowsFacts, voiceFacts, keptFacts } from './voice.js';
 import { PERSONA } from './persona.js';
+import { models, ANSWER_FALLBACK } from './models.js';
 const SELF_NOUN = /\b(wish\s*list|improvement budget|growth[- ]inbox|outcome cards?|scouting[- ]reports?|your (will|wants|skills|board|plans?|roadmap|growth|inbox|features?|backlog|priorit(y|ies))|about yourself)\b/i;
 // "Verse" (once "Verse") the product, capitalised, or a-to-mind; never C's void pointer / void function
 const NAMED = /\bVoid\b|\bVerse\b|\ba-to-mind\b/;
@@ -36,6 +37,15 @@ export function isSelfAsk(ask) {
   return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || ((Verse.test(a) || VERSE.test(a)) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
 }
 
+// a note about one of Verse's own answer cards ("That card is wrong", "This card is the first one that speaks as itself", "it still says
+// "the card" about its own card"): the owner pastes the card back with what is off. It is answered from Verse's facts in its own voice,
+// never as a stranger's "documentation you are auditing" (owner, 2026-10-29, five cards in a row)
+const CARD_REF = /\b(?:this|that|the|your|its|my|verse'?s|void'?s)\s+(?:(?:own|last|first|new|latest|answer|verse)\s+){0,2}(?:card|answer|reply)s?\b|\bverse[- ]card\b|\b(?:card|answer)\s+(?:\d+|one|two|three|four|five)\b/i;
+const CARD_FAULT = /\b(?:wrong|off|fault|faults|filler|false|fake|claims?|cites?|cited|sources?|sourced|label(?:s|led)?|paraphras\w*|third[- ]person|first[- ]person|speaks?|says?|said|refuses?|cut|truncat\w*|mid-sentence|correction|dates?|dated|lists?|leaves?\s+out|misses|fixed|still\s+open|better|closer)\b/i;
+const NOT_OURS = /\b(?:credit|debit|gift|sim|sd|memory|graphics|video|business|greeting|playing|tarot|pok[eé]mon|yugioh|magic|baseball|trading|report|id|library|birthday|wild)\s+cards?\b|\b(?:tarot|pok[eé]mon|yu-?gi-?oh|uno|blackjack|bingo|deck|credit|debit|bank|visa|mastercard)\b/i;
+export const isOwnCardNote = (ask) => { const a = String(ask || ''); return CARD_REF.test(a) && CARD_FAULT.test(a) && !NOT_OURS.test(a); };
+export const OWN_CARD_RULE = 'The message is about one of your own answer cards, a card you made, often pasted back with what is wrong with it. Answer as yourself about your own card: say "my last card" or "my card", never "the card", "the system" or "the documentation". Do not explain how answer systems work in general and do not say you have no access: the facts below are yours. In one or two short sentences, own each fault the message names, plainly. Then write "Fixed:" with a short list of only the fixes the facts say have shipped, newest first, each with its date from the facts, and "Still open:" with a short list in the order the facts give (the site I am fighting now first, then the next smallest sites, then the other open work). Never call a fault fixed unless a fact says it shipped; a fault the facts do not show as shipped goes under Still open. Take every date from the facts, never from the message or from memory. Nothing else.';
+
 export const SELF_RULE = 'Never answer with troubleshooting for other products or platforms (their config files, integrations, registries): Verse is its own site, and a note about its cards, routing or fixes is about Verse. This question is about you, Verse, yourself: your skills, what you have shipped, what is still open, what you want next. Answer from the Facts about Verse below and be specific: name the actual skills, inbox rows and wants. Do not give generic advice that could apply to any project. If the facts do not cover something, say so plainly instead of guessing. Speak as yourself, in the first person. ' + PERSONA;
 
 function within(p, ms) { let t; return Promise.race([p, new Promise((r) => { t = setTimeout(() => r(null), ms); })]).finally(() => clearTimeout(t)); }
@@ -59,12 +69,15 @@ export function selfFacts({ self, skills, will, voice, replies } = {}) {
   const parts = [];
   if (self && self.about) parts.push('What I am: ' + self.about);
   if (skills && skills.length) parts.push('My skill index has ' + skills.length + ' entries (a few, like games, time and dates, each stand for several skills, so this is not the skill count; the skill families line gives that): ' + skills.join(', '));
+  const tw = towerFacts(self);
+  if (tw) parts.push(tw);
   if (self && Array.isArray(self.open)) parts.push('Growth inbox, still open: ' + (self.open.length ? self.open.map((r) => `"${r.ask}" (${r.from}, ${r.date})`).join('; ') : '(none open)'));
   if (self && Array.isArray(self.shipped) && self.shipped.length) parts.push('Growth inbox, recently shipped: ' + self.shipped.slice().sort((x, y) => (x.date < y.date ? 1 : -1)).slice(0, 12).map((r) => `"${r.ask}" (${r.date})`).join('; '));
   const wants = will && Array.isArray(will.wants) ? will.wants : [];
   if (wants.length) parts.push('What I want next (my will' + (will.at ? ', ' + String(will.at).slice(0, 10) : '') + '): ' + wants.map((w) => `${w.i_want || w.title}${w.because ? ' Because: ' + w.because : ''}`).join(' | '));
   const b = builderFacts(self);
   if (b) parts.push(b);
+  parts.push(modelFacts(self));
   const wl = wishlistFacts(self);
   if (wl) parts.push(wl);
   const knows = knowsFacts(self), said = voiceFacts(voice);
@@ -86,6 +99,29 @@ export function builderFacts(self) {
   if (b.ladders && b.ladders.length) parts.push('Tools my builders left each other: ' + list(b.ladders.slice(0, 4)));
   parts.push('Where these are written: only in domains/handoff.md, my builders\' shared board. I never say they are codified or recorded in any other file.');
   return parts.join('\n');
+}
+
+// the models I really run on, read from lib/models.js, so I never ask for a move that is already done (asked by Verse 7 times,
+// 2026-10-24 to 10-28: "migrate answer generation from gpt-oss-120b to gemma", built 2026-10-25 in 630e666fb, still wanted because no fact said so)
+const modelName = (m) => String(m).split('/').pop();
+// The date and commit of the move come from the record (docs/wishlist.md row 1, carried into self.json at deploy: "done 2026-10-25
+// (commit 630e666fb)"), never written here by hand, so a card cannot date the move from memory (owner, 2026-10-29).
+export function modelMove(self) {
+  const w = self && Array.isArray(self.wishlist) ? self.wishlist : [];
+  for (const x of w) { const m = /\bdone (\d{4}-\d\d-\d\d) \(commit ([0-9a-f]{7,40})\)[^.;]*gemma/i.exec(String(x.free || '')); if (m) return { date: m[1], commit: m[2] }; }
+  return null;
+}
+export function modelFacts(self) {
+  const mv = modelMove(self);
+  return 'The models I run on (lib/models.js): my answers come from ' + modelName(models('answer')) + ', and ' + modelName(ANSWER_FALLBACK) + ' is only the second try when it cannot answer; my code review reads with ' + modelName(models('review')) + '. Moving my answers from gpt-oss-120b to gemma is done' + (mv ? ' (merged and deployed ' + mv.date + ', commit ' + mv.commit + ')' : '') + ', so it is not a want any more.';
+}
+
+// The tower (self.json 'tower', written at deploy from tower.target.json and lib/tower.js): the site I am fighting now and the next
+// smallest ones. The owner's rule is every site ever made, smallest first, so "what is still open" starts here.
+export function towerFacts(self) {
+  const t = self && self.tower;
+  if (!t || !t.target) return '';
+  return 'Still open first, by my rule (every site ever made, smallest first): the site I am fighting now, my tower target, is ' + t.target + (t.since ? ' (since ' + t.since + ')' : '') + (t.page ? '; ' + t.page : '') + '.' + (Array.isArray(t.next) && t.next.length ? ' The next smallest unbeaten sites after it: ' + t.next.join(', ') + '.' : '') + (Number.isFinite(t.beaten) && Number.isFinite(t.total) ? ' Beaten so far: ' + t.beaten + ' of ' + t.total + '.' : '');
 }
 
 // my wishlist (self.json 'wishlist', from docs/wishlist.md): my improvement budget, ranked; a plan, nothing bought. Free paths come first.

@@ -14,8 +14,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 2,
-    "tested": 11,
+    "experiment": 1,
+    "tested": 12,
     "checked": 2,
     "proven": 36
    },
@@ -30,8 +30,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 1,
-    "proven": 30
+    "checked": 0,
+    "proven": 31
    },
    "from": 58,
    "to": 91
@@ -98,8 +98,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "kind": "family",
    "count": {
-    "experiment": 2,
-    "tested": 4,
+    "experiment": 1,
+    "tested": 5,
     "checked": 1,
     "proven": 29
    },
@@ -126,8 +126,8 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "kind": "family",
    "count": {
-    "experiment": 2,
-    "tested": 5,
+    "experiment": 0,
+    "tested": 7,
     "checked": 7,
     "proven": 88
    },
@@ -371,8 +371,9 @@
     "photo editor",
     "compress an image"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 8
   },
   {
@@ -1254,8 +1255,10 @@
     "heads or tails",
     "coin toss"
    ],
-   "tier": "checked",
-   "why": "a self-test, 12 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 12 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Not a boast but a record: 1 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 60
   },
   {
@@ -3704,8 +3707,9 @@
     "make a kanban board",
     "free kanban board"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 196
   },
   {
@@ -4157,8 +4161,9 @@
     "save this recipe: Lemon cake, ingredients: 200 g flour, 3 eggs; steps: mix. bake",
     "save this recipe: Toast, ingredients: bread, butter; steps: toast it"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 218
   },
   {
@@ -4171,8 +4176,9 @@
     "make a generator of pirate ship names: Black Pearl, Sea Wolf, Revenge",
     "keep the name Sea Wolf"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 219
   },
   {
