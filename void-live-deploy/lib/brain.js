@@ -1,7 +1,11 @@
 // brain — Verse Brain: one entity made of Grok's frontier drafts (owner, 2026-10-29: "combine all the builds into one entity"; "the grok
 // builds combined can be verse brain"). Five layers, each a real part that runs, not a picture of one:
 //   1. one working memory      lib/brain-workspace.js: layers, rhythm phases and one node table, with who wrote each cell and when
-//   2. organs                  lib/brain-organs.js: senses, predictor, gestures, memory, concepts, tissue, rhythm, swarm, membrane, will, arena
+//   2. organs                  lib/brain-organs.js: senses, predictor, gestures, memory, concepts, tissue, rhythm, synapses (F217's spiking eye), creature
+//                              (F304's Lenia creature), gardener (F215: tends the tissue to the edge of chaos), hearing (F299's
+//                              hummed notes), swarm, membrane, painter
+//                              (F322: the look is a program it rewrites), grower (F453: a plant from a grammar it rewrites, bent toward
+//                              the attention), will, arena
 //   3. attention               scheduleTick() here: each tick a budget of organ runs goes to the organs that want it most, the starved
 //                              ones catch up, and one spotlight (the focus layer) shows what the brain is thinking about
 //   4. imagination             imagine() here: freeze the workspace, try an action or a genome for a few dozen ticks on the substrate
@@ -17,9 +21,16 @@ import { createWorkspace, snapshot, restore, measure, ownership, regionMeans, re
 import { ORGANS, ORGAN_IDS, STARTER, fixGenome, makeReservoir, makeGestures, makeMemory, makeConcepts, makeWill, makeArena, seedSwarm, seedMembrane, addPhrase, related, applyAction, ACTIONS, gestureName, LETTERS, hypervector } from './brain-organs.js';
 import { sealSync } from './field-kit.js';
 import * as Mind from './brain-mind.js';
+import { makeSynapses, wiring as eyeWiring } from './brain-synapses.js';
+import { makeCreature, dropCreature, progress as creatureProgress } from './brain-creature.js';
+import { makeEar, hearFrame, earOf } from './brain-hearing.js';
+import { makePainter, painterOf } from './brain-painter.js';
+import { makeGardener, gardenerOf, TILES as GARDEN_TILES } from './brain-gardener.js';
+import { makeGrower, growerOf } from './brain-grower.js';
 
 export const VERSION = 1;
 export const STARVE = 120; // ticks of waiting that add a whole 1 to an organ's want
+export const USE_RATE = 1 / 256; // how fast an organ's recent share of ticks follows what it does now (about 4 seconds at 60 ticks a second)
 export const BUDGET = 7, BUDGET_PHONE = 5; // organ runs a tick (senses always runs and is not counted)
 export const GOALS = ['keep the tissue alive and varied', 'expect what you will do next', 'stay in step without freezing', 'attend where something new is happening'];
 
@@ -36,10 +47,10 @@ export function createBrain(seed = 1, opts = {}) {
   const ws = createWorkspace(seed, ORGAN_IDS.concat(['attention']));
   const b = { v: VERSION, seed, ws, genome: fixGenome(opts.genome || STARTER), budget: opts.phone ? BUDGET_PHONE : BUDGET,
     senses: { feat: new Float32Array(8), px: 0.5, py: 0.5, has: false, over: false, speed: 0, trail: [] },
-    reservoir: makeReservoir(seed), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
+    reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), ear: makeEar(), painter: makePainter(seed), gardener: makeGardener(seed), grower: makeGrower(seed), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
     focus: { x: 0.5, y: 0.5, px: 0.5, py: 0.5, region: 5, held: 0 }, surprise: 0, utility: 0, metrics: measure(ws),
-    runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
-    board: { drive: 'rest', gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
+    runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), recent: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
+    board: { drive: 'rest', eye: null, creature: null, ear: null, paint: null, garden: null, grow: null, gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
   seedSwarm(b); seedMembrane(b);
   b.swarmIds = nodesOf(ws, [0, 1, 2]); b.membraneIds = nodesOf(ws, [KIND.membrane]);
   // a few seeds so the tissue has somewhere to start
@@ -74,13 +85,15 @@ export function scheduleTick(b) {
   return ORGANS.filter((o) => pick.has(o.id)).map((o) => o.id);
 }
 
-/** one tick of the whole brain. input: { x, y, over, down, tiltX, tiltY, sound }. Returns the organs that ran. */
+/** one tick of the whole brain. input: { x, y, over, down, tiltX, tiltY, sound, pitches: [[Hz, seconds], ...] }. Returns the organs that ran. */
 export function stepBrain(b, input = {}) {
-  const ws = b.ws; ws.tick++; b.ticks++; b.will.since++; b.arena.since++;
+  const ws = b.ws; ws.tick++; b.ticks++; b.will.since++; b.arena.since++; b.painter.since++; b.gardener.since++; b.grower.since++;
+  if (Array.isArray(input.pitches)) for (const p of input.pitches.slice(-64)) if (Array.isArray(p)) hearFrame(b.ear, +p[0], +p[1]); // every pitch frame, run or not: the hearing organ learns the notes when it runs
   updateFocus(b);
   const ids = scheduleTick(b);
   for (const id of ids) { const o = ORGANS.find((x) => x.id === id); o.run(b, input, imagine); b.runs[id]++; b.lastRun[id] = b.ticks; }
   b.granted = ids;
+  const ran = new Set(ids); for (const id of ORGAN_IDS) b.recent[id] += ((ran.has(id) ? 1 : 0) - b.recent[id]) * USE_RATE;
   Mind.stepGoals(b, deposit); Mind.stepValence(b); Mind.stepMonitor(b, ORGANS);
   if ((b.ticks & 7) === 0) { b.metrics = measure(ws); b.utility = valence(b); }
   Mind.stepHistory(b);
@@ -127,6 +140,9 @@ export function ask(b, text) {
 /** Verse's own priorities (the parsed /self.json) as standing ideas the visitor's are compared with. Returns how many. */
 export function knowVerse(b, self) { b.mind.semantic = Mind.semanticFrom(self); return b.mind.semantic.length; }
 export const knowledgeOf = Mind.knowledgeOf, loadKnowledge = Mind.loadKnowledge;
+/** Verse's own asks (the ask box, every page): the brain learns what the visitor asks next, guesses it before it comes and counts its hits
+ *  (lib/brain-mind.js heardAsk), and ranks the ask box's suggestions by that and by its goals (suggestAsks). */
+export const heardAsk = Mind.heardAsk, suggestAsks = Mind.suggestAsks, askScore = Mind.askScore, habitOf = Mind.habitOf, nextAfter = Mind.nextAfter, isQuestion = Mind.isQuestion;
 
 // ---- the working memory across a reload ------------------------------------------------------------------------------------------------
 // knowledgeOf keeps what the brain learned (slow); this keeps what it is thinking now: the whole workspace (layers, rhythm, nodes with the
@@ -134,19 +150,33 @@ export const knowledgeOf = Mind.knowledgeOf, loadKnowledge = Mind.loadKnowledge;
 // gives it to the shared field (lib/shared-field.js hold), which keeps it on this device and gives it back after a reload.
 /** a brain with nothing of its own to think about yet: no ideas and no goals (a new card, or one just reset). Pure. */
 export const isCold = (b) => !b.concepts.words.length && !b.mind.goals.length;
+// a record kept before the spiking eye joined (2026-10-29) has no organ list: these were its writers, in order
+const BEFORE_SYNAPSES = ['senses', 'predictor', 'gestures', 'memory', 'concepts', 'tissue', 'rhythm', 'swarm', 'membrane', 'will', 'arena', 'attention'];
+/** a kept workspace snapshot whose writers were `from`, re-indexed for writers `to` by name (a writer that is gone becomes nobody). Pure. */
+export function byName(s, from, to) {
+  if (!s || !Array.isArray(from) || from.length === to.length && from.every((x, i) => x === to[i])) return s;
+  const map = (o) => (o >= 254 || o >= from.length ? o : (to.indexOf(from[o]) >= 0 ? to.indexOf(from[o]) : 255));
+  const remap = (a) => (a && typeof a.length === 'number' ? Uint8Array.from(a, map) : a);
+  const writes = new Uint32Array(Math.max(1, to.length)), R = REGIONS_X * REGIONS_Y, Wf = from.length + 1, Wt = to.length + 1, regionWrites = new Uint32Array(R * Wt);
+  if (s.writes && s.writes.length === Math.max(1, from.length)) from.forEach((id, i) => { const k = to.indexOf(id); if (k >= 0) writes[k] = s.writes[i]; });
+  else return { ...s, writes: null };
+  if (s.regionWrites && s.regionWrites.length === R * Wf) for (let r = 0; r < R; r++) { for (let i = 0; i < from.length; i++) { const k = to.indexOf(from[i]); if (k >= 0) regionWrites[r * Wt + k] = s.regionWrites[r * Wf + i]; } regionWrites[r * Wt + Wt - 1] = s.regionWrites[r * Wf + Wf - 1]; }
+  else return { ...s, regionWrites: null };
+  return { ...s, owner: remap(s.owner), writes, regionWrites, nodes: s.nodes ? { ...s.nodes, owner: remap(s.nodes.owner) } : s.nodes };
+}
 /** what the brain is thinking now, as one plain record. Pure. */
 export function workingOf(b) {
   const C = b.concepts, M = b.mind;
-  return { v: VERSION, ws: snapshot(b.ws),
+  return { v: VERSION, organs: b.ws.organs.slice(), ws: snapshot(b.ws),
     concepts: { words: C.words.slice(), node: C.node.slice(), edges: [...C.edges], ppm: { seen: C.ppm.seen, counts: [...C.ppm.counts].map(([k, m]) => [k, [...m]]) }, lastBits: C.lastBits },
-    focus: { ...b.focus }, surprise: b.surprise, ticks: b.ticks, runs: { ...b.runs }, lastRun: { ...b.lastRun },
+    focus: { ...b.focus }, surprise: b.surprise, ticks: b.ticks, runs: { ...b.runs }, lastRun: { ...b.lastRun }, recent: { ...b.recent },
     mind: { goals: M.goals.map((g) => ({ ...g })), history: M.history.map((h) => ({ ...h })), approval: M.approval, dwell: M.dwell } };
 }
 /** put a kept working memory into a brain. A record of the wrong shape changes nothing (an old record never breaks a new brain).
  *  Returns what was restored: [] or ['workspace', 'ideas', 'attention', 'goals']. */
 export function loadWorking(b, w) {
   if (!w || w.v !== VERSION || !w.ws || !w.concepts || !w.focus) return [];
-  const ws = b.ws, s = w.ws, Nn = ws.nodes, C = w.concepts, n = s.nodes && s.nodes.n;
+  const ws = b.ws, s = byName(w.ws, Array.isArray(w.organs) ? w.organs : BEFORE_SYNAPSES, ws.organs), Nn = ws.nodes, C = w.concepts, n = s.nodes && s.nodes.n;
   const same = (dst, src) => src != null && typeof src.length === 'number' && src.length === dst.length;
   const fine = LAYER_KEYS.every((k) => s.layers && same(ws.layers[k], s.layers[k])) && ['phase', 'omega', 'owner', 'wroteAt', 'writes', 'regionWrites'].every((k) => same(ws[k], s[k]))
     && Number.isInteger(n) && n >= 0 && n <= Nn.x.length && ['x', 'y', 'vx', 'vy', 'kind', 'act', 'emb', 'owner'].every((k) => same(Nn[k], s.nodes[k])) && Array.isArray(s.nodes.label) && s.nodes.label.length === Nn.label.length;
@@ -161,7 +191,12 @@ export function loadWorking(b, w) {
   const done = ['workspace', 'ideas'];
   const f = w.focus; if (['x', 'y', 'px', 'py', 'held'].every((k) => Number.isFinite(f[k])) && Number.isInteger(f.region) && f.region >= 0 && f.region < REGIONS_X * REGIONS_Y) { b.focus = { x: f.x, y: f.y, px: f.px, py: f.py, region: f.region, held: f.held }; done.push('attention'); }
   b.ticks = Math.max(0, Math.floor(+w.ticks)); b.surprise = Number.isFinite(w.surprise) ? w.surprise : 0;
-  for (const id of ORGAN_IDS) { if (w.runs && Number.isFinite(w.runs[id])) b.runs[id] = w.runs[id]; if (w.lastRun && Number.isFinite(w.lastRun[id])) b.lastRun[id] = w.lastRun[id]; }
+  for (const id of ORGAN_IDS) {
+    if (w.runs && Number.isFinite(w.runs[id])) b.runs[id] = w.runs[id];
+    if (w.lastRun && Number.isFinite(w.lastRun[id])) b.lastRun[id] = w.lastRun[id];
+    // a record from before the recent share starts from the lifetime share, then follows what the organ does now
+    const r = w.recent && w.recent[id]; b.recent[id] = Number.isFinite(r) && r >= 0 && r <= 1 ? r : clamp(b.runs[id] / Math.max(1, b.ticks), 0, 1);
+  }
   const M = w.mind || {};
   if (Array.isArray(M.goals)) { b.mind.goals = M.goals.filter((g) => g && typeof g.word === 'string' && Number.isInteger(g.idx) && cs.words[g.idx] === g.word && Number.isFinite(g.strength)).map((g) => ({ ...g })); if (b.mind.goals.length) done.push('goals'); }
   if (Array.isArray(M.history)) b.mind.history = M.history.filter((h) => h && Number.isFinite(h.t)).map((h) => ({ ...h }));
@@ -174,6 +209,8 @@ export function loadWorking(b, w) {
 export function dragTo(b, ref, x, y) {
   const N = b.ws.nodes;
   if (ref && ref.node >= 0 && ref.node < N.n) { N.x[ref.node] = clamp(x, 0.02, 0.98); N.y[ref.node] = clamp(y, 0.02, 0.98); N.act[ref.node] = 1; }
+  if (ref && ref.key === 'eye' && b.synapses) { b.synapses.x = clamp(x, 0, 1); b.synapses.y = clamp(y, 0, 1); } // the eye goes where it is put, and learns from there
+  if (ref && ref.key === 'creature' && b.creature) dropCreature(b.creature, clamp(x, 0, 1) * GW, clamp(y, 0, 1) * GH); // a creature put down walks back to the focus
   deposit(b.ws, 'input', x, y, 0.25, 3, 'you');
 }
 
@@ -184,14 +221,22 @@ export function embodiment(b) {
   C.node.forEach((i, k) => out.push({ key: 'w:' + C.words[k], organ: 'concepts', x: N.x[i], y: N.y[i], label: C.words[k], size: N.act[i], hue: 190 + N.act[i] * 120, node: i }));
   if (b.board.gesture && b.senses.over) out.push({ key: 'gesture', organ: 'gestures', x: b.senses.px, y: b.senses.py, label: b.board.gesture + (b.board.motif && b.board.motif.seen > 1 ? ' x' + b.board.motif.seen : ''), size: 0.4, hue: 40 });
   if (b.board.expect) { const c = regionCenter(b.board.expect.region); out.push({ key: 'expect', organ: 'memory', x: c.x, y: c.y, label: 'expects here', size: b.board.expect.strength, hue: 280 }); }
+  if (b.board.eye) out.push({ key: 'eye', organ: 'synapses', x: b.board.eye.x, y: b.board.eye.y, label: 'eye', size: 0.3, hue: 330 });
+  if (b.board.ear && b.ticks - b.board.ear.tick < 600) out.push({ key: 'ear', organ: 'hearing', x: b.board.ear.x, y: b.board.ear.y, label: b.board.ear.note + (b.board.ear.next ? ', next ' + b.board.ear.next + '?' : ''), size: 0.3, hue: 50 });
+  if (b.board.garden && b.board.garden.focus >= 0 && b.ticks - b.board.garden.tick < 60) out.push({ key: 'garden', organ: 'gardener', x: b.board.garden.x, y: b.board.garden.y, label: 'tending: ' + b.board.garden.cls, size: 0.22, hue: 120 });
+  if (b.board.paint && b.board.paint.changed && b.ticks - b.board.paint.tick < 300) out.push({ key: 'paint', organ: 'painter', x: b.board.paint.x, y: b.board.paint.y, label: 'new look, gen ' + b.board.paint.gen, size: 0.3, hue: 300 });
+  if (b.board.grow && b.board.grow.reach > 0 && b.ticks - b.board.grow.tick < 120) out.push({ key: 'grow', organ: 'grower', x: b.board.grow.x, y: b.board.grow.y, label: 'reaching light', size: 0.2, hue: 95 });
+  if (b.board.creature) out.push({ key: 'creature', organ: 'creature', x: b.board.creature.x, y: b.board.creature.y, label: 'creature', size: 0.35, hue: 20 });
   if (b.board.action && b.board.action.name !== 'rest') out.push({ key: 'will', organ: 'will', x: b.focus.x, y: clamp(b.focus.y - 0.12, 0.04, 0.96), label: b.board.action.name, size: 0.5, hue: 140 });
   return out;
 }
 
 // ---- 5. the self -------------------------------------------------------------------------------------------------------------------
+/** each organ's share of recent ticks, 0..1 to 2 places: what it does now, not its share of a life that began before it existed. Pure. */
+export function useOf(b) { return Object.fromEntries(ORGAN_IDS.map((id) => [id, Math.round(clamp(b.recent[id], 0, 1) * 100) / 100])); }
 /** what Verse can say about its own brain right now. Pure. */
 export function selfOf(b) {
-  const total = Math.max(1, b.ticks), use = Object.fromEntries(ORGAN_IDS.map((id) => [id, Math.round((b.runs[id] / total) * 100) / 100]));
+  const use = useOf(b);
   const wants = Object.fromEntries(ORGANS.map((o) => [o.id, clamp(o.want(b), 0, 1)]));
   let starved = null, gap = 0; for (const o of ORGANS) { if (o.id === 'senses') continue; const d = wants[o.id] - use[o.id]; if (d > gap) { gap = d; starved = o.id; } }
   const own = ownership(b.ws); let top = null, tv = 0; for (const [k, v] of Object.entries(own)) if (v > tv) { tv = v; top = k; }
@@ -201,6 +246,8 @@ export function selfOf(b) {
     surpriseBudget: Math.round(clamp(1 - b.reservoir.errAvg * 2, 0, 1) * 100) / 100, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length,
     q: b.will.chosen, action: b.board.action ? b.board.action.name : 'rest',
     wants: b.mind.goals.map((g) => ({ word: g.word, strength: Math.round(g.strength * 100) / 100 })), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length,
+    eye: { wiring: Math.round(eyeWiring(b.synapses.W) * 100) / 100, seen: Math.round(b.synapses.seenAvg * 1000) / 1000, spikes: b.synapses.spikes },
+    creature: { generations: b.creature.gens, trials: b.creature.trials, deaths: b.creature.deaths, reverts: b.creature.reverts, progress: creatureProgress(b.creature) }, hearing: earOf(b.ear), painter: painterOf(b.painter), gardener: gardenerOf(b.gardener), grower: growerOf(b.grower),
     conflicts: b.mind.conflicts, aligned: b.mind.aligned || null, approval: Math.round(b.mind.approval * 100) / 100, recent: Mind.recent(b) };
 }
 /** plain sentences from the self, for the card and for "what is your brain doing". Pure. */
@@ -211,6 +258,14 @@ export function selfSays(b) {
   if (s.wants.length) out.push('Asked for: ' + s.wants.slice(0, 3).map((g) => g.word).join(', ') + '.');
   if (s.conflicts.length) { const c = s.conflicts[0]; out.push(c.organs.join(' and ') + ' disagree in region ' + (c.region + 1) + (c.slowed ? '; ' + c.slowed + ' slowed' : '') + '.'); }
   if (s.aligned) out.push('"' + s.aligned.word + '" is near "' + s.aligned.near + '" (' + s.aligned.from + ').');
+  if (!b.creature.trials) out.push('Creature: generation 0, its first trial is under way (' + b.creature.steps + ' steps lived; it walks when the focus moves away).');
+  else { const c = s.creature, p = c.progress; out.push('Creature: generation ' + c.generations + ', ' + c.trials + ' trial' + (c.trials === 1 ? '' : 's') + ' and ' + c.deaths + ' death' + (c.deaths === 1 ? '' : 's') + (p ? '; its generations scored ' + p.early + ' earlier and ' + p.late + ' lately (cells toward the focus per 10 steps, a death is -1)' : '') + '.'); }
+  if (b.ear.guessed) { const h = s.hearing; out.push('Hearing: ' + h.notes + ' hummed note' + (h.notes === 1 ? '' : 's') + '; it guessed the next one right ' + Math.round(h.hit * 100) + '% of the time (' + h.bits + ' bits a note, ' + h.bits0 + ' with no context).'); }
+  else if (b.ear.notes) out.push('Hearing: ' + b.ear.notes + ' hummed note' + (b.ear.notes === 1 ? '' : 's') + ' so far; it guesses from the second one on.');
+  if (b.painter.last) { const p = s.painter; out.push('Painter: its look is a program it rewrote ' + p.gen + ' time' + (p.gen === 1 ? '' : 's') + ', now ' + p.program + ' (' + p.tokens + ' tokens); it paints ' + p.score + ' (the first scored ' + p.first + ').'); }
+  if (b.grower.last) { const g = s.grower; out.push('Grower: its plant grows from a grammar it rewrote ' + g.gen + ' time' + (g.gen === 1 ? '' : 's') + ', now ' + g.grammar + '; ' + g.stems + ' stems bend toward the focus and reach ' + Math.round(g.reach * 100) + '% of the brightest light (it scores ' + g.score + ', the first scored ' + g.first + ').'); }
+  if (b.gardener.blinks) { const g = s.gardener; out.push('Gardener: ' + g.inBand + ' of ' + GARDEN_TILES + ' patches at the edge of chaos (' + g.classes.dead + ' too still, ' + g.classes.noise + ' too wild); it tended them ' + g.thoughts + ' time' + (g.thoughts === 1 ? '' : 's') + '.'); }
+  if (b.synapses.spikes) out.push('Eye: ' + s.eye.spikes + ' spikes; its same-side wiring is ' + Math.round(s.eye.wiring * 100) + '% (it starts at 0 and grows as dopamine finds living tissue).');
   if (b.senses.felt) out.push('Feels ' + b.senses.felt + ' memor' + (b.senses.felt === 1 ? 'y' : 'ies') + ' from other cards in the shared field.');
   out.push('Remembers ' + s.episodes + ' moment' + (s.episodes === 1 ? '' : 's') + ' and ' + s.procedures + ' winning genome' + (s.procedures === 1 ? '' : 's') + '.');
   if (s.starved) out.push('Under-used: ' + s.starved + '.');
@@ -220,5 +275,5 @@ export function selfSays(b) {
 }
 
 /** the card's settings and numbers for a seal (numbers only, never the visitor's path or words). */
-export function params(b) { return { v: VERSION, genome: Object.fromEntries(Object.entries(b.genome).map(([k, v]) => [k, Math.round(v * 10000) / 10000])), gen: b.arena.gen, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length, q: Array.from(b.will.q, (v) => Math.round(v * 100) / 100), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length, pref: Array.from(b.mind.pref, (v) => Math.round(v * 100) / 100) }; }
+export function params(b) { return { v: VERSION, genome: Object.fromEntries(Object.entries(b.genome).map(([k, v]) => [k, Math.round(v * 10000) / 10000])), gen: b.arena.gen, concepts: b.concepts.words.length, motifs: b.gestures.motifs.length, q: Array.from(b.will.q, (v) => Math.round(v * 100) / 100), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length, paint: b.painter.pop[b.painter.champ].slice(), pref: Array.from(b.mind.pref, (v) => Math.round(v * 100) / 100) }; }
 export { ACTIONS, LETTERS, gestureName, sealSlice, GW, GH, ORGANS, ORGAN_IDS };

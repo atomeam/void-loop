@@ -42,6 +42,10 @@ export function utilOf(text) {
   // counted as typed: the cleaned ask drops a closing "!" or "?", and "word count: ... amused!" came out one character short (the tower gate's
   // accuracy question for wordcounter.net); "how many words in X?" still loses its question mark, which is the ask's, not the text's
   const typed = raw.replace(/\s+/g, ' ');
+  // the word counter's card (lib/wordcount.js cardAsk): its text as base64url, read back only when it is that exact code, so a typed "#tag" stays a word
+  m = raw.match(/^count\s+words\s+#([A-Za-z0-9_-]{2,1100})$/);
+  if (m) { try { const b = atob(m[1].replace(/-/g, '+').replace(/_/g, '/')), s = new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(b, (c) => c.charCodeAt(0)));
+    if (s.trim() && btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') === m[1]) return { kind: 'count', s }; } catch (_) { /* not a card code: an ask about a tag */ } }
   m = typed.match(/^(?:word\s+count|count\s+(?:the\s+)?words)(?:\s+(?:of|in|for)\s+|\s*:\s*)(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
   if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, '') };
   // "make it uppercase: hello world", "turn this into title case: ..."
@@ -160,7 +164,7 @@ async function run(text, api) {
   }
   // the card links to the tool page that does the same thing in full (lib/card-frame.js pageOfCard; owner, 2026-10-25: "why are you not linking the cards to the pages?")
   const page = { password: '/password/', color: '/color/', count: '/word-count/' }[q.kind];
-  if (el && el.dataset && page) el.dataset.page = page;
+  if (el && el.dataset && page) el.dataset.page = q.kind === 'password' ? page + '?len=' + q.n : page; /* the password page opens on the same length, never the password */
   // and a 3D figure of the thing (owner, 2026-10-25: "3d figure if possible"): a paint-chip fan in the colour, a padlock rated by lib/pwcheck.js
   if (el && q.kind === 'color') { const hx = (el.querySelector('ul li') || {}).textContent || ''; const m = /#[0-9a-f]{6}/i.exec(hx); if (m) bandMini(api, el, 'swatch', { hex: m[0] }, '3D paint-chip fan in ' + m[0]); }
   if (el && q.kind === 'count' && !q.chars) bandMini(api, el, 'page', { words: (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length }, '3D page of writing, ' + (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length + ' words');

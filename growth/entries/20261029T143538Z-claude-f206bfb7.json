@@ -1,0 +1,1 @@
+{"at":"2026-10-29T14:35:38Z","by":"claude","kind":"fix","what":"Reverted #1470: the /prizes/ parity rows made crypto rewards and gambling core features to match, from a loop job the smallest-first ranking never asked for"}

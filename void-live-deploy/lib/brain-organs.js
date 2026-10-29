@@ -9,6 +9,12 @@
 import { episodicPrior, recordEpisode, keyOf, recordProcedure, bestProcedure } from './brain-mind.js';
 import { clamp, laplacian4, idx, mutate, randomGenome, rng } from './field-kit.js';
 import { kuramoto } from './field-resonance.js';
+import { synapses } from './brain-synapses.js';
+import { creature } from './brain-creature.js';
+import { hearing } from './brain-hearing.js';
+import { painter } from './brain-painter.js';
+import { gardener, tileOf } from './brain-gardener.js';
+import { grower } from './brain-grower.js';
 import { GW, GH, CELLS, RG, RH, EMB, KIND, REGIONS_X, REGIONS_Y, deposit, writeCell, readRegion, regionMeans, regionCenter, regionOf, addNode, nodesOf, cellOf } from './brain-workspace.js';
 
 const TAU = Math.PI * 2;
@@ -247,14 +253,14 @@ const concepts = {
 };
 
 // ---- tissue: Gray-Scott reaction-diffusion fed by everything that lands in the input and memory layers -------------------------------------
-export function tissueStep(ws, feed, kill, iters = 2, owner = 'tissue') {
+export function tissueStep(ws, feed, kill, iters = 2, owner = 'tissue', garden = null) { // garden: the gardener's feed and kill offsets per patch (lib/brain-gardener.js)
   const u = ws.layers.sub, v = ws.layers.act, inp = ws.layers.input, mem = ws.layers.memory, nu = new Float32Array(CELLS), nv = new Float32Array(CELLS);
   const o = ws.organs.indexOf(owner);
   for (let it = 0; it < iters; it++) {
     for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
-      const i = y * GW + x, U = u[i], V = v[i], uvv = U * V * V, seed = inp[i] * 0.06 + mem[i] * 0.01;
-      nu[i] = clamp(U + 0.2097 * laplacian4(u, x, y, GW, GH) - uvv + feed * (1 - U) - seed, 0, 1);
-      nv[i] = clamp(V + 0.105 * laplacian4(v, x, y, GW, GH) + uvv - (kill + feed) * V + seed, 0, 1);
+      const i = y * GW + x, U = u[i], V = v[i], uvv = U * V * V, seed = inp[i] * 0.06 + mem[i] * 0.01, t = garden ? tileOf(x, y) : 0, F = garden ? feed + garden.df[t] : feed, Kl = garden ? kill + garden.dk[t] : kill;
+      nu[i] = clamp(U + 0.2097 * laplacian4(u, x, y, GW, GH) - uvv + F * (1 - U) - seed, 0, 1);
+      nv[i] = clamp(V + 0.105 * laplacian4(v, x, y, GW, GH) + uvv - (Kl + F) * V + seed, 0, 1);
     }
     for (let i = 0; i < CELLS; i++) { if (o >= 0 && Math.abs(nv[i] - v[i]) > 0.01) { ws.owner[i] = o; ws.wroteAt[i] = ws.tick; ws.writes[o]++; } }
     u.set(nu); v.set(nv);
@@ -264,7 +270,7 @@ export function tissueStep(ws, feed, kill, iters = 2, owner = 'tissue') {
 const tissue = {
   id: 'tissue', name: 'Tissue', job: 'the living surface: a reaction-diffusion field that grows wherever input, ideas and memory feed it', imagine: true,
   want: (b) => 0.55 + 0.4 * b.surprise,
-  run(b) { tissueStep(b.ws, b.genome.feed, b.genome.kill, 2); return 1; }
+  run(b) { tissueStep(b.ws, b.genome.feed, b.genome.kill, 2, 'tissue', b.gardener); return 1; }
 };
 
 // ---- rhythm: a Kuramoto lattice that spins faster over living tissue and locks into step (F027, F034, F442, the wave and spectral drafts) -
@@ -407,7 +413,7 @@ const arena = {
   }
 };
 
-export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, rhythm, swarm, membrane, will, arena];
+export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, will, arena];
 export const ORGAN_IDS = ORGANS.map((o) => o.id);
 export { randomGenome };
 export const _private = { kuramoto, idx, writeCell, regionOf, nodesOf };

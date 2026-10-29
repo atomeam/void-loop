@@ -1,1 +1,0 @@
-{"at":"2026-10-29T07:22:08Z","by":"claude","kind":"fix","what":"Verse's coder gets an exact-text replace tool: a run spent all 30 turns on diffs that did not apply, so a change no longer has to line up line numbers and context","show":"Verse's coder can swap exact text, no diff to line up","try":"node --test tools/verse-coder.test.mjs"}

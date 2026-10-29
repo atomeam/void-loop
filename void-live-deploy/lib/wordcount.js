@@ -15,6 +15,17 @@ const ABBR = new Set(['mr', 'mrs', 'ms', 'dr', 'prof', 'sr', 'jr', 'st', 'mt', '
 
 export const wordsOf = (text) => String(text || '').match(WORD) || [];
 
+/** the stage ask that opens the page's card on the text in the box, exactly as typed (line breaks too): the text rides as base64url
+ *  ('count words #...', read back by skills/util.js utilOf), so no word in it can send the ask to another skill (a line about the
+ *  weather was a forecast, its words sent off the device); at most `max` characters, so a long draft keeps the example; '' when
+ *  the card would count it differently (a lone - or ' the skill counts as a word and this page does not). Pure. */
+export function cardAsk(text, max = 200) {
+  const s = String(text || ''), n = wordsOf(s).length;
+  if (!n || Array.from(s).length > max || (s.match(/[\p{L}\p{N}'’-]+/gu) || []).length !== n) return '';
+  let bin = ''; for (const x of new TextEncoder().encode(s)) bin += String.fromCharCode(x);
+  return 'count words #' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
 /** how many sentences: an end mark (. ! ? or …, repeated or not, a closing quote or bracket after it) before a space or the end. Pure. */
 export function sentences(text) {
   const t = String(text || '').trim(); if (!wordsOf(t).length) return 0;

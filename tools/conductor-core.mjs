@@ -35,11 +35,12 @@ export const ROUTES = Object.freeze({
   novelty: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   auto: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   flake: { wf: AGENT, input: 'job', claims: true, cap: 40 },
+  member: { wf: AGENT, input: 'job', claims: true, cap: 30 }, // a paid member's idea (lib/members.js); the lap holds it to add-only
 });
 
 // what a kind of job is worth (AGENTS.md: Verse's own asks come first; STANDING.md and RULES.md 2026-10-26: Verse earns on its own, and the
 // tower never stops). A broken loop stops everything after it, so its repair outranks all.
-export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, 'store-gap': 90, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
+export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, 'store-gap': 90, member: 88, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
 export const MAX_TRIES = 3; // a job tried this often without landing is set aside with its last reason
 export const STALE_H = 3; // a job the conductor claimed that is still `building` after this long was left by a dead run
 export const SAME_JOB_H = 6; // an executor that claims for itself is not handed the same job again within this many hours
@@ -57,10 +58,14 @@ export const withTries = (note, n, why) => {
 };
 const ms = (iso) => { const t = Date.parse(iso || ''); return Number.isFinite(t) ? t : 0; };
 
-/** a job's worth now: its kind's weight, plus 2 a day of waiting (up to 30), minus 25 a try. Pure. */
+// a try costs a job 25, so a hopeless one sinks; the will's want costs only 5 a try (2026-10-29: with 34 fresh versus jobs at 85, a want at
+// 95 that had one try sank to 75 and waited behind every one of them until it was set aside untried; Verse's own ask comes first, and
+// MAX_TRIES and the 2N-hour wait still stop a hopeless want)
+export const TRY_COST = Object.freeze({ will: 5 });
+/** a job's worth now: its kind's weight, plus 2 a day of waiting (up to 30), minus 25 a try (TRY_COST for the will). Pure. */
 export function score(job, now) {
-  const w = WEIGHT[kindOf(job.target)] ?? 30, days = Math.max(0, (now - ms(job.at)) / (24 * H));
-  return w + Math.min(30, 2 * days) - 25 * triesOf(job.note);
+  const k = kindOf(job.target), w = WEIGHT[k] ?? 30, days = Math.max(0, (now - ms(job.at)) / (24 * H));
+  return w + Math.min(30, 2 * days) - (TRY_COST[k] ?? 25) * triesOf(job.note);
 }
 
 /** where a job goes: { wf, input, claims, cap } or null when nothing can run it. Pure. */

@@ -8,17 +8,22 @@
 //
 //   node tools/naming-audit.mjs            report every unnamed feature from each page's own HTML, exit 0 (advisory)
 //   node tools/naming-audit.mjs --rendered the same audit over the page as a browser draws it (the gate's own view: a feature
-//   node tools/naming-audit.mjs --check    exit 1 when any feature is unnamed (the ratchet, once the list is empty)
+//   node tools/naming-audit.mjs --check    exit 1 when a page no longer names a feature the gate's last measurement credits it with
+//                                          (tower.evidence.json: a feature its completeness row does not list as lacking)
 //                                          a script renders counts as named here, never in the static read)
 //   node tools/naming-audit.mjs --json     the findings as JSON, for a workflow or a ledger
 //
 // A page's text here is its own HTML with scripts and styles removed: the words a visitor reads before any script runs. A page
 // that draws its features only after a script (a client-rendered grid) reads as unnamed here even when it names them on screen;
 // that is why the default run is advisory and the check is the ratchet, not the report.
+//
+// What the check fails on (2026-10-29: it failed on every run, since it counted a feature Verse does not have yet as one it stopped
+// naming): only drift. A feature the gate already records as lacking is a known gap, reported by the completeness aspect itself; a
+// features file whose floors were never measured for completeness credits nothing yet. Both are still listed, never failed on.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { factsFromFile, showsFeature, withFeatureFacts, probeFor } from './tower-probes.mjs';
+import { factsFromFile, showsFeature, withFeatureFacts, probeFor, featureSlug } from './tower-probes.mjs';
 import { FLOORS } from '../void-live-deploy/lib/tower.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -85,6 +90,28 @@ export function audit(siteDir = SITE, featuresDir = FEATURES) {
   return rows;
 }
 
+/** what the gate's last measurement records Verse as lacking, per features file: { slug: Set of ', a, b, ' lists }. A slug is here only
+ *  when at least one of its floors has a completeness row (an empty set: measured, lacking nothing). Pure. */
+export function lackingBySlug(evidence) {
+  const out = {};
+  for (const [floor, row] of Object.entries((evidence && evidence.floors) || {})) {
+    const c = row && row.completeness; if (!c) continue;
+    const set = out[featureSlug(floor)] || (out[featureSlug(floor)] = new Set());
+    const m = /\(Verse lacks: ([\s\S]*?)(?:; site lacks: [\s\S]*)?\)$/.exec(String(c.evidence || ''));
+    if (m && m[1] !== 'none') set.add(', ' + m[1].toLowerCase() + ', ');
+  }
+  return out;
+}
+
+/** the audit's rows split by what the gate credits: drift (credited by the last measurement, now unnamed: the check fails on these),
+ *  known (the gate already records it as lacking) and unmeasured (no completeness row for the file's floors yet). Pure. */
+export function splitByCredit(rows, lacking) {
+  return rows.map((r) => {
+    const lists = lacking[r.floor], known = (u) => !!lists && [...lists].some((t) => t.includes(', ' + String(u.feature).toLowerCase() + ', '));
+    return { ...r, drift: lists ? r.unnamed.filter((u) => !known(u)) : [], known: lists ? r.unnamed.filter(known) : [], unmeasured: lists ? [] : r.unnamed };
+  });
+}
+
 /** every kept page as a browser draws it: { '/flights/': text }. One browser, one server, page by page. Impure (a browser). */
 export async function renderedText(pages, siteDir = SITE, live = '') {
   const http = await import('node:http'), fsP = await import('node:fs');
@@ -108,7 +135,10 @@ export async function renderedText(pages, siteDir = SITE, live = '') {
       const p = await ctx.newPage();
       try {
         await p.goto(live ? live.replace(/\/$/, '') + (page.startsWith('/') ? page : '/' + page) : base + page.replace(/^\//, ''), { waitUntil: 'load', timeout: 20000 });
-        await p.waitForTimeout(1600); // let the page's own script (and any fetch it makes) draw its first screen
+        // let the page's own script draw its first screen: a page whose rows come from its own fetch (weather: a place, then its forecast)
+        // names them only once that fetch answers, which a fixed 1.6 s missed on the live run (2026-10-29), so wait for the network to go quiet
+        await p.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+        await p.waitForTimeout(600);
         out[page] = await p.evaluate(() => document.body.innerText).catch(() => '');
       } catch (_) { out[page] = ''; }
       await p.close().catch(() => {});
@@ -130,18 +160,22 @@ if (isMain) {
       r.unnamed = auditFloor({ file: path.join(FEATURES, r.floor + '.json') }, text[r.url], r.floor);
     }
   }
-  const flagged = rows.filter((r) => r.unnamed.length);
-  const total = flagged.reduce((n, r) => n + r.unnamed.length, 0);
-  if (json) { console.log(JSON.stringify({ floors: rows.length, flagged: flagged.length, features: total, rows: flagged }, null, 1)); }
+  let evidence = null; try { evidence = JSON.parse(fs.readFileSync(path.join(SITE, 'tower.evidence.json'), 'utf8')); } catch (_) { evidence = null; }
+  const split = splitByCredit(rows, lackingBySlug(evidence));
+  const flagged = split.filter((r) => r.unnamed.length);
+  const total = flagged.reduce((n, r) => n + r.unnamed.length, 0), drift = split.reduce((n, r) => n + r.drift.length, 0);
+  if (json) { console.log(JSON.stringify({ floors: rows.length, flagged: flagged.length, features: total, drift, rows: flagged }, null, 1)); }
   else {
     for (const r of flagged) {
       console.log(r.floor + ' (' + r.page + ')');
-      for (const u of r.unnamed) console.log('    unnamed: ' + u.feature + (u.lacking.length ? '   [missing: ' + u.lacking.join(', ') + ']' : ''));
+      for (const [k, list] of [['NO LONGER NAMED', r.drift], ['known gap', r.known], ['not measured yet', r.unmeasured]]) for (const u of list) console.log('    ' + k + ': ' + u.feature);
     }
     if (flagged.length) console.log('');
     if (process.argv.includes('--rendered') && !process.argv.includes('--live')) console.log('(a page whose rows come from its own api shows its pre-fetch state to a local server: run with --live for the page the gate reads)');
-    console.log(flagged.length + ' of ' + rows.length + ' floors have a feature their page never names (' + total + ' features)');
+    console.log(flagged.length + ' of ' + rows.length + ' floors have a feature their page never names (' + total + ' features); ' + drift + ' of them the gate credits the page with');
   }
-  // advisory by default: the picture, not a red. --check is the ratchet for when the list is empty.
-  process.exit(check && total > 0 ? 1 : 0);
+  // a workflow shows each drifted page as an annotation, so the reason is on the run without its log
+  if (process.env.GITHUB_ACTIONS) for (const r of split.filter((x) => x.drift.length)) console.log('::error title=naming: ' + r.floor + '::' + r.page + ' no longer names: ' + r.drift.map((u) => u.feature).join('; '));
+  // advisory by default: the picture, not a red. --check fails only on drift (see the header).
+  process.exit(check && drift > 0 ? 1 : 0);
 }

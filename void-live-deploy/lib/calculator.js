@@ -4,7 +4,7 @@
  * shown to 15 significant digits so floating-point noise never shows (0.1 + 0.2 = 0.3). No eval. The stage calculator's own asks ("what is ...",
  * "calculate ...") and its unit conversions (skills/calc.js expressionOf, convertUnits) are reused, not copied. Pure. Tests: tools/calculator.test.mjs.
  */
-import { expressionOf, convertUnits } from '../skills/calc.js';
+import { expressionOf, convertUnits, evaluate } from '../skills/calc.js';
 
 const FUNCS = {
   sin: (x, d) => trig(Math.sin, x, d), cos: (x, d) => trig(Math.cos, x, d), tan: (x, d) => { if (d && mod(x, 180) === 90) throw new Error('tan of 90° is undefined'); return trig(Math.tan, x, d); },
@@ -45,6 +45,21 @@ export function tokens(src) {
     throw new Error('"' + c + '" is not something I can work out');
   }
   return out;
+}
+
+/** the stage card's ask for the sum in the box ("calculator 2*(3+4)"), only when the stage calculator (skills/calc.js) works out the
+ *  same number this page does; '' for a sum it reads another way or not at all (sin, π, Ans, a bare %), so the link opens the example. Pure. */
+export function cardAsk(src, opts) {
+  const raw = String(src || '').trim().replace(/=+\s*$/, ''); if (!raw || raw.length > 200) return '';
+  const ask = 'calculator ' + raw.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-'), expr = expressionOf(ask); if (expr === null) return '';
+  const a = calc(raw, opts), b = evaluate(expr);
+  return a.ok && b.ok && Number.isFinite(a.value) && Math.abs(a.value - b.value) <= 1e-9 * Math.max(1, Math.abs(a.value)) ? ask : '';
+}
+
+/** the card for the page: just after =, the box holds the answer, so the card takes the sum that gave it (the history's top row), not the bare number. */
+export function boxAsk(box, list, done, opts) {
+  const top = done && Array.isArray(list) && list[0];
+  return (top && top.v === String(box || '').trim() && cardAsk(top.e, opts)) || cardAsk(box, opts);
 }
 
 /** work out an expression: { ok, value } or { ok: false, error }. opts: { deg (true: trig in degrees), ans (the last answer), mem }. Pure. */

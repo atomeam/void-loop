@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40829044589",
-  "at": "2026-10-29T06:26:01Z",
-  "what": "Verse hardened itself: 6 benchmark ask(s) for sports-browse, textgen, backdrop, boards.  Why these: tab (no benchmark ask, evidence tier: tested, 22 failed runs name it); sports-browse (no benchmark ask, evidence tier: experiment); textgen (no benchmark ask, evidence tier: experiment); toolkit (no benchmark ask, evidence tier: experiment); backdrop (no benchmark ask, evidence tier: checked); boards (no benchmark ask, evidence tier: checked). New phrases: “browse sports” now opens sports-browse; “list of sports” now opens sports-browse; “random generators” now opens textgen; “backdrop: a cyberpunk rooftop” now opens backdrop; “text boards” now opens boards; “open the image boards” now opens boards. Did not route: put in the page; draft for me; fantasy name generator; band name generator.",
-  "try": "browse sports",
+  "run": "40893446461",
+  "at": "2026-10-29T14:39:29Z",
+  "what": "Verse hardened itself: 3 benchmark ask(s) for leet, lorem.  Why these: tab (no benchmark ask, evidence tier: tested, 21 failed runs name it); agent-fluid-memory-orbs (no benchmark ask, evidence tier: tested); ascii (no benchmark ask, evidence tier: tested); eightball (no benchmark ask, evidence tier: tested); leet (no benchmark ask, evidence tier: tested); lorem (no benchmark ask, evidence tier: tested). New phrases: “1337 speak for world” now opens leet; “lorem” now opens lorem; “give me some lorem” now opens lorem. Did not route: put in the page; draft for me; memory orbs; agent fluid memory orbs.",
+  "try": "1337 speak for world",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-29T04:23:08Z",
-    "try": "coin toss",
-    "closedAt": "2026-10-29T06:25:25Z"
+    "at": "2026-10-29T12:35:49Z",
+    "try": "calculator for molar mass",
+    "closedAt": "2026-10-29T14:38:50Z"
   }
 }

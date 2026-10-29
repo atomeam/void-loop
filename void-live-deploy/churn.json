@@ -1,5 +1,5 @@
 {
- "at": "2026-10-29T05:56:07.788Z",
+ "at": "2026-10-29T15:05:34.705Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -10,83 +10,95 @@
   },
   {
    "file": "tools/tower-probes.mjs",
-   "changes": 84
+   "changes": 87
+  },
+  {
+   "file": "void-live-deploy/sw.js",
+   "changes": 70
   },
   {
    "file": "domains/handoff.md",
    "changes": 67
   },
   {
-   "file": "void-live-deploy/sw.js",
-   "changes": 67
-  },
-  {
    "file": "tools/tower-gate.mjs",
-   "changes": 48
-  },
-  {
-   "file": "void-live-deploy/skills/tower.js",
-   "changes": 44
+   "changes": 46
   },
   {
    "file": "tools/tower-gate.test.mjs",
-   "changes": 41
+   "changes": 43
   },
   {
    "file": "tools/families.mjs",
-   "changes": 40
+   "changes": 41
   },
   {
    "file": "void-live-deploy/lib/seo.js",
-   "changes": 39
+   "changes": 41
   },
   {
    "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 34
+   "changes": 40
+  },
+  {
+   "file": "void-live-deploy/skills/tower.js",
+   "changes": 38
   },
   {
    "file": "domains/tower-self.json",
-   "changes": 27
-  },
-  {
-   "file": "tools/tower.test.mjs",
-   "changes": 26
+   "changes": 30
   },
   {
    "file": "void-live-deploy/lib/guard.js",
-   "changes": 23
-  },
-  {
-   "file": "tools/openapi-check.mjs",
-   "changes": 22
-  },
-  {
-   "file": ".github/workflows/tower-gate.yml",
-   "changes": 21
-  },
-  {
-   "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 21
+   "changes": 25
   },
   {
    "file": "tools/bench.json",
-   "changes": 20
+   "changes": 24
+  },
+  {
+   "file": "tools/openapi-check.mjs",
+   "changes": 24
+  },
+  {
+   "file": "tools/toolkit.test.mjs",
+   "changes": 24
+  },
+  {
+   "file": "void-live-deploy/fanfic/index.html",
+   "changes": 24
+  },
+  {
+   "file": ".github/workflows/tower-gate.yml",
+   "changes": 23
+  },
+  {
+   "file": "tools/card-cycle.json",
+   "changes": 23
+  },
+  {
+   "file": "tools/fanfic.test.mjs",
+   "changes": 23
+  },
+  {
+   "file": "tools/grow-self.state.json",
+   "changes": 23
+  },
+  {
+   "file": "void-live-deploy/fanfic/app.js",
+   "changes": 23
+  },
+  {
+   "file": "void-live-deploy/lib/card-frame.js",
+   "changes": 23
+  },
+  {
+   "file": "tools/tower.test.mjs",
+   "changes": 22
   },
   {
    "file": "void-live-deploy/lib/art-rules.js",
    "changes": 20
-  },
-  {
-   "file": "docs/RULES.md",
-   "changes": 19
-  },
-  {
-   "file": "tools/card-cycle.json",
-   "changes": 19
-  },
-  {
-   "file": "tools/grow-self.state.json",
-   "changes": 19
   },
   {
    "file": "void-live-deploy/calendar/index.html",
@@ -94,7 +106,27 @@
   },
   {
    "file": "void-live-deploy/random/index.html",
-   "changes": 17
+   "changes": 19
+  },
+  {
+   "file": "docs/RULES.md",
+   "changes": 16
+  },
+  {
+   "file": "domains/growth-inbox.md",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/color/index.html",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 16
   },
   {
    "file": "void-live-deploy/functions/api/card-art.js",
@@ -109,8 +141,16 @@
    "changes": 16
   },
   {
-   "file": "domains/growth-inbox.md",
-   "changes": 15
+   "file": "void-live-deploy/lib/fanfic-de.js",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/lib/fanfic.js",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/skills/verse-brain.js",
+   "changes": 16
   },
   {
    "file": "tools/skill-matchers.test.mjs",
@@ -125,10 +165,6 @@
    "changes": 15
   },
   {
-   "file": "void-live-deploy/color/index.html",
-   "changes": 14
-  },
-  {
    "file": "void-live-deploy/compare/index.html",
    "changes": 14
   },
@@ -137,19 +173,15 @@
    "changes": 14
   },
   {
-   "file": "void-live-deploy/skills/coin.js",
-   "changes": 14
-  },
-  {
    "file": "tools/card-art-route.test.mjs",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "file": "void-live-deploy/base-converter/index.html",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "file": "void-live-deploy/base64/index.html",
    "changes": 13
   },
   {
@@ -157,7 +189,27 @@
    "changes": 13
   },
   {
+   "file": "void-live-deploy/resize-image/index.html",
+   "changes": 13
+  },
+  {
    "file": "void-live-deploy/skills/cartoon.js",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/skills/coin.js",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/time/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/translate/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/wheel/index.html",
    "changes": 13
   }
  ]

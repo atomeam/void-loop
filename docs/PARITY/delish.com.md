@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: delish.com (https://www.delish.com/)
-- Verse: /recipes/?q=pancakes (recipes: delish.com, tower gate 12 of 15)
+- Verse: /recipes/?q=pancakes (recipes: delish.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Recipes, Party Food, Cooking Guides, Dinner Ideas - Delish.com"
 - History: [docs/HISTORY/delish.com.md](../HISTORY/delish.com.md)
 

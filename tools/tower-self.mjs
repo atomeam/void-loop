@@ -1,7 +1,7 @@
 // Versus by itself (owner, 2026-10-26: "use all your energy into making fully autonomous verse continue the tower without you"; "all sites get a page"):
 // Verse climbs the tower with no builder in the loop, on its own free model (Workers AI, lib/models.js FREE_MODEL) and its own tools, from a scheduled
 // workflow (.github/workflows/tower-self.yml). One run:
-//   PICK      the next sites of the frontier (void-live-deploy/tower.frontier.json, lib/tower.js frontierOf: easiest first), skipping what it tried lately
+//   PICK      the next sites of the frontier (void-live-deploy/tower.frontier.json, lib/tower.js frontierOf: smallest first), skipping what it tried lately
 //   RESEARCH  each site read at its own address (tools/feature-scan.mjs scanSite: robots.txt respected, parked, stub and sign-in pages refused)
 //   CLASSIFY  one model call: which of Verse's floors does that site's job (familiesOf: a floor with a page, a probe and a page that can be copied),
 //             and the new page's words; a site no floor covers becomes a build job on Verse's queue with what was read, never invented code
@@ -25,12 +25,13 @@
 //   node tools/tower-self.mjs status                                          what the loop has done and how many pages a day
 import { badgeOf, buildable } from '../void-live-deploy/lib/gate-badge.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate, barRow } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 import { probeFor, keywordsOf } from './tower-probes.mjs';
 import { secretsIn } from './secret-scan.mjs';
 import { pageOf as seoPageOf } from '../void-live-deploy/lib/seo.js';
+import { rankingOf, offLimits, versusAllowed } from './versus-ranking.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), SITE_DIR = path.join(root, 'void-live-deploy');
 export const STATE = path.join(root, 'domains', 'tower-self.json'), ROWS = path.join(SITE_DIR, 'lib', 'self-sites.js'), SW = path.join(SITE_DIR, 'sw.js');
@@ -81,12 +82,12 @@ export const sharesWords = (fam, text) => { const t = norm(text); return familyW
 /** the next sites to read: the frontier easiest first, never a site that is already a floor, a site blocked by its own wall, or one tried lately
  *  (a site no floor covered is tried again after RETRY_DAYS). Pure. */
 export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date.now(), floors = FLOORS } = {}) {
-  const tried = (state && state.sites) || {}, out = [];
+  const tried = (state && state.sites) || {}, out = [], ranking = rankingOf({ frontier, floors, state });
   for (const x of frontierOf(frontier, floors)) {
-    if (x.blocked) continue; if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
+    if (x.blocked || offLimits(x.host, ranking)) continue; // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
     const t = tried[x.host];
     if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
-    out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness }); if (out.length >= max) break;
+    out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness, controls: x.controls, bytes: x.bytes }); if (out.length >= max) break;
   }
   return out;
 }
@@ -262,11 +263,13 @@ async function apply(decisionFile) {
 
 // ---- judge: the gate's rows, fixes, jobs, the report ----
 /** what to do about one floor's rows: { n, m, beaten, fixes: [aspect], jobs: [{ aspect, evidence }] }. A mechanical fix is one whose template is
- *  known: offline (the page into sw.js TOOLS) and sharing (the page's own link-preview tags, rewritten by writePages). Pure. */
+ *  known: offline (the page into sw.js TOOLS) and sharing (the page's own link-preview tags, rewritten by writePages). A default-bar row (the site
+ *  turned the gate away, lib/tower.js barRow) is not a measure of the site: never a fix, only a job to measure it. Pure. */
 export function judgeRows(floor, ev, sw = '') {
   const g = gate(floor, ev || {}), fixes = [], jobs = [];
   for (const a of g.left) {
     const r = (ev || {})[a];
+    if (barRow(r)) { jobs.push({ aspect: a, evidence: 'not measured yet: ' + (hostOf(floor.url) || floor.site) + ' turned the gate away, so only the default bar was scored' }); continue; }
     if (a === 'offline' && floor.page && !String(sw).includes("'" + pathOnly(floor.page) + "'")) fixes.push(a);
     else if (a === 'sharing' && r && r.verdict === 'worse' && floor.page) fixes.push(a);
     else jobs.push({ aspect: a, evidence: r ? r.verdict + ': ' + clip(r.evidence, 150) : 'not measured yet' });
@@ -296,7 +299,10 @@ async function judge(idsFile, { queue = false, decisionFile = null } = {}) {
   }
   const d = decisionFile ? readJson(decisionFile, {}) : {};
   jobs.push(...((d && d.jobs) || []));
-  const queued = queue && jobs.length ? await queueJobs(jobs) : 0;
+  // a versus job only for a site of the smallest-first ranking that is not a gambling or crypto site (#1470): the scan's own words of this run count
+  const ranking = rankingOf({ frontier: readJson(path.join(SITE_DIR, 'tower.frontier.json'), null), floors: FLOORS, state: { sites: { ...st.sites, ...((d && d.state) || {}) } } });
+  const allowed = jobs.filter((j) => { const v = versusAllowed(j.target, ranking); if (!v.ok) console.log('not queued ' + j.target + ': ' + v.why); return v.ok; });
+  const queued = queue && allowed.length ? await queueJobs(allowed) : 0;
   // the mechanical fixes: the offline list and the pages' own tags (writePages rewrites them from the rows; swWith adds a missing page)
   let swNext = sw; for (const r of SELF_SITES) swNext = swWith(swNext, r.path); if (swNext !== sw) fs.writeFileSync(SW, swNext); const rewrote = writePages();
   const next = pickCandidates(readJson(path.join(SITE_DIR, 'tower.frontier.json'), null), st, { max: 1 })[0];

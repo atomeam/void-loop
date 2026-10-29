@@ -219,7 +219,9 @@ test('history and explain: it says what just happened and why a region formed, f
 test('knowledge: what it learned survives a reload as numbers, a wrong record is ignored, and a seal still holds no words', () => {
   const b = run(B.createBrain(28), 900, circle); B.ask(b, 'romance'); run(b, 100, circle);
   const k = JSON.parse(JSON.stringify(B.knowledgeOf(b))), b2 = B.createBrain(29), done = B.loadKnowledge(b2, k);
-  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'procedures', 'episodes']);
+  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'synapses', 'creature', 'hearing', 'painter', 'gardener', 'grower', 'asks', 'procedures', 'episodes']);
+  assert.deepEqual(b2.creature.mean, b.creature.mean.map((v) => Math.round(v * 1000) / 1000), 'the creature keeps its evolved physics');
+  assert.deepEqual(Array.from(b2.synapses.W), Array.from(b.synapses.W, (v) => Math.fround(Math.round(v * 1000) / 1000)), 'the eye keeps its learned wiring');
   assert.deepEqual(Array.from(b2.will.q), Array.from(b.will.q, (v) => Math.round(v * 1000) / 1000).map((v) => Math.fround(v)));
   assert.deepEqual(B.loadKnowledge(B.createBrain(30), { v: 1, q: [1, 2], episodes: [{ key: [1], action: 9 }] }), [], 'a record of the wrong shape restores nothing');
   assert.equal(B.createBrain(31).mind.episodes.length, 0); assert.ok(JSON.stringify(B.params(b)).indexOf('romance') < 0);
@@ -228,4 +230,17 @@ test('knowledge: what it learned survives a reload as numbers, a wrong record is
 test('store: with no IndexedDB (node, a private window that refuses it) every call resolves and nothing breaks (lib/brain-store.js)', async () => {
   const St = await import('../void-live-deploy/lib/brain-store.js');
   assert.equal(await St.loadKept(), null); assert.equal(await St.keep({ v: 1 }), false); assert.equal(await St.forget(), false);
+});
+
+test('an organ newer than a kept brain shows what it does now, not its share of the life before it existed', () => {
+  const old = structuredClone(B.workingOf(run(B.createBrain(31), 400, circle)));
+  delete old.runs.gardener; delete old.lastRun.gardener; delete old.recent; old.ticks = 100000; // a brain kept for a long time before the gardener joined it
+  const b = B.createBrain(31); assert.ok(B.loadWorking(b, old).includes('workspace'));
+  const r0 = b.runs.gardener, t0 = b.ticks; run(b, 1500, circle);
+  const now = (b.runs.gardener - r0) / (b.ticks - t0), use = B.selfOf(b).use;
+  assert.ok(now > 0.1, 'the gardener runs on ' + now + ' of these ticks');
+  assert.ok(Math.abs(use.gardener - now) < 0.08, 'shown ' + use.gardener + ', runs ' + now);
+  assert.ok(use.senses === 1 && use.tissue > 0.5, JSON.stringify(use));
+  const again = B.createBrain(32); B.loadWorking(again, structuredClone(B.workingOf(b)));
+  assert.deepEqual(B.selfOf(again).use, use, 'the recent share is kept with the brain');
 });

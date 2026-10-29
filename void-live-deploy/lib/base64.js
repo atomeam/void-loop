@@ -275,4 +275,9 @@ export const hexOf = (bytes) => Array.from(bytes || [], (x) => x.toString(16).pa
 /** bytes as a data: URL (data:image/png;base64,...). Pure. */
 export const dataUrl = (bytes, mime = 'application/octet-stream') => 'data:' + (mime || 'application/octet-stream') + ';base64,' + encodeBytes(bytes);
 /** a byte count as people say it: 5 bytes, 1.2 KB, 3.4 MB. Pure. */
+/** the page's stage card: the text as "base64 decode <its UTF-8 Base64>", so the card holds the text exactly as typed and no keyword skill reads its words; '' when there is no text to carry. Pure. */
+export function cardAsk(text, max = 1500) {
+  const s = String(text ?? '');
+  return s.trim() && Array.from(s).length <= max ? 'base64 decode ' + encodeBytes(new TextEncoder().encode(s)) : '';
+}
 export function sizeOf(n) { return n < 1024 ? n + (n === 1 ? ' byte' : ' bytes') : n < 1048576 ? (n / 1024).toFixed(1) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; }

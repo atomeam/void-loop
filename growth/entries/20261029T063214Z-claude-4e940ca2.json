@@ -1,1 +1,0 @@
-{"at":"2026-10-29T06:32:14Z","by":"claude","kind":"fix","what":"Verse's coder keeps its 30 turns: older tool results are cut short in each turn's window, and a stop at a cap names where the turns went","show":"Coder tokens now last its 30 turns","try":"the next will job's note on the verse-job run"}

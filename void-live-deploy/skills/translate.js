@@ -4,21 +4,15 @@
  */
 import { bandMini } from '../lib/card-mini.js';
 import { isIt } from './is-it.js';
-const LANGS = {
-  english:'en', spanish:'es', french:'fr', german:'de', italian:'it', portuguese:'pt', dutch:'nl',
-  russian:'ru', ukrainian:'uk', polish:'pl', czech:'cs', greek:'el', turkish:'tr', arabic:'ar',
-  hebrew:'he', hindi:'hi', bengali:'bn', urdu:'ur', japanese:'ja', korean:'ko', chinese:'zh-CN',
-  mandarin:'zh-CN', cantonese:'zh-TW', vietnamese:'vi', thai:'th', indonesian:'id', malay:'ms',
-  filipino:'tl', tagalog:'tl', swedish:'sv', norwegian:'no', danish:'da', finnish:'fi',
-  hungarian:'hu', romanian:'ro', swahili:'sw', persian:'fa', farsi:'fa', irish:'ga', welsh:'cy',
-  latin:'la', hawaiian:'haw', catalan:'ca', croatian:'hr', serbian:'sr', bulgarian:'bg'
-};
+import { STAGE_LANGS, cardText } from '../lib/translate-card.js';
+const LANGS = STAGE_LANGS;
 const LANG_RE = Object.keys(LANGS).join('|');
 
 function parse(text) {
   const t = text.trim().replace(/[?!.]+$/, '');
   let m = t.match(new RegExp('^(?:please\\s+)?translate\\s+["“]?(.+?)["”]?\\s+(?:from\\s+(' + LANG_RE + ')\\s+)?(?:to|into|in)\\s+(' + LANG_RE + ')$', 'i'));
-  if (m) return { q: m[1], from: m[2], to: m[3] };
+  // the translate page's card (lib/translate-card.js cardAsk): its text as base64url, read back only when it is that exact code
+  if (m) return { q: cardText(m[1]) ?? m[1], from: m[2], to: m[3] };
   m = t.match(new RegExp('^how\\s+(?:do|would)\\s+(?:you|i|we)\\s+say\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
   // "is it christmas in french": a yes-or-no day question asked for its word in that language (skills/is-it.js), not a phrase to translate
@@ -81,6 +75,7 @@ async function run(text, api) {
 export default {
   name: 'translate',
   examples: ['translate hello to Spanish', 'how do you say thank you in Japanese', 'good morning in French', 'what is cat in German'],
+  translateOf: parse,
   match(lower, text) { return !!parse(text); },
   run
 };

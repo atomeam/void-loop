@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: cozi.com (https://www.cozi.com/)
-- Verse: /calendar/ (calendar: cozi.com, tower gate 12 of 15)
+- Verse: /calendar/ (calendar: cozi.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Cozi Family Calendar &amp; Organizer App / Free Shared Planner"
 - History: [docs/HISTORY/cozi.com.md](../HISTORY/cozi.com.md)
 

@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: passwordsgenerator.net (https://passwordsgenerator.net/)
-- Verse: /password/ (password, tower gate 8 of 14)
+- Verse: /password/ (password, tower gate 1 of 14)
 - Live scan: 2026-10-28, HTTP no answer
 - History: [docs/HISTORY/passwordsgenerator.net.md](../HISTORY/passwordsgenerator.net.md)
 

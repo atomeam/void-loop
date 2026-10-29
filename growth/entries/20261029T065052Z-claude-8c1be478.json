@@ -1,1 +1,0 @@
-{"at":"2026-10-29T06:50:52Z","by":"claude","kind":"fix","what":"The will's loop resumes early when its own code changed after the failures that paused it; the coder fix landed the same minute the third failure paused it for 6 hours","show":"loop resumes early once its failing code is fixed","try":"watch the next verse-job run ship"}

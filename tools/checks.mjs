@@ -62,7 +62,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -104,6 +104,9 @@ for (const [name, file] of [
   ['podcasts', 'podcasts.test.mjs'],
   ['boards', 'boards.test.mjs'],
   ['fanfic', 'fanfic.test.mjs'],
+  ['fanfic-hits', 'fanfic-hits.test.mjs'],
+  ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
+  ['naming-audit', 'naming-audit.test.mjs'],
   ['music-tools', 'music-tools.test.mjs'],
   ['flights', 'flights.test.mjs'],
   ['job-board', 'job-board.test.mjs'],
@@ -309,7 +312,15 @@ for (const [name, file] of [
   ['field-resonance', 'field-resonance.test.mjs'],
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
-  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, eleven organs, attention, imagination, the mind layers, kept knowledge
+  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, seventeen organs, attention, imagination, the mind layers, kept knowledge
+  ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
+  ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load
+  ['brain-creature', 'brain-creature.test.mjs'], // F304's Lenia creature: it follows a moving target, it learns by online evolution, it runs in the brain, its genome is kept
+  ['brain-painter', 'brain-painter.test.mjs'], // F322's look as a program: programs stay valid numbers, evolution beats random search with the same budget, it runs in the brain, its programs are kept
+  ['brain-hearing', 'brain-hearing.test.mjs'], // F299's hummed notes: it hears pitch as notes, learns tunes it heard and guesses the next note, runs in the brain, its counts are kept
+  ['brain-gardener', 'brain-gardener.test.mjs'], // F215's codec retina gardener: its coder tells still from noise, it keeps more patches at the edge of chaos than the same brain watching, its gardening is kept
+  ['brain-grower', 'brain-grower.test.mjs'], // F453's L-system plant: valid grammars, evolution beats random search on held brain states, it bends toward attention, feeds the tissue, is kept
+  ['brain-host', 'brain-host.test.mjs'], // Verse uses its brain on every page: it hears every ask, learns what you ask next, ranks the ask box by it (measured against newest-first) and answers "what are you thinking?"
   ['shared-field', 'shared-field.test.mjs'], // the shared field (skills/field.js): its API, and Verse Brain feeling other skills' slots and publishing numbers only
   ['field-fluid-orbs', 'field-fluid-orbs.test.mjs'], // F-321: orientation leans the flow, a peak spawns an orb, seal then load gives the same SHA-256
   ['stage-camera', 'stage-camera.test.mjs'],
@@ -317,6 +328,7 @@ for (const [name, file] of [
   ['operating-laws', 'operating-laws.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['sw-3d-cache', 'sw-3d-cache.test.mjs'], // the worker never keeps HTML as a 3D file; three.js at a path no edge holds (issue #1114)
+  ['fresh-scripts', 'fresh-scripts.test.mjs'], // a deploy reaches a returning browser's scripts on every page: sw.js asks again for each script, visit.js asks again after load where no worker is in control
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],

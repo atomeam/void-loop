@@ -21,7 +21,7 @@ test('one queue, easiest first: conquered sites, then the one with the fewest as
   // a site Verse is losing on is not easy to beat: an easier site is fought first, and the hard one stays in the queue
   assert.notEqual(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].id, FLOORS[4].id); assert.equal(t.floors[0].state, 'current');
   assert.equal(t.floors.find((f) => f.id === FLOORS[1].id).state, 'ahead');
-  assert.match(towerLine(t), /^Versus: now [^ ]+ \(\d+ of \d+ aspects ahead\), 0 surpassed$/); assert.doesNotMatch(towerLine(t), / of \d+ floors| of 39\b|Tower/);
+  assert.match(towerLine(t), /^Versus: now [^ ]+ \(Verse ahead on \d+ of \d+ aspects\), 0 surpassed$/); assert.doesNotMatch(towerLine(t), / of \d+ floors| of 39\b|Tower/);
   ev[FLOORS[1].id].speed = { verdict: 'better', evidence: 'fixed' }; t = tower([], ev);
   assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'beaten'); // its loss fixed, it falls
 });
@@ -125,7 +125,7 @@ test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"
   assert.match(h, /@media \(prefers-reduced-motion:reduce\)\{\.tw-vs \*,\.tw-vs::after\{animation:none!important\}/);
 });
 
-test('a row the gate scored against its default bar (the site turned it away) says "default bar" and is not credited to the site (2026-10-29)', async () => {
+test('a row the gate scored against its default bar (the site turned it away) says "not measured" and is not credited to either side (2026-10-29)', async () => {
   const { vsHtml, matchRows, onBar } = await import('../void-live-deploy/skills/tower.js'); const esc = (s) => String(s);
   const at = '2026-10-29T05:59:18.672Z', b = (verdict, verse, best, what) => ({ verdict, verse, best, at, evidence: 'Verse (/fanfic/) ' + verse + what + ' vs the bar (sycophanthex.com unreachable) ' + best + what });
   const ev = { speed: b('worse', 261, 200, ' ms to the load event'), mobile: b('equal-and-better', 0, 0, ' px sideways overflow at 390 px'), offline: b('worse', 0, 1, ' (1: the page shows itself again with the network cut)'),
@@ -134,12 +134,12 @@ test('a row the gate scored against its default bar (the site turned it away) sa
   const f = { site: 'sycophanthex.com', url: 'https://sycophanthex.com/', aspects: ['speed', 'mobile', 'offline', 'reliability', 'accuracy'], m: 5, n: 1, lost: ['speed', 'offline', 'accuracy'], left: ['reliability'], ev };
   assert.equal(onBar(ev.speed), true); assert.equal(onBar(ev.accuracy), false); assert.equal(onBar(ev.reliability), false); assert.equal(onBar(undefined), false);
   const by = Object.fromEntries(matchRows(f).map((r) => [r.a, r]));
-  assert.deepEqual([by.speed.say, by.speed.bar, by.speed.nums], ['below the default bar', true, '261 ms vs 200 ms']); assert.equal(by.mobile.say, 'equal and better (default bar)');
+  assert.deepEqual([by.speed.say, by.speed.bar, by.speed.nums], ['below the default bar', true, '261 ms vs 200 ms']); assert.equal(by.mobile.say, 'not measured: the site turned the gate away');
   assert.equal(by.offline.say, 'below the default bar'); assert.deepEqual([by.accuracy.say, by.accuracy.bar], ['lost', false], 'a row measured on the site keeps its own word'); assert.equal(by.reliability.say, 'not measured yet');
   const vs = vsHtml(f, esc);
   assert.equal((vs.match(/<i data-k="s">/g) || []).length, 1, "the site's bar lights only what was measured on the site"); assert.match(vs, /class="tw-bar-n">1 of 5<\/span><\/div><\/div>/);
-  assert.match(vs, /<div class="tw-barnote">3 of 5 aspects are scored against the default bar: sycophanthex\.com turned the gate away, so those numbers are not its own<\/div>/);
-  assert.match(vs, /aria-label="Verse versus sycophanthex\.com: Verse ahead on 1 of 5 aspects, sycophanthex\.com on 1; 3 of 5 aspects are scored against the default bar/);
+  assert.match(vs, /<div class="tw-barnote">3 of 5 aspects are not measured: sycophanthex\.com turned the gate away, so they are not counted for either side<\/div>/);
+  assert.match(vs, /aria-label="Verse versus sycophanthex\.com: Verse ahead on 1 of 5 aspects, sycophanthex\.com on 1; 3 of 5 aspects are not measured/);
   assert.doesNotMatch(vsHtml({ ...f, ev: { accuracy: ev.accuracy } }, esc), /tw-barnote/, 'no note when every row was measured on the site');
 });
 
@@ -246,5 +246,42 @@ test('the want card and the Versus card name the same site: both rank with the t
 });
 test('a held site says why in the Versus line, so all aspects ahead and none surpassed explains itself', () => {
   const t = { floors: [{ site: 'heycolor.com', n: 16, m: 16, held: 'not yet better at painting a picture' }], marker: 1, beaten: 0 };
-  assert.equal(towerLine(t), 'Versus: now heycolor.com (16 of 16 aspects ahead; held: not yet better at painting a picture), 0 surpassed');
+  assert.equal(towerLine(t), 'Versus: now heycolor.com (Verse ahead on 16 of 16 aspects; held: not yet better at painting a picture), 0 surpassed');
+});
+
+test('a default-bar score is never a lead: it is not counted ahead, it keeps the floor open, and it cannot make a site surpassed (owner card, 2026-10-29)', async () => {
+  const { gate, passes, barRow } = await import('../void-live-deploy/lib/tower.js');
+  const { matchRows, vsHtml, verseTake } = await import('../void-live-deploy/skills/tower.js'); const esc = (s) => String(s);
+  const at = '2026-10-29T05:59:18.672Z', bar = (verdict, what) => ({ verdict, verse: 0, best: 0, at, evidence: 'Verse (/fanfic/) 0' + what + ' vs the bar (sycophanthex.com unreachable) 0' + what });
+  const ev = { mobile: bar('equal-and-better', ' px sideways overflow at 390 px'), design: bar('better', ' design faults'), speed: { verdict: 'better', verse: 90, best: 200, at, evidence: 'Verse (/fanfic/) 90 ms vs sycophanthex.com 200 ms' } };
+  assert.equal(barRow(ev.mobile), true); assert.equal(barRow(ev.speed), false);
+  assert.equal(passes('mobile', ev.mobile), false, 'a row against the default bar is not a pass'); assert.equal(passes('speed', ev.speed), true);
+  const floor = { id: 'fanfic', site: 'sycophanthex.com', url: 'https://sycophanthex.com/', aspects: ['mobile', 'design', 'speed'] }, g = gate(floor, ev);
+  assert.equal(g.n, 1, 'only the aspect measured on the site counts as ahead'); assert.equal(g.beaten, false, 'never surpassed on numbers that are not its own');
+  assert.ok(g.left.includes('design') && g.left.includes('mobile') && !g.left.includes('speed')); assert.ok(g.incomplete.includes('mobile') && g.incomplete.includes('design'), 'the card lists them as not measured');
+  const f = { ...floor, ...g, ev, state: 'current' }, rows = Object.fromEntries(matchRows(f).map((r) => [r.a, r]));
+  for (const a of ['mobile', 'design']) { assert.equal(rows[a].v, 'open'); assert.equal(rows[a].say, 'not measured: the site turned the gate away'); }
+  assert.match(vsHtml(f, esc), /2 of \d+ aspects are not measured: sycophanthex\.com turned the gate away/);
+  const take = verseTake({ floors: [f], beaten: 0 }).now; assert.match(take, /I lead on speed\./); assert.doesNotMatch(take, /lead on[^.]*(mobile|design)/);
+  const all = gate(floor, { mobile: bar('better', ' px'), design: bar('better', ' faults'), speed: ev.speed }); assert.equal(all.beaten, false, 'two default-bar wins and one real win are not a surpass');
+});
+
+test('the frontier is smallest first: a site the scan counted by its fewest controls, then its fewer bytes, before a site it did not count', async () => {
+  const { frontierOf } = await import('../void-live-deploy/lib/tower.js');
+  const fr = { sites: [{ site: 'old.test', hardness: 1 }, { site: 'heavy.test', controls: 3, bytes: 90000, hardness: 40 }, { site: 'light.test', controls: 3, bytes: 4000, hardness: 50 }, { site: 'few.test', controls: 1, bytes: 800000, hardness: 60 }] };
+  assert.deepEqual(frontierOf(fr, []).map((x) => x.host), ['few.test', 'light.test', 'heavy.test', 'old.test']);
+  assert.deepEqual(frontierOf(fr, []).map((x) => [x.controls, x.bytes]), [[1, 800000], [3, 4000], [3, 90000], [null, null]]);
+});
+
+test('the queue ranks on measured rows only: a loss against the default bar (the site turned the gate away) never moves a site back', async () => {
+  const { judgeRows } = await import('./tower-self.mjs');
+  const fr = { sites: [{ site: 'plain.test', hardness: 5 }, { site: 'away.test', hardness: 5 }] };
+  const first = aspectsOf({ id: 'x', site: 'x', url: 'https://x.test/', extra: [] })[0];
+  const ev = { 'away.test': { [first]: { verdict: 'worse', evidence: '1.2 s vs the bar (away.test unreachable)' } }, 'plain.test': { [first]: { verdict: 'worse', evidence: 'Verse 3 s, plain.test 1 s' } } };
+  const t = tower([], ev, fr), at = (id) => t.floors.findIndex((f) => f.id === id), away = t.floors[at('away.test')];
+  assert.ok(at('away.test') < at('plain.test'), 'a real loss waits; a default-bar loss does not');
+  assert.deepEqual([away.lost, away.rankLost, away.barred], [[first], [], [first]], 'the card still shows the loss, the queue does not rank on it');
+  assert.match(easeLine(away), /1 of them not measured: the site turned the gate away/);
+  const j = judgeRows({ id: 'away.test', site: 'away.test', url: 'https://away.test/', extra: [] }, ev['away.test']);
+  assert.deepEqual(j.jobs.find((x) => x.aspect === first), { aspect: first, evidence: 'not measured yet: away.test turned the gate away, so only the default bar was scored' });
 });
