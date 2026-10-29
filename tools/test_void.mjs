@@ -49,8 +49,9 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
-// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out
-const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites)\.js)(\?|$)/;
+// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
+// converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
@@ -9348,7 +9349,7 @@ try {
   const OUT_LINE = 'MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
-  for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
+  for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|MultiVerse|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
   // A price question is different: the membership sentence stays first, and the services card opens under it.
@@ -12046,7 +12047,14 @@ if (bad.length && !ONLY.length && !process.env.VOID_RETRY && !bad.some((r) => r.
     for (const h of heads) {
       const c = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--only', h], { env: { ...process.env, VOID_RETRY: '1', VOID_SKIP_BENCH: '1', VOID_SHARD: '' }, encoding: 'utf8', timeout: 8 * 60e3 });
       if (c.status !== 0) console.log('second run of "' + h + '" failed too (exit ' + c.status + '): ' + String(c.stdout || '').split('\n').filter((l) => /^FAIL|passed|matched/.test(l)).join(' | ').slice(0, 300) + ' ' + String(c.stderr || '').slice(-200));
-      if (c.status === 0) for (const r of bad) if (r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ') === h) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + h); }
+      // healed only when the second run ran this very check and it passed: "--only <head>" can match another section and skip this
+      // one (a check in the CORE block, or under another want label), exit 0 with it never run, and hide a real failure (2026-10-29:
+      // six "paid:" checks that the MultiVerse rename broke read "healed" on cd360ad0)
+      const ran = new Set(String(c.stdout || '').split('\n').filter((l) => l.startsWith('pass ')).map((l) => l.slice(5)));
+      for (const r of bad) if (r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ') === h) {
+        if (c.status === 0 && ran.has(r.name)) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + r.name); }
+        else if (c.status === 0) console.log('second run of "' + h + '" did not run "' + r.name.slice(0, 120) + '": still red');
+      }
     }
     bad = results.filter((r) => !r.ok);
   }
