@@ -533,6 +533,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:35:18Z",
+   "subject": "Hook /fanfic/ into the other Verse pages and the Versus card"
+  },
+  {
    "at": "2026-10-29T05:09:35Z",
    "subject": "Own-card lists: end a cut row at its last whole clause"
   },
@@ -603,14 +607,14 @@
   {
    "at": "2026-10-29T04:36:29Z",
    "subject": "Want card names the site Versus is on: /api/will ranks with tower.target.json"
-  },
-  {
-   "at": "2026-10-29T04:30:34Z",
-   "subject": "Verse knows its answers already run on gemma, so the want closes"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Claude (F321 thread, 2026-10-29)",
+    "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
+   },
    {
     "name": "Main green, tower checks (box, 2026-10-28)",
     "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
@@ -630,10 +634,6 @@
    {
     "name": "IndexNow on every deploy (claude)",
     "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
-   },
-   {
-    "name": "Claude (pdf and kanban floors, 2026-10-26)",
-    "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
    }
   ],
   "ladders": [
@@ -844,7 +844,6 @@
  "tower": {
   "target": "sycophanthex.com",
   "since": "2026-10-29",
-  "page": "my page for it is /fanfic/",
   "next": [
    "nameunit.com",
    "wheelroot.com",

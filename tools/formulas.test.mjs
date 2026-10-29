@@ -5,6 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FORMULA_BATCHES } from '../void-live-deploy/lib/formulas.js';
+import batch1 from '../void-live-deploy/lib/formulas-1.js';
 import { CALCULATORS, CATEGORIES, BY_ID, FORMULA_COUNT, run, readQuery, writeQuery, search, toJSON } from '../void-live-deploy/lib/calculators.js';
 import { KINDS, unitOf } from '../void-live-deploy/lib/calc-units.js';
 
@@ -62,4 +63,9 @@ test('every variable is a real kind and unit, and search finds formulas by name'
   for (const d of ALL) for (const v of BY_ID.get(d.id).def.vars) { assert.ok(KINDS[v.kind], d.id); assert.ok(unitOf(v.kind, v.unit), d.id + ' ' + v.unit); }
   assert.ok(search('braking distance').some((c) => c.id === 'braking-distance'));
   assert.ok(search('du bois').some((c) => c.id === 'bsa-du-bois'));
+});
+
+test('lib/formulas-1.js is the first batch the library ships, every definition with its worked example', () => {
+  assert.equal(FORMULA_BATCHES[0], batch1);
+  assert.ok(batch1.length > 0 && batch1.every((d) => d.id && d.eq && typeof d.want === 'number'), 'a definition without id, eq or want');
 });

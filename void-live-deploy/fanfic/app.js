@@ -6,8 +6,14 @@
 import * as F from '/lib/fanfic.js';
 import { doWork, excerpt } from '/lib/boards.js';
 import { mountRelated } from '/lib/toolkit.js';
+import { connectBrain } from '/lib/brain-bridge.js';
 
 const $ = (id) => document.getElementById(id), API = '/api/boards', KEY = 'a2m.void.fanfic.v1', BOARDS_KEY = 'a2m.void.boards.v1';
+// Verse Brain (lib/brain-bridge.js, owner 2026-10-29: "all the pages are supposed to be able to work together"): the fandom a reader opens and
+// the words they search go to the brain when one is open in this browser (BroadcastChannel, never a server); the footer says what it is
+// thinking about then, and nothing at all when no brain is open
+const brain = connectBrain();
+brain.on((m) => { const p = $('brainSay'); if (!p) return; const t = m.thinking || (m.words && m.words[m.words.length - 1]); p.hidden = !t; if (t) p.textContent = 'Verse Brain, open in another tab, is thinking about "' + t + '"' + (m.related && m.related.length ? ', near ' + m.related.map((r) => r.word).join(', ') : '') + '.'; });
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 const load = (k, d) => { try { return { ...d, ...JSON.parse(localStorage.getItem(k) || '{}') }; } catch (_) { return { ...d }; } };
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (_) { return false; } };
@@ -209,6 +215,7 @@ async function viewForum(code) {
   if (!b) { gone('There is no fandom at that link. It may have been removed, or the link is not complete.'); return; }
   if (b.nsfw && !adultOk()) { gate(); return; }
   show('forum', b.title);
+  brain.tell(b.title);
   $('forumCrumb').textContent = b.title; $('forumH').textContent = b.title;
   $('forumAbout').textContent = b.about && !/^Fan fiction: /.test(b.about) ? b.about : 'Stories in ' + b.title + '.';
   $('forumPost').href = href({ new: 'story', f: code });
@@ -417,6 +424,7 @@ async function viewSearch(q) {
   const list = $('sres'), note = $('sSay'); $('sq').value = q || '';
   list.replaceChildren();
   if (!q) { note.hidden = false; say(note, 'Type a word to search.'); return; }
+  brain.tell(q);
   note.hidden = false; say(note, 'Searching…');
   let a; try { a = await archive(); } catch (e) { fail(note, e); return; }
   const fic = new Map(a.boards.map((b) => [b.code, b])), r = await api('?q=' + encodeURIComponent(q));

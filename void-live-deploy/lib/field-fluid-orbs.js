@@ -16,8 +16,8 @@ import { rng, clamp, lerp, entropy, canonical, sha256Sync, sha256Hex, evolveStep
 export const GW = 48, GH = 36, N_AGENTS = 18, MAX_ORBS = 7, DMAX = 4, PATCH = 4, POP = 6, MIND_EVERY = 2;
 export const IN = 10, HID = 6, OUT = 2, GENES = IN * HID + HID + HID * OUT + OUT; // 80 weights
 export const SPEC = Object.fromEntries(Array.from({ length: GENES }, (_, i) => ['w' + i, [-2, 2]]));
-export const ORB_MIN = 1.1, ORB_GAP = 5, ORB_FADE = 0.3, ORB_LIFE = 90, ORB_EVERY = 8;
-const TILT = 0.4, AGENT_FORCE = 0.35, AGENT_DYE = 0.06, AGENT_SWIM = 0.25, POINTER_DYE = 0.45, POINTER_PUSH = 0.8, VMAX = 2, DECAY = 0.994, DAMP = 0.992, BLUR = 0.05, ITERS = 10;
+export const ORB_MIN = 1.1, ORB_GAP = 8, ORB_FADE = 0.3, ORB_LIFE = 180, ORB_EVERY = 8;
+const TILT = 0.4, AGENT_FORCE = 0.35, AGENT_DYE = 0.065, AGENT_SWIM = 0.25, AGENT_SNIFF = 0.5, POINTER_DYE = 0.45, POINTER_PUSH = 0.8, VMAX = 2, DECAY = 0.994, DAMP = 0.992, BLUR = 0.05, ITERS = 10;
 const NC = GW * GH, r2 = (v) => Math.round(v * 100) / 100, r4 = (v) => Math.round(v * 1e4) / 1e4;
 const I = (x, y) => (((y % GH) + GH) % GH) * GW + (((x % GW) + GW) % GW);
 // each cell's four neighbours, once (the projection reads them ten times a step)
@@ -118,7 +118,10 @@ export function step(s, dt = 1 / 60, input = {}) {
   } else { s.px = null; s.py = null; }
   for (let k = 0; k < N_AGENTS; k++) { // the agents: each reads its patch with the shared policy, swims and pushes
     const [fx, fy] = policy(s, k, tx, ty), x = s.ax[k], y = s.ay[k];
-    s.ax[k] = wrapP(x + (sample(u, x, y) + fx * AGENT_SWIM) * h, GW); s.ay[k] = wrapP(y + (sample(v, x, y) + fy * AGENT_SWIM) * h, GH);
+    // and each swims up the density slope it senses (inp 1, 2), so trails feed on themselves and the fluid pools where agents gather:
+    // the field's own peaks (and its orbs) come from the agents, not only from the pointer
+    const gx = s.inp[1], gy = s.inp[2], gn = Math.hypot(gx, gy), sx = gn > 1e-4 ? gx / gn : 0, sy = gn > 1e-4 ? gy / gn : 0;
+    s.ax[k] = wrapP(x + (sample(u, x, y) + fx * AGENT_SWIM + sx * AGENT_SNIFF) * h, GW); s.ay[k] = wrapP(y + (sample(v, x, y) + fy * AGENT_SWIM + sy * AGENT_SNIFF) * h, GH);
     splat(s, s.ax[k], s.ay[k], fx * AGENT_FORCE * h, fy * AGENT_FORCE * h, AGENT_DYE * h, 1.5);
   }
   for (let i = 0; i < NC; i++) { div[i] = -0.5 * (u[R[i]] - u[L[i]] + v[D[i]] - v[U[i]]); p[i] = 0; } // pressure projection: the flow keeps no sources or sinks
