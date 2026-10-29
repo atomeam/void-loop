@@ -20,8 +20,8 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 62,
-   "tests": 6
+   "dependants": 63,
+   "tests": 7
   },
   {
    "file": "lib/ask-text.js",
@@ -1070,7 +1070,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -1103,6 +1103,13 @@
   },
   {
    "file": "lib/brain-gardener.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-grower.js",
    "skills": 1,
    "direct": 0,
    "dependants": 5,
@@ -1267,7 +1274,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 9
+   "tests": 10
   },
   {
    "file": "lib/compose.js",
@@ -4403,6 +4410,21 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-grower.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-hearing.js": {
    "imports": [
     "lib/field-kit.js",
@@ -4436,7 +4458,8 @@
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
-    "lib/brain-gardener.js"
+    "lib/brain-gardener.js",
+    "lib/brain-grower.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
@@ -4458,6 +4481,7 @@
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
     "lib/brain-gardener.js",
+    "lib/brain-grower.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -4515,6 +4539,7 @@
     "lib/brain-creature.js",
     "lib/brain-field.js",
     "lib/brain-gardener.js",
+    "lib/brain-grower.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -4537,7 +4562,8 @@
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
-    "lib/brain-gardener.js"
+    "lib/brain-gardener.js",
+    "lib/brain-grower.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -5598,6 +5624,7 @@
    "importedBy": [
     "lib/brain-creature.js",
     "lib/brain-gardener.js",
+    "lib/brain-grower.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",

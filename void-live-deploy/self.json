@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T20:18:28Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,84 +545,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T00:12:35Z",
-   "subject": "Add palette skill: random color palettes. Mark building in growth inbox."
-  },
-  {
-   "at": "2026-10-28T23:25:21Z",
-   "subject": "Verse loop: no human in the loop — self-heal, grooming, verify dispatch, a back-off that resumes by itself"
-  },
-  {
-   "at": "2026-10-28T23:24:14Z",
-   "subject": "Verse fixes its toolkit skill: learn to handle \"how many rolls of tape for 200ft\""
-  },
-  {
-   "at": "2026-10-28T23:18:42Z",
-   "subject": "deps.json: regenerated"
-  },
-  {
-   "at": "2026-10-28T23:18:32Z",
-   "subject": "Calculators: 17 for calculator.net's Other gaps (15 of 19), with known-answer tests"
-  },
-  {
-   "at": "2026-10-28T23:18:08Z",
+   "at": "2026-10-29T15:25:37Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T23:17:16Z",
-   "subject": "Verse loop: docs and CI step for verse-coder"
-  },
-  {
-   "at": "2026-10-28T23:17:11Z",
-   "subject": "Tower: paint (heycolor.com) surpassed on evidence; the queue moves on to is it"
-  },
-  {
-   "at": "2026-10-28T23:15:40Z",
-   "subject": "verse-coder: Verse's own coding agent on the free model stack, the default verse brain for red checks and NEXT"
-  },
-  {
-   "at": "2026-10-28T23:14:12Z",
-   "subject": "Regenerated the generated files after merging main"
-  },
-  {
-   "at": "2026-10-28T23:11:10Z",
+   "at": "2026-10-29T15:25:18Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T23:11:08Z",
-   "subject": "verse-loop: run with the workflow token, no extra secret needed (Actions may open PRs now)"
+   "at": "2026-10-29T15:24:56Z",
+   "subject": "Main health: a real-pages spec for /learn-to-draw/ (begin, draw a stroke, Done scores it, share), and the stale parity pages and deps map…"
   },
   {
-   "at": "2026-10-28T23:11:05Z",
-   "subject": "Notes: the render line says why its HTML is safe"
-  },
-  {
-   "at": "2026-10-28T23:10:39Z",
-   "subject": "Notes clean a note's HTML when they show it; the review's false alarms marked with why"
-  },
-  {
-   "at": "2026-10-28T23:09:17Z",
-   "subject": "Paint by number rebuilt: a picture library with categories, smooth zoom and pan, hints, highlighting, saved progress, a reveal, your own…"
-  },
-  {
-   "at": "2026-10-28T23:06:53Z",
+   "at": "2026-10-29T15:22:46Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T23:06:46Z",
-   "subject": "wip paint"
+   "at": "2026-10-29T15:22:22Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T23:05:53Z",
-   "subject": "Regenerated the generated files after merging main again"
+   "at": "2026-10-29T15:21:37Z",
+   "subject": "Merge Verse: the board takes the room above the ask bar, so New game is never under it"
   },
   {
-   "at": "2026-10-28T23:05:22Z",
-   "subject": "Calculators: the 16 Maths gaps from calculator.net's sitemap, with known-answer tests"
+   "at": "2026-10-29T15:21:22Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T23:02:30Z",
-   "subject": "Versus card: the easiest-first plan from docs/NEXT.md, with the gate's own numbers"
+   "at": "2026-10-29T15:21:04Z",
+   "subject": "random skill: take only the bare dice notation the stage's chance cards leave (d20, 2d6), crypto rolls, order file, family, map line, test"
+  },
+  {
+   "at": "2026-10-29T15:20:39Z",
+   "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
+  },
+  {
+   "at": "2026-10-29T15:20:35Z",
+   "subject": "Restore the password generator's test (lib/password.js), overwritten by the password skill's test in #1536; the skill's test is…"
+  },
+  {
+   "at": "2026-10-29T15:19:19Z",
+   "subject": "Versus queue: fewest controls first, then the fewer bytes"
+  },
+  {
+   "at": "2026-10-29T15:19:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:18:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:17:06Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:16:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:15:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:15:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:14:41Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:14:11Z",
+   "subject": "password skill: take the asks util leaves, crypto with no bias, order file, family, map line, test"
+  },
+  {
+   "at": "2026-10-29T15:14:06Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
