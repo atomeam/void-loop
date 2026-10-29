@@ -5476,7 +5476,8 @@ try {
       const card = '.ff-agent-fluid-memory-orbs', box = await (await F.p.$(card + ' canvas')).boundingBox();
       const read = () => F.p.$eval(card, (e) => ({ orbs: +(e.dataset.orbs || 0), els: e.querySelectorAll('.fo-orb').length, gen: +(e.dataset.gen || 0), mind: e.dataset.mind, status: e.querySelector('.ff-hud').textContent,
         hue: e.style.getPropertyValue('--fo-hue'), filter: e.style.filter, page: getComputedStyle(document.body).filter, seal: e.dataset.orbSeal || '', recalled: e.dataset.recalled || '', same: e.dataset.recallSame || '',
-        sealed: e.querySelector('.ff-sealed').textContent, mode: (e.querySelector('select.mf-mode') || {}).value || '', field: e.dataset.field || '' }));
+        sealed: e.querySelector('.ff-sealed').textContent, mode: (e.querySelector('select.mf-mode') || {}).value || '', field: e.dataset.field || '',
+        hand: e.dataset.handColor || '', toColor: (e.querySelector('a.fo-color') || {}).getAttribute ? e.querySelector('a.fo-color').getAttribute('href') : '' }));
       await F.p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await F.p.mouse.down(); // pour energy in: press and circle
       for (let i = 0; i < 30; i++) { const a = i / 5; await F.p.mouse.move(box.x + box.width / 2 + Math.cos(a) * box.width / 5, box.y + box.height / 2 + Math.sin(a) * box.height / 5); }
       await F.p.mouse.up();
@@ -5490,8 +5491,9 @@ try {
     }
     const good = (o) => o.a.orbs > 0 && o.a.els === o.a.orbs && /^[0-9a-f]{12}$/.test(o.b.seal) && o.b.recalled === o.b.seal && o.b.same === 'true' && o.b.gen > 0
       && /^F-321 · gen \d+ · fitness [\d.]+ · \d+ orbs? · swirl [\d.]+ · entropy [\d.]+ · thinking/.test(o.b.status) && o.b.hue !== '' && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.mode === 'agent-fluid-memory-orbs' && !o.errors.length
-      && o.b.field === 'off' && !/shared field/.test(o.b.status + o.b.sealed); // no skills/field.js yet: the orbs keep their own state (lib/orb-field.js answers null)
-    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own',
+      && o.b.field === 'off' && !/shared field/.test(o.b.status + o.b.sealed) // no skills/field.js yet: the orbs keep their own state (lib/orb-field.js answers null)
+      && /^#[0-9a-f]{6}$/.test(o.b.hand) && o.b.toColor === '/color/?c=' + o.b.hand.slice(1); // the hand-off: an orb's colour opens on the colour page
+    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page',
       out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
   }
   if (want("mind field: the seven field minds are one skill with a Mode switcher, Draw mode guesses the next stroke, orbs drag and feed back, every old ask still opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"

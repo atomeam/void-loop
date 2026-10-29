@@ -77,6 +77,17 @@ test('morph follows the metrics: an orb grows with the density under it, turns w
   const s = run(3, 200); for (const o of s.orbs) { const m = M(o); assert.ok(m.scale > 0.6, 'a live orb sits on density'); }
 });
 
+test('the hand-off: an orb hands its own colour to the colour page, the last sealed orb first, then the densest, and none with no orb', () => {
+  assert.equal(F.orbHex({ sealed: 'a' }), '#f5be3d', 'a sealed orb is gold, hsl(42, 90%, 60%)');
+  assert.equal(F.orbHex({ mass: 2, vort: 0.2 }), '#b83df5', 'hue 280 from its swirl'); assert.match(F.orbHex({}), /^#[0-9a-f]{6}$/);
+  const s = F.create(3); s.orbs = [{ id: 1, mass: 1 }, { id: 2, mass: 3, vort: 0.4 }];
+  assert.equal(F.handOrb(s).id, 2, 'no seal: the densest'); assert.equal(F.orbColorLink(s), '/color/?c=' + F.orbHex(s.orbs[1]).slice(1));
+  s.orbs.push({ id: 3, mass: 0.5, sealed: 'x', sealedAt: 5 }, { id: 4, mass: 0.2, sealed: 'y', sealedAt: 9 });
+  assert.equal(F.handOrb(s).id, 4, 'the last sealed, however faint'); assert.equal(F.orbColorLink(s), '/color/?c=f5be3d');
+  assert.equal(F.orbColorLink(F.create(1)), null); assert.equal(F.orbColorLink({}), null);
+  const live = run(3, 200); assert.match(F.orbColorLink(live), /^\/color\/\?c=[0-9a-f]{6}$/, 'a live field hands a colour');
+});
+
 test('the mind: one generation is seeded, keeps its best, and its best never gets worse', () => {
   const a = F.evolveOrbs({ seed: 3 }), b = F.evolveOrbs({ seed: 3 });
   assert.deepEqual(a.best, b.best); assert.equal(a.pop.length, F.POP); assert.equal(Object.keys(a.best).length, F.GENES); assert.equal(a.gen, 1);

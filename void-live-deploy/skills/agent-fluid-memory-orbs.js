@@ -9,6 +9,7 @@
  * tools/field-fluid-orbs.test.mjs); the card is lib/field-stage.js; it is a Mind Field mode. The pointer's path is never kept.
  * When Verse has its shared field (skills/field.js), live orbs are written into it and a seal is also sealed there (lib/orb-field.js,
  * tools/orb-field.test.mjs): the orbs are the field's episodic memory. Without it, nothing changes.
+ * Open its colour hands the last sealed orb's colour (or the densest orb's) to /color/, which hands it on to /gradient/ and /wheel/.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { fieldSkill, keepSeal } from '../lib/field-stage.js';
@@ -51,6 +52,17 @@ function mount({ el, q, th, cv, still, redraw }) {
   recall.type = 'button'; recall.className = 'g-btn fo-recall'; recall.textContent = 'Recall'; recall.title = 'bring the last sealed orb back into the field';
   recall.addEventListener('pointerdown', (e) => e.stopPropagation());
   q('.ff-btns').prepend(recall);
+  // the hand-off to the other pages: an orb's colour opens on the colour page, which hands it on to the gradient and the wheel
+  const toColor = document.createElement('a'), dot = document.createElement('span');
+  toColor.className = 'g-btn fo-color'; toColor.href = '/color/'; toColor.title = 'open the colour of the last sealed orb, or the densest one, on the colour page';
+  toColor.style.cssText = 'display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:inherit';
+  dot.className = 'fo-dot'; dot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:transparent;box-shadow:0 0 0 1px currentColor';
+  toColor.append(dot, document.createTextNode('Open its colour'));
+  const aim = () => { const u = F.orbColorLink(th.state); if (u) toColor.href = u; return u; }; // worked out when pressed, from the orbs there now
+  toColor.addEventListener('pointerdown', (e) => { e.stopPropagation(); aim(); });
+  toColor.addEventListener('focus', aim);
+  toColor.addEventListener('click', (e) => { if (!aim()) { e.preventDefault(); sealed.textContent = 'No orb yet to take a colour from: wait for one to form.'; } });
+  recall.after(toColor);
 
   const els = new Map(); // orb id -> its element
   let pop = null, busy = false; // the mind's population (a recalled seal resets it) and whether a generation is out
@@ -64,7 +76,7 @@ function mount({ el, q, th, cv, still, redraw }) {
       const inField = field ? await field.seal(s, o).catch(() => null) : null; // the field seals its own copy; the SHA-256 seal stands either way
       if (inField) { rec.field = inField; el.dataset.fieldGenome = inField.genomeId; }
       tabSeals.push(rec); if (tabSeals.length > 20) tabSeals.shift();
-      const r = await keepSeal(rec); o.sealed = hash;
+      const r = await keepSeal(rec); o.sealed = hash; o.sealedAt = Date.now();
       sealed.textContent = 'Orb sealed ' + hash.slice(0, 12) + ' (SHA-256 of the density around it and the agents\' genome, no pointer path) · ' + r.kept + ' kept on ' + r.where + (inField ? ' · in the shared field as ' + inField.genomeId : '');
       el.dataset.orbSeal = hash.slice(0, 12); el.dataset.orbSeals = String((+el.dataset.orbSeals || 0) + 1);
     } catch (_) { sealed.textContent = 'Could not seal this orb here.'; }
@@ -91,6 +103,8 @@ function mount({ el, q, th, cv, still, redraw }) {
     }
     for (const [id, b] of els) if (!live.has(id)) { b.remove(); els.delete(id); }
     el.dataset.orbs = String(s.orbs.length);
+    const hand = F.handOrb(s), hx = hand ? F.orbHex(hand) : ''; // keep the hand-off's swatch on the orb it would carry
+    if (hx !== (el.dataset.handColor || '')) { el.dataset.handColor = hx; dot.style.background = hx || 'transparent'; toColor.href = hx ? '/color/?c=' + hx.slice(1) : '/color/'; }
   };
   SYNC.set(cv, sync);
 
@@ -99,7 +113,7 @@ function mount({ el, q, th, cv, still, redraw }) {
     if (!rec || !rec.orb) { sealed.textContent = 'No sealed orb yet: tap an orb to seal one.'; return; }
     const ok = F.verifySnap(rec.orb, rec.hash);
     if (!ok) { sealed.textContent = 'That seal no longer matches its hash, so it was not loaded.'; return; }
-    const o = F.loadOrb(th.state, rec.orb, rec.hash), again = F.sealOrbSync(th.state, o).hash;
+    const o = F.loadOrb(th.state, rec.orb, rec.hash), again = F.sealOrbSync(th.state, o).hash; o.sealedAt = Date.now();
     sealed.textContent = 'Recalled orb ' + rec.hash.slice(0, 12) + (again === rec.hash ? ' · it seals to the same SHA-256' : ' · its hash changed') + ' · its genome seeds the mind';
     el.dataset.recalled = rec.hash.slice(0, 12); el.dataset.recallSame = String(again === rec.hash); pop = null; redraw();
     if (field) field.sync(th.state).catch(() => {}); // the recalled memory is back in the shared field too

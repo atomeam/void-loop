@@ -107,6 +107,20 @@ export function orbMorph(o) {
   const m = clamp((+o.mass || 0) / DMAX, 0, 1), w = clamp(Math.abs(+o.vort || 0) / 0.4, 0, 1), fade = clamp(1 - (+o.low || 0) / ORB_LIFE, 0, 1);
   return { scale: r2(0.6 + m * 1.6), hue: Math.round(200 + w * 120 + ((+o.vort || 0) < 0 ? 0 : 20)) % 360, opacity: r2(clamp((0.35 + m * 0.65) * fade, 0, 1)) };
 }
+/** the colour an orb shows, as #rrggbb: the middle of its glow, hsl(hue, 90%, 60%), gold (hue 42) once sealed. Pure. */
+export function orbHex(o) {
+  const h = (o && o.sealed ? 42 : orbMorph(o || {}).hue) / 360, s = 0.9, l = 0.6, q = l + s - l * s, p = 2 * l - q;
+  const ch = (t) => { t = (t + 1) % 1; const v = t < 1 / 6 ? p + (q - p) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p; return Math.round(v * 255).toString(16).padStart(2, '0'); };
+  return '#' + ch(h + 1 / 3) + ch(h) + ch(h - 1 / 3);
+}
+/** the orb a hand-off carries: the last one sealed that is still on the card, else the densest; null when there is none. Pure. */
+export function handOrb(s) {
+  const live = (s && s.orbs) || [], sealed = live.filter((o) => o.sealed);
+  const pick = (list, key) => list.reduce((b, o) => (b == null || key(o) > key(b) ? o : b), null);
+  return sealed.length ? pick(sealed, (o) => +o.sealedAt || 0) : pick(live, (o) => +o.mass || 0);
+}
+/** the colour page for the orb a hand-off carries ('/color/?c=rrggbb'), or null when the card has no orb. Pure. */
+export const orbColorLink = (s) => { const o = handOrb(s); return o ? '/color/?c=' + orbHex(o).slice(1) : null; };
 
 /** one step: tilt, pointer, agents, projection, advection, blur, decay, orbs. input { x, y (0..1), over, down, tiltX, tiltY (-1..1) }. */
 export function step(s, dt = 1 / 60, input = {}) {
