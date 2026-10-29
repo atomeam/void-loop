@@ -5241,7 +5241,7 @@ say('nothing selected to remove');
       say('publishing');
       let r = null; try { r = await meFetch('/api/publish', 'POST', { handle, look: voidLook, cards }); } catch (_) {}
       if (!r) { say("couldn't reach the server, nothing published"); return; }
-      if (r.status === 402) { say('publishing is part of a paid Verse'); return; }
+      if (r.status === 402) { say('publishing is part of MultiVerse'); return; }
       if (r.status === 401) { say('say “sign in” first, then publish'); return; }
       if (r.status === 409) { say('@' + handle + ' is taken, try another name'); return; }
       if (r.status !== 200) { say(r.body && r.body.error ? r.body.error : "couldn't publish"); return; }
@@ -5336,7 +5336,7 @@ say('nothing selected to remove');
     }
     async function paidLine() { // what paid Verse costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
-      return vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
+      return vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
     }
     async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
@@ -5347,7 +5347,7 @@ say('nothing selected to remove');
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Verse, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
-      const line = vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
+      const line = vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
       if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the Verse store</a>'; }
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';

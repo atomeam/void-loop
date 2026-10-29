@@ -28,7 +28,7 @@ export async function onRequestPost({ request, env }) {
     await ready(env);
     const me = await session(request, env);
     if (!me) return bad(401, 'sign in with your passkey first');
-    if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'building Verse with us is part of paid Verse', { buy: BUY });
+    if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'sending ideas is part of MultiVerse', { buy: BUY });
     // before go-live, the pilot: a paid member on /members/?pilot (linked from nowhere) sends a real idea through every check, so
     // the whole path is proven on the live site before the form is switched on for everyone. MEMBERS_TRY: the test suite only
     if (!LIVE && !(b && b.pilot === true) && !env.MEMBERS_TRY) return bad(503, 'members can send ideas soon');

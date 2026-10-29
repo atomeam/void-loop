@@ -7,7 +7,7 @@ export default [
   "every": "month",
   "kind": "membership",
   "gumroad": "yinmj",
-  "blurb": "Paid Verse: every pro skill, films, code review, priority.",
+  "blurb": "MultiVerse: every pro skill, films, code review, priority.",
   "status": "live",
   "origin": "v01d",
   "published": "2026-10-15"
