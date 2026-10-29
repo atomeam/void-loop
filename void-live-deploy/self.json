@@ -537,13 +537,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T20:18:28Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T15:21:04Z",
+   "subject": "random skill: take only the bare dice notation the stage's chance cards leave (d20, 2d6), crypto rolls, order file, family, map line, test"
+  },
+  {
+   "at": "2026-10-29T15:20:39Z",
+   "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
+  },
+  {
+   "at": "2026-10-29T15:18:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T15:17:06Z",
    "subject": "Regenerate the generated files after the merge"
@@ -558,6 +570,10 @@
   },
   {
    "at": "2026-10-29T15:15:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:14:41Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -606,22 +622,6 @@
   },
   {
    "at": "2026-10-29T15:09:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:08:57Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T15:08:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:28Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
