@@ -550,8 +550,60 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T18:19:05Z",
+   "subject": "who is X check: a realistic answer-route reply; the retry reruns a check by its own section"
+  },
+  {
+   "at": "2026-10-29T18:13:43Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T18:11:10Z",
+   "subject": "Bench: a lighter page per ask (reduced motion, no pictures, fonts or media) so the daily run on main finishes inside 40 min"
+  },
+  {
+   "at": "2026-10-29T18:08:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T18:07:49Z",
+   "subject": "Persona playtest: wait for a lifted 3D board before reading its card"
+  },
+  {
+   "at": "2026-10-29T18:05:02Z",
+   "subject": "Deploy: prove a-to-mind.com serves the Versus size and target files byte for byte"
+  },
+  {
+   "at": "2026-10-29T18:02:09Z",
+   "subject": "Incident: the browser suite failed on a7aad196 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T17:55:02Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T17:47:49Z",
+   "subject": "verse brain: prove the riding the current orb, in the brain and on the live card"
+  },
+  {
+   "at": "2026-10-29T17:47:36Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T17:45:32Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T17:40:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T17:39:54Z",
    "subject": "void_ask: keep waiting while the answer body still ends in an ellipsis"
+  },
+  {
+   "at": "2026-10-29T17:36:19Z",
+   "subject": "Versus size job: count a built page when its load event times out, and let a run re-read named sites"
   },
   {
    "at": "2026-10-29T17:31:53Z",
@@ -576,58 +628,6 @@
   {
    "at": "2026-10-29T17:23:04Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T17:22:40Z",
-   "subject": "Browser suite: count converter-ask.js as shared, wait for MultiVerse when signed out, and heal a retry only when the check ran"
-  },
-  {
-   "at": "2026-10-29T17:18:50Z",
-   "subject": "Refresh generated files after merging main"
-  },
-  {
-   "at": "2026-10-29T17:18:16Z",
-   "subject": "Verse Brain organ 19: Current, F447's lattice-Boltzmann flow and evolved swimmers"
-  },
-  {
-   "at": "2026-10-29T17:17:21Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-29T17:14:09Z",
-   "subject": "Versus size job: a time budget and a per-site limit, so a long run always saves"
-  },
-  {
-   "at": "2026-10-29T17:12:14Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T17:09:43Z",
-   "subject": "Add emoji skill: random emoji picker. Mark building in growth inbox."
-  },
-  {
-   "at": "2026-10-29T17:08:21Z",
-   "subject": "Map: name the edge cache live check (tool and workflow from #1580), so map-coverage is green on main"
-  },
-  {
-   "at": "2026-10-29T17:08:07Z",
-   "subject": "Send \"random band name\" to the name generators, not to fake people"
-  },
-  {
-   "at": "2026-10-29T17:08:07Z",
-   "subject": "Browser suite: the paid lines read MultiVerse after #1567"
-  },
-  {
-   "at": "2026-10-29T17:06:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T17:06:26Z",
-   "subject": "Main green: 5 browser checks that the reply section, the MultiVerse rename and the pinned target made red"
-  },
-  {
-   "at": "2026-10-29T17:02:54Z",
-   "subject": "guide.json: follows the families.json refresh"
   }
  ],
  "builders": {
@@ -867,8 +867,8 @@
   "since": "2026-10-29",
   "next": [
    "serverdiscounter.com",
-   "howsecureismypassword.net",
-   "wheeloutlet.com"
+   "wheeloutlet.com",
+   "ndscalc.ru"
   ],
   "beaten": 0,
   "total": 1268
