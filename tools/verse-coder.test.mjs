@@ -133,6 +133,20 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.deepEqual(providersFrom({ CLOUDFLARE_API_TOKEN: 'x' }), [], 'Workers AI needs the account id too');
   assert.deepEqual(providersFrom({}), []);
   assert.deepEqual(providersFrom({ ...env, GH_MODELS_TOKEN: 'gh'.repeat(10) }).map((p) => p.name), ['workers-ai', 'github-models', 'openrouter', 'groq', 'gemini', 'cerebras'], 'GitHub Models follows Workers AI');
+  // Verse's own model leads when the owner token is there; a 2xx that is not JSON is named by status and type, never by its body
+  const own = providersFrom({ ...env, GH_MODELS_TOKEN: 'gh'.repeat(10), VOID_OWNER_TOKEN: 'o'.repeat(30), VOID_SITE: 'https://example.invalid/' });
+  assert.deepEqual(own.map((p) => p.name), ['verse', 'workers-ai', 'github-models', 'openrouter', 'groq', 'gemini', 'cerebras']);
+  assert.equal(own[0].url, 'https://example.invalid/api/coder'); assert.equal(own[0].shape, 'workers');
+  assert.equal(own[2].headers.accept, 'application/vnd.github+json', 'GitHub Models gets the headers its docs name');
+  const sent = [];
+  const odd = stackModel(own.slice(0, 3), { fetchImpl: async (url, init) => { sent.push([url, init.headers]);
+    if (url.includes('example.invalid')) return { ok: true, status: 200, json: async () => ({ result: { response: call('finish'), usage: { total_tokens: 7 } } }) };
+    return { ok: false, status: 401 }; } });
+  assert.deepEqual(await odd([{ role: 'user', content: 'hi' }]), { text: call('finish'), tokens: 7 }, 'the site answers in the Workers AI shape');
+  assert.equal(sent.length, 1); assert.equal(sent[0][1].authorization, 'Bearer ' + 'o'.repeat(30)); assert.match(odd.last, /^verse /);
+  const html = stackModel(own.slice(2, 3), { fetchImpl: async () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': 'text/html; charset=utf-8' }), json: async () => { throw new SyntaxError('Unexpected token <'); } }) });
+  const said = (await html([])).error;
+  assert.equal(said, 'no model answered (github-models 200 not JSON (text/html))'); assert.doesNotMatch(said, /Unexpected token/);
   const seen = [];
   const fakeFetch = async (url, init) => {
     seen.push(url);
@@ -152,7 +166,7 @@ test('the CLI: no key means exit 4 with the keys it wants; a scripted model runs
   const s = repo();
   const bare = { PATH: process.env.PATH, HOME: process.env.HOME };
   let r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname, '--repo', s.work, '--task', 'fix add'], { env: bare, encoding: 'utf8' });
-  assert.equal(r.status, 4); assert.match(r.stdout, /CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID, GH_MODELS_TOKEN.*?, OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY/);
+  assert.equal(r.status, 4); assert.match(r.stdout, /VOID_OWNER_TOKEN \(Verse's own model, \/api\/coder\), CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID, GH_MODELS_TOKEN.*?, OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY/);
   const script = join(s.dir, 'script.json'), checks = join(s.dir, 'checks.json');
   writeFileSync(script, JSON.stringify([{ tool: 'edit', diff: FIX }, { tool: 'check', name: 'add' }, { tool: 'finish', summary: 'fixed' }]));
   writeFileSync(checks, JSON.stringify(CHECKS));
