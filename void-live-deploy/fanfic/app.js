@@ -691,6 +691,41 @@ function detailFields(form) {
   const cap = () => { const n = g.querySelectorAll('input:checked').length; for (const c of g.querySelectorAll('input')) c.disabled = !c.checked && n >= F.DETAIL_LIMITS.genres; };
   g.addEventListener('change', cap); form.addEventListener('reset', () => setTimeout(cap));
 }
+// a writer's chapter is in a document already: "Open a file" reads it on this device into the box (lib/fanfic.js fileText), and Preview shows
+// it as readers will, drawn by the same paras() as a story page, before anything is sent
+const inflate = async (bytes) => { // a .docx entry, capped as it unpacks, so a crafted file cannot grow into memory
+  const r = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader(), parts = []; let n = 0;
+  for (;;) { const { done, value } = await r.read(); if (done) break; n += value.length; if (n > F.XML_MAX) { try { await r.cancel(); } catch (_) {} throw new Error('too big'); } parts.push(value); }
+  const out = new Uint8Array(n); let at = 0; for (const p of parts) { out.set(p, at); at += p.length; } return out;
+};
+function fileAndPreview(form, note) {
+  if (form._files) return; form._files = true; // the form stays in the page between visits, so it is wired once
+  const box = form.elements.text, file = $('stFile'), undo = $('stUndo'), prev = $('stPrev'), pane = $('stPreview');
+  file.accept = F.FILE_TYPES;
+  let before = null;
+  const drawPreview = () => {
+    if (pane.hidden) return;
+    pane.querySelector('h3').textContent = form.elements.title.value.trim() || 'Untitled story';
+    const sum = form.elements.summary.value.trim(), ps = pane.querySelector('.psum'); ps.textContent = sum; ps.hidden = !sum;
+    const prose = pane.querySelector('.prose'); prose.replaceChildren(); paras(box.value, prose);
+    if (!prose.childElementCount) prose.append(el('p', 'hint', 'Write or open chapter 1, and it shows here.'));
+  };
+  for (const h of [pane.querySelector('h3'), pane.querySelector('.psum'), pane.querySelector('.prose')]) h.translate = false;
+  prev.onclick = () => { pane.hidden = !pane.hidden; prev.setAttribute('aria-expanded', String(!pane.hidden)); prev.textContent = pane.hidden ? 'Preview' : 'Hide preview'; drawPreview(); };
+  form.addEventListener('input', drawPreview); form.addEventListener('reset', () => setTimeout(() => { before = null; undo.hidden = true; drawPreview(); }));
+  $('stOpen').onclick = () => file.click();
+  const put = (text) => { box.value = text; box.dispatchEvent(new Event('input', { bubbles: true })); };
+  file.onchange = async () => {
+    const f = file.files && file.files[0]; file.value = ''; if (!f) return;
+    if (f.size > F.FILE_MAX) { say(note, 'That file is over 4 MB. Open a smaller one, or paste the chapter.', 'bad'); return; }
+    let t = ''; try { t = await F.fileText(f.name, new Uint8Array(await f.arrayBuffer()), inflate); } catch (_) {}
+    if (!F.words(t)) { say(note, 'No text found in that file. Open a .docx, .txt, .html or .md file, or paste the chapter.', 'bad'); return; }
+    before = box.value; undo.hidden = !box.value.trim(); put(t);
+    if (!form.elements.title.value.trim()) form.elements.title.value = F.titleOfFile(f.name);
+    say(note, 'Opened: ' + words(F.words(t)) + '. Check it in Preview before you post.', 'good');
+  };
+  undo.onclick = () => { if (before == null) return; put(before); before = null; undo.hidden = true; say(note, 'The text you had is back.'); };
+}
 async function viewPost(pick, forKey) {
   show('post', 'Post a story');
   const form = $('stForm'), note = form.querySelector('[data-say]'), sel = $('stFandom');
@@ -707,6 +742,7 @@ async function viewPost(pick, forKey) {
     genres: [...form.querySelectorAll('input[name=genre]:checked')].map((c) => c.value), warnings: [...form.querySelectorAll('input[name=warning]:checked')].map((c) => c.value) });
   const parts = () => F.chapterPosts(1, '', form.elements.text.value, form.elements.summary.value, details()).length;
   counter(form, 'text', parts);
+  fileAndPreview(form, note);
   // a first writer never leaves the form: "A new fandom…" names one here, and it opens with the story (no fandom yet: it is picked already)
   const nw = $('stNew'), newName = form.elements.newFandom, drawNew = () => { const on = sel.value === NEW_FANDOM; nw.hidden = !on; newName.required = on; };
   sel.onchange = () => { drawNew(); if (!nw.hidden) newName.focus(); };

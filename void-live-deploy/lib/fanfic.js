@@ -135,6 +135,71 @@ export function recsMoved(r, i, by) {
 /** a file name for a draft: its title in lowercase words, or "story". */
 export const fileName = (title) => (String(title || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'story') + '.txt';
 
+// ---- a chapter from a file: a writer's story is in a document already, so the post form opens it (.txt, .md, .html, .docx) on this device ----
+// Nothing is sent: the file is read here and its text goes into the form as plain text, where the writer sees it before posting. A .docx is a
+// zip holding word/document.xml; the page unzips that one entry with the browser's own DecompressionStream (inflate is passed in, so node tests
+// pass zlib's). Every size is capped, so a crafted file cannot grow into memory.
+export const FILE_MAX = 4 * 1024 * 1024;  // bytes of file the form opens
+export const TEXT_MAX = 400000;           // characters of text it takes from one
+export const XML_MAX = 16 * 1024 * 1024;  // bytes a .docx's word/document.xml may unpack to
+export const FILE_TYPES = '.txt,.md,.text,.htm,.html,.docx,text/plain,text/markdown,text/html,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', hellip: '\u2026', mdash: '\u2014', ndash: '\u2013', lsquo: '\u2018', rsquo: '\u2019', ldquo: '\u201c', rdquo: '\u201d' };
+const deEntity = (s) => s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+  if (e[0] === '#') { const n = e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : +e.slice(1); return n > 0 && n < 0x110000 ? String.fromCodePoint(n) : ''; }
+  return ENTITIES[e.toLowerCase()] ?? m;
+});
+/** plain text with paragraphs at blank lines: spaces at the line ends gone, no more than one blank line in a row. Pure. */
+const tidy = (s) => s.replace(/\r\n?/g, '\n').replace(/[ \t\u00a0]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').replace(/^\n+|\s+$/g, '').slice(0, TEXT_MAX);
+/** an HTML page's text (a saved web page, or Google Docs' "Web page" download): a block ends a paragraph, <br> a line; scripts, styles and
+ *  the head are dropped; no markup is kept. Pure. */
+export function htmlText(html) {
+  const s = String(html == null ? '' : html).replace(/<!--[\s\S]*?-->/g, '').replace(/<(head|script|style|template|noscript)\b[\s\S]*?<\/\1\s*>/gi, '')
+    .replace(/<br\b[^>]*>/gi, '\n').replace(/<\/?(p|div|h[1-6]|li|blockquote|section|article|tr|pre|hr)\b[^>]*>/gi, '\n\n').replace(/<[^>]*>/g, '');
+  return tidy(deEntity(s).split('\n').map((l) => l.replace(/[ \t\u00a0]+/g, ' ').trim()).join('\n'));
+}
+/** a Word document's text from its word/document.xml: each paragraph a paragraph, a line break a line, a tab a tab. Pure. */
+export function docxText(xml) {
+  const out = [];
+  for (const p of String(xml == null ? '' : xml).split(/<\/w:p>/)) {
+    let line = '';
+    for (const m of p.matchAll(/<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>|<w:(br|cr|tab)\b[^>]*\/>/g)) line += m[1] != null ? deEntity(m[1]) : m[2] === 'tab' ? '\t' : '\n';
+    out.push(line);
+  }
+  return tidy(out.join('\n\n'));
+}
+/** one entry of a zip, as bytes, or null: read through the central directory (stored or deflated; inflate(bytes) is the caller's). */
+export async function zipEntry(bytes, name, inflate) {
+  const b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes), v = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  let e = -1; for (let i = b.length - 22; i >= Math.max(0, b.length - 65557); i--) if (v.getUint32(i, true) === 0x06054b50) { e = i; break; }
+  if (e < 0) return null;
+  const count = v.getUint16(e + 10, true); let at = v.getUint32(e + 16, true);
+  for (let k = 0; k < count && at + 46 <= b.length; k++) {
+    if (v.getUint32(at, true) !== 0x02014b50) return null;
+    const method = v.getUint16(at + 10, true), size = v.getUint32(at + 20, true), full = v.getUint32(at + 24, true), nl = v.getUint16(at + 28, true);
+    const xl = v.getUint16(at + 30, true), cl = v.getUint16(at + 32, true), local = v.getUint32(at + 42, true);
+    if (new TextDecoder().decode(b.subarray(at + 46, at + 46 + nl)) === name) {
+      if (full > XML_MAX || local + 30 > b.length || v.getUint32(local, true) !== 0x04034b50) return null;
+      const start = local + 30 + v.getUint16(local + 26, true) + v.getUint16(local + 28, true), data = b.subarray(start, start + size);
+      if (method === 0) return data; if (method === 8) return new Uint8Array(await inflate(data)); return null;
+    }
+    at += 46 + nl + xl + cl;
+  }
+  return null;
+}
+/** the text of a file the writer picked, or '' when it holds none this form can read. inflate is for a .docx. */
+export async function fileText(name, bytes, inflate) {
+  const b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes), ext = (/\.([a-z0-9]+)$/i.exec(String(name || '')) || [])[1] || '';
+  if (b.length > FILE_MAX) return '';
+  if (b[0] === 0x50 && b[1] === 0x4b) { // a zip: a .docx is the only one this form takes
+    try { const x = await zipEntry(b, 'word/document.xml', inflate); return x ? docxText(new TextDecoder().decode(x)) : ''; } catch (_) { return ''; }
+  }
+  const t = new TextDecoder().decode(b).replace(/^\ufeff/, '');
+  if (t.includes('\u0000')) return ''; // a binary file (an old .doc, a .pdf): no text to take
+  return /^html?$/i.test(ext) || (!ext && /^\s*<(!doctype html|html)\b/i.test(t)) ? htmlText(t) : tidy(t);
+}
+/** a title from a file name: its words, with the type and dashes gone. Pure. */
+export const titleOfFile = (name) => cleanLine(String(name || '').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[_-]+/g, ' '), 100);
+
 /** the code for a new fandom's board: fic and the name's letters and digits, 10 at most, with a number on the end when that code is taken or
  *  not allowed. '' when no code is left (it never runs out in practice: 999 tries). */
 export function ficCode(name, taken = new Set()) {

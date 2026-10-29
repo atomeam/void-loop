@@ -162,6 +162,12 @@ export const DICT = {
   'No fandom is here yet. Name the first one above: it opens when your story goes up.': 'Noch gibt es kein Fandom. Gib oben dem ersten einen Namen: Es öffnet sich, wenn deine Geschichte online geht.', 'Give the challenge a title.': 'Gib dem Wettbewerb einen Titel.', 'Write the prompt and its rules.': 'Schreibe die Aufgabe und ihre Regeln.',
   'Choose a last day from today on, or leave it empty.': 'Wähle einen Einsendeschluss ab heute oder lass das Feld leer.', 'The challenge is set.': 'Der Wettbewerb ist ausgeschrieben.',
   'Your story is entered.': 'Deine Geschichte ist eingereicht.', 'Winner named.': 'Gewinner genannt.', 'This challenge is closed.': 'Dieser Wettbewerb ist beendet.',
+  'Open a file': 'Datei öffnen', 'Undo open': 'Öffnen rückgängig', Preview: 'Vorschau', 'Hide preview': 'Vorschau ausblenden', 'Untitled story': 'Geschichte ohne Titel',
+  'A .docx, .txt, .html or .md file opens here, on this device. Nothing is sent until you press Post story.': 'Eine .docx-, .txt-, .html- oder .md-Datei öffnet sich hier, auf diesem Gerät. Nichts wird gesendet, bis du Geschichte veröffentlichen drückst.',
+  'Preview: what readers see once it is up.': 'Vorschau: das sehen Leser:innen, sobald sie online ist.', 'Write or open chapter 1, and it shows here.': 'Schreibe oder öffne Kapitel 1, dann erscheint es hier.',
+  'That file is over 4 MB. Open a smaller one, or paste the chapter.': 'Die Datei ist größer als 4 MB. Öffne eine kleinere oder füge das Kapitel ein.',
+  'No text found in that file. Open a .docx, .txt, .html or .md file, or paste the chapter.': 'In der Datei ist kein Text. Öffne eine .docx-, .txt-, .html- oder .md-Datei oder füge das Kapitel ein.',
+  'The text you had is back.': 'Dein vorheriger Text ist zurück.',
   'There is no fandom yet. Start one first, then set a challenge in it.': 'Es gibt noch kein Fandom. Gründe zuerst eines und schreibe dann darin einen Wettbewerb aus.',
 };
 
@@ -175,6 +181,7 @@ const PATTERNS = [
   [/^No entries yet\. Write a story for this challenge, or enter one you posted in (.+)\.$/, 'Noch keine Einsendungen. Schreibe eine Geschichte für diesen Wettbewerb oder reiche eine ein, die du in $1 veröffentlicht hast.'],
   [/^Your story is up\. It enters the challenge in (\d+) s, so the boards take it\.$/, 'Deine Geschichte ist online. Sie wird in $1 s eingereicht, damit die Boards sie annehmen.'],
   [/^This story enters the challenge "(.*)" once it is up\.( Entries close (.+)\.)?$/, (m, t, _, d) => 'Diese Geschichte wird beim Wettbewerb „' + t + '“ eingereicht, sobald sie online ist.' + (d ? ' Einsendeschluss: ' + d + '.' : '')],
+  [/^Opened: (\d[\d,.]*) words?\. Check it in Preview before you post\.$/, 'Geöffnet: $1 Wörter. Prüfe es in der Vorschau, bevor du veröffentlichst.'],
   [/^Exported (\d+) stor(?:y|ies)\.$/, '$1 Geschichte(n) exportiert.'], [/^(\d[\d,.]*) authors? ha(?:s|ve) posted here\.$/, '$1 Autor:innen haben hier veröffentlicht.'], [/^No stories in (.*) yet\. Post the first one\.$/, 'Noch keine Geschichten in $1. Veröffentliche die erste.'],
 ];
 
