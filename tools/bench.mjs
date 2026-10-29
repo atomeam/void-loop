@@ -70,9 +70,12 @@ const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Pro
 const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 // no host but this machine resolves: every outside service is a stand-in below, and one that has none (a worker's request, a map in an iframe) fails at once
 // 2026-10-29: --disable-gl-drawing-for-tests was tried (#1627): an ask took 1.40 s on 3 pages, not 0.89 s, so it is gone again
-// --disable-gpu (2026-10-29): with one tab for each slot (#1630), the GPU process took 1.67 s of CPU for each ask, more than the renderers
-// (1.34 s). On a runner it draws in software GL. Without a GPU process the page is drawn by Skia in software, which costs less.
-const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1', '--disable-gpu'];
+// 2026-10-29: --disable-gpu was tried (#1631): the GPU process still took 1.68 s of CPU for each ask and an ask took 0.93 s, so it is gone again
+const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'];
+// The window is 800 by 540 (2026-10-29), not Playwright's 1280 by 720. With no GPU on a runner, every frame is drawn and composited in
+// software, and the GPU process took 1.68 s of CPU for each ask (#1631), more than the renderers. 800 is wider than every breakpoint in
+// index.html (700 at most), so the page keeps its desktop layout with 47% of the pixels.
+const VIEWPORT = { width: 800, height: 540 };
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
@@ -94,7 +97,7 @@ if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(p
 // still stopped at 1600 of 3187 asks. Each slot is its own browser on its own empty profile, removed at the end of the run.
 const slotDirs = [];
 const slot = () => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'void-bench-slot-')); slotDirs.push(dir);
-  return chromium.launchPersistentContext(dir, { executablePath: exe, headless: true, args: ARGS, reducedMotion: 'reduce', serviceWorkers: 'block' }); };
+  return chromium.launchPersistentContext(dir, { executablePath: exe, headless: true, args: ARGS, viewport: VIEWPORT, reducedMotion: 'reduce', serviceWorkers: 'block' }); };
 const CLEAR_STORAGE = async () => { localStorage.clear(); sessionStorage.clear();
   for (const d of (indexedDB.databases ? await indexedDB.databases() : [])) if (d.name) await new Promise((r) => { const q = indexedDB.deleteDatabase(d.name); q.onsuccess = q.onerror = q.onblocked = () => r(); });
   if (self.caches) for (const k of await caches.keys()) await caches.delete(k); };
