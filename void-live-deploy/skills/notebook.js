@@ -5,10 +5,13 @@
  * shows the notes that link to it; the daily note is today's date and is made once; "what am I missing" lists links to notes that do not exist,
  * notes named in plain words but not linked (one tap links the mention), and notes nothing links to. Everything is kept on this device with the
  * stage (nothing is sent anywhere); nothing is deleted without a second tap. Note text is written with text nodes, never as markup.
+ * A note's [[links]] reach the stage: "Links to" shows each one, a tap opens that note (or makes it), and "send to the notepad" writes the
+ * note, title first and its links as plain titles, under what the notepad holds (skills/notepad.js append, a new notepad when there is none).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), stageKinds }
  */
 import { addThing, firstOf, cardEl, keepOut } from '../lib/stage-pack.js';
-import { ensureDaily, missingOf, linkMention, tidyNotes, parseAsk, keyOf, cleanTitle, backlinksOf, MAX_NOTES, MAX_TEXT, MAX_TITLE } from '../lib/notebook.js';
+import { ensureDaily, missingOf, linkMention, tidyNotes, parseAsk, keyOf, cleanTitle, backlinksOf, outlinksOf, padText, MAX_NOTES, MAX_TEXT, MAX_TITLE } from '../lib/notebook.js';
+import { append } from './notepad.js';
 
 const newId = () => 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 const byTitle = (notes, title) => notes.find((n) => keyOf(n.title) === keyOf(title)) || null;
@@ -61,6 +64,11 @@ function mount(th, stageApi) {
     side.textContent = '';
     const n = cur();
     if (n) {
+      const out = outlinksOf(th.notes, n), o = section('Links to (' + out.length + ')', 'nb-out');
+      if (!out.length) o.appendChild(mk('div', '', 'No links yet. Write [[a title]] in the text.', 'opacity:.7'));
+      const orow = mk('div', '', null, 'display:flex;flex-wrap:wrap;gap:4px');
+      for (const l of out) { const x = btn(l.id ? l.title : l.title + ' (make it)', () => { const c = addNote(l.title); if (c) choose(c.id); }, 'nb-out-note', l.id ? '' : ';border-style:dashed'); x.dataset.title = l.title; x.dataset.made = l.id ? '1' : ''; orow.appendChild(x); }
+      o.appendChild(orow); side.appendChild(o);
       const back = backlinksOf(th.notes, n.title), s = section('Linked from (' + back.length + ')', 'nb-back');
       if (!back.length) s.appendChild(mk('div', '', 'Nothing links here yet. Write [[' + n.title + ']] in another note.', 'opacity:.7'));
       const row = mk('div', '', null, 'display:flex;flex-wrap:wrap;gap:4px'); for (const b of back) { const x = btn(b.title, () => choose(b.id), 'nb-back-note'); x.dataset.title = b.title; row.appendChild(x); } s.appendChild(row);
@@ -81,8 +89,10 @@ function mount(th, stageApi) {
   title.addEventListener('change', () => { const n = cur(); if (!n) return; const t = cleanTitle(title.value); if (!t || (byTitle(th.notes, t) && keyOf(t) !== keyOf(n.title))) { title.value = n.title; return; } n.title = t; save(); paintList(); paintSide(); });
   const del = btn('delete this note', () => { if (del.dataset.sure !== '1') { del.dataset.sure = '1'; del.textContent = 'really delete? tap again'; return; } th.notes = th.notes.filter((n) => n.id !== th.sel); th.sel = th.notes.length ? th.notes[th.notes.length - 1].id : ''; save(); del.dataset.sure = ''; del.textContent = 'delete this note'; loadEditor(); paintList(); paintSide(); }, 'nb-delete', ';margin-top:6px;opacity:.8');
   del.addEventListener('blur', () => { del.dataset.sure = ''; del.textContent = 'delete this note'; });
+  const toPad = btn('send to the notepad', () => { const n = cur(), t = padText(n); if (!t) return; th.hint = 'Sent "' + n.title + '" to the notepad.'; append(stageApi, t); }, 'nb-to-pad', ';margin:6px 6px 0 0');
+  const acts = mk('div', 'nb-acts', null, 'display:flex;flex-wrap:wrap;align-items:center'); acts.append(toPad, del);
 
-  el.append(head, bar, hint, list, title, body, del, side);
+  el.append(head, bar, hint, list, title, body, acts, side);
   loadEditor(); paintList(); paintSide();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
@@ -109,6 +119,8 @@ export function suite() {
   const ok = day.notes.length === 2 && day.notes[1].title === '2026-10-18' && day.sel === 'i-2026-10-18' && again.notes.length === 2 && again.sel === 'i-2026-10-18'
     && made.notes.map((n) => n.title).join() === 'Alpha,Reading List' && made.sel === 'i-Reading List' && seen.notes.length === 1 && seen.sel === 'a'
     && none.sel === '' && /No note called "Nowhere"/.test(none.hint) && have.sel === 'a' && have.hint === ''
+    && JSON.stringify(outlinksOf([...base, { id: 'b', title: 'Beta', text: '', at: 0 }], base[0])) === '[{"title":"Beta","id":"b"}]' && outlinksOf(base, base[0])[0].id === ''
+    && padText(base[0]) === 'Alpha\nsee Beta'
     && openAs(null, null, d).notes.length === 0 && JSON.stringify(parseAsk('what am i missing in my notes')) === '{"missing":true}' && parseAsk('sticky note buy milk') === null;
   return { ok, got: ok ? '' : JSON.stringify({ day, again, made, none }) };
 }

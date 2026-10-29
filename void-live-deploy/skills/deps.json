@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 966,
+ "counted": 971,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 61,
+   "dependants": 62,
    "tests": 6
   },
   {
@@ -140,7 +140,7 @@
    "skills": 15,
    "direct": 0,
    "dependants": 51,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/card-art.js",
@@ -496,7 +496,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 71,
+   "dependants": 74,
    "tests": 1
   },
   {
@@ -545,7 +545,7 @@
    "file": "lib/field-resonance.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 1
   },
   {
@@ -643,7 +643,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 69,
+   "dependants": 72,
    "tests": 9
   },
   {
@@ -707,7 +707,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 5,
-   "tests": 26
+   "tests": 27
   },
   {
    "file": "lib/arena-say.js",
@@ -1053,10 +1053,24 @@
    "tests": 1
   },
   {
+   "file": "lib/repo-look.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 22,
+   "tests": 1
+  },
+  {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
    "dependants": 21,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-workspace.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 11,
    "tests": 1
   },
   {
@@ -1065,13 +1079,6 @@
    "direct": 0,
    "dependants": 10,
    "tests": 3
-  },
-  {
-   "file": "lib/brain-workspace.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 10,
-   "tests": 1
   },
   {
    "file": "lib/boards.js",
@@ -1086,6 +1093,55 @@
    "direct": 0,
    "dependants": 6,
    "tests": 0
+  },
+  {
+   "file": "lib/brain-creature.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-gardener.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-hearing.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-mind.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
+   "file": "lib/brain-organs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-painter.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-synapses.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/scores.js",
@@ -1105,55 +1161,6 @@
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-creature.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-gardener.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-hearing.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-mind.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-organs.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-painter.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-synapses.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 4,
    "tests": 1
   },
@@ -1242,6 +1249,27 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-bridge.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 9
+  },
+  {
    "file": "lib/compose.js",
    "skills": 1,
    "direct": 1,
@@ -1280,13 +1308,6 @@
    "file": "lib/note-extras.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/repo-look.js",
-   "skills": 1,
-   "direct": 1,
    "dependants": 2,
    "tests": 1
   },
@@ -1361,13 +1382,6 @@
    "tests": 2
   },
   {
-   "file": "lib/brain-bridge.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-field.js",
    "skills": 1,
    "direct": 1,
@@ -1375,18 +1389,11 @@
    "tests": 2
   },
   {
-   "file": "lib/brain-store.js",
+   "file": "lib/brain-host.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/brain.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 8
   },
   {
    "file": "lib/calc-more.js",
@@ -1826,22 +1833,22 @@
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 0
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
-   "tests": 6
+   "dependants": 37,
+   "tests": 7
   },
   {
    "file": "lib/code-review.js",
@@ -1946,7 +1953,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 21,
-   "tests": 6
+   "tests": 7
   },
   {
    "file": "lib/answer-honesty.js",
@@ -1999,6 +2006,13 @@
   },
   {
    "file": "lib/news-report.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
+   "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
@@ -2279,6 +2293,13 @@
   },
   {
    "file": "lib/lap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/members.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2849,6 +2870,7 @@
     "lib/clef.js",
     "lib/shortfall.js",
     "lib/self-context.js",
+    "lib/own-card.js",
     "lib/answer-honesty.js",
     "lib/draft.js",
     "lib/memory-scope.js",
@@ -3231,6 +3253,13 @@
     "lib/media.js",
     "lib/movies.js",
     "functions/api/movies.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/members.js": {
+   "imports": [
+    "lib/void-me.js",
+    "lib/members.js"
    ],
    "importedBy": []
   },
@@ -4054,6 +4083,7 @@
     "lib/code-review.js",
     "lib/correction-fix.js",
     "lib/job-draft.js",
+    "lib/members.js",
     "lib/privacy.js",
     "lib/probe-asks.js",
     "lib/propose-fix.js",
@@ -4073,6 +4103,7 @@
     "functions/api/jobs.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -4100,6 +4131,7 @@
     "lib/jobs-ui.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
+    "lib/own-card.js",
     "lib/paid-access.js",
     "lib/routine-skill.js",
     "lib/self-context.js",
@@ -4321,6 +4353,7 @@
   "lib/brain-bridge.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4335,6 +4368,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4358,6 +4392,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4370,6 +4405,19 @@
     "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain.js",
+    "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
+   ]
+  },
+  "lib/brain-host.js": {
+   "imports": [
+    "lib/brain.js",
+    "lib/brain-store.js",
+    "lib/brain-bridge.js"
+   ],
+   "importedBy": [
     "skills/verse-brain.js"
    ]
   },
@@ -4388,6 +4436,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-mind.js",
     "skills/verse-brain.js"
    ]
@@ -4409,6 +4458,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-organs.js",
     "skills/verse-brain.js"
    ]
@@ -4423,11 +4473,15 @@
     "lib/brain-organs.js",
     "lib/brain.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
    ]
   },
   "lib/brain-store.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4441,6 +4495,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-mind.js",
     "skills/verse-brain.js"
    ]
@@ -4460,6 +4515,9 @@
     "lib/brain-synapses.js",
     "lib/brain.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
    ]
   },
   "lib/brain.js": {
@@ -4475,6 +4533,7 @@
     "lib/brain-gardener.js"
    ],
    "importedBy": [
+    "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
   },
@@ -5554,6 +5613,7 @@
    ],
    "reachedBy": [
     "lib/brain-field.js",
+    "lib/brain-host.js",
     "lib/field-vector-worker.js",
     "lib/orb-field.js",
     "lib/tilt-arena-idea.js",
@@ -5610,6 +5670,7 @@
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-host.js",
     "lib/brain-mind.js",
     "lib/brain.js",
     "skills/mind-field-mode.js",
@@ -6744,6 +6805,14 @@
     "skills/pick-for-me.js"
    ]
   },
+  "lib/members.js": {
+   "imports": [
+    "lib/automation-fix.js"
+   ],
+   "importedBy": [
+    "functions/api/members.js"
+   ]
+  },
   "lib/memory-core.js": {
    "imports": [],
    "importedBy": [
@@ -7282,6 +7351,35 @@
     "skills/mind-field.js"
    ]
   },
+  "lib/own-card.js": {
+   "imports": [
+    "lib/repo-look.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
   "lib/own-parts.js": {
    "imports": [],
    "importedBy": [
@@ -7332,6 +7430,7 @@
     "functions/api/image.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/mine.js",
@@ -8094,7 +8193,29 @@
    ],
    "importedBy": [
     "functions/api/repo.js",
+    "lib/own-card.js",
     "skills/repo.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/report-run.js": {
@@ -9372,6 +9493,7 @@
     "functions/api/jobs.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/miss.js",
@@ -9407,7 +9529,9 @@
     "lib/jobs-core.js",
     "lib/jobs-ui.js",
     "lib/mcp.js",
+    "lib/members.js",
     "lib/memory-scope.js",
+    "lib/own-card.js",
     "lib/paid-access.js",
     "lib/privacy.js",
     "lib/probe-asks.js",
@@ -9755,6 +9879,7 @@
     "functions/api/film-review.js",
     "functions/api/films.js",
     "functions/api/gumroad.js",
+    "functions/api/members.js",
     "functions/api/mine.js",
     "functions/api/passkey.js",
     "functions/api/publish.js",
@@ -9867,6 +9992,7 @@
     "functions/api/image.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/mine.js",
@@ -12227,7 +12353,8 @@
   "skills/notebook.js": {
    "imports": [
     "lib/stage-pack.js",
-    "lib/notebook.js"
+    "lib/notebook.js",
+    "skills/notepad.js"
    ],
    "importedBy": []
   },
@@ -12237,6 +12364,7 @@
     "lib/arena-say.js",
     "skills/kept.js",
     "skills/list.js",
+    "skills/notebook.js",
     "skills/together.js"
    ],
    "reachedBy": [
@@ -13569,6 +13697,10 @@
     "skills/writing-aids.js"
    ]
   },
+  "skills/uuid.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/uv.js": {
    "imports": [],
    "importedBy": [
@@ -13597,6 +13729,7 @@
     "lib/brain.js",
     "lib/brain-workspace.js",
     "lib/brain-bridge.js",
+    "lib/brain-host.js",
     "lib/mind-field-modes.js",
     "lib/brain-store.js",
     "lib/shared-field.js",

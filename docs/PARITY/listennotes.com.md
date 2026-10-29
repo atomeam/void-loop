@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: listennotes.com (https://www.listennotes.com/)
-- Verse: /podcasts/?show=verse&ep=ep1 (podcasts: listennotes.com, tower gate 10 of 15)
+- Verse: /podcasts/?show=verse&ep=ep1 (podcasts: listennotes.com, tower gate 1 of 15)
 - Live scan: 2026-10-28, HTTP 403, page title "Are you a robot? 2a09:bac1:7681:1c50::3dc:44"
 - History: [docs/HISTORY/listennotes.com.md](../HISTORY/listennotes.com.md)
 
