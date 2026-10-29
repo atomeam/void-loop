@@ -41,6 +41,8 @@ const senses = {
     S.over = over; S.speed = Math.hypot(f[2], f[3]);
     if (over) deposit(ws, 'input', px, py, input.down ? 0.5 : 0.18, input.down ? 3 : 2, 'you');
     if (f[6] > 0.05) deposit(ws, 'input', b.focus.x, b.focus.y, f[6] * 0.35, 3, 'senses'); // sound lands where the brain is attending
+    S.felt = Array.isArray(input.field) ? input.field.length : 0;
+    if (Array.isArray(input.field)) for (const s of input.field) deposit(ws, 'memory', clamp(+s.x || 0, 0, 1), clamp(+s.y || 0, 0, 1), clamp(+s.act || 0, 0, 1) * 0.06, 2, 'senses'); // other skills' slots in the shared field (lib/brain-field.js)
     if (S.trail.length >= 24) S.trail.shift(); if (over) S.trail.push([px, py, f[6]]);
     return 1;
   }
