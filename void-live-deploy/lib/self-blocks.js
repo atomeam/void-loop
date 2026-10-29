@@ -132,8 +132,10 @@ export function selfSections(v, now = Date.now()) {
     if (blocks.length) blocks.push({ t: 'note', text: 'Source: the model, asked right after this shipped, given what shipped and the facts above. A reading of the change, not a measurement.', tight: true });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
   }
-  const asks = foldAsks((v && v.asks) || []).slice(0, 12);
-  if (asks.length) out.push({ id: 'asked', title: "What I've asked for", count: asks.length + ' waiting', log: false, blocks: [{ t: 'list', cls: 'v-asks', items: asks.map((a, i) => ({
+  const all = foldAsks((v && v.asks) || []), asks = all.slice(0, 12);
+  // the count is every ask not built (/api/reflect follow.open, the same record as "What got built"), never only the ones listed
+  const waiting = v && v.follow && Number.isFinite(+v.follow.open) && +v.follow.open >= all.length ? +v.follow.open : all.length;
+  if (asks.length) out.push({ id: 'asked', title: "What I've asked for", count: waiting + ' waiting', log: false, blocks: [{ t: 'list', cls: 'v-asks', items: asks.map((a, i) => ({
     text: a.ask, open: i < FOLD, more: i >= FOLD, sub: 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + day(a.at) : '') + (a.times > 1 ? ' · asked ' + a.times + ' times' : '') + (a.small ? ' · I called it small' : '') + ' · not built yet' })) }] });
   const f = v && v.follow;
   if (f && f.total) {
