@@ -177,6 +177,24 @@ test('the random page\'s card draws from the range on the page, not 1 to 100, an
   assert.ok(/card: \(\) => cardAsk\(/.test(fs.readFileSync(new URL('../void-live-deploy/random/index.html', import.meta.url), 'utf8')), 'the page gives the stage its range');
 });
 
+test('the password page\'s card makes a password of the length on the page, not 20, and no password ever goes into the stage link or the card\'s page link', async () => {
+  const C = await import('../void-live-deploy/lib/password-card.js'), P = await import('../void-live-deploy/lib/password.js'), { utilOf } = await import('../void-live-deploy/skills/util.js'), { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  for (const n of [8, 16, 33, 128]) {
+    const ask = C.cardAsk(String(n)); assert.equal(ask, 'generate a password with ' + n + ' characters');
+    assert.equal(await firstSkill(ask), 'util', 'the stage gives it to the password card: ' + ask); assert.deepEqual(utilOf(ask), { kind: 'password', n }, 'the card makes that length');
+  }
+  for (const [len, mode] of [['4', 'pw'], ['7', 'pw'], ['129', 'pw'], ['', 'pw'], ['16', 'phrase'], ['1e2', 'pw']]) assert.equal(C.cardAsk(len, mode), '', 'the example ask stays: ' + len + ' ' + mode);
+  // a password is never carried: not one the page made, not text in the length box
+  for (const pw of [...P.generateMany({ length: 16 }, 20), 'hunter2hunter2', 'Tr0ub4dor&3']) {
+    assert.equal(C.cardAsk(pw), '', 'text in the length box is never an ask');
+    const link = '/?q=' + encodeURIComponent(C.cardAsk('16')); assert.ok(!link.includes(pw) && !link.includes(encodeURIComponent(pw)), 'the stage link has no password in it');
+  }
+  const page = fs.readFileSync(new URL('../void-live-deploy/password/index.html', import.meta.url), 'utf8'), util = fs.readFileSync(new URL('../void-live-deploy/skills/util.js', import.meta.url), 'utf8');
+  assert.ok(page.includes("{ card: () => cardAsk($('lenN').value, mode) }"), 'the page gives the card the length and the mode, nothing else');
+  assert.ok(util.includes("q.kind === 'password' ? page + '?len=' + q.n : page"), 'the stage card names the page with its length only');
+  assert.deepEqual(pageOfCard('', '/password/?len=33'), ['/password/?len=33', 'Password generator'], 'the card links back to the page on its length');
+});
+
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
   const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
   for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {
