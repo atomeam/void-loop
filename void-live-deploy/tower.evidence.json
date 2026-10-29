@@ -667,60 +667,62 @@
   },
   "password": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 151,
+    "verdict": "worse",
+    "verse": 303,
     "best": 200,
-    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 151 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:00:46.700Z"
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 303 ms to the load event (median of 3, phone width) vs the bar (passwordsgenerator.net unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:26:13.717Z",
+    "was": "equal-and-better"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 px sideways overflow at 390 px vs the bar (passwordsgenerator.net unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:00:46.700Z"
+    "at": "2026-10-29T02:26:13.717Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 unnamed controls or images vs the bar (passwordsgenerator.net unreachable) 0 unnamed controls or images",
-    "at": "2026-10-28T13:00:46.700Z"
+    "at": "2026-10-29T02:26:13.717Z"
    },
    "reliability": {
-    "verdict": "better",
+    "verdict": "incomplete",
+    "incomplete": true,
     "verse": 3,
-    "best": 0,
-    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 3 of 3 loads answered vs passwordsgenerator.net 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-28T13:00:46.700Z"
+    "best": null,
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 3 of 3 loads answered; passwordsgenerator.net turned the gate away or did not answer, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
+    "at": "2026-10-29T02:26:13.717Z"
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 1 (1: the page shows itself again with the network cut) vs the bar (passwordsgenerator.net unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:00:46.700Z"
+    "at": "2026-10-29T02:26:13.717Z"
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (passwordsgenerator.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:00:46.700Z"
+    "at": "2026-10-29T02:26:13.717Z"
    },
    "design polish": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 0 design defects vs the bar (passwordsgenerator.net unreachable) 0 design defects",
-    "at": "2026-10-28T13:00:46.700Z"
+    "at": "2026-10-29T02:26:13.717Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 2 of 2 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-28T13:00:46.700Z",
+    "at": "2026-10-29T02:26:13.717Z",
     "of": 2
    },
    "completeness": {
@@ -728,7 +730,7 @@
     "verse": 22,
     "best": 24,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 22 of 24 things a full answer shows vs the bar (passwordsgenerator.net unreachable) 24 of 24 things a full answer shows (Verse lacks: Character classes, Save my preference)",
-    "at": "2026-10-28T13:00:46.700Z",
+    "at": "2026-10-29T02:26:13.717Z",
     "was": "equal-and-better",
     "of": 24
    },
@@ -737,7 +739,7 @@
     "verse": 11,
     "best": 11,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 11 of 11 shown vs the bar (passwordsgenerator.net unreachable) 11 of 11 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:00:46.700Z",
+    "at": "2026-10-29T02:26:13.717Z",
     "of": 11,
     "part": true
    },
@@ -746,95 +748,119 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 3 of 3 shown vs the bar (passwordsgenerator.net unreachable) 3 of 3 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:00:46.700Z",
+    "at": "2026-10-29T02:26:13.717Z",
     "of": 3,
     "part": true
+   },
+   "wider use": {
+    "verdict": "worse",
+    "verse": 7,
+    "best": 11,
+    "evidence": "Verse (/password/?len=16&upper=1&lower=1&digits=1&symbols=1) 7 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (passwordsgenerator.net unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:26:13.717Z"
    }
   },
   "encoder": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 164,
-    "best": 200,
-    "evidence": "Verse (/base64/) 164 ms to the load event (median of 3, phone width) vs the bar (base64encode.org unreachable) 200 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:02:10.454Z"
+    "verse": 147,
+    "best": 382,
+    "evidence": "Verse (/base64/) 147 ms to the load event (median of 3, phone width) vs base64encode.org 382 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/base64/) 0 px sideways overflow at 390 px vs the bar (base64encode.org unreachable) 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:02:10.454Z"
+    "evidence": "Verse (/base64/) 0 px sideways overflow at 390 px vs base64encode.org 0 px sideways overflow at 390 px",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/base64/) 0 unnamed controls or images vs the bar (base64encode.org unreachable) 0 unnamed controls or images",
-    "at": "2026-10-28T13:02:10.454Z"
+    "evidence": "Verse (/base64/) 0 unnamed controls or images vs base64encode.org 0 unnamed controls or images",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "better",
     "verse": 3,
-    "best": 0,
-    "evidence": "Verse (/base64/) 3 of 3 loads answered vs base64encode.org 0 of 3 from an ordinary phone browser (it turned the gate away or did not answer); the other aspects are judged against the best score there is",
-    "at": "2026-10-28T13:02:10.454Z"
+    "best": 1,
+    "evidence": "Verse (/base64/) 3 of 3 loads answered vs base64encode.org 1 of 3 loads answered",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    },
    "offline": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 1,
-    "best": 1,
-    "evidence": "Verse (/base64/) 1 (1: the page shows itself again with the network cut) vs the bar (base64encode.org unreachable) 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:02:10.454Z"
+    "best": 0,
+    "evidence": "Verse (/base64/) 1 (1: the page shows itself again with the network cut) vs base64encode.org 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    },
    "sharing": {
-    "verdict": "equal-and-better",
+    "verdict": "better",
     "verse": 4,
-    "best": 4,
-    "evidence": "Verse (/base64/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (base64encode.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:02:10.454Z"
+    "best": 3,
+    "evidence": "Verse (/base64/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs base64encode.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    },
    "design polish": {
-    "verdict": "worse",
+    "verdict": "better",
     "verse": 5,
-    "best": 0,
-    "evidence": "Verse (/base64/) 5 design defects vs the bar (base64encode.org unreachable) 0 design defects",
-    "at": "2026-10-28T13:02:10.454Z",
-    "was": "better"
+    "best": 34,
+    "evidence": "Verse (/base64/) 5 design defects vs base64encode.org 34 design defects: Verse (0 low-contrast texts, 5 small tap targets, layout shift 0.00), base64encode.org (4 low-contrast texts, 29 small tap targets, layout shift 0.37)",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
-    "evidence": "Verse (/base64/) 1 of 1 right against the worked-out answer; judged against the standard",
-    "at": "2026-10-28T13:02:10.454Z",
+    "evidence": "Verse (/base64/) 1 of 1 right against the worked-out answer; judged against the standard, not base64encode.org (the site is not asked)",
+    "at": "2026-10-29T02:28:06.240Z",
     "of": 1
    },
    "decode too": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
-    "evidence": "Verse (/base64/) 1 of 1 shown vs the bar (base64encode.org unreachable) 1 of 1 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:02:10.454Z",
+    "evidence": "Verse (/base64/) 1 of 1 shown vs base64encode.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-29T02:28:06.240Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "files and character sets": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
-    "evidence": "Verse (/base64/) 2 of 2 shown vs the bar (base64encode.org unreachable) 2 of 2 shown (Verse lacks: none)",
-    "at": "2026-10-28T13:02:10.454Z",
+    "evidence": "Verse (/base64/) 2 of 2 shown vs base64encode.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-29T02:28:06.240Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "equal-and-better",
     "verse": 16,
     "best": 16,
-    "evidence": "Verse (/base64/) 16 of 16 things a full answer shows vs the bar (base64encode.org unreachable) 16 of 16 things a full answer shows (Verse lacks: none)",
-    "at": "2026-10-28T13:02:10.454Z",
-    "of": 16
+    "evidence": "Verse (/base64/) 16 of 16 things a full answer shows vs base64encode.org 16 of 16 things a full answer shows (Verse lacks: none; site lacks: none)",
+    "at": "2026-10-29T02:28:06.240Z",
+    "of": 16,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 7,
+    "evidence": "Verse (/base64/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs base64encode.org 7 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:28:06.240Z",
+    "siteRead": true
    }
   },
   "colour": {
@@ -18755,10 +18781,10 @@
   "emojis": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 147,
-    "best": 481,
-    "evidence": "Verse (/emojis/) 147 ms to the load event (median of 3, phone width) vs emojitracker.com 481 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-29T02:18:48.360Z",
+    "verse": 146,
+    "best": 486,
+    "evidence": "Verse (/emojis/) 146 ms to the load event (median of 3, phone width) vs emojitracker.com 486 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    },
    "reliability": {
@@ -18766,7 +18792,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    },
    "mobile": {
@@ -18774,7 +18800,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    },
    "accessibility": {
@@ -18782,7 +18808,7 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 1 unnamed controls or images",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    },
    "offline": {
@@ -18790,7 +18816,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/emojis/) 1 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    },
    "sharing": {
@@ -18798,7 +18824,7 @@
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/emojis/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    },
    "accuracy": {
@@ -18806,7 +18832,7 @@
     "verse": 9,
     "best": 9,
     "evidence": "Verse (/emojis/) 9 of 9 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "of": 9
    },
    "design polish": {
@@ -18814,7 +18840,7 @@
     "verse": 0,
     "best": 3,
     "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), emojitracker.com (0 low-contrast texts, 2 small tap targets, layout shift 0.61)",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    },
    "completeness": {
@@ -18822,7 +18848,7 @@
     "verse": 17,
     "best": 0,
     "evidence": "Verse (/emojis/) 17 of 22 things a full answer shows vs emojitracker.com 0 of 22 things a full answer shows (Verse lacks: its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, a share link for it; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse, the picked emoji, named, its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, everyone today, a share link for it, the stage bridge, the copy format picker)",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "of": 22,
     "siteRead": true
    },
@@ -18831,7 +18857,7 @@
     "verse": 6.5,
     "best": 5,
     "evidence": "Verse (/emojis/) 6.5 of 11 wider-use points (docs/WIDER-USE.md) vs emojitracker.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-29T02:18:48.360Z",
+    "at": "2026-10-29T02:24:29.750Z",
     "siteRead": true
    }
   },
