@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Talk with Verse · Verse</title>
+<meta name="description" content="A friendly AI to talk with: speak instead of typing, hear every reply read aloud in the voice and speed you choose, a hands-free mode that listens again after each reply, and topics to start from. Speech is turned into text by your browser.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Talk with Verse · Verse">
+<meta property="og:description" content="A friendly AI to talk with: speak instead of typing, hear every reply read aloud in the voice and speed you choose, a hands-free mode that listens again after each reply, and topics to start from. Speech is turned into text by your browser.">
+<meta property="og:url" content="https://a-to-mind.com/assistant/voice/">
+<meta property="og:image" content="https://a-to-mind.com/og/assistant-voice.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Voice chat on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Talk with Verse · Verse">
+<meta name="twitter:description" content="A friendly AI to talk with: speak instead of typing, hear every reply read aloud in the voice and speed you choose, a hands-free mode that listens again after each reply, and topics to start from. Speech is turned into text by your browser.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/assistant-voice.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --me: #ece6ff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --me: #241d3d; } }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --me: #241d3d; }
+  * { box-sizing: border-box; } [hidden] { display: none !important; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; text-align: center; font-weight: 700; } h2 { font-size: 17px; margin: 0 0 8px; } h3 { font-size: 15px; margin: 10px 0 4px; }
+  .sub { font-size: 14px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 42px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #anav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 12px; min-height: 92px; align-content: flex-start; }
+  #anav a { font-size: 14px; padding: 8px 12px; min-height: 40px; display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #anav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; max-width: 100%; }
+  textarea { width: 100%; min-height: 92px; resize: vertical; }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; } button.sm { min-height: 36px; padding: 4px 10px; font-size: 14px; }
+  a { color: var(--accent); } .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 150px; min-width: 0; }
+  .row > label select, .row > label input { width: 100%; } .row.c { justify-content: center; }
+  .chk { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 8px !important; color: var(--ink) !important; font-size: 15px !important; min-height: 44px; }
+  .row > label.chk input[type=checkbox] { min-height: 0; width: 24px; height: 24px; flex: 0 0 auto; } input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); } input[type=file] { min-height: 44px; }
+  .cards a, td a, .src a, .side a { display: inline-block; min-height: 24px; line-height: 24px; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 20px; }
+  .status { font-size: 14px; min-height: 24px; margin: 6px 0; } .bad { color: var(--bad); } .good { color: var(--good); }
+  .cards { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 8px; min-height: 420px; align-content: start; }
+  .cards li { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--bg); }
+  .cards .t { font-weight: 650; word-break: break-word; } .cards .m { font-size: 13px; color: var(--soft); } .cards .a { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; font-size: 12px; margin: 2px 4px 2px 0; background: var(--tint); }
+  .tw { overflow-x: auto; } table { border-collapse: collapse; width: 100%; font-size: 14px; } th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; } th { color: var(--soft); font-weight: 600; }
+  th button { min-height: 32px; min-width: 0; padding: 2px 6px; border: 0; background: none; color: var(--soft); font-weight: 600; font-size: 13px; } th button[aria-pressed=true] { color: var(--accent); background: none; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .card-md { font-size: 15px; max-height: 70vh; overflow: auto; border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; } .card-md pre, .msg pre { background: var(--tint); padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+  .card-md img { max-width: 100%; } code { font-family: ui-monospace, monospace; font-size: .92em; }
+  pre.cmd { background: var(--tint); padding: 10px; border-radius: 8px; overflow-x: auto; margin: 4px 0; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+  .ans { border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-height: 160px; background: var(--bg); overflow-wrap: anywhere; } .ans h3 { margin-top: 0; }
+  .bar { height: 14px; background: var(--accent); border-radius: 4px; }
+  .chat { display: grid; grid-template-columns: 250px 1fr; gap: 12px; } @media (max-width: 760px) { .chat { grid-template-columns: 1fr; } .thread { min-height: 200px; } }
+  .side { border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: var(--box); min-height: 120px; align-self: start; }
+  .side ul { list-style: none; padding: 0; margin: 6px 0; max-height: 420px; overflow-y: auto; } .side li { display: flex; gap: 4px; align-items: center; }
+  .side li a { flex: 1; display: block; padding: 8px; min-height: 40px; border-radius: 8px; color: var(--ink); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .side li a[aria-current=true] { background: var(--tint); font-weight: 600; }
+  .thread { border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: var(--box); min-height: 340px; display: flex; flex-direction: column; gap: 10px; overflow-wrap: anywhere; }
+  .msg { padding: 8px 12px; border-radius: 12px; max-width: 100%; } .msg.user { background: var(--me); align-self: flex-end; max-width: 88%; white-space: pre-wrap; } .msg.assistant { background: var(--bg); border: 1px solid var(--line); }
+  .msg .who { font-size: 12px; color: var(--soft); font-weight: 600; display: block; } .msg .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .msg p { margin: 6px 0; } .msg ul, .msg ol { padding-left: 22px; } .run-out { background: var(--bg); border: 1px dashed var(--line); border-radius: 8px; padding: 6px 8px; font: 13px ui-monospace, monospace; white-space: pre-wrap; }
+  .empty { color: var(--soft); text-align: center; margin: auto 0; font-size: 15px; }
+  .composer textarea { min-height: 80px; } .src { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; } .src li { border: 1px solid var(--line); border-radius: 10px; padding: 8px; font-size: 13px; }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; min-height: 48px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); display: inline-flex; align-items: center; min-height: 32px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media print { #anav, button, .row, .side, .composer, #related, #asks { display: none !important; } .chat { display: block; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/assistant/voice/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Voice chat","url":"https://a-to-mind.com/assistant/voice/","description":"A friendly AI to talk with: speak instead of typing, hear every reply read aloud in the voice and speed you choose, a hands-free mode that listens again after each reply, and topics to start from. Speech is turned into text by your browser.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"talk to ai, ai voice chat, ai to talk to, speak with ai, ai companion chat, voice assistant online","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Voice chat","item":"https://a-to-mind.com/assistant/voice/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body data-page="voice">
+<main id="app">
+  <h1>Talk with Verse</h1>
+  <p class="sub" id="lede">A friendly AI to talk with: speak instead of typing, hear every reply read aloud in the voice and speed you choose, a hands-free mode that listens again after each reply, and topics to start from. Speech is turned into text by your browser.</p>
+  <nav id="anav" aria-label="Assistant pages"><a href="/assistant/">Assistant</a><a href="/assistant/workspace/">Chat workspace</a><a href="/assistant/voice/" aria-current="page">Voice chat</a><a href="/assistant/quick/">Quick chat</a><a href="/assistant/private/">Private chat</a><a href="/assistant/sources/">Answers with sources</a></nav>
+  <div class="chat">
+    <aside class="side" aria-label="Your chats">
+      <div class="row"><button type="button" class="go" id="newChat" style="flex:1">New chat</button></div>
+      <label class="vh" for="find">Search your chats</label><input type="search" id="find" placeholder="Search your chats" style="width:100%">
+      
+      <ul id="chats" aria-label="Chats"></ul>
+      
+    </aside>
+    <div>
+      <section class="thread" id="thread" aria-label="Conversation" aria-live="polite"><p class="empty" id="emptyNote">Press Speak and talk, or type. Replies are read aloud.</p></section>
+      <form class="composer" id="composer" aria-label="Write a message">
+        <label class="vh" for="box">Your message</label>
+        <textarea id="box" maxlength="4000" placeholder="Say or type something" enterkeyhint="send"></textarea>
+        <div class="row">
+          <button type="submit" class="go" id="send">Send</button><button type="button" id="stop" disabled>Stop</button><button type="button" id="again" disabled>Answer again</button>
+          <button type="button" id="mic" aria-pressed="false">Speak</button>
+          
+        </div>
+        <div class="row">
+          
+          
+          
+          
+        </div>
+        <p class="status" id="status" role="status" aria-live="polite">Enter sends, Shift+Enter starts a new line.</p>
+      </form>
+    </div>
+  </div>
+  <section class="pane" aria-label="Voice">
+    <h2>Voice</h2>
+    <div class="row"><label class="chk"><input type="checkbox" id="readAloud" checked> Read replies aloud</label><label class="chk"><input type="checkbox" id="handsFree"> Hands-free: listen again after each reply</label></div>
+    <div class="row"><label>Voice<select id="voiceSel"><option value="">The device's default voice</option></select></label><label>Speed<input type="range" id="rate" min="0.6" max="1.6" step="0.1" value="1"></label><button type="button" id="hush">Stop speaking</button></div>
+    <p class="note" id="voiceNote">Your browser turns speech into text and reads the replies; where it cannot, type instead. Speech recognition in some browsers is done by the browser maker's service.</p>
+  </section>
+  <section class="pane" aria-label="Topics to start from">
+    <h2>Topics to start from</h2>
+    <div class="row" id="topics"><button type="button" data-topic="Help me unwind after a long day">Help me unwind after a long day</button><button type="button" data-topic="Talk me through a decision">Talk me through a decision</button><button type="button" data-topic="Tell me something fascinating">Tell me something fascinating</button><button type="button" data-topic="Practise a hard conversation">Practise a hard conversation</button><button type="button" data-topic="Plan my weekend">Plan my weekend</button><button type="button" data-topic="Let's brainstorm a gift">Let's brainstorm a gift</button></div>
+  </section>
+  <section class="pane" aria-label="Notes">
+    <h2>Notes</h2>
+    <label class="vh" for="notes">Your notes</label><textarea id="notes" style="min-height:120px" placeholder="Notes kept on this device; they work offline."></textarea>
+    <div class="row"><button type="button" id="toNotes">Save the last reply to notes</button><span class="note" id="notesNote">Saved as you type.</span></div>
+  </section>
+  <section class="pane" aria-label="Share and export">
+    <h2>Share and export</h2>
+    <div class="row"><button type="button" id="shareChat">Share this chat as a link</button><button type="button" id="exMd">Export this chat (Markdown)</button><button type="button" id="exJson">Export every chat (JSON)</button><label class="chk" style="font-size:15px"><span>Import chats</span><input type="file" id="imp" accept=".json,application/json" style="max-width:190px"></label><button type="button" id="print">Print</button></div>
+    <p class="note" id="shareNote">A shared link holds the chat itself, packed into the address: nothing is uploaded, and whoever opens it can keep a copy.</p>
+  </section>
+  <section class="pane" aria-label="What it can and cannot do">
+    <h2>What it can and cannot do</h2>
+    <ul class="note">
+      <li>It answers with a smaller open model on Verse's free share of Cloudflare Workers AI, not a frontier model: it knows less, reasons less deeply and makes more mistakes than the largest assistants. Check anything that matters.</li>
+      <li>There is a daily free limit shared by everyone, and about ten messages a minute each. When it is reached the page says so and keeps your chat.</li>
+      <li>It sees only this conversation's text (the last 16 turns): no web browsing, no images or PDFs read by the model, no memory across chats, no connectors to your accounts.</li>
+      <li>It writes code, and JavaScript runs right here in your browser, sealed off from the page; it does not run other languages or make files for you.</li>
+      <li>Verse builds itself: questions it cannot handle well become work it takes on, so it grows from what people ask.</li>
+      <li>No account: your chats, notes and instructions stay on this device. Each message is sent once to be answered and is not stored by Verse.</li>
+    </ul>
+  </section>
+  <nav id="related" aria-label="Related tools"></nav>
+  <p class="note" style="text-align:center"><button type="button" id="shareBtn">Share this page</button> <button type="button" id="theme" aria-pressed="false">Light or dark</button></p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words and controls are in the HTML. Its code loads after the first paint and the load event, then wires them and fetches what is live
+  const go = () => Promise.all([import('/lib/assistant-page.js'), import('/lib/toolkit.js')]).then(([page, kit]) => { page.start('voice'); kit.mountRelated(document.getElementById('related'), '/assistant/voice/'); });
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>

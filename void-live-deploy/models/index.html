@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI models · Verse</title>
+<meta name="description" content="Browse and search open AI models and datasets: filter by task, licence, size and downloads, read a model card, put up to three models side by side, try the ones Verse can run for free, and see what each licence allows. Data read live from a public model hub; no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="AI models · Verse">
+<meta property="og:description" content="Browse and search open AI models and datasets: filter by task, licence, size and downloads, read a model card, put up to three models side by side, try the ones Verse can run for free, and see what each licence allows. Data read live from a public model hub; no account.">
+<meta property="og:url" content="https://a-to-mind.com/models/">
+<meta property="og:image" content="https://a-to-mind.com/og/models.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI models on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI models · Verse">
+<meta name="twitter:description" content="Browse and search open AI models and datasets: filter by task, licence, size and downloads, read a model card, put up to three models side by side, try the ones Verse can run for free, and see what each licence allows. Data read live from a public model hub; no account.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/models.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --me: #ece6ff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --me: #241d3d; } }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --me: #241d3d; }
+  * { box-sizing: border-box; } [hidden] { display: none !important; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; text-align: center; font-weight: 700; } h2 { font-size: 17px; margin: 0 0 8px; } h3 { font-size: 15px; margin: 10px 0 4px; }
+  .sub { font-size: 14px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 42px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #anav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 12px; min-height: 92px; align-content: flex-start; }
+  #anav a { font-size: 14px; padding: 8px 12px; min-height: 40px; display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #anav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; max-width: 100%; }
+  textarea { width: 100%; min-height: 92px; resize: vertical; }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; } button.sm { min-height: 36px; padding: 4px 10px; font-size: 14px; }
+  a { color: var(--accent); } .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 150px; min-width: 0; }
+  .row > label select, .row > label input { width: 100%; } .row.c { justify-content: center; }
+  .chk { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 8px !important; color: var(--ink) !important; font-size: 15px !important; min-height: 44px; }
+  .row > label.chk input[type=checkbox] { min-height: 0; width: 24px; height: 24px; flex: 0 0 auto; } input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); } input[type=file] { min-height: 44px; }
+  .cards a, td a, .src a, .side a { display: inline-block; min-height: 24px; line-height: 24px; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 20px; }
+  .status { font-size: 14px; min-height: 24px; margin: 6px 0; } .bad { color: var(--bad); } .good { color: var(--good); }
+  .cards { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 8px; min-height: 420px; align-content: start; }
+  .cards li { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--bg); }
+  .cards .t { font-weight: 650; word-break: break-word; } .cards .m { font-size: 13px; color: var(--soft); } .cards .a { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; font-size: 12px; margin: 2px 4px 2px 0; background: var(--tint); }
+  .tw { overflow-x: auto; } table { border-collapse: collapse; width: 100%; font-size: 14px; } th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; } th { color: var(--soft); font-weight: 600; }
+  th button { min-height: 32px; min-width: 0; padding: 2px 6px; border: 0; background: none; color: var(--soft); font-weight: 600; font-size: 13px; } th button[aria-pressed=true] { color: var(--accent); background: none; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .card-md { font-size: 15px; max-height: 70vh; overflow: auto; border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; } .card-md pre, .msg pre { background: var(--tint); padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+  .card-md img { max-width: 100%; } code { font-family: ui-monospace, monospace; font-size: .92em; }
+  pre.cmd { background: var(--tint); padding: 10px; border-radius: 8px; overflow-x: auto; margin: 4px 0; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+  .ans { border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-height: 160px; background: var(--bg); overflow-wrap: anywhere; } .ans h3 { margin-top: 0; }
+  .bar { height: 14px; background: var(--accent); border-radius: 4px; }
+  .chat { display: grid; grid-template-columns: 250px 1fr; gap: 12px; } @media (max-width: 760px) { .chat { grid-template-columns: 1fr; } .thread { min-height: 200px; } }
+  .side { border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: var(--box); min-height: 120px; align-self: start; }
+  .side ul { list-style: none; padding: 0; margin: 6px 0; max-height: 420px; overflow-y: auto; } .side li { display: flex; gap: 4px; align-items: center; }
+  .side li a { flex: 1; display: block; padding: 8px; min-height: 40px; border-radius: 8px; color: var(--ink); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .side li a[aria-current=true] { background: var(--tint); font-weight: 600; }
+  .thread { border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: var(--box); min-height: 340px; display: flex; flex-direction: column; gap: 10px; overflow-wrap: anywhere; }
+  .msg { padding: 8px 12px; border-radius: 12px; max-width: 100%; } .msg.user { background: var(--me); align-self: flex-end; max-width: 88%; white-space: pre-wrap; } .msg.assistant { background: var(--bg); border: 1px solid var(--line); }
+  .msg .who { font-size: 12px; color: var(--soft); font-weight: 600; display: block; } .msg .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .msg p { margin: 6px 0; } .msg ul, .msg ol { padding-left: 22px; } .run-out { background: var(--bg); border: 1px dashed var(--line); border-radius: 8px; padding: 6px 8px; font: 13px ui-monospace, monospace; white-space: pre-wrap; }
+  .empty { color: var(--soft); text-align: center; margin: auto 0; font-size: 15px; }
+  .composer textarea { min-height: 80px; } .src { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; } .src li { border: 1px solid var(--line); border-radius: 10px; padding: 8px; font-size: 13px; }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; min-height: 48px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); display: inline-flex; align-items: center; min-height: 32px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media print { #anav, button, .row, .side, .composer, #related, #asks { display: none !important; } .chat { display: block; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/models/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI models","url":"https://a-to-mind.com/models/","description":"Browse and search open AI models and datasets: filter by task, licence, size and downloads, read a model card, put up to three models side by side, try the ones Verse can run for free, and see what each licence allows. Data read live from a public model hub; no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"open source ai models, search ai models, llm catalogue, compare ai models, ai model licences explained, text generation models, ai datasets","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/models/?q={query}"},"query-input":"required name=query"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"AI models","item":"https://a-to-mind.com/models/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body data-page="hub">
+<main id="app">
+  <h1>AI models</h1>
+  <p class="sub" id="lede">Browse and search open AI models and datasets: filter by task, licence, size and downloads, read a model card, put up to three models side by side, try the ones Verse can run for free, and see what each licence allows. Data read live from a public model hub; no account.</p>
+  <nav id="anav" aria-label="AI model pages"><a href="/models/" aria-current="page">AI models</a><a href="/models/leaderboard/">Model leaderboard</a><a href="/models/local/">Models to run at home</a><a href="/models/prices/">Model prices and context</a><a href="/models/arena/">Model arena</a></nav>
+  <section class="pane" aria-label="Find a model">
+    <div class="row" role="tablist" aria-label="What to browse"><button type="button" role="tab" id="kindM" aria-selected="true">Models</button><button type="button" role="tab" id="kindD" aria-selected="false">Datasets</button></div>
+    <div class="row"><label>Search<input type="search" id="q" maxlength="80" placeholder="llama, whisper, bert, a person or a team" enterkeyhint="search"></label></div>
+    <div class="row"><label>Task<select id="task"><option value="" selected>Any task</option><option value="text-generation">Text generation</option><option value="image-text-to-text">Images and text to text</option><option value="text-to-image">Text to image</option><option value="automatic-speech-recognition">Speech to text</option><option value="text-to-speech">Text to speech</option><option value="feature-extraction">Embeddings (feature extraction)</option><option value="sentence-similarity">Sentence similarity</option><option value="translation">Translation</option><option value="summarization">Summarization</option><option value="text-classification">Text classification</option><option value="token-classification">Named entities (token classification)</option><option value="question-answering">Question answering</option><option value="fill-mask">Fill in the blank</option><option value="zero-shot-classification">Zero-shot classification</option><option value="image-classification">Image classification</option><option value="object-detection">Object detection</option><option value="image-segmentation">Image segmentation</option><option value="image-to-text">Image to text (captions)</option><option value="depth-estimation">Depth estimation</option><option value="text-to-video">Text to video</option><option value="audio-classification">Audio classification</option></select></label><label>Licence<select id="lic"><option value="" selected>Any licence</option><option value="apache-2.0">Apache 2.0</option><option value="mit">MIT</option><option value="bsd-3-clause">BSD 3-Clause</option><option value="cc-by-4.0">CC BY 4.0</option><option value="cc-by-sa-4.0">CC BY-SA 4.0</option><option value="cc-by-nc-4.0">CC BY-NC 4.0</option><option value="openrail">OpenRAIL</option><option value="creativeml-openrail-m">CreativeML OpenRAIL-M</option><option value="llama3.1">Llama 3.1 Community Licence</option><option value="llama3.2">Llama 3.2 Community Licence</option><option value="gemma">Gemma Terms of Use</option><option value="gpl-3.0">GPL 3.0</option></select></label><label>Size<select id="size"><option value="" selected>Any size</option><option value="xs">Under 1B</option><option value="s">1B to 4B</option><option value="m">4B to 10B</option><option value="l">10B to 40B</option><option value="xl">40B and up</option></select></label><label>Downloads at least<select id="minDl"><option value="0" selected>Any</option><option value="1000">1,000+</option><option value="10000">10,000+</option><option value="100000">100,000+</option><option value="1000000">1,000,000+</option></select></label><label>Sort<select id="sort"><option value="downloads" selected>Most downloads</option><option value="likes">Most likes</option><option value="trending">Trending</option><option value="updated">Recently updated</option><option value="new">Newest</option></select></label></div>
+    <p class="status" id="status" role="status" aria-live="polite">Well-known open models, from this page. The live list from the Hub loads next.</p>
+    <ul class="cards" id="list" aria-label="Models"><li><div class="t"><a href="https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct" rel="noopener" target="_blank">meta-llama/Llama-3.1-8B-Instruct</a></div><div class="m">Text generation · llama3.1 · 8B</div></li><li><div class="t"><a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3" rel="noopener" target="_blank">mistralai/Mistral-7B-Instruct-v0.3</a></div><div class="m">Text generation · apache-2.0 · 7.3B</div></li><li><div class="t"><a href="https://huggingface.co/Qwen/Qwen2.5-7B-Instruct" rel="noopener" target="_blank">Qwen/Qwen2.5-7B-Instruct</a></div><div class="m">Text generation · apache-2.0 · 7.6B</div></li><li><div class="t"><a href="https://huggingface.co/google/gemma-2-9b-it" rel="noopener" target="_blank">google/gemma-2-9b-it</a></div><div class="m">Text generation · gemma · 9.2B</div></li><li><div class="t"><a href="https://huggingface.co/microsoft/Phi-3-mini-4k-instruct" rel="noopener" target="_blank">microsoft/Phi-3-mini-4k-instruct</a></div><div class="m">Text generation · mit · 3.8B</div></li><li><div class="t"><a href="https://huggingface.co/openai/gpt-oss-20b" rel="noopener" target="_blank">openai/gpt-oss-20b</a></div><div class="m">Text generation · apache-2.0 · 21B</div></li><li><div class="t"><a href="https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct" rel="noopener" target="_blank">HuggingFaceTB/SmolLM2-1.7B-Instruct</a></div><div class="m">Text generation · apache-2.0 · 1.7B</div></li><li><div class="t"><a href="https://huggingface.co/meta-llama/Llama-3.2-1B" rel="noopener" target="_blank">meta-llama/Llama-3.2-1B</a></div><div class="m">Text generation · llama3.2 · 1.2B</div></li><li><div class="t"><a href="https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct" rel="noopener" target="_blank">Qwen/Qwen2.5-Coder-32B-Instruct</a></div><div class="m">Text generation · apache-2.0 · 32.8B</div></li><li><div class="t"><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1" rel="noopener" target="_blank">deepseek-ai/DeepSeek-R1</a></div><div class="m">Text generation · mit · 671B</div></li><li><div class="t"><a href="https://huggingface.co/openai/whisper-large-v3" rel="noopener" target="_blank">openai/whisper-large-v3</a></div><div class="m">Speech to text · apache-2.0 · 1.5B</div></li><li><div class="t"><a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2" rel="noopener" target="_blank">sentence-transformers/all-MiniLM-L6-v2</a></div><div class="m">Sentence similarity · apache-2.0 · 22.7M</div></li></ul>
+    <div class="row c"><button type="button" id="more">Show more</button></div>
+  </section>
+  <section class="pane" id="cardPane" aria-label="Model card">
+    <h2>Model card</h2>
+    <p class="note" id="cardNote">Press Card on any model to read its card here: what it is for, how it was trained, its limits and its licence.</p>
+    <div class="card-md" id="cardMd" aria-live="polite"></div>
+  </section>
+  <section class="pane" aria-label="Compare side by side">
+    <h2>Compare side by side</h2>
+    <p class="note" id="cmpNote">Press Compare on up to three models to see their licence, size, memory to run and downloads side by side. They stay on this device, and the link carries them.</p>
+    <div class="tw"><table id="cmp"><tbody></tbody></table></div>
+    <div class="row"><button type="button" id="cmpClear">Clear the comparison</button><button type="button" id="cmpLink">Copy a link to this comparison</button></div>
+  </section>
+  <section class="pane" id="tryPane" aria-label="Try it">
+    <h2>Try it</h2>
+    <p class="note">Verse can run these open models for free. A model in the list that has a Try button is one of them.</p>
+    <div class="row"><label>Model<select id="tryModel"><option value="verse" selected>Gemma 4 (26B, mixture of experts)</option><option value="oss120">GPT-OSS 120B</option><option value="oss20">GPT-OSS 20B</option><option value="llama8">Llama 3.1 8B Instruct</option><option value="llama3">Llama 3.2 3B Instruct</option><option value="mistral24">Mistral Small 3.1 24B</option><option value="qwencoder">Qwen 2.5 Coder 32B</option></select></label></div>
+    <label class="vh" for="tryIn">Your prompt</label><textarea id="tryIn" maxlength="2000" placeholder="Ask the model something, for example: explain what a transformer is in three sentences."></textarea>
+    <div class="row"><button type="button" class="go" id="tryGo">Run</button><a href="/models/arena/">Put two models against each other</a></div>
+    <div class="ans" id="tryOut" aria-live="polite"></div>
+    <p class="note">Runs on Verse's free share of Cloudflare Workers AI: about ten messages a minute, a daily limit shared by everyone (it resets at midnight UTC), and answers of up to about 800 words. The build here may be quantized, so it can differ a little from the files on the Hub.</p>
+  </section>
+  <section class="pane" aria-label="What each licence allows">
+    <h2>What each licence allows</h2>
+    <div class="tw"><table id="lics"><thead><tr><th>Licence</th><th>Commercial use</th><th>You must</th><th>Watch for</th></tr></thead><tbody><tr><td><strong>Apache 2.0</strong><br><span class="note">apache-2.0</span></td><td>yes</td><td>Keep the licence and notices; say what you changed.</td><td>Gives a patent licence too; no trademark rights.</td></tr><tr><td><strong>MIT</strong><br><span class="note">mit</span></td><td>yes</td><td>Keep the copyright notice and licence text.</td><td>No warranty; nothing else asked.</td></tr><tr><td><strong>BSD 3-Clause</strong><br><span class="note">bsd-3-clause</span></td><td>yes</td><td>Keep the copyright notice; do not use the authors' names to promote.</td><td>Close to MIT.</td></tr><tr><td><strong>CC BY 4.0</strong><br><span class="note">cc-by-4.0</span></td><td>yes</td><td>Credit the authors and link the licence.</td><td>Made for content; common for datasets.</td></tr><tr><td><strong>CC BY-SA 4.0</strong><br><span class="note">cc-by-sa-4.0</span></td><td>yes</td><td>Credit the authors; share what you make from it under the same licence.</td><td>Share-alike carries over to derived work.</td></tr><tr><td><strong>CC BY-NC 4.0</strong><br><span class="note">cc-by-nc-4.0</span></td><td>no</td><td>Credit the authors.</td><td>Non-commercial only.</td></tr><tr><td><strong>OpenRAIL</strong><br><span class="note">openrail</span></td><td>yes</td><td>Pass the use restrictions on to anyone you share it with.</td><td>Lists uses that are not allowed (harm, misinformation and more).</td></tr><tr><td><strong>CreativeML OpenRAIL-M</strong><br><span class="note">creativeml-openrail-m</span></td><td>yes</td><td>Pass the use restrictions on; you own what you generate.</td><td>The licence of early image models.</td></tr><tr><td><strong>Llama 3.1 Community Licence</strong><br><span class="note">llama3.1</span></td><td>yes, below a size</td><td>Show &quot;Built with Llama&quot;; follow Meta's acceptable use policy.</td><td>A company with more than 700 million monthly active users needs a separate licence from Meta.</td></tr><tr><td><strong>Llama 3.2 Community Licence</strong><br><span class="note">llama3.2</span></td><td>yes, below a size</td><td>Show &quot;Built with Llama&quot;; follow the acceptable use policy.</td><td>The same 700 million monthly active users line; the vision models were not licensed to people in the EU.</td></tr><tr><td><strong>Gemma Terms of Use</strong><br><span class="note">gemma</span></td><td>yes</td><td>Pass the terms and the prohibited use policy on.</td><td>Google may restrict use that breaks the policy.</td></tr><tr><td><strong>GPL 3.0</strong><br><span class="note">gpl-3.0</span></td><td>yes</td><td>Share the source of what you distribute, under the GPL.</td><td>Copyleft.</td></tr><tr><td><strong>Other</strong><br><span class="note">other</span></td><td>read it</td><td>Open the model card and read the licence file.</td><td>Often a custom licence with conditions.</td></tr></tbody></table></div>
+    <p class="note">A plain summary, not legal advice: the licence file in each repository is what counts.</p>
+  </section>
+  <section class="pane" aria-label="About the data"><h2>About the data</h2><p class="note">Models and datasets are read live by your browser from the Hugging Face Hub's public API (no key; the Hub limits how often one address may ask, so a result is kept on this device for ten minutes). Every name links to its page on Hugging Face, where its files, discussions and full card are. Card texts belong to their authors. Sizes come from the files' own parameter counts; a size marked "from the name" is read off the model's name.</p></section>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/models/?task=text-generation">Text generation</a><a href="/models/?task=text-to-image">Image generation</a><a href="/models/?task=automatic-speech-recognition">Speech to text</a><a href="/models/?licence=apache-2.0">Apache 2.0 models</a><a href="/models/?size=s">Small models (under 4B)</a><a href="/models/?kind=datasets">Datasets</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"></nav>
+  <p class="note" style="text-align:center"><button type="button" id="shareBtn">Share this page</button> <button type="button" id="theme" aria-pressed="false">Light or dark</button></p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words and controls are in the HTML. Its code loads after the first paint and the load event, then wires them and fetches what is live
+  const go = () => Promise.all([import('/lib/models-page.js'), import('/lib/toolkit.js')]).then(([page, kit]) => { page.start('hub'); kit.mountRelated(document.getElementById('related'), '/models/'); });
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>

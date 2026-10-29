@@ -18,7 +18,8 @@ import { isPayAsk, payAnswer, HONEST_RULE } from '../../lib/pay-honest.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf, basisOf } from '../../lib/automation-fix.js';
 import { guardAnswer, heldBack } from '../../lib/patch-guard.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
-import { models, ANSWER_FALLBACK } from '../../lib/models.js';
+import { models, ANSWER_FALLBACK, TRY_MODELS } from '../../lib/models.js';
+import { assistantMessages, cleanAssistantReply, ASSISTANT_SAYS, ASSISTANT_PER_HOUR, ASSISTANT_PER_DAY, ASSISTANT_RPM, REPLY_TOKENS } from '../../lib/assistant-chat.js';
 import { keeperOf, scrubOut } from '../../lib/keeper.js';
 import { redactPersonal } from '../../lib/privacy.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
@@ -220,6 +221,26 @@ async function characterAnswer(request, env, body) {
   } catch (e) { await recordShortfall(env, 'character', reasonOf(e)); return Response.json({ reply: null, note: 'model busy', say: say('busy') }); }
 }
 
+// The assistant pages (/assistant/ and its lane pages; /models/ "Try it" and /models/arena/; lib/assistant-chat.js): a conversation the visitor keeps on their
+// device, answered by a free model they may pick from lib/models.js TRY_MODELS. The same keeper as any ask reads the newest message first; then a limit per
+// connection (ASSISTANT_RPM a minute) and ONE count for everyone in D1 (lib/daily-cap.js: an hour's share, then the day's), failing closed: no D1, no spend.
+// Nothing is cached or written: no answer cache, no route log, no copy of the chat.
+export async function assistantAnswer(request, env, body) {
+  const de = body && body.lang === 'de', say = (k) => ASSISTANT_SAYS[k][de ? 1 : 0];
+  const p = assistantMessages(body);
+  if (p.error) return Response.json({ reply: null, note: p.error }, { status: p.status });
+  const kept = keeperOf(p.last); if (kept) return Response.json({ reply: kept.answer, kept: kept.kind, model: p.model });
+  if (!modelsOn(env)) return Response.json({ reply: null, note: 'models off', say: say('off') });
+  if (await rateLimited(request, env, 'assistant', ASSISTANT_RPM)) return Response.json({ reply: null, note: 'slow down', say: say('slow') }, { status: 429 });
+  const at = new Date().toISOString();
+  if (!(await capAll(env, [['assistant:h' + at.slice(0, 13), ASSISTANT_PER_HOUR], ['assistant', ASSISTANT_PER_DAY]])).ok) return Response.json({ reply: null, note: 'limit', say: say('limit') });
+  try {
+    const r = await env.AI.run(TRY_MODELS[p.model] || TRY_MODELS.verse, { messages: p.messages.map((m) => (m.role === 'system' ? { ...m, content: m.content + ' ' + INJECTION_RULE } : { ...m, content: redact(m.content) })), max_tokens: REPLY_TOKENS, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const reply = cleanAssistantReply(scrubOut(redact(noThink(pick(r))), env));
+    return reply ? Response.json({ reply, model: p.model }) : Response.json({ reply: null, note: 'empty', say: say('busy'), model: p.model });
+  } catch (e) { await recordShortfall(env, 'assistant', reasonOf(e)); return Response.json({ reply: null, note: 'model busy', say: say('busy'), model: p.model }); }
+}
+
 // The story writer (/generators/story/) and the generators' {ai: ...} text (lib/story.js): the same free answer model and the same 12-a-minute
 // limit as any answer. An {ai: ...} text is kept in the edge cache by its prompt and the result's seed for a week, so the same link shows the same
 // words and asking again costs nothing; a story part is never cached (it continues the visitor's own story, kept on their device).
@@ -381,6 +402,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'proposal') return proposalAnswer(request, env, body);
   if (body && body.mode === 'plan') return planAnswer(request, env, body);
   if (body && body.mode === 'character') return characterAnswer(request, env, body);
+  if (body && body.mode === 'assistant') return assistantAnswer(request, env, body);
   if (body && body.mode === 'report') return reportAnswer(request, env, body);
   if (body && (body.mode === 'story' || body.mode === 'aitext')) return storyAnswer(request, env, body);
   if (body && body.mode === 'market-report') return marketReport(request, env, body); // the /markets/ page's "Verse reports" (lib/report-run.js): one per window for everyone, validated, capped

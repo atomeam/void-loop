@@ -10,7 +10,8 @@ const TOOLS = ['/photos/', '/stopwatch/', '/word-count/', '/color/', '/gradient/
 // and /generators/ read 0 offline again); their own module files (/generators/<page>/app.js, /image/app.js) are kept like /lib/ code
 // the six music pages (2026-10-26) are kept the first time each is opened, with their app.js, for the same reason
 // the flights pages (2026-10-26) are kept the first time each is opened, with their app.js and the airport list
-const LATER = ['/flights/', '/flights/trip/', '/flights/airports/', '/flights/time/', '/flights/distance/', '/flights/map/', '/flights/co2/', '/flights/routes/', '/music/', '/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/markets/caps/', '/markets/screener/', '/photos/squoosh/', '/photos/tinypng/', '/photos/exif/', '/photos/exifeditor/', '/photos/photopea/', '/photos/iloveimg/', '/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
+// the AI model and assistant pages (2026-10-26) are kept the first time each is opened; their code is under /lib/ (lib/models-page.js, lib/assistant-page.js)
+const LATER = ['/models/', '/models/leaderboard/', '/models/local/', '/models/prices/', '/models/arena/', '/assistant/', '/assistant/workspace/', '/assistant/voice/', '/assistant/quick/', '/assistant/private/', '/assistant/sources/', '/flights/', '/flights/trip/', '/flights/airports/', '/flights/time/', '/flights/distance/', '/flights/map/', '/flights/co2/', '/flights/routes/', '/music/', '/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/markets/caps/', '/markets/screener/', '/photos/squoosh/', '/photos/tinypng/', '/photos/exif/', '/photos/exifeditor/', '/photos/photopea/', '/photos/iloveimg/', '/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
 const isTool = (p) => TOOLS.includes(p) || LATER.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
 const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|photos\/app|scores\/(?:app|more|sports|reports|gfx)|(?:sports|fantasy)\/(?:app|boot)|(?:music|metronome|piano|tuner|bpm|chords)\/app|(?:pdf|kanban|flights)(?:\/[a-z]+)?\/app)\.js$/.test(p) || p === '/flights/airports.json' || p === '/flights/routes.json';
 // the install keeps each tool page itself and nothing more (2026-10-25: with 21 pages, fetching every page's modules at install took longer than the
@@ -26,7 +27,8 @@ const CACHE_3D = 'void-3d-v2'; // v2: v1 could hold the page's HTML under a vend
 // the scores page's own answers (owner, 2026-10-26: the offline reload must show the last scoreboard from the worker, not only from localStorage): network first,
 // the last good JSON kept per address and served when the network is cut or answers an error; nothing else under /api/ is ever touched
 const CACHE_SCORES = 'void-scores-v1';
-const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
+// a 3D file under /models/ (the chess sets, their textures and light); the AI model pages share the folder and are pages, not files
+const is3d = (p) => p.startsWith('/vendor/') || /^\/models\/.+\.(?:glb|gltf|hdr|webp|png|jpg|ktx2|bin)$/i.test(p);
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(TOOLS.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));

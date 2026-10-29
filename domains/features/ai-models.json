@@ -1,6 +1,6 @@
 {
  "floor": "ai models",
- "verse_page": null,
+ "verse_page": "/models/",
  "researched": "2026-10-25",
  "sites": {
   "huggingface.co": {
@@ -16,24 +16,26 @@
      "name": "Model catalogue",
      "detail": "2M+ models with filters by task, library, language, licence, size; trending and sort",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "lib/models.js names the few Workers AI models Verse uses; no catalogue"
+     "verse": "has",
+     "verse_evidence": "/models/: the Hub's live list with search, task, licence, size (from the files' parameter counts), downloads and sort; every model links to its Hub page",
+     "shows": "Search[\\s\\S]*Task[\\s\\S]*Licence"
     },
     {
      "group": "core",
      "name": "Model cards",
      "detail": "README with usage, training data, limits, licence, eval results",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/models/: Card renders the repository's README (safe Markdown, tables, code) with its licence explained",
+     "shows": "Model card"
     },
     {
      "group": "core",
      "name": "Datasets catalogue",
      "detail": "Datasets with cards and the Data Studio viewer (browse rows, SQL)",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/models/?kind=datasets lists and searches datasets with their cards; no row viewer or SQL"
     },
     {
      "group": "core",
@@ -41,23 +43,24 @@
      "detail": "Gradio, Streamlit, Docker, static apps running models in the browser; ZeroGPU",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse_evidence": "skipped: Spaces run on the Hub's own hardware; /models/ \"Try it\" runs the open models Verse hosts for free instead"
     },
     {
      "group": "core",
      "name": "Inference widgets",
      "detail": "Try a model on its page",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/models/ \"Try it\": a prompt to the open models Verse runs on Workers AI (lib/models.js TRY_MODELS), limits said on the page",
+     "shows": "Try it"
     },
     {
      "group": "core",
      "name": "Search",
      "detail": "Search models, datasets, Spaces, people, papers",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/models/ searches models and datasets; not Spaces, people or papers"
     },
     {
      "group": "core",
@@ -65,7 +68,7 @@
      "detail": "Every model/dataset/Space is a git repo with versions, files, commits",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse_evidence": "skipped: Verse links each model to its repository on the Hub"
     },
     {
      "group": "power",
@@ -96,8 +99,9 @@
      "name": "Leaderboards and evaluations",
      "detail": "Open LLM leaderboard, community evals",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/models/leaderboard/: the archived Open LLM Leaderboard's scores, sortable, filterable, charted",
+     "shows": "Model leaderboard"
     },
     {
      "group": "power",
@@ -112,16 +116,17 @@
      "name": "HuggingChat",
      "detail": "Chat with open models",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/assistant/ and /assistant/private/: chat with open models, model choice",
+     "shows": "\\bAssistant\\b"
     },
     {
      "group": "power",
      "name": "Gated models and access requests",
      "detail": "Licence acceptance flows",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "a gated model is marked \"gated: accept its terms on the Hub\"; the acceptance stays on the Hub"
     },
     {
      "group": "power",
@@ -168,8 +173,9 @@
      "name": "Download weights to run locally",
      "detail": "Models downloadable for offline use",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/models/local/: GGUF files with sizes, the fit for your memory and the command that runs one",
+     "shows": "Models to run at home"
     },
     {
      "group": "accessibility",
@@ -195,6 +201,309 @@
      "verse": "missing",
      "verse_evidence": "no Verse skill or page does this"
     }
+   ],
+   "leader": true,
+   "verse_uses": [
+    "the Hub API (/api/models, /api/datasets, a repository's file list), read by the visitor's browser, keyless, kept 10 minutes on the device",
+    "each repository's README as the model card",
+    "the dataset viewer API for the archived Open LLM Leaderboard's table",
+    "\"hf.co/<repo>\" in the Ollama and llama.cpp commands, which fetch a GGUF straight from the Hub"
+   ],
+   "verse_extra": [
+    "a licence explainer: what each licence allows, in plain words",
+    "three models side by side with the memory each needs to run",
+    "Try it free on Verse's own open models, with the limits said"
+   ]
+  },
+  "llm-stats.com": {
+   "lane": true,
+   "page": "/models/leaderboard/",
+   "sources": [
+    "https://llm-stats.com/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Benchmark leaderboard",
+     "detail": "Models ranked by benchmark scores (GPQA, MMLU and more)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/models/leaderboard/: IFEval, BBH, MATH Lvl 5, GPQA, MuSR, MMLU-PRO and the average, for open models"
+    },
+    {
+     "group": "core",
+     "name": "Sort and filter",
+     "detail": "Sort by any score; filter by size, open or closed, provider",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "sort any column; size, type and merges filters; search (open models only, said)"
+    },
+    {
+     "group": "core",
+     "name": "Compare models",
+     "detail": "Pick models and compare their scores",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "tick two to four models: a bar chart per benchmark"
+    },
+    {
+     "group": "core",
+     "name": "Prices and context",
+     "detail": "Price per token and context window per model",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "on /models/prices/, the sister page"
+    },
+    {
+     "group": "core",
+     "name": "Closed models",
+     "detail": "Proprietary models with self-reported scores",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: self-reported scores cannot be checked the same way (said on the page)"
+    },
+    {
+     "group": "power",
+     "name": "Benchmark explanations",
+     "detail": "What each benchmark measures",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"What the benchmarks measure\""
+    },
+    {
+     "group": "sharing",
+     "name": "Share a view",
+     "detail": "A link to a sorted, filtered view",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Copy a link to this view\""
+    },
+    {
+     "group": "power",
+     "name": "Export",
+     "detail": "Download the table",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Export CSV"
+    }
+   ],
+   "verse_uses": [
+    "nothing from the site itself: the scores come from the Open LLM Leaderboard's public table on the Hub"
+   ]
+  },
+  "ollama.com": {
+   "lane": true,
+   "page": "/models/local/",
+   "sources": [
+    "https://ollama.com/search",
+    "https://ollama.com/library"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Model library",
+     "detail": "Search models to run locally, by capability (tools, vision, embedding, thinking)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/models/local/: GGUF repositories on the Hub, search, filter by what they do"
+    },
+    {
+     "group": "core",
+     "name": "Run command",
+     "detail": "One command that downloads and runs a model",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"ollama run hf.co/<repo>:<build>\" and the llama.cpp line, with Copy"
+    },
+    {
+     "group": "core",
+     "name": "Sizes and quantizations",
+     "detail": "Each tag with its size and quantization",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Files: every .gguf with its build and size"
+    },
+    {
+     "group": "power",
+     "name": "What fits your memory",
+     "detail": "Pick a build that fits",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Will it fit?\" and a fits / too big per file for the memory you give"
+    },
+    {
+     "group": "power",
+     "name": "Readme per model",
+     "detail": "The model's description",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "the card is on /models/; the local page links the repository"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Runs offline",
+     "detail": "A local model runs without the network",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "said on the page: the file downloads once, then runs offline"
+    },
+    {
+     "group": "power",
+     "name": "Cloud models",
+     "detail": "Hosted models behind an account",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: needs an account"
+    }
+   ],
+   "verse_uses": [
+    "Ollama's documented hf.co/<repo> pull, so a visitor runs any GGUF on the Hub with one line"
+   ]
+  },
+  "openrouter.ai": {
+   "lane": true,
+   "page": "/models/prices/",
+   "sources": [
+    "https://openrouter.ai/models",
+    "https://openrouter.ai/docs/api-reference/list-available-models"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Model list with prices",
+     "detail": "Every hosted model with prompt and completion prices per million tokens",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/models/prices/: the router's own public list, live, in $ per million tokens"
+    },
+    {
+     "group": "core",
+     "name": "Context length",
+     "detail": "Context window and max output per model",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Context column, Max output in the comparison"
+    },
+    {
+     "group": "core",
+     "name": "Filters",
+     "detail": "Input and output modalities, context, price, supported parameters",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "takes in, gives out, context at least, highest price, uses tools"
+    },
+    {
+     "group": "core",
+     "name": "Free models",
+     "detail": "Models at $0",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Free only\""
+    },
+    {
+     "group": "power",
+     "name": "Cost of use",
+     "detail": "Work out what usage costs",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"What would it cost?\": tokens and requests a day to a day and a month"
+    },
+    {
+     "group": "power",
+     "name": "Compare",
+     "detail": "Models side by side",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "up to three"
+    },
+    {
+     "group": "power",
+     "name": "One API to all models",
+     "detail": "A single key to call any model",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: needs an account and payment"
+    },
+    {
+     "group": "power",
+     "name": "Provider breakdown",
+     "detail": "Per-provider prices and uptime",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: the public list gives one price per model"
+    }
+   ],
+   "verse_uses": [
+    "the public model list (GET /api/v1/models, keyless), read by the visitor's browser and kept 30 minutes on the device; each model links to its page there"
+   ]
+  },
+  "lmarena.ai": {
+   "lane": true,
+   "page": "/models/arena/",
+   "sources": [
+    "https://lmarena.ai/leaderboard",
+    "https://lmarena.ai/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Anonymous battle",
+     "detail": "One prompt, two hidden models, answers side by side",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/models/arena/: Battle on Verse's free models"
+    },
+    {
+     "group": "core",
+     "name": "Vote",
+     "detail": "A better, B better, tie, both bad; names after the vote",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "four vote buttons; the names show after the vote"
+    },
+    {
+     "group": "core",
+     "name": "Leaderboard",
+     "detail": "Ratings from votes",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "your own Elo table, kept on the device; the public pooled one is the site's (said)"
+    },
+    {
+     "group": "core",
+     "name": "Side by side",
+     "detail": "Pick the two models yourself",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "\"Side by side: you choose the models\""
+    },
+    {
+     "group": "power",
+     "name": "Categories",
+     "detail": "Ratings by category (coding, writing, maths)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "five categories, rated apart"
+    },
+    {
+     "group": "power",
+     "name": "Vision and web dev arenas",
+     "detail": "Images and app building",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: Verse's free models answer in text"
+    },
+    {
+     "group": "sharing",
+     "name": "Share",
+     "detail": "Share results",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a link to your ratings; CSV of your votes"
+    }
+   ],
+   "verse_uses": [
+    "nothing: the battles run on Verse's own free models"
    ]
   }
  },
@@ -207,5 +516,12 @@
  "verse_extra": [
   "Verse uses models for real asks and records when it would escalate"
  ],
- "first_page": "Models page /ai-models/ for curious people who want to see and try AI models. First: browse trending Hub models by task (public API, keyless) with their card summary and licence, try one small text or image model right in the browser with Transformers.js (nothing sent), and a section on the models Verse itself runs (lib/models.js). Will not build: hosting, training, inference APIs, datasets uploads or accounts."
+ "first_page": "Models page /ai-models/ for curious people who want to see and try AI models. First: browse trending Hub models by task (public API, keyless) with their card summary and licence, try one small text or image model right in the browser with Transformers.js (nothing sent), and a section on the models Verse itself runs (lib/models.js). Will not build: hosting, training, inference APIs, datasets uploads or accounts.",
+ "built": "2026-10-26",
+ "union_gaps": [
+  "Spaces-style live demos of other tasks (speech, images) on the page",
+  "a dataset row viewer",
+  "closed models on the leaderboard (self-reported scores)",
+  "vision and web-dev arenas"
+ ]
 }

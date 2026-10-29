@@ -88,3 +88,71 @@ export function pdfToolOf(lower) {
   return '';
 }
 export const KANBAN_ASK = /^(?:please\s+)?(?:(?:open|show|make|start|create|new|build|give\s+me|i\s+want|i\s+need)(?:\s+me)?\s+(?:a\s+|an\s+|my\s+|the\s+|another\s+)?)?(?:free\s+|online\s+|simple\s+|personal\s+|new\s+)*kanban(?:\s+(?:board|tool|app|boards))?(?:\s+(?:online|free|please))*$|^(?:a\s+)?trello\s+(?:like|style)\s+board$/i;
+
+// The AI model and assistant floors (owner, 2026-10-26: every tower site gets its own page): /models/ (Hugging Face's floor) and a page under it for each site of
+// its lane, /assistant/ (Claude's) the same. tools/ai-pages.mjs writes the pages from these rows (their code is lib/models-page.js and lib/assistant-page.js);
+// lib/ai-sites.js names them for the pages and the models Verse can run. Kept here, beside the other floors' rows, because lib/toolkit.js already reads this file.
+export const MODEL_SITES = Object.freeze([
+  { path: '/models/', page: 'hub', lane: 'ai models', name: 'AI models', h1: 'AI models', card: 'browse ai models',
+    does: 'Browse and search open AI models and datasets: filter by task, licence, size and downloads, read a model card, put up to three models side by side, try the ones Verse can run for free, and see what each licence allows. Data read live from a public model hub; no account.',
+    asks: ['open source ai models', 'search ai models', 'llm catalogue', 'compare ai models', 'ai model licences explained', 'text generation models', 'ai datasets'],
+    links: [['Text generation', '/models/?task=text-generation'], ['Image generation', '/models/?task=text-to-image'], ['Speech to text', '/models/?task=automatic-speech-recognition'], ['Apache 2.0 models', '/models/?licence=apache-2.0'], ['Small models (under 4B)', '/models/?size=s'], ['Datasets', '/models/?kind=datasets']],
+    action: { template: '/models/?q={query}', input: 'query', search: true }, related: ['/models/leaderboard/', '/models/local/', '/assistant/'] },
+  { path: '/models/leaderboard/', page: 'leaderboard', lane: 'ai models: llm-stats.com', name: 'Model leaderboard', h1: 'Open model leaderboard', card: 'llm leaderboard',
+    does: 'A leaderboard of open language models by benchmark (IFEval, BBH, MATH level 5, GPQA, MuSR, MMLU-PRO and the average): sort any column, filter by size and type, search, compare models in a chart, read what each benchmark measures and export CSV.',
+    asks: ['llm leaderboard', 'open llm leaderboard', 'llm benchmark scores', 'mmlu pro scores', 'compare llm benchmarks'], related: ['/models/', '/models/arena/', '/models/prices/'] },
+  { path: '/models/local/', page: 'local', lane: 'ai models: ollama.com', name: 'Models to run at home', h1: 'Run a model on your computer', card: 'run an llm locally',
+    does: 'Find open models packed to run on your own computer (GGUF files): search, filter by what they do, see each file and its size, the one-line command to run it, and which builds fit in your memory. Quantization explained in plain words.',
+    asks: ['run llm locally', 'gguf models', 'local ai models', 'which llm fits my ram', 'llm quantization explained', 'offline ai model'], related: ['/models/', '/models/leaderboard/', '/assistant/'] },
+  { path: '/models/prices/', page: 'prices', lane: 'ai models: openrouter.ai', name: 'Model prices and context', h1: 'Model prices and context', card: 'ai model prices',
+    does: 'Every hosted AI model a public router lists, with its price per million tokens, context length and what it takes in and gives out: filter, sort, find the free ones, compare side by side and work out what a month of use would cost.',
+    asks: ['llm api prices', 'ai model pricing', 'cost per million tokens', 'llm context length', 'free llm api models', 'llm cost calculator'], related: ['/models/', '/models/leaderboard/', '/calculator/'] },
+  { path: '/models/arena/', page: 'arena', lane: 'ai models: lmarena.ai', name: 'Model arena', h1: 'Model arena', card: 'ai model arena',
+    does: 'Put one prompt to two AI models at once without knowing which is which, vote for the better answer, then see their names. Your votes build your own rating table (Elo) by category, kept on your device. Side by side with the models you choose, too.',
+    asks: ['ai model arena', 'chatbot arena', 'compare two ai models', 'blind ai test', 'llm side by side', 'ai elo ratings'], related: ['/models/', '/models/leaderboard/', '/assistant/'] },
+]);
+export const ASSISTANT_SITES = Object.freeze([
+  { path: '/assistant/', page: 'hub', lane: 'assistant', name: 'Assistant', h1: 'Assistant', card: 'chat with verse',
+    does: 'Chat with Verse\'s assistant on a free open model: conversations kept on your device and searchable, prompt templates, standing instructions, code that runs in your browser, export, share a chat as a link, notes that work offline, and text tools (count, summarize, rewrite, translate). No account.',
+    asks: ['ai chat', 'free ai assistant', 'chat with ai no account', 'ai chatbot free', 'ai assistant online', 'ask ai a question', 'ai writing assistant'],
+    links: [['Explain simply', '/assistant/?t=explain'], ['Summarize a text', '/assistant/?t=summarize'], ['Write an email', '/assistant/?t=email'], ['Brainstorm ideas', '/assistant/?t=brainstorm'], ['Review my code', '/assistant/?t=code'], ['Plan my week', '/assistant/?t=plan']],
+    action: { template: '/assistant/?t={template}', input: 'template' }, related: ['/assistant/workspace/', '/assistant/sources/', '/notes/', '/word-count/'] },
+  { path: '/assistant/workspace/', page: 'workspace', lane: 'assistant: typingmind.com', name: 'Chat workspace', h1: 'Chat workspace', card: 'ai chat workspace',
+    does: 'An AI chat workspace on your device: folders for chats, pinned chats, search across every message, a prompt library you insert with a slash, saved characters with their own instructions, chat statistics, import and export.',
+    asks: ['ai chat workspace', 'organize ai chats', 'prompt library', 'ai chat folders', 'search my ai chats', 'ai characters'], related: ['/assistant/', '/notes/', '/assistant/private/'] },
+  { path: '/assistant/voice/', page: 'voice', lane: 'assistant: pi.ai', name: 'Voice chat', h1: 'Talk with Verse', card: 'talk to an ai',
+    does: 'A friendly AI to talk with: speak instead of typing, hear every reply read aloud in the voice and speed you choose, a hands-free mode that listens again after each reply, and topics to start from. Speech is turned into text by your browser.',
+    asks: ['talk to ai', 'ai voice chat', 'ai to talk to', 'speak with ai', 'ai companion chat', 'voice assistant online'], related: ['/assistant/', '/assistant/quick/', '/translate/'] },
+  { path: '/assistant/quick/', page: 'quick', lane: 'assistant: deepai.org', name: 'Quick chat', h1: 'Quick AI chat', card: 'quick ai chat',
+    does: 'Ask anything and get an answer at once, no sign-in: pick a chat style (teacher, coder, poet, comedian, philosopher and more), ask for longer answers, copy or share a reply, start again with one press.',
+    asks: ['quick ai chat', 'ai chat no sign up', 'ask ai anything', 'ai chat styles', 'free chatbot online', 'chat gpt alternative free'], related: ['/assistant/', '/assistant/voice/', '/assistant/sources/'] },
+  { path: '/assistant/private/', page: 'private', lane: 'assistant: duck.ai', name: 'Private chat', h1: 'Private AI chat', card: 'private ai chat',
+    does: 'Private AI chat: no account, chats kept only on your device (or not at all), choose the model, and one button that burns every chat. Verse keeps no log of what you write; each message is sent once to be answered.',
+    asks: ['private ai chat', 'anonymous ai chat', 'ai chat without account', 'ai chat no history', 'choose ai model chat', 'private chatbot'], related: ['/assistant/', '/assistant/workspace/', '/password/'] },
+  { path: '/assistant/sources/', page: 'sources', lane: 'assistant: perplexity.ai', name: 'Answers with sources', h1: 'Answers with sources', card: 'answer with sources',
+    does: 'Ask a question and get an answer with numbered sources you can open, the sources listed as cards, follow-up questions to go deeper, and every thread kept on your device to come back to.',
+    asks: ['ai answers with sources', 'ai search with citations', 'answer engine', 'ask a question with sources', 'cited ai answers', 'research a question'], related: ['/assistant/', '/news/', '/assistant/quick/'] },
+]);
+export const AI_SITES = Object.freeze([...MODEL_SITES, ...ASSISTANT_SITES]);
+/** the row of a page path, or null. Pure. */
+export const aiSiteOf = (path) => AI_SITES.find((r) => r.path === path) || null;
+
+// what the ask bar sends to these pages (lib/toolkit.js routeAsk): narrow phrases only, so an ordinary question still reaches the stage
+const AI_ROUTES = [
+  [/^(?:browse |search |find |open )?(?:open[- ]source |open |hugging ?face )?(?:ai|ml|llm) models?(?: catalogue| catalog| directory| hub| list)?$|^model hub$/i, '/models/'],
+  [/^(?:ai |ml )?datasets?(?: hub| catalogue| catalog)?$/i, '/models/?kind=datasets'],
+  [/^(?:open )?llm (?:leaderboard|benchmarks?|rankings?)$|^(?:ai|llm) benchmark scores$/i, '/models/leaderboard/'],
+  [/^(?:run (?:an? )?(?:llm|ai|model) (?:locally|at home|offline)|gguf models?|local (?:llms?|ai models?))$/i, '/models/local/'],
+  [/^(?:llm|ai model|ai api) (?:prices|pricing|costs?)$|^cost per million tokens$/i, '/models/prices/'],
+  [/^(?:ai |llm |chatbot )?(?:model )?arena$|^blind ai test$/i, '/models/arena/'],
+  [/^(?:ai chat|chat with (?:an? )?ai|ai assistant|assistant|chatbot)$/i, '/assistant/'],
+  [/^(?:talk to (?:an? )?ai|ai voice chat|voice chat with ai)$/i, '/assistant/voice/'],
+  [/^(?:private|anonymous) (?:ai )?chat$/i, '/assistant/private/'],
+  [/^(?:ai )?answers? with sources$|^answer engine$/i, '/assistant/sources/'],
+];
+/** the page an ask opens, or null. Pure. */
+export function aiAskOf(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  for (const [re, to] of AI_ROUTES) if (re.test(t)) return to;
+  return null;
+}

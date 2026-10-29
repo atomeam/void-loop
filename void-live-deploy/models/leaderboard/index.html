@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Open model leaderboard · Verse</title>
+<meta name="description" content="A leaderboard of open language models by benchmark (IFEval, BBH, MATH level 5, GPQA, MuSR, MMLU-PRO and the average): sort any column, filter by size and type, search, compare models in a chart, read what each benchmark measures and export CSV.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Open model leaderboard · Verse">
+<meta property="og:description" content="A leaderboard of open language models by benchmark (IFEval, BBH, MATH level 5, GPQA, MuSR, MMLU-PRO and the average): sort any column, filter by size and type, search, compare models in a chart, read what each benchmark measures and export CSV.">
+<meta property="og:url" content="https://a-to-mind.com/models/leaderboard/">
+<meta property="og:image" content="https://a-to-mind.com/og/models-leaderboard.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Model leaderboard on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Open model leaderboard · Verse">
+<meta name="twitter:description" content="A leaderboard of open language models by benchmark (IFEval, BBH, MATH level 5, GPQA, MuSR, MMLU-PRO and the average): sort any column, filter by size and type, search, compare models in a chart, read what each benchmark measures and export CSV.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/models-leaderboard.png">
+<style>
+  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --me: #ece6ff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --me: #241d3d; } }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --me: #241d3d; }
+  * { box-sizing: border-box; } [hidden] { display: none !important; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; text-align: center; font-weight: 700; } h2 { font-size: 17px; margin: 0 0 8px; } h3 { font-size: 15px; margin: 10px 0 4px; }
+  .sub { font-size: 14px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 42px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #anav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 12px; min-height: 92px; align-content: flex-start; }
+  #anav a { font-size: 14px; padding: 8px 12px; min-height: 40px; display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #anav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; max-width: 100%; }
+  textarea { width: 100%; min-height: 92px; resize: vertical; }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; } button.sm { min-height: 36px; padding: 4px 10px; font-size: 14px; }
+  a { color: var(--accent); } .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 150px; min-width: 0; }
+  .row > label select, .row > label input { width: 100%; } .row.c { justify-content: center; }
+  .chk { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 8px !important; color: var(--ink) !important; font-size: 15px !important; min-height: 44px; }
+  .row > label.chk input[type=checkbox] { min-height: 0; width: 24px; height: 24px; flex: 0 0 auto; } input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); } input[type=file] { min-height: 44px; }
+  .cards a, td a, .src a, .side a { display: inline-block; min-height: 24px; line-height: 24px; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 20px; }
+  .status { font-size: 14px; min-height: 24px; margin: 6px 0; } .bad { color: var(--bad); } .good { color: var(--good); }
+  .cards { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 8px; min-height: 420px; align-content: start; }
+  .cards li { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--bg); }
+  .cards .t { font-weight: 650; word-break: break-word; } .cards .m { font-size: 13px; color: var(--soft); } .cards .a { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; font-size: 12px; margin: 2px 4px 2px 0; background: var(--tint); }
+  .tw { overflow-x: auto; } table { border-collapse: collapse; width: 100%; font-size: 14px; } th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; } th { color: var(--soft); font-weight: 600; }
+  th button { min-height: 32px; min-width: 0; padding: 2px 6px; border: 0; background: none; color: var(--soft); font-weight: 600; font-size: 13px; } th button[aria-pressed=true] { color: var(--accent); background: none; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .card-md { font-size: 15px; max-height: 70vh; overflow: auto; border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; } .card-md pre, .msg pre { background: var(--tint); padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+  .card-md img { max-width: 100%; } code { font-family: ui-monospace, monospace; font-size: .92em; }
+  pre.cmd { background: var(--tint); padding: 10px; border-radius: 8px; overflow-x: auto; margin: 4px 0; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+  .ans { border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-height: 160px; background: var(--bg); overflow-wrap: anywhere; } .ans h3 { margin-top: 0; }
+  .bar { height: 14px; background: var(--accent); border-radius: 4px; }
+  .chat { display: grid; grid-template-columns: 250px 1fr; gap: 12px; } @media (max-width: 760px) { .chat { grid-template-columns: 1fr; } .thread { min-height: 200px; } }
+  .side { border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: var(--box); min-height: 120px; align-self: start; }
+  .side ul { list-style: none; padding: 0; margin: 6px 0; max-height: 420px; overflow-y: auto; } .side li { display: flex; gap: 4px; align-items: center; }
+  .side li a { flex: 1; display: block; padding: 8px; min-height: 40px; border-radius: 8px; color: var(--ink); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .side li a[aria-current=true] { background: var(--tint); font-weight: 600; }
+  .thread { border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: var(--box); min-height: 340px; display: flex; flex-direction: column; gap: 10px; overflow-wrap: anywhere; }
+  .msg { padding: 8px 12px; border-radius: 12px; max-width: 100%; } .msg.user { background: var(--me); align-self: flex-end; max-width: 88%; white-space: pre-wrap; } .msg.assistant { background: var(--bg); border: 1px solid var(--line); }
+  .msg .who { font-size: 12px; color: var(--soft); font-weight: 600; display: block; } .msg .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .msg p { margin: 6px 0; } .msg ul, .msg ol { padding-left: 22px; } .run-out { background: var(--bg); border: 1px dashed var(--line); border-radius: 8px; padding: 6px 8px; font: 13px ui-monospace, monospace; white-space: pre-wrap; }
+  .empty { color: var(--soft); text-align: center; margin: auto 0; font-size: 15px; }
+  .composer textarea { min-height: 80px; } .src { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; } .src li { border: 1px solid var(--line); border-radius: 10px; padding: 8px; font-size: 13px; }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; min-height: 48px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); display: inline-flex; align-items: center; min-height: 32px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media print { #anav, button, .row, .side, .composer, #related, #asks { display: none !important; } .chat { display: block; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/models/leaderboard/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Model leaderboard","url":"https://a-to-mind.com/models/leaderboard/","description":"A leaderboard of open language models by benchmark (IFEval, BBH, MATH level 5, GPQA, MuSR, MMLU-PRO and the average): sort any column, filter by size and type, search, compare models in a chart, read what each benchmark measures and export CSV.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"llm leaderboard, open llm leaderboard, llm benchmark scores, mmlu pro scores, compare llm benchmarks","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Model leaderboard","item":"https://a-to-mind.com/models/leaderboard/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body data-page="leaderboard">
+<main id="app">
+  <h1>Open model leaderboard</h1>
+  <p class="sub" id="lede">A leaderboard of open language models by benchmark (IFEval, BBH, MATH level 5, GPQA, MuSR, MMLU-PRO and the average): sort any column, filter by size and type, search, compare models in a chart, read what each benchmark measures and export CSV.</p>
+  <nav id="anav" aria-label="AI model pages"><a href="/models/">AI models</a><a href="/models/leaderboard/" aria-current="page">Model leaderboard</a><a href="/models/local/">Models to run at home</a><a href="/models/prices/">Model prices and context</a><a href="/models/arena/">Model arena</a></nav>
+  <section class="pane" aria-label="Leaderboard">
+    <div class="row"><label>Search a model<input type="search" id="q" maxlength="80" placeholder="qwen, llama, mistral" enterkeyhint="search"></label><label>Size<select id="size"><option value="" selected>Any size</option><option value="xs">Under 1B</option><option value="s">1B to 4B</option><option value="m">4B to 10B</option><option value="l">10B to 40B</option><option value="xl">40B and up</option></select></label><label>Type<select id="type"><option value="" selected>Every type</option><option value="pretrained">Pretrained</option><option value="chat">Chat (instruction tuned)</option><option value="fine">Fine-tuned</option></select></label><label class="chk"><input type="checkbox" id="merges"> Show merged models</label></div>
+    <p class="status" id="status" role="status" aria-live="polite">Loading the leaderboard…</p>
+    <div class="tw"><table id="board"><thead><tr><th>#</th><th>Compare</th><th><button type="button" data-k="name">Model</button></th><th class="n"><button type="button" data-k="params">Size</button></th><th class="n"><button type="button" data-k="average" aria-pressed="true">Average</button></th><th class="n"><button type="button" data-k="ifeval">IFEval</button></th><th class="n"><button type="button" data-k="bbh">BBH</button></th><th class="n"><button type="button" data-k="math">MATH Lvl 5</button></th><th class="n"><button type="button" data-k="gpqa">GPQA</button></th><th class="n"><button type="button" data-k="musr">MuSR</button></th><th class="n"><button type="button" data-k="mmlupro">MMLU-PRO</button></th></tr></thead><tbody id="rows"><tr><td colspan="10" style="height:360px">&nbsp;</td></tr></tbody></table></div>
+    <div class="row"><button type="button" id="more">Show more</button><button type="button" id="csv">Export CSV</button><button type="button" id="link">Copy a link to this view</button></div>
+  </section>
+  <section class="pane" aria-label="Compare in a chart">
+    <h2>Compare in a chart</h2>
+    <p class="note" id="chartNote">Tick Compare on two to four models to see their scores bar by bar.</p>
+    <div id="chart" style="min-height:60px"></div>
+  </section>
+  <section class="pane" aria-label="What the benchmarks measure">
+    <h2>What the benchmarks measure</h2>
+    <dl><dt><strong>Average</strong></dt><dd class="note" style="margin:0 0 6px">The mean of the six scores below.</dd><dt><strong>IFEval</strong></dt><dd class="note" style="margin:0 0 6px">Instruction following: does the answer obey checkable instructions such as &quot;write in under 100 words&quot; or &quot;use no commas&quot;.</dd><dt><strong>BBH</strong></dt><dd class="note" style="margin:0 0 6px">BIG-Bench Hard: 23 hard reasoning tasks from BIG-Bench, such as logic puzzles and date understanding.</dd><dt><strong>MATH Lvl 5</strong></dt><dd class="note" style="margin:0 0 6px">The hardest level (5) of the MATH competition problems.</dd><dt><strong>GPQA</strong></dt><dd class="note" style="margin:0 0 6px">Graduate-level, Google-proof questions in biology, physics and chemistry, written by experts.</dd><dt><strong>MuSR</strong></dt><dd class="note" style="margin:0 0 6px">Multistep soft reasoning: long stories (murder mysteries, object placement, team allocation) to reason through.</dd><dt><strong>MMLU-PRO</strong></dt><dd class="note" style="margin:0 0 6px">MMLU made harder: 10 answer choices instead of 4 and more reasoning questions across 14 subjects.</dd></dl>
+    <p class="note">Scores are percentages, normalised so that random guessing scores 0. A higher score on a test is not the same as being better at what you need: try the models yourself in the arena.</p>
+  </section>
+  <section class="pane" aria-label="About the data"><h2>About the data</h2><p class="note">Scores from the Open LLM Leaderboard by Hugging Face, which evaluated open models with the same harness on the same hardware and was archived in 2025; read live from its public table through the Hub's dataset viewer. Only open models are here: closed models' scores are reported by their makers and cannot be checked the same way. Every model links to its page on the Hub.</p></section>
+  <nav id="related" aria-label="Related tools"></nav>
+  <p class="note" style="text-align:center"><button type="button" id="shareBtn">Share this page</button> <button type="button" id="theme" aria-pressed="false">Light or dark</button></p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words and controls are in the HTML. Its code loads after the first paint and the load event, then wires them and fetches what is live
+  const go = () => Promise.all([import('/lib/models-page.js'), import('/lib/toolkit.js')]).then(([page, kit]) => { page.start('leaderboard'); kit.mountRelated(document.getElementById('related'), '/models/leaderboard/'); });
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>

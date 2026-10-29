@@ -453,6 +453,23 @@ export const PROBES = Object.freeze({
     askParts: { 'chord finder': [['a chord finder', /chord finder/i], ['inversions', /inversion/i], ['naming a chord from notes', /which chord is this/i]], 'scale finder': [['a scale finder', /scale finder/i], ['Dorian', /\bdorian\b/i], ['the notes of the scale', /C D E F G A B/]], 'guitar and piano shapes': [['guitar fingerings', /guitar fingerings/i], ['an open shape', /x 3 2 0 1 0/], ['a piano keyboard', /piano keyboard/i]], 'chords in a key': [['roman numerals', /\bvii°/], ['the circle of fifths', /circle of fifths/i], ['progressions', /progressions/i]] },
     facts: [['chord finder', /chord finder/i], ['scale finder', /scale finder/i], ['guitar fingerings', /guitar fingerings/i], ['a piano keyboard', /piano keyboard/i], ['inversions', /inversion/i], ['a chord named from notes', /which chord is this/i], ['chords in a key', /chords in this key/i], ['seventh chords', /seventh chords/i], ['progressions', /progressions/i], ['the circle of fifths', /circle of fifths/i], ['a transposer', /transpose/i], ['plays the chord', /play the chord/i]],
   },
+  // ai models (owner, 2026-10-26: every tower site gets its own page): Hugging Face's floor is /models/, a catalogue read live from the Hub's public API. Judged on
+  // Verse alone; the truths are the licences' own terms (Apache 2.0 allows commercial use, CC BY-NC does not, the Llama licence's 700 million monthly active users).
+  'ai models': {
+    site: 'https://huggingface.co/', verse: '/models/',
+    ask: { verse: '/models/?task=text-generation' },
+    truth: [['Apache 2.0 allows commercial use', /Apache 2\.0[\s\S]{0,40}\byes\b/], ['CC BY-NC is non-commercial only', /CC BY-NC 4\.0[\s\S]{0,40}\bno\b/], ['the Llama licence\'s 700 million monthly active users', /700 million monthly active users/], ['credits the Hub', /Hugging Face Hub/]],
+    askParts: { 'model catalogue': [['a search', /\bSearch\b/], ['a task filter', /\bTask\b/], ['a licence filter', /\bLicence\b/], ['a size filter', /\bSize\b/], ['a downloads filter', /Downloads at least/]], datasets: [['datasets', /\bDatasets\b/]], 'live demos (spaces)': [['try a model', /\bTry it\b/], ['run it', /\bRun\b/], ['the limits said', /daily limit/i]] },
+    facts: [['search', /\bSearch\b/], ['filter by task', /\bTask\b/], ['filter by licence', /\bLicence\b/], ['filter by size', /\bSize\b/], ['sort', /\bSort\b/], ['datasets', /\bDatasets\b/], ['model cards', /Model card/], ['compare side by side', /Compare side by side/], ['try a model', /\bTry it\b/], ['licences explained', /What each licence allows/], ['memory to run', /memory to run/i], ['no account', /no account/i]],
+  },
+  // the assistant (same day): Claude's floor is /assistant/, a chat on Verse's free models. Judged on Verse alone; what it cannot do is said on the page, plainly.
+  assistant: {
+    site: 'https://claude.ai/', verse: '/assistant/',
+    ask: { verse: '/assistant/?t=explain' },
+    truth: [['says it runs a smaller open model', /smaller open model/], ['says there is a daily free limit', /daily free limit/i], ['says the chats stay on the device', /stay on this device/i], ['the template named in the link opened', /Template: Explain simply/]],
+    askParts: { 'answers anything': [['a message box and Send', /\bSend\b/], ['templates', /Start from a template/], ['chat styles', /Chat style/]], 'writes and runs code': [['code runs in the browser', /JavaScript runs right here/]], 'builds itself': [['builds itself', /Verse builds itself/]] },
+    facts: [['a conversation', /Conversation|Your chats/], ['chat history', /Search your chats/], ['new chat', /New chat/], ['templates', /template/i], ['standing instructions', /Standing instructions/], ['file upload', /Add a text file/], ['text tools', /Text tools/], ['summarize', /\bSummarize\b/], ['translate', /\bTranslate\b/], ['export', /\bExport\b/], ['share a chat', /Share this chat as a link/], ['notes offline', /work offline/i], ['model choice', /\bModel\b/], ['no account', /no account/i]],
+  },
   podcasts: {
     site: 'https://podcasts.apple.com/', verse: '/podcasts/?show=verse&ep=ep1',
     // the question: open Verse Out Loud's first episode from a link. A page that only loaded shows its title and a search box; a page that works shows
@@ -643,6 +660,72 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
 const LANE_PROBES = Object.freeze({
   // the travel lane (owner, 2026-10-26: "need a flights page"): each site has a page of its own (LANE_PAGES) and the question that page answers. Truths worked out by hand
   // (London to New York is 5,540 km and 3,442 miles; London to Singapore 10,880 km; a 40 minute wait is under 45 minutes; Lisbon's ICAO code is LPPT).
+  // the ai models lane (owner, 2026-10-26): each site has a page of its own under /models/ (LANE_PAGES) and the question that page answers. Truths are fixed facts
+  // the page states (what a benchmark measures, Q4_K_M's 4.85 bits, the cost sum 1,000 x (1,000 x $1 + 500 x $2) / 1M = $2.00 a day, Elo 1000 vs 1000 -> 1016 and 984).
+  'ai models: llm-stats.com': {
+    ask: { verse: '/models/leaderboard/' },
+    truth: [['MMLU-PRO has 10 answer choices', /10 answer choices/], ['BBH is 23 hard tasks', /23 hard reasoning tasks/], ['MATH level 5 is the hardest level', /hardest level \(5\)/], ['credits the Open LLM Leaderboard', /Open LLM Leaderboard/]],
+    askParts: { 'benchmark leaderboard': [['IFEval', /\bIFEval\b/], ['GPQA', /\bGPQA\b/], ['MMLU-PRO', /MMLU-PRO/], ['an average', /\bAverage\b/]], 'sort and filter': [['size', /\bSize\b/], ['type', /\bType\b/], ['search', /Search a model/]], 'compare models': [['compare in a chart', /Compare in a chart/]], 'benchmarks explained': [['what they measure', /What the benchmarks measure/]] },
+    pageParts: {}, parts: {},
+    facts: [['IFEval', /\bIFEval\b/], ['BBH', /\bBBH\b/], ['MATH', /\bMATH\b/], ['GPQA', /\bGPQA\b/], ['MuSR', /\bMuSR\b/], ['MMLU-PRO', /MMLU-PRO/], ['sort any column', /Sorted by|Model/], ['filter by size', /\bSize\b/], ['merged models', /merged models/i], ['compare', /Compare/], ['export CSV', /Export CSV/], ['share a view', /link to this view/i]],
+  },
+  'ai models: ollama.com': {
+    ask: { verse: '/models/local/' },
+    truth: [['Q4_K_M keeps about 4.8 bits per weight', /Q4_K_M keeps about 4\.8 bits per weight/], ['an 8B model at Q4_K_M needs about 5.9 GB to run', /about 5\.9 GB to run|5\.9 GB/], ['Q8_0 is about twice the size of Q4', /twice the size/], ['GGUF named', /\bGGUF\b/]],
+    askParts: { 'model library': [['a list of models', /Models packed as GGUF|Live from the Hugging Face Hub/], ['search', /\bSearch\b/]], 'run command': [['a command', /ollama run|Files and commands/]], 'sizes and quantizations': [['builds', /Q4_K_M/], ['sizes in GB', /\bGB\b/]], 'what fits your memory': [['will it fit', /Will it fit\?/], ['memory', /Memory you can give it/]] },
+    pageParts: {}, parts: {},
+    facts: [['search models', /\bSearch\b/], ['filter by capability', /What it does/], ['vision models', /Vision/], ['embedding models', /Embeddings/], ['files and sizes', /Files and commands/], ['a run command', /ollama run|Run it with/], ['llama.cpp', /llama\.cpp/], ['quantization explained', /Quantization in plain words/], ['will it fit', /Will it fit\?/], ['runs offline', /\boffline\b/i]],
+  },
+  'ai models: openrouter.ai': {
+    ask: { verse: '/models/prices/' },
+    truth: [['1,000 requests of 1,000 in and 500 out at $1 and $2 per million cost $2.00 a day', /\$2\.00 a day/], ['a month of it is $60.00', /\$60\.00 a month/], ['prices in dollars per million tokens', /per million tokens/i]],
+    askParts: { 'model list with prices': [['input price', /In \$\/M/], ['output price', /Out \$\/M/]], 'context length': [['context', /\bContext\b/]], filters: [['takes in', /Takes in/], ['gives out', /Gives out/], ['highest price', /Highest price/]], 'free models': [['free only', /Free only/]], 'cost of use': [['a cost calculator', /What would it cost\?/]] },
+    pageParts: {}, parts: {},
+    facts: [['search', /\bSearch\b/], ['input modalities', /Takes in/], ['output modalities', /Gives out/], ['context length', /\bContext\b/], ['price per million tokens', /per million tokens/i], ['free models', /Free only/], ['tool use', /Uses tools/], ['sort by price', /Cheapest/], ['compare side by side', /Compare side by side/], ['cost calculator', /What would it cost\?/]],
+  },
+  'ai models: lmarena.ai': {
+    ask: { verse: '/models/arena/' },
+    truth: [['two models at 1000: the winner goes to 1016', /1016/], ['and the loser to 984', /\b984\b/], ['K = 32', /K = 32/]],
+    askParts: { 'anonymous battle': [['model A and model B', /Model A[\s\S]*Model B/], ['names after the vote', /names show after you vote/i]], vote: [['A is better', /A is better/], ['B is better', /B is better/], ['a tie', /\bTie\b/], ['both bad', /Both are bad/]], leaderboard: [['ratings', /Your ratings/], ['wins and losses', /Wins[\s\S]*Losses/]], 'side by side': [['you choose the models', /Side by side/]], categories: [['categories', /\bCategory\b/], ['coding', /\bCoding\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['a blind battle', /Battle/], ['a vote', /A is better/], ['a tie', /\bTie\b/], ['both bad', /Both are bad/], ['names after the vote', /after you vote/i], ['side by side', /Side by side/], ['ratings', /\bRating\b/], ['categories', /\bCategory\b/], ['Elo explained', /How the rating works/], ['export votes', /Export votes/]],
+  },
+  // the assistant lane (same day): each has a page of its own under /assistant/, sharing one chat engine (lib/assistant-page.js); each judged on what that site does
+  'assistant: typingmind.com': {
+    ask: { verse: '/assistant/workspace/' },
+    truth: [['a prompt picked with a slash', /type \/ in the message box|type \/ for your prompts/i], ['characters are names with their own instructions', /own standing instructions/i]],
+    askParts: { 'chat history search': [['search your chats', /Search your chats/]], folders: [['folders', /\bFolder\b/]], 'prompt library': [['a prompt library', /Prompt library/]], characters: [['characters', /\bCharacters\b/]], 'import and export': [['import', /Import chats/], ['export', /\bExport\b/]] },
+    pageParts: {}, parts: {},
+    facts: [['folders', /\bFolder\b/], ['pinned chats', /pinned chats/i], ['search every message', /Search your chats/], ['prompt library', /Prompt library/], ['characters', /\bCharacters\b/], ['chat stats', /chats ·|chats/], ['templates', /template/i], ['model choice', /\bModel\b/], ['export', /\bExport\b/], ['import', /Import chats/], ['share a chat', /Share this chat/], ['on your device', /on your device|on this device/i]],
+  },
+  'assistant: pi.ai': {
+    ask: { verse: '/assistant/voice/' },
+    truth: [['replies read aloud', /Read replies aloud/], ['hands-free listening', /listen again after each reply/i]],
+    askParts: { 'voice input': [['speak', /\bSpeak\b/]], 'replies read aloud': [['read aloud', /Read replies aloud/]], 'voice choice': [['a voice', /\bVoice\b/], ['speed', /\bSpeed\b/]], 'conversation starters': [['topics', /Topics to start from/]] },
+    pageParts: {}, parts: {},
+    facts: [['speak', /\bSpeak\b/], ['read aloud', /Read replies aloud/], ['choose a voice', /\bVoice\b/], ['speed', /\bSpeed\b/], ['hands-free', /Hands-free/], ['topics', /Topics to start from/], ['stop speaking', /Stop speaking/], ['notes', /\bNotes\b/], ['no account', /no account/i]],
+  },
+  'assistant: deepai.org': {
+    ask: { verse: '/assistant/quick/' },
+    truth: [['no sign-in said', /no sign-in/i], ['chat styles named', /Teacher[\s\S]*Coder[\s\S]*Poet/]],
+    askParts: { 'instant chat': [['ask anything', /Ask anything/]], 'chat styles': [['chat style', /Chat style/], ['comedian', /Comedian/], ['philosopher', /Philosopher/]], 'longer answers': [['longer answers', /Longer, deeper answers/]], 'no sign-in': [['no sign-in', /no sign-in/i]] },
+    pageParts: {}, parts: {},
+    facts: [['ask anything', /Ask anything/], ['chat styles', /Chat style/], ['teacher', /Teacher/], ['coder', /Coder/], ['poet', /Poet/], ['longer answers', /Longer, deeper answers/], ['new chat', /New chat/], ['share', /Share this chat/], ['no sign-in', /no sign-in/i]],
+  },
+  'assistant: duck.ai': {
+    ask: { verse: '/assistant/private/' },
+    truth: [['no log kept said', /keeps no log/i], ['burn all named', /Burn all/], ['chats only in this browser', /only in this browser/i]],
+    askParts: { 'no account': [['no account', /No account/]], 'chats kept on the device': [['kept on this device', /Keep my recent chats on this device/]], 'model choice': [['a model choice', /\bModel\b/]], 'clear all chats': [['burn all', /Burn all/]] },
+    pageParts: {}, parts: {},
+    facts: [['no account', /No account/], ['no tracking', /no tracking/i], ['no log', /no log/i], ['keep chats or not', /Keep my recent chats/], ['burn all', /Burn all/], ['model choice', /\bModel\b/], ['new chat', /New chat/], ['search chats', /Search your chats/], ['export', /\bExport\b/]],
+  },
+  'assistant: perplexity.ai': {
+    ask: { verse: '/assistant/sources/' },
+    truth: [['numbered sources said', /nummeriert|numbered/i], ['no live web search said plainly', /no live web search/i]],
+    askParts: { 'answers with sources': [['sources', /\bSources\b/]], 'numbered citations': [['numbered', /numbered/i]], 'follow-up questions': [['ask next', /Ask next/]], 'threads kept': [['your chats', /Search your chats/]] },
+    pageParts: {}, parts: {},
+    facts: [['ask a question', /Ask a question/], ['sources', /\bSources\b/], ['numbered citations', /numbered/i], ['follow-ups', /Ask next/], ['threads kept', /Search your chats/], ['share', /Share this chat/], ['export', /\bExport\b/], ['honest about the web', /no live web search/i]],
+  },
   'travel: tripwaffle.com': {
     ask: { verse: '/flights/trip/#trip=' + ASK_TRIP },
     truth: [['both flights listed', /BA 117[\s\S]{0,400}UA 904/], ['the wait of 40 minutes at New York', /Wait: 40 min/], ['a warning for a wait under 45 minutes', /Under 45 minutes/], ['the whole trip time', /from the first departure to the last arrival/]],

@@ -23,7 +23,7 @@ test('every page a floor, a lane, a probe or the tool table names exists as a fi
 // it beside the site. A floor's `page` is the page the gate measures it against, so where a probe names one too they must be the same page. The floors
 // below have no fitting page yet: each is a page to build, and comes off this list the day its page lands (a listed floor that has a page fails, so the
 // list only shrinks). Nothing else may be added to it without its page.
-const NEEDS_PAGE = ['maps', 'games', 'learning', 'jobs', 'shopping', 'chat', 'video', 'social', 'email', 'search', 'code hosting', 'ai models', 'assistant'];
+const NEEDS_PAGE = ['maps', 'games', 'learning', 'jobs', 'shopping', 'chat', 'video', 'social', 'email', 'search', 'code hosting'];
 test('every floor and lane site names its own Verse page, the same page its probe measures, and the page exists', () => {
   const path = (p) => String(p || '').replace(/[?#].*$/, ''), bad = [];
   for (const f of FLOORS) {

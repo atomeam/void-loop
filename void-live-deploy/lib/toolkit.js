@@ -7,7 +7,7 @@
  *      time into a countdown): each page passes its own as { label, href: () => url }, worked out when pressed, so they carry what is there now.
  * Nothing leaves the device. Pure except accent(), setAccent() and mountRelated(). Tests: tools/toolkit.test.mjs.
  */
-import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf } from './tool-sites.js';
+import { SITE_PAGES, PDF_SITES, KANBAN_SITES, PDF_ASK, KANBAN_ASK, pdfToolOf, AI_SITES, aiAskOf } from './tool-sites.js';
 import { flightAskOf } from './flight-sites.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
@@ -19,6 +19,8 @@ export const TOOLS = Object.freeze({
   '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
+  // the AI model and assistant floors: the leader's page and a page for each site of its lane (lib/tool-sites.js AI_SITES)
+  ...Object.fromEntries(AI_SITES.map((p) => [p.path, p.name])),
 });
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 // each PDF page leads to its sisters; each Kanban page to the others; the leaders reach the tools that go with them
@@ -27,6 +29,7 @@ const SITE_RELATED = Object.fromEntries([...PDF_SITES.map((p) => [p.path, p.path
   ...KANBAN_SITES.map((p) => [p.path, p.path === '/kanban/' ? [...sisters(KANBAN_SITES, p.path).slice(0, 2), '/calendar/', '/notes/', '/stopwatch/'] : ['/kanban/', ...sisters(KANBAN_SITES, p.path).filter((x) => x !== '/kanban/').slice(0, 2), '/calendar/']])]);
 export const RELATED = Object.freeze({
   ...SITE_RELATED,
+  ...Object.fromEntries(AI_SITES.map((p) => [p.path, p.related])),
   '/photos/': ['/resize-image/', '/color/', '/convert/'],
   '/color/': ['/gradient/', '/wheel/', '/base-converter/'],
   '/gradient/': ['/color/', '/wheel/'],
@@ -85,6 +88,7 @@ export const CARD_ASK = Object.freeze({
   '/calculator/': '17% of 240', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
   '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  ...Object.fromEntries(AI_SITES.map((p) => [p.path, p.card])),
 });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
@@ -154,6 +158,8 @@ const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
   // flights (owner, 2026-10-26): 'flights to lisbon', 'cheap flights', 'flight time london new york', 'distance london to new york', 'airport codes', 'layover calculator' open the flights page that does it, with the places in the link (lib/flight-sites.js)
   [{ exec: (t) => (flightAskOf(t) ? [t] : null) }, (m, t) => flightAskOf(t)],
+  // ai models and the assistant: 'ai models', 'llm leaderboard', 'run llm locally', 'ai chat', 'private ai chat' open the page that does it (lib/tool-sites.js aiAskOf)
+  [{ exec: (t) => (aiAskOf(t) ? [t] : null) }, (m, t) => aiAskOf(t)],
   // pdf and kanban: 'merge pdf', 'jpg to pdf', 'compress pdf', 'pdf tools' open that tool; 'kanban board' opens the board ('ask questions about a pdf' stays with the stage's PDF card)
   [PDF_ASK, (m, t) => '/pdf/' + (pdfToolOf(t) ? '?tool=' + pdfToolOf(t) : '')],
   [KANBAN_ASK, () => '/kanban/'],

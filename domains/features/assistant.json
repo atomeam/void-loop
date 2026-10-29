@@ -1,6 +1,6 @@
 {
  "floor": "assistant",
- "verse_page": null,
+ "verse_page": "/assistant/",
  "researched": "2026-10-25",
  "sites": {
   "claude.ai": {
@@ -17,24 +17,25 @@
      "name": "Chat with an AI",
      "detail": "Multi-turn conversation answering anything",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "functions/api/answer.js: any ask no skill covers is answered by the free Workers AI model with a Wikipedia source cited when one matches, plain Wikipedia extract without a model; one ask at a time on the stage"
+     "verse": "has",
+     "verse_evidence": "/assistant/: a multi-turn chat on Verse's free open model (the last 16 turns sent), model choice, chat styles"
     },
     {
      "group": "core",
      "name": "Writing and editing",
      "detail": "Drafts, rewrites, summaries, translation",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/writing-aids.js, translate.js, answer engine"
+     "verse": "has",
+     "verse_evidence": "templates, Ask Verse to rewrite, and device tools (count, summarize, rewrite) plus Verse's translator",
+     "shows": "\\bRewrite\\b"
     },
     {
      "group": "core",
      "name": "Code help",
      "detail": "Write, explain and debug code",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "answer engine; skills/terminal.js is a rule-based command line"
+     "verse": "has",
+     "verse_evidence": "code in fenced blocks with Copy; JavaScript runs in a Worker in the browser"
     },
     {
      "group": "core",
@@ -42,31 +43,32 @@
      "detail": "PDFs, images, docs, spreadsheets in the chat",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "device-only cards: photos, pdf-card, csv-table; not read by a model"
+     "verse_evidence": "a text file is read on the device and sent with the message; no images or PDFs read by the model (said)"
     },
     {
      "group": "core",
      "name": "Conversation history",
      "detail": "Past chats listed and searchable",
      "paid": false,
-     "verse": "partial",
-     "verse_evidence": "skills/recent.js and ask-clipboard keep recent asks on the device"
+     "verse": "has",
+     "verse_evidence": "chats kept on the device, listed and searchable; rename, delete; pinned on the workspace page",
+     "shows": "Search your chats"
     },
     {
      "group": "core",
      "name": "Artifacts",
      "detail": "Self-contained pages, documents, code and apps made in the chat",
      "paid": false,
-     "verse": "has",
-     "verse_evidence": "Verse makes working cards and pages from an ask (calculator, games, flashcards) - its core"
+     "verse": "missing",
+     "verse_evidence": "skipped: Verse's stage makes live cards from asks; not in this chat"
     },
     {
      "group": "power",
      "name": "Projects",
      "detail": "Workspaces with shared files and instructions",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "/assistant/workspace/: folders and characters with their own instructions"
     },
     {
      "group": "power",
@@ -74,7 +76,7 @@
      "detail": "Remembers context across chats",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/memory-graph.js notes which skills answered and patterns; skills/codex.js files cards"
+     "verse_evidence": "standing instructions kept on the device and sent with every message"
     },
     {
      "group": "power",
@@ -82,7 +84,7 @@
      "detail": "Answers with current web sources",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "answer engine cites Wikipedia; live data skills (weather, news, markets)"
+     "verse_evidence": "/assistant/sources/: answers with encyclopedia sources; no live web search (said)"
     },
     {
      "group": "power",
@@ -90,7 +92,7 @@
      "detail": "Multi-step research report with citations",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse_evidence": "skipped for now: one question at a time on the free model"
     },
     {
      "group": "power",
@@ -98,7 +100,7 @@
      "detail": "Runs code, makes xlsx/docx/pptx/pdf files",
      "paid": false,
      "verse": "partial",
-     "verse_evidence": "skills/print-download.js, csv-table and stage-export make files from cards"
+     "verse_evidence": "JavaScript runs in the browser; no other languages or files (said)"
     },
     {
      "group": "power",
@@ -106,31 +108,31 @@
      "detail": "Gmail, Calendar, Drive, Slack and more",
      "paid": false,
      "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse_evidence": "skipped: no accounts"
     },
     {
      "group": "power",
      "name": "Extended thinking and model choice",
      "detail": "Choose model, think longer",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "a choice of seven free open models; no extended thinking"
     },
     {
      "group": "power",
      "name": "Voice mode",
      "detail": "Speak and listen",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "/assistant/voice/: speak, replies read aloud, voice and speed, hands-free"
     },
     {
      "group": "power",
      "name": "Styles and custom instructions",
      "detail": "Set tone and preferences",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "chat styles and standing instructions"
     },
     {
      "group": "power",
@@ -138,7 +140,7 @@
      "detail": "n/a",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "Verse files its own misses as jobs (lib/learn.js) and agents ship new skills daily"
+     "verse_evidence": "said on the page: asks it cannot handle become work Verse takes on"
     },
     {
      "group": "sharing",
@@ -146,23 +148,23 @@
      "detail": "Public links, publish artifacts",
      "paid": false,
      "verse": "has",
-     "verse_evidence": "skills/share.js and card share links; invite.js shared stage"
+     "verse_evidence": "a chat packed into a link, nothing uploaded; Markdown and JSON export, import, print"
     },
     {
      "group": "offline-mobile",
      "name": "Desktop and mobile apps",
      "detail": "Mac, Windows, iOS, Android; Chrome extension",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "partial",
+     "verse_evidence": "installable web app; works offline for chats, notes and tools"
     },
     {
      "group": "accessibility",
      "name": "Screen reader and voice",
      "detail": "Accessible web app, dictation",
      "paid": false,
-     "verse": "missing",
-     "verse_evidence": "no Verse skill or page does this"
+     "verse": "has",
+     "verse_evidence": "labelled controls, live regions for replies, speech in and out"
     },
     {
      "group": "paid",
@@ -180,6 +182,326 @@
      "verse": "missing",
      "verse_evidence": "no Verse skill or page does this"
     }
+   ],
+   "leader": true,
+   "verse_uses": [
+    "nothing from the site: the chat runs on Verse's own free models; what Claude does that Verse cannot is listed on the page"
+   ]
+  },
+  "typingmind.com": {
+   "lane": true,
+   "page": "/assistant/workspace/",
+   "sources": [
+    "https://www.typingmind.com/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Chat history search",
+     "detail": "Search across all chats",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "search every message, with a snippet"
+    },
+    {
+     "group": "core",
+     "name": "Folders",
+     "detail": "File chats in folders",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "a folder per chat and a folder filter"
+    },
+    {
+     "group": "core",
+     "name": "Prompt library",
+     "detail": "Saved prompts inserted with a slash",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "save prompts; \"/\" in the box picks one"
+    },
+    {
+     "group": "core",
+     "name": "Characters",
+     "detail": "Agents with their own system prompt",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "characters: a name with standing instructions, picked per chat"
+    },
+    {
+     "group": "core",
+     "name": "Import and export",
+     "detail": "Back up chats",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "JSON export and import, Markdown per chat"
+    },
+    {
+     "group": "power",
+     "name": "Pin chats",
+     "detail": "Keep chats on top",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pin"
+    },
+    {
+     "group": "power",
+     "name": "Chat statistics",
+     "detail": "Counts of chats and words",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "chats, messages and words"
+    },
+    {
+     "group": "power",
+     "name": "Bring your own key",
+     "detail": "Use paid models with your API key",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: Verse asks for no keys"
+    },
+    {
+     "group": "power",
+     "name": "Plugins",
+     "detail": "Web search, image generation plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped for now"
+    }
+   ],
+   "verse_uses": [
+    "nothing: its features are rebuilt on the device"
+   ]
+  },
+  "pi.ai": {
+   "lane": true,
+   "page": "/assistant/voice/",
+   "sources": [
+    "https://pi.ai/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Voice input",
+     "detail": "Speak instead of typing",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Speak (the browser's speech recognition)"
+    },
+    {
+     "group": "core",
+     "name": "Replies read aloud",
+     "detail": "Hear every reply",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Read replies aloud"
+    },
+    {
+     "group": "core",
+     "name": "Voice choice",
+     "detail": "Pick a voice",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the device's voices and a speed"
+    },
+    {
+     "group": "core",
+     "name": "Conversation starters",
+     "detail": "Topics to begin with",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "six topics"
+    },
+    {
+     "group": "power",
+     "name": "Warm conversational style",
+     "detail": "Short, friendly replies",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the warm style is sent for this page"
+    },
+    {
+     "group": "power",
+     "name": "Hands-free",
+     "detail": "Listens again after a reply",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Hands-free"
+    }
+   ],
+   "verse_uses": [
+    "nothing: speech runs in the visitor's browser"
+   ]
+  },
+  "deepai.org": {
+   "lane": true,
+   "page": "/assistant/quick/",
+   "sources": [
+    "https://deepai.org/chat"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Instant chat",
+     "detail": "Ask without signing in",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/assistant/quick/"
+    },
+    {
+     "group": "core",
+     "name": "Chat styles",
+     "detail": "Personas such as teacher, coder, poet",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "eight styles"
+    },
+    {
+     "group": "core",
+     "name": "Longer answers",
+     "detail": "A mode for deeper answers",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Longer, deeper answers"
+    },
+    {
+     "group": "core",
+     "name": "No sign-in",
+     "detail": "Use without an account",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "said on the page"
+    },
+    {
+     "group": "paid",
+     "name": "Pro models",
+     "detail": "Better models for subscribers",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: paid"
+    }
+   ],
+   "verse_uses": [
+    "nothing"
+   ]
+  },
+  "duck.ai": {
+   "lane": true,
+   "page": "/assistant/private/",
+   "sources": [
+    "https://duck.ai/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "No account",
+     "detail": "Private chat without signing in",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/assistant/private/"
+    },
+    {
+     "group": "core",
+     "name": "Chats kept on the device",
+     "detail": "Recent chats stored locally, optional",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Keep my recent chats on this device (on by default, can be off)"
+    },
+    {
+     "group": "core",
+     "name": "Model choice",
+     "detail": "Pick among several models",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "seven free open models"
+    },
+    {
+     "group": "core",
+     "name": "Clear all chats",
+     "detail": "The fire button",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Burn all"
+    },
+    {
+     "group": "power",
+     "name": "No training on chats",
+     "detail": "Providers do not train on them",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Verse keeps no log or copy; the model runs on Verse's own Cloudflare account"
+    }
+   ],
+   "verse_uses": [
+    "nothing"
+   ]
+  },
+  "perplexity.ai": {
+   "lane": true,
+   "page": "/assistant/sources/",
+   "sources": [
+    "https://www.perplexity.ai/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Answers with sources",
+     "detail": "An answer with the pages it came from",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the stage's answer route with encyclopedia sources"
+    },
+    {
+     "group": "core",
+     "name": "Numbered citations",
+     "detail": "[1] marks link to sources",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "each [n] links to its source; sources as cards"
+    },
+    {
+     "group": "core",
+     "name": "Follow-up questions",
+     "detail": "Suggested next questions",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Ask next"
+    },
+    {
+     "group": "core",
+     "name": "Threads kept",
+     "detail": "Come back to a thread",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "kept on the device, searchable"
+    },
+    {
+     "group": "power",
+     "name": "Live web search",
+     "detail": "Searches the whole web now",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: no live search API; said on the page"
+    },
+    {
+     "group": "power",
+     "name": "Focus modes",
+     "detail": "Academic, video and more",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped for now"
+    },
+    {
+     "group": "paid",
+     "name": "Pro search",
+     "detail": "Deeper multi-step search",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: paid"
+    }
+   ],
+   "verse_uses": [
+    "nothing: the sources are Wikipedia articles the answer route finds"
    ]
   }
  },
@@ -194,5 +516,12 @@
   "device-first: most cards send nothing",
   "grows itself from what it could not answer"
  ],
- "first_page": "Conversation page /ask/ for people who want to keep talking to Verse. First: a thread where each turn can be a plain answer or a live card (the same skills as the stage), follow-ups carry the last answer as context to the answer engine, the thread kept on the device and shareable as a link, and a visible \"what I remember\" list the visitor can edit. Will not build: paid models, connectors to private accounts, voice mode or file reading by a model."
+ "first_page": "Conversation page /ask/ for people who want to keep talking to Verse. First: a thread where each turn can be a plain answer or a live card (the same skills as the stage), follow-ups carry the last answer as context to the answer engine, the thread kept on the device and shareable as a link, and a visible \"what I remember\" list the visitor can edit. Will not build: paid models, connectors to private accounts, voice mode or file reading by a model.",
+ "built": "2026-10-26",
+ "union_gaps": [
+  "live web search with sources",
+  "multi-step research",
+  "images and PDFs read by the model",
+  "artifacts in the chat"
+ ]
 }

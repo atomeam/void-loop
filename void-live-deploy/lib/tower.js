@@ -88,8 +88,8 @@ const HAND_FLOORS = [
   { id: 'code hosting', site: 'GitHub', url: 'https://github.com/', ask: 'look at atomeam/void-loop', label: 'Code hosting', glyph: '⌥', extra: ['repositories', 'pull requests and review', 'issues', 'actions and automation'] },
   // more opponents (owner, 2026-10-24: "you can use github and hugging face and perchance and anything you want as an opponent")
   { id: 'random generators', site: 'perchance.org', url: 'https://perchance.org/', ask: 'random name generator', label: 'Random generators', glyph: '⁇', page: '/generators/', extra: ['generator catalogue', 'make your own generator', 'image generation', 'list language', 'publish and remix'] },
-  { id: 'ai models', site: 'Hugging Face', url: 'https://huggingface.co/', ask: 'what can you do', label: 'AI models and demos', glyph: '◈', extra: ['model catalogue', 'datasets', 'live demos (spaces)'] },
-  { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', extra: ['answers anything', 'writes and runs code', 'builds itself'] },
+  { id: 'ai models', site: 'Hugging Face', url: 'https://huggingface.co/', ask: 'what can you do', page: '/models/', label: 'AI models and demos', glyph: '◈', extra: ['model catalogue', 'datasets', 'live demos (spaces)'] },
+  { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', page: '/assistant/', label: 'AI assistant', glyph: '◈', extra: ['answers anything', 'writes and runs code', 'builds itself'] },
 ];
 
 // Lanes (owner, 2026-10-25: "defeat every single translate site one by one before we move on . its ok to punch down we can just confirm we
@@ -125,6 +125,11 @@ export const LANES = Object.freeze({
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // travel (owner, 2026-10-26: "need a flights page"): the small flight and trip tools, smallest first, Google Flights (the floor itself) last; each found alive by a web search on 2026-10-26 (a fetch from the builder's network is closed). tripwaffle.com asks for an account to keep a trip (its public side is a page about forwarding booking emails); the others are open pages. Each gets a page of its own (LANE_PAGES)
   travel: ['https://tripwaffle.com/', 'https://aruljohn.com/airport-codes/', 'https://www.clock7.com/flight-calculator/', 'https://www.airmilescalculator.com/', 'https://www.gcmap.com/', 'https://co2.myclimate.org/en/flight_calculators/new', 'https://www.flightconnections.com/'],
+  // ai models (owner, 2026-10-26: every tower site gets its own page; easiest first): model directories and leaderboards smaller than Hugging Face (the floor itself, last), written from what
+  // each is (the builder's network was closed, so the gate's first run is the first check each answers); each has a page of its own under /models/ (LANE_PAGES, lib/ai-sites.js)
+  'ai models': ['https://llm-stats.com/', 'https://ollama.com/search', 'https://openrouter.ai/models', 'https://lmarena.ai/leaderboard'],
+  // the assistant (same day): assistant and chat-UI sites smaller than Claude (the floor itself, last), the same way; each has a page of its own under /assistant/
+  assistant: ['https://www.typingmind.com/', 'https://pi.ai/', 'https://deepai.org/chat', 'https://duck.ai/', 'https://www.perplexity.ai/'],
   calendar: ['https://calendar.online/', 'https://www.teamup.com/', 'https://timetreeapp.com/', 'https://www.any.do/calendar', 'https://www.cozi.com/', 'https://proton.me/calendar', 'https://calendar.zoho.com/', 'https://www.icloud.com/calendar', 'https://calendar.yahoo.com/', 'https://outlook.live.com/calendar'],
 });
 // A lane site with a page of its own (owner, 2026-10-26: "even if we are sure we already stomp them we still make a page and beat them"; docs/RULES.md): the
@@ -137,6 +142,8 @@ export const LANE_PAGES = Object.freeze({
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
   'travel: tripwaffle.com': '/flights/trip/', 'travel: aruljohn.com': '/flights/airports/', 'travel: clock7.com': '/flights/time/', 'travel: airmilescalculator.com': '/flights/distance/', 'travel: gcmap.com': '/flights/map/', 'travel: co2.myclimate.org': '/flights/co2/', 'travel: flightconnections.com': '/flights/routes/',
+  'ai models: llm-stats.com': '/models/leaderboard/', 'ai models: ollama.com': '/models/local/', 'ai models: openrouter.ai': '/models/prices/', 'ai models: lmarena.ai': '/models/arena/',
+  'assistant: typingmind.com': '/assistant/workspace/', 'assistant: pi.ai': '/assistant/voice/', 'assistant: deepai.org': '/assistant/quick/', 'assistant: duck.ai': '/assistant/private/', 'assistant: perplexity.ai': '/assistant/sources/',
   'finance: companiesmarketcap.com': '/markets/caps/', 'finance: finviz.com': '/markets/screener/?near=100&sort=pct',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
@@ -154,6 +161,15 @@ export const LANE_EXTRAS = Object.freeze({
   'travel: gcmap.com': ['route map', 'chained routes', 'great circle distance', 'airport info'],
   'travel: co2.myclimate.org': ['CO2 per passenger', 'cabin class', 'return trip', 'method named'],
   'travel: flightconnections.com': ['where can I go', 'filter by distance', 'airport finder', 'provider links'],
+  'ai models: llm-stats.com': ['benchmark leaderboard', 'sort and filter', 'compare models', 'benchmarks explained'],
+  'ai models: ollama.com': ['model library', 'run command', 'sizes and quantizations', 'what fits your memory'],
+  'ai models: openrouter.ai': ['model list with prices', 'context length', 'filters', 'free models', 'cost of use'],
+  'ai models: lmarena.ai': ['anonymous battle', 'vote', 'leaderboard', 'side by side', 'categories'],
+  'assistant: typingmind.com': ['chat history search', 'folders', 'prompt library', 'characters', 'import and export'],
+  'assistant: pi.ai': ['voice input', 'replies read aloud', 'voice choice', 'conversation starters'],
+  'assistant: deepai.org': ['instant chat', 'chat styles', 'longer answers', 'no sign-in'],
+  'assistant: duck.ai': ['no account', 'chats kept on the device', 'model choice', 'clear all chats'],
+  'assistant: perplexity.ai': ['answers with sources', 'numbered citations', 'follow-up questions', 'threads kept'],
   'sports: thesportsdb.com': ['sport search', 'born on this day', 'sport grid', 'free api'] });
 const laneHost = (u) => String(u).replace(/^[a-z]+:\/\//, '').replace(/[/?#].*$/, '').replace(/^www\./, '');
 /** the hand-named floors with each one's lane unrolled behind it. Pure. */

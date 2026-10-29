@@ -17,6 +17,10 @@ export const TRANSLATE_MODEL = '@cf/meta/m2m100-1.2b'; // the translator (functi
 export const ANSWER_FALLBACK = '@cf/openai/gpt-oss-120b';
 export const PATH_MODELS = { answer: FREE_MODEL, merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL, translate: TRANSLATE_MODEL };
 export const PATHS = Object.keys(PATH_MODELS);
+// The models a visitor may pick on the assistant and model pages (lib/ai-sites.js TRY names each by the hub repository it is a build of; owner, 2026-10-26:
+// /models/ "try it" for the models Verse can run free, /assistant/ on Verse's free models). Every one is a Workers AI model on the site's own binding, spent
+// from the same free daily allowance under the assistant mode's own cap (lib/assistant-chat.js). A key that no longer answers says so on the page.
+export const TRY_MODELS = Object.freeze({ verse: FREE_MODEL, oss120: ANSWER_FALLBACK, oss20: '@cf/openai/gpt-oss-20b', llama8: '@cf/meta/llama-3.1-8b-instruct', llama3: '@cf/meta/llama-3.2-3b-instruct', mistral24: '@cf/mistralai/mistral-small-3.1-24b-instruct', qwencoder: '@cf/qwen/qwen2.5-coder-32b-instruct' });
 
 export function models(path) {
   if (!PATHS.includes(path)) throw new Error('unknown model path: ' + path);
