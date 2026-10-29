@@ -1,1 +1,0 @@
-{"at":"2026-10-29T15:35:48Z","by":"claude","kind":"fix","what":"The queue no longer trusts a shell count: a home page whose html holds under 2 controls (linkedin.com/jobs read 1 over 19 scripts) is not counted, so the jobs lane stops jumping ahead of real small sites"}
