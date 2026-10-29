@@ -310,76 +310,85 @@
   "random number": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 145,
-    "best": 193,
-    "evidence": "Verse (/random/?min=1&max=100) 145 ms to the load event (median of 3, phone width) vs random.org 193 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:00:05.016Z"
+    "verse": 170,
+    "best": 172,
+    "evidence": "Verse (/random/?min=1&max=100) 170 ms to the load event (median of 3, phone width) vs random.org 172 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 loads answered vs random.org 3 of 3 loads answered",
-    "at": "2026-10-28T13:00:05.016Z"
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 px sideways overflow at 390 px vs random.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:00:05.016Z"
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 0 unnamed controls or images vs random.org 0 unnamed controls or images",
-    "at": "2026-10-28T13:00:05.016Z"
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/random/?min=1&max=100) 1 (1: the page shows itself again with the network cut) vs random.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:00:05.016Z"
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs random.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:00:05.016Z"
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 11,
     "best": 4,
     "evidence": "Verse (/random/?min=1&max=100) 11 of 15 things a full answer shows vs random.org 4 of 15 things a full answer shows (Verse lacks: Integer generator: count, min, max, Repeatable randomisation (persistent identifier / date), List randomizer, Decimal fractions; site lacks: how many, no repeats, sorted, pick from a list, a link that keeps the setting, number base, Integer generator: count, min, max, Base 2 / 8 / 10 / 16, Repeatable randomisation (persistent identifier / date), List randomizer, Decimal fractions)",
-    "at": "2026-10-28T13:00:05.016Z",
-    "of": 15
+    "at": "2026-10-29T02:54:35.727Z",
+    "of": 15,
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
-    "verse": 1,
+    "verse": 4,
     "best": 29,
-    "evidence": "Verse (/random/?min=1&max=100) 1 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.10), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:00:05.016Z"
+    "evidence": "Verse (/random/?min=1&max=100) 4 design defects vs random.org 29 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.04), random.org (10 low-contrast texts, 19 small tap targets, layout shift 0.00)",
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    },
    "range choice": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 3 of 3 shown vs random.org 1 of 3 shown (Verse lacks: none; site lacks: how many, no repeats)",
-    "at": "2026-10-28T13:00:05.016Z",
+    "at": "2026-10-29T02:54:35.727Z",
     "of": 3,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 1 of 1 right against the worked-out answer; judged against the standard, not random.org (the site is not asked)",
-    "at": "2026-10-28T13:00:05.016Z",
+    "at": "2026-10-29T02:54:35.727Z",
     "of": 1
    },
    "true randomness": {
@@ -387,9 +396,18 @@
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/random/?min=1&max=100) 2 of 2 shown vs random.org 1 of 2 shown (Verse lacks: none; site lacks: a draw others can check)",
-    "at": "2026-10-28T13:00:05.016Z",
+    "at": "2026-10-29T02:54:35.727Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 4,
+    "evidence": "Verse (/random/?min=1&max=100) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs random.org 4 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:54:35.727Z",
+    "siteRead": true
    }
   },
   "word count": {
@@ -16936,59 +16954,66 @@
   "travel: tripwaffle.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 191,
-    "best": 247,
-    "evidence": "Verse (/flights/trip/) 191 ms to the load event (median of 3, phone width) vs tripwaffle.com 247 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:16:37.069Z"
+    "verse": 163,
+    "best": 172,
+    "evidence": "Verse (/flights/trip/) 163 ms to the load event (median of 3, phone width) vs tripwaffle.com 172 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/trip/) 3 of 3 loads answered vs tripwaffle.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:16:37.069Z"
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/flights/trip/) 0 px sideways overflow at 390 px vs tripwaffle.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:16:37.069Z"
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 0 unnamed controls or images vs tripwaffle.com 2 unnamed controls or images",
-    "at": "2026-10-28T13:16:37.069Z"
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/flights/trip/) 1 (1: the page shows itself again with the network cut) vs tripwaffle.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:16:37.069Z"
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/flights/trip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tripwaffle.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:16:37.069Z"
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 18,
     "evidence": "Verse (/flights/trip/) 0 design defects vs tripwaffle.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tripwaffle.com (5 low-contrast texts, 13 small tap targets, layout shift 0.01)",
-    "at": "2026-10-28T13:16:37.069Z"
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/flights/trip/) 4 of 4 right against the worked-out answer; judged against the standard, not tripwaffle.com (the site is not asked)",
-    "at": "2026-10-28T13:16:37.069Z",
+    "at": "2026-10-29T02:55:17.967Z",
     "of": 4
    },
    "paste a confirmation": {
@@ -16996,7 +17021,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:37.069Z",
+    "at": "2026-10-29T02:55:17.967Z",
     "of": 2,
     "part": true
    },
@@ -17005,7 +17030,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/trip/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:37.069Z",
+    "at": "2026-10-29T02:55:17.967Z",
     "of": 3,
     "part": true
    },
@@ -17014,7 +17039,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/flights/trip/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:37.069Z",
+    "at": "2026-10-29T02:55:17.967Z",
     "of": 3,
     "part": true
    },
@@ -17023,7 +17048,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:37.069Z",
+    "at": "2026-10-29T02:55:17.967Z",
     "of": 2,
     "part": true
    },
@@ -17032,7 +17057,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/flights/trip/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:37.069Z",
+    "at": "2026-10-29T02:55:17.967Z",
     "of": 1,
     "part": true
    },
@@ -17041,7 +17066,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:37.069Z",
+    "at": "2026-10-29T02:55:17.967Z",
     "of": 2,
     "part": true
    },
@@ -17050,8 +17075,17 @@
     "verse": 13,
     "best": 1,
     "evidence": "Verse (/flights/trip/) 13 of 13 things a full answer shows vs tripwaffle.com 1 of 13 things a full answer shows (Verse lacks: none; site lacks: paste a confirmation, flights read from text, add a flight by hand, a booking reference, local times, layovers, layover warnings, airport changes, a calendar file, a share link, on this device, no account)",
-    "at": "2026-10-28T13:16:37.069Z",
-    "of": 13
+    "at": "2026-10-29T02:55:17.967Z",
+    "of": 13,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 9,
+    "best": 6,
+    "evidence": "Verse (/flights/trip/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs tripwaffle.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:55:17.967Z",
+    "siteRead": true
    }
   },
   "travel: aruljohn.com": {
@@ -17899,10 +17933,10 @@
   "unit converter: convertlive.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 146,
-    "best": 833,
-    "evidence": "Verse (/convert/unit-converter/) 146 ms to the load event (median of 3, phone width) vs convertlive.com 833 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "verse": 103,
+    "best": 1045,
+    "evidence": "Verse (/convert/unit-converter/) 103 ms to the load event (median of 3, phone width) vs convertlive.com 1045 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    },
    "reliability": {
@@ -17910,7 +17944,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/convert/unit-converter/) 3 of 3 loads answered vs convertlive.com 3 of 3 loads answered",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    },
    "mobile": {
@@ -17918,7 +17952,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 0 px sideways overflow at 390 px vs convertlive.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    },
    "accessibility": {
@@ -17926,7 +17960,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 0 unnamed controls or images vs convertlive.com 0 unnamed controls or images",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    },
    "offline": {
@@ -17934,7 +17968,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 1 (1: the page shows itself again with the network cut) vs convertlive.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    },
    "sharing": {
@@ -17942,7 +17976,7 @@
     "verse": 4,
     "best": 2,
     "evidence": "Verse (/convert/unit-converter/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs convertlive.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    },
    "accuracy": {
@@ -17950,15 +17984,15 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/convert/unit-converter/) 1 of 1 right against the worked-out answer; judged against the standard, not convertlive.com (the site is not asked)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "of": 1
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 180,
-    "evidence": "Verse (/convert/unit-converter/) 0 design defects vs convertlive.com 180 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertlive.com (142 low-contrast texts, 38 small tap targets, layout shift 0.08)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "evidence": "Verse (/convert/unit-converter/) 0 design defects vs convertlive.com 180 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertlive.com (142 low-contrast texts, 38 small tap targets, layout shift 0.09)",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    },
    "unit breadth": {
@@ -17966,7 +18000,7 @@
     "verse": 21,
     "best": 13,
     "evidence": "Verse (/convert/unit-converter/) 21 of 21 shown vs convertlive.com 13 of 21 shown (Verse lacks: none; site lacks: temperature, fuel consumption, frequency, heat, light, electricity, magnetism, radiology)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "of": 21,
     "part": true,
     "siteRead": true
@@ -17976,7 +18010,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/convert/unit-converter/) 2 of 2 shown vs convertlive.com 0 of 2 shown (Verse lacks: none; site lacks: swap, from and to)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "of": 2,
     "part": true,
     "siteRead": true
@@ -17986,7 +18020,7 @@
     "verse": 31,
     "best": 15,
     "evidence": "Verse (/convert/unit-converter/) 31 of 31 things a full answer shows vs convertlive.com 15 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, temperature, fuel consumption, frequency, engineering, heat, light, electricity, magnetism, radiology, a swap or reverse control, the formula, precision, Many units per kind, Engineering converters, Heat converters)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "of": 31,
     "siteRead": true
    },
@@ -17995,7 +18029,7 @@
     "verse": 7.5,
     "best": 5.5,
     "evidence": "Verse (/convert/unit-converter/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs convertlive.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-29T01:56:19.411Z",
+    "at": "2026-10-29T02:53:24.472Z",
     "siteRead": true
    }
   },
