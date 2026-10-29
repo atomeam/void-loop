@@ -1121,3 +1121,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T08:56:10Z | claude | grow | The password page hands a password to the strength page in memory, never in an address
 2026-10-29T08:51:04Z | verse | build | Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com
 2026-10-29T08:53:38Z | verse | build | Versus: took on no site; next randomarea.com
+2026-10-29T09:03:14Z | claude | grow | The made-up people page's stage card shows the people on the page: its count, countries, gender and seed

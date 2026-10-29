@@ -231,6 +231,28 @@ test('a made or typed password is never in an address, a hash or history: the st
   assert.ok(strength.includes('receive(window, (v) => { pw.value = v; draw(); })') && strength.includes("history.replaceState(null, '', location.pathname + location.search)"), 'it takes it in memory and wipes any old #p= unread');
 });
 
+test('the made-up people page\'s card shows the people on the page: its count, countries, gender and seed, not a fake name generator example', async () => {
+  const C = await import('../void-live-deploy/lib/people-card.js'), F = await import('../void-live-deploy/lib/fakeuser.js'), S = (await import('../void-live-deploy/skills/fakeuser.js')).default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
+  for (const [n, nats, g, seed] of [['12', ['us'], '', 'k3x9ab01'], ['1', ['de', 'jp'], 'female', 'Ab_9'], ['33', ['nz', 'gb'], '', 'q'], ['7', ['ua', 'us', 'fr'], 'male', 'zz-1'], ['250', ['br'], '', 'Verse']]) {
+    const ask = C.cardAsk(n, nats, g, seed); assert.ok(ask, 'an ask for ' + [n, nats, g, seed].join(' '));
+    assert.equal(await firstSkill(ask), 'fakeuser', 'the stage gives it to the made-up people card: ' + ask);
+    assert.deepEqual(F.askFake(ask), { n: +n, nats, gender: g, seed }, 'the card reads back the page\'s settings: ' + ask);
+    const el = { dataset: {}, innerHTML: '' }; assert.equal(S.run(ask, { showPage: (f) => f(el), esc }), 'fakeuser');
+    for (const p of F.people({ seed, n: Math.min(+n, 3), nats, gender: g })) assert.ok(el.innerHTML.includes(esc(p.name)) && el.innerHTML.includes(esc(p.email)), 'the card shows the page\'s person ' + p.name);
+    const want = '/random-user/?' + new URLSearchParams({ n, nat: nats.join(','), ...(g ? { g } : {}), seed });
+    assert.equal(el.dataset.page, want, 'the card\'s page link opens these same people'); assert.deepEqual(pageOfCard('fakeuser', el.dataset.page), [want, 'Made-up people']);
+  }
+  // a seed the ask cannot carry still gives the count, countries and gender; settings it cannot say keep the example
+  assert.deepEqual(F.askFake(C.cardAsk('33', ['nz', 'gb'], '', 'bad seed!')), { n: 33, nats: ['nz', 'gb'], gender: '' });
+  for (const a of [['0'], [''], ['5001'], ['1e2'], ['abc'], ['5000', Object.keys(F.NATS), 'male', 'x']]) assert.equal(C.cardAsk(...a), '', 'the example ask stays: ' + a.join(' '));
+  for (const nat of Object.keys(F.NATS)) assert.deepEqual(F.askFake(C.cardAsk('4', [nat])).nats, [nat], 'each country reads back as itself: ' + nat);
+  // other asks keep what they did: no seed, and the countries in the order asked
+  assert.deepEqual(F.askFake('generate 5 fake german women'), { n: 5, nats: ['de'], gender: 'female' }); assert.deepEqual(F.askFake('20 random users from japan and brazil').nats, ['jp', 'br']);
+  const page = fs.readFileSync(new URL('../void-live-deploy/random-user/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes("{ card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) }"), 'the page gives the card its count, countries, gender and seed');
+});
+
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
   const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
   for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {
