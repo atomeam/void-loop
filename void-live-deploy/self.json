@@ -545,16 +545,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:21:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:21:04Z",
+   "subject": "random skill: take only the bare dice notation the stage's chance cards leave (d20, 2d6), crypto rolls, order file, family, map line, test"
+  },
+  {
    "at": "2026-10-29T15:20:39Z",
    "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
   },
   {
-   "at": "2026-10-29T15:20:35Z",
-   "subject": "Restore the password generator's test (lib/password.js), overwritten by the password skill's test in #1536; the skill's test is…"
-  },
-  {
-   "at": "2026-10-29T15:19:19Z",
-   "subject": "Versus queue: fewest controls first, then the fewer bytes"
+   "at": "2026-10-29T15:19:02Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:18:45Z",
@@ -577,11 +581,19 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-29T15:14:41Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:14:11Z",
    "subject": "password skill: take the asks util leaves, crypto with no bias, order file, family, map line, test"
   },
   {
    "at": "2026-10-29T15:14:06Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:13:46Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -610,18 +622,6 @@
   },
   {
    "at": "2026-10-29T15:10:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:10:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:09:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:09:09Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
