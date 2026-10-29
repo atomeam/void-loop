@@ -545,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T12:57:50Z",
+   "subject": "skills: register yesno (order file, Games family, map line) so the fast checks pass on main"
+  },
+  {
    "at": "2026-10-29T12:50:13Z",
    "subject": "fanfic: ask the server again for each module file before the import"
   },
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T11:43:21Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T11:36:18Z",
-   "subject": "Verse Brain: when a tune ends, the card says how many notes it heard and guessed right"
   }
  ],
  "builders": {
