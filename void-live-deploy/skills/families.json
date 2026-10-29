@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 6,
-  "checked": 17,
-  "proven": 351
+  "tested": 3,
+  "checked": 15,
+  "proven": 357
  },
  "families": [
   {
@@ -25,9 +25,9 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 4,
-    "proven": 53
+    "tested": 0,
+    "checked": 3,
+    "proven": 55
    },
    "skills": [
     {
@@ -51,10 +51,12 @@
     },
     {
      "name": "converter",
-     "tier": "checked",
-     "why": "a self-test, 10 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "sprite-sheet",
@@ -134,10 +136,12 @@
     },
     {
      "name": "rap",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "music-tools",
@@ -565,9 +569,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 3,
-    "proven": 32
+    "tested": 2,
+    "checked": 2,
+    "proven": 33
    },
    "skills": [
     {
@@ -871,8 +875,17 @@
     },
     {
      "name": "emoji",
-     "tier": "checked",
-     "why": "a self-test, 10 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 10 browser-suite mentions, 1 real ask in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
+    },
+    {
+     "name": "hangman",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test"
     }
@@ -1261,9 +1274,9 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 1,
-    "proven": 20
+    "tested": 0,
+    "checked": 0,
+    "proven": 22
    },
    "skills": [
     {
@@ -1455,17 +1468,21 @@
     },
     {
      "name": "uuid",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "password",
-     "tier": "checked",
-     "why": "a self-test, 5 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 5 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     }
    ]
   },
@@ -1587,8 +1604,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 3,
+    "tested": 0,
+    "checked": 4,
     "proven": 38
    },
    "sources": {
@@ -1918,10 +1935,12 @@
     },
     {
      "name": "magic8",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 1
     },
     {
@@ -2273,7 +2292,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 14 live findings, 2026-10-28",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 15 live findings, 2026-10-29",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -3276,17 +3295,19 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 2,
-    "proven": 44
+    "proven": 45
    },
    "skills": [
     {
      "name": "team-chat",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-29"
     },
     {
      "name": "tower",
