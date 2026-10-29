@@ -45,6 +45,15 @@ async function openFirstStory(J) {
 /** /hosting/'s domain search: the registries answer in their own time, so wait (25 s at most) until no row still reads "Asking..." */
 const settleDomains = (J) => J.page.waitForFunction(() => { const r = document.getElementById('domainrows'); return r && r.children.length && !/Asking\.\.\./.test(r.textContent); }, null, { timeout: 25000 }).catch(() => {}); // void-review: ok (the controls after it read what the page shows)
 
+/** a line drawn with the mouse from the left dot to the right dot of the line drill, in 24 small moves, as a hand draws it */
+async function drawLine(J) {
+  await J.page.locator('#sheet').scrollIntoViewIfNeeded().catch(() => {}); const b = await J.page.locator('#sheet').boundingBox(); if (!b) throw new Failed('the drawing sheet is not there');
+  const at = (x, y) => [b.x + x / 300 * b.width, b.y + y / 300 * b.height];
+  await J.page.mouse.move(...at(40, 150)); await J.page.mouse.down();
+  for (let i = 1; i <= 24; i++) await J.page.mouse.move(...at(40 + 220 * i / 24, 150 + (i % 2 ? 1.5 : -1.5)), { steps: 2 });
+  await J.page.mouse.up(); await J.page.waitForTimeout(200);
+}
+
 /** per floor id, per journey name: the script. A journey with no script here is INCOMPLETE. */
 export const SCRIPTS = {
   'random number': {
@@ -85,6 +94,22 @@ export const SCRIPTS = {
       const u = await J.shareLink('#dshare'); if (!/[?&]d=verse\.org(&|$)/.test(u)) throw new Failed('the share link does not carry the domain: ' + u);
       await J.open('/hosting/'); await J.open(u); await settleDomains(J);
       await J.expect((t) => /verse\.org\s+Registered/.test(t) && /verse: \d of 6 endings/.test(t) && /server_name verse\.org;/.test(t), 'the search for verse.org back from its link, and the server config named for it');
+    },
+  },
+  // wheelroot.com (/learn-to-draw/, 2026-10-29): a stroke drawn with the mouse along the line drill, as a person draws it, then scored; the drawing
+  // shared and its link opened in a fresh page, where it is scored again from the strokes in the link alone
+  'wheelroot.com': {
+    'draw a drill and see its score': async (J) => {
+      await J.open('/learn-to-draw/?d=line'); await drawLine(J);
+      await J.click('#done', 'press Done'); await J.expect(/Score: (\d{2}|100) of 100[\s\S]*First try: \d+/, 'a score of 10 or more for the line, and the first try kept');
+      await J.expect(/A straight line · best \d+/, 'the course list showing the best score for the drill');
+    },
+    'share the drawing and reopen it from the link': async (J) => {
+      await J.open('/learn-to-draw/?d=line'); await drawLine(J); await J.click('#done', 'press Done');
+      const got = (await J.expect(/Score: \d+ of 100/, 'the drawing scored')).match(/Score: (\d+) of 100/)[1];
+      const u = await J.shareLink('#share'); if (!/[?&]s=[0-9a-z_]{8,}/.test(u)) throw new Failed('the share link does not carry the strokes: ' + u);
+      await J.open('/learn-to-draw/'); await J.open(u);
+      await J.expect(new RegExp('Scored again from the link\\. Score: ' + got + ' of 100'), 'the same drawing back from its link, scored again: ' + got);
     },
   },
   // paint (/paint/, rebuilt 2026-10-28 against the colour-by-number sites): every step is a tap, a key or a file a person would use

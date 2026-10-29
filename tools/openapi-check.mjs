@@ -12,6 +12,7 @@ const FN = join(ROOT, 'functions');
 
 // Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/members': "the /members/ page's own API: what paid Verse gives, and a paid member's ideas (passkey session, paid tier from Gumroad, a daily and monthly limit) queued as member: jobs that may only add (functions/api/members.js, lib/members.js, tools/add-only.mjs)",
   '/api/coder': "Verse's coder thinking on Verse's own model: owner only, the Workers AI shape in and out, under an hourly and daily cap (functions/api/coder.js); tools/verse-coder.mjs is the only caller",
   '/api/studies': "the owner's study panel (/studies.html): owner only, read only, lists Verse's private studies; not a public API (functions/api/studies.js)",
   '/api/image': "the /image/ page's own painter: a prompt, a style and a shape in, one picture out, inside the Art Forge's shared daily cap and per hashed connection (functions/api/image.js, lib/image-gen.js); the page is the only caller",

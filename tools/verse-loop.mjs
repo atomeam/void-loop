@@ -18,8 +18,11 @@ import { readFileSync, writeFileSync, existsSync, openSync, closeSync, unlinkSyn
 import { resolve, join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { check as addOnlyCheck } from './add-only.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
+/** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
+export const isMemberTask = (task) => !!task && task.kind === 'next' && /^Queue job \S+ \(member: /.test(String(task.text || ''));
 
 export const AGENTS = ['verse', 'opencode', 'aider', 'cmd'];
 // the fast part of .github/actions/void-test (the browser suite is verify.yml's, on every head of main)
@@ -513,6 +516,11 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const g = gate(before, task);
     if (g.stop) return g.stop;
     const v = g.v;
+    if (isMemberTask(task)) { // owner, 2026-10-29: paid members "only add positive improvements"; enforced here, before any commit
+      const taken = addOnlyCheck(cwd, 'origin/' + opts.base);
+      if (taken.length) return done('refused', 'a member\'s idea may only add, and this change ' + taken.slice(0, 3).join('; '), { addOnly: taken });
+      step('add-only: nothing taken away');
+    }
 
     const branch = 'loop/' + stamp();
     const title = task.kind === 'fix' ? `Verse loop: fix ${task.check}`

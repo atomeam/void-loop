@@ -25,7 +25,8 @@ import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, pai
 import { nearOf } from '../../lib/near-miss.js';
 import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { isSelfAsk, isOwnCardNote, readSelf, selfFacts, SELF_RULE, OWN_CARD_RULE } from '../../lib/self-context.js';
+import { isSelfAsk, isOwnCardNote, readSelf, selfFacts, cardLists, SELF_RULE, OWN_CARD_RULE } from '../../lib/self-context.js';
+import { ownCardAnswer, fetchPulls, keptCards } from '../../lib/own-card.js';
 import { ASK_MAX, QUERY_MAX, supportedOnly, hasCorrection, CORRECTION_RULE, ACT_RULE, FILLER_RULE, dropUnbackedActs, dropFiller } from '../../lib/answer-honesty.js';
 import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '../../lib/draft.js';
 import { scopeOf } from '../../lib/memory-scope.js';
@@ -49,6 +50,7 @@ const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || 
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const TTL_DAYS = 7, RL_MAX = 12;
 // an ask is read whole up to ASK_MAX (lib/answer-honesty.js): at 300 a status note was cut mid-word and answered from the cut
+const OWN_CARDS = 'own-cards'; // void_kv: my last cards for one visitor's notes about my own card, so their next note's quotes are checked against them
 const norm = (t, n = ASK_MAX) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n);
 async function sha(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
@@ -485,6 +487,14 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const clefP = clefOn(env) ? clefRoute(env, ask) : Promise.resolve(null);
   // an ask about Verse itself reads Verse's own facts instead of Wikipedia (lib/self-context.js)
   let selfP = self ? readSelf(env, origin) : null;
+  // a note about my own card: the repo's pull requests (for the status of each fix it names) and my earlier cards (to check what it quotes),
+  // read beside everything else, both bounded (lib/own-card.js)
+  // kept per visitor (a hash of their address, never the address): one person's note or card never reaches another person's card
+  const own = isOwnCardNote(ask), ownKey = own ? OWN_CARDS + ':' + (await sha(request.headers.get('cf-connecting-ip') || 'anon')).slice(0, 16) : '';
+  const pullsP = own ? fetchPulls(fetch) : null;
+  const priorP = own && env.DB ? env.DB.prepare('SELECT v FROM void_kv WHERE k = ?').bind(ownKey).first().then((r) => (r && r.v ? JSON.parse(r.v) : []), () => []) : Promise.resolve([]);
+  const ownBody = async (lead) => { const s = (await selfP) || {}; const sj = s.self || null; return ownCardAnswer(lead, ask, { lists: cardLists(sj), commits: sj && Array.isArray(sj.commits) ? sj.commits : [], pulls: await pullsP, prior: (await priorP) || [] }); };
+  const keepCard = (card) => env.DB && later(priorP.then((old) => env.DB.prepare('INSERT INTO void_kv (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v').bind(ownKey, JSON.stringify(keptCards(old, ask, card, new Date().toISOString()))).run()).catch(() => {}));
   // a paste is summarised from its own words (PASTE_RULE): a Wikipedia search on it only finds pages it never mentions
   let src = self || isPaste(ask) ? [] : await sources(ask);
   const srcAt = Date.now();
@@ -494,7 +504,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
   if (!self && !isPaste(ask) && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
-  const facts = self ? selfFacts(await selfP, { card: isOwnCardNote(ask) }) : '';
+  const facts = self ? selfFacts(await selfP, { card: own, note: ask }) : '';
   let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
   const lead = !self && !told && src.length && isNameAsk(ask) && sourcesMatch(ask, [src[0]]) ? src[0] : null; // the first source holds the ask itself: its description types the card (lib/subject-kinds.js)
@@ -556,9 +566,10 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       const paid = answer ? answer : access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
         // no paid path: the open-web answer, as with the switch off (for an ask about Verse: its facts)
-        const web = self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
+        const web = own ? await ownBody('') : self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
         log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
         if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind, ...nearOut });
+        if (own) keepCard(web);
         return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, ...nearOut, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
       }
       if (!answer) { answer = paid; model = access.model; outcome += '; default busy, paid from earnings'; }
@@ -573,6 +584,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   if (!self && !told && isNoAnswer(answer)) return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, ...(guessOf(src) ? { guess: guessOf(src) } : {}), route: route.kind, ...nearOut });
   if (sectioned && src[0] && answer) answer = grounded(answer, src[0].text); // a list-page section: only what its text says
   answer = scrubOut(answer, env); // no env value or key shape leaves in a model's words, whatever the model was told (lib/keeper.js)
+  if (own) { answer = scrubOut(await ownBody(answer), env); keepCard(answer); } // the lead the note gave reason for, then the lists from my records
   const at = new Date().toISOString();
   // the cache write finishes after the answer has gone out (waitUntil), not before: nobody waits on D1 for an answer they already have
   if (!masked && !self && !told) try {

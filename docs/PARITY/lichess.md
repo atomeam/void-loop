@@ -13,7 +13,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | --- | --- | --- | --- | --- |
 | A full feature study of this site (not written yet) | Study | unreviewed | every site of this kind offers it | not studied yet |
 | An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "port game Advanced search Donate Search Sign in Register Preferences WCM blitzingmaria blitz arena / take take" | void-live-deploy//index.html:2588 `['on every device', 'remember me', 'a passkey, no password or email · sign in ·` |
-| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "r uploading a picture. See the demo and download the app ! All updates » Open tournaments More » Monthly Blitz" | void-live-deploy//index.html:6112 `if ('serviceWorker' in navigator && (location.protocol === 'https:' // location.hostna` |
+| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "r uploading a picture. See the demo and download the app ! All updates » Open tournaments More » Monthly Blitz" | void-live-deploy//index.html:6124 `if ('serviceWorker' in navigator && (location.protocol === 'https:' // location.hostna` |
 | Accessibility - Enable blind mode | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | lichess .org | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Play lichess.org | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
