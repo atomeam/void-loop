@@ -160,7 +160,10 @@ export function flavorOf(name, familyName, why, tier, taken = new Set()) {
     const line = LORE[(s + i) % LORE.length](f, n ? Number(n) : 0) + TAILS[((s >>> 8) + Math.floor(i / LORE.length)) % TAILS.length];
     if (!taken.has(line)) { taken.add(line); return line; }
   }
-  return LORE[s % LORE.length](f, n ? Number(n) : 0);
+  // every lore line and tail is in the book already (many proven skills with no asks counted share the same few): the skill's own name keeps it unique
+  const line = LORE[s % LORE.length](f, n ? Number(n) : 0) + ' This is the page of ' + name + '.';
+  taken.add(line);
+  return line;
 }
 
 /**

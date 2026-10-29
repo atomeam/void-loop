@@ -1,6 +1,38 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.",
  "incidents": [
+  {
+   "at": "2026-10-29T16:53:46.677Z",
+   "sha": "cd360ad03ae234e9eab1902f6425585d427fd745",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40911797802",
+   "suite": "browser suite on main",
+   "checks": [
+    "poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half",
+    "WebMCP: a paid Verse ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout",
+    "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
+    "pick for me: says one found pick with its honest why (leaning on the thumbs-up kind), \"something else\" gives a different one, \"funnier\" sends only the mood word, the thumb is kept in the browser, only the pick line is spoken, \"forget my taste\" clears it",
+    "what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Verse"
+   ],
+   "touched": [
+    "void-live-deploy/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/void.html",
+    "void.html",
+    "docs/PARITY/github.md",
+    "docs/PARITY/hugging-face.md",
+    "docs/PARITY/lichess.md",
+    "tools/card-reply.test.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/corrections.js",
+    "void-live-deploy/void.html",
+    "void.html"
+   ],
+   "shards": [
+    1,
+    2,
+    4
+   ]
+  },
   {
    "at": "2026-10-29T13:05:55.568Z",
    "sha": "96ff518205447b3b2ddc02e3b412ac03933ec4a6",
@@ -27,6 +59,9 @@
     "void-live-deploy/lib/fanfic.js",
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/yesno.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -46,6 +81,9 @@
     "void-live-deploy/functions/fanfic/rss.js",
     "void-live-deploy/lib/fanfic-de.js",
     "void-live-deploy/lib/fanfic.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -74,6 +112,9 @@
     "void-live-deploy/tower.evidence.json",
     "void-live-deploy/void.growth.json",
     "void-live-deploy/void.html"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -91,6 +132,9 @@
     "void-live-deploy/fanfic/index.html",
     "void-live-deploy/lib/fanfic-de.js",
     "void-live-deploy/lib/fanfic.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -133,6 +177,9 @@
     "void-live-deploy/lib/self-context.js",
     "void-live-deploy/self.json",
     "void-live-deploy/void.asks.json"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -149,6 +196,9 @@
     "void-live-deploy/functions/api/will.js",
     "void-live-deploy/lib/tower.js",
     "void-live-deploy/skills/tower.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -180,6 +230,9 @@
    ],
    "touched": [
     "void-live-deploy/skills/tower.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -205,6 +258,9 @@
     "void-live-deploy/parity.json",
     "void-live-deploy/self.json",
     "void-live-deploy/skills/deps.json"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -230,6 +286,9 @@
     "void-live-deploy/incidents.json",
     "void-live-deploy/tower.evidence.json",
     "void-live-deploy/tower.shots/is-it.jpg"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -261,6 +320,9 @@
    ],
    "touched": [
     "domains/verse-loop.pause"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -277,6 +339,9 @@
     ".github/workflows/verse-loop.yml",
     "tools/verse-coder.mjs",
     "tools/verse-coder.test.mjs"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -304,6 +369,9 @@
     "docs/PARITY/justflipacoin.com.md",
     "docs/PARITY/timeanddate.com.md",
     "docs/PARITY/unitconverters.net.md"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -329,6 +397,9 @@
     "tools/verse-job.mjs",
     "tools/verse-job.test.mjs",
     "void-live-deploy/self.json"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -366,6 +437,9 @@
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/order/1937-advice",
     "void-live-deploy/skills/what.json"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -388,6 +462,9 @@
     "void-live-deploy/lib/tower.js",
     "void-live-deploy/self.json",
     "void-live-deploy/skills/tower.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -418,6 +495,9 @@
     "growth/entries/20261028T205621Z-box-a2687e69.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/void.growth.json"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -453,6 +533,9 @@
     "docs/VERSE-LOOP.md",
     "tools/verse-loop.mjs",
     "tools/verse-loop.test.mjs"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -498,6 +581,9 @@
     "void-live-deploy/calculators/index.html",
     "void-live-deploy/flights/airports/app.js",
     "void-live-deploy/flights/airports/index.html"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -533,6 +619,9 @@
     "tools/test_void.mjs",
     "void-live-deploy/lib/scrim.js",
     "void-live-deploy/tournaments/index.html"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -569,6 +658,9 @@
     "domains/forethinkers/run-log.md",
     "domains/forethinkers/tracks/planet-restoration.md",
     "domains/void.growth.md"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -604,6 +696,9 @@
     "tools/test_void.mjs",
     "tools/tower-probes.mjs",
     "void-live-deploy/identity/index.html"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -649,6 +744,9 @@
     "tools/weather-busy.test.mjs",
     "void-live-deploy/lib/similar-index.js",
     "void-live-deploy/self.json"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -685,6 +783,9 @@
     "void-live-deploy/hosting/index.html",
     "void-live-deploy/lib/tower.js",
     "void-live-deploy/incidents.json"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -726,6 +827,9 @@
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/order/0500-hosting",
     "void-live-deploy/sw.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -759,6 +863,9 @@
     "tools/test_void.mjs",
     "tools/tower-probes.mjs",
     "void-live-deploy/lib/tower.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -795,6 +902,9 @@
     "void-live-deploy/identity/index.html",
     "void-live-deploy/skills/automations.js",
     "void-live-deploy/sw.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -827,6 +937,9 @@
    "touched": [
     "void-live-deploy/identity/index.html",
     "void-live-deploy/lib/tower.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -862,6 +975,9 @@
     "void-live-deploy/identity/index.html",
     "void-live-deploy/lib/tower.js",
     "void-live-deploy/sw.js"
+   ],
+   "passed": [
+    3
    ]
   },
   {
@@ -888,46 +1004,9 @@
    ],
    "touched": [
     "void-live-deploy/tower.evidence.json"
-   ]
-  },
-  {
-   "at": "2026-10-28T03:05:55.009Z",
-   "sha": "536f52ddae3fa4c7eac3d0a60b1822f08df319e9",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40621907686",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested"
    ],
-   "touched": [
-    "tools/test_void.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/emojis/index.html",
-    "void-live-deploy/g/index.html",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/paint/index.html",
-    "void-live-deploy/sw.js",
-    "void-live-deploy/tournaments/index.html",
-    "void-live-deploy/translate/index.html"
+   "passed": [
+    3
    ]
   }
  ]
