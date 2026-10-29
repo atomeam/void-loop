@@ -55,6 +55,14 @@ test('it runs in the brain as one of nineteen organs: your drag stirs it, it evo
   assert.ok(b.current.lives >= 8 && b.runs.current > 200, 'lives ' + b.current.lives + ' runs ' + b.runs.current);
   assert.ok(b.current.fed > 0, 'it fed the tissue where it swam');
   assert.ok(b.board.current && b.board.current.lives === b.current.lives, JSON.stringify(b.board.current));
+  // its body on the card: the orb 'riding the current' is drawn from the measured gain over drifters, never set by hand. Here the
+  // swimmers won that race in the brain (the board gain is the mean of their lives against drifters), so the orb is there where they swim
+  const orb = B.embodiment(b).find((e) => e.key === 'current');
+  assert.ok(b.board.current.gain > 1, 'the swimmers beat the drifters in the brain, gain ' + b.board.current.gain);
+  assert.ok(orb && orb.organ === 'current' && orb.label === 'riding the current' && orb.x === b.board.current.x && orb.y === b.board.current.y, JSON.stringify(orb));
+  // and it goes when the measure says they do not beat the drifters: the same brain, its gain put under 1, has no current orb
+  const under = { ...b, board: { ...b.board, current: { ...b.board.current, gain: 0.9 } } };
+  assert.ok(!B.embodiment(under).some((e) => e.key === 'current'), 'no orb when the swimmers do not beat the drifters');
   const self = B.selfSays(b).find((l) => /^Current:/.test(l)) || '';
   assert.match(self, /^Current: \d+ lives? of swimmers whose tiny networks evolve to ride a lattice-Boltzmann flow your drag stirs; (they gather \d+\.\d times the life of drifters in the same flow|they do not yet gather more life than drifters in the same flow)(\.|, and \d+% more than their first lives\.|, and not yet more than their first lives\.)$/);
   // your drag pushes the fluid: the same current, one run with a drag across it and one without
