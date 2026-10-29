@@ -210,17 +210,28 @@ const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cp
 let next = 0;
 // the pace on stderr every 100 asks, so a run cut off by a time limit still shows how far it got, how fast, and where the time goes
 let done = 0; const began = Date.now();
+// the CPU of each kind of process (Linux /proc, sampled each second, so a page's renderer that exits keeps what it used): where the machine's time goes
+const procCpu = { renderer: 0, gpu: 0, utility: 0, browser: 0, bench: 0 }, procSeen = new Map(); let idle0 = null, idleNow = null;
+const cpuOf = (st) => { const f = st.slice(st.lastIndexOf(')') + 2).split(' '); return (+f[11] + +f[12]) * 10; }; // utime + stime, at 100 ticks a second, in ms
+const procTimes = () => { try { const c = fs.readFileSync('/proc/stat', 'utf8').split('\n')[0].trim().split(/\s+/).slice(1).map(Number); return { idle: c[3] + c[4], all: c.reduce((a, b) => a + b, 0) }; } catch (_) { return null; } };
+const sampleCpu = () => { let pids = []; try { pids = fs.readdirSync('/proc').filter((d) => /^\d+$/.test(d)); } catch (_) { return; }
+  for (const pid of pids) { try { const cmd = fs.readFileSync('/proc/' + pid + '/cmdline', 'utf8'); const kind = +pid === process.pid ? 'bench' : !/chrom/i.test(cmd.split('\0')[0]) ? '' : /--type=renderer/.test(cmd) ? 'renderer' : /--type=gpu-process/.test(cmd) ? 'gpu' : /--type=/.test(cmd) ? 'utility' : 'browser';
+    if (!kind) continue; const ms = cpuOf(fs.readFileSync('/proc/' + pid + '/stat', 'utf8')), was = procSeen.get(pid) || 0; procCpu[kind] += Math.max(0, ms - was); procSeen.set(pid, ms); } catch (_) {} }
+  idleNow = procTimes(); if (!idle0) idle0 = idleNow; };
+const sampler = fs.existsSync('/proc/stat') ? setInterval(sampleCpu, 1000) : null; if (sampler) sampler.unref(); // never what keeps the run alive
+const procLine = () => { if (!sampler) return ''; const per = (k) => Math.round(procCpu[k] / done); const idle = idle0 && idleNow && idleNow.all > idle0.all ? Math.round(100 * (idleNow.idle - idle0.idle) / (idleNow.all - idle0.all)) : 0;
+  return '; machine CPU per ask: renderers ' + per('renderer') + ' ms, gpu ' + per('gpu') + ', other chrome ' + per('utility') + ', chrome main ' + per('browser') + ', bench ' + per('bench') + ', idle ' + idle + '%'; };
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { const ctx = await slot(); try { while (next < todo.length) { const i = next++; out[i] = await one(ctx, todo[i]);
   if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
     + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in, load ' + os.loadavg()[0].toFixed(1)
-    + '; page CPU per ask ' + Math.round(pace.task / done) + ' ms (script ' + Math.round(pace.script / done) + ', layout ' + Math.round(pace.layout / done) + ', style ' + Math.round(pace.style / done) + ')'); } } finally { await ctx.close(); } }));
+    + '; page CPU per ask ' + Math.round(pace.task / done) + ' ms (script ' + Math.round(pace.script / done) + ', layout ' + Math.round(pace.layout / done) + ', style ' + Math.round(pace.style / done) + ')' + procLine()); } } finally { await ctx.close(); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
 const full = !probeFile && !lastN && !process.env.BENCH_ASKS; // a partial replay is not scored against the floor, unless a floor is named
 const a = probeFile ? { score: out.filter((x) => x.right).length, total: out.length, wrong: [], loadMisses: [], unreplayed: 0, inconclusive: false, note: '', failed: false }
   : await assess({ out, replay: async (i) => { const c = await slot(); try { return (await one(c, todo[i])).right; } finally { await c.close(); } }, floor: full || process.env.BENCH_BEST ? best : null, latency, baseline: best.latency && best.latency[env], pages: PAR });
-server.close(); for (const d of slotDirs) fs.rmSync(d, { recursive: true, force: true });
+if (sampler) clearInterval(sampler); server.close(); for (const d of slotDirs) fs.rmSync(d, { recursive: true, force: true });
 const loadSet = new Set(a.loadMisses);
 for (const x of out) if (!x.right) x.alone = loadSet.has(x.ask + ' -> ' + x.by) ? 'passed alone (load)' : 'misses alone';
 if (a.inconclusive) console.error(a.note);
