@@ -53,7 +53,9 @@ const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); 
 // converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too
 const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
-const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
+// SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
+let SECTION = null;
+const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) { sweep(); SECTION = label; } return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
 const CORE = want('core: the shared page, the asks typed one after another');
@@ -75,7 +77,7 @@ const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's
 const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
 const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
 const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
-const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
+const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got, section: SECTION }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
@@ -5171,6 +5173,12 @@ try {
       // like Wikipedia: a title with no page answers 404 (the exact-title try, ccaf78621, asks for "Snorgleblat" before it searches)
       if (!['Michael Jordan', 'Air Jordan', 'Blat'].includes(t)) return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ type: 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found', title: 'Not found.' }) });
       return r.fulfill(json({ type: 'standard', title: t, description: t === 'Michael Jordan' ? 'American basketball player (born 1963)' : t === 'Blat' ? 'Russian slang' : 'Brand of basketball shoes', extract: t + ' extract.' })); });
+    // a name ask whose only page is a loose neighbour goes to the answer route first (51056167, a name inside a list page);
+    // the real route finds nothing on the web for a made-up word, so it answers null and the card falls back to the closest
+    // page. The suite's shared stub answers every ask with the sky text, which no real route gives for "snorgleblat"
+    // (red since 51056167, hidden by the retry that healed checks it never ran; 2026-10-29, f8101922 shard 2).
+    await E.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = JSON.parse(r.request().postData() || '{}');
+      if (/snorgleblat/.test(b.ask || '')) return r.fulfill(json({ answer: null, sources: [], note: 'nothing on the web' })); return r.fallback(); });
     await E.ask('who is michael jordan', 1200); const mj = await E.page();
     await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
     check('article: "who is X" opens the person, not the brand that ranks first; a loose match says "Closest match I found" in one line, a close one does not',
@@ -12056,7 +12064,11 @@ let bad = results.filter((r) => !r.ok);
 // quiz card). A check that fails twice is red, as before; one that heals is named below so it is not forgotten, and the spotter
 // (tools/flakes.mjs) counts it. Not for --only runs (finish.mjs, a person) and not after the suite threw: nothing after that ran.
 if (bad.length && !ONLY.length && !process.env.VOID_RETRY && !bad.some((r) => r.name === 'suite ran to the end')) {
-  const heads = [...new Set(bad.map((r) => r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ')))];
+  // a check runs again by its own section's want label: the first words of its name can match no section at all, when the label
+  // is worded differently (2026-10-29: 'article: "who is X" opens the person' sits under '"who is X" prefers the person', so its
+  // second run ran nothing). The shared core block keeps the first words of the name: a second run of core is the whole long page.
+  const headOf = (r) => r.section && !r.section.startsWith('core: ') ? r.section : r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ');
+  const heads = [...new Set(bad.map(headOf))];
   if (heads.length <= 6) {
     releaseHeavy();
     for (const h of heads) {
@@ -12066,7 +12078,7 @@ if (bad.length && !ONLY.length && !process.env.VOID_RETRY && !bad.some((r) => r.
       // one (a check in the CORE block, or under another want label), exit 0 with it never run, and hide a real failure (2026-10-29:
       // six "paid:" checks that the MultiVerse rename broke read "healed" on cd360ad0)
       const ran = new Set(String(c.stdout || '').split('\n').filter((l) => l.startsWith('pass ')).map((l) => l.slice(5)));
-      for (const r of bad) if (r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ') === h) {
+      for (const r of bad) if (headOf(r) === h) {
         if (c.status === 0 && ran.has(r.name)) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + r.name); }
         else if (c.status === 0) console.log('second run of "' + h + '" did not run "' + r.name.slice(0, 120) + '": still red');
       }
