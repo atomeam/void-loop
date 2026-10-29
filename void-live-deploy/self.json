@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T08:12:08Z",
+   "subject": "3D miniatures: free materials only after a shader compile in flight settles"
+  },
+  {
+   "at": "2026-10-29T08:08:29Z",
+   "subject": "Regenerate after merging main"
+  },
+  {
+   "at": "2026-10-29T08:08:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T08:08:03Z",
    "subject": "Wheel: the hand-off copy is written on the press, not when the link is aimed"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T07:31:47Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:31:36Z",
-   "subject": "Stage card links carry the conversion, the sum and the countdown"
-  },
-  {
-   "at": "2026-10-29T07:28:41Z",
-   "subject": "Verse loop: task, Queue job mvoxczpi (versus: wheelofgold.com): Versus: wheelo"
-  },
-  {
-   "at": "2026-10-29T07:25:49Z",
-   "subject": "Verse Brain keeps what it is thinking across a reload, through the shared field"
   }
  ],
  "builders": {
