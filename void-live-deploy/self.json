@@ -545,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T12:51:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T12:50:56Z",
    "subject": "test: bridges check grabs the sticky at its middle, not its tilted corner"
   },
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T11:36:18Z",
    "subject": "Verse Brain: when a tune ends, the card says how many notes it heard and guessed right"
-  },
-  {
-   "at": "2026-10-29T11:33:00Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
   }
  ],
  "builders": {
