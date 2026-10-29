@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 955,
+ "counted": 957,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 58,
+   "dependants": 57,
    "tests": 4
   },
   {
@@ -1018,6 +1018,13 @@
    "tests": 1
   },
   {
+   "file": "lib/translate-card.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/walker.js",
    "skills": 2,
    "direct": 1,
@@ -1063,7 +1070,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 6,
    "tests": 1
   },
   {
@@ -1072,6 +1079,13 @@
    "direct": 0,
    "dependants": 6,
    "tests": 0
+  },
+  {
+   "file": "lib/boards.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 2
   },
   {
    "file": "lib/scores.js",
@@ -1091,20 +1105,6 @@
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 2
-  },
-  {
-   "file": "lib/brain-creature.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 4,
    "tests": 1
   },
@@ -1212,6 +1212,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
+  },
+  {
+   "file": "lib/fanfic.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/film-discovery.js",
@@ -1344,7 +1351,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 5
+   "tests": 4
   },
   {
    "file": "lib/calc-more.js",
@@ -1449,7 +1456,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/duel-rules.js",
@@ -1474,13 +1481,6 @@
   },
   {
    "file": "lib/fakeuser.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/fanfic.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1784,7 +1784,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 69,
    "tests": 26
   },
   {
@@ -2415,7 +2415,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/beacon.js",
@@ -2636,6 +2636,13 @@
   },
   {
    "file": "lib/progress-chart.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/random-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2898,7 +2905,9 @@
     "lib/guard.js",
     "lib/boards.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/fanfic/rss.js"
+   ]
   },
   "functions/api/calshare.js": {
    "imports": [
@@ -3555,6 +3564,13 @@
   "functions/c/[clip].js": {
    "imports": [
     "lib/guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/fanfic/rss.js": {
+   "imports": [
+    "functions/api/boards/[[path]].js",
+    "lib/fanfic.js"
    ],
    "importedBy": []
   },
@@ -4223,6 +4239,7 @@
     "lib/fanfic.js"
    ],
    "reachedBy": [
+    "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
   },
@@ -4251,20 +4268,6 @@
     "skills/verse-brain.js"
    ]
   },
-  "lib/brain-creature.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "skills/verse-brain.js"
-   ]
-  },
   "lib/brain-field.js": {
    "imports": [
     "lib/brain-workspace.js",
@@ -4278,8 +4281,7 @@
    "imports": [
     "lib/field-kit.js",
     "lib/brain-workspace.js",
-    "lib/brain-organs.js",
-    "lib/brain-creature.js"
+    "lib/brain-organs.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
@@ -4296,7 +4298,6 @@
     "lib/field-kit.js",
     "lib/field-resonance.js",
     "lib/brain-synapses.js",
-    "lib/brain-creature.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -4333,7 +4334,6 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
-    "lib/brain-creature.js",
     "lib/brain-field.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -4348,8 +4348,7 @@
     "lib/brain-workspace.js",
     "lib/brain-organs.js",
     "lib/brain-mind.js",
-    "lib/brain-synapses.js",
-    "lib/brain-creature.js"
+    "lib/brain-synapses.js"
    ],
    "importedBy": [
     "skills/verse-brain.js"
@@ -5324,6 +5323,7 @@
     "lib/boards.js"
    ],
    "importedBy": [
+    "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
   },
@@ -5395,7 +5395,6 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
-    "lib/brain-creature.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain-synapses.js",
@@ -5897,6 +5896,7 @@
     "functions/api/scores.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
+    "functions/fanfic/rss.js",
     "functions/films/rss.js",
     "lib/bench-asks.js"
    ]
@@ -7821,6 +7821,10 @@
     "skills/oracle.js"
    ]
   },
+  "lib/random-card.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/rating-note.js": {
    "imports": [],
    "importedBy": []
@@ -9484,6 +9488,15 @@
    ],
    "reachedBy": [
     "skills/cartoon.js"
+   ]
+  },
+  "lib/translate-card.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/translate.js"
+   ],
+   "reachedBy": [
+    "skills/languages.js"
    ]
   },
   "lib/translate-docs.js": {
@@ -13362,7 +13375,8 @@
   "skills/translate.js": {
    "imports": [
     "lib/card-mini.js",
-    "skills/is-it.js"
+    "skills/is-it.js",
+    "lib/translate-card.js"
    ],
    "importedBy": [
     "skills/languages.js"

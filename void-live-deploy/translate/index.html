@@ -200,7 +200,7 @@
 <script type="module">
   // everything after the first paint: the page shows its boxes and its words at once, the modules land after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, L, X] = await Promise.all([import('/lib/toolkit.js'), import('/lib/translate-langs.js'), import('/lib/translate-extras.js')]);
+    const [{ mountRelated }, L, X, C] = await Promise.all([import('/lib/toolkit.js'), import('/lib/translate-langs.js'), import('/lib/translate-extras.js'), import('/lib/translate-card.js')]);
     const docs = () => import('/lib/translate-docs.js'); // only when a document is translated
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.translate.v1', MAX_HIST = 30, RTL = /^(?:ar|fa|he|ur|ps|sd|yi)$/;
     const W = L.wordsFor(navigator.language);
@@ -670,7 +670,7 @@
     lists(); count(); show('', '', '');
     if ($('in').value.trim()) go(true); else if (!navigator.onLine) say(W.offline);
     if (q.get('url')) { $('url').value = q.get('url'); website(q.get('url')); }
-    mountRelated($('related'), '/translate/', [{ label: de ? 'Wörter zählen' : 'Count the words', href: () => ($('in').value.trim() ? '/word-count/?t=' + encodeURIComponent($('in').value.trim()) : null) }]);
+    mountRelated($('related'), '/translate/', [{ label: de ? 'Wörter zählen' : 'Count the words', href: () => ($('in').value.trim() ? '/word-count/?t=' + encodeURIComponent($('in').value.trim()) : null) }], { card: () => C.cardAsk($('in').value, state.from, state.to) });
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

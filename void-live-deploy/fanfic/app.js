@@ -112,7 +112,7 @@ const archive = (fresh) => (!fresh && loaded) || (loaded = readArchive().catch((
 const shown = (topics) => topics.filter((t) => !t.nsfw || adultOk()); // adult fandoms' stories stay off the shared lists until this device said 18+
 
 // ---- topic lists: pinned notices, then the stories, with the period filter, paging and read marks ----
-const NOTICES = [['format', 'How to format chapters'], ['report', 'Report spam or abuse here'], ['rules', 'Writing rules & guidelines']];
+const NOTICES = [['format', 'How to format chapters'], ['report', 'Report spam or abuse here'], ['rules', 'Writing rules & guidelines'], ['help', 'Help desk: questions and answers']];
 function dot(kind, label) { const d = el('i', 'dot' + (kind ? ' ' + kind : '')); d.setAttribute('role', 'img'); d.setAttribute('aria-label', label); return d; }
 function noticeRow([id, title]) {
   const tr = el('tr', 'pin'), ic = el('td', 'ic'), main = el('td', 'm'), rep = el('td', 'num hide-s', '0'), who = el('td', 'who hide-s', 'Verse'), when = el('td', 'when', 'Pinned');
@@ -126,7 +126,7 @@ function topicRow(t, { inFandom } = {}) {
   ic.append(t.locked ? dot('lock', 'Locked') : F.unread(t, me.read) ? dot('new', 'New posts') : dot('', 'No new posts'));
   const a = link(t.title, href({ f: t.board, s: t.no }), 't'); a.translate = false; main.append(a);
   if (t.nsfw) main.append(el('span', 'tag adult', '18+'));
-  const by = el('span', 'in'), pen = el('span', '', t.author); pen.translate = false; by.append('by ', pen);
+  const by = el('span', 'in'), pen = link(t.author, href({ by: F.authorKey(t) })); pen.translate = false; by.append('by ', pen);
   if (!inFandom) { const fl = link(t.fandom, href({ f: t.board })); fl.translate = false; by.append(' in ', fl); }
   main.append(by);
   const line = F.detailsLine(t); if (line) { const d = el('span', 'in det', line); d.translate = false; main.append(d); }
@@ -170,8 +170,8 @@ function setPage(n, push) {
 }
 
 // ---- views ----
-const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'gate', 'gone'];
-const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice' };
+const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'authors', 'random', 'gate', 'gone'];
+const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice', authors: 'authors', random: 'index' };
 // what the view on screen hands to the other pages (owner, 2026-10-29: "all the pages are supposed to be able to work together"): the chapter
 // being read, the draft in the Writing Room, or chapter 1 typed in the post form (the stage card's "Post a story" lands there); the index and the lists hand nothing. A link carries at most LINK_MAX encoded characters (a longer
 // address is refused by the edge), so the translator gets the opening of a long chapter (it takes 5,000 characters) and the word counter opens
@@ -184,9 +184,9 @@ function drawRelated() {
     { label: 'Count the words', href: () => (h().trim() && encodeURIComponent(h()).length <= LINK_MAX ? '/word-count/?t=' + encodeURIComponent(h()) : null) }];
   mountRelated($('related'), '/fanfic/', hand);
 }
-function show(id, title) {
+function show(id, title, nav = NAV[id]) {
   for (const v of VIEWS) $(v).classList.toggle('on', v === id);
-  for (const a of document.querySelectorAll('.nav a')) { if (a.dataset.v === NAV[id]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
+  for (const a of document.querySelectorAll('.nav a')) { if (a.dataset.v === nav) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
   const t = (title ? title + ' · ' : '') + 'Fan fiction · Verse'; document.title = german ? DE.deTitle(t) : t;
   handing = id === 'room' ? () => draft().text : id === 'post' ? () => $('stForm').elements.text.value : null; drawRelated();
 }
@@ -226,8 +226,8 @@ const findQ = () => (new URLSearchParams(location.search).get('find') || '').sli
 // warnings, and a title letter A to Z; they combine with the find field and live in the address, so a filtered list can be shared
 const filtersQ = () => { const q = new URLSearchParams(location.search);
   return { sort: F.SORTS[q.get('sort')] ? q.get('sort') : 'recent', rating: (q.get('rated') || '').slice(0, 20), genres: (q.get('genre') || '').split(',').filter(Boolean).slice(0, 15),
-    characters: (q.get('char') || '').slice(0, 120), noWarnings: q.get('nowarn') === '1', letter: (q.get('letter') || '').slice(0, 1) }; };
-const filtering = (f) => !!(f.rating || f.genres.length || f.characters.trim() || f.noWarnings || f.letter);
+    characters: (q.get('char') || '').slice(0, 120), noWarnings: q.get('nowarn') === '1', letter: (q.get('letter') || '').slice(0, 1), by: (q.get('by') || '').slice(0, 120) }; };
+const filtering = (f) => !!(f.rating || f.genres.length || f.characters.trim() || f.noWarnings || f.letter || f.by);
 const indexList = () => { if (!idx) return []; const f = filtersQ(); return F.sortStories(F.filterStories(F.findIn(idx.list, findQ()), f), f.sort); };
 function drawIndexList() {
   if (!idx) return;
@@ -259,7 +259,10 @@ function drawFilters(f) {
   if (document.activeElement !== $('fChars')) $('fChars').value = f.characters; $('fNoWarn').checked = f.noWarnings;
   for (const b of az.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.letter === f.letter.toUpperCase()));
   $('fGenresSay').textContent = f.genres.length ? f.genres.join(', ') : 'any';
+  // one author's stories (a pen name in a row, or a row of the Authors list, opens them): the name shows, with a way back to every author
+  $('fBy').hidden = !f.by; const who = $('fByName'); who.textContent = f.by.replace(/!.*/, ''); who.translate = false;
 }
+$('fByAll').onclick = () => setFilter('by', '');
 $('find').addEventListener('input', () => {
   const u = new URLSearchParams(location.search), v = $('find').value.slice(0, 100);
   if (v.trim()) u.set('find', v); else u.delete('find'); u.delete('page');
@@ -287,6 +290,34 @@ async function viewForum(code) {
   $('forumAbout').textContent = b.about && !/^Fan fiction: /.test(b.about) ? b.about : 'Stories in ' + b.title + '.';
   $('forumPost').href = href({ new: 'story', f: code });
   drawList('forum', a.topics.filter((t) => t.board === code), { inFandom: true, emptySay: 'No stories in ' + b.title + ' yet. Post the first one.' });
+}
+
+// the Authors list: every pen name A to Z, how many stories each has posted and its newest post; a name opens that writer's stories on the index
+async function viewAuthors() {
+  show('authors', 'Authors');
+  const rows = $('authorRows'); rows.replaceChildren(quietRow('Opening the archive…', 3));
+  let a; try { a = await archive(); } catch (e) { rows.replaceChildren(quietRow(e.message, 3)); return; }
+  const list = F.authorsOf(shown(a.topics));
+  $('authorsSay').textContent = list.length ? list.length.toLocaleString() + (list.length === 1 ? ' author has' : ' authors have') + ' posted here.' : '';
+  if (!list.length) { rows.replaceChildren(quietRow('No authors yet. The first person to post a story shows here.', 3)); return; }
+  const twice = new Set(list.filter((w, i) => list.findIndex((x) => x.author === w.author) !== i).map((w) => w.author)); // a pen name two writers use
+  rows.replaceChildren(...list.map((w) => {
+    const tr = el('tr'), main = el('td', 'm'), n = el('td', 'num', String(w.stories)), when = el('td', 'when');
+    const a = link(w.author, href({ by: w.key }), 't'); a.translate = false; main.append(a);
+    if (w.trip && twice.has(w.author)) { const m = el('span', 'in', 'Signed'), code = el('span', '', ' ' + w.trip.slice(0, 12)); code.translate = false; m.append(code); main.append(m); } // tells namesakes apart
+    n.dataset.l = 'Stories'; when.dataset.l = 'Last post'; when.append(timeEl(w.last));
+    tr.append(main, n, when); return tr;
+  }));
+}
+
+// Random story: one of the stories this device may see, picked at random; the address becomes that story's, so Back returns to where you were
+async function viewRandom() {
+  show('random', 'Random story');
+  const s = $('randomSay'); say(s, 'Picking a story…');
+  let a; try { a = await archive(); } catch (e) { fail(s, e); return; }
+  const t = F.randomOf(shown(a.topics));
+  if (t) return go(href({ f: t.board, s: t.no }), true);
+  say(s, 'Random story picks one of the stories posted here. There are none yet, so there is nothing to pick.');
 }
 
 async function viewRecent() {
@@ -602,7 +633,7 @@ function viewRoom() {
 
 function viewNotice(which) {
   const id = NOTICES.some(([k]) => k === which) ? which : 'rules';
-  show('notice', NOTICES.find(([k]) => k === id)[1]);
+  show('notice', NOTICES.find(([k]) => k === id)[1], id === 'help' ? 'help' : 'notice');
   for (const [k] of NOTICES) $('n-' + k).hidden = k !== id;
 }
 
@@ -615,6 +646,8 @@ async function route() {
   if (f && s) return viewStory(f, s, q.get('c'));
   if (f) return viewForum(f);
   if (v === 'recent') return viewRecent();
+  if (v === 'authors') return viewAuthors();
+  if (v === 'random') return viewRandom();
   if (v === 'search') return viewSearch((q.get('q') || '').slice(0, 200));
   if (v === 'room' || /^#room=/.test(location.hash)) return viewRoom();
   if (v === 'glossary') { show('glossary', 'Writing Glossary'); return; }

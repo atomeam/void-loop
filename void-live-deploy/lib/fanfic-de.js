@@ -28,6 +28,7 @@ export const DICT = {
   'Nothing was posted this week. Choose All topics to see every story.': 'Diese Woche wurde nichts veröffentlicht. Wähle Alle Themen, um jede Geschichte zu sehen.',
   'New posts': 'Neue Beiträge', 'No new posts': 'Keine neuen Beiträge', Announcement: 'Ankündigung', Locked: 'Gesperrt', 'Site info': 'Statistik', Authors: 'Autor:innen',
   'Post a new story': 'Neue Geschichte veröffentlichen', 'The stories with the newest posts, in every fandom.': 'Die Geschichten mit den neuesten Beiträgen, aus allen Fandoms.',
+  'Follow the newest stories by feed (RSS)': 'Den neuesten Geschichten per Feed folgen (RSS)', 'New stories by feed:': 'Neue Geschichten als Feed:',
   Chapter: 'Kapitel', 'Add the next chapter': 'Nächstes Kapitel hinzufügen', 'Chapter title': 'Kapiteltitel', 'The chapter': 'Das Kapitel', 'Post chapter': 'Kapitel veröffentlichen',
   Reviews: 'Rezensionen', 'Your review': 'Deine Rezension', 'Pen name': 'Autorenname', 'Optional. Kept on this device for next time.': 'Freiwillig. Wird für das nächste Mal auf diesem Gerät gespeichert.',
   'Post review': 'Rezension veröffentlichen', 'Post a story': 'Geschichte veröffentlichen',
@@ -101,6 +102,16 @@ export const DICT = {
   'Choose a rating, so readers know what to expect.': 'Wähle eine Freigabe, damit Leser:innen wissen, was sie erwartet.',
   'Readers filter the archive by it.': 'Leser:innen filtern das Archiv danach.', 'Readers find stories by the people in them.': 'Leser:innen finden Geschichten über die Figuren darin.',
   'Tick each one that applies. Readers can hide every story with a warning.': 'Kreuze jede an, die zutrifft. Leser:innen können jede Geschichte mit Warnung ausblenden.',
+  'Random story': 'Zufällige Geschichte', Help: 'Hilfe', 'Pen name': 'Autorenname', 'Authors A to Z': 'Autor:innen von A bis Z',
+  "Everyone who has posted a story here, A to Z. Open a name to read that writer's stories.": 'Alle, die hier eine Geschichte veröffentlicht haben, von A bis Z. Öffne einen Namen, um die Geschichten dieser Person zu lesen.',
+  'No authors yet. The first person to post a story shows here.': 'Noch keine Autor:innen. Die erste Person, die eine Geschichte veröffentlicht, erscheint hier.',
+  'Picking a story…': 'Eine Geschichte wird ausgewählt…',
+  'Random story picks one of the stories posted here. There are none yet, so there is nothing to pick.': 'Zufällige Geschichte wählt eine der hier veröffentlichten Geschichten. Es gibt noch keine, also gibt es nichts zu wählen.',
+  'Stories by': 'Geschichten von', Signed: 'Signiert', 'Show every author': 'Alle Autor:innen zeigen',
+  'Help desk: questions and answers': 'Hilfe: Fragen und Antworten', 'How do I post a story?': 'Wie veröffentliche ich eine Geschichte?',
+  'How do I add the next chapter?': 'Wie füge ich das nächste Kapitel hinzu?', 'Do I need an account?': 'Brauche ich ein Konto?',
+  'How do I find a story?': 'Wie finde ich eine Geschichte?', 'Something here breaks the rules. What do I do?': 'Hier verstößt etwas gegen die Regeln. Was tue ich?',
+  'Where can I ask something else?': 'Wo kann ich sonst etwas fragen?',
   'Most recent post': 'Neuester Beitrag', 'Newest stories': 'Neueste Geschichten', 'Title, A to Z': 'Titel, A bis Z', 'Most replies': 'Meiste Antworten',
   'General: fine for every reader': 'Allgemein: für alle Leser:innen geeignet', 'Teen: some violence, strong words or romance': 'Jugend: etwas Gewalt, derbe Sprache oder Romantik',
   'Mature: strong themes, for adult readers': 'Erwachsen: starke Themen, für erwachsene Leser:innen',
@@ -114,7 +125,7 @@ const PATTERNS = [
   [/^Chapter (\d+)$/, 'Kapitel $1'], [/^Chapter (\d+) of (\d+)$/, 'Kapitel $1 von $2'], [/^Chapter (\d+): /, 'Kapitel $1: '], [/^Page (\d+) of (\d+)$/, 'Seite $1 von $2'],
   [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
   [/^(\d[\d,.]*) words?$/, '$1 Wörter'], [/^(\d+) min read$/, '$1 Min. Lesezeit'], [/^No story matches "(.*)"\.$/, 'Keine Geschichte passt zu „$1“.'],
-  [/^Exported (\d+) stor(?:y|ies)\.$/, '$1 Geschichte(n) exportiert.'], [/^No stories in (.*) yet\. Post the first one\.$/, 'Noch keine Geschichten in $1. Veröffentliche die erste.'],
+  [/^Exported (\d+) stor(?:y|ies)\.$/, '$1 Geschichte(n) exportiert.'], [/^(\d[\d,.]*) authors? ha(?:s|ve) posted here\.$/, '$1 Autor:innen haben hier veröffentlicht.'], [/^No stories in (.*) yet\. Post the first one\.$/, 'Noch keine Geschichten in $1. Veröffentliche die erste.'],
 ];
 
 /** one string in German: the dictionary, then the patterns; the string as it is when neither knows it. Spaces around it are kept. Pure. */

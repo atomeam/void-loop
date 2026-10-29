@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,84 +545,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T08:01:59Z",
+   "at": "2026-10-29T08:31:17Z",
+   "subject": "Random page: preload the card module"
+  },
+  {
+   "at": "2026-10-29T08:27:11Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T07:59:15Z",
+   "at": "2026-10-29T08:26:59Z",
+   "subject": "Random number page: stage card uses the page's range, and links back"
+  },
+  {
+   "at": "2026-10-29T08:24:25Z",
    "subject": "Tower gate: sycophanthex.com measured against their live sites"
   },
   {
-   "at": "2026-10-29T07:56:55Z",
+   "at": "2026-10-29T08:22:55Z",
+   "subject": "seo-audit: /fanfic/rss is a function route"
+  },
+  {
+   "at": "2026-10-29T08:19:30Z",
+   "subject": "Fan fiction: a feed of the newest stories at /fanfic/rss"
+  },
+  {
+   "at": "2026-10-29T08:17:57Z",
+   "subject": "Refresh the translate parity evidence for the card import"
+  },
+  {
+   "at": "2026-10-29T08:15:54Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T07:56:55Z",
+   "at": "2026-10-29T08:15:42Z",
+   "subject": "Translate card holds the typed text"
+  },
+  {
+   "at": "2026-10-29T08:14:02Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T07:56:43Z",
-   "subject": "Word counter card counts the typed text on the device"
+   "at": "2026-10-29T08:13:56Z",
+   "subject": "fanfic: Authors list, a writer's stories, Random story and a help desk"
   },
   {
-   "at": "2026-10-29T07:56:23Z",
-   "subject": "Verse Brain grows a spiking eye from F217 that learns by dopamine"
+   "at": "2026-10-29T08:12:23Z",
+   "subject": "Regenerate after merging main"
   },
   {
-   "at": "2026-10-29T07:55:08Z",
-   "subject": "fanfic: story details, catalog filters, sort and A to Z"
-  },
-  {
-   "at": "2026-10-29T07:46:47Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T07:44:04Z",
+   "at": "2026-10-29T08:12:22Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T07:43:53Z",
-   "subject": "Calculator stage card keeps the sum after ="
+   "at": "2026-10-29T08:12:08Z",
+   "subject": "3D miniatures: free materials only after a shader compile in flight settles"
   },
   {
-   "at": "2026-10-29T07:43:23Z",
-   "subject": "fix: the will's own want keeps its place in the queue after a try"
-  },
-  {
-   "at": "2026-10-29T07:38:57Z",
+   "at": "2026-10-29T08:10:38Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T07:38:26Z",
-   "subject": "fix: the sprite card's numbers are whole and in range before they reach its markup"
+   "at": "2026-10-29T08:10:26Z",
+   "subject": "Base64 card holds the typed text"
   },
   {
-   "at": "2026-10-29T07:38:03Z",
-   "subject": "feat: sprite sheet cleaner, joined from the sprite tool in the owner's repos"
+   "at": "2026-10-29T08:08:29Z",
+   "subject": "Regenerate after merging main"
   },
   {
-   "at": "2026-10-29T07:34:35Z",
-   "subject": "Parity: the currency row needs a currency converter, not the bare word"
-  },
-  {
-   "at": "2026-10-29T07:31:47Z",
+   "at": "2026-10-29T08:08:18Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T07:31:36Z",
-   "subject": "Stage card links carry the conversion, the sum and the countdown"
+   "at": "2026-10-29T08:08:03Z",
+   "subject": "Wheel: the hand-off copy is written on the press, not when the link is aimed"
   },
   {
-   "at": "2026-10-29T07:28:41Z",
-   "subject": "Verse loop: task, Queue job mvoxczpi (versus: wheelofgold.com): Versus: wheelo"
-  },
-  {
-   "at": "2026-10-29T07:25:49Z",
-   "subject": "Verse Brain keeps what it is thinking across a reload, through the shared field"
-  },
-  {
-   "at": "2026-10-29T07:25:35Z",
-   "subject": "/fanfic/: the post form hands chapter 1 to the translator and word counter"
+   "at": "2026-10-29T08:01:59Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

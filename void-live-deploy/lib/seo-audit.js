@@ -26,7 +26,7 @@ export function internalPath(href, from = '/') {
   try { return decodeURIComponent(u.pathname); } catch (_) { return u.pathname; }
 }
 // what the server answers without a file: the Pages Functions routes (_routes.json) and the API
-const DYNAMIC = /^\/(?:api\/|c\/|is-it\/|gen\/|boards\/t\/|@|films\/rss$|tools\.json$|cdn-cgi\/)/;
+const DYNAMIC = /^\/(?:api\/|c\/|is-it\/|gen\/|boards\/t\/|@|films\/rss$|fanfic\/rss$|tools\.json$|cdn-cgi\/)/;
 /** whether a site path is served, given the files that exist (a Set of paths like '/photos/index.html', '/og.png'). Pure. */
 export function served(p, files) {
   if (DYNAMIC.test(p)) return true;

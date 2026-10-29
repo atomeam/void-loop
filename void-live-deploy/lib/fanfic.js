@@ -215,6 +215,20 @@ export function topicOf(t, board) {
     trip: t.trip || '', summary: summary || excerpt(text, 160), replies: t.replies || 0, at: t.at || 0, bumped: t.bumped || t.at || 0, locked: !!t.locked, ...details };
 }
 
+/** one author's key: the pen name, and its mark after a ! when it has one, so two writers with the same pen name stay apart. Pure. */
+export const authorKey = (t) => (t.author || 'Anonymous') + (t.trip ? '!' + t.trip : '');
+/** the archive's authors A to Z (case and accents ignored), each with its key, pen name, mark, how many stories and its newest post. Pure. */
+export function authorsOf(topics) {
+  const by = new Map();
+  for (const t of topics || []) {
+    const k = authorKey(t), a = by.get(k) || { key: k, author: t.author || 'Anonymous', trip: t.trip || '', stories: 0, last: 0 };
+    a.stories += 1; a.last = Math.max(a.last, t.bumped || t.at || 0); by.set(k, a);
+  }
+  return [...by.values()].sort((a, b) => byTitle(a.author).localeCompare(byTitle(b.author)) || a.trip.localeCompare(b.trip));
+}
+/** one story picked at random from the list, or null for an empty list. rand is Math.random by default, so a test can fix it. Pure apart from rand. */
+export const randomOf = (list, rand = Math.random) => (list && list.length ? list[Math.min(list.length - 1, Math.floor(rand() * list.length))] : null);
+
 /** the archive's numbers, all counted from what is there: fandoms, stories, posts, and authors (a pen name and its mark count once). */
 export function statsOf(boards, topics) {
   const authors = new Set(topics.map((t) => t.author + '!' + t.trip));
@@ -239,6 +253,21 @@ export function storiesCsv(topics, origin = '') {
   return rows.map((r) => r.map(cell).join(',')).join('\r\n') + '\r\n';
 }
 
+// the archive's feed (sycophanthex.com lists its most recent stories and offers them by feed): /fanfic/rss, functions/fanfic/rss.js. The newest
+// stories first, at most `max`, adult fandoms' stories left out (a feed reader asks nobody whether they are 18), each item linking its story page.
+const xml = (s) => String(s == null ? '' : s).replace(/[<>&'"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
+/** the stories as an RSS 2.0 document, newest post first. An empty list is a channel with no items. Pure. */
+export function storiesRss(topics, origin = '', max = 50) {
+  const list = (topics || []).filter((t) => !t.nsfw).slice().sort((a, b) => (b.bumped || b.at || 0) - (a.bumped || a.at || 0)).slice(0, max);
+  const items = list.map((t) => {
+    const link = origin + '/fanfic/?f=' + encodeURIComponent(t.board) + '&s=' + t.no, when = t.bumped || t.at;
+    return '<item><title>' + xml(t.title + ' (' + t.fandom + ')') + '</title><link>' + xml(link) + '</link><guid isPermaLink="false">' + xml(t.board + '/' + t.no) + '</guid>'
+      + (when ? '<pubDate>' + new Date(when).toUTCString() + '</pubDate>' : '') + '<dc:creator>' + xml(t.author || 'Anonymous') + '</dc:creator><description>' + xml(t.summary || '') + '</description></item>';
+  }).join('');
+  return '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Fan fiction · Verse</title><link>' + xml(origin + '/fanfic/')
+    + '</link><description>The newest stories in Verse\'s open fan fiction archive, every fandom.</description><language>en</language>' + items + '</channel></rss>';
+}
+
 // the catalog's filters and sorts (sycophanthex.com browses by rating, genre, character and warning, and lists titles A to Z or most recent):
 // they combine, and the page keeps them in its address so a filtered list can be shared
 export const SORTS = Object.freeze({ recent: 'Most recent post', newest: 'Newest stories', title: 'Title, A to Z', replies: 'Most replies' });
@@ -246,9 +275,9 @@ export const SORTS = Object.freeze({ recent: 'Most recent post', newest: 'Newest
 export const letterOf = (title) => { const c = byTitle(title).charAt(0).toUpperCase(); return /^[A-Z]$/.test(c) ? c : '#'; };
 /** the stories that pass every filter given: a rating, every genre asked for, every character name asked for (part of a name is enough, case and
  *  accents ignored), no warnings when noWarnings, and a title letter. Empty filters pass everything. Pure. */
-export function filterStories(topics, { rating = '', genres = [], characters = '', noWarnings = false, letter = '' } = {}) {
+export function filterStories(topics, { rating = '', genres = [], characters = '', noWarnings = false, letter = '', by = '' } = {}) {
   const g = pick(genres, GENRES, GENRES.length), names = String(characters || '').split(',').map(fold).map((x) => x.trim()).filter(Boolean), L = String(letter || '').toUpperCase();
-  return (topics || []).filter((t) => (!rating || t.rating === rating) && g.every((x) => (t.genres || []).includes(x))
+  return (topics || []).filter((t) => (!by || authorKey(t) === by) && (!rating || t.rating === rating) && g.every((x) => (t.genres || []).includes(x))
     && names.every((n) => (t.characters || []).some((c) => fold(c).includes(n))) && (!noWarnings || !(t.warnings || []).length) && (!L || letterOf(t.title) === L));
 }
 const byTitle = (t) => fold(t).replace(/^[^\p{L}\p{N}]+/u, '');
