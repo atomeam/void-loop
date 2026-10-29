@@ -2214,6 +2214,18 @@
       "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot (commit 630e666fb, lib/models.js); the bake-off of 2026-10-10 only measured the models (tools/asks-link.json)"
     }
   ],
+  "held": [
+    {
+      "words": "Absorb every repository on the account into the core code",
+      "until": "sycophanthex.com",
+      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the tower goes every site ever made, smallest first (owner, 2026-10-29)"
+    },
+    {
+      "words": "Create a browser-based utility to check the watertightness of STL print files.",
+      "until": "sycophanthex.com",
+      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the forge already checks the STL files it writes (printCheck, ledger 2026-10-10T20:43:56Z), a check for a file someone brings waits (owner, 2026-10-29)"
+    }
+  ],
   "totals": {
     "asked": 239,
     "built": 235,

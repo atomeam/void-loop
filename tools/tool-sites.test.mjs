@@ -40,3 +40,12 @@ test('each page and its module are what the table makes (tools/tool-site-pages.m
     const html = fs.readFileSync(new URL('../void-live-deploy' + r.path + 'index.html', import.meta.url), 'utf8'); assert.match(html, /<nav id="related"/); assert.ok(html.includes('<title>' + r.name.replace(/&/g, '&amp;') + ' · Verse</title>'), r.path); assert.ok(pageOf(r, kind).includes(r.path + 'app.js')); assert.ok(html.includes('/og/' + slug(r.path) + '.png'), r.path + ' has its own share picture'); assert.ok(fs.existsSync(new URL('../void-live-deploy/og/' + slug(r.path) + '.png', import.meta.url)), r.path + ' picture is there'); assert.match(html, /og:description/);
   }
 });
+
+// Verse asked (2026-10-29 card): "a tool-sites.js row and LANE_PAGES for any new tower". 106 lane sites still share their floor's page;
+// a lane site added from now on comes with a page of its own, so the count of shared ones may only fall. Lower OWN_PAGE_DEBT as pages land.
+const OWN_PAGE_DEBT = 106;
+test('a new lane site comes with a page of its own: the lane sites that share their floor\'s page may not grow', () => {
+  const shared = FLOORS.filter((f) => f.lane && !LANE_PAGES[f.id]).map((f) => f.id);
+  assert.ok(shared.length <= OWN_PAGE_DEBT, (shared.length - OWN_PAGE_DEBT) + ' new lane site(s) without a page of their own (LANE_PAGES, from a lib/tool-sites.js or SELF_SITES row): ' + shared.slice(-5).join(', '));
+  for (const f of FLOORS.filter((x) => x.lane && LANE_PAGES[x.id])) assert.equal(f.page, LANE_PAGES[f.id], f.id + ' opens its own page');
+});
