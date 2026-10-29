@@ -133,6 +133,19 @@ export const SPECS = {
     await t.fill('#ask', '100 f to c'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(400); t.ok(/37\.7777|37\.78/.test(await t.p.locator('main').innerText()), '100 F is 37.78 C');
     await t.share('#link');
   },
+  // the file converter (onlineconverter.com assimilated, 2026-10-29): a search opens the tool, a real HTML file becomes plain text on the device,
+  // the text file is checked word for word, and the share link opens the same tool with no file in it
+  '/converter/': async (t) => {
+    t.ok(/106 tools: 21 on this page, \d+ on another Verse page, \d+ in part, \d+ not on Verse yet/.test(await t.text('#counts')), 'all 106 tools counted: ' + (await t.text('#counts')).slice(0, 80));
+    await t.fill('#q', 'epub to txt'); await t.click('#find button[type=submit]'); await t.p.waitForTimeout(300);
+    t.ok(/EPUB to TXT/.test(await t.text('#found')) && /Ebook to TXT/.test(await t.text('#tName')), 'epub to txt finds and opens the tool');
+    await t.p.setInputFiles('#files', t.tmp('note.html', '<html><body><h1>Shop list</h1><p>Two eggs and bread.</p></body></html>')); await t.p.waitForTimeout(300);
+    await t.click('#go'); await t.waitText('#status', /made on this device|could not/, 10000);
+    const got = await t.p.evaluate(async () => { const a = document.querySelector('#out a.dl'); return a ? { name: a.download, text: await (await fetch(a.href)).text() } : null; });
+    t.ok(!!got && got.name === 'note.txt' && /Shop list/.test(got.text) && /Two eggs and bread\./.test(got.text) && !/</.test(got.text), 'the HTML file becomes note.txt with its words and no tags: ' + JSON.stringify(got).slice(0, 90));
+    await t.download('#out a.dl', /^note\.txt$/);
+    await t.share('#share', async (p) => /Ebook to TXT/.test(await p.locator('#tName').innerText()));
+  },
   '/cpan/': async (t) => {
     await t.fill('#reports', 'Moo 2.005005 PASS perl-5.38.0 x86_64-linux\nMoo 2.005005 FAIL perl-5.8.9 darwin\nTry::Tiny 0.31 PASS perl-5.36.0 MSWin32'); await t.click('#ingest');
     await t.fill('#q', 'Moo'); await t.click('#search'); t.ok(/2 matching/.test(await t.text('#searchout')), 'two Moo reports found');
@@ -165,6 +178,15 @@ export const SPECS = {
   '/generators/make/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate rolls the table again'); await t.download('#download', /\.html$/i); await t.share('#share'); },
   '/generators/story/': async (t) => { await t.fill('#idea', 'a lighthouse keeper finds a door in the sea'); await t.click('#write'); await t.waitText('#story', /\w{20,}/, 30000); t.ok((await t.text('#story')).split(/\s+/).length > 40, 'an opening is written'); await t.download('#dl', /\.txt$/i); },
   '/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
+  // Verse raps (2026-10-29): a topic in, a rap written for it by the free answer model (two verses and a hook, the rhymes lettered), performed by
+  // Rap it yourself (beat and lights), copied, and shared with the whole rap in the link
+  '/rap/': async (t) => {
+    await t.fill('#topic', 'a cat who runs the night shift'); await t.click('#write');
+    const got = await t.waitText('#rap', /verse 1[\s\S]*hook[\s\S]*verse 2/i, 60000); t.ok(/verse 1[\s\S]*hook[\s\S]*verse 2/i.test(got), 'a rap with two verses and a hook is written for the topic');
+    t.ok(/\d+ bars in \d parts · \d+ of \d+ bars end on a rhyme/.test(await t.text('#rap')), 'the bars and rhymes are counted');
+    await t.clickText('Rap it yourself'); await t.p.waitForTimeout(3500); t.ok((await t.p.locator('.rp-bar.on').count()) === 1, 'a bar lights up on its measure over the beat'); await t.clickText('Stop');
+    await t.copies('button.rp-btn >> text="Copy the lyrics"', 'Verse 1'); await t.share('#share');
+  },
   // the scored drawing course (wheelroot.com assimilated, 2026-10-29): begin opens the first drill, a stroke drawn on the sheet is scored 0 to 100 on Done, and the drawing travels in a link
   '/learn-to-draw/': async (t) => {
     await t.click('#begin'); await t.p.waitForTimeout(200); t.ok((await t.text('#dName')).trim().length > 0, 'Begin opens a drill: ' + (await t.text('#dName')).trim());
