@@ -3089,13 +3089,13 @@ try {
   // the error garden grown from the incident autopsy (asked by Verse and the owner, 2026-10-18): "plant my test failures" plants incidents.json's failing checks
   if (want("error garden from incidents: plant my test failures plants the failing checks, repeats are weeds, and asking again adds nothing twice")) { const S = await fresh();
     await S.ask('plant my test failures in my error garden', 1500);
-    const one = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    const one = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage + x.dataset.count)); // a weed is a count of 2 or more, and incidents.json repeats a check 10+ times on a red day
     await S.ask('visualize your test failures', 1500);
     const two = await S.p.$$eval('.error-garden .eg-plant', (r) => r.length);
     const inc = await S.p.evaluate(() => fetch('/incidents.json').then((r) => r.json()).catch(() => null));
     const titles = new Set(((inc && inc.incidents) || []).slice(0, 30).flatMap((i) => (i.checks || []).map((c) => String(c).split(':')[0].trim().toLowerCase())));
     check('error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none',
-      one.length >= 1 && one.length <= Math.min(12, titles.size) && one.some((x) => /^weed[2-9]/.test(x)) && two === one.length && !S.errors.length, JSON.stringify({ one, two, titles: titles.size, errors: S.errors }));
+      one.length >= 1 && one.length <= Math.min(12, titles.size) && one.some((x) => /^weed\d+$/.test(x) && Number(x.slice(4)) >= 2) && two === one.length && !S.errors.length, JSON.stringify({ one, two, titles: titles.size, errors: S.errors }));
   }
   // stage pack b (owner, 2026-10-18): the error garden, the idea certificate, noun heat and the hunting question, played the way a person uses them
   if (want("stage pack b: an error garden that turns a repeated mistake into a weed and a ruled one into compost, idea certificates that need a why and a death note, noun heat, a hunting question that returns on a later visit")) { const S = await fresh();
