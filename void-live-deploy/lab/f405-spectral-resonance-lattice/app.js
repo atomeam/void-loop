@@ -136,6 +136,6 @@ sealBtn.onclick = () => {
 
 // Load previous if any
 try {
-  const prev = JSON.parse(localStorage.getItem('f044-seal')||'null');
+  const prev = JSON.parse(localStorage.getItem('f044-seal')||'null'); // void-review: ok (inside a try whose catch keeps the default)
   if (prev && prev.data && prev.data.genes) genes = prev.data.genes;
 } catch (e) { console.warn('f405-spectral-resonance-lattice:', e); }

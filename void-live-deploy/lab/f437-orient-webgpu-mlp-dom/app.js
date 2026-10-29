@@ -252,7 +252,7 @@ document.getElementById('reset').onclick = () => {
           statusEl.textContent += ' · restored sealed genome';
         }
       };
-    } catch {}
+    } catch (e) { console.warn('f437-orient-webgpu-mlp-dom:', e); }
     canvas.width = canvas.clientWidth * devicePixelRatio;
     canvas.height = canvas.clientHeight * devicePixelRatio;
     // simple render loop using 2D fallback overlay? For pure compute we need a render pass; for demo use CPU points on a 2D overlay or note.

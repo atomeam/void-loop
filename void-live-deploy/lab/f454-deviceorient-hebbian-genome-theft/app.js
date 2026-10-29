@@ -134,6 +134,6 @@ window.addEventListener('beforeunload', () => {
 });
 // load if present
 try {
-  const saved = JSON.parse(localStorage.getItem('f454-genomes')||'null');
+  const saved = JSON.parse(localStorage.getItem('f454-genomes')||'null'); // void-review: ok (inside a try whose catch keeps the default)
   if (saved) saved.forEach((s,i) => { if (agents[i]) agents[i].w = s.w; });
-} catch(e){}
+} catch (e) { console.warn('f454-deviceorient-hebbian-genome-theft:', e); }

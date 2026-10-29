@@ -216,5 +216,5 @@ document.getElementById('seal').onclick = async () => {
         document.getElementById('status').textContent = 'Loaded sealed mind';
       }
     };
-  } catch (e) {}
+  } catch (e) { console.warn('f438-causal-webgpu-softbody-attention-mind:', e); }
 })();

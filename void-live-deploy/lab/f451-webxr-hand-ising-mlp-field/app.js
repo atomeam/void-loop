@@ -188,7 +188,7 @@ async function loadState() {
         statusEl.textContent = 'Loaded persistent state';
       }
     };
-  } catch (e) {}
+  } catch (e) { console.warn('f451-webxr-hand-ising-mlp-field:', e); }
 }
 initMLP();
 initWebGPU().then(ok => {

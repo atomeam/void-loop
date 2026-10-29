@@ -127,7 +127,7 @@ function spawnProbes() {
     const genes = nearby[0].genes;
     const div = document.createElement('div');
     div.className = 'probe';
-    div.innerHTML = `Probe ${i+1}<br>fit:${avgFit.toFixed(2)} rest:${genes[0].toFixed(2)}<br>Click to seal`;
+    div.innerHTML = `Probe ${i+1}<br>fit:${avgFit.toFixed(2)} rest:${genes[0].toFixed(2)}<br>Click to seal`; // void-review: ok (constant labels and computed numbers, no visitor text)
     div.onclick = () => sealGenome(genes, avgFit);
     probesEl.appendChild(div);
   });

@@ -157,12 +157,12 @@ document.getElementById('sealBest').onclick = () => {
   const best = agents.reduce((b,a) => a.genome.fitness > b.genome.fitness ? a : b, agents[0]);
   best.sealed = true;
   sealedGenomes.push(JSON.parse(JSON.stringify(best.genome)));
-  try { localStorage.setItem('f285-sealed', JSON.stringify(sealedGenomes)); } catch(e){}
+  try { localStorage.setItem('f285-sealed', JSON.stringify(sealedGenomes)); } catch (e) { console.warn('f439-webxr-hand-genome-competition:', e); }
   statusEl.textContent = `Sealed A${best.id} fitness ${best.genome.fitness.toFixed(2)}`;
 };
 document.getElementById('loadGenome').onclick = () => {
   try {
-    const stored = JSON.parse(localStorage.getItem('f285-sealed') || '[]');
+    const stored = JSON.parse(localStorage.getItem('f285-sealed') || '[]'); // void-review: ok (inside a try whose catch keeps the default)
     if (stored.length) {
       const g = stored[stored.length-1];
       const target = agents[Math.floor(Math.random()*agents.length)];
@@ -178,6 +178,6 @@ document.getElementById('reset').onclick = () => {
 };
 
 try {
-  const prev = JSON.parse(localStorage.getItem('f285-sealed') || '[]');
+  const prev = JSON.parse(localStorage.getItem('f285-sealed') || '[]'); // void-review: ok (inside a try whose catch keeps the default)
   if (prev.length) statusEl.textContent += ` | ${prev.length} sealed genomes in storage`;
-} catch(e){}
+} catch (e) { console.warn('f439-webxr-hand-genome-competition:', e); }

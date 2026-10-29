@@ -67,7 +67,7 @@ function spawnPortal(px, py, energy) {
   el.className = 'portal';
   el.style.left = (px - 60) + 'px';
   el.style.top = (py - 40) + 'px';
-  el.innerHTML = `<div>Wave ${energy.toFixed(2)}</div><canvas width="100" height="36"></canvas>`;
+  el.innerHTML = `<div>Wave ${energy.toFixed(2)}</div><canvas width="100" height="36"></canvas>`; // void-review: ok (constant labels and computed numbers, no visitor text)
   const pcanvas = el.querySelector('canvas');
   const pctx = pcanvas.getContext('2d');
   document.body.appendChild(el);
