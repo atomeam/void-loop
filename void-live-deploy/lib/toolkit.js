@@ -266,7 +266,12 @@ export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
   const row = d.createElement('div'); row.className = 'tk-row';
   { const c = cardLinkOf(path); if (c) { // first: the page's own card (owner, 2026-10-25: "and vice versa")
     const x = a(c, 'See it as a card on the stage →', 'tk-card'), aim = () => { let q = ''; try { q = card ? String(card() || '').trim() : ''; } catch (_) { /* the page's own problem: keep the example */ } x.href = q ? '/?q=' + encodeURIComponent(q) : c; };
-    if (card) { aim(); for (const ev of ['pointerdown', 'focus', 'click']) x.addEventListener(ev, aim); } // worked out when pressed, from what the page shows then
+    if (card) { // aimed now, again after anything the page does (a swatch clicked, a stop dragged, a key typed), and when pointed at or pressed,
+      // so a hover already shows the card for what is on the page (owner via the team, 2026-10-29: the link follows the colour live)
+      aim(); for (const ev of ['pointerenter', 'pointerdown', 'focus', 'click']) x.addEventListener(ev, aim);
+      if (d.addEventListener) for (const ev of ['input', 'change', 'click', 'pointerup', 'keyup']) d.addEventListener(ev, aim);
+      if (d.defaultView && d.defaultView.addEventListener) for (const ev of ['hashchange', 'popstate']) d.defaultView.addEventListener(ev, aim);
+    }
     row.append(x);
   } }
   for (const h of handoffs) {

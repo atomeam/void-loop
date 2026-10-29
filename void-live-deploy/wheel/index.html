@@ -93,7 +93,7 @@
 </main>
 <script type="module">
   import { mountRelated, paletteOf, setPalette } from '/lib/toolkit.js';
-  import { entriesOf, textOf, slices, pickIndex, plan, under, ease, shuffle, sorted, pack, open, fairRandom } from '/lib/wheel.js';
+  import { entriesOf, textOf, slices, pickIndex, plan, under, ease, shuffle, sorted, pack, open, fairRandom, askOf } from '/lib/wheel.js';
   import { put, mountPill, mountStrip, prizesLink, tournamentsLink, labelsFrom, textOfHandoff } from '/lib/handoff.js';
   const $ = (id) => document.getElementById(id), cv = $('wheel'), cx = cv.getContext('2d'), WINPIC = $('winpic');
   const START = 'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHeidi';
@@ -222,7 +222,7 @@
   mountRelated($('related'), '/wheel/', [{ label: 'Pick from these on the random page', href: () => (entries.length ? '/random/?list=' + encodeURIComponent(textOf(entries)) : null) },
     { label: 'Prize odds for these', href: handoff(() => prizesLink(textOf(entries))) },
     { label: 'Seed a tournament', href: handoff(() => tournamentsLink(entries.map((e) => e.label))) }]
-    .concat(COLORS !== OWN ? [{ label: 'Its own colours again', run: () => { setPalette(null); COLORS = OWN; draw(); return 'Back to its own colours'; } }] : []));
+    .concat(COLORS !== OWN ? [{ label: 'Its own colours again', run: () => { setPalette(null); COLORS = OWN; draw(); return 'Back to its own colours'; } }] : []), { card: () => askOf(entries) });
   mountStrip($('related'), '/wheel/');
   mountPill($('entries'), '/wheel/', (h) => { entries = entriesOf(labelsFrom(textOfHandoff(h)).join('\n')); sync(false); });
 </script>

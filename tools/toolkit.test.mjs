@@ -72,3 +72,47 @@ test('the colour page\'s card opens on the colour open there, not the example, a
   const src = fs.readFileSync(new URL('../void-live-deploy/color/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*'color #'\s*\+\s*curHex\(\)/, 'the colour page gives its card the colour open on it');
 });
+
+// the stage link on a page with a card follows the page live, so a hover already shows the card for what is open (owner via the team, 2026-10-29)
+const fakeRow = (path, card) => {
+  const docOn = {}, winOn = {}, mk = (tag) => { const on = {}; return { tag, on, children: [], className: '', href: '', textContent: '', style: {}, append(...c) { this.children.push(...c); }, prepend(...c) { this.children.unshift(...c); }, setAttribute() {}, addEventListener(ev, fn) { (on[ev] ||= []).push(fn); }, replaceChildren(...c) { this.children = c; } }; };
+  const host = mk('nav'); host.ownerDocument = { createElement: mk, addEventListener: (ev, fn) => (docOn[ev] ||= []).push(fn), defaultView: { addEventListener: (ev, fn) => (winOn[ev] ||= []).push(fn) } };
+  return import('../void-live-deploy/lib/toolkit.js').then(({ mountRelated }) => { mountRelated(host, path, [], { card }); const x = host.children.find((c) => c.className === 'tk-row').children.find((c) => c.className === 'tk-card'); return { x, fire: (ev) => (docOn[ev] || []).forEach((f) => f()), win: (ev) => (winOn[ev] || []).forEach((f) => f()) }; });
+};
+test('the stage link follows the page as it changes, with no press: after a click, an input, a key, a drag, a new address, and when pointed at', async () => {
+  let hex = 'f5be3d'; const { x, fire, win } = await fakeRow('/color/', () => 'color #' + hex);
+  for (const [ev, h, how] of [['click', '7b5f1f', fire], ['input', '3d6bf5', fire], ['keyup', '00ff88', fire], ['pointerup', '112233', fire], ['hashchange', 'abcdef', win]]) {
+    hex = h; how(ev); assert.equal(x.href, '/?q=color%20%23' + h, 'after ' + ev + ' on the page');
+  }
+  hex = '445566'; for (const fn of x.on.pointerenter) fn(); assert.equal(x.href, '/?q=color%20%23445566', 'pointed at: a hover shows the colour open now');
+});
+
+// skills/index.json order, first match wins, as on the stage
+async function firstSkill(ask) {
+  const names = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8')), mods = [];
+  for (const n of names) { const sk = (await import('../void-live-deploy/skills/' + n + '.js')).default; mods.push(...(sk.family ? sk.members : [sk])); }
+  const k = mods.find((s) => s.match(ask.toLowerCase(), ask)); return k ? k.name : null;
+}
+
+test('the gradient page\'s card opens on the gradient open there: every stop, its opacity and place, the angle and the type, not red to blue', async () => {
+  const G = await import('../void-live-deploy/lib/gradient.js');
+  const many = [G.normal({ type: 'linear', angle: 135, stops: [{ color: '#ff5f6d', pos: 0 }, { color: 'rgba(10, 20, 30, 0.5)', pos: 40 }, { color: '#ffc371', pos: 100 }] }),
+    G.normal({ type: 'radial', shape: 'circle', stops: [{ color: '#6d4aff', pos: 10 }, { color: '#000', pos: 90 }] }), G.normal({ type: 'conic', angle: 45, stops: [{ color: 'red', pos: 0 }, { color: 'lime', pos: 50 }, { color: 'blue', pos: 100 }] }), ...G.PRESETS.map((p) => G.normal(p.g))];
+  for (const g of many) { const ask = 'css gradient ' + G.css(g), back = G.askGradient(ask); assert.ok(back, ask); assert.equal(G.css(back.g), G.css(g), 'the card draws the same gradient: ' + ask); }
+  const ask = 'css gradient ' + G.css(many[0]); assert.equal(await firstSkill(ask), 'gradient', 'the stage gives it to the gradient skill');
+  assert.equal(G.askGradient('gradient descent'), null); assert.ok(G.askGradient('gradient from red to blue'), 'the old asks still work');
+  const src = fs.readFileSync(new URL('../void-live-deploy/gradient/index.html', import.meta.url), 'utf8');
+  assert.match(src, /card:\s*\(\)\s*=>\s*'css gradient '\s*\+\s*css\(g\)/, 'the gradient page gives its card the gradient open on it');
+});
+
+test('the wheel page\'s card opens on the wheel open there: every entry and weight, in words when they read back, else in its link form', async () => {
+  const W = await import('../void-live-deploy/lib/wheel.js');
+  const plain = [{ label: 'pizza', weight: 1 }, { label: 'tacos', weight: 3 }, { label: 'sushi', weight: 1 }], hard = [{ label: 'salt and pepper', weight: 1 }, { label: 'a, b', weight: 2 }, { label: 'Zoë', weight: 1 }];
+  assert.equal(W.askOf(plain), 'spin the wheel with pizza, tacos*3, sushi', 'in words');
+  assert.match(W.askOf(hard), /^spin the wheel #[A-Za-z0-9_-]+$/, '"and" or a comma in a name: the link form');
+  for (const e of [plain, hard]) { const back = W.askWheel(W.askOf(e)); assert.ok(back, W.askOf(e)); assert.equal(W.textOf(back.entries), W.textOf(e), 'the card spins the same entries'); assert.equal(await firstSkill(W.askOf(e)), 'wheel', 'the stage gives it to the wheel skill'); }
+  assert.equal(W.askOf([{ label: 'one', weight: 1 }]), '', 'one entry: nothing to spin, the example');
+  assert.equal(W.askWheel('wheel alignment near me'), null); assert.equal(W.askWheel('spin the wheel #!!'), null);
+  const src = fs.readFileSync(new URL('../void-live-deploy/wheel/index.html', import.meta.url), 'utf8');
+  assert.match(src, /card:\s*\(\)\s*=>\s*askOf\(entries\)/, 'the wheel page gives its card the entries open on it');
+});
