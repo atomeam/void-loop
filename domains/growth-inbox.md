@@ -65,3 +65,6 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-28 | magic 8-ball skill: classic answers to yes/no questions | new idea by growth agent; helper/8ball-skill |
 | building | 2026-10-29 | yes or no skill: simple yes or no answers | new idea by growth agent; helper/yesno |
 | building | 2026-10-29 | uuid skill: generate a random UUID | new idea by growth agent; helper/growth-uuid |
+| building | 2026-10-29 | shuffle skill: shuffle a list of items | new idea by growth agent; helper/shuffle |
+| open | 2026-10-29 | random emoji skill: pick a random emoji or a few | new idea by growth agent |
+| open | 2026-10-29 | timer skill: a simple countdown timer on the stage | new idea by growth agent |
