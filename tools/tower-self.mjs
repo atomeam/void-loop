@@ -1,7 +1,7 @@
 // Versus by itself (owner, 2026-10-26: "use all your energy into making fully autonomous verse continue the tower without you"; "all sites get a page"):
 // Verse climbs the tower with no builder in the loop, on its own free model (Workers AI, lib/models.js FREE_MODEL) and its own tools, from a scheduled
 // workflow (.github/workflows/tower-self.yml). One run:
-//   PICK      the next sites of the frontier (void-live-deploy/tower.frontier.json, lib/tower.js frontierOf: easiest first), skipping what it tried lately
+//   PICK      the next sites of the frontier (void-live-deploy/tower.frontier.json, lib/tower.js frontierOf: smallest first), skipping what it tried lately
 //   RESEARCH  each site read at its own address (tools/feature-scan.mjs scanSite: robots.txt respected, parked, stub and sign-in pages refused)
 //   CLASSIFY  one model call: which of Verse's floors does that site's job (familiesOf: a floor with a page, a probe and a page that can be copied),
 //             and the new page's words; a site no floor covers becomes a build job on Verse's queue with what was read, never invented code
@@ -25,7 +25,7 @@
 //   node tools/tower-self.mjs status                                          what the loop has done and how many pages a day
 import { badgeOf, buildable } from '../void-live-deploy/lib/gate-badge.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate, barRow } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 import { probeFor, keywordsOf } from './tower-probes.mjs';
@@ -87,7 +87,7 @@ export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date
     if (x.blocked || offLimits(x.host, ranking)) continue; // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
     const t = tried[x.host];
     if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
-    out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness }); if (out.length >= max) break;
+    out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness, controls: x.controls, bytes: x.bytes }); if (out.length >= max) break;
   }
   return out;
 }
@@ -263,11 +263,13 @@ async function apply(decisionFile) {
 
 // ---- judge: the gate's rows, fixes, jobs, the report ----
 /** what to do about one floor's rows: { n, m, beaten, fixes: [aspect], jobs: [{ aspect, evidence }] }. A mechanical fix is one whose template is
- *  known: offline (the page into sw.js TOOLS) and sharing (the page's own link-preview tags, rewritten by writePages). Pure. */
+ *  known: offline (the page into sw.js TOOLS) and sharing (the page's own link-preview tags, rewritten by writePages). A default-bar row (the site
+ *  turned the gate away, lib/tower.js barRow) is not a measure of the site: never a fix, only a job to measure it. Pure. */
 export function judgeRows(floor, ev, sw = '') {
   const g = gate(floor, ev || {}), fixes = [], jobs = [];
   for (const a of g.left) {
     const r = (ev || {})[a];
+    if (barRow(r)) { jobs.push({ aspect: a, evidence: 'not measured yet: ' + (hostOf(floor.url) || floor.site) + ' turned the gate away, so only the default bar was scored' }); continue; }
     if (a === 'offline' && floor.page && !String(sw).includes("'" + pathOnly(floor.page) + "'")) fixes.push(a);
     else if (a === 'sharing' && r && r.verdict === 'worse' && floor.page) fixes.push(a);
     else jobs.push({ aspect: a, evidence: r ? r.verdict + ': ' + clip(r.evidence, 150) : 'not measured yet' });

@@ -219,7 +219,7 @@ test('history and explain: it says what just happened and why a region formed, f
 test('knowledge: what it learned survives a reload as numbers, a wrong record is ignored, and a seal still holds no words', () => {
   const b = run(B.createBrain(28), 900, circle); B.ask(b, 'romance'); run(b, 100, circle);
   const k = JSON.parse(JSON.stringify(B.knowledgeOf(b))), b2 = B.createBrain(29), done = B.loadKnowledge(b2, k);
-  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'synapses', 'creature', 'hearing', 'painter', 'gardener', 'asks', 'procedures', 'episodes']);
+  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'synapses', 'creature', 'hearing', 'painter', 'gardener', 'grower', 'asks', 'procedures', 'episodes']);
   assert.deepEqual(b2.creature.mean, b.creature.mean.map((v) => Math.round(v * 1000) / 1000), 'the creature keeps its evolved physics');
   assert.deepEqual(Array.from(b2.synapses.W), Array.from(b.synapses.W, (v) => Math.fround(Math.round(v * 1000) / 1000)), 'the eye keeps its learned wiring');
   assert.deepEqual(Array.from(b2.will.q), Array.from(b.will.q, (v) => Math.round(v * 1000) / 1000).map((v) => Math.fround(v)));
