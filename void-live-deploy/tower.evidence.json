@@ -10834,61 +10834,68 @@
   },
   "sports: thesportsdb.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 127,
-    "best": 529,
-    "evidence": "Verse (/sports/) 127 ms to the load event (median of 3, phone width) vs thesportsdb.com 529 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:10:52.586Z"
+    "verdict": "better",
+    "verse": 212,
+    "best": 321,
+    "evidence": "Verse (/sports/) 212 ms to the load event (median of 3, phone width) vs thesportsdb.com 321 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 loads answered vs thesportsdb.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:10:52.586Z"
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    },
    "mobile": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": 50,
-    "evidence": "Verse (/sports/) 0 px sideways overflow at 390 px vs thesportsdb.com 50 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:10:52.586Z"
+    "best": 0,
+    "evidence": "Verse (/sports/) 0 px sideways overflow at 390 px vs thesportsdb.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 362,
-    "evidence": "Verse (/sports/) 0 unnamed controls or images vs thesportsdb.com 362 unnamed controls or images",
-    "at": "2026-10-28T13:10:52.586Z"
+    "best": 221,
+    "evidence": "Verse (/sports/) 0 unnamed controls or images vs thesportsdb.com 221 unnamed controls or images",
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/sports/) 1 (1: the page shows itself again with the network cut) vs thesportsdb.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:10:52.586Z"
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/sports/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs thesportsdb.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:10:52.586Z"
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 right against the worked-out answer; judged against the standard, not thesportsdb.com (the site is not asked)",
-    "at": "2026-10-28T13:10:52.586Z",
+    "at": "2026-10-29T02:43:28.966Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 2,
-    "best": 64,
-    "evidence": "Verse (/sports/) 2 design defects vs thesportsdb.com 64 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), thesportsdb.com (0 low-contrast texts, 64 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:10:52.586Z"
+    "best": 60,
+    "evidence": "Verse (/sports/) 2 design defects vs thesportsdb.com 60 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.00), thesportsdb.com (0 low-contrast texts, 60 small tap targets, layout shift 0.00)",
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    },
    "live scores": {
     "verdict": "equal-and-better",
@@ -10922,15 +10929,16 @@
     "verse": 11,
     "best": 7,
     "evidence": "Verse (/sports/) 11 of 11 things a full answer shows vs thesportsdb.com 7 of 11 things a full answer shows (Verse lacks: none; site lacks: sports to browse, search across sports, a stats strip, no betting)",
-    "at": "2026-10-28T13:10:52.586Z",
-    "of": 11
+    "at": "2026-10-29T02:43:28.966Z",
+    "of": 11,
+    "siteRead": true
    },
    "sport search": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/sports/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:10:52.586Z",
+    "at": "2026-10-29T02:43:28.966Z",
     "of": 4,
     "part": true
    },
@@ -10939,7 +10947,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/sports/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:10:52.586Z",
+    "at": "2026-10-29T02:43:28.966Z",
     "of": 2,
     "part": true
    },
@@ -10948,7 +10956,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/sports/) 5 of 5 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:10:52.586Z",
+    "at": "2026-10-29T02:43:28.966Z",
     "of": 5,
     "part": true
    },
@@ -10957,75 +10965,84 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/sports/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:10:52.586Z",
+    "at": "2026-10-29T02:43:28.966Z",
     "of": 3,
     "part": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 9,
+    "best": 3,
+    "evidence": "Verse (/sports/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs thesportsdb.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:43:28.966Z",
+    "siteRead": true
    }
   },
   "sports: besoccer.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 128,
-    "best": 216,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 128 ms to the load event (median of 3, phone width) vs besoccer.com 216 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:08:10.668Z"
+    "verse": 136,
+    "best": 200,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 136 ms to the load event (median of 3, phone width) vs the bar (besoccer.com unreachable) 200 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:44:24.808Z"
    },
    "reliability": {
-    "verdict": "equal-and-better",
+    "verdict": "incomplete",
+    "incomplete": true,
     "verse": 3,
-    "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs besoccer.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:08:10.668Z"
+    "best": null,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered; besoccer.com showed a bot or sign-in wall, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
+    "at": "2026-10-29T02:44:24.808Z"
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs besoccer.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:08:10.668Z"
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs the bar (besoccer.com unreachable) 0 px sideways overflow at 390 px",
+    "at": "2026-10-29T02:44:24.808Z"
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs besoccer.com 0 unnamed controls or images",
-    "at": "2026-10-28T13:08:10.668Z"
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs the bar (besoccer.com unreachable) 0 unnamed controls or images",
+    "at": "2026-10-29T02:44:24.808Z"
    },
    "offline": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 1,
-    "best": 0,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs besoccer.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:08:10.668Z"
+    "best": 1,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs the bar (besoccer.com unreachable) 1 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-29T02:44:24.808Z"
    },
    "sharing": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 4,
-    "best": 0,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs besoccer.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:08:10.668Z"
+    "best": 4,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (besoccer.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-29T02:44:24.808Z"
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard, not besoccer.com (the site is not asked)",
-    "at": "2026-10-28T13:08:10.668Z",
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard",
+    "at": "2026-10-29T02:44:24.808Z",
     "of": 3
    },
    "design polish": {
-    "verdict": "better",
+    "verdict": "equal-and-better",
     "verse": 0,
-    "best": 1,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs besoccer.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), besoccer.com (0 low-contrast texts, 0 small tap targets, layout shift 0.19)",
-    "at": "2026-10-28T13:08:10.668Z"
+    "best": 0,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs the bar (besoccer.com unreachable) 0 design defects",
+    "at": "2026-10-29T02:44:24.808Z"
    },
    "live scores": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:08:10.668Z",
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown vs the bar (besoccer.com unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-29T02:44:24.808Z",
     "of": 3,
     "part": true
    },
@@ -11033,8 +11050,8 @@
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:08:10.668Z",
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown vs the bar (besoccer.com unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-29T02:44:24.808Z",
     "of": 3,
     "part": true
    },
@@ -11042,84 +11059,99 @@
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:08:10.668Z",
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown vs the bar (besoccer.com unreachable) 3 of 3 shown (Verse lacks: none)",
+    "at": "2026-10-29T02:44:24.808Z",
     "of": 3,
     "part": true
    },
    "completeness": {
-    "verdict": "better",
+    "verdict": "worse",
     "verse": 18,
-    "best": 0,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 18 of 19 things a full answer shows vs besoccer.com 0 of 19 things a full answer shows (Verse lacks: Start/sit and trade comparator; site lacks: the day's games, a day picker, standings, leagues, match details, my teams, follow a team, a share link, the source named, delayed data said, no betting, Formula 1, NBA, works offline, Live scoreboard, Box scores, Schedules, Favourites, Start/sit and trade comparator)",
-    "at": "2026-10-28T13:08:10.668Z",
+    "best": 19,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 18 of 19 things a full answer shows vs the bar (besoccer.com unreachable) 19 of 19 things a full answer shows (Verse lacks: Start/sit and trade comparator)",
+    "at": "2026-10-29T02:44:24.808Z",
+    "was": "better",
     "of": 19
+   },
+   "wider use": {
+    "verdict": "worse",
+    "verse": 8.5,
+    "best": 11,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (besoccer.com unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:44:24.808Z"
    }
   },
   "sports: int.soccerway.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 100,
-    "best": 2153,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 100 ms to the load event (median of 3, phone width) vs int.soccerway.com 2153 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:10:17.542Z"
+    "verse": 117,
+    "best": 2756,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 117 ms to the load event (median of 3, phone width) vs int.soccerway.com 2756 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs int.soccerway.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:10:17.542Z"
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs int.soccerway.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:10:17.542Z"
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
-    "best": 8,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs int.soccerway.com 8 unnamed controls or images",
-    "at": "2026-10-28T13:10:17.542Z"
+    "best": 2,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs int.soccerway.com 2 unnamed controls or images",
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs int.soccerway.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:10:17.542Z"
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs int.soccerway.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:10:17.542Z"
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard, not int.soccerway.com (the site is not asked)",
-    "at": "2026-10-28T13:10:17.542Z",
+    "at": "2026-10-29T02:45:18.814Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 277,
-    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs int.soccerway.com 277 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), int.soccerway.com (74 low-contrast texts, 203 small tap targets, layout shift 0.07)",
-    "at": "2026-10-28T13:10:17.542Z"
+    "best": 192,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs int.soccerway.com 192 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), int.soccerway.com (50 low-contrast texts, 141 small tap targets, layout shift 0.12)",
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    },
    "live scores": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:10:17.542Z",
+    "at": "2026-10-29T02:45:18.814Z",
     "of": 3,
     "part": true
    },
@@ -11128,7 +11160,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:10:17.542Z",
+    "at": "2026-10-29T02:45:18.814Z",
     "of": 3,
     "part": true
    },
@@ -11137,7 +11169,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:10:17.542Z",
+    "at": "2026-10-29T02:45:18.814Z",
     "of": 3,
     "part": true
    },
@@ -11146,8 +11178,17 @@
     "verse": 18,
     "best": 7,
     "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 18 of 19 things a full answer shows vs int.soccerway.com 7 of 19 things a full answer shows (Verse lacks: Start/sit and trade comparator; site lacks: a day picker, my teams, follow a team, a share link, the source named, delayed data said, no betting, Formula 1, NBA, Live scoreboard, Box scores, Start/sit and trade comparator)",
-    "at": "2026-10-28T13:10:17.542Z",
-    "of": 19
+    "at": "2026-10-29T02:45:18.814Z",
+    "of": 19,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8.5,
+    "best": 5.5,
+    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs int.soccerway.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-29T02:45:18.814Z",
+    "siteRead": true
    }
   },
   "sports: onefootball.com": {
