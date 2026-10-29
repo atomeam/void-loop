@@ -239,8 +239,13 @@ export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) 
 // a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
 // stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")
 export const PAGE_PATHS = Object.freeze(Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])));
-/** the [href, label] of a card's full page: its own data-page when it is a known page, else its skill's; null when it has none. Pure. */
-export const pageOfCard = (name, page) => (page && PAGE_PATHS[page] ? [page, PAGE_PATHS[page]] : PAGE_OF[name] || null);
+// a data-page may carry what the card shows in a plain query ('/random/?min=-5&max=5'), so the page opens on it, not on its default
+const PAGE_QUERY = /^\?[A-Za-z0-9_.=&%-]{1,200}$/;
+/** the [href, label] of a card's full page: its own data-page when it is a known page (with a plain query or none), else its skill's; null when it has none. Pure. */
+export const pageOfCard = (name, page) => {
+  const i = page ? page.indexOf('?') : -1, base = i < 0 ? page : page.slice(0, i);
+  return page && PAGE_PATHS[base] && (i < 0 || PAGE_QUERY.test(page.slice(i))) ? [page, PAGE_PATHS[base]] : PAGE_OF[name] || null;
+};
 /** the link to a skill's full page, or '' when it has none. Pure. */
 export const pageLinkHtml = (name, esc, page = '') => { const p = pageOfCard(name, page); return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
 

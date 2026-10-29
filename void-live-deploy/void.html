@@ -5745,7 +5745,7 @@ say('nothing selected to remove');
     function chanceOf(l) {
       l = l.replace(/[?.!]+$/, '').replace(/,?\s+please$/, '');
       // folded in from helper/random-num, helper/coin-flip and helper/magic-8ball (2026-10-22, the Game Box): "roll 1 to 6", "pick 1 to 10", "coin flip for dinner", "what does the 8 ball say"
-      { const r = l.match(/^(?:roll|pick)\s+(-?\d{1,9})\s+to\s+(-?\d{1,9})$/); if (r) { let a = +r[1], b = +r[2]; if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely' }; } }
+      { const r = l.match(/^(?:roll|pick)\s+(-?\d{1,9})\s+to\s+(-?\d{1,9})$/); if (r) { let a = +r[1], b = +r[2]; if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely', lo: a, hi: b }; } }
       { const r = l.match(/^(?:coin\s+(?:flip|toss)|flip\s+(?:a\s+)?coin)\s+for\s+(.{1,60})$/); if (r && !coinSkill()) return { title: 'Coin for ' + r[1], big: rnd(2) ? 'Heads' : 'Tails', note: 'a fair coin' }; }
       if (/^what\s+(?:does|would)\s+the\s+(?:magic\s+)?8[\s-]?ball\s+say(?:\s.*)?$/.test(l)) l = 'magic 8 ball';
       // a coin is the coin skill's (skills/coin.js: the coin on the card, the tally); these answer only if that skill did not load
@@ -5773,7 +5773,7 @@ say('nothing selected to remove');
       if (/^(?:(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful', 'No']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers', eight: true }; }
       if (/^(?:play\s+)?rock[\s,]+paper[\s,]+(?:and\s+)?scissors$/.test(l)) { const R = ['Rock', 'Paper', 'Scissors']; return { title: 'Rock, paper, scissors', big: R[rnd(3)], note: 'Verse’s throw: what was yours?' }; }
       m = l.match(/^(?:pick|give\s+me|choose|generate|think\s+of)\s+(?:me\s+)?a\s+(?:random\s+)?number(?:\s+(?:between|from)\s+(-?\d{1,9})\s+(?:and|to)\s+(-?\d{1,9}))?$|^random\s+number(?:\s+(?:between|from)?\s*(-?\d{1,9})\s+(?:and|to|-)\s+(-?\d{1,9}))?$/);
-      if (m) { let a = +(m[1] || m[3] || 1), b = +(m[2] || m[4] || 100); if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely' }; }
+      if (m) { let a = +(m[1] || m[3] || 1), b = +(m[2] || m[4] || 100); if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely', lo: a, hi: b }; }
       return null;
     }
     // Holidays: the next date of each (US dates for the US-only ones, and the page says so). Easter by the Gregorian computus.
@@ -5861,7 +5861,7 @@ say('nothing selected to remove');
           if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
           else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });
           say(c.big); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
-        if (c) { const cel = showPage((p) => { if (c.title === 'Random number') p.dataset.page = '/random/'; p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p><p><a href="#" data-ask="game box">More table tools in the Game Box: dice of any size, coins, a card deck, a timer and a score keeper</a></p>'; }); diceMini(cel, c); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
+        if (c) { const cel = showPage((p) => { if (c.title === 'Random number') p.dataset.page = '/random/?min=' + c.lo + '&max=' + c.hi; /* the page opens on the same range */ p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p><p><a href="#" data-ask="game box">More table tools in the Game Box: dice of any size, coins, a card deck, a timer and a score keeper</a></p>'; }); diceMini(cel, c); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[\s?¿.!¡]+$/, '').replace(/^[¿¡\s]+/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
