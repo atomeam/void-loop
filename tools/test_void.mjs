@@ -5664,13 +5664,15 @@ try {
     const box = await (await F.p.$(card + ' canvas')).boundingBox();
     for (let i = 0; i < 30; i++) await F.p.mouse.move(box.x + box.width * (0.5 + 0.3 * Math.cos(i * 0.4)), box.y + box.height * (0.5 + 0.3 * Math.sin(i * 0.4)));
     // nothing is told or set: the card's own loop runs the brain until a life of swimmers ends with more food than drifters in the same flow
-    await until(async () => !!(await F.p.$(card + ' .vb-orb[data-key="current"]')), 40000);
+    // the card draws its orbs every step but writes its data- counts only every 4th step (skills/verse-brain.js), so the
+    // orb can show up to 3 steps before data-currentlives counts the life that earned it (shard 4 on 06da9b70 read lives 0)
+    await until(async () => !!(await F.p.$(card + ' .vb-orb[data-key="current"]')) && +(await F.p.$eval(card, (e) => e.dataset.currentlives || 0)) >= 1, 40000);
     const o = await F.p.evaluate((card) => { const e = document.querySelector(card), orb = e && e.querySelector('.vb-orb[data-key="current"]'), s = window.verseBrain && window.verseBrain.state();
       return { orb: orb ? { text: orb.textContent, organ: orb.dataset.organ, left: parseFloat(orb.style.left), top: parseFloat(orb.style.top) } : null, lives: +(e && e.dataset.currentlives || 0),
         ticks: +(e && e.dataset.ticks || 0), line: s ? (s.self.find((l) => /^Current:/.test(l)) || '') : '' }; }, card);
     check('verse brain current: on the live card, with only the pointer moved over it, the swimmers of organ 19 beat the drifters in the same flow, and the card shows their orb, "riding the current", where they swim; the brain\'s own self says the gain over drifters in words',
       !!o.orb && o.orb.text === 'riding the current' && o.orb.organ === 'current' && o.orb.left >= 0 && o.orb.left <= 100 && o.orb.top >= 0 && o.orb.top <= 100 && o.lives >= 1
-      && /^Current: \d+ lives? of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o));
+      && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
     await F.ctx.close();
   }
   if (want('verse brain: one workspace that nineteen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
