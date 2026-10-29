@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 3,
-  "tested": 39,
+  "tested": 40,
   "checked": 17,
   "proven": 298
  },
@@ -1453,7 +1453,7 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 8,
+    "tested": 9,
     "checked": 1,
     "proven": 29
    },
@@ -2071,6 +2071,13 @@
     },
     {
      "name": "ascii",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "leet",
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-10-29",
