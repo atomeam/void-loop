@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { measure, weightOf, weightBand, bytesLabel } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
-import { planSizes } from './tower-size.mjs';
+import { planSizes, usable } from './tower-size.mjs';
 
 test('a page is weighed by its bytes, scripts, elements and routes', () => {
   const html = '<html><head><script src="/a.js"></script><link rel="stylesheet" href="/s.css"></head><body><a href="/one">1</a><a href="/two">2</a><a href="https://x.com/o">o</a><p>hi</p></body></html>';
@@ -30,4 +30,8 @@ test('planSizes reads the unmeasured first, keeps fresh rows, and never opens a 
   const file = { sites: { 'a.com': { at: '2026-10-20', bytes: 1 }, 'b.com': { at: '2026-08-01', bytes: 1 } } };
   assert.deepEqual(planSizes({ sites, file, now }).map((s) => s.host), ['c.com', 'b.com']);
   assert.equal(planSizes({ sites, file, now, max: 1 }).length, 1);
+});
+
+test('an empty reply or a bot wall is not weighed, so it can never stand as the lightest site', () => {
+  assert.equal(usable(''), false); assert.equal(usable('<html></html>'), false); assert.equal(usable('<html><body>' + '<p>x</p>'.repeat(60) + '</body></html>'), true);
 });

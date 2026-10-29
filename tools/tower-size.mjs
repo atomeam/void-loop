@@ -21,6 +21,8 @@ export function planSizes({ sites, file = {}, now = Date.now(), max = 120 }) {
   return sites.filter((s) => s.host && !noRivalUrl('https://' + s.host + '/')).map((s) => ({ s, d: due(s) })).filter((x) => x.d !== null).sort((a, b) => a.d - b.d).slice(0, max).map((x) => x.s);
 }
 const get = async (url, max = 3e6) => { const r = await fetch(url, { headers: { 'user-agent': UA, accept: '*/*' }, redirect: 'follow', signal: AbortSignal.timeout(12000) }); const buf = Buffer.from(await r.arrayBuffer()).subarray(0, max); return { ok: r.ok, status: r.status, buf, type: r.headers.get('content-type') || '', url: r.url }; };
+/** a page worth weighing: real html with a body, not an empty reply or a few bytes of wall. Pure. */
+export const usable = (html) => String(html).length >= 300 && /<(body|div|p|main|h1)\b/i.test(String(html));
 /** read one site: its home page and what it loads. Returns a row or null (refused, unreachable). */
 export async function readSite(host) {
   const base = 'https://' + host + '/';
@@ -29,7 +31,8 @@ export async function readSite(host) {
     if (rb && rb.ok && /text/.test(rb.type) && !robotsAllows(rb.buf.toString('utf8'), '/')) return null;
     const home = await get(base); if (!home.ok || !/html/.test(home.type)) return null;
     const html = home.buf.toString('utf8'), origin = new URL(home.url).origin, found = [];
-    for (const m of html.matchAll(/<script\b[^>]*\ssrc=["']([^"']+)["']|<link\b[^>]*rel=["']?stylesheet[^>]*\shref=["']([^"']+)["']/gi)) { try { const u = new URL(m[1] || m[2], home.url); if (u.origin === origin && found.length < 12) found.push(u.href); } catch (_) { /* a bad url */ } }
+    if (!usable(html)) return null; // an empty body, a bot wall or a redirect stub says nothing about the site: not weighed, never lightest
+    for (const m of html.matchAll(/<script\b[^>]*\ssrc=["']([^"']+)["']|<link\b[^>]*rel=["']?stylesheet[^>]*\shref=["']([^"']+)["']/gi)) { try { const u = new URL(m[1] || m[2], home.url); if (found.length < 12) found.push(u.href); } catch (_) { /* a bad url */ } }
     const assets = []; for (const u of found) { try { const a = await get(u); if (a.ok) assets.push({ url: u, bytes: a.buf.length }); } catch (_) { /* skipped */ } }
     let sm = null; try { const s = await get(origin + '/sitemap.xml', 2e6); if (s.ok) sm = (s.buf.toString('utf8').match(/<loc>/g) || []).length || null; } catch (_) { /* none */ }
     const m = measure({ html, htmlBytes: home.buf.length, assets, sitemapUrls: sm, host });

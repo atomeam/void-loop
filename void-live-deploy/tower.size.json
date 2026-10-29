@@ -94,12 +94,7 @@
    "at": "2026-10-29"
   },
   "amazon.com": {
-   "bytes": 0,
-   "scripts": 0,
-   "styles": 0,
-   "nodes": 0,
-   "routes": 0,
-   "weight": 0,
+   "refused": true,
    "at": "2026-10-29"
   },
   "anotepad.com": {
@@ -188,12 +183,7 @@
    "at": "2026-10-29"
   },
   "barchart.com": {
-   "bytes": 0,
-   "scripts": 0,
-   "styles": 0,
-   "nodes": 0,
-   "routes": 721,
-   "weight": 360500,
+   "refused": true,
    "at": "2026-10-29"
   },
   "base64.guru": {
@@ -281,12 +271,7 @@
    "at": "2026-10-29"
   },
   "brandcolors.net": {
-   "bytes": 170,
-   "scripts": 0,
-   "styles": 0,
-   "nodes": 4,
-   "routes": 0,
-   "weight": 210,
+   "refused": true,
    "at": "2026-10-29"
   },
   "budgetbytes.com": {
@@ -856,12 +841,7 @@
    "at": "2026-10-29"
   },
   "docs.zoho.com": {
-   "bytes": 258,
-   "scripts": 0,
-   "styles": 0,
-   "nodes": 2,
-   "routes": 0,
-   "weight": 278,
+   "refused": true,
    "at": "2026-10-29"
   },
   "doublecounter.gg": {
@@ -1004,12 +984,7 @@
    "at": "2026-10-29"
   },
   "espn.com": {
-   "bytes": 0,
-   "scripts": 0,
-   "styles": 0,
-   "nodes": 0,
-   "routes": 0,
-   "weight": 0,
+   "refused": true,
    "at": "2026-10-29"
   },
   "euronews.com": {
@@ -1116,12 +1091,7 @@
    "at": "2026-10-29"
   },
   "flightconnections.com": {
-   "bytes": 0,
-   "scripts": 0,
-   "styles": 0,
-   "nodes": 0,
-   "routes": 0,
-   "weight": 0,
+   "refused": true,
    "at": "2026-10-29"
   },
   "font.im": {

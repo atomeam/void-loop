@@ -14,8 +14,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 3,
-    "tested": 10,
+    "experiment": 2,
+    "tested": 11,
     "checked": 2,
     "proven": 36
    },
@@ -98,8 +98,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "kind": "family",
    "count": {
-    "experiment": 4,
-    "tested": 2,
+    "experiment": 2,
+    "tested": 4,
     "checked": 1,
     "proven": 29
    },
@@ -485,8 +485,9 @@
     "online piano",
     "guitar tuner"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "1 real ask in the benchmark",
+   "glow": 100,
    "n": 15
   },
   {
@@ -3654,8 +3655,9 @@
     "fantasy tools",
     "start or sit"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 193
   },
   {
@@ -3686,8 +3688,9 @@
     "split a pdf",
     "compress pdf"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "1 real ask in the benchmark",
+   "glow": 100,
    "n": 195
   },
   {
@@ -4125,7 +4128,7 @@
     "what did I write about Lisbon"
    ],
    "tier": "tested",
-   "why": "1 real ask in the benchmark",
+   "why": "4 real asks in the benchmark",
    "glow": 100,
    "n": 216
   },

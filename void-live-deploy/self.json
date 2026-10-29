@@ -509,6 +509,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T02:42:49Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T02:40:42Z",
+   "subject": "Versus by weight: the tower ranks sites by what they really weigh (bytes, scripts, elements, routes), measured by tower-size.yml; Tranco…"
+  },
+  {
+   "at": "2026-10-29T02:38:25Z",
+   "subject": "Incident: the browser suite failed on 7e681ad7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T02:29:31Z",
+   "subject": "Tower gate: emojis,password,encoder measured against their live sites"
+  },
+  {
    "at": "2026-10-29T02:22:19Z",
    "subject": "Incident: the browser suite failed on 65e4a8c9 (void-live-deploy/incidents.json)"
   },
@@ -523,6 +539,10 @@
   {
    "at": "2026-10-29T02:21:15Z",
    "subject": "Switch Verse's coder on: remove the kill-switch file (the conductor now hands queue jobs to verse-job.yml; put the file back to pause)"
+  },
+  {
+   "at": "2026-10-29T02:20:02Z",
+   "subject": "Better at notes fill, music tools, pdf tools and 1 more: 7 more ways of asking answered right, and sharper card art — new phrases: “add a…"
   },
   {
    "at": "2026-10-29T02:16:42Z",
@@ -563,26 +583,6 @@
   {
    "at": "2026-10-29T00:22:18Z",
    "subject": "Incident: the browser suite failed on 966dbc1c (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T00:12:00Z",
-   "subject": "Add advice skill: random advice from public API. Mark building in growth inbox."
-  },
-  {
-   "at": "2026-10-28T23:25:21Z",
-   "subject": "Verse loop: no human in the loop — self-heal, grooming, verify dispatch, a back-off that resumes by itself"
-  },
-  {
-   "at": "2026-10-28T23:24:14Z",
-   "subject": "Verse fixes its toolkit skill: learn to handle \"how many rolls of tape for 200ft\""
-  },
-  {
-   "at": "2026-10-28T23:18:42Z",
-   "subject": "deps.json: regenerated"
-  },
-  {
-   "at": "2026-10-28T23:18:32Z",
-   "subject": "Calculators: 17 for calculator.net's Other gaps (15 of 19), with known-answer tests"
   }
  ],
  "builders": {
