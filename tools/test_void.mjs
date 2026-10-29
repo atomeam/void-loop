@@ -40,7 +40,7 @@ const argOf = (f) => { const i = process.argv.indexOf(f); return i > 0 ? String(
 const ONLY = (argOf('--only') || process.env.VOID_ONLY || '').toLowerCase().split(/\s+/).filter(Boolean);
 const wanted = new Set(); // the sections --only picked: none at all is a failed run, never a silent pass (tools/finish.mjs leans on it)
 // --shard i/n (or VOID_SHARD): this run takes the sections whose heading hashes to shard i of n (tools/shard.mjs), so verify.yml
-// can run the suite as n jobs at once (three, since 2026-10-16), every section in exactly one of them, each well inside the
+// can run the suite as n jobs at once (three since 2026-10-16, four since 2026-10-29), every section in exactly one of them, each well inside the
 // 28-minute budget (the whole suite ran to 1,652 s of 1,680 s on main that day). --only still narrows within the shard;
 // --list shows the shard's headings.
 const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
