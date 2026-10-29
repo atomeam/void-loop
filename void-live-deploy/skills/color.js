@@ -4,7 +4,7 @@
  * "random color", "color palette", "give me a color".
  */
 export function isColor(text) {
-  return /^(?:please\\s+)?(?:(?:a\\s+|random\\s+|give\\s+me\\s+(?:a\\s+)?)?(?:color|colour)(?:\\s+palette)?|palette|random\\s+hex)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:a\s+|another\s+|random\s+|give\s+me\s+(?:a\s+|another\s+)?)?(?:color|colour)(?:\s+palette)?|palette|random\s+hex)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function hex() {

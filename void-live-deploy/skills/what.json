@@ -46,6 +46,7 @@
  "coin": "A coin flip that lands at once and looks like a coin",
  "collectible": "\"make a collectible card of a dragon\", \"mint a card of the moon\", \"collectible card of tokyo\"",
  "collide": "Flags two things that sit on the same spot",
+ "color": "A random color or a small palette, pure client-side",
  "connect4": "Connect Four against Verse: \"play connect 4\", \"connect four\", \"four in a row\"",
  "constellation": "\"what's that constellation\", \"which constellations are up tonight\", \"where is Orion\", \"when can I see the Big…",
  "constellation-weaver": "\"weave a constellation called night ops\" draws glowing lines between the things on your stage",
