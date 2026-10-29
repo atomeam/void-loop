@@ -41,3 +41,13 @@ export function linkBrain(field) {
     close() { for (const i of [...held.keys()]) free(i); }
   };
 }
+
+/** the line the card shows under the brain's words: how many memories it feels from other cards, whose they are, and how many ideas of
+ *  its own it holds there. census is shared-field census(); felt is feltFrom(...).length; own is the link's held. Numbers in, words out. */
+const CARD_NAMES = { 'agent-fluid-memory-orbs': 'Memory orbs' };
+export function fieldSays(census, felt, own) {
+  const others = Object.entries(census.held || {}).filter(([who]) => who !== SKILL).map(([who, n]) => (CARD_NAMES[who] || who.replace(/-/g, ' ')) + ' (' + n + ')');
+  const mine = own ? ' It holds ' + own + ' of its own idea' + (own === 1 ? '' : 's') + ' there.' : '';
+  if (!felt) return 'Shared field: nothing from other cards yet. Open "memory orbs" and each orb shows here as a pink ring.' + mine;
+  return 'Shared field: feels ' + felt + ' memor' + (felt === 1 ? 'y' : 'ies') + ' from other cards' + (others.length ? ': ' + others.join(', ') : '') + '.' + mine;
+}

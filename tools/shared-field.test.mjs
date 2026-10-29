@@ -6,7 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as Field from '../void-live-deploy/lib/shared-field.js';
 import * as Served from '../void-live-deploy/skills/field.js';
-import { feltFrom, linkBrain, SKILL } from '../void-live-deploy/lib/brain-field.js';
+import { feltFrom, linkBrain, fieldSays, SKILL } from '../void-live-deploy/lib/brain-field.js';
 import * as B from '../void-live-deploy/lib/brain.js';
 import { layoutOf } from '../void-live-deploy/lib/orb-field.js';
 
@@ -53,4 +53,13 @@ test('the brain writes numbers only: no slot holds its words', () => {
   Field.reset(); const link = linkBrain(Field), b = B.createBrain(7); B.tell(b, 'secret words'); for (let i = 0; i < 10; i++) B.stepBrain(b, {});
   link.publish(b); const all = Field.readRegion(0, L.total); assert.ok(all.every((v) => Number.isFinite(v)));
   assert.ok(!JSON.stringify(Field.census()).includes('secret'), 'the census names writers, never words');
+});
+
+test('the card says in words what the brain feels in the field and whose it is, never its own slots as felt', () => {
+  Field.reset(); orb(1, 0.3, 0.3, 0.8); orb(2, 0.6, 0.6, 0.7); const link = linkBrain(Field), b = B.createBrain(9);
+  B.tell(b, 'orbs'); for (let i = 0; i < 10; i++) B.stepBrain(b, {}); link.publish(b);
+  const line = fieldSays(Field.census(), feltFrom(Field, link.code).length, link.held);
+  assert.match(line, /^Shared field: feels 2 memories from other cards: Memory orbs \(2\)\./);
+  assert.match(line, new RegExp('It holds ' + link.held + ' of its own idea')); assert.ok(!line.includes('verse brain'), 'its own slots are not listed as felt');
+  assert.match(fieldSays({ held: {} }, 0, 0), /nothing from other cards yet/); assert.match(fieldSays({ held: { x: 1 } }, 1, 0), /feels 1 memory from other cards: x \(1\)\.$/);
 });

@@ -5659,9 +5659,9 @@ try {
     await F.p.evaluate(async () => { const Fd = await import('/skills/field.js'); Fd.init(); const L = Fd.layout, who = 'agent-fluid-memory-orbs', c = Fd.provenanceOf(who);
       Fd.writeRegion(L.pos + 3 * 200, 3, [0.3, 0.4, 0], who); Fd.writeRegion(L.act + 200, 1, [0.9], who); Fd.writeRegion(L.prov + 200, 1, [c], who); }).catch(() => {});
     await until(async () => +(await F.p.$eval(card, (e) => e.dataset.felt).catch(() => 0)) >= 1, 6000).catch(() => {});
-    const shared = await F.p.$eval(card, (e) => ({ felt: +(e.dataset.felt || 0), owners: e.dataset.fieldOwners || '', says: e.querySelector('[role=status]') ? e.querySelector('[role=status]').textContent : '' })).catch(() => null);
-    check('verse brain shared field: an orb\'s slot in skills/field.js is felt by the brain on the same page, and the brain\'s ideas are in the field under its own name',
-      !!shared && shared.felt >= 1 && /agent-fluid-memory-orbs/.test(shared.owners), JSON.stringify(shared));
+    const shared = await F.p.$eval(card, (e) => ({ felt: +(e.dataset.felt || 0), owners: e.dataset.fieldOwners || '', says: e.querySelector('[role=status]') ? e.querySelector('[role=status]').textContent : '', line: e.querySelector('.vb-field') ? e.querySelector('.vb-field').textContent : '' })).catch(() => null);
+    check('verse brain shared field: an orb\'s slot in skills/field.js is felt by the brain on the same page, the card says so in words ("Shared field: feels N memories from other cards: Memory orbs (N)"), and the brain\'s ideas are in the field under its own name',
+      !!shared && shared.felt >= 1 && /agent-fluid-memory-orbs/.test(shared.owners) && /^Shared field: feels \d+ memor(y|ies) from other cards: Memory orbs \(\d+\)/.test(shared.line), JSON.stringify(shared));
     const errors = F.errors.slice(); await F.ctx.close();
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
