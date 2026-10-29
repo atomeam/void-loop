@@ -62,6 +62,17 @@ test('before go-live the API refuses even a member (the switch is lib/members.js
   assert.equal((await post(DB, IDEA, { MEMBERS_TRY: '' })).status, 503);
 });
 
+test('the pre-launch pilot lets a paid member send through every check, and still nothing else', async () => {
+  if (LIVE) return;
+  const pilot = (DB, idea) => onRequestPost({ env: { DB }, request: new Request('https://a-to-mind.com/api/members', { method: 'POST', headers: { authorization: 'Bearer ' + TOKEN, 'content-type': 'application/json', 'cf-connecting-ip': '10.1.0.' + (++ip) }, body: JSON.stringify({ idea, pilot: true }) }) });
+  const free = d1(); await signIn(free, null);
+  assert.equal((await pilot(free, IDEA)).status, 402, 'a free account cannot use the pilot');
+  const DB = d1(); await signIn(DB, 'paid');
+  assert.equal((await pilot(DB, 'Remove the games page from the site')).status, 400, 'the add-only check holds in the pilot');
+  const r = await pilot(DB, IDEA); assert.equal(r.status, 200);
+  assert.equal(DB.raw.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE target LIKE 'member:%'").get().n, 1);
+});
+
 test('a member idea becomes one member:<id> queue job, shows in their list, and the daily limit holds', async () => {
   const DB = d1(); await signIn(DB, 'paid');
   const r = await post(DB, IDEA); const j = await r.json();
