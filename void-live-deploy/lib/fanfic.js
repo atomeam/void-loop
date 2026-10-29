@@ -96,6 +96,42 @@ export function readShare(hash) {
   } catch (_) { return null; }
 }
 
+// Rec lists (sycophanthex.com keeps featured story lists): a reader's own list of stories they recommend, each with a one-line note on why. It is
+// kept on this device and sent by a link that holds the list after the # (never sent to a server), so nothing is posted and no list is seeded.
+// A story is its fandom's board code and its number; the title and writer are read from the boards when the list is opened.
+export const RECS_LIMITS = Object.freeze({ items: 25, note: 140, name: 60 });
+/** a rec list as the page keeps it: a name and up to 25 stories, each named once, with a one-line note. */
+export function cleanRecs(r = {}) {
+  const items = [], seen = new Set();
+  for (const x of Array.isArray(r && r.items) ? r.items : []) {
+    const f = String((x && x.f) || '').toLowerCase(), s = Math.floor(+(x && x.s));
+    if (!/^[a-z0-9]{1,16}$/.test(f) || !(s > 0) || seen.has(f + '/' + s)) continue;
+    seen.add(f + '/' + s); items.push({ f, s, note: cleanLine((x && x.note) || '', RECS_LIMITS.note) });
+    if (items.length === RECS_LIMITS.items) break;
+  }
+  return { name: cleanLine((r && r.name) || '', RECS_LIMITS.name), items };
+}
+const b64 = (str) => { const bytes = new TextEncoder().encode(str); let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const unb64 = (s) => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0)));
+/** a rec list as the part of a link after the #: recs= and base64url of a short JSON form. */
+export function recsHash(r) { const c = cleanRecs(r); return 'recs=' + b64(JSON.stringify({ n: c.name, i: c.items.map((x) => (x.note ? [x.f, x.s, x.note] : [x.f, x.s])) })); }
+/** the rec list in a #recs= link, or null when it is not one or does not read. */
+export function readRecs(hash) {
+  const m = /^#?recs=([A-Za-z0-9_-]{1,20000})$/.exec(String(hash || ''));
+  if (!m) return null;
+  try { const o = JSON.parse(unb64(m[1])); return o && Array.isArray(o.i) ? cleanRecs({ name: o.n, items: o.i.map((x) => ({ f: x && x[0], s: x && x[1], note: x && x[2] })) }) : null; } catch (_) { return null; }
+}
+/** a rec list with a story added at the end (a story already there keeps its place), or taken out when drop is true. */
+export function recsWith(r, f, s, drop = false) {
+  const c = cleanRecs(r), key = String(f).toLowerCase() + '/' + Math.floor(+s), items = c.items.filter((x) => x.f + '/' + x.s !== key);
+  return cleanRecs({ name: c.name, items: drop ? items : items.length < c.items.length ? c.items : [...c.items, { f, s }] });
+}
+/** a rec list with one story moved up (by -1) or down (by 1); the ends stay where they are. */
+export function recsMoved(r, i, by) {
+  const c = cleanRecs(r), j = i + by; if (i < 0 || j < 0 || i >= c.items.length || j >= c.items.length) return c;
+  const items = c.items.slice(); [items[i], items[j]] = [items[j], items[i]]; return { ...c, items };
+}
+
 /** a file name for a draft: its title in lowercase words, or "story". */
 export const fileName = (title) => (String(title || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'story') + '.txt';
 

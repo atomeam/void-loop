@@ -123,6 +123,15 @@ export const DICT = {
   'The series': 'Die Reihe', ', in part order': ', nach Teilen geordnet', 'Show every story': 'Alle Geschichten zeigen',
   'Stories a writer tells in parts, A to Z. Open a series to read its parts in order.': 'Geschichten, die eine Person in Teilen erzählt, von A bis Z. Öffne eine Reihe, um ihre Teile der Reihe nach zu lesen.',
   'No series yet. A writer starts one by giving a story a series name and a part number.': 'Noch keine Reihen. Eine Reihe beginnt, wenn eine Geschichte einen Reihennamen und eine Teilnummer bekommt.',
+  'Rec lists': 'Empfehlungslisten', 'My rec list': 'Meine Empfehlungsliste', 'A rec list': 'Eine Empfehlungsliste', 'List name': 'Name der Liste', Recommend: 'Empfehlen',
+  'In your rec list': 'In deiner Empfehlungsliste', 'Why you recommend it': 'Warum du sie empfiehlst', Up: 'Nach oben', Down: 'Nach unten', 'Take off': 'Entfernen',
+  'Add them to my rec list': 'Zu meiner Empfehlungsliste hinzufügen', 'Show my rec list': 'Meine Empfehlungsliste zeigen',
+  'Stories you recommend, in your order, each with a line on why. Your list stays on this device. Its link holds the whole list, so whoever opens the link reads the same stories. Nothing is posted.': 'Geschichten, die du empfiehlst, in deiner Reihenfolge, jede mit einer Zeile dazu, warum. Deine Liste bleibt auf diesem Gerät. Ihr Link enthält die ganze Liste, sodass alle, die den Link öffnen, dieselben Geschichten lesen. Nichts wird veröffentlicht.',
+  'Someone sent you this rec list by its link. It is not posted anywhere.': 'Jemand hat dir diese Empfehlungsliste per Link geschickt. Sie ist nirgends veröffentlicht.',
+  'Your rec list is empty. Open a story and press Recommend to put it here.': 'Deine Empfehlungsliste ist leer. Öffne eine Geschichte und tippe auf Empfehlen, um sie hier aufzunehmen.',
+  'This story is not on the boards now.': 'Diese Geschichte ist gerade nicht auf den Boards.', 'Taken off your rec list.': 'Von deiner Empfehlungsliste entfernt.',
+  'On your rec list. Open Rec lists to add a line on why.': 'Auf deiner Empfehlungsliste. Öffne Empfehlungslisten, um eine Zeile dazu zu schreiben, warum.',
+  'Link copied. It holds the whole list.': 'Link kopiert. Er enthält die ganze Liste.', 'The link could not be copied.': 'Der Link konnte nicht kopiert werden.',
   'Help desk: questions and answers': 'Hilfe: Fragen und Antworten', 'How do I post a story?': 'Wie veröffentliche ich eine Geschichte?',
   'How do I add the next chapter?': 'Wie füge ich das nächste Kapitel hinzu?', 'Do I need an account?': 'Brauche ich ein Konto?',
   'How do I find a story?': 'Wie finde ich eine Geschichte?', 'Something here breaks the rules. What do I do?': 'Hier verstößt etwas gegen die Regeln. Was tue ich?',
@@ -138,7 +147,7 @@ export const DICT = {
 // text made from numbers and names: the English shape on the left, the German on the right
 const PATTERNS = [
   [/^Chapter (\d+)$/, 'Kapitel $1'], [/^Chapter (\d+) of (\d+)$/, 'Kapitel $1 von $2'], [/^Chapter (\d+): /, 'Kapitel $1: '], [/^Page (\d+) of (\d+)$/, 'Seite $1 von $2'],
-  [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^★ (\d(?:\.\d)?) of 5 from (\d+) ratings?$/, '★ $1 von 5 aus $2 Bewertung(en)'], [/^(\d+) series posted here\.$/, '$1 Reihe(n) hier veröffentlicht.'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
+  [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^★ (\d(?:\.\d)?) of 5 from (\d+) ratings?$/, '★ $1 von 5 aus $2 Bewertung(en)'], [/^(\d+) series posted here\.$/, '$1 Reihe(n) hier veröffentlicht.'], [/^(\d+) stor(?:y|ies)$/, '$1 Geschichte(n)'], [/^Your rec list is full at (\d+) stories\. Take one off in Rec lists first\.$/, 'Deine Empfehlungsliste ist mit $1 Geschichten voll. Entferne zuerst eine in den Empfehlungslisten.'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
   [/^(\d[\d,.]*) words?$/, '$1 Wörter'], [/^(\d+) min read$/, '$1 Min. Lesezeit'], [/^No story matches "(.*)"\.$/, 'Keine Geschichte passt zu „$1“.'],
   [/^Exported (\d+) stor(?:y|ies)\.$/, '$1 Geschichte(n) exportiert.'], [/^(\d[\d,.]*) authors? ha(?:s|ve) posted here\.$/, '$1 Autor:innen haben hier veröffentlicht.'], [/^No stories in (.*) yet\. Post the first one\.$/, 'Noch keine Geschichten in $1. Veröffentliche die erste.'],
 ];
