@@ -4626,12 +4626,15 @@ say('nothing selected to remove');
     // "poulation of japan") is corrected from the skills' own examples, with no typo pattern written by hand, and the corrected ask
     // runs only when the skill that takes it owns the corrected word (fuzzy.confirm). The page's own parsers (calc, the weather regex)
     // still read the typed words. The ask is logged as it was typed (typoFix, loopLog), the corrected one is routed.
+    // a first ask on a slow link waits at most this long for skills still loading: the fuzzy layer's vocabulary below, and the routing of
+    // an ask the page's own calc can answer (handle: watchdog #110, 309 skills no longer all arrive inside the bench's 4 s window)
+    const FIRST_ASK_WAIT = 2500;
     let fuzzy = null, fuzzyVocab = null, fuzzyVocabN = -1; const fuzzyReady = import('/lib/fuzzy.js').then((m) => { fuzzy = m; }).catch(() => {});
     async function fuzzyFix(t) {
       if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t)) return t;
       if (!fuzzy) await fuzzyReady;
       // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most 2.5 s
-      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 2500))]);
+      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, FIRST_ASK_WAIT))]);
       const loaded = skillsLoaded ? learnedSkills : skillSlots ? skillSlots.filter((s) => s.done && s.skill).map((s) => s.skill) : [];
       if (!fuzzy || !loaded.length) return t;
       if (fuzzyVocabN !== loaded.length) { fuzzyVocab = fuzzy.vocabulary(loaded); fuzzyVocabN = loaded.length; }
@@ -4647,7 +4650,9 @@ say('nothing selected to remove');
       const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
       if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
       for (const slot of skillSlots) {
-        const skill = slot.done ? slot.skill : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
+        // past the deadline a skill still loading is passed over at once: a zero timer per slot cost 4 ms or more each (nested timers),
+        // a second or more across a couple of hundred slots on a busy page
+        const skill = slot.done ? slot.skill : deadline <= Date.now() ? null : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
         if (skill && fits(skill)) return skill;
       }
       return null;
@@ -5859,7 +5864,9 @@ say('nothing selected to remove');
       const sa = shortAsk(l); if (sa && sa !== l.replace(/[?.!]+$/, '').trim()) { await handle(sa); return true; } // an ask that maps to itself goes on normally
       return false;
     }
+    let askCount = 0; // which ask is the newest: a calc answer given before the skills were in is only handed to a skill while it still is
     async function handle(raw) {
+      const askNo = ++askCount, askAt = Date.now();
       const typed = (raw || '').trim();
       const quiet = quietAsk; quietAsk = false; // read once: an ask this one starts is the person's again
       if (!typed) return;
@@ -5920,7 +5927,11 @@ say('nothing selected to remove');
       currentAsk = text; if (!/^(close|menu|undo|oops|clear)\b/.test(lower0)) lastAsk = text;
       if (!skillsLoaded) say('waking up');
       let ranSkill; skillsRunning++;
-      try { ranSkill = await runLearnedSkills(text, lower0, Date.now() + 6000); } finally { skillsRunning--; } // waits only for the skills ranked above the one that answers
+      // an ask the page's calc can answer waits for skills still loading only until FIRST_ASK_WAIT after it was asked (the calc below then
+      // answers, and a skill that turns out to take the ask gets it once they are all in); any other ask waits up to 6 s
+      const calcable = !skillsLoaded && wantsCalc(lower0);
+      try { ranSkill = await runLearnedSkills(text, lower0, calcable ? askAt + FIRST_ASK_WAIT : Date.now() + 6000); } finally { skillsRunning--; } // waits only for the skills ranked above the one that answers
+      const calcEarly = calcable && !skillsLoaded; // routed before every skill was in: one ranked above the calc may still take this ask
       if (whisper.textContent === 'waking up') say('');
       if (ranSkill) return;
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
@@ -5929,7 +5940,10 @@ say('nothing selected to remove');
       if (wantsVoice(lower0)) { showVoice(lower0); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
       if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
-      if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
+      if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' });
+        // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's
+        if (calcEarly) { const calcEl = vpageEl; skillsReady.then(() => (askNo === askCount && vpageEl === calcEl ? runLearnedSkills(text, lower0) : false)).catch(() => {}); }
+        return; }
       if (/^(why|how|when|where|which|what\s+language\b|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
         showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, lookedUp()); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
