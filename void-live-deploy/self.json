@@ -537,13 +537,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T06:19:12Z",
+   "subject": "Colour page: its stage card opens the colour you have open"
+  },
+  {
+   "at": "2026-10-29T06:14:30Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T06:13:00Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T06:10:53Z",
    "subject": "Regenerate the generated files after the merge"
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T05:50:15Z",
    "subject": "Memory orbs: look up the shared field when asked, so a missing file is not a broken import"
-  },
-  {
-   "at": "2026-10-29T05:48:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:48:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:48:04Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
