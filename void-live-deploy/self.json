@@ -545,6 +545,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T10:47:59Z",
+   "subject": "Shard 4: the memory orbs and Verse Brain checks match what Verse now does"
+  },
+  {
+   "at": "2026-10-29T10:43:29Z",
+   "subject": "verse brain: painter organ (F322), the brain's look is a program it rewrites"
+  },
+  {
+   "at": "2026-10-29T10:41:54Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T10:34:08Z",
+   "subject": "Refresh the parity docs the merge left stale"
+  },
+  {
+   "at": "2026-10-29T10:33:29Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T10:33:16Z",
+   "subject": "Better at color and fanfic: 3 more ways of asking answered right — new phrases: “give me a color” now opens color; “fan fiction” now opens…"
+  },
+  {
    "at": "2026-10-29T10:33:12Z",
    "subject": "Password page test: the checker opens in a new tab with the password handed over in memory"
   },
@@ -563,6 +587,10 @@
   {
    "at": "2026-10-29T09:57:59Z",
    "subject": "Incident: the browser suite failed on b9dde86e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T09:53:42Z",
+   "subject": "verse brain: painter organ draft (F322), not yet measured against random search"
   },
   {
    "at": "2026-10-29T09:43:13Z",
@@ -595,34 +623,6 @@
   {
    "at": "2026-10-29T09:28:16Z",
    "subject": "Fan fiction: rec lists you share by link"
-  },
-  {
-   "at": "2026-10-29T09:26:13Z",
-   "subject": "Verse Brain grows F299's ear: it hears hummed notes and guesses the next one"
-  },
-  {
-   "at": "2026-10-29T09:25:03Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T09:24:48Z",
-   "subject": "Ask libs first: lanes wait for the four libs every ask needs"
-  },
-  {
-   "at": "2026-10-29T09:20:55Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T09:19:15Z",
-   "subject": "Fan fiction: stories can be parts of a series"
-  },
-  {
-   "at": "2026-10-29T09:08:24Z",
-   "subject": "Regenerate the hand-off and parity docs for the people card"
-  },
-  {
-   "at": "2026-10-29T09:03:29Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

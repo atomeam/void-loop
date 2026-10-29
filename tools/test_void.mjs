@@ -437,7 +437,7 @@ async function catalogRoute(r) {
 }
 
 async function fresh(...inits) {
-  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
+  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0] || 'field' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
   const at = opt.base || base;
   const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   OPEN.add(ctx); ctx.on('close', () => OPEN.delete(ctx));
@@ -447,6 +447,7 @@ async function fresh(...inits) {
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
   // asks below miss their fixed waits. tools/test_3d.mjs turns them on with fresh({ mini3d: true }).
   if (!opt.mini3d) await ctx.route(/\/skills\/scene3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
+  if (opt.field === false) await ctx.route(/\/skills\/field\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' })); // { field: false }: a Verse with no shared field (lib/orb-field.js answers null)
   await routeOutside(ctx); // tools/fixtures/outside.mjs: the same offline replies for every runner
   await ctx.route(/^http:\/\/(?:127\.0\.0\.1|localhost):\d+\/api\//, (r) => {
     const u = r.request().url();
@@ -5474,8 +5475,8 @@ try {
   }
   if (want("field minds: memory orbs, agents push a fluid, density peaks become orbs, an orb seals and Recall loads it to the same hash, with or without a Worker")) { // asked by Owner, 2026-10-29: the F321 draft (agent-fluid memory orbs)
     const out = [];
-    for (const noWorker of [false, true]) {
-      const F = await fresh(noWorker ? 'delete window.Worker; delete window.AudioContext;' : () => {}); // the playbook's test: no Worker, no Web Audio
+    for (const [noWorker, field] of [[false, true], [true, true], [false, false]]) { // the shared field is skills/field.js (dbfbc15b); the last run has none
+      const F = await fresh(...(field ? [] : [{ field: false }]), noWorker ? 'delete window.Worker; delete window.AudioContext;' : () => {}); // the playbook's test: no Worker, no Web Audio
       await F.ask('memory orbs', 700); await until(async () => !!(await F.p.$('.ff-agent-fluid-memory-orbs canvas')), 8000);
       const card = '.ff-agent-fluid-memory-orbs', box = await (await F.p.$(card + ' canvas')).boundingBox();
       const read = () => F.p.$eval(card, (e) => ({ orbs: +(e.dataset.orbs || 0), els: e.querySelectorAll('.fo-orb').length, gen: +(e.dataset.gen || 0), mind: e.dataset.mind, status: e.querySelector('.ff-hud').textContent,
@@ -5491,14 +5492,15 @@ try {
       await until(async () => !!(await read()).seal, 5000).catch(() => {});
       await F.p.click(card + ' .fo-recall'); await until(async () => !!(await read()).recalled, 5000).catch(() => {});
       await until(async () => (await read()).gen > 0, 12000).catch(() => {});
-      out.push({ noWorker, a, b: await read(), errors: F.errors.slice() }); await F.ctx.close();
+      out.push({ noWorker, field, a, b: await read(), errors: F.errors.slice() }); await F.ctx.close();
     }
     const good = (o) => o.a.orbs > 0 && o.a.els === o.a.orbs && /^[0-9a-f]{12}$/.test(o.b.seal) && o.b.recalled === o.b.seal && o.b.same === 'true' && o.b.gen > 0
       && /^F-321 · gen \d+ · fitness [\d.]+ · \d+ orbs? · swirl [\d.]+ · entropy [\d.]+ · thinking/.test(o.b.status) && o.b.hue !== '' && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.mode === 'agent-fluid-memory-orbs' && !o.errors.length
-      && o.b.field === 'off' && !/shared field/.test(o.b.status + o.b.sealed) // no skills/field.js yet: the orbs keep their own state (lib/orb-field.js answers null)
+      && (o.field ? o.b.field === 'on' && /in the shared field/.test(o.b.status) // the orbs write into Verse's shared field (skills/field.js)
+        : o.b.field === 'off' && !/shared field/.test(o.b.status + o.b.sealed)) // no skills/field.js: the orbs keep their own state (lib/orb-field.js answers null)
       && /^#[0-9a-f]{6}$/.test(o.b.hand) && o.b.toColor === '/color/?c=' + o.b.hand.slice(1); // the hand-off: an orb's colour opens on the colour page
-    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page',
-      out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
+    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, the orbs join the shared field and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page',
+      out.length === 3 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
   }
   if (want("mind field: the seven field minds are one skill with a Mode switcher, Draw mode guesses the next stroke, orbs drag and feed back, every old ask still opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
     const out = {};
@@ -5637,7 +5639,7 @@ try {
     const orb = await F.p.$(card + ' .vb-orb[data-key="w:romance"]'), ob = orb && await orb.boundingBox();
     if (ob) { await F.p.mouse.move(ob.x + ob.width / 2, ob.y + ob.height / 2); await F.p.mouse.down(); await F.p.mouse.move(box.x + box.width * 0.1, box.y + box.height * 0.15, { steps: 6 }); await F.p.mouse.up(); }
     const moved = await F.p.$eval(card + ' .vb-orb[data-key="w:romance"]', (o) => parseFloat(o.style.left)).catch(() => -1);
-    const other = await F.ctx.newPage(); await other.goto(localOrigin + '/privacy/');
+    const other = await F.ctx.newPage(); await other.goto(base + 'privacy/'); // the brain's own origin: a BroadcastChannel never crosses origins (localhost is not 127.0.0.1)
     const heard = await other.evaluate(async () => { const { connectBrain } = await import('/lib/brain-bridge.js'); const c = connectBrain(); c.tell('dragons');
       return new Promise((res) => { const t = setTimeout(() => res(null), 4000); c.on((m) => { if (m.words.includes('dragons')) { clearTimeout(t); res({ words: m.words, utility: m.utility, self: m.self.length }); } }); }); });
     await until(async () => (await read()).concepts >= 3, 4000).catch(() => {});
