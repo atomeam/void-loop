@@ -537,13 +537,33 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-29T03:43:50Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T14:46:31Z",
+   "subject": "feat(learn-to-draw): assimilate wheelroot.com with a scored drawing course"
+  },
+  {
+   "at": "2026-10-29T14:29:35Z",
+   "subject": "Tower gate: nameunit measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T14:25:59Z",
+   "subject": "Tower: point the two colour-name floors at /color/, gate the loop on lane-pages"
+  },
+  {
+   "at": "2026-10-29T14:23:14Z",
+   "subject": "nameunit: search a name at every ending, share it, and name the config for it"
+  },
+  {
+   "at": "2026-10-29T14:17:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T14:16:45Z",
    "subject": "test: the Verse self page check brings the body into view before the tap"
@@ -603,26 +623,6 @@
   {
    "at": "2026-10-29T13:46:53Z",
    "subject": "Tower gate: every floor measured against its live site (3 slices)"
-  },
-  {
-   "at": "2026-10-29T13:46:39Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-29T13:46:27Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-29T13:44:54Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-29T13:43:53Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-10-29T13:43:27Z",
-   "subject": "fanfic: terms of use, disclaimer and credits pages, opened from the footer"
   }
  ],
  "builders": {

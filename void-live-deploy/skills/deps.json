@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 966,
+ "counted": 967,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -707,7 +707,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 5,
-   "tests": 26
+   "tests": 27
   },
   {
    "file": "lib/arena-say.js",
@@ -2489,6 +2489,13 @@
   },
   {
    "file": "lib/correction-heat.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/drawing-drills.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5335,6 +5342,10 @@
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
+  },
+  "lib/drawing-drills.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/drive.js": {
    "imports": [],
