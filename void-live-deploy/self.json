@@ -545,16 +545,16 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:53:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:52:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T06:52:13Z",
    "subject": "Verse's will: hourly from the conductor's clock, and started by every main deploy"
-  },
-  {
-   "at": "2026-10-29T06:51:49Z",
-   "subject": "Parity doc: the hourly forecast line moved in lib/weather.js"
   },
   {
    "at": "2026-10-29T06:51:29Z",
@@ -565,12 +565,8 @@
    "subject": "Fan fiction: find, link, CSV export, keyboard shortcuts and German on the index"
   },
   {
-   "at": "2026-10-29T06:49:35Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:49:25Z",
-   "subject": "Weather, time and base converter stage cards follow the page"
+   "at": "2026-10-29T06:48:23Z",
+   "subject": "Money/GPA asks the page's calc can answer no longer wait for all 309 skills (watchdog #110)"
   },
   {
    "at": "2026-10-29T06:47:46Z",
@@ -623,6 +619,10 @@
   {
    "at": "2026-10-29T06:32:15Z",
    "subject": "Verse's coder: older results cut short, so the token cap lasts the turns"
+  },
+  {
+   "at": "2026-10-29T06:31:47Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
