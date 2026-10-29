@@ -15,8 +15,6 @@
 <meta property="og:url" content="https://a-to-mind.com/fanfic/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="modulepreload" href="/lib/fanfic.js">
-<link rel="modulepreload" href="/lib/boards.js">
 <style>
   /* a-to-mind.com/fanfic/ (owner, 2026-10-29: "build the page"; the same night: "deep space dark mode", "a clean, dedicated fanfiction archive
      view that matches legacy layouts (like Sycophant Hex)", "without raw board form fields", "zero seeded or fake stories").
@@ -61,7 +59,8 @@
   .nav a:hover { color: var(--ink); background: rgba(255,255,255,.05); }
   .nav a[aria-current] { color: var(--ink); background: rgb(var(--key) / .12); box-shadow: 0 0 0 1px rgb(var(--key) / .28) inset; }
 
-  main.wrap { padding-top: 34px; padding-bottom: 40px; }
+  /* the views draw after the page script runs: the main area keeps a screen's height from the first paint, so the footer never jumps down (layout shift, tower gate design polish) */
+  main.wrap { padding-top: 34px; padding-bottom: 40px; min-height: 100vh; min-height: 100svh; }
   .view { display: none; } .view.on { display: block; animation: rise .5s var(--ease); }
   @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
   h1, .h1 { font-weight: 280; font-size: clamp(30px, 5vw, 46px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 10px; overflow-wrap: anywhere;
@@ -121,7 +120,7 @@
   table.list .when { white-space: nowrap; color: var(--ink-3); font-size: 13px; width: 1%; }
   table.list .ic { width: 22px; padding-right: 0; }
   table.list .who { white-space: nowrap; color: var(--ink-2); font-size: 14px; }
-  table.list a.t { color: var(--ink); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; }
+  table.list a.t { color: var(--ink); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; display: inline-block; padding: 2px 0; } /* 24 px tap target at least (WCAG 2.5.8) */
   table.list a.t:hover { color: #fff; text-decoration: underline; text-decoration-color: rgb(var(--key) / .6); }
   table.list .about { display: block; font-size: 13px; color: var(--ink-3); margin-top: 2px; overflow-wrap: anywhere; }
   table.list .in { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
@@ -504,7 +503,7 @@
   <p id="brainSay" hidden></p>
   <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
 </footer>
-<script type="module" src="/fanfic/app.js"></script>
+<script>addEventListener('load', () => { import('/fanfic/app.js').catch(() => {}); }); // the module after load, as /boards/ does: nothing fetched holds the load event back (Versus measures speed)</script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 </body>
 </html>
