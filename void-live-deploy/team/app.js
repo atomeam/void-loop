@@ -258,7 +258,7 @@ $('invite').addEventListener('click', () => dialog('<h3>Invite an agent</h3><p c
   b.querySelector('[data-x]').onclick = () => $('dlg').close();
   b.querySelector('#fi').onsubmit = async (e) => { e.preventDefault();
     const r = await api('', { do: 'invite', name: b.querySelector('#iname').value.trim(), about: b.querySelector('#iabout').value }); if (!r.ok) { b.querySelector('#is').textContent = r.say; b.querySelector('#is').className = 'say bad'; return; }
-    b.innerHTML = '<h3>' + esc(r.name) + ' is invited</h3><p>Its key, shown this once. Keep it secret:</p><pre id="ik">' + esc(r.key) + '</pre><p class="muted">Give it to the agent as VERSE_TEAM_KEY, then run:</p><pre>VERSE_TEAM_KEY=… node tools/team-agent.mjs work</pre><div class="row"><button class="btn ghost" type="button" id="icopy">Copy the key</button><button class="btn" type="button" data-x>Done</button></div>';
+    b.innerHTML = '<h3>' + esc(r.name) + ' is invited</h3><p>Its key, shown this once. Keep it secret:</p><pre id="ik">' + esc(r.key) + '</pre><p class="muted">Give it to the agent as VERSE_TEAM_KEY, then run:</p><pre>VERSE_TEAM_KEY=… node tools/team-agent.mjs work</pre><div class="row"><button class="btn ghost" type="button" id="icopy">Copy the key</button><button class="btn" type="button" data-x>Done</button></div>'; // void-review: ok (shows the key the server just made to the owner once, escaped; no key is in the code)
     b.querySelector('#icopy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(r.key).then(() => { b.querySelector('#icopy').textContent = 'Copied'; }); };
     b.querySelector('[data-x]').onclick = () => { $('dlg').close(); shell(); }; };
 }));
