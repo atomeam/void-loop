@@ -338,8 +338,8 @@ export function measurable(f) {
   return want.filter((a) => (MEASURES[a] && !['accuracy', 'completeness'].includes(a)) || (a === 'accuracy' && p && p.truth) || (a === 'completeness' && p && p.facts && p.facts.length) || (p && p.parts && p.parts[a]) || (p && p.askParts && p.askParts[a]) || (p && p.pageParts && p.pageParts[a]) || (p && p.motion && p.motion[a]));
 }
 /** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in FLOORS (a frontier site has no Verse page yet), at most max. Pure. */
-export function pick(evidence = {}, frontier = null, changed = [], max = 3, rank = null, size = null) {
-  const t = tower([], evidence, frontier, null, rank, size), ids = new Set(FLOORS.map((f) => f.id)), out = [];
+export function pick(evidence = {}, frontier = null, changed = [], max = 3, rank = null, size = null, target = null) {
+  const t = tower([], evidence, frontier, null, rank, size, target), ids = new Set(FLOORS.map((f) => f.id)), out = [];
   const add = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < max) out.push(id); };
   add((t.floors.find((f) => f.state === 'current' && ids.has(f.id)) || t.floors.find((f) => !f.beaten && ids.has(f.id)) || {}).id);
   // a floor whose own page the deploy changed: /color/ for void-live-deploy/color/index.html; its probe's page counts too
@@ -484,7 +484,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // --which [changed file ...]: print the floors a post-deploy run measures, one per line (.github/workflows/tower-gate.yml)
   if (argv[0] === '--which') {
     const data = read(), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
-    for (const id of pick(data.floors || {}, fr, argv.slice(1), 3, (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.rank.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.size.json'), 'utf8')); } catch (_) { return null; } })())) console.log(id);
+    for (const id of pick(data.floors || {}, fr, argv.slice(1), 3, (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.rank.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.size.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.target.json'), 'utf8')).id || null; } catch (_) { return null; } })())) console.log(id);
     process.exit(0);
   }
   // --merge <slice file ...>: the sweep's slices folded into the evidence file, a newer row over an older one only (tools/tower-merge.mjs); no site loaded

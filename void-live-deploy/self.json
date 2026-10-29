@@ -509,6 +509,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T03:07:40Z",
+   "subject": "Every site gets a cited history before it is fought: the history tool covers the whole queue, a daily workflow writes the next ones, and a…"
+  },
+  {
+   "at": "2026-10-29T03:07:32Z",
+   "subject": "Tower gate: nameunit,travel: aruljohn.com,travel: clock7.com measured against their live sites"
+  },
+  {
    "at": "2026-10-29T03:04:24Z",
    "subject": "Served tower files speak as Verse: no owner words in the hold, the weight notes or the card styles"
   },
@@ -579,14 +587,6 @@
   {
    "at": "2026-10-29T02:51:19Z",
    "subject": "Tower size: re-weigh the lightest rows under the stricter rule"
-  },
-  {
-   "at": "2026-10-29T02:51:11Z",
-   "subject": "Tower size: an offline notice, an error page or a page with nothing to use is never weighed (counterscope.ae was 'is offline')"
-  },
-  {
-   "at": "2026-10-29T02:50:53Z",
-   "subject": "Incident: the browser suite failed on df95fa08 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
