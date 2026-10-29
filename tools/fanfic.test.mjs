@@ -257,3 +257,24 @@ test('the index shows the filters, the sort and the A to Z bar, and the post for
   const de = fs.readFileSync(path.join(root, 'lib', 'fanfic-de.js'), 'utf8');
   for (const s of ['Titles A to Z', 'Hide stories with warnings', ...Object.values(F.SORTS), ...F.GENRES, ...F.WARNINGS]) assert.ok(de.includes("'" + s + "'") || de.includes(' ' + s.replace(/[^A-Za-z]/g, '') + ':'), 'German for ' + s);
 });
+
+test('the Authors list counts each pen name and mark once, A to Z, and Random story picks from the list', () => {
+  const t = (no, author, trip, bumped, title = 'T' + no) => ({ no, author, trip, bumped, at: bumped, title, rating: '', genres: [], characters: [], warnings: [] });
+  const list = [t(1, 'zed', 'aa', 5), t(2, 'Ána', '', 9), t(3, 'zed', 'aa', 7), t(4, 'zed', 'bb', 1), t(5, 'Bo', '', 2)];
+  const w = F.authorsOf(list);
+  assert.deepEqual(w.map((a) => [a.author, a.trip, a.stories, a.last]), [['Ána', '', 1, 9], ['Bo', '', 1, 2], ['zed', 'aa', 2, 7], ['zed', 'bb', 1, 1]]);
+  assert.deepEqual(F.authorsOf([]), []);
+  assert.equal(F.authorKey(list[0]), 'zed!aa'); assert.equal(F.authorKey(list[1]), 'Ána'); assert.equal(F.authorKey({}), 'Anonymous');
+  assert.deepEqual(F.filterStories(list, { by: 'zed!aa' }).map((x) => x.no), [1, 3], 'one writer, not a namesake');
+  assert.equal(F.randomOf([], () => 0.5), null); assert.equal(F.randomOf(null), null);
+  assert.equal(F.randomOf(list, () => 0).no, 1); assert.equal(F.randomOf(list, () => 0.999999).no, 5); assert.equal(F.randomOf(list, () => 1).no, 5, 'never past the end');
+});
+
+test('the archive has Authors, Help and Random story, with the help desk as a pinned notice', () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  for (const id of ['authors', 'random', 'n-help', 'authorRows', 'fBy', 'fByAll']) assert.match(html, new RegExp('id="' + id + '"'), id);
+  for (const h of ['?v=authors', '?notice=help', '?v=random']) assert.ok(html.includes('href="/fanfic/' + h + '"'), h);
+  assert.match(app, /\['help', 'Help desk: questions and answers'\]/);
+  const de = fs.readFileSync(path.join(root, 'lib', 'fanfic-de.js'), 'utf8');
+  for (const s of ['Random story', 'Help desk: questions and answers', 'Show every author', 'Authors A to Z']) assert.ok(de.includes("'" + s + "'"), 'German for ' + s);
+});

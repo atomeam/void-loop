@@ -261,3 +261,19 @@ test('the word counter\'s card counts the text in the box, exactly as typed, on 
   const src = fs.readFileSync(new URL('../void-live-deploy/word-count/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*cardAsk\(box\.value\)/, 'the word counter gives its card the text in the box');
 });
+
+test('the Base64 page\'s card holds the text in the box, exactly as typed, and its Base64; no word in it sends it to another skill', async () => {
+  const B = await import('../void-live-deploy/lib/base64.js'), D = await import('../void-live-deploy/lib/dev-tools.js');
+  const texts = ['hello', ' leading space and trailing  ', 'line one\nline two\r\n', 'I hate rainy weather, will it rain tomorrow', 'tip 20% on 50', 'translate hello to spanish',
+    'Zoë’s café 😀 日本', '"quoted" = a + b / c?', 'set a timer for 5 minutes', 'qr code for this stage view'];
+  for (const t of texts) {
+    const ask = B.cardAsk(t); assert.match(ask, /^base64 decode [A-Za-z0-9+/]+={0,2}$/, t);
+    assert.equal(await firstSkill(ask), 'dev-tools', 'the stage opens the Base64 card: ' + t);
+    const p = D.devOf(ask); assert.equal(p.mode, 'base64'); assert.equal(p.opts.dir, 'decode');
+    assert.equal(D.b64Decode(p.input).out, t, 'the card shows this text, as typed'); assert.equal(p.input, D.b64Encode(t), 'and its UTF-8 Base64');
+  }
+  assert.equal(B.cardAsk(''), '', 'an empty box: the example'); assert.equal(B.cardAsk(' \n '), '');
+  assert.equal(B.cardAsk('x'.repeat(1501)), '', 'past 1500 characters: the example, so a long paste does not go in a link');
+  const src = fs.readFileSync(new URL('../void-live-deploy/base64/index.html', import.meta.url), 'utf8');
+  assert.match(src, /card:\s*\(\)\s*=>\s*\(text\.classList\.contains\('stale'\)\s*\?\s*''\s*:\s*cardAsk\(text\.value\)\)/, 'the page gives its card the text box, unless the box is not the text of this Base64');
+});
