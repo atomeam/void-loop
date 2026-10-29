@@ -537,13 +537,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T14:29:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T16:01:10Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:00:24Z",
+   "subject": "Versus: count controls on the rendered page, name a pinned target as the target"
+  },
   {
    "at": "2026-10-29T15:59:03Z",
    "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
@@ -609,20 +617,12 @@
    "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
   },
   {
+   "at": "2026-10-29T15:40:34Z",
+   "subject": "8 ball chance line: the classic 20 answers in the page too, matching the skill"
+  },
+  {
    "at": "2026-10-29T15:40:03Z",
    "subject": "Put the reply section in void.html, the page the deploy copies"
-  },
-  {
-   "at": "2026-10-29T15:36:15Z",
-   "subject": "Queue ignores a shell control count under 2"
-  },
-  {
-   "at": "2026-10-29T15:35:04Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:34:04Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -858,8 +858,9 @@
   "source": "verse"
  },
  "tower": {
-  "target": "sycophanthex.com",
+  "target": "onlineconverter.com",
   "since": "2026-10-29",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "serverdiscounter.com",
    "howsecureismypassword.net",
