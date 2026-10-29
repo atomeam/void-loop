@@ -1,0 +1,1 @@
+{"at":"2026-10-29T14:25:40Z","by":"claude","kind":"fix","what":"Tower: the colorcanon.com and colornames.org floors pointed to /color-canon/ and /color-names/, which do not exist (404 live, lane-pages red on main). Both now point to /color/, the page that names hex colours. The Verse loop gate now runs lane-pages, so a floor with no page fails the lap."}
