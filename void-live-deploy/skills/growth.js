@@ -255,8 +255,9 @@ async function run(text, api) {
     if (slot && html && el.isConnected) slot.innerHTML = html; // void-review: ok: probeHtml escapes every value (lib/probe-log.js, tested with markup in a skill name)
   }).catch(() => {});
   // who visits (asked of the owner, gathered by Verse itself: tools/traffic.mjs into self.json): "People this week: N (...)", under the velocity
+  // and after the friction line when that is already drawn: the friction line sits right under the velocity (asked by Verse) whichever answer comes first
   fetch('/self.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
-    const html = peopleHtml(esc, j && j.people), v = el.querySelector('[data-velocity]');
+    const html = peopleHtml(esc, j && j.people), v = el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');
     if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html); // void-review: ok: peopleHtml escapes the line
   }).catch(() => {});
   // the friction line under the velocity: which skills are failing or least checked (skills/families.json); without it, no line

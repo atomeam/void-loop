@@ -1345,7 +1345,9 @@ Object.values(things).forEach((th) => {
     // A thing mostly under the card glides to the nearest side with room (left, right, above, below: the shortest move)
     // while the card is up, and back when it closes.
     // Only how it is drawn moves (CSS translate); where it was put (th.x, th.y) is unchanged and unsaved, unless you take
-    // hold of it while it is aside: then it stays where you see it. Where no side has room, it stays put.
+    // hold of it while it is aside: then it stays where you see it. Where no side has room for all of it (a phone, where the card
+    // is up to 60% of the screen tall since 2026-10-25 and leaves a strip above and below shorter than a sticky), it goes to the
+    // side that leaves the most of it on the screen, when that is at least half of it; otherwise it stays put.
     function clearUnderPage(glide = true) {
       const pg = vpageEl && vpageEl.classList.contains('on') ? vpageEl.getBoundingClientRect() : null;
       const floor = stage.getBoundingClientRect().bottom - 8;
@@ -1360,8 +1362,10 @@ Object.values(things).forEach((th) => {
           const w = Math.min(r.right, pg.right) - Math.max(r.left, pg.left), h = Math.min(r.bottom, pg.bottom) - Math.max(r.top, pg.top);
           if (w > 0 && h > 0 && w * h >= 0.3 * r.width * r.height) {
             const fits = ([x, y]) => r.left + x >= 8 && r.right + x <= innerWidth - 8 && r.top + y >= 8 && r.bottom + y <= floor;
-            move = [[pg.left - 14 - r.right, 0], [pg.right + 14 - r.left, 0], [0, pg.top - 14 - r.bottom], [0, pg.bottom + 14 - r.top]]
-              .filter(fits).sort((a, b) => Math.abs(a[0]) + Math.abs(a[1]) - Math.abs(b[0]) - Math.abs(b[1]))[0] || [0, 0];
+            const sides = [[pg.left - 14 - r.right, 0], [pg.right + 14 - r.left, 0], [0, pg.top - 14 - r.bottom], [0, pg.bottom + 14 - r.top]];
+            const shown = ([x, y]) => Math.max(0, Math.min(r.right + x, innerWidth - 8) - Math.max(r.left + x, 8)) * Math.max(0, Math.min(r.bottom + y, floor) - Math.max(r.top + y, 8)) / (r.width * r.height);
+            move = sides.filter(fits).sort((a, b) => Math.abs(a[0]) + Math.abs(a[1]) - Math.abs(b[0]) - Math.abs(b[1]))[0]
+              || sides.filter((m) => shown(m) >= 0.5).sort((a, b) => shown(b) - shown(a))[0] || [0, 0];
           }
         }
         if (Math.round(move[0]) === Math.round(had[0]) && Math.round(move[1]) === Math.round(had[1])) continue;
