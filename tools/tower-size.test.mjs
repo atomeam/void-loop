@@ -15,7 +15,7 @@ test('a page is weighed by its bytes, scripts, elements and routes', () => {
   assert.deepEqual([512, 1400, 25000, 2.4e6].map(bytesLabel), ['512 B', '1.4 KB', '25 KB', '2.4 MB']);
 });
 
-test('the lightest weighed site is the target; a heavy popular-looking one waits; an unweighed one comes after the weighed (owner, 2026-10-29)', () => {
+test('the lightest weighed site is the target; a heavy popular-looking one waits; an unweighed one comes after the weighed', () => {
   const rank = { ranks: {}, order: {}, list: {} };
   const size = { sites: { 'calculator.net': { bytes: 2.4e6, scripts: 40, nodes: 9000, routes: 600 }, 'isitchristmas.com': { bytes: 700, scripts: 0, nodes: 20, routes: 0 } } };
   const t = tower([], {}, null, null, rank, size), cur = t.floors.find((f) => f.state === 'current');

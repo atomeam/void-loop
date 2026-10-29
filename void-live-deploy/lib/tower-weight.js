@@ -1,4 +1,4 @@
-// Versus by weight (owner, 2026-10-29: popularity is not size; "the smallest sites on the internet by physical weight and surface area": raw transfer
+// Versus by weight: size is what a site weighs, not how popular it is: the bytes it transfers, the scripts it runs, its elements and its routes.
 // payload, route count, client-side script). Pure helpers shared by tools/tower-size.mjs (measures a site, writes tower.size.json), lib/tower.js
 // (the queue's size key) and the card. The 1kB Club (https://1kb.club/) is the bar the lightest sites clear.
 export const SCRIPT_COST = 2000, NODE_COST = 10, ROUTE_COST = 500; // one script weighs as 2 KB, a DOM element as 10 bytes, a route as 500 bytes

@@ -24,7 +24,7 @@ test('negative controls: no block, a line without an id, an unknown id and a rep
   const bad = problems(p, ['paint']);
   assert.ok(bad.some((b) => /not a tower floor: no such floor/.test(b)) && bad.some((b) => /named twice: paint/.test(b)), bad.join('; '));
 });
-test('the card names the easiest site left as its target, says why, and lists the next easiest, from the gate (owner, 2026-10-29); the hand plan no longer picks the target', () => {
+test('the card names the easiest site left as its target, says why, and lists the next easiest, from the gate ; the hand plan no longer picks the target', () => {
   const plan = parsePlan(md), t = tower(); t.plan = plan;
   const cur = t.floors.find((f) => f.state === 'current'), html = towerHtml(t, esc, { now: 0 });
   assert.ok(html.includes('>' + t.beaten + ' surpassed · easiest site left: ' + esc(cur.site)));

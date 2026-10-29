@@ -44,7 +44,7 @@ const HAND_FLOORS = [
   { id: 'gradient', learned: "a gradient is judged by the text on it: the worst contrast across the whole gradient, conic gradients, and a link that holds it whole", site: 'colorzilla.com', url: 'https://www.colorzilla.com/gradient-editor/', ask: 'gradient generator', page: '/gradient/', label: 'CSS gradient', glyph: '▤', fatality: 'conic gradients, the worst text contrast across the gradient, a link that holds it whole, and it opens offline, with no ads, trackers or social widgets', extra: ['stops with opacity', 'import css', 'presets'] },
   // paint by number (owner, 2026-10-26: "build wherever fits"): a frontier site given a page of its own, so the floor can be measured and beaten
   { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', extra: [],
-    held: 'owner, 2026-10-29: "its not better than the site so its not beaten". The gate rows read a win (completeness 18 of 18 against 1 of 18) but the page is not better than heycolor.com at the job itself, painting a picture; it stays in the queue until a person says it is better' },
+    held: 'Verse\'s page is not yet better than this site at painting a picture, whatever the gate rows read, so the floor stays in the queue until it is' },
   // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com is the
   // frontier's next fight — its own page says the Twitter stream that fed it is inactive and it now ranks the emoji copied from
   // Emojipedia. Verse counts copies of a closed list of emoji on /emojis/ and says exactly that, so no global feed is faked
@@ -318,7 +318,7 @@ export function frontierOf(frontier, floors = FLOORS) {
 // sorted by how many aspects Verse still has to beat, then by the order they came (FLOORS, then the scan's hardness). `total` is the sites found
 // so far, never a ceiling: it grows as the scan grows.
 // How big a site is, as a tier (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"; 2026-10-28: "move
-// backwards to easier sites"; 2026-10-29: "the tower card ... needs completely rethought and redone, with the actual easiest site as the target"):
+// backwards to easier sites"):
 // 0 = outside the top 100,000 most visited (Tranco, tower.rank.json) or unranked, 1 = 10,000 to 100,000, 2 = 1,000 to 10,000, 3 = the giants.
 export const sizeTier = (rank) => (!Number.isFinite(+rank) || !rank || +rank >= 100000 ? 0 : +rank >= 10000 ? 1 : +rank >= 1000 ? 2 : 3);
 export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant']);

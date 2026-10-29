@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-59';
+import { tower, towerLine, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-60';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -134,7 +134,7 @@ export function planHtml(p, esc) {
     + (p.skipped.length ? '<p class="tw-plan-skip" style="margin:4px 0 0;font-size:12px;opacity:.75">Skipped: ' + p.skipped.map((x) => esc(x.site) + (x.why ? ' (' + esc(x.why) + ')' : '')).join('; ') + '</p>' : '')
     + '<p style="margin:4px 0 0;font-size:11px;opacity:.65">The order comes from docs/NEXT.md; the counts come from the gate. A floor is surpassed only on scripted journeys with negative controls.</p></div>';
 }
-// the card's layout (owner, 2026-10-29: "the whole card sucks make a good card"): the target first and big, its weight as chips, the fight, the aspects as a
+// the card's layout: the target first and big, its weight as chips, the fight, the aspects as a
 // compact grid of won / lost / open, three actions, what is up next, the honest surpassed count, and the long takes folded away
 const GOOD_CSS = '<style>.tw-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:2px 0 2px}.tw-top .tw-head{margin:0;text-align:left;font-size:20px}'
   + '.tw-pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:#2a2340;border:1px solid #4a3f6b;color:#d9ccff;white-space:nowrap}'

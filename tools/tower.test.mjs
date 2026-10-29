@@ -191,7 +191,7 @@ test('the shopping floor fights from Verse\'s own store, and the store page exis
   for (const a of ['catalogue', 'checkout', 'delivery tracking']) assert.ok(probe.askParts[a] && probe.askParts[a].length >= 5, a + ' is measured');
   assert.ok(probe.facts.length >= 18, 'completeness has a real checklist');
 });
-test('with the size data the target is the easiest site: a small one before a giant, fewer aspects left first, a page before none (owner, 2026-10-29)', () => {
+test('with the size data the target is the easiest site: a small one before a giant, fewer aspects left first, a page before none', () => {
   const rank = { ranks: { calculator: 1338, 'is it': 853018 }, order: {} };
   const t = tower([], {}, null, null, rank), cur = t.floors.find((f) => f.state === 'current');
   assert.ok(cur.tier === 0, 'the target is small: ' + cur.id + ' tier ' + cur.tier);
@@ -200,11 +200,11 @@ test('with the size data the target is the easiest site: a small one before a gi
   assert.deepEqual([sizeTier(null), sizeTier(150000), sizeTier(50000), sizeTier(5000), sizeTier(500)], [0, 0, 1, 2, 3]);
   assert.match(easeLine(cur), /aspects left to pass/);
 });
-test('a floor the owner holds is never beaten, whatever the gate rows say (owner, 2026-10-29: heycolor.com "its not better than the site so its not beaten")', () => {
+test('a held floor is never beaten, whatever the gate rows say', () => {
   const f = FLOORS.find((x) => x.id === 'paint'), t = tower([], { paint: passingRows(f) }), p = t.floors.find((x) => x.id === 'paint');
-  assert.equal(p.n, p.m, 'every row reads a win'); assert.equal(p.beaten, false); assert.notEqual(p.state, 'beaten'); assert.match(easeLine(p), /^held, not beaten: owner, 2026-10-29/);
+  assert.equal(p.n, p.m, 'every row reads a win'); assert.equal(p.beaten, false); assert.notEqual(p.state, 'beaten'); assert.match(easeLine(p), /^held, not beaten: Verse's page is not yet better/);
 });
-test('the card leads with the target: hero with logo, name and weight chips, three actions, up next, an honest empty surpassed, the long takes folded (owner, 2026-10-29)', () => {
+test('the card leads with the target: hero with logo, name and weight chips, three actions, up next, an honest empty surpassed, the long takes folded', () => {
   const size = { sites: { 'isitchristmas.com': { bytes: 700, scripts: 0, nodes: 20, routes: 1 } } };
   const t = tower([], {}, null, null, { ranks: {}, order: {}, list: {} }, size), cur = t.floors.find((f) => f.state === 'current'), esc = (s) => String(s);
   const h = towerHtml(t, esc, { enter: false });
