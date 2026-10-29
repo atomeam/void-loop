@@ -535,8 +535,12 @@
     <div class="glass banner" id="postFor" hidden><p id="postForSay"></p></div>
     <form class="glass pbody" id="stForm" autocomplete="off">
       <div class="two">
-        <label class="f"><span>Fandom</span><select id="stFandom" name="fandom" required><option value="">Choose a fandom</option></select><small>Not listed? <a href="/fanfic/?new=fandom" data-go>Start a fandom</a>.</small></label>
+        <label class="f"><span>Fandom</span><select id="stFandom" name="fandom" required><option value="">Choose a fandom</option></select><small>Not listed? Choose A new fandom and name it here.</small></label>
         <label class="f"><span>Pen name</span><input type="text" name="pen" maxlength="40" placeholder="Anonymous"><small>Optional. Your chapters carry the same mark, made on this device.</small></label>
+      </div>
+      <div class="two" id="stNew" hidden>
+        <label class="f"><span>New fandom</span><input type="text" name="newFandom" maxlength="40" placeholder="A book, show, game or genre"><small>It opens with your story. Anyone can post in it after you.</small></label>
+        <fieldset class="f"><legend>Who it is for</legend><div class="radios"><label><input type="radio" name="newRate" value="all" checked> All ages</label><label><input type="radio" name="newRate" value="adult"> 18+ only</label></div></fieldset>
       </div>
       <label class="f"><span>Title</span><input type="text" name="title" maxlength="100" required></label>
       <div class="two">

@@ -72,7 +72,7 @@ function botFor(box) { // { start(), proof(): Promise<proof>, reset() }; nothing
   let cfg = null, token = '', wid = null, work = null, ready = null, waiters = [];
   const startWork = () => work || (work = (async () => {
     const c = await api('?challenge'); if (!c.ok) throw new Error(c.say || 'the person check could not start');
-    box.textContent = 'Checking on this device that you are a person…'; const n = await doWork(c.c, c.bits); box.textContent = 'Checked: you can post.'; return { c: c.c, sig: c.sig, n };
+    box.textContent = 'Checking on this device that you are a person…'; const n = await doWork(c.c, c.bits); box.textContent = 'Checked: you are a person.'; return { c: c.c, sig: c.sig, n };
   })().catch((e) => { work = null; box.textContent = 'The person check did not finish. It tries again when you post.'; throw e; }));
   const start = () => ready || (ready = cfgP.then(async (c) => {
     cfg = c || {};
@@ -658,10 +658,25 @@ function counter(form, field, n = () => 1) {
 function busy(form, on) { for (const b of form.querySelectorAll('button')) b.disabled = on; }
 const sig = (...a) => JSON.stringify(a);
 
-function fandomOptions(sel, boards, pick) {
+const NEW_FANDOM = '+new'; // the post form's "A new fandom…": no board code can start with +
+function fandomOptions(sel, boards, pick, withNew) {
   sel.replaceChildren(el('option', '', 'Choose a fandom')); sel.firstChild.value = '';
   for (const b of boards) { const o = el('option', '', b.title + (b.nsfw ? ' (18+)' : '')); o.value = b.code; sel.append(o); }
-  if (pick && boards.some((b) => b.code === pick)) sel.value = pick;
+  if (withNew) { const o = el('option', '', 'A new fandom…'); o.value = NEW_FANDOM; sel.append(o); }
+  if (pick && (boards.some((b) => b.code === pick) || (withNew && pick === NEW_FANDOM))) sel.value = pick;
+}
+/** opens the fandom a typed name means (lib/fanfic.js fandomFor) through the form's own person check, or finds it when it is here already.
+ *  { title, code, existing }; throws with the reason. One name never opens two fandoms, from either form. */
+async function openFandom(form, name, adult, about) {
+  const a = await archive(true), all = await api('');
+  const want = F.fandomFor(name, a.boards, new Set((all.boards || []).map((b) => b.code)));
+  if (!want) throw new Error('that name cannot make a fandom. Try another');
+  if (want.existing) return want;
+  const bot = botOf(form), proof = await bot.proof();
+  const r = await api('', { do: 'board', code: want.code, title: want.title, about: about || 'Fan fiction: ' + want.title, nsfw: !!adult, textOnly: true, ids: false, proof });
+  bot.reset();
+  if (!r.ok) throw new Error(r.say || 'the fandom did not start');
+  loaded = null; return want;
 }
 
 // the post form's story details (lib/fanfic.js RATINGS, GENRES, WARNINGS), drawn once: a rating with its one-line meaning, at most 3 genres
@@ -692,20 +707,30 @@ async function viewPost(pick, forKey) {
     genres: [...form.querySelectorAll('input[name=genre]:checked')].map((c) => c.value), warnings: [...form.querySelectorAll('input[name=warning]:checked')].map((c) => c.value) });
   const parts = () => F.chapterPosts(1, '', form.elements.text.value, form.elements.summary.value, details()).length;
   counter(form, 'text', parts);
+  // a first writer never leaves the form: "A new fandom…" names one here, and it opens with the story (no fandom yet: it is picked already)
+  const nw = $('stNew'), newName = form.elements.newFandom, drawNew = () => { const on = sel.value === NEW_FANDOM; nw.hidden = !on; newName.required = on; };
+  sel.onchange = () => { drawNew(); if (!nw.hidden) newName.focus(); };
   let a; try { a = await archive(); } catch (e) { fail(note, e); return; }
-  fandomOptions(sel, a.boards, pick || sel.value);
-  if (!a.boards.length) say(note, 'There is no fandom yet. Start one first, then post your story in it.');
+  fandomOptions(sel, a.boards, pick || sel.value, true);
+  if (!a.boards.length) { sel.value = NEW_FANDOM; say(note, 'No fandom is here yet. Name the first one above: it opens when your story goes up.'); }
+  drawNew();
   // written for a challenge (?for=fandom/no): the story goes up in the challenge's fandom, then enters the challenge with a reply signed the same way
   const ch = forKey ? a.challenges.find((x) => x.board + '/' + x.no === forKey && x.board === pick) : null, chOpen = !!ch && F.challengeOpen(ch) && !ch.locked;
   if (chOpen) { $('postForSay').textContent = 'This story enters the challenge "' + ch.title + '" once it is up.' + (ch.closes ? ' Entries close ' + dayLabel(ch.closes) + '.' : ''); $('postFor').hidden = false; sel.disabled = true; }
   form.onsubmit = async (ev) => {
     ev.preventDefault();
-    const b = sel.value, title = form.elements.title.value.trim(), text = form.elements.text.value, summary = form.elements.summary.value, d = details();
+    let b = sel.value; const title = form.elements.title.value.trim(), text = form.elements.text.value, summary = form.elements.summary.value, d = details();
     if (!b) { say(note, 'Choose a fandom first.', 'bad'); sel.focus(); return; }
+    if (b === NEW_FANDOM && !F.penName(newName.value)) { say(note, 'Give the new fandom a name.', 'bad'); newName.focus(); return; }
     if (!title) { say(note, 'Give the story a title.', 'bad'); form.elements.title.focus(); return; }
     if (!d.rating) { say(note, 'Choose a rating, so readers know what to expect.', 'bad'); form.elements.rating.focus(); return; }
     if (d.series.trim() && !F.cleanDetails(d).part) { say(note, 'Give the part number this story is in its series, from 1 to 999.', 'bad'); form.elements.part.focus(); return; }
     if (!F.words(text)) { say(note, 'Write or paste chapter 1 first.', 'bad'); form.elements.text.focus(); return; }
+    if (b === NEW_FANDOM) { // open it first; once it is open the picker holds it, so a second press never opens it again
+      busy(form, true); say(note, 'Opening the fandom…');
+      try { const f = await openFandom(form, newName.value, form.elements.newRate.value === 'adult'); a = await archive(); fandomOptions(sel, a.boards, f.code, true); sel.value = b = f.code; drawNew(); }
+      catch (e) { fail(note, e); busy(form, false); return; }
+    }
     me.pen = F.penName(form.elements.pen.value); keep();
     const s = sig(b, title, text, summary, me.pen, d);
     if (!form._job || form._job.sig !== s) form._job = { sig: s, b, t: 0, sub: title, parts: F.chapterPosts(1, '', text, summary, d), name: F.signedName(me.pen, me.secret), i: 0, onThread: (t, trip) => { me.mine[b + '/' + t] = trip || 1; keep(); } };
@@ -769,19 +794,11 @@ async function viewFandom() {
     ev.preventDefault();
     const title = F.penName(form.elements.title.value), about = form.elements.about.value.trim(), adult = form.elements.rate.value === 'adult';
     if (!title) { say(note, 'Give the fandom a name.', 'bad'); form.elements.title.focus(); return; }
-    let a; try { a = await archive(true); } catch (e) { fail(note, e); return; }
-    const all = await api(''), taken = new Set((all.boards || []).map((b) => b.code));
-    const same = a.boards.find((b) => b.title.toLowerCase() === title.toLowerCase());
-    if (same) { say(note, title + ' is here already.'); go(href({ f: same.code })); return; }
-    const code = F.ficCode(title, taken);
-    if (!code) { say(note, 'That name cannot make a fandom. Try another.', 'bad'); return; }
     busy(form, true); say(note, 'Starting the fandom…');
     try {
-      const bot = botOf(form), proof = await bot.proof();
-      const r = await api('', { do: 'board', code, title, about: about || 'Fan fiction: ' + title, nsfw: adult, textOnly: true, ids: false, proof });
-      bot.reset();
-      if (!r.ok) throw new Error(r.say || 'the fandom did not start');
-      form.reset(); loaded = null; say(note, title + ' is open.', 'good'); go(href({ f: code }));
+      const f = await openFandom(form, title, adult, about);
+      if (f.existing) { say(note, f.title + ' is here already.'); go(href({ f: f.code })); return; }
+      form.reset(); say(note, f.title + ' is open.', 'good'); go(href({ f: f.code }));
     } catch (e) { fail(note, e); } finally { busy(form, false); }
   };
 }

@@ -427,3 +427,14 @@ test('a writing challenge: a prompt and a last day, read back whole or from the 
   assert.deepEqual(F.winnersOf(picks, entries, 'hh', '2026-11-30').map((t) => t.no), [2, 1], 'first place first');
   assert.deepEqual(F.winnersOf(picks, entries, '', '2026-11-30'), [], 'a challenge set with no mark has no winners');
 });
+
+test('a typed fandom name: the one here already in any case, else a new code that is free; blank or codeless names open nothing', () => {
+  const fic = [{ code: 'ficdune', title: 'Dune' }], taken = new Set(['ficdune', 'ficstartre']);
+  assert.deepEqual(F.fandomFor('  DUNE ', fic, taken), { title: 'Dune', code: 'ficdune', existing: true });
+  assert.deepEqual(F.fandomFor('Star Trek', fic, taken), { title: 'Star Trek', code: 'ficstartr2', existing: false }, 'a taken code gets a number');
+  assert.deepEqual(F.fandomFor('Tom #1', fic, new Set()), { title: 'Tom 1', code: 'fictom1', existing: false }, 'one line, no #, as the post form takes names');
+  assert.equal(F.fandomFor('   ', fic, taken), null);
+  const app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  assert.equal((app.match(/F\.fandomFor\(/g) || []).length, 1, 'both forms open a fandom through one helper (openFandom)');
+  assert.equal((app.match(/await openFandom\(form, /g) || []).length, 2, 'Start a fandom and the post form');
+});
