@@ -43,6 +43,7 @@ test('the stability dial (asked by Verse): the needle turns with the score, the 
   assert.match(steady, /data-stability="steady" data-score="100"/); assert.match(steady, /rotate\(90deg\)/); assert.match(steady, /steady · 100\/100/); assert.match(steady, /0 red suites on main in 7 days/);
   const shaky = S.gaugeHtml(esc, { score: 28, label: 'shaky', week: 6, day: 2, known: 9 });
   assert.match(shaky, /data-stability="shaky" data-score="28"/); assert.match(shaky, /rotate\(-40deg\)/); assert.match(shaky, /6 red suites on main in 7 days, 2 in the last day/); assert.match(shaky, /stroke-dasharray="44 157"/);
+  assert.match(S.gaugeHtml(esc, { score: 0, label: 'shaky', week: 30, day: 22, known: 30, capped: true }), /at least 30 red suites on main in 7 days, 22 in the last day/, 'a full incidents.json says at least');
   const none = S.gaugeHtml(esc, { score: 100, label: 'steady', week: 0, day: 0, known: 0 });
   assert.match(none, /data-stability="none"/); assert.match(none, /nothing to gauge/); assert.match(none, /no red suite recorded yet/); assert.match(none, /rotate\(90deg\)/);
   const odd = S.gaugeHtml(esc, { score: 64, label: '<b>', week: 1, day: 0, known: 1 });
