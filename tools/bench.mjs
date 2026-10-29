@@ -198,15 +198,17 @@ async function one(ctx, { ask: a, want, says, before }) {
   await p.close();
   return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms, ...(ground ? { ground } : {}) };
 }
-// default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
+// default: one page per core, at most 6 (it was one page fewer than the cores). At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
 // of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
-const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
+// 2026-10-29: with the HTTP and compiled-code caches on (#1622, #1623) an ask is about 0.6 s to open and 1.8 s to answer on CI, and the answer waits on
+// the skill files every time. One page per core, so a core is not idle while a page waits; the pace line shows the load average to check it.
+const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length));
 let next = 0;
 // the pace on stderr every 100 asks, so a run cut off by a time limit still shows how far it got, how fast, and where the time goes
 let done = 0; const began = Date.now();
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { const ctx = await slot(); try { while (next < todo.length) { const i = next++; out[i] = await one(ctx, todo[i]);
   if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
-    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in'); } } finally { await ctx.close(); } }));
+    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in, load ' + os.loadavg()[0].toFixed(1)); } } finally { await ctx.close(); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
