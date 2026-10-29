@@ -265,7 +265,8 @@
    "state": "open",
    "date": "",
    "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5"
+   "from": "void.plan.md Now #5",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -277,13 +278,15 @@
    "state": "open",
    "date": "",
    "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13"
+   "from": "void.plan.md Next #13",
+   "waits": "the miss board"
   },
   {
    "state": "open",
    "date": "",
    "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
+   "from": "void.plan.md Next #12",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -325,7 +328,8 @@
    "state": "open",
    "date": "",
    "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan"
+   "from": "owner, 2026-10-11, pit crew plan",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -337,7 +341,8 @@
    "state": "open",
    "date": "",
    "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -537,13 +542,17 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T14:29:35Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T16:08:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T16:07:22Z",
    "subject": "Regenerate the generated files after the merge"
@@ -619,10 +628,6 @@
   {
    "at": "2026-10-29T15:52:41Z",
    "subject": "Close an incident when the shards it failed pass on a later commit"
-  },
-  {
-   "at": "2026-10-29T15:52:36Z",
-   "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
   }
  ],
  "builders": {

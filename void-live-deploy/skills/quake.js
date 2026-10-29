@@ -14,6 +14,7 @@ const TYPES = /\b(earth\s*quakes?|quakes?|tremors?|seismic\s+(?:activity|event|e
 // "in the last week", "over the past 24 hours", "past 3 days", "today": how far back to look, in days, and how to say it; null when not said
 const N = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, ten: 10, thirty: 30 };
 const SPAN = /\b(?:(?:in|over|during|from|for|within)\s+)?(?:the\s+)?(?:last|past)\s+(?:(\d+|an?|one|two|three|four|five|six|seven|ten|thirty)\s+)?(hours?|days?|weeks?|months?|years?)\b/i;
+const SPAN_ALL = new RegExp(SPAN.source, 'ig'); // void-review: ok (built once from the constant SPAN above, never from user text)
 function spanOf(text) {
   const t = String(text || '').toLowerCase(), m = t.match(SPAN);
   if (!m) return /\b(?:today|tonight)\b/.test(t) ? { days: 1, label: 'last 24 hours' } : null;
@@ -25,7 +26,7 @@ function spanOf(text) {
 const HERE = /\b(?:(?:near|around|close\s+to)\s+(?:me|us|here|my\s+(?:location|area|house|home))|nearby|around\s+here|in\s+my\s+area|where\s+i\s+am|my\s+location)\b/i;
 
 function placeOf(text) {
-  const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' ').replace(new RegExp(SPAN.source, 'ig'), ' ').replace(/\s+/g, ' ').trim();
+  const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' ').replace(SPAN_ALL, ' ').replace(/\s+/g, ' ').trim();
   if (HERE.test(t)) return '';
   const m = t.match(/\b(?:near|around|by|in|at|for|close\s+to)\s+(.+)$/i);
   if (!m) return '';
