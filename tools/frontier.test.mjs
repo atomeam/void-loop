@@ -1,7 +1,7 @@
 // tools/frontier.mjs: the one build order, read the same way everywhere. node --test tools/frontier.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { openItems, stepsLeft, addOpen, readFrontier } from './frontier.mjs';
+import { openItems, stepsLeft, addOpen, readFrontier, waitsOf } from './frontier.mjs';
 
 const sample = `# The frontier
 
@@ -49,4 +49,15 @@ test('the real frontier parses: open items each with a source, and the cleanup s
   assert.ok(o.length >= 1, 'the frontier has an open list');
   assert.ok(o.every((x) => x.title && x.from), JSON.stringify(o.filter((x) => !x.title || !x.from)));
   assert.ok(stepsLeft(t).every((s) => s.n >= 1 && s.title));
+});
+
+test('waitsOf: an open item that needs or waits for the owner, or names what it needs in brackets; a part that waits is not the item', () => {
+  assert.equal(waitsOf('WebMCP origin trial', 'the code is live; set the token. Needs the owner.'), 'the owner');
+  assert.equal(waitsOf('Pit crew: the crew chief (waits for the owner)', 'a scheduled starter'), 'the owner');
+  assert.equal(waitsOf('Fix any automation', 'Next: a page per error people paste (needs the miss board).'), 'the miss board');
+  assert.equal(waitsOf('Absorb every repo', 'Being built now. Waits on the owner: live two-person play.'), '', 'a list of parts that wait is not the item waiting');
+  assert.equal(waitsOf('Flaky check', 'the check waits for the card to settle before it clicks'), '');
+  assert.equal(waitsOf('The best code reviewer', 'a finding needs code from another file'), '');
+  const o = openItems(addOpen(sample, { title: 'Paid thing', why: 'What is left needs the owner: one real purchase.', from: 'test' }));
+  assert.equal(o[2].waits, 'the owner'); assert.equal('waits' in o[0], false);
 });

@@ -85,7 +85,8 @@ export function holdAsks(asks, held, target) {
   const H = (Array.isArray(held) ? held : []).filter((h) => h && typeof h.words === 'string' && h.words.trim() && h.until && String(h.until) === String(target || ''));
   const hold = (a) => H.find((h) => h.words.toLowerCase() === String(a && a.ask).toLowerCase() || sameAsk(h.words, a && a.ask));
   const now = [], later = [];
-  for (const a of asks || []) { const h = hold(a); if (h) later.push({ ...a, held: String(h.until) }); else now.push(a); }
+  // a hold that names its frontier line (void.asks.json `frontier`) carries it, so the wants card marks that growth inbox item held too
+  for (const a of asks || []) { const h = hold(a); if (h) later.push({ ...a, held: String(h.until), ...(typeof h.frontier === 'string' && h.frontier.trim() ? { heldFrontier: h.frontier.trim() } : {}) }); else now.push(a); }
   return now.concat(later);
 }
 /** The site Versus is fighting, as a fact for the reflection (owner's card, 2026-10-29: the asks named an STL checker and "absorb every
