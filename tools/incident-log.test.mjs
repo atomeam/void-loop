@@ -69,3 +69,34 @@ test('the incident page says fixed after N min, or still open', () => {
   const h = incidentsHtml((s) => String(s), [{ at: '2026-10-18T12:00:00Z', sha: 'aaaaaaaa', checks: ['x'], closedAt: '2026-10-18T12:25:00Z', closedBy: 'fffffff0', minutes: 25 }, { at: '2026-10-18T14:00:00Z', sha: 'bbbbbbbb', checks: ['y'] }]);
   assert.match(h, /fixed after 25 min by fffffff/); assert.match(h, /not marked fixed yet/);
 });
+
+test('a shard that passes on a later commit closes what it fixed: the shards are kept, each failed shard must pass again, and an old entry waits for all four', async () => {
+  const { passShards, shardsOf, incidentOf, addIncident, openCount } = await import('./incident-log.mjs');
+  assert.deepEqual(shardsOf('4, 2,2,9,x'), [2, 4]); assert.deepEqual(shardsOf([3, '1']), [1, 3]); assert.deepEqual(shardsOf(null), []);
+  const red = incidentOf({ sha: 'a'.repeat(40), output: 'FAIL x', at: '2026-10-29T10:00:00Z', shards: '4,2' });
+  assert.deepEqual(red.shards, [2, 4]); assert.equal('shards' in incidentOf({ sha: 'a'.repeat(40), output: 'FAIL x' }), false, 'no shards given, none written');
+  assert.deepEqual(addIncident([red], { ...red, checks: ['y'], shards: [1] })[0].shards, [1, 2, 4], 'a second record for the commit adds its shards');
+  const old = { at: '2026-10-29T09:00:00Z', sha: 'b'.repeat(40), checks: ['z'] }, later = { at: '2026-10-29T12:00:00Z', sha: 'c'.repeat(40), checks: ['w'], shards: [2] };
+  const earlier = (s) => s !== 'c'.repeat(40); // c is not an earlier commit of the commit that passed
+  const run = 'https://github.com/atomeam/void-loop/actions/runs/7', sha = 'd'.repeat(40);
+  let list = passShards([later, red, old], { sha, run, at: '2026-10-29T11:00:00Z', shards: '2', isEarlier: earlier });
+  assert.deepEqual([list[1].passed, list[1].closedAt], [[2], undefined], 'one of its two shards passed: still open');
+  assert.equal(list[0], later, 'a commit that is not earlier is left alone'); assert.deepEqual(list[2].passed, [2], 'an entry with no shards waits for all four');
+  list = passShards(list, { sha, run, at: '2026-10-29T11:30:00Z', shards: [4, 1], isEarlier: earlier });
+  assert.deepEqual([list[1].closedAt, list[1].closedBy, list[1].closedRun, list[1].minutes], ['2026-10-29T11:30:00Z', sha, run, 90]);
+  assert.equal(list[2].closedAt, undefined); assert.deepEqual(list[2].passed, [1, 2, 4]);
+  list = passShards(list, { sha, run, at: '2026-10-29T11:40:00Z', shards: [3], isEarlier: earlier });
+  assert.equal(list[2].closedAt, '2026-10-29T11:40:00Z', 'all four passed: closed'); assert.equal(openCount(list), 1);
+  assert.deepEqual(passShards([red], { sha: red.sha, shards: [2, 4], isEarlier: () => true }), [red], 'the red commit itself never closes its own incident');
+  assert.deepEqual(passShards([red], { sha, shards: [2, 4], isEarlier: () => false }), [red], 'nor does a commit on another history');
+  const closed = list[1]; assert.equal(passShards([closed], { sha, shards: [1, 2, 3, 4], isEarlier: () => true })[0], closed, 'a closed one is left as it was');
+});
+
+test('isAncestor reads the git history and never throws', async () => {
+  const { isAncestor } = await import('./incident-log.mjs');
+  const d = mkdtempSync(join(tmpdir(), 'anc-')), git = (...a) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: d, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  git('init', '-q'); writeFileSync(join(d, 'a'), '1'); git('add', '.'); git('commit', '-qm', 'one'); const one = git('rev-parse', 'HEAD').trim();
+  writeFileSync(join(d, 'a'), '2'); git('commit', '-qam', 'two'); const two = git('rev-parse', 'HEAD').trim();
+  assert.equal(isAncestor(one, two, d), true); assert.equal(isAncestor(two, one, d), false);
+  assert.equal(isAncestor('x; rm -rf /', two, d), false); assert.equal(isAncestor('0'.repeat(40), two, d), false);
+});
