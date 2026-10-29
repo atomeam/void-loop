@@ -125,7 +125,24 @@ function noticeRow([id, title]) {
   rep.dataset.l = 'Replies'; when.dataset.l = '';
   tr.append(ic, main, rep, who, when); return tr;
 }
-// a row's own figures (chapters, words, reviews, stars) come from the whole story: each row reads its thread once, at most 4 at a time, and
+// a story's hits: real reads counted by the server (/api/fanfic-hits), one a visitor a day, never made up. Rows ask together, up to 100 in one read
+const HITS = '/api/fanfic-hits';
+let hitAsk = null;
+function hitsOf(k) {
+  if (!hitAsk || hitAsk.keys.size >= 100) {
+    const ask = (hitAsk = { keys: new Set() });
+    ask.p = new Promise((r) => setTimeout(r, 0)).then(() => { if (hitAsk === ask) hitAsk = null; return fetch(HITS + '?ids=' + encodeURIComponent([...ask.keys].join(','))); })
+      .then((r) => r.json()).then((j) => (j && j.hits) || {}).catch(() => ({}));
+  }
+  hitAsk.keys.add(k); return hitAsk.p.then((h) => +h[k] || 0);
+}
+// one read of an open story, counted once per page load; the server decides whether it counts (not a bot, not already today)
+const hitSent = new Map();
+const countHit = (code, no) => { const k = code + '/' + no;
+  if (!hitSent.has(k)) hitSent.set(k, fetch(HITS + '?b=' + encodeURIComponent(code) + '&t=' + no, { method: 'POST' }).then((r) => r.json()).then((j) => (j && j.ok ? +j.hits || 0 : null)).catch(() => null)
+    .then((n) => (n === null ? hitsOf(k) : n)));
+  return hitSent.get(k); };
+// a row's own figures (chapters, words, reviews, stars, hits) come from the whole story: each row reads its thread once, at most 4 at a time, and
 // keeps the answer until the thread is bumped. An empty archive has no rows, so nothing is read and nothing is shown
 const figs = new Map(), figWait = []; let figBusy = 0;
 const slot = () => new Promise((r) => { if (figBusy < 4) { figBusy++; r(); } else figWait.push(r); });
@@ -133,7 +150,8 @@ const free = () => { const r = figWait.shift(); if (r) r(); else figBusy--; };
 function figuresOf(t) {
   const k = t.board + '/' + t.no, had = figs.get(k);
   if (had && had.bumped === t.bumped) return had.p;
-  const p = slot().then(() => api('?b=' + encodeURIComponent(t.board) + '&t=' + t.no)).then((r) => (r.ok && r.thread ? F.rowFigures(F.storyOf(r.thread, r.posts || [])) : null)).catch(() => null).finally(free);
+  const p = Promise.all([slot().then(() => api('?b=' + encodeURIComponent(t.board) + '&t=' + t.no)).finally(free), hitsOf(k)])
+    .then(([r, hits]) => (r.ok && r.thread ? F.rowFigures(F.storyOf(r.thread, r.posts || []), hits) : null)).catch(() => null);
   figs.set(k, { bumped: t.bumped, p }); p.then((x) => { if (!x) figs.delete(k); });
   return p;
 }
@@ -559,6 +577,9 @@ async function viewStory(code, no, chap) {
     ...(s.details.part ? [['Series', 'Part ' + s.details.part + ' of ' + s.details.series, href({ series: F.seriesKey({ ...s.details, author: s.author, trip: s.trip }) })]] : []), ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
     ['Reading time', F.readLabel(s.words)], ['Reviews', String(s.reviews.length)], ...(s.stars.n ? [['Stars', '★ ' + s.stars.avg + ' of 5 from ' + s.stars.n + (s.stars.n === 1 ? ' rating' : ' ratings')]] : []), ['Published', date(s.published)], ['Updated', date(s.updated)]];
   $('storyInfo').replaceChildren(...facts.map(([k, v, to]) => { const d = el('div'), dd = el('dd'); if (to) { const a = link(v, to); a.translate = false; dd.append(a); } else dd.textContent = v; d.append(el('dt', '', k), dd); return d; }));
+  // hits: this read is counted (once a visitor a day, on the server) and the count shows when there is one; a story no one has read shows none
+  const hitsD = el('div'), hitsV = el('dd'); hitsD.id = 'storyHits'; hitsD.hidden = true; hitsD.append(el('dt', '', 'Hits'), hitsV); $('storyInfo').append(hitsD);
+  countHit(code, no).then((n) => { if (n > 0 && hitsD.isConnected) { hitsV.textContent = n.toLocaleString(); hitsD.hidden = false; } });
   // the chapter shown, and the chapter list
   const n = Math.max(1, Math.min(s.chapters.length, +chap || 1)), c = s.chapters[n - 1], sel = $('tocSel');
   handing = () => (c ? c.text : ''); drawRelated();

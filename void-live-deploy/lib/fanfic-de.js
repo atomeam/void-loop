@@ -36,7 +36,7 @@ export const DICT = {
   'This chapter ends the story: mark it Complete': 'Dieses Kapitel beendet die Geschichte: als abgeschlossen markieren',
   'Follow the newest stories by feed (RSS)': 'Den neuesten Geschichten per Feed folgen (RSS)', 'New stories by feed:': 'Neue Geschichten als Feed:',
   Chapter: 'Kapitel', 'Add the next chapter': 'Nächstes Kapitel hinzufügen', 'Chapter title': 'Kapiteltitel', 'The chapter': 'Das Kapitel', 'Post chapter': 'Kapitel veröffentlichen',
-  Reviews: 'Rezensionen', 'Your review': 'Deine Rezension', 'Pen name': 'Autorenname', 'Optional. Kept on this device for next time.': 'Freiwillig. Wird für das nächste Mal auf diesem Gerät gespeichert.',
+  Reviews: 'Rezensionen', Hits: 'Aufrufe', 'Your review': 'Deine Rezension', 'Pen name': 'Autorenname', 'Optional. Kept on this device for next time.': 'Freiwillig. Wird für das nächste Mal auf diesem Gerät gespeichert.',
   'Post review': 'Rezension veröffentlichen', 'Post a story': 'Geschichte veröffentlichen',
   "Your story goes up in its fandom for anyone to read. Later chapters go on the story's own page.":
     'Deine Geschichte erscheint in ihrem Fandom, für alle lesbar. Weitere Kapitel kommen auf die eigene Seite der Geschichte.',
@@ -165,7 +165,7 @@ export const DICT = {
 const PATTERNS = [
   [/^Chapter (\d+)$/, 'Kapitel $1'], [/^Chapter (\d+) of (\d+)$/, 'Kapitel $1 von $2'], [/^Chapter (\d+): /, 'Kapitel $1: '], [/^Page (\d+) of (\d+)$/, 'Seite $1 von $2'],
   [/^Reviews \((\d+)\)$/, 'Rezensionen ($1)'], [/^★ (\d(?:\.\d)?) of 5 from (\d+) ratings?$/, '★ $1 von 5 aus $2 Bewertung(en)'], [/^(\d+) series posted here\.$/, '$1 Reihe(n) hier veröffentlicht.'], [/^(\d+) stor(?:y|ies)$/, '$1 Geschichte(n)'], [/^Your rec list is full at (\d+) stories\. Take one off in Rec lists first\.$/, 'Deine Empfehlungsliste ist mit $1 Geschichten voll. Entferne zuerst eine in den Empfehlungslisten.'], [/^(\d+) min ago$/, 'vor $1 Min.'], [/^(\d+) h ago$/, 'vor $1 Std.'], [/^(\d+) d ago$/, 'vor $1 T.'],
-  [/^(\d[\d,.]*) words?$/, '$1 Wörter'], [/^(\d[\d,.]*) chapters?$/, '$1 Kapitel'], [/^(\d[\d,.]*) reviews?$/, '$1 Rezension(en)'], [/^(\d+) min read$/, '$1 Min. Lesezeit'], [/^No story matches "(.*)"\.$/, 'Keine Geschichte passt zu „$1“.'],
+  [/^(\d[\d,.]*) words?$/, '$1 Wörter'], [/^(\d[\d,.]*) chapters?$/, '$1 Kapitel'], [/^(\d[\d,.]*) reviews?$/, '$1 Rezension(en)'], [/^(\d[\d,.]*) hits?$/, '$1 Aufruf(e)'], [/^(\d+) min read$/, '$1 Min. Lesezeit'], [/^No story matches "(.*)"\.$/, 'Keine Geschichte passt zu „$1“.'],
   [/^(\d+) challenges?$/, '$1 Wettbewerb(e)'], [/^Open until (.+)$/, 'Offen bis $1'], [/^Closed (\d.+|[A-Z][a-z]{2,}\.? \d.+)$/, 'Beendet am $1'], [/^Entries closed on (.+)\.$/, 'Einsendeschluss war am $1.'],
   [/^No story of yours in (.+) to enter yet\. Write one for this challenge first\.$/, 'Noch keine Geschichte von dir in $1 zum Einreichen. Schreibe zuerst eine für diesen Wettbewerb.'],
   [/^No entries yet\. Write a story for this challenge, or enter one you posted in (.+)\.$/, 'Noch keine Einsendungen. Schreibe eine Geschichte für diesen Wettbewerb oder reiche eine ein, die du in $1 veröffentlicht hast.'],

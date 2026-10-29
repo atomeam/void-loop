@@ -138,8 +138,8 @@ test('the page shows only real posts, posts only through the boards, and is dark
   const read = (...p) => fs.readFileSync(path.join(root, ...p), 'utf8');
   const html = read('fanfic', 'index.html'), js = read('fanfic', 'app.js'), lib = read('lib', 'fanfic.js');
   const calls = [...js.matchAll(/fetch\(([^,)]+)/g)].map((m) => m[1].trim());
-  assert.deepEqual([...new Set(calls)], ['API + qs'], 'one fetch, to the boards API');
-  assert.match(js, /API = '\/api\/boards'/);
+  assert.deepEqual([...new Set(calls.map((c) => c.split(' ')[0]))], ['API', 'HITS'], 'stories through the boards API, read counts through the hits API, nothing else');
+  assert.match(js, /API = '\/api\/boards'/); assert.match(js, /HITS = '\/api\/fanfic-hits'/);
   assert.ok(!fs.existsSync(path.join(root, 'functions', 'api', 'fanfic.js')), 'no endpoint of its own');
   // the one function under /fanfic/ is the read-only feed: it reads the boards' own GET handler and takes no post
   assert.deepEqual(fs.readdirSync(path.join(root, 'functions', 'fanfic')), ['rss.js']);
