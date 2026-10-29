@@ -707,7 +707,7 @@
    "skills": 3,
    "direct": 2,
    "dependants": 5,
-   "tests": 26
+   "tests": 27
   },
   {
    "file": "lib/arena-say.js",
@@ -12227,7 +12227,8 @@
   "skills/notebook.js": {
    "imports": [
     "lib/stage-pack.js",
-    "lib/notebook.js"
+    "lib/notebook.js",
+    "skills/notepad.js"
    ],
    "importedBy": []
   },
@@ -12237,6 +12238,7 @@
     "lib/arena-say.js",
     "skills/kept.js",
     "skills/list.js",
+    "skills/notebook.js",
     "skills/together.js"
    ],
    "reachedBy": [

@@ -99,8 +99,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 12,
-    "checked": 1,
+    "tested": 10,
+    "checked": 3,
     "proven": 29
    },
    "from": 172,
@@ -3983,8 +3983,9 @@
     "1337 speak for world",
     "convert cool to leet"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 212
   },
   {
@@ -3998,8 +3999,9 @@
     "generate placeholder text",
     "give me some lorem"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 213
   },
   {
