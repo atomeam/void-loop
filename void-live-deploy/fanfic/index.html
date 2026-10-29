@@ -93,7 +93,7 @@
   label.f { display: block; margin: 0 0 16px; } label.f > span, .f > legend { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); margin: 0 0 6px; padding: 0; }
   label.f small, .f small { display: block; color: var(--ink-3); font-size: 12px; margin-top: 4px; }
   fieldset.f { border: 0; margin: 0 0 16px; padding: 0; min-width: 0; }
-  input[type=text], input[type=search], input[type=number], select, textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 12px;
+  input[type=text], input[type=search], input[type=number], input[type=date], select, textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 12px;
     padding: 10px 14px; min-height: 46px; width: 100%; box-sizing: border-box; transition: border-color .2s, box-shadow .2s; }
   input::placeholder, textarea::placeholder { color: #6c7286; }
   input:focus, select:focus, textarea:focus { outline: none; border-color: rgb(var(--key) / .7); box-shadow: 0 0 0 3px rgb(var(--key) / .16); }
@@ -274,6 +274,7 @@
       <a href="/fanfic/?v=authors" data-go data-v="authors">Authors</a>
       <a href="/fanfic/?v=series" data-go data-v="series">Series</a>
       <a href="/fanfic/?v=recs" data-go data-v="recs">Rec lists</a>
+      <a href="/fanfic/?v=challenges" data-go data-v="challenges">Challenges</a>
       <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink" aria-keyshortcuts="w">Writing Room</a>
       <a href="/fanfic/?v=glossary" data-go data-v="glossary">Writing Glossary</a>
       <a href="/fanfic/?notice=rules" data-go data-v="notice">Rules</a>
@@ -419,6 +420,68 @@
     </div>
   </section>
 
+  <!-- writing challenges: each is a thread in a fandom whose first post holds the prompt and its last day (lib/fanfic.js challengeBody) -->
+  <section class="view" id="challenges" aria-labelledby="challengesH">
+    <h2 id="challengesH" class="h1">Writing challenges</h2>
+    <p class="lead">A challenge is a prompt in a fandom, with a last day to enter if its setter gives one. Writers enter stories they posted here, and only a story's own writer can enter it. When the challenge closes, the one who set it names up to 3 winners.</p>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="challengeListH">Challenges</h2><span class="quiet" id="challengesSay"></span></div>
+      <table class="list authors" aria-labelledby="challengeListH">
+        <thead><tr><th>Challenge</th><th class="hide-s">Fandom</th><th>Entries close</th><th>Last post</th></tr></thead>
+        <tbody id="challengeRows"></tbody>
+      </table>
+    </div>
+    <div class="glass">
+      <div class="phead"><h2 id="cgFormH">Set a challenge</h2></div>
+      <form class="pbody" id="cgForm" autocomplete="off" aria-labelledby="cgFormH">
+        <div class="two">
+          <label class="f"><span>Fandom</span><select id="cgFandom" name="fandom" required><option value="">Choose a fandom</option></select><small>Entries are stories posted in this fandom.</small></label>
+          <label class="f"><span>Pen name</span><input type="text" name="pen" maxlength="40" placeholder="Anonymous"><small>Optional. The challenge carries this device's mark, so only you can name its winners.</small></label>
+        </div>
+        <label class="f"><span>Title</span><input type="text" name="title" maxlength="100" required></label>
+        <label class="f"><span>Prompt and rules</span><textarea name="prompt" maxlength="2000" required placeholder="What to write, the rules, and how you will pick the winners"></textarea></label>
+        <label class="f"><span>Last day to enter</span><input type="date" name="closes"><small>Optional. An entry posted after this day does not count. Leave it empty to keep the challenge open.</small></label>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Set the challenge</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- one challenge: its prompt, its winners, its entries, and a way to enter a story -->
+  <section class="view" id="challenge" aria-labelledby="challengeH">
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><a href="/fanfic/?v=challenges" data-go>Challenges</a></nav>
+    <article class="glass">
+      <div class="storyh">
+        <h2 id="challengeH" class="h1" translate="no"></h2>
+        <p class="by" id="challengeBy"></p>
+      </div>
+      <dl class="facts" id="challengeInfo"></dl>
+      <section class="chapter"><div class="prose" id="challengePrompt" translate="no"></div>
+        <div class="acts"><a class="btn go" id="challengeWrite" href="/fanfic/?new=story" data-go>Write a story for it</a><a class="btn" id="challengeReport" href="/boards/">Report this</a></div></section>
+    </article>
+    <div class="glass" id="winnersBox" hidden>
+      <div class="phead"><h2 class="grow" id="winnersH">Winners</h2></div>
+      <ol class="recs" id="winnerRows" aria-labelledby="winnersH"></ol>
+    </div>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="entriesH">Entries</h2><span class="quiet" id="entriesSay"></span></div>
+      <ol class="recs" id="entryRows" aria-labelledby="entriesH"></ol>
+      <form class="pbody" id="enForm" autocomplete="off" style="border-top:1px solid var(--line)">
+        <label class="f"><span>Enter a story you posted</span><select name="story" id="enStory"></select><small>Only stories this device posted in this fandom can be entered, signed with the same mark.</small></label>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Enter the story</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+      <form class="pbody" id="wnForm" autocomplete="off" style="border-top:1px solid var(--line)" hidden>
+        <label class="f"><span>Name a winner</span><select name="story" id="wnStory"></select><small>You set this challenge, so you pick its winners: first place first, up to 3.</small></label>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Name the winner</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+    </div>
+  </section>
+
   <!-- a random story: the view shows only while one is picked, or when there is none to pick -->
   <section class="view" id="random" aria-labelledby="randomH">
     <div class="glass empty"><div class="orb" aria-hidden="true"></div><p class="big" id="randomH">Random story</p><p id="randomSay"></p><div class="acts"><a class="btn go" href="/fanfic/?new=story" data-go>Post a story</a><a class="btn" href="/fanfic/" data-go>Back to the index</a></div></div>
@@ -469,6 +532,7 @@
     <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span>Post a story</span></nav>
     <h2 id="postH" class="h1">Post a story</h2>
     <p class="lead">Your story goes up in its fandom for anyone to read. Later chapters go on the story's own page.</p>
+    <div class="glass banner" id="postFor" hidden><p id="postForSay"></p></div>
     <form class="glass pbody" id="stForm" autocomplete="off">
       <div class="two">
         <label class="f"><span>Fandom</span><select id="stFandom" name="fandom" required><option value="">Choose a fandom</option></select><small>Not listed? <a href="/fanfic/?new=fandom" data-go>Start a fandom</a>.</small></label>
