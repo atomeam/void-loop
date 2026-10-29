@@ -545,6 +545,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:03:50Z",
+   "subject": "Card replies count on the heat map by the card's family"
+  },
+  {
    "at": "2026-10-29T16:01:10Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -581,20 +585,12 @@
    "subject": "team chat: mark Verse's review false positives with their reasons; drop 'password' from the invite text"
   },
   {
-   "at": "2026-10-29T15:53:27Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-29T15:53:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:53:20Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:52:41Z",
-   "subject": "Close an incident when the shards it failed pass on a later commit"
   },
   {
    "at": "2026-10-29T15:52:36Z",
@@ -623,6 +619,10 @@
   {
    "at": "2026-10-29T15:41:49Z",
    "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
+  },
+  {
+   "at": "2026-10-29T15:40:03Z",
+   "subject": "Put the reply section in void.html, the page the deploy copies"
   }
  ],
  "builders": {
