@@ -218,6 +218,8 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'sycophanthex.com': '/fanfic/',
   // wheelroot.com ("Drawing Fundamentals", a course page whose button leads nowhere) is assimilated by /learn-to-draw/, the course itself (domains/targets/wheelroot.json)
   'wheelroot.com': '/learn-to-draw/',
+  // onlineconverter.com (106 file and unit tools, each an upload to its server) is assimilated by /converter/, the same 106 tools listed with what Verse does on the device (domains/targets/onlineconverter.json)
+  'onlineconverter.com': '/converter/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores

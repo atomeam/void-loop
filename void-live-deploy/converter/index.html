@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: image, text; out: image, text">
+<title>File converter: audio, image, ebook and document tools on your device · Verse</title>
+<meta name="description" content="Convert sound to WAV or AIFF, pictures to JPG, PNG, WebP, GIF, BMP, TIFF or PDF, and the words of EPUB, DOCX, PDF, RTF and HTML files to each other. Cut, merge, mix and speed up sounds, change a GIF's speed, take a frame from a video. All 106 tools of a full online converter listed with what Verse does. No upload.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="File converter · Verse">
+<meta property="og:description" content="Sound, pictures, ebooks and documents converted on your device: nothing uploaded. Every tool listed with an honest status.">
+<meta property="og:url" content="https://a-to-mind.com/converter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  /* a-to-mind.com/converter (2026-10-29): assimilates onlineconverter.com (106 file and unit tools on one page, each one an upload to its server) */
+  :root { color-scheme: dark; --ink: #ecebf5; --dim: #b3b0c8; --line: rgba(255,255,255,.18); --accent: #9fb8ff; --ok: #8fe3b0; --part: #f2d38a; --no: #c9a3b0; }
+  html, body { margin: 0; min-height: 100%; background: radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%) fixed; color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 40px; }
+  h1 { font-size: 30px; margin: 4px 0 6px; } h2 { font-size: 20px; margin: 28px 0 10px; } h3 { font-size: 16px; margin: 18px 0 6px; color: var(--accent); }
+  p { margin: 6px 0; } .lead { color: var(--dim); } a { color: var(--accent); }
+  button, input, select { font: inherit; color: inherit; background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; min-height: 44px; box-sizing: border-box; }
+  button { cursor: pointer; } button:hover, button:focus-visible, input:focus-visible, select:focus-visible { border-color: var(--accent); outline: none; }
+  button.main { background: #3b4f9a; border-color: #6f86d6; } button:disabled { opacity: .5; cursor: default; }
+  select option { background: #1d1830; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  #q { flex: 1 1 260px; min-width: 0; }
+  #found, #catalog ul { list-style: none; padding: 0; margin: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .row .nm { font-weight: 600; min-width: 9em; } .row .nt { color: var(--dim); font-size: 14px; flex: 1 1 260px; } .row .why { color: var(--accent); font-size: 13px; }
+  .row button, .row a.go { min-height: 36px; padding: 4px 12px; font-size: 14px; } .row a.go { border: 1px solid var(--line); border-radius: 10px; text-decoration: none; display: inline-flex; align-items: center; }
+  .badge { font-size: 12px; border-radius: 999px; padding: 2px 9px; border: 1px solid currentColor; white-space: nowrap; }
+  .b-here { color: var(--ok); } .b-verse { color: var(--accent); } .b-part { color: var(--part); } .b-no { color: var(--no); }
+  #counts { color: var(--dim); }
+  #panel { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(10,9,20,.55); scroll-margin-top: 10px; }
+  #tName { margin: 0 0 4px; font-size: 22px; color: var(--ink); }
+  #drop { border: 1px dashed var(--line); border-radius: 12px; padding: 14px; text-align: center; color: var(--dim); margin: 10px 0; }
+  #drop.over { border-color: var(--accent); color: var(--ink); }
+  #picked { color: var(--dim); font-size: 14px; margin: 4px 0; padding-left: 18px; }
+  #opts label { display: inline-flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--dim); } #opts input, #opts select { width: 9em; }
+  #status { min-height: 1.5em; color: var(--dim); }
+  #out { list-style: none; padding: 0; margin: 8px 0 0; } #out li { border-top: 1px solid rgba(255,255,255,.08); padding: 8px 0; }
+  #out a.dl { font-weight: 600; } #out .sz { color: var(--dim); font-size: 13px; margin-left: 6px; } #out .notes { color: var(--dim); font-size: 13px; margin: 2px 0; }
+  #out img { max-width: 100%; max-height: 220px; display: block; margin-top: 6px; border-radius: 6px; background: repeating-conic-gradient(#2a2838 0 25%, #1c1a28 0 50%) 0 0 / 16px 16px; }
+  #out audio { display: block; margin-top: 6px; width: 100%; max-width: 420px; }
+  #shareNote { color: var(--dim); font-size: 13px; }
+  details { margin: 8px 0; } summary { cursor: pointer; color: var(--accent); }
+  .tk-label { color: var(--dim); } nav#related { max-width: 860px; margin: 0 auto; padding: 0 16px; font-size: 14px; } nav#related a { color: var(--accent); margin-right: 8px; }
+  footer { text-align: center; font-size: 13px; color: var(--dim); margin: 18px 0 30px; } footer a { color: inherit; }
+</style><!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/converter/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"File converter: audio, image, ebook and document tools on your device","url":"https://a-to-mind.com/converter/","description":"Sound to WAV or AIFF, pictures to JPG, PNG, WebP, GIF, BMP, TIFF or PDF, and the words of EPUB, DOCX, PDF, RTF and HTML files to each other. Cut, speed up, merge, mix or crossfade sounds, take the silence out, change a GIF's speed, take a frame or the sound out of a video, and put a picture on a PDF. All 106 tools of a full online converter are listed with what Verse does today. Nothing is uploaded; no account; it works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"file converter, audio converter, mp4 to mp3, epub to txt, pdf to docx, cut mp3, merge audio, video to audio","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/converter/?q={q}"},"q-input":"required name=q"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"File converter: audio, image, ebook and document tools on your device","item":"https://a-to-mind.com/converter/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <p class="lead">Verse · file converter</p>
+  <h1>File converter</h1>
+  <p>Sound to WAV or AIFF. Pictures to JPG, PNG, WebP, GIF, BMP, TIFF or PDF. The words of an EPUB, DOCX, PDF, RTF or HTML file to any of the others. Cut, speed up, merge, mix or crossfade sounds, take the silence out, change a GIF's speed, take a frame or the sound out of a video, and put a picture on a PDF.</p>
+  <p class="lead">Done on this device: no file is uploaded, nothing to install, no account. Works offline once opened, on a computer or a phone.</p>
+
+  <form class="bar" id="find" role="search"><label for="q" class="lead">Find a tool</label><input id="q" type="search" placeholder="mp4 to mp3, cut mp3, epub to txt" autocomplete="off"><button type="submit" class="main">Find</button></form>
+  <ul id="found" aria-live="polite"></ul>
+
+  <section id="panel" aria-labelledby="tName">
+    <h2 id="tName">Convert any file</h2>
+    <p id="tNote" class="lead">Pick one or more files: Verse reads what each file is from its first bytes and lists what it can become.</p>
+    <div id="drop"><input id="files" type="file" multiple aria-label="Pick files"><div>or drop files here</div></div>
+    <ul id="picked"></ul>
+    <div id="opts" class="bar"></div>
+    <div class="bar"><button type="button" class="main" id="go" disabled>Convert</button><button type="button" id="zip" hidden>Download all as a zip</button><button type="button" id="share">Copy share link</button><button type="button" id="any">Any file</button></div>
+    <p id="shareNote"></p>
+    <p id="status" role="status" aria-live="polite"></p>
+    <ul id="out"></ul>
+  </section>
+
+  <h2>All 106 tools</h2>
+  <p id="counts"></p>
+  <p class="lead">The same 106 tools onlineconverter.com lists, in its 6 groups. Each one says what Verse does today: on this page, on another Verse page, in part (the note says which part), or not on Verse yet. A tool is never shown as done when it is not.</p>
+  <div id="catalog"></div>
+
+  <h2>How it works</h2>
+  <p class="lead">Your browser opens the file and Verse writes the new one: WAV, AIFF, BMP, TIFF and GIF with Verse's own encoders, JPG, PNG and WebP with the browser's, PDF with pdf-lib, and the words of a PDF read with pdf.js. Sounds the browser can play (MP3, M4A, OGG, FLAC, the sound of an MP4) are opened by the browser. Encrypted or protected files cannot be read, here or anywhere.</p>
+  <details><summary>What Verse cannot do yet</summary><p class="lead">Write video (MP4, MOV, WEBM and the rest), write MP3, M4A, OGG, FLAC or other compressed sound, write Kindle files (AZW, MOBI), read camera raw (DNG), take a background out of a picture or the noise out of a sound. Those tools say so in the list.</p></details>
+</main>
+<!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/converter/?q=mp4%20to%20wav">MP4 to WAV</a><a href="/converter/?t=cut-mp3">Cut MP3</a><a href="/converter/?t=merge-audio">Merge audio</a><a href="/converter/?t=ebook-txt">EPUB to TXT</a><a href="/converter/?t=change-gif-speed">Change GIF speed</a><a href="/converter/?t=add-image-to-pdf">Add image to PDF</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/photos/">Photo tools</a> <a href="/pdf/">PDF tools</a> <a href="/convert/">Unit converter</a> <a href="/resize-image/">Resize an image</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<footer><a href="/">Back to Verse</a> · <a href="/convert/">Unit converter</a> · <a href="/tools/">All tools</a></footer>
+<script type="module" src="/converter/app.js"></script>
+</body>
+</html>
