@@ -533,10 +533,6 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T05:26:49Z",
-   "subject": "Approval gate: a yes runs only when the gate clears it"
-  },
-  {
    "at": "2026-10-29T05:25:14Z",
    "subject": "List the morse skill so it loads, and narrow its match"
   },
@@ -611,6 +607,10 @@
   {
    "at": "2026-10-29T05:04:25Z",
    "subject": "Own-card notes: copy Fixed and Still open from the record, keep the record date"
+  },
+  {
+   "at": "2026-10-29T05:02:56Z",
+   "subject": "Fan fiction: list /fanfic/ in the sitemap generator and update the hand-off note"
   }
  ],
  "builders": {

@@ -9487,6 +9487,10 @@
     "skills/forge-table.js"
    ]
   },
+  "skills/ascii.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/ask-clipboard.js": {
    "imports": [
     "skills/recent.js",
