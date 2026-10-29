@@ -157,9 +157,15 @@ export function autopsyHtml(a, esc = escHtml) {
       + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + (i.signature ? '<div class="sub" data-signature="' + esc(i.signature.kind) + '">' + esc(signatureLine(i.signature)) + '</div>' : '') + culpritHtml(i, esc) + remedyHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
+/** how many red suites incidents.json keeps (tools/incident-log.mjs KEEP): a week with that many may hold more that fell off the end */
+export const INCIDENTS_KEPT = 30;
+/** how many different checks failed across a list of incidents (the suite's own flags, a stall or the end-of-run flag, are not a check): one
+ *  break seen again on every push until it is fixed adds red suites, not checks. Pure. */
+export const failingChecksOf = (incidents) => new Set(incidents.flatMap((i) => i.checks.filter((c) => !isSuiteMeta(c)))).size;
 /**
  * the stability gauge (Status card, asked by Verse): how often the browser suite went red on main in the last 7 days, from incidents.json.
- * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. Pure.
+ * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. Every red suite still counts: `checks` says how many
+ * different checks failed in them, and `capped` says the file was full, so the week held at least `week` red suites, not exactly that. Pure.
  */
 export function stabilityOf(incidentsJson, now = Date.now()) {
   const week = 7 * 864e5, inc = parseIncidents(incidentsJson), recent = inc.filter((i) => { const t = Date.parse(i.at); return t <= now + 6e4 && now - t < week; });
@@ -169,7 +175,8 @@ export function stabilityOf(incidentsJson, now = Date.now()) {
   const cost = recent.reduce((a, i) => a + 12 * Math.pow(0.5, Math.max(0, now - Date.parse(i.at)) / (12 * 36e5)), 0);
   const score = Math.max(0, Math.round(100 - cost));
   const last = recent.length ? Math.max(0, Math.round((now - Math.max(...recent.map((i) => Date.parse(i.at)))) / 36e5)) : null; // hours since the newest red
-  return { score, label: score >= 95 ? 'steady' : score >= 60 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length, last };
+  const capped = inc.length >= INCIDENTS_KEPT && recent.length === inc.length; // the oldest one kept is still inside the week
+  return { score, label: score >= 95 ? 'steady' : score >= 60 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length, last, checks: failingChecksOf(recent), capped };
 }
 /** the gauge as markup: a bar and one sentence. Pure. */
 export function stabilityHtml(g, esc = escHtml) {
@@ -177,7 +184,9 @@ export function stabilityHtml(g, esc = escHtml) {
   const col = g.label === 'steady' ? '#3fbf6a' : g.label === 'wobbly' ? '#d9a441' : '#e0584a';
   return '<div class="status-stability" data-stability="' + esc(g.label) + '" style="margin:6px 0"><b>Stability: ' + esc(g.label) + '</b> <span style="font-variant-numeric:tabular-nums">' + esc(g.score) + '/100</span>'
     + '<div style="height:6px;border-radius:3px;background:rgba(128,128,128,.25);margin:4px 0"><div style="height:6px;border-radius:3px;width:' + esc(g.score) + '%;background:' + col + '"></div></div>'
-    + '<span class="sub">' + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day), from <code>incidents.json</code>.</span></div>';
+    + '<span class="sub">' + (g.capped ? 'At least ' : '') + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day)'
+    + (g.week && g.checks ? ', with ' + esc(g.checks) + ' different check' + (g.checks === 1 ? '' : 's') + ' failing' : '') + ', from <code>incidents.json</code>'
+    + (g.capped ? ', which keeps only the newest ' + esc(INCIDENTS_KEPT) : '') + '.</span></div>';
 }
 /** the "changed in this commit" line of one incident: the skill files it changed, the likely ones first; says plainly when none was a skill file or the paths were never recorded. Pure. */
 
