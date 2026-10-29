@@ -42,6 +42,12 @@ for (const g of games) {
     let card = page.locator('.game-card, .kept-card').last();
     const shown = await card.waitFor({ timeout: 6000 }).then(() => true, () => false);
     await page.waitForTimeout(700); // a 3D board moves the controls into a side card beside it (skills/side-card.js)
+    // a board lifted by skills/lift3d.js moves its controls out only once its miniature has loaded, and that load can take
+    // longer than 700 ms on CI: read the card before the move and the move empties it mid-read (2026-10-29, monopoly on
+    // a7aad196: "says how to play" and "status is announced" failed while the side card held both). Wait while its 3D
+    // view is still hidden (a load in flight), up to 10 s; a load that fails leaves the flat card, which is then checked.
+    if (shown) await page.waitForFunction(() => { const c = [...document.querySelectorAll('.game-card, .kept-card')].pop();
+      const v = c && c.querySelector('.lift3d-view'); return !v || v.style.visibility !== 'hidden'; }, null, { timeout: 10000 }).catch(() => {});
     if (await page.locator('.side-card').count()) card = page.locator('.side-card').last();
     const tag = g.name + ' ' + per.id;
     check(tag + ': the card opens', shown, 'stuck: card did not open');
