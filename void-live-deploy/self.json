@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,83 +550,83 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:10:31Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T16:06:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:05:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:04:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:04:10Z",
    "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
   },
   {
-   "at": "2026-10-29T15:15:09Z",
+   "at": "2026-10-29T16:03:50Z",
+   "subject": "Card replies count on the heat map by the card's family"
+  },
+  {
+   "at": "2026-10-29T16:01:10Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:14:06Z",
+   "at": "2026-10-29T16:00:24Z",
+   "subject": "Versus: count controls on the rendered page, name a pinned target as the target"
+  },
+  {
+   "at": "2026-10-29T15:59:03Z",
+   "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
+  },
+  {
+   "at": "2026-10-29T15:57:50Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:13:15Z",
+   "at": "2026-10-29T15:57:45Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:13:06Z",
-   "subject": "Paid members: a pre-launch pilot at /members/?pilot, so a paid account proves the idea path on the live site before go-live"
+   "at": "2026-10-29T15:57:00Z",
+   "subject": "Money/GPA asks: stop waiting for skills the ask does not need, ask for card-share's graph at once"
   },
   {
-   "at": "2026-10-29T15:12:02Z",
+   "at": "2026-10-29T15:56:48Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:11:22Z",
+   "at": "2026-10-29T15:55:49Z",
+   "subject": "Lab: log caught errors and mark safe lines (more)"
+  },
+  {
+   "at": "2026-10-29T15:55:35Z",
+   "subject": "Lab: log caught errors, guard the saved-memory parse, mark safe innerHTML lines"
+  },
+  {
+   "at": "2026-10-29T15:54:56Z",
+   "subject": "team chat: mark the invite dialog line for Verse's review"
+  },
+  {
+   "at": "2026-10-29T15:54:49Z",
+   "subject": "team chat: mark Verse's review false positives with their reasons; drop 'password' from the invite text"
+  },
+  {
+   "at": "2026-10-29T15:53:27Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:10:57Z",
-   "subject": "Paid members: check the idea limit inside the insert, so sends at the same moment cannot pass it"
-  },
-  {
-   "at": "2026-10-29T15:10:31Z",
+   "at": "2026-10-29T15:53:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:09:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:08:57Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T15:07:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:05Z",
-   "subject": "Word the namedFixes comment without a bare count"
-  },
-  {
-   "at": "2026-10-29T15:06:42Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:06:42Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:06:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:06:21Z",
-   "subject": "Translate page: language lists show their own spellings after load, so the first layout no longer shapes 30 scripts"
-  },
-  {
-   "at": "2026-10-29T15:05:46Z",
-   "subject": "uuid skill: take the asks util leaves (random, another, please), crypto ids, order file, family, map line, test"
-  },
-  {
-   "at": "2026-10-29T15:05:20Z",
+   "at": "2026-10-29T15:53:20Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
