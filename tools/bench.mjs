@@ -19,7 +19,7 @@
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import crypto from 'node:crypto'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 import { execFileSync } from 'node:child_process';
-import { envName, latencyOf, assess } from './bench-load.mjs';
+import { envName, latencyOf, assess, againOf } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
@@ -79,6 +79,13 @@ const VIEWPORT = { width: 800, height: 540 };
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
+// A second run in the same CI run, after an inconclusive first one, runs again only the asks the first run missed (againOf, tools/bench-load.mjs).
+// The first run's results are kept for that in AGAIN_FILE, and the file is used once.
+const AGAIN_FILE = CACHE.replace('void-bench-pass-', 'void-bench-again-'), ciRun = process.env.GITHUB_RUN_ID ? process.env.GITHUB_RUN_ID + '.' + (process.env.GITHUB_RUN_ATTEMPT || '1') : '';
+let prior = null; if (cacheable && ciRun) { try { prior = JSON.parse(fs.readFileSync(AGAIN_FILE, 'utf8')); } catch (_) {} try { fs.rmSync(AGAIN_FILE, { force: true }); } catch (_) {} }
+const again = againOf(prior, todo, { key, run: ciRun });
+if (again) { prior.out.forEach((x, i) => { out[i] = x; }); console.error('bench: second run after the inconclusive one of ' + prior.at + ': ' + again.length + ' of ' + todo.length + ' asks run again (the ones it missed); the rest keep their result'); }
+const order = again || todo.map((_, i) => i);
 // --ground: the semantic validator's measurement (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"). Every answer the
 // right skill gave, with no "says" to check it, is read off the page and asked: is this card about the ask's subject? Reported
 // apart (tools/bench.ground.json); it never changes the score. A skill's trigger words are read off its own asks in bench.json.
@@ -226,8 +233,8 @@ const sampleCpu = () => { let pids = []; try { pids = fs.readdirSync('/proc').fi
 const sampler = fs.existsSync('/proc/stat') ? setInterval(sampleCpu, 1000) : null; if (sampler) sampler.unref(); // never what keeps the run alive
 const procLine = () => { if (!sampler) return ''; const per = (k) => Math.round(procCpu[k] / done); const idle = idle0 && idleNow && idleNow.all > idle0.all ? Math.round(100 * (idleNow.idle - idle0.idle) / (idleNow.all - idle0.all)) : 0;
   return '; machine CPU per ask: renderers ' + per('renderer') + ' ms, gpu ' + per('gpu') + ', other chrome ' + per('utility') + ', chrome main ' + per('browser') + ', bench ' + per('bench') + ', idle ' + idle + '%'; };
-await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { const ctx = await slot(); try { while (next < todo.length) { const i = next++; out[i] = await one(ctx, todo[i]);
-  if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
+await Promise.all(Array.from({ length: Math.min(PAR, order.length) }, async () => { const ctx = await slot(); try { while (next < order.length) { const i = order[next++]; out[i] = await one(ctx, todo[i]);
+  if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + order.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
     + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in, load ' + os.loadavg()[0].toFixed(1)
     + '; page CPU per ask ' + Math.round(pace.task / done) + ' ms (script ' + Math.round(pace.script / done) + ', layout ' + Math.round(pace.layout / done) + ', style ' + Math.round(pace.style / done) + ')' + procLine()); } } finally { await ctx.close(); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
@@ -245,7 +252,9 @@ if (process.argv.includes('--score')) {
   const result = { score: a.score, total: a.total, wrong: a.wrong, env, cores: os.cpus().length, pages: PAR, latency, sha, at: new Date().toISOString() };
   if (a.loadMisses.length) result.loadMisses = a.loadMisses;
   if (a.unreplayed) result.unreplayed = a.unreplayed;
+  if (again) result.rerun = { of: prior.at, asks: again.length }; // the second run of an inconclusive one: only its misses ran again
   if (a.inconclusive) { result.inconclusive = true; result.note = a.note; }
+  if (cacheable && ciRun && a.inconclusive && !again) try { fs.writeFileSync(AGAIN_FILE, JSON.stringify({ key, run: ciRun, at: result.at, out: out.map(({ ask, by, want, right, ms }) => ({ ask, by, want, right, ms })) })); } catch (_) {}
   const floor = Number.isFinite(best.score) ? best.score : Infinity;
   if (cacheable && !a.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: result.at, result })); } catch (_) {}
   console.log(JSON.stringify(result)); process.exit(a.failed ? 1 : 0); }
