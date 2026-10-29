@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { layout, MAX_LABELS, AHEAD_SHOWN, FLOOR_H, MIN_FLOOR_H, TOWER_H, GAP, BASE_H } from '../void-live-deploy/skills/mini/tower.js';
-import { tower, FLOORS, aspectsOf } from '../void-live-deploy/lib/tower.js';
+import { tower, FLOORS, aspectsOf, passingRows } from '../void-live-deploy/lib/tower.js';
 import { miniFloors } from '../void-live-deploy/skills/tower.js';
 
 const fake = (beaten, ahead = 4) => [...Array.from({ length: beaten }, (_, i) => ({ id: 'b' + i, site: 'site' + i + '.example', state: 'beaten', n: 11, m: 11, page: '/p' + i + '/' })),
@@ -28,7 +28,7 @@ test('no current floor (everything surpassed) and bad data are handled', () => {
   const W = layout([{ site: 'x'.repeat(200), state: 'weird', page: 7 }]); assert.equal(W.drawn[0].state, 'beaten'); assert.equal(W.drawn[0].site.length, 48); assert.equal(W.drawn[0].page, '');
 });
 test('the card hands the miniature the real tower: ids, states, n of m and the page without its query', () => {
-  const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: 'better', evidence: 'x' }]))]));
+  const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, passingRows(f)]));
   const m = miniFloors(tower([], ev));
   assert.equal(m.filter((f) => f.state === 'beaten').length, 3); assert.equal(m.filter((f) => f.state === 'current').length, 1); assert.equal(m[3].state, 'current');
   assert.ok(m.every((f) => typeof f.id === 'string' && typeof f.site === 'string' && Number.isFinite(f.n) && Number.isFinite(f.m)));

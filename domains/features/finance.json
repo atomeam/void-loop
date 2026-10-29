@@ -2593,7 +2593,15 @@
     ]
    }
   ],
-  "queued": []
+  "queued": [
+   {
+    "target": "feature:companiesmarketcap-c-b38ba761",
+    "feature": "DISCLAIMER",
+    "host": "companiesmarketcap.com",
+    "at": "2026-10-26",
+    "id": "mvpkt1u7"
+   }
+  ]
  },
  "re": {
   "scanned": "2026-10-26",

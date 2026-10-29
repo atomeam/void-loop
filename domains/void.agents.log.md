@@ -1081,3 +1081,14 @@ Format: `ISO | slug | role | event | note`
 2026-10-26T07:29:37Z | verse | build | Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten (also read: 3 no-family); next heycolor.com
 2026-10-26T07:38:13Z | verse | build | Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten (also read: 1 walled, 3 no-family); next heycolor.com
 2026-10-26T07:42:05Z | verse | build | Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten; next heycolor.com
+2026-10-26T16:56:18Z | verse | build | Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com
+2026-10-26T16:58:53Z | verse | build | Versus: took on no site; next supercolorapp.com
+2026-10-26T22:52:52Z | verse | build | Versus: took on no site (also read: 2 discarded, 5 no-family, 1 not-judged); next hexdb.io
+2026-10-27T08:19:58Z | verse | build | Versus: took on no site (also read: 7 no-family, 1 not-judged); next randomarea.com
+2026-10-27T08:22:31Z | verse | build | Versus: took on no site; next randomarea.com
+2026-10-27T16:00:06Z | verse | build | Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com
+2026-10-27T22:34:36Z | verse | build | Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com
+2026-10-27T22:37:12Z | verse | build | Versus: took on no site; next randomarea.com
+2026-10-28T16:33:31Z | grok-bot | grow | Lists run 6: the weather page never stays busy (12 s timeouts), Verse's zero KV writes are guarded by a test, nightsky joins the time family (0 moved over 5,457 asks), and V01D's open asks drop from 19 to 2
+2026-10-28T22:47:55Z | verse | build | Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com
+2026-10-28T22:50:28Z | verse | build | Versus: took on no site; next randomarea.com

@@ -6,11 +6,13 @@
 // completeness unverified (never counted as beaten); a probe with truth null leaves accuracy unverified (only a site whose own address carries the
 // question can be asked the same thing as Verse). Pure data, plus the date the 'is it' truth depends on.
 import { readFileSync } from 'node:fs';
-import { LANE_PAGES } from '../void-live-deploy/lib/tower.js';
+import { fileURLToPath } from 'node:url';
+import { LANE_PAGES, FLOORS } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 // a site Verse took on by itself (tools/tower-self.mjs) is asked its family's question on its own page: the row keeps that question's address
 const SELF_ASK = new Map(SELF_SITES.filter((r) => r && r.lane && r.ask).map((r) => [r.lane, r.ask]));
 import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
+import { CALCULATORS } from '../void-live-deploy/lib/calculators.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -82,6 +84,11 @@ export const LIST_PROBE = 'p.' + Buffer.from(LIST_PROBE_TEXT, 'utf8').toString('
 export const inDays = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
 // the trip the trip page is asked about: London (LHR) to New York (JFK) landing at 13:00 local, then a flight to Lisbon (LIS) leaving 40 minutes later
 const ASK_TRIP = tripToToken([{ al: 'BA', no: '117', from: 'LHR', to: 'JFK', dep: '2027-03-12T10:00', arr: '2027-03-12T13:00', loc: 'ABC123' }, { al: 'UA', no: '904', from: 'JFK', to: 'LIS', dep: '2027-03-12T13:40', arr: '2027-03-13T01:50', loc: 'ABC123' }]);
+// the formula library floor's rival size (lib/tower.js rivalCount: vcalc.com's published count) and the gap to Verse's library, for the label
+const RIVAL_N = ((FLOORS.find((f) => f.id === 'formula calculators') || {}).rivalCount || {}).n || 15000;
+/** the calculator count a page shows as "All calculators (N)", or 0. Pure. */
+export const libraryCount = (t) => Number((String(t).match(/All calculators \(([\d,]+)\)/i) || [])[1]?.replace(/,/g, '') || 0);
+const LIBRARY_GAP = 'at least ' + RIVAL_N.toLocaleString('en-US') + ' calculators, the size vcalc.com publishes (Verse has ' + CALCULATORS.length + ': ' + (RIVAL_N - CALCULATORS.length).toLocaleString('en-US') + ' short)';
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -412,6 +419,335 @@ export const PROBES = Object.freeze({
     facts: [['keyword search', /Keyword/], ['place', /\bPlace\b/], ['remote region', /Work from/], ['category', /Category/], ['tags', /\bTag\b/], ['job type', /Job type/], ['level', /\bLevel\b/], ['salary', /salary/i], ['date posted', /Posted/], ['sort', /\bSort\b/], ['saved jobs', /Saved jobs/],
       ['alerts', /alert/i], ['an RSS feed', /RSS/], ['application tracker', /Applications/], ['interview stage', /Interview/], ['calendar file', /\.ics/], ['CSV export', /Export CSV/], ['share link', /Share link/i], ['other job sites', /other job sites/i], ['visa sponsorship', /visa sponsorship/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
+  // paint (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint-by-number art, fought from Verse's own /paint/. The ask opens a
+  // known template, so the counts are checkable against the formula: the heart is 76 cells on a 12 by 12 grid in four numbered colours,
+  // 10 + 26 + 28 + 12. Judged on Verse alone (their side is an app store listing, not a page).
+  paint: {
+    site: 'https://heycolor.com/', verse: '/paint/',
+    ask: { verse: '/paint/?p=wave' },
+    truth: [['the areas, counted (104)', /\b104 areas/], ['the pixels, counted (48,400)', /48,400 pixels/], ['ten numbered colours', /\b10 colours/],
+      ['colour 1 has 10 areas', /1 \u00b7 10 left/], ['colour 8 has 16', /8 \u00b7 16 left/], ['colour 9 has 18', /9 \u00b7 18 left/], ['the painting it opened', /The Great Wave/]],
+    facts: [
+      ['paint by number', /paint by number/i], ['real paintings, numbered', /real paintings/i], ['numbered areas', /numbered areas/i], ['a numbered palette', /palette/i],
+      ['the progress count', /pixels painted/], ['tap an area to fill it', /tap an area/i], ['find an area', /Find a 1/], ['start over', /Start over/],
+      ['download a PNG', /Download PNG/], ['a share link', /Share link/], ['save to a gallery', /Save to gallery/], ['upload your own image', /Upload your own image/],
+      ['the artwork is public domain', /public domain/i], ['kept on this device', /on this device/i], ['works offline', /works offline/i], ['no account', /no account/i], ['no ads', /no ads/i],
+      ['a second painting', /The Starry Night/],
+    ],
+  },
+  // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com ranks the emoji
+  // copied from Emojipedia; the Twitter stream its old page was built on is, by its own account, inactive. Verse's /emojis/ counts copies
+  // of a closed list of emoji made on the page itself and says so, so the "realtime" is real and local and no global feed is pretended.
+  // Judged on Verse alone (their page is a paragraph of history and a link to the source, not a tool).
+  // yunite.xyz (owner, 2026-10-27): the scrim scorer a Fortnite lobby passes around. Its scores arrive through an account and its bot
+  // reads screenshots; Verse's /tournaments/ takes results typed in and shows the arithmetic - placement pays the highest matching threshold
+  // (a win is not a win plus the top-five), the tiebreakers are points, wins, eliminations then average placement, heats are dealt in snake
+  // order and two teams on one starting spot are flagged contested. The seeded ask is a three-team match, worked out by hand below.
+  tournaments: {
+    site: 'https://yunite.xyz/', verse: '/tournaments/',
+    ask: { verse: '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor,Charlie:Old%20Mill&elim=2&win=10&top5=5' },
+    truth: [['the first seeded team', /Alpha/], ['its points, worked out: 1st is 10 plus 6 x 2 (22)', /Alpha\s+22\s+1\s+6/],
+      ['the second seeded team', /Bravo/], ['its points, worked out: 2nd is 5 plus 7 x 2 (19)', /Bravo\s+19\s+0\s+7/],
+      ['the third seeded team', /Charlie/], ['its points, worked out: 6th is 0 plus 3 x 2 (6)', /Charlie\s+6\s+0\s+3/],
+      ['the total teams', /3 teams/], ['the total eliminations, worked out (16)', /16 eliminations/], ['the total points, worked out (47)', /47 points/],
+      ['the leader, named', /leader Alpha/], ['the threshold rule, said on the page', /highest matching threshold/],
+      ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/],
+      ['the contested starting spot', /Old Mill[\s\S]*?contested/], ['the snake heat split', /snake order/]],
+    facts: [
+      ['tournament standings', /tournament standings/i], ['a point system', /point system/i], ['preset systems', /Finals-style/i],
+      ['team sizes', /(?:solo|duos|trios|squads)/i], ['points per elimination', /per elimination/i],
+      ['the threshold rule, said', /highest matching threshold/], ['the standings table', /standings after every match entered/i],
+      ['the tiebreakers, in order', /points, then wins, then eliminations, then average placement/], ['wins counted', /wins/i],
+      ['average placement', /average placement/i], ['one match per line', /one match per line/i],
+      ['snake heats', /snake order/i], ['starting spots', /starting spots/i], ['contested spots flagged', /contested/i],
+      ['CSV in', /Import CSV/], ['CSV out', /Export CSV/], ['a share link', /Copy share link/],
+      ['the share link carries the state', /Share link: \/tournaments\/\?results=/],
+      ['nothing sent', /nothing is sent anywhere/i], ['no account', /no account/i], ['works offline', /works offline/i],
+      ['stays on this device', /on this device/i], ['the worked example, marked as one', /worked example/i],
+      ['back to Verse', /Back to Verse/], ['the stage bridge', /See it as a card on the stage/],
+    ],
+    // the five rows this floor is fought on (its extra aspects): each is read off the same seeded answer, so a page that shows all of
+    // them is the most any page can show - judged on Verse alone, like the codebase rows (commit f108005d)
+    askParts: {
+      'point system presets': [['a finals-style preset', /Finals-style/], ['a cash-cup-style preset', /Cash-cup-style/], ['a scrim preset', /Scrim/], ['a custom choice', /Custom/]],
+      'multi-match standings': [['one match per line', /one match per line/i], ['standings after every match', /standings after every match entered/i], ['average placement named', /average placement/i], ['the counts for the set', /\d+ teams? · \d+ match/]],
+      'heat split': [['snake order', /snake order/i], ['the heats numbered', /Heat 1/], ['a second heat', /Heat 2/], ['seeded by standing rank', /seeded by standing rank/i]],
+      'drop spots': [['starting spots', /starting spots \(drops/i], ['contested flagged', /contested/i], ['a claimed place', /Old Mill/], ['who is contesting, ranked', /#1 Alpha \(22 pts\) vs #3 Charlie \(6 pts\)/], ['clear ones too', /\bclear\b/]],
+      'CSV in and out': [['import', /Import CSV/], ['export', /Export CSV/], ['the columns named', /team, place, eliminations/i], ['the heading', /CSV in and out/]],
+    },
+  },
+  // thunit.com (owner, 2026-10-27): a 70-word brochure for "exclusive" hosting on a stock site, with six unnamed icon links and no tool of
+  // any kind. Verse's /hosting/ answers the two claims it makes in numbers: a crowded shared host splits its cores, an exclusive one keeps
+  // them; and the uptime an SLA actually buys, as downtime per year, month, week and day. The ask is traffic (50 requests/s of 200 KB at
+  // 40 ms a worker) and a 99.9% SLA; the arithmetic is worked out by hand below (bandwidth, transfer, Little's law, memory, downtime).
+  hosting: {
+    site: 'https://thunit.com/', verse: '/hosting/',
+    ask: { verse: '/hosting/?rps=50&kb=200&ms=40&ram=128&sla=99.9' },
+    truth: [
+      ['the sustained bandwidth, worked out (10,000 KB/s)', /10,000 KB\/s/],
+      ['the same in MB/s (10 MB/s)', /10 MB\/s/],
+      ['the same in Mbps (80 Mbps)', /80 Mbps/],
+      ['requests per month, worked out (129,600,000)', /129,600,000 requests\/month/],
+      ['the monthly transfer, worked out (25,920 GB)', /25,920 GB\/month/],
+      ["the concurrent workers, by Little's law (2)", /2 active workers/],
+      ['the vCPUs at 50% headroom (4)', /4 vCPUs/],
+      ['the memory, worked out (1,024 MB)', /1,024 MB/],
+      ['the RAM minimum (1 GB)', /1 GB RAM/],
+      ['the RAM with cache headroom (2 GB)', /2 GB RAM/],
+      ['the 99.9% downtime per year (8h 45m 36s)', /8h 45m 36s/],
+      ['the 99.9% downtime per month (43m 48s)', /43m 48s/],
+      ['the 99.9% downtime per week (10m 5s)', /10m 5s/],
+      ['the 99.9% downtime per day (1m 26s)', /1m 26s/]],
+    askParts: {
+      'capacity sizing': [['requests per second', /requests\/s/i], ['a reply size', /KB replies/], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/], ['shared vs exclusive', /shared vs exclusive/i]],
+      'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/], ['an SLA of 99.99%', /99\.99%/]],
+      'server config': [['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/], ['TLS 1.3', /TLS 1\.3/], ['a copy control', /\bCopy\b/], ['a download control', /\bDownload\b/]],
+      'security headers': [['HSTS', /Strict-Transport-Security/], ['CSP', /Content-Security-Policy/], ['nosniff', /X-Content-Type-Options/], ['a referrer policy', /Referrer-Policy/], ['a permissions policy', /Permissions-Policy/], ['a rate limit', /rate limit/i]],
+    },
+    facts: [
+      ['requests per second', /requests\/s/i], ['bandwidth', /bandwidth/i], ['megabits', /\bMbps\b/], ['monthly transfer', /GB\/month/],
+      ['virtual cores', /\bvCPUs?\b/], ['memory', /\bRAM\b/], ['concurrent workers', /concurrent/i], ['shared vs exclusive', /shared vs exclusive/i],
+      ['uptime', /uptime/i], ['an SLA of 99.9%', /99\.9%/], ['allowed downtime', /downtime/i], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],
+      ['TLS 1.3', /TLS 1\.3/], ['Strict-Transport-Security', /Strict-Transport-Security/], ['Content-Security-Policy', /Content-Security-Policy/],
+      ['X-Content-Type-Options', /X-Content-Type-Options/], ['a rate limit', /rate limit/i], ['Copy', /\bCopy\b/], ['Download', /\bDownload\b/],
+      ['Share link', /Share link/], ['on this device', /on this device/], ['works offline', /works offline/i], ['no account', /no account/i],
+    ],
+  },
+  prizes: {
+    site: 'https://wheelofgold.com/', verse: '/prizes/',
+    // the reward faucet audit preset, worked out by hand: slices $1 x1, $0.10 x9, $0.01 x90, $0.001 x900 (1,000 tickets), so the EV is
+    // (1 + 0.9 + 0.9 + 0.9) / 1000 = $0.0037 a spin; the top prize is 1 in 1,000, P(at least once in 1,000) = 1 - 0.999^1000 = 63.2%;
+    // even odds take 693 spins; one spin an hour to a $5 cashout is ceil(5 / 0.0037) = 1,352 spins, 1,352 hours, 56.3 days
+    ask: { verse: '/prizes/?preset=faucet' },
+    truth: [
+      ['the expected value per spin ($0.0037)', /Expected value per spin\s*\$0\.0037\b/],
+      ['the top prize chance (0.1%, 1 in 1,000)', /0\.1% a spin, 1 in 1,000/],
+      ['P(top prize at least once in 1,000 spins) (63.2%)', /P\(top prize ≥1 in 1,000\)\s*63\.2%/],
+      ['the spins for even odds (693)', /even odds of the top prize\s*693\b/],
+      ['the drip to a $5 cashout (1,352 spins, 1,352 hours, 56.3 days)', /1,352 spins · 1,352 hours · 56\.3 days to reach \$5/]],
+    askParts: {
+      'odds table': [['a chance column', /\bchance\b/i], ['every slice listed', /Top prize[\s\S]*Big[\s\S]*Small[\s\S]*Dust/]],
+      'expected value': [['EV per spin', /EV per spin/i], ['net of the cost', /Net per spin/i]],
+      'drip calculator': [['a cooldown', /cooldown/i], ['a minimum cashout', /minimum cashout/i], ['a referral share', /referral/i]],
+    },
+    facts: [
+      ['a spin', /\bSpin\b/], ['a 1,000-spin check', /1,000 spins/], ['weights', /\bweight\b/i], ['a share link', /share link/i], ['CSV export', /Export CSV/],
+      ['says it never pays or collects', /never pays out/i], ['secure random numbers', /secure random numbers/i]],
+  },
+  identity: {
+    site: 'https://anycolorid.com/', verse: '/identity/',
+    ask: { verse: '/identity/#name=Sky%20Rivera&email=sky%40example.com&aid=AC-0001&region=jp' },
+    truth: [
+      ['the profile name, edited (Sky Rivera)', /Sky Rivera/],
+      ['the profile email, edited', /sky@example.com/],
+      ['the account ID (AC-0001)', /AC-0001/],
+      ['the region (JP)', /\bJP\b/],
+      ['a change history ledger', /Change history/],
+      ['a JWT claims inspector', /JWT claims/],
+      ['a service portal', /Service portal/],
+      ['no account required', /no account/i],
+    ],
+    askParts: {
+      'profile metadata': [['a name field', /Name/], ['an email field', /Email/], ['an account ID', /Account ID/], ['a region selector', /Region/]],
+      'change history': [['a ledger', /Change history/], ['a clear control', /Clear history/], ['kept on this device', /on this device/]],
+      'SSO claims': [['a bearer token input', /Bearer token/], ['a decode control', /Decode/], ['decoded claims', /claims/i]],
+      'service portal': [['Official Website', /Official Website/], ['Fan Club', /Fan Club/], ['Official Store', /Official Store/], ['Community Hub', /Community Hub/]],
+      'sharing': [['a share link', /Share link/], ['an export', /Export JSON/], ['a copy card', /Copy card/]],
+    },
+    facts: [
+      ['profile', /profile/i], ['name', /Name/], ['email', /Email/], ['account ID', /Account ID/], ['region', /Region/],
+      ['change history', /Change history/], ['on this device', /on this device/], ['JWT', /JWT/], ['claims', /claims/i],
+      ['SSO', /SSO/], ['service portal', /Service portal/], ['Official Website', /Official Website/], ['Fan Club', /Fan Club/],
+      ['Official Store', /Official Store/], ['Community Hub', /Community Hub/], ['share link', /Share link/], ['export JSON', /Export JSON/],
+      ['copy card', /Copy card/], ['no account', /no account/i], ['works offline', /works offline/i], ['no ads', /no ads/i],
+      ['back to Verse', /Back to Verse/],
+    ],
+  },
+  cpan: {
+    site: 'https://www.cpantesters.org/', verse: '/cpan/',
+    ask: { verse: '/cpan/' },
+    truth: [
+      ['ingested reports', /Ingested \d+ reports/],
+      ['pass and fail counts', /\d+ PASS, \d+ FAIL/],
+      ['distribution health', /Distribution health/],
+      ['a test matrix', /CPAN test matrix/],
+      ['module search', /Search modules/],
+      ['export as JSON', /Export JSON/],
+      ['export as CSV', /Export CSV/],
+      ['no account', /no account/i],
+    ],
+    askParts: {
+      'test reports': [['ingest control', /Ingest reports/], ['clear control', /Clear/], ['reports textarea', /CPAN test reports/]],
+      'distribution health': [['pass count', /PASS/], ['fail count', /FAIL/], ['health line', /Distribution health/]],
+      'module search': [['search input', /Search modules/], ['search control', /Search/], ['matching count', /matching reports/]],
+      'live feed': [['connect live', /Connect Live Feed/], ['offline fallback', /Offline-first/]],
+      'export': [['export JSON', /Export JSON/], ['export CSV', /Export CSV/], ['export box', /Exported summary|module,version/]],
+    },
+    facts: [
+      ['test reports', /Test reports/], ['distribution health', /Distribution health/], ['module search', /Module search/],
+      ['live feed', /Live feed/], ['export', /Export/], ['ingest reports', /Ingest reports/], ['clear', /Clear/],
+      ['CPAN test matrix', /CPAN test matrix/], ['export JSON', /Export JSON/], ['export CSV', /Export CSV/],
+      ['no account', /no account/i], ['works offline', /works offline/i], ['no ads', /no ads/i],
+      ['back to Verse', /Back to Verse/], ['on this device', /on this device/],
+    ],
+  },
+  colorzilla: {
+    site: 'https://www.colorzilla.com/', verse: '/gradient/',
+    ask: { verse: '/gradient/' },
+    truth: [
+      ['linear gradients', /linear/i],
+      ['radial gradients', /radial/i],
+      ['conic gradients', /conic/i],
+      ['an eyedropper', /Pick a colour from the screen/i],
+      ['copy CSS', /Copy CSS/],
+    ],
+    askParts: {
+      'gradient editor': [['linear type', /linear/i], ['radial type', /radial/i], ['conic type', /conic/i]],
+      'eyedropper': [['an eyedropper control', /Pick a colour from the screen/i], ['pick from the screen', /screen/i]],
+      'color picker': [['colour stops', /colour stops/i], ['presets', /presets/i]],
+      'css output': [['copy CSS', /Copy CSS/], ['copy link', /Copy link/]],
+      'sharing': [['a share link', /Copy link/]],
+    },
+    facts: [
+      ['gradient', /gradient/i], ['linear', /linear/i], ['radial', /radial/i], ['conic', /conic/i],
+      ['eyedropper', /Pick a colour from the screen/i], ['copy CSS', /Copy CSS/],
+    ],
+  },
+  sudowrite: {
+    site: 'https://www.sudowrite.com/', verse: '/books/',
+    ask: { verse: '/books/' },
+    truth: [
+      ['chapters from capability families', /Chapters/],
+      ['export markdown', /Export Markdown/],
+      ['export text', /Export text/],
+      ['no credits', /no credits/i],
+      ['no subscriptions', /no subscriptions/i],
+      ['no API keys', /no API keys/i],
+      ['works offline', /works offline/i],
+    ],
+    askParts: {
+      'book studio': [['chapters heading', /Chapters/], ['export controls', /Export Markdown/]],
+      'chapters': [['chapter titles', /Chapter \d/], ['surpassed count', /Surpassed \d+/]],
+      'export': [['export markdown', /Export Markdown/], ['export text', /Export text/]],
+      'offline': [['works offline', /works offline/i], ['no credits', /no credits/i]],
+      'sharing': [['stage link', /See it as a card/], ['back to Verse', /Back to Verse/]],
+    },
+    facts: [
+      ['book studio', /Verse Bookshelf/], ['chapters', /Chapters/], ['export markdown', /Export Markdown/],
+      ['export text', /Export text/], ['no credits', /no credits/i], ['no subscriptions', /no subscriptions/i],
+      ['works offline', /works offline/i], ['back to Verse', /Back to Verse/],
+    ],
+  },
+  nameunit: {
+    site: 'https://www.nameunit.com/', verse: '/hosting/',
+    ask: { verse: '/hosting/?rps=50&kb=200&ms=40&ram=128&sla=99.9' },
+    truth: [
+      ['sustained bandwidth, worked out (10,000 KB/s)', /10,000 KB\/s/],
+      ['monthly transfer, worked out (25,920 GB)', /25,920 GB\/month/],
+      ['concurrent workers, by Little\'s law (2)', /2 active workers/],
+      ['vCPUs at 50% headroom (4)', /4 vCPUs/],
+      ['memory, worked out (1,024 MB)', /1,024 MB/],
+      ['domain search', /Domain search/],
+      ['tiered plans (Small, Medium, Large)', /Small/],
+      ['no account', /no account/i],
+    ],
+    askParts: {
+      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['a real registry check (RDAP)', /asks the registry itself \(RDAP/], ['the result line', /whether it is registered/]],
+      'tiered plans': [['Small plan', /Small/], ['Medium plan', /Medium/], ['Large plan', /Large/], ['Norwegian servers', /Servere i Norge/]],
+      'capacity sizing': [['requests per second', /requests\/s/i], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/]],
+      'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/]],
+      'server config': [['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/], ['TLS 1.3', /TLS 1\.3/]],
+    },
+    facts: [
+      ['domain search', /Domain search/], ['tiered plans, labelled as the rival\'s', /Name Unit's hosting plans/], ['Small', /Small/],
+      ['Medium', /Medium/], ['Large', /Large/], ['Norwegian servers', /Servere i Norge/],
+      ['bandwidth', /bandwidth/i], ['monthly transfer', /GB\/month/], ['vCPUs', /\bvCPUs?\b/],
+      ['memory', /\bRAM\b/], ['SLA', /SLA/], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],
+      ['TLS 1.3', /TLS 1\.3/], ['no account', /no account/i], ['works offline', /works offline/i],
+      ['back to Verse', /Back to Verse/],
+    ],
+  },
+  emojis: {
+    site: 'https://emojitracker.com/', verse: '/emojis/',
+    ask: { verse: '/emojis/?pick=🔥' },
+    truth: [['a known emoji on the wall', /rocket/], ['another (a heart)', /red heart/], ['the ranking it shows', /ranked today or all time/i],
+      ['the search, said on the page', /searched by name/i], ['the honest line: not a feed', /not a feed of anyone's messages/i],
+      ['the fire the link picked', /\bfire\b/i], ['its Unicode, worked out', /U\+1F525/], ['its UTF-8 bytes, worked out', /F0 9F 94 A5/], ['its HTML entity, worked out', /&#128293;/]],
+    facts: [
+      ['emoji counts', /emoji counts/i], ['a ranked wall', /ranked wall/i], ['tap to copy', /tap one to copy/i], ['today', /\bToday\b/], ['all time', /All time/],
+      ['a search', /searched by name/i], ['refreshed while open', /refresh/i], ['a closed list', /closed list/i], ['no text to send', /no text to send/i],
+      ['works offline', /works offline/i], ['no account', /no account/i], ['no ads', /no ads/i], ['back to Verse', /Back to Verse/],
+      ['the picked emoji, named', /\bfire\b/i], ['its Unicode', /U\+1F525/], ['its UTF-8 bytes', /F0 9F 94 A5/], ['its HTML entity', /&#128293;/],
+      ['copied on this device', /Copied on this device/i], ['everyone today', /Everyone today/i], ['a share link for it', /Share this emoji/i],
+      ['the stage bridge', /See it as a card on the stage/i], ['the copy format picker', /Copy as/],
+    ],
+  },
+  // codebase (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): Codebase is a code host with project management
+  // beside it; Verse's /g/ is a gist page that keeps the work beside the code — a task list, a timer and notes on this device, with the
+  // code itself only in the link. The ask arrives carrying a gist (a seeded link, the way a shared one looks), so the counts are
+  codebase: {
+    site: 'https://www.codebasehq.com/', verse: '/g/',
+    ask: { verse: '/g/?text=hello%20world&name=notes.txt' },
+    truth: [['the file it was asked to hold', /notes\.txt/], ['the text it was asked to hold', /hello world/], ['the count of characters, worked out (11)', /11 characters/], ['the line count, worked out (1)', /1 line\b/], ['where the gist lives', /whole gist in the link/i]],
+    askParts: {
+      'code hosting': [['a raw view', /\bRaw\b/], ['a download', /\bDownload\b/], ['a copy-link', /Copy link/], ['a share control', /Share link/], ['a GitHub file it can open', /GitHub/], ['a stated limit', /[\d,]+ characters is the limit/]],
+      'ticket tracking': [['a task list', /\bTask list\b/], ['add a task', /Add a task/], ['how many are left', /\d+ of \d+ tasks left/], ['kept on the device', /on this device/]],
+      'time tracking': [['a timer', /\bTimer\b/], ['start', /\bStart\b/], ['stop', /\bStop\b/], ['the time shown', /\d+ m \d+ s/], ['a total', /Total \d+ m/], ['kept on the device', /on this device/]],
+      'project files and docs': [['notes and docs', /\bNotes and docs\b/], ['a preview', /\bPreview\b/], ['file sizes', /\d+ B\b/], ['download them all', /Download all/], ['the code is in the link', /whole gist in the link/i]],
+    },
+    facts: [
+      ['no account', /no account/i], ['nothing stored', /nothing stored/i], ['a passphrase lock', /passphrase/i], ['a raw view', /\bRaw\b/],
+      ['a download', /\bDownload\b/], ['a copy link', /Copy link/], ['a share control', /Share link/], ['an editable copy', /Edit a copy/],
+      ['the character count', /\d+ characters/], ['the line count', /\d+ lines?\b/], ['where the gist lives', /whole gist in the link/i],
+      ['a task list', /\bTask list\b/], ['add a task', /Add a task/], ['how many tasks are left', /\d+ of \d+ tasks left/],
+      ['a timer', /\bTimer\b/], ['start and stop', /Start[\s\S]{0,120}Stop/], ['the time shown', /\d+ m \d+ s/], ['the total time', /Total \d+ m/],
+      ['notes and docs', /\bNotes and docs\b/], ['a preview', /\bPreview\b/], ['file sizes', /\d+ B\b/], ['download them all', /Download all/],
+      ['kept on this device', /on this device/], ['works offline', /works offline/i], ['a GitHub file', /GitHub/],
+    ],
+  },
+  // automation (owner, 2026-10-28: the Zapier trial runs out; two Zaps logged the issues and pull requests of atomeam/void-loop into a Zapier table):
+  // Zapier is the floor, fought from /ledger/. The question is the oldest pull requests of the repo, which never change: #1 and #2 are pull requests,
+  // merged by atomeam on 2026-09-28 (05:14 and 04:57 UTC, so Sep 27 or 28 in the reader's own zone). Judged on Verse alone (the Zapier table is private).
+  automation: {
+    site: 'https://zapier.com/', verse: '/ledger/',
+    ask: { verse: '/ledger/?tab=pr&sort=old' },
+    truth: [['pull request #1 by its title', /Void side-panel extension/], ['pull request #2 by its title', /PC-free deploys/], ['who opened them', /atomeam/], ['merged, not just closed', /Merged/], ['the day they merged', /Sep 2[78], 2026/]],
+    askParts: {
+      'repo activity log': [['issues and pull requests apart', /Issues[\s\S]{0,80}Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/], ['how many are shown', /[\d,]+ of [\d,]+ (?:issues|pull requests) shown/]],
+      tables: [['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/], ['copy as CSV', /Copy as CSV/], ['the view as a link', /Copy link to this view/]],
+      'triggers and actions': [['a refresh that asks only for what changed', /Refresh/], ['an unchanged answer is free', /304/]],
+      'app integrations': [['opens in any spreadsheet', /spreadsheet/i]],
+      'scheduled runs': [['the saved copy opens offline', /opens offline/]],
+    },
+    facts: [
+      ['issues tab', /\bIssues\b/], ['pull requests tab', /Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/],
+      ['an author filter', /\bAuthor\b/], ['merged shown apart from closed', /Merged/], ['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/],
+      ['copy as CSV', /Copy as CSV/], ['a link to the exact view', /Copy link to this view/], ['no account', /no account/i], ['no token', /no token/i],
+      ['the rate limit said plainly', /60 requests an hour/], ['an unchanged answer is free', /304/], ['kept on this device', /on this device/], ['opens offline', /opens offline/],
+    ],
+  },
+  // shopping (owner, 2026-10-26: "need a /store page that beats amazons"; and, the same day: "we should just go after smaller sites no reason to go after big
+  // sites yet"): Amazon is the floor, fought from Verse's own /store/. The ask arrives carrying a cart, so the money on the page is checkable against the
+  // worked-out answer and the cart opens itself; the totals are the page's own, and the payment page (Gumroad or Stripe) is said to be the final word before
+  // anyone pays. Digital goods: delivery is told as steps, not tracking theatre. Judged on Verse alone (nobody buys from both sites).
+  shopping: {
+    site: 'https://www.amazon.com/', verse: '/store/',
+    ask: { verse: '/store/?cart=void-monthly,code-review-pro:2' },
+    truth: [['Verse Monthly at $49.00', /\$49\.00/], ['two Code Review Pro, $20.00 on that line', /Code Review Pro[\s\S]{0,80}Qty 2[\s\S]{0,40}\$20\.00/], ['the subtotal, $69.00', /Subtotal\s*\$69\.00/], ['the total, $69.00', /Total\s*\$69\.00/], ['the payment page is the final word before anyone pays', /before you confirm/]],
+    askParts: {
+      catalogue: [['keyword search', /Search products/], ['a kind filter', /Kind/], ['a sort control', /Sort/], ['how many are shown', /\d+ of \d+ products/], ['every product names its price', /\$\d/], ['availability on the card', /Available now/], ['the price list as CSV', /price list \(CSV\)/]],
+      checkout: [['quantities', /Qty/], ['what one costs', /each/], ['a subtotal', /Subtotal/], ['the total', /Total\s*\$\d/], ['the payment page is the final word', /before you confirm/], ['no account needed', /no account/i], ['checkout names its provider', /Gumroad/]],
+      'delivery tracking': [['digital goods, nothing ships', /nothing ships/i], ['an order code', /order code/i], ['the steps named', /Ordered[\s\S]{0,200}Support window/], ['signed downloads ready', /Signed downloads/], ['license keys', /License key/], ['links re-openable any time', /re-open them any time/]],
+    },
+    facts: [
+      ['keyword search', /Search products/], ['a kind filter', /Kind/], ['a sort control', /Sort/], ['a count of what is shown', /\d+ of \d+ products/],
+      ['prices on the products', /\$\d/], ['availability', /Available now/], ['a 3D preview', /Turn any model/], ['the changelog', /changelog/],
+      ['an order lookup', /Find my order/], ['order codes', /order code/i], ['license keys', /License key/], ['signed downloads', /Signed downloads/],
+      ['links that last 24 hours', /last 24 hours/], ['a receipt any time', /receipt/i], ['a cart shared as a link', /shared as a link/],
+      ['the cart kept on this device', /on this device/], ['works offline', /orks offline/], ['no account', /no account/i], ['no ads', /no ads/i],
+      ['no trackers', /no trackers/i], ['the payment provider credited', /Gumroad/], ['ask Verse from the page', /what can I buy/], ['support the crew', /Tip the crew/],
+    ],
+  },
   // travel (owner, 2026-10-26: "need a flights page"): Google Flights is the floor; Verse has no paid fare feed, so the page says so and opens the same search on the providers.
   // The question is a route with dates: New York (JFK) to Lisbon (LIS), a return a week after leaving in a month. Truth worked out by hand: the great circle is about 5,400 km
   // (3,360 miles), a typical flight about 7 hours, Lisbon is 5 hours ahead of New York. Judged on Verse alone.
@@ -573,6 +909,30 @@ export const PROBES = Object.freeze({
       ['logarithms', /\bln\b[\s\S]{0,80}\blog\b|\blog\b[\s\S]{0,80}\bln\b/i], ['pi', /π|\bpi\b/i], ['factorial', /n!|\bfactorial\b/i], ['percent', /%/],
       ['memory', /\bM\+[\s\S]{0,60}\bMR\b|\bMR\b[\s\S]{0,60}\bM\+|\bmemory\b/i], ['last answer', /\bAns\b/], ['exponent entry', /\bEXP\b|×\s*10/], ['change sign', /±|\+\/[-−]/],
       ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
+  },
+  'formula calculators': {
+    site: 'https://www.vcalc.com/', verse: '/calculators/',
+    // vcalc.com's robots.txt asks robots not to read it, so accuracy is Verse against the worked-out answer: the outside area of a pipe 2 inches
+    // across and 10 feet long, pi x d x l = pi x (2/12 ft) x 10 ft = 5.235988 ft², and the same area in square metres (0.4864390 m²) and square
+    // inches (753.9822 in²), the units a page that is unit-aware shows beside it
+    ask: { verse: '/calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
+    truth: [['5.23599 ft²', /(?<![\d.])5\.2359\d*\s*ft²/], ['0.486439 m²', /(?<![\d.])0\.48643\d*\s*m²/], ['753.982 in²', /(?<![\d.])753\.98\d*\s*in²/]],
+    askParts: {
+      // the library: each kind of calculator the best formula sites keep, named as a section of the page
+      'formula library': [['everyday', /\bEveryday\b/i], ['maths', /\bMath(?:s|ematics)?\b/i], ['geometry', /\bGeometry\b/i], ['statistics', /\bStatistics\b/i], ['physics', /\bPhysics\b/i],
+        ['chemistry', /\bChemistry\b/i], ['electrical', /\bElectrical\b|\bElectricity\b/i], ['health', /\bHealth\b/i], ['dates', /\bDays between two dates\b/i], ['more than 100 calculators', /\bAll calculators \((?:[1-9]\d{2,})\)/i]],
+      // unit-aware: every input offers the units of its kind, the answer in any unit, the same answer in every other unit, the formula and its working
+      'unit-aware inputs': [['each input takes a unit of its kind', /Diameter of pipe\s*\n\s*m \(metres\)[\s\S]*?in \(inches\)[\s\S]*?ft \(feet\)/], ['the answer in any unit', /\bShow in\b/], ['every other unit', /\bIn other units\b/], ['the formula in its symbols, with the working', /A = π × d × l[\s\S]*\bWorking\b/], ['square metres beside square feet', /\bm²[\s\S]*\bft²|\bft²[\s\S]*\bm²/]],
+      // a formula of your own: guided rows or the raw text, with units, kept on the device and shared by a link
+      'custom formulas': [['build your own formula', /\bBuild your own formula\b/i], ['a guided mode', /\bGuided\b/], ['a raw mode', /\bRaw\b/], ['saved on the device', /\bSave on this device\b/i], ['shared by a link', /\bShare formula link\b/i]],
+      // the library's size against what vcalc.com publishes (owner, 2026-10-28: not beaten while the count is short, the gap shown): the page's own
+      // "All calculators (N)" read off the answer, held to the floor's rivalCount, so this fails, honestly, until Verse has as many
+      'library size': [[LIBRARY_GAP, (t) => libraryCount(t) >= RIVAL_N]],
+    },
+    // what a full formula library offers: the everyday sums, the sciences, units, the working, and a way out (share, export) and in (your own)
+    facts: [['percent', /\bpercent/i], ['tip', /\btip\b/i], ['loan', /\bloan\b/i], ['BMI', /\bBMI\b/], ['date maths', /\bdays between\b|\bdate\b/i], ['unit conversion', /\bconver/i], ['area', /\barea\b/i],
+      ['physics', /\bPhysics\b/i], ['chemistry', /\bChemistry\b/i], ['electrical', /\bOhm/], ['geometry', /\bGeometry\b/i], ['statistics', /\bStatistics\b/i], ['the formula shown', /\b\w+ = [^\n]*[×÷+−^√π]/],
+      ['a share link', /\bShare link\b/i], ['copy the answer', /\bCopy answer\b/i], ['export', /\bExport\b/i], ['a custom formula', /\bBuild your own formula\b/i], ['works offline', /\boffline\b/i]],
   },
   password: {
     // both pages make a password as they open (passwordsgenerator.net's default is 16 characters of every class; Verse's link asks for the same);
@@ -774,14 +1134,19 @@ const LANE_PROBES = Object.freeze({
   },
 });
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
+// a second floor standing on the same page reads it the same way (owner, 2026-10-26: tildegit is /g/ like codebase): the questions and the
+// lists come from the page, and only the site it is compared with changes — said once here, never copied into a second probe that can drift
+const SAME_PAGE = { tildegit: 'codebase', squibler: 'sudowrite', inkfluence: 'sudowrite', novelcrafter: 'sudowrite' };
+
 export function probeFor(id) {
   // a lane site ('translate: deepl.com', lib/tower.js LANES) is measured by its lane's probe: the same Verse page, the same truth, that site
   const lane = String(id || '').match(/^(.+?): ([a-z0-9.-]+)$/i), id0 = id;
-  const p = PROBES[id] || (lane && PROBES[lane[1]]); if (!p) return null;
+  const alias = SAME_PAGE[id], p = PROBES[id] || (alias && PROBES[alias]) || (lane && PROBES[lane[1]]); if (!p) return null;
   if (lane) id = lane[1];
   // a lane site with a page of its own (LANE_PAGES) is measured against that page, not its leader's
   const own = lane && LANE_PAGES[id0], lp = lane && LANE_PROBES[id0]; // a lane page may bring its own question, parts and facts (LANE_PROBES)
-  const base = { site: p.site, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: SELF_ASK.get(id0) || own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
+  const ownSite = alias ? ((FLOORS.find((f) => f.id === id0) || {}).url || p.site) : p.site;
+  const base = { site: ownSite, verse: own || p.verse, ask: own && p.ask ? { ...p.ask, verse: SELF_ASK.get(id0) || own } : p.ask || null, askParts: p.askParts || {}, pageParts: p.pageParts || {}, motion: p.motion || {}, truth: typeof p.truth === 'function' ? p.truth() : p.truth || null, facts: p.facts || (id === 'colour codes' ? PROBES.colour.facts : []), parts: PARTS[id] || {} };
   return lp ? { ...base, ...lp, verse: own || base.verse, ask: lp.ask || base.ask, ownFacts: true } : base;
 }
 /** how many of the [label, RegExp] items a page's text shows: { n, of, has: [labels], missing: [labels] }. Pure. */
@@ -828,7 +1193,7 @@ export function factsFromFile(file, n = 6) {
 const FEATURE_DIR = new URL('../domains/features/', import.meta.url), featureFiles = new Map();
 /** a floor's features file, read once, or null (none, or not JSON) */
 export function featuresOf(id, dir = FEATURE_DIR) {
-  const file = new URL(featureSlug(id) + '.json', dir).pathname; if (featureFiles.has(file)) return featureFiles.get(file);
+  const file = fileURLToPath(new URL(featureSlug(id) + '.json', dir)); if (featureFiles.has(file)) return featureFiles.get(file);
   let v = null; try { v = JSON.parse(readFileSync(file, 'utf8')); } catch (_) { v = null; } featureFiles.set(file, v); return v;
 }
 /** a probe with its floor's feature facts added after its own (none already named), or the probe as it was: no probe, no file, nothing Verse has */

@@ -195,6 +195,12 @@ export default {
     ]
    },
    {
+    "name": "night-sky",
+    "examples": [
+     "hide the sky"
+    ]
+   },
+   {
     "name": "moontonight",
     "examples": [
      "moon tonight",
@@ -454,6 +460,28 @@ export default {
     ]
    }
   ],
+  "shop": [
+   {
+    "name": "store",
+    "examples": [
+     "what's new in the store",
+     "store preview",
+     "new products",
+     "what can i buy",
+     "tip",
+     "buy"
+    ]
+   },
+   {
+    "name": "services",
+    "examples": [
+     "what do you sell",
+     "hire you",
+     "fix my automation",
+     "what does void cost"
+    ]
+   }
+  ],
   "mind-field": [
    {
     "name": "mind-field-mode",
@@ -578,7 +606,8 @@ export default {
      "tilt arena",
      "genome arena",
      "tilt game",
-     "agent arena"
+     "agent arena",
+     "show me a 45deg tilt"
     ]
    },
    {

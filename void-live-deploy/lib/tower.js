@@ -13,8 +13,11 @@
 // stay private; this public side names generic aspects only and counts. Pure.
 
 import { SELF_SITES } from './self-sites.js';
+import { badgeOf, buildable } from './gate-badge.js';
+import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
+import { journeyAspects } from './tower-journeys.js';
 
-export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'];
+export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
 const HAND_FLOORS = [
   // the tutorial floors (2026-10-23): one-trick sites, the first fights, so the climb starts where a whole site can be out-done
@@ -38,6 +41,12 @@ const HAND_FLOORS = [
   // the first floor taken from the frontier (tower.frontier.json; owner, 2026-10-24: "find the site to conquer and get to work now"):
   // colorzilla.com (Tranco 101,274), its gradient editor behind Carbon ads, a Twitter widget, Facebook styles, Google Analytics and a tag manager
   { id: 'gradient', learned: "a gradient is judged by the text on it: the worst contrast across the whole gradient, conic gradients, and a link that holds it whole", site: 'colorzilla.com', url: 'https://www.colorzilla.com/gradient-editor/', ask: 'gradient generator', page: '/gradient/', label: 'CSS gradient', glyph: '▤', fatality: 'conic gradients, the worst text contrast across the gradient, a link that holds it whole, and it opens offline, with no ads, trackers or social widgets', extra: ['stops with opacity', 'import css', 'presets'] },
+  // paint by number (owner, 2026-10-26: "build wherever fits"): a frontier site given a page of its own, so the floor can be measured and beaten
+  { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', extra: [] },
+  // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com is the
+  // frontier's next fight — its own page says the Twitter stream that fed it is inactive and it now ranks the emoji copied from
+  // Emojipedia. Verse counts copies of a closed list of emoji on /emojis/ and says exactly that, so no global feed is faked
+  { id: 'emojis', site: 'emojitracker.com', url: 'https://emojitracker.com/', ask: 'realtime emoji counts', page: '/emojis/', label: 'Emoji counts', glyph: '☻', extra: [] },
   // the wheel picker (owner, 2026-10-24: "find the site to conquer and get to work now"): the frontier's wheelofgold.com is a login-walled
   // spin-to-win, not a tool, so the floor fights the category's best, wheelofnames.com
   { id: 'wheel', learned: "a fair wheel draws the winner first with crypto and plans the spin to land on it; and the gate learned to spin a wheel and read who won", site: 'wheelofnames.com', url: 'https://wheelofnames.com/', ask: 'spin the wheel', page: '/wheel/', label: 'Wheel picker', glyph: '◔', fatality: 'the winner drawn fairly with cryptographic random numbers before the wheel turns, weights like Pizza*3 typed inline, and an answer straight from the ask', extra: ['entries list', 'remove the winner', 'weights'] },
@@ -65,33 +74,73 @@ const HAND_FLOORS = [
   { id: 'image boards', site: '4chan', url: 'https://www.4chan.org/', ask: 'image boards', page: '/boards/', label: 'Image boards', glyph: '▧', noShot: true, extra: ['catalog', 'replies and quoting', 'image posts', 'archive'] },
   { id: 'sports', site: 'ESPN', url: 'https://www.espn.com/', ask: 'nba scores', page: '/scores/', label: 'Sports', glyph: '◎', extra: ['live scores', 'schedules', 'standings'] },
   { id: 'finance', site: 'Yahoo Finance', url: 'https://finance.yahoo.com/', ask: 'markets', page: '/markets/', label: 'Finance', glyph: '△', extra: ['live quotes', 'charts', 'watchlists'] },
-  { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', extra: ['directions', 'place search', 'live traffic'] },
+  { id: 'maps', site: 'Google Maps', url: 'https://www.google.com/maps', ask: 'map of lisbon', label: 'Maps', glyph: '⌖', defer: true, extra: ['directions', 'place search', 'live traffic'] },
   { id: 'news', site: 'BBC News', url: 'https://www.bbc.com/news', ask: 'news', page: '/news/', label: 'News', glyph: '▤', extra: ['breadth of sources', 'freshness', 'topic following'] },
   { id: 'photos', site: 'Google Photos', url: 'https://photos.google.com/', ask: 'my photos', page: '/photos/', label: 'Photos', glyph: '◰', extra: ['editing', 'compress and convert', 'metadata and privacy'] },
-  { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', label: 'Games', glyph: '♟', extra: ['catalogue size', 'online play', 'ratings and ladders'] },
-  { id: 'learning', site: 'Khan Academy', url: 'https://www.khanacademy.org/', ask: 'quiz me', label: 'Learning', glyph: '✦', extra: ['courses', 'progress tracking', 'practice'] },
+  { id: 'games', site: 'Lichess', url: 'https://lichess.org/', ask: 'play chess', label: 'Games', glyph: '♟', defer: true, extra: ['catalogue size', 'online play', 'ratings and ladders'] },
+  { id: 'learning', site: 'Khan Academy', url: 'https://www.khanacademy.org/', ask: 'quiz me', label: 'Learning', glyph: '✦', defer: true, extra: ['courses', 'progress tracking', 'practice'] },
   { id: 'music', site: 'Spotify', url: 'https://open.spotify.com/', ask: 'play music', page: '/music/', label: 'Music', glyph: '♪', extra: ['catalogue', 'playlists', 'recommendations'] },
   { id: 'podcasts', site: 'Apple Podcasts', url: 'https://podcasts.apple.com/', ask: 'play the podcast', page: '/podcasts/?show=verse&ep=ep1', label: 'Podcasts', glyph: '◉', extra: ['catalogue', 'subscriptions', 'playback controls'] },
   { id: 'travel', site: 'Google Flights', url: 'https://www.google.com/travel/flights', ask: 'flights to paris', page: '/flights/', label: 'Travel', glyph: '✈', extra: ['search across providers', 'price tracking', 'itineraries'] },
-  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', page: '/jobs/', label: 'Jobs', glyph: '⚒', extra: ['listing breadth', 'alerts', 'applications'] },
-  { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', label: 'Shopping', glyph: '⊡', extra: ['catalogue', 'checkout', 'delivery tracking'] },
-  { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', extra: ['groups', 'media', 'calls'] },
-  { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', extra: ['catalogue', 'streaming quality', 'recommendations'] },
-  { id: 'social', site: 'Reddit', url: 'https://www.reddit.com/', ask: 'social', label: 'Social', glyph: '⁂', extra: ['feed', 'following', 'posting and replies'] },
-  { id: 'email', site: 'Gmail', url: 'https://mail.google.com/', ask: 'my email', label: 'Email', glyph: '✉', extra: ['sending and receiving', 'spam filtering', 'search'] },
-  { id: 'search', site: 'Google Search', url: 'https://www.google.com/', ask: 'who wrote hamlet', label: 'Search', glyph: '⌕', extra: ['web coverage', 'freshness', 'answer quality'] },
+  { id: 'jobs', site: 'LinkedIn Jobs', url: 'https://www.linkedin.com/jobs/', ask: 'find jobs', page: '/jobs/', label: 'Jobs', glyph: '⚒', defer: true, extra: ['listing breadth', 'alerts', 'applications'] },
+  // far future (owner, 2026-10-28: Amazon and YouTube are not beaten, and not now; Verse works through the small single-purpose sites first).
+  // /store/ is Verse's own small shop, not a catalogue: the gate's earlier 11 of 13 came from keyword parts judged on Verse alone and from
+  // reading Amazon as "0 of 23" behind a bot wall. `gaps` and `plan` are the honest account the card shows.
+  { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', page: '/store/', label: 'Shopping', glyph: '⊡', defer: true, farFuture: true, extra: ['catalogue', 'checkout', 'delivery tracking'],
+    gaps: ['no product catalogue beyond Verse\'s own few items (no search across millions of products, no sellers)', 'no cart quantities, saved addresses or payment of its own (checkout hands off to the shop partner)', 'no order history, delivery tracking or returns', 'no reviews, ratings or questions from buyers', 'design polish measured worse (31 defects vs 2)'],
+    plan: 'after the small single-purpose sites: first a real product search over open catalogues with price and stock shown, then a cart and order history kept in the browser, then tracking for orders placed elsewhere (carrier numbers), then reviews; each step ships only when its journey passes' },
+  { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', defer: true, extra: ['groups', 'media', 'calls'] },
+  { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', defer: true, farFuture: true, extra: ['catalogue', 'streaming quality', 'recommendations'],
+    gaps: ['no Verse video page at all: the floor has nothing to measure', 'no catalogue, search or channels', 'no player with seek, quality and captions', 'no uploads, comments, playlists or recommendations', 'no adaptive streaming, live video or watch-later offline; the old speed and design rows measured a page that plays nothing'],
+    plan: 'after the small single-purpose sites: first a player page for open-licence video (seek, speed, captions, chapters) with search over an open archive, then playlists and history kept in the browser, then recommendations from what was watched; uploads and comments only with a partner, and each step ships only when its journey passes' },
+  { id: 'social', site: 'Reddit', url: 'https://www.reddit.com/', ask: 'social', label: 'Social', glyph: '⁂', defer: true, extra: ['feed', 'following', 'posting and replies'] },
+  { id: 'email', site: 'Gmail', url: 'https://mail.google.com/', ask: 'my email', label: 'Email', glyph: '✉', defer: true, extra: ['sending and receiving', 'spam filtering', 'search'] },
+  { id: 'search', site: 'Google Search', url: 'https://www.google.com/', ask: 'who wrote hamlet', label: 'Search', glyph: '⌕', defer: true, extra: ['web coverage', 'freshness', 'answer quality'] },
   // the code hosts from the least visited up (owner, 2026-10-24: "verse can eat github starting with the smallest"; the order is Tranco's,
   // tools/easiest-sites.mjs --rank). codebasehq.com's public side is one page that sells a paid product; its extra aspects are what that page lists
   { id: 'codebase', site: 'codebasehq.com', url: 'https://www.codebasehq.com/', ask: 'make a gist', page: '/g/', label: 'Code host (Codebase)', glyph: '⌥', fatality: 'a gist locked with a passphrase and a what-changed view, with no account and nothing stored', extra: ['code hosting', 'ticket tracking', 'time tracking', 'project files and docs'] },
   // the next forge up (Tranco order): sent down when its proof-of-work wall (Anubis) turned the old gate away; a wall the gate could not pass is the
   // gate's fault, not a loss (owner, 2026-10-24), so it is a floor again and the gate, a full browser now, does the wall's work like a visitor
-  { id: 'tildegit', site: 'tildegit.org', url: 'https://tildegit.org/', ask: 'make a gist', page: '/g/', label: 'Code host (tildegit)', glyph: '⌥', extra: ['code hosting', 'issues', 'pull requests', 'accounts'] },
+  { id: 'tildegit', site: 'tildegit.org', url: 'https://tildegit.org/', ask: 'make a gist', page: '/g/', label: 'Code host (tildegit)', glyph: '⌥', extra: ['code hosting', 'issues', 'pull requests', 'accounts'], defer: true }, // waits: a full forge (issues, pull requests, accounts) is not the job /g/ does, and Verse never asks for an account
   // the top of the tower (owner, 2026-10-23: "Github and claude ar on the tower too"): where Verse's own code lives, and the final boss
-  { id: 'code hosting', site: 'GitHub', url: 'https://github.com/', ask: 'look at atomeam/void-loop', label: 'Code hosting', glyph: '⌥', extra: ['repositories', 'pull requests and review', 'issues', 'actions and automation'] },
+  // automation (owner, 2026-10-28: "just build Verse to be able to take over by then", the Zapier trial running out): two Zaps kept a table of
+  // the repo's issues and pull requests; /ledger/ reads the same list straight from GitHub. A giant with thousands of apps, so it waits behind the small sites.
+  { id: 'automation', learned: 'a log of what happened in a repo does not need a pipe that copies it: the repo already keeps it, so read it where it lives and keep a copy on the device', site: 'Zapier', url: 'https://zapier.com/', ask: 'look at atomeam/void-loop', page: '/ledger/', label: 'Repo activity ledger', glyph: '⇄', defer: true, extra: ['repo activity log', 'tables', 'triggers and actions', 'app integrations', 'scheduled runs'] }, // waits: one job of thousands (the repo log) is done; triggers into other apps are not
+  { id: 'code hosting', site: 'GitHub', url: 'https://github.com/', ask: 'look at atomeam/void-loop', label: 'Code hosting', glyph: '⌥', defer: true, extra: ['repositories', 'pull requests and review', 'issues', 'actions and automation'] },
   // more opponents (owner, 2026-10-24: "you can use github and hugging face and perchance and anything you want as an opponent")
   { id: 'random generators', site: 'perchance.org', url: 'https://perchance.org/', ask: 'random name generator', label: 'Random generators', glyph: '⁇', page: '/generators/', extra: ['generator catalogue', 'make your own generator', 'image generation', 'list language', 'publish and remix'] },
-  { id: 'ai models', site: 'Hugging Face', url: 'https://huggingface.co/', ask: 'what can you do', label: 'AI models and demos', glyph: '◈', extra: ['model catalogue', 'datasets', 'live demos (spaces)'] },
-  { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', extra: ['answers anything', 'writes and runs code', 'builds itself'] },
+  { id: 'ai models', site: 'Hugging Face', url: 'https://huggingface.co/', ask: 'what can you do', label: 'AI models and demos', glyph: '◈', defer: true, extra: ['model catalogue', 'datasets', 'live demos (spaces)'] },
+  { id: 'assistant', site: 'Claude', url: 'https://claude.ai/', ask: 'what can you do', label: 'AI assistant', glyph: '◈', defer: true, extra: ['answers anything', 'writes and runs code', 'builds itself'] },
+  // yunite.xyz (owner, 2026-10-27): the scrim scorer players pass around in Discord. Its scoring needs an account and its bot reads
+  // screenshots; Verse's /tournaments/ does the arithmetic in the page and says so: placement is the highest matching threshold (a win is
+  // not a win plus the top-five), the tiebreakers are points, wins, eliminations then average placement, and the lobby splits into
+  // snake-seeded heats with contested drop spots - all from results typed in, with nothing sent anywhere and no account
+  { id: 'tournaments', learned: "a scrim score is arithmetic people must be able to check: placement pays the highest matching threshold, the tiebreakers are points then wins then eliminations then average placement, and the lobby splits into snake-seeded heats, all from the results typed in", site: 'yunite.xyz', url: 'https://yunite.xyz/', ask: 'fortnite tournament scoring', page: '/tournaments/', label: 'Tournament scoring', glyph: '▣', fatality: 'standings with the official tiebreakers, snake heats and contested drop spots worked out from results typed in, with no account, no screenshot and nothing sent', extra: ['point system presets', 'multi-match standings', 'heat split', 'drop spots', 'CSV in and out'] },
+
+  // thunit.com (owner, 2026-10-27): the next target after yunite, a 70-word brochure for "exclusive" hosting on a stock site, with six
+  // unnamed icon links and no tool of any kind. Verse's /hosting/ answers the two claims it makes in numbers: a crowded shared host splits
+  // its cores and an exclusive one keeps them, and an SLA is downtime per year, month, week and day. The ask is traffic (50 requests/s of
+  // 200 KB at 40 ms a worker) and a 99.9% SLA, with the arithmetic, the NGINX or Caddy config and the header set worked out in the page.
+  { id: 'hosting', learned: "hosting is arithmetic people must be able to check: sustained bandwidth, monthly transfer, concurrent workers by Little's law, the vCPUs and RAM they need, and the downtime each SLA allows, with a hardened config worked out from the same numbers", site: 'thunit.com', url: 'https://thunit.com/', ask: 'web hosting sizing calculator', page: '/hosting/', label: 'Hosting sizer', glyph: '▤', fatality: 'bandwidth, workers, vCPUs and RAM worked out from your traffic, the downtime each SLA allows, a hardened NGINX or Caddy config (TLS 1.3, headers, rate limit) - no account, nothing sent', extra: ['capacity sizing', 'uptime and SLA', 'server config', 'security headers'] },
+  // the prize wheel floor (2026-10-28): wheelofgold.com is a spin-to-win reward faucet that shows a wheel and a balance but never the odds.
+  // Verse's /prizes/ only does the arithmetic: each slice's real chance and expected value, the chance of the top prize in N spins, a
+  // 1,000-spin check against the theory, and how long a reward drip takes to reach its cashout. It never pays out or collects anything.
+  { id: 'prizes', learned: "a prize wheel is honest only when its odds are shown: each slice's chance and expected value, the chance of the top prize in N spins, and the days a reward drip takes to reach a cashout", site: 'wheelofgold.com', url: 'https://wheelofgold.com/', ask: 'prize wheel odds and payout calculator', page: '/prizes/', label: 'Prize wheel odds', glyph: '◕', fatality: "every slice's real chance and expected value, the top prize's odds over N spins, a 1,000-spin check and the days to a cashout - nothing paid, nothing collected", extra: ['odds table', 'expected value', 'drip calculator'] },
+  // vcalc.com (2026-10-28): a library of formula calculators with units and a builder for your own formulas. Its robots.txt asks robots
+  // not to read it, so the gate judges Verse's answers against the worked-out truth. Verse's /calculators/ is the library (164 calculators:
+  // everyday, maths, geometry, statistics, physics, chemistry, electrical, engineering, health, conversion and dates), every input in any
+  // unit of its kind, every answer in any unit, the SI working, and a guided or raw builder for your own formula, all on the device.
+  // Not beaten (owner, 2026-10-28): vcalc.com publishes over 15,000 calculator tools and Verse has far fewer, so 'library size' fails
+  // until the count is matched. The gate never opens vcalc.com (noRival) and judges the other aspects on Verse's own numbers.
+  { id: 'formula calculators', site: 'vcalc.com', url: 'https://www.vcalc.com/', ask: 'pipe surface area calculator', page: '/calculators/', label: 'Formula calculators', glyph: '∑', fatality: 'every input in any unit and every answer in any other, the SI working shown, your own formula built guided or raw, and a link that holds it all, offline', extra: ['formula library', 'unit-aware inputs', 'custom formulas', 'library size'], noRival: 'its robots.txt asks robots to stay away', rivalCount: { n: 15000, what: 'calculator tools', source: 'https://www.vcalc.com/features/ ("over 15,000 calculator tools", read 2026-10-28)' } },
+  { id: 'nameunit', learned: "a hosting and domain studio sizes servers from your traffic, checks a domain and shows tiered plans on the device, with no account and nothing sent", site: 'nameunit.com', url: 'https://www.nameunit.com/', ask: 'web hosting and domain studio', page: '/hosting/', label: 'Hosting & Domain Studio', glyph: 'H', fatality: 'domain search, tiered hosting plans, bandwidth, transfer, workers, vCPUs, RAM and SLA downtime worked out from the traffic typed in, plus a hardened NGINX or Caddy config - no account, nothing sent', extra: ['domain search', 'tiered plans', 'capacity sizing', 'uptime and SLA', 'server config'] },
+  { id: 'colorzilla', learned: "a colour tool is a converter, a picker, an eyedropper and a gradient editor that run on the device, with no extension, tracking or ads", site: 'colorzilla.com', url: 'https://www.colorzilla.com/', ask: 'colorzilla eyedropper and gradient studio', page: '/gradient/', label: 'ColorZilla studio', glyph: '◎', fatality: 'linear, radial and conic gradients, any number of stops, an eyedropper from the screen, presets, copy CSS or SCSS, paste to edit, from a picture - no extension, no ads, nothing sent', extra: ['gradient editor', 'eyedropper', 'color picker', 'css output', 'sharing'] },
+  { id: 'identity', learned: "an account portal is profile metadata, change history and SSO claims a person can read and edit on their own device, with no login and nothing sent", site: 'anycolorid.com', url: 'https://anycolorid.com/', ask: 'universal sso profile identity studio', page: '/identity/', label: 'Identity studio', glyph: '◎', fatality: 'editable profile, local change history, JWT claims inspector, mock service portal and a shareable profile - no account, nothing sent', extra: ['profile metadata', 'change history', 'SSO claims', 'service portal', 'sharing'] },
+  { id: 'cpan', learned: "a test report is data a developer can ingest, aggregate and search on their own device, with no account and nothing sent", site: 'cpantesters.org', url: 'https://www.cpantesters.org/', ask: 'cpan testers report ingestion studio', page: '/cpan/', label: 'CPAN Testers studio', glyph: 'Perl', fatality: 'ingest test reports, distribution health, a test matrix, module search and export - no account, nothing sent', extra: ['test reports', 'distribution health', 'module search', 'live feed', 'export'] },
+  { id: 'sudowrite', learned: "a book is a volume compiled from a ledger on the device, with no credits, subscriptions or API keys", site: 'sudowrite.com', url: 'https://www.sudowrite.com/', ask: 'ai book writer studio', page: '/books/', label: 'Verse Bookshelf', glyph: 'B', fatality: 'compile chapters from the ledger, export markdown or text, no credits, no subscriptions, nothing sent', extra: ['book studio', 'chapters', 'export', 'offline', 'sharing'] },
+  { id: 'squibler', learned: "a book is a volume compiled from a ledger on the device, with no credits, subscriptions or API keys", site: 'squibler.io', url: 'https://www.squibler.io/', ask: 'ai book writer studio', page: '/books/', label: 'Verse Bookshelf', glyph: 'B', fatality: 'compile chapters from the ledger, export markdown or text, no credits, no subscriptions, nothing sent', extra: ['book studio', 'chapters', 'export', 'offline', 'sharing'] },
+  { id: 'inkfluence', learned: "a book is a volume compiled from a ledger on the device, with no credits, subscriptions or API keys", site: 'inkfluenceai.com', url: 'https://www.inkfluenceai.com/', ask: 'ai book writer studio', page: '/books/', label: 'Verse Bookshelf', glyph: 'B', fatality: 'compile chapters from the ledger, export markdown or text, no credits, no subscriptions, nothing sent', extra: ['book studio', 'chapters', 'export', 'offline', 'sharing'] },
+  { id: 'novelcrafter', learned: "a book is a volume compiled from a ledger on the device, with no credits, subscriptions or API keys", site: 'novelcrafter.com', url: 'https://www.novelcrafter.com/', ask: 'ai book writer studio', page: '/books/', label: 'Verse Bookshelf', glyph: 'B', fatality: 'compile chapters from the ledger, export markdown or text, no credits, no subscriptions, nothing sent', extra: ['book studio', 'chapters', 'export', 'offline', 'sharing'] },
 ];
 
 // Lanes (owner, 2026-10-25: "defeat every single translate site one by one before we move on . its ok to punch down we can just confirm we
@@ -187,6 +236,12 @@ export function withLanes(floors, lanes = LANES) {
 }
 export const FLOORS = withLanes(HAND_FLOORS);
 /** true when no picture of a floor's site may be kept or shown (the floor, or its lane's leader, says noShot): /compare/ and the gate read it. Pure. */
+// a site the gate never opens (owner, 2026-10-28: skip opening vcalc.com in gate runs, its robots.txt blocks bots): noRival names why. Its floor is judged on Verse's own
+// numbers against the bar, and rivalCount (the size the site publishes, with where it says so) is what Verse's library is held to, so the gap shows and it is not beaten.
+/** why the gate must not open a floor's site ('' when it may), from the floor or its lane's leader. Pure. */
+export const noRivalOf = (f) => String((f && (f.noRival || (f.lane && (HAND_FLOORS.find((x) => x.id === f.lane) || {}).noRival))) || '');
+/** true when a URL is on a site the gate never opens (any floor with noRival names it). Pure. */
+export function noRivalUrl(url) { const h = hostOf(url).replace(/^www\./, ''); return !!h && HAND_FLOORS.some((f) => f.noRival && hostOf(f.url).replace(/^www\./, '') === h); }
 export const noShotOf = (f) => !!(f && (f.noShot || (f.lane && (HAND_FLOORS.find((x) => x.id === f.lane) || {}).noShot)));
 // fatality (owner, 2026-10-24: "i like the match then killshot", then "killshot= fatality"): once a site's aspects are matched, the one thing Verse does that the site cannot
 // answer, so the site becomes obsolete rather than equal. Only a thing that is built and live is written here; the card shows it as a plain line.
@@ -206,7 +261,9 @@ export function learnedOf(f) {
   const won = f.m ? 'beaten on ' + f.n + ' of ' + f.m + ' aspects: ' : '';
   return won + bits.join('; ');
 }
-export const aspectsOf = (f) => COMMON_ASPECTS.concat(f.extra || []);
+// the journeys (owner's standards, 2026-10-28; lib/tower-journeys.js) are on every floor's checklist: a floor is beaten only when its scripted
+// end-to-end journeys pass, never by aspects alone
+export const aspectsOf = (f) => COMMON_ASPECTS.concat(f.extra || [], journeyAspects(f));
 // a floor's checklist plus anything its evidence names beyond it: a site that gains a feature Verse lacks (tools/tower-verdict.mjs --lost)
 // adds that aspect, and the floor is not beaten until Verse has it too
 const checklist = (f, ev) => { const all = aspectsOf(f); for (const k of Object.keys(ev || {})) if (!all.includes(k)) all.push(k); return all; };
@@ -216,11 +273,22 @@ const OK = new Set(['better', 'equal-and-better']);
 // a row Verse awarded itself because one of its skills answered (the old gate, taken back 2026-10-24: "this whole card is fake") never counts,
 // whoever writes it into the file
 export const selfCalled = (r) => !!(r && r.called && /^called beaten by verse\b/.test(String(r.evidence || '')));
+// The standards (owner, 2026-10-28, after Amazon read 11 of 13 and YouTube read "replaced"): a journey passes only with its recorded steps and
+// negative controls (lib/tower-controls.js journeyPasses); a row that was blocked, skipped or not loaded is INCOMPLETE, never a pass; a
+// comparison won only because the rival could not be read (zeroRivalUnread: "0 of 3 ... turned the gate away", "0 of 23 things") is INCOMPLETE.
+// `incomplete` lists them so the card says so instead of counting them.
+// a journey row passes when the runner took it with its controls, or when a person signed the floor beaten (tools/tower-verdict.mjs --beaten:
+// the owner or the scout took the journeys by hand; a call Verse made itself never counts)
+export const passes = (a, r) => (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
 export function gate(floor, ev = {}) {
-  const all = checklist(floor, ev), passed = all.filter((a) => ev[a] && OK.has(ev[a].verdict) && ev[a].evidence && !selfCalled(ev[a]));
+  const all = checklist(floor, ev), passed = all.filter((a) => passes(a, ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
-  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed };
+  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || isJourney(a)) : isJourney(a)));
+  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
 }
+/** evidence rows that pass a floor's whole checklist the way the gate demands (journeys with steps and negative controls): for tests and
+ *  fixtures only, never written to tower.evidence.json. Pure. */
+export const passingRows = (f, extra = {}) => Object.fromEntries(aspectsOf(f).map((a) => [a, isJourney(a) ? { verdict: 'pass', steps: ['fixture step'], negatives: ['no stub text'], evidence: 'fixture', ...extra } : { verdict: 'better', evidence: 'x', ...extra }]));
 
 const HOST_RE = /^(?=.{3,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
 /** a host from what a list names ("Example.com", "https://www.example.com/x"), or '' when it is not one. Pure. */
@@ -254,13 +322,24 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); return { ...f, order: i, ...g, ev, icon, coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); return { ...f, order: i, ...g, ev, icon, badge, coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   const hard = (f) => (f.lost.length ? 1 : 0);
   // a lane site stands where its leader would and just in front of it, so the climb goes up the lane from its bottom and the leader is its last fight
   const lead = new Map(all.map((f) => [f.id, f])), key = (f) => (f.lane && lead.get(f.lane) && !lead.get(f.lane).beaten ? lead.get(f.lane) : f);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+    // a mega-site floor waits (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"): the giants keep their
+  // place in the queue but stand behind every small site, so the fight on the stage is always the easiest one left. The flag is read off the floor
+  // itself, never off key(), so a deferred leader's lane still climbs from its bottom; the giant comes back to the front once the small sites are done.
+  const waiting = (f) => (f.defer ? 1 : 0);
+  // the gate badge (lib/gate-badge.js): the build queue picks only Code work, or stage 1 on a regulated floor; a floor that needs a partner or a licence
+  // keeps its place in the line but never stands as the current fight, so nothing past what is real gets built or claimed
+  const gated = (f) => (buildable(f.badge) ? 0 : 1);
+  // far future (owner, 2026-10-28: Amazon and YouTube): behind every other site, deferred giants included; and before the hand floors' own
+  // order, small single-purpose sites first (owner: "work through millions of small sites, easiest first"): a site with at most two aspects of
+  // its own (a frontier tool site has none) stands before a broad, many-feature one
+  const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }

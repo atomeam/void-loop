@@ -1,5 +1,13 @@
 // German for the flights pages (lib/flights-ui.js): the English sentence is the key. Tests: tools/flights.test.mjs checks every t('...') has an entry.
 export const DE = Object.freeze({
+ "Try an example:": "Ein Beispiel:",
+ "Germany": "Deutschland",
+ "Press <kbd>/</kbd> to search, <kbd>Enter</kbd> to open the first result.": "<kbd>/</kbd> springt in die Suche, <kbd>Enter</kbd> öffnet den ersten Treffer.",
+ "Advanced: codes and the data": "Für Fortgeschrittene: Codes und Daten",
+ "IATA codes (three letters, like LHR) are the ones on tickets and bag tags; ICAO codes (four letters, like EGLL) are the ones pilots and flight plans use. Both work in the search. The whole list is one file you can download and use offline.": "IATA-Codes (drei Buchstaben, etwa LHR) stehen auf Tickets und Gepäckanhängern; ICAO-Codes (vier Buchstaben, etwa EGLL) nutzen Piloten und Flugpläne. Beide funktionieren in der Suche. Die ganze Liste ist eine Datei, die Sie herunterladen und offline nutzen können.",
+ "Download the airport list (JSON)": "Flughafenliste herunterladen (JSON)",
+ "Copy the codes": "Codes kopieren",
+ "Copied.": "Kopiert.",
  "Pick two different airports to see the kg CO2 of a seat on the flight, its Range, the figure per passenger-kilometre and with high-altitude effects.": "Wählen Sie zwei verschiedene Flughäfen, um die kg CO2 eines Sitzes auf dem Flug zu sehen, die Spanne, den Wert pro Passagierkilometer und mit Effekten in großer Höhe.",
  "Pick the airport you leave from to see where a flight of that length would land, each with its distance in km and its flight time (like 1 h 05 min).": "Wählen Sie Ihren Abflughafen, um zu sehen, wo ein Flug dieser Länge landen würde, jeweils mit Entfernung in km und Flugzeit (etwa 1 h 05 min).",
  "Pick two airports to see the Distance in km, miles and nm, the typical flight time, the time difference, the Direction, the distance actually flown, the CO2 of the flight and the Nearby airports of each end.": "Wählen Sie zwei Flughäfen, um die Entfernung in km, Meilen und nm, die übliche Flugzeit, den Zeitunterschied, die Richtung, die tatsächlich geflogene Strecke, das CO2 des Fluges und die Flughäfen in der Nähe beider Enden zu sehen.",

@@ -121,6 +121,28 @@ jobs:
           if-no-files-found: warn # a slice that measured nothing is merged as nothing
           retention-days: 3
 
+  # the naming audit (owner, 2026-10-26: "every future floor measurement entirely bulletproof"): the completeness checklist reads a
+  # page the way a visitor does, so a feature the page HAS but never NAMES counts as missing. Two floors lost completeness that way (the
+  # coin's flip counter, the base64 decoder). This runs the gate's own checklist over the deployed pages and fails when a page stops
+  # naming something it is credited with, so the drift is found here instead of by a gate run days later.
+  naming:
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.floor == 'all' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: The service worker parses (a worker that does not parse takes every page offline)
+        run: node --check void-live-deploy/sw.js
+      - name: Every page names what its checklist credits it with
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/naming-audit.mjs --rendered --live --check
   # every slice folded into tower.evidence.json on a fresh main, then committed and deployed as the fight run does
   merge:
     needs: sweep

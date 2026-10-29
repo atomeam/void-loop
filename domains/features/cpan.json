@@ -1,0 +1,54 @@
+{
+ "floor": "cpan",
+ "verse_page": "/cpan/",
+ "researched": "2026-10-28",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "cpantesters.org": {
+   "url": "https://www.cpantesters.org/",
+   "scanned": "2026-10-28",
+   "leader": true,
+   "pages": [
+    "https://www.cpantesters.org/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "CPAN Testers",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/cpan/ shows \"cpan\", \"tester\""
+    },
+    {
+     "name": "Report APIs",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/cpan/ shows \"report\"; not \"api\""
+    },
+    {
+     "name": "Site News",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/cpan/ shows none of its words; not \"new\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Site News",
+   "sites": [
+    "cpantesters.org"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-28",
+  "queued": []
+ }
+}

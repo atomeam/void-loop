@@ -79,7 +79,9 @@
   import { placeOf, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words } from '/lib/weather.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.weather.v1', esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   let shown = null; // the view on the page, for the share text and the hand-off
-  const get = (u) => fetch(u, { headers: { accept: 'application/geo+json, application/json' } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))));
+  // every fetch gives up after 12 s, so a service that never answers ends in the kept forecast or the retry line, never a page stuck busy
+  const WAIT_MS = 12000, timed = () => (typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(WAIT_MS) : undefined);
+  const get = (u) => fetch(u, { headers: { accept: 'application/geo+json, application/json' }, signal: timed() }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))));
   function draw(v, kept) {
     shown = v; $('out').hidden = false; $('place').textContent = v.place; $('temp').textContent = both(v.now.temp);
     $('now').textContent = 'Now: ' + words(v.now.code) + ', feels like ' + both(v.now.feels) + (Number.isFinite(v.now.humidity) ? ', humidity ' + Math.round(v.now.humidity) + '%' : '') + (Number.isFinite(v.now.windKmh) ? ', wind ' + v.now.windMph + ' mph / ' + Math.round(v.now.windKmh) + ' km/h' : '');
@@ -103,7 +105,7 @@
       let loc = coords || null, w = null;
       // Verse's own /api/weather first: the place and its forecast in one round trip, kept on the edge for ten minutes, so the page draws at once;
       // a 404 there is a place not found; anything else falls back to asking Open-Meteo from here
-      if (!loc) { try { const r = await fetch('/api/weather?q=' + encodeURIComponent(place)), j = await r.json().catch(() => null); if (r.status === 404 && j && j.kind === 'missing') { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } if (r.ok && j && j.ok && j.loc && j.w) { loc = j.loc; w = j.w; } } catch (_) {} }
+      if (!loc) { try { const r = await fetch('/api/weather?q=' + encodeURIComponent(place), { signal: timed() }), j = await r.json().catch(() => null); if (r.status === 404 && j && j.kind === 'missing') { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } if (r.ok && j && j.ok && j.loc && j.w) { loc = j.loc; w = j.w; } } catch (_) {} }
       if (!loc) { const g = await get(geocodeUrl(place)); loc = locOf(g.results && g.results[0]); if (!loc) { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } }
       if (!w) w = await get(forecastUrl(loc.lat, loc.lon));
       const v = viewOf(w, loc);

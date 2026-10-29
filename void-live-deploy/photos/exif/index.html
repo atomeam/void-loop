@@ -55,8 +55,13 @@
 <body data-start="info" data-slug="exif">
 <main>
   <button type="button" id="lang" aria-label="Sprache / Language">DE</button>
-  <h1 id="h1" data-i="title_exif">EXIF viewer and metadata remover</h1>
-  <p class="sub" id="sub" data-i="sub_exif">See what a photo says about you: camera, serial number, time and GPS. Strip it, or save it as JSON. Nothing is uploaded.</p>
+  <h1 id="h1" data-i="title_exif">Photo details checker: see and remove EXIF metadata</h1>
+  <p class="sub" id="sub" data-i="sub_exif">See what a photo quietly records (when, where, which camera, its serial number) and remove it before you share. Or save it as JSON. Nothing is uploaded.</p>
+  <section id="uses" aria-labelledby="usesh" class="sub"><h2 id="usesh" data-i="uses_h" style="font-size:16px;margin:6px 0 2px">Before you share</h2><ul style="margin:0 0 10px;padding-left:1.2em">
+    <li data-i="uses_sell">Selling something online: remove the place and the camera's serial number, so a buyer cannot find your home.</li>
+    <li data-i="uses_trip">A holiday photo: check the time and place it shows before you post it while you are away.</li>
+    <li data-i="uses_scan">A document scan: remove the phone or scanner name and the time before you email it.</li>
+  </ul></section>
   <div class="drop" id="drop"><label for="file" data-i="choose">Choose photos, drop them here, or paste one</label><input id="file" type="file" accept="image/*" multiple><small data-i="drophint">JPEG, PNG, WebP, AVIF, GIF, BMP. Several at once make a batch.</small></div>
   <p style="text-align:center;margin:0 0 10px"><button type="button" id="share" data-i="share">Share this tool</button></p>
   <p class="sub" id="caps" data-i="caps" style="min-height:7.5em">Compress and convert JPEG, PNG, WebP and AVIF with a quality slider, a before and after slider and the size saved. Resize, crop with shapes, rotate and flip. Brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo. See and strip EXIF, GPS and other metadata. Batch many photos into one zip. Paste or drop photos. Nothing is uploaded and it works offline.</p>

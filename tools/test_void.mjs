@@ -49,6 +49,9 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
+// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites)\.js)(\?|$)/;
+const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
@@ -60,6 +63,7 @@ if (process.argv.includes('--list')) {
 const releaseHeavy = await acquireHeavy('browser suite (tools/test_void.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const results = [];
+const siblingCount = (p) => p.evaluate(() => new Set([...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => h && h.startsWith('/') && !h.startsWith('//')).map((h) => h.split('?')[0]).filter((h) => h !== location.pathname && h !== '/')).size);
 const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's browser can do decides a few checks (skip below)
 // A hang fails loudly (owner, 2026-10-09, frontier build order step 1, suite split (4)): a per-check timeout and a
 // whole-suite budget. Either one ends the run red within seconds of being passed, prints every result so far, and names
@@ -327,6 +331,7 @@ const SIGNAL_SPY = () => {
 // Plan item 12: Atom's Gumroad store. /api/catalog and /api/gumroad are the real Pages Functions, run against an in-memory D1,
 // with a stand-in store (storefront + product pages carry an HTML-escaped data-page JSON, like moonbeam846.gumroad.com).
 const catalogFn = await import(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url).href);
+const storeFn = await import(new URL('../void-live-deploy/functions/api/store/[[path]].js', import.meta.url).href); // the store's own api, for the shopping floor
 const pingFn = await import(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url).href);
 const gum = await import(new URL('../void-live-deploy/lib/gumroad.js', import.meta.url).href);
 const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', import.meta.url).href);
@@ -471,6 +476,7 @@ async function fresh(...inits) {
     if (u.includes('/api/misses')) { missesCalls.push(u); return r.fulfill(json([])); }
     if (/\/api\/(passkey|mine)$/.test(new URL(u).pathname)) return meRoute(r);
     if (/\/api\/catalog$/.test(new URL(u).pathname)) return catalogRoute(r);
+    if (u.includes('/api/store/')) { const rq = r.request(), path = u.split('/api/store/')[1].split('?')[0].replace(/\/$/, ''); const init = { method: rq.method(), headers: { 'content-type': rq.headers()['content-type'] || 'application/json' } }; if (rq.method() !== 'GET') init.body = rq.postData() || ''; return storeFn.onRequest({ request: new Request(u, init), env: { SALT: 'test-salt' }, params: { path: path ? path.split('/') : [] }, waitUntil() {} }).then((res) => res.text().then((body) => r.fulfill({ status: res.status, contentType: res.headers.get('content-type') || 'application/json', body }))); }
     if (u.includes('/api/figurescript')) {
       const body = r.request().method() === 'POST' ? JSON.parse(r.request().postData() || '{}') : Object.fromEntries(new URL(u).searchParams);
       return figurescriptFn.onRequestPost({ request: new Request('http://x/api/figurescript', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: {} })
@@ -702,6 +708,505 @@ try {
     check('coin: "flip 5 coins" lays out five coins and says how many heads and tails', !!five && five.coins === 5 && /^\d heads, \d tails$/.test(five.word), JSON.stringify(five));
     await P.ctx.close();
   }
+  // the coin floor's own completeness checklist (tools/tower-probes.mjs withFeatureFacts, domains/features/coin-flip.json): the gate reads the page
+  // the way a visitor does, so a feature the page has but never says in words counts as missing — the 4 of 7 the tower sat at for a day
+  if (want("coin: /flip/ shows every feature the completeness checklist reads — the counter named, the tap and the result said")) {
+    const { PROBES, factsFromFile } = await import('./tower-probes.mjs');
+    const ff = JSON.parse(fs.readFileSync(new URL('../domains/features/coin-flip.json', import.meta.url), 'utf8'));
+    const F = await fresh({ base: base + 'flip/' });
+    await F.p.waitForSelector('.coin-again', { timeout: 10000 });
+    for (let i = 0; i < 10; i++) { await F.p.click('.coin-again'); await F.p.waitForTimeout(420); }
+    const text = await F.p.evaluate(() => document.body.innerText);
+    const facts = [...PROBES['coin flip'].facts, ...factsFromFile(ff)];
+    const missing = facts.filter(([name, fn]) => { let ok = false; try { ok = typeof fn === 'function' ? !!fn(text) : fn.test(text); } catch (_) {} return !ok; }).map(([name]) => name); // a probe fact is a regex, a feature fact a function — the gate reads both
+    check('coin: /flip/ shows all 7 things a full answer shows — the flip counter named, the tap and the result said in words (the gate\'s own rule, the 3 the tower sat at 4 of 7 on)',
+      facts.length === 7 && !missing.length && /Flip counter/.test(text) && /Tap the coin/.test(text) && /result is shown/.test(text), JSON.stringify({ facts: facts.length, missing }));
+    await F.ctx.close();
+  }
+  // the paint floor (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint by number, fought from /paint/. The page paints a
+  // real painting cut into numbered areas, so the counts come from the template file the page loads (wave.json), not from a formula: the
+  // labels are unpacked here the same way the page unpacks them, and a test tap lands on a pixel known to belong to a known colour.
+  if (want("paint: a real painting cut into numbered areas, a tap fills the area the chosen colour owns, the wrong colour says which number it is, undo, a gallery on this device, and every item the paint probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const fsx = await import('node:fs');
+    const tpl = JSON.parse(fsx.readFileSync(new URL('../void-live-deploy/paint/templates/wave.json', import.meta.url), 'utf8'));
+    const labels = new Uint8Array(tpl.w * tpl.h); let at = 0;
+    for (const [v, len] of tpl.rle) { labels.fill(v, at, at + len); at += len; }
+    const P = await fresh({ base: base + 'paint/?p=wave' });
+    await P.p.waitForSelector('#palette button', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.paint;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('paint: the painting is cut into 104 numbered areas in ten colours, and every item the paint probe reads is on the page', /\b104 areas/.test(t) && /\b10 colours/.test(t) && /The Great Wave/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const pick = (colour) => { for (let p = 0; p < labels.length; p++) if (labels[p] === colour) return { x: p % tpl.w, y: (p / tpl.w) | 0 }; return null; };
+    const tapAt = async (pt) => { const box = await P.p.$eval('#c', (e) => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; }); await P.p.mouse.click(box.x + (pt.x + 0.5) * box.w / tpl.w, box.y + (pt.y + 0.5) * box.h / tpl.h); };
+    await tapAt(pick(0)); await P.p.waitForTimeout(300);
+    const afterOne = await text();
+    await tapAt(pick(1)); await P.p.waitForTimeout(300);
+    const wrong = await P.p.$eval('#say', (e) => e.textContent);
+    check('paint: a tap fills the area the chosen colour owns and the count follows; the wrong colour says which number the area is instead of filling it', /\b1 of 104 areas/.test(afterOne) && /number 2\b/.test(wrong), JSON.stringify({ afterOne: (afterOne.match(/\d+ of \d+ areas/) || []), wrong }));
+    const pct = await P.p.evaluate(() => document.getElementById('bar').getAttribute('aria-valuenow'));
+    await P.p.click('#next'); await P.p.waitForTimeout(200);
+    const ringed = await P.p.$eval('#say', (e) => e.textContent);
+    await P.p.click('#save'); await P.p.waitForTimeout(250);
+    const gallery = await P.p.evaluate(() => [...document.querySelectorAll('#gallery li')].map((e) => e.textContent));
+    check('paint: the bar shows the share painted, find an area rings one, and saving puts the painting in the gallery on this device', +pct > 0 && /ringed/.test(ringed) && gallery.length === 1 && /The Great Wave/.test(gallery[0]) && /1 areas/.test(gallery[0]), JSON.stringify({ pct, ringed, gallery }));
+    await P.p.click('#share'); await P.p.waitForTimeout(200);
+    const shared = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#gallery li', { timeout: 15000 });
+    const kept = await P.p.evaluate(() => document.querySelectorAll('#gallery li').length);
+    const restored = await text();
+    check('paint: the link carries the areas finished (they come back on a reload) and the gallery survives a reload, nothing uploaded', /p=wave/.test(shared) && /done=\d/.test(shared) && kept >= 1 && /\b1 of 104 areas/.test(restored), JSON.stringify({ shared, kept, restored: (restored.match(/\d+ of \d+ areas/) || []) }));
+    await P.p.click('#undo'); await P.p.waitForTimeout(250);
+    const afterUndo = await text();
+    check('paint: undo takes the last area back', /\b0 of 104 areas/.test(afterUndo), JSON.stringify({ afterUndo: (afterUndo.match(/\d+ of \d+ areas/) || []) }));
+    const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share, #undo, #mode, #bar').length);
+    check('paint: the upload, the ten colours, the PNG export, the brush toggle and the share control are all there', inputs >= 14, JSON.stringify({ inputs }));
+    check('paint: the footer links to at least four sibling Verse tools, so the page is not a dead end', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.ctx.close();
+  }
+  // the tournament floor (owner, 2026-10-27): yunite.xyz's scrim scorer, fought from /tournaments/ — results typed in instead of a bot
+  // reading screenshots, placement on the highest matching threshold, the official tiebreakers, snake-seeded heats and contested drop
+  // spots, with no account and nothing sent. The seeded ask is the three-team match the probe works out by hand (Alpha 22, Bravo 19, Charlie 6).
+  if (want("tournament: seeded standings, the threshold rule, tiebreakers, snake heats, contested drops, CSV in and out and a share link")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const ask = '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor,Charlie:Old%20Mill&elim=2&win=10&top5=5';
+    const P = await fresh({ base: base + ask.slice(1) });
+    await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.tournaments;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const stat = await P.p.$eval('#stat', (e) => e.textContent);
+    const rows = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
+    const demo = await P.p.$eval('#demo', (e) => !e.hidden);
+    check('tournament: the seeded ask lands as three teams, 16 eliminations and 47 points, a win pays 10 and not 10 plus the top-five, and every item the probe reads is on the page',
+      /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1 leads by 3 pts' && rows[1] === '2 Bravo 19 0 7 2.0 2 -3 pts · needs 2 elims or a Top 5 to lead' && /^3 Charlie 6 0 3 6\.0 6 -16 pts/.test(rows[2]) && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
+    const heats = await P.p.$eval('#heatout', (e) => e.innerText);
+    const drops = await P.p.$eval('#droptable', (e) => e.innerText);
+    check('tournament: the lobby splits into snake-seeded heats, and the shared starting spot is flagged contested with who holds it while the unique one stays clear',
+      /Heat 1 Alpha/.test(heats) && /Heat 2 Bravo, Charlie/.test(heats) && /Old Mill\s+contested\s+#1 Alpha \(22 pts\) vs #3 Charlie \(6 pts\)/.test(drops) && /Harbor\s+clear\s+#2 Bravo \(19 pts\)/.test(drops), JSON.stringify({ heats, drops }));
+    await P.p.click('#share'); await P.p.waitForTimeout(250);
+    const search = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const back = await P.p.$eval('#stat', (e) => e.textContent);
+    check("tournament: the share link is the page's own state, and opening it again gives the same standings", /results=/.test(search) && /47 points/.test(back) && /leader Alpha/.test(back), JSON.stringify({ search: search.slice(0, 140), back }));
+    await P.p.selectOption('#preset', 'finals'); await P.p.waitForTimeout(150);
+    const tiers = await P.p.$eval('#tiers', (e) => e.textContent);
+    await P.p.fill('#csv', 'Delta, 3, 4\nEcho, 7, 1'); await P.p.click('#import'); await P.p.waitForTimeout(200);
+    const after = await P.p.$eval('#stat', (e) => e.textContent);
+    check('tournament: the finals-style preset sets its own placement ladder, and two CSV rows become the next match', /1st 10/.test(tiers) && /6th-10th 3/.test(tiers) && /5 teams/.test(after) && /2 matches/.test(after), JSON.stringify({ tiers, after }));
+    // the match grid (owner, 2026-10-28): the roster carries over, the host tabs through place and elims, a shared place is flagged
+    await P.p.click('#add'); await P.p.waitForTimeout(100);
+    const gridNames = await P.p.$$eval('#grid tbody td.team', (tds) => tds.map((t) => t.textContent));
+    await P.p.keyboard.type('2'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('3'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('2');
+    await P.p.waitForTimeout(150);
+    const dupe = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    await P.p.keyboard.press('Backspace'); await P.p.keyboard.type('1'); await P.p.waitForTimeout(150);
+    const dupeAfter = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    const gridResults = await P.p.evaluate(() => new URLSearchParams(location.search).get('results'));
+    check('tournament: the match grid keeps the roster from match 1, tabs place then elims, flags two teams on one place and writes the URL format back',
+      gridNames.join('|') === 'Alpha|Bravo|Charlie|Delta|Echo' && /Alpha and Bravo are both 2nd/.test(dupe) && !dupeAfter && /;Alpha:2:3,Bravo:1:0$/.test(gridResults || ''), JSON.stringify({ gridNames, dupe, dupeAfter, gridResults }));
+    // per-match columns, the cutoff gap and the match-point rule (owner, 2026-10-28)
+    await P.p.check('#percols'); await P.p.fill('#cut', '2'); await P.p.fill('#mp', '20'); await P.p.waitForTimeout(150);
+    const heads = await P.p.$$eval('#standings thead th', (t) => t.map((x) => x.textContent).join('|'));
+    const firstRow = await P.p.$eval('#standings tbody tr', (tr) => tr.innerText.replace(/\t/g, ' '));
+    const mpNote = await P.p.$eval('#mpnote', (e) => (e.hidden ? '' : e.textContent));
+    const colSearch = await P.p.evaluate(() => location.search);
+    check('tournament: each match gets its own column (points, place/elims), the gap names the cutoff, and match point names who is on it',
+      /\|M1\|M2\|M3\|Gap$/.test(heads) && /22 \(1\/6\)/.test(firstRow) && /On match point/.test(mpNote) && /cols=1/.test(colSearch) && /cut=2/.test(colSearch) && /mp=20/.test(colSearch), JSON.stringify({ heads, firstRow, mpNote, colSearch }));
+    // the tier chips (owner, 2026-10-28): remove a tier with its x, add a range, and the link carries tiers=
+    await P.p.click('#chips button[aria-label="Remove the 16th-25th tier"]'); await P.p.fill('#tfrom', '11'); await P.p.fill('#tto', '30'); await P.p.fill('#tpts', '1'); await P.p.click('#tadd'); await P.p.waitForTimeout(150);
+    const chips = await P.p.$$eval('#chips .chip', (c) => c.map((x) => x.firstChild.textContent).join('|'));
+    const tierUrl = await P.p.evaluate(() => new URLSearchParams(location.search).get('tiers'));
+    check('tournament: the tier chips remove and add ranges, an overlapped tier is replaced, and the link carries the ladder',
+      chips === '1st: 10|2nd-5th: 5|6th-10th: 3|11th-30th: 1' && tierUrl === '1:10,2-5:5,6-10:3,11-30:1', JSON.stringify({ chips, tierUrl }));
+    // the claim form (owner, 2026-10-28): a typed team and a half-typed spot snap to the roster and the spot already claimed, the pill says
+    // how many hold it, and the note names a team with no spot yet
+    await P.p.goto(base + 'tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor&elim=2&win=10&top5=5'); await P.p.waitForSelector('#droptable tbody tr', { timeout: 15000 });
+    const note0 = await P.p.$eval('#spotnote', (e) => e.textContent);
+    await P.p.fill('#spteam', 'charlie'); await P.p.fill('#spspot', 'harb'); await P.p.click('#spadd'); await P.p.waitForTimeout(150);
+    const sp = await P.p.evaluate(() => ({ drops: document.getElementById('drops').value, rows: [...document.querySelectorAll('#droptable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pills: [...document.querySelectorAll('#pills .chip')].map((b) => b.textContent), note: document.getElementById('spotnote').textContent, q: new URLSearchParams(location.search).get('drops') }));
+    check('tournament: the claim form snaps "charlie" and "harb" to Charlie and Harbor, groups the table by spot with ranks and points, and the note names who has no spot',
+      /no spot yet: Charlie/.test(note0) && sp.drops === 'Alpha:Old Mill\nBravo:Harbor\nCharlie:Harbor' && sp.rows[1] === 'Harbor contested #2 Bravo (19 pts) vs #3 Charlie (6 pts)' && sp.rows[0] === 'Old Mill clear #1 Alpha (22 pts)'
+        && sp.pills.join('|') === 'Old Mill · 1|Harbor · 2' && /1 contested spot · every team has a spot/.test(sp.note) && sp.q === 'Alpha:Old Mill,Bravo:Harbor,Charlie:Harbor', JSON.stringify(sp));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth; const over = [...document.querySelectorAll('main *')].filter((e) => e.offsetParent && !e.closest('.scroll') && (e.getBoundingClientRect().right > vw + 1 || (e.scrollWidth > e.clientWidth + 1 && getComputedStyle(e).overflowX !== 'visible' && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName)))).map((e) => e.tagName + '#' + e.id + '.' + e.className); return { page: document.documentElement.scrollWidth - vw, over: over.slice(0, 6) }; });
+    check('tournament: at phone width (360 px) the page never scrolls sideways and nothing outside a scroll box is cut off', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
+    const stageLink = await P.p.$eval('a[href*="ask=tournament"]', (a) => a.getAttribute('href')).catch(() => '');
+    check('tournament: the footer links to at least four sibling Verse tools and hands the page to the stage', (await siblingCount(P.p)) >= 4 && stageLink === '/?ask=tournament%20scorer', JSON.stringify({ siblings: await siblingCount(P.p), stageLink }));
+    await P.ctx.close();
+  }
+  // everyone's tournaments (owner, 2026-10-28): a bare page opens on a game night, one click swaps to the battle-royale example, a league
+  // scores 3/1/0 with goal difference, and a link made before the presets were renamed (preset=fncs, win/top5) still scores the same
+  if (want("tournament: a bare page opens on a game night, the battle-royale swap, a league and old links")) {
+    const P = await fresh({ base: base + 'tournaments/' });
+    await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const gn = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, heads: [...document.querySelectorAll('#grid thead th')].filter((t) => !t.hidden).map((t) => t.textContent).join('|'), demo: !document.getElementById('demo').hidden, body: document.body.innerText }));
+    check('tournament: a bare /tournaments/ opens on an everyday game night, scores added straight on, no placement or elims, no trademarked names',
+      /3 teams · 3 rounds · 68 points · leader Owls/.test(gn.stat) && gn.preset === 'gamenight' && gn.heads === 'Team|Score' && gn.demo && !/Fortnite|FNCS|Tilted|Pleasant Park/.test(gn.body), JSON.stringify({ stat: gn.stat, preset: gn.preset, heads: gn.heads, demo: gn.demo }));
+    await P.p.click('#swapdemo'); await P.p.waitForTimeout(150);
+    const br = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, search: location.search }));
+    check('tournament: one click swaps the game night for the battle-royale example on the finals-style ladder',
+      br.preset === 'finals' && /3 teams · 1 match · 16 eliminations/.test(br.stat) && /leader Alpha/.test(br.stat) && !/kind=/.test(br.search), JSON.stringify(br));
+    await P.p.goto(base + 'tournaments/?kind=league&results=Reds:2:1,Blues:1:2,Greens:0:0,Golds:0:0;Reds:0:3,Blues:3:0,Greens:4:1,Golds:1:4'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const lg = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
+    check('tournament: a league scores win 3, draw 1, loss 0 and breaks the tie on goal difference', /^1 Greens 4 1 1 0 \+3 4 /.test(lg[0]) && /^2 Blues 3 1 0 1 \+2 4 /.test(lg[1]) && /^3 Reds 3 1 0 1 -2 2 /.test(lg[2]), JSON.stringify(lg));
+    await P.p.goto(base + 'tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&mode=duos&elim=2&win=10&top5=5&top10=3&top15=2&top25=1&preset=fncs'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const old = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, tiers: document.getElementById('tiers').textContent }));
+    check('tournament: an old link (preset=fncs with win, top5 ... top25) still opens as the same battle royale on the renamed preset',
+      old.preset === 'finals' && /16 eliminations · 50 points/.test(old.stat) && /1st 10, 2nd-5th 5, 6th-10th 3, 11th-15th 2, 16th-25th 1/.test(old.tiers), JSON.stringify(old));
+    // a roster sent from /wheel/ or /prizes/ (?roster=...&preset=gamenight): Game night is the scorer's own preset, the teams sit on 0 in its
+    // standings and grid, a score typed for one keeps the others, and the share link carries the whole roster
+    await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const r0 = await P.p.evaluate(() => ({ preset: document.getElementById('preset').value, rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), grid: [...document.querySelectorAll('#grid tbody td.team')].map((t) => t.textContent) }));
+    await P.p.fill('#grid input[data-team="Bob"]', '7'); await P.p.waitForTimeout(150);
+    const r1 = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), q: Object.fromEntries(new URLSearchParams(document.getElementById('link').getAttribute('href').split('?')[1])) }));
+    check('tournament: a ?roster= link opens on the native Game night preset with every team on 0, and after one score the share link still carries the whole roster',
+      r0.preset === 'gamenight' && r0.rows.join('|') === 'Ann 0|Bob 0|Cat 0' && r0.grid.join('|') === 'Ann|Bob|Cat' && r1.rows.join('|') === 'Bob 7|Ann 0|Cat 0'
+        && r1.q.kind === 'gamenight' && r1.q.results === 'Bob:7' && r1.q.roster === 'Bob\nAnn\nCat' && r1.q.preset === 'gamenight', JSON.stringify({ r0, r1 }));
+    // Copy for Discord: the standings as a monospace Markdown block (shown in a box too, for when the clipboard is refused), and it fits a phone
+    await P.p.click('#discord'); await P.p.waitForTimeout(150);
+    const dc = await P.p.evaluate(() => ({ text: document.getElementById('discordout').value, shown: !document.getElementById('discordout').hidden, say: document.getElementById('say').textContent }));
+    const dl = dc.text.split('\n');
+    check('tournament: Copy for Discord writes a bold title and a lined-up monospace block of the standings',
+      dc.shown && dl[0] === '**Standings · Game night / Trivia** · after 1 round' && dl[1] === '```text' && /^#  Team\s+Points  Round wins  Rounds  Best round$/.test(dl[2]) && /^1  Bob\s+7\s+\d+\s+1\s+7$/.test(dl[3]) && dl[dl.length - 1] === '```' && /Discord/.test(dc.say), JSON.stringify(dc));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const dw = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth, b = document.getElementById('discord').getBoundingClientRect(), t = document.getElementById('discordout').getBoundingClientRect(); return { page: document.documentElement.scrollWidth - vw, button: b.right <= vw + 1, box: t.right <= vw + 1 }; });
+    check('tournament: at phone width (360 px) the Discord button and its message box fit without sideways scrolling', dw.page <= 0 && dw.button && dw.box, JSON.stringify(dw));
+    await P.ctx.close();
+  }
+  // the repo activity ledger (owner, 2026-10-28: "just build Verse to be able to take over by then", the Zapier trial running out): /ledger/ reads
+  // GitHub's issues list from the browser - issues and pull requests on their own tabs, merged told apart from closed, filters in the link, a CSV
+  // download, a refresh that sends the saved ETag (a 304 is free), and GitHub's rate limit said plainly while the saved copy stays on screen.
+  // GitHub is a fixture here: #1 and #2 are the repo's real first pull requests (the tower probe asks for them), #3 an issue.
+  if (want("ledger: issues and pull requests apart, merged vs closed, filters in the link, CSV, an ETag refresh that comes back 304, and the rate limit said plainly")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'ledger/' });
+    const gh = { mode: 'ok', seen: [] }, H = { 'access-control-allow-origin': '*', 'access-control-expose-headers': 'ETag, Link, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset', 'content-type': 'application/json' };
+    const item = (n, title, extra) => ({ number: n, title, html_url: 'https://github.com/atomeam/void-loop/' + (extra.pull_request ? 'pull/' : 'issues/') + n, user: { login: extra.login || 'atomeam', type: 'User' }, labels: extra.labels || [], comments: 0, ...extra });
+    const items = [
+      item(4, 'Draft: tidy the docs', { state: 'closed', created_at: '2026-10-02T09:00:00Z', updated_at: '2026-10-03T09:00:00Z', closed_at: '2026-10-03T09:00:00Z', pull_request: { merged_at: null }, login: 'kim' }),
+      item(3, 'Login bug on phones', { state: 'open', created_at: '2026-10-01T09:00:00Z', updated_at: '2026-10-04T09:00:00Z', closed_at: null, labels: [{ name: 'bug' }], login: 'ann' }),
+      item(2, 'CI: PC-free deploys (tests + Cloudflare Pages) and helper/* auto-ship', { state: 'closed', created_at: '2026-09-28T04:40:00Z', updated_at: '2026-09-28T04:57:59Z', closed_at: '2026-09-28T04:57:59Z', pull_request: { merged_at: '2026-09-28T04:57:59Z' } }),
+      item(1, 'Void side-panel extension + frame permission, and free-model shortfall evidence', { state: 'closed', created_at: '2026-09-28T04:30:00Z', updated_at: '2026-09-28T05:14:17Z', closed_at: '2026-09-28T05:14:17Z', pull_request: { merged_at: '2026-09-28T05:14:17Z' } }),
+    ];
+    await P.ctx.route(/^https:\/\/api\.github\.com\//, (r) => {
+      const req = r.request(), u = req.url(), tag = req.headers()['if-none-match'] || '';
+      if (req.method() === 'OPTIONS') return r.fulfill({ status: 204, headers: { ...H, 'access-control-allow-headers': 'accept, if-none-match', 'access-control-allow-methods': 'GET' } });
+      gh.seen.push({ u, tag });
+      const rate = (left) => ({ 'x-ratelimit-limit': '60', 'x-ratelimit-remaining': String(left), 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 1800) });
+      if (gh.mode === 'limit') return r.fulfill({ status: 403, headers: { ...H, ...rate(0) }, body: JSON.stringify({ message: 'API rate limit exceeded' }) });
+      const since = /[?&]since=/.test(u), etag = since ? '"since-1"' : '"all-1"';
+      if (tag === etag) return r.fulfill({ status: 304, headers: { ...H, ...rate(50), etag } });
+      const body = since ? [items[1]] : items;
+      return r.fulfill({ status: 200, headers: { ...H, ...rate(55), etag }, body: JSON.stringify(body) });
+    });
+    await P.p.evaluate(() => localStorage.clear());
+    await P.p.goto(base + 'ledger/?tab=pr&sort=old'); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForTimeout(150);
+    const t = await P.p.evaluate(() => document.body.innerText);
+    const probe = PROBES.automation;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([, re]) => !re.test(t)).map(([n]) => n);
+    const prRows = await P.p.$$eval('#rows tr', (trs) => trs.map((tr) => tr.innerText.replace(/\s+/g, ' ')));
+    check('ledger: the pull requests tab lists #1, #2 and #4 oldest first, #1 and #2 merged and #4 closed, and the tower probe finds every truth and fact',
+      prRows.length === 3 && /Void side-panel/.test(prRows[0]) && /PC-free/.test(prRows[1]) && /tidy the docs/.test(prRows[2]) && /Merged/.test(prRows[0]) && /Closed/.test(prRows[2]) && !/Merged/.test(prRows[2]) && !miss.length, JSON.stringify({ prRows, miss }));
+    await P.p.click('#tab-issue'); await P.p.waitForTimeout(100);
+    const iss = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#rows tr')].map((tr) => tr.innerText.replace(/\s+/g, ' ')), sel: document.getElementById('tab-issue').getAttribute('aria-selected'), url: location.search }));
+    check('ledger: the issues tab holds only the issue (#3 by ann, open) and the tab change is in the link', iss.rows.length === 1 && /Login bug/.test(iss.rows[0]) && /ann/.test(iss.rows[0]) && iss.sel === 'true' && !/tab=/.test(iss.url), JSON.stringify(iss));
+    await P.p.click('#tab-pr'); await P.p.selectOption('#state', 'merged'); await P.p.waitForTimeout(100);
+    const merged = await P.p.evaluate(() => ({ n: document.querySelectorAll('#rows tr').length, url: location.search, count: document.getElementById('count').textContent }));
+    check('ledger: Merged on the pull requests tab keeps #1 and #2, says "2 of 3 pull requests shown", and puts state=merged in the link', merged.n === 2 && /state=merged/.test(merged.url) && /tab=pr/.test(merged.url) && /^2 of 3 pull requests shown/.test(merged.count), JSON.stringify(merged));
+    const [dl] = await Promise.all([P.p.waitForEvent('download', { timeout: 10000 }), P.p.click('#csv')]);
+    const { readFileSync } = await import('node:fs'); const csv = readFileSync(await dl.path(), 'utf8').replace(/^\uFEFF/, ''), lines = csv.split('\r\n').filter(Boolean);
+    check('ledger: Download CSV gives the view on screen with a header and CRLF lines (2 merged pull requests, oldest first, a BOM for spreadsheets)', lines[0].startsWith('kind,number,title,url,author,state,created_at') && lines.length === 3 && lines[1].startsWith('pr,1,') && lines[2].startsWith('pr,2,') && /,merged,/.test(lines[2]) && /\.csv$/.test(dl.suggestedFilename()), JSON.stringify({ name: dl.suggestedFilename(), lines: lines.slice(0, 3) }));
+    await P.p.reload(); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForTimeout(300);
+    const back = await P.p.evaluate(() => ({ state: document.getElementById('state').value, tab: document.getElementById('tab-pr').getAttribute('aria-selected'), n: document.querySelectorAll('#rows tr').length }));
+    check('ledger: a reload restores the view from the link (pull requests, merged)', back.state === 'merged' && back.tab === 'true' && back.n === 2, JSON.stringify(back));
+    await P.p.waitForTimeout(100); gh.seen.length = 0;
+    await P.p.click('#refresh'); await P.p.waitForFunction(() => !document.getElementById('refresh').disabled, null, { timeout: 10000 });
+    await P.p.click('#refresh'); await P.p.waitForFunction(() => !document.getElementById('refresh').disabled, null, { timeout: 10000 }); await P.p.waitForTimeout(100);
+    const st = await P.p.$eval('#status', (e) => e.textContent);
+    check('ledger: Refresh asks only for what changed (since=), and the second sends the saved ETag, gets a 304 and says nothing changed', gh.seen.length === 2 && gh.seen.every((s) => /since=/.test(s.u)) && gh.seen[1].tag === '"since-1"' && /nothing changed/.test(st), JSON.stringify({ seen: gh.seen, st }));
+    gh.mode = 'limit';
+    await P.p.reload(); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForFunction(() => /limit/.test(document.getElementById('status').textContent), null, { timeout: 10000 });
+    const lim = await P.p.evaluate(() => ({ st: document.getElementById('status').textContent, n: document.querySelectorAll('#rows tr').length }));
+    check('ledger: when GitHub says the limit is used up (403, 0 left) the page says when it resets and keeps the saved copy on screen', /60 requests an hour/.test(lim.st) && /resets at/.test(lim.st) && /saved copy/.test(lim.st) && lim.n === 2, JSON.stringify(lim));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')))).length);
+    check('ledger: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    check('ledger: the page links to at least four sibling Verse tools and to its card on the stage', (await siblingCount(P.p)) >= 4 && !!(await P.p.$('a[href="/?q=look%20at%20atomeam%2Fvoid-loop"]')), JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check('ledger: at phone width (360 px) the table turns into cards and the page never scrolls sideways', cut <= 0, JSON.stringify({ cut }));
+    await P.ctx.close();
+  }
+  // the prize wheel floor (2026-10-28): wheelofgold.com's spin-to-win, fought from /prizes/ - every slice's real chance and expected value,
+  // the top prize in N spins, a seeded 1,000-spin check, the drip to a cashout, and the list carried between /wheel/, /prizes/ and /tournaments/
+  if (want("prizes: the faucet audit's odds and drip, a seeded 1,000-spin check, never-reaches at EV 0, and the wheel, prizes and tournaments handoff")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const PZ = await import('../void-live-deploy/lib/prizes.js');
+    const P = await fresh({ base: base + 'prizes/?preset=faucet' });
+    await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.prizes;
+    const miss = [...(probe.truth || []), ...(probe.facts || []), ...Object.values(probe.askParts || {}).flat()].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('prizes: the lead line, and the faucet audit works out $0.0037 a spin, 63.2% for the top prize in 1,000 spins and 1,352 spins (56.3 days) to a $5 cashout; every item the probe reads is on the page',
+      t.includes('Spin a weighted prize wheel, check the real odds and expected value of every slice, and see how long a reward drip takes to pay out.') && !miss.length, JSON.stringify({ miss }));
+    await P.p.goto(base + 'prizes/?preset=loot&seed=42'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    await P.p.click('#sim'); await P.p.waitForTimeout(150);
+    const counts = await P.p.$eval('#simtable', (e) => e.dataset.counts);
+    const want42 = PZ.simulate(PZ.parseSlices(PZ.PRESETS.loot.slices), 1000, PZ.seeded('42'));
+    const simsay = await P.p.$eval('#simsay', (e) => e.textContent);
+    check('prizes: ?seed=42 makes the 1,000-spin run the same every time, it matches the odds (chi-square under the 0.1% line) and the page says the Spin button stays on secure randoms',
+      counts === want42.counts.join(',') && want42.chi2 < 16.27 && counts.split(',').reduce((a, b) => a + +b, 0) === 1000 && /Seeded with "42"/.test(simsay) && /secure random/.test(simsay), JSON.stringify({ counts, want: want42.counts, simsay }));
+    await P.p.click('#spin'); await P.p.waitForFunction(() => /worth/.test(document.getElementById('result').textContent), null, { timeout: 8000 });
+    const won = await P.p.$eval('#result', (e) => e.textContent);
+    check('prizes: a live spin lands on one of the slices and says what it is worth', /^(Legendary|Epic|Rare|Common) · worth /.test(won), JSON.stringify({ won }));
+    await P.p.goto(base + 'prizes/?s=' + encodeURIComponent('Alice\nBob') + '&cd=0'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const plain = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#odds tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), drip: document.getElementById('drip').textContent, body: document.body.innerText }));
+    await P.p.goto(base + 'prizes/?s=' + encodeURIComponent('a:0:1\nb:0:3')); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const zero = await P.p.$eval('#drip', (e) => e.textContent);
+    check('prizes: plain names from the wheel count as value 1, weight 1 (no NaN), and EV 0 or a 0 cooldown says it never reaches the cashout instead of Infinity',
+      plain.rows[0] === 'Alice 1 1 50% $0.5 100%' && plain.drip === 'Never reaches cashout ($0 expected value per spin)' && zero === 'Never reaches cashout ($0 expected value per spin)' && !/NaN|Infinity/.test(plain.body), JSON.stringify({ rows: plain.rows, drip: plain.drip, zero }));
+    // the handoff: prizes -> wheel (suffixes off, one copy kept on the click), the paste pill there, and a roster on 0 points under Game night
+    await P.p.goto(base + 'prizes/?preset=raffle'); await P.p.waitForSelector('#sendrow a', { timeout: 15000 });
+    await P.p.click('text=Spin them on the name wheel'); await P.p.waitForSelector('#entries', { timeout: 15000 }); await P.p.waitForTimeout(200);
+    const onWheel = await P.p.evaluate(() => ({ path: location.pathname, entries: document.getElementById('entries').value, kept: JSON.parse(localStorage.getItem('verse_handoff') || 'null'), strip: !!document.querySelector('.vh-strip a[href="/prizes/"]') }));
+    check('prizes: "Spin them on the name wheel" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill',
+      onWheel.path === '/wheel/' && onWheel.entries === 'Grand prize\nGift card\nTote bag\nThanks for entering' && onWheel.kept && onWheel.kept.fromPage === '/prizes/' && onWheel.kept.type === 'list' && onWheel.kept.data.length === 4 && onWheel.strip, JSON.stringify(onWheel));
+    await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#rostertable tbody tr', { timeout: 15000 });
+    const roster = await P.p.evaluate(() => ({ head: document.getElementById('h-roster').textContent, rows: [...document.querySelectorAll('#rostertable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pill: (document.querySelector('.vh-pill button') || {}).textContent || '', standings: document.querySelectorAll('#standings tbody tr').length }));
+    check('prizes: names sent to /tournaments/ become a roster on 0 points under Game night, beside the scorer\'s own standings, with the paste pill from /prizes/',
+      roster.head === 'Roster · Game night' && roster.rows.join('|') === '1 Ann 0|2 Bob 0|3 Cat 0' && /^Paste from \/prizes\//.test(roster.pill) && roster.standings > 0, JSON.stringify(roster));
+    await P.p.goto(base + 'prizes/'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')))).length);
+    check('prizes: every control is named and the pages threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth; return { page: document.documentElement.scrollWidth - vw, over: [...document.querySelectorAll('main *')].filter((e) => e.offsetParent && !e.closest('.scroll') && e.getBoundingClientRect().right > vw + 1).map((e) => e.tagName + '#' + e.id).slice(0, 5) }; });
+    check('prizes: at phone width (360 px) the page never scrolls sideways', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
+    check('prizes: the footer links to at least four sibling Verse tools', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.ctx.close();
+  }
+  // the hosting floor (owner, 2026-10-27): thunit.com's 70-word brochure, fought from /hosting/ - the two claims it makes (exclusive vs
+  // crowded shared servers, and security) turned into numbers: bandwidth, transfer, workers, memory and the downtime each SLA allows, with a
+  // hardened NGINX or Caddy config. The seeded ask is 50 requests/s of 200 KB at 40 ms, 128 MB a worker and a 99.9% SLA, worked out by hand.
+  if (want("hosting: the seeded traffic works out bandwidth, transfer, workers, memory and downtime, and the config carries the headers")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const ask = '/hosting/?rps=50&kb=200&ms=40&ram=128&sla=99.9';
+    const P = await fresh({ base: base + ask.slice(1) });
+    await P.p.waitForSelector('#config', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.hosting;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const out = await P.p.evaluate(() => ['bw', 'monthly', 'workers', 'memory'].map((id) => document.getElementById(id).textContent).join('\n'));
+    check('hosting: 50 requests/s of 200 KB at 40 ms works out 10 MB/s (80 Mbps), 129,600,000 requests and 25,920 GB a month, 2 workers, 4 vCPUs and 1,024 MB',
+      /10,000 KB\/s/.test(out) && /10 MB\/s/.test(out) && /80 Mbps/.test(out) && /129,600,000 requests\/month/.test(out) && /25,920 GB\/month/.test(out) && /2 active workers/.test(out) && /4 vCPUs/.test(out) && /1,024 MB/.test(out) && !miss.length, JSON.stringify({ out, miss }));
+    const sla = await P.p.$eval('#slatable tr.on', (e) => e.innerText.replace(/\t/g, ' '));
+    check('hosting: the 99.9% row allows 8h 45m 36s a year, 43m 48s a month, 10m 5s a week and 1m 26s a day',
+      /99\.9%/.test(sla) && /8h 45m 36s/.test(sla) && /43m 48s/.test(sla) && /10m 5s/.test(sla) && /1m 26s/.test(sla), JSON.stringify({ sla }));
+    const shared = await P.p.$eval('#shared-say', (e) => e.textContent);
+    const exclusive = await P.p.$eval('#exclusive-say', (e) => e.textContent);
+    check('hosting: shared and exclusive are the same traffic in numbers - four tenants leave one core, so it queues; an exclusive server has headroom',
+      /2\.0× over capacity/.test(shared) && /50% headroom/.test(exclusive), JSON.stringify({ shared, exclusive }));
+    const nginx = await P.p.$eval('#config', (e) => e.textContent);
+    await P.p.selectOption('#server', 'caddy'); await P.p.waitForTimeout(150);
+    const caddy = await P.p.$eval('#config', (e) => e.textContent);
+    check('hosting: the NGINX and Caddy configs both carry TLS 1.3, HSTS, a content security policy, nosniff and a rate limit sized to the traffic',
+      /TLS 1\.3/.test(nginx) && /TLS 1\.3/.test(caddy) && /ssl_protocols TLSv1\.3/.test(nginx) && /protocols tls1\.3/.test(caddy) && /limit_req_zone/.test(nginx) && /rate_limit/.test(caddy) && /Strict-Transport-Security/.test(caddy), JSON.stringify({ nginx: nginx.slice(0, 60), caddy: caddy.slice(0, 60) }));
+    const gist = await P.p.$eval('#gist', (a) => a.getAttribute('href'));
+    check('hosting: the config hands off to a gist, Base64 and the word count, encoded with the numbers on the page', /^\/g\/\?text=/.test(gist) && /name=Caddyfile/.test(gist), JSON.stringify({ gist: gist.slice(0, 60) }));
+    await P.p.click('#share'); await P.p.waitForTimeout(200);
+    const search = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#config', { timeout: 15000 });
+    const back = await P.p.$eval('#bw', (e) => e.textContent);
+    check("hosting: the share link is the page's own numbers, and opening it again gives the same sizing", /rps=50/.test(search) && /10 MB\/s/.test(back), JSON.stringify({ search, back }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('hosting: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=web"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('hosting: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=web%20hosting%20sizing', JSON.stringify({ siblings: sib, stageLink }));
+    // the queue card (docs/WIDER-USE.md): the support desk example is 120 calls an hour of 6 minutes, 14 agents; Erlang C says 15 keep the wait under a minute
+    await P.p.click('[data-qp="desk"]'); await P.p.waitForTimeout(150);
+    const qout = await P.p.$eval('#qout', (e) => e.textContent), qurl = P.p.url();
+    check('hosting: the support desk example works out 12 busy at once, 86% busy with 14 agents, and 15 for waits under a minute, kept in the link',
+      /12 are being served at once/.test(qout) && /86% busy/.test(qout) && /you need 15 open/.test(qout) && /qn=14/.test(qurl) && /rps=50/.test(qurl), JSON.stringify({ qout, qurl }));
+    await P.ctx.close();
+  }
+  // the identity floor (owner, 2026-10-27): anycolorid.com's SSO portal, fought from /identity/ - a sovereign, on-device profile identity studio
+  // with editable profile metadata, a local change history ledger, a JWT claims inspector, a portal of your own service links and a shareable profile link.
+  if (want("identity: the profile edits, the change history, the token inspector, the service portal and the share link")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'identity/' });
+    await P.p.waitForSelector('#profileout', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.identity;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('identity: the profile shows the seeded name, email, account ID and region, with a change history ledger', /Sky Rivera/.test(t) && /sky@example\.com/.test(t) && /AC-0001/.test(t) && /Change history/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('identity: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=identity"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('identity: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=identity%20sso%20profile', JSON.stringify({ siblings: sib, stageLink }));
+    await P.ctx.close();
+  }
+  // the cpan floor (owner, 2026-10-28): cpantesters.org's tester network, fought from /cpan/ - an offline-first Perl test report and
+  // module ingestion studio with distribution health, a test matrix, module search and export. The seeded ask ingests report lines and
+  // summarizes them on this device.
+  if (want("cpan: the seeded reports ingest, summarize health, build a matrix and export")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'cpan/' });
+    await P.p.waitForSelector('#summary', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.cpan;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('cpan: the page ingests reports, shows distribution health, a test matrix and export controls', /Ingest reports/.test(t) && /Distribution health/.test(t) && /CPAN test matrix/.test(t) && /Export JSON/.test(t) && /Export CSV/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('cpan: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=cpan"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('cpan: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=cpan%20testers', JSON.stringify({ siblings: sib, stageLink }));
+    await P.ctx.close();
+  }
+  // the obituaries floor: a respectful archive of surpassed tools, starting with ColorZilla's lineage card.
+  if (want("obituaries: the ColorZilla tribute and lineage chain")) {
+    const P = await fresh({ base: base + 'obituaries/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    await P.p.waitForTimeout(1500);
+    const t2 = await text();
+    check('obituaries: the archive reads the conquered ledger and renders memorials', /Obituaries & Lineage/.test(t2), JSON.stringify({}));
+    // honesty (owner, 2026-10-28: "be sure that our sites are actually better ... in every way"): every memorial carries a status, and one
+    // says "beaten" only when lib/obituary.js lets it; the rest say "in progress" with a match % and keep their Legacy and Tribute text
+    await P.p.waitForSelector('#list .badge', { timeout: 15000 }).catch(() => {});
+    const obit = await P.p.evaluate(() => { const cards = [...document.querySelectorAll('#list .card')]; return { cards: cards.length, badges: cards.filter((c) => c.querySelector('.badge')).length, wip: cards.filter((c) => /In progress: \d+% of its features matched/.test(c.innerText)).length, homage: cards.filter((c) => /The Legacy:/.test(c.innerText) && /Our Tribute:/.test(c.innerText)).length, falseWin: cards.filter((c) => /Beaten in every way/.test(c.querySelector('.badge').textContent) && /Not beaten yet/.test(c.innerText)).length, tally: document.getElementById('tally').textContent }; });
+    check('obituaries: every memorial shows an honest status and keeps its homage text', obit.cards > 0 && obit.badges === obit.cards && obit.homage === obit.cards && obit.wip > 0 && !obit.falseWin && /beaten in every way, \d+ in progress/.test(obit.tally), JSON.stringify(obit));
+    await P.p.fill('#q', 'Google Translate');
+    await P.p.evaluate(() => { const d = document.querySelector('#list details'); if (d) d.open = true; });
+    await P.p.waitForSelector('#list .tl li a[href^="http"]', { timeout: 15000 }).catch(() => {});
+    const tl = await P.p.evaluate(() => { const items = [...document.querySelectorAll('#list .tl li')]; return { items: items.length, cited: items.filter((li) => li.querySelector('a[href^="http"]') || /unknown/.test(li.textContent)).length, gaps: document.querySelectorAll('#list .gaps li').length }; });
+    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', tl.items > 3 && tl.cited === tl.items, JSON.stringify(tl));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const sib = await siblingCount(P.p);
+    check('obituaries: the footer links to at least two sibling Verse tools', sib >= 2, JSON.stringify({ siblings: sib }));
+    await P.ctx.close();
+  }
+  // the colorzilla floor: ColorZilla's eyedropper and gradient editor, fought from /gradient/.
+  if (want("colorzilla: the gradient editor, eyedropper and css output")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'gradient/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.colorzilla;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('colorzilla: the gradient page shows linear, radial, conic, an eyedropper and copy CSS', /linear/i.test(t) && /radial/i.test(t) && /conic/i.test(t) && /Pick a colour from the screen/i.test(t) && /Copy CSS/.test(t) && !miss.length, JSON.stringify({ miss }));
+    check('colorzilla: the page threw nothing', !P.errors.length, JSON.stringify({ errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the books floor: Verse Bookshelf, compiling chapters from the ledger.
+  if (want("books: the bookshelf compiles chapters and exports")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'books/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    await P.p.waitForTimeout(1500);
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.sudowrite;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('books: the bookshelf compiles chapters and exports', /Verse Bookshelf/.test(t) && /Chapters/.test(t) && /Export Markdown/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('books: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
+  // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
+  // that says what it is not. The count is real: the tap copies the character and adds one.
+  if (want("emoji counts: a ranked wall of a closed list, a tap copies the emoji and its count rises, a search, today and all time, and every item the emojis probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'emojis/?pick=' + encodeURIComponent('🔥') });
+    await P.p.waitForSelector('#wall button', { timeout: 15000 });
+    await P.p.waitForSelector('#pick:not([hidden])', { timeout: 15000 });
+    const seed = await P.p.evaluate(() => ({ cp: document.getElementById('pick-cp').textContent, bytes: document.getElementById('pick-bytes').textContent, ent: document.getElementById('pick-ent').textContent, name: document.getElementById('pick-name').textContent, link: document.getElementById('pick-link').getAttribute('href'), hidden: document.getElementById('pick').hidden, search: location.search }));
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.emojis;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const rows = await P.p.evaluate(() => document.querySelectorAll('#wall button').length);
+    check('emoji: the wall lists the whole closed list, ranked, and every item the emojis probe reads is on the page', rows === 134 && /rocket/.test(t) && /red heart/.test(t) && !miss.length, JSON.stringify({ rows, miss }));
+    // tap the first row: it should be copied and the count should rise by one, today and all time together
+    const firstBefore = await P.p.$eval('#wall button .n', (e) => e.textContent);
+    const firstName = await P.p.$eval('#wall button', (e) => e.getAttribute('aria-label'));
+    await P.p.click('#wall button'); await P.p.waitForTimeout(400);
+    const firstAfter = await P.p.$eval('#wall button .n', (e) => e.textContent);
+    const said = await P.p.$eval('#say', (e) => e.textContent);
+    check('emoji: a tap copies the emoji and its own count goes up by one, said plainly', /\b1\b/.test(firstAfter) && firstAfter !== firstBefore && /Copied/.test(said) && /copies today/.test(firstName), JSON.stringify({ firstBefore, firstAfter, said, firstName }));
+    await P.p.fill('#q', 'rocket'); await P.p.waitForTimeout(250);
+    // the rows are all on the page; the search hides the ones that do not match, so count what is shown
+    const filtered = await P.p.evaluate(() => [...document.querySelectorAll('#wall button')].filter((b) => b.offsetParent !== null).map((b) => b.querySelector('.name').textContent));
+    check('emoji: the search narrows the wall by name', filtered.length === 1 && /rocket/.test(filtered[0]), JSON.stringify({ filtered }));
+    await P.p.fill('#q', ''); await P.p.waitForTimeout(200);
+    await P.p.click('#all'); await P.p.waitForTimeout(250);
+    const allOn = await P.p.$eval('#all', (e) => e.getAttribute('aria-pressed'));
+    const todayOff = await P.p.$eval('#today', (e) => e.getAttribute('aria-pressed'));
+    const allText = await text();
+    check('emoji: all time is a mode of its own and the line says what the number counts', allOn === 'true' && todayOff === 'false' && /in all/.test(allText), JSON.stringify({ allOn, todayOff }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title)).length);
+    check('emoji: every control on the wall is named', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    // the seeded ask: ?pick= opens that emoji's record with its Unicode, its UTF-8 bytes, an HTML entity and a share link
+    const tapped = await P.p.evaluate(() => new Promise((r) => { document.querySelector('#wall button[data-c="\u{1F525}"]').click(); setTimeout(() => r({ say: document.getElementById('say').textContent, href: document.getElementById('pick-link').getAttribute('href') }), 300); }));
+    check('emoji: ?pick= opens the emoji with its Unicode, its bytes, its entity and a share link, and a tap keeps it there', !seed.hidden && seed.name === 'fire' && seed.cp === 'U+1F525' && seed.bytes === 'F0 9F 94 A5' && seed.ent === '&#128293;' && /pick=%F0%9F%94%A5/.test(seed.link) && /pick=%F0%9F%94%A5/.test(seed.search) && /pick=%F0%9F%94%A5/.test(tapped.href) && /Copied/.test(tapped.say), JSON.stringify({ seed, tapped }));
+    await P.p.fill('#q', 'heart'); await P.p.waitForTimeout(200);
+    const heartRows = await P.p.evaluate(() => [...document.querySelectorAll('#wall button')].filter((b) => b.offsetParent !== null).map((b) => b.querySelector('.name').textContent));
+    check('emoji: ?q= narrows the wall the same way the box does', heartRows.length >= 1 && heartRows.every((n) => /heart/.test(n)), JSON.stringify({ heartRows }));
+    // the handoff (owner, 2026-10-27): the picked emoji rides in the strip above the wall, and changes when another is tapped
+    const handoff = await P.p.evaluate(() => ['send-count', 'send-translate', 'send-base64', 'send-gist', 'send-stage'].map((id) => document.getElementById(id).getAttribute('href')));
+    await P.p.fill('#q', ''); await P.p.waitForTimeout(150);
+    await P.p.evaluate(() => document.querySelector('#wall button[data-c="🚀"]').click());
+    await P.p.waitForTimeout(400);
+    const rocket = await P.p.evaluate(() => ({ name: document.getElementById('handoff-name').textContent, hrefs: ['send-count', 'send-translate', 'send-base64', 'send-gist', 'send-stage'].map((id) => document.getElementById(id).getAttribute('href')) }));
+    check('emoji: the picked emoji rides in the handoff strip (characters, translation, Base64, gist, stage) and changes when another is tapped',
+      handoff[0] === '/word-count/?t=%F0%9F%94%A5' && handoff[1] === '/translate/?q=fire&to=es' && handoff[2] === '/base64/?t=%F0%9F%94%A5' && /%F0%9F%94%A5%20fire/.test(handoff[3]) && handoff[4] === '/?ask=emoji%20fire' &&
+      rocket.name === 'rocket' && rocket.hrefs[1] === '/translate/?q=rocket&to=es' && rocket.hrefs[4] === '/?ask=emoji%20rocket' && [0, 2, 3].every((i) => rocket.hrefs[i].includes('%F0%9F%9A%80')), JSON.stringify({ handoff, rocket }));
+    check('emoji: the footer links to at least four sibling Verse tools, so the page is not a dead end', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.ctx.close();
+  }
+  // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the
+  // code — a task list, a timer and notes on this device — and every item the gate reads is on it (the probe's own lists, run here)
+  if (want("gist: the work beside the code — tasks, a timer, notes and sizes on the device, and every item the codebase probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const g = await fresh({ base: base + 'g/?text=hello world&name=notes.txt' });
+    await g.p.waitForSelector('#work', { timeout: 10000 });
+    const probe = PROBES.codebase, text = () => g.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const missFact = (probe.facts || []).filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([name]) => name);
+    const missPart = Object.entries(probe.askParts || {}).flatMap(([a, items]) => items.filter(([, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([name]) => a + ': ' + name));
+    check('gist: the seeded gist shows its file, its 11 characters on 1 line, and where it lives', /notes\.txt/.test(t) && /hello world/.test(t) && /11 characters/.test(t) && /1 line\b/.test(t) && /whole gist in the link/i.test(t), t.slice(0, 220));
+    check('gist: the work panel is there — task list, timer, notes and docs, file sizes, download all, kept on this device', /Task list/.test(t) && /Add a task/.test(t) && /\d+ of \d+ tasks left/.test(t) && /\bTimer\b/.test(t) && /\d+ m \d+ s/.test(t) && /Total \d+ m/.test(t) && /Notes and docs/.test(t) && /\bPreview\b/.test(t) && /\d+ B\b/.test(t) && /Download all/.test(t) && /on this device/.test(t), String(t).slice(String(t).indexOf('Task list'), String(t).indexOf('Task list') + 320));
+    check('gist: every item the codebase probe reads is on the page — its facts and all four named parts, checked with the probe own lists', !missFact.length && !missPart.length, JSON.stringify({ missFact, missPart }));
+    await g.p.fill('#tasknew', 'ship the gist'); await g.p.click('text=Add a task'); await g.p.waitForTimeout(200);
+    const afterAdd = await text();
+    await g.p.check('#tasks input[type=checkbox]'); await g.p.waitForTimeout(200);
+    const afterDone = await text();
+    check('gist: a task is added and ticked off, and the count says how many are left', /1 of 1 tasks left/.test(afterAdd) && /0 of 1 tasks left/.test(afterDone), JSON.stringify({ afterAdd: (afterAdd.match(/\d+ of \d+ tasks left/g) || []), afterDone: (afterDone.match(/\d+ of \d+ tasks left/g) || []) }));
+    await g.p.click('text=Start'); await g.p.waitForTimeout(1200); await g.p.click('text=Stop'); await g.p.waitForTimeout(200);
+    const stopped = await g.p.$eval('#totaltime', (e) => e.textContent);
+    await g.p.reload({ waitUntil: 'load' }); await g.p.waitForSelector('#work', { timeout: 10000 });
+    const kept = await g.p.$eval('#totaltime', (e) => e.textContent);
+    check('gist: the timer starts and stops, and its total survives a reload (it is on this device)', /^Total \d+ m$/.test(stopped) && stopped === kept, JSON.stringify({ stopped, kept }));
+    await g.p.fill('#docs', '## Plan\n\n**ship** it'); await g.p.click('text=Preview'); await g.p.waitForTimeout(200);
+    const preview = await g.p.$eval('#docout', (e) => e.innerHTML);
+    const notesKept = await g.p.$eval('#docs', (e) => e.value);
+    check('gist: the notes preview renders a heading and bold, and the notes survive a reload', /<b>Plan<\/b>/.test(preview) && /<b>ship<\/b>/.test(preview) && /ship/.test(notesKept), String(preview).slice(0, 140));
+    await g.ctx.close();
+  }
   // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally, hidden until the first read works
   if (want("coin: everyone's flips show under the tally from /api/tally, and stay hidden when the tally is off")) {
     const P = await fresh(); const posts = []; let reads = 0;
@@ -730,7 +1235,7 @@ try {
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
     const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
     check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
-      loaded <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+      ownLoads(reqs, loaded) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
       && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
       JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
     const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
@@ -760,7 +1265,7 @@ try {
     await pg.fill('#b2', '12'); await pg.waitForTimeout(150); const bad = await pg.evaluate(() => ({ note: document.getElementById('note').textContent, cls: document.getElementById('b2').className }));
     const typed = reqs.length - loaded; await pg.fill('#b10', '255'); await pg.waitForTimeout(150); const cleared = await pg.evaluate(() => [...document.querySelectorAll('input.bad')].length); if (process.env.VOID_SHOTS) { await pg.waitForTimeout(150); await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'base-converter.png') }).catch(() => {}); }
     check('base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request',
-      loaded <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
+      ownLoads(reqs, loaded) <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
       && /not a base 2 number/.test(bad.note) && /bad/.test(bad.cls) && cleared === 0 && typed === 0 && !B.errors.length, JSON.stringify({ loaded, reqs, fromHex, huge, bad, cleared, typed, errors: B.errors }));
     const K = await fresh(); await K.ask('ff hex to binary', 900); const card = await until(async () => K.p.$eval('.vpage.on .bc-out', (e) => e.textContent).catch(() => ''), 8000);
     const rows = await K.p.$$eval('.vpage.on .bc-all td', (t) => t.map((x) => x.textContent)).catch(() => []); const link = await K.p.$eval('.vpage.on .bc-open', (a) => a.getAttribute('href')).catch(() => '');
@@ -802,7 +1307,7 @@ try {
     await pg.fill('#kb', '1'); await pg.waitForTimeout(600); const tight = await pg.evaluate(() => ({ cls: document.getElementById('line').className, note: document.getElementById('note').textContent }));
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'resize-image.png') }).catch(() => {});
     check('photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page',
-      loaded <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
+      ownLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
       JSON.stringify({ loaded, out, jlen: jb.length, jsz, pdf: pb.slice(0, 5).toString(), tight, reqs: reqs.length, errors: R.errors }));
     const K = await fresh(); await K.ask('resize a photo to 3.5 x 2.5 cm under 50 kb', 900); const href = await until(async () => K.p.$eval('.vpage.on .ir-open', (a) => a.getAttribute('href')).catch(() => ''), 8000);
     const pg2 = await K.ctx.newPage(); await pg2.goto(origin + href); await pg2.waitForSelector('#w'); const filled = await pg2.evaluate(() => [w.value, h.value, u.value, kb.value].join('|'));
@@ -962,8 +1467,8 @@ try {
   // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
   // the evidence is stubbed so three sites are conquered and the fourth is 4 aspects in
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
-    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
-    const rows = (f, n) => Object.fromEntries([...aspectsOf(f), ...(f.extra || [])].slice(0, n).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
     const floors = { [FLOORS[0].id]: rows(FLOORS[0], 99), [FLOORS[1].id]: rows(FLOORS[1], 99), [FLOORS[2].id]: rows(FLOORS[2], 99), [FLOORS[3].id]: rows(FLOORS[3], 4) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);
@@ -984,8 +1489,8 @@ try {
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
-    const { FLOORS, aspectsOf } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
-    const all = (f) => Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: 'better', evidence: 'stub' }]));
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
+    const all = (f) => passingRows(f, { evidence: 'stub' });
     const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
     await P.ask('the tower', 1200);
@@ -1003,7 +1508,7 @@ try {
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
     const P = await fresh(); let hits = 0, beaten = false;
-    const all = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'history', 'unit and scientific modes'];
+    const all = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use', 'history', 'unit and scientific modes'];
     await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: Object.fromEntries(all.map((a) => [a, { verdict: 'better', evidence: 'stub' }])) } : {} }) }); });
     await P.p.evaluate(() => { window.__towerPollMs = 400; });
     await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
@@ -1475,6 +1980,31 @@ try {
     await W.ctx.close(); }
   // real movies (owner, 2026-10-17): "pick a movie to watch with me" looks each suggestion up; a found one is a card with its own poster as art,
   // an unfound one is "not verified"; a free film plays in a <video>, a film in copyright shows its trailer and links. Sources are stood in for here.
+  if (want("store: the catalogue searched and sorted, a cart carried by its link, quantities and the totals worked out, and the delivery steps")) {
+    const S = await fresh({ base: base + 'store/?cart=void-monthly,code-review-pro:2' });
+    const text = async () => S.p.evaluate(() => document.body.innerText);
+    await until(async () => /Showing \d+ of \d+ products/.test(await text()), 8000);
+    const page = await text();
+    const count = page.match(/Showing (\d+) of (\d+) products/);
+    check('store: the catalogue counts what it shows, every product names its price and its availability', count && +count[2] >= 4 && /Available now/.test(page) && /\$49\.00/.test(page), JSON.stringify({ count: count && count[0], head: page.slice(0, 500), errs: S.logs }));
+    check('store: a link carries the cart — it opens itself, quantities and all, with the money worked out', /Qty 2/.test(page) && /\$20\.00/.test(page) && /Subtotal\s*\$69\.00/.test(page) && /Total\s*\$69\.00/.test(page) && /before you confirm/.test(page), (page.split('Your cart')[1] || '').slice(0, 300));
+    const link = await S.p.$eval('#cartlink', (e) => e.getAttribute('href'));
+    check('store: the share link carries exactly that cart', decodeURIComponent(link) === '/store/?cart=void-monthly,code-review-pro:2', link);
+    await S.p.fill('#q', 'review pro'); await S.p.waitForTimeout(300);
+    check('store: the search narrows the catalogue', /Showing 1 of \d+ products/.test(await text()), (await text()).match(/Showing \d+ of \d+ products/));
+    await S.p.fill('#q', ''); await S.p.selectOption('#sort', 'price-asc'); await S.p.waitForTimeout(300);
+    const prices = await S.p.evaluate(() => [...document.querySelectorAll('#grid .card .price')].map((e) => parseFloat(String(e.textContent).replace(/[^0-9.]/g, ''))).filter((n) => Number.isFinite(n)));
+    check('store: sorting by price orders the grid', prices.length > 2 && prices.every((v, i) => i === 0 || prices[i - 1] <= v), JSON.stringify(prices));
+    await S.p.selectOption('#sort', 'featured');
+    await S.p.click('#items [data-inc="code-review-pro"]'); await S.p.waitForTimeout(250);
+    const bumped = await text();
+    check('store: one more of a product raises its qty, its line and the total', /Qty 3/.test(bumped) && /\$30\.00/.test(bumped) && /Total\s*\$79\.00/.test(bumped), (bumped.match(/Qty 3[\s\S]{0,60}/) || [''])[0]);
+    await S.p.click('#items [data-dec="code-review-pro"]');
+    const csv = await S.p.$eval('#csv', (e) => e.getAttribute('href'));
+    check('store: the price list is a CSV anyone can take, no account and no api key', /^data:text\/csv/.test(csv) && decodeURIComponent(csv).includes('id,name,kind,cents,price,every,availability'), String(csv).slice(0, 80));
+    check('store: delivery is told as steps — nothing ships, signed downloads, license keys — and the honest lines stand', /nothing ships/i.test(page) && /Signed downloads/.test(page) && /License key/.test(page) && /last 24 hours/.test(page) && /no trackers/.test(page) && /works offline/.test(page) && /no ads/i.test(page), JSON.stringify({ ships: /nothing ships/i.test(page), dl: /Signed downloads/.test(page), key: /License key/.test(page), h24: /last 24 hours/.test(page), track: /no trackers/.test(page), off: /works offline/.test(page), ads: /no ads/i.test(page) }));
+    check('store: the offline note waits for a real offline visit', await S.p.$eval('#offlinenote', (e) => e.hidden));
+  }
   if (want("real movies: \"pick a movie to watch with me\" shows only found movies with their poster")) { const M = await fresh();
     const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
     await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
@@ -2158,6 +2688,116 @@ try {
         /Inicio/.test(web) && /Noticias del mundo/.test(web) && /El tiempo es bueno/.test(web) && /Noticias del día/.test(web) && !scripts && !sideways && !/alert/.test(web), web.slice(0, 300));
       check('the translate page batch threw no page errors', !T.errors.length, T.errors.join(' | '));
     } finally { globalThis.fetch = was; await T.ctx.close(); }
+  }
+  // The translate page's catch-up features (docs/PARITY/google-translate.md): recent languages, searching the languages, the on-screen
+  // keyboard, the handwriting pad (read as a picture), your own correction kept, conversation mode, the bookmarklet. /api/translate is stubbed.
+  if (want('translate page catch-up: recent languages, language search, on-screen keyboard, handwriting, your correction kept, conversation, bookmarklet')) {
+    const T = await fresh({ phone: true }), P = T.p, asks = [];
+    const D = { 'Good night': { fr: 'Bonne nuit', ja: 'おやすみ' }, 'Где': { en: 'Where' }, 'Thank you': { fr: 'Merci' }, 'Merci beaucoup': { en: 'Thank you very much' } };
+    await T.ctx.route(/\/api\/translate$/, async (r) => { const b = JSON.parse(r.request().postData() || '{}'); asks.push(b);
+      if (b.image) return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ read: 'Thank you', text: 'Merci', from: 'en', to: b.to, via: 'model' }) });
+      const t = (D[b.text] || {})[b.to] || ('[' + b.to + '] ' + b.text);
+      return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ text: t, from: b.from || 'en', to: b.to, detected: b.from ? '' : 'en', via: 'model' }) }); });
+    const outText = () => P.$eval('#out', (e) => e.textContent);
+    try {
+      await P.goto(base + 'translate/?q=' + encodeURIComponent('Good night') + '&from=en&to=fr');
+      await until(async () => /Bonne nuit/.test(await outText()), 4000);
+      await P.fill('#langQ', 'japan'); await until(() => P.$eval('#langHits', (h) => h.querySelectorAll('button').length > 0), 2000);
+      const hit = await P.$eval('#langHits button', (b) => b.textContent); await P.press('#langQ', 'Enter');
+      await until(async () => /おやすみ/.test(await outText()), 4000);
+      const to = await P.$eval('#to', (s) => s.value), recent = await P.$$eval('#recentLangs button', (b) => b.map((x) => x.dataset.lang));
+      await P.click('#recentLangs button[data-lang="fr"]'); await until(async () => /Bonne nuit/.test(await outText()), 4000);
+      check('translate page, languages: typing "japan" in the language search offers Japanese, Enter picks it and translates; French then waits as a one-tap recent language and switches back',
+        /Japanese/.test(hit) && to === 'ja' && recent.includes('fr') && await P.$eval('#to', (s) => s.value) === 'fr', JSON.stringify({ hit, to, recent }));
+      await P.selectOption('#from', 'ru'); await P.selectOption('#to', 'en'); await P.fill('#in', '');
+      await P.click('#kbdB'); const keys = await P.$$eval('#kbd .keys button', (b) => b.map((x) => x.textContent));
+      await P.click('#kbd button[aria-label="shift"]'); for (const k of ['Г', 'д', 'е']) await P.click(`#kbd .keys button:text-is("${k}")`);
+      await P.click('#kbd button[aria-label="space"]'); await P.click('#kbd button[aria-label="backspace"]');
+      const typed = await P.$eval('#in', (t) => t.value); await P.click('#go'); await until(async () => /Where/.test(await outText()), 4000);
+      check('translate page, on-screen keyboard: with Russian as the typed language it shows Cyrillic keys; tapping shift, Г д е (shift lasts one letter), space and backspace types "Где", which translates to "Where"',
+        keys.includes('ж') && typed === 'Где' && /Where/.test(await outText()), JSON.stringify({ typed, n: keys.length }));
+      await P.selectOption('#from', 'en'); await P.selectOption('#to', 'fr'); await P.fill('#in', '');
+      await P.click('#handB'); const kbdShut = await P.$eval('#kbd', (k) => k.hidden); await P.$eval('#pad', (c) => c.scrollIntoView({ block: 'center' })); const box = await P.$eval('#pad', (c) => { const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+      await P.mouse.move(box.x + 20, box.y + 30); await P.mouse.down(); await P.mouse.move(box.x + box.w / 2, box.y + box.h / 2, { steps: 5 }); await P.mouse.up();
+      await P.click('#handGo'); await until(async () => /Merci/.test(await outText()), 4000);
+      const img = asks.find((a) => a.image);
+      check('translate page, handwriting: opening the pad shuts the keyboard (one input tool at a time); a stroke on the pad is sent as a picture, its words ("Thank you") land in the box and come back translated ("Merci")',
+        kbdShut && !!img && /^data:image\/jpeg/.test(img.image) && await P.$eval('#in', (t) => t.value) === 'Thank you' && /Merci/.test(await outText()), JSON.stringify(asks.map((a) => Object.keys(a))));
+      await P.click('#fbB'); await P.fill('#fbT', 'Merci bien'); await P.click('#fbSave');
+      const said = await P.$eval('#note', (s) => s.textContent).catch(() => ''); const n = asks.length;
+      await P.reload(); await until(async () => /Bonne nuit/.test(await outText()), 4000); await P.fill('#in', 'Thank you'); await P.click('#go'); await until(async () => /Merci bien/.test(await outText()), 4000);
+      const after = await outText(), undo = await until(() => P.$eval('#fbUndo', (b) => !b.hidden), 4000), note = await P.$eval('#note', (n) => n.textContent);
+      const kept = await P.evaluate(() => Object.keys(localStorage).filter((k) => /translate/.test(k)).map((k) => k + '=' + localStorage.getItem(k).slice(0, 300)).join(' ; '));
+      if (undo) { await P.click('#fbUndo'); await until(async () => (await outText()) === 'Merci', 4000); }
+      check('translate page, suggest an edit: "Merci bien" replaces the machine\'s "Merci", is kept on this device after a reload (marked as your own) and "Back to the machine\'s" undoes it',
+        /Merci bien/.test(after) && undo && (await outText()) === 'Merci' && n > 0, JSON.stringify({ after, said, undo, note, kept }));
+      await P.click('#convS'); await P.fill('#convT', 'Merci beaucoup'); await P.click('#convTB');
+      await until(() => P.$eval('#convLog', (l) => /Thank you very much/.test(l.textContent)), 4000);
+      const conv = await P.$eval('#convLog', (l) => l.textContent), names = await P.$eval('#convTB', (b) => b.textContent);
+      const bm = await P.$eval('#bm', (a) => a.getAttribute('href')), sideways = await P.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+      check('translate page, conversation and bookmarklet: a line sent as the French side comes back in English for the other side; the bookmarklet opens this page with the selection or the page address; nothing scrolls sideways at 390 px',
+        /Thank you very much/.test(conv) && /French/.test(names) && /^javascript:/.test(bm) && /translate\/\?/.test(bm) && /url=/.test(bm) && !sideways, JSON.stringify({ conv, names }));
+      check('the translate catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
+  }
+  // Notes catching up with Google Docs (docs/PARITY/google-docs.md): a picture from a file kept through a reload, a comment on selected words with a reply
+  // and Resolve, voice typing (speech recognition stubbed: it hears "hello from my voice").
+  if (want('notes page catch-up: a picture kept through a reload, a comment with a reply resolved, voice typing')) {
+    const T = await fresh(), P = T.p, PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await T.ctx.addInitScript(() => { window.SpeechRecognition = window.webkitSpeechRecognition = class { start() { setTimeout(() => { const r = [{ 0: { transcript: 'hello from my voice' }, isFinal: true, length: 1 }]; this.onresult && this.onresult({ resultIndex: 0, results: r }); setTimeout(() => this.onend && this.onend(), 30); }, 50); } stop() { this.onend && this.onend(); } }; }); // newer Chrome has the unprefixed one too
+    const notes = () => P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.v1') || '{"docs":[]}').docs);
+    try {
+      await P.goto(base + 'notes/'); await until(() => P.evaluate(() => !!document.getElementById('related') && document.getElementById('related').children.length > 0), 8000);
+      await P.click('#dtitle'); await P.keyboard.type('Trip photos'); await P.click('#body'); await P.keyboard.type('The view from the hill was lovely.');
+      await P.setInputFiles('#imgF', { name: 'hill.png', mimeType: 'image/png', buffer: Buffer.from(PNG, 'base64') });
+      await until(() => P.$$eval('#body img', (i) => i.length === 1), 4000);
+      await P.reload(); await until(() => P.$$eval('#body img', (i) => i.length === 1), 6000);
+      const img = await P.$eval('#body img', (i) => ({ src: i.src.slice(0, 22), alt: i.alt, w: i.naturalWidth }));
+      check('notes, a picture: Picture puts the chosen PNG into the note as a data picture, named by its file, and it is still there after a reload',
+        img.src === 'data:image/png;base64,' && img.alt === 'hill' && img.w === 1, JSON.stringify(img));
+      await P.evaluate(() => { const b = document.getElementById('body'), t = [...b.querySelectorAll('*'), b].map((e) => [...e.childNodes]).flat().find((n) => n.nodeType === 3 && /hill/.test(n.textContent)); const i = t.textContent.indexOf('hill'), r = document.createRange(); r.setStart(t, i); r.setEnd(t, i + 4); const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+      await P.click('#cmB'); await until(() => P.$eval('#cmNew', (f) => !f.hidden), 2000); await P.fill('#cmT', 'Which hill?'); await P.click('#cmSave');
+      await until(() => P.$eval('#cmts', (c) => !c.hidden), 2000);
+      await P.fill('#cmList input', 'Monsanto'); await P.press('#cmList input', 'Enter');
+      await until(() => P.$eval('#cmList', (l) => /Monsanto/.test(l.textContent)), 2000);
+      const mid = await P.$eval('#body mark.cm', (m) => m.textContent), panel = await P.$eval('#cmList', (l) => l.innerText);
+      let d = (await notes()).find((x) => x.title === 'Trip photos');
+      const stored = d && d.comments && d.comments[0];
+      await P.click('#cmList button'); await until(() => P.$eval('#cmts', (c) => c.hidden), 2000);
+      d = (await notes()).find((x) => x.title === 'Trip photos');
+      check('notes, comments: selecting "hill" and commenting highlights it; the comment and its reply show under the note and are stored; Resolve clears the highlight and keeps the words and the thread',
+        mid === 'hill' && /hill/.test(panel) && /Which hill\?/.test(panel) && /Monsanto/.test(panel) && stored && stored.quote === 'hill' && stored.replies[0].text === 'Monsanto'
+        && !/<mark/.test(d.html) && /hill/.test(d.html) && d.comments[0].done === true, JSON.stringify({ mid, panel, html: d && d.html.slice(0, 200) }));
+      await P.click('#body'); await P.keyboard.press('Control+End'); await P.click('#micB');
+      await until(() => P.$eval('#body', (b) => /hello from my voice/.test(b.textContent)), 3000);
+      await until(() => P.$eval('#micB', (b) => b.getAttribute('aria-pressed') === 'false'), 2000);
+      await P.waitForTimeout(600); d = (await notes()).find((x) => x.title === 'Trip photos');
+      check('notes, voice typing: what is heard goes in at the cursor and is saved; the button shows it is listening and stops',
+        /hello from my voice/.test(d.html) && /lovely\./.test(d.html), d.html.replace(/data:[^"]+/, 'data:…').slice(0, 300));
+      check('the notes catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
+  }
+  if (want('calendar page catch-up: a video call added to an event, joined from its detail, carried by its invite; Print')) {
+    const T = await fresh(), P = T.p;
+    await T.ctx.addInitScript(() => { window.__printed = 0; window.print = () => { window.__printed++; }; });
+    const evs = () => P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []);
+    try {
+      await P.goto(base + 'calendar/'); await until(() => P.evaluate(() => !!document.getElementById('newBtn')), 8000);
+      await P.click('#newBtn'); await P.fill('#eTitle', 'Design review'); await P.click('#eVideoB');
+      const made = await P.inputValue('#eVideo');
+      await P.click('#eSave'); await until(async () => (await evs()).some((e) => e.title === 'Design review'), 3000);
+      const ev = (await evs()).find((e) => e.title === 'Design review');
+      await P.locator('text=Design review').first().click(); await until(() => P.evaluate(() => !document.getElementById('detail').hidden), 3000);
+      const join = await P.$eval('#detVideo', (a) => ({ href: a.href, text: a.textContent, target: a.target })).catch(() => null);
+      const inv = await P.evaluate(async (e) => { const C = await import('/lib/calendar.js'); const i = C.inviteLink(e, location.origin); return { ics: i.ics, back: C.parseIcs(i.ics)[0].video }; }, ev);
+      check('calendar, video call: "Add a video call" fills a private Jitsi Meet room named for the event; saved with it; its detail has Join video call opening a new tab; its .ics invite carries it and reads back',
+        /^https:\/\/meet\.jit\.si\/Verse-DesignReview-[a-z]{12}$/.test(made) && ev.video === made && join && join.href === made && /Join video call/.test(join.text) && join.target === '_blank'
+        && /CONFERENCE;VALUE=URI;FEATURE=VIDEO/.test(inv.ics) && inv.back === made, JSON.stringify({ made, ev, join }).slice(0, 600));
+      await P.click('#printBtn'); const printed = await P.evaluate(() => window.__printed);
+      const hidden = await P.evaluate(() => { const m = [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch (e) { return []; } }).filter((r) => r.media && /print/.test(r.media.mediaText)); return m.length > 0; });
+      check('calendar, Print: the Print button prints the view on screen, with print styles that drop the buttons and forms', printed === 1 && hidden, JSON.stringify({ printed, hidden }));
+      check('the calendar catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
   }
   // Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail + slider, closed shells, mm)
   if (want("Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail ")) { const P = await fresh();
@@ -5789,6 +6429,46 @@ try {
       linked === '40.8' && typed === '0.3' && keyed === '1,024' && rad === '-1' && kept.hist === 4 && kept.mem === 'M = 1,024' && kept.angle === 'Radians' && !Z.errors.length, JSON.stringify({ linked, typed, keyed, rad, kept, errors: Z.errors }));
     await Z.ctx.close();
   }
+  // the tower's vcalc.com floor: /calculators/ works a formula from its link, takes each input in any unit (or a unit typed in the box),
+  // shows the answer in any other with the SI working in pro mode, opens any of the library, and builds your own formula guided or raw
+  if (want("formula calculators: /calculators/ works a linked formula in any units, pro shows the working, the library and search open one, and your own formula works guided, raw and from its link")) {
+    const Z = await fresh(); const big = () => Z.p.$eval('#big', (e) => e.textContent), bouts = () => Z.p.$eval('#bouts', (e) => e.innerText);
+    await Z.p.goto(base + 'calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft'); const linked = await big();
+    await Z.p.selectOption('[aria-label="Show Surface area in"]', 'm²'); const m2 = await big(), link = Z.p.url();
+    await Z.p.selectOption('[aria-label="Unit for Length of pipe"]', 'm'); const lm = await big();
+    await Z.p.fill('#in-d', '5 cm'); const inline = await big(); await Z.p.fill('#in-d', 'abc'); const bad = await big();
+    await Z.p.click('#pro'); await Z.p.fill('#in-d', '2'); const pro = await big(), working = await Z.p.$eval('#working', (e) => e.textContent), proLink = Z.p.url(); await Z.p.click('#pro');
+    await Z.p.click('#lib a[data-id="loan-payment"]'); const loan = [await big(), await Z.p.$eval('#outs', (e) => e.innerText)];
+    await Z.p.fill('#find', 'molar mass'); await Z.p.press('#find', 'Enter'); const molar = await big();
+    await Z.p.click('#lib a[data-id="convert"]'); await Z.p.selectOption('#in-kind', 'temperature'); await Z.p.fill('#in-v', '100'); const temp = await big();
+    await Z.p.goto(base + 'calculators/?calc=pipe-surface-area'); const b1 = await bouts();
+    await Z.p.fill('[aria-label="Result 1 unit"]', 'cm²'); const b2 = await bouts(); await Z.p.fill('[aria-label="Result 1 formula"]', 'pi*d + l'); const b3 = await bouts();
+    await Z.p.click('#traw'); await Z.p.fill('#rawtext', '# Kinetic energy\nE [J] = 0.5*m*v^2\nm [kg] = 2\nv [km/h] = 36'); const ke = await bouts();
+    await Z.p.click('#bsave'); const saved = await Z.p.$$eval('#saved button', (x) => x.map((y) => y.textContent));
+    await Z.p.goto(base + 'calculators/?formula=' + encodeURIComponent('# Kinetic energy\nE [J] = 0.5*m*v^2\nm [kg] = 2\nv [km/h] = 36')); const fromLink = await bouts();
+    check("formula calculators: /calculators/ works a linked formula in any units, pro shows the working, the library and search open one, and your own formula works guided, raw and from its link",
+      linked === '5.23599 ft²' && m2 === '0.486439 m²' && /a\.u=m%C2%B2/.test(link) && lm === '1.59593 m²' && inline === '1.5708 m²' && /"abc" is not a number/.test(bad)
+      && pro === '1.59592906802 m²' && /Diameter of pipe = 2 in\s+→\s+0\.0508 m/.test(working) && /&pro=1/.test(proLink) && loan[0] === '$483.32' && /\$3,999\.20/.test(loan[1])
+      && molar === '180.156 g/mol' && temp === '−173.15 °C' && /5\.23599 ft²/.test(b1) && /4,864\.39 cm²/.test(b2) && /not area/.test(b3) && /100 J/.test(ke) && saved.includes('Kinetic energy')
+      && /100 J/.test(fromLink) && !Z.errors.length, JSON.stringify({ linked, m2, link, lm, inline, bad, pro, working, proLink, loan, molar, temp, b1, b2, b3, ke, saved, fromLink, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the formula library on /calculators/: one definition worked for any of its variables (Solve for), its source shown, its link reopening the
+  // same direction, and a long category showing its first 24 with a button for the rest
+  if (want("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click")) {
+    const Z = await fresh(); const big = () => Z.p.$eval('#big', (e) => e.textContent);
+    await Z.p.goto(base + 'calculators/?calc=braking-distance'); const fwd = await big(), src = await Z.p.$eval('#csource', (e) => e.textContent);
+    await Z.p.selectOption('#in-solve', 'v'); const back = await big(), what = await Z.p.$eval('#what', (e) => e.textContent);
+    await Z.p.fill('#in-d', '25'); const v25 = await big(), link = Z.p.url();
+    await Z.p.goto(link); const reopened = [await big(), await Z.p.$eval('#in-solve', (e) => e.value)];
+    const money = '#lib button[aria-controls="cat-money-list"]', hidden0 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length);
+    await Z.p.click(money); const hidden1 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length), gone = !(await Z.p.$(money));
+    check("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click",
+      fwd === '56.2013 m' && /Wikipedia: Braking distance/.test(src) && back === '100 km/h' && /Speed/.test(what) && v25 === '66.6956 km/h' && /solve=v/.test(link) && /d=25/.test(link)
+      && reopened[0] === '66.6956 km/h' && reopened[1] === 'v' && hidden0 > 0 && hidden1 === 0 && gone && !Z.errors.length,
+      JSON.stringify({ fwd, src, back, what, v25, link, reopened, hidden0, hidden1, gone, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the rest of timeanddate.com on /time/: the next clock change for the city, and on each clock in the world clock; a zone with none says so
   if (want("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change")) {
     const Z = await fresh(); await Z.p.goto(base + 'time/?c=London'); await Z.p.waitForTimeout(300);
@@ -5840,9 +6520,10 @@ try {
     await Z.p.fill('#text', '😀'); await Z.p.selectOption('#alpha', 'url'); await Z.p.uncheck('#pad'); const url = await Z.p.$eval('#b64', (e) => e.value);
     await Z.p.setInputFiles('#file', { name: 'x.png', mimeType: 'image/png', buffer: Buffer.from([137, 80, 78, 71]) }); await Z.p.waitForTimeout(200);
     const file = await Z.p.$eval('#fileout', (e) => e.value);
+    const body = await Z.p.evaluate(() => document.body.innerText);
     check("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
       linked === 'aGVsbG8=' && enc === Buffer.from('café 🎉').toString('base64') && /“\*” at character 5/.test(bad.note) && bad.invalid === 'true' && dec === '😀' && url === '8J-YgA'
-      && file === 'data:image/png;base64,iVBORw==' && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, errors: Z.errors }));
+      && file === 'data:image/png;base64,iVBORw==' && /sister site base64decode\.org/.test(body) && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, sister: /sister site base64decode\.org/.test(body), errors: Z.errors }));
     await Z.ctx.close();
   }
   // the tower's passwordsgenerator.net floor: /password/ makes passwords the gate can read as text, follows its link, says how strong each is exactly, and makes passphrases
@@ -6902,7 +7583,7 @@ try {
     const card = await until(async () => F.p.$eval('.vpage', (p) => {
       if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
       return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
-        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
+        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: [...p.querySelectorAll('img')].filter((i) => !i.closest('.vc-art')).length /* the card's own art seal is on every card; the autopsy body itself shows no pictures */, wide: p.scrollWidth > p.clientWidth + 1 };
     }).catch(() => null), 15000); // a loaded runner took longer than 8 s to draw it
     const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
     check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',
@@ -7458,6 +8139,8 @@ try {
     const down = await until(async () => { const f = await forged(D); return f && f.title === 'Pizza Singularity' ? f : null; }, 8000); await new Promise((ok) => setTimeout(ok, 600)); const down2 = await forged(D);
     check('Verse art forge: with the route down the card keeps its plate, with no button and no page errors', !!down && !!down2 && down2.plate && !down2.img && !down2.btn && !D.errors.length, JSON.stringify({ down2, errors: D.errors })); await D.ctx.close(); }
   if (want("Verse cards: no evolved note on a skill card, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Verse
+    // the ocean has its own article here: the shared fixture answers every lookup with "Black hole", and since a name whose article does not match goes to the answer route (lib/no-answer.js), the ocean would get an untyped answer card instead of its kind's layout
+    await E.ctx.route(/wikipedia\.org\/(?:w\/api\.php|api\/rest_v1\/page\/summary\/)/, (r) => { const u = r.request().url(); if (!/ocean/i.test(decodeURIComponent(u))) return r.fallback(); const body = u.includes('/page/summary/') ? { title: 'Ocean', description: 'Body of salt water covering most of Earth', extract: 'The ocean is the body of salt water that covers about 71% of Earth.', timestamp: '2026-09-20T10:00:00Z' } : { query: { search: [{ title: 'Ocean' }] } }; return r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) }); });
     await E.ask('20% tip on 45', 1600);
     const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
     const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on[data-evolved]'), stored: localStorage.getItem('a2m.void.tiers.v1') }));
@@ -11056,6 +11739,32 @@ try {
     const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
       await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true, ...(a[0] && typeof a[0] === 'object' && 'phone' in a[0] ? a.shift() : {}) }, ...a), want: (l) => all3d || want(l) }); }
+  // connected floors (owner, 2026-10-27): a floor page is not a dead end. Every floor page must link to at least four sibling Verse
+  // tools, so a new floor cannot ship with only "Back to Verse". Pages that predate the rule are named once here; the list only shrinks
+  // (emojis, paint and tournaments are checked in the browser above too). A page file that does not exist is skipped, never passed.
+  if (want("connected: every floor page links to at least four sibling Verse tools")) {
+    const { FLOORS } = await import('../void-live-deploy/lib/tower.js');
+    const legacy = new Set(['finance: companiesmarketcap.com', 'finance: finviz.com', 'photos: exifeditor.io', 'photos: exif.tools', 'photos: tinypng.com', 'photos: squoosh.app', 'photos: photopea.com', 'photos: iloveimg.com']);
+    const dead = []; let pages = 0;
+    for (const f of FLOORS) {
+      if (!f.page || legacy.has(f.id)) continue;
+      const file = f.page.split('?')[0].replace(/\/$/, '/index.html').replace(/^\//, '');
+      const full = path.join(root, file);
+      if (!fs.existsSync(full)) continue;
+      const self = '/' + file.replace(/index\.html$/, '');
+      const links = new Set();
+      for (const m of fs.readFileSync(full, 'utf8').matchAll(/href="([^"]+)"/g)) {
+        const h = m[1];
+        if (!h.startsWith('/') || h.startsWith('//')) continue;
+        const base = h.split('?')[0].split('#')[0];
+        if (base === self || base === '/') continue;
+        links.add(base);
+      }
+      pages++;
+      if (links.size < 4) dead.push(f.id + ' (' + links.size + ')');
+    }
+    check('connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end', pages > 150 && !dead.length, JSON.stringify({ pages, dead: dead.slice(0, 10), more: dead.length }));
+  }
 } catch (e) {
   // always, --only included: a section that throws is a failure, never "0/0 passed" (finish.mjs's first shot runs --only)
   check('suite ran to the end', false, String(e && e.message));

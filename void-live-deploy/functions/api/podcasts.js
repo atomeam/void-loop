@@ -22,7 +22,7 @@
 //   - the iTunes asks use fixed hosts and paths; the caller picks only a search phrase (100 characters), a two-letter country from a closed
 //     list and a category from a closed list. No model, no token, no database, no write; a failure is never cached.
 import { rateLimited } from './answer.js';
-import { whyNot, parseFeed, parseChapters, parseTranscript, fromItunes, fromChart, GENRES, COUNTRIES } from '../../lib/podcasts.js';
+import { whyNot, parseFeed, parseChapters, parseTranscript, fromItunes, fromChart, fromFyyd, GENRES, COUNTRIES } from '../../lib/podcasts.js';
 
 export const RL_MAX = 20, TTL = 900, MAX_BYTES = 3 * 1024 * 1024, MAX_BYTES_SMALL = 1024 * 1024, TIMEOUT_MS = 8000, MAX_HOPS = 4, SELF_FEED = 'https://a-to-mind.com/podcast/rss.xml';
 const OWN = /(?:^|\.)(?:a-to-mind\.com|pages\.dev|workers\.dev)$/i;
@@ -70,15 +70,23 @@ export async function safeFetch(raw, { fetchFn = fetch, assets = null, max = MAX
     return { ok: false, kind: 'away', say: 'The feed redirected too many times.' };
   } catch (e) { return { ok: false, kind: 'away', say: e && e.name === 'AbortError' ? 'The publisher took too long.' : 'The publisher did not answer.' }; } finally { clearTimeout(timer); }
 }
-const itunes = async (url, fetchFn) => { const r = await fetchFn(url, { headers: { accept: 'application/json' } }); if (!r.ok) throw new Error('status ' + r.status); return r.json(); };
+// Apple's directory answered the Worker badly with no user agent (the live 502 of 28 Oct 2026), so every directory ask names itself
+const UA = 'VerseBot/1.0 (+https://a-to-mind.com/podcasts/)';
+const itunes = async (url, fetchFn) => { const r = await fetchFn(url, { headers: { accept: 'application/json', 'user-agent': UA } }); if (!r.ok) throw new Error('status ' + r.status); return r.json(); };
+// fyyd.de: a free, keyless second directory, asked only when Apple fails; the answer then carries a note naming its source
+export const FYYD_NOTE = 'Apple did not answer just now, so these shows come from fyyd.de, a second open podcast directory.';
+export const FYYD_HOT_NOTE = 'The Apple chart did not answer just now, so these are the most listened shows on fyyd.de, not a chart of one country.';
+const fyyd = async (path, fetchFn) => fromFyyd(await itunes('https://api.fyyd.de/0.2/' + path, fetchFn));
 /** the answer to one ask. { ok: true, ... } or { ok: false, kind, say }. */
 export async function look(ask, { fetchFn = fetch, assets = null } = {}) {
   try {
-    if (ask.kind === 'q') { const j = await itunes('https://itunes.apple.com/search?media=podcast&entity=podcast&limit=25&term=' + encodeURIComponent(ask.value), fetchFn); return { ok: true, shows: ((j && j.results) || []).map(fromItunes).filter(Boolean) }; }
+    if (ask.kind === 'q') { try { const j = await itunes('https://itunes.apple.com/search?media=podcast&entity=podcast&limit=25&term=' + encodeURIComponent(ask.value), fetchFn); return { ok: true, shows: ((j && j.results) || []).map(fromItunes).filter(Boolean) }; } catch (_) {}
+      return { ok: true, shows: await fyyd('search/podcast?count=25&title=' + encodeURIComponent(ask.value), fetchFn), source: 'fyyd', note: FYYD_NOTE }; }
     if (ask.kind === 'top') {
       const legacy = 'https://itunes.apple.com/' + ask.value + '/rss/toppodcasts/limit=30' + (ask.genre !== '0' ? '/genre=' + ask.genre : '') + '/json';
       let shows = []; try { shows = fromChart(await itunes(legacy, fetchFn)); } catch (_) {}
-      if (!shows.length && ask.genre === '0') shows = fromChart(await itunes('https://rss.applemarketingtools.com/api/v2/' + ask.value + '/podcasts/top/30/podcasts.json', fetchFn));
+      if (!shows.length && ask.genre === '0') try { shows = fromChart(await itunes('https://rss.applemarketingtools.com/api/v2/' + ask.value + '/podcasts/top/30/podcasts.json', fetchFn)); } catch (_) {}
+      if (!shows.length) { const hot = await fyyd('feature/podcast/hot?count=30', fetchFn); if (hot.length) return { ok: true, shows: hot, source: 'fyyd', note: FYYD_HOT_NOTE }; }
       return { ok: true, shows };
     }
     if (ask.kind === 'id') {
@@ -105,7 +113,7 @@ export async function onRequestGet({ request, env, fetchFn = fetch }) {
   if (cache) { try { const hit = await cache.match(key); if (hit) return json({ ...(await hit.json()), cached: true }, 200, { 'cache-control': 'public, max-age=300' }); } catch (_) {} }
   if (await rateLimited(request, env || {}, 'podcasts', RL_MAX)) return json({ ok: false, kind: 'limited', say: 'That is a lot of podcast searches in a minute. Give me a moment and ask again.' }, 429);
   const out = await look(ask, { fetchFn, assets: env && env.ASSETS });
-  if (!out.ok) return json(out, out.kind === 'refused' ? 400 : out.kind === 'missing' || out.kind === 'notfeed' ? 422 : 502, { 'cache-control': 'no-store' });
+  if (!out.ok) return json(out, out.kind === 'refused' ? 400 : out.kind === 'missing' || out.kind === 'notfeed' ? 422 : 503, { 'cache-control': 'no-store' }); // 503, not 502: Cloudflare covers a Function's 502 with its own page, so the JSON reason never arrived
   if (cache) { try { await cache.put(key, new Response(JSON.stringify(out), { headers: { 'cache-control': 'max-age=' + TTL } })); } catch (_) {} }
   return json(out, 200, { 'cache-control': 'public, max-age=300' });
 }

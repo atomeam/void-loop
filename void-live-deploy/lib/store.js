@@ -89,3 +89,56 @@ export function buyAnswer() {
   const made = STORE_PRODUCTS.filter((p) => !p.gumroad && !p.soon && p.files).map((p) => ({ id: p.id, name: p.name, price: p.pwyw ? 'Free · pay what you want' : price(p), blurb: p.blurb, url: '/store/#' + p.id }));
   return { lead: 'What Verse sells · support Verse', rows: live.map((p) => ({ id: p.id, name: p.tip ? p.name + ' (tip jar)' : p.name, price: price(p), blurb: p.blurb, url: gumroadUrl(p, 'void-card') })), made, more: 'Everything is at a-to-mind.com/store.' };
 }
+
+// ---- the store as the shopping floor (owner, 2026-10-26: "need a /store page that beats amazons"): a cart a person can
+// read and check, the money worked out in one place, and a delivery story for digital goods. Pure: no fetch, no clock.
+
+// parse a cart spec ("id", "id:2", separated by commas); unknown ids, bad counts and soon items are dropped, not errors
+export function cartLines(products, spec = '') {
+  const out = [];
+  for (const part of String(spec || '').split(',')) {
+    const m = /^\s*([a-z0-9-]+)\s*(?::\s*|\s+x\s*)?([1-9])?\s*$/i.exec(part);
+    if (!m) continue;
+    const p = products.find((x) => x.id === m[1]);
+    if (!p || p.soon || !p.cents) continue; // paid products only: a free one checks out by itself
+    const qty = Math.min(9, m[2] ? +m[2] : 1);
+    const line = out.find((l) => l.id === p.id);
+    if (line) line.qty = Math.min(9, line.qty + qty); else out.push({ id: p.id, name: p.name, cents: p.cents, every: p.every || '', qty });
+  }
+  return out;
+}
+
+// the money in one place, whole cents in and out. The payment page (Gumroad or Stripe) is the final word before anyone
+// pays: it adds whatever tax applies where the buyer is, and the page says so instead of guessing a tax here
+export function cartTotals(lines) { const subtotal = lines.reduce((a, l) => a + l.cents * l.qty, 0); return { subtotal, total: subtotal }; }
+export const usdCents = (c) => '$' + (c / 100).toFixed(2);
+
+// a link that carries the whole cart, so a cart can be shared, bookmarked, or handed to another device
+export function cartUrl(lines) { const spec = lines.map((l) => l.id + (l.qty > 1 ? ':' + l.qty : '')).join(','); return '/store/' + (spec ? '?cart=' + encodeURIComponent(spec) : ''); }
+
+// the catalogue controls: search, kinds, sort; a search that matches nothing is an empty result, never an error
+export function searchProducts(products, q = '') { const w = String(q || '').trim().toLowerCase(); return w ? products.filter((p) => ((p.name || '') + ' ' + (p.blurb || '') + ' ' + (p.kind || '')).toLowerCase().includes(w)) : products.slice(); }
+export function kindsOf(products) { const m = new Map(); for (const p of products) { const k = p.kind || 'other'; m.set(k, (m.get(k) || 0) + 1); } return [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])); }
+export function sortProducts(products, by = 'featured') {
+  const s = products.slice();
+  if (by === 'price-asc') s.sort((a, b) => (a.cents || 0) - (b.cents || 0));
+  else if (by === 'price-desc') s.sort((a, b) => (b.cents || 0) - (a.cents || 0));
+  else if (by === 'newest') s.sort((a, b) => String(b.published || '').localeCompare(String(a.published || '')));
+  return s;
+}
+
+// the catalogue as a price list anyone can take away: one row per product, no login and no API key
+export function catalogCsv(products) {
+  const q = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  return ['id,name,kind,cents,price,every,availability'].concat(products.map((p) => [p.id, p.name, p.kind || '', p.cents || 0, ((p.cents || 0) / 100).toFixed(2), p.every || '', p.soon ? 'coming soon' : 'available now'].map(q).join(','))).join('\r\n');
+}
+
+// how a digital order travels, told in advance and marked on the receipt; these are digital goods, nothing ships
+export const DELIVERY_STEPS = ['Ordered', 'Paid (on Gumroad or Stripe)', 'Signed downloads ready: links last 24 hours, re-open them any time', 'License key issued', 'Support window opens'];
+export function deliveryDone(order) {
+  const items = (order && order.items) || [];
+  const placed = !!(order && order.code) && items.length > 0;
+  const keys = placed && items.every((i) => i.license);
+  const files = placed && items.some((i) => (i.downloads || []).length);
+  return { 'Ordered': placed, 'Paid (on Gumroad or Stripe)': !!(order && order.status && order.status !== 'pending'), 'Signed downloads ready: links last 24 hours, re-open them any time': files, 'License key issued': keys, 'Support window opens': keys };
+}

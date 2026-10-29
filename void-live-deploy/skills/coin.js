@@ -52,7 +52,7 @@ const CSS = '<style>.vpage:has(.coin-row) .vc-art{display:none}.coin-row{display
   + '.coin .fc{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;font:900 calc(var(--d) * .42)/1 Georgia,serif;'
   + 'box-shadow:inset 0 0 0 calc(var(--d) * .045) var(--rim),inset 0 0 0 calc(var(--d) * .07) rgba(255,255,255,.35),0 6px 22px rgba(0,0,0,.45),0 0 26px rgba(255,214,102,.25)}'
   + '.coin .fc.t{transform:rotateY(180deg)}.coin-word{text-align:center;font:800 clamp(34px,7vw,56px)/1.1 system-ui,sans-serif;letter-spacing:.02em;margin:6px 0 2px}'
-  + '.coin-tally{text-align:center;opacity:.7;font-variant-numeric:tabular-nums;margin:4px 0}.coin-tools{display:flex;gap:8px;justify-content:center;margin:6px 0}'
+  + '.coin-tally{text-align:center;opacity:.7;font-variant-numeric:tabular-nums;margin:4px 0}.coin-tally-name{font-weight:600;margin-right:4px}.coin-tools{display:flex;gap:8px;justify-content:center;margin:6px 0}'
   + '.coin-tools button{font:inherit;font-size:12px;opacity:.75;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:2px 10px;cursor:pointer}'
   + '@media (prefers-reduced-motion:reduce){.coin{transition:none}}</style>';
 
@@ -179,10 +179,11 @@ function flipCard(text, api, ask, look, keepEl) {
   let spins = 0;
   const el = showPage((card) => {
     card.innerHTML = CSS + '<h2>' + esc(ask.for ? (look ? look.title + ' for ' : 'Coin for ') + ask.for : look ? look.title : ask.n > 1 ? ask.n + ' coins' : 'Coin') + '</h2>'
-      + '<div class="coin-row"></div><div class="coin-word" aria-live="polite"></div><div class="coin-tally"></div><div class="coin-everyone" hidden></div>'
+      + '<div class="coin-row"></div><div class="coin-word" aria-live="polite"></div><div class="coin-tally"><span class="coin-tally-name">Flip counter</span><span class="coin-tally-n"></span></div><div class="coin-everyone" hidden></div>'
       + '<div class="coin-tools"><button type="button" class="coin-again">Flip again</button><button type="button" class="coin-sound"></button><button type="button" class="coin-reset">Reset tally</button></div>'
       + '<div class="src">' + (look ? esc(look.src) : (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network') + '</div>'
       // on the stage, the way to the coin's own page (/flip/) and what it adds there; the page itself needs no link to itself
+      + '<div class="src">Tap the coin to flip it again — the animation is drawn live, and the result is shown under the coin.</div>'
       + (typeof location !== 'undefined' && /^\/flip\//.test(location.pathname) ? '' : '<p class="coin-full" style="text-align:center;font-size:13px;margin:8px 0"><a href="/flip/" style="color:inherit">The full coin flip page: Space or Enter flips again, a Share button, and it opens offline after one visit</a></p>');
   });
   if (!el || !el.querySelector) return 'coin';
@@ -211,7 +212,7 @@ function flipCard(text, api, ask, look, keepEl) {
     paintFace(b.querySelector('.fc.h'), look ? look.h : { bg: st.face, ink: st.ink, txt: st.h }); paintFace(b.querySelector('.fc.t'), look ? look.t : { bg: st.face, ink: st.ink, txt: st.t });
     row.appendChild(b); return b;
   });
-  const showTally = (v) => { tally.textContent = 'Heads ' + v.h.toLocaleString('en') + ' · Tails ' + v.t.toLocaleString('en') + (v.h + v.t ? ' · ' + Math.round((100 * v.h) / (v.h + v.t)) + '% heads this visit' : ''); };
+  const showTally = (v) => { tally.querySelector('.coin-tally-n').textContent = 'Heads ' + v.h.toLocaleString('en') + ' · Tails ' + v.t.toLocaleString('en') + (v.h + v.t ? ' · ' + Math.round((100 * v.h) / (v.h + v.t)) + '% heads this visit' : ''); };
   const go = () => {
     spins += 2; // each flip turns every coin a full turn more, so it visibly flips, then lands on its face: a third of a second, no fake wait
     const res = coins.map((c) => { const h = flip(ask.p); c.style.transform = 'rotateY(' + (spins * 180 + (h ? 0 : 180)) + 'deg)'; c.setAttribute('aria-label', h ? 'Heads' : 'Tails'); return h; });

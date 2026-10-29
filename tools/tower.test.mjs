@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { tower, gate, FLOORS, aspectsOf, towerLine } from '../void-live-deploy/lib/tower.js';
+import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows } from '../void-live-deploy/lib/tower.js';
 import { towerHtml } from '../void-live-deploy/skills/tower.js';
 import { verdict, record } from './tower-gate.mjs';
-const all = (f, v = 'better') => Object.fromEntries(aspectsOf(f).map((a) => [a, { verdict: v, evidence: 'x' }]));
+// every aspect passing; journey rows carry their steps and negative controls (the gate's standards, 2026-10-28)
+const all = (f) => passingRows(f);
 test('a floor is beaten only when every aspect passes with evidence', () => {
   const f = FLOORS[0]; assert.equal(gate(f, all(f)).beaten, true);
   const e = all(f); delete e.speed; assert.equal(gate(f, e).beaten, false); assert.deepEqual(gate(f, e).left, ['speed']);
@@ -52,7 +53,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   // nothing conquered yet: only the current site is drawn, with each of its aspects, and nothing above or after it
   assert.equal((h.match(/class="tower-floor"/g) || []).length, 1); assert.match(h, /data-state="current"/); assert.doesNotMatch(h, /data-state="ahead"|FINAL BOSS|YOU ARE HERE|data-boss/);
   assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.match(h, /class="tw-logo"/); // logos only (owner, 2026-10-25)
-  assert.match(sk.detailText(t.floors[0]), /^0 of 11 aspects ahead of /);
+  assert.match(sk.detailText(t.floors[0]), new RegExp('^0 of ' + t.floors[0].m + ' aspects ahead of ')); // whichever floor stands first, its own count
   // three conquered: the current site first, the conquered under it, newest first
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
   const states = [...h3.matchAll(/data-state="(\w+)"/g)].map((x) => x[1]);
@@ -61,11 +62,12 @@ test('the tower skill answers its asks and not near misses; the card is headed V
 });
 test('the live card tells what moved between two polls', async () => {
   const sk = (await import('../void-live-deploy/skills/tower.js')).default;
-  const a = tower([], {}), ev = { [FLOORS[0].id]: Object.fromEntries(aspectsOf(FLOORS[0]).map((x) => [x, { verdict: 'better', evidence: 'e' }])) }, b = tower([], ev);
+  const a = tower([], {}), first = a.floors[0], ev = { [first.id]: passingRows(first, { evidence: 'e' }) }, b = tower([], ev);
   assert.deepEqual(sk.changes(a, a), []);
   const said = sk.changes(a, b).join(' ');
-  assert.match(said, /isitchristmas\.com is surpassed\./); assert.match(said, /Now: (?!isitchristmas)/);
-  assert.match(sk.changes(b, a).join(' '), /isitchristmas\.com slipped\./);
+  assert.ok(said.includes(first.site + ' is surpassed.'), said); // beating the site at the front moves the marker
+  assert.ok(/Now: /.test(said) && !said.includes('Now: ' + first.site), said);
+  assert.ok(sk.changes(b, a).join(' ').includes(first.site + ' slipped.'));
   assert.deepEqual(sk.changes(null, b), []);
 });
 
@@ -127,8 +129,9 @@ test('every surpassed site is on the card, visible and copyable, with a taught-m
   const { tower, learnedOf, FLOORS } = await import('../void-live-deploy/lib/tower.js');
   const { towerHtml, verseTake } = await import('../void-live-deploy/skills/tower.js');
   const good = (a) => ({ verdict: 'better', evidence: 'x' }), ev = {};
-  const lane = FLOORS.find((f) => f.lane === 'translate'), aspects = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability'].concat(lane.extra);
-  ev[lane.id] = Object.fromEntries(aspects.map((a) => [a, good(a)]));
+  const { passingRows } = await import('../void-live-deploy/lib/tower.js');
+  const lane = FLOORS.find((f) => f.lane === 'translate');
+  ev[lane.id] = passingRows(lane);
   ev[lane.id].speed = { verdict: 'equal-and-better', verse: 101, best: 712, evidence: 'Verse 101 ms vs 712 ms' };
   ev[lane.id].completeness = { verdict: 'better', verse: 10, best: 3, of: 10, evidence: 'Verse 10 of 10 things a full answer shows vs 3 of 10 (Verse lacks: none; site lacks: listen, speak, camera)' };
   ev[lane.id]['camera text'] = { verdict: 'better', verse: 2, best: 0, evidence: 'Verse 2 of 2 shown vs 0 of 2 (Verse lacks: none; site lacks: camera)' };
@@ -157,4 +160,34 @@ test('a page older than the evidence file knows it: the sites the file names tha
   assert.equal(staleOf({ floors: { 'translate: deepl.com': {}, 'calculator': {} } }, t), 0);
   assert.equal(staleOf({ floors: { 'translate: nope.example': {}, 'another: x.example': {}, 'calculator': {} } }, t), 2);
   assert.equal(staleOf(null, t), 0); assert.equal(staleOf({}, null), 0);
+});
+
+test('a mega-site floor waits (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"): even with the fewest aspects left it is never the current fight while a small site remains', () => {
+  const giant = FLOORS.find((f) => f.defer);
+  assert.ok(giant, 'some floors are marked defer');
+  const ev = { [giant.id]: Object.fromEntries(aspectsOf(giant).slice(0, 2).map((a) => [a, { verdict: 'better', evidence: 'x' }])) };
+  const t = tower([], ev);
+  const g = t.floors.find((f) => f.id === giant.id);
+  assert.equal(g.state, 'ahead', 'the giant stays in the queue, just not first');
+  assert.ok(g.floor > t.floors.find((f) => f.state === 'current').floor, 'it stands behind the current fight');
+  const cur = t.floors.find((f) => f.state === 'current');
+  assert.ok(!cur.defer, 'the current fight is never a deferred floor while small sites remain');
+  assert.equal(t.floors.filter((f) => f.state === 'current').length, 1);
+});
+test('the shopping floor fights from Verse\'s own store, and the store page exists with what the probes read', async () => {
+  const { readFileSync } = await import('node:fs');
+  const s = FLOORS.find((f) => f.id === 'shopping');
+  assert.equal(s.site, 'Amazon'); assert.equal(s.page, '/store/'); assert.ok(s.defer);
+  const html = readFileSync(new URL('../void-live-deploy/store/index.html', import.meta.url), 'utf8');
+  assert.ok(!/http-equiv="refresh"/.test(html), 'the store page is a page, not a redirect');
+  const redir = readFileSync(new URL('../void-live-deploy/_redirects', import.meta.url), 'utf8');
+  assert.match(redir, /\/shopping\/ \/store\/ 301/, '/shopping/ lands on the store, so the floor\'s own name never 404s');
+  assert.match(redir, /\/shopping \/store\/ 301/, 'the same without the slash');
+  const { PROBES } = await import('./tower-probes.mjs');
+  const probe = PROBES.shopping;
+  assert.ok(probe, 'the shopping floor has a probe');
+  assert.match(probe.ask.verse, /cart=void-monthly%2Ccode-review-pro%3A2|cart=void-monthly,code-review-pro:2/);
+  assert.ok(probe.truth.length >= 4, 'accuracy is judged against a worked-out answer');
+  for (const a of ['catalogue', 'checkout', 'delivery tracking']) assert.ok(probe.askParts[a] && probe.askParts[a].length >= 5, a + ' is measured');
+  assert.ok(probe.facts.length >= 18, 'completeness has a real checklist');
 });

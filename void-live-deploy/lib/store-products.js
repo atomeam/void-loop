@@ -160,8 +160,7 @@ export default [
    "v01d-tree.stl",
    "v01d-lighthouse.stl",
    "README.txt"
-  ],
-  "preview": "/models/store/v01d-forge-printables-preview.glb"
+  ]
  },
  {
   "id": "v01d-clips-pack",

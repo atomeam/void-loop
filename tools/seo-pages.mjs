@@ -46,7 +46,9 @@ export function withRelated(html, path) {
 /** the tools /tools/ does not list by hand yet, as one more section of real links (from lib/toolkit.js TOOLS, which every page's row uses). Pure. */
 export function moreTools(html) {
   const listed = new Set([...withoutBlock(html, MORE).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1].split('?')[0]));
-  const extra = [...Object.entries(TOOLS).filter(([p]) => p !== '/tools/' && !listed.has(p)), ['/code-review/', 'Code review'], ['/g/', 'Gists'], ['/fix/', 'Fix a broken automation']].filter(([p], i, a) => !listed.has(p) && a.findIndex((x) => x[0] === p) === i);
+  const extra = [...Object.entries(TOOLS).filter(([p]) => p !== '/tools/' && !listed.has(p)), ['/code-review/', 'Code review'], ['/g/', 'Gists'], ['/fix/', 'Fix a broken automation'],
+    // pages of their own that no tool row reaches yet: linked here so none is an orphan (tools/seo-audit.mjs)
+    ['/books/', 'Bookshelf'], ['/films/', 'Films'], ['/obituaries/', 'Obituaries and lineage'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'], ['/hosting/', 'Hosting sizer: traffic, queue and uptime']].filter(([p], i, a) => !listed.has(p) && a.findIndex((x) => x[0] === p) === i);
   return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li><a href="' + esc(p) + '">' + esc(name) + '</a></li>').join('') + '</ul></section>';
 }
 /** on each paid page: the other things Verse does for people, each with its one plain line (lib/products.js), and the free fixes. Pure. */

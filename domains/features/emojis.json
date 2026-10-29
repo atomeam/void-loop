@@ -1,0 +1,48 @@
+{
+ "floor": "emojis",
+ "verse_page": "/emojis/",
+ "researched": "2026-10-27",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "emojitracker.com": {
+   "url": "https://emojitracker.com/",
+   "scanned": "2026-10-27",
+   "leader": true,
+   "pages": [
+    "https://emojitracker.com/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Reject Optional Cookies",
+     "detail": "a button on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/emojis/ shows none of its words; not \"reject\", \"optional\", \"cooky\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Reject Optional Cookies",
+   "sites": [
+    "emojitracker.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-27",
+  "queued": [
+   {
+    "target": "feature:emojitracker-com-78b6be34",
+    "feature": "Reject Optional Cookies",
+    "host": "emojitracker.com",
+    "at": "2026-10-27",
+    "id": "mvqun4oo"
+   }
+  ]
+ }
+}

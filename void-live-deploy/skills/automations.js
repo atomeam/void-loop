@@ -10,7 +10,7 @@ const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || ''; }
 
 export function automationsOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+)?(?:(?:void|verse)\s+)?(?:automations?|zaps|workflows? i (?:made|set up))$|^(?:new|make|create|add)\s+(?:an?\s+)?automation$|^(?:my\s+)?automation\s+rules$|^what\s+automations\s+(?:do\s+i\s+have|are\s+(?:on|running))$/.test(t)) return { open: true };
+  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+)?(?:(?:void|verse)\s+)?(?:automations?|zaps|workflows? i (?:made|set up))$|^(?:new|make|create|add)\s+(?:an?\s+)?automation$|^(?:my\s+)?automation\s+rules$|^what\s+automations\s+(?:do\s+i\s+have|are\s+(?:on|running))$|^yo\s+automations?$/.test(t)) return { open: true };
   return null;
 }
 
@@ -126,7 +126,7 @@ async function run(text, api) {
 export default {
   name: 'automations',
   automationsOf,
-  examples: ['my automations', 'show my automations', 'automations', 'new automation', 'zaps'],
+  examples: ['my automations', 'show my automations', 'automations', 'new automation', 'zaps', 'yo automations', 'yo automation'],
   nearMisses: ['what is automation', 'home automation', 'automation jobs', 'automate my life', 'zap the bug'],
   match(lower, text) { return !!automationsOf(text); },
   run,

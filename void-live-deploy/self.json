@@ -192,6 +192,24 @@
    "date": "2026-10-21",
    "ask": "Verse Remix Kit",
    "from": "store-publish: templates, 6 files, free; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "identity studio opens with a neutral example profile (no real name or email in the seed)",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
+   "from": "asked by Verse"
   }
  ],
  "open": [
@@ -475,7 +493,7 @@
   },
   {
    "name": "Planet restoration",
-   "last": "2026-10-14"
+   "last": "2026-10-28"
   },
   {
    "name": "Verse stage handoff",
@@ -491,88 +509,100 @@
  },
  "commits": [
   {
-   "at": "2026-10-26T07:35:04Z",
+   "at": "2026-10-28T23:17:11Z",
+   "subject": "Tower: paint (heycolor.com) surpassed on evidence; the queue moves on to is it"
+  },
+  {
+   "at": "2026-10-28T23:14:12Z",
+   "subject": "Regenerated the generated files after merging main"
+  },
+  {
+   "at": "2026-10-28T23:11:10Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T07:34:55Z",
-   "subject": "Versus by itself: unit converter: convertunits.com, the sites read recorded"
+   "at": "2026-10-28T23:11:08Z",
+   "subject": "verse-loop: run with the workflow token, no extra secret needed (Actions may open PRs now)"
   },
   {
-   "at": "2026-10-26T07:33:04Z",
-   "subject": "Versus by itself: a row's words end at a sentence, and an ask meets its family by the stem of its words (the first page's own words were…"
+   "at": "2026-10-28T23:11:05Z",
+   "subject": "Notes: the render line says why its HTML is safe"
   },
   {
-   "at": "2026-10-26T07:31:49Z",
+   "at": "2026-10-28T23:10:39Z",
+   "subject": "Notes clean a note's HTML when they show it; the review's false alarms marked with why"
+  },
+  {
+   "at": "2026-10-28T23:09:17Z",
+   "subject": "Paint by number rebuilt: a picture library with categories, smooth zoom and pan, hints, highlighting, saved progress, a reveal, your own…"
+  },
+  {
+   "at": "2026-10-28T23:06:53Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-26T07:30:52Z",
-   "subject": "seo-audit: duplicate titles are told every run, not held, so Verse's tower-self loop is never stopped by the check"
+   "at": "2026-10-28T23:06:46Z",
+   "subject": "wip paint"
   },
   {
-   "at": "2026-10-26T07:29:37Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten…"
+   "at": "2026-10-28T23:05:53Z",
+   "subject": "Regenerated the generated files after merging main again"
   },
   {
-   "at": "2026-10-26T07:27:52Z",
-   "subject": "seo.test: build() also reaches the pages it only writes links into; each must be up to date too"
+   "at": "2026-10-28T23:05:22Z",
+   "subject": "Calculators: the 16 Maths gaps from calculator.net's sitemap, with known-answer tests"
   },
   {
-   "at": "2026-10-26T07:27:09Z",
-   "subject": "Tower gate: shopping,jobs: arbeitnow.com,jobs: himalayas.app measured against their live sites"
+   "at": "2026-10-28T23:02:30Z",
+   "subject": "Versus card: the easiest-first plan from docs/NEXT.md, with the gate's own numbers"
   },
   {
-   "at": "2026-10-26T07:26:41Z",
-   "subject": "Versus by itself: unit converter: convertlive.com, the sites read recorded"
+   "at": "2026-10-28T23:01:47Z",
+   "subject": "Verse loop: the lock's catches let only a missing file pass (Verse's review)"
   },
   {
-   "at": "2026-10-26T07:23:58Z",
-   "subject": "Feature scan: shopping researched by Verse"
+   "at": "2026-10-28T23:01:46Z",
+   "subject": "Board: the parity branch's edits across agents' files, under the owner's any-agent rule"
   },
   {
-   "at": "2026-10-26T07:23:36Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-28T23:00:02Z",
+   "subject": "MAP names rival-inventory.mjs (main's map check was red on it)"
   },
   {
-   "at": "2026-10-26T07:23:24Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-28T22:59:32Z",
+   "subject": "Verse loop: item 0 and --task read right in the prompt and the title"
   },
   {
-   "at": "2026-10-26T07:22:44Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-28T22:55:08Z",
+   "subject": "Fast checks run the Verse loop's tests"
   },
   {
-   "at": "2026-10-26T07:22:36Z",
-   "subject": "Versus by itself: the model answers without thinking first (its thinking spent the whole budget and left the answer empty)"
+   "at": "2026-10-28T22:54:56Z",
+   "subject": "Verse loop: one lap from a terminal or a timer, over the pieces that exist"
   },
   {
-   "at": "2026-10-26T07:22:36Z",
-   "subject": "Verse fixes its print-file skill: learn to handle \"get the stl for the motor\""
+   "at": "2026-10-28T22:54:49Z",
+   "subject": "Verse fixes its baseconv skill: learn to handle \"256 to hex\""
   },
   {
-   "at": "2026-10-26T07:22:03Z",
-   "subject": "Jobs: /api/jobs in the OpenAPI check (Verse's own) and its rate in lib/guard.js; one visit beacon on the jobs pages (the shared template…"
-  },
-  {
-   "at": "2026-10-26T07:21:45Z",
-   "subject": "Tower gate: shopping measured against their live sites"
-  },
-  {
-   "at": "2026-10-26T07:21:40Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 4 not-judged); next heycolor.com"
-  },
-  {
-   "at": "2026-10-26T07:21:38Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-10-26T07:19:02Z",
-   "subject": "Versus by itself: the model's answer found however it is wrapped, and what it said logged when it is not"
+   "at": "2026-10-28T22:53:37Z",
+   "subject": "Tools: rival-inventory reads each rival's robots.txt and sitemap and writes the gaps to PARITY.md and the build feed"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Main green, tower checks (box, 2026-10-28)",
+    "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
+   },
+   {
+    "name": "Lists run 7 (grok, 2026-10-28)",
+    "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
+   },
+   {
+    "name": "Lists run 8 (grok, 2026-10-28)",
+    "line": "green foundation first, so red checks only. Fixed \"connected\" (/books/ links /notes/ and /translate/) and \"incident autopsy\" (the card's art seal is not an autopsy picture). Open counts: V01D asks 1 (milestone, blocked on Claude's growth…"
+   },
    {
     "name": "Who visits (claude, 2026-10-26)",
     "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
@@ -584,18 +614,6 @@
    {
     "name": "Claude (pdf and kanban floors, 2026-10-26)",
     "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
-   },
-   {
-    "name": "Claude (perchance session)",
-    "line": "the random generators floor to perchance parity (main a3a708a9..): /image/ text to image (15 styles, 4 shapes, 1-4 a go, seed, leave out, download, gallery on the device; the Art Forge's painter, its Workers AI share counted with the…"
-   },
-   {
-    "name": "Claude (feature scan, 2026-10-25)",
-    "line": "Verse researches every Versus site's features by itself: tools/feature-scan.mjs reads each floor's sites at their own address, writes domains/features/<floor>.json (under…"
-   },
-   {
-    "name": "Claude (tower session, 2026-10-25, 07:45)",
-    "line": "the weather floor (weather.gov) surpassed, 12 of 12 (a4b5043). What closed it: /api/weather (functions/api/weather.js), the place and its Open-Meteo forecast in one round trip kept on the edge ten minutes per place, so /weather/ draws at…"
    }
   ],
   "ladders": [
@@ -626,6 +644,14 @@
   ],
   "lessons": [
    {
+    "name": "A new page says what it takes and gives",
+    "line": "add <meta name=\"verse-handoff\" content=\"in: ...; out: ...\"> when it ships (types in tools/handoff-scan.mjs); every lap builds the top connections in docs/HANDOFF-GAPS.md and plays them in tools/handoff-e2e.mjs (standing item in…"
+   },
+   {
+    "name": "The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)",
+    "line": "a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or \"coming soon\"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never…"
+   },
+   {
     "name": "Rumble's page id is not its embed id",
     "line": "rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing."
    },
@@ -640,14 +666,6 @@
    {
     "name": "Set the PR head in code and verify it",
     "line": "#713 merged another agent's unfinished branch because a sed edit of \"head\" silently missed; build the request as data and check the reply names your branch."
-   },
-   {
-    "name": "Wrangler only uploads functions/ from the current directory",
-    "line": "a deploy from a copied folder dropped every Function; deploy from inside void-live-deploy."
-   },
-   {
-    "name": "Never write a whole file through an API to change part of it",
-    "line": "a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout so the diff shows what changed."
    }
   ]
  },
@@ -663,7 +681,7 @@
   {
    "rank": 2,
    "item": "Cut KV writes under 1k/day",
-   "free": "edge cache (caches.default) instead of KV for counters and caches; move the two non-V01D workers off the shared namespace",
+   "free": "done on Verse's side (lists run 6, 2026-10-28): Verse makes no KV writes (counters and caches in caches.default since 2026-09-27) and tools/kv-writes.test.mjs keeps it so. Moving other workers to…",
    "cost": "$0",
    "value": "high: writes failing at 109%",
    "why": "free, live problem"
@@ -799,8 +817,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 1 (1 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-10-26T06:42Z",
+  "line": "People this week: 22 (152 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-28T11:22Z",
   "source": "verse"
  }
 }

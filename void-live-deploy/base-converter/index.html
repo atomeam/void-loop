@@ -19,6 +19,7 @@
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 640px; margin: 0 auto; padding: 22px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 14px; text-align: center; font-weight: 600; color: var(--soft); }
+  .lead { margin: 2px 0 6px; } .tries { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; margin: 0 0 10px; } .tries a { padding: 8px 0; }
   .row { display: grid; grid-template-columns: 6.2em 1fr auto; gap: 8px; align-items: center; margin: 8px 0; }
   label { font-size: 14px; color: var(--soft); }
   input { font: 17px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 9px 11px; min-width: 0; width: 100%; box-sizing: border-box; }
@@ -49,7 +50,9 @@
 </head>
 <body>
 <main>
-  <h1>Binary, octal, decimal, hex</h1>
+  <h1>Convert numbers: binary, octal, decimal, hex and any base</h1>
+  <p class="lead" id="lead">Turn a number into binary, hex or any base and back: for colours, file sizes, permissions or homework. Type in any box; the others follow.</p>
+  <nav class="tries" id="tries" aria-label="Ready examples"><span>Try:</span> <a href="?v=ff8800&amp;b=16">Colour #ff8800</a> <a href="?v=755&amp;b=8">File permission 755</a> <a href="?v=1024&amp;b=10">1 kilobyte in bytes (1024)</a> <a href="?v=42&amp;b=10">Homework: 42 in binary</a></nav>
   <div class="row"><label for="b2">Binary</label><input id="b2" data-base="2" inputmode="text" autocomplete="off" spellcheck="false" placeholder="1111 1111"><button type="button" data-copy="b2">Copy</button></div>
   <div class="row"><label for="b8">Octal</label><input id="b8" data-base="8" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="377"><button type="button" data-copy="b8">Copy</button></div>
   <div class="row"><label for="b10">Decimal</label><input id="b10" data-base="10" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="255" autofocus><button type="button" data-copy="b10">Copy</button></div>

@@ -14,10 +14,14 @@ const ENT = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'
 const unent = (s) => String(s).replace(/&(?:amp|lt|gt|quot|#39|nbsp);/g, (m) => ENT[m]);
 
 // ---- cleaning pasted or imported html: a whitelist, rebuilt attributes ----
-const KEEP_TAGS = new Set(['b', 'i', 'u', 's', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'p', 'div', 'br', 'code', 'pre', 'blockquote', 'a', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td']);
+const KEEP_TAGS = new Set(['b', 'i', 'u', 's', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'p', 'div', 'br', 'code', 'pre', 'blockquote', 'a', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'mark']);
+/** a picture kept in a note: a data URL of a png, jpeg, gif or webp, at most 3 MB (the page shrinks photos before they go in) */
+export const IMG_SRC = /^data:image\/(?:png|jpeg|gif|webp);base64,[A-Za-z0-9+/]+={0,2}$/;
+const IMG_MAX = 3e6;
 const ALIAS = { strong: 'b', em: 'i', strike: 's', del: 's', h4: 'h3', h5: 'h3', h6: 'h3' };
 const TAG_RE = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)((?:"[^"]*"|'[^']*'|[^>"'])*)>/g;
-/** html reduced to b i u s h1-h3 ul ol li p div br code pre blockquote a (http, https, mailto only); li/ul keep the checkbox classes. Pure. */
+/** html reduced to b i u s h1-h3 ul ol li p div br code pre blockquote a (http, https, mailto only), img (data: pictures only, with alt) and mark (a comment's
+ * anchor: class cm and its id); li/ul keep the checkbox classes. Pure. */
 export function clean(html) {
   let h = String(html == null ? '' : html).replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style|head|title|iframe|object|svg|template)\b[\s\S]*?<\/\1\s*>/gi, '');
   let out = '', last = 0, m; const as = [];
@@ -26,6 +30,8 @@ export function clean(html) {
     out += h.slice(last, m.index).replace(/</g, '&lt;'); last = m.index + m[0].length;
     let tag = m[2].toLowerCase(); tag = ALIAS[tag] || tag;
     if (!KEEP_TAGS.has(tag)) continue;
+    if (tag === 'img') { if (m[1]) continue; const sr = /\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')/i.exec(m[3]), u = sr ? (sr[1] ?? sr[2]).trim() : ''; if (u.length > IMG_MAX || !IMG_SRC.test(u)) continue; const al = /\balt\s*=\s*(?:"([^"]*)"|'([^']*)')/i.exec(m[3]); out += '<img src="' + u + '" alt="' + esc(unent(al ? (al[1] ?? al[2]) : '').slice(0, 300)) + '">'; continue; }
+    if (tag === 'mark' && !m[1]) { const c = /\bdata-c\s*=\s*["']?([a-z0-9]{1,16})\b/i.exec(m[3]); out += c ? '<mark class="cm" data-c="' + c[1].toLowerCase() + '">' : '<mark>'; continue; }
     if (m[1]) { if (tag === 'a') { if (as.pop()) out += '</a>'; continue; } if (tag !== 'br' && tag !== 'hr') out += '</' + tag + '>'; continue; }
     const attrs = m[3]; let extra = '';
     if (tag === 'a') { const hr = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(attrs); const u = hr ? unent(hr[1] ?? hr[2] ?? hr[3]).trim() : ''; if (!/^(?:https?:|mailto:)/i.test(u)) { as.push(false); continue; } as.push(true); extra = ' href="' + esc(u) + '" rel="noopener noreferrer" target="_blank"'; }
@@ -64,6 +70,7 @@ export function toMd(html) {
       else if (tag === 'li') { nl(); const L = lists[lists.length - 1] || { n: 0 }; L.n++; o += '  '.repeat(Math.max(0, lists.length - 1)) + (/chk done/.test(at) ? '- [x] ' : /chk/.test(at) ? '- [ ] ' : L.ol ? L.n + '. ' : '- '); }
       else if (tag === 'blockquote') { blank(); o += '> '; } else if (tag === 'p' || tag === 'div') nl(); else if (tag === 'br') o += '  \n';
       else if (tag === 'a') { const h = /href="([^"]*)"/.exec(at); href = h ? unent(h[1]) : null; o += '['; }
+      else if (tag === 'img') { const sr = /src="([^"]*)"/.exec(at), al = /alt="([^"]*)"/.exec(at); o += '![' + unent(al ? al[1] : '').replace(/[\[\]]/g, '') + '](' + (sr ? sr[1] : '') + ')'; }
     } else if (tag === 'b') o += '**'; else if (tag === 'i') o += '*'; else if (tag === 's') o += '~~'; else if (tag === 'u') o += '</u>';
     else if (tag === 'code') o += pre ? '' : '`'; else if (tag === 'pre') { nl(); o += '```\n'; pre = false; }
     else if (/^h[1-3]$/.test(tag) || tag === 'blockquote') blank();
@@ -74,7 +81,7 @@ export function toMd(html) {
 }
 
 const inline = (s) => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/__([^_]+)__/g, '<b>$1</b>').replace(/\*([^*\s][^*]*)\*/g, '<i>$1</i>')
-  .replace(/~~([^~]+)~~/g, '<s>$1</s>').replace(/\[([^\]]+)\]\(((?:https?:|mailto:)[^)\s]+)\)/g, '<a href="$2">$1</a>');
+  .replace(/~~([^~]+)~~/g, '<s>$1</s>').replace(/!\[([^\]]*)\]\((data:image\/(?:png|jpeg|gif|webp);base64,[A-Za-z0-9+/]+={0,2})\)/g, '<img src="$2" alt="$1">').replace(/\[([^\]]+)\]\(((?:https?:|mailto:)[^)\s]+)\)/g, '<a href="$2">$1</a>');
 /** markdown (headings, lists, - [ ] tasks, fenced code, quotes, bold, italic, code, links) as a clean body. */
 export function mdToHtml(md) {
   const lines = String(md || '').replace(/\r\n?/g, '\n').split('\n'); let out = '', i = 0;
@@ -119,7 +126,7 @@ export function sorted(docs) { return [...(docs || [])].sort((a, b) => (b.pinned
 /** the stored value cleaned: only documents with an id, bodies cleaned, versions an array. */
 export function load(raw) {
   let v = raw; if (typeof raw === 'string') { try { v = JSON.parse(raw); } catch (_) { v = null; } }
-  const cleanDoc = (d) => ({ id: String(d.id), title: String(d.title || ''), html: clean(d.html || ''), updated: +d.updated || 0, ...(d.pinned ? { pinned: true } : {}), ...(Array.isArray(d.tags) && d.tags.length ? { tags: d.tags.map((x) => String(x).slice(0, 30)).slice(0, 20) } : {}), versions: Array.isArray(d.versions) ? d.versions.filter((x) => x && x.t).map((x) => ({ t: +x.t, title: String(x.title || ''), html: clean(x.html || '') })) : [] });
+  const cleanDoc = (d) => ({ id: String(d.id), title: String(d.title || ''), html: clean(d.html || ''), updated: +d.updated || 0, ...(d.pinned ? { pinned: true } : {}), ...(Array.isArray(d.tags) && d.tags.length ? { tags: d.tags.map((x) => String(x).slice(0, 30)).slice(0, 20) } : {}), ...(Array.isArray(d.comments) && d.comments.length ? { comments: d.comments.filter((c) => c && /^[a-z0-9]{1,16}$/.test(c.id)).slice(0, 500).map((c) => ({ id: c.id, quote: String(c.quote || '').slice(0, 300), text: String(c.text || '').slice(0, 2000), at: +c.at || 0, ...(c.done ? { done: true } : {}), ...(Array.isArray(c.replies) && c.replies.length ? { replies: c.replies.slice(0, 100).map((r) => ({ text: String(r && r.text || '').slice(0, 2000), at: +(r && r.at) || 0 })) } : {}) })) } : {}), versions: Array.isArray(d.versions) ? d.versions.filter((x) => x && x.t).map((x) => ({ t: +x.t, title: String(x.title || ''), html: clean(x.html || '') })) : [] });
   const docs = ((v && v.docs) || []).filter((d) => d && d.id).map(cleanDoc);
   const trash = ((v && v.trash) || []).filter((x) => x && x.doc && x.doc.id && +x.at > 0).map((x) => ({ at: +x.at, doc: cleanDoc(x.doc) })).slice(0, 200);
   return { docs, ...(trash.length ? { trash } : {}), cur: v && v.cur && docs.some((d) => d.id === v.cur) ? v.cur : docs.length ? sorted(docs)[0].id : null };

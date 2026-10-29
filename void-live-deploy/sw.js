@@ -4,20 +4,31 @@ const CACHE = 'void-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];
 // the one-tool pages open offline too (owner, 2026-10-24: the tower gate measures offline): each page is kept under its own path, with the
 // modules its generated modulepreload block names (tools/preload.mjs), fetched once at install
-const TOOLS = ['/photos/', '/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/', '/random-user/', '/base-converter/', '/convert/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/base64/', '/calculator/', '/time/', '/password/', '/weather/', '/translate/', '/recipes/', '/markets/', '/podcasts/', '/scores/', '/sports/', '/fantasy/', '/calendar/', '/notes/', '/generators/', '/boards/', '/news/', '/image/', '/pdf/', '/pdf/merge/', '/pdf/organize/', '/pdf/toolbox/', '/pdf/editor/', '/pdf/suite/', '/pdf/studio/', '/kanban/', '/kanban/simple/', '/kanban/quick/', '/kanban/teams/', '/kanban/flow/', '/g/', '/is-it/christmas', '/tools/', '/convert/unit-converter/', '/convert/unit-converter-2/'];
+const TOOLS = ['/photos/', '/ledger/', '/stopwatch/', '/word-count/', '/color/', '/gradient/', '/wheel/', '/random-user/', '/base-converter/', '/convert/', '/resize-image/', '/password-strength/', '/random/', '/flip/', '/base64/', '/calculator/', '/calculators/', '/time/', '/password/', '/weather/', '/translate/', '/recipes/', '/markets/', '/markets/caps/', '/metronome/', '/paint/', '/emojis/', '/tournaments/', '/prizes/', '/hosting/', '/identity/', '/cpan/', '/obituaries/', '/books/', '/podcasts/', '/scores/', '/sports/', '/fantasy/', '/calendar/', '/notes/', '/generators/', '/boards/', '/news/', '/image/', '/pdf/', '/pdf/merge/', '/pdf/organize/', '/pdf/toolbox/', '/pdf/editor/', '/pdf/suite/', '/pdf/studio/', '/kanban/', '/kanban/simple/', '/kanban/quick/', '/kanban/teams/', '/kanban/flow/', '/g/', '/is-it/christmas', '/tools/', '/convert/unit-converter/', '/convert/unit-converter-2/'];
 // any /is-it/<day> page (not its .rss or .json) is kept under its own path once visited
-// pages kept the first time they are opened, never at install (2026-10-25: four more pages at install made the worker miss the gate's 10 s wait,
-// and /generators/ read 0 offline again); their own module files (/generators/<page>/app.js, /image/app.js) are kept like /lib/ code
+// the pages whose own module files (/generators/<page>/app.js, /image/app.js) are kept like /lib/ code: the page itself is shelled at install
+// with every other kept page (see KEPT below), and its modules are kept the first time it loads under the worker
 // the six music pages (2026-10-26) are kept the first time each is opened, with their app.js, for the same reason
 // the flights pages (2026-10-26) are kept the first time each is opened, with their app.js and the airport list
 // the jobs pages (2026-10-26) likewise, with their app.js and the listings snapshot
-const LATER = ['/jobs/', '/jobs/regions/', '/jobs/alerts/', '/jobs/europe/', '/jobs/salary/', '/jobs/categories/', '/jobs/tags/', '/jobs/companies/', '/flights/', '/flights/trip/', '/flights/airports/', '/flights/time/', '/flights/distance/', '/flights/map/', '/flights/co2/', '/flights/routes/', '/music/', '/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/markets/caps/', '/markets/screener/', '/photos/squoosh/', '/photos/tinypng/', '/photos/exif/', '/photos/exifeditor/', '/photos/photopea/', '/photos/iloveimg/', '/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
-const isTool = (p) => TOOLS.includes(p) || LATER.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
-const pageCode = (p) => /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|photos\/app|scores\/(?:app|more|sports|reports|gfx)|(?:sports|fantasy)\/(?:app|boot)|(?:music|metronome|piano|tuner|bpm|chords)\/app|(?:pdf|kanban|flights|jobs)(?:\/[a-z]+)?\/app)\.js$/.test(p) || p === '/flights/airports.json' || p === '/jobs/snapshot.json' || p === '/flights/routes.json';
+// the store (2026-10-26, owner: "need a /store page that beats amazons") likewise; its catalogue is kept by the page itself in localStorage, so an offline visit still shows every product and the cart
+const LATER = ['/store/', '/jobs/', '/jobs/regions/', '/jobs/alerts/', '/jobs/europe/', '/jobs/salary/', '/jobs/categories/', '/jobs/tags/', '/jobs/companies/', '/flights/', '/flights/trip/', '/flights/airports/', '/flights/time/', '/flights/distance/', '/flights/map/', '/flights/co2/', '/flights/routes/', '/music/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/markets/screener/', '/photos/squoosh/', '/photos/tinypng/', '/photos/exif/', '/photos/exifeditor/', '/photos/photopea/', '/photos/iloveimg/', '/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
+// Every page the site keeps — TOOLS and LATER alike — is pre-cached as a THIN HTML SHELL at install (owner, 2026-10-26: the offline class
+// deletion). A LATER page used to be kept only on its first open, so the gate's fresh context could lose the race and read 0 offline while
+// the page passed here every time: two floors stalled on exactly that, and 33 pages carried the risk. The shells are HTML only, which is what
+// makes this cheap (the 2026-10-25 install slowdown was MODULES); a page's modules are still kept the first time it loads under the worker.
+const KEPT = TOOLS.concat(LATER);
+const isTool = (p) => KEPT.includes(p) || /^\/is-it\/[a-z0-9-]+$/.test(p);
+const pageCode = (p) => /^\/paint\/(?:app\.js|templates\/[a-z-]+\.json)$/.test(p) || /^\/(?:generators\/[a-z]+\/app|image\/(?:app|layers)|photos\/app|scores\/(?:app|more|sports|reports|gfx)|(?:sports|fantasy)\/(?:app|boot)|(?:music|metronome|piano|tuner|bpm|chords)\/app|(?:pdf|kanban|flights|jobs|ledger)(?:\/[a-z]+)?\/app)\.js$/.test(p) || p === '/flights/airports.json' || p === '/jobs/snapshot.json' || p === '/flights/routes.json';
 // the install keeps each tool page itself and nothing more (2026-10-25: with 21 pages, fetching every page's modules at install took longer than the
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML
 const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? c.put(t, res) : null)).catch(() => {});
+// the files a kept page fetches that are neither its HTML nor a modulepreload: /paint/ asks for its paintings by fetch and /emojis/
+// imports the closed list directly, so neither arrives through keepWhole — and a page that shows itself but cannot draw is offline 0
+// (the gate's own reading: paint measured 0 against an ideal of 1 until these were kept)
+const EXTRA = ['/paint/app.js', '/paint/templates/index.json', '/paint/templates/wave.json', '/paint/templates/starry.json', '/lib/emoji.js'];
+
 // a tool page and the modules it preloads: kept for the pages open when the worker takes over, so the page that installed it works offline
 // on its very next load (2026-10-25: /color/ reloaded offline showed its shell with no colour, its modules never kept)
 const keepWhole = (c, t) => fetch(t).then((res) => (res.ok ? res.clone().text().then((h) => c.put(t, res).then(() => c.addAll([...h.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1])))) : null)).catch(() => {});
@@ -30,7 +41,7 @@ const CACHE_SCORES = 'void-scores-v1';
 const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(TOOLS.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(KEPT.map((t) => keepTool(c, t)))).then(() => Promise.all(EXTRA.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D && k !== CACHE_SCORES).map((k) => caches.delete(k)))).then(() => self.clients.claim())

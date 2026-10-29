@@ -162,6 +162,15 @@ export function fromItunes(r) {
   if (!r || !r.collectionId) return null;
   return { id: String(r.collectionId), title: String(r.collectionName || r.trackName || '').slice(0, 200), author: String(r.artistName || '').slice(0, 200), image: secure(r.artworkUrl600 || r.artworkUrl100 || r.artworkUrl60), feed: okUrl(secure(r.feedUrl || '')) ? secure(r.feedUrl) : '', genre: String(r.primaryGenreName || '').slice(0, 60), count: +r.trackCount || 0 };
 }
+/** fyyd's directory answer (api.fyyd.de, free, no key: a search or its "hot" list) as show rows; it has no Apple id, so a row opens by its feed. Pure. */
+export function fromFyyd(j) {
+  const out = [];
+  for (const r of Array.isArray(j && j.data) ? j.data : []) {
+    const feed = secure(String(r && r.xmlURL || '')); if (!r || !r.title || !okUrl(feed)) continue;
+    out.push({ id: '', title: String(r.title).slice(0, 200), author: String(r.author || '').slice(0, 200), image: secure(r.imgURL || r.smallImageURL || ''), feed, genre: '', count: +r.episode_count || 0 });
+  }
+  return out.slice(0, 50);
+}
 /** the top-podcasts chart in either of Apple's shapes (the iTunes RSS "feed.entry" list, or the marketing-tools "feed.results" list) as show rows. Pure. */
 export function fromChart(j) {
   const f = (j && j.feed) || {}, out = [];

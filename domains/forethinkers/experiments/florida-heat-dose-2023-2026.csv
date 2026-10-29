@@ -1,17 +1,17 @@
 station,lat,lon,year,peak_dhw,peak_date,max_sst,max_sst_date,days_sst_ge_31,days_dhw_ge_4,days_dhw_ge_8,max_baa,last_date,last_dhw,last_baa,source_file
-Key Biscayne Cluster,25.725,-80.125,2023,11.8471,2023-09-19,31.6500,2023-08-12,28,105,63,4,2023-11-30,0.4800,0,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
-Key Biscayne Cluster,25.725,-80.125,2024,4.2529,2024-09-24,31.1400,2024-08-15,2,25,0,3,2024-11-30,1.2786,0,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
-Key Biscayne Cluster,25.725,-80.125,2025,7.0714,2025-09-05,31.2900,2025-08-19,17,81,0,3,2025-11-30,0.0000,0,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
-Key Biscayne Cluster,25.725,-80.125,2026,10.4500,2026-09-17,31.3600,2026-08-19,13,73,31,4,2026-10-13,7.3014,1,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
-Dry Tortugas Nursery,24.625,-82.875,2023,14.3457,2023-09-23,31.9400,2023-08-11,41,108,78,4,2023-11-30,1.6557,0,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
-Dry Tortugas Nursery,24.625,-82.875,2024,6.8243,2024-09-25,31.2900,2024-09-15,8,64,0,3,2024-11-30,3.4586,0,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
-Dry Tortugas Nursery,24.625,-82.875,2025,6.5743,2025-09-05,31.4400,2025-08-27,19,78,0,3,2025-11-30,0.0000,0,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
-Dry Tortugas Nursery,24.625,-82.875,2026,13.6986,2026-09-25,31.6600,2026-08-27,31,61,45,4,2026-10-13,12.6357,1,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
-Carysfort Reef,25.225,-80.225,2023,16.2057,2023-09-21,31.8200,2023-07-14,43,117,85,4,2023-11-30,1.6629,0,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
-Carysfort Reef,25.225,-80.225,2024,7.1043,2024-09-24,31.1800,2024-08-14,8,79,0,3,2024-11-30,2.3786,0,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
-Carysfort Reef,25.225,-80.225,2025,8.4143,2025-09-06,31.5000,2025-08-28,27,85,50,4,2025-11-30,0.0000,0,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
-Carysfort Reef,25.225,-80.225,2026,14.8614,2026-09-21,31.3300,2026-08-25,29,88,59,4,2026-10-13,10.9457,1,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
+Key Biscayne Cluster,25.725,-80.125,2023,11.8471,2023-09-26,31.6500,2023-08-12,28,105,63,4,2023-11-30,0.4800,0,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
+Key Biscayne Cluster,25.725,-80.125,2024,4.2529,2024-09-29,31.1400,2024-08-15,2,25,0,3,2024-11-30,1.2786,0,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
+Key Biscayne Cluster,25.725,-80.125,2025,7.0714,2025-10-21,31.2900,2025-08-19,17,81,0,3,2025-11-30,0.0000,0,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
+Key Biscayne Cluster,25.725,-80.125,2026,10.4500,2026-09-22,31.3600,2026-08-19,13,87,31,4,2026-10-27,6.3900,0,AtlanticOcean_Florida_SoutheastFlorida_KeyBiscayneCluster.txt
+Dry Tortugas Nursery,24.625,-82.875,2023,14.3457,2023-09-28,31.9400,2023-08-11,41,108,78,4,2023-11-30,1.6557,0,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
+Dry Tortugas Nursery,24.625,-82.875,2024,6.8243,2024-10-10,31.2900,2024-09-15,8,64,0,3,2024-11-30,3.4586,0,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
+Dry Tortugas Nursery,24.625,-82.875,2025,6.5743,2025-10-22,31.4400,2025-08-27,19,78,0,3,2025-11-30,0.0000,0,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
+Dry Tortugas Nursery,24.625,-82.875,2026,13.6986,2026-09-25,31.6600,2026-08-27,31,75,59,4,2026-10-27,11.4686,0,AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt
+Carysfort Reef,25.225,-80.225,2023,16.2057,2023-09-24,31.8200,2023-07-15,43,117,85,4,2023-11-30,1.6629,0,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
+Carysfort Reef,25.225,-80.225,2024,7.1043,2024-09-29,31.1800,2024-08-14,8,79,0,3,2024-11-30,2.3786,0,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
+Carysfort Reef,25.225,-80.225,2025,8.4143,2025-10-21,31.5000,2025-08-28,27,85,50,4,2025-11-30,0.0000,0,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
+Carysfort Reef,25.225,-80.225,2026,14.8614,2026-09-21,31.3300,2026-08-25,29,102,73,4,2026-10-27,8.6714,0,AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt
 Looe Key Reef,24.525,-81.425,2023,17.9714,2023-09-22,32.0900,2023-07-19,55,123,96,4,2023-11-30,2.5714,0,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt
-Looe Key Reef,24.525,-81.425,2024,8.7057,2024-09-24,31.4500,2024-09-15,19,88,25,4,2024-11-30,3.0814,0,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt
-Looe Key Reef,24.525,-81.425,2025,8.7243,2025-09-05,31.8400,2025-08-27,29,86,53,4,2025-11-30,0.0000,0,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt
-Looe Key Reef,24.525,-81.425,2026,16.4971,2026-09-20,31.6400,2026-07-07,50,96,71,4,2026-10-13,12.3171,1,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt
+Looe Key Reef,24.525,-81.425,2024,8.7057,2024-10-10,31.4500,2024-09-15,19,88,25,4,2024-11-30,3.0814,0,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt
+Looe Key Reef,24.525,-81.425,2025,8.7243,2025-10-21,31.8400,2025-08-27,29,86,53,4,2025-11-30,0.0000,0,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt
+Looe Key Reef,24.525,-81.425,2026,16.4971,2026-09-20,31.6400,2026-07-08,50,110,85,4,2026-10-27,9.8014,0,AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt

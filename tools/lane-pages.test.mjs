@@ -7,7 +7,8 @@ import fs from 'node:fs';
 import { FLOORS, LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
 import { probeFor } from './tower-probes.mjs';
-const site = new URL('../void-live-deploy', import.meta.url).pathname;
+import { fileURLToPath } from 'node:url';
+const site = fileURLToPath(new URL('../void-live-deploy', import.meta.url));
 // pages served by something other than a folder: a dynamic route of the site (the /is-it/ days) or the stage itself
 const SERVED = [/^\/$/, /^\/is-it\/[a-z0-9-]+$/, /^\/g\/?$/];
 const exists = (p) => { const clean = String(p).replace(/[?#].*$/, ''); if (SERVED.some((r) => r.test(clean))) return true; const f = site + clean; return clean.endsWith('/') ? fs.existsSync(f + 'index.html') : fs.existsSync(f + '/index.html') || (fs.existsSync(f) && fs.statSync(f).isFile()); };
@@ -23,7 +24,7 @@ test('every page a floor, a lane, a probe or the tool table names exists as a fi
 // it beside the site. A floor's `page` is the page the gate measures it against, so where a probe names one too they must be the same page. The floors
 // below have no fitting page yet: each is a page to build, and comes off this list the day its page lands (a listed floor that has a page fails, so the
 // list only shrinks). Nothing else may be added to it without its page.
-const NEEDS_PAGE = ['maps', 'games', 'learning', 'shopping', 'chat', 'video', 'social', 'email', 'search', 'code hosting', 'ai models', 'assistant'];
+const NEEDS_PAGE = ['maps', 'games', 'learning', 'chat', 'video', 'social', 'email', 'search', 'code hosting', 'ai models', 'assistant'];
 test('every floor and lane site names its own Verse page, the same page its probe measures, and the page exists', () => {
   const path = (p) => String(p || '').replace(/[?#].*$/, ''), bad = [];
   for (const f of FLOORS) {
