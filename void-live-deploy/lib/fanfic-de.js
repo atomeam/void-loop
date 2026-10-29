@@ -92,6 +92,21 @@ export const DICT = {
   'One or two lines a reader sees first': 'Ein, zwei Zeilen, die man zuerst liest', 'A book, show, game or genre': 'Ein Buch, eine Serie, ein Spiel oder ein Genre',
   'One line about what belongs here': 'Eine Zeile dazu, was hierher gehört', 'A title, a character, a line': 'Ein Titel, eine Figur, eine Zeile', 'Untitled story': 'Unbenannte Geschichte',
   'Start writing. It saves as you type, on this device only.': 'Fang an zu schreiben. Es wird beim Tippen gespeichert, nur auf diesem Gerät.', Notice: 'Hinweis',
+  // story details, filters, sort and A to Z (lib/fanfic.js RATINGS, GENRES, WARNINGS, SORTS)
+  Sort: 'Sortieren', Rating: 'Freigabe', 'Any rating': 'Jede Freigabe', 'Choose a rating': 'Freigabe wählen', Characters: 'Figuren', Warnings: 'Warnungen',
+  'Names, split by commas': 'Namen, mit Kommas getrennt', 'Up to 6 names, split by commas': 'Bis zu 6 Namen, mit Kommas getrennt', 'Genres:': 'Genres:', any: 'beliebig', 'Genres (up to 3)': 'Genres (bis zu 3)', 'Titles A to Z': 'Titel von A bis Z', All: 'Alle',
+  'Hide stories with warnings': 'Geschichten mit Warnungen ausblenden', 'No story matches these filters.': 'Keine Geschichte passt zu diesen Filtern.',
+  'A story shows when it has every genre ticked.': 'Eine Geschichte erscheint, wenn sie jedes angekreuzte Genre hat.',
+  'Titles that start with a number or a sign': 'Titel, die mit einer Zahl oder einem Zeichen beginnen',
+  'Choose a rating, so readers know what to expect.': 'Wähle eine Freigabe, damit Leser:innen wissen, was sie erwartet.',
+  'Readers filter the archive by it.': 'Leser:innen filtern das Archiv danach.', 'Readers find stories by the people in them.': 'Leser:innen finden Geschichten über die Figuren darin.',
+  'Tick each one that applies. Readers can hide every story with a warning.': 'Kreuze jede an, die zutrifft. Leser:innen können jede Geschichte mit Warnung ausblenden.',
+  'Most recent post': 'Neuester Beitrag', 'Newest stories': 'Neueste Geschichten', 'Title, A to Z': 'Titel, A bis Z', 'Most replies': 'Meiste Antworten',
+  'General: fine for every reader': 'Allgemein: für alle Leser:innen geeignet', 'Teen: some violence, strong words or romance': 'Jugend: etwas Gewalt, derbe Sprache oder Romantik',
+  'Mature: strong themes, for adult readers': 'Erwachsen: starke Themen, für erwachsene Leser:innen',
+  Adventure: 'Abenteuer', Angst: 'Angst', Comedy: 'Komödie', Drama: 'Drama', Family: 'Familie', Fantasy: 'Fantasy', Fluff: 'Fluff', Friendship: 'Freundschaft',
+  Horror: 'Horror', 'Hurt/Comfort': 'Hurt/Comfort', Mystery: 'Krimi', Poetry: 'Lyrik', Romance: 'Romantik', 'Sci-fi': 'Science-Fiction', Tragedy: 'Tragödie',
+  Violence: 'Gewalt', 'Major character death': 'Tod einer Hauptfigur', 'Strong language': 'Derbe Sprache', 'Dark themes': 'Düstere Themen',
 };
 
 // text made from numbers and names: the English shape on the left, the German on the right

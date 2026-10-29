@@ -129,6 +129,7 @@ function topicRow(t, { inFandom } = {}) {
   const by = el('span', 'in'), pen = el('span', '', t.author); pen.translate = false; by.append('by ', pen);
   if (!inFandom) { const fl = link(t.fandom, href({ f: t.board })); fl.translate = false; by.append(' in ', fl); }
   main.append(by);
+  const line = F.detailsLine(t); if (line) { const d = el('span', 'in det', line); d.translate = false; main.append(d); }
   rep.dataset.l = 'Replies'; when.dataset.l = 'Last post'; when.append(timeEl(t.bumped));
   tr.append(ic, main, rep, who, when); return tr;
 }
@@ -221,11 +222,43 @@ async function viewIndex() {
 // the index's story list, narrowed by the find field (lib/fanfic.js findIn: title, fandom and pen name, accents ignored)
 let idx = null;
 const findQ = () => (new URLSearchParams(location.search).get('find') || '').slice(0, 100);
-const indexList = () => (idx ? F.findIn(idx.list, findQ()) : []);
+// the catalog's browse filters (lib/fanfic.js filterStories, sortStories): sort, rating, genres (a story has every one ticked), characters, hide
+// warnings, and a title letter A to Z; they combine with the find field and live in the address, so a filtered list can be shared
+const filtersQ = () => { const q = new URLSearchParams(location.search);
+  return { sort: F.SORTS[q.get('sort')] ? q.get('sort') : 'recent', rating: (q.get('rated') || '').slice(0, 20), genres: (q.get('genre') || '').split(',').filter(Boolean).slice(0, 15),
+    characters: (q.get('char') || '').slice(0, 120), noWarnings: q.get('nowarn') === '1', letter: (q.get('letter') || '').slice(0, 1) }; };
+const filtering = (f) => !!(f.rating || f.genres.length || f.characters.trim() || f.noWarnings || f.letter);
+const indexList = () => { if (!idx) return []; const f = filtersQ(); return F.sortStories(F.filterStories(F.findIn(idx.list, findQ()), f), f.sort); };
 function drawIndexList() {
   if (!idx) return;
-  const q = findQ().trim();
-  drawList('index', indexList(), { emptySay: q && idx.list.length ? 'No story matches "' + q + '".' : idx.empty });
+  const q = findQ().trim(), f = filtersQ(); drawFilters(f);
+  drawList('index', indexList(), { emptySay: idx.list.length && filtering(f) ? 'No story matches these filters.' : q && idx.list.length ? 'No story matches "' + q + '".' : idx.empty });
+}
+function setFilter(key, value) {
+  const u = new URLSearchParams(location.search); if (value) u.set(key, value); else u.delete(key); u.delete('page');
+  history.replaceState(null, '', location.pathname + (u.toString() ? '?' + u : '') + location.hash); drawIndexList();
+}
+let filtersBuilt = false;
+function drawFilters(f) {
+  const sort = $('fSort'), rated = $('fRated'), genres = $('fGenres'), az = $('fAz');
+  if (!filtersBuilt) {
+    filtersBuilt = true;
+    for (const [k, v] of Object.entries(F.SORTS)) { const o = el('option', '', v); o.value = k; sort.append(o); }
+    for (const [n, line] of F.RATINGS) { const o = el('option', '', n + ': ' + line); o.value = n; rated.append(o); }
+    for (const g of F.GENRES) { const l = el('label'), c = el('input'); c.type = 'checkbox'; c.value = g; l.append(c, ' ' + g); genres.append(l); }
+    for (const x of ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#']) { const b = el('button', '', x); b.type = 'button'; b.dataset.letter = x === 'All' ? '' : x; if (x === '#') b.setAttribute('aria-label', 'Titles that start with a number or a sign'); az.append(b); }
+    sort.onchange = () => setFilter('sort', sort.value === 'recent' ? '' : sort.value);
+    rated.onchange = () => setFilter('rated', rated.value);
+    genres.onchange = () => setFilter('genre', [...genres.querySelectorAll('input:checked')].map((c) => c.value).join(','));
+    $('fChars').oninput = () => setFilter('char', $('fChars').value.slice(0, 120));
+    $('fNoWarn').onchange = () => setFilter('nowarn', $('fNoWarn').checked ? '1' : '');
+    az.onclick = (ev) => { const b = ev.target.closest('button[data-letter]'); if (b) setFilter('letter', b.dataset.letter); };
+  }
+  sort.value = f.sort; rated.value = F.RATINGS.some(([n]) => n === f.rating) ? f.rating : '';
+  for (const c of genres.querySelectorAll('input')) c.checked = f.genres.includes(c.value);
+  if (document.activeElement !== $('fChars')) $('fChars').value = f.characters; $('fNoWarn').checked = f.noWarnings;
+  for (const b of az.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.letter === f.letter.toUpperCase()));
+  $('fGenresSay').textContent = f.genres.length ? f.genres.join(', ') : 'any';
 }
 $('find').addEventListener('input', () => {
   const u = new URLSearchParams(location.search), v = $('find').value.slice(0, 100);
@@ -286,8 +319,9 @@ async function viewStory(code, no, chap) {
   $('storyH').textContent = s.title;
   const by = $('storyBy'), pen = el('b', '', s.author); pen.translate = false; by.replaceChildren('by ', pen);
   if (b.nsfw) by.append(el('span', 'tag adult', '18+'));
+  const det = F.detailsLine(s.details); $('storyDetails').textContent = det; $('storyDetails').hidden = !det;
   $('storySum').textContent = s.summary; $('storySum').hidden = !s.summary;
-  const facts = [['Rated', b.nsfw ? '18+' : 'All ages'], ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
+  const facts = [['Rated', s.details.rating ? s.details.rating + (b.nsfw ? ' · 18+' : '') : b.nsfw ? '18+' : 'All ages'], ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
     ['Reading time', F.readLabel(s.words)], ['Reviews', String(s.reviews.length)], ['Published', date(s.published)], ['Updated', date(s.updated)]];
   $('storyInfo').replaceChildren(...facts.map(([k, v]) => { const d = el('div'); d.append(el('dt', '', k), el('dd', '', v)); return d; }));
   // the chapter shown, and the chapter list
@@ -365,6 +399,18 @@ function fandomOptions(sel, boards, pick) {
   if (pick && boards.some((b) => b.code === pick)) sel.value = pick;
 }
 
+// the post form's story details (lib/fanfic.js RATINGS, GENRES, WARNINGS), drawn once: a rating with its one-line meaning, at most 3 genres
+// (the rest turn off at 3), the characters as names split by commas, and each warning that applies
+function detailFields(form) {
+  const r = form.elements.rating, g = $('stGenres'), w = $('stWarnings');
+  if (r.options.length > 1) return;
+  for (const [n, line] of F.RATINGS) { const o = el('option', '', n + ': ' + line); o.value = n; r.append(o); }
+  const chip = (box, name, v) => { const l = el('label'), c = el('input'); c.type = 'checkbox'; c.name = name; c.value = v; l.append(c, ' ' + v); box.append(l); };
+  for (const x of F.GENRES) chip(g, 'genre', x);
+  for (const x of F.WARNINGS) chip(w, 'warning', x);
+  const cap = () => { const n = g.querySelectorAll('input:checked').length; for (const c of g.querySelectorAll('input')) c.disabled = !c.checked && n >= F.DETAIL_LIMITS.genres; };
+  g.addEventListener('change', cap); form.addEventListener('reset', () => setTimeout(cap));
+}
 async function viewPost(pick) {
   show('post', 'Post a story');
   const form = $('stForm'), note = form.querySelector('[data-say]'), sel = $('stFandom');
@@ -374,20 +420,24 @@ async function viewPost(pick) {
     const d = draft(); if (d) { form.elements.title.value = d.title; form.elements.text.value = d.text; }
   }
   if (!form.elements.pen.value) form.elements.pen.value = me.pen || '';
-  const parts = () => F.chapterPosts(1, '', form.elements.text.value, form.elements.summary.value).length;
+  detailFields(form);
+  const details = () => ({ rating: form.elements.rating.value, characters: form.elements.characters.value,
+    genres: [...form.querySelectorAll('input[name=genre]:checked')].map((c) => c.value), warnings: [...form.querySelectorAll('input[name=warning]:checked')].map((c) => c.value) });
+  const parts = () => F.chapterPosts(1, '', form.elements.text.value, form.elements.summary.value, details()).length;
   counter(form, 'text', parts);
   let a; try { a = await archive(); } catch (e) { fail(note, e); return; }
   fandomOptions(sel, a.boards, pick || sel.value);
   if (!a.boards.length) say(note, 'There is no fandom yet. Start one first, then post your story in it.');
   form.onsubmit = async (ev) => {
     ev.preventDefault();
-    const b = sel.value, title = form.elements.title.value.trim(), text = form.elements.text.value, summary = form.elements.summary.value;
+    const b = sel.value, title = form.elements.title.value.trim(), text = form.elements.text.value, summary = form.elements.summary.value, d = details();
     if (!b) { say(note, 'Choose a fandom first.', 'bad'); sel.focus(); return; }
     if (!title) { say(note, 'Give the story a title.', 'bad'); form.elements.title.focus(); return; }
+    if (!d.rating) { say(note, 'Choose a rating, so readers know what to expect.', 'bad'); form.elements.rating.focus(); return; }
     if (!F.words(text)) { say(note, 'Write or paste chapter 1 first.', 'bad'); form.elements.text.focus(); return; }
     me.pen = F.penName(form.elements.pen.value); keep();
-    const s = sig(b, title, text, summary, me.pen);
-    if (!form._job || form._job.sig !== s) form._job = { sig: s, b, t: 0, sub: title, parts: F.chapterPosts(1, '', text, summary), name: F.signedName(me.pen, me.secret), i: 0, onThread: (t, trip) => { me.mine[b + '/' + t] = trip || 1; keep(); } };
+    const s = sig(b, title, text, summary, me.pen, d);
+    if (!form._job || form._job.sig !== s) form._job = { sig: s, b, t: 0, sub: title, parts: F.chapterPosts(1, '', text, summary, d), name: F.signedName(me.pen, me.secret), i: 0, onThread: (t, trip) => { me.mine[b + '/' + t] = trip || 1; keep(); } };
     busy(form, true);
     try {
       const job = await sendParts(form, form._job); form._job = null; form.reset(); loaded = null;

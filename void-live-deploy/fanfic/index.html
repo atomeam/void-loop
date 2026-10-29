@@ -91,7 +91,7 @@
   .acts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   label.f { display: block; margin: 0 0 16px; } label.f > span, .f > legend { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); margin: 0 0 6px; padding: 0; }
   label.f small, .f small { display: block; color: var(--ink-3); font-size: 12px; margin-top: 4px; }
-  fieldset.f { border: 0; margin: 0 0 16px; padding: 0; }
+  fieldset.f { border: 0; margin: 0 0 16px; padding: 0; min-width: 0; }
   input[type=text], input[type=search], select, textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 12px;
     padding: 10px 14px; min-height: 46px; width: 100%; box-sizing: border-box; transition: border-color .2s, box-shadow .2s; }
   input::placeholder, textarea::placeholder { color: #6c7286; }
@@ -104,7 +104,7 @@
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
   .radios { display: flex; flex-wrap: wrap; gap: 10px; }
   .radios label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line-2); border-radius: 999px; cursor: pointer; font-size: 14px; }
-  .radios input { accent-color: rgb(var(--key)); width: 18px; height: 18px; margin: 0; }
+  .radios input { accent-color: rgb(var(--key)); width: 24px; height: 24px; margin: 0; }
   .radios label:has(input:checked) { border-color: rgb(var(--key) / .6); background: rgb(var(--key) / .1); }
   .say { font-size: 14px; color: var(--ink-2); min-height: 1.4em; margin: 10px 0 0; } .say.bad { color: var(--bad); } .say.good { color: var(--good); }
   .bot { font-size: 13px; color: var(--ink-3); margin: 0 0 14px; min-height: 1.3em; }
@@ -134,6 +134,17 @@
   .tag.adult { color: rgb(var(--warm)); border-color: rgb(var(--warm) / .45); }
   .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   .tools select { width: auto; min-width: 170px; }
+  .filters { padding: 14px 20px 4px; border-bottom: 1px solid var(--line); }
+  .filters .frow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 14px; } .filters label.f { margin-bottom: 12px; }
+  .filters .fgen { margin: 0 0 12px; } .filters .fgen summary { cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; color: var(--ink-2);
+    list-style: none; border: 1px solid var(--line-2); border-radius: 12px; background: var(--field); } .filters .fgen summary::-webkit-details-marker { display: none; }
+  .filters .fgen summary::after { content: '▾'; color: var(--ink-3); margin-left: 4px; } .filters .fgen[open] summary::after { content: '▴'; } .filters .fgen #fGenresSay { color: var(--ink); }
+  .filters .fgen .radios label { min-height: 40px; padding: 0 12px; }
+  .filters .chk { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-size: 14px; color: var(--ink-2); cursor: pointer; } .filters .chk input { width: 24px; height: 24px; margin: 0; accent-color: rgb(var(--key)); }
+  .az { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 8px 0 12px; } .az .azl { font-size: 13px; color: var(--ink-3); margin-right: 6px; }
+  .az button { min-width: 36px; min-height: 36px; padding: 0 8px; font-size: 13px; } .az button[aria-pressed="true"] { border-color: rgb(var(--key) / .7); background: rgb(var(--key) / .14); }
+  table.list .det { color: var(--ink-2); }
+  @media (max-width: 640px) { .filters .frow { grid-template-columns: 1fr; } }
   .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--ink-3); padding: 14px 20px; border-top: 1px solid var(--line); }
   .legend span { display: inline-flex; align-items: center; gap: 8px; }
   .pages { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 14px 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-3); }
@@ -283,6 +294,16 @@
         <div class="tools"><label class="vh" for="find">Find a story</label><input type="search" id="find" maxlength="100" enterkeyhint="search" placeholder="A title, a fandom or a pen name" aria-keyshortcuts="/"></div>
         <div class="tools" data-tools></div>
       </div>
+      <div class="filters" id="filters">
+        <div class="frow">
+          <label class="f"><span>Sort</span><select id="fSort"></select></label>
+          <label class="f"><span>Rated</span><select id="fRated"><option value="">Any rating</option></select></label>
+          <label class="f"><span>Characters</span><input type="search" id="fChars" maxlength="120" placeholder="Names, split by commas"></label>
+        </div>
+        <details class="fgen"><summary><span>Genres:</span><span id="fGenresSay">any</span></summary><p class="quiet">A story shows when it has every genre ticked.</p><div class="radios" id="fGenres"></div></details>
+        <label class="chk"><input type="checkbox" id="fNoWarn"> Hide stories with warnings</label>
+        <nav class="az" id="fAz" aria-label="Titles A to Z"><span class="azl">Titles A to Z</span></nav>
+      </div>
       <table class="list" aria-labelledby="latestH" id="latest">
         <thead><tr><th class="ic"><span class="vh">New</span></th><th>Topics</th><th class="num hide-s">Replies</th><th class="hide-s">Author</th><th>Last post</th></tr></thead>
         <tbody data-rows></tbody>
@@ -340,6 +361,7 @@
       <div class="storyh">
         <h2 id="storyH" class="h1" translate="no"></h2>
         <p class="by" id="storyBy"></p>
+        <p class="by det" id="storyDetails" translate="no" hidden></p>
         <p class="summary" id="storySum" translate="no"></p>
       </div>
       <dl class="facts" id="storyInfo"></dl>
@@ -381,6 +403,12 @@
         <label class="f"><span>Pen name</span><input type="text" name="pen" maxlength="40" placeholder="Anonymous"><small>Optional. Your chapters carry the same mark, made on this device.</small></label>
       </div>
       <label class="f"><span>Title</span><input type="text" name="title" maxlength="100" required></label>
+      <div class="two">
+        <label class="f"><span>Rating</span><select name="rating" required><option value="">Choose a rating</option></select><small>Readers filter the archive by it.</small></label>
+        <label class="f"><span>Characters</span><input type="text" name="characters" maxlength="260" placeholder="Up to 6 names, split by commas"><small>Readers find stories by the people in them.</small></label>
+      </div>
+      <fieldset class="f"><legend>Genres (up to 3)</legend><div class="radios" id="stGenres"></div></fieldset>
+      <fieldset class="f"><legend>Warnings</legend><div class="radios" id="stWarnings"></div><small>Tick each one that applies. Readers can hide every story with a warning.</small></fieldset>
       <label class="f"><span>Summary</span><textarea class="short" name="summary" maxlength="300" placeholder="One or two lines a reader sees first"></textarea></label>
       <label class="f"><span>Chapter 1</span><textarea name="text" required></textarea></label>
       <p class="count" data-count></p>

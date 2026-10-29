@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,44 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T07:59:15Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T07:56:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T07:56:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T07:56:43Z",
+   "subject": "Word counter card counts the typed text on the device"
+  },
+  {
+   "at": "2026-10-29T07:56:23Z",
+   "subject": "Verse Brain grows a spiking eye from F217 that learns by dopamine"
+  },
+  {
+   "at": "2026-10-29T07:55:08Z",
+   "subject": "fanfic: story details, catalog filters, sort and A to Z"
+  },
+  {
+   "at": "2026-10-29T07:46:47Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T07:44:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T07:43:53Z",
    "subject": "Calculator stage card keeps the sum after ="
+  },
+  {
+   "at": "2026-10-29T07:43:23Z",
+   "subject": "fix: the will's own want keeps its place in the queue after a try"
   },
   {
    "at": "2026-10-29T07:38:57Z",
@@ -587,42 +623,6 @@
   {
    "at": "2026-10-29T07:22:18Z",
    "subject": "Verse's coder: an exact-text replace tool, so a change needs no diff to line up"
-  },
-  {
-   "at": "2026-10-29T07:19:38Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T07:16:04Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T07:15:17Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T07:13:54Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T07:13:51Z",
-   "subject": "Verse's coder: tell the model its budget, and keep a change checked green at a cap"
-  },
-  {
-   "at": "2026-10-29T07:13:43Z",
-   "subject": "Hand-off links read their place before a press"
-  },
-  {
-   "at": "2026-10-29T07:09:58Z",
-   "subject": "Live cards keep running when another card opens on the stage"
-  },
-  {
-   "at": "2026-10-29T07:08:06Z",
-   "subject": "Verse measures /fanfic/ against sycophanthex.com: accuracy, completeness, 2 journeys"
-  },
-  {
-   "at": "2026-10-29T07:07:48Z",
-   "subject": "Growth card today view: a try it link on each ledger line that has a try phrase (glassbox proof of work)"
   }
  ],
  "builders": {
