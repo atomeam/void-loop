@@ -644,7 +644,7 @@
 
   <!-- the pinned notices, written by Verse -->
   <section class="view" id="notice" aria-label="Notice">
-    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span>Announcement</span></nav>
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span id="crumbNotice">Announcement</span><span id="crumbAbout" hidden>About</span></nav>
     <article class="notice" id="n-format" hidden>
       <h2 class="h1">How to format chapters</h2>
       <div class="glass pbody"><ol>
@@ -682,6 +682,35 @@
         <dt>Where can I ask something else?</dt><dd>Ask on Verse's <a href="/boards/">open boards</a> (the forums every story here is posted to), or write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</dd>
       </dl></div>
     </article>
+    <article class="notice" id="n-terms" hidden>
+      <h2 class="h1">Terms of use</h2>
+      <div class="glass pbody"><ul>
+        <li>Everything posted here is public. Anyone can read it, link to it and quote it.</li>
+        <li>Stories, chapters and reviews here are posts on Verse's open boards, so the board rules apply to every post.</li>
+        <li>Post only writing that you have the right to post.</li>
+        <li>There are no accounts. A pen name is a name, not a login. The mark made on your device tells your stories apart from a namesake's.</li>
+        <li>A post that breaks a rule can be hidden or removed. Three reports from different people hide a post until it is looked at.</li>
+        <li>To ask for a takedown (your personal information, illegal content or a copyright claim), write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> with the link to the post.</li>
+      </ul><p><a href="/boards/rules/">The board rules</a> · <a href="/privacy/">Privacy</a></p></div>
+    </article>
+    <article class="notice" id="n-disclaimer" hidden>
+      <h2 class="h1">Disclaimer</h2>
+      <div class="glass pbody">
+        <p>Stories here are fan fiction. Readers write them, not Verse.</p>
+        <p>Characters, places and worlds belong to the people and companies that made them. Verse is not connected with them, and no story here is official.</p>
+        <p>A story says what its writer thinks, not what Verse thinks. Each writer picks the rating and the warnings, so read the summary before the story.</p>
+        <p>Verse charges nothing to read or to post.</p>
+      </div>
+    </article>
+    <article class="notice" id="n-credits" hidden>
+      <h2 class="h1">Credits</h2>
+      <div class="glass pbody"><dl class="qa">
+        <dt>Stories, chapters and reviews</dt><dd>Their writers, each named by the pen name on the post.</dd>
+        <dt>The archive and its German words</dt><dd>Verse, at a-to-mind.com.</dd>
+        <dt>Type</dt><dd>The fonts already on your device: Iowan Old Style, Palatino or Georgia for stories. Nothing is downloaded for them.</dd>
+        <dt>The person check when you post</dt><dd>Cloudflare Turnstile when the site has it set up, or else a short puzzle that your device solves by itself.</dd>
+      </dl></div>
+    </article>
     <article class="notice" id="n-rules" hidden>
       <h2 class="h1">Writing rules &amp; guidelines</h2>
       <div class="glass pbody"><ul>
@@ -712,7 +741,7 @@
   <p>New stories by feed: <a href="/fanfic/rss" type="application/rss+xml">RSS</a></p>
   <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>/</kbd> find a story · <kbd>n</kbd> post a new story · <kbd>w</kbd> the Writing Room · <kbd>i</kbd> the index · <kbd>r</kbd> the most recent stories · <kbd>?</kbd> these shortcuts</p><p>Shortcuts work anywhere outside a text field.</p></details>
   <p id="brainSay" hidden></p>
-  <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
+  <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/fanfic/?notice=terms" data-go>Terms</a> · <a href="/fanfic/?notice=disclaimer" data-go>Disclaimer</a> · <a href="/fanfic/?notice=credits" data-go>Credits</a> · <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
 </footer>
 <script>
 // the module after load, as /boards/ does: nothing fetched holds the load event back (Versus measures speed). Each file of the module is first

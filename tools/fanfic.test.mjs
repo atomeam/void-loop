@@ -297,6 +297,20 @@ test('the archive has Authors, Help and Random story, with the help desk as a pi
   for (const s of ['Random story', 'Help desk: questions and answers', 'Show every author', 'Authors A to Z']) assert.ok(de.includes("'" + s + "'"), 'German for ' + s);
 });
 
+test('the archive has terms, disclaimer and credits pages, linked from the footer and not pinned on the story lists', async () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  for (const id of ['terms', 'disclaimer', 'credits']) {
+    assert.match(html, new RegExp('<article class="notice" id="n-' + id + '" hidden>'), id + ' page');
+    assert.ok(html.includes('href="/fanfic/?notice=' + id + '" data-go>'), id + ' footer link');
+  }
+  assert.match(app, /const SITE_PAGES = \[\['terms', 'Terms of use'\], \['disclaimer', 'Disclaimer'\], \['credits', 'Credits'\]\];/);
+  assert.match(app, /rows\.replaceChildren\(\.\.\.NOTICES\.map\(noticeRow\)\)/, 'only the notices are pinned');
+  assert.match(app, /NOTICES\.concat\(SITE_PAGES\)/, 'the router opens the site pages');
+  assert.ok(html.includes('href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> with the link to the post'), 'takedowns go to the address the board rules give');
+  const DE = await import('../void-live-deploy/lib/fanfic-de.js');
+  for (const s of ['Terms of use', 'Disclaimer', 'Credits', 'Terms', 'Verse charges nothing to read or to post.']) assert.notEqual(DE.de(s), s, 'German for ' + s);
+});
+
 test('the feed lists the newest stories first, links each story, escapes what readers wrote and leaves adult fandoms out', async () => {
   const t = (no, bumped, extra = {}) => ({ board: 'ficx', fandom: 'X & Y', no, title: 'T' + no, author: 'a', summary: 's', bumped, at: bumped, ...extra });
   const rss = F.storiesRss([t(1, 1e12), t(2, 2e12, { title: '<b>"Q"</b>', author: 'P&Q' }), t(3, 3e12, { nsfw: true })], 'https://x.test');
