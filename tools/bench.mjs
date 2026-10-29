@@ -76,7 +76,9 @@ const GROUND = process.argv.includes('--ground');
 const triggersOf = new Map();
 if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))) for (const w of String(x.want).split('|')) if (w.startsWith('skill:')) { const k = w.slice(6); if (!by.has(k)) by.set(k, []); by.get(k).push(x.ask); }
   for (const [k, list] of by) triggersOf.set(k, triggersFrom(list)); }
+const pace = { load: 0, answer: 0, full: 0 }; // where the time goes, for the pace line below
 async function one({ ask: a, want, says, before }) {
+  const tOpen = Date.now();
   // a light page. No service worker: on 127.0.0.1 the page registers /sw.js, and each new context installed it again, which fetches every
   // tool page the worker keeps offline (sw.js KEPT, since 2026-10-24) while the ask runs. That is the cost that put the daily run on main past its
   // 40 min (cancelled every day since 2026-10-22, last pass 2026-10-17). No ask is judged on the worker: it is network first, and on a first load it
@@ -125,6 +127,7 @@ async function one({ ask: a, want, says, before }) {
     return r.fulfill({ status: 204, body: '' }); });
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
   const p = await ctx.newPage(); await p.goto(base);
+  pace.load += Date.now() - tOpen;
   const logged = (q, ms) => p.waitForFunction((q) => { const w = document.getElementById('whisper'); if (w && w.textContent) window.__said = w.textContent; // keep the last whisper: it fades
     try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) && l.some((x) => String(x.ask).trim() === q.trim()); } catch (_) { return false; } }, q, { timeout: ms, polling: 50 }).catch(() => {});
   // "before": setup asks run first (a list to check off, a timer to pause), so asks that act on earlier ones are tested too
@@ -137,7 +140,7 @@ async function one({ ask: a, want, says, before }) {
   const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
-  const ms = Date.now() - t0; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
+  const ms = Date.now() - t0; pace.answer += ms; if (ms >= ASK_WAIT_MS) pace.full++; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
   // a plain want ("timer", "list", "calc") is the ability, whichever code answers it: the page's own parser used to log "timer",
   // the skill it moved out to (cleanup step 6) logs "skill:timer", and both are the timer answering (2026-10-16: 20 first-session
@@ -165,10 +168,11 @@ async function one({ ask: a, want, says, before }) {
 // of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
 const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
-// the pace on stderr every 500 asks, so a run cut off by a time limit still shows how far it got and how fast
+// the pace on stderr every 100 asks, so a run cut off by a time limit still shows how far it got, how fast, and where the time goes
 let done = 0; const began = Date.now();
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]);
-  if (++done % 500 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s'); } }));
+  if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
+    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms'); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
