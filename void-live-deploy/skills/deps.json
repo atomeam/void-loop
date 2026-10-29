@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 970,
+ "counted": 971,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -140,7 +140,7 @@
    "skills": 15,
    "direct": 0,
    "dependants": 51,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/card-art.js",
@@ -496,7 +496,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 73,
+   "dependants": 74,
    "tests": 1
   },
   {
@@ -643,7 +643,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 71,
+   "dependants": 72,
    "tests": 9
   },
   {
@@ -1053,6 +1053,13 @@
    "tests": 1
   },
   {
+   "file": "lib/repo-look.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 22,
+   "tests": 1
+  },
+  {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
@@ -1301,13 +1308,6 @@
    "file": "lib/note-extras.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/repo-look.js",
-   "skills": 1,
-   "direct": 1,
    "dependants": 2,
    "tests": 1
   },
@@ -1953,7 +1953,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 21,
-   "tests": 6
+   "tests": 7
   },
   {
    "file": "lib/answer-honesty.js",
@@ -2006,6 +2006,13 @@
   },
   {
    "file": "lib/news-report.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
+   "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
@@ -2863,6 +2870,7 @@
     "lib/clef.js",
     "lib/shortfall.js",
     "lib/self-context.js",
+    "lib/own-card.js",
     "lib/answer-honesty.js",
     "lib/draft.js",
     "lib/memory-scope.js",
@@ -4123,6 +4131,7 @@
     "lib/jobs-ui.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
+    "lib/own-card.js",
     "lib/paid-access.js",
     "lib/routine-skill.js",
     "lib/self-context.js",
@@ -7342,6 +7351,35 @@
     "skills/mind-field.js"
    ]
   },
+  "lib/own-card.js": {
+   "imports": [
+    "lib/repo-look.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
   "lib/own-parts.js": {
    "imports": [],
    "importedBy": [
@@ -8155,7 +8193,29 @@
    ],
    "importedBy": [
     "functions/api/repo.js",
+    "lib/own-card.js",
     "skills/repo.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/report-run.js": {
@@ -9471,6 +9531,7 @@
     "lib/mcp.js",
     "lib/members.js",
     "lib/memory-scope.js",
+    "lib/own-card.js",
     "lib/paid-access.js",
     "lib/privacy.js",
     "lib/probe-asks.js",

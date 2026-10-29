@@ -545,12 +545,32 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:07:28Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:07:05Z",
+   "subject": "Word the namedFixes comment without a bare count"
+  },
+  {
+   "at": "2026-10-29T15:06:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:05:46Z",
    "subject": "uuid skill: take the asks util leaves (random, another, please), crypto ids, order file, family, map line, test"
   },
   {
+   "at": "2026-10-29T15:05:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:04:44Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:04:22Z",
+   "subject": "Answer cards for notes about my own card: no denial, no blame for a site's block, each fix's status"
   },
   {
    "at": "2026-10-29T15:02:55Z",
@@ -603,26 +623,6 @@
   {
    "at": "2026-10-29T14:41:18Z",
    "subject": "Versus jobs only for ranked sites, never gambling or crypto"
-  },
-  {
-   "at": "2026-10-29T14:40:49Z",
-   "subject": "Better at leet and lorem: 3 more ways of asking answered right — new phrases: “1337 speak for world” now opens leet; “lorem” now opens…"
-  },
-  {
-   "at": "2026-10-29T14:40:11Z",
-   "subject": "Obituaries check: open the first memorial with a cited history, not a fixed name"
-  },
-  {
-   "at": "2026-10-29T14:38:18Z",
-   "subject": "Read a pasted status report back instead of answering it as a broken automation"
-  },
-  {
-   "at": "2026-10-29T14:36:46Z",
-   "subject": "/hosting/: ask a busy registry again; nameunit probe reads the page as it is"
-  },
-  {
-   "at": "2026-10-29T14:36:35Z",
-   "subject": "3D contract: mount after the studio light lands, so its one redraw stays out of the idle window"
   }
  ],
  "builders": {

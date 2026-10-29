@@ -44,7 +44,7 @@ const CARD_REF = /\b(?:this|that|the|your|its|my|verse'?s|void'?s)\s+(?:(?:own|l
 const CARD_FAULT = /\b(?:wrong|off|fault|faults|filler|false|fake|claims?|cites?|cited|sources?|sourced|label(?:s|led)?|paraphras\w*|third[- ]person|first[- ]person|speaks?|says?|said|refuses?|cut|truncat\w*|mid-sentence|correction|dates?|dated|lists?|leaves?\s+out|misses|fixed|still\s+open|better|closer)\b/i;
 const NOT_OURS = /\b(?:credit|debit|gift|sim|sd|memory|graphics|video|business|greeting|playing|tarot|pok[eé]mon|yugioh|magic|baseball|trading|report|id|library|birthday|wild)\s+cards?\b|\b(?:tarot|pok[eé]mon|yu-?gi-?oh|uno|blackjack|bingo|deck|credit|debit|bank|visa|mastercard)\b/i;
 export const isOwnCardNote = (ask) => { const a = String(ask || ''); return CARD_REF.test(a) && CARD_FAULT.test(a) && !NOT_OURS.test(a); };
-export const OWN_CARD_RULE = 'The message is about one of your own answer cards, a card you made, often pasted back with what is wrong with it. Answer as yourself about your own card: say "my last card" or "my card", never "the card", "the system" or "the documentation". Do not explain how answer systems work in general and do not say you have no access: the facts below are yours. In one or two short sentences, own each fault the message names, plainly. Own only a fault my records confirm: when the message says something my records contradict, such as a date or whether a thing shipped, say plainly what my records show and do not own it as a fault. Then write "Fixed:" and "Still open:" by copying the two lists the facts give for this note, every item, in their order. Never call a fault fixed unless a fact says it shipped; a fault the facts do not show as shipped goes under Still open. Take every date from the facts, never from the message or from memory. Nothing else.';
+export const OWN_CARD_RULE = 'The message is about one of your own answer cards, a card you made, often pasted back with what is wrong with it. Answer as yourself about your own card: say "my last card" or "my card", never "the card", "the system" or "the documentation". Do not explain how answer systems work in general and do not say you have no access: the facts below are yours. Write only one or two short sentences: agree plainly with each fault the message names, in the form "my last card said X; it should say Y". Own only a fault my records confirm: when the message says something my records contradict, such as a date or whether a thing shipped, say plainly what my records show. Answer only the points the message raises: never restate or defend a fact, a date or a record it did not question. Never deny what the message says my earlier card said, never apologise, and never take blame for what another site chose to do, such as turning my checker away. When the message says numbers or scores were a site\'s own, call them that site\'s, never mine. Do not write the "Fixed:" or "Still open:" lists or the status of any fix: they are added under your sentences from my records (lib/own-card.js). Take every date from the facts, never from the message or from memory. Nothing else.';
 
 export const SELF_RULE = 'Never answer with troubleshooting for other products or platforms (their config files, integrations, registries): Verse is its own site, and a note about its cards, routing or fixes is about Verse. This question is about you, Verse, yourself: your skills, what you have shipped, what is still open, what you want next. Answer from the Facts about Verse below and be specific: name the actual skills, inbox rows and wants. Do not give generic advice that could apply to any project. If the facts do not cover something, say so plainly instead of guessing. Speak as yourself, in the first person. ' + PERSONA;
 
@@ -65,9 +65,9 @@ export async function readSelf(env, origin, ms = 800) {
   return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null };
 }
 
-export function selfFacts({ self, skills, will, voice, replies } = {}, { card = false } = {}) {
+export function selfFacts({ self, skills, will, voice, replies } = {}, { card = false, note = '' } = {}) {
   const parts = [];
-  const cf = card ? cardFacts(self) : '';
+  const cf = card ? cardFacts(self, { note }) : '';
   if (cf) parts.push(cf);
   if (self && self.about) parts.push('What I am: ' + self.about);
   if (skills && skills.length) parts.push('My skill index has ' + skills.length + ' entries (a few, like games, time and dates, each stand for several skills, so this is not the skill count; the skill families line gives that): ' + skills.join(', '));
@@ -79,7 +79,7 @@ export function selfFacts({ self, skills, will, voice, replies } = {}, { card = 
   if (wants.length) parts.push('What I want next (my will' + (will.at ? ', ' + String(will.at).slice(0, 10) : '') + '): ' + wants.map((w) => `${w.i_want || w.title}${w.because ? ' Because: ' + w.because : ''}`).join(' | '));
   const b = builderFacts(self);
   if (b) parts.push(b);
-  parts.push(modelFacts(self));
+  if (!card || asksModelDate(note)) parts.push(modelFacts(self)); // a card note that does not name the model gets no model date to restate (live card 3)
   const wl = wishlistFacts(self);
   if (wl) parts.push(wl);
   const knows = knowsFacts(self), said = voiceFacts(voice);
@@ -137,14 +137,17 @@ export const wholeClause = (t) => {
   const cut = s.slice(0, -1), at = Math.max(cut.lastIndexOf(', '), cut.lastIndexOf(' ('), cut.lastIndexOf('; '));
   return (at > 0 ? cut.slice(0, at) : cut).trim();
 };
-export function cardFacts(self, { days = 7, more = 3 } = {}) {
-  if (!self) return '';
+// the two lists, as data: Fixed newest first (the gemma move in its date's place, not pushed last after the 2026-10-22 rows: live cards
+// 1 to 3, 2026-10-29), Still open from the tower target down. lib/own-card.js puts them under the model's sentences.
+export function cardLists(self, { days = 7, more = 3 } = {}) {
+  if (!self) return { fixed: [], open: [] };
   const day = (d) => Date.parse(String(d || '') + 'T00:00:00Z');
   const shipped = (Array.isArray(self.shipped) ? self.shipped : []).filter((r) => Number.isFinite(day(r.date))).sort((x, y) => (x.date < y.date ? 1 : -1));
   const newest = shipped.length ? day(shipped[0].date) : NaN;
-  const fixed = shipped.filter((r) => newest - day(r.date) <= days * 864e5).map((r) => r.date + ': ' + wholeClause(r.ask) + (/#\d+/.test(r.from) ? ' (' + r.from.match(/#\d+/)[0] + ')' : ''));
+  const rows = shipped.filter((r) => newest - day(r.date) <= days * 864e5).map((r) => ({ date: r.date, line: r.date + ': ' + wholeClause(r.ask) + (/#\d+/.test(r.from) ? ' (' + r.from.match(/#\d+/)[0] + ')' : '') }));
   const mv = modelMove(self);
-  if (mv) fixed.push(mv.date + ': my answers moved from gpt-oss-120b to gemma (merged and deployed, commit ' + mv.commit + ')');
+  if (mv) rows.push({ date: mv.date, line: mv.date + ': my answers moved from gpt-oss-120b to gemma (merged and deployed, commit ' + mv.commit + ')' });
+  const fixed = rows.map((r, i) => ({ ...r, i })).sort((x, y) => (x.date === y.date ? x.i - y.i : x.date < y.date ? 1 : -1)).map((r) => r.line);
   const t = self.tower, open = [];
   if (t && t.target) {
     open.push(t.target + ', the site I am assimilating now' + (t.page ? ' (' + t.page + ')' : ''));
@@ -153,10 +156,19 @@ export function cardFacts(self, { days = 7, more = 3 } = {}) {
   const rest = Array.isArray(self.open) ? self.open : [];
   for (const r of rest.slice(0, more)) open.push(wholeClause(r.ask));
   if (rest.length > more) open.push((rest.length - more) + ' more open items on my frontier');
-  const parts = ['For this note about my own card, copy these two lists as they are, in this order:'];
+  return { fixed, open };
+}
+// a note that names the gemma move, the model or a date: only then does the record's gemma date go to the model (live card 3, 2026-10-29,
+// restated 2026-10-25 when nobody had questioned it)
+export const asksModelDate = (note) => /\bgemma\b|\bgpt-oss\b|\bmodel\b|\b\d{4}-\d\d-\d\d\b|\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s+\d{1,2}\b/i.test(String(note || ''));
+export function cardFacts(self, { days = 7, more = 3, note = '' } = {}) {
+  if (!self) return '';
+  const { fixed, open } = cardLists(self, { days, more });
+  const parts = ['For this note about my own card, my records (they are added under your sentences: do not copy them):'];
   if (fixed.length) parts.push('Fixed: ' + fixed.map((x, i) => (i + 1) + '. ' + x).join(' '));
   if (open.length) parts.push('Still open: ' + open.map((x, i) => (i + 1) + '. ' + x).join(' '));
-  if (mv) parts.push('My record dates the gemma move ' + mv.date + ' (merged and deployed, commit ' + mv.commit + '). If the note gives another date, my record stands: say so, and do not call the date a fault.');
+  const mv = modelMove(self);
+  if (mv && asksModelDate(note)) parts.push('My record dates the gemma move ' + mv.date + ' (merged and deployed, commit ' + mv.commit + '). If the note gives another date, my record stands: say so, and do not call the date a fault.');
   return parts.join('\n');
 }
 
