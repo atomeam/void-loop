@@ -135,7 +135,10 @@ export async function renderedText(pages, siteDir = SITE, live = '') {
       const p = await ctx.newPage();
       try {
         await p.goto(live ? live.replace(/\/$/, '') + (page.startsWith('/') ? page : '/' + page) : base + page.replace(/^\//, ''), { waitUntil: 'load', timeout: 20000 });
-        await p.waitForTimeout(1600); // let the page's own script (and any fetch it makes) draw its first screen
+        // let the page's own script draw its first screen: a page whose rows come from its own fetch (weather: a place, then its forecast)
+        // names them only once that fetch answers, which a fixed 1.6 s missed on the live run (2026-10-29), so wait for the network to go quiet
+        await p.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+        await p.waitForTimeout(600);
         out[page] = await p.evaluate(() => document.body.innerText).catch(() => '');
       } catch (_) { out[page] = ''; }
       await p.close().catch(() => {});

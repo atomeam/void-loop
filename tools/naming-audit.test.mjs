@@ -37,3 +37,10 @@ test('a feature name that is only part of a lacking name is not taken for it', (
   const rows = splitByCredit([{ floor: 'news', unnamed: [{ feature: 'story ages' }] }], lackingBySlug({ floors: ev('news', '4 of 6 (Verse lacks: live story ages)') }));
   assert.deepEqual(rows[0].drift.map((u) => u.feature), ['story ages']);
 });
+
+test('the rendered audit waits for a page\'s own fetch to answer, so a page that draws its rows from it (weather) is read drawn', async () => {
+  const fs = await import('node:fs');
+  const src = fs.readFileSync(new URL('./naming-audit.mjs', import.meta.url), 'utf8');
+  assert.match(src, /waitForLoadState\('networkidle', \{ timeout: \d+ \}\)\.catch\(/, 'waits for the network to go quiet, and never fails the read on it');
+  assert.doesNotMatch(src, /waitForTimeout\(1600\)/, 'not the fixed 1.6 s that read /weather/ before its forecast came');
+});
