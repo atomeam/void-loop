@@ -35,11 +35,12 @@ export const ROUTES = Object.freeze({
   novelty: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   auto: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   flake: { wf: AGENT, input: 'job', claims: true, cap: 40 },
+  member: { wf: AGENT, input: 'job', claims: true, cap: 30 }, // a paid member's idea (lib/members.js); the lap holds it to add-only
 });
 
 // what a kind of job is worth (AGENTS.md: Verse's own asks come first; STANDING.md and RULES.md 2026-10-26: Verse earns on its own, and the
 // tower never stops). A broken loop stops everything after it, so its repair outranks all.
-export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, 'store-gap': 90, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
+export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, 'store-gap': 90, member: 88, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
 export const MAX_TRIES = 3; // a job tried this often without landing is set aside with its last reason
 export const STALE_H = 3; // a job the conductor claimed that is still `building` after this long was left by a dead run
 export const SAME_JOB_H = 6; // an executor that claims for itself is not handed the same job again within this many hours

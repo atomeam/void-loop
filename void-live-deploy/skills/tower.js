@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-64';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-66';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -56,11 +56,11 @@ export function nums(r) {
 // a row the gate judged against its default bar because the site turned the gate away (tools/tower-gate.mjs "vs the bar (<site> unreachable)")
 // is not a measure of the site (2026-10-29): the card says "default bar" on it and does not credit the site with it
 export const onBar = (e) => !!e && / vs the bar \(/.test(String(e.evidence || ''));
-const barSay = (e, say) => e.verdict === 'worse' ? 'below the default bar' : say + ' (default bar)';
+const barSay = (e) => e.verdict === 'worse' ? 'below the default bar' : 'not measured: the site turned the gate away';
 /** one row per aspect: where Verse stands (won / lost / open), the word for it, the numbers, when it was measured. Pure. */
 export const matchRows = (f) => aspectRows(f).map((r) => {
   const e = (f.ev || {})[r.a], say = r.v === 'open' ? (e && SAY[e.verdict] && e.verdict !== 'worse' ? SAY[e.verdict] : 'not measured yet') : SAY[e && e.verdict] || r.v;
-  return { ...r, say: onBar(e) && say !== 'not measured yet' ? barSay(e, say) : say, nums: nums(e), at: (e && e.at) || '', bar: onBar(e) };
+  return { ...r, say: onBar(e) ? barSay(e) : say, nums: nums(e), at: (e && e.at) || '', bar: onBar(e) };
 });
 /** when a floor was last measured: the newest `at` of its rows, or ''. Pure. */
 export const lastAt = (f) => Object.values(f.ev || {}).map((r) => String((r && r.at) || '')).filter((s) => Number.isFinite(Date.parse(s))).sort().pop() || '';
@@ -88,7 +88,7 @@ export function vsHtml(f, esc, { enter = true } = {}) {
   const m = Math.max(1, f.m || 0), n = Math.max(0, f.n || 0), ev = f.ev || {};
   // the site's side counts only what was measured on the site; a loss against the default bar is Verse short of the bar, not the site ahead
   const lost = (f.lost || []).filter((a) => !onBar(ev[a])).length, onB = (f.aspects || []).filter((a) => onBar(ev[a])).length;
-  const note = onB ? onB + ' of ' + m + ' aspects are scored against the default bar: ' + f.site + ' turned the gate away, so those numbers are not its own' : '';
+  const note = onB ? onB + ' of ' + m + ' aspects are not measured: ' + f.site + ' turned the gate away, so they are not counted for either side' : '';
   const bar = (k, lit) => '<span class="tw-bar" aria-hidden="true">' + Array.from({ length: m }, (_, i) => '<i' + (i < lit ? ' data-k="' + k + '"' : '') + '></i>').join('') + '</span>';
   return '<div class="tw-vs' + (enter ? ' tw-in' : '') + '" role="group" aria-label="' + esc('Verse versus ' + f.site + ': Verse ahead on ' + n + ' of ' + m + ' aspects, ' + f.site + ' on ' + lost + (note ? '; ' + note : '')) + '">'
     + '<div class="tw-side tw-v">' + '<img class="tw-logo" src="/verse-logo.webp" alt="" width="56" height="56" style="width:56px;height:56px;border-radius:50%">' + '<span class="tw-who">Verse</span>' + bar('v', n) + '<span class="tw-bar-n">' + n + ' of ' + m + '</span></div>'
@@ -121,7 +121,7 @@ export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' +
 export function sizeListHtml(t, esc, lang = 'en') {
   const rk = t.rank || {}, w = words(lang), ranks = rk.ranks || {}, order = rk.order || {};
   return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
-    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + gateTag(f, esc) + pageLink(f, esc) + '<a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
+    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : 'Verse ahead on ' + f.n + ' of ' + f.m + ' aspects') + '</span>' + gateTag(f, esc) + pageLink(f, esc) + '<a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
 }
 /** the plan block (tower.plan.json, made by tools/tower-plan.mjs from the tower-plan block in docs/NEXT.md; owner, 2026-10-28: "move backwards
  *  to easier sites"): what is worked on now, the next easiest floors and the far-future ones, each joined with the gate's own numbers from
@@ -133,7 +133,7 @@ export function planOf(t, plan) {
   const out = { now: pickRows(plan.now), next: pickRows(plan.next), far: pickRows(plan.far), skipped: (Array.isArray(plan.skipped) ? plan.skipped : []).filter((x) => x && x.site) };
   return out.now.length || out.next.length || out.far.length ? out : null;
 }
-const planCount = (f) => (f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead · not beaten yet');
+const planCount = (f) => (f.state === 'beaten' ? 'surpassed' : 'Verse ahead on ' + f.n + ' of ' + f.m + ' aspects · not beaten yet');
 export function planHtml(p, esc) {
   if (!p) return '';
   const li = (r, i) => '<li data-id="' + esc(r.f.id) + '" data-state="' + esc(r.f.state) + '" style="margin:1px 0">' + (i != null ? '<b>' + (i + 1) + '.</b> ' : '') + '<span class="tw-name">' + esc(r.f.site) + '</span> <span class="tw-plan-id" style="opacity:.75">(' + esc(r.f.id) + ')</span> · <span class="tw-count">' + esc(planCount(r.f)) + '</span>' + (r.f.page ? ' · <a href="' + esc(r.f.page) + '">Verse\'s page</a>' : '') + '</li>';
@@ -193,7 +193,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   // a surpassed site's row is a div, not a button, so a copied or saved card keeps it (lib/card-share.js leaves buttons out; owner, 2026-10-25: "theres no way to see the 24 surpassed")
   const row = (f) => (f.state === 'beaten' ? '<div class="tower-floor" role="button" tabindex="0" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="beaten">' : '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">')
     + (f.state === 'beaten' ? '<span class="tw-face">' + siteFace(f, 24) + '</span>' : '')
-    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : f.n + ' of ' + f.m + ' aspects ahead') + '</span>' + sizeTag(f) + gateTag(f, esc)
+    + '<span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : 'Verse ahead on ' + f.n + ' of ' + f.m + ' aspects') + '</span>' + sizeTag(f) + gateTag(f, esc)
     + (f.state === 'current' ? rowsHtml(f, esc, now) : '') + (f.state === 'beaten' ? '</div>' : '</button>');
   // the site and Verse's own page side by side (owner, 2026-10-25: "its ok for Verse to have links to the site its going against as well as links to its
   // own version for easy side by side compare"): one line under each floor, the site in a new tab, Verse's page in this one
@@ -204,7 +204,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></div>';
   // the fight in words for a saved or copied card (lib/card-share.js leaves buttons out, and the aspect list is inside the floor's button):
   // hidden from sight and from screen readers, who have the list itself
-  const fight = cur ? cur.site + ': ' + cur.n + ' of ' + cur.m + ' aspects ahead.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
+  const fight = cur ? 'Verse is ahead of ' + cur.site + ' on ' + cur.n + ' of ' + cur.m + ' aspects.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
   const lastRow = '<div class="tw-sortrow" data-share-skip style="display:flex;justify-content:space-between;align-items:center;gap:8px">' + (rk ? '<button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') : '') + '</div>';
   const empty = '<div class="tw-empty">Nothing surpassed yet. A site counts only when Verse is better than it on every aspect, checked head to head and by scripted journeys.</div>';

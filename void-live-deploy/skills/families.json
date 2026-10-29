@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 0,
   "tested": 44,
-  "checked": 16,
+  "checked": 20,
   "proven": 305
  },
  "families": [
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 14,
+    "tested": 15,
     "checked": 2,
     "proven": 39
    },
@@ -518,6 +518,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 10
+    },
+    {
+     "name": "palette",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },
@@ -528,7 +535,7 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 0,
+    "checked": 1,
     "proven": 31
    },
    "skills": [
@@ -811,6 +818,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 10
+    },
+    {
+     "name": "random",
+     "tier": "checked",
+     "why": "a self-test, 4 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },
@@ -1192,8 +1206,8 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 3,
+    "tested": 4,
+    "checked": 4,
     "proven": 14
    },
    "skills": [
@@ -1378,6 +1392,20 @@
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "streak": 10
+    },
+    {
+     "name": "uuid",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "password",
+     "tier": "checked",
+     "why": "a self-test, 5 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },
@@ -1499,8 +1527,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 12,
-    "checked": 1,
+    "tested": 10,
+    "checked": 3,
     "proven": 29
    },
    "sources": {
@@ -2136,18 +2164,22 @@
     },
     {
      "name": "leet",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 1
     },
     {
      "name": "lorem",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 1
     },
     {

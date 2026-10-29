@@ -16,7 +16,7 @@ import { SELF_SITES } from './self-sites.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
-import { bytesLabel, weightBand, weightOf } from './tower-weight.js';
+import { bytesLabel, trustedControls, weightBand, weightOf } from './tower-weight.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -210,6 +210,8 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   // a frontier site's own page, by its host: sycophanthex.com, the tower target since 2026-10-29 (a fan-fiction archive), is assimilated by /fanfic/, the
   // archive built to its catalog (domains/targets/sycophanthex.json)
   'sycophanthex.com': '/fanfic/',
+  // wheelroot.com ("Drawing Fundamentals", a course page whose button leads nowhere) is assimilated by /learn-to-draw/, the course itself (domains/targets/wheelroot.json)
+  'wheelroot.com': '/learn-to-draw/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores
@@ -286,11 +288,15 @@ export const selfCalled = (r) => !!(r && r.called && /^called beaten by verse\b/
 // `incomplete` lists them so the card says so instead of counting them.
 // a journey row passes when the runner took it with its controls, or when a person signed the floor beaten (tools/tower-verdict.mjs --beaten:
 // the owner or the scout took the journeys by hand; a call Verse made itself never counts)
-export const passes = (a, r) => (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
+// a row the gate scored against its default bar because the site turned the gate away (tools/tower-gate.mjs "vs the bar (<site> unreachable)")
+// measured Verse, not the site (owner's card, 2026-10-29: "those numbers are not its own"): it is not measured against the site, so it is never a
+// lead and never part of a surpass. It stays a loss when Verse is short of the bar, since that gap is Verse's own.
+export const barRow = (r) => !!r && / vs the bar \(/.test(String(r.evidence || ''));
+export const passes = (a, r) => !barRow(r) && (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
 export function gate(floor, ev = {}) {
   const all = checklist(floor, ev), passed = all.filter((a) => passes(a, ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
-  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || isJourney(a)) : isJourney(a)));
+  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || barRow(ev[a]) || isJourney(a)) : isJourney(a)));
   return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
 }
 /** evidence rows that pass a floor's whole checklist the way the gate demands (journeys with steps and negative controls): for tests and
@@ -304,16 +310,18 @@ export function hostOf(s) {
   return HOST_RE.test(h) ? h : '';
 }
 /** the frontier's sites (tower.frontier.json, the real tool sites ranked from the top million by easiest-sites.mjs --tools) as one list: one per
- *  host, never a site that is already in FLOORS, easiest first (the scan's hardness, then the least visited), the rest in the order they came. Pure. */
+ *  host, never a site that is already in FLOORS, smallest first: a site the scan counted the controls and bytes of first, by the fewest controls, then the
+ *  fewer bytes (owner, 2026-10-29); then the scan's hardness, then the least visited, the rest in the order they came. Pure. */
 export function frontierOf(frontier, floors = FLOORS) {
   const list = Array.isArray(frontier) ? frontier : frontier && Array.isArray(frontier.sites) ? frontier.sites : [];
   const taken = new Set(floors.map((f) => hostOf(f.url) || hostOf(f.site)).filter(Boolean)), seen = new Set(), out = [];
   for (const x of list) {
     const host = hostOf(x && (x.site || x.host)); if (!host || taken.has(host) || seen.has(host)) continue;
-    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: Number.isFinite(+x.hardness) ? +x.hardness : null, ...(x.blocked ? { blocked: String(x.blocked) } : {}) });
+    const num = (v) => (v !== null && v !== '' && Number.isFinite(+v) ? +v : null);
+    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: num(x.hardness), controls: num(x.controls), bytes: num(x.bytes), ...(x.blocked ? { blocked: String(x.blocked) } : {}) });
   }
-  const h = (x) => (x.hardness === null ? 1e9 : x.hardness);
-  return out.map((x, i) => [x, i]).sort((a, b) => h(a[0]) - h(b[0]) || (b[0].rank || 0) - (a[0].rank || 0) || a[1] - b[1]).map((p) => p[0]);
+  const h = (x) => (x.hardness === null ? 1e9 : x.hardness), sized = (x) => (x.controls !== null && x.bytes !== null ? 0 : 1), c = (x) => (sized(x) ? 0 : x.controls), by = (x) => (sized(x) ? 0 : x.bytes);
+  return out.map((x, i) => [x, i]).sort((a, b) => sized(a[0]) - sized(b[0]) || c(a[0]) - c(b[0]) || by(a[0]) - by(b[0]) || h(a[0]) - h(b[0]) || (b[0].rank || 0) - (a[0].rank || 0) || a[1] - b[1]).map((p) => p[0]);
 }
 
 /** the whole tower: each site's gate, coverage (replaced, partial, missing from lap.items.json) and skills; the conquered sites first, then the
@@ -331,9 +339,11 @@ export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant'])
 export function easeLine(f) {
   if (f.held) return 'held, not beaten: ' + f.held;
   const left = Math.max(0, (f.m || 0) - (f.n || 0)), sc = f.size ? f.size.scripts : 0;
-  const how = f.weight !== null && f.size ? 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
+  const tc = trustedControls(f.size), ctl = tc !== null ? 'has ' + tc + ' controls on its home page and ' : '';
+  const how = f.weight !== null && f.size ? ctl + 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
     : 'not weighed yet' + (f.rank ? ' (ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited)' : '');
-  return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
+  const bar = (f.barred || []).length;
+  return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (bar ? ' (' + bar + ' of them not measured: the site turned the gate away, so only the default bar was scored)' : '') + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
 }
 /** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */
 export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null) {
@@ -343,10 +353,12 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(LANE_PAGES[x.host] ? { page: LANE_PAGES[x.host] } : {}), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
-  const hard = (f) => (f.lost.length ? 1 : 0);
+  // the queue ranks on measured rows only (2026-10-29): a loss against the default bar (the site turned the gate away, barRow) stays a loss on the
+  // card, but it says nothing about the site, so it never moves the site back in the queue
+  const hard = (f) => (f.rankLost.length ? 1 : 0);
   // a lane site stands where its leader would and just in front of it, so the climb goes up the lane from its bottom and the leader is its last fight
   const lead = new Map(all.map((f) => [f.id, f])), key = (f) => (f.lane && lead.get(f.lane) && !lead.get(f.lane).beaten ? lead.get(f.lane) : f);
     // a mega-site floor waits (owner, 2026-10-26: "we should just go after smaller sites no reason to go after big sites yet"): the giants keep their
@@ -360,17 +372,22 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // order, small single-purpose sites first (owner: "work through millions of small sites, easiest first"): a site with at most two aspects of
   // its own (a frontier tool site has none) stands before a broad, many-feature one
   const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
-  // with the size data (the card, the plan) the queue is easiest first by size, then by work left: gate, far future, a waiting giant, the size tier, what Verse
-  // loses on, aspects still to pass, a site with a page before one without, then the order they came. Without it the old order stands.
+  // with the size data (the card, the plan) the queue is smallest first, then by work left: gate, far future, a waiting giant, then size (owner,
+  // 2026-10-29: "all sites ever made smallest first", smallest being the fewest interactive elements on the home page, the lighter page on a tie):
+  // a site counted by tools/tower-size.mjs (controls and bytes) by its controls, then its bytes; then a site only weighed, by its weight; then an
+  // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
+  // came. Without it the old order stands.
   const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the fight in progress stays first until it is won
-  const tierOf = (f) => (rank ? (f.weight !== null ? 0 : 1 + f.tier) : 0), lightOf = (f) => (f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  const counted = (f) => !!f.size && trustedControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2) is not counted
+  const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
+  const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
+  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
 // a held site says why it is not surpassed, so "16 of 16 aspects ahead, 0 surpassed" explains itself (owner's card, 2026-10-29)
-export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (Verse ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
 /** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
  *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
  *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */

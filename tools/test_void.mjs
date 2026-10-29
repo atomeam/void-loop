@@ -1091,11 +1091,15 @@ try {
     await P.p.waitForSelector('#list .badge', { timeout: 15000 }).catch(() => {});
     const obit = await P.p.evaluate(() => { const cards = [...document.querySelectorAll('#list .card')]; return { cards: cards.length, badges: cards.filter((c) => c.querySelector('.badge')).length, wip: cards.filter((c) => /In progress: \d+% of its features matched/.test(c.innerText)).length, homage: cards.filter((c) => /The Legacy:/.test(c.innerText) && /Our Tribute:/.test(c.innerText)).length, falseWin: cards.filter((c) => /Beaten in every way/.test(c.querySelector('.badge').textContent) && /Not beaten yet/.test(c.innerText)).length, tally: document.getElementById('tally').textContent }; });
     check('obituaries: every memorial shows an honest status and keeps its homage text', obit.cards > 0 && obit.badges === obit.cards && obit.homage === obit.cards && obit.wip > 0 && !obit.falseWin && /beaten in every way, \d+ in progress/.test(obit.tally), JSON.stringify(obit));
-    await P.p.fill('#q', 'Google Translate');
-    await P.p.evaluate(() => { const d = document.querySelector('#list details'); if (d) d.open = true; });
+    // the memorial is the first one with a cited history, not a fixed name: which sites hold a memorial follows the tower gate's own
+    // measures (2026-10-29 13:46, 1099c17b: /translate/ measured 1 small tap target, so Google Translate's memorial came down and
+    // this check, fixed on it, read 0 items); the search still narrows the list to it
+    const site = await P.p.evaluate(() => { const s = [...document.querySelectorAll('#list details summary')].find((x) => /\(\d+ cited events\)/.test(x.textContent)); return s ? s.textContent.replace(/^History of /, '').replace(/ \(\d+ cited events\)$/, '') : ''; });
+    await P.p.fill('#q', site);
+    await P.p.evaluate((site) => { const d = [...document.querySelectorAll('#list details')].find((x) => x.querySelector('summary').textContent.startsWith('History of ' + site + ' (')); if (d) d.open = true; }, site);
     await P.p.waitForSelector('#list .tl li a[href^="http"]', { timeout: 15000 }).catch(() => {});
     const tl = await P.p.evaluate(() => { const items = [...document.querySelectorAll('#list .tl li')]; return { items: items.length, cited: items.filter((li) => li.querySelector('a[href^="http"]') || /unknown/.test(li.textContent)).length, gaps: document.querySelectorAll('#list .gaps li').length }; });
-    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', tl.items > 3 && tl.cited === tl.items, JSON.stringify(tl));
+    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', !!site && tl.items > 3 && tl.cited === tl.items, JSON.stringify({ site, ...tl }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     const sib = await siblingCount(P.p);
@@ -1491,8 +1495,8 @@ try {
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
     const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
-    check('tower: a saved or copied tower card says the fight (the target: 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice',
-      new RegExp(tgt.site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects ahead\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+    check('tower: a saved or copied tower card says the fight (Verse is ahead of the target on 4 of N aspects, what is still to beat, what is conquered) and no announcement twice',
+      new RegExp('Verse is ahead of ' + tgt.site.replace(/\./g, '\\.') + ' on 4 of \\d+ aspects\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
@@ -4246,6 +4250,7 @@ try {
   // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
   if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
     const r = {};
+    const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3); // the sticky's box breathes by a pixel or two with its tilt (179 against 181 on a slow runner): the spot is what counts
     // the third: a desktop whose CPU is 20x slower while the card opens (CDP throttling), the way a loaded runner left the sticky
     // under the card for good (verify run 38165509211): it measured the card while it was still scaling in, and nothing measured again
     for (const [w, h, slow] of [[1280, 800], [390, 844], [1280, 800, 20]]) {
@@ -4255,7 +4260,10 @@ try {
       const covered = () => P.p.evaluate(() => { const s = document.querySelector('.sticky'), v = document.querySelector('.vpage.on'); if (!s || !v) return -1; const a = s.getBoundingClientRect(), b = v.getBoundingClientRect();
         return Math.round(100 * Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) / (a.width * a.height)); });
       const saved = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.x, t.y]).join(';');
-      const before = await box(), place = await saved();
+      // the sticky can still be growing in when the ask's wait ends (verify on 31a24cf5, slow case: 177 px wide before, 183 after):
+      // read its spot once two reads 150 ms apart agree, as the place it comes back to
+      const settledBox = async () => { let a = await box(); for (let i = 0; i < 20; i++) { await P.p.waitForTimeout(150); const b = await box(); if (b.join() === a.join()) return b; a = b; } return a; };
+      const before = await settledBox(), place = await saved();
       const cdp = slow ? await P.p.context().newCDPSession(P.p) : null;
       if (cdp) await cdp.send('Emulation.setCPUThrottlingRate', { rate: slow });
       await P.ask('how good are you at othello', slow ? 4000 : 600);
@@ -4266,11 +4274,14 @@ try {
       await P.p.waitForTimeout(450);
       const under = await covered(), during = await box(), placeDuring = await saved();
       await P.ask('close', 900);
+      // the glide back (.35 s) can start late on a loaded runner (a local run read it 13 px short, and once not yet moved): wait for it
+      // to arrive, then read; a sticky that never comes back still reads its own spot and fails below
+      await until(async () => (near(await box(), before) ? 'back' : ''), 6000);
+      await P.p.waitForTimeout(300);
       const after = await box();
       r[slow ? 'slow' : w] = { before, under, during, after, same: place === placeDuring && place === await saved(), errors: P.errors.length };
       await P.ctx.close();
     }
-    const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3); // the sticky's box breathes by a pixel or two with its tilt (179 against 181 on a slow runner): the spot is what counts
     const ok = (x) => x.under === 0 && x.same && x.during.join() !== x.before.join() && near(x.after, x.before) && !x.errors;
     check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
       ok(r[1280]) && ok(r[390]) && ok(r.slow), JSON.stringify(r));
@@ -5187,7 +5198,7 @@ try {
   if (want('talk back: the owner replies to Verse')) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const posts = [], AT = '2026-10-08T18:09:00Z';
     await O.ctx.route(/\/api\/voice-reply$/, (r) => {
-      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }] }));
+      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }, { at: '2026-10-09T08:00:00Z', to: null, about: { ask: '5 miles in km', title: 'Converted' }, text: 'Earlier on this card.', answer: 'I kept that.' }] }));
       const b = JSON.parse(r.request().postData() || '{}'); posts.push({ b, auth: r.request().headers().authorization });
       return r.fulfill(json({ at: '2026-10-09T11:00:00Z', to: b.to, text: b.text, answer: 'Heard. I will check the live finding before I call rides untested.', correction: true, remember: 'rides has a live finding' }));
     });
@@ -5198,20 +5209,31 @@ try {
     await O.p.fill('.vpage.on [data-v-reply]', 'Rides is live: <img src=x onerror="window.__x=1"> check the finding');
     await O.p.click('.vpage.on [data-v-send]'); await until(async () => /check the live finding/.test(await O.page()), 4000);
     const after = await O.page(), stillOpen = await O.p.$('.vpage.on [data-v-reply]'), x = await O.p.evaluate(() => window.__x || 0), imgs = await O.p.$$eval('.vpage.on .v-talk img', (l) => l.length);
-    // and about any card: "Tell Verse" under it sends the ask, the card's title and what it said
-    await O.ask('5 miles in km', 300); await until(async () => !!(await O.p.$('.vpage.on a.vtell')), 4000);
-    await O.p.click('.vpage.on a.vtell'); await O.p.fill('.vpage.on .vtell-box textarea', 'Say it to two decimals.');
-    await O.p.click('.vpage.on .vtell-box button'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.page()), 4000);
-    const card = posts[1] && posts[1].b, tellLeft = await O.p.$$eval('.vpage.on a.vtell', (l) => l.length);
-    const S = await fresh(); await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
-    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')); await S.ask('5 miles in km', 300); await S.p.waitForTimeout(500);
-    const strangerTell = await S.p.$$eval('.vpage a.vtell', (l) => l.length); await S.ctx.close();
-    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; "Tell Verse" under any card sends its ask, title and words; a stranger sees neither',
-      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before)
+    const selfReply = await O.p.$$eval('.vpage.on .vreply', (l) => l.length); // the self card keeps its own Talk to me: no second box
+    // and on every other card (owner, 2026-10-29): "Reply to what I said, or correct me" at its end sends the ask, the card's title and what it said,
+    // and shows what was said on this ask before
+    await O.ask('5 miles in km', 300); await until(async () => /Earlier on this card/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const cardBefore = await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '');
+    await O.p.fill('.vpage.on .vreply textarea', 'Say it to two decimals.');
+    await O.p.click('.vpage.on .vreply [data-reply-send]'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const card = posts[1] && posts[1].b, lastIsReply = await O.p.$eval('.vpage.on', (e) => { let n = e.lastElementChild; while (n && n.classList.contains('vtail')) n = n.previousElementSibling; return !!n && n.classList.contains('vreply'); });
+    // a stranger gets the same section; the words stay in this browser's correction log, nothing is sent
+    const S = await fresh(); const strangerPosts = []; await S.ctx.route(/\/api\/voice-reply$/, (r) => { strangerPosts.push(r.request().method()); return r.fulfill(json({ replies: [] })); });
+    await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
+    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')), strangerSelf = await S.p.$$eval('.vpage.on .vreply', (l) => l.length);
+    await S.ask('5 miles in km', 300); await until(async () => !!(await S.p.$('.vpage.on .vreply textarea')), 4000);
+    await S.p.fill('.vpage.on .vreply textarea', 'Kilometres, not km.'); await S.p.click('.vpage.on .vreply [data-reply-send]');
+    await until(async () => /Kept on this device/.test(await S.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const kept = await S.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.corrections.v1') || '[]'); } catch (_) { return []; } });
+    await S.ctx.close();
+    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which shows the earlier replies on its ask and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
+      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before) && !/Earlier on this card/.test(before)
         && posts.length === 2 && posts[0].b.to === AT && /^Rides is live/.test(posts[0].b.text) && posts[0].auth === 'Bearer owner-k'
-        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length
-        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Tell Verse/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && tellLeft === 0 && strangerTell === 0,
-      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), posts, imgs, x, stranger, strangerTell, tellLeft, errors: O.errors }));
+        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length && selfReply === 0
+        && /Reply to what I said, or correct me/.test(cardBefore) && /You: Earlier on this card\./.test(cardBefore) && /Verse: I kept that\./.test(cardBefore) && lastIsReply
+        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Reply to what I said/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && posts[1].auth === 'Bearer owner-k'
+        && strangerSelf === 0 && !strangerPosts.includes('POST') && kept.length === 1 && kept[0].ask === '5 miles in km' && kept[0].text === 'Kilometres, not km.',
+      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), cardBefore, posts, imgs, x, stranger, strangerSelf, strangerPosts, kept, lastIsReply, selfReply, errors: O.errors }));
     await O.ctx.close(); }
   // Verse's fixes, previewed (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"; skills/v01d-fixes.js)
   if (want("Verse's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
@@ -5626,7 +5648,7 @@ try {
       out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
       && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
   }
-  if (want('verse brain: one workspace that sixteen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that seventeen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5697,9 +5719,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its sixteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its seventeen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 16 && a.rows === 16 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 17 && a.rows === 17 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
