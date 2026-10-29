@@ -6,7 +6,7 @@
  * The card shows the workspace live: the tissue tinted by the rhythm's phase, surprise in red, the memory's expectation in violet, the
  * attention spotlight, the swarm, the membrane. The words you type, what the gestures organ named, what the memory expects and what the will
  * is doing are DOM orbs you can drag: a drag writes into the workspace as "you". Good rewards the will; Listen feeds it the microphone's
- * level and the pitch of what you hum (numbers, never recorded: lib/brain-hearing.js turns them into notes and guesses the next one). Every other Verse page in this browser reaches the same brain (lib/brain-bridge.js).
+ * level and the pitch of what you hum (numbers, never recorded: lib/brain-hearing.js turns them into notes and guesses the next one). Play a tune feeds the same ear a tune the page plays, for anyone with no microphone. Every other Verse page in this browser reaches the same brain (lib/brain-bridge.js).
  * The mind layers (lib/brain-mind.js): every ask on the stage (the page's 'void:ask' event) and every word typed here becomes ideas and
  * goals that pull; a question ("why did that form?", "what just happened?", "what are you doing?") is answered from its own state; its
  * choices are remembered as moments the will reads before choosing, its winning genomes by context; where two organs disagree over a
@@ -106,7 +106,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   frame.appendChild(layer);
   const row = document.createElement('div'); row.className = 'vb-ctl'; row.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px';
   row.innerHTML = '<form class="vb-form" style="display:flex;gap:6px;flex:1;min-width:180px"><input class="vb-word" type="text" maxlength="120" autocomplete="off" spellcheck="false" placeholder="tell it something, or ask why" aria-label="Words for Verse Brain to think about, or a question about what it is doing" style="flex:1;min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--line,#444);background:transparent;color:inherit">'
-    + '<button type="submit" class="g-btn vb-tell">Tell</button></form><button type="button" class="g-btn vb-good">Good</button><button type="button" class="g-btn vb-listen" aria-pressed="false">Listen</button><button type="button" class="g-btn vb-forget">Forget</button>';
+    + '<button type="submit" class="g-btn vb-tell">Tell</button></form><button type="button" class="g-btn vb-good">Good</button><button type="button" class="g-btn vb-listen" aria-pressed="false">Listen</button><button type="button" class="g-btn vb-tune" aria-pressed="false" title="Plays Frere Jacques twice into its ear: a tune the page plays, not your voice, so you can see it hear with no microphone">Play a tune</button><button type="button" class="g-btn vb-forget">Forget</button>';
   q('.ff-btns').insertAdjacentElement('beforebegin', row);
   const said = document.createElement('div'); said.className = 'vb-said'; said.setAttribute('aria-live', 'polite'); said.style.cssText = 'font-size:12px;min-height:1.3em;margin-top:4px';
   row.insertAdjacentElement('afterend', said);
@@ -118,7 +118,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     + '<div class="vb-made" style="color:var(--muted,#8a8a8a);margin-top:4px"></div>';
   fieldLine.insertAdjacentElement('afterend', det);
   for (const n of [row, det, ...row.querySelectorAll('input,button')]) for (const ev of ['pointerdown', 'keydown']) n.addEventListener(ev, (e) => e.stopPropagation());
-  const box = q('.vb-word'), listenBtn = q('.vb-listen'), body = det.querySelector('tbody');
+  const box = q('.vb-word'), listenBtn = q('.vb-listen'), tuneBtn = q('.vb-tune'), body = det.querySelector('tbody');
   const made = () => {
     q('.vb-made').textContent = DRAFTS.total ? 'Made from ' + DRAFTS.inBrain + ' of ' + DRAFTS.total + ' frontier drafts (' + DRAFTS.techniques + ' techniques); '
       + DRAFTS.left + ' were left out, each with its reason: ' + DRAFTS.drafts.filter((d) => !d.organ).map((d) => d.folder.replace(/^F0*(\d+)-/, 'F$1 ')).join(', ') + '.' : '';
@@ -196,17 +196,45 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 
   // Listen: the microphone's loudness and the pitch of a hum, as numbers (never recorded, never sent). Pitch is read every 25 ms so a
   // short note still gets the 3 frames the ear needs; the loudness keeps its 100 ms beat.
+  // Play a tune: the same ear with no microphone. An oscillator plays Frere Jacques twice (G3, 0.3 s a beat) into the same analyser and
+  // 25 ms pitch reads, quietly out of the speakers too, so anyone can watch it hear and guess the next note. Only one ear is on at a time.
   let mic = null;
-  const stopMic = () => { if (!mic) return; framesFor(S()).push([0, mic.ctx.currentTime + 0.05]); clearInterval(mic.pitch); try { mic.stream.getTracks().forEach((t) => t.stop()); mic.ctx.close(); } catch (_) { /* gone */ } mic = null; S().level = 0; listenBtn.setAttribute('aria-pressed', 'false'); listenBtn.textContent = 'Listen'; };
+  const ear = (ctx, an, kind, stop) => {
+    mic = { ctx, an, kind, stop, buf: new Float32Array(an.fftSize) };
+    mic.pitch = setInterval(() => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); const p = detectPitch(mic.buf, mic.ctx.sampleRate), q = framesFor(S()); q.push([Math.round(p.f * 10) / 10, mic.ctx.currentTime]); if (q.length > 64) q.shift(); }, 25);
+  };
+  const idle = () => { listenBtn.setAttribute('aria-pressed', 'false'); listenBtn.textContent = listenBtn.disabled ? 'Listen unavailable' : 'Listen'; tuneBtn.setAttribute('aria-pressed', 'false'); tuneBtn.textContent = 'Play a tune'; };
+  const stopMic = () => { if (!mic) return; framesFor(S()).push([0, mic.ctx.currentTime + 0.05]); clearInterval(mic.pitch); clearTimeout(mic.done); try { mic.stop(); mic.ctx.close(); } catch (_) { /* gone */ } mic = null; S().level = 0; idle(); };
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { listenBtn.disabled = true; listenBtn.textContent = 'Listen unavailable'; }
   listenBtn.addEventListener('click', async () => {
-    if (mic) return stopMic();
+    if (mic) { const was = mic.kind; stopMic(); if (was === 'mic') return; }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true }), AC = window.AudioContext || window.webkitAudioContext, ctx = new AC();
       const an = ctx.createAnalyser(); an.fftSize = 1024; ctx.createMediaStreamSource(stream).connect(an);
-      mic = { stream, ctx, an, buf: new Float32Array(an.fftSize) };
-      mic.pitch = setInterval(() => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); const p = detectPitch(mic.buf, mic.ctx.sampleRate), q = framesFor(S()); q.push([Math.round(p.f * 10) / 10, mic.ctx.currentTime]); if (q.length > 64) q.shift(); }, 25); listenBtn.setAttribute('aria-pressed', 'true'); listenBtn.textContent = 'Listening (tap to stop)';
+      ear(ctx, an, 'mic', () => stream.getTracks().forEach((t) => t.stop())); listenBtn.setAttribute('aria-pressed', 'true'); listenBtn.textContent = 'Listening (tap to stop)';
     } catch (_) { listenBtn.textContent = 'Microphone not allowed'; }
+  });
+  const TUNE = [[0, 1], [2, 1], [4, 1], [0, 1], [0, 1], [2, 1], [4, 1], [0, 1], [4, 1], [5, 1], [7, 2], [4, 1], [5, 1], [7, 2]]; // Frere Jacques, semitones over G3, beats
+  const AC0 = window.AudioContext || window.webkitAudioContext;
+  if (!AC0) { tuneBtn.disabled = true; tuneBtn.textContent = 'No audio here'; }
+  tuneBtn.addEventListener('click', async () => {
+    if (mic) { const was = mic.kind; stopMic(); if (was === 'tune') return; }
+    const ctx = new AC0(); await ctx.resume().catch(() => {});
+    const an = ctx.createAnalyser(); an.fftSize = 1024;
+    const osc = ctx.createOscillator(), env = ctx.createGain(), out = ctx.createGain(); osc.type = 'triangle'; env.gain.value = 0; out.gain.value = 0.15;
+    osc.connect(env); env.connect(an); env.connect(out); out.connect(ctx.destination);
+    let t = ctx.currentTime + 0.2;
+    for (let r = 0; r < 2; r++) {
+      for (const [st, bt] of TUNE) {
+        const len = bt * 0.3 - 0.07; osc.frequency.setValueAtTime(440 * Math.pow(2, (55 + st - 69) / 12), t);
+        env.gain.setValueAtTime(0, t); env.gain.linearRampToValueAtTime(0.5, t + 0.03); env.gain.setValueAtTime(0.5, t + len - 0.03); env.gain.linearRampToValueAtTime(0, t + len); t += len + 0.07;
+      }
+      t += 1.7;
+    }
+    osc.start(); osc.stop(t);
+    ear(ctx, an, 'tune', () => { try { osc.stop(); } catch (_) { /* already stopped */ } });
+    mic.done = setTimeout(stopMic, (t - ctx.currentTime + 0.3) * 1000);
+    tuneBtn.setAttribute('aria-pressed', 'true'); tuneBtn.textContent = 'Playing a tune (tap to stop)';
   });
   const hear = () => { if (!mic) return; mic.an.getFloatTimeDomainData(mic.buf); let s = 0; for (const v of mic.buf) s += v * v; S().level = Math.min(1, Math.sqrt(s / mic.buf.length) * 6); };
 
@@ -256,7 +284,7 @@ const idea = {
   // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
   modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
   params: (s) => B.params(s.b),
-  how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. With Listen on, hum to it: it hears the notes and guesses your next one. Every action is imagined before it is taken, and checked against moments it remembers.'
+  how: 'Move over it and it predicts you; where it guessed wrong turns red and its attention moves there. Type to give it ideas, drag them, say Good when it does something you like, or ask it why. With Listen on, hum to it: it hears the notes and guesses your next one. With no microphone, Play a tune plays it Frere Jacques to hear instead. Every action is imagined before it is taken, and checked against moments it remembers.'
 };
 
 export default fieldSkill({
