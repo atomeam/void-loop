@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:54:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:54:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:53:42Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -557,12 +565,24 @@
    "subject": "Verse's will: hourly from the conductor's clock, and started by every main deploy"
   },
   {
+   "at": "2026-10-29T06:51:49Z",
+   "subject": "Parity doc: the hourly forecast line moved in lib/weather.js"
+  },
+  {
    "at": "2026-10-29T06:51:29Z",
    "subject": "Loop: resume early when its own code changed after the failures that paused it"
   },
   {
    "at": "2026-10-29T06:51:20Z",
    "subject": "Fan fiction: find, link, CSV export, keyboard shortcuts and German on the index"
+  },
+  {
+   "at": "2026-10-29T06:49:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:49:25Z",
+   "subject": "Weather, time and base converter stage cards follow the page"
   },
   {
    "at": "2026-10-29T06:48:23Z",
@@ -603,26 +623,6 @@
   {
    "at": "2026-10-29T06:33:10Z",
    "subject": "Coder on Verse's own model: the loop tests and the API list catch up with #1439"
-  },
-  {
-   "at": "2026-10-29T06:32:36Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:32:28Z",
-   "subject": "Fan fiction: keep the index steady while the archive is read"
-  },
-  {
-   "at": "2026-10-29T06:32:26Z",
-   "subject": "Stage links follow the colour, gradient and wheel open on the page"
-  },
-  {
-   "at": "2026-10-29T06:32:15Z",
-   "subject": "Verse's coder: older results cut short, so the token cap lasts the turns"
-  },
-  {
-   "at": "2026-10-29T06:31:47Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
