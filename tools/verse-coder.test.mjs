@@ -8,7 +8,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW } from './verse-coder.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, budgetNote, BUDGET } from './verse-coder.mjs';
 import { scanDiff } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
@@ -113,6 +113,33 @@ test('each turn sends the task and the newest results whole, and older results c
   const s = repo(); writeFileSync(join(s.work, 'src/big.mjs'), Array.from({ length: 400 }, (_, i) => '// line ' + i + ' ' + 'y'.repeat(30)).join('\n'));
   const r = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, model: async () => ({ text: call('read', { path: 'src/big.mjs' }) }), limits: { turns: 30, tokens: 250000 } });
   assert.ok(r.turns >= 20, 'turns before the token cap: ' + r.turns + ' (' + r.tokens + ' tokens)');
+});
+
+test('past 40% of the budget each result says how much is gone and, with no edit yet, that the next answer is an edit; at a cap a change checked green is kept', async () => {
+  const L = { turns: 30, tokens: 250000 };
+  assert.equal(budgetNote({ turns: 11, tokens: 90000, limits: L }), '', 'under 40% of turns and of tokens: nothing');
+  assert.match(budgetNote({ turns: 12, tokens: 10000, limits: L }), /^\n\[turn 12 of 30, 4% of the token budget used, and no edit yet\. You have read enough: answer with an edit next/);
+  assert.match(budgetNote({ turns: 3, tokens: 100000, limits: L }), /40% of the token budget used, and no edit yet/, 'the tokens count too');
+  assert.equal(budgetNote({ turns: 12, tokens: 10000, limits: L, edited: true }), '\n[turn 12 of 30, 4% of the token budget used.]');
+  assert.match(budgetNote({ turns: 25, tokens: 240000, limits: L }), /96% of the token budget used\. Nothing is changed yet, and a run with no edit ships nothing: answer with an edit now\.\]$/);
+  assert.match(budgetNote({ turns: 24, tokens: 0, limits: L, edited: true }), /Run the check now, then finish/);
+  assert.equal(budgetNote({ turns: 0, tokens: 0, limits: L }), ''); assert.deepEqual(BUDGET, { warn: 0.4, last: 0.8 });
+  // the model sees it: a run that only reads is told from turn 4 of 10 to edit, and from turn 8 that it ships nothing without one
+  const s = repo(); const seen = [];
+  let r = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, limits: { turns: 10 }, model: async (m) => { seen.push(m[m.length - 1].content); return { text: call('read', { path: 'src/add.mjs' }) }; } });
+  assert.equal(r.outcome, 'turn-cap');
+  assert.ok(!/no edit yet/.test(seen[3]) && /turn 4 of 10, \d+% of the token budget used, and no edit yet/.test(seen[4]), seen[4]);
+  assert.match(seen[8], /turn 8 of 10.*answer with an edit now/);
+  // at a cap: edited, then checked green, then out of turns: the change goes through finish and is kept
+  r = await run(s, [call('edit', { diff: FIX }), call('check', { name: 'add' }), call('list', { path: 'src' })], { limits: { turns: 4 } });
+  assert.equal(r.outcome, 'done', r.why); assert.match(r.why, /turn cap \(4\), with the change checked green after its last edit: kept as it stood/);
+  assert.deepEqual(r.files, ['src/add.mjs']); assert.match(readFileSync(join(s.work, 'src/add.mjs'), 'utf8'), /a \+ b/);
+  sh(s.work, 'checkout', '--', '.');
+  // a check before the last edit does not count: the change is put back
+  const BREAK = FIX.replace('+  return a + b;', '+  return a + b + 1;').replace('-  return a - b;', '-  return a + b;');
+  r = await run(s, [call('edit', { diff: FIX }), call('check', { name: 'add' }), call('edit', { diff: BREAK }), call('list', { path: 'src' })], { limits: { turns: 5 } });
+  assert.equal(r.outcome, 'turn-cap', r.why); assert.match(readFileSync(join(s.work, 'src/add.mjs'), 'utf8'), /a - b/, 'put back');
+  assert.equal(sh(s.work, 'status', '--porcelain'), '');
 });
 
 test('Verse\'s review on its own diff sends a risky change back; a created file goes away when it gives up', async () => {
