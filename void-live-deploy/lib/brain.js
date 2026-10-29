@@ -8,12 +8,13 @@
 //                              organs only, score the future, put everything back exactly. The will and the arena decide by it.
 //   5. the self                selfOf() here: goals, which organs are used and which are starved, who owns the workspace, the winning
 //                              genome's seal, the surprise budget; what Verse can say about its own brain.
+// workingOf() and loadWorking() carry the working memory and the attention across a page reload (through the shared field's kept record).
 // embodiment() lists what becomes DOM (word orbs, the gesture, the expectation, the action); a drag on one writes back as 'you'.
 // Pure: no DOM, no clock, no Math.random (the workspace's seeded rng). The card is skills/verse-brain.js; other pages reach a running
 // brain through lib/brain-bridge.js.
 import { clamp } from './field-kit.js';
-import { createWorkspace, snapshot, restore, measure, ownership, regionMeans, regionCenter, deposit, nodesOf, sealSlice, GW, GH, CELLS, KIND, REGIONS_X } from './brain-workspace.js';
-import { ORGANS, ORGAN_IDS, STARTER, fixGenome, makeReservoir, makeGestures, makeMemory, makeConcepts, makeWill, makeArena, seedSwarm, seedMembrane, addPhrase, related, applyAction, ACTIONS, gestureName, LETTERS } from './brain-organs.js';
+import { createWorkspace, snapshot, restore, measure, ownership, regionMeans, regionCenter, deposit, nodesOf, sealSlice, GW, GH, CELLS, KIND, REGIONS_X, REGIONS_Y, LAYERS as LAYER_KEYS } from './brain-workspace.js';
+import { ORGANS, ORGAN_IDS, STARTER, fixGenome, makeReservoir, makeGestures, makeMemory, makeConcepts, makeWill, makeArena, seedSwarm, seedMembrane, addPhrase, related, applyAction, ACTIONS, gestureName, LETTERS, hypervector } from './brain-organs.js';
 import { sealSync } from './field-kit.js';
 import * as Mind from './brain-mind.js';
 
@@ -126,6 +127,49 @@ export function ask(b, text) {
 /** Verse's own priorities (the parsed /self.json) as standing ideas the visitor's are compared with. Returns how many. */
 export function knowVerse(b, self) { b.mind.semantic = Mind.semanticFrom(self); return b.mind.semantic.length; }
 export const knowledgeOf = Mind.knowledgeOf, loadKnowledge = Mind.loadKnowledge;
+
+// ---- the working memory across a reload ------------------------------------------------------------------------------------------------
+// knowledgeOf keeps what the brain learned (slow); this keeps what it is thinking now: the whole workspace (layers, rhythm, nodes with the
+// ideas' words, who wrote what), the ideas and their links, the character model, the spotlight, the goals and the last minute. The card
+// gives it to the shared field (lib/shared-field.js hold), which keeps it on this device and gives it back after a reload.
+/** a brain with nothing of its own to think about yet: no ideas and no goals (a new card, or one just reset). Pure. */
+export const isCold = (b) => !b.concepts.words.length && !b.mind.goals.length;
+/** what the brain is thinking now, as one plain record. Pure. */
+export function workingOf(b) {
+  const C = b.concepts, M = b.mind;
+  return { v: VERSION, ws: snapshot(b.ws),
+    concepts: { words: C.words.slice(), node: C.node.slice(), edges: [...C.edges], ppm: { seen: C.ppm.seen, counts: [...C.ppm.counts].map(([k, m]) => [k, [...m]]) }, lastBits: C.lastBits },
+    focus: { ...b.focus }, surprise: b.surprise, ticks: b.ticks, runs: { ...b.runs }, lastRun: { ...b.lastRun },
+    mind: { goals: M.goals.map((g) => ({ ...g })), history: M.history.map((h) => ({ ...h })), approval: M.approval, dwell: M.dwell } };
+}
+/** put a kept working memory into a brain. A record of the wrong shape changes nothing (an old record never breaks a new brain).
+ *  Returns what was restored: [] or ['workspace', 'ideas', 'attention', 'goals']. */
+export function loadWorking(b, w) {
+  if (!w || w.v !== VERSION || !w.ws || !w.concepts || !w.focus) return [];
+  const ws = b.ws, s = w.ws, Nn = ws.nodes, C = w.concepts, n = s.nodes && s.nodes.n;
+  const same = (dst, src) => src != null && typeof src.length === 'number' && src.length === dst.length;
+  const fine = LAYER_KEYS.every((k) => s.layers && same(ws.layers[k], s.layers[k])) && ['phase', 'omega', 'owner', 'wroteAt', 'writes', 'regionWrites'].every((k) => same(ws[k], s[k]))
+    && Number.isInteger(n) && n >= 0 && n <= Nn.x.length && ['x', 'y', 'vx', 'vy', 'kind', 'act', 'emb', 'owner'].every((k) => same(Nn[k], s.nodes[k])) && Array.isArray(s.nodes.label) && s.nodes.label.length === Nn.label.length;
+  const words = Array.isArray(C.words) && Array.isArray(C.node) && C.words.length === C.node.length && C.words.every((x, k) => typeof x === 'string' && x && Number.isInteger(C.node[k]) && C.node[k] >= 0 && C.node[k] < n && s.nodes.kind[C.node[k]] === KIND.concept);
+  if (!fine || !words || !Number.isFinite(+w.ticks)) return [];
+  restore(ws, s);
+  b.swarmIds = nodesOf(ws, [0, 1, 2]); b.membraneIds = nodesOf(ws, [KIND.membrane]);
+  const cs = b.concepts; cs.words = C.words.slice(); cs.node = C.node.slice(); cs.hv = cs.words.map(hypervector); cs.lastBits = +C.lastBits || 0;
+  cs.edges = new Map((Array.isArray(C.edges) ? C.edges : []).filter((e) => Array.isArray(e) && typeof e[0] === 'string' && Number.isFinite(e[1])));
+  cs.ppm.counts = new Map(); cs.ppm.seen = C.ppm && Number.isFinite(C.ppm.seen) ? C.ppm.seen : 0;
+  for (const [k, m] of (C.ppm && Array.isArray(C.ppm.counts) ? C.ppm.counts : [])) if (typeof k === 'string' && Array.isArray(m)) cs.ppm.counts.set(k, new Map(m.filter((e) => Array.isArray(e) && typeof e[0] === 'string' && Number.isFinite(e[1]))));
+  const done = ['workspace', 'ideas'];
+  const f = w.focus; if (['x', 'y', 'px', 'py', 'held'].every((k) => Number.isFinite(f[k])) && Number.isInteger(f.region) && f.region >= 0 && f.region < REGIONS_X * REGIONS_Y) { b.focus = { x: f.x, y: f.y, px: f.px, py: f.py, region: f.region, held: f.held }; done.push('attention'); }
+  b.ticks = Math.max(0, Math.floor(+w.ticks)); b.surprise = Number.isFinite(w.surprise) ? w.surprise : 0;
+  for (const id of ORGAN_IDS) { if (w.runs && Number.isFinite(w.runs[id])) b.runs[id] = w.runs[id]; if (w.lastRun && Number.isFinite(w.lastRun[id])) b.lastRun[id] = w.lastRun[id]; }
+  const M = w.mind || {};
+  if (Array.isArray(M.goals)) { b.mind.goals = M.goals.filter((g) => g && typeof g.word === 'string' && Number.isInteger(g.idx) && cs.words[g.idx] === g.word && Number.isFinite(g.strength)).map((g) => ({ ...g })); if (b.mind.goals.length) done.push('goals'); }
+  if (Array.isArray(M.history)) b.mind.history = M.history.filter((h) => h && Number.isFinite(h.t)).map((h) => ({ ...h }));
+  if (Number.isFinite(M.approval)) b.mind.approval = M.approval; if (Number.isFinite(M.dwell)) b.mind.dwell = M.dwell;
+  let best = -1, ba = 0; cs.node.forEach((i, a) => { if (Nn.act[i] > ba) { ba = Nn.act[i]; best = a; } }); b.board.thinking = best >= 0 && ba > 0.15 ? cs.words[best] : null;
+  b.metrics = measure(ws); b.utility = valence(b);
+  return done;
+}
 /** a drag of an embodied thing to (x, y): a concept moves; anything else deposits there as 'you'. */
 export function dragTo(b, ref, x, y) {
   const N = b.ws.nodes;

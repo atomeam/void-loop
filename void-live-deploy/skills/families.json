@@ -359,7 +359,7 @@
     {
      "name": "verse-brain",
      "tier": "checked",
-     "why": "a self-test, 5 browser-suite mentions",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests"
     },
@@ -3257,7 +3257,7 @@
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 19 browser-suite mentions, 11 real asks in the benchmark",
+     "why": "a self-test, 20 browser-suite mentions, 11 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,
