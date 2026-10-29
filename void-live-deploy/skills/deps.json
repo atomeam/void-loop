@@ -1886,6 +1886,13 @@
    "tests": 0
   },
   {
+   "file": "lib/self-blocks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 26,
+   "tests": 2
+  },
+  {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
@@ -2752,13 +2759,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
-  },
-  {
-   "file": "lib/self-blocks.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 2
   },
   {
    "file": "lib/seo.js",
@@ -8537,7 +8537,36 @@
    "imports": [
     "lib/spark.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/voice.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "lib/bench-asks.js",
+    "lib/built-detail.js",
+    "lib/self-context.js"
+   ]
   },
   "lib/self-context.js": {
    "imports": [
@@ -9838,7 +9867,8 @@
    "imports": [
     "lib/persona.js",
     "lib/automation-fix.js",
-    "skills/growth-tree.js"
+    "skills/growth-tree.js",
+    "lib/self-blocks.js"
    ],
    "importedBy": [
     "functions/api/reflect.js",
