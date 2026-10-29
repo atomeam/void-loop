@@ -1101,3 +1101,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T05:16:45Z | claude | fix | memory orbs grow on their own: left alone, the agents swim up the density they sense and pool the fluid, so orbs are born with nobody touching the card, and an orb lingers 3 s after its peak goes so it can be tapped
 2026-10-29T05:47:51Z | claude | grow | Verse Brain mind layers: asks become goals, episodic and procedural memory, one valence, a monitor of organs that disagree, answers from its own state, learning kept on the device
 2026-10-29T05:47:53Z | claude | grow | Memory orbs connect to Verse's shared field when it exists: live orbs go into free slots, a seal is sealed there too, and with no field.js the card works exactly as before
+2026-10-29T06:04:00Z | claude | grow | Verse's shared field: the memory orbs and Verse Brain share one field; the brain feels other cards' memories and publishes its ideas
