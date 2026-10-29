@@ -118,12 +118,12 @@ export function modelFacts(self) {
   return 'The models I run on (lib/models.js): my answers come from ' + modelName(models('answer')) + ', and ' + modelName(ANSWER_FALLBACK) + ' is only the second try when it cannot answer; my code review reads with ' + modelName(models('review')) + '. Moving my answers from gpt-oss-120b to gemma is done' + (mv ? ' (merged and deployed ' + mv.date + ', commit ' + mv.commit + ')' : '') + ', so it is not a want any more.';
 }
 
-// The tower (self.json 'tower', written at deploy from tower.target.json and lib/tower.js): the site I am fighting now and the next
+// The tower (self.json 'tower', written at deploy from tower.target.json and lib/tower.js): the site I am assimilating now and the next
 // smallest ones. The owner's rule is every site ever made, smallest first, so "what is still open" starts here.
 export function towerFacts(self) {
   const t = self && self.tower;
   if (!t || !t.target) return '';
-  return 'Still open first, by my rule (every site ever made, smallest first): the site I am fighting now, my tower target, is ' + t.target + (t.since ? ' (since ' + t.since + ')' : '') + (t.page ? '; ' + t.page : '') + '.' + (Array.isArray(t.next) && t.next.length ? ' The next smallest unbeaten sites after it: ' + t.next.join(', ') + '.' : '') + (Number.isFinite(t.beaten) && Number.isFinite(t.total) ? ' Beaten so far: ' + t.beaten + ' of ' + t.total + '.' : '');
+  return 'Still open first, by my rule (every site ever made, smallest first): the site I am assimilating now, my tower target, is ' + t.target + (t.since ? ' (since ' + t.since + ')' : '') + (t.page ? '; ' + t.page : '') + '.' + (Array.isArray(t.next) && t.next.length ? ' The next smallest unbeaten sites after it: ' + t.next.join(', ') + '.' : '') + (Number.isFinite(t.beaten) && Number.isFinite(t.total) ? ' Beaten so far: ' + t.beaten + ' of ' + t.total + '.' : '');
 }
 
 // For a note about one of my own answer cards: the two lists the card must give, already in order, so the model copies them and does
@@ -147,7 +147,7 @@ export function cardFacts(self, { days = 7, more = 3 } = {}) {
   if (mv) fixed.push(mv.date + ': my answers moved from gpt-oss-120b to gemma (merged and deployed, commit ' + mv.commit + ')');
   const t = self.tower, open = [];
   if (t && t.target) {
-    open.push(t.target + ', the site I am fighting now' + (t.page ? ' (' + t.page + ')' : ''));
+    open.push(t.target + ', the site I am assimilating now' + (t.page ? ' (' + t.page + ')' : ''));
     for (const n of Array.isArray(t.next) ? t.next : []) open.push(n + ', the next smallest');
   }
   const rest = Array.isArray(self.open) ? self.open : [];

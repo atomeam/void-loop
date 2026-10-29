@@ -52,7 +52,7 @@ test('over the site: duplicates, inbound counts, orphans and the pages that lead
 });
 
 test('the related row in the HTML is the same links the script draws, and the services lead to each other', () => {
-  assert.match(relatedLinks('/word-count/'), /href="\/stopwatch\/"[^>]*>Stopwatch and timer<\/a> <a href="\/tools\/">All tools<\/a>$/);
+  assert.match(relatedLinks('/word-count/'), /href="\/stopwatch\/"[^>]*>Stopwatch and timer<\/a> <a href="\/fanfic\/">Fan fiction<\/a> <a href="\/tools\/">All tools<\/a>$/);
   const html = '<main><nav id="related" aria-label="Related tools"></nav></main>';
   const once = withRelated(html, '/word-count/'); assert.match(once, /<nav id="related" aria-label="Related tools"><!-- related -->.*<!-- \/related --><\/nav>/);
   assert.equal(withRelated(once, '/word-count/'), once, 'written again, it is the same');
