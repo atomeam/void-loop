@@ -329,3 +329,20 @@ test('a story is in progress or complete: said on chapter 1, or by a later chapt
   const flatHit = [{ board: 'ficx', thread: 3, trip: 'aa', body: 'Chapter 2: The End Status: Complete Two.' }];
   assert.deepEqual(F.finishedLater(list, flatHit).map((t) => t.status), ['In progress', 'Complete', 'Complete'], 'a search excerpt (one line) counts too');
 });
+
+test('a review can give 1 to 5 stars: the story averages them, the writer\'s own and none-given leave the average alone, and stars never make a chapter', () => {
+  assert.equal(F.reviewBody('Loved it.', 4), 'Stars: 4 of 5\n\nLoved it.');
+  assert.equal(F.reviewBody('Loved it.', '0'), 'Loved it.'); assert.equal(F.reviewBody('x', 9), 'x'); assert.equal(F.reviewBody('x', 'abc'), 'x');
+  assert.deepEqual(F.readReview('Stars: 4 of 5\n\nLoved it.'), { stars: 4, text: 'Loved it.' });
+  assert.deepEqual(F.readReview('Stars: 4 of 5 Loved it.'), { stars: 0, text: 'Stars: 4 of 5 Loved it.' }, 'only the line the form writes counts');
+  assert.deepEqual(F.readReview('Plain words.'), { stars: 0, text: 'Plain words.' });
+  assert.deepEqual(F.starsOf([]), { avg: 0, n: 0 });
+  const op = { no: 1, at: 1, sub: 'S', name: 'Ink', trip: 'aa', body: 'One.' };
+  const posts = [{ no: 2, at: 2, trip: '', body: F.reviewBody('Good.', 5) }, { no: 3, at: 3, trip: '', body: F.reviewBody('Fine.', 4) }, { no: 4, at: 4, trip: '', body: 'No stars here.' },
+    { no: 5, at: 5, trip: 'aa', body: F.reviewBody('My own.', 1) }, { no: 6, at: 6, trip: 'zz', body: F.reviewBody(F.chapterHead(2) + 'Fake.', 2) }];
+  const s = F.storyOf(op, posts);
+  assert.equal(s.chapters.length, 1, 'a review with stars is never a chapter');
+  assert.equal(s.reviews.length, 5);
+  assert.deepEqual(s.stars, { avg: 3.7, n: 3 }, 'the writer\'s own stars do not count; (5 + 4 + 2) / 3 = 3.7');
+});
+

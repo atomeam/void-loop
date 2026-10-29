@@ -115,7 +115,7 @@ const archive = (fresh) => (!fresh && loaded) || (loaded = readArchive().catch((
 const shown = (topics) => topics.filter((t) => !t.nsfw || adultOk()); // adult fandoms' stories stay off the shared lists until this device said 18+
 
 // ---- topic lists: pinned notices, then the stories, with the period filter, paging and read marks ----
-const NOTICES = [['format', 'How to format chapters'], ['report', 'Report spam or abuse here'], ['rules', 'Writing rules & guidelines'], ['help', 'Help desk: questions and answers']];
+const NOTICES = [['format', 'How to format chapters'], ['report', 'Report spam or abuse here'], ['rules', 'Writing rules & guidelines'], ['help', 'Help desk: questions and answers'], ['reviews', 'Reviews and stars: how they work']];
 function dot(kind, label) { const d = el('i', 'dot' + (kind ? ' ' + kind : '')); d.setAttribute('role', 'img'); d.setAttribute('aria-label', label); return d; }
 function noticeRow([id, title]) {
   const tr = el('tr', 'pin'), ic = el('td', 'ic'), main = el('td', 'm'), rep = el('td', 'num hide-s', '0'), who = el('td', 'who hide-s', 'Verse'), when = el('td', 'when', 'Pinned');
@@ -358,7 +358,7 @@ async function viewStory(code, no, chap) {
   const det = F.detailsLine(s.details); $('storyDetails').textContent = det; $('storyDetails').hidden = !det;
   $('storySum').textContent = s.summary; $('storySum').hidden = !s.summary;
   const facts = [['Rated', s.details.rating ? s.details.rating + (b.nsfw ? ' · 18+' : '') : b.nsfw ? '18+' : 'All ages'], ...(s.details.status ? [['Status', s.details.status]] : []), ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
-    ['Reading time', F.readLabel(s.words)], ['Reviews', String(s.reviews.length)], ['Published', date(s.published)], ['Updated', date(s.updated)]];
+    ['Reading time', F.readLabel(s.words)], ['Reviews', String(s.reviews.length)], ...(s.stars.n ? [['Stars', '★ ' + s.stars.avg + ' of 5 from ' + s.stars.n + (s.stars.n === 1 ? ' rating' : ' ratings')]] : []), ['Published', date(s.published)], ['Updated', date(s.updated)]];
   $('storyInfo').replaceChildren(...facts.map(([k, v]) => { const d = el('div'); d.append(el('dt', '', k), el('dd', '', v)); return d; }));
   // the chapter shown, and the chapter list
   const n = Math.max(1, Math.min(s.chapters.length, +chap || 1)), c = s.chapters[n - 1], sel = $('tocSel');
@@ -384,7 +384,8 @@ async function viewStory(code, no, chap) {
   $('reviewsH').textContent = s.reviews.length ? 'Reviews (' + s.reviews.length + ')' : 'Reviews';
   $('reviews').replaceChildren(...(s.reviews.length ? s.reviews.map((p) => {
     const d = el('div', 'review'), meta = el('p', 'meta'), who = el('b', '', p.name || 'Anonymous'); if (p.name) who.translate = false; meta.append(who, ' · ', timeEl(p.at)); d.append(meta);
-    const body = el('div'); body.translate = false; paras(p.body, body); d.append(body); return d;
+    const rv = F.readReview(p.body); if (rv.stars) { const st = el('p', 'stars', '★'.repeat(rv.stars) + '☆'.repeat(5 - rv.stars)); st.setAttribute('aria-label', rv.stars + ' of 5 stars'); st.title = rv.stars + ' of 5 stars'; d.append(st); }
+    const body = el('div'); body.translate = false; paras(rv.text, body); d.append(body); return d;
   }) : [el('p', 'quiet', 'No reviews yet. Be the first to say what you thought.')]));
   wireReview(code, no, op.locked || op.archived);
   // the next chapter: only for the device that posted the story, while the thread is open
@@ -513,9 +514,9 @@ function wireReview(code, no, closed) {
     me.pen = F.penName(form.elements.pen.value); keep();
     busy(form, true);
     try {
-      // a review is never signed, so it can never be read as a chapter
-      await sendParts(form, { b: code, t: no, sub: '', parts: [text], name: me.pen || 'Anonymous', i: 0 });
-      form.elements.text.value = ''; loaded = null; say(note, 'Thank you. Your review is up.', 'good'); viewStory(code, no, new URLSearchParams(location.search).get('c'));
+      // a review is never signed, so it can never be read as a chapter; its stars, when given, open the post
+      await sendParts(form, { b: code, t: no, sub: '', parts: [F.reviewBody(text, form.elements.stars.value)], name: me.pen || 'Anonymous', i: 0 });
+      form.elements.text.value = ''; form.elements.stars.value = '0'; loaded = null; say(note, 'Thank you. Your review is up.', 'good'); viewStory(code, no, new URLSearchParams(location.search).get('c'));
     } catch (e) { fail(note, e); } finally { busy(form, false); }
   };
 }

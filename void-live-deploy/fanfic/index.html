@@ -187,6 +187,7 @@
   .review { padding: 16px 20px; border-bottom: 1px solid var(--line); } .review:last-child { border-bottom: 0; }
   .review .meta { font-size: 13px; color: var(--ink-3); margin: 0 0 6px; } .review .meta b { color: var(--ink-2); font-weight: 500; }
   .review p { margin: 0 0 .6em; overflow-wrap: anywhere; color: var(--ink); }
+  .review .stars { margin: 0 0 6px; color: rgb(var(--key)); letter-spacing: 2px; font-size: 16px; }
 
   /* notices, the glossary and search results */
   .notice { max-width: 44em; } .notice li, .notice p { color: var(--ink-2); margin-bottom: 8px; } .notice b { color: var(--ink); font-weight: 600; }
@@ -412,6 +413,7 @@
       <div id="reviews"></div>
       <form class="pbody" id="rvForm" autocomplete="off" style="border-top:1px solid var(--line)">
         <label class="f"><span>Your review</span><textarea class="short" name="text" maxlength="4000" required placeholder="What stayed with you?"></textarea></label>
+        <fieldset class="f"><legend>Stars</legend><div class="radios"><label><input type="radio" name="stars" value="0" checked> No stars</label><label><input type="radio" name="stars" value="1"> 1</label><label><input type="radio" name="stars" value="2"> 2</label><label><input type="radio" name="stars" value="3"> 3</label><label><input type="radio" name="stars" value="4"> 4</label><label><input type="radio" name="stars" value="5"> 5</label></div><small>Optional. The story shows the average of the stars its reviews give.</small></fieldset>
         <label class="f"><span>Pen name</span><input type="text" name="pen" maxlength="40" placeholder="Anonymous"><small>Optional. Kept on this device for next time.</small></label>
         <p class="bot" data-bot></p>
         <div class="acts"><button class="go" type="submit">Post review</button></div>
@@ -542,6 +544,14 @@
         <p>For a takedown or anything urgent, write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
       </div>
     </article>
+    <article class="notice" id="n-reviews" hidden>
+      <h2 class="h1">Reviews and stars: how they work</h2>
+      <div class="glass pbody">
+        <p>Anyone can review a story on its page. A review can give the story 1 to 5 stars, or none.</p>
+        <p>The story page shows how many reviews it has and the average of the stars readers gave. Stars from the story's own writer do not count.</p>
+        <p>Be kind in reviews. Critique the story, never the writer.</p>
+      </div>
+    </article>
     <article class="notice" id="n-help" hidden>
       <h2 class="h1">Help desk: questions and answers</h2>
       <div class="glass pbody"><dl class="qa">
@@ -560,6 +570,7 @@
         <li>Adult stories go only in fandoms marked 18+. Sexual content involving anyone under 18 is never allowed, in any fandom, whatever the canon says.</li>
         <li>Post your own writing. Credit a co-writer, a beta reader or a prompt you answered.</li>
         <li>Be kind in reviews. Critique the story, never the writer.</li>
+        <li>A review can give the story 1 to 5 stars. The story page shows the average of those stars.</li>
       </ul></div>
     </article>
   </section>
