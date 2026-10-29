@@ -42,7 +42,7 @@ const HAND_FLOORS = [
   // colorzilla.com (Tranco 101,274), its gradient editor behind Carbon ads, a Twitter widget, Facebook styles, Google Analytics and a tag manager
   { id: 'gradient', learned: "a gradient is judged by the text on it: the worst contrast across the whole gradient, conic gradients, and a link that holds it whole", site: 'colorzilla.com', url: 'https://www.colorzilla.com/gradient-editor/', ask: 'gradient generator', page: '/gradient/', label: 'CSS gradient', glyph: '▤', fatality: 'conic gradients, the worst text contrast across the gradient, a link that holds it whole, and it opens offline, with no ads, trackers or social widgets', extra: ['stops with opacity', 'import css', 'presets'] },
   // paint by number (owner, 2026-10-26: "build wherever fits"): a frontier site given a page of its own, so the floor can be measured and beaten
-  { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', extra: [] },
+  { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', held: 'the 24+ organic colour region engine is not merged (owner, 2026-10-28)', extra: [] },
   // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com is the
   // frontier's next fight — its own page says the Twitter stream that fed it is inactive and it now ranks the emoji copied from
   // Emojipedia. Verse counts copies of a closed list of emoji on /emojis/ and says exactly that, so no global feed is faked
@@ -284,7 +284,7 @@ export function gate(floor, ev = {}) {
   const all = checklist(floor, ev), passed = all.filter((a) => passes(a, ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
   const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || isJourney(a)) : isJourney(a)));
-  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
+  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: !(floor && floor.held) && passed.length === all.length, held: (floor && floor.held) || '', n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
 }
 /** evidence rows that pass a floor's whole checklist the way the gate demands (journeys with steps and negative controls): for tests and
  *  fixtures only, never written to tower.evidence.json. Pure. */
@@ -340,7 +340,8 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // its own (a frontier tool site has none) stands before a broad, many-feature one
   const far = (f) => (f.farFuture ? 1 : 0), broad = (f) => ((f.extra || []).length > 2 ? 1 : 0);
   const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
-  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
+  const firstOpen = queue.find((f) => !f.held); // a held floor sits in the line but is never the fight
+  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f.held ? 'held' : f === firstOpen ? 'current' : 'ahead'; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */

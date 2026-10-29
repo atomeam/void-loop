@@ -180,6 +180,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + '<div style="font-size:13px;margin-top:2px">' + esc(target.state === 'beaten' ? 'surpassed' : target.n + ' of ' + target.m + ' aspects ahead · not beaten yet') + (target.page ? ' · <a href="' + esc(target.page) + '">Verse\'s page</a>' : '') + '</div>'
     + '<div style="font-size:12px;opacity:.7;margin-top:2px">' + esc((Number.isFinite(size) ? 'Tranco #' + size.toLocaleString('en') + ' · ' : '') + (nexts.length ? 'next: ' + nexts[0].f.site + (nexts.length > 1 ? ' (+' + (nexts.length - 1) + ' more)' : '') : 'last floor in the queue')) + '</div>'
     + diffRows(target, esc)
+    + (target.held ? '<div style="font-size:11px;color:#c9b26a;margin-top:2px">held: ' + esc(target.held) + '</div>' : '')
     + (cur && target.id !== cur.id ? '<div style="font-size:11px;opacity:.6;margin-top:2px">the gate\'s easiest unbeaten floor is ' + esc(cur.site) + ' (' + esc(cur.n + ' of ' + cur.m) + ')</div>' : '') + '</div>' : '';
   return TW_CSS + (rk ? SIZE_CSS : '') + '<div class="tw">' + summary + '<div class="tw-head">Versus</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (plan && plan.now.length ? ' · working on: ' + plan.now.map((r) => r.f.site).join(', ') : cur ? ' · working on: ' + cur.site : '')) + '</div>' + planHtml(plan, esc)
     + sortBar + (cur ? vsHtml(cur, esc, { enter }) : '')

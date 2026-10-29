@@ -348,11 +348,11 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3) {
   // hexcolor16.com, on the same page, with a reading from before it), the unbeaten first, at most 10; and when the service worker changed, every
   // unbeaten floor whose last offline reading is not a win
   const OKV = new Set(['better', 'equal-and-better']), room = Math.max(max, 10), addMore = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < room) out.push(id); };
-  const onPage = FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); });
+  const onPage = FLOORS.filter((f) => !f.held && (() => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); })());
   const beatenOf = (id) => { const g = t.floors.find((x) => x.id === id); return !!(g && g.beaten); };
   for (const f of onPage.filter((f) => !beatenOf(f.id)).concat(onPage.filter((f) => beatenOf(f.id)))) addMore(f.id);
   if (changed.includes('void-live-deploy/sw.js')) for (const f of t.floors) if (ids.has(f.id) && !f.beaten && !OKV.has(((evidence[f.id] || {}).offline || {}).verdict)) addMore(f.id);
-  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
+  for (const f of t.floors) if (ids.has(f.id) && !f.beaten && !f.held) { const rows = evidence[f.id] || {}; if (measurable(FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
   return out;
 }
 
@@ -500,7 +500,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   for (let i = 0; i < argv.length; i++) { const a = argv[i]; if (['--shard', '--floors', '--out'].includes(a)) opt[a.slice(2)] = argv[++i] || ''; else if (['--rescore', '--list'].includes(a)) opt[a.slice(2)] = true; else words.push(a); }
   const sh = opt.shard !== undefined ? parseShard(opt.shard) : null;
   if (opt.shard !== undefined && !(sh && sh.i >= 1 && sh.i <= sh.n)) { console.error('--shard wants i/N with 1 <= i <= N, e.g. --shard 2/6; got ' + opt.shard); process.exit(2); }
-  const ids = sh ? shard(FLOORS.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
+  // a held floor is not measured: its verdict would only re-assert text facts the owner has already ruled out (owner, 2026-10-28)
+  const open = FLOORS.filter((x) => !x.held);
+  for (const x of FLOORS) if (x.held && (opt.floors || '').split(',').map((s) => s.trim()).includes(x.id)) console.error('held: ' + x.id + ' — ' + x.held + '; not measured');
+  const ids = sh ? shard(open.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
   const floors = ids.map((id) => FLOORS.find((x) => x.id === id) || id), unknown = floors.filter((x) => typeof x === 'string');
   if (unknown.length || !floors.length) { console.error('no floor ' + (unknown.join(', ') || '(none given)') + '; floors: ' + FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
   if (opt.list) { for (const f of floors) console.log(f.id); process.exit(0); } // the selection alone, nothing loaded

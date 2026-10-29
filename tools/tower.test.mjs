@@ -191,3 +191,17 @@ test('the shopping floor fights from Verse\'s own store, and the store page exis
   for (const a of ['catalogue', 'checkout', 'delivery tracking']) assert.ok(probe.askParts[a] && probe.askParts[a].length >= 5, a + ' is measured');
   assert.ok(probe.facts.length >= 18, 'completeness has a real checklist');
 });
+
+// a held floor is not beaten, whatever its rows say (owner, 2026-10-28: heycolor.com's page is a wip, the gate's text facts passed anyway)
+test('a held floor never reads beaten or current, even when every row passes', () => {
+  const held = FLOORS.find((f) => f.held);
+  assert.ok(held, 'a floor carries held: why');
+  const rows = passingRows(held);
+  const g = gate(held, rows);
+  assert.equal(g.beaten, false, 'held keeps the floor un-beaten');
+  assert.equal(g.held, held.held);
+  const t = tower([], { [held.id]: rows });
+  const f = t.floors.find((x) => x.id === held.id);
+  assert.equal(f.state, 'held');
+  assert.equal(t.beaten, 0);
+});
