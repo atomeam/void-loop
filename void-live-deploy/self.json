@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,8 +545,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T06:49:25Z",
-   "subject": "Weather, time and base converter stage cards follow the page"
+   "at": "2026-10-29T06:52:13Z",
+   "subject": "Verse's will: hourly from the conductor's clock, and started by every main deploy"
+  },
+  {
+   "at": "2026-10-29T06:51:20Z",
+   "subject": "Fan fiction: find, link, CSV export, keyboard shortcuts and German on the index"
   },
   {
    "at": "2026-10-29T06:47:46Z",
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T06:27:50Z",
    "subject": "CSP smoke: a ! Name line in _headers drops the earlier header, as Cloudflare does"
-  },
-  {
-   "at": "2026-10-29T06:26:56Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
   }
  ],
  "builders": {

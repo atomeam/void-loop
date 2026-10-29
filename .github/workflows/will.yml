@@ -8,13 +8,12 @@ name: Verse's will
 on:
   schedule:
     - cron: '7 * * * *' # every hour at :07, day and night; each run chooses three fresh wants and replaces the card's
+  # GitHub throttles this cron (75 scheduled runs in 2 weeks, 2026-10-29), so the conductor's clock also starts the will when the
+  # last run is an hour old (tools/conductor-core.mjs willDue). Its concurrency group keeps the two from running at once.
   workflow_dispatch:
   # also right after main deploys (owner, 2026-10-18: "ok there is too much not updating"): a merge that built a want would
-  # otherwise leave it on the card until the next hourly slot. One Workers AI call per merge, and only when the deploy passed.
-  workflow_run:
-    workflows: ['Verse deploy']
-    types: [completed]
-    branches: [main]
+  # otherwise leave it on the card until the next hourly slot. deploy.yml starts it with gh workflow run, only when the deploy
+  # passed: a workflow_run trigger never fired for a deploy that automerge starts (GITHUB_TOKEN runs fire no workflow_run).
 
 concurrency:
   group: void-will
@@ -26,7 +25,6 @@ permissions:
 
 jobs:
   will:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

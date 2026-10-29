@@ -53,7 +53,7 @@
   .top .wrap { display: flex; align-items: center; gap: 6px 18px; min-height: 60px; flex-wrap: wrap; }
   .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--ink); white-space: nowrap; }
   .brand b { font-weight: 300; font-size: 20px; letter-spacing: -.03em; background: linear-gradient(180deg, #fff, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .brand span { font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--ink-3); }
+  .brand span { font-size: 15px; letter-spacing: .22em; font-variant-caps: all-small-caps; font-variant-ligatures: none; color: var(--ink-3); } /* small caps, so the words stay words to a screen reader */
   .nav { display: flex; flex-wrap: wrap; gap: 2px; margin-left: auto; }
   .nav a { color: var(--ink-2); text-decoration: none; font-size: 14px; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 999px; transition: color .2s, background .2s; }
   .nav a:hover { color: var(--ink); background: rgba(255,255,255,.05); }
@@ -189,8 +189,13 @@
 
   footer { border-top: 1px solid var(--line); padding: 22px 0 40px; font-size: 13px; color: var(--ink-3); }
   footer a { color: var(--ink-2); } footer p { margin: 0 0 6px; }
-  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; clip-path: inset(50%); white-space: nowrap; } /* hidden by clip-path, not overflow, so no text reads as cut off */
   [hidden] { display: none !important; }
+  .tools input[type=search] { width: auto; min-width: 220px; flex: 1 1 220px; }
+  .listacts { padding: 12px 20px; border-top: 1px solid var(--line); } .listacts .quiet { padding: 0; font-size: 13px; }
+  .langb { align-self: center; min-height: 32px; padding: 0 12px; font-size: 13px; margin-left: 6px; }
+  details.keys { margin: 0 0 8px; } details.keys summary { cursor: pointer; color: var(--ink-2); min-height: 24px; display: inline-flex; align-items: center; }
+  kbd { font: 12px/1 ui-monospace, monospace; padding: 2px 6px; border: 1px solid var(--line-2); border-radius: 6px; color: var(--ink-2); background: rgba(255,255,255,.04); }
 
   @media (max-width: 760px) {
     .wrap { padding: 0 16px; }
@@ -231,14 +236,15 @@
 <canvas id="stars" aria-hidden="true"></canvas>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="/fanfic/" data-go><b>Verse</b><span>Fan fiction</span></a>
+    <a class="brand" href="/fanfic/" data-go><b>Verse</b><span>Fan Fiction</span></a>
     <nav class="nav" aria-label="Archive">
-      <a href="/fanfic/" data-go data-v="index">Index</a>
-      <a href="/fanfic/?v=recent" data-go data-v="recent">Most recent</a>
-      <a href="/fanfic/?v=search" data-go data-v="search">Search</a>
-      <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink">Writing Room</a>
+      <a href="/fanfic/" data-go data-v="index" aria-keyshortcuts="i">Index</a>
+      <a href="/fanfic/?v=recent" data-go data-v="recent" aria-keyshortcuts="r">Most recent</a>
+      <a href="/fanfic/?v=search" data-go data-v="search" aria-keyshortcuts="/">Search</a>
+      <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink" aria-keyshortcuts="w">Writing Room</a>
       <a href="/fanfic/?v=glossary" data-go data-v="glossary">Writing Glossary</a>
       <a href="/fanfic/?notice=rules" data-go data-v="notice">Rules</a>
+      <button type="button" class="langb" id="langBtn" translate="no" lang="de" aria-label="Auf Deutsch lesen">Deutsch</button>
     </nav>
   </div>
 </header>
@@ -254,6 +260,7 @@
       <a class="btn go" href="/fanfic/?v=room" data-go>Open the Writing Room</a>
       <a class="btn" href="/fanfic/?v=search" data-go>Search</a>
       <a class="btn" href="/fanfic/?v=glossary" data-go>Writing Glossary</a>
+      <a class="btn" href="/fanfic/?notice=format" data-go>Quick start: how to post</a>
     </div>
 
     <div class="glass loading" id="fandomBox">
@@ -273,6 +280,7 @@
 
     <div class="glass" id="latestBox">
       <div class="phead"><h2 class="grow" id="latestH">Stories</h2>
+        <div class="tools"><label class="vh" for="find">Find a story</label><input type="search" id="find" maxlength="100" enterkeyhint="search" placeholder="A title, a fandom or a pen name" aria-keyshortcuts="/"></div>
         <div class="tools" data-tools></div>
       </div>
       <table class="list" aria-labelledby="latestH" id="latest">
@@ -280,6 +288,7 @@
         <tbody data-rows></tbody>
       </table>
       <div class="pages" data-pages hidden></div>
+      <div class="acts listacts"><button type="button" id="copyLink">Copy link</button><button type="button" id="exportCsv">Export list (.csv)</button><span class="quiet" id="listSay" role="status"></span></div>
       <div class="legend"><span><i class="dot new"></i>New posts</span><span><i class="dot"></i>No new posts</span><span><i class="dot pin"></i>Announcement</span><span><i class="dot lock"></i>Locked</span></div>
     </div>
 
@@ -296,8 +305,8 @@
 
   <!-- one fandom: its topic list -->
   <section class="view" id="forum" aria-labelledby="forumH">
-    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span id="forumCrumb"></span></nav>
-    <h2 id="forumH" class="h1"></h2>
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span id="forumCrumb" translate="no"></span></nav>
+    <h2 id="forumH" class="h1" translate="no"></h2>
     <p class="lead" id="forumAbout"></p>
     <div class="acts" style="margin:0 0 24px"><a class="btn go" id="forumPost" href="/fanfic/?new=story" data-go>Post a new story</a></div>
     <div class="glass">
@@ -326,12 +335,12 @@
 
   <!-- one story -->
   <section class="view" id="story" aria-labelledby="storyH">
-    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><a id="storyCrumb" href="/fanfic/" data-go></a></nav>
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><a id="storyCrumb" href="/fanfic/" data-go>Story</a></nav>
     <article class="glass">
       <div class="storyh">
-        <h2 id="storyH" class="h1"></h2>
+        <h2 id="storyH" class="h1" translate="no"></h2>
         <p class="by" id="storyBy"></p>
-        <p class="summary" id="storySum"></p>
+        <p class="summary" id="storySum" translate="no"></p>
       </div>
       <dl class="facts" id="storyInfo"></dl>
       <div class="toc" id="toc"><label class="vh" for="tocSel">Chapter</label><select id="tocSel"></select><span class="muted" id="tocSay"></span></div>
@@ -502,6 +511,7 @@
 <!-- /asks -->
 <nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/generators/">Generators</a> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <p>Stories here are posts on Verse's <a href="/boards/">open boards</a> and follow <a href="/boards/rules/">the rules</a>. Takedowns and reports of illegal content: <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+  <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>/</kbd> find a story · <kbd>n</kbd> post a new story · <kbd>w</kbd> the Writing Room · <kbd>i</kbd> the index · <kbd>r</kbd> the most recent stories · <kbd>?</kbd> these shortcuts</p><p>Shortcuts work anywhere outside a text field.</p></details>
   <p id="brainSay" hidden></p>
   <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
 </footer>

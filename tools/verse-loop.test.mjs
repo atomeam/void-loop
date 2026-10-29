@@ -6,7 +6,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, rmSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, failedLoopPr, loadState, PAUSE_TITLE, GROOM_TITLE } from './verse-loop.mjs';
+import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, failedLoopPr, loadState, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
 
 const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
@@ -339,6 +339,34 @@ test('the back-off: three failures pause for 6 hours, a merged PR resets the str
   assert.equal(pauseState({ state: { pausedAt: t0 }, now: t0 + 6 * 3600e3 }).resume, true, 'resumes by itself at 6 hours');
   assert.equal(pauseState({ state: {}, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 3600e3 }).paused, true, 'a fresh runner reads the open issue');
   assert.equal(pauseState({ state: {}, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 7 * 3600e3 }).resume, true, 'and an open issue does not hold it past 6 hours');
+  // the loop's own code changed after the streak's first failure: the failures were on code that no longer runs, so resume now
+  const streak = { pausedAt: t0, last: [{ at: t0 - 3600e3 }, { at: t0 - 1800e3 }, { at: t0 }] };
+  assert.deepEqual(pauseState({ state: streak, now: t0 + 600e3, changedAt: t0 - 2400e3 }), { paused: false, resume: true, until: t0 + 6 * 3600e3, early: true }, 'a fix between the failures counts');
+  assert.equal(pauseState({ state: streak, now: t0 + 600e3, changedAt: t0 - 7200e3 }).paused, true, 'a change before the first failure does not');
+  assert.equal(pauseState({ state: streak, now: t0 + 600e3 }).paused, true, 'no change: the 6 hours hold');
+  assert.equal(pauseState({ state: {}, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 3600e3, changedAt: t0 + 60e3 }).resume, true, 'a fresh runner measures from the issue');
+  assert.ok(LOOP_CODE.includes('tools/verse-coder.mjs') && LOOP_CODE.includes('tools/verse-loop.mjs'));
+});
+
+test('a lap: a commit to the loop\'s own code after the failures began ends the pause early and says why on the issue', async () => {
+  const s = sandbox({ gh: { 'issue list': [{ number: 9, title: PAUSE_TITLE, createdAt: new Date().toISOString() }] } });
+  const statePath = join(s.work, '.git', 'verse-loop.state.json');
+  const t0 = Date.now();
+  // the failures are in the future of every commit so far: the pause holds
+  writeFileSync(statePath, JSON.stringify({ fails: 3, prs: [], pausedAt: t0, last: [{ outcome: 'error', why: 'token cap', at: t0 + 60e3 }] }));
+  writeFileSync(join(s.work, 'tools/verse-coder.mjs'), '// v1\n'); sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'coder v1'); sh(s.work, 'push', '-q', 'origin', 'main');
+  let r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo ran > ran.txt'), log: quiet, now: t0 + 120e3 });
+  assert.equal(r.outcome, 'paused'); assert.ok(!existsSync(join(s.work, 'ran.txt')));
+  // the fix lands after the first failure: resume now, not in 6 hours
+  writeFileSync(statePath, JSON.stringify({ fails: 3, prs: [], pausedAt: t0, last: [{ outcome: 'error', why: 'token cap', at: t0 - 120e3 }] }));
+  writeFileSync(join(s.work, 'tools/verse-coder.mjs'), '// v2: the fix\n'); sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'coder fix'); sh(s.work, 'push', '-q', 'origin', 'main');
+  r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo built > built.txt'), log: quiet, now: t0 + 180e3 });
+  assert.equal(r.outcome, 'shipped', r.why);
+  assert.ok(r.steps.some((x) => /changed after the failures began; resuming early/.test(x)), r.steps.join(' | '));
+  const close = ghCalls(s).find((c) => c.slice(0, 3).join(' ') === 'issue close 9');
+  assert.ok(close, 'the loop closes its own issue'); assert.match(close[4], /Resumed early: the loop's own code changed on main after these failures began/);
+  const st = loadState(statePath);
+  assert.deepEqual([st.pausedAt, st.last.length], [null, 0]);
 });
 
 test('a lap: the third failure in a row pauses and opens the issue; laps skip while paused; after 6 hours it resumes and closes the issue itself', async () => {
