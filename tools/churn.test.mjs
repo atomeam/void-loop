@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { hotFiles, namedHot, hotOf, MAX_CHANGES, SWEEP_FILES, WINDOW_DAYS } from '../void-live-deploy/lib/churn.js';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { pickWant, skippedNote } from '../void-live-deploy/lib/will-guard.js';
 import { commitsSince, churnJson } from './churn.mjs';
 
@@ -35,7 +35,14 @@ test('pickWant skips a want that names a hot file and takes the next; the note s
   assert.deepEqual(r.skipped.map((s) => [s.title, s.churn]), [['Rework will-guard.js', ['void-live-deploy/lib/will-guard.js']]]);
   assert.match(skippedNote(r.skipped), /will-guard\.js, changed more than 12 times in 7 days/);
   assert.equal(pickWant(wants, [], 2).want.title, 'Rework will-guard.js', 'no hot list, no change');
-  assert.equal(pickWant(wants, [], 2, hot.concat([{ file: 'x/notebook.js' }])).want, null, 'every want waits');
+  const all = pickWant(wants, [], 2, hot.concat([{ file: 'x/notebook.js' }]));
+  assert.equal(all.want.title, 'Rework will-guard.js', 'every want names a hot file: the first goes ahead, so the loop never starves');
+  assert.deepEqual(all.overCap, ['void-live-deploy/lib/will-guard.js']);
+  assert.deepEqual(all.skipped.map((s) => s.title), ['A new card']);
+  assert.match(skippedNote(all.skipped, all.overCap), /goes ahead anyway \(void-live-deploy\/lib\/will-guard\.js\)/);
+  const tried = [{ target: 'will:rework-will-guard-js', state: 'failed' }, { target: 'will:rework-will-guard-js', state: 'set aside' }];
+  assert.equal(pickWant(wants, tried, 2, hot.concat([{ file: 'x/notebook.js' }])).want.title, 'A new card', 'a want out of tries never goes ahead over the cap');
+  assert.equal(pickWant([wants[0]], tried, 2, hot).want, null, 'tries used up still means it waits');
 });
 
 test('commitsSince reads this repo\'s git without throwing', () => {
@@ -64,4 +71,12 @@ test('the will reads /churn.json and passes its hot list to pickWant, with the w
   assert.match(src, /\/churn\.json/);
   assert.match(src, /pickWant\([^;]*hot\)/);
   assert.match(src, /catch \(_\) \{ hot = \[\]; \}/, 'an unreadable list means no cap, never no will');
+});
+
+test('the churn cap holds back only the will\'s own wants: only the will, its writer and its log name churn.json or import lib/churn.js', () => {
+  const root = new URL('..', import.meta.url).pathname, hits = [];
+  const walk = (d) => { for (const n of readdirSync(d)) { if (n === 'node_modules' || n === '.git' || n === 'archive') continue; const p = d + '/' + n, st = statSync(p);
+    if (st.isDirectory()) walk(p); else if (/\.(?:m?js|ya?ml|py|sh)$/.test(n) && st.size < 2e6) { const t = readFileSync(p, 'utf8'); if (/churn\.json|from ['"][./]*(?:lib\/)?churn\.js['"]/.test(t)) hits.push(p.slice(root.length)); } } };
+  walk(root + '.github'); walk(root + 'tools'); walk(root + 'void-live-deploy');
+  assert.deepEqual(hits.sort(), ['tools/churn.mjs', 'tools/churn.test.mjs', 'tools/refresh.mjs', 'tools/will.py', 'void-live-deploy/functions/api/will.js', 'void-live-deploy/lib/churn.js', 'void-live-deploy/lib/will-guard.js'].sort(), 'a PR gate or another loop reading the churn list would block agents\' work');
 });

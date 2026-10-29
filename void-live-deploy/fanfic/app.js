@@ -5,6 +5,7 @@
 // shows the empty state, and every row is a real post. What this device keeps: drafts, read marks, the pen name and its signing secret.
 import * as F from '/lib/fanfic.js';
 import { doWork, excerpt } from '/lib/boards.js';
+import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
 
 const $ = (id) => document.getElementById(id), API = '/api/boards', KEY = 'a2m.void.fanfic.v1', BOARDS_KEY = 'a2m.void.boards.v1';
@@ -164,10 +165,23 @@ function setPage(n, push) {
 // ---- views ----
 const VIEWS = ['index', 'forum', 'recent', 'story', 'post', 'fandom', 'search', 'room', 'glossary', 'notice', 'gate', 'gone'];
 const NAV = { index: 'index', forum: 'index', story: 'index', post: 'index', fandom: 'index', recent: 'recent', search: 'search', room: 'room', glossary: 'glossary', notice: 'notice' };
+// what the view on screen hands to the other pages (owner, 2026-10-29: "all the pages are supposed to be able to work together"): the chapter
+// being read, or the draft in the Writing Room; the index and the lists hand nothing. A link carries at most LINK_MAX encoded characters (a longer
+// address is refused by the edge), so the translator gets the opening of a long chapter (it takes 5,000 characters) and the word counter opens
+// only when the whole text fits; the story page and the room already count the words of a long one.
+const LINK_MAX = 12000;
+const fitted = (text) => { let t = String(text || '').slice(0, 5000); while (t && encodeURIComponent(t).length > LINK_MAX) t = t.slice(0, Math.floor(t.length * 0.8)); return t; };
+let handing = null;
+function drawRelated() {
+  const h = handing, hand = !h ? [] : [{ label: 'Translate it', href: () => (h().trim() ? '/translate/?q=' + encodeURIComponent(fitted(h())) : null) },
+    { label: 'Count the words', href: () => (h().trim() && encodeURIComponent(h()).length <= LINK_MAX ? '/word-count/?t=' + encodeURIComponent(h()) : null) }];
+  mountRelated($('related'), '/fanfic/', hand);
+}
 function show(id, title) {
   for (const v of VIEWS) $(v).classList.toggle('on', v === id);
   for (const a of document.querySelectorAll('.nav a')) { if (a.dataset.v === NAV[id]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
   document.title = (title ? title + ' · ' : '') + 'Fan fiction · Verse';
+  handing = id === 'room' ? () => draft().text : null; drawRelated();
 }
 const fail = (node, e) => say(node, e && e.message ? e.message.replace(/^./, (c) => c.toUpperCase()) + '.' : 'Something went wrong. Try again.', 'bad');
 
@@ -244,6 +258,7 @@ async function viewStory(code, no, chap) {
   $('storyInfo').replaceChildren(...facts.map(([k, v]) => { const d = el('div'); d.append(el('dt', '', k), el('dd', '', v)); return d; }));
   // the chapter shown, and the chapter list
   const n = Math.max(1, Math.min(s.chapters.length, +chap || 1)), c = s.chapters[n - 1], sel = $('tocSel');
+  handing = () => (c ? c.text : ''); drawRelated();
   $('toc').hidden = s.chapters.length < 2;
   sel.replaceChildren(...s.chapters.map((x) => { const o = el('option', '', 'Chapter ' + x.n + (x.title ? ': ' + x.title : '')); o.value = x.n; return o; }));
   sel.value = n; sel.onchange = () => go(href({ f: code, s: no, c: sel.value > 1 ? sel.value : '' }), true);
@@ -489,7 +504,8 @@ function viewRoom() {
   const shared = F.readShare(location.hash);
   $('shared').hidden = !shared;
   if (!shared) return;
-  $('sharedSay').textContent = 'Someone shared a draft with you: "' + (shared.title || 'Untitled story') + '", ' + words(F.words(shared.text)) + '.';
+  const from = new URLSearchParams(location.search).get('from') === 'story' ? 'Your story from the story writer' : 'Someone shared a draft with you';
+  $('sharedSay').textContent = from + ': "' + (shared.title || 'Untitled story') + '", ' + words(F.words(shared.text)) + '.';
   const clear = () => { $('shared').hidden = true; history.replaceState(null, '', location.pathname + location.search); };
   $('sharedKeep').onclick = () => { newDraft(shared.title, shared.text); counted = total(); keep(); drawDrafts(); clear(); roomSay('The shared draft is in your Writing Room.', 'good'); };
   $('sharedNo').onclick = clear;

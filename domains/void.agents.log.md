@@ -1100,3 +1100,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-29T05:25:31Z | claude | grow | Verse Brain: Grok's frontier drafts as one mind on one shared workspace (eleven organs, attention, imagination, a self), draggable orbs, and a bridge so every Verse page in the browser reaches the same brain
 2026-10-29T05:16:45Z | claude | fix | memory orbs grow on their own: left alone, the agents swim up the density they sense and pool the fluid, so orbs are born with nobody touching the card, and an orb lingers 3 s after its peak goes so it can be tapped
 2026-10-29T05:47:51Z | claude | grow | Verse Brain mind layers: asks become goals, episodic and procedural memory, one valence, a monitor of organs that disagree, answers from its own state, learning kept on the device
+2026-10-29T05:47:53Z | claude | grow | Memory orbs connect to Verse's shared field when it exists: live orbs go into free slots, a seal is sealed there too, and with no field.js the card works exactly as before

@@ -89,7 +89,7 @@ export function readWishlist(text, n = 12) {
     .filter((x) => !isPrivate(x.item) && !isPrivate(x.why)).slice(0, n);
 }
 
-// the tower (lib/tower.js): the site Verse is fighting now (tower.target.json) and the next smallest unbeaten sites, in the tower's own
+// the tower (lib/tower.js): the site Verse is assimilating now (tower.target.json) and the next smallest unbeaten sites, in the tower's own
 // order, smallest first (owner's rule: every site ever made, smallest first). The answer engine lists what is still open from here,
 // so the target leads (owner, 2026-10-29: "the open asks are not in smallest-first order behind sycophanthex.com"). Pure.
 export function towerOf(floors, target, pages = {}, n = 3) {

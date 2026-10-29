@@ -1,12 +1,12 @@
 /**
- * tower skill — Versus, the only-site-you-need ladder where Verse fights real sites: "versus", "verse versus", "which sites have you beaten"
+ * tower skill — Versus, the only-site-you-need ladder where Verse assimilates real sites: "versus", "verse versus", "which sites have you beaten"
  * open it, and "the tower", "verse tower" still do. The ladder is lib/tower.js. The site Verse is
  * on now at the top with each of its aspects, every conquered site under it, nothing above (the queue has no end). Each site is named in
  * plain text as a comparison (no logos or brand styling, no affiliation implied). A site is conquered only when every aspect is verified
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-63';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-64';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -160,7 +160,7 @@ export function chipsHtml(f, esc) {
 }
 /** the target at the top: its logo and name (a link to the site), its weight, and why it is the one. Pure. */
 export function heroHtml(f, esc) {
-  return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">Now fighting · the easiest site left</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
+  return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">Now assimilating · the easiest site left</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
     + chipsHtml(f, esc) + '<p class="tw-why">' + esc('Why this one: ' + easeLine(f) + '.') + '</p></div>';
 }
 /** three actions for the target: Verse's page (or that it has none yet), side by side, the site itself. Pure. */
