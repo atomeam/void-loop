@@ -265,7 +265,8 @@
    "state": "open",
    "date": "",
    "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5"
+   "from": "void.plan.md Now #5",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -277,13 +278,15 @@
    "state": "open",
    "date": "",
    "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13"
+   "from": "void.plan.md Next #13",
+   "waits": "the miss board"
   },
   {
    "state": "open",
    "date": "",
    "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
+   "from": "void.plan.md Next #12",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -325,7 +328,8 @@
    "state": "open",
    "date": "",
    "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan"
+   "from": "owner, 2026-10-11, pit crew plan",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -337,7 +341,8 @@
    "state": "open",
    "date": "",
    "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -545,6 +550,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:12:04Z",
+   "subject": "Refresh generated files: guide, MCP skill tools for the newly proven skills"
+  },
+  {
    "at": "2026-10-29T16:10:54Z",
    "subject": "Promotion record: 44 skills meet the proven standard, 22 stay with their reasons"
   },
@@ -619,10 +628,6 @@
   {
    "at": "2026-10-29T15:48:51Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:48:26Z",
-   "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
   }
  ],
  "builders": {

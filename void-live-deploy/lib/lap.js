@@ -32,6 +32,8 @@ export function nextStep(state, skills, weights = {}) {
 /** the state after a step was taken (queued): position moves on, so an interruption resumes at the next one. Pure. */
 export function advance(state, step, at = null, facts = null) {
   const s = { ...state, at };
+  // when the lap began: its first step's time, kept so a card can say what changed since (an older lap has none and says so)
+  if (!s.since && at && !(+s.pos > 0) && !(+s.newThisLap > 0)) s.since = at;
   if (step && step.kind === 'upgrade') { s.pos = Math.min(s.order.length, s.pos + 1); if (facts) s.before = { ...(s.before || {}), [step.skill]: facts }; }
   if (step && step.kind === 'new') s.newThisLap = s.newThisLap + 1;
   return s;
@@ -39,8 +41,9 @@ export function advance(state, step, at = null, facts = null) {
 
 /** the public line (counts only): "Lap 2: upgraded 140 of 316, 37 of 100 new this lap". Pure. */
 export const lapLine = (s) => { const x = { ...fresh(), ...(s || {}) }; return 'Lap ' + x.lap + ': upgraded ' + x.pos + ' of ' + x.order.length + ' items' + ', ' + x.newThisLap + ' of ' + NEW_PER_LAP + ' new this lap'; };
-/** the public tracker: counts only, no skill names beyond the next one. Pure. */
-export const publicLap = (s, onlySite = null) => { const x = { ...fresh(), ...(s || {}) }; return { ...(onlySite ? { onlySite } : {}), lap: x.lap, upgraded: x.pos, skills: x.order.length, newThisLap: x.newThisLap, newPerLap: NEW_PER_LAP, next: x.order[x.pos] || null, line: lapLine(x), at: x.at, ...(x.lastLap ? { lastLap: x.lastLap } : {}) }; };
+/** the public tracker: counts, the next item and the last few items taken this lap (newest first, so the wants card can say what
+ *  changed), and when the lap began when that was kept. Item ids only (they are public in /lap.items.json), never people. Pure. */
+export const publicLap = (s, onlySite = null) => { const x = { ...fresh(), ...(s || {}) }; return { ...(onlySite ? { onlySite } : {}), lap: x.lap, upgraded: x.pos, skills: x.order.length, newThisLap: x.newThisLap, newPerLap: NEW_PER_LAP, next: x.order[x.pos] || null, recent: x.order.slice(Math.max(0, x.pos - 3), x.pos).reverse(), line: lapLine(x), at: x.at, ...(x.since ? { since: x.since } : {}), ...(x.lastLap ? { lastLap: x.lastLap } : {}) }; };
 
 /** a want for a step: an upgrade names the skill and its rolling next upgrade (never "done"); a new step asks for one new feature. Pure. */
 const factLine = (f) => Object.entries(f || {}).map(([k, v]) => k + ' ' + v).join(', ');
