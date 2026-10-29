@@ -17,6 +17,8 @@ test('a file is hot only above the cap, inside the window; one commit counts onc
   assert.deepEqual(hotFiles(null, { now: NOW }), []);
   const ledger = Array.from({ length: 30 }, () => commit(0.1, 'void-live-deploy/void.growth.json', 'docs/MAP.md', 'tools/real.mjs'));
   assert.deepEqual(hotFiles(ledger, { now: NOW }).map((h) => h.file), ['tools/real.mjs'], 'the ledger, the map and the logs change every ship by design');
+  const made = Array.from({ length: 30 }, () => commit(0.1, 'void-live-deploy/sitemap.xml', 'void-live-deploy/llms.txt', 'void-live-deploy/skills/what.json', 'void-live-deploy/tower.evidence.json', 'void-live-deploy/lib/tower.js'));
+  assert.deepEqual(hotFiles(made, { now: NOW }).map((h) => h.file), ['void-live-deploy/lib/tower.js'], 'generated files and the tower gate\'s evidence change every ship by design; the tower code still counts');
 });
 
 test('a want names a hot file by path or by file name as a whole word, not by part of another name', () => {
@@ -71,6 +73,12 @@ test('the will reads /churn.json and passes its hot list to pickWant, with the w
   assert.match(src, /\/churn\.json/);
   assert.match(src, /pickWant\([^;]*hot\)/);
   assert.match(src, /catch \(_\) \{ hot = \[\]; \}/, 'an unreadable list means no cap, never no will');
+});
+
+test('generated cards and the tower gate\'s record are expected churn, never hot', () => {
+  const gen = ['void-live-deploy/skills/what.json', 'void-live-deploy/sitemap.xml', 'void-live-deploy/parity.json', 'void-live-deploy/churn.json', 'void-live-deploy/tower.evidence.json'];
+  const cs = Array.from({ length: MAX_CHANGES + 1 }, (_, i) => commit(i / 10, ...gen, 'void-live-deploy/lib/real.js'));
+  assert.deepEqual(hotFiles(cs, { now: NOW }).map((h) => h.file), ['void-live-deploy/lib/real.js']);
 });
 
 test('the churn cap holds back only the will\'s own wants: only the will, its writer and its log name churn.json or import lib/churn.js', () => {
