@@ -89,7 +89,7 @@ test('a test case from each recent failure (asked by Verse): the ask the check q
 test('stability gauge: red suites in the last week lower the score; none is steady (asked by Verse)', async () => {
   const { stabilityOf, stabilityHtml } = await import('../void-live-deploy/lib/autopsy.js');
   const now = Date.parse('2026-10-18T12:00:00Z'), mk = (...ats) => ({ incidents: ats.map((at, n) => ({ at, sha: 'abcdef' + n, checks: ['x'] })) });
-  assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1, last: null });
+  assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1, last: null, checks: 0, capped: false, fixed: 0 });
   const g = stabilityOf(mk('2026-10-18T06:00:00Z', '2026-10-15T00:00:00Z', '2026-10-01T00:00:00Z'), now); assert.deepEqual([g.score, g.label, g.week, g.day, g.last], [91, 'wobbly', 2, 1, 6]);
   assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-18T11:00:00Z')), now).score, 0); assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-18T11:00:00Z')), now).label, 'shaky');
   // a bad morning fades: 30 reds, then main stays green; a day later the dial is climbing, two days later it is nearly steady
@@ -98,6 +98,24 @@ test('stability gauge: red suites in the last week lower the score; none is stea
   assert.equal(stabilityOf(bad, now + 864e5).score, 10); assert.equal(stabilityOf(bad, now + 2 * 864e5).score, 78); assert.equal(stabilityOf(bad, now + 3 * 864e5).label, 'wobbly');
   assert.equal(stabilityOf(mk('2027-01-01T00:00:00Z'), now).week, 0, 'a time in the future is not counted');
   assert.match(stabilityHtml(g), /data-stability="wobbly"/); assert.match(stabilityHtml(stabilityOf(null, now)), /data-stability="none"/); assert.match(stabilityHtml(g), /width:91%/);
+});
+
+test('stability gauge: a full incidents.json says "at least", and the red suites name how many different checks failed (asked in review)', async () => {
+  const { stabilityOf, stabilityHtml, INCIDENTS_KEPT } = await import('../void-live-deploy/lib/autopsy.js');
+  const { KEEP } = await import('./incident-log.mjs');
+  assert.equal(INCIDENTS_KEPT, KEEP, 'the gauge knows how many red suites the log keeps');
+  const now = Date.parse('2026-10-18T12:00:00Z'), at = (h) => new Date(now - h * 36e5).toISOString();
+  // one break seen on 29 pushes, plus a stall and one more check: 30 red suites, 2 different checks, every red suite still costs
+  const full = { incidents: Array.from({ length: 30 }, (_, n) => ({ at: at(n), sha: 'abcdef' + String(n).padStart(2, '0'), checks: n === 0 ? ['suite ran to the end'] : n === 1 ? ['book opens', 'clock ticks'] : ['book opens'] })) };
+  const g = stabilityOf(full, now);
+  assert.deepEqual([g.week, g.checks, g.capped, g.score, g.label], [30, 2, true, 0, 'shaky'], 'the stall is not a check; the score is the same as before');
+  const said = stabilityHtml(g).replace(/<[^>]+>/g, '');
+  assert.match(said, /^Stability: shaky 0\/100At least 30 red browser suites on main in the last 7 days \(\d+ in the last day\), with 2 different checks failing, from incidents\.json, which keeps only the newest 30\.$/);
+  // the same file with its oldest red suite more than a week old: the week is counted in full, so no "at least"
+  full.incidents[29].at = at(24 * 8); const h = stabilityOf(full, now);
+  assert.deepEqual([h.week, h.capped], [29, false]); assert.doesNotMatch(stabilityHtml(h), /At least|keeps only/);
+  // fewer than the log keeps: never "at least"
+  assert.equal(stabilityOf({ incidents: full.incidents.slice(0, 5) }, now).capped, false);
 });
 test('culprit pointer: a changed skill file whose skill has a failing check is the likely cause; none changed says so (asked by Verse)', () => {
   assert.equal(skillOfPath('void-live-deploy/skills/convert.js'), 'convert'); assert.equal(skillOfPath('void-live-deploy/skills/order/0480-watch'), null); assert.equal(skillOfPath('tools/convert.js'), null);

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 971,
+ "counted": 981,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,8 +20,8 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 62,
-   "tests": 6
+   "dependants": 63,
+   "tests": 7
   },
   {
    "file": "lib/ask-text.js",
@@ -153,8 +153,8 @@
    "file": "lib/corrections.js",
    "skills": 14,
    "direct": 0,
-   "dependants": 46,
-   "tests": 2
+   "dependants": 47,
+   "tests": 3
   },
   {
    "file": "lib/autopsy.js",
@@ -241,6 +241,13 @@
    "tests": 1
   },
   {
+   "file": "lib/card-mini.js",
+   "skills": 9,
+   "direct": 5,
+   "dependants": 15,
+   "tests": 0
+  },
+  {
    "file": "lib/game-kit.js",
    "skills": 9,
    "direct": 1,
@@ -281,13 +288,6 @@
    "direct": 8,
    "dependants": 9,
    "tests": 1
-  },
-  {
-   "file": "lib/card-mini.js",
-   "skills": 8,
-   "direct": 5,
-   "dependants": 14,
-   "tests": 0
   },
   {
    "file": "lib/flight-sites.js",
@@ -416,11 +416,25 @@
    "tests": 1
   },
   {
+   "file": "lib/colour.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
    "file": "lib/calendar.js",
    "skills": 5,
    "direct": 1,
    "dependants": 11,
    "tests": 2
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 11,
+   "tests": 1
   },
   {
    "file": "lib/card-forge.js",
@@ -496,7 +510,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 74,
+   "dependants": 75,
    "tests": 1
   },
   {
@@ -521,25 +535,11 @@
    "tests": 1
   },
   {
-   "file": "lib/colour.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
    "file": "lib/movies.js",
    "skills": 4,
    "direct": 2,
    "dependants": 10,
    "tests": 0
-  },
-  {
-   "file": "lib/pwcheck.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 10,
-   "tests": 1
   },
   {
    "file": "lib/field-resonance.js",
@@ -643,7 +643,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 72,
+   "dependants": 73,
    "tests": 9
   },
   {
@@ -896,7 +896,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 12,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/showers.js",
@@ -1050,7 +1050,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 22,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/repo-look.js",
@@ -1070,7 +1070,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -1078,7 +1078,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 10,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/boards.js",
@@ -1103,6 +1103,13 @@
   },
   {
    "file": "lib/brain-gardener.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-grower.js",
    "skills": 1,
    "direct": 0,
    "dependants": 5,
@@ -1267,7 +1274,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 9
+   "tests": 10
   },
   {
    "file": "lib/compose.js",
@@ -1819,8 +1826,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 69,
-   "tests": 27
+   "dependants": 70,
+   "tests": 28
   },
   {
    "file": "lib/models.js",
@@ -2072,7 +2079,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 5,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/image-gen.js",
@@ -2397,6 +2404,13 @@
    "tests": 2
   },
   {
+   "file": "lib/team.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/translate-web.js",
    "skills": 0,
    "direct": 0,
@@ -2502,6 +2516,13 @@
    "tests": 2
   },
   {
+   "file": "lib/card-reply.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/comments-ui.js",
    "skills": 0,
    "direct": 0,
@@ -2517,6 +2538,13 @@
   },
   {
    "file": "lib/correction-heat.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
+  },
+  {
+   "file": "lib/drawing-drills.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3547,6 +3575,14 @@
    ],
    "importedBy": []
   },
+  "functions/api/team.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/automation-fix.js",
+    "lib/team.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/tower-self.js": {
    "imports": [
     "lib/guard.js",
@@ -4078,6 +4114,7 @@
     "functions/api/miss.js",
     "functions/api/rehearsal.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/api/will.js",
     "lib/bench-asks.js",
     "lib/code-review.js",
@@ -4396,6 +4433,21 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-grower.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-hearing.js": {
    "imports": [
     "lib/field-kit.js",
@@ -4429,7 +4481,8 @@
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
-    "lib/brain-gardener.js"
+    "lib/brain-gardener.js",
+    "lib/brain-grower.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
@@ -4451,6 +4504,7 @@
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
     "lib/brain-gardener.js",
+    "lib/brain-grower.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -4508,6 +4562,7 @@
     "lib/brain-creature.js",
     "lib/brain-field.js",
     "lib/brain-gardener.js",
+    "lib/brain-grower.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -4530,7 +4585,8 @@
     "lib/brain-creature.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
-    "lib/brain-gardener.js"
+    "lib/brain-gardener.js",
+    "lib/brain-grower.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -4840,8 +4896,15 @@
     "lib/writing-aids.js",
     "skills/languages.js",
     "skills/lorem.js",
+    "skills/password.js",
     "skills/writing-aids.js"
    ]
+  },
+  "lib/card-reply.js": {
+   "imports": [
+    "lib/corrections.js"
+   ],
+   "importedBy": []
   },
   "lib/card-sections.js": {
    "imports": [],
@@ -5134,6 +5197,7 @@
     "lib/writing-aids.js",
     "skills/gradient.js",
     "skills/lorem.js",
+    "skills/password.js",
     "skills/writing-aids.js"
    ]
   },
@@ -5205,6 +5269,7 @@
    "imports": [],
    "importedBy": [
     "lib/autopsy.js",
+    "lib/card-reply.js",
     "lib/correction-fix.js",
     "lib/correction-heat.js"
    ],
@@ -5394,6 +5459,10 @@
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
+  },
+  "lib/drawing-drills.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/drive.js": {
    "imports": [],
@@ -5585,6 +5654,7 @@
    "importedBy": [
     "lib/brain-creature.js",
     "lib/brain-gardener.js",
+    "lib/brain-grower.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -6060,6 +6130,7 @@
     "functions/api/studies.js",
     "functions/api/support.js",
     "functions/api/tally.js",
+    "functions/api/team.js",
     "functions/api/tower-self.js",
     "functions/api/v01d-fixes.js",
     "functions/api/visit.js",
@@ -8022,6 +8093,7 @@
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/lorem.js",
+    "skills/password.js",
     "skills/writing-aids.js"
    ]
   },
@@ -9484,6 +9556,12 @@
     "skills/pick-for-me.js"
    ]
   },
+  "lib/team.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/team.js"
+   ]
+  },
   "lib/technical-context.js": {
    "imports": [],
    "importedBy": [
@@ -9543,6 +9621,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
@@ -10585,7 +10664,9 @@
   },
   "skills/color.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/palette.js"
+   ]
   },
   "skills/connect4-rules.js": {
    "imports": [],
@@ -12493,6 +12574,12 @@
    ],
    "importedBy": []
   },
+  "skills/palette.js": {
+   "imports": [
+    "skills/color.js"
+   ],
+   "importedBy": []
+  },
   "skills/part.js": {
    "imports": [
     "lib/ask-text.js"
@@ -12503,6 +12590,12 @@
    "imports": [
     "lib/stage-pack-i.js",
     "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
+  "skills/password.js": {
+   "imports": [
+    "skills/util.js"
    ],
    "importedBy": []
   },
@@ -12746,6 +12839,10 @@
     "lib/forge-duel.js",
     "lib/card-share.js"
    ],
+   "importedBy": []
+  },
+  "skills/random.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/rebuild-map.js": {
@@ -13079,6 +13176,10 @@
     "skills/about-skill.js",
     "skills/own-parts.js"
    ]
+  },
+  "skills/shuffle.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/side-card.js": {
    "imports": [
@@ -13500,6 +13601,10 @@
    ],
    "importedBy": []
   },
+  "skills/team-chat.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/technical-context.js": {
    "imports": [
     "lib/technical-context.js",
@@ -13717,7 +13822,8 @@
    "importedBy": [
     "lib/wordcount.js",
     "lib/writing-aids.js",
-    "skills/lorem.js"
+    "skills/lorem.js",
+    "skills/password.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",

@@ -16,7 +16,7 @@ export const BUY = 'https://moonbeam846.gumroad.com/l/yinmj'; // the paid Verse 
 
 // What paid Verse gives, in the order the page lists it. live: true for what works today; the member lab's rows follow LIVE.
 export const PERKS = Object.freeze([
-  { id: 'build', title: 'Build Verse with us', text: 'Send ideas that Verse\'s own agents build into the site. Each one becomes a pull request that only adds: no page, skill, test or score can be taken away.', lab: true },
+  { id: 'build', title: 'Add to Verse', text: 'Send an idea and Verse\'s own agents build it into the site. Changes only ever add.', lab: true },
   { id: 'credit', title: 'Your name on what you add', text: 'Every idea of yours that ships is listed under Built by members, with your published Verse name if you have one.', lab: true },
   { id: 'publish', title: 'Publish your Verse', text: 'Your own page at a-to-mind.com/@name with your look and your cards.' },
   { id: 'follow', title: 'Your Verse follows you', text: 'Sign in with a passkey and your stage, memory and kept cards sync to every device.' },

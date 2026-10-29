@@ -550,6 +550,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:04:10Z",
+   "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
+  },
+  {
    "at": "2026-10-29T15:15:09Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -623,10 +627,6 @@
   },
   {
    "at": "2026-10-29T15:05:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:05:02Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
@@ -863,14 +863,15 @@
   "source": "verse"
  },
  "tower": {
-  "target": "sycophanthex.com",
+  "target": "onlineconverter.com",
   "since": "2026-10-29",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
-   "nameunit.com",
-   "wheelroot.com",
-   "onlineconverter.com"
+   "serverdiscounter.com",
+   "howsecureismypassword.net",
+   "wheeloutlet.com"
   ],
   "beaten": 0,
-  "total": 1266
+  "total": 1267
  }
 }

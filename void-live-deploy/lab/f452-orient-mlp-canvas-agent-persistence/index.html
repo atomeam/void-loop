@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; background:#050510; }
+#hud { position:absolute; top:10px; left:10px; font-size:12px; background:rgba(0,0,20,0.7); padding:8px; border-radius:6px; max-width:280px; }
+button { margin:4px; padding:4px 8px; background:#223; color:#aaf; border:1px solid #446; cursor:pointer; }
+button:hover { background:#334; }
+#status { font-size:11px; color:#8f8; margin-top:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceOrientation-Causal Local MLP Controlling Canvas Physical Agents with IndexedDB Persistence · Verse lab</title>
+<meta name="description" content="DeviceOrientationEvent provides causal input (tilt as environmental gravity) to a pure-JS tiny MLP.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceOrientation-Causal Local MLP Controlling Canvas Physical Agents with IndexedDB Persistence · Verse lab">
+<meta property="og:description" content="DeviceOrientationEvent provides causal input (tilt as environmental gravity) to a pure-JS tiny MLP.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f452-orient-mlp-canvas-agent-persistence/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f452-orient-mlp-canvas-agent-persistence/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div><strong>Verse F452</strong> — Orient → Local MLP → Canvas Agents</div>
+  <div>Tilt device to inject causal gravity. MLP learns to stabilize agents.</div>
+  <button id="perm">Enable Orientation</button>
+  <button id="train">Train on Click (reward)</button>
+  <button id="reset">Reset Weights</button>
+  <button id="save">Save to IndexedDB</button>
+  <button id="load">Load from IndexedDB</button>
+  <div id="status">Offline-capable. Weights persist locally.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">DeviceOrientation-Causal Local MLP Controlling Canvas Physical Agents with IndexedDB Persistence</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

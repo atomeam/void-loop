@@ -196,3 +196,44 @@ export function watchOf(text) {
   const w = parseWatchAsk(t);
   return w ? { watch: w } : null;
 }
+
+// ---- slowing down when a site says so (2026-10-29: hourly-store's page answered 429 three hours running, each a failed record) ----
+// A 429, or a 503 that names a Retry-After, is the site asking Verse to wait, not a broken watch. Verse waits as long as the site
+// asks (Retry-After: seconds or an HTTP date), or, with no Retry-After, 1 h, 2 h, 4 h … up to a day, longer with each rate limit in a
+// row, and the next good answer forgets the count. While it waits the scheduled run sends no request at all. Nothing else is tried: no
+// other user agent, no proxy, cache, mirror or archive, and no second request inside one run.
+export const BACKOFF_FIRST = 3600e3, BACKOFF_MAX = 24 * 3600e3, RETRY_AFTER_MAX = 7 * 864e5; // a Retry-After of a year is taken as a week
+/** Retry-After as milliseconds from now: whole seconds or an HTTP date (a date gone by is 0); null when absent or unreadable. Pure. */
+export function retryAfterMs(header, now = Date.now()) {
+  const s = str(header).trim();
+  if (!s) return null;
+  if (/^\d+$/.test(s)) return Math.min(Number(s) * 1000, RETRY_AFTER_MAX);
+  const t = Date.parse(s);
+  return Number.isFinite(t) ? Math.min(Math.max(0, t - now), RETRY_AFTER_MAX) : null;
+}
+/** the wait after the n-th rate limit in a row with no Retry-After: 1 h, 2 h, 4 h … a day at most. Pure. */
+export const backoffMs = (n) => Math.min(BACKOFF_FIRST * 2 ** Math.max(0, Math.min(30, (Number(n) || 1) - 1)), BACKOFF_MAX);
+/** is this answer the site asking Verse to slow down? A 429 always; a 503 only when it says for how long. Pure. */
+export const slowDown = (status, retryAfter) => status === 429 || (status === 503 && !!str(retryAfter).trim());
+/** the wait a rate limit sets, from the answer and the wait before it: { until (ISO), n (rate limits in a row), why }. Pure. */
+export function waitAfter(status, retryAfter, before = null, now = Date.now()) {
+  const n = ((before && Number(before.n)) || 0) + 1, ra = retryAfterMs(retryAfter, now), ms = ra != null ? ra : backoffMs(n);
+  return { until: new Date(now + ms).toISOString(), n, why: status + (ra != null ? ', Retry-After ' + clean(retryAfter).slice(0, 40) : ', no Retry-After, backing off ' + Math.round(ms / 3600e3) + ' h') };
+}
+/** is a watch still inside the wait a site asked for? Pure. */
+export const waiting = (wait, now = Date.now()) => !!(wait && Date.parse(wait.until) > now);
+const utc = (iso) => str(iso).slice(0, 16).replace('T', ' ') + ' UTC';
+/** a rate limit as the record says it: not a failure, and when the next look is. Pure. */
+export function limitText(w, wait, answered) {
+  return 'rate limited, retry later · ' + clean(answered).slice(0, 160) + ' · next try after ' + utc(wait.until) + ' (' + wait.why + ') · watching for ' + describe(w);
+}
+/** a scheduled run that waits as asked: no request sent, nothing failed. Pure. */
+export const skipText = (w, wait) => 'waiting as the site asked: no request until ' + utc(wait.until) + ' (rate limit ' + wait.n + ' in a row) · watching for ' + describe(w);
+/** who answered a refused fetch, in a few words, so a record can say where a 429 came from (the site, a proxy in front of it, or
+ * our own rate): the status, the Server and cf-ray headers, Retry-After, any rate-limit headers and the first words of the body. Pure. */
+export function answerOf(status, get = () => '', body = '') {
+  const h = (k) => clean(get(k)).slice(0, 60), parts = [];
+  for (const [k, name] of [['server', 'server'], ['cf-ray', 'cf-ray'], ['retry-after', 'Retry-After'], ['x-ratelimit-limit', 'limit'], ['x-ratelimit-remaining', 'remaining'], ['via', 'via']]) if (h(k)) parts.push(name + ' ' + h(k));
+  const words = pageText(body).slice(0, 80);
+  return 'the page answered ' + status + (parts.length ? ' (' + parts.join(', ') + ')' : '') + (words ? ' "' + words + '"' : '');
+}

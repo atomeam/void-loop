@@ -122,3 +122,12 @@ test('words are cut at a sentence, and an ask meets its family by the stem of it
   assert.ok(!/,$/.test(sentences('a, '.repeat(200), 50)));
   const conv = familiesOf().find((f) => f.id === 'unit converter'); assert.ok(sharesWords(conv, 'convert km to miles'));
 });
+
+test('a reason is cut at a whole word, never mid-word (Versus job mvoxd09y: "a niche professional servic")', async () => {
+  const { clipWords } = await import('./tower-self.mjs');
+  const why = 'The website is a B2B service for protecting digital marketing campaigns from bad traffic and spy tools, which is a niche professional service';
+  assert.equal(clipWords(why, 160), why);
+  assert.equal(clipWords(why, 140), why.replace(/ service$/, ''));
+  assert.equal(clipWords('one, two, three', 9), 'one, two');
+  assert.equal(clipWords('  short  ', 140), 'short');
+});

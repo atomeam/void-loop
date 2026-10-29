@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Learn to draw: a drawing course for absolute beginners · Verse</title>
+<meta name="description" content="Learn to draw from zero: line, shape, proportion and shading in 8 short drills you do on screen, each one scored from what you draw. A drill of the day, a streak, your first and best try side by side. No account, no cookies, works offline.">
+<meta name="verse-handoff" content="in: none; out: number">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Learn to draw · Verse">
+<meta property="og:description" content="Line, shape, proportion and shading in 8 short drills, each scored from what you draw. No account, no cookies.">
+<meta property="og:url" content="https://a-to-mind.com/learn-to-draw/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  /* a-to-mind.com/learn-to-draw (2026-10-29): assimilates wheelroot.com ("Drawing Fundamentals", a course page with no course behind its button) */
+  :root { color-scheme: dark; --ink: #ecebf5; --dim: #b3b0c8; --line: rgba(255,255,255,.18); --accent: #9fb8ff; }
+  html, body { margin: 0; min-height: 100%; background: radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%) fixed; color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 40px; }
+  h1 { font-size: 30px; margin: 4px 0 6px; } h2 { font-size: 20px; margin: 28px 0 10px; } h3 { font-size: 15px; margin: 0 0 6px; color: var(--accent); }
+  p { margin: 6px 0; } .lead { color: var(--dim); }
+  button { font: inherit; color: inherit; background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; min-height: 44px; }
+  button:hover, button:focus-visible { border-color: var(--accent); outline: none; } button[aria-pressed="true"] { border-color: var(--accent); background: rgba(159,184,255,.14); }
+  button.main { background: #3b4f9a; border-color: #6f86d6; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+  #streak { color: var(--dim); font-size: 14px; }
+  #course { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  #course section { border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+  #course button { text-align: left; font-size: 14px; }
+  #drill { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(10,9,20,.55); scroll-margin-top: 10px; }
+  #dUnit { color: var(--accent); font-size: 13px; margin: 0; } #dName { margin: 2px 0 4px; font-size: 20px; }
+  .sheetwrap { display: flex; justify-content: center; margin: 10px 0; }
+  #sheet { touch-action: none; border-radius: 6px; box-shadow: 0 6px 30px rgba(0,0,0,.5); cursor: crosshair; }
+  #result { min-height: 3em; } #result ul { margin: 4px 0; padding-left: 20px; color: var(--dim); }
+  #progress { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; color: var(--dim); }
+  figure { margin: 0; border: 1px solid var(--line); border-radius: 12px; padding: 10px; } figcaption { color: var(--ink); margin-bottom: 6px; }
+  .pair { display: flex; gap: 8px; } .pair div { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; }
+  .pair canvas { width: 130px; height: 130px; border-radius: 4px; }
+  #shareNote { color: var(--dim); font-size: 13px; }
+  .tk-label { color: var(--dim); } nav#related { max-width: 760px; margin: 0 auto; padding: 0 16px; font-size: 14px; } nav#related a { color: var(--accent); margin-right: 8px; }
+  footer { text-align: center; font-size: 13px; color: var(--dim); margin: 18px 0 30px; } footer a { color: inherit; }
+</style><!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/learn-to-draw/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Learn to draw: a drawing course for absolute beginners","url":"https://a-to-mind.com/learn-to-draw/","description":"A drawing course you do on screen: line, shape, proportion and shading in 8 short drills (a straight line, a steady curve, a circle by eye, a square, finding the middle, drawing from memory, a value scale, a smooth gradient), each scored from what you draw. A drill of the day, a streak, and your first try beside your highest score. No account, no cookies; it works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"learn to draw, drawing course, drawing for beginners, drawing exercises, how to draw a straight line, draw a circle freehand, shading practice, daily drawing practice","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/learn-to-draw/?d={drill}"},"drill-input":"required name=drill"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Learn to draw: a drawing course for absolute beginners","item":"https://a-to-mind.com/learn-to-draw/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <p class="lead">Verse · a drawing course for absolute beginners</p>
+  <h1>Learn to draw</h1>
+  <p>Line, shape, proportion and shading, in 8 short drills you do right here with a finger, a pen or a mouse. Each drill is scored from what you draw, so you see your progress in numbers and in pictures. No talent needed: a few minutes a day.</p>
+  <p class="lead">No account, no cookies: your scores stay in this browser. Works offline once opened.</p>
+  <div class="bar"><button type="button" class="main" id="begin">Begin the course</button><button type="button" id="today">Today's drill</button></div>
+  <p id="streak">Streak: 0 days</p>
+
+  <h2 id="h-drill">Draw</h2>
+  <section id="drill" aria-labelledby="dName">
+    <p id="dUnit"></p><h3 id="dName"></h3><p id="dHow"></p>
+    <div class="sheetwrap"><canvas id="sheet" width="300" height="300" role="img" aria-label="Drawing sheet: draw with a finger, pen or mouse"></canvas></div>
+    <div class="bar"><button type="button" class="main" id="done">Done: score it</button><button type="button" id="undo">Undo stroke</button><button type="button" id="clear">Clear</button><button type="button" id="flash" hidden>Show the shape (4 s)</button><button type="button" id="share">Copy share link</button></div>
+    <p id="shareNote"></p>
+    <div id="result" aria-live="polite"></div>
+  </section>
+
+  <h2>The course: 4 units, 8 drills</h2>
+  <div id="course"></div>
+
+  <h2>Your progress: first try and best</h2>
+  <div id="progress"></div>
+
+  <h2>How each drill is scored</h2>
+  <p class="lead">Lines and traced shapes: how far your stroke is from the line on average, and how much of the way it covers. A circle by eye: how round it is and how far round it goes, at any size. The middle of a line: how far your tap is from the true middle. Shading: the sheet is cut into 5 px cells and each pass of the pencil darkens a cell by a quarter; the boxes and the bar must get darker in even steps. The same strokes always give the same score, so a shared drawing is scored again when its link opens.</p>
+</main>
+<!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/learn-to-draw/?d=line">Draw a straight line</a><a href="/learn-to-draw/?d=circle">Draw a circle by eye</a><a href="/learn-to-draw/?d=half">Find the middle</a><a href="/learn-to-draw/?d=memory">Draw from memory</a><a href="/learn-to-draw/?d=values">Value scale</a><a href="/learn-to-draw/?d=gradient">Smooth gradient</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/color/">Colour codes</a> <a href="/resize-image/">Resize an image</a> <a href="/notes/">Notes</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<footer><a href="/">Back to Verse</a> · <a href="/paint/">Paint by numbers</a> · <a href="/tools/">All tools</a></footer>
+<script type="module" src="/learn-to-draw/app.js"></script>
+</body>
+</html>

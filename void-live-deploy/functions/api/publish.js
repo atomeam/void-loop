@@ -26,7 +26,7 @@ export async function onRequestPost({ request, env }) {
   try {
     const me = await who(request, env);
     if (!me) return bad(401, 'not signed in');
-    if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'publishing is part of a paid Verse');
+    if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'publishing is part of MultiVerse');
     const owner = await env.DB.prepare('SELECT user_id FROM void_pages WHERE handle = ?').bind(handle).first();
     if (owner && owner.user_id !== me.userId) return bad(409, 'that name is taken');
     const now = new Date().toISOString();

@@ -265,3 +265,23 @@ test('a default-bar score is never a lead: it is not counted ahead, it keeps the
   const take = verseTake({ floors: [f], beaten: 0 }).now; assert.match(take, /I lead on speed\./); assert.doesNotMatch(take, /lead on[^.]*(mobile|design)/);
   const all = gate(floor, { mobile: bar('better', ' px'), design: bar('better', ' faults'), speed: ev.speed }); assert.equal(all.beaten, false, 'two default-bar wins and one real win are not a surpass');
 });
+
+test('the frontier is smallest first: a site the scan counted by its fewest controls, then its fewer bytes, before a site it did not count', async () => {
+  const { frontierOf } = await import('../void-live-deploy/lib/tower.js');
+  const fr = { sites: [{ site: 'old.test', hardness: 1 }, { site: 'heavy.test', controls: 3, bytes: 90000, hardness: 40 }, { site: 'light.test', controls: 3, bytes: 4000, hardness: 50 }, { site: 'few.test', controls: 1, bytes: 800000, hardness: 60 }] };
+  assert.deepEqual(frontierOf(fr, []).map((x) => x.host), ['few.test', 'light.test', 'heavy.test', 'old.test']);
+  assert.deepEqual(frontierOf(fr, []).map((x) => [x.controls, x.bytes]), [[1, 800000], [3, 4000], [3, 90000], [null, null]]);
+});
+
+test('the queue ranks on measured rows only: a loss against the default bar (the site turned the gate away) never moves a site back', async () => {
+  const { judgeRows } = await import('./tower-self.mjs');
+  const fr = { sites: [{ site: 'plain.test', hardness: 5 }, { site: 'away.test', hardness: 5 }] };
+  const first = aspectsOf({ id: 'x', site: 'x', url: 'https://x.test/', extra: [] })[0];
+  const ev = { 'away.test': { [first]: { verdict: 'worse', evidence: '1.2 s vs the bar (away.test unreachable)' } }, 'plain.test': { [first]: { verdict: 'worse', evidence: 'Verse 3 s, plain.test 1 s' } } };
+  const t = tower([], ev, fr), at = (id) => t.floors.findIndex((f) => f.id === id), away = t.floors[at('away.test')];
+  assert.ok(at('away.test') < at('plain.test'), 'a real loss waits; a default-bar loss does not');
+  assert.deepEqual([away.lost, away.rankLost, away.barred], [[first], [], [first]], 'the card still shows the loss, the queue does not rank on it');
+  assert.match(easeLine(away), /1 of them not measured: the site turned the gate away/);
+  const j = judgeRows({ id: 'away.test', site: 'away.test', url: 'https://away.test/', extra: [] }, ev['away.test']);
+  assert.deepEqual(j.jobs.find((x) => x.aspect === first), { aspect: first, evidence: 'not measured yet: away.test turned the gate away, so only the default bar was scored' });
+});

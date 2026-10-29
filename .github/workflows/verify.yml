@@ -224,11 +224,13 @@ jobs:
           echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
           echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
 
-  # One incident per red head of main (all shards' failed checks in one entry, one commit), and a green head closes the open
-  # ones (tools/incident-log.mjs resolve; it was never called, so every incident stayed open). An automatic revert is skipped.
+  # One incident per red head of main (all shards' failed checks in one entry, one commit, with the shards that failed), and every
+  # shard that passed closes what it fixed on earlier heads (tools/incident-log.mjs pass). A run whose other shards were cancelled
+  # counts too: each shard queues on its own, so on a busy main the four almost never finish on one head (not one did from 25 to
+  # 29 October), and a close that waited for four green shards on one head never came. An automatic revert is skipped.
   incident:
     needs: browser-suite
-    if: always() && (needs.browser-suite.result == 'failure' || needs.browser-suite.result == 'success')
+    if: always() && (needs.browser-suite.result == 'failure' || needs.browser-suite.result == 'success' || needs.browser-suite.result == 'cancelled')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -236,6 +238,7 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: write # the one incidents.json commit on main
+      actions: read # which shards of this run passed and which failed
     steps:
       - uses: actions/checkout@v4
         with:
@@ -247,18 +250,31 @@ jobs:
           pattern: suite-output-*
           path: suite-output
       - name: Record or close
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           tested="${{ github.sha }}"
           run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           git log -1 --format=%B "$tested" | grep -q '^Verse-auto-revert:' && { echo "automatic revert: not recorded"; exit 0; }
           [ "$(git diff --name-only "$tested~1" "$tested")" = "void-live-deploy/incidents.json" ] && { echo "only the incident record changed: not tested, not recorded"; exit 0; }
-          if [ "${{ needs.browser-suite.result }}" = failure ]; then
-            cat suite-output/*/test-output.txt > /tmp/all-output.txt 2>/dev/null || true
-            node tools/incident-log.mjs record "$tested" "$run" /tmp/all-output.txt || true
+          # the shards of this run that passed and that failed ("1,3"); a cancelled shard is neither
+          jobs=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" --jq '.jobs[] | "\(.name)|\(.conclusion)"' || true)
+          shards() { echo "$jobs" | sed -n "s/^browser-suite (\([1-4]\))|$1\$/\1/p" | sort -n | paste -sd, -; }
+          passed=$(shards success); failed=$(shards failure)
+          echo "shards passed: ${passed:-none}; failed: ${failed:-none}"
+          [ -z "$passed$failed" ] && { echo "no shard finished: nothing to record"; exit 0; }
+          apply() {
+            if [ -n "$failed" ]; then
+              cat suite-output/*/test-output.txt > /tmp/all-output.txt 2>/dev/null || true
+              node tools/incident-log.mjs record "$tested" "$run" /tmp/all-output.txt "$failed" || true
+            fi
+            [ -n "$passed" ] && { node tools/incident-log.mjs pass "$tested" "$run" "$passed" || true; }
+          }
+          apply
+          if [ -n "$failed" ]; then
             msg="Incident: the browser suite failed on ${tested:0:8} (void-live-deploy/incidents.json)"
           else
-            node tools/incident-log.mjs resolve "$tested" "$run" || true
-            msg="Incidents closed: the browser suite passed on ${tested:0:8} (void-live-deploy/incidents.json)"
+            msg="Incidents closed: shard(s) $passed passed on ${tested:0:8} (void-live-deploy/incidents.json)"
           fi
           git diff --quiet -- void-live-deploy/incidents.json && { echo "nothing to write"; exit 0; }
           git config user.name "github-actions[bot]"
@@ -268,7 +284,7 @@ jobs:
             git add void-live-deploy/incidents.json && git commit -q -m "$msg" && git push -q origin HEAD:main && exit 0
             sleep $((2 ** i)); git fetch -q origin main && git reset -q --hard origin/main
             # re-apply on the newer main (the record is computed again so nothing written meanwhile is lost)
-            if [ "${{ needs.browser-suite.result }}" = failure ]; then node tools/incident-log.mjs record "$tested" "$run" /tmp/all-output.txt || true; else node tools/incident-log.mjs resolve "$tested" "$run" || true; fi
+            apply
             git diff --quiet -- void-live-deploy/incidents.json && exit 0
           done
           echo "::warning title=Incident not recorded::could not push incidents.json to main"
