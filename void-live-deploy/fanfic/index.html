@@ -144,6 +144,8 @@
   .az { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 8px 0 12px; } .az .azl { font-size: 13px; color: var(--ink-3); margin-right: 6px; }
   .az button { min-width: 36px; min-height: 36px; padding: 0 8px; font-size: 13px; } .az button[aria-pressed="true"] { border-color: rgb(var(--key) / .7); background: rgb(var(--key) / .14); }
   table.list .det { color: var(--ink-2); }
+  .fby { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0 0; font-size: 14px; color: var(--ink-2); } .fby b { color: var(--ink); font-weight: 600; } .fby button { min-height: 36px; font-size: 13px; }
+  dl.qa { margin: 0; } dl.qa dt { font-weight: 600; color: var(--ink); margin-top: 16px; } dl.qa dt:first-child { margin-top: 0; } dl.qa dd { margin: 4px 0 0; color: var(--ink-2); }
   @media (max-width: 640px) { .filters .frow { grid-template-columns: 1fr; } }
   .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--ink-3); padding: 14px 20px; border-top: 1px solid var(--line); }
   .legend span { display: inline-flex; align-items: center; gap: 8px; }
@@ -223,6 +225,7 @@
     table.list tbody tr:last-child { border-bottom: 0; }
     table.list td { padding: 0; border: 0; grid-column: 2; text-align: left; }
     table.list td.ic { grid-column: 1; grid-row: 1 / span 3; padding-top: 5px; }
+    table.list.authors tr { grid-template-columns: 1fr; } table.list.authors td { grid-column: 1; } table.list.authors td.m { margin-top: 0; } table.list.authors td.num::after { content: ' · '; }
     table.list td.num, table.list td.when, table.list td.who { display: inline; width: auto; font-size: 13px; color: var(--ink-3); }
     table.list td.num::before { content: attr(data-l) ' '; } table.list td.when::before { content: attr(data-l) ' '; }
     table.list td.m { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
@@ -252,9 +255,11 @@
       <a href="/fanfic/" data-go data-v="index" aria-keyshortcuts="i">Index</a>
       <a href="/fanfic/?v=recent" data-go data-v="recent" aria-keyshortcuts="r">Most recent</a>
       <a href="/fanfic/?v=search" data-go data-v="search" aria-keyshortcuts="/">Search</a>
+      <a href="/fanfic/?v=authors" data-go data-v="authors">Authors</a>
       <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink" aria-keyshortcuts="w">Writing Room</a>
       <a href="/fanfic/?v=glossary" data-go data-v="glossary">Writing Glossary</a>
       <a href="/fanfic/?notice=rules" data-go data-v="notice">Rules</a>
+      <a href="/fanfic/?notice=help" data-go data-v="help">Help</a>
       <button type="button" class="langb" id="langBtn" translate="no" lang="de" aria-label="Auf Deutsch lesen">Deutsch</button>
     </nav>
   </div>
@@ -270,6 +275,7 @@
     <div class="acts" style="margin:0 0 30px">
       <a class="btn go" href="/fanfic/?v=room" data-go>Open the Writing Room</a>
       <a class="btn" href="/fanfic/?v=search" data-go>Search</a>
+      <a class="btn" href="/fanfic/?v=random" data-go>Random story</a>
       <a class="btn" href="/fanfic/?v=glossary" data-go>Writing Glossary</a>
       <a class="btn" href="/fanfic/?notice=format" data-go>Quick start: how to post</a>
     </div>
@@ -302,6 +308,7 @@
         </div>
         <details class="fgen"><summary><span>Genres:</span><span id="fGenresSay">any</span></summary><p class="quiet">A story shows when it has every genre ticked.</p><div class="radios" id="fGenres"></div></details>
         <label class="chk"><input type="checkbox" id="fNoWarn"> Hide stories with warnings</label>
+        <p class="fby" id="fBy" hidden>Stories by <b id="fByName"></b> <button type="button" id="fByAll">Show every author</button></p>
         <nav class="az" id="fAz" aria-label="Titles A to Z"><span class="azl">Titles A to Z</span></nav>
       </div>
       <table class="list" aria-labelledby="latestH" id="latest">
@@ -352,6 +359,24 @@
       </table>
       <div class="pages" data-pages hidden></div>
     </div>
+  </section>
+
+  <!-- the authors A to Z -->
+  <section class="view" id="authors" aria-labelledby="authorsH">
+    <h2 id="authorsH" class="h1">Authors</h2>
+    <p class="lead">Everyone who has posted a story here, A to Z. Open a name to read that writer's stories.</p>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="authorListH">Authors A to Z</h2><span class="quiet" id="authorsSay"></span></div>
+      <table class="list authors" aria-labelledby="authorListH">
+        <thead><tr><th>Pen name</th><th class="num">Stories</th><th>Last post</th></tr></thead>
+        <tbody id="authorRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- a random story: the view shows only while one is picked, or when there is none to pick -->
+  <section class="view" id="random" aria-labelledby="randomH">
+    <div class="glass empty"><div class="orb" aria-hidden="true"></div><p class="big" id="randomH">Random story</p><p id="randomSay"></p><div class="acts"><a class="btn go" href="/fanfic/?new=story" data-go>Post a story</a><a class="btn" href="/fanfic/" data-go>Back to the index</a></div></div>
   </section>
 
   <!-- one story -->
@@ -513,6 +538,17 @@
         <p>For a takedown or anything urgent, write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
       </div>
     </article>
+    <article class="notice" id="n-help" hidden>
+      <h2 class="h1">Help desk: questions and answers</h2>
+      <div class="glass pbody"><dl class="qa">
+        <dt>How do I post a story?</dt><dd>Choose <a href="/fanfic/?new=story" data-go>Post a story</a>. Pick its fandom and its rating, give it a title and a short summary, and write or paste chapter 1. <a href="/fanfic/?notice=format" data-go>How to format chapters</a> has the details.</dd>
+        <dt>How do I add the next chapter?</dt><dd>Open the story and choose <b>Add the next chapter</b>. Only the device that posted the story shows that button.</dd>
+        <dt>Do I need an account?</dt><dd>No. Your drafts, what you have read and your 18+ answer are kept on this device. Stories you post carry a mark made on this device, so readers can tell your stories from a writer with the same pen name.</dd>
+        <dt>How do I find a story?</dt><dd>On the index, type in <b>Find a story</b>, use the filters or Titles A to Z, or open <a href="/fanfic/?v=authors" data-go>Authors</a>, <a href="/fanfic/?v=search" data-go>Search</a> or <a href="/fanfic/?v=random" data-go>Random story</a>.</dd>
+        <dt>Something here breaks the rules. What do I do?</dt><dd>Read <a href="/fanfic/?notice=report" data-go>Report spam or abuse here</a>.</dd>
+        <dt>Where can I ask something else?</dt><dd>Ask on Verse's <a href="/boards/">open boards</a> (the forums every story here is posted to), or write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</dd>
+      </dl></div>
+    </article>
     <article class="notice" id="n-rules" hidden>
       <h2 class="h1">Writing rules &amp; guidelines</h2>
       <div class="glass pbody"><ul>
@@ -535,7 +571,7 @@
 
 <footer class="wrap">
   <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/fanfic/?new=story">Post a story</a><a href="/fanfic/?new=fandom">Start a fandom</a><a href="/fanfic/?v=recent">Most recent stories</a><a href="/fanfic/?v=room">Writing Room</a><a href="/fanfic/?v=glossary">Writing glossary</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/fanfic/?new=story">Post a story</a><a href="/fanfic/?new=fandom">Start a fandom</a><a href="/fanfic/?v=recent">Most recent stories</a><a href="/fanfic/?v=random">Random story</a><a href="/fanfic/?v=room">Writing Room</a><a href="/fanfic/?v=glossary">Writing glossary</a></nav>
 <!-- /asks -->
 <nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/generators/">Generators</a> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <p>Stories here are posts on Verse's <a href="/boards/">open boards</a> and follow <a href="/boards/rules/">the rules</a>. Takedowns and reports of illegal content: <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
