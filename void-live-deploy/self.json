@@ -550,6 +550,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T17:22:40Z",
+   "subject": "Browser suite: count converter-ask.js as shared, wait for MultiVerse when signed out, and heal a retry only when the check ran"
+  },
+  {
+   "at": "2026-10-29T17:17:21Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T17:14:09Z",
+   "subject": "Versus size job: a time budget and a per-site limit, so a long run always saves"
+  },
+  {
+   "at": "2026-10-29T17:12:14Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T17:09:43Z",
+   "subject": "Add emoji skill: random emoji picker. Mark building in growth inbox."
+  },
+  {
+   "at": "2026-10-29T17:08:21Z",
+   "subject": "Map: name the edge cache live check (tool and workflow from #1580), so map-coverage is green on main"
+  },
+  {
+   "at": "2026-10-29T17:08:07Z",
+   "subject": "Send \"random band name\" to the name generators, not to fake people"
+  },
+  {
+   "at": "2026-10-29T17:08:07Z",
+   "subject": "Browser suite: the paid lines read MultiVerse after #1567"
+  },
+  {
+   "at": "2026-10-29T17:06:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T17:06:26Z",
    "subject": "Main green: 5 browser checks that the reply section, the MultiVerse rename and the pinned target made red"
   },
@@ -592,42 +628,6 @@
   {
    "at": "2026-10-29T16:41:15Z",
    "subject": "Breath card: no \"-1 rounds done\" on the first frame"
-  },
-  {
-   "at": "2026-10-29T16:40:55Z",
-   "subject": "converter: a whole one-line skill summary, and mark the unit-kind links as not keys"
-  },
-  {
-   "at": "2026-10-29T16:39:39Z",
-   "subject": "brain-gardener: check collapse on a brain that collapses when only watched"
-  },
-  {
-   "at": "2026-10-29T16:34:49Z",
-   "subject": "converter: assimilate onlineconverter.com as /converter/"
-  },
-  {
-   "at": "2026-10-29T16:31:30Z",
-   "subject": "Keep every proven skill's flavor line unique once the lore runs out; regenerate parity and hand-off gaps"
-  },
-  {
-   "at": "2026-10-29T16:29:52Z",
-   "subject": "Weather: an ask with no place in it is the forecast for here"
-  },
-  {
-   "at": "2026-10-29T16:28:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:26:17Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:25:27Z",
-   "subject": "Place replies kept before cards had a family, once, from the loop log"
-  },
-  {
-   "at": "2026-10-29T16:24:24Z",
-   "subject": "test(answer-honesty): read the tower target from the record"
   }
  ],
  "builders": {
