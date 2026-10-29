@@ -144,6 +144,16 @@ export function ficCode(name, taken = new Set()) {
   return '';
 }
 
+/** the fandom a typed name means: the fan-fiction board of that name when one is here (any case), else a new code for it. fic: the archive's
+ *  fandoms ({ code, title }); taken: every board code on the site. { title, code, existing } or null when the name is blank or makes no code.
+ *  The Start a fandom form and the post form's "A new fandom" both use it, so one name never opens two fandoms. */
+export function fandomFor(name, fic = [], taken = new Set()) {
+  const title = penName(name); if (!title) return null;
+  const same = fic.find((b) => String(b.title || '').toLowerCase() === title.toLowerCase());
+  if (same) return { title: same.title, code: same.code, existing: true };
+  const code = ficCode(title, taken); return code ? { title, code, existing: false } : null;
+}
+
 /** a pen name as the archive shows it: one line, no # (the # would start a tripcode), at most the boards' name length; '' when blank. */
 export const penName = (raw) => cleanLine(String(raw == null ? '' : raw).replace(/#/g, ''), LIMITS.name);
 /** the name field the boards take: the pen name (or Anonymous) and, after #, this device's secret, so the server signs every post from this
