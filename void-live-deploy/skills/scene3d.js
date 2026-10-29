@@ -275,9 +275,13 @@ function warmUp(h) {
   const bound = setTimeout(() => { console.warn('[miniature ' + h.kind + '] compile still running after ' + COMPILE_BOUND_MS + ' ms: drawing anyway'); finish(); }, COMPILE_BOUND_MS);
   const p = Promise.all([r.compileAsync(h.scene, h.camera), extra.children.length ? r.compileAsync(extra, h.camera, h.scene) : null])
     .catch((e) => console.warn('[miniature ' + h.kind + '] compile', e));
-  h.compileP = p; // dispose() waits on it before freeing materials (see there)
-  p.finally(() => { if (h.compileP === p) h.compileP = null; finish(); });
+  h.compiles.add(p); // whenCompiled() waits on every compile still in flight, also one the bound gave up on
+  p.finally(() => { h.compiles.delete(p); finish(); });
 }
+// three's compileAsync checks each material's program on a timer until it is ready; a material freed under it throws "reading
+// 'isReady'" from that timer. Freeing GPU resources waits for every compile in flight: dispose() when a miniature unmounts
+// mid-compile, and setGround() when an update reframes it mid-compile (the gear explainer going 16:32 -> 24:32, shard 3, 2026-10-29)
+function whenCompiled(h, f) { if (h.compiles.size && !h.E.lost) Promise.allSettled([...h.compiles]).then(f); else f(); }
 // Textures go to the GPU one per frame before the first draw. The first draw used to upload them all at once: the chess set's
 // nine 2k textures held the main thread for seconds in one task (cleanup step 5, 2026-10-11), the freeze when a 3D game opened.
 export function texturesOf(scene) {
@@ -442,7 +446,7 @@ async function mountFresh(host, kind, data, opts, key) {
   }
   const h = {
     key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, wire, draws: 0, gone: 0, dirty: true, shadowDirty: true, visible: true, ready: false, needsCompile: true, compiling: false,
-    anim: [], moving: false, exposure: opts.exposure ?? 1.0, contact: null, contacts: [], cssW: 0, cssH: 0, inst: null, taps: [],
+    anim: [], compiles: new Set(), moving: false, exposure: opts.exposure ?? 1.0, contact: null, contacts: [], cssW: 0, cssH: 0, inst: null, taps: [],
     attach(host2) { if (host2 && wrap.parentNode !== host2) host2.appendChild(wrap); if (place === 'beside') fitBeside(wrap); h.dirty = true; wake(); },
     update(d) { h.data = d; h.needsCompile = true; if (h.inst && h.inst.update) { try { h.inst.update(d); } catch (e) { console.warn('[miniature ' + kind + '] update', e); } } h.requestRender(); },
     requestRender(opts2 = {}) { h.dirty = true; h.shadowDirty = true; if (opts2.shadows !== false) for (const c of h.contacts) c.dirty = true; wake(); },
@@ -512,8 +516,8 @@ async function mountFresh(host, kind, data, opts, key) {
     },
     /** Soft ground under the model: 'shadow' = contact shadow plus key-light shadow on an invisible floor; 'none' removes it. */
     setGround(y, rad, mode = 'shadow') {
-      if (h.ground) { h.ground.dispose(); scene.remove(h.ground.group); h.ground = null; }
-      if (h.contact) { h.contact.dispose(); scene.remove(h.contact.group); h.contacts = h.contacts.filter((c) => c !== h.contact); h.contact = null; }
+      if (h.ground) { const g = h.ground; scene.remove(g.group); h.ground = null; whenCompiled(h, () => g.dispose()); }
+      if (h.contact) { const c = h.contact; scene.remove(c.group); h.contacts = h.contacts.filter((x) => x !== c); h.contact = null; whenCompiled(h, () => c.dispose()); }
       if (mode === 'none') return;
       const size = rad * 3.2;
       h.contact = contactShadows(E, size, { height: rad * 1.6 }); h.contact.group.position.y = y; scene.add(h.contact.group); h.contacts.push(h.contact);
@@ -526,15 +530,13 @@ async function mountFresh(host, kind, data, opts, key) {
       if (h.wire) { h.wire.stop(true); h.wire = null; }
       if (controls) controls.dispose(); if (h.ro) h.ro.disconnect(); if (h.io) h.io.disconnect();
       wrap.remove();
-      // three's compileAsync checks each material's program on a timer until it is ready; a material freed under it threw "reading
-      // 'isReady'" from that timer (the gear explainer unmounted mid-compile, browser shard 3, 2026-10-29). So the GPU side waits for a
-      // compile still in flight; the miniature is already gone from the page and from live
+      // the GPU side waits for a compile still in flight (see whenCompiled); the miniature is already gone from the page and from live
       const free = () => {
         try { h.inst && h.inst.dispose && h.inst.dispose(); } catch (_) {}
         for (const c of h.contacts) c.dispose(); if (h.ground) h.ground.dispose();
         scene.traverse((o) => { if (o.isMesh && !o.userData.shared) { o.geometry && o.geometry.dispose(); } });
       };
-      if (h.compileP && !h.E.lost) h.compileP.then(free, free); else free();
+      whenCompiled(h, free);
     },
   };
   h.g2d = canvas.getContext('2d');
