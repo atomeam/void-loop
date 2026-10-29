@@ -58,7 +58,7 @@ test('a degenerate face is counted (and a slicer can still take a closed mesh wi
   const collapsed = new Float32Array(t.length + 9); collapsed.set(t); collapsed.set([5, 5, 5, 5, 5, 5, 6, 6, 6], t.length);
   const c = check(binaryStl(collapsed)); assert.equal(c.degenerate, 1); assert.equal(c.collapsed, 1); assert.equal(c.watertight, true);
   const dup = new Float32Array(t.length + 9); dup.set(t); dup.set(t.subarray(0, 9), t.length);
-  const d = check(binaryStl(dup)); assert.equal(d.duplicates, 1); assert.equal(d.watertight, true); assert.equal(d.nonManifoldEdges, 0);
+  const d = check(binaryStl(dup)); assert.equal(d.duplicates, 1); assert.equal(d.watertight, true); assert.equal(d.nonManifoldEdges, 0); assert.ok(Math.abs(d.area - 2400) < 1e-6, 'a repeated face adds no area: ' + d.area);
 });
 
 test('non-manifold edges, separate shells, crossing faces and the weld tolerance', () => {
@@ -66,7 +66,8 @@ test('non-manifold edges, separate shells, crossing faces and the weld tolerance
   const two = new Float32Array(a.length + b.length); two.set(a); two.set(b, a.length);
   const r = check(binaryStl(two)); assert.ok(r.nonManifoldEdges > 0, 'shared edges are used by four faces'); assert.equal(r.watertight, false);
   const apart = Float32Array.from(two, (v, i) => (i >= a.length && i % 3 === 0 ? v + 5 : v)); const s = check(binaryStl(apart)); assert.equal(s.shells, 2); assert.equal(s.ok, true);
-  const inside = Float32Array.from(two, (v, i) => (i < a.length ? v : v + [-10, 5, 5][i % 3])); // the second cube pushed halfway into the first const x = check(binaryStl(inside)); assert.ok(x.selfIntersections > 0, 'two cubes overlapping cross each other'); assert.equal(x.ok, false);
+  const inside = Float32Array.from(two, (v, i) => (i < a.length ? v : v + [-10, 5, 5][i % 3])); // the second cube pushed halfway into the first
+  const x = check(binaryStl(inside)); assert.ok(x.selfIntersections > 0, 'two cubes overlapping cross each other'); assert.equal(x.ok, false);
   // a corner moved by half a micron welds back at the default 1 µm tolerance, and does not at 0.1 µm
   const nudged = cubeTris(20); nudged[0] += 0.0005; assert.equal(check(binaryStl(nudged)).watertight, true); assert.equal(check(binaryStl(nudged), { tol: 0.0001 }).watertight, false);
   assert.equal(weld(cubeTris(1)).positions.length / 3, 8);
@@ -95,4 +96,12 @@ test('the report: plain text with every number, JSON without the mesh, and the v
   assert.match(t, /^STL check: hole\.stl\nNot watertight/); for (const w of ['Triangles: 11', 'Vertices: 8', 'Open edges: 3 (1 hole)', 'Watertight: no', 'Self-intersections: 0', 'not uploaded']) assert.ok(t.includes(w), w);
   const j = reportJson(r, 'hole.stl'); assert.equal(j.mesh, undefined); assert.equal(j.openEdges, 3); assert.equal(JSON.parse(JSON.stringify(j)).file, 'hole.stl');
   assert.equal(verdict({ triangles: 0, problems: ['the file is empty'] }), 'Not an STL that can be checked: the file is empty');
+});
+
+test('the stage skill (skills/stl-check.js) takes the asks for the checker and leaves the forge\'s own asks alone; the tool bar sends them to /stl/', async () => {
+  const skill = (await import('../void-live-deploy/skills/stl-check.js')).default, { routeAsk } = await import('../void-live-deploy/lib/toolkit.js');
+  for (const a of ['check my stl file', 'is my stl watertight?', 'stl checker', 'check my stl for holes', 'Is this STL file printable', 'does my stl have holes', 'check the watertightness of my stl']) assert.ok(skill.match(a.toLowerCase(), a), a);
+  for (const a of ['download the stl', 'print it', 'check it before printing', 'make me a vase', 'what is an stl file', 'check my email']) assert.ok(!skill.match(a.toLowerCase(), a), a);
+  for (const a of ['check my stl file', 'is my stl watertight', 'stl checker']) assert.equal(routeAsk(a), '/stl/', a);
+  assert.equal(skill.name, 'stl-check'); assert.equal(typeof skill.run, 'function');
 });

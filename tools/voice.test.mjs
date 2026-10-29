@@ -360,9 +360,8 @@ test('asks held behind the Versus target come last and carry the site; the hold 
   const held = JSON.parse(readFileSync(new URL('../void-live-deploy/void.asks.json', import.meta.url), 'utf8')).held;
   const asks = [{ ask: 'Absorb every repository on the account into the core code to unify the system architecture.' }, { ask: 'Build a browser-based utility to check the watertightness of STL print files.' }, { ask: 'Add author pages to the story catalog' }];
   const out = holdAsks(asks, held, 'sycophanthex.com');
-  // the STL checker was held behind the target until the owner had it built (2026-10-29, /stl/), so only the absorb ask is held now
-  assert.deepEqual(out.map((a) => a.held), [undefined, undefined, 'sycophanthex.com']);
-  assert.match(out[2].ask, /^Absorb every repository/); assert.ok(out.slice(0, 2).some((a) => /watertightness of STL/.test(a.ask)), 'the built STL ask is not held');
+  assert.equal(out[0].ask, 'Add author pages to the story catalog'); assert.equal(out[0].held, undefined);
+  assert.deepEqual(out.slice(1).map((a) => a.held), ['sycophanthex.com', 'sycophanthex.com']);
   assert.equal(out.length, 3, 'nothing is dropped');
   assert.deepEqual(holdAsks(asks, held, 'nextsite.com'), asks, 'once the target moves on, the hold ends');
   assert.deepEqual(holdAsks(asks, null, 'sycophanthex.com'), asks);

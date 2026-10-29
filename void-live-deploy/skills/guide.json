@@ -14,8 +14,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 14,
+    "experiment": 0,
+    "tested": 15,
     "checked": 2,
     "proven": 39
    },
@@ -778,8 +778,8 @@
     "is my stl watertight",
     "stl checker"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 32
   },
   {

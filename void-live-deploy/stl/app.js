@@ -14,11 +14,11 @@ const tolNow = () => { const v = parseFloat($('tol').value); return Number.isFin
 
 /** read bytes, check them, show it. link: the query that brings this file back, or '' for a file only this device has */
 async function run(bytes, file, link = '') {
-  say('Reading ' + file + '…');
+  say('Reading ' + file + ' on this device.');
   await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0))); // the status paints before a big file is worked on
   const t0 = performance.now(), parsed = parseStl(bytes);
   if (!parsed.count) { cur = null; $('out').hidden = true; say(file + ': ' + (parsed.problems[0] || 'no facets found') + '.'); return; }
-  say('Checking ' + parsed.count.toLocaleString('en') + ' triangles…');
+  say('Checking ' + parsed.count.toLocaleString('en') + ' triangles.');
   await new Promise((r) => setTimeout(r, 0));
   const report = analyze(parsed, { tol: tolNow() });
   cur = { parsed, report, file, link };

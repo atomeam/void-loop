@@ -27,7 +27,7 @@ function run(text, api) {
     const inp = el.querySelector('.stl-in'), out = el.querySelector('.stl-out');
     for (const ev of ['pointerdown', 'keydown']) for (const b of el.querySelectorAll('input,a')) b.addEventListener(ev, (e) => e.stopPropagation());
     inp.addEventListener('change', async () => {
-      const f = inp.files && inp.files[0]; if (!f) return; out.textContent = 'Checking ' + f.name + '…';
+      const f = inp.files && inp.files[0]; if (!f) return; out.textContent = 'Checking ' + f.name + ' on this device.';
       const r = analyze(parseStl(new Uint8Array(await f.arrayBuffer())));
       out.textContent = '';
       const line = (t, strong) => { const p = document.createElement('p'); p.style.margin = '6px 0'; if (strong) { const b = document.createElement('b'); b.textContent = t; p.appendChild(b); } else p.textContent = t; out.appendChild(p); };

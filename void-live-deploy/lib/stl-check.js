@@ -97,14 +97,14 @@ export function analyze(parsed, { tol = DEFAULT_TOL, selfCap = SELF_CAP } = {}) 
   let area = 0, vol = 0, degenerate = 0, collapsed = 0, duplicates = 0; const keep = [], seen = new Map(), degenerateFaces = [];
   for (let t = 0; t < nRaw; t++) {
     const a = index[t * 3], b = index[t * 3 + 1], c = index[t * 3 + 2];
-    const n = cross(sub(P, b, a), sub(P, c, a)), A = Math.hypot(...n) / 2; area += A;
-    vol += dot([P[a * 3], P[a * 3 + 1], P[a * 3 + 2]], cross([P[b * 3], P[b * 3 + 1], P[b * 3 + 2]], [P[c * 3], P[c * 3 + 1], P[c * 3 + 2]])) / 6;
+    const n = cross(sub(P, b, a), sub(P, c, a)), A = Math.hypot(...n) / 2;
     if (a === b || b === c || a === c) { degenerate++; collapsed++; degenerateFaces.push(t); continue; }
     if (A <= span * span * 1e-12) { degenerate++; degenerateFaces.push(t); } // a sliver of no area: counted, still part of the surface
     // the same three corners in any order: a hash of the sorted three, then a real comparison (Map of hash -> faces)
     const x0 = Math.min(a, b, c), x2 = Math.max(a, b, c), x1 = a + b + c - x0 - x2, h = (Math.imul(x0, 73856093) ^ Math.imul(x1, 19349663) ^ Math.imul(x2, 83492791)) >>> 0, same = seen.get(h);
     if (same && same.some((q) => q[0] === x0 && q[1] === x1 && q[2] === x2)) { duplicates++; continue; }
     if (same) same.push([x0, x1, x2]); else seen.set(h, [[x0, x1, x2]]); keep.push(t);
+    area += A; vol += dot([P[a * 3], P[a * 3 + 1], P[a * 3 + 2]], cross([P[b * 3], P[b * 3 + 1], P[b * 3 + 2]], [P[c * 3], P[c * 3 + 1], P[c * 3 + 2]])) / 6; // a repeated face is not counted twice
   }
   const F = keep.length, fv = new Uint32Array(F * 3); for (let i = 0; i < F; i++) for (let k = 0; k < 3; k++) fv[i * 3 + k] = index[keep[i] * 3 + k];
   // every edge: how many faces use it, and the first two with the way each walks it (+1 low to high corner, -1 high to low)
