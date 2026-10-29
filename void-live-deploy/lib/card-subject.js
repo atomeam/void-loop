@@ -51,8 +51,12 @@ export function nounsOf(text, max = 6) {
   return [...seen.values()].sort((a, b) => (b.n + (WORD_MOTIF[b.w] || WORD_MOTIF[stem(b.w)] ? 2 : 0)) - (a.n + (WORD_MOTIF[a.w] || WORD_MOTIF[stem(a.w)] ? 2 : 0)) || a.at - b.at).slice(0, max).map((e) => e.w);
 }
 /** the paint subject of a card: the answer's own nouns as one line; with too little answer text, the card title's content words. Pure. */
+// a status card (Fixed, Still open, Fixes you named, Changed, Waiting) reports work, it is not a failure: the warning plate is kept for a card about a
+// real error or outage (owner, 2026-10-29: a plain note about my own card drew a hazard triangle, from "I own the fault")
+export const isStatusCard = (text) => /^(?:Fixed|Still open|Fixes you named|Changed|Waiting|Next step):/m.test(String(text || ''));
 export function subjectOf(title, text) {
   let n = nounsOf(text); if (n.length < 2) n = [...new Set([...n, ...nounsOf(title)])].slice(0, 6);
+  if (isStatusCard(text)) n = n.filter((w) => (WORD_MOTIF[w] || WORD_MOTIF[stem(w)]) !== 'warning');
   return { nouns: n, phrase: n.join(' ') };
 }
 /** the motif names (at most 3, no repeats) for a list of nouns, in order. Pure. */

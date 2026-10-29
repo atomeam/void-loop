@@ -14,8 +14,8 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 42,
-  "checked": 18,
+  "tested": 43,
+  "checked": 20,
   "proven": 305
  },
  "families": [
@@ -528,7 +528,7 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 0,
+    "checked": 1,
     "proven": 31
    },
    "skills": [
@@ -811,6 +811,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 10
+    },
+    {
+     "name": "random",
+     "tier": "checked",
+     "why": "a self-test, 4 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },
@@ -1192,8 +1199,8 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 3,
+    "tested": 4,
+    "checked": 4,
     "proven": 14
    },
    "skills": [
@@ -1378,6 +1385,20 @@
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "streak": 10
+    },
+    {
+     "name": "uuid",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "password",
+     "tier": "checked",
+     "why": "a self-test, 5 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },

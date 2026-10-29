@@ -32,6 +32,17 @@ export function asksOf(md) {
   for (const m of String(md || '').matchAll(/^- (.+?)( \*\(small\)\*)? \((?:daily|after a build), \d{4}-\d\d-\d\d\)(?: `(ask-[0-9-]+)`)?$/gm)) push(m[1], m[2], m[3]);
   return out;
 }
+/** each ask's newest mention in the voice log: norm(ask) -> { at, kind } (the "### YYYY-MM-DD HH:MM UTC · kind" heading over its Asks: line). Pure. */
+export function lastAsked(md) {
+  const out = new Map(); let at = '', kind = '';
+  for (const line of String(md || '').split('\n')) {
+    const h = /^### (\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC(?: · (.*))?$/.exec(line);
+    if (h) { at = h[1] + 'T' + h[2] + ':00Z'; kind = /daily/.test(h[3] || '') ? 'daily' : 'build'; continue; }
+    if (!/^Asks: /.test(line) || !at) continue;
+    for (const q of line.matchAll(/"([^"]{12,})"/g)) { const k = norm(q[1]); const was = out.get(k); if (!was || was.at < at) out.set(k, { at, kind }); }
+  }
+  return out;
+}
 /** the asks no ledger entry answers yet. Pure. */
 export function openAsks(asks, ledger, links) {
   const done = new Set((ledger || []).filter((e) => e && e.asked).map((e) => norm(e.asked)));
@@ -90,7 +101,13 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   const stillOpen = new Set(openAsks(asks, ledger, links).map((a) => norm(a.ask)));
   // through: the newest reflection in the log; asks made online after it are counted on top by /api/reflect
   const through = [...readFileSync(VOICE, 'utf8').matchAll(/^### (\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC/gm)].map((m) => m[1] + 'T' + m[2] + ':00Z').sort().pop() || '';
-  const totals = { asked: groups.length, built: groups.filter((g) => g.some((a) => !stillOpen.has(norm(a.ask)))).length, through };
+  // the asks still open as of `through`, by name (asked by Verse, 2026-10-29: the self card said "3 waiting" beside "237 of 244"): /api/reflect
+  // matches an ask asked again online to this list instead of counting it as new, so waiting is always total minus built (lib/voice.js askRecord)
+  const seen = lastAsked(readFileSync(VOICE, 'utf8'));
+  const openGroups = groups.filter((g) => !g.some((a) => !stillOpen.has(norm(a.ask))));
+  const openNow = openGroups.map((g) => { const at = g.map((a) => seen.get(norm(a.ask))).filter(Boolean).sort((x, y) => String(y.at).localeCompare(String(x.at)))[0] || {};
+    return { ask: g[0].ask, ...(at.at ? { at: at.at, kind: at.kind } : {}), small: g.some((a) => a.small), times: g.length }; });
+  const totals = { asked: groups.length, built: groups.length - openGroups.length, through, open: openNow };
   console.log('all time: ' + totals.built + ' of ' + totals.asked + ' asks built');
   if (argv.includes('--write')) { asksJson.totals = totals; asksJson.links = links; writeFileSync(ASKS, JSON.stringify(asksJson, null, 2) + '\n'); console.log('wrote ' + added + ' links to void.asks.json'); }
   // --check (tools/refresh.mjs): built asks still unlinked keep showing as "not built" on the wants and self cards (owner, 2026-10-19: "the cards should update and be accurate always")

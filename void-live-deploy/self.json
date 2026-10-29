@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T03:43:50Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,84 +545,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T14:59:49Z",
-   "subject": "fix(tower): never count a default-bar score as a lead"
-  },
-  {
-   "at": "2026-10-29T14:42:21Z",
+   "at": "2026-10-29T15:25:37Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:41:18Z",
-   "subject": "Versus jobs only for ranked sites, never gambling or crypto"
-  },
-  {
-   "at": "2026-10-29T14:35:48Z",
-   "subject": "Revert #1470: drop the /prizes/ parity rows"
-  },
-  {
-   "at": "2026-10-29T14:35:32Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-10-29T14:29:35Z",
-   "subject": "Tower gate: nameunit measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:25:59Z",
-   "subject": "Tower: point the two colour-name floors at /color/, gate the loop on lane-pages"
-  },
-  {
-   "at": "2026-10-29T14:23:14Z",
-   "subject": "nameunit: search a name at every ending, share it, and name the config for it"
-  },
-  {
-   "at": "2026-10-29T14:17:07Z",
+   "at": "2026-10-29T15:25:18Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:16:45Z",
-   "subject": "test: the Verse self page check brings the body into view before the tap"
+   "at": "2026-10-29T15:24:56Z",
+   "subject": "Main health: a real-pages spec for /learn-to-draw/ (begin, draw a stroke, Done scores it, share), and the stale parity pages and deps map…"
   },
   {
-   "at": "2026-10-29T14:13:31Z",
-   "subject": "Notebook: a note's [[links]] reach the stage"
-  },
-  {
-   "at": "2026-10-29T14:09:16Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:07:20Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T14:06:35Z",
-   "subject": "Keep main's volatile files and parity pages as they are"
-  },
-  {
-   "at": "2026-10-29T14:06:16Z",
+   "at": "2026-10-29T15:22:46Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:05:49Z",
-   "subject": "Regenerate deps.json (main was behind node tools/deps.mjs)"
+   "at": "2026-10-29T15:22:22Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:05:13Z",
-   "subject": "The will's lap want names where its item lives, so the coder reads instead of searching"
+   "at": "2026-10-29T15:21:37Z",
+   "subject": "Merge Verse: the board takes the room above the ask bar, so New game is never under it"
   },
   {
-   "at": "2026-10-29T14:03:59Z",
-   "subject": "fanfic: the hidden featured link has no address until it has a title"
+   "at": "2026-10-29T15:21:22Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:00:37Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+   "at": "2026-10-29T15:21:04Z",
+   "subject": "random skill: take only the bare dice notation the stage's chance cards leave (d20, 2d6), crypto rolls, order file, family, map line, test"
   },
   {
-   "at": "2026-10-29T13:54:54Z",
-   "subject": "fanfic: a featured story on the archive home, with why it was picked"
+   "at": "2026-10-29T15:20:39Z",
+   "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
+  },
+  {
+   "at": "2026-10-29T15:20:35Z",
+   "subject": "Restore the password generator's test (lib/password.js), overwritten by the password skill's test in #1536; the skill's test is…"
+  },
+  {
+   "at": "2026-10-29T15:19:19Z",
+   "subject": "Versus queue: fewest controls first, then the fewer bytes"
+  },
+  {
+   "at": "2026-10-29T15:19:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:18:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:17:06Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:16:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:15:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:15:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:14:41Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:14:11Z",
+   "subject": "password skill: take the asks util leaves, crypto with no bias, order file, family, map line, test"
+  },
+  {
+   "at": "2026-10-29T15:14:06Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
