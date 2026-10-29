@@ -22,7 +22,7 @@ const cards = [];
 for (let i = 0; i < N_CARDS; i++) {
   const el = document.createElement('div');
   el.className = 'card';
-  el.innerHTML = `<strong>slot ${i}</strong><br>intent residual<br>attn —`;
+  el.innerHTML = `<strong>slot ${i}</strong><br>intent residual<br>attn —`; // void-review: ok (constant labels and computed numbers, no visitor text)
   scene.appendChild(el);
   cards.push({ el, x: 0, y: 0, z: 0, s: 1, h: 0 });
 }
@@ -201,7 +201,7 @@ function loop(t) {
     cards[i].h = (w * 180 + fit * 40) % 360;
     cards[i].el.style.transform = `translate3d(${cards[i].x - 70}px, ${cards[i].y - 45}px, ${cards[i].z}px) scale(${cards[i].s})`;
     cards[i].el.style.filter = `hue-rotate(${cards[i].h}deg)`;
-    cards[i].el.innerHTML = `<strong>slot ${i}</strong><br>w ${(w*100).toFixed(0)}%<br>res ${residual[0].toFixed(2)}`;
+    cards[i].el.innerHTML = `<strong>slot ${i}</strong><br>w ${(w*100).toFixed(0)}%<br>res ${residual[0].toFixed(2)}`; // void-review: ok (constant labels and computed numbers, no visitor text)
   }
 
   // chrome

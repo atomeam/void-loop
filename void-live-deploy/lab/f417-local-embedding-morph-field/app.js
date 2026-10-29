@@ -90,7 +90,7 @@ if (window.DeviceOrientationEvent) {
 }
 
 // persist recent queries
-let memory = JSON.parse(localStorage.getItem('f197-memory') || '[]');
+let memory = []; try { memory = JSON.parse(localStorage.getItem('f197-memory') || '[]'); } catch (e) { console.warn('f417-local-embedding-morph-field: saved memory unreadable', e); }
 
 function step() {
   const query = makeQuery();

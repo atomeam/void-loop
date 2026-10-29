@@ -129,6 +129,6 @@ document.getElementById('reset').onclick = () => {
   genes = { diff: 0.15, decay: 0.98, reward: 0.4, audioBias: 0.1 };
 };
 const saved = localStorage.getItem('f197-genes');
-if (saved) try { genes = JSON.parse(saved); } catch(e) {}
+if (saved) try { genes = JSON.parse(saved); } catch (e) { console.warn('f416-webgpu-sonified-thought-field:', e); }
 
 window.addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });

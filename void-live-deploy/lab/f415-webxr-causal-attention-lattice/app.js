@@ -192,5 +192,5 @@ document.getElementById('xr').onclick = async () => {
 };
 
 setInterval(() => {
-  try { localStorage.setItem('f196-mind', JSON.stringify(mind)); } catch(e) {}
+  try { localStorage.setItem('f196-mind', JSON.stringify(mind)); } catch (e) { console.warn('f415-webxr-causal-attention-lattice:', e); }
 }, 5000);

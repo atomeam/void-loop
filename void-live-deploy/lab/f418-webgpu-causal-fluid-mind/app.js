@@ -80,7 +80,7 @@ worker.onmessage = e => {
   document.documentElement.style.setProperty('--hue', (210 + entropy * 120 + energy * 40).toFixed(0));
   document.documentElement.style.setProperty('--sat', (30 + energy * 50).toFixed(0) + '%');
   document.documentElement.style.setProperty('--energy', energy.toFixed(2));
-  hud.innerHTML = `F-200 Causal Fluid Mind<br>Energy ${energy.toFixed(2)} · Visc ${visc.toFixed(2)} · Ent ${entropy.toFixed(2)}<br>Gen fitness ${best.fit.toFixed(2)}`;
+  hud.innerHTML = `F-200 Causal Fluid Mind<br>Energy ${energy.toFixed(2)} · Visc ${visc.toFixed(2)} · Ent ${entropy.toFixed(2)}<br>Gen fitness ${best.fit.toFixed(2)}`; // void-review: ok (constant labels and computed numbers, no visitor text)
 };
 
 const portals = Array.from({length:5}, () => {
@@ -144,4 +144,4 @@ document.getElementById('seal').onclick = () => {
   hud.textContent = 'Sealed best genes to localStorage';
 };
 const saved = localStorage.getItem('f200-genes');
-if (saved) { try { bestGenes = JSON.parse(saved); visc = bestGenes.visc; diff = bestGenes.diff; } catch(e){} }
+if (saved) { try { bestGenes = JSON.parse(saved); visc = bestGenes.visc; diff = bestGenes.diff; } catch (e) { console.warn('f418-webgpu-causal-fluid-mind:', e); } }

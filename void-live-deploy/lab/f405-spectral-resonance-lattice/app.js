@@ -138,4 +138,4 @@ sealBtn.onclick = () => {
 try {
   const prev = JSON.parse(localStorage.getItem('f044-seal')||'null');
   if (prev && prev.data && prev.data.genes) genes = prev.data.genes;
-} catch(e){}
+} catch (e) { console.warn('f405-spectral-resonance-lattice:', e); }

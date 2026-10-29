@@ -141,7 +141,7 @@ async function sealOrb(el){
       const tx = db.transaction('orbs','readwrite');
       tx.objectStore('orbs').put({h, dens:Array.from(dens).slice(0,200), t:Date.now()}, h);
     };
-  }catch(e){}
+  }catch (e) { console.warn('f321-webgpu-agent-fluid-memory-orbs:', e); }
   status.textContent = 'sealed '+h;
 }
 

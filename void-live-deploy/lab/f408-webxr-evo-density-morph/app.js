@@ -59,7 +59,7 @@ async function tryXR() {
   try {
     xrSession = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor'] });
     hud.textContent += ' · XR active';
-  } catch (e) { /* fallback */ }
+  } catch (e) { console.warn('f408-webxr-evo-density-morph:', e); }
 }
 document.body.addEventListener('click', () => { if (!xrSession) tryXR(); }, { once: true });
 

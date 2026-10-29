@@ -148,7 +148,7 @@ const cardData = [
 cardData.forEach((d, i) => {
   const el = document.createElement('div');
   el.className = 'card';
-  el.innerHTML = `<h4>${d.title}</h4><div>${d.text}</div>`;
+  el.innerHTML = `<h4>${d.title}</h4><div>${d.text}</div>`; // void-review: ok (constant labels and computed numbers, no visitor text)
   cardsEl.appendChild(el);
 });
 const cardEls = [...cardsEl.children];
@@ -222,7 +222,7 @@ document.getElementById('seal').onclick = async () => {
   const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0, 12);
   seals.unshift({ hash, clusters: st.clusters, conf: lastMind.conf });
   if (seals.length > 5) seals.pop();
-  sealsEl.innerHTML = seals.map(s => `<div>${s.hash} · c${s.clusters} · ${(s.conf*100|0)}%</div>`).join('');
+  sealsEl.innerHTML = seals.map(s => `<div>${s.hash} · c${s.clusters} · ${(s.conf*100|0)}%</div>`).join(''); // void-review: ok (constant labels and computed numbers, no visitor text)
   // IndexedDB optional
   try {
     const db = await new Promise((res, rej) => {
@@ -233,5 +233,5 @@ document.getElementById('seal').onclick = async () => {
     });
     const tx = db.transaction('seals', 'readwrite');
     tx.objectStore('seals').put({ hash, ...JSON.parse(data) });
-  } catch (e) { /* in-memory only */ }
+  } catch (e) { console.warn('f412-webxr-lattice-mind:', e); }
 };

@@ -100,7 +100,7 @@ function draw() {
 function updateStats() {
   const avg = agents.reduce((s,a)=>s+a.fitness,0)/agents.length || 0;
   statsEl.textContent = `Agents: ${agents.length} | Avg fitness: ${avg.toFixed(1)} | Sealed: ${sealed.length}`;
-  tilesEl.innerHTML = sealed.slice(-3).map(s => `<span class="tile" title="${s.hash}">${s.hash.slice(0,4)}… ${s.fitness.toFixed(0)}</span>`).join('');
+  tilesEl.innerHTML = sealed.slice(-3).map(s => `<span class="tile" title="${s.hash}">${s.hash.slice(0,4)}… ${s.fitness.toFixed(0)}</span>`).join(''); // void-review: ok (constant labels and computed numbers, no visitor text)
 }
 
 function loop() {

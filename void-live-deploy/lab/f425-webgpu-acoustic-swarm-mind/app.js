@@ -202,9 +202,9 @@ oriBtn.onclick = () => {
 try {
   const saved = localStorage.getItem('f197-genome');
   if (saved) genome = JSON.parse(saved);
-} catch(e){}
+} catch (e) { console.warn('f425-webgpu-acoustic-swarm-mind:', e); }
 setInterval(() => {
-  try { localStorage.setItem('f197-genome', JSON.stringify(genome)); } catch(e){}
+  try { localStorage.setItem('f197-genome', JSON.stringify(genome)); } catch (e) { console.warn('f425-webgpu-acoustic-swarm-mind:', e); }
 }, 5000);
 
 statusEl.textContent = 'Canvas2D swarm (WebGPU path noted). Enable sensors.';

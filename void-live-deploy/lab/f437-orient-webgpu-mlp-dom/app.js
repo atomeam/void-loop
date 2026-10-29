@@ -59,7 +59,7 @@ function initAgents() {
 }
 
 function renderAgents() {
-  agentsEl.innerHTML = agents.map(a => `
+  agentsEl.innerHTML = agents.map(a => /* void-review: ok (numbers and ids only) */ `
     <div class="agent ${a.active?'active':''}" data-id="${a.id}">
       Agent ${a.id} <span class="score">${a.score.toFixed(0)}</span>
       <div style="font-size:0.7rem;color:#888">center ${(a.center.x*100|0)}%,${(a.center.y*100|0)}%</div>

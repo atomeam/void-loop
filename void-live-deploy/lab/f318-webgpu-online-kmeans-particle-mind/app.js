@@ -148,5 +148,5 @@ sealBtn.onclick = async () => {
         status.textContent = 'Loaded sealed mind · ' + status.textContent;
       }
     };
-  } catch(e) {}
+  } catch (e) { console.warn('f318-webgpu-online-kmeans-particle-mind:', e); }
 })();

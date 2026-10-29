@@ -60,7 +60,7 @@ class Agent {
   updateBadge() {
     this.badge.style.left = this.cx + 'px';
     this.badge.style.top = this.cy + 'px';
-    this.badge.innerHTML = `A${this.id} f:${this.fitness.toFixed(1)}`;
+    this.badge.innerHTML = `A${this.id} f:${this.fitness.toFixed(1)}`; // void-review: ok (constant labels and computed numbers, no visitor text)
     this.badge.classList.toggle('leader', this === agents.reduce((a,b)=>a.fitness>b.fitness?a:b, agents[0]));
   }
 }
@@ -180,7 +180,7 @@ async function injectSealed() {
       const tx = db.transaction('genomes', 'readonly');
       const req = tx.objectStore('genomes').get('leader');
       sealed = await new Promise(r => req.onsuccess = () => r(req.result));
-    } catch {}
+    } catch (e) { console.warn('f432-webgpu-mlp-sph-genome-competition:', e); }
   }
   if (sealed && agents.length) {
     const target = agents[Math.floor(Math.random()*agents.length)];

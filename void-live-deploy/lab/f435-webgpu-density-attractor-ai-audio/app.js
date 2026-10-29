@@ -201,7 +201,7 @@ async function seal() {
       ts: Date.now()
     }, 'latest');
     statusEl.textContent += ' | Sealed to IndexedDB';
-  } catch (e) { /* silent */ }
+  } catch (e) { console.warn('f435-webgpu-density-attractor-ai-audio:', e); }
 }
 setInterval(seal, 8000);
 

@@ -204,7 +204,7 @@ function initAudio() {
   if (audioCtx) return;
   try {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  } catch (e) {}
+  } catch (e) { console.warn('f410-predictive-temporal-echo-mind:', e); }
 }
 
 function tone(freq, dur = 0.12) {

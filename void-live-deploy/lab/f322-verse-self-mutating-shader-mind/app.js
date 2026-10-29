@@ -113,7 +113,7 @@ async function sealFragment(el, hash){
       const tx = db.transaction('genomes','readwrite');
       tx.objectStore('genomes').put({hash, genome, t:Date.now()}, hash);
     };
-  }catch(e){}
+  }catch (e) { console.warn('f322-verse-self-mutating-shader-mind:', e); }
   status.textContent = 'sealed ' + hash.slice(0,16);
 }
 

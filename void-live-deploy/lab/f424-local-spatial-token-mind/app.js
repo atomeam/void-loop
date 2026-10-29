@@ -171,5 +171,5 @@ render();
 
 // Seal on unload
 window.addEventListener('beforeunload', () => {
-  try { localStorage.setItem('f197-field', JSON.stringify(Array.from(field.slice(0,100)))); } catch(e){}
+  try { localStorage.setItem('f197-field', JSON.stringify(Array.from(field.slice(0,100)))); } catch (e) { console.warn('f424-local-spatial-token-mind:', e); }
 });

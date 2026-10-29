@@ -151,4 +151,4 @@ try {
     Object.assign(policy, s.policy || {});
     energy = parseFloat(s.energy) || 0;
   }
-} catch(e) {}
+} catch (e) { console.warn('f423-webgpu-fluid-policy-mind:', e); }

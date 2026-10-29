@@ -191,7 +191,7 @@ document.getElementById('xr').onclick = async () => {
 try {
   const saved = localStorage.getItem('f197-mind');
   if (saved) mindState = { ...mindState, ...JSON.parse(saved) };
-} catch (e) {}
+} catch (e) { console.warn('f421-webgpu-predictive-spectral-constellation:', e); }
 
 if (navigator.gpu) {
   statusEl.textContent = 'WebGPU available — using Canvas2D fallback for lattice';
