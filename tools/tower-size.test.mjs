@@ -1,7 +1,7 @@
 // Versus by weight: what a page weighs, which sites get measured, and that the lightest measured site stands first. Run: node --test tools/tower-size.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { measure, weightOf, weightBand, bytesLabel } from '../void-live-deploy/lib/tower-weight.js';
+import { measure, weightOf, weightBand, bytesLabel, controlsOf } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
 import { planSizes, usable, isTool } from './tower-size.mjs';
 
@@ -27,9 +27,37 @@ test('the lightest weighed site is the target; a heavy popular-looking one waits
 
 test('planSizes reads the unmeasured first, keeps fresh rows, and never opens a no-rival site', () => {
   const now = Date.parse('2026-10-29'), sites = [{ host: 'a.com' }, { host: 'b.com' }, { host: 'c.com' }];
-  const file = { sites: { 'a.com': { at: '2026-10-20', bytes: 1 }, 'b.com': { at: '2026-08-01', bytes: 1 } } };
+  const file = { sites: { 'a.com': { at: '2026-10-20', bytes: 1, controls: 3 }, 'b.com': { at: '2026-08-01', bytes: 1, controls: 3 } } };
   assert.deepEqual(planSizes({ sites, file, now }).map((s) => s.host), ['c.com', 'b.com']);
   assert.equal(planSizes({ sites, file, now, max: 1 }).length, 1);
+  // a fresh row weighed before the controls count existed is read again, after the unmeasured and before the stale; a refused row waits its 30 days
+  const old = { sites: { ...file.sites, 'd.com': { at: '2026-10-28', bytes: 1 }, 'e.com': { at: '2026-10-28', refused: true } } };
+  assert.deepEqual(planSizes({ sites: [...sites, { host: 'd.com' }, { host: 'e.com' }], file: old, now }).map((s) => s.host), ['c.com', 'd.com', 'b.com']);
+});
+
+test('the controls of a home page are its links, inputs, buttons and selects, counted as domains/targets/sycophanthex.json counts them (33 links and 1 input make 34)', () => {
+  const page = '<html><head><script>document.write("<a href=x>no</a>")</script><style>a{}</style></head><body><!-- <a href="/old">no</a> -->'
+    + '<form><input name="q" type="text"><input type="hidden" name="t"></form>' + Array.from({ length: 33 }, (_, i) => '<a href="/p' + i + '">p</a>').join('') + '<a name="top">anchor, no href</a></body></html>';
+  assert.deepEqual(controlsOf(page), { links: 33, inputs: 1, buttons: 0, selects: 0, total: 34 });
+  assert.deepEqual(controlsOf('<textarea></textarea><button>a</button><input type="submit"><div role="button">b</div><select><option>1</option></select>'), { links: 0, inputs: 1, buttons: 3, selects: 1, total: 5 });
+  assert.equal(measure({ html: page }).controls, 34);
+});
+
+test('the queue is smallest first: the fewest controls, then the fewer bytes; a counted site before one only weighed, and that before an unweighed one', () => {
+  const rank = { ranks: {}, order: {}, list: {} };
+  // isitchristmas.com is the lightest by weight but has more controls: it stands behind both counted sites with fewer controls
+  const size = { sites: {
+    'isitchristmas.com': { bytes: 700, controls: 9, scripts: 0, nodes: 20, routes: 0 },
+    'calculator.net': { bytes: 2.4e6, controls: 2, scripts: 40, nodes: 9000, routes: 600 },
+    'random.org': { bytes: 90000, controls: 2, scripts: 3, nodes: 300, routes: 10 },
+    'justflipacoin.com': { bytes: 500, scripts: 0, nodes: 10, routes: 0 } } };
+  const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
+  const ids = ['random number', 'calculator', 'is it', 'coin flip'];
+  for (const id of ids) assert.ok(t.floors.some((f) => f.id === id), id + ' is a floor');
+  assert.ok(at('random number') < at('calculator'), 'the same controls: the fewer bytes first');
+  assert.ok(at('calculator') < at('is it'), 'fewer controls first, however heavy');
+  assert.ok(at('is it') < at('coin flip'), 'a counted site before one only weighed');
+  assert.match(easeLine(t.floors[at('is it')]), /has 9 controls on its home page and weighs 700 B/);
 });
 
 test('an offline notice, an error page or a page with nothing to use is not weighed (counterscope.ae was 728 bytes of "is offline")', () => {
