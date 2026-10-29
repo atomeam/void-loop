@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-27",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 0,
+  "experiment": 1,
   "tested": 44,
   "checked": 16,
   "proven": 305
@@ -24,7 +24,7 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 14,
     "checked": 2,
     "proven": 39
@@ -257,6 +257,14 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 10
+    },
+    {
+     "name": "stl-check",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-27",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-29"
     },
     {
      "name": "inventory",

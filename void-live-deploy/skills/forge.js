@@ -115,7 +115,11 @@ function mount(th, stageApi) {
   const turn = (d) => { th.angle = ((th.angle || 0) + d + 360) % 360; drawFlat(cv, model, th.angle); if (stageApi.save) stageApi.save(); };
   row.append(btn('⟲', 'forge-left', () => turn(-30), 'turn it left'), btn('⟳', 'forge-right', () => turn(30), 'turn it right'),
     btn('Print it (STL)', 'g-primary forge-print', () => printOrRefuse(model, (line) => { facts.textContent = line; }), 'check and download an STL of the ' + model.label.toLowerCase()));
-  const note = document.createElement('div'); note.className = 'g-rules'; note.textContent = 'Millimetres, Z up. Open the STL in any slicer (Cura, PrusaSlicer, Bambu Studio).';
+  const note = document.createElement('div'); note.className = 'g-rules'; note.textContent = 'Millimetres, Z up. Open the STL in any slicer (Cura, PrusaSlicer, Bambu Studio). ';
+  // the STL checker (asked by Verse: a utility to check the watertightness of STL print files): the same file "Print it" downloads, checked
+  // edge by edge on /stl/ with its holes drawn in 3D (stl/app.js ?forge= builds it from this recipe in the page; nothing is sent)
+  const chk = stop(document.createElement('a')); chk.className = 'forge-stl-check'; chk.href = '/stl/?forge=' + encodeURIComponent(th.key); chk.target = '_blank'; chk.rel = 'noopener'; chk.textContent = 'Check this STL';
+  chk.addEventListener('click', (e) => e.stopPropagation()); note.appendChild(chk);
   el.append(cv, facts, row, note);
   drawFlat(cv, model, th.angle || 0);
   stageApi.bindDrag(el, th);
