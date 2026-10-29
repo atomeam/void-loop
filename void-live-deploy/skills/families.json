@@ -14,7 +14,7 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 3,
-  "tested": 41,
+  "tested": 42,
   "checked": 18,
   "proven": 298
  },
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 1,
-    "tested": 13,
+    "tested": 14,
     "checked": 3,
     "proven": 36
    },
@@ -57,6 +57,13 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 3
+    },
+    {
+     "name": "color",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
     },
     {
      "name": "fakeuser",
