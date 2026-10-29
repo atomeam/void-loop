@@ -19,10 +19,6 @@
    "weight": 8517796,
    "at": "2026-10-29"
   },
-  "4chan.org": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "5ch.net": {
    "bytes": 326643,
    "scripts": 32,
@@ -30,10 +26,6 @@
    "nodes": 938,
    "routes": 18,
    "weight": 409023,
-   "at": "2026-10-29"
-  },
-  "7chan.org": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "abacktools.com": {
@@ -54,10 +46,6 @@
    "weight": 1212420,
    "at": "2026-10-29"
   },
-  "airmilescalculator.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "ajsonline.org": {
    "bytes": 18695,
    "scripts": 1,
@@ -74,18 +62,6 @@
    "nodes": 1158,
    "routes": 8597,
    "weight": 5962139,
-   "at": "2026-10-29"
-  },
-  "allrecipes.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "allsides.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "amazon.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "anotepad.com": {
@@ -122,10 +98,6 @@
    "nodes": 63,
    "routes": 3,
    "weight": 1476819,
-   "at": "2026-10-29"
-  },
-  "apnews.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "arbeitnow.com": {
@@ -173,10 +145,6 @@
    "weight": 1047501,
    "at": "2026-10-29"
   },
-  "barchart.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "base64.guru": {
    "bytes": 25973,
    "scripts": 4,
@@ -184,10 +152,6 @@
    "nodes": 534,
    "routes": 135,
    "weight": 106813,
-   "at": "2026-10-29"
-  },
-  "base64encode.org": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "bbc.com": {
@@ -208,10 +172,6 @@
    "weight": 3260791,
    "at": "2026-10-29"
   },
-  "bbs.progrider.org": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "behindthename.com": {
    "bytes": 136264,
    "scripts": 8,
@@ -219,19 +179,6 @@
    "nodes": 399,
    "routes": 92,
    "weight": 202254,
-   "at": "2026-10-29"
-  },
-  "besoccer.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "besslerwheel.com": {
-   "bytes": 37835,
-   "scripts": 2,
-   "styles": 1,
-   "nodes": 119,
-   "routes": 17,
-   "weight": 51525,
    "at": "2026-10-29"
   },
   "bestfonts.pro": {
@@ -259,10 +206,6 @@
    "nodes": 417,
    "routes": 4,
    "weight": 301083,
-   "at": "2026-10-29"
-  },
-  "brandcolors.net": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "budgetbytes.com": {
@@ -337,14 +280,6 @@
    "weight": 401062,
    "at": "2026-10-29"
   },
-  "calendar.yahoo.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "calendar.zoho.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "cashconverters.co.uk": {
    "bytes": 2106542,
    "scripts": 24,
@@ -381,15 +316,6 @@
    "weight": 4024357,
    "at": "2026-10-29"
   },
-  "chaoticshiny.com": {
-   "bytes": 38284,
-   "scripts": 2,
-   "styles": 1,
-   "nodes": 790,
-   "routes": 14,
-   "weight": 57184,
-   "at": "2026-10-29"
-  },
   "chordchord.com": {
    "bytes": 824443,
    "scripts": 19,
@@ -399,30 +325,6 @@
    "weight": 890683,
    "at": "2026-10-29"
   },
-  "claude.ai": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "clock7.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "co2.myclimate.org": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "codebasehq.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "codeshack.io": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "color-hex.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "color-register.org": {
    "bytes": 537067,
    "scripts": 30,
@@ -430,10 +332,6 @@
    "nodes": 442,
    "routes": 6916,
    "weight": 4059487,
-   "at": "2026-10-29"
-  },
-  "coloradoan.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "coloradosos.gov": {
@@ -454,15 +352,6 @@
    "weight": 5788466,
    "at": "2026-10-29"
   },
-  "colorcanon.com": {
-   "bytes": 32219,
-   "scripts": 3,
-   "styles": 1,
-   "nodes": 192,
-   "routes": 4,
-   "weight": 42139,
-   "at": "2026-10-29"
-  },
   "colordrop.io": {
    "bytes": 501511,
    "scripts": 6,
@@ -479,24 +368,6 @@
    "nodes": 800,
    "routes": 22,
    "weight": 208196,
-   "at": "2026-10-29"
-  },
-  "coloringhome.com": {
-   "bytes": 23009,
-   "scripts": 7,
-   "styles": 4,
-   "nodes": 349,
-   "routes": 60,
-   "weight": 70499,
-   "at": "2026-10-29"
-  },
-  "coloringnation.com": {
-   "bytes": 23009,
-   "scripts": 7,
-   "styles": 4,
-   "nodes": 349,
-   "routes": 60,
-   "weight": 70499,
    "at": "2026-10-29"
   },
   "colorjigsaw.com": {
@@ -553,10 +424,6 @@
    "weight": 348383,
    "at": "2026-10-29"
   },
-  "colorschemer.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "colorzilla.com": {
    "bytes": 115674,
    "scripts": 5,
@@ -566,15 +433,6 @@
    "weight": 130234,
    "at": "2026-10-29"
   },
-  "colourlab.ai": {
-   "bytes": 46941,
-   "scripts": 2,
-   "styles": 1,
-   "nodes": 234,
-   "routes": 28,
-   "weight": 67281,
-   "at": "2026-10-29"
-  },
   "communitycollegejobs.com": {
    "bytes": 712765,
    "scripts": 16,
@@ -582,15 +440,6 @@
    "nodes": 395,
    "routes": 500,
    "weight": 998715,
-   "at": "2026-10-29"
-  },
-  "communitydns.net": {
-   "bytes": 20422,
-   "scripts": 3,
-   "styles": 2,
-   "nodes": 108,
-   "routes": 3,
-   "weight": 29002,
    "at": "2026-10-29"
   },
   "communitydragon.org": {
@@ -645,24 +494,6 @@
    "nodes": 580,
    "routes": 110,
    "weight": 149404,
-   "at": "2026-10-29"
-  },
-  "convertunits.com": {
-   "bytes": 20480,
-   "scripts": 6,
-   "styles": 2,
-   "nodes": 237,
-   "routes": 84,
-   "weight": 76850,
-   "at": "2026-10-29"
-  },
-  "convertytmp3.org": {
-   "bytes": 14478,
-   "scripts": 3,
-   "styles": 1,
-   "nodes": 64,
-   "routes": 8,
-   "weight": 25118,
    "at": "2026-10-29"
   },
   "cookpad.com": {
@@ -728,15 +559,6 @@
    "weight": 500278,
    "at": "2026-10-29"
   },
-  "dafont.com": {
-   "bytes": 35493,
-   "scripts": 18,
-   "styles": 3,
-   "nodes": 274,
-   "routes": 9,
-   "weight": 78733,
-   "at": "2026-10-29"
-  },
   "deadlinkchecker.com": {
    "bytes": 69991,
    "scripts": 8,
@@ -771,19 +593,6 @@
    "nodes": 925,
    "routes": 274,
    "weight": 1208034,
-   "at": "2026-10-29"
-  },
-  "desuchan.net": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "diffen.com": {
-   "bytes": 17758,
-   "scripts": 3,
-   "styles": 1,
-   "nodes": 188,
-   "routes": 48,
-   "weight": 49638,
    "at": "2026-10-29"
   },
   "diffuse.tools": {
@@ -822,10 +631,6 @@
    "weight": 969692,
    "at": "2026-10-29"
   },
-  "docs.zoho.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "doublecounter.gg": {
    "bytes": 970354,
    "scripts": 21,
@@ -851,15 +656,6 @@
    "nodes": 815,
    "routes": 304,
    "weight": 348476,
-   "at": "2026-10-29"
-  },
-  "drawspace.com": {
-   "bytes": 12647,
-   "scripts": 12,
-   "styles": 1,
-   "nodes": 152,
-   "routes": 6,
-   "weight": 41167,
    "at": "2026-10-29"
   },
   "duniter.org": {
@@ -898,15 +694,6 @@
    "weight": 552861,
    "at": "2026-10-29"
   },
-  "email-checker.net": {
-   "bytes": 20725,
-   "scripts": 8,
-   "styles": 1,
-   "nodes": 129,
-   "routes": 11,
-   "weight": 43515,
-   "at": "2026-10-29"
-  },
   "emojiall.com": {
    "bytes": 215136,
    "scripts": 6,
@@ -916,15 +703,6 @@
    "weight": 556956,
    "at": "2026-10-29"
   },
-  "emojigraph.org": {
-   "bytes": 28462,
-   "scripts": 3,
-   "styles": 3,
-   "nodes": 281,
-   "routes": 26,
-   "weight": 50272,
-   "at": "2026-10-29"
-  },
   "emojitracker.com": {
    "bytes": 325243,
    "scripts": 7,
@@ -932,10 +710,6 @@
    "nodes": 32,
    "routes": 1,
    "weight": 340063,
-   "at": "2026-10-29"
-  },
-  "epicurious.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "epoch.com": {
@@ -954,10 +728,6 @@
    "nodes": 721,
    "routes": 7,
    "weight": 1007010,
-   "at": "2026-10-29"
-  },
-  "espn.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "euronews.com": {
@@ -1023,10 +793,6 @@
    "weight": 164055,
    "at": "2026-10-29"
   },
-  "fantasynamegenerators.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "fasterwheeler.com": {
    "bytes": 74365,
    "scripts": 10,
@@ -1063,10 +829,6 @@
    "weight": 926278,
    "at": "2026-10-29"
   },
-  "flightconnections.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "font.im": {
    "bytes": 1927388,
    "scripts": 3,
@@ -1074,10 +836,6 @@
    "nodes": 90,
    "routes": 6,
    "weight": 1937288,
-   "at": "2026-10-29"
-  },
-  "food52.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "fotmob.com": {
@@ -1123,19 +881,6 @@
    "nodes": 227,
    "routes": 19,
    "weight": 528109,
-   "at": "2026-10-29"
-  },
-  "gcmap.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "getconverter.org": {
-   "bytes": 18868,
-   "scripts": 2,
-   "styles": 1,
-   "nodes": 114,
-   "routes": 36,
-   "weight": 42008,
    "at": "2026-10-29"
   },
   "gigacalculator.com": {
@@ -1228,10 +973,6 @@
    "weight": 301933,
    "at": "2026-10-29"
   },
-  "hexcolorpicker.io": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "hexdb.io": {
    "bytes": 292990,
    "scripts": 3,
@@ -1295,19 +1036,6 @@
    "weight": 170564,
    "at": "2026-10-29"
   },
-  "hextobinary.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "heycolor.com": {
-   "bytes": 12932,
-   "scripts": 3,
-   "styles": 2,
-   "nodes": 72,
-   "routes": 0,
-   "weight": 19652,
-   "at": "2026-10-29"
-  },
   "himalayas.app": {
    "bytes": 915720,
    "scripts": 35,
@@ -1342,15 +1070,6 @@
    "nodes": 341,
    "routes": 1,
    "weight": 1171350,
-   "at": "2026-10-29"
-  },
-  "icalculator.com": {
-   "bytes": 39064,
-   "scripts": 8,
-   "styles": 2,
-   "nodes": 200,
-   "routes": 10,
-   "weight": 62064,
    "at": "2026-10-29"
   },
   "icloud.com": {
@@ -1434,10 +1153,6 @@
    "weight": 1336778,
    "at": "2026-10-29"
   },
-  "investing.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "ipcalc.co": {
    "bytes": 162786,
    "scripts": 8,
@@ -1465,10 +1180,6 @@
    "weight": 916645,
    "at": "2026-10-29"
   },
-  "jasperbernaers.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "jobicy.com": {
    "bytes": 496262,
    "scripts": 24,
@@ -1476,10 +1187,6 @@
    "nodes": 1999,
    "routes": 15,
    "weight": 571752,
-   "at": "2026-10-29"
-  },
-  "jsonline.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "junit.org": {
@@ -1518,10 +1225,6 @@
    "weight": 131724,
    "at": "2026-10-29"
   },
-  "keydifferences.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "kingdraw.cn": {
    "bytes": 1062219,
    "scripts": 22,
@@ -1558,10 +1261,6 @@
    "weight": 549717,
    "at": "2026-10-29"
   },
-  "lainchan.org": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "ldraw.org": {
    "bytes": 2137701,
    "scripts": 4,
@@ -1580,32 +1279,6 @@
    "weight": 372906,
    "at": "2026-10-29"
   },
-  "linguee.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "lingvanex.com": {
-   "bytes": 39002,
-   "scripts": 9,
-   "styles": 4,
-   "nodes": 521,
-   "routes": 3,
-   "weight": 63712,
-   "at": "2026-10-29"
-  },
-  "linkedin.com": {
-   "bytes": 21323,
-   "scripts": 19,
-   "styles": 1,
-   "nodes": 53,
-   "routes": 0,
-   "weight": 59853,
-   "at": "2026-10-29"
-  },
-  "listennotes.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "livescore.com": {
    "bytes": 1177000,
    "scripts": 23,
@@ -1613,28 +1286,6 @@
    "nodes": 436,
    "routes": 177,
    "weight": 1315860,
-   "at": "2026-10-29"
-  },
-  "loanwisecalculatoreasy.com": {
-   "bytes": 29876,
-   "scripts": 2,
-   "styles": 2,
-   "nodes": 216,
-   "routes": 1,
-   "weight": 36536,
-   "at": "2026-10-29"
-  },
-  "localconditions.com": {
-   "bytes": 21538,
-   "scripts": 8,
-   "styles": 1,
-   "nodes": 266,
-   "routes": 41,
-   "weight": 60698,
-   "at": "2026-10-29"
-  },
-  "macrotrends.net": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "magicchecker.com": {
@@ -1662,19 +1313,6 @@
    "nodes": 294,
    "routes": 2,
    "weight": 970024,
-   "at": "2026-10-29"
-  },
-  "marketwatch.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "mazegenerator.net": {
-   "bytes": 12918,
-   "scripts": 4,
-   "styles": 1,
-   "nodes": 101,
-   "routes": 0,
-   "weight": 21928,
    "at": "2026-10-29"
   },
   "metronomeonline.com": {
@@ -1731,24 +1369,6 @@
    "weight": 340090,
    "at": "2026-10-29"
   },
-  "nameunit.com": {
-   "bytes": 8100,
-   "scripts": 1,
-   "styles": 1,
-   "nodes": 143,
-   "routes": 8,
-   "weight": 15530,
-   "at": "2026-10-29"
-  },
-  "ndscalc.ru": {
-   "bytes": 13474,
-   "scripts": 10,
-   "styles": 1,
-   "nodes": 80,
-   "routes": 0,
-   "weight": 34274,
-   "at": "2026-10-29"
-  },
   "nnamdicenter.org": {
    "bytes": 506980,
    "scripts": 14,
@@ -1767,10 +1387,6 @@
    "weight": 208154,
    "at": "2026-10-29"
   },
-  "notepad.pw": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "notion.so": {
    "bytes": 1593833,
    "scripts": 43,
@@ -1787,10 +1403,6 @@
    "nodes": 858,
    "routes": 40,
    "weight": 693634,
-   "at": "2026-10-29"
-  },
-  "npr.org": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "ofont.ru": {
@@ -1847,15 +1459,6 @@
    "weight": 239414,
    "at": "2026-10-29"
   },
-  "onlinepasswordgenerator.ru": {
-   "bytes": 14405,
-   "scripts": 10,
-   "styles": 1,
-   "nodes": 105,
-   "routes": 4,
-   "weight": 37455,
-   "at": "2026-10-29"
-  },
   "open.spotify.com": {
    "bytes": 169878,
    "scripts": 11,
@@ -1865,15 +1468,6 @@
    "weight": 192748,
    "at": "2026-10-29"
   },
-  "openspeedtest.com": {
-   "bytes": 18112,
-   "scripts": 9,
-   "styles": 5,
-   "nodes": 221,
-   "routes": 9,
-   "weight": 42822,
-   "at": "2026-10-29"
-  },
   "opentimestamps.org": {
    "bytes": 2070772,
    "scripts": 7,
@@ -1881,15 +1475,6 @@
    "nodes": 358,
    "routes": 1,
    "weight": 2088852,
-   "at": "2026-10-29"
-  },
-  "outlook.live.com": {
-   "bytes": 14275,
-   "scripts": 4,
-   "styles": 2,
-   "nodes": 71,
-   "routes": 0,
-   "weight": 22985,
    "at": "2026-10-29"
   },
   "pancardresizer.com": {
@@ -1910,10 +1495,6 @@
    "weight": 1096638,
    "at": "2026-10-29"
   },
-  "passwordsgenerator.net": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "pdfcandy.com": {
    "bytes": 84668,
    "scripts": 12,
@@ -1921,19 +1502,6 @@
    "nodes": 1492,
    "routes": 1066,
    "weight": 656588,
-   "at": "2026-10-29"
-  },
-  "perchance.org": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "photopea.com": {
-   "bytes": 16444,
-   "scripts": 1,
-   "styles": 1,
-   "nodes": 162,
-   "routes": 1,
-   "weight": 20564,
    "at": "2026-10-29"
   },
   "photos.google.com": {
@@ -1945,10 +1513,6 @@
    "weight": 412906,
    "at": "2026-10-29"
   },
-  "player.fm": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "podbean.com": {
    "bytes": 187587,
    "scripts": 27,
@@ -1956,10 +1520,6 @@
    "nodes": 1061,
    "routes": 44,
    "weight": 274197,
-   "at": "2026-10-29"
-  },
-  "podcastindex.org": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "podcasts.apple.com": {
@@ -1980,24 +1540,6 @@
    "weight": 4164591,
    "at": "2026-10-29"
   },
-  "portchecker.co": {
-   "bytes": 13808,
-   "scripts": 6,
-   "styles": 3,
-   "nodes": 187,
-   "routes": 6,
-   "weight": 30678,
-   "at": "2026-10-29"
-  },
-  "processchecker.com": {
-   "bytes": 30031,
-   "scripts": 11,
-   "styles": 10,
-   "nodes": 122,
-   "routes": 4,
-   "weight": 55251,
-   "at": "2026-10-29"
-  },
   "proton.me": {
    "bytes": 834635,
    "scripts": 199,
@@ -2005,15 +1547,6 @@
    "nodes": 2601,
    "routes": 3,
    "weight": 1260145,
-   "at": "2026-10-29"
-  },
-  "qunitjs.com": {
-   "bytes": 38330,
-   "scripts": 2,
-   "styles": 1,
-   "nodes": 210,
-   "routes": 14,
-   "weight": 51430,
    "at": "2026-10-29"
   },
   "racetimer.se": {
@@ -2041,15 +1574,6 @@
    "nodes": 429,
    "routes": 114,
    "weight": 105945,
-   "at": "2026-10-29"
-  },
-  "randomarea.com": {
-   "bytes": 29250,
-   "scripts": 2,
-   "styles": 2,
-   "nodes": 239,
-   "routes": 0,
-   "weight": 35640,
    "at": "2026-10-29"
   },
   "randomtranslator.com": {
@@ -2088,19 +1612,6 @@
    "weight": 679469,
    "at": "2026-10-29"
   },
-  "rangen.co.uk": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "realtimerental.com": {
-   "bytes": 35327,
-   "scripts": 4,
-   "styles": 4,
-   "nodes": 316,
-   "routes": 16,
-   "weight": 54487,
-   "at": "2026-10-29"
-  },
   "recipetineats.com": {
    "bytes": 935260,
    "scripts": 46,
@@ -2108,10 +1619,6 @@
    "nodes": 2097,
    "routes": 8,
    "weight": 1052230,
-   "at": "2026-10-29"
-  },
-  "reddit.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "reedsy.com": {
@@ -2159,19 +1666,6 @@
    "weight": 344331,
    "at": "2026-10-29"
   },
-  "responsivedesignchecker.com": {
-   "bytes": 62339,
-   "scripts": 6,
-   "styles": 3,
-   "nodes": 158,
-   "routes": 1,
-   "weight": 76419,
-   "at": "2026-10-29"
-  },
-  "reverso.net": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "rnz.co.nz": {
    "bytes": 3595107,
    "scripts": 349,
@@ -2181,10 +1675,6 @@
    "weight": 4405587,
    "at": "2026-10-29"
   },
-  "searchexpertfind.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "sejda.com": {
    "bytes": 930752,
    "scripts": 1,
@@ -2192,10 +1682,6 @@
    "nodes": 1671,
    "routes": 748,
    "weight": 1323462,
-   "at": "2026-10-29"
-  },
-  "seriouseats.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "seriouswheels.com": {
@@ -2232,10 +1718,6 @@
    "nodes": 464,
    "routes": 109,
    "weight": 424882,
-   "at": "2026-10-29"
-  },
-  "simplyrecipes.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "sipcalculator.in": {
@@ -2310,10 +1792,6 @@
    "weight": 909810,
    "at": "2026-10-29"
   },
-  "sofascore.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "speedchecker.com": {
    "bytes": 310654,
    "scripts": 8,
@@ -2368,15 +1846,6 @@
    "weight": 83520,
    "at": "2026-10-29"
   },
-  "springhole.net": {
-   "bytes": 31127,
-   "scripts": 14,
-   "styles": 1,
-   "nodes": 120,
-   "routes": 0,
-   "weight": 60327,
-   "at": "2026-10-29"
-  },
   "squibler.io": {
    "bytes": 324094,
    "scripts": 10,
@@ -2384,15 +1853,6 @@
    "nodes": 749,
    "routes": 374,
    "weight": 538584,
-   "at": "2026-10-29"
-  },
-  "squoosh.app": {
-   "bytes": 75215,
-   "scripts": 1,
-   "styles": 3,
-   "nodes": 143,
-   "routes": 1,
-   "weight": 79145,
    "at": "2026-10-29"
   },
   "standardnotes.com": {
@@ -2429,10 +1889,6 @@
    "nodes": 3266,
    "routes": 4743,
    "weight": 2617392,
-   "at": "2026-10-29"
-  },
-  "stooq.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "streamingunity.dog": {
@@ -2489,15 +1945,6 @@
    "weight": 300516,
    "at": "2026-10-29"
   },
-  "sycophanthex.com": {
-   "bytes": 11827,
-   "scripts": 0,
-   "styles": 1,
-   "nodes": 212,
-   "routes": 2,
-   "weight": 14947,
-   "at": "2026-10-29"
-  },
   "syncsketch.com": {
    "bytes": 65591,
    "scripts": 15,
@@ -2514,10 +1961,6 @@
    "nodes": 187,
    "routes": 4,
    "weight": 151833,
-   "at": "2026-10-29"
-  },
-  "systransoft.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "tallycount.app": {
@@ -2565,10 +2008,6 @@
    "weight": 2112647,
    "at": "2026-10-29"
   },
-  "textboard.org": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "theguardian.com": {
    "bytes": 1399427,
    "scripts": 19,
@@ -2576,10 +2015,6 @@
    "nodes": 5167,
    "routes": 238,
    "weight": 1608097,
-   "at": "2026-10-29"
-  },
-  "thelocal.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "thesportsdb.com": {
@@ -2607,14 +2042,6 @@
    "nodes": 201,
    "routes": 6,
    "weight": 1577324,
-   "at": "2026-10-29"
-  },
-  "tildegit.org": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "timeanddate.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "timeclockwizard.com": {
@@ -2662,10 +2089,6 @@
    "weight": 1919588,
    "at": "2026-10-29"
   },
-  "tools.dungeonmastersvault.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "tools.pdf24.org": {
    "bytes": 484662,
    "scripts": 15,
@@ -2700,10 +2123,6 @@
    "nodes": 6872,
    "routes": 34,
    "weight": 1503912,
-   "at": "2026-10-29"
-  },
-  "tradukka.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "translate.com": {
@@ -2778,15 +2197,6 @@
    "weight": 1080894,
    "at": "2026-10-29"
   },
-  "uboachan.net": {
-   "bytes": 19087,
-   "scripts": 1,
-   "styles": 2,
-   "nodes": 12,
-   "routes": 0,
-   "weight": 21207,
-   "at": "2026-10-29"
-  },
   "ufonts.com": {
    "bytes": 64456,
    "scripts": 13,
@@ -2850,15 +2260,6 @@
    "weight": 347890,
    "at": "2026-10-29"
   },
-  "uniteforliteracy.com": {
-   "bytes": 42183,
-   "scripts": 6,
-   "styles": 12,
-   "nodes": 302,
-   "routes": 3,
-   "weight": 58703,
-   "at": "2026-10-29"
-  },
   "unitingchurch.org.au": {
    "bytes": 609627,
    "scripts": 4,
@@ -2895,24 +2296,6 @@
    "weight": 551744,
    "at": "2026-10-29"
   },
-  "uptimer.dev": {
-   "bytes": 25439,
-   "scripts": 2,
-   "styles": 3,
-   "nodes": 226,
-   "routes": 6,
-   "weight": 34699,
-   "at": "2026-10-29"
-  },
-  "urdufonts.net": {
-   "bytes": 11532,
-   "scripts": 16,
-   "styles": 4,
-   "nodes": 177,
-   "routes": 3,
-   "weight": 46802,
-   "at": "2026-10-29"
-  },
   "vectorunit.com": {
    "bytes": 170017,
    "scripts": 48,
@@ -2920,37 +2303,6 @@
    "nodes": 625,
    "routes": 667,
    "weight": 605767,
-   "at": "2026-10-29"
-  },
-  "videounit.net": {
-   "bytes": 69646,
-   "scripts": 1,
-   "styles": 2,
-   "nodes": 254,
-   "routes": 0,
-   "weight": 74186,
-   "at": "2026-10-29"
-  },
-  "virtualpiano.net": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
-  "vtuner.com": {
-   "bytes": 65115,
-   "scripts": 4,
-   "styles": 1,
-   "nodes": 162,
-   "routes": 1,
-   "weight": 75235,
-   "at": "2026-10-29"
-  },
-  "w3counter.com": {
-   "bytes": 30602,
-   "scripts": 11,
-   "styles": 4,
-   "nodes": 262,
-   "routes": 6,
-   "weight": 58222,
    "at": "2026-10-29"
   },
   "watercalculator.org": {
@@ -2971,15 +2323,6 @@
    "weight": 585576,
    "at": "2026-10-29"
   },
-  "web.whatsapp.com": {
-   "bytes": 40648,
-   "scripts": 18,
-   "styles": 4,
-   "nodes": 171,
-   "routes": 0,
-   "weight": 78358,
-   "at": "2026-10-29"
-  },
   "wekan.fi": {
    "bytes": 212718,
    "scripts": 0,
@@ -2989,10 +2332,6 @@
    "weight": 216568,
    "at": "2026-10-29"
   },
-  "weworkremotely.com": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "whatismyip.org": {
    "bytes": 147955,
    "scripts": 7,
@@ -3000,24 +2339,6 @@
    "nodes": 242,
    "routes": 3,
    "weight": 165875,
-   "at": "2026-10-29"
-  },
-  "wheelockweb.com": {
-   "bytes": 24061,
-   "scripts": 1,
-   "styles": 1,
-   "nodes": 146,
-   "routes": 0,
-   "weight": 27521,
-   "at": "2026-10-29"
-  },
-  "wheelockweb.net": {
-   "bytes": 24061,
-   "scripts": 1,
-   "styles": 1,
-   "nodes": 146,
-   "routes": 0,
-   "weight": 27521,
    "at": "2026-10-29"
   },
   "wheelofgold.com": {
@@ -3045,15 +2366,6 @@
    "nodes": 59,
    "routes": 0,
    "weight": 112094,
-   "at": "2026-10-29"
-  },
-  "wheelroot.com": {
-   "bytes": 11691,
-   "scripts": 2,
-   "styles": 2,
-   "nodes": 99,
-   "routes": 0,
-   "weight": 16681,
    "at": "2026-10-29"
   },
   "wizchan.org": {
@@ -3110,10 +2422,6 @@
    "weight": 1235788,
    "at": "2026-10-29"
   },
-  "younit.kr": {
-   "refused": true,
-   "at": "2026-10-29"
-  },
   "youtube.com": {
    "bytes": 7214697,
    "scripts": 43,
@@ -3121,10 +2429,6 @@
    "nodes": 419,
    "routes": 12,
    "weight": 7310887,
-   "at": "2026-10-29"
-  },
-  "yummly.com": {
-   "refused": true,
    "at": "2026-10-29"
   },
   "yunite.xyz": {
@@ -3161,10 +2465,6 @@
    "nodes": 46,
    "routes": 3,
    "weight": 116159,
-   "at": "2026-10-29"
-  },
-  "zoopicker.com": {
-   "refused": true,
    "at": "2026-10-29"
   }
  }
