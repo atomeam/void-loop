@@ -533,7 +533,7 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T05:29:07Z",
+   "at": "2026-10-29T05:29:44Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -547,6 +547,14 @@
   {
    "at": "2026-10-29T05:26:47Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:26:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:25:34Z",
+   "subject": "Verse Brain: the frontier drafts as one mind on one shared field"
   },
   {
    "at": "2026-10-29T05:25:14Z",
@@ -603,14 +611,6 @@
   {
    "at": "2026-10-29T05:10:00Z",
    "subject": "List the proverb skill so it loads"
-  },
-  {
-   "at": "2026-10-29T05:09:35Z",
-   "subject": "Own-card lists: end a cut row at its last whole clause"
-  },
-  {
-   "at": "2026-10-29T05:05:44Z",
-   "subject": "Memory orbs: generated cards after bringing main in (node tools/refresh.mjs)"
   }
  ],
  "builders": {

@@ -14,8 +14,8 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 3,
-  "tested": 40,
-  "checked": 17,
+  "tested": 39,
+  "checked": 18,
   "proven": 298
  },
  "families": [
@@ -26,7 +26,7 @@
    "count": {
     "experiment": 1,
     "tested": 13,
-    "checked": 2,
+    "checked": 3,
     "proven": 36
    },
    "skills": [
@@ -347,6 +347,13 @@
      "last_tested": "2026-10-27",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
+    },
+    {
+     "name": "verse-brain",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests"
     },
     {
      "name": "rts",
@@ -1453,7 +1460,7 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 9,
+    "tested": 8,
     "checked": 1,
     "proven": 29
    },
@@ -2071,13 +2078,6 @@
     },
     {
      "name": "ascii",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "its tests"
-    },
-    {
-     "name": "leet",
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-10-29",
