@@ -537,13 +537,17 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T03:43:50Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T14:42:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T14:41:18Z",
    "subject": "Versus jobs only for ranked sites, never gambling or crypto"
@@ -619,10 +623,6 @@
   {
    "at": "2026-10-29T13:51:28Z",
    "subject": "Regenerate the parity pages: main's were behind the tower gate (the parity test fails on main without this)"
-  },
-  {
-   "at": "2026-10-29T13:50:56Z",
-   "subject": "Keep the parity pages of other sites as main has them"
   }
  ],
  "builders": {

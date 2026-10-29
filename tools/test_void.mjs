@@ -1491,8 +1491,8 @@ try {
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
     const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
-    check('tower: a saved or copied tower card says the fight (the target: 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice',
-      new RegExp(tgt.site.replace(/\./g, '\\.') + ': 4 of \\d+ aspects ahead\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+    check('tower: a saved or copied tower card says the fight (Verse is ahead of the target on 4 of N aspects, what is still to beat, what is conquered) and no announcement twice',
+      new RegExp('Verse is ahead of ' + tgt.site.replace(/\./g, '\\.') + ' on 4 of \\d+ aspects\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
