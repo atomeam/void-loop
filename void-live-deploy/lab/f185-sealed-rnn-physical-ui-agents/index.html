@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root { --bg: #0a0a0c; --fg: #e8e6e3; --accent: #7c5cbf; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.card { position: absolute; width: 140px; height: 90px; background: rgba(124, 92, 191, 0.18); border: 1px solid rgba(124, 92, 191, 0.6); border-radius: 12px; backdrop-filter: blur(6px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 12px; pointer-events: none; transition: border-color 0.2s; transform-origin: center; }
+.card.champion { border-color: #f0c040; box-shadow: 0 0 20px rgba(240, 192, 64, 0.4); }
+#ui { position: absolute; top: 12px; left: 12px; z-index: 10; display: flex; gap: 8px; flex-wrap: wrap; }
+button { background: #1a1a22; color: var(--fg); border: 1px solid #444; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+button:hover { background: #252530; }
+#status { position: absolute; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.8; z-index: 10; max-width: 60%; }
+#energy { position: absolute; width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle, #fff8, transparent 70%); pointer-events: none; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sealed RNN Physical UI Agents · Verse lab</title>
+<meta name="description" content="Local tiny RNN (recurrent state) agents compete to control hybrid DOM physical UI cards. DeviceOrientation (or pointer proxy) is the causal input.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sealed RNN Physical UI Agents · Verse lab">
+<meta property="og:description" content="Local tiny RNN (recurrent state) agents compete to control hybrid DOM physical UI cards. DeviceOrientation (or pointer proxy) is the causal input.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f185-sealed-rnn-physical-ui-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f185-sealed-rnn-physical-ui-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <button id="seal">Seal Champion</button>
+  <button id="transfer">Force Transfer</button>
+  <button id="reset">Reset Agents</button>
+</div>
+<div id="status">Tilt device or move pointer. Agents compete. Seal persists to IndexedDB.</div>
+<div id="energy"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Sealed RNN Physical UI Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -44,6 +44,10 @@ const ONLY_WHEN = {
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
   // glitch titles in a real browser (~3 min): a rule may be a function of the path. A script matters only when it holds a glitch letter
   // (<span class="gl ...">: skills/films.js and skills/is-it.js today, any file that gains one tomorrow); the styles are the page's
+  // every page doing its own job in a real browser (tools/real-pages.mjs): only the pages this branch changed, so a page edit is tested there
+  'real-pages.mjs': /(?:^|\/)index\.html$|real-pages/,
+  // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
+  'handoff-e2e.mjs': /void-live-deploy\/(?:bpm|metronome)\/|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
 const readText = (f) => { try { return readFileSync(resolve(here, '..', f), 'utf8'); } catch (_) { return ''; } }; // a deleted file is no title
@@ -58,7 +62,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -75,6 +79,8 @@ const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipW
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
+  ['handoff-scan', 'handoff-scan.test.mjs'],
+  ['handoff-e2e', 'handoff-e2e.mjs'],
   ['backdrop', 'backdrop.test.mjs'],
   ['fringe', 'fringe.mjs'],
   ['telemetry-route', 'telemetry-route.test.mjs'],
@@ -87,6 +93,8 @@ for (const [name, file] of [
   ['loop-parts', 'loop-parts.test.mjs'],
   ['wiped-files', 'wiped-files.test.mjs'],
   ['translate', 'translate.test.mjs'],
+  ['translate-extras', 'translate-extras.test.mjs'],
+  ['parity', 'parity.test.mjs'],
   ['gate-land', 'gate-land.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
   ['scores', 'scores.test.mjs'],
@@ -95,6 +103,7 @@ for (const [name, file] of [
   ['matchgfx', 'matchgfx.test.mjs'],
   ['podcasts', 'podcasts.test.mjs'],
   ['boards', 'boards.test.mjs'],
+  ['fanfic', 'fanfic.test.mjs'],
   ['music-tools', 'music-tools.test.mjs'],
   ['flights', 'flights.test.mjs'],
   ['job-board', 'job-board.test.mjs'],
@@ -221,6 +230,7 @@ for (const [name, file] of [
   ['showcase', 'showcase.test.mjs'],
   ['fix-pages', 'fix-pages.test.mjs'],
   ['sitemap', 'sitemap.test.mjs'],
+  ['lab-import', 'lab-import.test.mjs'],
   ['beacon', 'beacon-pages.test.mjs'],
   ['traffic', 'traffic.test.mjs'],
   ['indexnow', 'indexnow.test.mjs'],
@@ -298,6 +308,7 @@ for (const [name, file] of [
   ['field-nca', 'field-nca.test.mjs'],
   ['field-resonance', 'field-resonance.test.mjs'],
   ['field-swarm', 'field-swarm.test.mjs'],
+  ['field-fluid-orbs', 'field-fluid-orbs.test.mjs'], // F-321: orientation leans the flow, a peak spawns an orb, seal then load gives the same SHA-256
   ['stage-camera', 'stage-camera.test.mjs'],
   ['star-parallax', 'star-parallax.test.mjs'],
   ['operating-laws', 'operating-laws.test.mjs'],
@@ -417,6 +428,11 @@ for (const [name, file] of [
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
   ['queue', 'queue.test.mjs'],
+  ['conductor', 'conductor.test.mjs'],
+  ['verse-job', 'verse-job.test.mjs'],
+  ['tower-size', 'tower-size.test.mjs'],
+  ['history-coverage', 'history-coverage.test.mjs'],
+  ['tower-target', 'tower-target.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
   ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['sale-e2e', 'sale-e2e.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'], ['email-worker', 'email-worker.test.mjs'], ['rehearsal-route', 'rehearsal-route.test.mjs'], ['email-send', 'email-send.test.mjs'],
   ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],
@@ -455,8 +471,11 @@ for (const [name, file] of [
   ['completeness', 'completeness.test.mjs'],
   ['lap', 'lap.test.mjs'],
   ['tower', 'tower.test.mjs'],
+  ['tower-plan', 'tower-plan.test.mjs'],
   ['tower-self', 'tower-self.test.mjs'],
+  ['gate-badge', 'gate-badge.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],
+  ['tower-falsepass', 'tower-falsepass.test.mjs'],
   ['avatar', 'avatar.test.mjs'],
   ['tower-verdict', 'tower-verdict.test.mjs'],
   ['site-scout', 'site-scout.test.mjs'],
@@ -500,11 +519,13 @@ for (const [name, file] of [
   ['wiki-look', 'wiki-look.test.mjs'],
   ['colour', 'colour.test.mjs'],
   ['tower-gate', 'tower-gate.test.mjs'],
+  ['tower-norival', 'tower-norival.test.mjs'],
   ['tower-merge', 'tower-merge.test.mjs'],
   ['site-icons', 'site-icons.test.mjs'],
   ['gradient', 'gradient.test.mjs'],
   ['wheel', 'wheel.test.mjs'],
   ['prizes', 'prizes.test.mjs'],
+  ['ledger', 'ledger.test.mjs'],
   ['handoff', 'handoff.test.mjs'],
   ['fakeuser', 'fakeuser.test.mjs'],
   ['beacon', 'beacon.test.mjs'],
@@ -525,6 +546,12 @@ for (const [name, file] of [
   ['tools pack 3', 'tools-pack3.test.mjs'],
   ['convert-math', 'convert-math.test.mjs'],
   ['calculators', 'calculators.test.mjs'],
+  ['formula engine', 'formula-engine.test.mjs'],
+  ['formula library', 'formulas.test.mjs'],
+  ['shape skill', 'shape-skill.test.mjs'],
+  ['battleship skill', 'battleship-skill.test.mjs'],
+  ['parody data', 'parody-data.test.mjs'],
+  ['music-de', 'music-de.test.mjs'],
 ]) {
   addScript(name, file);
 }
@@ -576,6 +603,9 @@ addScript('index', 'skills-index.mjs', ['--check']);
 addScript('preload-pages', 'preload.mjs', ['--check']);
 // the page guard (owner, 2026-10-26: "all sites get a page"): a frontier site that reaches the front of the Versus queue has a page of its own (tools/tower-self.mjs)
 addScript('versus-pages', 'tower-self.mjs', ['guard']);
+// every page is real (owner, 2026-10-28): each route has a spec in tools/real-pages.mjs (pure), and the pages this branch changed run it in a browser
+add('real-pages-list', async () => { const r = await run([resolve(here, 'real-pages.mjs'), '--list']); return [r.ok, last(r), r.ms]; });
+addScript('real-pages', 'real-pages.mjs', ['--changed', '--base', 'local']);
 // Verse's own SEO tool over every page it serves (tools/seo-audit.mjs, lib/seo-audit.js; owner, 2026-10-26: "Verse uses its own tools"): a missing
 // canonical, title, description or share card, a broken internal link, unparsable JSON-LD, a page nothing links to, or one fewer free page leading
 // to what Verse sells fails here; the counts in tools/seo-audit.baseline.json only go down

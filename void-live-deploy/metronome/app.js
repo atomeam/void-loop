@@ -21,6 +21,8 @@ function show() {
   $('tempoWord').textContent = tempoName(st.bpm) + ' · ' + Math.round(beatSeconds(st.bpm) * 1000) + ' ms ' + t('per beat'); $('sig').value = st.sig; $('sub').value = st.sub; $('snd').value = st.snd;
   $('ladder').textContent = t('Practice ladder for this tempo:') + ' ' + practiceLadder(st.bpm).join(', ') + ' BPM.';
   keep({ bpm: st.bpm, sig: st.sig, sub: st.sub, snd: st.snd });
+  // the tempo handed on (docs/HANDOFF-GAPS.md): the BPM counter shows every note length at it, since it reads ?bpm=
+  const go = $('toBpm'); if (go) go.href = '/bpm/?bpm=' + st.bpm;
   const u = new URLSearchParams({ bpm: st.bpm, sig: st.sig, sub: st.sub, snd: st.snd }); try { history.replaceState(null, '', '?' + u); } catch (_) { /* a sandboxed frame */ }
 }
 const setBpm = (v) => { st.bpm = clampBpm(v); show(); };

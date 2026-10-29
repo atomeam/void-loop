@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+  :root { --tilt: 0deg; --glow: .3; }
+  html, body { margin: 0; height: 100%; background: #000; color: #dfe6ff; font: 14px/1.4 ui-sans-serif, system-ui, sans-serif; overflow: hidden; }
+  canvas#gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #ask { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; gap: 8px; width: min(640px, 92vw); }
+  #ask input { flex: 1; background: rgba(10,12,24,.72); border: 1px solid rgba(160,180,255,.25); color: #fff; border-radius: 999px; padding: 12px 18px; font-size: 15px; outline: none; backdrop-filter: blur(8px); }
+  #ask button { background: rgba(30,36,70,.8); color: #dfe6ff; border: 1px solid rgba(160,180,255,.3); border-radius: 999px; padding: 0 16px; cursor: pointer; }
+  #ask button:focus-visible, #ask input:focus-visible { box-shadow: 0 0 0 2px #9fb4ff; }
+  #mic.on { background: #6b2340; }
+  #mobile { position: fixed; top: 22px; right: 22px; width: 300px; height: 360px; pointer-events: none; }
+  #bar { position: absolute; left: 10px; right: 10px; top: 10px; height: 3px; background: linear-gradient(90deg, #8aa0ff, #ffd6a0); border-radius: 2px; transform-origin: 50% 50%; transform: rotate(var(--tilt)); box-shadow: 0 0 12px rgba(160,180,255,var(--glow)); }
+  #bar::before { content: ""; position: absolute; left: 50%; top: -14px; width: 1px; height: 14px; background: #8aa0ff88; }
+  .card { position: absolute; top: 0; width: 52px; transform-origin: 50% 0; pointer-events: auto; cursor: pointer; }
+  .card .str { width: 1px; margin: 0 auto; background: #9fb4ff66; }
+  .card .body { font: 10px/1.25 ui-monospace, monospace; background: rgba(12,14,30,.82); border: 1px solid rgba(160,180,255,.3); border-radius: 6px; padding: 4px; word-break: break-all; color: #cfd8ff; }
+  .card .s { color: #ffd6a0; }
+  .card.best .body { border-color: #ffd6a0; box-shadow: 0 0 14px #ffd6a055; }
+  #hud { position: fixed; left: 22px; top: 20px; max-width: 360px; font-size: 12px; color: #aab4dd; }
+  #hud h1 { font-size: 13px; font-weight: 600; color: #e8ecff; margin: 0 0 6px; letter-spacing: .04em; }
+  .bars { display: grid; grid-template-columns: 56px 1fr; gap: 3px 8px; align-items: center; margin-top: 8px; }
+  .meter { position: relative; height: 6px; background: #ffffff10; border-radius: 3px; }
+  .meter i { position: absolute; top: 0; bottom: 0; left: 0; background: #8aa0ff; border-radius: 3px; }
+  .meter b { position: absolute; top: -3px; width: 2px; height: 12px; background: #ffd6a0; }
+  #glsl { position: fixed; left: 22px; bottom: 90px; max-width: 420px; max-height: 30vh; overflow: hidden; font: 10px/1.3 ui-monospace, monospace; color: #8a96c8; opacity: .55; white-space: pre; pointer-events: none; mask-image: linear-gradient(#000 70%, transparent); }
+  #note { color: #ffb0b0; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none !important; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spoken Sculpture: a local program-synthesis mind that writes its own shader · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Spoken Sculpture: a local program-synthesis mind that writes its own shader.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spoken Sculpture: a local program-synthesis mind that writes its own shader · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Spoken Sculpture: a local program-synthesis mind that writes its own shader.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f207-spoken-sdf-program-synthesis/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f207-spoken-sdf-program-synthesis/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="gl" aria-label="Raymarched sculpture written by the local mind"></canvas>
+<div id="hud">
+  <h1>F-207 · SPOKEN SCULPTURE</h1>
+  <div>Say or type what you want to see. A local mind searches a tiny shape language, writes GLSL, and hot-swaps it into the renderer. Its candidate programs hang on the mobile at right; the bar tips toward the stronger ideas.</div>
+  <div class="bars" id="bars"></div>
+  <div id="stat">idle</div>
+  <div id="note"></div>
+</div>
+<div id="mobile" aria-label="Candidate programs"><div id="bar"></div></div>
+<div id="glsl" aria-hidden="true"></div>
+<form id="ask" autocomplete="off">
+  <input id="q" placeholder="a tall twisted spire with a hollow crown of many pieces" aria-label="Describe a sculpture">
+  <button type="button" id="mic" title="Speak (Web Speech)">🎙</button>
+  <button type="button" id="seal" title="Seal this program into local memory">Seal</button>
+  <button type="submit">Shape</button>
+</form>
+<script src="core.js"></script>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

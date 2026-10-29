@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin: 0; overflow: hidden; background: #0a0a0f; color: #e0e0ff; font-family: system-ui, sans-serif; }
+canvas { display: block; width: 100vw; height: 100vh; }
+#hud { position: fixed; top: 12px; left: 12px; pointer-events: none; opacity: 0.85; font-size: 13px; }
+.thought {
+  position: absolute; padding: 6px 10px; background: rgba(20,30,60,0.75); border: 1px solid #6af; border-radius: 8px;
+  pointer-events: auto; cursor: grab; transform-style: preserve-3d; transition: transform 0.3s, opacity 0.3s;
+  font-size: 12px; white-space: nowrap; backdrop-filter: blur(4px);
+}
+.thought:active { cursor: grabbing; }
+#status { position: fixed; bottom: 8px; left: 8px; font-size: 11px; opacity: 0.6; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Spatial Attention Mind · Verse lab</title>
+<meta name="description" content="Verse landing: spatial attention skill under void-live-deploy/skills/;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Spatial Attention Mind · Verse lab">
+<meta property="og:description" content="Verse landing: spatial attention skill under void-live-deploy/skills/;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f219-webgpu-spatial-attention-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f219-webgpu-spatial-attention-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">F-219 Spatial Attention Mind<br>Tilt or drag to focus. Drag thought cards to seed.</div>
+<div id="status">Initializing…</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Spatial Attention Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

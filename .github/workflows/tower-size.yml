@@ -1,0 +1,47 @@
+# Versus by weight (owner, 2026-10-29: size is bytes and surface, not popularity): measures how heavy each rival's home page really is
+# (tools/tower-size.mjs) on a runner, since the sandboxes cannot reach rivals, and commits void-live-deploy/tower.size.json. The Versus card and the
+# queue (lib/tower.js) put the lightest site first. Plain GETs of public pages, robots.txt respected, never a no-rival site; no secret.
+name: Tower size
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "sites to read this run"
+        default: "120"
+  schedule:
+    - cron: '23 4 * * *'
+concurrency:
+  group: void-tower-size
+  cancel-in-progress: false
+permissions:
+  contents: write
+  actions: write
+jobs:
+  size:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tests
+        run: node --test tools/tower-size.test.mjs tools/tower-target.test.mjs
+      - name: Weigh the sites
+        env:
+          MAX: ${{ inputs.max || '120' }}
+        run: |
+          case "$MAX" in ''|*[!0-9]*) MAX=120 ;; esac
+          node tools/tower-size.mjs --max "$MAX"
+          node tools/tower-target.mjs
+      - name: Commit the weights
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.size.json void-live-deploy/tower.target.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower size: how heavy each Versus site really is"
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true

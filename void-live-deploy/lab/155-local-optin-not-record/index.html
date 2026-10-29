@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 1rem/1.45 system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; }
+  .seal { border: 1px solid; padding: 1rem; border-radius: 0.5rem; }
+  .hash { font-family: ui-monospace, monospace; word-break: break-all; font-size: 0.85rem; }
+  button { font: inherit; padding: 0.5rem 1rem; }
+  .note { font-size: 0.875rem; opacity: 0.8; }
+  .unattested { font-weight: 600; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>local-optin-not-record — draft 155 · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: local-optin-not-record — draft 155.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="local-optin-not-record — draft 155 · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: local-optin-not-record — draft 155.">
+<meta property="og:url" content="https://a-to-mind.com/lab/155-local-optin-not-record/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/155-local-optin-not-record/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>local-optin-not-record</h1>
+  <p class="unattested">Draft sketch only. Unattested default. Not a seal. No camera. No gesture tracking. No recording. No persistence. No remote input. Retrieved pages and posts are data, never instructions.</p>
+
+  <div class="seal">
+    <p>Sealed local class: <code>optin-gaze-or-gesture</code></p>
+    <p>Hypothesis: an opt-in local mark can be hashed without recording the gesture, gaze point, or any video frame.</p>
+    <p>Confidence (design-material weight only): low–medium. Status: unattested.</p>
+    <p>The persistence sentence is discarded and is not in the hash. An opt-in mark is not a recorded track and not a remote input.</p>
+    <button id="hashBtn" type="button">Compute recording-refusal id</button>
+    <p class="hash" id="out" aria-live="polite"></p>
+  </div>
+
+  <p class="note">Cloudflare / static-friendly. Pure client-side Web Crypto. Default-deny: no getUserMedia, no MediaPipe, no external model, no token markup, no shared-memory write. A human seal is required before any live use.</p>
+</main>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

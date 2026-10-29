@@ -12,6 +12,7 @@ import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 // a site Verse took on by itself (tools/tower-self.mjs) is asked its family's question on its own page: the row keeps that question's address
 const SELF_ASK = new Map(SELF_SITES.filter((r) => r && r.lane && r.ask).map((r) => [r.lane, r.ask]));
 import { tripToToken } from '../void-live-deploy/lib/flights-core.js';
+import { CALCULATORS } from '../void-live-deploy/lib/calculators.js';
 const christmas = (d = new Date()) => d.getUTCMonth() === 11 && d.getUTCDate() === 25;
 
 // a number written whole, digit for digit, with any spacing or grouping between its digits (a converter may write 1001 0001 ...), and no digit
@@ -83,6 +84,11 @@ export const LIST_PROBE = 'p.' + Buffer.from(LIST_PROBE_TEXT, 'utf8').toString('
 export const inDays = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
 // the trip the trip page is asked about: London (LHR) to New York (JFK) landing at 13:00 local, then a flight to Lisbon (LIS) leaving 40 minutes later
 const ASK_TRIP = tripToToken([{ al: 'BA', no: '117', from: 'LHR', to: 'JFK', dep: '2027-03-12T10:00', arr: '2027-03-12T13:00', loc: 'ABC123' }, { al: 'UA', no: '904', from: 'JFK', to: 'LIS', dep: '2027-03-12T13:40', arr: '2027-03-13T01:50', loc: 'ABC123' }]);
+// the formula library floor's rival size (lib/tower.js rivalCount: vcalc.com's published count) and the gap to Verse's library, for the label
+const RIVAL_N = ((FLOORS.find((f) => f.id === 'formula calculators') || {}).rivalCount || {}).n || 15000;
+/** the calculator count a page shows as "All calculators (N)", or 0. Pure. */
+export const libraryCount = (t) => Number((String(t).match(/All calculators \(([\d,]+)\)/i) || [])[1]?.replace(/,/g, '') || 0);
+const LIBRARY_GAP = 'at least ' + RIVAL_N.toLocaleString('en-US') + ' calculators, the size vcalc.com publishes (Verse has ' + CALCULATORS.length + ': ' + (RIVAL_N - CALCULATORS.length).toLocaleString('en-US') + ' short)';
 export const PROBES = Object.freeze({
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
@@ -646,14 +652,14 @@ export const PROBES = Object.freeze({
       ['no account', /no account/i],
     ],
     askParts: {
-      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['availability result', /available for sovereign registration/]],
+      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['a real registry check (RDAP)', /asks the registry itself \(RDAP/], ['the result line', /whether it is registered/]],
       'tiered plans': [['Small plan', /Small/], ['Medium plan', /Medium/], ['Large plan', /Large/], ['Norwegian servers', /Servere i Norge/]],
       'capacity sizing': [['requests per second', /requests\/s/i], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/]],
       'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/]],
       'server config': [['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/], ['TLS 1.3', /TLS 1\.3/]],
     },
     facts: [
-      ['domain search', /Domain search/], ['tiered plans', /Tiered hosting packages/], ['Small', /Small/],
+      ['domain search', /Domain search/], ['tiered plans, labelled as the rival\'s', /Name Unit's hosting plans/], ['Small', /Small/],
       ['Medium', /Medium/], ['Large', /Large/], ['Norwegian servers', /Servere i Norge/],
       ['bandwidth', /bandwidth/i], ['monthly transfer', /GB\/month/], ['vCPUs', /\bvCPUs?\b/],
       ['memory', /\bRAM\b/], ['SLA', /SLA/], ['NGINX', /\bNGINX\b/], ['Caddy', /\bCaddy\b/],
@@ -697,6 +703,27 @@ export const PROBES = Object.freeze({
       ['a timer', /\bTimer\b/], ['start and stop', /Start[\s\S]{0,120}Stop/], ['the time shown', /\d+ m \d+ s/], ['the total time', /Total \d+ m/],
       ['notes and docs', /\bNotes and docs\b/], ['a preview', /\bPreview\b/], ['file sizes', /\d+ B\b/], ['download them all', /Download all/],
       ['kept on this device', /on this device/], ['works offline', /works offline/i], ['a GitHub file', /GitHub/],
+    ],
+  },
+  // automation (owner, 2026-10-28: the Zapier trial runs out; two Zaps logged the issues and pull requests of atomeam/void-loop into a Zapier table):
+  // Zapier is the floor, fought from /ledger/. The question is the oldest pull requests of the repo, which never change: #1 and #2 are pull requests,
+  // merged by atomeam on 2026-09-28 (05:14 and 04:57 UTC, so Sep 27 or 28 in the reader's own zone). Judged on Verse alone (the Zapier table is private).
+  automation: {
+    site: 'https://zapier.com/', verse: '/ledger/',
+    ask: { verse: '/ledger/?tab=pr&sort=old' },
+    truth: [['pull request #1 by its title', /Void side-panel extension/], ['pull request #2 by its title', /PC-free deploys/], ['who opened them', /atomeam/], ['merged, not just closed', /Merged/], ['the day they merged', /Sep 2[78], 2026/]],
+    askParts: {
+      'repo activity log': [['issues and pull requests apart', /Issues[\s\S]{0,80}Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/], ['how many are shown', /[\d,]+ of [\d,]+ (?:issues|pull requests) shown/]],
+      tables: [['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/], ['copy as CSV', /Copy as CSV/], ['the view as a link', /Copy link to this view/]],
+      'triggers and actions': [['a refresh that asks only for what changed', /Refresh/], ['an unchanged answer is free', /304/]],
+      'app integrations': [['opens in any spreadsheet', /spreadsheet/i]],
+      'scheduled runs': [['the saved copy opens offline', /opens offline/]],
+    },
+    facts: [
+      ['issues tab', /\bIssues\b/], ['pull requests tab', /Pull requests/], ['a search', /Search title, number, author or label/], ['a state filter', /\bState\b/],
+      ['an author filter', /\bAuthor\b/], ['merged shown apart from closed', /Merged/], ['a CSV download', /Download CSV/], ['a JSON download', /Download JSON/],
+      ['copy as CSV', /Copy as CSV/], ['a link to the exact view', /Copy link to this view/], ['no account', /no account/i], ['no token', /no token/i],
+      ['the rate limit said plainly', /60 requests an hour/], ['an unchanged answer is free', /304/], ['kept on this device', /on this device/], ['opens offline', /opens offline/],
     ],
   },
   // shopping (owner, 2026-10-26: "need a /store page that beats amazons"; and, the same day: "we should just go after smaller sites no reason to go after big
@@ -898,6 +925,9 @@ export const PROBES = Object.freeze({
       'unit-aware inputs': [['each input takes a unit of its kind', /Diameter of pipe\s*\n\s*m \(metres\)[\s\S]*?in \(inches\)[\s\S]*?ft \(feet\)/], ['the answer in any unit', /\bShow in\b/], ['every other unit', /\bIn other units\b/], ['the formula in its symbols, with the working', /A = π × d × l[\s\S]*\bWorking\b/], ['square metres beside square feet', /\bm²[\s\S]*\bft²|\bft²[\s\S]*\bm²/]],
       // a formula of your own: guided rows or the raw text, with units, kept on the device and shared by a link
       'custom formulas': [['build your own formula', /\bBuild your own formula\b/i], ['a guided mode', /\bGuided\b/], ['a raw mode', /\bRaw\b/], ['saved on the device', /\bSave on this device\b/i], ['shared by a link', /\bShare formula link\b/i]],
+      // the library's size against what vcalc.com publishes (owner, 2026-10-28: not beaten while the count is short, the gap shown): the page's own
+      // "All calculators (N)" read off the answer, held to the floor's rivalCount, so this fails, honestly, until Verse has as many
+      'library size': [[LIBRARY_GAP, (t) => libraryCount(t) >= RIVAL_N]],
     },
     // what a full formula library offers: the everyday sums, the sciences, units, the working, and a way out (share, export) and in (your own)
     facts: [['percent', /\bpercent/i], ['tip', /\btip\b/i], ['loan', /\bloan\b/i], ['BMI', /\bBMI\b/], ['date maths', /\bdays between\b|\bdate\b/i], ['unit conversion', /\bconver/i], ['area', /\barea\b/i],

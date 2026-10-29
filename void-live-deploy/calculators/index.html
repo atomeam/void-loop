@@ -59,6 +59,14 @@
   [hidden] { display: none !important; }
   footer { font-size: 13px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
   @media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .row .expr { grid-column: 1 / -1; } }
+  .tablewrap { max-height: 420px; overflow: auto; margin-top: 6px; border: 1px solid var(--line); border-radius: 10px; }
+  .tablewrap table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .tablewrap th, .tablewrap td { padding: 4px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .tablewrap th { position: sticky; top: 0; background: var(--card); }
+  #kshow { display: block; font: 600 28px/1.3 ui-monospace, Menlo, Consolas, monospace; text-align: right; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; overflow-wrap: anywhere; min-height: 1.3em; }
+  .keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
+  .keys button { justify-content: center; border-radius: 10px; padding: 4px 6px; }
+  .keys button.op { background: var(--chip); } .keys button.eq { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/calculators/">
@@ -71,6 +79,10 @@
 <link rel="modulepreload" href="/lib/calc-units.js">
 <link rel="modulepreload" href="/lib/fincalc.js">
 <link rel="modulepreload" href="/lib/date-math.js">
+<link rel="modulepreload" href="/lib/formula-engine.js">
+<link rel="modulepreload" href="/lib/formulas.js">
+<link rel="modulepreload" href="/lib/formulas-1.js">
+<link rel="modulepreload" href="/lib/keypad.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -94,6 +106,7 @@
   <section id="calc" class="card" aria-labelledby="cname" style="min-height:420px">
     <h2 id="cname" tabindex="-1">Percent of a number</h2>
     <p class="formula" id="cformula">result = p × x</p>
+    <p class="note" id="csource" hidden></p>
     <div id="cform" class="form"></div>
     <div class="answer">
       <p class="what" id="what">Result</p>
@@ -102,7 +115,15 @@
       <ul class="outs" id="outs"></ul>
       <details class="other" id="otherbox" hidden open><summary>In other units</summary><ul id="other"></ul></details>
       <details id="workbox"><summary>Working</summary><div class="working" id="working"></div></details>
+      <details id="tablebox" hidden open><summary id="tablesum">Schedule</summary><div class="tablewrap" tabindex="0" role="region" aria-labelledby="tablesum"><table id="ctable"></table></div></details>
     </div>
+  </section>
+  <section id="keypad" class="card" aria-labelledby="kname" style="margin-top:16px">
+    <h2 id="kname">Scientific calculator</h2>
+    <p class="note">Tap the keys, or click here and type: digits, + − * /, ^, ( ), Enter for =, Backspace for Back, Escape for AC. Deg is on until you press it; Ans is the last answer, M+ M− MR MC use the memory, RND writes a random number from 0 to 1, EXP is times ten to a power.</p>
+    <output id="kshow" aria-live="polite">0</output>
+    <p class="note" id="kinfo">Deg · memory 0</p>
+    <div class="keys" id="keys" role="group" aria-label="Calculator keys"></div>
   </section>
   <section id="build" class="card" aria-labelledby="bname" style="margin-top:16px">
     <h2 id="bname">Build your own formula</h2>
@@ -135,14 +156,15 @@
     <div id="lib"></div>
   </section>
   <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/calculators/?calc=pipe-surface-area&amp;d=2&amp;d.u=in&amp;l=10&amp;l.u=ft">Pipe surface area, 2 in by 10 ft</a><a href="/calculators/?calc=tip&amp;bill=64&amp;people=3">Tip for $64 split 3 ways</a><a href="/calculators/?calc=loan-payment">Loan payment</a><a href="/calculators/?calc=ohms-law-current">Ohm's law: current</a><a href="/calculators/?calc=molar-mass&amp;f=C6H12O6">Molar mass of glucose</a><a href="/calculators/#build">Build your own formula</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/calculators/?calc=pipe-surface-area&amp;d=2&amp;d.u=in&amp;l=10&amp;l.u=ft">Pipe surface area, 2 in by 10 ft</a><a href="/calculators/?calc=tip&amp;bill=64&amp;people=3">Tip for $64 split 3 ways</a><a href="/calculators/?calc=loan-payment">Loan payment</a><a href="/calculators/?calc=ohms-law-current">Ohm's law: current</a><a href="/calculators/?calc=molar-mass&amp;f=C6H12O6">Molar mass of glucose</a><a href="/calculators/?formula=%23%20Circle%20area%0AA%20%5Bm%C2%B2%5D%20%3D%20pi%2Ar%5E2%20%20%23%20Area%0Ar%20%5Bm%5D%20%3D%203%20%20%23%20Radius">Build your own formula: a circle's area</a></nav>
 <!-- /asks -->
   <nav id="related" aria-label="Related tools" style="min-height:106px"><!-- related --><span class="tk-label">Use with</span> <a href="/calculator/">Calculator</a> <a href="/convert/">Unit converter</a> <a href="/base-converter/">Base converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer><p>Worked out on your device; nothing you type is sent anywhere. Physical constants are CODATA 2018 exact or recommended values, atomic weights IUPAC abridged. <a href="/calculator/">Scientific calculator</a> · <a href="/convert/">Unit converter</a> · <a href="/">Ask Verse anything</a></p></footer> <!-- void-review: ok (CODATA and IUPAC are words in the footer, not code) -->
 </main>
 <script type="module">
-  import { CATEGORIES, CALCULATORS, BY_ID, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt } from '/lib/calculators.js';
+  import { CATEGORIES, CALCULATORS, BY_ID, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt, fmtMoney } from '/lib/calculators.js';
   import { KINDS, findUnit, parseSpec, runSpec } from '/lib/calc-units.js';
+  import { KEYS, start as keyStart, press as keyPress } from '/lib/keypad.js';
   const $ = (id) => document.getElementById(id);
   const h = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (v === undefined || v === null || v === false) continue; if (k === 'text') e.textContent = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v); } for (const c of kids.flat()) if (c !== null && c !== undefined) e.append(c); return e; };
   const store = { get: (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} } };
@@ -153,7 +175,7 @@
   const say = (t) => { $('said').textContent = t; clearTimeout(say.t); say.t = setTimeout(() => { $('said').textContent = ''; }, 4000); };
 
   const q0 = readQuery(location.search);
-  const state = { calc: BY_ID.has(q0.calc) ? q0.calc : DEFAULT_CALC, given: q0.given, outUnits: q0.outUnits, kind: q0.kind, pro: q0.pro || store.get(PRO_KEY, false) === true };
+  const state = { calc: BY_ID.has(q0.calc) ? q0.calc : DEFAULT_CALC, given: q0.given, outUnits: q0.outUnits, kind: q0.kind, solve: q0.solve, pro: q0.pro || store.get(PRO_KEY, false) === true };
   let last = null, shaped = null;
 
   // ---------- one calculator: its form, then its answer
@@ -182,10 +204,17 @@
   }
   function renderForm() {
     const calc = BY_ID.get(state.calc);
-    shaped = run(calc, state.given, state.outUnits, { pro: state.pro, kind: state.kind }).calc;
+    shaped = run(calc, state.given, state.outUnits, { pro: state.pro, kind: state.kind, solve: state.solve }).calc;
     $('cname').textContent = shaped.name;
     $('cformula').textContent = shaped.cat + ' · ' + shaped.formula;
+    // a library formula says where it comes from
+    const src = $('csource'); src.replaceChildren(); src.hidden = !shaped.src;
+    if (shaped.src) src.append('Source: ', /^https?:/.test(shaped.src) ? h('a', { href: shaped.src, rel: 'noopener', text: shaped.src.replace(/^https?:\/\/(www\.)?/, '').replace(/^en\.wikipedia\.org\/wiki\//, 'Wikipedia: ').replace(/_/g, ' ') }) : shaped.src);
     const form = $('cform'); form.replaceChildren();
+    // a library formula works for any of its variables: pick the one to find, and the rest become the boxes
+    if (shaped.solveFor && shaped.solveFor.length > 1) {
+      form.append(h('div', { class: 'field' }, h('label', { for: 'in-solve', text: 'Solve for' }), h('select', { id: 'in-solve', oninput: (e) => { state.solve = e.target.value === shaped.def.lhs ? '' : e.target.value; renderForm(); } }, shaped.solveFor.map(([k, label]) => h('option', { value: k, text: label + ' (' + k + ')', selected: k === shaped.target })))));
+    }
     if (calc.convert) {
       const kinds = Object.entries(KINDS).filter(([id, k]) => id !== 'number' && k.units.length > 1);
       form.append(h('div', { class: 'field' }, h('label', { for: 'in-kind', text: 'Quantity' }), h('select', { id: 'in-kind', oninput: (e) => { state.kind = e.target.value; delete state.given['v.u']; delete state.outUnits.r; renderForm(); } }, kinds.map(([id, k]) => h('option', { value: id, text: k.name, selected: id === shaped.kind })))));
@@ -195,9 +224,9 @@
     for (const a of document.querySelectorAll('#lib a[data-id="' + state.calc + '"]')) a.setAttribute('aria-current', 'page');
     compute();
   }
-  function urlState() { return { calc: state.calc === DEFAULT_CALC && !Object.keys(state.given).length && !Object.keys(state.outUnits).length ? '' : state.calc, kind: BY_ID.get(state.calc).convert ? state.kind || shaped.kind : '', given: state.given, outUnits: state.outUnits, pro: state.pro }; }
+  function urlState() { return { calc: state.calc === DEFAULT_CALC && !Object.keys(state.given).length && !Object.keys(state.outUnits).length ? '' : state.calc, solve: state.solve, kind: BY_ID.get(state.calc).convert ? state.kind || shaped.kind : '', given: state.given, outUnits: state.outUnits, pro: state.pro }; }
   function compute() {
-    const r = run(BY_ID.get(state.calc), state.given, state.outUnits, { pro: state.pro, kind: state.kind || (shaped && shaped.kind) }); last = r;
+    const r = run(BY_ID.get(state.calc), state.given, state.outUnits, { pro: state.pro, kind: state.kind || (shaped && shaped.kind), solve: state.solve }); last = r;
     const big = $('big'), first = r.outputs[0];
     big.classList.toggle('err', !!r.error);
     $('what').textContent = r.error ? 'Check this box' : first ? first.label : '';
@@ -221,6 +250,14 @@
     lines.push('');
     for (const o of r.outputs) lines.push(o.label + ' = ' + o.text + (KINDS[o.kind] && Number.isFinite(o.si) && o.kind !== 'money' && o.unit !== siUnit(o.kind) ? '  (' + fmt(o.si, 12) + (siUnit(o.kind) ? ' ' + siUnit(o.kind) : '') + ' in SI)' : ''));
     $('working').textContent = lines.join('\n');
+    // a table when the answer has one (an amortization schedule, a year-by-year balance, tax by bracket)
+    const tb = $('tablebox'), tt = $('ctable'); tt.replaceChildren(); tb.hidden = !r.table;
+    if (r.table) {
+      const money = new Set(r.table.money || []), cell = (v, i) => (money.has(i) && typeof v === 'number' ? fmtMoney(v) : typeof v === 'number' ? fmt(v, 12) : String(v));
+      tt.append(h('thead', {}, h('tr', {}, ...r.table.head.map((x) => h('th', { scope: 'col', text: x })))));
+      const body = h('tbody'); for (const row of r.table.rows) body.append(h('tr', {}, ...row.map((v, i) => h('td', { text: cell(v, i) })))); tt.append(body);
+      $('tablesum').textContent = r.table.head[0] === 'Month' ? 'Schedule, month by month (' + r.table.rows.length + ' rows)' : r.table.head[0] === 'Year' ? 'Year by year' : 'By bracket';
+    }
     $('workbox').open = state.pro || $('workbox').open;
     history.replaceState(null, '', location.pathname + writeQuery(urlState()) + location.hash);
     $('link').value = location.href;
@@ -228,7 +265,7 @@
   }
   function openCalc(id, push = true) {
     if (!BY_ID.has(id)) return;
-    state.calc = id; state.given = {}; state.outUnits = {}; state.kind = '';
+    state.calc = id; state.given = {}; state.outUnits = {}; state.kind = ''; state.solve = '';
     if (push) history.pushState(null, '', location.pathname + writeQuery(urlState()));
     renderForm();
     $('calc').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
@@ -241,13 +278,19 @@
   $('lname').textContent = 'All calculators (' + CALCULATORS.length + ')';
   for (const cat of CATEGORIES) {
     const list = CALCULATORS.filter((c) => c.cat === cat); if (!list.length) continue;
-    lib.append(h('h3', { id: 'cat-' + cat.toLowerCase(), text: cat + ' (' + list.length + ')' }), h('ul', { 'aria-labelledby': 'cat-' + cat.toLowerCase() }, list.map(chip)));
+    // a long category shows its first 24 and a button for the rest (every hand-built calculator always shows; search finds them all)
+    const cid = 'cat-' + cat.toLowerCase().replace(/\s+/g, '-');
+    let room = Math.max(0, 24 - list.filter((c) => !c.def).length), more = 0;
+    const items = list.map((c) => { const li = chip(c); if (c.def && room-- <= 0) { li.hidden = true; more++; } return li; });
+    const ul = h('ul', { id: cid + '-list', 'aria-labelledby': cid }, items);
+    lib.append(h('h3', { id: cid, text: cat + ' (' + list.length + ')' }), ul);
+    if (more) { const b = h('button', { type: 'button', class: 'more', 'aria-controls': cid + '-list', 'aria-expanded': 'false', text: 'Show all ' + list.length + ' in ' + cat }); b.addEventListener('click', () => { for (const li of ul.children) li.hidden = false; b.remove(); }); lib.append(b); }
   }
   const find = $('find');
   find.addEventListener('input', () => { const t = find.value.trim(); $('hits').replaceChildren(...(t ? search(t).slice(0, 12).map(chip) : [])); if (t && !$('hits').children.length) $('hits').append(h('li', { class: 'note', text: 'No calculator matches "' + t + '". Build it below with your own formula.' })); });
   find.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const a = $('hits').querySelector('a[data-id]'); if (a) { e.preventDefault(); openCalc(a.dataset.id); } } });
   if (q0.find) { find.value = q0.find; find.dispatchEvent(new Event('input')); }
-  addEventListener('popstate', () => { const q = readQuery(location.search); state.calc = BY_ID.has(q.calc) ? q.calc : DEFAULT_CALC; state.given = q.given; state.outUnits = q.outUnits; state.kind = q.kind; renderForm(); });
+  addEventListener('popstate', () => { const q = readQuery(location.search); state.calc = BY_ID.has(q.calc) ? q.calc : DEFAULT_CALC; state.given = q.given; state.outUnits = q.outUnits; state.kind = q.kind; state.solve = q.solve; renderForm(); });
   // ---------- the toolbar: pro mode, share, copy, export
   const proBtn = $('pro');
   const setPro = (on) => { state.pro = on; proBtn.setAttribute('aria-pressed', String(on)); store.set(PRO_KEY, on); document.body.classList.toggle('pro', on); };
@@ -345,6 +388,17 @@
   $('rawtext').value = text; setMode(mode); buildRun(); renderSaved();
   if (q0.formula) $('build').scrollIntoView({ block: 'start' });
   import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculators/')).catch(() => {});
+  // the scientific keypad (lib/keypad.js): the same press() the tests drive
+  {
+    let ks = keyStart(); const box = $('keys'), CLS = { '=': 'eq', '+': 'op', '−': 'op', '×': 'op', '÷': 'op', AC: 'op', Back: 'op' };
+    const LABEL = { 'xʸ': 'xʸ', '√': '√', Deg: 'Deg' };
+    const paint = () => { $('kshow').textContent = ks.error ? 'Error: ' + ks.error : ks.shown; $('kinfo').textContent = (ks.deg ? 'Deg' : 'Rad') + ' · memory ' + fmt(ks.mem, 12) + (ks.ans ? ' · Ans ' + fmt(ks.ans, 12) : ''); const d = box.querySelector('[data-k=Deg]'); if (d) d.textContent = ks.deg ? 'Deg' : 'Rad'; };
+    const go = (k) => { ks = keyPress(ks, k); paint(); };
+    for (const k of KEYS) box.append(h('button', { type: 'button', class: CLS[k] || '', 'data-k': k, 'aria-label': k === 'Deg' ? 'Degrees or radians' : k === '−' ? 'minus' : k === '±' ? 'change sign' : k === 'M−' ? 'memory minus' : k, text: LABEL[k] || k, onclick: () => go(k) }));
+    const TYPED = { '*': '×', '/': '÷', '-': '−', '+': '+', '^': 'xʸ', '(': '(', ')': ')', '.': '.', '%': '%', '!': 'n!', Enter: '=', '=': '=', Backspace: 'Back', Escape: 'AC' };
+    $('keypad').addEventListener('keydown', (e) => { if (e.ctrlKey || e.metaKey || e.altKey) return; const k = /^[0-9]$/.test(e.key) ? e.key : TYPED[e.key]; if (!k) return; e.preventDefault(); go(k); });
+    $('kshow').tabIndex = 0; paint();
+  }
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

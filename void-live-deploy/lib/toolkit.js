@@ -15,6 +15,7 @@ export const ACCENT_KEY = 'a2m.void.accent.v1';
 export const TOOLS = Object.freeze({
   '/photos/': 'Photo tools',
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
+  '/ledger/': 'Repo activity ledger',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/time/': 'Time zones', '/base64/': 'Base64',
   '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
@@ -46,7 +47,7 @@ const HAND_RELATED = Object.freeze({
   '/calculators/': ['/calculator/', '/convert/', '/base-converter/'],
   '/time/': ['/stopwatch/', '/weather/'],
   '/weather/': ['/time/', '/stopwatch/'],
-  '/translate/': ['/word-count/', '/time/'],
+  '/translate/': ['/word-count/', '/time/', '/notes/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/scores/': ['/sports/', '/time/', '/calendar/'],
   '/sports/': ['/scores/', '/calendar/', '/time/'],
@@ -84,6 +85,8 @@ const HAND_RELATED = Object.freeze({
   '/jobs/categories/': ['/jobs/', '/jobs/tags/', '/jobs/companies/'],
   '/jobs/tags/': ['/jobs/', '/jobs/categories/', '/jobs/salary/'],
   '/jobs/companies/': ['/jobs/', '/jobs/categories/', '/jobs/alerts/'],
+  // the repo activity ledger (owner, 2026-10-28): a Kanban board and notes to plan from what it lists, the calendar for its dates
+  '/ledger/': ['/kanban/', '/notes/', '/calendar/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // a page Verse built by itself (lib/self-sites.js) goes with its family's page first, then the tools that page goes with
@@ -97,7 +100,7 @@ const HAND_CARD_ASK = Object.freeze({
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 // a self-built page opens its family's card on the stage
 export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base]).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });

@@ -3,14 +3,14 @@
 //   node --test tools/calculators.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CALCULATORS, CATEGORIES, BY_ID, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt, molarMass } from '../void-live-deploy/lib/calculators.js';
+import { CALCULATORS, CATEGORIES, BY_ID, FORMULA_COUNT, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt, molarMass } from '../void-live-deploy/lib/calculators.js';
 import { KINDS, findUnit, toSI, fromSI, evaluate, parseSpec, specText, runSpec } from '../void-live-deploy/lib/calc-units.js';
 import formulas, { pick, isLibrary } from '../void-live-deploy/skills/formulas.js';
 
 const out = (id, given = {}, units = {}, opts = {}) => { const r = run(id, given, units, opts); assert.equal(r.error, '', id + ': ' + r.error); return Object.fromEntries(r.outputs.map((o) => [o.k, o.text])); };
 
-test('the library: 164 calculators in 11 kinds, each id once, each with a formula, inputs and outputs, and each works out with its own defaults', () => {
-  assert.equal(CALCULATORS.length, 164); assert.equal(CATEGORIES.length, 11); assert.equal(BY_ID.size, 164);
+test('the library: 218 hand-built calculators (164, the 21 calculator.net home-page gap-fills in tools/calc-net.test.mjs, the 16 Maths gap-fills in tools/calc-math.test.mjs and the 17 Other gap-fills in tools/calc-other.test.mjs) plus the formula library (tools/formulas.test.mjs), in 21 kinds, each id once, each with a formula, inputs and outputs, and each works out with its own defaults', () => {
+  assert.equal(CALCULATORS.filter((c) => !c.def).length, 218); assert.equal(FORMULA_COUNT.before, 218); assert.equal(CATEGORIES.length, 21); assert.equal(BY_ID.size, CALCULATORS.length);
   for (const c of CALCULATORS) {
     assert.ok(CATEGORIES.includes(c.cat), c.id); assert.ok(c.formula && c.inputs.length && c.outputs.length, c.id);
     const r = run(c, {}, {}, { kind: 'length' }); assert.equal(r.error, '', c.id + ': ' + r.error);
@@ -77,16 +77,19 @@ test('the stage card: a calculator asked by name, the library by "formula calcul
   assert.equal(pick('pipe surface area calculator').id, 'pipe-surface-area'); assert.equal(pick('calculator for molar mass').id, 'molar-mass');
   assert.ok(isLibrary('formula calculators')); for (const a of formulas.nearMisses) assert.ok(!formulas.match(a.toLowerCase(), a), a);
   for (const a of formulas.examples) assert.ok(formulas.match(a.toLowerCase(), a), a);
+  for (const a of ['age calculator', 'bmi calculator', 'calorie calculator', 'savings calculator', 'paint calculator', 'flooring calculator', 'wallpaper calculator', 'calculator for drywall'])
+    assert.ok(!formulas.match(a.toLowerCase(), a), 'left to its own skill: ' + a);
+  assert.ok(formulas.match('bmr calculator', 'bmr calculator'), 'a calculator no other skill answers is still taken');
   let html = '', page = ''; const api = { esc: (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]), showPage: (f) => { const el = { dataset: {} }; f(el); html = el.innerHTML; page = el.dataset.page; return el; } };
   return formulas.run('pipe surface area calculator', api).then((name) => {
     assert.equal(name, 'formulas'); assert.equal(page, '/calculators/'); assert.match(html, /5\.23599 ft²/); assert.match(html, /href="\/calculators\/\?calc=pipe-surface-area"/);
   });
 });
 
-test('the floor: vcalc.com on the tower, its ask answered by /calculators/, a probe for its three extras', async () => {
+test('the floor: vcalc.com on the tower, its ask answered by /calculators/, a probe for its four extras (library size held to vcalc.com\'s published count)', async () => {
   const { FLOORS } = await import('../void-live-deploy/lib/tower.js'); const { probeFor } = await import('./tower-probes.mjs');
   const f = FLOORS.find((x) => x.id === 'formula calculators'); assert.ok(f); assert.equal(f.page, '/calculators/'); assert.equal(f.site, 'vcalc.com');
-  assert.deepEqual(f.extra, ['formula library', 'unit-aware inputs', 'custom formulas']);
+  assert.deepEqual(f.extra, ['formula library', 'unit-aware inputs', 'custom formulas', 'library size']);
   const p = probeFor('formula calculators'); assert.ok(p); assert.match(p.ask.verse, /calc=pipe-surface-area&d=2&d\.u=in&l=10&l\.u=ft/);
-  assert.deepEqual(Object.keys(p.askParts || {}).sort(), ['custom formulas', 'formula library', 'unit-aware inputs']);
+  assert.deepEqual(Object.keys(p.askParts || {}).sort(), ['custom formulas', 'formula library', 'library size', 'unit-aware inputs']);
 });

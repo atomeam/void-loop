@@ -1,0 +1,23 @@
+{
+ "floor": "formula calculators",
+ "verse_page": "/calculators/",
+ "researched": "2026-10-29",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "vcalc.com": {
+   "url": "https://www.vcalc.com/",
+   "scanned": "2026-10-29",
+   "leader": true,
+   "pages": [],
+   "problem": "robots.txt asks robots not to read it",
+   "features": []
+  }
+ },
+ "gaps": [],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-29",
+  "queued": []
+ }
+}

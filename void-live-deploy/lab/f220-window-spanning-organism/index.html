@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link id="fav" rel="icon" href="data:,">
+<style>
+ html,body{margin:0;height:100%;background:#000;color:#cfd6ff;font:13px/1.4 system-ui,sans-serif;overflow:hidden}
+ canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block}
+ #hud{position:fixed;left:12px;top:10px;max-width:360px;background:#05060ccc;border:1px solid #1d2240;border-radius:10px;padding:10px 12px;backdrop-filter:blur(6px)}
+ #hud b{color:#fff} #hud .t{font-size:16px;color:#fff;margin-bottom:4px}
+ button{background:#10142a;color:#cfd6ff;border:1px solid #2a3166;border-radius:7px;padding:5px 9px;margin:6px 6px 0 0;cursor:pointer;font:inherit}
+ button:hover{border-color:#6b78ff}
+ .pane{position:fixed;border:1px solid #3a4280;border-radius:8px;background:#ffffff05;box-shadow:0 0 0 1px #0008;cursor:grab}
+ .pane .bar{height:18px;background:#1a1f45;border-radius:7px 7px 0 0;font-size:11px;padding:0 6px;color:#aab}
+ small{color:#7e86b8}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Window-Spanning Organism · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Window-Spanning Organism.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Window-Spanning Organism · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Window-Spanning Organism.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f220-window-spanning-organism/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f220-window-spanning-organism/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="cv"></canvas>
+<div id="hud"><div class="t">The creature lives across your windows</div>
+<div id="line">waking…</div><div id="stats"><small></small></div>
+<button id="open">Open another window</button><button id="desk">Desk mode (one screen)</button><button id="mode">Mode: learning</button>
+<div><small>Drag windows so they overlap: overlaps are doors. It cannot see other windows; it learns doors by standing in two at once, and forgets them when you pull windows apart. Click to drop food here. The tab icon and title show what it believes about this window.</small></div></div>
+<script src="core.js"></script>
+<script src="app.js"></script><h1 class="vl-sr">Window-Spanning Organism</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>
