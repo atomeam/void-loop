@@ -3634,7 +3634,7 @@
     {
      "name": "wants",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 13 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 13 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,

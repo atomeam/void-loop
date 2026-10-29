@@ -119,7 +119,8 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
   return {
     about, shipped: rows.filter((r) => r.state === 'shipped' && pub(r)),
     // what is still open comes from the frontier, the one build order (cleanup step 4); the inbox keeps the shipped history
-    open: open ? open.map((o) => ({ state: 'open', date: '', ask: clip(o.title, 120), from: clip(o.from, 120) })) : rows.filter((r) => r.state !== 'shipped' && pub(r)),
+    // `waits` (tools/frontier.mjs waitsOf): what an item says it waits on, so the wants card can list it as blocked
+    open: open ? open.map((o) => ({ state: 'open', date: '', ask: clip(o.title, 120), from: clip(o.from, 120), ...(o.waits ? { waits: clip(o.waits, 60) } : {}) })) : rows.filter((r) => r.state !== 'shipped' && pub(r)),
     games: GAMES.filter((g) => skills.includes(g)), minis: minis.filter((m) => m !== 'sample').sort(),
     ...(canon ? { canon } : {}),
     ...(tracks ? { tracks } : {}),

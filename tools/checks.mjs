@@ -458,6 +458,7 @@ for (const [name, file] of [
   ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],
   ['memory-card', 'memory-card.test.mjs'],
   ['told-me', 'told-me.test.mjs'],
+  ['answer-edge', 'answer-edge.test.mjs'],
   ['memory', 'memory.test.mjs'],
   ['live', 'live.test.mjs'],
   ['draft', 'draft.test.mjs'],
