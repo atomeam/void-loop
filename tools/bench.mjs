@@ -12,7 +12,7 @@
 // browser and today's date (some answers count days). The next --score run with the same hash prints that result at once
 // instead of replaying 1900 asks: a change that never touches the page (a server route, a doc, a workflow) costs nothing.
 // Only a passing run is remembered, so a failure is never skipped; CI and the weekly watchdog still run the real thing.
-// Asks run BENCH_PAR at a time (default 6). Each page slot keeps one browser context, so Verse's files load from its cache after the first ask,
+// Asks run BENCH_PAR at a time (default 6). Each page slot keeps one browser profile, so Verse's files load and compile from its caches after the first ask,
 // and each ask starts with the site's storage cleared (cookies, localStorage, IndexedDB, Cache Storage), so the order and the result don't change;
 // each waits for the page to log its answer (at most 4 s) and, when an ask has "says", for that value to show (at most 2.5 s more):
 // no fixed sleeps, so a fast answer is read at once and a busy machine still doesn't miss one.
@@ -69,7 +69,7 @@ const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
 const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 // no host but this machine resolves: every outside service is a stand-in below, and one that has none (a worker's request, a map in an iframe) fails at once
-const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'] });
+const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'];
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
@@ -86,7 +86,12 @@ if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(p
 // since 2026-10-22). So the stand-ins go through the page's own DevTools session (Fetch, https and /api only), and the cache stays on.
 // No service worker: on 127.0.0.1 the page registers /sw.js, which fetches every tool page it keeps offline. No ask is judged on it.
 // Reduced motion: the page stops its idle animations, as it does for a person who asks for that.
-const slot = () => browser.newContext({ reducedMotion: 'reduce', serviceWorkers: 'block' });
+// A profile on disk, not an incognito context (browser.newContext): Chromium keeps no compiled-code cache for an incognito profile, so each ask
+// compiled the 320 skill files again. With the cache on (2026-10-29, #1622) the page opened in 1.0 s, but the answer still took 3.0 s and the run
+// still stopped at 1600 of 3187 asks. Each slot is its own browser on its own empty profile, removed at the end of the run.
+const slotDirs = [];
+const slot = () => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'void-bench-slot-')); slotDirs.push(dir);
+  return chromium.launchPersistentContext(dir, { executablePath: exe, headless: true, args: ARGS, reducedMotion: 'reduce', serviceWorkers: 'block' }); };
 const CLEAR_STORAGE = async () => { localStorage.clear(); sessionStorage.clear();
   for (const d of (indexedDB.databases ? await indexedDB.databases() : [])) if (d.name) await new Promise((r) => { const q = indexedDB.deleteDatabase(d.name); q.onsuccess = q.onerror = q.onblocked = () => r(); });
   if (self.caches) for (const k of await caches.keys()) await caches.delete(k); };
@@ -207,7 +212,7 @@ const env = envName(), latency = latencyOf(out.map((x) => x.ms));
 const full = !probeFile && !lastN && !process.env.BENCH_ASKS; // a partial replay is not scored against the floor, unless a floor is named
 const a = probeFile ? { score: out.filter((x) => x.right).length, total: out.length, wrong: [], loadMisses: [], unreplayed: 0, inconclusive: false, note: '', failed: false }
   : await assess({ out, replay: async (i) => { const c = await slot(); try { return (await one(c, todo[i])).right; } finally { await c.close(); } }, floor: full || process.env.BENCH_BEST ? best : null, latency, baseline: best.latency && best.latency[env], pages: PAR });
-await browser.close(); server.close();
+server.close(); for (const d of slotDirs) fs.rmSync(d, { recursive: true, force: true });
 const loadSet = new Set(a.loadMisses);
 for (const x of out) if (!x.right) x.alone = loadSet.has(x.ask + ' -> ' + x.by) ? 'passed alone (load)' : 'misses alone';
 if (a.inconclusive) console.error(a.note);
