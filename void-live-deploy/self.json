@@ -537,13 +537,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T08:37:11Z",
+   "subject": "Verse Brain grows F304's Lenia creature, which evolves its own physics while it lives"
+  },
+  {
+   "at": "2026-10-29T08:33:49Z",
+   "subject": "Refresh the random.org parity evidence lines"
+  },
   {
    "at": "2026-10-29T08:31:17Z",
    "subject": "Random page: preload the card module"
@@ -614,14 +622,6 @@
   },
   {
    "at": "2026-10-29T08:08:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:08:03Z",
-   "subject": "Wheel: the hand-off copy is written on the press, not when the link is aimed"
-  },
-  {
-   "at": "2026-10-29T08:01:59Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
