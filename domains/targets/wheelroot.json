@@ -1,0 +1,18 @@
+{
+ "site": "wheelroot.com (Slate Studio, Drawing Fundamentals)",
+ "kind": "drawing course page for absolute beginners",
+ "chosen": "2026-10-29",
+ "why": "next in the smallest-first ranking of all sites (fewest interactive elements on the home page, ties to the lighter page): 99 nodes, 16.7 KB",
+ "source": ["the site's home page, read 2026-10-29", "https://wheelroot.com/"],
+ "rule": "Verse assimilates the site: every feature it has, plus one notch, on one page wired into the rest of Verse.",
+ "features": [
+  { "id": "course", "theirs": "a 'Drawing Fundamentals' course and a 'Begin the course' button (it links to #enrol and #, with no course behind it)", "plus_one": "the course itself, on the page: 8 drills in 4 units that start with one tap", "void": "beats" },
+  { "id": "fundamentals", "theirs": "line, shape, proportion and shading, named", "plus_one": "2 drills in each unit, each scored from the strokes (distance from the line, roundness, how far off the middle, even steps of darkness)", "void": "beats" },
+  { "id": "daily", "theirs": "'Daily exercises: small drills that build real skill'", "plus_one": "a drill of the day, the same for everyone on a date, and a streak of days in a row", "void": "beats" },
+  { "id": "observation", "theirs": "'See like an artist: train observation, not just hands'", "plus_one": "a shape shown for 4 seconds then drawn from memory, the middle of a line judged by eye, a circle by eye at any size", "void": "beats" },
+  { "id": "progress", "theirs": "'Encouraging pace: progress you can actually see'", "plus_one": "first try and best try per drill, as scores and as the two drawings side by side, and how far up since the first try", "void": "beats" },
+  { "id": "beginners", "theirs": "'Absolute beginners', 'no talent required, just a pencil and a few minutes a day'", "plus_one": "a finger, pen or mouse is the pencil; no account, no cookies, works offline", "void": "beats" },
+  { "id": "cookies", "theirs": "a cookie notice with Accept and Decline", "plus_one": "no cookies at all, so nothing to accept: scores stay in the browser's own storage", "void": "beats" },
+  { "id": "share", "theirs": "none", "plus_one": "a drawing travels in its link and is scored again from its strokes when the link opens", "void": "beats" }
+ ]
+}
