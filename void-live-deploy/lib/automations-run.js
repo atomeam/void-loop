@@ -8,9 +8,9 @@
  * day from webhooks (AUTOMATION_RUN_CAP), and queue.add does not queue the same ask for the same target twice inside
  * QUEUE_DEDUPE_MS. A leaked or looping hook secret costs at most a day's cap, not the build queue.
  */
-import { track } from './actions.js';
+import { track, deferred } from './actions.js';
 import { validate, steps, matches, due, MAX_EVENT, RUN_CAP_DAY, QUEUE_DEDUPE_MS } from './automations.js';
-import { evaluate, pageText, checkText, describe } from './watch.js';
+import { evaluate, pageText, checkText, describe, slowDown, waitAfter, waiting, limitText, skipText, answerOf } from './watch.js';
 import { sameSecret } from './guard.js';
 
 export const TABLES = [
@@ -101,21 +101,39 @@ export async function sampleFor(w, { fetcher = fetch, now = Date.now } = {}) {
     const f = await (await fetcher('https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude + '&current=temperature_2m', { headers: UA })).json().catch(() => null);
     return { temperature: f && f.current ? f.current.temperature_2m : null };
   }
-  const r = await fetcher(w.url, { headers: UA, redirect: 'follow' });
-  if (!r.ok) throw new Error('the page answered ' + r.status);
+  const r = await fetcher(w.url, { headers: UA, redirect: 'follow' }); // one request, never retried here: a refusal waits for the next run
+  if (!r.ok) {
+    const get = (k) => (r.headers && typeof r.headers.get === 'function' ? r.headers.get(k) : '') || '';
+    const e = new Error(answerOf(r.status, get, await r.text().catch(() => ''))); // who answered, so the record can say where a 429 came from
+    e.status = r.status; e.retryAfter = get('retry-after');
+    throw e;
+  }
   return { text: pageText(await r.text()) };
 }
-/** one check of a watch rule: evidence as a watch.check record (owner = the asker's scope), a fresh match told once */
+const keep = (env, id, state, fresh) => env.DB.prepare('INSERT INTO void_watch_state (rule_id, state, at, matched_at) VALUES (?, ?, ?, ?) ON CONFLICT(rule_id) DO UPDATE SET state = excluded.state, at = excluded.at, matched_at = COALESCE(excluded.matched_at, void_watch_state.matched_at)')
+  .bind(id, JSON.stringify(state || null), now(), fresh ? now() : null).run();
+/** one check of a watch rule: evidence as a watch.check record (owner = the asker's scope), a fresh match told once. A site that
+ * asks Verse to slow down (lib/watch.js slowDown) ends the record `deferred` with the next try, kept in the watch's state as `wait`;
+ * until then a run sends no request and writes no record (nothing was done), and the next good answer forgets the wait. */
 export async function watchCheck(env, rule, step, opts = {}) {
-  const w = step.watch, who = rule.scope || 'owner';
+  const w = step.watch, who = rule.scope || 'owner', at = typeof opts.now === 'function' ? opts.now() : Number(opts.now) || Date.now();
   const row = await env.DB.prepare('SELECT state FROM void_watch_state WHERE rule_id = ?').bind(rule.id).first();
   let prev = null; try { prev = row && row.state ? JSON.parse(row.state) : null; } catch (_) {}
+  const wait = prev && prev.wait; if (wait) { prev = { ...prev }; delete prev.wait; if (!Object.keys(prev).length) prev = null; }
+  if (waiting(wait, at)) return skipText(w, wait);
   const out = await track(env, { owner: who, kind: 'watch.check', ref: rule.id }, async () => {
-    const r = evaluate(w, await sampleFor(w, opts), prev);
+    let sample;
+    try { sample = await sampleFor(w, opts); }
+    catch (e) {
+      if (!e || !slowDown(e.status, e.retryAfter)) throw e;
+      const next = waitAfter(e.status, e.retryAfter, wait, at);
+      await keep(env, rule.id, { ...(prev || {}), wait: next }, false); // the last look is kept, so "changes" still compares with it
+      throw deferred(limitText(w, next, e.message));
+    }
+    const r = evaluate(w, sample, prev);
     const fresh = r.matched && !(prev && prev.matched); // a new match; the same one is not told again every tick
     const told = fresh ? (step.tell === 'send' ? 'send stubbed (the confirm line would ask first)' : 'told on the stage') : '';
-    await env.DB.prepare('INSERT INTO void_watch_state (rule_id, state, at, matched_at) VALUES (?, ?, ?, ?) ON CONFLICT(rule_id) DO UPDATE SET state = excluded.state, at = excluded.at, matched_at = COALESCE(excluded.matched_at, void_watch_state.matched_at)')
-      .bind(rule.id, JSON.stringify(r.state || null), now(), fresh ? now() : null).run();
+    await keep(env, rule.id, r.state, fresh);
     if (fresh && step.tell === 'send') await track(env, { owner: who, kind: 'watch.send', ref: rule.id }, async () => {}, { stub: 'would have sent: ' + checkText(w, r, '') + '. Sending is not connected; the confirm line would ask first.' });
     return checkText(w, r, told);
   });
@@ -214,7 +232,7 @@ export async function tick(env, now = Date.now(), opts = {}) {
   for (const r of rows) {
     const rule = { ...JSON.parse(r.rule), id: r.id, enabled: !!r.enabled, scope: r.scope || '' };
     if (!due(rule, lastOf[r.id] || null, now)) continue;
-    const out = await run(env, rule, { tick: true, at }, 'schedule', opts);
+    const out = await run(env, rule, { tick: true, at }, 'schedule', { now, ...opts });
     ran.push({ id: r.id, ok: out.ok, ...(out.skipped ? { skipped: out.skipped } : {}) });
   }
   return { at, checked: rows.length, ran };

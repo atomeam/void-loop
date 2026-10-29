@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --field-entropy: 0.3; --mean-vorticity: 0; --orb-scale: 1; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; transition:filter .4s; filter: hue-rotate(calc(var(--field-entropy)*80deg)) contrast(calc(1+var(--mean-vorticity)*.3)); }
+canvas { display:block; width:100vw; height:100vh; }
+#status { position:fixed; top:8px; left:8px; font-size:12px; opacity:.7; pointer-events:none; }
+.orb { position:absolute; width:48px; height:48px; border-radius:50%; background:radial-gradient(circle, #6cf 0%, #36a 70%, transparent 100%); pointer-events:auto; cursor:pointer; transition:transform .2s, opacity .3s, filter .3s; mix-blend-mode:screen; box-shadow:0 0 20px #48f; }
+.orb.sealed { background:radial-gradient(circle, #fc6 0%, #a63 70%, transparent 100%); box-shadow:0 0 24px #fa4; }
+#controls { position:fixed; bottom:8px; left:8px; font-size:11px; }
+button { background:#222; color:#eee; border:1px solid #444; margin-right:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-agent-fluid-memory-orbs · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: A local population of tiny policy agents (evolved MLP outputs as force vectors) inject into a GPU-accelerated 2D fluid-like">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-agent-fluid-memory-orbs · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: A local population of tiny policy agents (evolved MLP outputs as force vectors) inject into a GPU-accelerated 2D fluid-like">
+<meta property="og:url" content="https://a-to-mind.com/lab/f321-webgpu-agent-fluid-memory-orbs/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f321-webgpu-agent-fluid-memory-orbs/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="status">F321 agent-fluid · loading…</div>
+<div id="controls">
+  <button id="sealBest">Seal best genome</button>
+  <button id="loadLast">Load last sealed</button>
+  <button id="reset">Reset field</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-agent-fluid-memory-orbs</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

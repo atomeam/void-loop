@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { margin:0; background:#0a0a12; color:#c0c8d0; font-family: system-ui, sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.55); padding:10px 14px; border-radius:8px; font-size:13px; max-width:280px; }
+button { background:#1e2a3a; color:#a0d0ff; border:1px solid #3a5a7a; padding:6px 12px; margin:4px 4px 0 0; border-radius:4px; cursor:pointer; }
+button:hover { background:#2a3a4a; }
+#status { margin-top:6px; font-size:12px; color:#88aa88; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand-Driven Ising Field with Local MLP · Verse lab</title>
+<meta name="description" content="True WebXR hand-joint positions (or pointer fallback) serve as causal input to a tiny online-learning MLP.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand-Driven Ising Field with Local MLP · Verse lab">
+<meta property="og:description" content="True WebXR hand-joint positions (or pointer fallback) serve as causal input to a tiny online-learning MLP.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f451-webxr-hand-ising-mlp-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f451-webxr-hand-ising-mlp-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu webxr" defer></script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div><strong>Verse · F451 Ising Hand Field</strong></div>
+  <button id="xrBtn">Enter WebXR</button>
+  <button id="resetBtn">Reset Spins</button>
+  <button id="saveBtn">Save State</button>
+  <div id="status">Initializing…</div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand-Driven Ising Field with Local MLP</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

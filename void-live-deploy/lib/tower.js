@@ -93,6 +93,10 @@ const HAND_FLOORS = [
   { id: 'shopping', site: 'Amazon', url: 'https://www.amazon.com/', ask: 'store', page: '/store/', label: 'Shopping', glyph: '⊡', defer: true, farFuture: true, extra: ['catalogue', 'checkout', 'delivery tracking'],
     gaps: ['no product catalogue beyond Verse\'s own few items (no search across millions of products, no sellers)', 'no cart quantities, saved addresses or payment of its own (checkout hands off to the shop partner)', 'no order history, delivery tracking or returns', 'no reviews, ratings or questions from buyers', 'design polish measured worse (31 defects vs 2)'],
     plan: 'after the small single-purpose sites: first a real product search over open catalogues with price and stock shown, then a cart and order history kept in the browser, then tracking for orders placed elsewhere (carrier numbers), then reviews; each step ships only when its journey passes' },
+  // team chat (owner, 2026-10-29: "verse should reverse engineer and create its own version of slack", "so it can bring in lots of agents and
+  // constantly keep all of them busy itself"): /team/, channels, threads, mentions, reactions, search and presence with agents as members and
+  // Verse handing each idle agent its next job. A giant, so deferred behind the small sites like the other leaders; the gate measures the page.
+  { id: 'team chat', site: 'Slack', url: 'https://slack.com/', ask: 'team chat', page: '/team/', label: 'Team chat', glyph: '#', defer: true, extra: ['channels and threads', 'agents as members', 'search and mentions'] },
   { id: 'chat', site: 'WhatsApp Web', url: 'https://web.whatsapp.com/', ask: 'chat', label: 'Chat', glyph: '❝', defer: true, extra: ['groups', 'media', 'calls'] },
   { id: 'video', site: 'YouTube', url: 'https://www.youtube.com/', ask: 'play a video', label: 'Video', glyph: '▶', defer: true, farFuture: true, extra: ['catalogue', 'streaming quality', 'recommendations'],
     gaps: ['no Verse video page at all: the floor has nothing to measure', 'no catalogue, search or channels', 'no player with seek, quality and captions', 'no uploads, comments, playlists or recommendations', 'no adaptive streaming, live video or watch-later offline; the old speed and design rows measured a page that plays nothing'],
@@ -377,12 +381,13 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // a site counted by tools/tower-size.mjs (controls and bytes) by its controls, then its bytes; then a site only weighed, by its weight; then an
   // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
   // came. Without it the old order stands.
-  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the fight in progress stays first until it is won
+  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
   const counted = (f) => !!f.size && trustedControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2) is not counted
   const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
   const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
   const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
-  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; });
+  // pinned: the target (tower.target.json) stands first because it is the target, not because it is the smallest, so the card says which
+  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten; });
   return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
