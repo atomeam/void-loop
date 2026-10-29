@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 966,
+ "counted": 967,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1949,6 +1949,13 @@
    "tests": 6
   },
   {
+   "file": "lib/answer-edge.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
@@ -2865,6 +2872,7 @@
     "lib/subject-kinds.js",
     "lib/card-kinds.js",
     "lib/free-pics.js",
+    "lib/answer-edge.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -3752,6 +3760,33 @@
     "lib/state.js"
    ],
    "importedBy": []
+  },
+  "lib/answer-edge.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
   },
   "lib/answer-honesty.js": {
    "imports": [
