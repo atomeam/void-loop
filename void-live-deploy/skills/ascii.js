@@ -3,16 +3,23 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "ascii for hello", "char codes of world", "what is the ascii of A".
  */
-export function isAscii(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
-  return /^(?:please\s+)?(?:(?:ascii|char\s+codes?|unicode)\s+(?:for|of)\s+(.+)|what\s+is\s+the\s+(?:ascii|unicode)\s+of\s+(.+))$/.test(t);
+/** the text whose codes are asked for, or null when the ask is not one for this skill (a closing ? ! or . is not part of it). Pure. */
+export function phraseOf(text) {
+  const m = /^(?:please\s+)?(?:(?:ascii|char\s+codes?|unicode)\s+(?:for|of)\s+(.+)|what\s+is\s+the\s+(?:ascii|unicode)\s+of\s+(.+))$/i.exec(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return m ? (m[1] || m[2]).trim() : null;
 }
+
+export function isAscii(text) {
+  return phraseOf(text) !== null;
+}
+
+/** "h: 104, i: 105", each character with its code point in decimal. Pure. */
+export const codesOf = (phrase) => [...phrase].map((c) => c + ': ' + c.codePointAt(0)).join(', ');
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const m = /(?:ascii|char\s+codes?|unicode)\s+(?:for|of)\s+(.+)|what\s+is\s+the\s+(?:ascii|unicode)\s+of\s+(.+)/i.exec(text);
-  const phrase = (m && (m[1] || m[2]) || 'A').trim();
-  const codes = [...phrase].map((c) => c + ': ' + c.codePointAt(0)).join(', ');
+  const phrase = phraseOf(text) || 'A';
+  const codes = codesOf(phrase);
   showPage((p) => {
     p.innerHTML = '<h2>ASCII / Unicode</h2><p>' + esc(codes) + '</p><div class="sub">for “' + esc(phrase) + '”</div><div class="src">Character codes from this device.</div>';
   });
