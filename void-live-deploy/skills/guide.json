@@ -16,8 +16,8 @@
    "count": {
     "experiment": 0,
     "tested": 16,
-    "checked": 3,
-    "proven": 36
+    "checked": 1,
+    "proven": 38
    },
    "from": 6,
    "to": 61
@@ -44,8 +44,8 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 2,
-    "proven": 15
+    "checked": 1,
+    "proven": 16
    },
    "from": 96,
    "to": 116
@@ -70,8 +70,8 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 3,
+    "experiment": 0,
+    "tested": 4,
     "checked": 2,
     "proven": 14
    },
@@ -169,9 +169,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 5
+    "proven": 6
    },
    "from": 376,
    "to": 382
@@ -622,8 +622,10 @@
     "make it walk",
     "walk around"
    ],
-   "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the making things it is the one a traveller is told to ask for first. Let the stage be the proof.",
+   "glow": 100,
    "n": 23
   },
   {
@@ -775,7 +777,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 4 real asks in the benchmark",
-   "flavor": "Among the making things it is the one a traveller is told to ask for first. Let the stage be the proof.",
+   "flavor": "Proven 4 times over by those who asked, and kept among the making things. Let the stage be the proof.",
    "n": 32
   },
   {
@@ -972,8 +974,10 @@
     "show me your brain",
     "your brain"
    ],
-   "tier": "checked",
-   "why": "a self-test, 6 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "An old art of the making things, tested each day before the sun is up. The void remembers each asking.",
+   "glow": 100,
    "n": 44
   },
   {
@@ -1997,8 +2001,10 @@
     "cheap flights",
     "flight time london new york"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 2 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 97
   },
   {
@@ -2741,8 +2747,9 @@
     "all tools",
     "every tool"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 140
   },
   {
@@ -6837,8 +6844,10 @@
     "random advice",
     "tell me something wise"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the safety and small delights, this one is trusted enough to be taught. Turn the page when you are done.",
+   "glow": 100,
    "n": 377
   },
   {

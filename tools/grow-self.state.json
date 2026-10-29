@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40829044589",
-  "at": "2026-10-29T06:26:01Z",
-  "what": "Verse hardened itself: 6 benchmark ask(s) for sports-browse, textgen, backdrop, boards.  Why these: tab (no benchmark ask, evidence tier: tested, 22 failed runs name it); sports-browse (no benchmark ask, evidence tier: experiment); textgen (no benchmark ask, evidence tier: experiment); toolkit (no benchmark ask, evidence tier: experiment); backdrop (no benchmark ask, evidence tier: checked); boards (no benchmark ask, evidence tier: checked). New phrases: “browse sports” now opens sports-browse; “list of sports” now opens sports-browse; “random generators” now opens textgen; “backdrop: a cyberpunk rooftop” now opens backdrop; “text boards” now opens boards; “open the image boards” now opens boards. Did not route: put in the page; draft for me; fantasy name generator; band name generator.",
-  "try": "browse sports",
+  "run": "40842400330",
+  "at": "2026-10-29T08:29:44Z",
+  "what": "Verse hardened itself: 14 benchmark ask(s) for toolkit, flights, verse-brain, walker, advice.  Why these: tab (no benchmark ask, evidence tier: tested, 22 failed runs name it); toolkit (no benchmark ask, evidence tier: experiment); flights (no benchmark ask, evidence tier: checked); verse-brain (no benchmark ask, evidence tier: checked); walker (no benchmark ask, evidence tier: checked); advice (no benchmark ask, evidence tier: tested). New phrases: “what tools do you have” now opens toolkit; “all tools” now opens toolkit; “every tool” now opens toolkit; “flights to lisbon” now opens flights; “cheap flights” now opens flights; “verse brain” now opens verse-brain; “show me your brain” now opens verse-brain; “your brain” now opens verse-brain; “let it walk” now opens walker; “make it walk” now opens walker; “walk around” now opens walker; “give me advice” now opens advice; “random advice” now opens advice; “tell me something wise” now opens advice. Did not route: put in the page; draft for me; flight time london new york.",
+  "try": "what tools do you have",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-29T04:23:08Z",
-    "try": "coin toss",
-    "closedAt": "2026-10-29T06:25:25Z"
+    "at": "2026-10-29T06:26:01Z",
+    "try": "browse sports",
+    "closedAt": "2026-10-29T08:29:12Z"
   }
 }
