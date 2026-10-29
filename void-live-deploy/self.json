@@ -545,6 +545,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:59:03Z",
+   "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
+  },
+  {
+   "at": "2026-10-29T15:57:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:56:48Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -614,14 +622,6 @@
   },
   {
    "at": "2026-10-29T15:34:04Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:33:45Z",
-   "subject": "MultiVerse, with a capital V (owner's spelling); the stage's source void.html carries the rename and both copies match it"
-  },
-  {
-   "at": "2026-10-29T15:33:37Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
