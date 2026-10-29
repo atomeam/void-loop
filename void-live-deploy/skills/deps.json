@@ -5441,6 +5441,9 @@
   },
   "lib/fanfic-de.js": {
    "imports": [],
+   "external": [
+    ": "
+   ],
    "importedBy": []
   },
   "lib/fanfic.js": {
