@@ -48,7 +48,7 @@ export const PRODUCTS = [
   {
     id: 'full-stack-audit',
     name: 'Full Stack Audit',
-    price: '$325',
+    price: '$300',
     page: 'https://a-to-mind.com/full-stack-audit/',
     adds: 'a top-to-bottom review of every automation you have, with a written repair plan ranked by priority',
     includedIn: '',

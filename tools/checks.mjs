@@ -465,6 +465,7 @@ for (const [name, file] of [
   ['card-art-route', 'card-art-route.test.mjs'],
   ['react', 'react.test.mjs'],
   ['tally', 'tally.test.mjs'],
+  ['earn', 'earn.test.mjs'], // Verse's earn loop: find, build (checked against the official page), price, measure, learn (tools/earn.mjs)
   ['card-subject', 'card-subject.test.mjs'],
   ['page-picture', 'page-picture.test.mjs'],
   ['card-forge', 'card-forge.test.mjs'],

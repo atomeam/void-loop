@@ -6,6 +6,7 @@
   <title>Power Automate 429 &quot;Rate limit is exceeded&quot;: why your flow is throttled and how to fix it</title>
   <meta name="description" content="A connector your flow uses has its own limit on calls per connection in a time window. What it means and the steps to fix it.">
   <link rel="canonical" href="https://a-to-mind.com/fix/power-automate-429-rate-limit-exceeded/">
+  <meta name="offer" content="power-automate-429-rate-limit-exceeded">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="Power Automate 429 &quot;Rate limit is exceeded&quot;: why your flow is throttled and how to fix it">
   <meta property="og:description" content="A connector your flow uses has its own limit on calls per connection in a time window. What it means and the steps to fix it.">
@@ -46,6 +47,7 @@
     .btn { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); padding: 9px 16px; text-decoration: none; display: inline-block; }
     .btn.solid { background: var(--accent); color: #fff; }
     .muted { color: var(--muted); font-size: 14px; }
+    .quick { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 15px; }
   </style>
 </head>
 <body>
@@ -53,6 +55,7 @@
   <p><a href="/">&larr; Verse &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
   <h1>Power Automate 429 &quot;Rate limit is exceeded&quot;: why your flow is throttled and how to fix it</h1>
   <p class="lead">You see: <code>429 · Rate limit is exceeded</code></p>
+  <p class="quick">The steps below are free. Rather have it done? <a href="#help" data-offer-click="power-automate-429-rate-limit-exceeded">We fix it for you, <span data-fix-price>$25</span> flat</a>.</p>
 
   <h2>What it means</h2>
   <p>A connector your flow uses has its own limit on calls per connection in a time window. Your flow went over it, so the service answered 429 Too Many Requests and told you how many seconds to wait. Retries and pagination count as calls too.</p>
@@ -68,16 +71,16 @@
   <h2>If it keeps coming back</h2>
   <p>Flows that keep hitting limits can be slowed down, and a flow throttled continuously for 14 days can be turned off. Check the connector's Throttling section on Microsoft Learn for its exact numbers.</p>
 
-  <div class="help">
+  <div class="help" id="help">
     <div class="box">
       <h2>Still stuck? Ask Verse, free</h2>
       <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
       <a class="btn" data-fix="ask" href="/?q=my%20power%20automate%20flow%20is%20failing%20with%20429%20Rate%20limit%20is%20exceeded">Ask Verse about this error</a>
     </div>
     <div class="box">
-      <h2>Or have it fixed: <span id="fix-price">$25</span></h2>
+      <h2>Or have it fixed: <span id="fix-price" data-fix-price>$25</span></h2>
       <p>One broken automation, diagnosed and repaired, with proof it runs again. Reply to the receipt with what stopped.</p>
-      <a class="btn solid" id="fix-buy" data-fix="buy" href="https://moonbeam846.gumroad.com/l/eozcma" rel="noopener">Get the One-Time Fix</a>
+      <a class="btn solid" id="fix-buy" data-fix="buy" data-offer-click="power-automate-429-rate-limit-exceeded" href="https://moonbeam846.gumroad.com/l/eozcma?utm_source=a-to-mind&amp;utm_medium=fix&amp;utm_campaign=power-automate-429-rate-limit-exceeded" rel="noopener">Get the One-Time Fix</a>
     </div>
   </div>
   <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>.</p>
@@ -97,11 +100,13 @@
     const row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
     if (!row) return; // the page's own price and link stand
     const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
-    if (row.price_cents && price) price.textContent = money(row);
+    if (row.price_cents) document.querySelectorAll('[data-fix-price]').forEach(function (el) { el.textContent = money(row); });
     if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
-    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url;
+    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url.split('?')[0] + (buy.search || ''); // the page's own utm stays: it names the page that sold
   }).catch(function (e) { console.warn('[fix] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
+<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>
 </body>
 </html>

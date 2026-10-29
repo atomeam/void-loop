@@ -17,7 +17,7 @@ test('the card opens on the ways people ask to buy, and not on look-alikes', () 
 });
 
 test('the four services are rows in the product list, priced, and every one is on sale', () => {
-  const want = [['one-time-fix', '$25', 'eozcma'], ['keep-it-running', '$49 a month', 'keep-it-running-membership'], ['full-stack-audit', '$325', 'full-stack-audit'], ['first-automation-setup', '$100', 'first-automation-setup']];
+  const want = [['one-time-fix', '$25', 'eozcma'], ['keep-it-running', '$49 a month', 'keep-it-running-membership'], ['full-stack-audit', '$300', 'full-stack-audit'], ['first-automation-setup', '$100', 'first-automation-setup']];
   assert.deepEqual(SERVICES.map((p) => p.id), want.map((w) => w[0]));
   for (const [id, price, slug] of want) {
     const p = productById(id);

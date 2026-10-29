@@ -6,6 +6,7 @@
   <title>First Automation Setup: your first automation, built for you</title>
   <meta name="description" content="Tell us the task you do by hand twice a week. We build the automation end to end with the tools you already use, test it, and hand it over in plain English. $100.">
   <link rel="canonical" href="https://a-to-mind.com/first-automation-setup/">
+  <meta name="offer" content="first-automation-setup">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="First Automation Setup">
   <meta property="og:description" content="Tell us the task you do by hand twice a week. We build the automation end to end with the tools you already use, test it, and hand it over in plain English. $100.">
@@ -63,7 +64,7 @@
     <h2 style="margin:0 0 4px">First Automation Setup</h2>
     <div class="price" id="price">$100</div>
     <p class="note">built, tested and handed over</p>
-    <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/first-automation-setup" rel="noopener">Buy &mdash; First Automation Setup</a>
+    <a class="buy" id="buy" data-offer-click="first-automation-setup" href="https://moonbeam846.gumroad.com/l/first-automation-setup?utm_source=a-to-mind&amp;utm_medium=service&amp;utm_campaign=first-automation-setup" rel="noopener">Buy &mdash; First Automation Setup</a>
     <p class="muted" id="unavailable" hidden>Not on sale right now &mdash; email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
   </div>
 
@@ -81,7 +82,7 @@
   </ul>
 
   <h2>Is this the right one?</h2>
-  <p>Anyone starting from zero. Most of our setup customers have never set up an automation before.</p>
+  <p>Anyone starting from zero: you do not need to have set up an automation before, or know what the tools are called.</p>
   <p class="muted">Not sure? <a href="/?q=what%20do%20you%20sell">Ask Verse</a> &mdash; it shows everything for sale with live prices &mdash; or email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> before you buy.</p>
 </main>
 <script>
@@ -94,9 +95,11 @@
     if (!row) return; // the page's own price and link stand
     if (row.price_cents) document.getElementById('price').textContent = money(row);
     if (row.available === false) { document.getElementById('buy').hidden = true; document.getElementById('unavailable').hidden = false; return; }
-    if (/^https:\/\//.test(row.url || '')) document.getElementById('buy').href = row.url;
+    if (/^https:\/\//.test(row.url || '')) { var b = document.getElementById('buy'); b.href = row.url.split('?')[0] + b.search; } // the utm stays: it names the page that sold
   }).catch(function (e) { console.warn('['+'first-automation-setup'+'] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
+<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>
 </body>
 </html>

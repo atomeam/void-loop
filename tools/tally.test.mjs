@@ -22,8 +22,11 @@ const post = (env, body, { ip = IP, type = 'application/json', headers = {} } = 
 const get = (env, of) => route.onRequestGet({ env, request: new Request('https://x/api/tally?of=' + encodeURIComponent(of)) });
 const today = new Date().toISOString().slice(0, 10);
 
-test('the list is closed: one tally (coin) with two values, and nothing else counts', () => {
-  assert.deepEqual(TALLY_IDS, ['coin']); assert.deepEqual([...TALLIES.coin], ['heads', 'tails']); assert.ok(Object.isFrozen(TALLIES));
+test('the list is closed: the coin with two values and the two offer tallies on the generated offer list, and nothing else counts', () => {
+  assert.deepEqual(TALLY_IDS, ['coin', 'offer-view', 'offer-click']); assert.deepEqual([...TALLIES.coin], ['heads', 'tails']); assert.ok(Object.isFrozen(TALLIES));
+  assert.ok(Object.isFrozen(TALLIES['offer-view']) && TALLIES['offer-view'].includes('one-time-fix') && TALLIES['offer-view'].includes('zapier-401-unauthorized'));
+  for (const bad of ['', 'ONE-TIME-FIX', 'heads', 'constructor', '../x', 'a'.repeat(65)]) assert.equal(isValue('offer-click', bad), false, String(bad));
+  assert.ok(TALLIES['offer-view'].every((v) => /^[a-z0-9][a-z0-9-]{0,63}$/.test(v)));
   for (const bad of ['', 'HEADS', 'constructor', '__proto__', 'toString', null, 5]) assert.equal(isValue('coin', bad), false, String(bad));
   assert.equal(isValue('__proto__', 'heads'), false);
 });

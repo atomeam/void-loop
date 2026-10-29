@@ -1,0 +1,13 @@
+{
+  "about": "What rivals charge for what Verse sells: the evidence Verse appraises its prices from (tools/earn.mjs, the store's public price log /store/prices.json). Each row says where the number was seen and when; a builder or the loop adds rows, never a visitor.",
+  "offers": {
+    "one-time-fix": {
+      "what": "one broken automation (a Zap, a Make scenario, an n8n workflow, a CI job) diagnosed and repaired",
+      "comps": [
+        { "who": "Fiverr Zapier 'set up or fix' gigs, low end", "cents": 2000, "seen": "2026-10-26", "source": "https://www.fiverr.com/gigs/zapier" },
+        { "who": "Fiverr Zapier 'set up or fix' gigs, common starting price", "cents": 2500, "seen": "2026-10-26", "source": "https://www.fiverr.com/gigs/zapier" },
+        { "who": "Fiverr top-rated 'set up or fix zapier zap' gig (1,000+ reviews)", "cents": 6000, "seen": "2026-10-26", "source": "https://www.fiverr.com/gigs/zapier-automation" }
+      ]
+    }
+  }
+}

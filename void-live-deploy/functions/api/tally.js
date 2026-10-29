@@ -9,7 +9,9 @@
 //     3 writes a request). Past a limit the answer is 429 with Retry-After;
 //   - so push a count up. THAT IS NOT PREVENTED: the tally is anonymous, so one person with many addresses (a botnet or a rotating proxy) can skew
 //     it, by at most 20 x 600 a day per address; the ceilings above bound how fast, and a day's count stops at 9,999,999. The counts are a curiosity
-//     ("everyone today: 51% heads"), never a vote that decides anything;
+//     ("everyone today: 51% heads"), never a vote that decides anything. The offer tallies (offer-view, offer-click: how often an offer page
+//     was seen and its buy button pressed, /offer.js) can be pushed up the same way; the earn loop (tools/earn.mjs) reads them only as a hint
+//     of which pages to write more of, never to set a price or pay anything, and sales come from Gumroad's own keyed pings, not from here;
 //   - fill the table: two rows a day per tally (one per value), because the lists are closed.
 // The minute limits live in the edge cache (lib/guard.js bump, per data centre, best effort); the daily limits are rows in D1. With no D1 or no SALT
 // the route is off (503) rather than unguarded. No model, no KV, no third party. Same-origin only: no CORS header, and a foreign Origin is refused.

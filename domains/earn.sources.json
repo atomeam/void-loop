@@ -1,0 +1,57 @@
+{
+  "about": "Where Verse's earn loop (tools/earn.mjs) finds errors people hit and will pay to have fixed: official documentation only, never a forum or a third-party blog. kind code: an index links one page per error and the error is the code in the link. kind headings: the listed pages (and, with index and link, the pages an index links to) have the error messages as their headings. A candidate ships only when its error text is found word for word on the official page it cites, and never when a page already covers it. weight is Verse's prior for how likely a person hitting this platform's errors pays for a fix (Make and n8n users run business automations; a Vercel or Cloudflare error is often a developer's own to fix); the loop multiplies it by what each platform's pages earn and get pressed (domains/earnings-log.json weights).",
+  "sources": [
+    {
+      "platform": "Vercel",
+      "weight": 0.7,
+      "kind": "code",
+      "index": "https://vercel.com/docs/errors",
+      "hosts": ["vercel.com"],
+      "link": "^https://vercel\\.com/docs/errors/([A-Za-z][A-Za-z0-9_]{3,63})/?$",
+      "upper": true,
+      "doc": "https://vercel.com/docs/errors/$1"
+    },
+    {
+      "platform": "n8n",
+      "weight": 0.8,
+      "kind": "headings",
+      "hosts": ["docs.n8n.io"],
+      "pages": [
+        "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/common-issues/",
+        "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/common-issues/",
+        "https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.gmail/common-issues/",
+        "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.code/common-issues/",
+        "https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/common-issues/",
+        "https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.postgres/common-issues/"
+      ],
+      "heading": "^(?:Error:\\s*)?(.{6,140})$"
+    },
+    {
+      "platform": "Make",
+      "weight": 0.9,
+      "kind": "headings",
+      "hosts": ["help.make.com"],
+      "pages": [
+        "https://help.make.com/common-errors-and-warnings-and-their-fixes",
+        "https://help.make.com/fix-errors-and-warnings"
+      ],
+      "heading": "^(?:Error:\\s*)?(.{6,140})$"
+    },
+    {
+      "platform": "Cloudflare",
+      "weight": 0.6,
+      "kind": "headings",
+      "index": "https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/",
+      "self": true,
+      "hosts": ["developers.cloudflare.com"],
+      "link": "^https://developers\\.cloudflare\\.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-5\\d\\d/?$",
+      "heading": "^(Error 5\\d\\d)\\b"
+    }
+  ],
+  "caps": {
+    "fetches": 40,
+    "model_calls": 6,
+    "new_pages": 3,
+    "retry_dropped_after_days": 30
+  }
+}

@@ -35,7 +35,7 @@ export function totals(rows) {
     const res = String(r.resource || p.resource_name || 'sale');
     if (res === 'sale') {
       const cents = Math.max(0, Math.round(Number(p.price) || 0));
-      if (!sales.has(id)) sales.set(id, { cents, currency: String(p.currency || 'usd').toLowerCase() });
+      if (!sales.has(id)) sales.set(id, { cents, currency: String(p.currency || 'usd').toLowerCase(), offer: offerOf(p) });
       if (String(p.refunded) === 'true') refunded.add(id);
       if (String(p.disputed) === 'true' && String(p.dispute_won) !== 'true') disputed.add(id);
     } else if (res === 'refund') refunded.add(id);
@@ -43,12 +43,28 @@ export function totals(rows) {
     else if (res === 'dispute_won') won.add(id);
   }
   let gross = 0, back = 0;
+  const by = {}, byPage = {};
   for (const [id, s] of sales) {
     gross += s.cents;
-    if (refunded.has(id) || (disputed.has(id) && !won.has(id))) back += s.cents;
+    const lost = refunded.has(id) || (disputed.has(id) && !won.has(id));
+    if (lost) back += s.cents;
+    for (const [map, k] of [[by, s.offer.product], [byPage, s.offer.page]]) {
+      const o = (map[k] ||= { sales: 0, gross_cents: 0, earned_cents: 0 });
+      o.sales += 1; o.gross_cents += s.cents; if (!lost) o.earned_cents += s.cents;
+    }
   }
   const earned = gross - back;
-  return { gross_cents: gross, refunded_cents: back, earned_cents: earned, budget_cents: Math.max(0, earned), sales: sales.size };
+  return { gross_cents: gross, refunded_cents: back, earned_cents: earned, budget_cents: Math.max(0, earned), sales: sales.size, by_offer: by, by_page: byPage };
+}
+
+/** where a sale came from, for the earn loop (tools/earn.mjs): the product (its Gumroad permalink) and the page that sent the buyer (the
+ *  utm_campaign our buy links carry, which Gumroad passes back in url_params; "direct" without one). Only short slugs are ever kept: no name,
+ *  no email. -> { product, page }. Pure. */
+export function offerOf(p) {
+  const slug = (v) => { const s = String(v || '').toLowerCase().trim(); return /^[a-z0-9][a-z0-9-]{0,63}$/.test(s) ? s : ''; };
+  const u = (p && typeof p.url_params === 'object' && p.url_params) || {};
+  const product = slug(p && p.permalink) || slug((String((p && p.product_permalink) || '').split('/l/')[1] || '').split(/[?#]/)[0]) || 'unknown';
+  return { product, page: slug(u.utm_campaign) || 'direct' };
 }
 
 export async function readEarnings(env) {

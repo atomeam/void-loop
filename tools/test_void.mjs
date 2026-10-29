@@ -1855,7 +1855,22 @@ try {
     check('publish: "forget me" also takes the public page down (it was live, then 404, row gone); a browser agent cannot publish or unpublish',
       up === 200 && fg.status === 200 && afterForget === 404 && !rowC && Array.isArray(agentTry) && agentTry.every((x) => /person at the screen/.test(String(x))),
       JSON.stringify({ up, forget: fg.status, afterForget, rowC, agentTry }));
-    await O.ctx.close(); }
+    await O.ctx.close();
+    // a free Verse that tries to publish meets the offer at that moment (the earn loop's lever: paid Verse where it is wanted, once, no timer):
+    // the reason, the price line the "paid Verse" ask gives, and the Verse Monthly link carrying the account id, counted by /offer.js
+    const Fr = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", ' + JSON.stringify(JSON.stringify({ token: F, userId: 'userF' })) + ');' });
+    await Fr.ctx.route(/\/api\/mine$/, (rt) => rt.fulfill(json({ data: null, rev: 0, updated: null })));
+    await Fr.ctx.route(/\/api\/publish$/, async (rt) => { const q = rt.request(); const res = await publishFn['onRequest' + q.method()[0] + q.method().slice(1).toLowerCase()]({ request: new Request('https://a-to-mind.com/api/publish', { method: q.method(), headers: { 'content-type': 'application/json', authorization: (await q.allHeaders()).authorization || '' }, body: q.method() === 'GET' || q.method() === 'DELETE' ? undefined : q.postData() }), env }); return rt.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
+    await Fr.p.reload(); await Fr.p.waitForTimeout(600);
+    await Fr.ask('publish my void as @freebie', 300); await until(async () => /Put your Verse at/.test(await Fr.whisper()), 15000);
+    await Fr.ask('yes', 300); const offer = await until(async () => { const w = await Fr.whisper(); return /part of paid Verse/.test(w) ? w : ''; }, 15000) || await Fr.whisper();
+    const offerLink = await Fr.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel, offer: a.dataset.offerClick })).catch(() => null);
+    const freeRow = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userF'").first();
+    check('publish: a free Verse that tries to publish is told it is part of paid Verse, with the price, what it adds and the Verse Monthly link for its account (counted, never opened by itself); nothing is published',
+      /^Publishing your Verse at its own address is part of paid Verse\. Paid Verse is \$49 a month: more model answers/.test(offer) && /buy it on Gumroad$/.test(offer)
+      && offerLink && offerLink.href === 'https://moonbeam846.gumroad.com/l/yinmj?void=userF' && offerLink.target === '_blank' && /noopener/.test(offerLink.rel) && offerLink.offer === 'void-monthly'
+      && !freeRow && Fr.ctx.pages().length === 1 && !Fr.errors.length, JSON.stringify({ offer, offerLink, freeRow, errors: Fr.errors }));
+    await Fr.ctx.close(); }
   // More of the list: directions, definitions (Wiktionary), weekday countdowns, "what day is it in", the time gap between two places.
   if (want("More of the list: directions, definitions (Wiktionary), weekday countdowns, \"what day is i")) { const D = await fresh(); const net = [];
     await D.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url(); const tok = /name=tokyo/i.test(u), lon = /name=london/i.test(u);
@@ -6466,9 +6481,10 @@ try {
       const price = await until(async () => { const t = await V.p.$eval('#price', (e) => e.textContent).catch(() => ''); return t === want ? t : ''; }, 4000) || await V.p.$eval('#price', (e) => e.textContent).catch(() => '');
       const buy = await V.p.$eval('#buy', (e) => ({ href: e.href, hidden: e.hidden, rel: e.rel })).catch(() => null);
       const h1 = await V.p.$eval('h1', (e) => e.textContent).catch(() => '');
-      got.push({ id, price, ok: price === want && !!buy && buy.href === 'https://moonbeam846.gumroad.com/l/' + slug && !buy.hidden && /noopener/.test(buy.rel) && h1.length > 10 });
+      const offer = await V.p.$eval('meta[name="offer"]', (e) => e.content).catch(() => '');
+      got.push({ id, price, ok: price === want && !!buy && buy.href === 'https://moonbeam846.gumroad.com/l/' + slug + '?utm_source=a-to-mind&utm_medium=service&utm_campaign=' + id && !buy.hidden && /noopener/.test(buy.rel) && h1.length > 10 && offer === id });
     }
-    check('every service has its page: it loads, shows the live price from /api/catalog, and links its Gumroad product', got.every((g) => g.ok) && !V.errors.length, JSON.stringify(got) + ' ' + V.errors.join(' | '));
+    check('every service has its page: it loads, shows the live price from /api/catalog, and links its Gumroad product (the link names the page that sold, the page names its offer for the counter)', got.every((g) => g.ok) && !V.errors.length, JSON.stringify(got) + ' ' + V.errors.join(' | '));
     await V.ctx.close(); }
   // The fix pages (/fix/, tools/fix-pages.mjs): the hub lists every error page; each page loads with its steps and sources,
   // shows the One-Time Fix's live price (stubbed at $26 to prove the live read) and its Gumroad link, fits a phone with no
@@ -6480,14 +6496,16 @@ try {
     await V.p.setViewportSize({ width: 375, height: 760 });
     await V.p.goto(base + 'fix/');
     const hub = await V.p.$$eval('main a[href^="/fix/"]', (as) => as.map((a) => a.getAttribute('href')));
-    const hubOk = FP.every((p) => hub.includes('/fix/' + p.slug + '/'));
-    for (const p of FP) {
+    const hubOk = FP.every((p) => (p.status === 'retired') !== hub.includes('/fix/' + p.slug + '/'));
+    for (const p of FP.filter((x) => x.status !== 'retired')) {
       await V.p.goto(base + 'fix/' + p.slug + '/');
       const price = await until(async () => { const t = await V.p.$eval('#fix-price', (e) => e.textContent).catch(() => ''); return t === '$26' ? t : ''; }, 4000);
       const info = await V.p.evaluate(() => ({ h1: (document.querySelector('h1') || {}).textContent || '', steps: document.querySelectorAll('ol li').length,
         sources: document.querySelectorAll('ul.muted a[href^="https://"]').length, buy: (document.getElementById('fix-buy') || {}).href || '',
-        wide: document.documentElement.scrollWidth > window.innerWidth, ask: (document.querySelector('[data-fix="ask"]') || {}).href || '' }));
-      got.push({ slug: p.slug, ok: !!price && info.h1 === p.title && info.steps === p.steps.length && info.sources === p.sources.length && /\/l\/eozcma$/.test(info.buy) && !info.wide && /\?q=/.test(info.ask), info: price ? '' : info });
+        wide: document.documentElement.scrollWidth > window.innerWidth, ask: (document.querySelector('[data-fix="ask"]') || {}).href || '',
+        quick: ((document.querySelector('.quick') || {}).textContent || '').replace(/\s+/g, ' '), offer: (document.querySelector('meta[name="offer"]') || {}).content || '' }));
+      got.push({ slug: p.slug, ok: !!price && info.h1 === p.title && info.steps === p.steps.length && info.sources === p.sources.length && info.buy === 'https://moonbeam846.gumroad.com/l/eozcma?utm_source=a-to-mind&utm_medium=fix&utm_campaign=' + p.slug
+        && /free\. Rather have it done\? We fix it for you, \$26 flat/.test(info.quick) && info.offer === p.slug && !info.wide && /\?q=/.test(info.ask), info: price ? '' : info });
     }
     // follow one page's "Ask Verse" link: Verse takes it as a broken-automation ask and shows the fix
     await V.p.goto(base + 'fix/zapier-401-unauthorized/'); await V.p.click('[data-fix="ask"]');

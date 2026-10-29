@@ -6,6 +6,7 @@
   <title>Keep-It-Running Plan: automation monitoring and repair</title>
   <meta name="description" content="Your automations watched around the clock: live monitoring with alerts, repairs included when something breaks, and a monthly plain-words report. $49 a month, cancel anytime.">
   <link rel="canonical" href="https://a-to-mind.com/keep-it-running/">
+  <meta name="offer" content="keep-it-running">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="Keep-It-Running Plan">
   <meta property="og:description" content="Your automations watched around the clock: live monitoring with alerts, repairs included when something breaks, and a monthly plain-words report. $49 a month, cancel anytime.">
@@ -63,7 +64,7 @@
     <h2 style="margin:0 0 4px">Keep-It-Running Plan</h2>
     <div class="price" id="price">$49 a month</div>
     <p class="note">cancel anytime, no lock-in</p>
-    <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/keep-it-running-membership" rel="noopener">Buy &mdash; Keep-It-Running Plan</a>
+    <a class="buy" id="buy" data-offer-click="keep-it-running" href="https://moonbeam846.gumroad.com/l/keep-it-running-membership?utm_source=a-to-mind&amp;utm_medium=service&amp;utm_campaign=keep-it-running" rel="noopener">Buy &mdash; Keep-It-Running Plan</a>
     <p class="muted" id="unavailable" hidden>Not on sale right now &mdash; email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
   </div>
 
@@ -94,9 +95,11 @@
     if (!row) return; // the page's own price and link stand
     if (row.price_cents) document.getElementById('price').textContent = money(row);
     if (row.available === false) { document.getElementById('buy').hidden = true; document.getElementById('unavailable').hidden = false; return; }
-    if (/^https:\/\//.test(row.url || '')) document.getElementById('buy').href = row.url;
+    if (/^https:\/\//.test(row.url || '')) { var b = document.getElementById('buy'); b.href = row.url.split('?')[0] + b.search; } // the utm stays: it names the page that sold
   }).catch(function (e) { console.warn('['+'keep-it-running'+'] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
+<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>
 </body>
 </html>

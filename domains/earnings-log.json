@@ -1,0 +1,39 @@
+{
+ "about": "What Verse earned and what each offer did, one row a day (tools/earn.mjs, the earn loop). Counts and totals only: no name, no email, no address. views and clicks are the public offer counter (/api/tally, anonymous and inflatable, a hint); sales and cents are Gumroad's own keyed pings (/api/earnings).",
+ "days": [
+  {
+   "day": "2026-10-26",
+   "earned_cents": 0,
+   "sales": 0,
+   "budget_cents": 0,
+   "spending": "off: nothing earned yet",
+   "views": 0,
+   "clicks": 0,
+   "published": [],
+   "dropped": 0,
+   "retired": [],
+   "priced": [
+    "one-time-fix $25"
+   ],
+   "notes": [
+    "the offer counter could not be read (not deployed yet, or offline)",
+    "no VOID_OWNER_TOKEN, so sales were not read",
+    "Vercel: the index could not be read",
+    "Cloudflare: the index could not be read",
+    "n8n: the index could not be read",
+    "GitHub Actions: the index could not be read",
+    "Make: the index could not be read"
+   ]
+  }
+ ],
+ "offers": {},
+ "weights": {
+  "Vercel": 0.7,
+  "Cloudflare": 0.6,
+  "n8n": 0.8,
+  "GitHub Actions": 0.6,
+  "Make": 0.9
+ },
+ "line": "Earned $0 this week; next I'm trying more error indexes to read.",
+ "at": "2026-10-26T07:12:21.637Z"
+}

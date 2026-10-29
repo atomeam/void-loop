@@ -61,7 +61,7 @@ export function pages({ tools = TOOLS, fixPages = [], days = DAYS } = {}) {
   out.push({ loc: '/compare/', changefreq: 'daily', priority: '0.6', files: [D + 'compare/index.html', D + 'tower.frontier.json'] });
   for (const [loc, changefreq, priority, files] of KEPT) out.push({ loc, changefreq, priority, files });
   out.push({ loc: '/fix/', changefreq: 'monthly', priority: '0.8', files: [D + 'fix/index.html'] });
-  for (const p of fixPages) out.push({ loc: '/fix/' + p.slug + '/', changefreq: 'monthly', priority: '0.7', files: [D + 'fix/' + p.slug + '/index.html'] });
+  for (const p of fixPages.filter((x) => x.status !== 'retired')) out.push({ loc: '/fix/' + p.slug + '/', changefreq: 'monthly', priority: '0.7', files: [D + 'fix/' + p.slug + '/index.html'] });
   for (const slug of isItSlugs(days)) out.push({ loc: '/is-it/' + slug, changefreq: 'daily', priority: '0.6', files: IS_IT_FILES });
   return out;
 }

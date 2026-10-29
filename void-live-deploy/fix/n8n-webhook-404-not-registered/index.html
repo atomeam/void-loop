@@ -6,6 +6,7 @@
   <title>n8n webhook 404 &quot;not registered&quot;: test URL or production URL, and how to fix it</title>
   <meta name="description" content="n8n gives every Webhook node two URLs. What it means and the steps to fix it.">
   <link rel="canonical" href="https://a-to-mind.com/fix/n8n-webhook-404-not-registered/">
+  <meta name="offer" content="n8n-webhook-404-not-registered">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="n8n webhook 404 &quot;not registered&quot;: test URL or production URL, and how to fix it">
   <meta property="og:description" content="n8n gives every Webhook node two URLs. What it means and the steps to fix it.">
@@ -46,6 +47,7 @@
     .btn { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); padding: 9px 16px; text-decoration: none; display: inline-block; }
     .btn.solid { background: var(--accent); color: #fff; }
     .muted { color: var(--muted); font-size: 14px; }
+    .quick { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 15px; }
   </style>
 </head>
 <body>
@@ -53,6 +55,7 @@
   <p><a href="/">&larr; Verse &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
   <h1>n8n webhook 404 &quot;not registered&quot;: test URL or production URL, and how to fix it</h1>
   <p class="lead">You see: <code>404 · webhook is not registered</code></p>
+  <p class="quick">The steps below are free. Rather have it done? <a href="#help" data-offer-click="n8n-webhook-404-not-registered">We fix it for you, <span data-fix-price>$25</span> flat</a>.</p>
 
   <h2>What it means</h2>
   <p>n8n gives every Webhook node two URLs. The test URL only answers while the editor is listening for a test event; the production URL only answers once the workflow is active (published, in newer versions). A 404 nearly always means the sender is calling the one that is not listening right now.</p>
@@ -68,16 +71,16 @@
   <h2>If it keeps coming back</h2>
   <p>Self-hosted behind a proxy: if the URLs n8n shows point at localhost or the wrong host, set the WEBHOOK_URL environment variable to your public address, and make sure the proxy forwards both /webhook/ and /webhook-test/.</p>
 
-  <div class="help">
+  <div class="help" id="help">
     <div class="box">
       <h2>Still stuck? Ask Verse, free</h2>
       <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
       <a class="btn" data-fix="ask" href="/?q=my%20n8n%20workflow%20is%20failing%20with%20404%20webhook%20is%20not%20registered">Ask Verse about this error</a>
     </div>
     <div class="box">
-      <h2>Or have it fixed: <span id="fix-price">$25</span></h2>
+      <h2>Or have it fixed: <span id="fix-price" data-fix-price>$25</span></h2>
       <p>One broken automation, diagnosed and repaired, with proof it runs again. Reply to the receipt with what stopped.</p>
-      <a class="btn solid" id="fix-buy" data-fix="buy" href="https://moonbeam846.gumroad.com/l/eozcma" rel="noopener">Get the One-Time Fix</a>
+      <a class="btn solid" id="fix-buy" data-fix="buy" data-offer-click="n8n-webhook-404-not-registered" href="https://moonbeam846.gumroad.com/l/eozcma?utm_source=a-to-mind&amp;utm_medium=fix&amp;utm_campaign=n8n-webhook-404-not-registered" rel="noopener">Get the One-Time Fix</a>
     </div>
   </div>
   <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>.</p>
@@ -98,11 +101,13 @@
     const row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
     if (!row) return; // the page's own price and link stand
     const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
-    if (row.price_cents && price) price.textContent = money(row);
+    if (row.price_cents) document.querySelectorAll('[data-fix-price]').forEach(function (el) { el.textContent = money(row); });
     if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
-    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url;
+    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url.split('?')[0] + (buy.search || ''); // the page's own utm stays: it names the page that sold
   }).catch(function (e) { console.warn('[fix] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
+<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>
 </body>
 </html>

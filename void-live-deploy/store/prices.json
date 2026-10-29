@@ -1,0 +1,12 @@
+{
+ "about": "Verse is the appraiser (STANDING.md): every price it sets, with its reasoning, newest first. Written by Verse's earn loop (tools/earn.mjs) from what rivals charge (domains/earn.comps.json) and its own sales. Nothing a visitor says moves a price; the owner can change any.",
+ "prices": [
+  {
+   "at": "2026-10-26",
+   "offer": "one-time-fix",
+   "cents": 2500,
+   "price": "$25",
+   "why": "Why $25: rivals charge $20 to $60 (3 seen; $25 is the common starting price); Verse has no sales or reviews yet, so it meets the common starting price to win a first buyer."
+  }
+ ]
+}

@@ -1,7 +1,10 @@
 // The fix pages: one page per common automation error (Zapier, Make, n8n, Power Automate, GitHub Actions), each answering it properly, with Verse's free
 // diagnosis one tap away and the One-Time Fix for when it should just be done. People search the exact error text;
 // these pages are where they land. Data: tools/fix-pages.json (claims paraphrased from each platform's own help
-// center, linked on the page). Writes void-live-deploy/fix/index.html and fix/<slug>/index.html.
+// center, linked on the page). Writes void-live-deploy/fix/index.html and fix/<slug>/index.html, and the closed list of offer ids
+// the offer counter accepts (void-live-deploy/lib/offer-ids.js: every fix page, the hub and every store product).
+// Verse's earn loop (tools/earn.mjs) adds pages here itself: those carry `checked` (the official page the error text was found on, and
+// when) and say so on the page. A page the loop retires keeps its file (salvage, never delete) but leaves the hub and the sitemap.
 //   node tools/fix-pages.mjs           write the pages
 //   node tools/fix-pages.mjs --check   exit 1 if a page or the sitemap is out of date (checks.mjs runs this)
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -9,18 +12,23 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isFixAsk } from '../void-live-deploy/lib/automation-fix.js';
 import { productById } from '../void-live-deploy/lib/products.js';
+import CATALOG from '../void-live-deploy/lib/store-products.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://a-to-mind.com';
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const fix = productById('one-time-fix');
 const BUY = 'https://moonbeam846.gumroad.com/l/' + fix.gumroad.slug;
+/** the buy link for one page: Gumroad passes these back in the sale ping (url_params), so a sale is counted for the page that sent it. Pure. */
+export const buyOf = (offer) => BUY + '?utm_source=a-to-mind&utm_medium=fix&utm_campaign=' + encodeURIComponent(offer);
+export const isLive = (p) => p.status !== 'retired';
 
 /** what a person would type into Verse about this error; must be something Verse's fixer takes. Pure. */
 export function askOf(p) {
   if (p.ask) return p.ask;
   const err = p.error.split(' · ').filter((x) => !/^(Zap |run on hold|Zapier has)/.test(x)).join(' ');
-  const lead = { Make: 'my make scenario is failing with ', n8n: 'my n8n workflow is failing with ', 'Power Automate': 'my power automate flow is failing with ', 'GitHub Actions': 'my github actions workflow is failing with ' };
+  const lead = { Make: 'my make scenario is failing with ', n8n: 'my n8n workflow is failing with ', 'Power Automate': 'my power automate flow is failing with ', 'GitHub Actions': 'my github actions workflow is failing with ',
+    Vercel: 'my vercel deployment pipeline is failing with ', Netlify: 'my netlify deploy pipeline is failing with ', Cloudflare: 'my cloudflare site integration is failing with ' };
   return (lead[p.platform] || 'my zap is failing with ') + (err || p.error);
 }
 
@@ -41,7 +49,8 @@ const STYLE = `:root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: 
     .box p { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
     .btn { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); padding: 9px 16px; text-decoration: none; display: inline-block; }
     .btn.solid { background: var(--accent); color: #fff; }
-    .muted { color: var(--muted); font-size: 14px; }`;
+    .muted { color: var(--muted); font-size: 14px; }
+    .quick { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 15px; }`;
 
 const PRICE_JS = `<script>
 (function () {
@@ -52,14 +61,14 @@ const PRICE_JS = `<script>
     const row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
     if (!row) return; // the page's own price and link stand
     const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
-    if (row.price_cents && price) price.textContent = money(row);
+    if (row.price_cents) document.querySelectorAll('[data-fix-price]').forEach(function (el) { el.textContent = money(row); });
     if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
-    if (/^https:\\/\\//.test(row.url || '') && buy) buy.href = row.url;
+    if (/^https:\\/\\//.test(row.url || '') && buy) buy.href = row.url.split('?')[0] + (buy.search || ''); // the page's own utm stays: it names the page that sold
   }).catch(function (e) { console.warn('[fix] the live price could not load; the page\\'s own price and link stand', e); });
 })();
 </script>`;
 
-function head(title, desc, path, ld) {
+function head(title, desc, path, ld, offer, retired) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,7 +76,8 @@ function head(title, desc, path, ld) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">
-  <link rel="canonical" href="${SITE}${path}">
+  <link rel="canonical" href="${SITE}${path}">${retired ? '\n  <meta name="robots" content="noindex">' : ''}
+  <meta name="offer" content="${esc(offer)}">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(desc)}">
@@ -87,17 +97,17 @@ ${JSON.stringify(ld, null, 2)}
 `;
 }
 
-function helpBoxes(ask) {
-  return `  <div class="help">
+function helpBoxes(ask, offer) {
+  return `  <div class="help" id="help">
     <div class="box">
       <h2>Still stuck? Ask Verse, free</h2>
       <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
       <a class="btn" data-fix="ask" href="/?q=${encodeURIComponent(ask)}">Ask Verse about this error</a>
     </div>
     <div class="box">
-      <h2>Or have it fixed: <span id="fix-price">${esc(fix.price)}</span></h2>
+      <h2>Or have it fixed: <span id="fix-price" data-fix-price>${esc(fix.price)}</span></h2>
       <p>One broken automation, diagnosed and repaired, with proof it runs again. Reply to the receipt with what stopped.</p>
-      <a class="btn solid" id="fix-buy" data-fix="buy" href="${BUY}" rel="noopener">Get the One-Time Fix</a>
+      <a class="btn solid" id="fix-buy" data-fix="buy" data-offer-click="${esc(offer)}" href="${esc(buyOf(offer))}" rel="noopener">Get the One-Time Fix</a>
     </div>
   </div>
   <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>.</p>
@@ -109,8 +119,9 @@ export function pageOf(p) {
   const desc = p.means.split('. ')[0] + '. What it means and the steps to fix it.';
   const ld = { '@context': 'https://schema.org', '@type': 'TechArticle', headline: p.title, description: desc, url: SITE + path,
     about: p.platform, publisher: { '@type': 'Organization', name: 'A-to-Mind', url: SITE + '/' } };
-  return head(p.title, desc, path, ld) + `  <h1>${esc(p.title)}</h1>
+  return head(p.title, desc, path, ld, p.slug, !isLive(p)) + `  <h1>${esc(p.title)}</h1>
   <p class="lead">You see: <code>${esc(p.error)}</code></p>
+  <p class="quick">The steps below are free. Rather have it done? <a href="#help" data-offer-click="${esc(p.slug)}">We fix it for you, <span data-fix-price>${esc(fix.price)}</span> flat</a>.</p>
 
   <h2>What it means</h2>
   <p>${esc(p.means)}</p>
@@ -123,19 +134,25 @@ ${p.steps.map((s) => '    <li>' + esc(s) + '</li>').join('\n')}
   <h2>If it keeps coming back</h2>
   <p>${esc(p.again)}</p>
 
-${helpBoxes(askOf(p))}
+${helpBoxes(askOf(p), p.slug)}
   <h2>Sources</h2>
   <ul class="muted">
 ${p.sources.map(([t, u]) => '    <li><a href="' + esc(u) + '" rel="noopener">' + esc(t) + '</a></li>').join('\n')}
-  </ul>
+  </ul>${p.checked ? `
+  <p class="muted">Written by Verse. The error text was checked word for word against <a href="${esc(p.checked.url)}" rel="noopener">the official page</a> on ${esc(String(p.checked.at).slice(0, 10))}.</p>` : ''}
 </main>
 ${PRICE_JS}
+${SCRIPTS}
 </body>
 </html>
 `;
 }
 
-export function hubOf(pages) {
+const SCRIPTS = `<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>`;
+
+export function hubOf(all) {
+  const pages = all.filter(isLive);
   const platforms = [...new Set(pages.map((p) => p.platform))]; // in the order the data lists them
   const named = platforms.length > 1 ? platforms.slice(0, -1).join(', ') + ' and ' + platforms[platforms.length - 1] : platforms.join('');
   const title = 'Fix a broken automation: ' + named + ' errors, explained';
@@ -144,7 +161,7 @@ export function hubOf(pages) {
     hasPart: pages.map((p) => ({ '@type': 'TechArticle', headline: p.title, url: SITE + '/fix/' + p.slug + '/' })) };
   const group = (name) => pages.filter((p) => p.platform === name)
     .map((p) => `    <li><a href="/fix/${p.slug}/">${esc(p.short)}</a> <span class="muted">${esc(p.error)}</span></li>`).join('\n');
-  return head(title, desc, '/fix/', ld) + `  <h1>Fix a broken automation</h1>
+  return head(title, desc, '/fix/', ld, 'fix-hub') + `  <h1>Fix a broken automation</h1>
   <p class="lead">The errors that stop ${esc(named)} automations, each with what it means and the steps that fix it.</p>
 ${platforms.map((name) => `
   <h2>${esc(name)}</h2>
@@ -152,17 +169,27 @@ ${platforms.map((name) => `
 ${group(name)}
   </ul>
 `).join('')}
-${helpBoxes('my automation stopped working, here is the error:')}
+${helpBoxes('my automation stopped working, here is the error:', 'fix-hub')}
 </main>
 ${PRICE_JS}
+${SCRIPTS}
 </body>
 </html>
 `;
 }
 
+/** the closed list of offer ids the counter takes: the hub, the store and every page with a buy button, and every fix page. Pure. */
+export function offerIds(pages) {
+  const ids = ['fix-hub', 'store', 'code-review', ...CATALOG.map((p) => p.id), ...pages.map((p) => p.slug)];
+  return [...new Set(ids)].filter((x) => /^[a-z0-9][a-z0-9-]{0,63}$/.test(x));
+}
+export const offerIdsJs = (ids) => `// Generated by tools/fix-pages.mjs (never by hand): the offer ids the offer counter takes (lib/tally.js offer-view, offer-click).
+export const OFFER_IDS = Object.freeze(${JSON.stringify(ids, null, 1).replace(/\n\s*/g, ' ')});
+`;
+
 export function build() {
   const pages = JSON.parse(readFileSync(resolve(root, 'tools/fix-pages.json'), 'utf8'));
-  const out = new Map([['void-live-deploy/fix/index.html', hubOf(pages)]]);
+  const out = new Map([['void-live-deploy/fix/index.html', hubOf(pages)], ['void-live-deploy/lib/offer-ids.js', offerIdsJs(offerIds(pages))]]);
   for (const p of pages) {
     if (!isFixAsk(askOf(p))) throw new Error('Verse would not take the ask for ' + p.slug + ': ' + askOf(p));
     out.set('void-live-deploy/fix/' + p.slug + '/index.html', pageOf(p));
@@ -180,7 +207,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (check) { if (!existsSync(file) || readFileSync(file, 'utf8') !== html) bad.push(rel + ' is out of date (node tools/fix-pages.mjs)'); }
     else { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, html); }
   }
-  for (const loc of ['/fix/', ...pages.map((p) => '/fix/' + p.slug + '/')]) if (!sitemap.includes('<loc>' + SITE + loc + '</loc>')) bad.push('sitemap.xml has no ' + loc);
+  for (const loc of ['/fix/', ...pages.filter(isLive).map((p) => '/fix/' + p.slug + '/')]) if (!sitemap.includes('<loc>' + SITE + loc + '</loc>')) bad.push('sitemap.xml has no ' + loc);
   if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
   console.log((check ? 'ok: ' : 'wrote ') + out.size + ' fix pages');
 }

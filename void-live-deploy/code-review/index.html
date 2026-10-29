@@ -6,6 +6,7 @@
   <title>Verse Code Review: instant code review for every pull request</title>
   <meta name="description" content="Verse reviews a whole pull request in about a second: 130 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, and a merge gate. Free GitHub Action; Code Review Pro (on its own, or in Verse Pro) adds an AI closer read.">
   <link rel="canonical" href="https://a-to-mind.com/code-review/">
+  <meta name="offer" content="code-review">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="Verse Code Review">
   <meta property="og:description" content="A whole pull request reviewed in about a second. Bugs, security risks, one-click fixes, a merge gate. Free GitHub Action; Pro adds an AI closer read.">
@@ -117,24 +118,24 @@ jobs:
     </div>
     <div class="plan">
       <h3>Code Review Pro</h3>
-      <div class="price" id="sprice">On its own</div>
+      <div class="price" id="sprice">$10 a month</div>
       <ul>
         <li>Everything in Free</li>
         <li>The closer read: an AI reviewer confirms the real findings, drops the wrong ones and finds what patterns miss</li>
         <li>Up to 300 closer reads a day</li>
         <li>No account: your license key is your key</li>
       </ul>
-      <a class="buy primary" id="sbuy" href="#pro" hidden rel="noopener">Buy Code Review Pro</a>
-      <p class="muted" id="ssoon">Opening soon on its own. It is in Verse Pro today.</p>
+      <a class="buy primary" id="sbuy" href="https://moonbeam846.gumroad.com/l/dkmcjk" data-offer-click="code-review-pro" rel="noopener">Buy Code Review Pro</a>
+      <p class="muted" id="ssoon" hidden>Opening soon on its own. It is in Verse Pro today.</p>
     </div>
     <div class="plan">
       <h3>Verse Pro</h3>
-      <div class="price" id="price">Paid Verse</div>
+      <div class="price" id="price">$49 a month</div>
       <ul>
         <li>Code Review Pro included, up to 5 keys</li>
         <li>Plus everything else paid Verse adds: more model answers, private skills, a higher cap on actions you confirm</li>
       </ul>
-      <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" rel="noopener">Get Verse Pro</a>
+      <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" data-offer-click="void-monthly" rel="noopener">Get Verse Pro</a>
     </div>
   </div>
 
@@ -188,6 +189,7 @@ jobs:
   // buying while signed in carries your Verse's id, so the purchase unlocks that Verse
   if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
   fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
+    if (o && o.standalone === null) { document.getElementById('sbuy').hidden = true; document.getElementById('ssoon').hidden = false; return; } // taken off sale on its own
     if (!o || !o.standalone || !/^https:\/\//.test(o.standalone.url)) return;
     var b = document.getElementById('sbuy'); b.href = o.standalone.url; b.hidden = false; document.getElementById('ssoon').hidden = true;
     standaloneSlug = (o.standalone.url.match(/\/l\/([^/?#]+)/) || [])[1] || '';
@@ -285,5 +287,7 @@ jobs:
   });
 })();
 </script>
+<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>
 </body>
 </html>

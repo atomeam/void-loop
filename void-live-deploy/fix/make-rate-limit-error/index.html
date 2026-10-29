@@ -6,6 +6,7 @@
   <title>Make RateLimitError (429): how to stop a scenario hitting the app's limit</title>
   <meta name="description" content="The scenario sent more requests to an app than its API allows in that window, so the app answered 429 and Make raised a RateLimitError.. What it means and the steps to fix it.">
   <link rel="canonical" href="https://a-to-mind.com/fix/make-rate-limit-error/">
+  <meta name="offer" content="make-rate-limit-error">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="Make RateLimitError (429): how to stop a scenario hitting the app's limit">
   <meta property="og:description" content="The scenario sent more requests to an app than its API allows in that window, so the app answered 429 and Make raised a RateLimitError.. What it means and the steps to fix it.">
@@ -46,6 +47,7 @@
     .btn { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); padding: 9px 16px; text-decoration: none; display: inline-block; }
     .btn.solid { background: var(--accent); color: #fff; }
     .muted { color: var(--muted); font-size: 14px; }
+    .quick { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 15px; }
   </style>
 </head>
 <body>
@@ -53,6 +55,7 @@
   <p><a href="/">&larr; Verse &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
   <h1>Make RateLimitError (429): how to stop a scenario hitting the app's limit</h1>
   <p class="lead">You see: <code>RateLimitError · 429</code></p>
+  <p class="quick">The steps below are free. Rather have it done? <a href="#help" data-offer-click="make-rate-limit-error">We fix it for you, <span data-fix-price>$25</span> flat</a>.</p>
 
   <h2>What it means</h2>
   <p>The scenario sent more requests to an app than its API allows in that window, so the app answered 429 and Make raised a RateLimitError.</p>
@@ -68,16 +71,16 @@
   <h2>If it keeps coming back</h2>
   <p>Two scenarios calling the same app share its limit. Spread their schedules apart, or merge them.</p>
 
-  <div class="help">
+  <div class="help" id="help">
     <div class="box">
       <h2>Still stuck? Ask Verse, free</h2>
       <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
       <a class="btn" data-fix="ask" href="/?q=my%20make%20scenario%20is%20failing%20with%20RateLimitError%20429">Ask Verse about this error</a>
     </div>
     <div class="box">
-      <h2>Or have it fixed: <span id="fix-price">$25</span></h2>
+      <h2>Or have it fixed: <span id="fix-price" data-fix-price>$25</span></h2>
       <p>One broken automation, diagnosed and repaired, with proof it runs again. Reply to the receipt with what stopped.</p>
-      <a class="btn solid" id="fix-buy" data-fix="buy" href="https://moonbeam846.gumroad.com/l/eozcma" rel="noopener">Get the One-Time Fix</a>
+      <a class="btn solid" id="fix-buy" data-fix="buy" data-offer-click="make-rate-limit-error" href="https://moonbeam846.gumroad.com/l/eozcma?utm_source=a-to-mind&amp;utm_medium=fix&amp;utm_campaign=make-rate-limit-error" rel="noopener">Get the One-Time Fix</a>
     </div>
   </div>
   <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>.</p>
@@ -97,11 +100,13 @@
     const row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
     if (!row) return; // the page's own price and link stand
     const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
-    if (row.price_cents && price) price.textContent = money(row);
+    if (row.price_cents) document.querySelectorAll('[data-fix-price]').forEach(function (el) { el.textContent = money(row); });
     if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
-    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url;
+    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url.split('?')[0] + (buy.search || ''); // the page's own utm stays: it names the page that sold
   }).catch(function (e) { console.warn('[fix] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
+<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>
 </body>
 </html>

@@ -3,11 +3,16 @@
 // skills/coin.js (the line under the coin). The request carries ONLY a tally name and a value from a closed list, and a small count; the
 // server returns integers. No free text exists anywhere in this feature. Playbook: docs/playbooks/open-endpoint-closed-list.md.
 import { dayOf, secondsToMidnight, clientKey } from './reactions.js';
+import { OFFER_IDS } from './offer-ids.js';
 export { dayOf, secondsToMidnight, clientKey };
 
 /** the closed list: tally name -> its values. Adding one is a code change and a review, never a request. */
 export const TALLIES = Object.freeze({
   coin: Object.freeze(['heads', 'tails']),
+  // what the earn loop measures (tools/earn.mjs): a view of an offer page and a press of its buy button, one count each, from /offer.js.
+  // The values are the offers' own ids, a closed list generated from the fix pages and the store (lib/offer-ids.js, tools/fix-pages.mjs).
+  'offer-view': OFFER_IDS,
+  'offer-click': OFFER_IDS,
 });
 export const TALLY_IDS = Object.freeze(Object.keys(TALLIES));
 export const isTally = (of) => typeof of === 'string' && Object.prototype.hasOwnProperty.call(TALLIES, of);

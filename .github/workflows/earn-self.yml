@@ -1,0 +1,73 @@
+# Verse goes after money by itself, every day (owner, 2026-10-26: "its not me whos going after the money its Verse, and its meant to be very good at
+# it so that it doesnt need me to find money and lots of it"; Verse's own tools only, no builder's model in the loop). tools/earn.mjs measures what each
+# offer did (views, buy presses, sales, counts and totals only), learns from it, finds errors people hit on official error indexes, builds the next
+# /fix/ pages with Verse's own free model (Workers AI) where every step is checked word for word against the official page, appraises the price
+# with its reasoning (void-live-deploy/store/prices.json), and writes the day into domains/earnings-log.json and the agent log. Caps in
+# domains/earn.sources.json (pages read, model calls and new pages a day). No spending: the budget is what Verse has earned (STANDING.md).
+# The run checks what it wrote with the same checks a builder runs, pushes to main with this workflow's own token, and starts the deploy itself
+# (a GITHUB_TOKEN push starts no workflow; a workflow_dispatch does), so IndexNow announces the new pages. Playbook: docs/playbooks/revenue.md.
+name: Verse earns
+
+on:
+  schedule:
+    - cron: '41 7 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: earn-self
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the new pages and the day's numbers on main
+  actions: write  # start the deploy after a push
+
+jobs:
+  earn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # the checks that cover what the loop writes (no packages needed); checks.mjs would run all 475 in CI, and an unrelated red check
+      # must not stop Verse earning: deploy.yml runs the quick checks again before anything reaches the site
+      - name: The loop's own tests first
+        run: node --test tools/earn.test.mjs tools/tally.test.mjs tools/fix-pages.test.mjs tools/sitemap.test.mjs tools/services.test.mjs tools/seo.test.mjs tools/automation-fix.test.mjs tools/fix-audit.test.mjs
+      - name: Measure, learn, find, build, price
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          node tools/earn.mjs --write | tee "$RUNNER_TEMP/earn.json"
+          { echo '### Verse earns'; echo '```json'; cat "$RUNNER_TEMP/earn.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Check what it wrote, the way a builder does
+        run: |
+          node tools/fix-pages.mjs --check
+          node tools/sitemap.mjs --check
+          node --test tools/earn.test.mjs tools/tally.test.mjs tools/fix-pages.test.mjs tools/sitemap.test.mjs tools/seo.test.mjs tools/automation-fix.test.mjs tools/fix-audit.test.mjs
+      - name: Commit, scan, push to main, then deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "nothing changed"; exit 0; fi
+          pages=$(git diff --cached --name-only -- 'void-live-deploy/fix/' | wc -l)
+          git commit -q -m "Verse earns: $(node -p "require('./domains/earnings-log.json').line")" -m "Made by Verse's earn loop (tools/earn.mjs, .github/workflows/earn-self.yml) on its own free model; every fix page's error text and steps were checked word for word against the official page it cites."
+          node tools/secret-scan.mjs --base origin/main
+          # the agent log is append-only and shared: when main moved, both sides' lines are kept (a rule for this clone only, never committed)
+          echo 'domains/void.agents.log.md merge=union' >> .git/info/attributes
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main
+            if ! git rebase -q origin/main; then git rebase --abort; echo "::error title=Not pushed::main changed the same files; the next run tries again"; exit 1; fi
+            git push -q origin HEAD:main && pushed=1 && break
+            sleep $((i * 5))
+          done
+          [ -n "$pushed" ] || { echo "::error title=Not pushed::five tries failed"; exit 1; }
+          if [ "$pages" -gt 0 ]; then
+            gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true && echo "deploy started ($pages fix page files changed)" >> "$GITHUB_STEP_SUMMARY" || echo "::warning title=Not deployed::the deploy did not start; the next push to main carries the pages"
+          fi

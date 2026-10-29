@@ -5221,7 +5221,7 @@ say('nothing selected to remove');
       say('publishing');
       let r = null; try { r = await meFetch('/api/publish', 'POST', { handle, look: voidLook, cards }); } catch (_) {}
       if (!r) { say("couldn't reach the server, nothing published"); return; }
-      if (r.status === 402) { say('publishing is part of a paid Verse'); return; }
+      if (r.status === 402) { await showPaidOffer('Publishing your Verse at its own address is part of paid Verse.'); return; } // the moment it is wanted: the price and the way to buy, once
       if (r.status === 401) { say('say “sign in” first, then publish'); return; }
       if (r.status === 409) { say('@' + handle + ' is taken, try another name'); return; }
       if (r.status !== 200) { say(r.body && r.body.error ? r.body.error : "couldn't publish"); return; }
@@ -5318,6 +5318,16 @@ say('nothing selected to remove');
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
     }
+    // A paid thing tried on a free Verse (publishing at /@name): say so, then the same price line and way to buy as the "paid Verse" ask. Shown
+    // only when the person tried it, never on a timer; the buy link carries the account id and is counted (/offer.js: void-monthly).
+    async function showPaidOffer(lead) {
+      const { g, products } = await storeCatalog();
+      const vm = g ? products.find((p) => g.isUnlock(p)) : null;
+      const url = !vm || vm.available !== false ? paidUrl() : '';
+      const line = lead + ' ' + (vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS);
+      whisper.innerHTML = esc(line) + (url ? ' · <a class="vc" data-vpay="1" data-offer-click="void-monthly" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>'
+        : ' · <a class="vc" data-offer-click="void-monthly" href="/store/#void-monthly">see the Verse store</a>');
+    }
     async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
       if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Verse's passkey)
@@ -5328,9 +5338,9 @@ say('nothing selected to remove');
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Verse, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
       const line = vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
-      if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the Verse store</a>'; }
+      if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" data-offer-click="void-monthly" href="/store/">see the Verse store</a>'; }
       else {
-        whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
+        whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" data-offer-click="void-monthly" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
         const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
       }
       if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
@@ -6637,6 +6647,7 @@ say('nothing selected to remove');
   })();
   </script>
   <script src="/visit.js" defer></script><!-- who visits: a count per page load, no cookie (functions/api/visit.js) -->
+  <script src="/offer.js" defer></script><!-- presses of a buy link (data-offer-click), counted for the earn loop, no cookie (/api/tally) -->
 </body>
 </html>
 

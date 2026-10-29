@@ -1,0 +1,4 @@
+{
+ "about": "Errors Verse found on official error indexes (domains/earn.sources.json) and what became of each: queued, built (a /fix/ page), or dropped with the reason (the error text was not on the official page, or the free model's draft failed the check). A dropped one is tried again after 30 days.",
+ "candidates": []
+}

@@ -1,5 +1,6 @@
 // What Verse has earned (plan item 12), for the owner (shown on the owner's board) and the will engine.
 // GET (Bearer READ_TOKEN) -> { gross_cents, refunded_cents, earned_cents, budget_cents, sales, milestones: [{ id, at, earned_cents, note }],
+//                              by_offer: { <permalink>: { sales, gross_cents, earned_cents } }, by_page: { <utm_campaign or direct>: { ... } },
 //                              shortfalls_7d: { total, by: [{ place, reason, n }] } }  (times the free model fell short: the case for a paid one)
 import { ownerOk } from '../../lib/guard.js';
 import { ensureStoreTables } from '../../lib/store-db.js';

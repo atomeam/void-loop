@@ -6,6 +6,7 @@
   <title>Full Stack Audit: every automation you run, reviewed</title>
   <meta name="description" content="An inventory of every workflow you run, a verdict on each - working, broken, fragile or wasteful - and a written repair plan ranked by priority.">
   <link rel="canonical" href="https://a-to-mind.com/full-stack-audit/">
+  <meta name="offer" content="full-stack-audit">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="Full Stack Audit">
   <meta property="og:description" content="An inventory of every workflow you run, a verdict on each - working, broken, fragile or wasteful - and a written repair plan ranked by priority.">
@@ -30,7 +31,7 @@
       "name": "Full Stack Audit",
       "url": "https://moonbeam846.gumroad.com/l/full-stack-audit",
       "priceCurrency": "USD",
-      "price": "325"
+      "price": "300"
     }
   ]
 }
@@ -61,9 +62,9 @@
 
   <div class="plan">
     <h2 style="margin:0 0 4px">Full Stack Audit</h2>
-    <div class="price" id="price">$325</div>
+    <div class="price" id="price">$300</div>
     <p class="note">the whole price, in writing</p>
-    <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/full-stack-audit" rel="noopener">Buy &mdash; Full Stack Audit</a>
+    <a class="buy" id="buy" data-offer-click="full-stack-audit" href="https://moonbeam846.gumroad.com/l/full-stack-audit?utm_source=a-to-mind&amp;utm_medium=service&amp;utm_campaign=full-stack-audit" rel="noopener">Buy &mdash; Full Stack Audit</a>
     <p class="muted" id="unavailable" hidden>Not on sale right now &mdash; email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
   </div>
 
@@ -94,9 +95,11 @@
     if (!row) return; // the page's own price and link stand
     if (row.price_cents) document.getElementById('price').textContent = money(row);
     if (row.available === false) { document.getElementById('buy').hidden = true; document.getElementById('unavailable').hidden = false; return; }
-    if (/^https:\/\//.test(row.url || '')) document.getElementById('buy').href = row.url;
+    if (/^https:\/\//.test(row.url || '')) { var b = document.getElementById('buy'); b.href = row.url.split('?')[0] + b.search; } // the utm stays: it names the page that sold
   }).catch(function (e) { console.warn('['+'full-stack-audit'+'] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
+<script src="/offer.js" defer></script>
+<script src="/visit.js" defer></script>
 </body>
 </html>

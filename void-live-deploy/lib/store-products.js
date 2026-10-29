@@ -64,6 +64,7 @@ export default [
   "id": "keep-it-running",
   "name": "Keep-It-Running Plan",
   "cents": 4900,
+  "every": "month",
   "kind": "service",
   "gumroad": "keep-it-running-membership",
   "blurb": "Automations watched around the clock, fixed when they break.",
