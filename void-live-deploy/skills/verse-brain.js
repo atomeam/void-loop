@@ -1,7 +1,7 @@
 /**
  * verse-brain skill — Verse Brain, the one entity Grok's frontier drafts became (owner, 2026-10-29: "build all the unique builds as a
  * combination and that can be verse"; "the grok builds combined can be verse brain"; "combine all the builds into one entity"; "all the
- * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, eighteen organs, attention, imagination, the
+ * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, nineteen organs, attention, imagination, the
  * self); lib/brain-drafts.json says which frontier drafts in atomeam/a-to-mind.com each organ is made from, and why the rest were left out.
  * The card shows the workspace live: the tissue tinted by the rhythm's phase, surprise in red, the memory's expectation in violet, the
  * attention spotlight, the swarm, the membrane. The words you type, what the gestures organ named, what the memory expects and what the will
@@ -27,6 +27,7 @@ import * as Field from '../lib/shared-field.js';
 import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
 import { detectPitch } from '../lib/brain-hearing.js';
 import { PX, PY } from '../lib/brain-painter.js';
+import { NX as CUR_X, NY as CUR_Y } from '../lib/brain-current.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
 const offs = new WeakMap(); // an offscreen GW x GH canvas per state, kept off the state (the stage saves its things)
@@ -82,6 +83,14 @@ function draw(g, s, W, H) {
   const gr = b.board.grow; if (gr && gr.segs && gr.segs.length) {
     g.strokeStyle = 'rgba(150,230,120,.7)'; g.lineWidth = 1; g.beginPath();
     for (let k = 0; k + 3 < gr.segs.length; k += 4) { g.moveTo(gr.segs[k] * W, gr.segs[k + 1] * H); g.lineTo(gr.segs[k + 2] * W, gr.segs[k + 3] * H); }
+    g.stroke();
+  }
+  // the current (F447): a few flow arrows of the lattice-Boltzmann fluid, and the swimmers as cyan dots with their thrust
+  const cur = b.current; if (cur && cur.lives + cur.age > 0) {
+    const fl = cur.fluid, cx = W / CUR_X, cy = H / CUR_Y; g.strokeStyle = 'rgba(120,200,255,.28)'; g.lineWidth = 1; g.beginPath();
+    for (let y = 2; y < CUR_Y; y += 4) for (let x = 2; x < CUR_X; x += 4) { const c = y * CUR_X + x; g.moveTo((x + 0.5) * cx, (y + 0.5) * cy); g.lineTo((x + 0.5 + fl.ux[c] * 60) * cx, (y + 0.5 + fl.uy[c] * 60) * cy); }
+    g.stroke(); g.fillStyle = 'rgba(110,240,255,.9)'; g.strokeStyle = 'rgba(110,240,255,.6)'; g.beginPath();
+    for (let k = 0; k < cur.sx.length; k++) { const px = cur.sx[k] * cx, py = cur.sy[k] * cy; g.fillRect(px - 1.5, py - 1.5, 3, 3); g.moveTo(px, py); g.lineTo(px + cur.tx[k] * 6, py + cur.ty[k] * 6); }
     g.stroke();
   }
   // the attention spotlight
@@ -184,7 +193,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
     el.dataset.utility = String(self.utility); el.dataset.gen = String(self.genome.gen); el.dataset.chosen = String(self.q); el.dataset.imagined = String(self.imagined);
     el.dataset.concepts = String(self.concepts); el.dataset.focus = String(b.focus.region); el.dataset.action = self.action; el.dataset.ticks = String(b.ticks);
     el.dataset.organs = String(B.ORGAN_IDS.length); el.dataset.episodes = String(self.episodes); el.dataset.procedures = String(self.procedures); el.dataset.wants = String(self.wants.length); el.dataset.conflicts = String(self.conflicts.length);
-    el.dataset.heard = String(b.ear.notes); el.dataset.guessed = String(b.ear.guessed); el.dataset.hits = String(b.ear.hits); el.dataset.ear = b.board.ear ? b.board.ear.note : ''; el.dataset.paintgen = String(b.painter.gen); el.dataset.growgen = String(b.grower.gen); el.dataset.formulagen = String(b.formula.gen); // Listen: notes heard, guesses made and right (numbers only)
+    el.dataset.heard = String(b.ear.notes); el.dataset.guessed = String(b.ear.guessed); el.dataset.hits = String(b.ear.hits); el.dataset.ear = b.board.ear ? b.board.ear.note : ''; el.dataset.paintgen = String(b.painter.gen); el.dataset.growgen = String(b.grower.gen); el.dataset.formulagen = String(b.formula.gen); el.dataset.currentlives = String(b.current.lives); // Listen: notes heard, guesses made and right (numbers only)
     const fc = Field.census(); el.dataset.felt = String((felt.get(S()) || []).length); el.dataset.published = String(link ? link.held : 0); el.dataset.fieldOwners = Object.keys(fc.held).sort().join(',');
     const t = fieldSays(fc, +el.dataset.felt, link ? link.held : 0); if (fieldLine.textContent !== t) fieldLine.textContent = t;
     const A = b.mind.asks; el.dataset.askGuessed = String(A.guessed); el.dataset.askHits = String(A.hits); el.dataset.askGuess = A.guess || '';
@@ -311,7 +320,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 }
 
 const idea = {
-  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · eighteen organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
+  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · nineteen organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
   // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
   modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
@@ -326,7 +335,7 @@ const skill = fieldSkill({
   examples: ['verse brain', 'show me your brain', 'your brain', 'how do you think', 'what are you thinking about', 'show the shared field'],
   nearMisses: ['add a brain', 'summon a zombie and a brain', 'brain teaser', 'mind field', 'what do you think of this song'],
   idea,
-  say: "My brain, live: one workspace that eighteen organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
+  say: "My brain, live: one workspace that nineteen organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
 });
 // "what are you thinking (about)?" opens the card and is answered in words by the brain itself, from the state it is in after hearing the
 // visitor's asks (lib/brain-host.js answer): what it attends to, what it chose and its goals. Any other ask opens the card as before.
