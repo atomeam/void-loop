@@ -1,0 +1,363 @@
+{
+ "site": "sycophanthex.com",
+ "kind": "fanfiction archive: five story archives by subject, each a catalog of stories with full metadata, browse, search and accounts",
+ "chosen": "2026-10-29",
+ "why": "the current Versus target in void-live-deploy/tower.target.json: the smallest site Verse has not beaten, by interactive elements on the home page (owner, 2026-10-29: every site ever made, smallest first)",
+ "source": [
+  "https://sycophanthex.com/ (home page)",
+  "https://sycophanthex.com/index.php?option=com_content&task=view&id=13&Itemid=53 (Archive Descriptions)",
+  "http://lumos.sycophanthex.com/ (an archive home)",
+  "http://lumos.sycophanthex.com/browse.php?type=titles (the titles list)"
+ ],
+ "read": "2026-10-29, through a page fetch; this build network cannot open the site (the tower scan in domains/tower-self.json saw 403), so the counts come from the fetched pages, not a browser DOM",
+ "rule": "Elevenessee: the target's feature is the floor, not the blueprint. Each feature's plus one is written before the build. Verse's catalog shows only real stories: an empty archive stays clean and looks intentional, never seeded (owner, 2026-10-29).",
+ "home": {
+  "url": "https://sycophanthex.com/",
+  "total": 34,
+  "byKind": {
+   "link": 33,
+   "input": 1,
+   "button": 0,
+   "select": 0,
+   "form": 0
+  },
+  "sections": [
+   {
+    "section": "header",
+    "count": 1,
+    "items": [
+     "search box 'Enter Keywords:' (no submit button)"
+    ]
+   },
+   {
+    "section": "top menu",
+    "count": 4,
+    "items": [
+     "Home",
+     "Archive Descriptions",
+     "Forums",
+     "Help Desk"
+    ]
+   },
+   {
+    "section": "main: recently added",
+    "count": 5,
+    "items": [
+     "Site Updates",
+     "Uncommonly Good Contest",
+     "Important Announcement",
+     "Featured Fics for January - April 2009",
+     "Featured Fics for November & December 2009"
+    ]
+   },
+   {
+    "section": "main: contest post",
+    "count": 7,
+    "items": [
+     "publisher's site",
+     "Rules and Restrictions",
+     "Awards",
+     "So how does it work?",
+     "How will submissions be judged?",
+     "I still have questions!",
+     "Read more..."
+    ]
+   },
+   {
+    "section": "sidebar: main menu",
+    "count": 6,
+    "items": [
+     "Home",
+     "News & Notices",
+     "Writing Fanfiction",
+     "Reading Fanfiction",
+     "About Sycophant Hex",
+     "Terms of Service"
+    ]
+   },
+   {
+    "section": "sidebar: second list",
+    "count": 8,
+    "items": [
+     "Archive Descriptions",
+     "Featured Fics",
+     "Help",
+     "Current SH Staff",
+     "Affiliates",
+     "SH Yahoo",
+     "SH LiveJournal",
+     "Contact Us"
+    ]
+   },
+   {
+    "section": "footer",
+    "count": 3,
+    "items": [
+     "Terms of Service",
+     "Disclaimer",
+     "Credits"
+    ]
+   }
+  ]
+ },
+ "archives": [
+  {
+   "name": "Ashwinder",
+   "covers": "stories with both Severus Snape and Hermione Granger"
+  },
+  {
+   "name": "Chaos",
+   "covers": "other fandoms, crossovers and original stories"
+  },
+  {
+   "name": "Eros & Sappho",
+   "covers": "slash and femmeslash"
+  },
+  {
+   "name": "Lumos",
+   "covers": "general Harry Potter fiction"
+  },
+  {
+   "name": "Occlumency",
+   "covers": "Severus Snape, without the Snape and Granger pairing"
+  }
+ ],
+ "archiveHome": {
+  "url": "http://lumos.sycophanthex.com/",
+  "total": 57,
+  "byKind": {
+   "link": 57,
+   "input": 0,
+   "button": 0,
+   "select": 0,
+   "form": 0
+  },
+  "sections": [
+   {
+    "section": "menu",
+    "count": 10,
+    "items": [
+     "Home",
+     "Most Recent",
+     "Authors",
+     "Titles",
+     "Browse",
+     "Rules",
+     "Help",
+     "Search",
+     "Register",
+     "Login"
+    ]
+   },
+   {
+    "section": "main",
+    "count": 31,
+    "items": [
+     "random story (title, author)",
+     "featured story (title, author)",
+     "7 affiliate banners",
+     "site news: Read more, comments, News Archive",
+     "most recent: 4 titles and 12 author names",
+     "site info: newest member"
+    ]
+   },
+   {
+    "section": "footer",
+    "count": 16,
+    "items": [
+     "the other 4 archives",
+     "forums",
+     "Yahoo group",
+     "LiveJournal",
+     "About",
+     "ratings guide",
+     "uploading guide",
+     "Terms of Service",
+     "writing resources",
+     "Disclaimers",
+     "Terms of Use",
+     "Credits",
+     "adults-only badge"
+    ]
+   }
+  ]
+ },
+ "storyRow": [
+  "title",
+  "author",
+  "star rating",
+  "reviews count (link)",
+  "summary",
+  "rated (C, S, B, W, L)",
+  "categories",
+  "characters",
+  "genres",
+  "warnings",
+  "series",
+  "chapters",
+  "word count",
+  "hits",
+  "complete (yes or no)",
+  "published",
+  "last updated",
+  "report this"
+ ],
+ "features": [
+  {
+   "id": "catalog",
+   "theirs": "Story catalog with one row per story and its full metadata (Titles, Most Recent)",
+   "plus_one": "one clean row per story: title, author, rating, summary, categories, characters, genres, warnings, series, chapters, words, complete, published and updated, in Verse's deep space dark look; an empty catalog says so plainly and shows no made-up stories",
+   "void": "none"
+  },
+  {
+   "id": "browse-category",
+   "theirs": "Browse by category (Browse (15 categories on Lumos))",
+   "plus_one": "every category opens its stories at once with a count beside it, and a reader can ask for a category in words",
+   "void": "none"
+  },
+  {
+   "id": "browse-character",
+   "theirs": "Browse by character (Browse (canon, original, mystery and other characters))",
+   "plus_one": "pick one or more characters and see only stories with all of them, with the count before you open it",
+   "void": "none"
+  },
+  {
+   "id": "browse-genre",
+   "theirs": "Browse by genre (Browse (18 genres))",
+   "plus_one": "genres combine (romance and mystery) instead of one at a time",
+   "void": "none"
+  },
+  {
+   "id": "browse-rating",
+   "theirs": "Browse by rating (Browse (5 ratings) and the ratings guide)",
+   "plus_one": "the rating filter is on every list, with each rating explained in one line where it is chosen",
+   "void": "none"
+  },
+  {
+   "id": "warnings",
+   "theirs": "Content warnings on every story, and browse by warning (story row, Browse (13 warnings))",
+   "plus_one": "warnings show before the summary, and a reader can hide every story with a warning they choose, kept on their device",
+   "void": "none"
+  },
+  {
+   "id": "authors",
+   "theirs": "Author list and author pages (Authors)",
+   "plus_one": "an author page lists every story with its metadata and series, newest first, and can be followed by RSS",
+   "void": "none"
+  },
+  {
+   "id": "title-index",
+   "theirs": "Title index A to Z and Other (Titles)",
+   "plus_one": "the A to Z index plus a search that finds a title from a few letters",
+   "void": "none"
+  },
+  {
+   "id": "sort",
+   "theirs": "Sort alphabetically or most recent (Titles)",
+   "plus_one": "sort by title, newest, most words, most hits or most reviews",
+   "void": "none"
+  },
+  {
+   "id": "status-filter",
+   "theirs": "Filter: all, completed only, work in progress only (Titles)",
+   "plus_one": "completed or in progress combines with every other filter on one line",
+   "void": "none"
+  },
+  {
+   "id": "paging",
+   "theirs": "Pages of 25 stories (Titles (73 pages on Lumos))",
+   "plus_one": "pages of 25 with a jump to any page, and the address keeps the filters so a list can be shared",
+   "void": "none"
+  },
+  {
+   "id": "series",
+   "theirs": "Series (story row)",
+   "plus_one": "a series page reads its stories in order with reading progress",
+   "void": "none"
+  },
+  {
+   "id": "story-stats",
+   "theirs": "Chapters, word count and hits per story (story row)",
+   "plus_one": "chapters, words, hits and a reading time on every row",
+   "void": "none"
+  },
+  {
+   "id": "reviews",
+   "theirs": "Reviews and a star rating per story (story row)",
+   "plus_one": "reviews per chapter with the count on the row, and a star rating that shows how many people gave it",
+   "void": "none"
+  },
+  {
+   "id": "report",
+   "theirs": "Report a story (story row)",
+   "plus_one": "report a story from its row, with the reason chosen from a short list",
+   "void": "none"
+  },
+  {
+   "id": "search",
+   "theirs": "Keyword search (home page box, archive Search)",
+   "plus_one": "search titles, summaries and authors from one box that works with every filter",
+   "void": "none"
+  },
+  {
+   "id": "recent",
+   "theirs": "Most recent stories and an RSS feed of the last 14 days (Most Recent)",
+   "plus_one": "most recent with an RSS feed per archive, per author and per filter",
+   "void": "none"
+  },
+  {
+   "id": "random-featured",
+   "theirs": "Random story and featured story (archive home)",
+   "plus_one": "a random story that respects the reader's filters and warnings, and a featured story with why it was picked",
+   "void": "none"
+  },
+  {
+   "id": "account",
+   "theirs": "Register and log in (archive menu)",
+   "plus_one": "an account that keeps favourites, follows and reading progress on every device",
+   "void": "none"
+  },
+  {
+   "id": "guides",
+   "theirs": "Rules, help, ratings guide and an uploading guide (archive menu and footer)",
+   "plus_one": "rules, help, the ratings guide and the upload guide on one page each, in plain words",
+   "void": "none"
+  },
+  {
+   "id": "news",
+   "theirs": "Site news with comments and a news archive (archive home, News & Notices)",
+   "plus_one": "site news with comments and an archive by month",
+   "void": "none"
+  },
+  {
+   "id": "featured-lists",
+   "theirs": "Featured fics lists (home page, Featured Fics)",
+   "plus_one": "featured lists that open as a filtered catalog, not a page of links",
+   "void": "none"
+  },
+  {
+   "id": "contests",
+   "theirs": "Writing contest pages (home page)",
+   "plus_one": "a contest page with its rules, its entries as a catalog and its winners",
+   "void": "none"
+  },
+  {
+   "id": "archives",
+   "theirs": "Several archives by subject under one site (Archive Descriptions (5 archives))",
+   "plus_one": "archives by subject under one catalog, so one search and one account cover all of them",
+   "void": "none"
+  },
+  {
+   "id": "community",
+   "theirs": "Forums and a help desk (top menu)",
+   "plus_one": "a forum and a help desk on the same site, with no outside group needed",
+   "void": "none"
+  },
+  {
+   "id": "site-pages",
+   "theirs": "Staff, affiliates, contact, terms, disclaimer and credits pages (sidebar and footer)",
+   "plus_one": "staff, contact, terms, disclaimer and credits pages, each short and linked from the footer",
+   "void": "none"
+  }
+ ]
+}
