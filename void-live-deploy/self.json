@@ -545,11 +545,35 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:13:28Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:13:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:13:06Z",
+   "subject": "Paid members: a pre-launch pilot at /members/?pilot, so a paid account proves the idea path on the live site before go-live"
+  },
+  {
    "at": "2026-10-29T15:12:02Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-29T15:10:57Z",
+   "subject": "Paid members: check the idea limit inside the insert, so sends at the same moment cannot pass it"
+  },
+  {
+   "at": "2026-10-29T15:10:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:10:31Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:09:28Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -559,6 +583,10 @@
   {
    "at": "2026-10-29T15:08:57Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T15:08:07Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T15:07:52Z",
@@ -594,34 +622,6 @@
   },
   {
    "at": "2026-10-29T15:05:02Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:04:44Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:04:22Z",
-   "subject": "Answer cards for notes about my own card: no denial, no blame for a site's block, each fix's status"
-  },
-  {
-   "at": "2026-10-29T15:02:55Z",
-   "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
-  },
-  {
-   "at": "2026-10-29T15:01:49Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:59:55Z",
-   "subject": "Verse fixes its spanish skill: learn to handle \"how to say bread in spanish\""
-  },
-  {
-   "at": "2026-10-29T14:59:49Z",
-   "subject": "fix(tower): never count a default-bar score as a lead"
-  },
-  {
-   "at": "2026-10-29T14:59:43Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
