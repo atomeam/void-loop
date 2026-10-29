@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T18:36:28Z",
+   "subject": "verse brain current check: wait for the lives count, and accept \"1 life\""
+  },
+  {
+   "at": "2026-10-29T18:23:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T18:20:45Z",
    "subject": "Card header line: no empty \"(born )\" when the year moves to the header"
   },
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-29T17:27:46Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T17:27:21Z",
-   "subject": "Incidents closed: shard(s) 4 passed on 9dafcb7d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T17:26:44Z",
-   "subject": "Skills: register emoji (order file and Games family), so the skills, index and refresh checks pass on main"
   }
  ],
  "builders": {
