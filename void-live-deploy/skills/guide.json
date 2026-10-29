@@ -519,7 +519,7 @@
    "chapter": "make",
    "name": "rap",
    "title": "Rap",
-   "line": "\"rap about pizza\", \"write me a rap\", \"a trap rap about mondays\", \"spit some bars about coffee\", \"drop a verse about my dog\", \"freestyle about the moon\", \"can you rap\"",
+   "line": "A rap written for your topic, rhymes shown, performed over its own beat",
    "examples": [
     "write me a rap about pizza",
     "rap about my dog",

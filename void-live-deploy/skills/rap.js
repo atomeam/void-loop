@@ -1,5 +1,6 @@
 /**
- * rap skill - "rap about pizza", "write me a rap", "a trap rap about mondays", "spit some bars about coffee", "drop a verse about my dog", "freestyle
+ * rap skill - a rap written for your topic, rhymes shown, performed over its own beat.
+ * Asks: "rap about pizza", "write me a rap", "a trap rap about mondays", "spit some bars about coffee", "drop a verse about my dog", "freestyle
  * about the moon", "can you rap" (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is"). The rap is
  * written for the ask by the free answer model (/api/answer mode 'rap', lib/rap.js), never picked from a list; the card shows it bar by bar with its
  * rhyme scheme, performs it over a beat made for its style in the browser (lib/rap-stage.js), takes another take, and opens on /rap/ with the whole
