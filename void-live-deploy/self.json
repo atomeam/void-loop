@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,15 +550,71 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:41:15Z",
+   "subject": "Breath card: no \"-1 rounds done\" on the first frame"
+  },
+  {
+   "at": "2026-10-29T16:40:55Z",
+   "subject": "converter: a whole one-line skill summary, and mark the unit-kind links as not keys"
+  },
+  {
+   "at": "2026-10-29T16:34:49Z",
+   "subject": "converter: assimilate onlineconverter.com as /converter/"
+  },
+  {
    "at": "2026-10-29T16:31:30Z",
    "subject": "Keep every proven skill's flavor line unique once the lore runs out; regenerate parity and hand-off gaps"
+  },
+  {
+   "at": "2026-10-29T16:29:52Z",
+   "subject": "Weather: an ask with no place in it is the forecast for here"
+  },
+  {
+   "at": "2026-10-29T16:28:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:26:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:25:27Z",
+   "subject": "Place replies kept before cards had a family, once, from the loop log"
+  },
+  {
+   "at": "2026-10-29T16:24:24Z",
+   "subject": "test(answer-honesty): read the tower target from the record"
+  },
+  {
+   "at": "2026-10-29T16:24:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:23:17Z",
+   "subject": "Regenerate the skill tools list after the main merge"
   },
   {
    "at": "2026-10-29T16:21:55Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
   {
+   "at": "2026-10-29T16:19:59Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:19:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:19:33Z",
+   "subject": "Keep the reply section last on cards that order their own parts"
+  },
+  {
+   "at": "2026-10-29T16:19:07Z",
+   "subject": "chore(rap): self.json as main has it"
+  },
+  {
+   "at": "2026-10-29T16:12:11Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -572,62 +628,6 @@
   {
    "at": "2026-10-29T16:10:31Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T16:07:45Z",
-   "subject": "Bench: 19 more asks that reach the right skill, from a second browser probe"
-  },
-  {
-   "at": "2026-10-29T16:07:45Z",
-   "subject": "Regenerate families and deps after the main merge"
-  },
-  {
-   "at": "2026-10-29T16:06:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:05:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:04:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:04:10Z",
-   "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
-  },
-  {
-   "at": "2026-10-29T16:03:50Z",
-   "subject": "Card replies count on the heat map by the card's family"
-  },
-  {
-   "at": "2026-10-29T16:01:10Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:00:24Z",
-   "subject": "Versus: count controls on the rendered page, name a pinned target as the target"
-  },
-  {
-   "at": "2026-10-29T15:59:03Z",
-   "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
-  },
-  {
-   "at": "2026-10-29T15:57:50Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:57:45Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:57:00Z",
-   "subject": "Money/GPA asks: stop waiting for skills the ask does not need, ask for card-share's graph at once"
-  },
-  {
-   "at": "2026-10-29T15:56:48Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -865,7 +865,6 @@
  "tower": {
   "target": "onlineconverter.com",
   "since": "2026-10-29",
-  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "serverdiscounter.com",
    "howsecureismypassword.net",
