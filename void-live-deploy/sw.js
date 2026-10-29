@@ -69,6 +69,16 @@ self.addEventListener('fetch', (e) => {
   }
   const nav = req.mode === 'navigate';
   const code = url.pathname.startsWith('/skills/') || url.pathname.startsWith('/lib/') || pageCode(url.pathname);
+  // every other script of the site (a page's own app.js and what it imports, a /lab/ page's app.js) is asked again of the server too, for the
+  // same 4-hour reason (2026-10-29: a returning browser ran an old /fanfic/app.js under a new page), and is never kept: offline it falls back
+  // to whatever copy the browser's own cache holds. /visit.js keeps its day in the cache (_headers), and /vendor/ files never change.
+  // The answer goes back marked no-cache: with the server's 4 hours on it, the tab's memory cache ran the old file on the next reload without
+  // asking the worker at all (tools/fresh-scripts.test.mjs).
+  if (!nav && !code && /\.m?js$/.test(url.pathname) && url.pathname !== '/visit.js') {
+    const asked = (res) => { if (!res || !res.ok) return res; const h = new Headers(res.headers); h.set('cache-control', 'no-cache'); return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h }); };
+    e.respondWith(fetch(new Request(req, { cache: 'no-cache' })).catch(() => fetch(new Request(req, { cache: 'force-cache' }))).then(asked).catch(() => Response.error()));
+    return;
+  }
   if (!nav && !code && !SHELL.includes(url.pathname)) return;
   // skill and card code is re-checked with the server on every load (owner, 2026-10-22: the films card still read "VERSE F   I   LMS"
   // hours after the fix): Cloudflare stretches .js browser caching to 4 hours whatever _headers says, so a plain fetch kept the old file.

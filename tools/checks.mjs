@@ -62,7 +62,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -326,6 +326,7 @@ for (const [name, file] of [
   ['operating-laws', 'operating-laws.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['sw-3d-cache', 'sw-3d-cache.test.mjs'], // the worker never keeps HTML as a 3D file; three.js at a path no edge holds (issue #1114)
+  ['fresh-scripts', 'fresh-scripts.test.mjs'], // a deploy reaches a returning browser's scripts on every page: sw.js asks again for each script, visit.js asks again after load where no worker is in control
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],
