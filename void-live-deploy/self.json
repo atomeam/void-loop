@@ -537,13 +537,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T20:18:28Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T15:24:56Z",
+   "subject": "Main health: a real-pages spec for /learn-to-draw/ (begin, draw a stroke, Done scores it, share), and the stale parity pages and deps map…"
+  },
+  {
+   "at": "2026-10-29T15:22:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T15:21:22Z",
    "subject": "Regenerate the generated files after the merge"
@@ -555,6 +563,14 @@
   {
    "at": "2026-10-29T15:20:39Z",
    "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
+  },
+  {
+   "at": "2026-10-29T15:20:35Z",
+   "subject": "Restore the password generator's test (lib/password.js), overwritten by the password skill's test in #1536; the skill's test is…"
+  },
+  {
+   "at": "2026-10-29T15:19:19Z",
+   "subject": "Versus queue: fewest controls first, then the fewer bytes"
   },
   {
    "at": "2026-10-29T15:19:02Z",
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T15:13:06Z",
    "subject": "Paid members: a pre-launch pilot at /members/?pilot, so a paid account proves the idea path on the live site before go-live"
-  },
-  {
-   "at": "2026-10-29T15:12:02Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:11:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:10:57Z",
-   "subject": "Paid members: check the idea limit inside the insert, so sends at the same moment cannot pass it"
-  },
-  {
-   "at": "2026-10-29T15:10:46Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
