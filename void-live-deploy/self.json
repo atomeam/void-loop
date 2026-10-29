@@ -545,6 +545,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T07:59:15Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T07:56:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T07:56:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T07:56:43Z",
+   "subject": "Word counter card counts the typed text on the device"
+  },
+  {
    "at": "2026-10-29T07:56:23Z",
    "subject": "Verse Brain grows a spiking eye from F217 that learns by dopamine"
   },
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T07:22:18Z",
    "subject": "Verse's coder: an exact-text replace tool, so a change needs no diff to line up"
-  },
-  {
-   "at": "2026-10-29T07:19:38Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T07:16:04Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T07:15:17Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T07:13:54Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
