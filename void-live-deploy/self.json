@@ -545,6 +545,70 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T06:54:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:54:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:53:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:52:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:52:13Z",
+   "subject": "Verse's will: hourly from the conductor's clock, and started by every main deploy"
+  },
+  {
+   "at": "2026-10-29T06:51:49Z",
+   "subject": "Parity doc: the hourly forecast line moved in lib/weather.js"
+  },
+  {
+   "at": "2026-10-29T06:51:29Z",
+   "subject": "Loop: resume early when its own code changed after the failures that paused it"
+  },
+  {
+   "at": "2026-10-29T06:51:20Z",
+   "subject": "Fan fiction: find, link, CSV export, keyboard shortcuts and German on the index"
+  },
+  {
+   "at": "2026-10-29T06:49:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T06:49:25Z",
+   "subject": "Weather, time and base converter stage cards follow the page"
+  },
+  {
+   "at": "2026-10-29T06:48:23Z",
+   "subject": "Money/GPA asks the page's calc can answer no longer wait for all 309 skills (watchdog #110)"
+  },
+  {
+   "at": "2026-10-29T06:47:46Z",
+   "subject": "Verse Brain: every Mind Field mode joins it through the shared field"
+  },
+  {
+   "at": "2026-10-29T06:46:27Z",
+   "subject": "Verse fixes its textgen skill: learn to handle \"fantasy name generator\""
+  },
+  {
+   "at": "2026-10-29T06:42:01Z",
+   "subject": "Suite: the who-is-X stub answers 404 for a title with no page"
+  },
+  {
+   "at": "2026-10-29T06:41:51Z",
+   "subject": "Verse Brain: say on the card what it feels in the shared field"
+  },
+  {
+   "at": "2026-10-29T06:41:01Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T06:40:19Z",
    "subject": "Verse loop tests: clear the owner token in the no-key cases"
   },
@@ -559,70 +623,6 @@
   {
    "at": "2026-10-29T06:33:10Z",
    "subject": "Coder on Verse's own model: the loop tests and the API list catch up with #1439"
-  },
-  {
-   "at": "2026-10-29T06:32:36Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:32:28Z",
-   "subject": "Fan fiction: keep the index steady while the archive is read"
-  },
-  {
-   "at": "2026-10-29T06:32:26Z",
-   "subject": "Stage links follow the colour, gradient and wheel open on the page"
-  },
-  {
-   "at": "2026-10-29T06:32:15Z",
-   "subject": "Verse's coder: older results cut short, so the token cap lasts the turns"
-  },
-  {
-   "at": "2026-10-29T06:31:47Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:30:26Z",
-   "subject": "Naming audit: launch the Chrome the Tower gate names (CHROME_PATH), not playwright's missing download"
-  },
-  {
-   "at": "2026-10-29T06:28:06Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-10-29T06:28:06Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:27:50Z",
-   "subject": "CSP smoke: a ! Name line in _headers drops the earlier header, as Cloudflare does"
-  },
-  {
-   "at": "2026-10-29T06:26:56Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T06:26:23Z",
-   "subject": "Better at sports browse, textgen, backdrop and 1 more: 6 more ways of asking answered right — new phrases: “browse sports” now opens…"
-  },
-  {
-   "at": "2026-10-29T06:24:03Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:23:04Z",
-   "subject": "Growth card: today's ledger lines with their hashes, checked in the browser"
-  },
-  {
-   "at": "2026-10-29T06:22:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T06:21:20Z",
-   "subject": "Shard 3 server checks: the confirm line, the router and the ?q= link pass again"
-  },
-  {
-   "at": "2026-10-29T06:21:13Z",
-   "subject": "Versus card: say \"default bar\" where the site turned the gate away; /fanfic/ opens offline, loads faster, 0 design defects"
   }
  ],
  "builders": {

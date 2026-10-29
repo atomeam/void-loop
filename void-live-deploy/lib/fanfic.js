@@ -172,3 +172,18 @@ export function statsOf(boards, topics) {
 
 /** a random secret for this device: 16 bytes as hex. */
 export function newSecret(rand = (n) => crypto.getRandomValues(new Uint8Array(n))) { return [...rand(16)].map((x) => x.toString(16).padStart(2, '0')).join(''); }
+
+const fold = (s) => String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+/** the stories whose title, fandom or author holds every word of q (case and accents ignored); all of them for an empty q. Pure. */
+export function findIn(topics, q) {
+  const want = fold(q).split(/\s+/).filter(Boolean); if (!want.length) return topics;
+  return topics.filter((t) => { const hay = fold(t.title + ' ' + t.fandom + ' ' + t.author); return want.every((w) => hay.includes(w)); });
+}
+
+/** the story list as CSV (a header row, then one row a story), for a spreadsheet: title, fandom, author, replies, rating, last post, link. Pure. */
+export function storiesCsv(topics, origin = '') {
+  const cell = (v) => { const s = String(v == null ? '' : v); return /[",\n\r]/.test(s) || /^[=+\-@]/.test(s) ? '"' + (/^[=+\-@]/.test(s) ? "'" : '') + s.replace(/"/g, '""') + '"' : s; };
+  const rows = [['Title', 'Fandom', 'Author', 'Replies', 'Rating', 'Last post', 'Link']].concat((topics || []).map((t) => [t.title, t.fandom, t.author, t.replies || 0,
+    t.nsfw ? '18+' : 'All ages', t.bumped ? new Date(t.bumped).toISOString() : '', origin + '/fanfic/?f=' + encodeURIComponent(t.board) + '&s=' + t.no]));
+  return rows.map((r) => r.map(cell).join(',')).join('\r\n') + '\r\n';
+}

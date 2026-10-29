@@ -7,8 +7,13 @@ import * as F from '/lib/fanfic.js';
 import { doWork, excerpt } from '/lib/boards.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
+import * as DE from '/lib/fanfic-de.js';
 
-const $ = (id) => document.getElementById(id), API = '/api/boards', KEY = 'a2m.void.fanfic.v1', BOARDS_KEY = 'a2m.void.boards.v1';
+const $ = (id) => document.getElementById(id), API = '/api/boards', KEY = 'a2m.void.fanfic.v1', BOARDS_KEY = 'a2m.void.boards.v1', LANG_KEY = 'a2m.void.fanfic.lang';
+// German for a reader who asks for it (?lang=de, the switch in the header, or a German browser): the archive's own words change after each
+// draw, what readers wrote never does (lib/fanfic-de.js). English is the page as written.
+const lang = (() => { let saved = ''; try { saved = localStorage.getItem(LANG_KEY) || ''; } catch (_) {} return DE.langOf(location.search, saved, navigator.language); })();
+const german = lang === 'de';
 // Verse Brain (lib/brain-bridge.js, owner 2026-10-29: "all the pages are supposed to be able to work together"): the fandom a reader opens and
 // the words they search go to the brain when one is open in this browser (BroadcastChannel, never a server); the footer says what it is
 // thinking about then, and nothing at all when no brain is open
@@ -117,11 +122,12 @@ function noticeRow([id, title]) {
   tr.append(ic, main, rep, who, when); return tr;
 }
 function topicRow(t, { inFandom } = {}) {
-  const tr = el('tr'), ic = el('td', 'ic'), main = el('td', 'm'), rep = el('td', 'num hide-s', String(t.replies)), who = el('td', 'who hide-s', t.author), when = el('td', 'when');
+  const tr = el('tr'), ic = el('td', 'ic'), main = el('td', 'm'), rep = el('td', 'num hide-s', String(t.replies)), who = el('td', 'who hide-s', t.author), when = el('td', 'when'); who.translate = false;
   ic.append(t.locked ? dot('lock', 'Locked') : F.unread(t, me.read) ? dot('new', 'New posts') : dot('', 'No new posts'));
-  const a = link(t.title, href({ f: t.board, s: t.no }), 't'); main.append(a);
+  const a = link(t.title, href({ f: t.board, s: t.no }), 't'); a.translate = false; main.append(a);
   if (t.nsfw) main.append(el('span', 'tag adult', '18+'));
-  const by = el('span', 'in', 'by ' + t.author); if (!inFandom) by.append(' in ', link(t.fandom, href({ f: t.board })));
+  const by = el('span', 'in'), pen = el('span', '', t.author); pen.translate = false; by.append('by ', pen);
+  if (!inFandom) { const fl = link(t.fandom, href({ f: t.board })); fl.translate = false; by.append(' in ', fl); }
   main.append(by);
   rep.dataset.l = 'Replies'; when.dataset.l = 'Last post'; when.append(timeEl(t.bumped));
   tr.append(ic, main, rep, who, when); return tr;
@@ -180,7 +186,7 @@ function drawRelated() {
 function show(id, title) {
   for (const v of VIEWS) $(v).classList.toggle('on', v === id);
   for (const a of document.querySelectorAll('.nav a')) { if (a.dataset.v === NAV[id]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
-  document.title = (title ? title + ' · ' : '') + 'Fan fiction · Verse';
+  const t = (title ? title + ' · ' : '') + 'Fan fiction · Verse'; document.title = german ? DE.deTitle(t) : t;
   handing = id === 'room' ? () => draft().text : null; drawRelated();
 }
 const fail = (node, e) => say(node, e && e.message ? e.message.replace(/^./, (c) => c.toUpperCase()) + '.' : 'Something went wrong. Try again.', 'bad');
@@ -188,6 +194,7 @@ const fail = (node, e) => say(node, e && e.message ? e.message.replace(/^./, (c)
 async function viewIndex() {
   show('index', 'Archive Descriptions & Stories');
   const s = $('indexSay'), box = $('fandomBox'); s.hidden = false; say(s, 'Opening the archive…');
+  $('find').value = findQ(); idx = null;
   box.classList.add('loading'); drawList('index', [], { emptySay: 'Opening the stories…' }); // the notices and tools are fixed: they show at once
   let a; try { a = await archive(); } catch (e) { box.classList.remove('loading'); fail(s, e); return; }
   box.classList.remove('loading'); s.hidden = true;
@@ -196,19 +203,45 @@ async function viewIndex() {
     const tr = el('tr'), ic = el('td', 'ic'), main = el('td', 'm'), n = el('td', 'num'), p = el('td', 'num'), when = el('td', 'when');
     const mine = topics.filter((t) => t.board === b.code);
     ic.append(mine.some((t) => F.unread(t, me.read)) ? dot('new', 'New posts') : dot('', 'No new posts'));
-    main.append(link(b.title, href({ f: b.code }), 't'));
+    const fl = link(b.title, href({ f: b.code }), 't'); fl.translate = false; main.append(fl);
     if (b.nsfw) main.append(el('span', 'tag adult', '18+'));
-    if (b.about && !/^Fan fiction: /.test(b.about)) main.append(el('span', 'about', b.about));
+    if (b.about && !/^Fan fiction: /.test(b.about)) { const ab = el('span', 'about', b.about); ab.translate = false; main.append(ab); }
     n.textContent = String(mine.length); n.dataset.l = 'Stories'; p.textContent = String(b.posts || 0); p.dataset.l = 'Posts';
     when.dataset.l = 'Last post'; if (b.last) when.append(timeEl(b.last)); else when.textContent = 'No posts yet';
     tr.append(ic, main, n, p, when); return tr;
   }));
   $('fandomList').hidden = !boards.length; $('emptyArchive').hidden = !!boards.length;
-  drawList('index', shown(topics), { emptySay: boards.length ? 'No stories yet. Open a fandom and post the first one.' : 'No stories yet. The first one posted shows here.' });
+  idx = { list: shown(topics), empty: boards.length ? 'No stories yet. Open a fandom and post the first one.' : 'No stories yet. The first one posted shows here.' };
+  drawIndexList();
   const st = F.statsOf(boards, topics);
   $('nFandoms').textContent = st.fandoms.toLocaleString(); $('nStories').textContent = st.stories.toLocaleString();
   $('nPosts').textContent = st.posts.toLocaleString(); $('nAuthors').textContent = st.authors.toLocaleString();
 }
+
+// the index's story list, narrowed by the find field (lib/fanfic.js findIn: title, fandom and pen name, accents ignored)
+let idx = null;
+const findQ = () => (new URLSearchParams(location.search).get('find') || '').slice(0, 100);
+const indexList = () => (idx ? F.findIn(idx.list, findQ()) : []);
+function drawIndexList() {
+  if (!idx) return;
+  const q = findQ().trim();
+  drawList('index', indexList(), { emptySay: q && idx.list.length ? 'No story matches "' + q + '".' : idx.empty });
+}
+$('find').addEventListener('input', () => {
+  const u = new URLSearchParams(location.search), v = $('find').value.slice(0, 100);
+  if (v.trim()) u.set('find', v); else u.delete('find'); u.delete('page');
+  history.replaceState(null, '', location.pathname + (u.toString() ? '?' + u : '') + location.hash); drawIndexList();
+});
+const listSay = (text, tone) => say($('listSay'), text, tone);
+$('copyLink').onclick = async () => {
+  try { await navigator.clipboard.writeText(location.href); listSay('Link copied.', 'good'); } catch (_) { listSay('The link could not be copied. Copy it from the address bar.', 'bad'); }
+};
+$('exportCsv').onclick = () => {
+  const list = indexList(); if (!list.length) { listSay('No stories to export yet.'); return; }
+  const url = URL.createObjectURL(new Blob([F.storiesCsv(list, location.origin)], { type: 'text/csv' })), a = el('a'); a.href = url; a.download = 'fan-fiction-stories.csv';
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  listSay('Exported ' + list.length + (list.length === 1 ? ' story.' : ' stories.'), 'good');
+};
 
 async function viewForum(code) {
   let a; try { a = await archive(); } catch (e) { gone(e.message); return; }
@@ -249,9 +282,9 @@ async function viewStory(code, no, chap) {
   const s = F.storyOf(op, r.posts || []), key = code + '/' + no;
   me.read.seen[key] = Math.max(op.bumped || 0, ...(r.posts || []).map((p) => p.at || 0)); keep();
   show('story', s.title);
-  const crumb = $('storyCrumb'); crumb.textContent = b.title; crumb.href = href({ f: code });
+  const crumb = $('storyCrumb'); crumb.textContent = b.title; crumb.translate = false; crumb.href = href({ f: code });
   $('storyH').textContent = s.title;
-  const by = $('storyBy'); by.replaceChildren('by ', el('b', '', s.author));
+  const by = $('storyBy'), pen = el('b', '', s.author); pen.translate = false; by.replaceChildren('by ', pen);
   if (b.nsfw) by.append(el('span', 'tag adult', '18+'));
   $('storySum').textContent = s.summary; $('storySum').hidden = !s.summary;
   const facts = [['Rated', b.nsfw ? '18+' : 'All ages'], ['Fandom', b.title], ['Chapters', String(s.chapters.length)], ['Words', s.words.toLocaleString()],
@@ -264,8 +297,8 @@ async function viewStory(code, no, chap) {
   sel.replaceChildren(...s.chapters.map((x) => { const o = el('option', '', 'Chapter ' + x.n + (x.title ? ': ' + x.title : '')); o.value = x.n; return o; }));
   sel.value = n; sel.onchange = () => go(href({ f: code, s: no, c: sel.value > 1 ? sel.value : '' }), true);
   $('tocSay').textContent = 'Chapter ' + n + ' of ' + s.chapters.length;
-  const box = el('section', 'chapter'), prose = el('div', 'prose');
-  box.append(el('h3', '', s.chapters.length > 1 ? 'Chapter ' + c.n + (c.title ? ': ' + c.title : '') : s.title));
+  const box = el('section', 'chapter'), prose = el('div', 'prose'), h3 = el('h3', '', s.chapters.length > 1 ? 'Chapter ' + c.n + (c.title ? ': ' + c.title : '') : s.title);
+  prose.translate = false; if (s.chapters.length < 2) h3.translate = false; box.append(h3);
   paras(c.text, prose); box.append(prose);
   const acts = el('div', 'acts');
   if (n > 1) acts.append(link('Previous chapter', href({ f: code, s: no, c: n - 1 > 1 ? n - 1 : '' }), 'btn'));
@@ -275,8 +308,8 @@ async function viewStory(code, no, chap) {
   // reviews
   $('reviewsH').textContent = s.reviews.length ? 'Reviews (' + s.reviews.length + ')' : 'Reviews';
   $('reviews').replaceChildren(...(s.reviews.length ? s.reviews.map((p) => {
-    const d = el('div', 'review'), meta = el('p', 'meta'); meta.append(el('b', '', p.name || 'Anonymous'), ' · ', timeEl(p.at)); d.append(meta);
-    const body = el('div'); paras(p.body, body); d.append(body); return d;
+    const d = el('div', 'review'), meta = el('p', 'meta'), who = el('b', '', p.name || 'Anonymous'); if (p.name) who.translate = false; meta.append(who, ' · ', timeEl(p.at)); d.append(meta);
+    const body = el('div'); body.translate = false; paras(p.body, body); d.append(body); return d;
   }) : [el('p', 'quiet', 'No reviews yet. Be the first to say what you thought.')]));
   wireReview(code, no, op.locked || op.archived);
   // the next chapter: only for the device that posted the story, while the thread is open
@@ -540,6 +573,33 @@ document.addEventListener('click', (ev) => {
 });
 addEventListener('popstate', route);
 $('gateYes').onclick = () => { setAdult(); route(); };
+
+// keyboard shortcuts, outside text fields (the footer lists them): / find, n new story, w Writing Room, i index, r most recent, ? the list
+document.addEventListener('keydown', (ev) => {
+  const t = ev.target, typing = t && (t.isContentEditable || /^(?:INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+  if (typing || ev.metaKey || ev.ctrlKey || ev.altKey || ev.defaultPrevented) return;
+  const k = ev.key, onIndex = $('index').classList.contains('on');
+  if (k === '/') { ev.preventDefault(); if (onIndex) $('find').focus(); else { go(href({ v: 'search' })); $('sq').focus(); } }
+  else if (k === 'n') go(href({ new: 'story' }));
+  else if (k === 'w') go(href({ v: 'room' }));
+  else if (k === 'i') go('/fanfic/');
+  else if (k === 'r') go(href({ v: 'recent' }));
+  else if (k === '?') { const d = document.querySelector('details.keys'); d.open = true; d.querySelector('summary').focus(); }
+});
+
+// the language: German swaps the archive's own words after every draw; the switch keeps the choice on this device
+{
+  const b = $('langBtn');
+  if (german) { b.textContent = 'English'; b.lang = 'en'; b.setAttribute('aria-label', 'Read in English'); }
+  b.onclick = () => {
+    try { localStorage.setItem(LANG_KEY, german ? 'en' : 'de'); } catch (_) {}
+    const u = new URLSearchParams(location.search); u.delete('lang'); location.replace(location.pathname + (u.toString() ? '?' + u : '') + location.hash);
+  };
+  if (german) {
+    document.documentElement.lang = 'de'; DE.germanize(document.body);
+    new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) DE.germanize(n); }).observe(document.body, { childList: true, subtree: true });
+  }
+}
 
 if (!me.drafts.length) newDraft();
 if (!draft()) me.cur = me.drafts[0].id;

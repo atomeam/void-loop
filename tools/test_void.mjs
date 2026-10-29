@@ -5514,7 +5514,7 @@ try {
       await F.p.mouse.move(orb.x + orb.width / 2, orb.y + orb.height / 2); await F.p.mouse.down(); await F.p.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.2, { steps: 6 }); await F.p.mouse.up();
       await F.p.waitForTimeout(1200);
       const r = await F.p.$eval(card, (e) => { const cb = e.getBoundingClientRect(); const out = [...e.querySelectorAll('button,select,.g-title,.g-sub,.ff-hud,.ff-why')].filter((n) => { const b = n.getBoundingClientRect(); return b.width && (b.left < cb.left - 1 || b.right > cb.right + 1 || n.scrollWidth > n.clientWidth + 1); }).map((n) => n.className);
-        return { dragged: +(e.dataset.dragged || 0), modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), fps: +(e.dataset.fps || 0), frameMs: +(e.dataset.frameMs || 99), clipped: out, hue: e.style.getPropertyValue('--mf-hue'), listen: !!e.querySelector('.mf-listen'), page: getComputedStyle(document.body).filter }; });
+        return { dragged: +(e.dataset.dragged || 0), slot: e.dataset.fieldSlot == null ? -1 : +e.dataset.fieldSlot, modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), fps: +(e.dataset.fps || 0), frameMs: +(e.dataset.frameMs || 99), clipped: out, hue: e.style.getPropertyValue('--mf-hue'), listen: !!e.querySelector('.mf-listen'), page: getComputedStyle(document.body).filter }; });
       await F.ask('save this mind', 700); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
       const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
       await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind'); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
@@ -5524,9 +5524,9 @@ try {
       await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
       out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
     }
-    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 10 && o.modes[0] === 'doodle-mind' && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
-      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 10 && o.sim === 11 && !o.errors.length; // ten modes since F-321's memory orbs (2026-10-29)
-    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 11 && o.modes[0] === 'doodle-mind' && o.modes[10] === 'verse-brain' && o.slot >= 0 && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 10 && o.sim === 11 && !o.errors.length; // ten modes since F-321's memory orbs, and Verse Brain last on the switcher (2026-10-29)
+    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm and ends with Verse Brain, the card keeps a slot of its own numbers in the shared field, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
       good(out[1280]) && good(out[390]), JSON.stringify(out));
   }
   if (want("tilt arena: four modes in one card, agents learn, Mode switches, GPU Swarm falls back, every ask opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
@@ -5664,6 +5664,13 @@ try {
     const shared = await F.p.$eval(card, (e) => ({ felt: +(e.dataset.felt || 0), owners: e.dataset.fieldOwners || '', says: e.querySelector('[role=status]') ? e.querySelector('[role=status]').textContent : '', line: e.querySelector('.vb-field') ? e.querySelector('.vb-field').textContent : '' })).catch(() => null);
     check('verse brain shared field: an orb\'s slot in skills/field.js is felt by the brain on the same page, the card says so in words ("Shared field: feels N memories from other cards: Memory orbs (N)"), and the brain\'s ideas are in the field under its own name',
       !!shared && shared.felt >= 1 && /agent-fluid-memory-orbs/.test(shared.owners) && /^Shared field: feels \d+ memor(y|ies) from other cards: Memory orbs \(\d+\)/.test(shared.line), JSON.stringify(shared));
+    // the Mind Field modes join it: the brain card opens Swarm beside itself (it stays), and the swarm's card is felt and named on the brain
+    const pickModes = await F.p.$$eval(card + ' select.mf-mode option', (o) => o.map((x) => x.value)).catch(() => []);
+    await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind').catch(() => {}); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
+    await until(async () => /Swarm \(1\)/.test(await F.p.$eval(card + ' .vb-field', (e) => e.textContent).catch(() => '')), 8000).catch(() => {});
+    const joined = { modes: pickModes.length, stays: !!(await F.p.$(card)), swarm: !!(await F.p.$('.ff-swarm-mind')), line: await F.p.$eval(card + ' .vb-field', (e) => e.textContent).catch(() => ''), owners: await F.p.$eval(card, (e) => e.dataset.fieldOwners || '').catch(() => '') };
+    check('verse brain and the Mind Field modes, one entity: its card opens any of the eleven choices beside it (it stays), and an open Swarm card is felt in the shared field and named on the brain ("Swarm (1)")',
+      joined.modes === 11 && joined.stays && joined.swarm && /Swarm \(1\)/.test(joined.line) && /swarm-mind/.test(joined.owners), JSON.stringify(joined));
     const errors = F.errors.slice(); await F.ctx.close();
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
