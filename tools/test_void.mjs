@@ -11547,6 +11547,9 @@ try {
       !!crowd0 && !!cheer && crowdGone && Q.errors.length === 0, JSON.stringify({ crowd0, cheer, crowdGone, errs: Q.errors }));
     // the unkeepable: never in the saved stage; its keep button shatters it; Ctrl+C while it is picked shatters the next one
     await Q.ask('make me something unkeepable', 600);
+    // the card summons in (.thing.arrive, .75 s from opacity 0): a loaded runner read it mid-way at 0.756 (shard 1 on 5598bafa), so its
+    // own fade is read once the arrival has finished
+    await until(() => Q.p.$eval('.unkeepable-card', (e) => e.getAnimations().every((a) => a.playState === 'finished')).catch(() => false), 3000);
     const unk = await Q.p.$eval('.unkeepable-card', (e) => ({ words: e.querySelector('.unkeepable-words').textContent, left: e.querySelector('.unkeepable-left').textContent, opacity: +getComputedStyle(e).opacity })).catch(() => null);
     const unkSaved = (await kinds()).includes('unkeepable');
     await Q.p.click('.unkeepable-card .unkeepable-keep').catch(() => {});
