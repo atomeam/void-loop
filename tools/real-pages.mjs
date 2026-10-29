@@ -166,6 +166,14 @@ export const SPECS = {
   '/generators/make/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate rolls the table again'); await t.download('#download', /\.html$/i); await t.share('#share'); },
   '/generators/story/': async (t) => { await t.fill('#idea', 'a lighthouse keeper finds a door in the sea'); await t.click('#write'); await t.waitText('#story', /\w{20,}/, 30000); t.ok((await t.text('#story')).split(/\s+/).length > 40, 'an opening is written'); await t.download('#dl', /\.txt$/i); },
   '/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
+  // the scored drawing course (wheelroot.com assimilated, 2026-10-29): begin opens the first drill, a stroke drawn on the sheet is scored 0 to 100 on Done, and the drawing travels in a link
+  '/learn-to-draw/': async (t) => {
+    await t.click('#begin'); await t.p.waitForTimeout(200); t.ok((await t.text('#dName')).trim().length > 0, 'Begin opens a drill: ' + (await t.text('#dName')).trim());
+    const b = await t.p.locator('#sheet').boundingBox(); t.ok(!!b && b.width > 50, 'the sheet is there to draw on');
+    if (b) { await t.p.mouse.move(b.x + b.width * 0.2, b.y + b.height * 0.5); await t.p.mouse.down(); for (let i = 1; i <= 20; i++) await t.p.mouse.move(b.x + b.width * (0.2 + 0.03 * i), b.y + b.height * 0.5); await t.p.mouse.up(); }
+    await t.click('#done'); await t.p.waitForTimeout(200); t.ok(/Score: \d{1,3} of 100/.test(await t.text('#result')), 'Done scores the stroke out of 100: ' + (await t.text('#result')).slice(0, 60));
+    await t.share('#share');
+  },
   '/hosting/': async (t) => {
     t.ok(/3 are being served/.test(await t.text('#qout')), '90 an hour at 2 minutes is 3 served at once');
     // the domain check asks the registry (RDAP): a registered name says who and since when, a made-up one is never called taken, a bad one is refused
