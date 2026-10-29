@@ -68,11 +68,13 @@ import { JOB_SITES } from './job-sites.js'; // the jobs floor's pages (owner, 20
 export { JOB_SITES };
 import { SELF_SITES } from './self-sites.js'; // the pages Verse built by itself for the sites it took on (tools/tower-self.mjs)
 export { SELF_SITES };
+// the calculator floor (Versus job mvoxrtv8, online-calculator.com): /calculator/ is the page built for it, named for what it is: the
+// scientific calculator with its history, memory and unit conversion (no BMI or darts calculator is claimed here: those are not on it)
 export const CALCULATOR_SITES = Object.freeze([
-  { path: '/calculator/', card: 'calculators', lane: 'calculator', name: 'Online Calculator', h1: 'Online Calculator', tools: ['scientific', 'bmi', 'darts', 'unit'],
-    intro: 'A multi-purpose collection of calculators: scientific, BMI, darts, and unit converters. Everything runs on this device: your files are never uploaded, there is no account, and the tools work offline after one visit.',
-    does: 'Scientific, BMI, darts, and unit calculators. Everything runs on your device: nothing is uploaded, no account, works offline.',
-    asks: ['online calculator', 'scientific calculator', 'bmi calculator', 'darts calculator', 'unit converter'],
+  { path: '/calculator/', card: 'calculators', lane: 'calculator', name: 'Calculator', h1: 'Scientific calculator', tools: ['scientific', 'history', 'memory', 'unit'],
+    intro: 'A scientific calculator that shows its working: the expression as typed, the answer, a history that stays, memory keys and unit conversion. Everything runs on this device: nothing is uploaded, there is no account, and it works offline after one visit.',
+    does: 'Scientific calculator with history, memory and unit conversion. Everything runs on your device: nothing is uploaded, no account, works offline.',
+    asks: ['online calculator', 'scientific calculator', 'calculator with history', 'unit converter'],
     links: [] },
 ]);
 
