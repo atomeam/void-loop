@@ -1,0 +1,237 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const statsEl = document.getElementById('stats');
+const sealsEl = document.getElementById('seals');
+const noteEl = document.getElementById('note');
+const cardsEl = document.getElementById('cards');
+const GRID = 32;
+let cells = new Float32Array(GRID * GRID);
+let next = new Float32Array(GRID * GRID);
+let w, h, cellW, cellH;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+  cellW = w / GRID;
+  cellH = h / GRID;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Seed some initial
+for (let i = 0; i < 20; i++) cells[Math.floor(Math.random()*cells.length)] = 0.8;
+
+// Worker for local mind
+const workerCode = `
+let rules = Array.from({length: 8}, () => ({
+  grow: 0.1 + Math.random()*0.3,
+  thresh: 0.3 + Math.random()*0.4,
+  score: 0
+}));
+self.onmessage = e => {
+  const { mean, varc, clusters } = e.data;
+  // Evolve: score rules by how well they match current
+  rules.forEach(r => {
+    const ideal = r.thresh * 4;
+    r.score = 1 - Math.abs(clusters - ideal) / 8 + mean * 0.5;
+  });
+  rules.sort((a,b) => b.score - a.score);
+  const best = rules[0];
+  // Mutate weak
+  for (let i = 4; i < rules.length; i++) {
+    rules[i].grow = Math.max(0.05, Math.min(0.6, rules[i].grow + (Math.random()-0.5)*0.1));
+    rules[i].thresh = Math.max(0.2, Math.min(0.7, rules[i].thresh + (Math.random()-0.5)*0.1));
+  }
+  const conf = Math.min(1, best.score);
+  self.postMessage({ conf, biasGrow: best.grow, clusters: Math.round(clusters), mean });
+};
+`;
+const blob = new Blob([workerCode], {type: 'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let lastMind = { conf: 0.5, biasGrow: 0.2, clusters: 0 };
+
+worker.onmessage = e => { lastMind = e.data; };
+
+function updateLattice(bias = 0.2) {
+  const thresh = 0.35;
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const i = y * GRID + x;
+      let sum = cells[i] * 0.6;
+      let n = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = (x + dx + GRID) % GRID, ny = (y + dy + GRID) % GRID;
+        sum += cells[ny * GRID + nx];
+        n++;
+      }
+      sum /= (n + 1);
+      let v = sum * (1 + bias) - 0.15;
+      if (sum > thresh) v += 0.08;
+      next[i] = Math.max(0, Math.min(1, v));
+    }
+  }
+  [cells, next] = [next, cells];
+}
+
+function sampleStats() {
+  let sum = 0, sum2 = 0, clusters = 0;
+  const visited = new Uint8Array(GRID*GRID);
+  function flood(x, y) {
+    const stack = [[x,y]];
+    let size = 0;
+    while (stack.length) {
+      const [cx, cy] = stack.pop();
+      const i = cy*GRID + cx;
+      if (visited[i] || cells[i] < 0.4) continue;
+      visited[i] = 1;
+      size++;
+      for (const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+        const nx = cx+dx, ny = cy+dy;
+        if (nx>=0 && nx<GRID && ny>=0 && ny<GRID) stack.push([nx,ny]);
+      }
+    }
+    return size > 3;
+  }
+  for (let y = 0; y < GRID; y++) for (let x = 0; x < GRID; x++) {
+    const v = cells[y*GRID + x];
+    sum += v; sum2 += v*v;
+    if (!visited[y*GRID + x] && v > 0.4 && flood(x,y)) clusters++;
+  }
+  const mean = sum / (GRID*GRID);
+  const variance = sum2 / (GRID*GRID) - mean*mean;
+  return { mean, varc: variance, clusters };
+}
+
+let frame = 0;
+function loop() {
+  frame++;
+  updateLattice(lastMind.biasGrow || 0.2);
+  if (frame % 20 === 0) {
+    const st = sampleStats();
+    worker.postMessage(st);
+    statsEl.textContent = `density ${(st.mean*100|0)/100} · clusters ${st.clusters} · conf ${(lastMind.conf*100|0)/100}`;
+    statusEl.textContent = lastMind.conf > 0.7 ? 'assimilating' : lastMind.conf > 0.4 ? 'exploring' : 'idle';
+    // Morph UI
+    document.documentElement.style.setProperty('--hue', 180 + lastMind.conf * 120);
+    document.documentElement.style.setProperty('--density', st.mean);
+    document.documentElement.style.setProperty('--conf', lastMind.conf);
+    document.documentElement.style.setProperty('--border', (8 + lastMind.conf * 20) + 'px');
+    morphCards(st.clusters, lastMind.conf);
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const v = cells[y * GRID + x];
+      if (v < 0.05) continue;
+      const hue = 180 + v * 80;
+      ctx.fillStyle = `hsla(${hue}, 70%, ${30 + v*40}%, ${0.4 + v*0.5})`;
+      ctx.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
+    }
+  }
+}
+
+// Cards
+const cardData = [
+  { title: 'cluster A', text: 'emerging' },
+  { title: 'cluster B', text: 'stable' },
+  { title: 'cluster C', text: 'growing' },
+  { title: 'void tile', text: 'open' }
+];
+cardData.forEach((d, i) => {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `<h4>${d.title}</h4><div>${d.text}</div>`; // void-review: ok (constant labels and computed numbers, no visitor text)
+  cardsEl.appendChild(el);
+});
+const cardEls = [...cardsEl.children];
+
+function morphCards(clusters, conf) {
+  cardEls.forEach((el, i) => {
+    const angle = (i / cardEls.length) * Math.PI * 2 + performance.now() * 0.0002;
+    const r = 80 + conf * 120 + (clusters % 3) * 20;
+    const x = w/2 + Math.cos(angle) * r - 70;
+    const y = h/2 + Math.sin(angle) * r - 45;
+    const sc = 0.85 + conf * 0.3;
+    const rot = (conf - 0.5) * 20;
+    el.style.transform = `translate(${x}px, ${y}px) scale(${sc}) rotate(${rot}deg)`;
+    el.style.opacity = 0.6 + conf * 0.4;
+  });
+}
+
+// Input
+function seedAt(px, py, strength = 0.9) {
+  const gx = Math.floor(px / cellW), gy = Math.floor(py / cellH);
+  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+    const x = gx + dx, y = gy + dy;
+    if (x >= 0 && x < GRID && y >= 0 && y < GRID) {
+      const i = y * GRID + x;
+      cells[i] = Math.min(1, cells[i] + strength * (1 - Math.hypot(dx, dy)/3));
+    }
+  }
+}
+canvas.addEventListener('pointerdown', e => seedAt(e.clientX, e.clientY));
+canvas.addEventListener('pointermove', e => { if (e.buttons) seedAt(e.clientX, e.clientY, 0.6); });
+
+// Orientation
+let orient = { beta: 0, gamma: 0 };
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    orient.beta = e.beta || 0;
+    orient.gamma = e.gamma || 0;
+    if (Math.abs(orient.beta) > 5 || Math.abs(orient.gamma) > 5) {
+      const cx = w/2 + orient.gamma * 2;
+      const cy = h/2 + orient.beta * 2;
+      seedAt(cx, cy, 0.3);
+      noteEl.textContent = 'orientation active';
+    }
+  });
+}
+
+// WebXR progressive
+let xrSession = null;
+document.getElementById('xr').onclick = async () => {
+  if (!navigator.xr) { noteEl.textContent = 'WebXR not supported'; return; }
+  try {
+    xrSession = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor'] });
+    noteEl.textContent = 'XR session started (pose seeding limited in draft)';
+    // Basic: on end
+    xrSession.addEventListener('end', () => { xrSession = null; noteEl.textContent = 'XR ended'; });
+  } catch (err) {
+    noteEl.textContent = 'XR request failed: ' + err.message;
+  }
+};
+
+// Clear / Seal
+document.getElementById('clear').onclick = () => {
+  cells.fill(0);
+  for (let i = 0; i < 10; i++) cells[Math.floor(Math.random()*cells.length)] = 0.7;
+};
+const seals = [];
+document.getElementById('seal').onclick = async () => {
+  const st = sampleStats();
+  const data = JSON.stringify({ ts: Date.now(), mean: st.mean, clusters: st.clusters, conf: lastMind.conf });
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0, 12);
+  seals.unshift({ hash, clusters: st.clusters, conf: lastMind.conf });
+  if (seals.length > 5) seals.pop();
+  sealsEl.innerHTML = seals.map(s => `<div>${s.hash} · c${s.clusters} · ${(s.conf*100|0)}%</div>`).join(''); // void-review: ok (constant labels and computed numbers, no visitor text)
+  // IndexedDB optional
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('void-lattice', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('seals', { keyPath: 'hash' });
+      r.onsuccess = () => res(r.result);
+      r.onerror = rej;
+    });
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').put({ hash, ...JSON.parse(data) });
+  } catch (e) { console.warn('f412-webxr-lattice-mind:', e); }
+};
