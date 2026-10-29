@@ -545,6 +545,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:09:28Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:09:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:08:57Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T15:08:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:07:28Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -607,22 +623,6 @@
   {
    "at": "2026-10-29T14:48:43Z",
    "subject": "Open card check: read the sticky's spot once it has settled, and after the close once it is back"
-  },
-  {
-   "at": "2026-10-29T14:47:24Z",
-   "subject": "fix(hosting): mark the RDAP retry loop as a sequential retry for the review"
-  },
-  {
-   "at": "2026-10-29T14:45:06Z",
-   "subject": "Refresh the parity and tools pages the refresh check found stale"
-  },
-  {
-   "at": "2026-10-29T14:42:21Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:41:18Z",
-   "subject": "Versus jobs only for ranked sites, never gambling or crypto"
   }
  ],
  "builders": {
