@@ -387,3 +387,10 @@ test('a lane site with a page of its own asks its own question; the others keep 
   assert.equal(score(page, own.truth).n, own.truth.length); assert.ok(score('Loading', own.truth).n === 0, 'a page that shows only a loading state fails');
   assert.equal(score('Click a sport to browse Born on this day', own.askParts['born on this day']).n, 1, 'the title alone, without a person born that day, is half');
 });
+test('a frontier site with a Verse page in LANE_PAGES is a floor the gate measures (sycophanthex.com: /fanfic/); one with no page is not', async () => {
+  const { GATE_FLOORS, pick } = await import('./tower-gate.mjs'), { LANE_PAGES } = await import('../void-live-deploy/lib/tower.js');
+  const f = GATE_FLOORS.find((x) => x.id === 'sycophanthex.com'); assert.ok(f, 'sycophanthex.com is measured'); assert.equal(f.page, LANE_PAGES['sycophanthex.com']); assert.equal(f.url, 'https://sycophanthex.com/');
+  assert.ok(!GATE_FLOORS.some((x) => x.id === 'only-on-the-frontier.example'));
+  assert.equal(new Set(GATE_FLOORS.map((x) => x.id)).size, GATE_FLOORS.length, 'no floor twice');
+  assert.equal(pick({}, { sites: [{ site: 'sycophanthex.com', hardness: 1 }] }, [], 3, null, null, 'sycophanthex.com')[0], 'sycophanthex.com', 'the tower target is measured first');
+});

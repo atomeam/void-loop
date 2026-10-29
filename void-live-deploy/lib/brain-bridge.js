@@ -21,7 +21,8 @@ export function summaryOf(B, b) {
   const related = last ? (B.relatedOf ? B.relatedOf(b, last) : []) : [];
   return { type: 'state', at: b.ticks, focus: { x: +b.focus.x.toFixed(3), y: +b.focus.y.toFixed(3), region: b.focus.region }, thinking: b.board.thinking,
     action: b.board.action ? b.board.action.name : 'rest', gesture: b.board.gesture, expect: b.board.expect ? b.board.expect.region : null,
-    utility: +b.utility.toFixed(3), metrics: Object.fromEntries(Object.entries(b.metrics).map(([k, v]) => [k, +(+v).toFixed(3)])), words, related, self: B.selfSays(b) };
+    utility: +b.utility.toFixed(3), metrics: Object.fromEntries(Object.entries(b.metrics).map(([k, v]) => [k, +(+v).toFixed(3)])), words, related, self: B.selfSays(b),
+    wants: b.mind ? b.mind.goals.map((g) => g.word) : [], conflicts: b.mind ? b.mind.conflicts.length : 0 };
 }
 
 /** host a running brain: returns { publish(force), received, close() }. getBrain() is called each time (a Reset makes a new brain).
@@ -35,9 +36,9 @@ export function hostBrain(B, getBrain, { onWords = null, onReward = null, id = '
     if (ch) { try { ch.postMessage(s); } catch (_) { /* closed */ } }
     return s;
   };
-  const take = (m, from) => {
+  const take = (m, from) => { // words from a page are asks: goals as well as ideas (a question gets its answer, nothing changes)
     const b = getBrain(); if (!b || !m || typeof m !== 'object') return null;
-    if (m.type === 'words') { const t = clean(m.text); if (!t) return null; const r = B.tell(b, t); received.words++; if (onWords) onWords(t, from); publish(true); return r; }
+    if (m.type === 'words') { const t = clean(m.text); if (!t) return null; const r = B.ask ? B.ask(b, t) : B.tell(b, t); if (r.answer) return r; received.words++; if (onWords) onWords(t, from); publish(true); return r; }
     if (m.type === 'reward') { B.reward(b); received.rewards++; if (onReward) onReward(from); return true; }
     if (m.type === 'hello') return publish(true);
     return null;

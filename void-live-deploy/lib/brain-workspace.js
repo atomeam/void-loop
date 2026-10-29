@@ -28,6 +28,7 @@ export function createWorkspace(seed = 1, organs = []) {
   const r = rng(seed);
   const ws = { seed, tick: 0, organs: organs.slice(), layers: {}, phase: new Float32Array(RG * RH), omega: new Float32Array(RG * RH),
     owner: new Uint8Array(CELLS).fill(255), wroteAt: new Uint32Array(CELLS), writes: new Uint32Array(Math.max(1, organs.length)),
+    regionWrites: new Uint32Array(REGIONS_X * REGIONS_Y * (organs.length + 1)), // per region, per writer (the last column is the visitor): the contention monitor reads it
     nodes: makeNodes(), rand: r };
   for (const k of LAYERS) ws.layers[k] = makeGrid(GW, GH);
   ws.layers.sub.fill(1);
@@ -49,6 +50,8 @@ export const regionCenter = (r) => ({ x: ((r % REGIONS_X) + 0.5) / REGIONS_X, y:
 export function writeCell(ws, layer, i, v, organ) {
   ws.layers[layer][i] = clamp(v, 0, 1);
   const o = ownerIndex(ws, organ); ws.owner[i] = o; ws.wroteAt[i] = ws.tick; if (o < ws.writes.length) ws.writes[o]++;
+  const W = ws.organs.length + 1, r = Math.floor(Math.floor(i / GW) * REGIONS_Y / GH) * REGIONS_X + Math.floor((i % GW) * REGIONS_X / GW);
+  ws.regionWrites[r * W + (o < ws.organs.length ? o : W - 1)]++;
 }
 /** add amt to a layer in a soft disc around (x, y) (radius in cells), tagging each cell it changed. Returns the cells touched. */
 export function deposit(ws, layer, x, y, amt, rad = 2, organ = 'you') {
@@ -103,12 +106,12 @@ export function nodesOf(ws, kinds) { const want = [].concat(kinds), out = []; fo
 export function snapshot(ws) {
   const N = ws.nodes;
   return { tick: ws.tick, layers: Object.fromEntries(LAYERS.map((k) => [k, ws.layers[k].slice()])), phase: ws.phase.slice(), omega: ws.omega.slice(),
-    owner: ws.owner.slice(), wroteAt: ws.wroteAt.slice(), writes: ws.writes.slice(),
+    owner: ws.owner.slice(), wroteAt: ws.wroteAt.slice(), writes: ws.writes.slice(), regionWrites: ws.regionWrites.slice(),
     nodes: { n: N.n, x: N.x.slice(), y: N.y.slice(), vx: N.vx.slice(), vy: N.vy.slice(), kind: N.kind.slice(), act: N.act.slice(), emb: N.emb.slice(), owner: N.owner.slice(), label: N.label.slice() } };
 }
 export function restore(ws, s) {
   ws.tick = s.tick; for (const k of LAYERS) ws.layers[k].set(s.layers[k]); ws.phase.set(s.phase); ws.omega.set(s.omega);
-  ws.owner.set(s.owner); ws.wroteAt.set(s.wroteAt); ws.writes.set(s.writes);
+  ws.owner.set(s.owner); ws.wroteAt.set(s.wroteAt); ws.writes.set(s.writes); ws.regionWrites.set(s.regionWrites);
   const N = ws.nodes, M = s.nodes; N.n = M.n; for (const k of ['x', 'y', 'vx', 'vy', 'kind', 'act', 'emb', 'owner']) N[k].set(M[k]); N.label = M.label.slice();
   return ws;
 }
