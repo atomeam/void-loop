@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { measure, weightOf, weightBand, bytesLabel } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
-import { planSizes, usable } from './tower-size.mjs';
+import { planSizes, usable, isTool } from './tower-size.mjs';
 
 test('a page is weighed by its bytes, scripts, elements and routes', () => {
   const html = '<html><head><script src="/a.js"></script><link rel="stylesheet" href="/s.css"></head><body><a href="/one">1</a><a href="/two">2</a><a href="https://x.com/o">o</a><p>hi</p></body></html>';
@@ -40,4 +40,12 @@ test('an offline notice, an error page or a page with nothing to use is not weig
 });
 test('an empty reply or a bot wall is not weighed, so it can never stand as the lightest site', () => {
   assert.equal(usable(''), false); assert.equal(usable('<html></html>'), false); assert.equal(usable('<html><body><p>' + 'a real tool page. '.repeat(15) + '</p><button>go</button></body></html>'), true);
+});
+
+test('a community, archive or news page is not a tool even with a search box; a page that does something with an input is (sycophanthex.com is a fanfiction archive)', () => {
+  const arch = '<html><body><h1>Archive</h1><p>Welcome to our fanfiction community. Read the forum, see the staff, enter the contest. Copyright 2006 all rights reserved. Terms of service.</p><form><input name="q"><button>Search</button></form></body></html>';
+  assert.equal(isTool(arch), false);
+  const tool = '<html><body><h1>Hex to decimal</h1><p>Type a number.</p><input id="n" type="text"><button id="go">Convert</button><pre id="out"></pre></body></html>';
+  assert.equal(isTool(tool), true);
+  assert.equal(isTool('<html><body><p>Just words about hex.</p></body></html>'), false, 'nothing to use');
 });

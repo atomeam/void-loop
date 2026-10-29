@@ -28,6 +28,15 @@ export function usable(html) {
   const t = String(html), text = t.replace(/<(script|style|noscript)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
   return t.length >= 300 && text.length >= 120 && !STUB_RE.test(text.slice(0, 600)) && /<(form|input|button|select|textarea|canvas|script)\b/i.test(t);
 }
+export const CONTENT_RE = /\b(fan ?fic(?:tion)?|forums?|community|webmistress|webmaster|members?|log ?in|sign ?in|sign ?up|register|subscribe|newsletter|latest news|blog|archive of|read more|terms of service|privacy policy|all rights reserved|copyright \d{4}|staff|contest|announcements?)\b/gi;
+/** a tool, not a content site: the page does something with an input (not just a search or login box) and its words are not a community's, a blog's or a
+ *  news site's. Pure; a heuristic, a content site with a form can still pass. */
+export function isTool(html) {
+  const t = String(html), text = t.replace(/<(script|style|noscript)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const content = (text.match(CONTENT_RE) || []).length;
+  const real = /<(textarea|select|canvas)\b/i.test(t) || /<input\b(?![^>]*type=["']?(?:search|hidden|password|email|submit|checkbox)["']?)(?![^>]*name=["']?(?:q|s|search|query|user|username|login|email|pass)["']?)/i.test(t) || /<button\b/i.test(t);
+  return real && content < 3;
+}
 /** read one site: its home page and what it loads. Returns a row or null (refused, unreachable). */
 export async function readSite(host) {
   const base = 'https://' + host + '/';
@@ -36,7 +45,7 @@ export async function readSite(host) {
     if (rb && rb.ok && /text/.test(rb.type) && !robotsAllows(rb.buf.toString('utf8'), '/')) return null;
     const home = await get(base); if (!home.ok || !/html/.test(home.type)) return null;
     const html = home.buf.toString('utf8'), origin = new URL(home.url).origin, found = [];
-    if (!usable(html)) return null; // an empty body, a bot wall or a redirect stub says nothing about the site: not weighed, never lightest
+    if (!usable(html) || !isTool(html)) return null; // an empty body, a bot wall or a redirect stub says nothing about the site: not weighed, never lightest
     for (const m of html.matchAll(/<script\b[^>]*\ssrc=["']([^"']+)["']|<link\b[^>]*rel=["']?stylesheet[^>]*\shref=["']([^"']+)["']/gi)) { try { const u = new URL(m[1] || m[2], home.url); if (found.length < 12) found.push(u.href); } catch (_) { /* a bad url */ } }
     const assets = []; for (const u of found) { try { const a = await get(u); if (a.ok) assets.push({ url: u, bytes: a.buf.length }); } catch (_) { /* skipped */ } }
     let sm = null; try { const s = await get(origin + '/sitemap.xml', 2e6); if (s.ok) sm = (s.buf.toString('utf8').match(/<loc>/g) || []).length || null; } catch (_) { /* none */ }
