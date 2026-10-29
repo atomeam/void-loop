@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 949,
+ "counted": 950,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -92,6 +92,13 @@
    "direct": 2,
    "dependants": 22,
    "tests": 2
+  },
+  {
+   "file": "lib/live-cards.js",
+   "skills": 20,
+   "direct": 0,
+   "dependants": 21,
+   "tests": 1
   },
   {
    "file": "lib/mode-field.js",
@@ -5418,6 +5425,7 @@
     "lib/motion-throttle.js",
     "lib/shared-field.js",
     "lib/mode-field.js",
+    "lib/live-cards.js",
     "lib/mind-field-modes.js"
    ],
    "importedBy": [
@@ -6382,6 +6390,34 @@
     "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/gen/[id].js"
+   ]
+  },
+  "lib/live-cards.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/field-stage.js"
+   ],
+   "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
+    "skills/attention-field-mind.js",
+    "skills/doodle-mind.js",
+    "skills/echo-field.js",
+    "skills/flow-canvas.js",
+    "skills/gaze-chase.js",
+    "skills/gpu-swarm.js",
+    "skills/hand-arena.js",
+    "skills/living-cards-mind.js",
+    "skills/mind-field-mode.js",
+    "skills/mind-field.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/resonant-membrane.js",
+    "skills/swarm-mind.js",
+    "skills/tilt-arena-mode.js",
+    "skills/tilt-arena.js",
+    "skills/tilt-mode.js",
+    "skills/vector-field-mind.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/markets-record.js": {

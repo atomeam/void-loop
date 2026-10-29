@@ -1327,10 +1327,17 @@
     }
 
     function render() {
+      // a live card (a field mind: the memory orbs, Swarm, Verse Brain) keeps running across a redraw instead of starting over
+      // (asked 2026-10-29: a new card restarted every mind on the stage): it says when it can stay as it is (el._liveKeep,
+      // lib/live-cards.js), and the same element goes back where its thing stands
+      const live = new Map();
+      for (const el of stage.querySelectorAll(':scope > [data-id]')) { try { const th = things[el.dataset.id]; if (th && el._liveKeep && el._liveKeep(th)) live.set(th.id, el); } catch (_) {} }
       stage.querySelectorAll('.clock').forEach((el) => clearInterval(el._timer));
       stage.querySelectorAll('.timer').forEach((el) => clearInterval(el._tickInterval));
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
+        const kept = live.get(th.id);
+        if (kept) { kept.style.left = th.x + 'px'; kept.style.top = th.y + 'px'; stage.appendChild(kept); return; }
         if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
