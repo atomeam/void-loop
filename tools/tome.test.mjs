@@ -65,6 +65,8 @@ test('flavor text (asked by Verse): one line of lore for a proven skill, cut fro
   assert.equal(lines.length, book.pages.filter((p) => p.kind === 'skill' && p.tier === 'proven').length, 'every proven skill has one');
   assert.equal(new Set(lines).size, lines.length, 'no two alike');
   assert.ok(lines.every((l) => l.length <= 150), 'short enough for one or two lines under a title: ' + Math.max(...lines.map((l) => l.length)));
+  const full = new Set(), many = Array.from({ length: 200 }, (_, i) => flavorOf('skill-' + i, 'Stage', '', 'proven', full));
+  assert.equal(new Set(many).size, 200, 'still unique once every lore line and tail is taken');
 });
 test('scented parchment (asked by Verse): the tome is warm when the last status check was clean, cooler the more failed, untouched with no fresh reading', async () => {
   const { parchmentFilter } = await import('../void-live-deploy/lib/tome.js');
