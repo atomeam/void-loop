@@ -197,3 +197,10 @@ test('German: the archive\'s own words change, what readers wrote never does', a
   const app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
   for (const m of ["a.translate = false", "pen.translate = false", "prose.translate = false", "body.translate = false"]) assert.ok(app.includes(m), m);
 });
+
+test('every view that holds a text hands it to the translator and the word counter: the story, the Writing Room and the post form', () => {
+  const app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  assert.match(app, /handing = id === 'room' \? \(\) => draft\(\)\.text : id === 'post' \? \(\) => \$\('stForm'\)\.elements\.text\.value : null/, 'the room and the post form hand their text');
+  assert.match(app, /handing = \(\) => \(c \? c\.text : ''\)/, 'the story hands the chapter being read');
+  assert.match(app, /mountRelated\(\$\('related'\), '\/fanfic\/', hand\)/, 'through the shared row (lib/toolkit.js)');
+});
