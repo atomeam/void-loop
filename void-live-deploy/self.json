@@ -545,6 +545,70 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T14:48:43Z",
+   "subject": "Open card check: read the sticky's spot once it has settled, and after the close once it is back"
+  },
+  {
+   "at": "2026-10-29T14:47:24Z",
+   "subject": "fix(hosting): mark the RDAP retry loop as a sequential retry for the review"
+  },
+  {
+   "at": "2026-10-29T14:45:06Z",
+   "subject": "Refresh the parity and tools pages the refresh check found stale"
+  },
+  {
+   "at": "2026-10-29T14:42:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T14:41:18Z",
+   "subject": "Versus jobs only for ranked sites, never gambling or crypto"
+  },
+  {
+   "at": "2026-10-29T14:40:49Z",
+   "subject": "Better at leet and lorem: 3 more ways of asking answered right — new phrases: “1337 speak for world” now opens leet; “lorem” now opens…"
+  },
+  {
+   "at": "2026-10-29T14:40:11Z",
+   "subject": "Obituaries check: open the first memorial with a cited history, not a fixed name"
+  },
+  {
+   "at": "2026-10-29T14:38:18Z",
+   "subject": "Read a pasted status report back instead of answering it as a broken automation"
+  },
+  {
+   "at": "2026-10-29T14:36:46Z",
+   "subject": "/hosting/: ask a busy registry again; nameunit probe reads the page as it is"
+  },
+  {
+   "at": "2026-10-29T14:36:35Z",
+   "subject": "3D contract: mount after the studio light lands, so its one redraw stays out of the idle window"
+  },
+  {
+   "at": "2026-10-29T14:35:48Z",
+   "subject": "Revert #1470: drop the /prizes/ parity rows"
+  },
+  {
+   "at": "2026-10-29T14:35:32Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+  },
+  {
+   "at": "2026-10-29T14:29:35Z",
+   "subject": "Tower gate: nameunit measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T14:25:59Z",
+   "subject": "Tower: point the two colour-name floors at /color/, gate the loop on lane-pages"
+  },
+  {
+   "at": "2026-10-29T14:23:14Z",
+   "subject": "nameunit: search a name at every ending, share it, and name the config for it"
+  },
+  {
+   "at": "2026-10-29T14:17:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T14:16:45Z",
    "subject": "test: the Verse self page check brings the body into view before the tap"
   },
@@ -559,70 +623,6 @@
   {
    "at": "2026-10-29T14:07:20Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T14:06:35Z",
-   "subject": "Keep main's volatile files and parity pages as they are"
-  },
-  {
-   "at": "2026-10-29T14:06:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:05:49Z",
-   "subject": "Regenerate deps.json (main was behind node tools/deps.mjs)"
-  },
-  {
-   "at": "2026-10-29T14:05:13Z",
-   "subject": "The will's lap want names where its item lives, so the coder reads instead of searching"
-  },
-  {
-   "at": "2026-10-29T14:03:59Z",
-   "subject": "fanfic: the hidden featured link has no address until it has a title"
-  },
-  {
-   "at": "2026-10-29T14:00:37Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T13:54:54Z",
-   "subject": "fanfic: a featured story on the archive home, with why it was picked"
-  },
-  {
-   "at": "2026-10-29T13:51:28Z",
-   "subject": "Regenerate the parity pages: main's were behind the tower gate (the parity test fails on main without this)"
-  },
-  {
-   "at": "2026-10-29T13:50:56Z",
-   "subject": "Keep the parity pages of other sites as main has them"
-  },
-  {
-   "at": "2026-10-29T13:50:34Z",
-   "subject": "fanfic: site news and a dated news archive, pinned first and linked from the footer"
-  },
-  {
-   "at": "2026-10-29T13:46:53Z",
-   "subject": "Tower gate: every floor measured against its live site (3 slices)"
-  },
-  {
-   "at": "2026-10-29T13:46:39Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-29T13:46:27Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-29T13:44:54Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-29T13:43:53Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-10-29T13:43:27Z",
-   "subject": "fanfic: terms of use, disclaimer and credits pages, opened from the footer"
   }
  ],
  "builders": {

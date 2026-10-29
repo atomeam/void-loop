@@ -22,6 +22,11 @@ export async function miniContract(fresh, { kind, a, b, settledWhen = 'flipping'
     const m = await import('/skills/scene3d.js');
     const wait = async (fn, ms) => { const end = performance.now() + ms; for (;;) { const v = fn(); if (v) return v; if (performance.now() > end) return false; await new Promise((r) => setTimeout(r, 100)); } };
     const key = 'contract:' + kind + (reduce ? ':still' : '');
+    // the studio light (scene3d's studioHdri) replaces the room light a moment after the engine starts and redraws every live
+    // miniature once; on a loaded runner that redraw fell inside the idle window (swatch under reduced motion: idleDraws 1 on
+    // 27ae12e9). Mount once it has landed, as a visitor's later cards do; where the studio light never loads, mount at once
+    const E = await m.engine(), x = E.renderer.extensions;
+    if (x.has('EXT_color_buffer_half_float') || x.has('EXT_color_buffer_float')) await wait(() => E.studio, 15000);
     const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:16px;top:16px;width:260px;height:210px;z-index:9';
     document.body.appendChild(host);
     const me = () => m.liveMiniatures().find((x) => x.key === key);
