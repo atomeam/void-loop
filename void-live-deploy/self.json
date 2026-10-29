@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,83 +550,83 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T16:24:24Z",
+   "subject": "test(answer-honesty): read the tower target from the record"
+  },
+  {
+   "at": "2026-10-29T16:21:55Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T16:19:59Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:19:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:19:33Z",
+   "subject": "Keep the reply section last on cards that order their own parts"
+  },
+  {
+   "at": "2026-10-29T16:19:07Z",
+   "subject": "chore(rap): self.json as main has it"
+  },
+  {
+   "at": "2026-10-29T16:12:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:10:31Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T16:09:58Z",
+   "subject": "chore(rap): self.json as main has it (the local regeneration reads the tower target differently)"
+  },
+  {
+   "at": "2026-10-29T16:09:39Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:09:16Z",
+   "subject": "chore(rap): mark the music page's link row, where BPM is link text, as right for Verse's review"
+  },
+  {
+   "at": "2026-10-29T16:08:38Z",
+   "subject": "fix(rap): a short whole line for the skill, so the skills list shows no cut sentence"
+  },
+  {
+   "at": "2026-10-29T16:07:04Z",
+   "subject": "chore(rap): keep the volatile records as main has them, the sitemap with /rap/"
+  },
+  {
+   "at": "2026-10-29T16:06:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:05:46Z",
+   "subject": "feat(rap): Verse raps, written for each ask and performed over its own beat"
+  },
+  {
+   "at": "2026-10-29T16:05:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:04:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T16:04:10Z",
    "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
   },
   {
-   "at": "2026-10-29T15:15:09Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-29T16:03:50Z",
+   "subject": "Card replies count on the heat map by the card's family"
   },
   {
-   "at": "2026-10-29T15:14:06Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:13:15Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:13:06Z",
-   "subject": "Paid members: a pre-launch pilot at /members/?pilot, so a paid account proves the idea path on the live site before go-live"
-  },
-  {
-   "at": "2026-10-29T15:12:02Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:11:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:10:57Z",
-   "subject": "Paid members: check the idea limit inside the insert, so sends at the same moment cannot pass it"
-  },
-  {
-   "at": "2026-10-29T15:10:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:09:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:08:57Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T15:07:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:07:05Z",
-   "subject": "Word the namedFixes comment without a bare count"
-  },
-  {
-   "at": "2026-10-29T15:06:42Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:06:42Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:06:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:06:21Z",
-   "subject": "Translate page: language lists show their own spellings after load, so the first layout no longer shapes 30 scripts"
-  },
-  {
-   "at": "2026-10-29T15:05:46Z",
-   "subject": "uuid skill: take the asks util leaves (random, another, please), crypto ids, order file, family, map line, test"
-  },
-  {
-   "at": "2026-10-29T15:05:20Z",
+   "at": "2026-10-29T16:01:10Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
@@ -872,6 +872,6 @@
    "wheeloutlet.com"
   ],
   "beaten": 0,
-  "total": 1267
+  "total": 1268
  }
 }

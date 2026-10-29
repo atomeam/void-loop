@@ -6,7 +6,7 @@
 // The router examples that send "tell void what it got wrong" to the self skill, not look, were already tightened in #988; this is the store behind them.
 // Device-local by design (no unauthenticated endpoint takes a stranger's text). Pure over the storage handed in; the text is untrusted and is
 // stored as plain text (the card shows it with textContent/esc, never as markup).
-export const CORRECTIONS = { family: 'self', key: 'a2m.void.corrections.v1', max: 100, askMax: 160, textMax: 300 };
+export const CORRECTIONS = { family: 'self', key: 'a2m.void.corrections.v1', placedKey: 'a2m.void.corrections.placed.v1', max: 100, askMax: 160, textMax: 300 };
 
 /** plain text: control characters out, spaces collapsed, clipped. Pure. */
 export function clean(t, n) {
@@ -45,6 +45,36 @@ export function addCorrection(input, s, now = Date.now()) {
   const list = readCorrections(s).concat(c).slice(-CORRECTIONS.max);
   try { st.setItem(CORRECTIONS.key, JSON.stringify(list)); } catch (_) { return { ok: false, list: readCorrections(s) }; }
   return { ok: true, list };
+}
+
+/**
+ * One-time placing of replies kept before #1576: a reply with no skill and no family is given the family of the card it came from, when this
+ * browser's loop log still holds that ask (the newest void.page entry for the same ask at or before the reply). `familyOf(note)` turns the log's
+ * note into a family id ('' when none). Nothing else changes, and a reply whose card is not in the log stays as it is. Pure.
+ * -> { list, placed }
+ */
+export function placeByLog(list, log, familyOf) {
+  const entries = (Array.isArray(log) ? log : []).filter((e) => e && e.domain === 'void.page' && typeof e.ask === 'string');
+  let placed = 0;
+  const out = (Array.isArray(list) ? list : []).map((c) => {
+    if (!c || c.skill || c.family || !c.ask) return c;
+    const at = Date.parse(c.at), ask = clean(c.ask, CORRECTIONS.askMax).toLowerCase();
+    const hit = entries.filter((e) => clean(e.ask, CORRECTIONS.askMax).toLowerCase() === ask && !(Date.parse(e.t) > at)).pop();
+    const family = hit && typeof familyOf === 'function' ? skillName(familyOf(hit.note)) : '';
+    if (!family) return c;
+    placed++;
+    return { ...c, family };
+  });
+  return { list: out, placed };
+}
+
+/** run placeByLog once on this device (CORRECTIONS.placedKey marks it done) and keep the result. Writes only CORRECTIONS.key and that mark. */
+export function placeUnplacedOnce(s, log, familyOf) {
+  const st = store(s); if (!st) return 0;
+  try { if (st.getItem(CORRECTIONS.placedKey)) return 0; } catch (_) { return 0; }
+  const { list, placed } = placeByLog(readCorrections(st), log, familyOf);
+  try { if (placed) st.setItem(CORRECTIONS.key, JSON.stringify(list)); st.setItem(CORRECTIONS.placedKey, '1'); } catch (_) { return 0; }
+  return placed;
 }
 
 /** the asks a skill answered lately, newest first, one per ask, from the loop log ([{ ask, note: 'skill:x' }]). Pure. */

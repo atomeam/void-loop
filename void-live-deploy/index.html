@@ -542,6 +542,9 @@
     .vread { position: sticky; top: 0; float: right; z-index: 2; margin: -10px -12px 4px 10px; width: 36px; height: 36px; border-radius: 50%; padding: 0;
       display: grid; place-items: center; cursor: pointer; color: #cfd8ff; background: rgba(20,22,34,.72); border: 1px solid rgba(255,255,255,.14);
       transition: background .2s ease, color .2s ease, transform .15s ease; }
+    /* last on the card, with only the product line after it (lib/card-reply.js placeReply), also on a card that orders its own parts
+       on a small screen (the sky card puts its chips first at 480 px and under): there the DOM order alone left the section above them */
+    .vpage > .vreply { order: 98; } .vpage > .src.vtail { order: 99; }
     .vreply { margin-top: 16px; } .vreply .vreply-h { font-size: var(--fs-s); font-weight: 700; color: var(--ink); margin: 0 0 6px; }
     .vreply .v-talk p { margin: 0 0 6px; } .vreply .v-who { color: var(--ink-3); } .vreply .sub { margin-top: 4px; }
     .vtell-box { margin-top: 10px; } .vtell-box textarea { width: 100%; font: inherit; background: rgba(255,255,255,.06); color: inherit; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 8px 10px; resize: vertical; margin-bottom: 6px; }
@@ -2829,6 +2832,9 @@ say('nothing selected to remove');
         const formEl = document.createElement('div'), heatEl = document.createElement('div'), logEl = document.createElement('div'); slot.replaceChildren(formEl, heatEl, logEl);
         let fam = null; try { fam = await fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)); } catch (_) {}
         if (vpageEl !== el) return;
+        // replies kept before cards had a family (#1576) get the family of their card once, when this browser's loop log still holds the ask
+        try { const rl = await import('/lib/card-reply.js'); m.placeUnplacedOnce(localStorage, log, rl.familyOfNote); } catch (_) {}
+        if (vpageEl !== el) return;
         const owner = ownerKey(); // the "Suggest fix" buttons are drawn for the owner only (lib/correction-fix.js); the route checks the key again
         const draw = () => { import('/lib/correction-heat.js').then((h) => { if (vpageEl === el) heatEl.innerHTML = h.heatHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }).catch(() => {}); /* void-review: ok: heatHtml escapes every word with esc */ logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }; // void-review: ok: logHtml escapes every kept word with esc
         draw();
@@ -4638,12 +4644,23 @@ say('nothing selected to remove');
     async function fuzzyFix(t) {
       if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t)) return t;
       if (!fuzzy) await fuzzyReady;
-      // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most 2.5 s
-      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, FIRST_ASK_WAIT))]);
-      const loaded = skillsLoaded ? learnedSkills : skillSlots ? skillSlots.filter((s) => s.done && s.skill).map((s) => s.skill) : [];
-      if (!fuzzy || !loaded.length) return t;
-      if (fuzzyVocabN !== loaded.length) { fuzzyVocab = fuzzy.vocabulary(loaded); fuzzyVocabN = loaded.length; }
-      const r = fuzzy.correct(t, fuzzyVocab);
+      if (!fuzzy) return t;
+      // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most
+      // 2.5 s, and only while a typed word can still be a slip: once the loaded skills know every word correct() could change
+      // (lib/fuzzy.js settled), the full vocabulary changes nothing, so the ask goes on (watchdog #110: "loan payment on 20000 at 6% for
+      // 5 years" waited the whole 2.5 s here, then again for the skills ranked above loan, and logged after the bench's 4 s)
+      const vocabNow = () => {
+        const loaded = skillsLoaded ? learnedSkills : skillSlots ? skillSlots.filter((s) => s.done && s.skill).map((s) => s.skill) : [];
+        if (loaded.length && fuzzyVocabN !== loaded.length) { fuzzyVocab = fuzzy.vocabulary(loaded); fuzzyVocabN = loaded.length; }
+        return loaded.length ? fuzzyVocab : null;
+      };
+      for (const until = Date.now() + FIRST_ASK_WAIT; !skillsLoaded && Date.now() < until;) {
+        const v = vocabNow(); if (v && fuzzy.settled(t, v)) return t;
+        await Promise.race([skillsReady, new Promise((r) => setTimeout(r, Math.min(100, until - Date.now())))]);
+      }
+      const vocab = vocabNow();
+      if (!vocab) return t;
+      const r = fuzzy.correct(t, vocab);
       if (!r.fixes.length) return t;
       const sk = await firstSkill(r.text.toLowerCase(), r.text, Date.now());
       return fuzzy.confirm(r, sk && sk.name) ? r.text : t;
@@ -4671,6 +4688,11 @@ say('nothing selected to remove');
     // every page is a Verse card (lib/card-frame.js; owner, 2026-10-16: cards like magic cards, with stats): a frame, a title bar with a cost, a type line
     // with a rarity gem, an "adds to Verse" line and a footer with a collector number and a power/toughness plate, all from the skill's own evidence
     let cardLib = null, cardStats = null;
+    // card-share and every module it reaches, all asked for at once at page start: imported level by level, its four levels queued behind the
+    // skill files the lanes had in flight, and every ask waits for it before it is routed (watchdog #110: on a busy page it arrived 5 to 6 s in)
+    // share-libs: tools/preload.mjs /lib/card-share.js
+    const SHARE_LIB_GRAPH = ['/lib/card-share.js', '/lib/card-image.js', '/lib/art-source.js', '/lib/card-art.js', '/lib/card-subject.js', '/lib/guide.js', '/lib/rule-registry.js', '/lib/art-rules.js', '/lib/merge-rules.js', '/lib/keeper.js', '/lib/qr.js'];
+    for (const p of SHARE_LIB_GRAPH.slice(1)) import(p).catch(() => null);
     const shareReady = import('/lib/card-share.js').catch(() => null);
     // a card brought back from a pasted code: its words and its https links, escaped; its stats are earned again by the frame, never read from the paste
     function showSharedCard(sc) {
