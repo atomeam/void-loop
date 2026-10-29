@@ -345,7 +345,8 @@ export default {
      "answer me in Spanish: what is a void",
      "reply in Spanish",
      "contéstame en español",
-     "answer this in Spanish: where is the library"
+     "answer this in Spanish: where is the library",
+     "how to say bread in spanish"
     ]
    },
    {
