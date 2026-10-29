@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 47,
+  "tested": 46,
   "checked": 13,
-  "proven": 304
+  "proven": 305
  },
  "families": [
   {
@@ -25,9 +25,9 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 16,
+    "tested": 15,
     "checked": 1,
-    "proven": 38
+    "proven": 39
    },
    "skills": [
     {
@@ -74,11 +74,12 @@
     },
     {
      "name": "fakeuser",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-27",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-29",
+     "last_tested_by": "its tests",
      "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 3
     },
     {
