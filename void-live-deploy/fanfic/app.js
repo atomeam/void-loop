@@ -313,7 +313,7 @@ async function viewAuthors() {
 // Random story: one of the stories this device may see, picked at random; the address becomes that story's, so Back returns to where you were
 async function viewRandom() {
   show('random', 'Random story');
-  const s = $('randomSay'); say(s, 'Picking a story…');
+  const s = $('randomSay'); say(s, 'Picking one of the stories.');
   let a; try { a = await archive(); } catch (e) { fail(s, e); return; }
   const t = F.randomOf(shown(a.topics));
   if (t) return go(href({ f: t.board, s: t.no }), true);

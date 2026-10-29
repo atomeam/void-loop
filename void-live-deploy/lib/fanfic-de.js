@@ -104,7 +104,7 @@ export const DICT = {
   'Random story': 'Zufällige Geschichte', Help: 'Hilfe', 'Pen name': 'Autorenname', 'Authors A to Z': 'Autor:innen von A bis Z',
   "Everyone who has posted a story here, A to Z. Open a name to read that writer's stories.": 'Alle, die hier eine Geschichte veröffentlicht haben, von A bis Z. Öffne einen Namen, um die Geschichten dieser Person zu lesen.',
   'No authors yet. The first person to post a story shows here.': 'Noch keine Autor:innen. Die erste Person, die eine Geschichte veröffentlicht, erscheint hier.',
-  'Picking a story…': 'Eine Geschichte wird ausgewählt…',
+  'Picking one of the stories.': 'Eine der Geschichten wird ausgewählt.',
   'Random story picks one of the stories posted here. There are none yet, so there is nothing to pick.': 'Zufällige Geschichte wählt eine der hier veröffentlichten Geschichten. Es gibt noch keine, also gibt es nichts zu wählen.',
   'Stories by': 'Geschichten von', Signed: 'Signiert', 'Show every author': 'Alle Autor:innen zeigen',
   'Help desk: questions and answers': 'Hilfe: Fragen und Antworten', 'How do I post a story?': 'Wie veröffentliche ich eine Geschichte?',
