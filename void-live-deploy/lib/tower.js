@@ -286,11 +286,15 @@ export const selfCalled = (r) => !!(r && r.called && /^called beaten by verse\b/
 // `incomplete` lists them so the card says so instead of counting them.
 // a journey row passes when the runner took it with its controls, or when a person signed the floor beaten (tools/tower-verdict.mjs --beaten:
 // the owner or the scout took the journeys by hand; a call Verse made itself never counts)
-export const passes = (a, r) => (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
+// a row the gate scored against its default bar because the site turned the gate away (tools/tower-gate.mjs "vs the bar (<site> unreachable)")
+// measured Verse, not the site (owner's card, 2026-10-29: "those numbers are not its own"): it is not measured against the site, so it is never a
+// lead and never part of a surpass. It stays a loss when Verse is short of the bar, since that gap is Verse's own.
+export const barRow = (r) => !!r && / vs the bar \(/.test(String(r.evidence || ''));
+export const passes = (a, r) => !barRow(r) && (isJourney(a) ? journeyPasses(r) || !!(r && r.called && r.verdict === 'better' && r.evidence && !selfCalled(r) && !incompleteRow(r)) : !!(r && OK.has(r.verdict) && r.evidence && !selfCalled(r) && !incompleteRow(r) && !zeroRivalUnread(r)));
 export function gate(floor, ev = {}) {
   const all = checklist(floor, ev), passed = all.filter((a) => passes(a, ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
-  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || isJourney(a)) : isJourney(a)));
+  const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || barRow(ev[a]) || isJourney(a)) : isJourney(a)));
   return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
 }
 /** evidence rows that pass a floor's whole checklist the way the gate demands (journeys with steps and negative controls): for tests and
@@ -370,7 +374,7 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
 // a held site says why it is not surpassed, so "16 of 16 aspects ahead, 0 surpassed" explains itself (owner's card, 2026-10-29)
-export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (' + f.n + ' of ' + f.m + ' aspects ahead' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (Verse ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
 /** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
  *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
  *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */

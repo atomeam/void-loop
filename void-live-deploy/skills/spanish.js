@@ -9,6 +9,7 @@ const READY = 'Puedo responder en español. Escribe la pregunta después de dos 
 export function spanishOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const m = t.match(/^(?:please\s+)?(?:answer(?:\s+me|\s+this)?|reply(?:\s+to\s+me)?|respond(?:\s+to\s+me)?)\s+in\s+spanish(?:\s*:\s*(.{1,240}))?$/i)
+    || t.match(/^how\s+to\s+say\s+(.{1,240})\s+in\s+spanish$/i)
     || t.match(/^(?:por favor\s+)?(?:contéstame|contestame|respóndeme|respondeme|háblame|hablame)\s+en\s+español(?:\s*:\s*(.{1,240}))?$/i);
   if (!m) return null;
   return { q: (m[1] || '').trim() };
@@ -58,7 +59,7 @@ async function run(text, api) {
 
 export default {
   name: 'spanish',
-  examples: ['answer me in Spanish', 'answer me in Spanish: what is a void', 'reply in Spanish', 'contéstame en español', 'answer this in Spanish: where is the library'],
+  examples: ['answer me in Spanish', 'answer me in Spanish: what is a void', 'reply in Spanish', 'contéstame en español', 'answer this in Spanish: where is the library', 'how to say bread in spanish'],
   nearMisses: ['translate hello to Spanish', 'good morning in Spanish', 'what is Spanish', 'answer me in French'],
   spanishOf,
   spanishReady,
