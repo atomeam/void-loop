@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:41:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T05:40:56Z",
+   "subject": "List the color skill so it loads, and fix its match"
+  },
+  {
+   "at": "2026-10-29T05:39:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T05:37:26Z",
    "subject": "Escape the lorem text on its page, as the review asks"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T05:25:14Z",
    "subject": "List the morse skill so it loads, and narrow its match"
-  },
-  {
-   "at": "2026-10-29T05:22:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:20:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T05:20:04Z",
-   "subject": "Green the fast checks that fail on main"
   }
  ],
  "builders": {
