@@ -147,9 +147,9 @@ function memoryD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     const made = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql);
     if (made) { tables.add(made[1]); return { meta: { changes: 0 } }; }
-    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
+    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2], updated: a[4] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); actions.set(a[0], { kind: a[2], ref: a[3], state: a[4], result: a[5], error: a[6] }); return { meta: { changes: 1 } }; } // the execution record (lib/actions.js)
     if (/^DELETE FROM void_actions/.test(sql)) { need('void_actions'); return { meta: { changes: 0 } }; }
@@ -164,6 +164,8 @@ function memoryD1({ broken = false } = {}) {
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql, a) => {
+    // the approval gate's history (functions/api/approval.js executedSince, #1422): the approvals that ended done since a time
+    if (/^SELECT record, updated FROM void_approvals WHERE state = 'done' AND updated >= \?$/.test(sql)) { need('void_approvals'); return { results: [...approvals.values()].filter((r) => r.state === 'done' && r.updated >= a[0]).map((r) => ({ record: r.record, updated: r.updated })) }; }
     if (/^SELECT .* FROM void_automations WHERE scope = \? ORDER BY created$/.test(sql)) { need('void_automations'); return { results: [...autos.values()].filter((r) => (r.scope || '') === a[0]) }; }
     if (/^SELECT .* FROM void_automation_runs WHERE rule_id = \? ORDER BY at DESC LIMIT 100$/.test(sql)) { need('void_automation_runs'); return { results: autoRuns.filter((r) => r.rule_id === a[0]).sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 100) }; }
     if (/^SELECT .* FROM void_automation_runs ORDER BY at DESC LIMIT 60$/.test(sql)) { need('void_automation_runs'); return { results: [...autoRuns].sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 60) }; }
@@ -10937,11 +10939,11 @@ try {
         if (/^INSERT INTO void_spends/.test(sql)) { need('void_spends'); spends.push({ id: a[0], approval_id: a[1], model: a[2], cap_cents: a[3], per: a[4], at: a[5] }); return ch(1); }
         if (/^INSERT INTO void_kv \(k, v\) VALUES \(\?, \?\) ON CONFLICT\(k\) DO UPDATE SET v = CAST\(CAST\(v AS REAL\)/.test(sql)) { need('void_kv'); kv.set(a[0], String((Number(kv.get(a[0])) || 0) + Number(a[1]))); return ch(1); }
         if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2], entry: JSON.parse(a[4]) }); return ch(1); }
-        if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return ch(1); }
+        if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2], updated: a[4] }); return ch(1); }
         if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); return ch(1); } // the execution record (lib/actions.js) around an approved action
         if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
-        if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
-        if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
+        if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return ch(1); }
+        if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return ch(1); }
         throw new Error('unexpected sql: ' + sql);
       },
       first: async () => {
@@ -10955,6 +10957,8 @@ try {
       },
       all: async () => {
         if (/FROM void_sales/.test(sql)) { need('void_sales'); return { results: sales }; }
+        // the approval gate's history (functions/api/approval.js executedSince, #1422): the approvals that ended done since a time
+        if (/^SELECT record, updated FROM void_approvals WHERE state = 'done' AND updated >= \?$/.test(sql)) { need('void_approvals'); return { results: [...approvals.values()].filter((r) => r.state === 'done' && r.updated >= a[0]).map((r) => ({ record: r.record, updated: r.updated })) }; }
         need('void_routes'); return { results: [...rows.values()].sort((x, y) => (x.last < y.last ? 1 : -1)).slice(0, a[0]) };
       } });
     return { rows, kv, answers, spends, ledger, approvals, shortfalls, tables, prepare: (sql) => stmt(sql), batch: async (list) => { const out = []; for (const q of list) out.push(await q.run()); return out; } };
@@ -10975,12 +10979,15 @@ try {
     return { response: 'Gemma: a short answer [1].' };
   } });
   const realFetch = globalThis.fetch;
+  // the fetched source holds what the stand-in models' cited sentences say: since #1410 (f92c2d219, lib/answer-honesty.js supportedOnly) a [1]
+  // whose sentence the source's text does not hold is dropped with its source, so a source that said nothing of the answer would leave neither
+  const EXTRACT = 'A sourced extract: a short answer, a paid answer.';
   let wikiDelay = 0;
   const wiki = async (u) => {
     if (wikiDelay) await new Promise((r) => setTimeout(r, wikiDelay));
     const s = String(u);
     if (/list=search/.test(s)) return new Response(JSON.stringify({ query: { search: [{ title: 'Topic' }] } }), { headers: { 'content-type': 'application/json' } });
-    return new Response(JSON.stringify({ title: 'Topic', extract: 'A sourced extract.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Topic' } } }), { headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify({ title: 'Topic', extract: EXTRACT, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Topic' } } }), { headers: { 'content-type': 'application/json' } });
   };
   const ask = async (text, env) => {
     const pending = [];
@@ -11082,7 +11089,7 @@ try {
     const o0 = await ask('who wrote the odyssey', eOut0), em = await ask('who wrote the odyssey', eEmpty);
     const fx = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ mode: 'fix', ask: 'my cron job is not running', details: '*/5 * * * * python3 sync.py' }) }), env: eOut0 })).json();
     check('router: when Gemma fails (daily free allocation used up, or an empty reply) it is counted in void_shortfalls (answer / fix, by reason, never the ask) and the answer is the open web, the fix the rules',
-      o0.answer === 'A sourced extract.' && o0.note === 'model busy, from the web' && em.answer === 'A sourced extract.' && fx.fix === 'rules' && fx.note === 'model busy, fixed from the error'
+      o0.answer === EXTRACT && o0.note === 'model busy, from the web' && em.answer === EXTRACT && fx.fix === 'rules' && fx.note === 'model busy, fixed from the error'
       && eOut0.DB.shortfalls.get('answer|free limit') === 1 && eOut0.DB.shortfalls.get('fix|free limit') === 1 && eEmpty.DB.shortfalls.get('answer|empty') === 1 && !JSON.stringify([...eOut0.DB.shortfalls]).includes('odyssey'),
       JSON.stringify({ o0: o0.note, em: em.answer, fx: fx.fix, sf: [...eOut0.DB.shortfalls, ...eEmpty.DB.shortfalls] }));
     // fallbacks: the classifier fails or hangs = the old behaviour, in about the old time
@@ -11142,7 +11149,7 @@ try {
     const eSaidNo = envOf({ db: { sales: SALE } }); const no = await approveSpend(eSaidNo, 'let Verse spend up to $5 a month on a stronger model', 'reject');
     const eStopped = envOf({ db: { sales: SALE } }); await approveSpend(eStopped, 'let Verse spend up to $5 a month on a stronger model'); await new Promise((r) => setTimeout(r, 5)); await approveSpend(eStopped, 'stop paying for stronger models');
     const eCapUsed = envOf({ db: { sales: SALE } }); await approveSpend(eCapUsed, 'let Verse spend up to $5 a month on a stronger model'); eCapUsed.DB.kv.set('router:paid:' + eCapUsed.DB.spends[0].id + ':' + R.periodKey('month'), '499.5');
-    const eBudgetUsed = envOf({ db: { sales: SALE } }); await approveSpend(eBudgetUsed, 'let Verse spend up to $100 a month on a stronger model'); eBudgetUsed.DB.kv.set('router:paid:total', '4899.5');
+    const eBudgetUsed = envOf({ db: { sales: SALE } }); await approveSpend(eBudgetUsed, 'let Verse spend up to $20 a month on a stronger model'); eBudgetUsed.DB.kv.set('router:paid:total', '4899.5'); // $20, under HIGH_SPEND: since #1422 (356cfdc97) a $25+ spend needs a second person's yes
     const blocked = [];
     for (const [name, env] of [['no standing spend', eNoSpend], ['refunded to zero', eNoMoney], ['no sales table', eNoTable], ['said no', eSaidNo], ['stopped ($0)', eStopped], ['cap used', eCapUsed], ['budget used', eBudgetUsed]]) {
       const x = await ask(HARDQ, env), r = rowOf(env, HARDQ);
@@ -11177,7 +11184,7 @@ try {
     const untouched = (e) => e.DB.rows.size === 0 && e.DB.answers.size === 0 && e.DB.kv.size === 0 && e.DB.spends.length === 0 && e.DB.shortfalls.size === 0 && e.DB.tables.size === 0;
     const cOn = calls.length, eOn = envOf(), d3 = await ask('who wrote the odyssey', eOn);
     check('router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)',
-      cOn === cOff && untouched(eOffX) && untouched(eOffY) && d1.answer === 'A sourced extract.' && d2.answer === 'A sourced extract.' && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic'
+      cOn === cOff && untouched(eOffX) && untouched(eOffY) && d1.answer === EXTRACT && d2.answer === EXTRACT && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic'
       && fOff.fix === 'rules' && !fOff.note && d3.answer === 'Gemma: a short answer [1].' && d3.route === 'simple' && calls.length > cOn,
       JSON.stringify({ off: cOn - cOff, d1: d1.answer, d2: d2.answer, fix: fOff.fix, on: d3.answer, route: d3.route }));
     const nAI = await ask('who wrote the odyssey', { AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE) });
