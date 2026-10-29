@@ -1091,11 +1091,15 @@ try {
     await P.p.waitForSelector('#list .badge', { timeout: 15000 }).catch(() => {});
     const obit = await P.p.evaluate(() => { const cards = [...document.querySelectorAll('#list .card')]; return { cards: cards.length, badges: cards.filter((c) => c.querySelector('.badge')).length, wip: cards.filter((c) => /In progress: \d+% of its features matched/.test(c.innerText)).length, homage: cards.filter((c) => /The Legacy:/.test(c.innerText) && /Our Tribute:/.test(c.innerText)).length, falseWin: cards.filter((c) => /Beaten in every way/.test(c.querySelector('.badge').textContent) && /Not beaten yet/.test(c.innerText)).length, tally: document.getElementById('tally').textContent }; });
     check('obituaries: every memorial shows an honest status and keeps its homage text', obit.cards > 0 && obit.badges === obit.cards && obit.homage === obit.cards && obit.wip > 0 && !obit.falseWin && /beaten in every way, \d+ in progress/.test(obit.tally), JSON.stringify(obit));
-    await P.p.fill('#q', 'Google Translate');
-    await P.p.evaluate(() => { const d = document.querySelector('#list details'); if (d) d.open = true; });
+    // the memorial is the first one with a cited history, not a fixed name: which sites hold a memorial follows the tower gate's own
+    // measures (2026-10-29 13:46, 1099c17b: /translate/ measured 1 small tap target, so Google Translate's memorial came down and
+    // this check, fixed on it, read 0 items); the search still narrows the list to it
+    const site = await P.p.evaluate(() => { const s = [...document.querySelectorAll('#list details summary')].find((x) => /\(\d+ cited events\)/.test(x.textContent)); return s ? s.textContent.replace(/^History of /, '').replace(/ \(\d+ cited events\)$/, '') : ''; });
+    await P.p.fill('#q', site);
+    await P.p.evaluate((site) => { const d = [...document.querySelectorAll('#list details')].find((x) => x.querySelector('summary').textContent.startsWith('History of ' + site + ' (')); if (d) d.open = true; }, site);
     await P.p.waitForSelector('#list .tl li a[href^="http"]', { timeout: 15000 }).catch(() => {});
     const tl = await P.p.evaluate(() => { const items = [...document.querySelectorAll('#list .tl li')]; return { items: items.length, cited: items.filter((li) => li.querySelector('a[href^="http"]') || /unknown/.test(li.textContent)).length, gaps: document.querySelectorAll('#list .gaps li').length }; });
-    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', tl.items > 3 && tl.cited === tl.items, JSON.stringify(tl));
+    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', !!site && tl.items > 3 && tl.cited === tl.items, JSON.stringify({ site, ...tl }));
     const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
     check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
     const sib = await siblingCount(P.p);
