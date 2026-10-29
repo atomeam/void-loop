@@ -78,6 +78,7 @@ const CLONE = /^(?:please\s+)?(?:clone|copy|duplicate|twin)\s+(?:it|that|this|hi
 
 export function natureSummon(t) {
   const m = NATURE_SUMMON.exec(t); if (!m) return null;
+  if (/^(?:your|verse'?s)\s/.test(m[1])) return null; // "show me your brain" asks about Verse's own (skills/verse-brain.js), not a figure
   const noun = m[1], last = noun.split(' ').pop(), find = (w) => natureOf(w).tags.find((x) => NATURE_LOOK[x]);
   // the last word is the thing ("a dog picture" is not a dog); a two-word name ("ice cube", "storm cloud") counts whole
   const kind = find(last) || (/^(?:pictures?|photos?|images?|drawings?|videos?|movies?|films?|songs?|facts?|names?|recipes?|emojis?|costumes?|toys?|games?)$/.test(last) ? null : find(noun));

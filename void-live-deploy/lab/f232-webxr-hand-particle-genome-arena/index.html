@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0c0ff; font-family:monospace; overflow:hidden; }
+#canvas { display:block; width:100vw; height:100vh; }
+#ui { position:fixed; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:10px; border-radius:8px; max-width:320px; }
+button { background:#222; color:#aaf; border:1px solid #44f; margin:4px; padding:6px 10px; cursor:pointer; }
+#agents { position:fixed; bottom:10px; right:10px; display:flex; gap:8px; flex-wrap:wrap; z-index:10; }
+.agent-card { background:rgba(20,20,40,0.8); border:1px solid #66f; padding:6px; border-radius:6px; font-size:11px; width:90px; text-align:center; }
+.status { font-size:12px; margin:4px 0; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Particle Genome Arena · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: WebXR Hand Particle Genome Arena.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Particle Genome Arena · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: WebXR Hand Particle Genome Arena.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f232-webxr-hand-particle-genome-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f232-webxr-hand-particle-genome-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div class="status" id="status">Pointer mode. Click Enter XR for hands.</div>
+  <button id="enterXR">Enter XR (Hands)</button>
+  <button id="seal">Seal Best Genome</button>
+  <button id="reset">Reset</button>
+  <div class="status" id="fitness">Fitness: --</div>
+</div>
+<div id="agents"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Particle Genome Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

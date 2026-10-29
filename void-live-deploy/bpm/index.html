@@ -4,10 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BPM counter: tap the beat to find the tempo · Verse</title>
+<meta name="verse-handoff" content="in: number; out: number">
 <meta name="description" content="A free BPM counter: tap any key or the button along with a song to find its tempo, with half and double, the average of your taps, note lengths in milliseconds and Hz, and the tempo of an audio file worked out on your device. No account, nothing uploaded.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="BPM counter · Verse">
+<meta property="og:title" content="Find how fast a song is: a beats-per-minute counter · Verse">
 <meta property="og:description" content="A free BPM counter: tap any key or the button along with a song to find its tempo, with half and double, the average of your taps, note lengths in milliseconds and Hz, and the tempo of an audio file worked out on your device. No account, nothing uploaded.">
 <meta property="og:url" content="https://a-to-mind.com/bpm/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -33,6 +34,7 @@
   button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
   button:disabled { opacity: .5; cursor: default; }
   .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  #tries a { padding: 8px 4px; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
   .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 130px; min-width: 0; }
   .row > label select, .row > label input { width: 100%; }
@@ -94,7 +96,9 @@
 </head>
 <body>
 <main id="app">
-  <h1>BPM counter</h1>
+  <h1>Find how fast a song is: a beats-per-minute counter</h1>
+  <p class="sub" id="lead"><strong>Tap along for a workout, a dance class, a DJ set or a rehearsal.</strong> <a href="#tap">Tap a song</a>, or see a ready tempo:</p>
+  <nav class="row" id="tries" aria-label="Ready tempos"><a href="?bpm=170">A running pace 170</a> <a href="?bpm=70">A resting heartbeat 70</a> <a href="?bpm=128">A dance class 128</a> <a href="?bpm=90">A walk 90</a></nav>
   <p class="sub" id="lede">A free BPM counter: tap along with a song to find its tempo, fix half or double time, see the length of every note value, or find the BPM of an audio file on your device. Nothing is uploaded.</p>
   <nav id="mnav" aria-label="Music tools"><a href="/metronome/">Metronome</a><a href="/piano/">Piano</a><a href="/tuner/">Tuner</a><a href="/bpm/" aria-current="page">BPM counter</a><a href="/chords/">Chords and scales</a><a href="/music/">Setlists and catalogue</a><a href="/?q=make%20me%20a%20song">Make me a song</a></nav>
   <section class="pane" aria-label="BPM counter">
@@ -104,6 +108,7 @@
     <div class="row c"><button type="button" id="half">Half time (÷2)</button><button type="button" id="dbl">Double time (×2)</button><button type="button" id="rst">Reset</button><button type="button" id="click" aria-pressed="false">Click on each tap</button></div>
     <div class="row"><label>Average the last (taps)<select id="keep"><option>4</option><option>8</option><option selected>12</option><option>24</option></select></label><label>Start over after a pause of (s)<select id="gap"><option>1.5</option><option selected>2.5</option><option>4</option></select></label><label class="chk"><input type="checkbox" id="whole"> Round to whole BPM</label></div>
     <p class="note" id="tempoWord" style="text-align:center">10 to 15 taps give the most reliable tempo.</p>
+    <p class="note" style="text-align:center"><a id="toMetro" href="/metronome/" hidden>Play this tempo on the metronome</a></p>
   </section>
   <section class="pane" aria-label="Note lengths">
     <h2>Note lengths at this tempo</h2>

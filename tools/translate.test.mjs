@@ -71,7 +71,7 @@ test('the endpoint: detects the language, refuses what it cannot take', async ()
 test('the page carries what the floor is measured on, in its first paint', () => {
   const html = fs.readFileSync(path.join(root, 'translate', 'index.html'), 'utf8');
   for (const w of ['100 languages', 'Detect language', 'Listen', 'Speak', 'Camera or photo', 'Copy', 'Share link', 'Saved phrases', 'History', 'offline', 'og:title', 'twitter:card', 'addEventListener(\'load\'']) assert.ok(html.includes(w), w);
-  assert.equal((html.match(/<option value="/g) || []).length, 202); // detect + 100 from, 100 to, and the tone select's default
+  assert.equal((html.match(/<option value="/g) || []).length, 204); // detect + 100 from, 100 to, the tone select's default, and the language search's to/from pair
   for (const w of ['Document', 'Dictionary', 'Back-translate', 'Tone', 'Translate a website', 'Into several languages', 'Glossary', 'Practice', '.docx,.pptx,.xlsx,.pdf']) assert.ok(html.includes(w), w);
   assert.ok(!/<link rel="modulepreload"[^>]*(?:three|scene3d)/.test(html));
   for (const w of ['Übersetzer', 'Anhören', 'Sprechen']) assert.ok(html.includes(w), w);

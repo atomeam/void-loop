@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,20,0.7); padding:10px 14px; border-radius:8px; font-size:13px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#adf; border:1px solid #45a; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+.probe { position:absolute; min-width:80px; padding:6px 8px; background:rgba(20,30,60,0.85); border:1px solid #6af; border-radius:6px; font-size:11px; cursor:grab; user-select:none; z-index:5; transition:opacity 0.2s; }
+.probe:active { cursor:grabbing; }
+#status { font-size:12px; opacity:0.8; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Neural Foraging Genome Arena · Verse lab</title>
+<meta name="description" content="A multi-agent particle foraging arena where each agent carries a sealed local genome (tiny 4-float weight vector acting as a force-kernel MLP).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Neural Foraging Genome Arena · Verse lab">
+<meta property="og:description" content="A multi-agent particle foraging arena where each agent carries a sealed local genome (tiny 4-float weight vector acting as a force-kernel MLP).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f291-webgpu-neural-foraging-genome-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f291-webgpu-neural-foraging-genome-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div><strong>F291 Neural Foraging Genome Arena</strong></div>
+  <button id="seal">Seal Champion</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset Pop</button>
+  <div id="status">Move pointer to attract. Agents transfer genomes on contact. Drag probes to reward.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Neural Foraging Genome Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

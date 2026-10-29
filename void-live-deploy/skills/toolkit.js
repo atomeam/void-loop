@@ -6,7 +6,7 @@
  */
 import { TOOLS } from '../lib/toolkit.js';
 
-const WHEN = /^(?:(?:what|which) tools (?:do you have|are there|can i use)|(?:show me |list )?(?:all|every|your) (?:the )?tools|every tool|show me your tools|tool list|list of tools)$/i;
+const WHEN = /^(?:(?:what|which) tools (?:do you have|are there|can i use)|(?:show me |list )?(?:all|every|your) (?:the )?tools|every tool|show me your tools|tool list|list of tools|how many rolls of tape for .+)$/i; // only tape: "how many rolls of wallpaper", paint, tiles and drywall belong to walls and home (tools/skill-overlap.mjs)
 
 function run(text, api) {
   const { showPage, esc } = api;
@@ -22,7 +22,7 @@ function run(text, api) {
 
 export default {
   name: 'toolkit',
-  examples: ['what tools do you have', 'all tools', 'every tool', 'show me your tools'],
+  examples: ['what tools do you have', 'all tools', 'every tool', 'show me your tools', 'how many rolls of tape for 200ft'],
   nearMisses: ['tool shed', 'what is a tool', 'power tools'],
   match(lower) { return WHEN.test(lower.trim().replace(/[?!.]+$/, '')); },
   run

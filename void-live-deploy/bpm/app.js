@@ -11,6 +11,8 @@ const whole = () => $('whole').checked;
 function show(v) {
   bpm = v == null ? null : (whole() ? Math.round(v) : Math.round(v * 10) / 10);
   $('bpmOut').textContent = bpm == null ? '–' : bpm; if (bpm != null) $('tempoWord').textContent = tempoName(bpm) + ' · ' + Math.round(60000 / bpm) + ' ms ' + t('per beat'); lens(); length();
+  // the tempo handed on (docs/HANDOFF-GAPS.md): the metronome opens at it, since it reads ?bpm=
+  const go = $('toMetro'); if (go) { go.hidden = bpm == null; if (bpm != null) go.href = '/metronome/?bpm=' + bpm; }
 }
 function lens() {
   const tb = $('lens').tBodies[0]; tb.textContent = ''; $('lensFor').textContent = bpm == null ? t('At 120 BPM until you tap a tempo (ms per note; Hz is how often it falls each second):') : t('At') + ' ' + bpm + ' BPM (ms ' + t('per note') + '; Hz ' + t('is how often it falls each second') + '):';
@@ -26,7 +28,8 @@ boot('/bpm/', say_); mountRelated($('related'), '/bpm/'); lens();
 { const w = parseFloat(new URLSearchParams(location.search).get('bpm')); if (w >= 20 && w <= 400) { show(w); say_(t('Note lengths for') + ' ' + w + ' BPM. ' + t('Tap to measure your own.')); } }
 wire($('tap'), 'pointerdown', (e) => { e.preventDefault(); tap(); }); wire($('tap'), 'keydown', (e) => { if (e.code === 'Space' || e.code === 'Enter') e.preventDefault(); });
 addEventListener('keydown', (e) => { const tag = (e.target.tagName || '').toLowerCase(); if (tag === 'input' || tag === 'select' || tag === 'textarea' || e.ctrlKey || e.metaKey || e.altKey || e.repeat || e.key === 'Tab' || e.key === 'Shift') return; if (e.target === $('tap') && (e.code === 'Space' || e.code === 'Enter')) { tap(); return; } if (tag !== 'button') { e.preventDefault(); tap(); } });
-wire($('half'), 'click', () => { if (bpm != null) show(halfDouble(bpm).half); }); wire($('dbl'), 'click', () => { if (bpm != null) show(halfDouble(bpm).double); });
+const noTempo = () => { $('tempoWord').textContent = t('Tap a tempo first, then halve or double it.'); }; // never a silent button
+wire($('half'), 'click', () => { if (bpm != null) show(halfDouble(bpm).half); else noTempo(); }); wire($('dbl'), 'click', () => { if (bpm != null) show(halfDouble(bpm).double); else noTempo(); });
 wire($('rst'), 'click', () => { taps = []; show(null); $('tempoWord').textContent = t('10 to 15 taps give the most reliable tempo.'); say_(t('Tap the button, or any key, to the beat.')); });
 wire($('click'), 'click', () => { clickOn = !clickOn; $('click').setAttribute('aria-pressed', String(clickOn)); }); wire($('whole'), 'change', () => bpm != null && show(bpm));
 wire($('sig'), 'change', length); wire($('bars'), 'change', length);

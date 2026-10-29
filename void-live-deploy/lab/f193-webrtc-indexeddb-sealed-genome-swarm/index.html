@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0a0a0f; --fg: #e0e0e8; --accent: #6ee7b7; --warn: #f59e0b; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+  #field { position: relative; width: 100vw; height: 100vh; }
+  .agent { position: absolute; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff8; pointer-events: none; transition: transform 0.05s linear; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #000; }
+  .resource { position: absolute; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; opacity: 0.85; }
+  #hud { position: fixed; top: 8px; left: 8px; right: 8px; background: #000a; padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 10; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  button, textarea, input { background: #1a1a22; color: var(--fg); border: 1px solid #333; border-radius: 4px; padding: 4px 8px; font-size: 12px; }
+  button:hover { border-color: var(--accent); }
+  #log { position: fixed; bottom: 8px; left: 8px; max-width: 40%; max-height: 120px; overflow: auto; font-size: 11px; background: #0008; padding: 6px; border-radius: 4px; }
+  .seal { font-family: monospace; color: var(--accent); }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebRTC + IndexedDB Sealed Genome Multi-Agent DOM Swarm · Verse lab</title>
+<meta name="description" content="A local multi-agent swarm embodied entirely as hybrid DOM elements (positioned divs) whose motion and decisions are driven by tiny on-device MLPs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebRTC + IndexedDB Sealed Genome Multi-Agent DOM Swarm · Verse lab">
+<meta property="og:description" content="A local multi-agent swarm embodied entirely as hybrid DOM elements (positioned divs) whose motion and decisions are driven by tiny on-device MLPs.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f193-webrtc-indexeddb-sealed-genome-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f193-webrtc-indexeddb-sealed-genome-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="field"></div>
+<div id="hud">
+  <span>Agents: <b id="acount">0</b></span>
+  <span>Score: <b id="score">0</b></span>
+  <span>Seal: <span id="lastseal" class="seal">—</span></span>
+  <button id="spawn">Spawn</button>
+  <button id="evolve">Evolve</button>
+  <button id="save">Save IDB</button>
+  <button id="load">Load IDB</button>
+  <button id="offer">Create Offer</button>
+  <button id="answer">Create Answer</button>
+  <button id="connect">Set Remote</button>
+  <button id="sendg">Send Genome</button>
+</div>
+<textarea id="sdp" rows="3" cols="40" placeholder="Paste SDP here..." style="position:fixed;top:60px;left:8px;z-index:11;width:320px;"></textarea>
+<div id="log"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebRTC + IndexedDB Sealed Genome Multi-Agent DOM Swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

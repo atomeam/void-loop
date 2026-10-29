@@ -2,6 +2,7 @@
 // falling back to Gumroad without keys, and the routes end to end with a fake env.
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { STORE_PRODUCTS, providerOf, signToken, verifyToken, licenseKey, LICENSE_Verse_RE, verifyStripe, buyAnswer, publicCatalog } from '../void-live-deploy/lib/store.js';
 import { onRequest } from '../void-live-deploy/functions/api/store/[[path]].js';
 import { storeAsk } from '../void-live-deploy/skills/store.js';
@@ -81,3 +82,13 @@ assert.equal(deliveryDone(demoOrder)['License key issued'], true);
 assert.equal(deliveryDone(demoOrder)['Signed downloads ready: links last 24 hours, re-open them any time'], true);
 assert.equal(deliveryDone({ code: 'ABCD1234', items: [] })['Ordered'], false);
 console.log('store floor: cart, totals, csv, delivery steps ok');
+
+// the payment page sends buyers to /store/receipt/: it is the same page as /store/, so a receipt never runs an older cart
+// (an old copy there read carts as plain ids and showed them empty) and gets every store fix; a receipt link fills the code only
+{ // /store/receipt/ is the store page, with copy, save and a code-only receipt link
+  const a = readFileSync(new URL('../void-live-deploy/store/index.html', import.meta.url), 'utf8');
+  const b = readFileSync(new URL('../void-live-deploy/store/receipt/index.html', import.meta.url), 'utf8');
+  assert.equal(b, a, 'copy store/index.html to store/receipt/index.html after editing it');
+  for (const s of ['id="rcopy"', 'id="rsave"', "q.get('code')", 'for="le"', 'for="lc"', 'aria-live="polite"']) assert.ok(a.includes(s), s);
+  assert.ok(!/q\.get\('email'\)/.test(a), 'a link never carries the email');
+}

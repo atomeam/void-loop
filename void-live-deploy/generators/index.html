@@ -64,6 +64,9 @@
 <link rel="modulepreload" href="/lib/flight-sites.js">
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/prizes.js">
 <link rel="modulepreload" href="/lib/generators.js">
 <!-- /modulepreload -->
 </head>
@@ -118,6 +121,7 @@
 <script type="module">
   // static imports so tools/preload.mjs lists them and sw.js keeps them whole: the page opens offline (a dynamic import was never cached)
   import { mountRelated } from '/lib/toolkit.js';
+  import { mountStrip } from '/lib/handoff.js';
   import * as G from '/lib/generators.js';
   // everything after the first paint: the page shows its words at once, the work lands after load (the gate measures speed)
   addEventListener('load', async () => {
@@ -184,6 +188,7 @@
     if (state.g === 'own') $('own').open = true;
     drawFavs(); go();
     mountRelated($('related'), '/generators/');
+    mountStrip($('related'), '/generators/');
     // the hub: generators people published (functions/api/generators.js); titles only, as text; each opens in the editor
     async function hub(sort) {
       $('hubNew').setAttribute('aria-pressed', String(sort === 'new')); $('hubPop').setAttribute('aria-pressed', String(sort === 'popular'));

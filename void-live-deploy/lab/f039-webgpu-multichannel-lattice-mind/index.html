@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a0f; color: #ccc; font-family: system-ui, sans-serif; overflow: hidden; transition: filter 0.3s, transform 0.3s; }
+  #canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  .hud { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; z-index: 10; max-width: 280px; }
+  .card { position: absolute; width: 140px; height: 90px; background: rgba(20,20,30,0.7); border: 1px solid #444; border-radius: 12px; padding: 8px; font-size: 12px; cursor: grab; user-select: none; transform-style: preserve-3d; transition: transform 0.15s ease-out; z-index: 5; }
+  .card:active { cursor: grabbing; }
+  button { background: #222; color: #eee; border: 1px solid #555; padding: 4px 8px; border-radius: 4px; margin: 2px; cursor: pointer; }
+  #status { font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Multi-Channel WebGPU Lattice Mind with Embodied Spatial Cards · Verse lab</title>
+<meta name="description" content="Novel combination: A multi-channel continuous lattice (activator / inhibitor / catalyst) stepped by a WebGPU compute shader (Canvas2D multi-buffer fallback).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Multi-Channel WebGPU Lattice Mind with Embodied Spatial Cards · Verse lab">
+<meta property="og:description" content="Novel combination: A multi-channel continuous lattice (activator / inhibitor / catalyst) stepped by a WebGPU compute shader (Canvas2D multi-buffer fallback).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f039-webgpu-multichannel-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f039-webgpu-multichannel-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="hud">
+  <div>F-039 Multi-Channel Lattice Mind</div>
+  <div id="status">Initializing…</div>
+  <div>Gen: <span id="gen">0</span> | Fit: <span id="fit">0.00</span></div>
+  <div>Ch Var: <span id="var">0.00</span> | Cross: <span id="cross">0.00</span></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="seals"></div>
+</div>
+<div id="cards"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Multi-Channel WebGPU Lattice Mind with Embodied Spatial Cards</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

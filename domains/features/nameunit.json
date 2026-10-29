@@ -1,0 +1,109 @@
+{
+ "floor": "nameunit",
+ "verse_page": "/hosting/",
+ "researched": "2026-10-29",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "nameunit.com": {
+   "url": "https://www.nameunit.com/",
+   "scanned": "2026-10-29",
+   "leader": true,
+   "pages": [
+    "https://www.nameunit.com/",
+    "https://www.nameunit.com/support/faq/annet/servere",
+    "https://www.nameunit.com/support/?page=support"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Informasjon om våre servere",
+     "detail": "a heading on /support/faq/annet/servere",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/hosting/ shows \"servere\"; not \"informasjon\""
+    },
+    {
+     "name": "Platform",
+     "detail": "a heading on /support/faq/annet/servere",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/hosting/ shows none of its words; not \"platform\""
+    },
+    {
+     "name": "Våre webservere",
+     "detail": "a heading on /support/faq/annet/servere",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/hosting/ shows none of its words; not \"webservere\""
+    },
+    {
+     "name": "Våre mailservere",
+     "detail": "a heading on /support/faq/annet/servere",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/hosting/ shows none of its words; not \"mailservere\""
+    },
+    {
+     "name": "Vår Internettforbindelse",
+     "detail": "a heading on /support/faq/annet/servere",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/hosting/ shows none of its words; not \"internettforbindelse\""
+    },
+    {
+     "name": "Name unit - Support / Kundeservice",
+     "detail": "a heading on /support/?page=support",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/hosting/ shows \"name\", \"unit\", \"support\"; not \"kundeservice\""
+    },
+    {
+     "name": ".no .com .net .org .info .biz",
+     "detail": "a pricing row on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/hosting/ shows \"com\", \"org\"; not \"net\", \"info\""
+    },
+    {
+     "name": "20 GB webhotell Servere i Norge",
+     "detail": "a pricing row on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/hosting/ shows \"20\", \"servere\", \"norge\"; not \"webhotell\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Platform",
+   "sites": [
+    "nameunit.com"
+   ]
+  },
+  {
+   "name": "Våre webservere",
+   "sites": [
+    "nameunit.com"
+   ]
+  },
+  {
+   "name": "Våre mailservere",
+   "sites": [
+    "nameunit.com"
+   ]
+  },
+  {
+   "name": "Vår Internettforbindelse",
+   "sites": [
+    "nameunit.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-29",
+  "queued": []
+ }
+}
