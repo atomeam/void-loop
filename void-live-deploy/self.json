@@ -537,13 +537,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T15:57:00Z",
+   "subject": "Money/GPA asks: stop waiting for skills the ask does not need, ask for card-share's graph at once"
+  },
+  {
+   "at": "2026-10-29T15:53:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T15:52:36Z",
    "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
@@ -615,14 +623,6 @@
   {
    "at": "2026-10-29T15:28:08Z",
    "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-29T15:27:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:27:32Z",
-   "subject": "feat(brain): organ 17, F453's L-system plant grown toward attention"
   }
  ],
  "builders": {
