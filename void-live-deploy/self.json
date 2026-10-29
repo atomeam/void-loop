@@ -545,6 +545,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T15:34:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:33:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:31:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:31:39Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
@@ -611,18 +623,6 @@
   {
    "at": "2026-10-29T15:21:22Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:21:04Z",
-   "subject": "random skill: take only the bare dice notation the stage's chance cards leave (d20, 2d6), crypto rolls, order file, family, map line, test"
-  },
-  {
-   "at": "2026-10-29T15:20:39Z",
-   "subject": "Verse fixes its movie skill: learn to handle \"scary movies from the 90s\""
-  },
-  {
-   "at": "2026-10-29T15:20:35Z",
-   "subject": "Restore the password generator's test (lib/password.js), overwritten by the password skill's test in #1536; the skill's test is…"
   }
  ],
  "builders": {
