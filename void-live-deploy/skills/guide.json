@@ -30,8 +30,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 3,
-    "proven": 31
+    "checked": 2,
+    "proven": 32
    },
    "from": 65,
    "to": 101
@@ -100,8 +100,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 4,
-    "proven": 37
+    "checked": 3,
+    "proven": 38
    },
    "from": 179,
    "to": 221
@@ -1101,8 +1101,8 @@
     "fluid memory orbs"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Earned, not claimed, over 3 real askings.",
+   "why": "a self-test, 5 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 5 real askings.",
    "glow": 100,
    "n": 51
   },
@@ -2039,8 +2039,10 @@
     "2d6",
     "3d8"
    ],
-   "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 4 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Asked 2 times in earnest, and never once left unanswered. Let the stage be the proof.",
+   "glow": 100,
    "n": 99
   },
   {
@@ -4121,8 +4123,9 @@
     "char codes of world",
     "what is the ascii of A"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it. The void remembers each asking.",
    "glow": 100,
    "n": 218
   },
@@ -4156,7 +4159,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the words and the world are built on it. The void remembers each asking.",
+   "flavor": "Earned, not claimed, over 3 real askings. The void remembers each asking.",
    "glow": 100,
    "n": 220
   },
@@ -4222,7 +4225,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Earned, not claimed, over 3 real askings. The void remembers each asking.",
+   "flavor": "Among the out in the world it is the one a traveller is told to ask for first. The void remembers each asking.",
    "glow": 100,
    "n": 224
   },
@@ -4883,7 +4886,7 @@
    ],
    "tier": "proven",
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Among the stage it is the one a traveller is told to ask for first.",
+   "flavor": "Earned, not claimed, over 3 real askings.",
    "glow": 100,
    "n": 258
   },
@@ -4933,7 +4936,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the stage.",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first.",
    "glow": 100,
    "n": 261
   },
@@ -5130,7 +5133,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of the stage; set down here after it answered true 3 times.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the stage.",
    "glow": 100,
    "n": 273
   },
@@ -5281,7 +5284,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Asked 3 times in earnest, and never once left unanswered.",
+   "flavor": "Of the stage; set down here after it answered true 3 times.",
    "glow": 100,
    "n": 282
   },
@@ -5315,7 +5318,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. So it is written.",
+   "flavor": "Asked 3 times in earnest, and never once left unanswered.",
    "glow": 100,
    "n": 284
   },
@@ -5808,7 +5811,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Of the stage; set down here after it answered true 3 times. So it is written.",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. So it is written.",
    "glow": 100,
    "n": 314
   },
@@ -5825,7 +5828,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of all the stage, this one is trusted enough to be taught. Turn the page when you are done.",
+   "flavor": "Of the stage; set down here after it answered true 3 times. So it is written.",
    "glow": 100,
    "n": 315
   },
@@ -5944,7 +5947,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
+   "flavor": "Of all the stage, this one is trusted enough to be taught. Turn the page when you are done.",
    "glow": 100,
    "n": 322
   },
@@ -5995,7 +5998,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of all the stage, this one is trusted enough to be taught. Let the stage be the proof.",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
    "glow": 100,
    "n": 325
   },
@@ -6012,7 +6015,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
+   "flavor": "Of all the stage, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
    "n": 326
   },
@@ -6029,7 +6032,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Not a boast but a record: 3 askings, each one answered. It has not failed a reader yet.",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
    "glow": 100,
    "n": 327
   },
@@ -6046,7 +6049,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. It has not failed a reader yet.",
+   "flavor": "Not a boast but a record: 3 askings, each one answered. It has not failed a reader yet.",
    "glow": 100,
    "n": 328
   },
@@ -6063,7 +6066,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. This is the page of stage-image.",
+   "flavor": "Keep this page; the stage are built on it. It has not failed a reader yet.",
    "glow": 100,
    "n": 329
   },
@@ -6322,7 +6325,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
-   "flavor": "Earned, not claimed, over 5 real askings.",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first.",
    "glow": 100,
    "n": 342
   },
