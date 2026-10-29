@@ -70,7 +70,9 @@ const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Pro
 const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 // no host but this machine resolves: every outside service is a stand-in below, and one that has none (a worker's request, a map in an iframe) fails at once
 // 2026-10-29: --disable-gl-drawing-for-tests was tried (#1627): an ask took 1.40 s on 3 pages, not 0.89 s, so it is gone again
-const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'];
+// --disable-gpu (2026-10-29): with one tab for each slot (#1630), the GPU process took 1.67 s of CPU for each ask, more than the renderers
+// (1.34 s). On a runner it draws in software GL. Without a GPU process the page is drawn by Skia in software, which costs less.
+const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1', '--disable-gpu'];
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
