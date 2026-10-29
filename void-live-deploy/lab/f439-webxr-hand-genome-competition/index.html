@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(10,10,20,0.75); padding: 10px 14px; border-radius: 8px; max-width: 320px; font-size: 13px; }
+  button { background: #2a2a4a; color: #fff; border: 1px solid #555; padding: 6px 12px; margin: 4px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  #status { margin-top: 8px; font-size: 12px; color: #aaa; }
+  .agent-label { position: absolute; pointer-events: none; font-size: 10px; background: rgba(0,0,0,0.6); padding: 2px 5px; border-radius: 3px; white-space: nowrap; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Genome Competition · Verse lab</title>
+<meta name="description" content="Branch away from: residual predictors (F284 trajectory residual, F275 acoustic residual), spectral/audio minds (F269 fluid audio, F282 speech), orientation">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Genome Competition · Verse lab">
+<meta property="og:description" content="Branch away from: residual predictors (F284 trajectory residual, F275 acoustic residual), spectral/audio minds (F269 fluid audio, F282 speech), orientation">
+<meta property="og:url" content="https://a-to-mind.com/lab/f439-webxr-hand-genome-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f439-webxr-hand-genome-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <strong>F285 WebXR Hand Genome Competition</strong><br>
+  Agents compete for the central energy orb. Hands (or mouse) push/grab. Seal transfers genome.
+  <div>
+    <button id="enterXR">Enter WebXR Hand</button>
+    <button id="sealBest">Seal Best Genome</button>
+    <button id="loadGenome">Load Sealed</button>
+    <button id="reset">Reset Arena</button>
+  </div>
+  <div id="status">Flat mode (mouse proxy). WebXR hand when available.</div>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Genome Competition</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

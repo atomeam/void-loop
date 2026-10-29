@@ -16,6 +16,8 @@
 //              disagree there, the one that wants it less is slowed, and the card says where
 //   history    a short record of the last minute (utility, focus, action, surprise), which the self reads to say what just happened
 //   explain    "why did that form?", "what just happened?", "what are you doing?": answered from the state above, not from a script
+//   asks       what the visitor asks Verse next after each ask (on this device): the brain guesses the next ask before it comes, the
+//              way the ear guesses the next note, counts its own hits, and ranks the ask box's suggestions by it and by its goals
 // Pure: no DOM, no clock, no Math.random. What is kept on the device (lib/brain-store.js) is numbers and the visitor's own words, never sent.
 import { clamp } from './field-kit.js';
 import { regionMeans, regionCenter, REGIONS_X, REGIONS_Y } from './brain-workspace.js';
@@ -24,6 +26,7 @@ import { loadMean } from './brain-creature.js';
 import { countsOf, loadCounts } from './brain-hearing.js';
 import { programsOf, loadPrograms } from './brain-painter.js';
 import { gardenOf, loadGarden } from './brain-gardener.js';
+import { grammarsOf, loadGrammars } from './brain-grower.js';
 
 export const REGIONS = REGIONS_X * REGIONS_Y;
 export const MAX_GOALS = 8, GOAL_DECAY = 0.997, GOAL_FLOOR = 0.05;
@@ -33,7 +36,7 @@ export const HISTORY = 64, HISTORY_EVERY = 15; // a minute at 60 ticks a second
 export const MONITOR_EVERY = 30, CONTEND_SHARE = 0.2, CONTEND_FLIPS = 8, THROTTLE = 0.35;
 
 export function makeMind() {
-  return { goals: [], episodes: [], open: null, procedures: [], semantic: [], history: [], approval: 0, dwell: 0,
+  return { goals: [], episodes: [], open: null, asks: makeAsks(), procedures: [], semantic: [], history: [], approval: 0, dwell: 0,
     pref: new Float32Array(ACTIONS.length), conflicts: [], throttle: {}, monitor: { last: new Float32Array(REGIONS), dir: new Int8Array(REGIONS), flips: new Uint16Array(REGIONS), base: null, n: 0 } };
 }
 
@@ -212,12 +215,69 @@ export function explain(b, text, names = {}) {
   return out;
 }
 
+// ---- asks: what the visitor asks next (Verse's ask box, on this device) --------------------------------------------------------------------
+export const MAX_ASK_KEYS = 64, MAX_NEXT = 8, ASK_LEN = 80;
+export const makeAsks = () => ({ last: null, next: {}, guess: null, guessed: 0, hits: 0, heard: 0 });
+/** an ask as the asks layer keys it: lower case, one space, no end punctuation, at most ASK_LEN characters. '' for nothing to keep (an
+ *  owner key never reaches here: void.html sends the ask out only after the key is handled, and this drops one anyway). Pure. */
+export const askKey = (t) => { const k = String(t == null ? '' : t).toLowerCase().replace(/[’']/g, "'").replace(/\s+/g, ' ').trim().replace(/[?!.]+$/, '').trim(); return !k || /^(?:unlock\s*)+\S{16,}$/.test(k) ? '' : k.slice(0, ASK_LEN); };
+/** the asks most often asked right after `key`, most first: [{ ask, n, share }]. Pure. */
+export function nextAfter(b, key, top = MAX_NEXT) {
+  const row = b.mind.asks.next[askKey(key)]; if (!row) return [];
+  const tot = Object.values(row).reduce((s, n) => s + n, 0) || 1;
+  return Object.entries(row).map((e, i) => [...e, i]).sort((p, q) => q[1] - p[1] || q[2] - p[2]).slice(0, top).map(([ask, n]) => ({ ask, n, share: Math.round((n / tot) * 1000) / 1000 })); // a tie goes to the one asked most lately
+}
+/** the visitor asked Verse `text`: score the guess made after the last ask, learn last -> this, and guess what comes next. Returns
+ *  { hit: true | false | null (no guess was made), guess: the ask it now expects next or null }. Pure on b. */
+export function heardAsk(b, text) {
+  const A = b.mind.asks, k = askKey(text); if (!k) return { hit: null, guess: A.guess };
+  let hit = null; if (A.guess) { hit = A.guess === k; A.guessed++; if (hit) A.hits++; }
+  if (A.last && A.last !== k) {
+    const row = A.next[A.last] || (A.next[A.last] = {}), n = (row[k] || 0) + 1; delete row[k]; row[k] = n; // kept last: the latest follower
+    const ks = Object.keys(row); if (ks.length > MAX_NEXT) { ks.sort((p, q) => row[p] - row[q]); delete row[ks[0] === k ? ks[1] : ks[0]]; } // the rarest follower goes, never the one just learned
+    const keys = Object.keys(A.next); if (keys.length > MAX_ASK_KEYS) { const lone = keys.filter((x) => x !== A.last).sort((p, q) => Object.values(A.next[p]).reduce((s, n) => s + n, 0) - Object.values(A.next[q]).reduce((s, n) => s + n, 0))[0]; delete A.next[lone]; }
+  }
+  A.last = k; A.heard++;
+  const n = nextAfter(b, k, 1)[0]; A.guess = n ? n.ask : null;
+  return { hit, guess: A.guess };
+}
+const hvCache = new Map(); const hvOf = (w) => { let v = hvCache.get(w); if (!v) { if (hvCache.size > 2000) hvCache.clear(); hvCache.set(w, (v = hypervector(w))); } return v; };
+/** how often the visitor asked `line` right after their last ask: its share of what followed, 0..1. Pure on b. */
+export function habitOf(b, line) {
+  const A = b.mind.asks, row = A.last ? A.next[A.last] : null, k = askKey(line);
+  return row && row[k] ? row[k] / (Object.values(row).reduce((t, n) => t + n, 0) || 1) : 0;
+}
+/** how much the brain wants to suggest a line now: its habit share (times 2) plus how near the line's words are to its goals (the
+ *  visitor's own recent asks, by strength, at most 0.5). Pure on b. */
+export function askScore(b, line) {
+  const s = 2 * habitOf(b, line), G = b.mind.goals; if (!G.length) return s;
+  let best = 0; for (const w of cleanWords(askKey(line))) { if (w.length < 3) continue; const hv = hvOf(w); for (const g of G) { const c = b.concepts.hv[g.idx]; if (!c) continue; const v = hvSim(hv, c) * g.strength; if (v > best) best = v; } }
+  return s + Math.max(0, best) * 0.5;
+}
+/** the empty ask box's suggestions, ranked by the brain: the asks it expects next, most likely first (even ones that fell out of the
+ *  recent list), then the candidates in the page's own order. candidates: lines in the order the page shows them (newest first). Pure. */
+export function suggestAsks(b, candidates, top = 5) {
+  const seen = new Set(), out = [];
+  for (const line of nextAfter(b, b.mind.asks.last || '').map((x) => x.ask).concat((candidates || []).map(String))) { const k = askKey(line); if (!k || seen.has(k)) continue; seen.add(k); out.push(line); if (out.length >= top) break; }
+  return out;
+}
+/** the asks layer to keep on the device (the visitor's own asks, never sent). Pure. */
+export const asksOf = (b) => ({ last: b.mind.asks.last, next: b.mind.asks.next, guessed: b.mind.asks.guessed, hits: b.mind.asks.hits, heard: b.mind.asks.heard });
+/** put kept asks back (wrong shapes are ignored). Returns true when they were. */
+export function loadAsks(b, k) {
+  if (!k || typeof k !== 'object' || !k.next || typeof k.next !== 'object') return false;
+  const next = {}; for (const [a, row] of Object.entries(k.next).slice(0, MAX_ASK_KEYS)) { const ka = askKey(a); if (!ka || !row || typeof row !== 'object') continue; const r = {}; for (const [c, n] of Object.entries(row).slice(0, MAX_NEXT)) { const kc = askKey(c); if (kc && Number.isFinite(n) && n > 0) r[kc] = Math.min(1e6, Math.round(n)); } if (Object.keys(r).length) next[ka] = r; }
+  const A = b.mind.asks; A.next = next; A.last = askKey(k.last) || null; const num = (x) => (Number.isFinite(x) && x >= 0 ? Math.round(x) : 0);
+  A.guessed = num(k.guessed); A.hits = Math.min(num(k.hits), A.guessed); A.heard = num(k.heard);
+  const n = A.last ? nextAfter(b, A.last, 1)[0] : null; A.guess = n ? n.ask : null; return true;
+}
+
 // ---- knowledge kept between visits: numbers and the visitor's own words, on their device ----------------------------------------------
 /** the slow learners as plain arrays (for lib/brain-store.js). Pure. */
 export function knowledgeOf(b) {
   const r2 = (v) => Math.round(v * 1000) / 1000;
   return { v: 1, q: Array.from(b.will.q, r2), hebb: Array.from(b.memory.w, r2), centroids: b.gestures.c.map((c) => c.map(r2)), counts: b.gestures.n.slice(), pref: Array.from(b.mind.pref, r2),
-    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, creature: b.creature ? b.creature.mean.map(r2) : undefined, hearing: b.ear ? countsOf(b.ear) : undefined, painter: b.painter ? programsOf(b.painter) : undefined, garden: b.gardener ? gardenOf(b.gardener) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES) };
+    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, creature: b.creature ? b.creature.mean.map(r2) : undefined, hearing: b.ear ? countsOf(b.ear) : undefined, painter: b.painter ? programsOf(b.painter) : undefined, garden: b.gardener ? gardenOf(b.gardener) : undefined, grower: b.grower ? grammarsOf(b.grower) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES), asks: asksOf(b) };
 }
 /** put kept knowledge back into a new brain (wrong shapes are ignored, so an old record never breaks a new brain). Returns what was restored. */
 export function loadKnowledge(b, k) {
@@ -233,6 +293,8 @@ export function loadKnowledge(b, k) {
   if (b.ear && loadCounts(b.ear, k.hearing)) done.push('hearing'); // the ear's melody counts, intervals and lengths only (lib/brain-hearing.js)
   if (b.painter && loadPrograms(b.painter, k.painter)) done.push('painter'); // the programs that paint its look, numbers only (lib/brain-painter.js)
   if (b.gardener && loadGarden(b.gardener, k.garden)) done.push('gardener'); // how it tends each patch of tissue, numbers only (lib/brain-gardener.js)
+  if (b.grower && loadGrammars(b.grower, k.grower)) done.push('grower'); // the grammars its plant grows from, numbers only (lib/brain-grower.js)
+  if (loadAsks(b, k.asks)) done.push('asks'); // what the visitor asks next, their own asks on their own device
   if (Array.isArray(k.procedures)) { const p = k.procedures.filter((x) => x && typeof x.ctx === 'string' && x.genome && typeof x.genome === 'object' && Number.isFinite(x.fitness)).slice(0, MAX_PROCEDURES); if (p.length || !k.procedures.length) { b.mind.procedures = p; done.push('procedures'); } }
   if (Array.isArray(k.episodes)) { b.mind.episodes = k.episodes.filter((e) => e && Array.isArray(e.key) && e.key.length === REGIONS * 2 + 2 && Number.isInteger(e.action) && e.action >= 0 && e.action < ACTIONS.length && Number.isFinite(e.gain)).slice(-MAX_EPISODES); if (!b.mind.episodes.length && k.episodes.length) b.mind.episodes = []; else done.push('episodes'); }
   return done;

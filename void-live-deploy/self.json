@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,84 +545,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T14:16:45Z",
-   "subject": "test: the Verse self page check brings the body into view before the tap"
-  },
-  {
-   "at": "2026-10-29T14:13:31Z",
-   "subject": "Notebook: a note's [[links]] reach the stage"
-  },
-  {
-   "at": "2026-10-29T14:09:16Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:07:20Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T14:06:35Z",
-   "subject": "Keep main's volatile files and parity pages as they are"
-  },
-  {
-   "at": "2026-10-29T14:06:16Z",
+   "at": "2026-10-29T16:05:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:05:49Z",
-   "subject": "Regenerate deps.json (main was behind node tools/deps.mjs)"
+   "at": "2026-10-29T16:04:16Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:05:13Z",
-   "subject": "The will's lap want names where its item lives, so the coder reads instead of searching"
+   "at": "2026-10-29T16:03:50Z",
+   "subject": "Card replies count on the heat map by the card's family"
   },
   {
-   "at": "2026-10-29T14:03:59Z",
-   "subject": "fanfic: the hidden featured link has no address until it has a title"
+   "at": "2026-10-29T16:01:10Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:00:37Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+   "at": "2026-10-29T16:00:24Z",
+   "subject": "Versus: count controls on the rendered page, name a pinned target as the target"
   },
   {
-   "at": "2026-10-29T13:54:54Z",
-   "subject": "fanfic: a featured story on the archive home, with why it was picked"
+   "at": "2026-10-29T15:59:03Z",
+   "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
   },
   {
-   "at": "2026-10-29T13:51:28Z",
-   "subject": "Regenerate the parity pages: main's were behind the tower gate (the parity test fails on main without this)"
+   "at": "2026-10-29T15:57:45Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T13:50:56Z",
-   "subject": "Keep the parity pages of other sites as main has them"
+   "at": "2026-10-29T15:56:48Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T13:50:34Z",
-   "subject": "fanfic: site news and a dated news archive, pinned first and linked from the footer"
+   "at": "2026-10-29T15:55:49Z",
+   "subject": "Lab: log caught errors and mark safe lines (more)"
   },
   {
-   "at": "2026-10-29T13:46:53Z",
-   "subject": "Tower gate: every floor measured against its live site (3 slices)"
+   "at": "2026-10-29T15:55:35Z",
+   "subject": "Lab: log caught errors, guard the saved-memory parse, mark safe innerHTML lines"
   },
   {
-   "at": "2026-10-29T13:46:39Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+   "at": "2026-10-29T15:54:56Z",
+   "subject": "team chat: mark the invite dialog line for Verse's review"
   },
   {
-   "at": "2026-10-29T13:46:27Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
+   "at": "2026-10-29T15:54:49Z",
+   "subject": "team chat: mark Verse's review false positives with their reasons; drop 'password' from the invite text"
   },
   {
-   "at": "2026-10-29T13:44:54Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-10-29T15:53:27Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T13:43:53Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+   "at": "2026-10-29T15:53:25Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T13:43:27Z",
-   "subject": "fanfic: terms of use, disclaimer and credits pages, opened from the footer"
+   "at": "2026-10-29T15:53:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:52:41Z",
+   "subject": "Close an incident when the shards it failed pass on a later commit"
+  },
+  {
+   "at": "2026-10-29T15:52:36Z",
+   "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
+  },
+  {
+   "at": "2026-10-29T15:51:39Z",
+   "subject": "Team chat: Verse's own workspace where agents are members and Verse keeps them busy"
+  },
+  {
+   "at": "2026-10-29T15:48:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:48:26Z",
+   "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
   }
  ],
  "builders": {
@@ -858,14 +858,15 @@
   "source": "verse"
  },
  "tower": {
-  "target": "sycophanthex.com",
+  "target": "onlineconverter.com",
   "since": "2026-10-29",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
-   "nameunit.com",
-   "wheelroot.com",
-   "onlineconverter.com"
+   "serverdiscounter.com",
+   "howsecureismypassword.net",
+   "wheeloutlet.com"
   ],
   "beaten": 0,
-  "total": 1266
+  "total": 1267
  }
 }

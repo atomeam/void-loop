@@ -98,7 +98,7 @@ test('fault 5: Still open starts with the tower target, then the next smallest s
 
 // card 5's note: the lists the model copies come from the record, and the record's gemma date stands
 test('card 5: the own-card facts give Fixed and Still open from my records, target first, record date kept', () => {
-  const c = cardFacts(selfJson);
+  const c = cardFacts(selfJson, { note: CARD5 }); // this note dates the gemma switch, so the record's date goes to the model (a note that does not: tools/own-card.test.mjs)
   const fixed = c.slice(c.indexOf('Fixed:'), c.indexOf('Still open:')), open = c.slice(c.indexOf('Still open:'));
   assert.ok(c.indexOf('Fixed:') >= 0 && c.indexOf('Fixed:') < c.indexOf('Still open:'), 'Fixed comes before Still open');
   assert.match(fixed, /#1406/); assert.match(fixed, /#1410/); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
@@ -108,8 +108,8 @@ test('card 5: the own-card facts give Fixed and Still open from my records, targ
   assert.ok(next.every((i, k) => i > open.indexOf('sycophanthex.com') && (k === 0 || i > next[k - 1])), 'the next smallest follow the target, in order');
   assert.match(c, /My record dates the gemma move 2026-10-25[^\n]*my record stands: say so, and do not call the date a fault/);
   assert.match(OWN_CARD_RULE, /Own only a fault my records confirm/);
-  assert.equal(selfFacts({ self: selfJson }).includes('copy these two lists'), false, 'only a note about my own card gets the lists');
-  assert.ok(selfFacts({ self: selfJson }, { card: true }).startsWith(c), 'and there they come first');
+  assert.equal(selfFacts({ self: selfJson }).includes('my records (they are added under your sentences'), false, 'only a note about my own card gets the lists');
+  assert.ok(selfFacts({ self: selfJson }, { card: true, note: CARD5 }).startsWith(c), 'and there they come first');
   assert.doesNotMatch(c, /…/, 'no row is broken mid-word');
   assert.equal(wholeClause('value-drift tracker: how prices move over time, grouped by kind, a kind flagged to…'), 'value-drift tracker: how prices move over time, grouped by kind');
   assert.equal(wholeClause('act skill: asks route to the act skill instead of no answer (`POST /api/answer` "my email" is…'), 'act skill: asks route to the act skill instead of no answer');
@@ -143,7 +143,8 @@ test('the card 5 note, end to end: self route, whole note, my own facts, no clai
   const all = (seen.messages || []).map((m) => m.content).join('\n');
   assert.match(all, /smallest-first order behind sycophanthex\.com/, 'the note reached the model whole');
   assert.match(all, /my last card/); assert.match(all, /2026-10-25, commit 630e666fb/); assert.match(all, /my tower target/);
-  assert.match(all, /copy these two lists/); assert.match(all, /my record stands/);
+  assert.match(all, /do not copy them/); assert.match(all, /my record stands/);
+  assert.match(res.answer, /\n\nFixed:\n2026-10-29[\s\S]*\n\nStill open:\nsycophanthex\.com/, 'the lists come from my records, under the lead');
   assert.equal(res.self, true);
   assert.deepEqual(res.sources, []);
   assert.doesNotMatch(res.answer, /noted this correction|do not have feelings|I am a program/);

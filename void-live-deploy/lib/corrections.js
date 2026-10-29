@@ -21,7 +21,10 @@ export function makeCorrection(input, now = Date.now()) {
   const i = input || {}, text = clean(i.text, CORRECTIONS.textMax);
   if (!text) return null;
   const at = new Date(Number.isFinite(+now) ? +now : Date.now()).toISOString();
-  return { at, ask: clean(i.ask, CORRECTIONS.askMax), skill: skillName(i.skill), wanted: clean(i.wanted, 60), text };
+  // `family`: the family of the card a reply came from, kept only when no skill is known (a calculator or article card answers without a router
+  // skill). It places the record on the heat map; it is never a skill, so it drafts no fix (hotEntry and Suggest fix read the skill alone).
+  const family = skillName(i.skill) ? '' : skillName(i.family);
+  return { at, ask: clean(i.ask, CORRECTIONS.askMax), skill: skillName(i.skill), wanted: clean(i.wanted, 60), text, ...(family ? { family } : {}) };
 }
 
 const store = (s) => { try { return s || globalThis.localStorage || null; } catch (_) { return null; } };
@@ -106,14 +109,16 @@ export function familyMap(fam) {
 
 /**
  * The correction log: the kept corrections grouped by the family of the skill that answered, biggest group first (ties by name), each group's
- * newest correction first. A correction whose skill is unknown (or not in the families file) goes to the group "unplaced". Counts are counts of
+ * newest correction first. A correction with no skill but a `family` (a reply from a card no router skill answered) goes to that family when the
+ * families file has it. A correction whose skill is unknown (or not in the families file) goes to the group "unplaced". Counts are counts of
  * what is kept; nothing is estimated. Pure.
  */
 export function groupByFamily(list, fam) {
   const map = familyMap(fam), groups = new Map();
+  const fams = new Map(((fam && fam.families) || []).filter((f) => f && f.id).map((f) => [String(f.id), { id: String(f.id), name: String(f.name || f.id) }]));
   for (const c of Array.isArray(list) ? list : []) {
     if (!c || typeof c.text !== 'string' || !c.text) continue;
-    const f = c.skill && map.get(c.skill) || { id: 'unplaced', name: 'Not placed in a family' };
+    const f = c.skill && map.get(c.skill) || !c.skill && c.family && fams.get(c.family) || { id: 'unplaced', name: 'Not placed in a family' };
     if (!groups.has(f.id)) groups.set(f.id, { id: f.id, name: f.name, items: [] });
     groups.get(f.id).items.unshift(c);
   }

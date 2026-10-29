@@ -100,11 +100,6 @@ export const CATALOG = {
     ['email-events', 'Events', 'Events added from your email', T('email|gmail'), T('from (your )?(e-?mail|inbox)'), null, ['Google Calendar', 'outlook.live.com']],
     ...COMMON,
   ],
-  '/prizes/': [
-    ['spin', 'Games', 'Spin a wheel for prizes', T('spin|wheel'), T('Spin'), null, 'core'],
-    ['rewards', 'Games', 'Crypto rewards and gambling', T('rewards|crypto|gambling'), T('Crypto Rewards'), null, 'core'],
-    ['account', 'Accounts', 'An account that keeps your things on every device', T('sign ?in|log ?in|create (an |your )?account'), T('Blockchain|Crypto Rewards'), T('localStorage'), 'core'],
-  ],
   '/recipes/': [
     ['volume', 'Content', 'As much content as the original (the counts are not compared yet)', null, null, null, 'core', 'unreviewed'],
     ['search', 'Find', 'Search recipes by name', T('search'), T('By name'), null, 'core'],

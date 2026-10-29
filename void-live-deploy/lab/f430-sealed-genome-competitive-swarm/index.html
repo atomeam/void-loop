@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin:0; background:#0a0a0f; color:#e0e0ff; font-family: system-ui, sans-serif; overflow:hidden; }
+  #stage { position:relative; width:100vw; height:100vh; }
+  canvas { display:block; background:#111122; }
+  #hud { position:absolute; top:12px; left:12px; background:rgba(20,20,40,0.85); padding:12px; border-radius:8px; font-size:13px; max-width:280px; z-index:10; }
+  #hud button { margin:4px 4px 0 0; padding:4px 8px; background:#334; color:#fff; border:1px solid #556; border-radius:4px; cursor:pointer; }
+  #hud button:hover { background:#445; }
+  .tile { display:inline-block; margin:2px; padding:4px 6px; background:#223; border-radius:4px; font-size:11px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>sealed-genome-competitive-swarm · Verse lab</title>
+<meta name="description" content="Novel combination: A multi-agent competitive swarm on a shared canvas where each agent is a local tiny decision kernel (weight vector acting as MLP-like force">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="sealed-genome-competitive-swarm · Verse lab">
+<meta property="og:description" content="Novel combination: A multi-agent competitive swarm on a shared canvas where each agent is a local tiny decision kernel (weight vector acting as MLP-like force">
+<meta property="og:url" content="https://a-to-mind.com/lab/f430-sealed-genome-competitive-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f430-sealed-genome-competitive-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="hud">
+    <strong>Sealed Genome Competitive Swarm</strong><br>
+    <span id="stats">Agents: 0 | Avg fitness: 0 | Sealed: 0</span><br>
+    <div id="tiles"></div>
+    <button id="inject">Inject Energy</button>
+    <button id="reset">Reset Swarm</button>
+    <button id="clear">Clear Seals</button>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">sealed-genome-competitive-swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

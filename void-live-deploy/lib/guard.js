@@ -40,7 +40,9 @@ export const LIMITS = {
   passkey: { rpm: 60, body: 20000 },
   mine: { rpm: 120, body: 900200 },
   publish: { rpm: 20, body: 40000 }, // a paid Verse's public page (/@name)
+  members: { rpm: 20, body: 8000 }, // paid Verse: a member's idea (functions/api/members.js; its own daily limit is in lib/members.js)
   gumroad: { rpm: 120, body: 50000 },
+  team: { rpm: 240, body: 16000 }, // the team chat (functions/api/team.js): a page polls a channel every few seconds; every write needs the owner or an agent key the owner made, with per-agent rates in the route
   handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
   rehearsal: { rpm: 10, body: 500 }, // owner-only: seed and clean the rehearsal's stand-in reply (functions/api/rehearsal.js)
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)

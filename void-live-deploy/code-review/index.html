@@ -130,10 +130,10 @@ jobs:
     </div>
     <div class="plan">
       <h3>Verse Pro</h3>
-      <div class="price" id="price">Paid Verse</div>
+      <div class="price" id="price">MultiVerse</div>
       <ul>
         <li>Code Review Pro included, up to 5 keys</li>
-        <li>Plus everything else paid Verse adds: more model answers, private skills, a higher cap on actions you confirm</li>
+        <li>Plus everything else MultiVerse adds: more model answers, private skills, a higher cap on actions you confirm</li>
       </ul>
       <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" rel="noopener">Get Verse Pro</a>
     </div>
@@ -272,7 +272,7 @@ jobs:
     if (what.length < 3) { supsay('Say what broke first.'); return; }
     fetch('/api/support', { method: 'POST', headers: supauth(), body: JSON.stringify({ what: what }) }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); }).then(function (x) {
       if (x.s === 201) { document.getElementById('supwhat').value = ''; supsay('Sent as ' + x.j.id + '. The owner answers here; press My reports to see it.'); }
-      else supsay(x.s === 401 ? 'That key is not a paying one (or you are not signed in to a paid Verse).' : (x.j && x.j.error) || 'Could not send it just now.');
+      else supsay(x.s === 401 ? 'That key is not a paying one (or you are not signed in on MultiVerse).' : (x.j && x.j.error) || 'Could not send it just now.');
     }).catch(function () { supsay('Could not reach Verse just now.'); });
   });
   document.getElementById('supmine').addEventListener('click', function () {
@@ -285,7 +285,7 @@ jobs:
         if (t.answer) p.appendChild(el('div', null, 'Answer: ' + t.answer));
         supout.appendChild(p);
       });
-    }).catch(function () { supsay('Paste a paying key, or sign in to a paid Verse, to see your reports.'); });
+    }).catch(function () { supsay('Paste a paying key, or sign in on MultiVerse, to see your reports.'); });
   });
 })();
 </script>

@@ -35,6 +35,7 @@
   input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
   .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
   .sr { position: absolute; left: -9999px; }
+  .lead { font-size: 15px; margin: 2px 0 4px; } .tries { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 10px; font-size: 14px; } .tries a { padding: 6px 0; }
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
   .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
   .chead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; } .chead h3 { flex: 1; font-size: 15px; overflow-wrap: anywhere; } .count { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; } .count.over { color: var(--bad); font-weight: 700; }
@@ -56,8 +57,10 @@
 </head>
 <body>
 <main>
-  <h1>Kanban with WIP limits and swimlanes</h1>
+  <h1>Plan team work on a shared to-do board (kanban with WIP limits)</h1>
+  <p class="lead" id="lead">A to-do board a team passes around by link, with a cap on how many tasks are in progress at once.</p>
   <p class="intro">Several boards, work-in-progress limits that warn when a column is full, swimlanes by label or person, labels, due dates, checklists, comments, assignees, an archive and filters. Bring in a Trello export; share a board as a link. No server, no account.</p>
+  <nav class="tries" id="tries" aria-label="Open a ready board"><span class="note">Try a ready board:</span> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJWb2x1bnRlZXIgZ3JvdXAiLCJjb2x1bW5zIjpbeyJuYW1lIjoiVG8gZG8iLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6IkZpbmQgYSB2ZW51ZSJ9LHsidGl0bGUiOiJQcmludCBmbHllcnMifV19LHsibmFtZSI6IkRvaW5nIChtYXggMykiLCJ3aXAiOjMsImNhcmRzIjpbeyJ0aXRsZSI6IlJpbmcgdGhlIHNwb25zb3JzIn1dfSx7Im5hbWUiOiJEb25lIiwid2lwIjowLCJjYXJkcyI6W119XX1dfQ">A volunteer group</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJOZXdzcm9vbSIsImNvbHVtbnMiOlt7Im5hbWUiOiJJZGVhcyIsIndpcCI6MCwiY2FyZHMiOlt7InRpdGxlIjoiQ291bmNpbCBidWRnZXQifSx7InRpdGxlIjoiTG9jYWwgdGVhbSB3aW5zIn1dfSx7Im5hbWUiOiJXcml0aW5nIChtYXggMykiLCJ3aXAiOjMsImNhcmRzIjpbeyJ0aXRsZSI6IlNjaG9vbCBjbG9zdXJlcyJ9XX0seyJuYW1lIjoiRWRpdGluZyIsIndpcCI6MCwiY2FyZHMiOltdfSx7Im5hbWUiOiJQdWJsaXNoZWQiLCJ3aXAiOjAsImNhcmRzIjpbXX1dfV19">A newsroom</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJEZXYgdGVhbSIsImNvbHVtbnMiOlt7Im5hbWUiOiJCYWNrbG9nIiwid2lwIjowLCJjYXJkcyI6W3sidGl0bGUiOiJTaWduLXVwIHBhZ2UifV19LHsibmFtZSI6IkluIHByb2dyZXNzIChtYXggMykiLCJ3aXAiOjMsImNhcmRzIjpbeyJ0aXRsZSI6IkZpeCB0aGUgbG9naW4gYnVnIn1dfSx7Im5hbWUiOiJSZXZpZXciLCJ3aXAiOjAsImNhcmRzIjpbXX0seyJuYW1lIjoiRG9uZSIsIndpcCI6MCwiY2FyZHMiOltdfV19XX0">A dev team</a></nav>
   <div id="app"></div>
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/kanban/simple/">Simple kanban board</a> <a href="/kanban/quick/">Quick kanban board</a> <a href="/calendar/">Calendar</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.</footer>

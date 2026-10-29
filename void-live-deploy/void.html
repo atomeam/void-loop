@@ -542,7 +542,8 @@
     .vread { position: sticky; top: 0; float: right; z-index: 2; margin: -10px -12px 4px 10px; width: 36px; height: 36px; border-radius: 50%; padding: 0;
       display: grid; place-items: center; cursor: pointer; color: #cfd8ff; background: rgba(20,22,34,.72); border: 1px solid rgba(255,255,255,.14);
       transition: background .2s ease, color .2s ease, transform .15s ease; }
-    .vtell { display: block; margin-top: 10px; font-size: var(--fs-s); color: var(--ink-3); text-decoration: none; } .vtell:hover { color: var(--ink); text-decoration: underline; }
+    .vreply { margin-top: 16px; } .vreply .vreply-h { font-size: var(--fs-s); font-weight: 700; color: var(--ink); margin: 0 0 6px; }
+    .vreply .v-talk p { margin: 0 0 6px; } .vreply .v-who { color: var(--ink-3); } .vreply .sub { margin-top: 4px; }
     .vtell-box { margin-top: 10px; } .vtell-box textarea { width: 100%; font: inherit; background: rgba(255,255,255,.06); color: inherit; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 8px 10px; resize: vertical; margin-bottom: 6px; }
     .vread:hover { background: rgba(60,66,100,.8); color: #fff; }
     .vread:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
@@ -2360,16 +2361,31 @@ say('nothing selected to remove');
     // so a button copied by innerHTML += still works
     const READ_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" fill="currentColor" stroke="none"/>'
       + '<g class="vread-on"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.2 6.4a7.6 7.6 0 0 1 0 11.2"/></g><g class="vread-off"><rect x="15" y="9" width="2.4" height="6" rx=".6" fill="currentColor" stroke="none"/><rect x="19" y="9" width="2.4" height="6" rx=".6" fill="currentColor" stroke="none"/></g></svg>';
-    // telling Verse about any card (owner, 2026-10-16: "reply to Verse's replies and cards so it can flex its persistent memory and
-    // evolve with the conversation when corrected"): the owner's link under each card opens a box; the reply goes to
-    // /api/voice-reply with the ask, the card's title and what it said, and Verse answers under it in its own words and keeps the lesson
+    // the reply section on every card (owner, 2026-10-16: "reply to Verse's replies and cards so it can flex its persistent memory and evolve
+    // with the conversation when corrected"; owner, 2026-10-29: "the reply to what i said or correct me section should be on every card"):
+    // lib/card-reply.js puts "Reply to what I said, or correct me" at the end of every card. The owner's words go to /api/voice-reply with the
+    // ask, the card's title and what it said, and Verse answers under it and keeps the lesson; anyone else's stay on this device, in the self
+    // card's correction log (lib/corrections.js). The self card keeps its own Talk to me and Correct me.
     function ownerKey() { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } } // hoisted: no TDZ
+    var replyLib = null; // var, not let: a card can open before this line has run, and keepTell then waits for the import below
+    import('/lib/card-reply.js').then((m) => { replyLib = m; if (vpageEl) keepTell(vpageEl); }).catch(() => {});
     function keepTell(el) {
-      if (!ownerKey() || el.querySelector(':scope > .vtell, :scope > .vtell-box') || el.querySelector('[data-v-reply]')) return;
-      const a = document.createElement('a'); a.href = '#'; a.className = 'vtell'; a.textContent = 'Tell Verse'; el.appendChild(a);
+      if (!el || !replyLib) return;
+      const card = () => { const title = ((el.querySelector('h2') || {}).textContent || '').trim(); return { ask: el._ask || '', title, said: cardWords(el).replace(title, '').trim(), routed: routeOfCard(el), family: replyLib.familyOfNote(noteOfCard(el)) }; };
+      const net = (u, o) => fetch(u, o);
+      replyLib.bindReply(el, document, { owner: ownerKey, storage: localStorage, fetchFn: net, card });
+      if (!replyLib.mountReply(el, document, { owner: ownerKey(), fetchFn: net, card })) replyLib.placeReply(el);
     }
     // which route answered this card, from the page's own loop log (LOOP_KEY, this browser only; nothing new is kept): a skill file
     // ('skill:<name>'), the automation fix ('void.fix'), or the page's own reply kinds. A correction then says which skill took it.
+    // the loop-log note of the ask that opened this card ('calc', 'article'), for the heat-map family of a reply (lib/card-reply.js familyOfNote).
+    // Read on its own: routeOfCard, which feeds the owner's misroute queue, is left as it is.
+    function noteOfCard(el) {
+      let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
+      const since = (el._at || 0) - 3000, near = log.filter((x) => x && x.domain === 'void.page' && Date.parse(x.t) >= since);
+      const hit = near.find((x) => el._ask && x.ask === el._ask) || near[0];
+      return hit && typeof hit.note === 'string' ? hit.note : '';
+    }
     function routeOfCard(el) {
       let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
       const since = (el._at || 0) - 3000, hit = log.filter((x) => x && Date.parse(x.t) >= since).pop();
@@ -2377,27 +2393,6 @@ say('nothing selected to remove');
       if (hit.domain === 'void.fix') return { skill: 'automation-fix', via: 'void.fix' };
       const m = /^skill:([a-z][a-z0-9-]{1,40})$/.exec(String(hit.note || ''));
       return m ? { skill: m[1], via: 'skill' } : null;
-    }
-    function tellV01D(el, a) {
-      const box = document.createElement('div'); box.className = 'vtell-box';
-      const ta = document.createElement('textarea'); ta.maxLength = 600; ta.rows = 2; ta.placeholder = 'Was this wrong, or could it be better? Tell me.'; ta.setAttribute('aria-label', 'What you want to tell Verse about this card');
-      const send = document.createElement('button'); send.type = 'button'; send.className = 'tr-copy'; send.textContent = 'Send';
-      const said = document.createElement('div'); said.setAttribute('aria-live', 'polite');
-      for (const ev of ['pointerdown', 'keydown']) ta.addEventListener(ev, (e) => e.stopPropagation());
-      box.append(ta, send, said); a.replaceWith(box); ta.focus();
-      const title = (el.querySelector('h2') || {}).textContent || '', words = cardWords(el).replace(title, '').trim();
-      send.addEventListener('click', async () => {
-        const text = ta.value.trim(); if (!text || send.disabled) return;
-        send.disabled = true; send.textContent = '…';
-        let line = 'That did not reach me. Try again in a moment.';
-        try {
-          const r = await fetch('/api/voice-reply', { method: 'POST', headers: { authorization: 'Bearer ' + ownerKey(), 'content-type': 'application/json' }, body: JSON.stringify({ about: { ask: el._ask || '', title, said: words.slice(0, 800), ...(routeOfCard(el) ? { routed: routeOfCard(el) } : {}) }, text }) });
-          if (r.ok) { const j = await r.json(); line = (j.answer || 'I could not answer just now; I kept what you said and will read it when I next reflect.') + (j.misroute ? ' I have queued a fix so my ' + j.misroute.skill + ' skill stops taking asks like this.' : ''); ta.value = ''; }
-          else if (r.status === 401) line = 'Only my owner can tell me things here.';
-        } catch (_) {}
-        const p = document.createElement('p'); p.className = 'v-me'; const b = document.createElement('span'); b.style.color = 'var(--ink-3)'; b.textContent = 'Verse: '; p.append(b, line); said.appendChild(p);
-        send.disabled = false; send.textContent = 'Send';
-      });
     }
     function keepRead(el) {
       if (!('speechSynthesis' in window) || el.querySelector(':scope > .vread')) return;
@@ -2488,7 +2483,6 @@ say('nothing selected to remove');
       if (pageTail && pageTail.ask === currentAsk) el._tail = pageTail.html;
       stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el);
       new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el); }).observe(el, { childList: true, subtree: true });
-      el.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('a.vtell'); if (!t) return; e.preventDefault(); e.stopPropagation(); tellV01D(el, t); });
       el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.vread'); if (!b) return; e.preventDefault(); e.stopPropagation(); readCard(el, b); });
       requestAnimationFrame(() => el.classList.add('on'));
       // what it covers steps aside, once it is up and again whenever it grows (an answer arriving); not on a phone-wide card
@@ -5255,7 +5249,7 @@ say('nothing selected to remove');
       say('publishing');
       let r = null; try { r = await meFetch('/api/publish', 'POST', { handle, look: voidLook, cards }); } catch (_) {}
       if (!r) { say("couldn't reach the server, nothing published"); return; }
-      if (r.status === 402) { say('publishing is part of a paid Verse'); return; }
+      if (r.status === 402) { say('publishing is part of MultiVerse'); return; }
       if (r.status === 401) { say('say “sign in” first, then publish'); return; }
       if (r.status === 409) { say('@' + handle + ' is taken, try another name'); return; }
       if (r.status !== 200) { say(r.body && r.body.error ? r.body.error : "couldn't publish"); return; }
@@ -5350,7 +5344,7 @@ say('nothing selected to remove');
     }
     async function paidLine() { // what paid Verse costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
-      return vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
+      return vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
     }
     async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
@@ -5361,7 +5355,7 @@ say('nothing selected to remove');
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Verse, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
-      const line = vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
+      const line = vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
       if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the Verse store</a>'; }
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
@@ -5994,6 +5988,18 @@ say('nothing selected to remove');
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
       'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'menu', 'undo', 'what do you want to be', 'what do you think of yourself', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
     let hintList = [], hintSel = -1;
+    // Verse Brain thinks for the ask box (lib/brain-host.js): one brain for the page, started in idle time so it never slows the first
+    // paint. It hears every ask (the asks before it was ready are queued here), learns what you ask next, and ranks the suggestions.
+    const earlyAsks = [], queueAsk = (e) => { const t = e && e.detail && e.detail.text; if (t && earlyAsks.length < 24) earlyAsks.push({ text: t, at: Date.now() }); };
+    document.addEventListener('void:ask', queueAsk);
+    let brainHost = null;
+    (window.requestIdleCallback || ((f) => setTimeout(f, 1200)))(() => {
+      import('/lib/brain-host.js').then((m) => {
+        brainHost = m.ensureHost({ early: earlyAsks.splice(0), self: fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null) });
+        document.removeEventListener('void:ask', queueAsk);
+      }).catch(() => { document.removeEventListener('void:ask', queueAsk); });
+    }, { timeout: 4000 });
+    const brainRank = (h) => { try { return brainHost ? brainHost.rank(h) : 0; } catch (_) { return 0; } };
     function allHints() {
       const out = CORE_HINTS.slice();
       if (ownerToken()) out.push('show the board', 'update yourself'); // owner-only lines show only to the owner
@@ -6039,12 +6045,12 @@ say('nothing selected to remove');
       hintSel = -1;
       if (!q) {
         if (!askBoxTouched || document.activeElement !== input) { hintList = []; hintsEl.classList.remove('on'); hintsEl.innerHTML = ''; return; }
-        hintList = recentAsks();
+        hintList = brainHost ? (() => { try { return brainHost.suggest(recentAsks(12), 5); } catch (_) { return recentAsks(); } })() : recentAsks(); // the asks the brain expects next first, then the newest
         hintsEl.innerHTML = hintList.map((h, i) => '<div role="option" data-i="' + i + '">' + esc(h) + '</div>').join('');
         hintsEl.classList.toggle('on', hintList.length > 0);
         return;
       }
-      hintList = allHints().map((h) => [h, scoreHint(h, q)]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 5).map((x) => x[0]);
+      hintList = allHints().map((h) => [h, scoreHint(h, q)]).filter((x) => x[1] > 0).map((x) => x.concat(x[1] ? brainRank(x[0]) : 0)).sort((a, b) => b[1] - a[1] || b[2] - a[2]).slice(0, 5).map((x) => x[0]); // equal matches: the brain's order (habit, then its goals)
       hintsEl.innerHTML = hintList.map((h, i) => {
         const at = h.toLowerCase().indexOf(q);
         const body = at >= 0 ? esc(h.slice(0, at)) + '<b>' + esc(h.slice(at, at + q.length)) + '</b>' + esc(h.slice(at + q.length)) : esc(h);

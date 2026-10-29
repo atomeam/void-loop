@@ -11,7 +11,10 @@ export const SITE = 'https://a-to-mind.com';
 
 /** one row per tool page: path (as lib/toolkit.js TOOLS names it), name, what it does (true of the page), the phrases people search, the setting
  *  the link takes (an EntryPoint urlTemplate with one placeholder, or none) and the common asks shown as links on the page */
-export const PAGES = Object.freeze([
+// one row per path: a floor row (lib/tool-sites.js) for a page this table already describes by hand keeps the hand row, which comes first
+// (the calculator floor, Versus job mvoxrtv8, names /calculator/ too)
+const firstOfEach = (rows) => rows.filter((r, i) => rows.findIndex((q) => q.path === r.path) === i);
+export const PAGES = Object.freeze(firstOfEach([
   { path: '/photos/', name: 'Photo tools: compress, convert, edit, strip EXIF', does: 'Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.',
     asks: ['compress image online', 'convert png to webp', 'photo editor online', 'crop photo online', 'remove exif data from photo', 'image compressor no upload', 'compress images in bulk to zip'],
     action: { template: '/photos/?tab={tab}', input: 'tab' },
@@ -128,6 +131,12 @@ export const PAGES = Object.freeze([
     asks: ['fan fiction', 'fanfic archive', 'post a story', 'write fan fiction', 'read fanfic', 'fan fiction writing community', 'story chapters and reviews', 'writing streak'],
     action: { template: '/fanfic/?v=search&q={search_term_string}', input: 'search_term_string', search: true },
     links: [['Post a story', '/fanfic/?new=story'], ['Start a fandom', '/fanfic/?new=fandom'], ['Most recent stories', '/fanfic/?v=recent'], ['Random story', '/fanfic/?v=random'], ['Writing Room', '/fanfic/?v=room'], ['Writing glossary', '/fanfic/?v=glossary']] },
+  { path: '/team/', name: 'Team chat: Verse and its agents at work', does: 'A team chat where AI agents are members: channels anyone in the team starts, threads, @mentions with an Activity list, reactions, search, presence and unread marks. Verse hands every idle agent the next job on its build queue as a thread, the agent answers in it and closes it, and Verse hands it the next. Agents join with a key from the owner; nothing is seeded.',
+    asks: ['team chat', 'agent workspace', 'chat for ai agents', 'team messaging channels', 'threads and mentions', 'keep agents busy', 'agent job queue'] },
+  { path: '/learn-to-draw/', name: 'Learn to draw: a drawing course for absolute beginners', does: 'A drawing course you do on screen: line, shape, proportion and shading in 8 short drills (a straight line, a steady curve, a circle by eye, a square, finding the middle, drawing from memory, a value scale, a smooth gradient), each scored from what you draw. A drill of the day, a streak, and your first try beside your highest score. No account, no cookies; it works offline.',
+    asks: ['learn to draw', 'drawing course', 'drawing for beginners', 'drawing exercises', 'how to draw a straight line', 'draw a circle freehand', 'shading practice', 'daily drawing practice'],
+    action: { template: '/learn-to-draw/?d={drill}', input: 'drill' },
+    links: [['Draw a straight line', '/learn-to-draw/?d=line'], ['Draw a circle by eye', '/learn-to-draw/?d=circle'], ['Find the middle', '/learn-to-draw/?d=half'], ['Draw from memory', '/learn-to-draw/?d=memory'], ['Value scale', '/learn-to-draw/?d=values'], ['Smooth gradient', '/learn-to-draw/?d=gradient']] },
   { path: '/metronome/', name: 'Metronome', does: 'A free online metronome from 20 to 400 BPM: tap tempo, every time signature from 2/4 to 12/8, an accent on each beat you can set strong, medium, soft or silent, subdivisions (eighths, triplets, sixteenths, swing), nine sounds, a voice count, a visual beat and pendulum, a practice timer, a speed trainer, silent bars and setlists. No account, no ads; it works offline.',
     asks: ['metronome', 'online metronome', 'metronome 120 bpm', 'tap tempo metronome', 'metronome with accents', 'metronome 6/8', 'free metronome no ads'],
     action: { template: '/metronome/?bpm={bpm}', input: 'bpm' },
@@ -162,7 +171,7 @@ export const PAGES = Object.freeze([
   ...SITE_PAGES.map((p) => ({ path: p.path, name: p.name, does: p.does, asks: p.asks, ...(p.links && p.links.length ? { links: p.links, action: p.action || { template: p.path + '?tool={tool}', input: 'tool' } } : {}) })),
   { path: '/tools/', name: 'Every Verse tool', does: 'Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.',
     asks: ['free online tools', 'online utilities', 'web tools without ads', 'tools that work offline', 'converter and generator tools'] },
-]);
+]));
 
 /** the row for a path, or null. Pure. */
 export const pageOf = (path) => PAGES.find((p) => p.path === path) || null;
