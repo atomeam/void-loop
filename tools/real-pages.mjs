@@ -165,6 +165,15 @@ export const SPECS = {
   '/generators/make/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate rolls the table again'); await t.download('#download', /\.html$/i); await t.share('#share'); },
   '/generators/story/': async (t) => { await t.fill('#idea', 'a lighthouse keeper finds a door in the sea'); await t.click('#write'); await t.waitText('#story', /\w{20,}/, 30000); t.ok((await t.text('#story')).split(/\s+/).length > 40, 'an opening is written'); await t.download('#dl', /\.txt$/i); },
   '/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
+  // Verse raps (2026-10-29): a topic in, a rap written for it by the free answer model (two verses and a hook, the rhymes lettered), performed by
+  // Rap it yourself (beat and lights), copied, and shared with the whole rap in the link
+  '/rap/': async (t) => {
+    await t.fill('#topic', 'a cat who runs the night shift'); await t.click('#write');
+    const got = await t.waitText('#rap', /verse 1[\s\S]*hook[\s\S]*verse 2/i, 60000); t.ok(/verse 1[\s\S]*hook[\s\S]*verse 2/i.test(got), 'a rap with two verses and a hook is written for the topic');
+    t.ok(/\d+ bars in \d parts · \d+ of \d+ bars end on a rhyme/.test(await t.text('#rap')), 'the bars and rhymes are counted');
+    await t.clickText('Rap it yourself'); await t.p.waitForTimeout(3500); t.ok((await t.p.locator('.rp-bar.on').count()) === 1, 'a bar lights up on its measure over the beat'); await t.clickText('Stop');
+    await t.copies('button.rp-btn >> text="Copy the lyrics"', 'Verse 1'); await t.share('#share');
+  },
   // the scored drawing course (wheelroot.com assimilated, 2026-10-29): begin opens the first drill, a stroke drawn on the sheet is scored 0 to 100 on Done, and the drawing travels in a link
   '/learn-to-draw/': async (t) => {
     await t.click('#begin'); await t.p.waitForTimeout(200); t.ok((await t.text('#dName')).trim().length > 0, 'Begin opens a drill: ' + (await t.text('#dName')).trim());
