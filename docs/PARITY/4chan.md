@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: 4chan (https://www.4chan.org/)
-- Verse: /boards/ (image boards, tower gate 12 of 16)
+- Verse: /boards/ (image boards, tower gate 1 of 16)
 - Live scan: 2026-10-28, HTTP 403, page title "Verification Required"
 - History: [docs/HISTORY/4chan.md](../HISTORY/4chan.md)
 
