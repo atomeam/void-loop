@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,20 +550,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T16:08:13Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:07:22Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-29T16:10:31Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
    "at": "2026-10-29T16:06:40Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T16:06:24Z",
-   "subject": "Refresh generated files after the main merge: families, guide, self, hand-off gaps"
   },
   {
    "at": "2026-10-29T16:05:25Z",
@@ -572,6 +564,10 @@
   {
    "at": "2026-10-29T16:04:16Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T16:04:10Z",
+   "subject": "Wants card made plain: definitions, changed this lap, blocked, next pick, inbox workstreams"
   },
   {
    "at": "2026-10-29T16:03:50Z",
@@ -590,8 +586,16 @@
    "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
   },
   {
+   "at": "2026-10-29T15:57:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T15:57:45Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:57:00Z",
+   "subject": "Money/GPA asks: stop waiting for skills the ask does not need, ask for card-share's graph at once"
   },
   {
    "at": "2026-10-29T15:56:48Z",
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-29T15:53:20Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T15:52:41Z",
-   "subject": "Close an incident when the shards it failed pass on a later commit"
   }
  ],
  "builders": {
