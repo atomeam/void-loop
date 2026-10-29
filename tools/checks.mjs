@@ -364,6 +364,7 @@ for (const [name, file] of [
   ['terminal', 'terminal.test.mjs'],
   ['ledger-proof', 'ledger-proof.test.mjs'],
   ['ledger-today', 'ledger-today.test.mjs'],
+  ['will-last', 'will-last.test.mjs'],
   ['approval-gate', 'approval-gate.test.mjs'],
   ['churn', 'churn.test.mjs'],
   ['coder-route', 'coder-route.test.mjs'],

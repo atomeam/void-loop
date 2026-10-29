@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 947,
+ "counted": 948,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -207,6 +207,13 @@
   },
   {
    "file": "lib/skill-confidence.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 37,
+   "tests": 1
+  },
+  {
+   "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
    "dependants": 37,
@@ -616,7 +623,7 @@
    "skills": 3,
    "direct": 0,
    "dependants": 69,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/ics.js",
@@ -3492,7 +3499,8 @@
     "lib/tower.js",
     "lib/lap.js",
     "lib/churn.js",
-    "lib/will-guard.js"
+    "lib/will-guard.js",
+    "lib/will-last.js"
    ],
    "importedBy": []
   },
@@ -9593,6 +9601,50 @@
     "functions/api/will.js"
    ]
   },
+  "lib/will-last.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/will.js",
+    "skills/growth.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/weather.js",
+    "lib/about-skill.js",
+    "lib/bench-asks.js",
+    "lib/built-detail.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/about-skill.js",
+    "skills/cartoon.js",
+    "skills/growth-tree.js",
+    "skills/guide.js",
+    "skills/merges.js",
+    "skills/mini/growthtree.js",
+    "skills/own-parts.js",
+    "skills/showcase.js",
+    "skills/walker.js"
+   ]
+  },
   "lib/wordcount.js": {
    "imports": [
     "skills/util.js"
@@ -10827,6 +10879,7 @@
   "skills/growth.js": {
    "imports": [
     "lib/probe-log.js",
+    "lib/will-last.js",
     "lib/ledger-today.js",
     "lib/ladder.js",
     "lib/better.js",
