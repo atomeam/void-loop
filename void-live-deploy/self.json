@@ -537,13 +537,33 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-29T09:24:48Z",
+   "subject": "Ask libs first: lanes wait for the four libs every ask needs"
+  },
+  {
+   "at": "2026-10-29T09:20:55Z",
+   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-29T09:19:15Z",
+   "subject": "Fan fiction: stories can be parts of a series"
+  },
+  {
+   "at": "2026-10-29T09:08:24Z",
+   "subject": "Regenerate the hand-off and parity docs for the people card"
+  },
+  {
+   "at": "2026-10-29T09:03:29Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-29T09:03:16Z",
    "subject": "The made-up people card shows the page's own people"
@@ -602,26 +622,6 @@
   },
   {
    "at": "2026-10-29T08:41:56Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T08:41:44Z",
-   "subject": "Password page: the stage card makes the length on the page, both ways"
-  },
-  {
-   "at": "2026-10-29T08:41:41Z",
-   "subject": "Password page: its stage card makes the length on the page, and the card opens the page on that length"
-  },
-  {
-   "at": "2026-10-29T08:41:36Z",
-   "subject": "Verse loop: task, Queue job mvoxrsct (versus: colorcanon.com): Versus: colorca"
-  },
-  {
-   "at": "2026-10-29T08:38:57Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T08:38:29Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
