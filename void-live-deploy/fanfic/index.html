@@ -181,6 +181,8 @@
   .toc { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 16px 26px; }
   .toc select { width: auto; min-width: 220px; flex: 0 1 360px; }
   .chapter { padding: 8px 26px 30px; }
+  .fileacts { margin: 4px 0 0; } .hint { font-size: 13px; color: var(--ink-2); margin: 6px 0 0; }
+  .preview { margin: 14px 0 12px; padding: 4px 18px 18px; border: 1px solid rgb(var(--key) / .25); border-radius: 12px; } .preview .psum { color: var(--ink-2); margin: 0 0 14px; }
   .chapter h3 { font-weight: 300; font-size: 24px; letter-spacing: -.02em; margin: 18px 0 18px; color: var(--ink); }
   .prose { font-family: var(--serif); font-size: 19px; line-height: 1.75; color: #e6e9f4; max-width: 36em; }
   .prose p { margin: 0 0 1.05em; overflow-wrap: anywhere; } .prose blockquote { margin: 0 0 1.05em; padding-left: 16px; border-left: 2px solid rgb(var(--key) / .4); color: var(--ink-2); }
@@ -556,6 +558,9 @@
       <fieldset class="f"><legend>Warnings</legend><div class="radios" id="stWarnings"></div><small>Tick each one that applies. Readers can hide every story with a warning.</small></fieldset>
       <label class="f"><span>Summary</span><textarea class="short" name="summary" maxlength="300" placeholder="One or two lines a reader sees first"></textarea></label>
       <label class="f"><span>Chapter 1</span><textarea name="text" required></textarea></label>
+      <div class="acts fileacts"><button type="button" id="stOpen">Open a file</button><input type="file" id="stFile" hidden><button type="button" id="stUndo" hidden>Undo open</button><button type="button" id="stPrev" aria-expanded="false" aria-controls="stPreview">Preview</button></div>
+      <p class="hint">A .docx, .txt, .html or .md file opens here, on this device. Nothing is sent until you press Post story.</p>
+      <section class="chapter preview" id="stPreview" hidden aria-label="Preview"><p class="hint">Preview: what readers see once it is up.</p><h3></h3><p class="psum"></p><div class="prose"></div></section>
       <p class="count" data-count></p>
       <p class="bot" data-bot></p>
       <div class="acts"><button class="go" type="submit">Post story</button><a class="btn" href="/fanfic/?notice=format" data-go>How to format chapters</a></div>

@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import * as F from '../void-live-deploy/lib/fanfic.js';
 import { LIMITS, cleanText, excerpt } from '../void-live-deploy/lib/boards.js';
+import zlib from 'node:zlib';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy');
 const DAY = 864e5;
@@ -446,4 +447,64 @@ test('a typed fandom name: the one here already in any case, else a new code tha
   const app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
   assert.equal((app.match(/F\.fandomFor\(/g) || []).length, 1, 'both forms open a fandom through one helper (openFandom)');
   assert.equal((app.match(/await openFandom\(form, /g) || []).length, 2, 'Start a fandom and the post form');
+});
+
+// ---- a chapter from a file (the post form's "Open a file") ----
+/** a zip of { name: text } entries, deflated, as Word writes a .docx (central directory and all), for the file tests. */
+function zipOf(entries) {
+  const local = [], central = []; let at = 0;
+  for (const [name, text] of Object.entries(entries)) {
+    const raw = Buffer.from(text), data = zlib.deflateRawSync(raw), nm = Buffer.from(name), crc = zlib.crc32(raw);
+    const h = Buffer.alloc(30); h.writeUInt32LE(0x04034b50, 0); h.writeUInt16LE(20, 4); h.writeUInt16LE(8, 8); h.writeUInt32LE(crc, 14); h.writeUInt32LE(data.length, 18); h.writeUInt32LE(raw.length, 22); h.writeUInt16LE(nm.length, 26);
+    const c = Buffer.alloc(46); c.writeUInt32LE(0x02014b50, 0); c.writeUInt16LE(20, 4); c.writeUInt16LE(20, 6); c.writeUInt16LE(8, 10); c.writeUInt32LE(crc, 16); c.writeUInt32LE(data.length, 20); c.writeUInt32LE(raw.length, 24); c.writeUInt16LE(nm.length, 28); c.writeUInt32LE(at, 42);
+    local.push(h, nm, data); central.push(c, nm); at += 30 + nm.length + data.length;
+  }
+  const cd = Buffer.concat(central), e = Buffer.alloc(22); e.writeUInt32LE(0x06054b50, 0); e.writeUInt16LE(central.length / 2, 8); e.writeUInt16LE(central.length / 2, 10); e.writeUInt32LE(cd.length, 12); e.writeUInt32LE(at, 16);
+  return Buffer.concat([...local, cd, e]);
+}
+const DOCX_XML = '<?xml version="1.0"?><w:document xmlns:w="x"><w:body><w:p><w:r><w:t>The ship left</w:t></w:r><w:r><w:t xml:space="preserve"> the dock &amp; nobody waved.</w:t></w:r></w:p>'
+  + '<w:p><w:r><w:t>Line one</w:t><w:br/><w:t>line two</w:t></w:r></w:p><w:p></w:p><w:p><w:r><w:t>The end.</w:t></w:r></w:p></w:body></w:document>';
+const inflate = (b) => zlib.inflateRawSync(b);
+
+test('a .docx opens as its text: each paragraph a paragraph, a line break a line, entities read, no markup', async () => {
+  const t = await F.fileText('Shore Leave.docx', zipOf({ '[Content_Types].xml': '<Types/>', 'word/document.xml': DOCX_XML }), inflate);
+  assert.equal(t, 'The ship left the dock & nobody waved.\n\nLine one\nline two\n\nThe end.');
+  assert.equal(F.docxText(DOCX_XML), t);
+});
+
+test('a .txt opens as it is (line ends made plain, a byte order mark dropped); .md too', async () => {
+  const enc = (s) => new TextEncoder().encode(s);
+  assert.equal(await F.fileText('a.txt', enc('\ufeffOne.\r\n\r\n\r\n\r\nTwo.   \r\n')), 'One.\n\nTwo.');
+  assert.equal(await F.fileText('a.md', enc('# Title\n\nText.')), '# Title\n\nText.');
+});
+
+test('an .html page opens as text: blocks are paragraphs, scripts and styles gone, entities read, nothing of the markup kept', async () => {
+  const html = '<!doctype html><html><head><title>x</title><style>p{}</style></head><body><script>alert(1)</script><h1>Shore&nbsp;Leave</h1><p>It was <b>late</b>&hellip;</p><p>One<br>two &lt;3 &#8212; &#x2019;</p><!-- note --></body></html>';
+  const t = await F.fileText('story.html', new TextEncoder().encode(html));
+  assert.equal(t, 'Shore Leave\n\nIt was late\u2026\n\nOne\ntwo <3 \u2014 \u2019');
+  assert.doesNotMatch(t, /alert|style|<b>/);
+  assert.equal(F.htmlText('<p>a</p><p>b</p>'), 'a\n\nb');
+});
+
+test('a file with no text this form can read gives nothing: a binary file, a zip that is not a .docx, a broken zip, a file over the limit', async () => {
+  assert.equal(await F.fileText('old.doc', new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 0, 0, 0, 1])), '');
+  assert.equal(await F.fileText('a.zip', zipOf({ 'readme.txt': 'hello' }), inflate), '');
+  assert.equal(await F.fileText('a.docx', new Uint8Array([0x50, 0x4b, 3, 4, 1, 2, 3]), inflate), '');
+  assert.equal(await F.fileText('big.txt', new Uint8Array(F.FILE_MAX + 1).fill(65)), '');
+  assert.equal(await F.zipEntry(zipOf({ 'word/document.xml': 'x' }), 'word/other.xml', inflate), null);
+});
+
+test('a title from a file name: its words, the type and the dashes gone', () => {
+  assert.equal(F.titleOfFile('shore_leave-draft.docx'), 'shore leave draft');
+  assert.equal(F.titleOfFile('Chapter One.txt'), 'Chapter One');
+  assert.equal(F.titleOfFile(''), '');
+});
+
+test('the post form opens a file and shows a preview, both on this device: the file input takes the types fileText reads, Preview draws with the story page\'s own paras()', () => {
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
+  for (const id of ['stOpen', 'stFile', 'stUndo', 'stPrev', 'stPreview']) assert.match(html, new RegExp('id="' + id + '"'), id);
+  assert.match(app, /file\.accept = F\.FILE_TYPES/);
+  assert.match(app, /paras\(box\.value, prose\)/, 'the preview is drawn as a story page draws a chapter');
+  assert.match(app, /new DecompressionStream\('deflate-raw'\)/);
+  assert.doesNotMatch(app.slice(app.indexOf('function fileAndPreview'), app.indexOf('async function viewPost')), /fetch\(|api\(/, 'opening a file sends nothing');
 });

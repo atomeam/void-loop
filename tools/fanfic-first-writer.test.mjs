@@ -8,6 +8,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import zlib from 'node:zlib';
 
 const site = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
@@ -116,6 +117,67 @@ test('a story post the boards refuse leaves the new fandom open, and the second 
     await page.click('#stForm button[type=submit]');
     await page.waitForFunction(() => /Posted\./.test(document.querySelector('#stForm [data-say]').textContent) || !document.getElementById('post').classList.contains('on'), null, { timeout: 30000 });
     assert.deepEqual(fake.s.writes.map((w) => w.do + ':' + (w.code || w.b)), ['board:ficorigina', 'post:ficorigina', 'post:ficorigina']);
+  });
+});
+
+/** a zip of { name: text } entries, deflated, as Word writes a .docx (central directory and all), for the file tests. */
+function zipOf(entries) {
+  const local = [], central = []; let at = 0;
+  for (const [name, text] of Object.entries(entries)) {
+    const raw = Buffer.from(text), data = zlib.deflateRawSync(raw), nm = Buffer.from(name), crc = zlib.crc32(raw);
+    const h = Buffer.alloc(30); h.writeUInt32LE(0x04034b50, 0); h.writeUInt16LE(20, 4); h.writeUInt16LE(8, 8); h.writeUInt32LE(crc, 14); h.writeUInt32LE(data.length, 18); h.writeUInt32LE(raw.length, 22); h.writeUInt16LE(nm.length, 26);
+    const c = Buffer.alloc(46); c.writeUInt32LE(0x02014b50, 0); c.writeUInt16LE(20, 4); c.writeUInt16LE(20, 6); c.writeUInt16LE(8, 10); c.writeUInt32LE(crc, 16); c.writeUInt32LE(data.length, 20); c.writeUInt32LE(raw.length, 24); c.writeUInt16LE(nm.length, 28); c.writeUInt32LE(at, 42);
+    local.push(h, nm, data); central.push(c, nm); at += 30 + nm.length + data.length;
+  }
+  const cd = Buffer.concat(central), e = Buffer.alloc(22); e.writeUInt32LE(0x06054b50, 0); e.writeUInt16LE(central.length / 2, 8); e.writeUInt16LE(central.length / 2, 10); e.writeUInt32LE(cd.length, 12); e.writeUInt32LE(at, 16);
+  return Buffer.concat([...local, cd, e]);
+}
+const DOCX_XML = '<?xml version="1.0"?><w:document xmlns:w="x"><w:body><w:p><w:r><w:t>The ship left</w:t></w:r><w:r><w:t xml:space="preserve"> the dock &amp; nobody waved.</w:t></w:r></w:p>'
+  + '<w:p><w:r><w:t>Line one</w:t><w:br/><w:t>line two</w:t></w:r></w:p><w:p></w:p><w:p><w:r><w:t>The end.</w:t></w:r></w:p></w:body></w:document>';
+
+test('a writer opens their .docx in the post form, sees it in Preview as readers will, and posts it: nothing is sent before the press', { skip: !exe && 'no browser here' }, async () => {
+  const fake = fakeBoards([{ code: 'ficdune', title: 'Dune', about: 'Fan fiction: Dune' }]);
+  await withPage(fake, async (page) => {
+    await page.waitForFunction(() => document.querySelector('#stFandom option[value="ficdune"]'));
+    await page.selectOption('#stFandom', 'ficdune');
+    await page.fill('#stForm [name=text]', 'what I typed first');
+    await page.setInputFiles('#stFile', { name: 'Shore_Leave.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: zipOf({ 'word/document.xml': DOCX_XML }) });
+    await page.waitForFunction(() => /^Opened: /.test(document.querySelector('#stForm [data-say]').textContent));
+    assert.equal(await page.inputValue('#stForm [name=text]'), 'The ship left the dock & nobody waved.\n\nLine one\nline two\n\nThe end.');
+    assert.equal(await page.inputValue('#stForm [name=title]'), 'Shore Leave', 'an empty title takes the file name');
+    assert.match(await say(page), /Opened: 13 words\. Check it in Preview/);
+    assert.match(await page.locator('#stForm [data-count]').innerText(), /13 words/, 'the count follows the opened text');
+    // Undo puts back what was typed, and opening again brings the file back
+    assert.equal(await page.locator('#stUndo').isVisible(), true);
+    await page.click('#stUndo');
+    assert.equal(await page.inputValue('#stForm [name=text]'), 'what I typed first');
+    await page.setInputFiles('#stFile', { name: 'Shore_Leave.docx', mimeType: 'application/octet-stream', buffer: zipOf({ 'word/document.xml': DOCX_XML }) });
+    await page.waitForFunction(() => /^Opened: /.test(document.querySelector('#stForm [data-say]').textContent));
+    // Preview: the title, then the chapter as paragraphs, drawn as the story page draws it
+    assert.equal(await page.locator('#stPreview').isVisible(), false);
+    await page.click('#stPrev');
+    assert.equal(await page.locator('#stPrev').getAttribute('aria-expanded'), 'true');
+    assert.equal(await page.locator('#stPreview h3').innerText(), 'Shore Leave');
+    assert.deepEqual(await page.locator('#stPreview .prose p').allInnerTexts(), ['The ship left the dock & nobody waved.', 'Line one\nline two', 'The end.']);
+    await page.fill('#stForm [name=title]', 'Shore Leave, Part One');
+    assert.equal(await page.locator('#stPreview h3').innerText(), 'Shore Leave, Part One', 'the preview follows the form');
+    assert.equal(fake.s.writes.length, 0, 'opening and previewing sent nothing');
+    await page.selectOption('#stForm [name=rating]', 'General');
+    await page.click('#stForm button[type=submit]');
+    await page.waitForFunction(() => /Posted\./.test(document.querySelector('#stForm [data-say]').textContent) || !document.getElementById('post').classList.contains('on'), null, { timeout: 30000 });
+    assert.equal(fake.s.writes.length, 1); assert.equal(fake.s.writes[0].sub, 'Shore Leave, Part One');
+    assert.match(fake.s.writes[0].body, /The ship left the dock & nobody waved\.\n\nLine one\nline two\n\nThe end\./);
+  });
+});
+
+test('a file with no text says so and leaves the box as it was', { skip: !exe && 'no browser here' }, async () => {
+  await withPage(fakeBoards([{ code: 'ficdune', title: 'Dune', about: 'Fan fiction: Dune' }]), async (page) => {
+    await page.waitForFunction(() => document.querySelector('#stFandom option[value="ficdune"]'));
+    await page.fill('#stForm [name=text]', 'keep me');
+    await page.setInputFiles('#stFile', { name: 'old.doc', mimeType: 'application/msword', buffer: Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0, 0, 0, 1]) });
+    await page.waitForFunction(() => /No text found/.test(document.querySelector('#stForm [data-say]').textContent));
+    assert.equal(await page.inputValue('#stForm [name=text]'), 'keep me');
+    assert.equal(await page.locator('#stUndo').isVisible(), false);
   });
 });
 
