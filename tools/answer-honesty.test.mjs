@@ -98,7 +98,7 @@ test('card 5: the own-card facts give Fixed and Still open from my records, targ
   assert.ok(c.indexOf('Fixed:') >= 0 && c.indexOf('Fixed:') < c.indexOf('Still open:'), 'Fixed comes before Still open');
   assert.match(fixed, /#1406/); assert.match(fixed, /#1410/); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
   assert.doesNotMatch(open, /#1406/, 'a shipped fix is never listed as open');
-  assert.match(open, /^Still open: 1\. sycophanthex\.com, the site I am fighting now \(my page for it is not built yet: it still needs its row in lib\/tool-sites\.js/);
+  assert.match(open, /^Still open: 1\. sycophanthex\.com, the site I am assimilating now \(my page for it is \/fanfic\/\)/);
   const next = selfJson.tower.next.map((s) => open.indexOf(s));
   assert.ok(next.every((i, k) => i > open.indexOf('sycophanthex.com') && (k === 0 || i > next[k - 1])), 'the next smallest follow the target, in order');
   assert.match(c, /My record dates the gemma move 2026-10-25[^\n]*my record stands: say so, and do not call the date a fault/);

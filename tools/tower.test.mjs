@@ -210,7 +210,7 @@ test('the card leads with the target: hero with logo, name and weight chips, thr
   const h = towerHtml(t, esc, { enter: false });
   const at = (m) => h.indexOf(m);
   assert.ok(at('<div class="tw-hero"') < at('<div class="tw-vs') && at('<div class="tw-vs') < at('<div class="tw-stack tower-stack"') && at('<div class="tw-stack tower-stack"') < at('<div class="tw-actions"') && at('<div class="tw-actions"') < at('<div class="tw-next"'), 'the order: hero, fight, aspects, actions, up next');
-  assert.match(heroHtml(cur, esc), /Now fighting[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
+  assert.match(heroHtml(cur, esc), /Now assimilating[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
   assert.match(chipsHtml({ size: { bytes: 700, scripts: 0, nodes: 20, routes: 1 }, weight: 900 }, esc), /700 B<\/b> · 1 KB club[\s\S]*<b>0<\/b> scripts[\s\S]*<b>20<\/b> elements[\s\S]*<b>1<\/b> route</);
   assert.match(chipsHtml({ size: null, weight: null }, esc), /not weighed yet/);
   assert.match(actionsHtml({ id: 'x', page: '/x/', url: 'https://x.com/' }, esc), /Open Verse's page[\s\S]*Side by side[\s\S]*Visit/); assert.match(actionsHtml({ id: 'x' }, esc), /No Verse page yet/);

@@ -89,14 +89,14 @@ export function readWishlist(text, n = 12) {
     .filter((x) => !isPrivate(x.item) && !isPrivate(x.why)).slice(0, n);
 }
 
-// the tower (lib/tower.js): the site Verse is fighting now (tower.target.json) and the next smallest unbeaten sites, in the tower's own
+// the tower (lib/tower.js): the site Verse is assimilating now (tower.target.json) and the next smallest unbeaten sites, in the tower's own
 // order, smallest first (owner's rule: every site ever made, smallest first). The answer engine lists what is still open from here,
 // so the target leads (owner, 2026-10-29: "the open asks are not in smallest-first order behind sycophanthex.com"). Pure.
 export function towerOf(floors, target, pages = {}, n = 3) {
   const fl = Array.isArray(floors) ? floors : [], open = fl.filter((f) => f && !f.beaten);
   const id = (target && target.id) || (open[0] && open[0].id); if (!id) return null;
   const t = fl.find((f) => f.id === id) || { id }, name = (f) => clip(f.site || f.id, 60);
-  const page = t.page || pages[t.id] ? '' : 'my page for it is not built yet: it still needs its row in lib/tool-sites.js and its LANE_PAGES entry in lib/tower.js';
+  const built = t.page || pages[t.id], page = built ? (typeof built === 'string' && built.startsWith('/') ? 'my page for it is ' + clip(built, 60) : '') : 'my page for it is not built yet: it still needs its row in lib/tool-sites.js and its LANE_PAGES entry in lib/tower.js';
   return { target: name(t), ...(target && target.since ? { since: clip(target.since, 10) } : {}), ...(page ? { page } : {}), next: open.filter((f) => f.id !== id).slice(0, n).map(name), beaten: fl.length - open.length, total: fl.length };
 }
 

@@ -45,6 +45,9 @@ const HAND_FLOORS = [
   // paint by number (owner, 2026-10-26: "build wherever fits"): a frontier site given a page of its own, so the floor can be measured and beaten
   { id: 'paint', site: 'heycolor.com', url: 'https://heycolor.com/', ask: 'paint by numbers', page: '/paint/', label: 'Paint by number', glyph: '◍', extra: [],
     held: 'Verse\'s page is not yet better than this site at painting a picture, whatever the gate rows read, so the floor stays in the queue until it is' },
+  // fan fiction (owner, 2026-10-29: "build the page", a clean archive like Sycophant Hex): the frontier's sycophanthex.com (Tranco 391,415), a
+  // phpBB story archive, assimilated by Verse's own /fanfic/, whose stories post through the boards; `aka` keeps any row the frontier floor had
+  { id: 'fan fiction', aka: 'sycophanthex.com', site: 'sycophanthex.com', url: 'https://sycophanthex.com/', ask: 'fan fiction archive', page: '/fanfic/', label: 'Fan fiction', glyph: '✎', rank: 391415, extra: [] },
   // emoji counts (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com is the
   // frontier's next fight — its own page says the Twitter stream that fed it is inactive and it now ranks the emoji copied from
   // Emojipedia. Verse counts copies of a closed list of emoji on /emojis/ and says exactly that, so no global feed is faked

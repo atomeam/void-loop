@@ -29,7 +29,6 @@ const KEPT = [
   ['/keep-it-running/', 'weekly', '0.8', [D + 'keep-it-running/index.html']],
   ['/full-stack-audit/', 'weekly', '0.8', [D + 'full-stack-audit/index.html']],
   ['/first-automation-setup/', 'weekly', '0.8', [D + 'first-automation-setup/index.html']],
-  ['/fanfic/', 'daily', '0.8', [D + 'fanfic/index.html']],
 ];
 // the /is-it/ pages are rendered by one function from one skill: a change to either is a change to every day
 const IS_IT_FILES = [D + 'functions/is-it/[what].js', D + 'skills/is-it.js'];

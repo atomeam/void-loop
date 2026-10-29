@@ -525,7 +525,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T03:43:50Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -533,12 +533,52 @@
  },
  "commits": [
   {
+   "at": "2026-10-29T05:09:35Z",
+   "subject": "Own-card lists: end a cut row at its last whole clause"
+  },
+  {
+   "at": "2026-10-29T05:05:44Z",
+   "subject": "Memory orbs: generated cards after bringing main in (node tools/refresh.mjs)"
+  },
+  {
+   "at": "2026-10-29T05:04:59Z",
+   "subject": "Memory orbs (F-321): agent-pushed fluid whose peaks become sealable orbs"
+  },
+  {
+   "at": "2026-10-29T05:04:25Z",
+   "subject": "Own-card notes: copy Fixed and Still open from the record, keep the record date"
+  },
+  {
+   "at": "2026-10-29T05:02:56Z",
+   "subject": "Fan fiction: list /fanfic/ in the sitemap generator and update the hand-off note"
+  },
+  {
+   "at": "2026-10-29T05:00:38Z",
+   "subject": "Incident: the browser suite failed on 12e44a29 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-29T04:57:30Z",
+   "subject": "Shard 3: an unknown name keeps its honest refusal, the answer route's name lookups go out with the search, and the self checks read the…"
+  },
+  {
+   "at": "2026-10-29T04:57:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-29T04:56:55Z",
    "subject": "Growth inbox: the card-fix rows name PR #1410"
   },
   {
    "at": "2026-10-29T04:56:22Z",
    "subject": "Answer cards: cite only what a source holds, read the whole note, own my card"
+  },
+  {
+   "at": "2026-10-29T04:55:53Z",
+   "subject": "Fan fiction: rebuild /fanfic/ as a dark, clean archive that starts empty"
+  },
+  {
+   "at": "2026-10-29T04:54:57Z",
+   "subject": "Shard 3: the owner's confirm line skips the visitor's mail card, and a price question that names Verse gets the membership line"
   },
   {
    "at": "2026-10-29T04:54:23Z",
@@ -567,42 +607,6 @@
   {
    "at": "2026-10-29T04:30:34Z",
    "subject": "Verse knows its answers already run on gemma, so the want closes"
-  },
-  {
-   "at": "2026-10-29T04:23:28Z",
-   "subject": "Better at coin, generators fill, kanban board and 2 more: 9 more ways of asking answered right — new phrases: “coin toss” now opens coin…"
-  },
-  {
-   "at": "2026-10-29T04:11:38Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T03:47:37Z",
-   "subject": "Incident: the browser suite failed on d390475f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T03:43:50Z",
-   "subject": "Spotter: 3 check(s) healed with no revert after d390475f7d8c097a4a1dce15fc3e0c22c5962605 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-29T03:17:05Z",
-   "subject": "Tower gate: nameunit,travel,gradient measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T03:14:00Z",
-   "subject": "Tower gate: nameunit,travel: co2.myclimate.org,travel: flightconnections.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T03:12:00Z",
-   "subject": "Incident: the browser suite failed on 8560b023 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T03:11:52Z",
-   "subject": "Versus card: one surpassed count, not two"
-  },
-  {
-   "at": "2026-10-29T03:11:21Z",
-   "subject": "Verse fixes its coin skill: learn to handle \"heads or tails\""
   }
  ],
  "builders": {
@@ -840,7 +844,7 @@
  "tower": {
   "target": "sycophanthex.com",
   "since": "2026-10-29",
-  "page": "my page for it is not built yet: it still needs its row in lib/tool-sites.js and its LANE_PAGES entry in lib/tower.js",
+  "page": "my page for it is /fanfic/",
   "next": [
    "nameunit.com",
    "wheelroot.com",
