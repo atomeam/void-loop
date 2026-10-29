@@ -9,20 +9,18 @@ export const WILL_LAST_SQL = "SELECT ask, state, note, at, updated FROM void_que
 const PR_RE = /https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+/;
 const SHIPPED = new Set(['done', 'live']);
 
-/** the why of a note: no claim, no try count, no "Verse chose this" tail (that is the want's own reason, not the run's), redacted, short */
+/** the why of a note: no claim, no try count, no "Verse chose this" tail (that is the want's own reason, not the run's), redacted; whole (the queue caps a note at 300 characters) */
 export function whyOf(note, scrub = (t) => t) {
   const parts = String(note || '').split(/\s+·\s+/).map((s) => s.trim()).filter((s) => s && !/^claimed by\b/i.test(s) && !/^tries \d+$/i.test(s) && !/^(?:verse|void) chose this:/i.test(s));
-  const w = String(scrub(parts.join(' · '))).replace(/^verse-job:\s*/i, '').replace(/\s+/g, ' ').trim();
-  return w.length > 160 ? w.slice(0, 159) + '…' : w;
+  return String(scrub(parts.join(' · '))).replace(/^verse-job:\s*/i, '').replace(/\s+/g, ' ').trim();
 }
 
 /** a queue row as the public sees it: { title, state, at, tries, shipped, pr, why }, or null. `scrub` redacts the why (the server passes redact). */
 export function lastRun(row, scrub) {
   if (!row || typeof row !== 'object' || !row.state) return null;
   const note = String(row.note || ''), m = note.match(/\btries (\d+)\b/), pr = (note.match(PR_RE) || [null])[0];
-  const title = String(row.ask || '').replace(/\s+/g, ' ').trim();
   return {
-    title: title.length > 100 ? title.slice(0, 99) + '…' : title,
+    title: String(row.ask || '').replace(/\s+/g, ' ').trim(),
     state: String(row.state),
     at: String(row.updated || row.at || ''),
     tries: m ? +m[1] : 0,

@@ -35,7 +35,7 @@ export async function onRequestGet({ request, env }) {
     if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; }
   } catch (_) { /* the ledger could not be read: the will as it was chosen */ }
   // the will's last run (lib/will-last.js, for the growth card's today view): the newest tried will job's title, state and the PR or the
-  // reason it did not ship. An open read of one queue row, cut to that public shape (its why redacted and capped); the rest of the queue
+  // reason it did not ship. An open read of one queue row, cut to that public shape (its why redacted); the rest of the queue
   // stays owner only (functions/api/queue.js). It costs one indexed SELECT per read, behind the same 60-second public cache.
   try { const last = lastRun(await env.DB.prepare(WILL_LAST_SQL).first(), redact); if (last) will.lastRun = last; } catch (_) { /* no queue table yet */ }
   // the public lap tracker (counts only): ?lap=1, or will.lap on every read

@@ -21,7 +21,7 @@ test('a row becomes the public shape: shipped with its PR, or why not, without t
   assert.equal(lastRun(ASIDE).why, 'untouched for 3.0 days, a newer want takes its place', 'the state is not said twice');
   assert.equal(lastRun({ ...SHIPPED, note: 'verse-job: PR https://github.com/someone/else/pull/9' }).pr, null, 'only a PR on Verse\'s own repo is linked');
   assert.equal(lastRun(null), null); assert.equal(lastRun({ ask: 'x' }), null);
-  assert.equal(whyOf('claimed by conductor · tries 2 · error: ' + 'x'.repeat(300)).length, 160, 'capped');
+  assert.equal(whyOf('claimed by conductor · tries 2 · error: busy'), 'error: busy', 'no claim, no try count');
   assert.match(whyOf('tries 1 · error: key AIza' + 'A'.repeat(35) + ' leaked', redact), /error: key \[redacted\] leaked/);
 });
 
