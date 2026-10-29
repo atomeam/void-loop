@@ -655,7 +655,7 @@ export const PROBES = Object.freeze({
       ['no account', /no account/i],
     ],
     askParts: {
-      'domain search': [['domain input', /Domain search/], ['check control', /Check/], ['a real registry check (RDAP)', /asks the registry itself \(RDAP/], ['the result line', /whether it is registered/]],
+      'domain search': [['domain input', /Domain search/], ['search control', /\bSearch\b/], ['a real registry check (RDAP)', /asks the registry of every ending[\s\S]{0,120}\bRDAP\b/], ['the result line', /whether it is registered/]],
       'tiered plans': [['Small plan', /Small/], ['Medium plan', /Medium/], ['Large plan', /Large/], ['Norwegian servers', /Servere i Norge/]],
       'capacity sizing': [['requests per second', /requests\/s/i], ['bandwidth in Mbps', /\bMbps\b/], ['monthly transfer', /GB\/month/], ['active workers', /active workers/]],
       'uptime and SLA': [['uptime', /uptime/i], ['downtime', /downtime/i], ['an SLA of 99.9%', /99\.9%/]],
