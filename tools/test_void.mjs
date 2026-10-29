@@ -5936,7 +5936,8 @@ try {
   if (want("\"remember that <fact>\" keeps one line (POST with the bearer), \"forget that <fact>\" removes")) { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
     // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
     await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
-    await T.p.reload(); await T.p.waitForTimeout(700);
+    // wait for the skills to be in after the reload (skillsUp), not a fixed 700 ms: ~300 skill files load before the first ask is routed
+    await T.p.reload(); await skillsUp(T.p);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -8236,12 +8237,13 @@ try {
     const m = await until(async () => { const x = await probe(M); return x && x.im && x.im.w > 40 ? x : null; }, 12000) || await probe(M);
     check('poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text', !!m && m.poster === '1' && m.display === 'grid' && m.art.h > m.art.w * 1.3 && Math.abs((m.art.x + m.art.w / 2) - (m.card.x + m.card.w / 2)) < 10 && m.art.w < m.card.w * 0.6 && m.type.y >= m.art.b - 2 && m.ptHits === false && m.numHits === false && !M.errors.length, JSON.stringify(m && { art: m.art, card: m.card, type: m.type, cols: m.cols }));
     await M.ctx.close();
-    // an answer with a long body: one title, and a small painting fills its art window
+    // an answer with a long body: one title, and a small painting fills its art window. The reply section (lib/card-reply.js, #1569) at the end of
+    // every card has its own section heading; it is not a second title, so it is left out of the count like the art window
     const A = await fresh(); const ANS = '## Visa test card\n\nA visa test card is a payment number that never works for real transactions. Merchants use it to rehearse a checkout, so no money moves and nobody is charged. It is safe to publish.';
     await A.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode) return rt.fallback(); return rt.fulfill(json({ answer: ANS, sources: [] })); });
     await A.ctx.route(/\/api\/card-art/, (rt) => rt.fulfill(json({ state: 'art', img: PX })));
     await A.ask('show me a visa test card', 2200); // "the site test card" is Verse's own card now (lib/own-parts.js); a visa test card still goes to the answer path
-    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
+    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art') && !h.closest('.vreply')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
     check('poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half', !!a && a.heads.length === 1 && /show me a visa test card/i.test(a.heads[0]) && a.im[0] >= a.art[0] - 6 && a.im[1] >= a.art[1] - 6 && a.pics === 1 && a.seals === 0 && !A.errors.length, JSON.stringify({ a, e: A.errors }));
     await A.ctx.close();
     // a text-only reply: the seal is the one picture, centred and filling the window
