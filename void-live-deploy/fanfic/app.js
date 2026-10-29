@@ -254,6 +254,7 @@ async function viewIndex() {
     tr.append(ic, main, n, p, when); return tr;
   }));
   $('fandomList').hidden = !boards.length; $('emptyArchive').hidden = !!boards.length;
+  drawFeatured(F.featuredOf(shown(topics)));
   idx = { list: shown(topics), empty: boards.length ? 'No stories yet. Open a fandom and post the first one.' : 'No stories yet. The first one posted shows here.' };
   drawIndexList();
   const st = F.statsOf(boards, topics);
@@ -261,6 +262,13 @@ async function viewIndex() {
   $('nPosts').textContent = st.posts.toLocaleString(); $('nAuthors').textContent = st.authors.toLocaleString();
 }
 
+// the featured story on the archive home (lib/fanfic.js featuredOf): hidden while no story qualifies, so an empty archive shows no empty panel
+function drawFeatured(f) {
+  $('featured').hidden = !f; if (!f) return;
+  const t = f.t, a = $('featLink'), by = $('featBy'), pen = link(t.author, href({ by: F.authorKey(t) })), fl = link(t.fandom, href({ f: t.board }));
+  a.textContent = t.title; a.href = href({ f: t.board, s: t.no }); pen.translate = false; fl.translate = false;
+  by.replaceChildren('by ', pen, ' in ', fl); $('featSum').textContent = t.summary || ''; $('featWhy').textContent = f.why;
+}
 // the index's story list, narrowed by the find field (lib/fanfic.js findIn: title, fandom and pen name, accents ignored)
 let idx = null;
 const findQ = () => (new URLSearchParams(location.search).get('find') || '').slice(0, 100);

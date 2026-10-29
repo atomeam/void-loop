@@ -187,6 +187,11 @@ export const DICT = {
   'The fonts already on your device: Iowan Old Style, Palatino or Georgia for stories. Nothing is downloaded for them.': 'Die Schriften, die schon auf deinem Gerät sind: Iowan Old Style, Palatino oder Georgia für Geschichten. Dafür wird nichts heruntergeladen.',
   'The person check when you post': 'Die Personenprüfung beim Veröffentlichen',
   'Cloudflare Turnstile when the site has it set up, or else a short puzzle that your device solves by itself.': 'Cloudflare Turnstile, wenn die Seite es eingerichtet hat, sonst ein kurzes Rätsel, das dein Gerät selbst löst.',
+  // the featured story on the archive home
+  'Featured story': 'Empfohlene Geschichte', 'Why it is featured:': 'Warum sie empfohlen ist:',
+  'The complete story with the most replies.': 'Die abgeschlossene Geschichte mit den meisten Antworten.', 'The story with the most replies.': 'Die Geschichte mit den meisten Antworten.',
+  'The complete story with the most replies (none have replies yet, so the newest).': 'Die abgeschlossene Geschichte mit den meisten Antworten (noch keine hat Antworten, daher die neueste).',
+  'The story with the most replies (none have replies yet, so the newest).': 'Die Geschichte mit den meisten Antworten (noch keine hat Antworten, daher die neueste).',
   // site news and the news archive
   'Site news and the news archive': 'Neuigkeiten und das Nachrichtenarchiv', News: 'Neuigkeiten', 'News archive': 'Nachrichtenarchiv', '29 October 2026': '29. Oktober 2026',
   "What is new in the archive, newest first. Talk about it on Verse's": 'Was im Archiv neu ist, das Neueste zuerst. Sprich darüber auf den',

@@ -297,6 +297,23 @@ test('the archive has Authors, Help and Random story, with the help desk as a pi
   for (const s of ['Random story', 'Help desk: questions and answers', 'Show every author', 'Authors A to Z']) assert.ok(de.includes("'" + s + "'"), 'German for ' + s);
 });
 
+test('the archive home features one story with why, never an 18+ or locked one, and shows nothing with no story', async () => {
+  const { featuredOf } = await import('../void-live-deploy/lib/fanfic.js');
+  assert.equal(featuredOf([]), null);
+  assert.equal(featuredOf([{ no: 1, nsfw: true, replies: 9 }, { no: 2, locked: true, replies: 9 }]), null, 'no 18+ or locked story is featured');
+  const a = { no: 1, replies: 3, bumped: 5 }, b = { no: 2, replies: 7, bumped: 1 }, c = { no: 3, replies: 1, bumped: 9, status: 'Complete' }, x = { no: 4, replies: 99, nsfw: true };
+  assert.deepEqual(featuredOf([a, b, x]), { t: b, why: 'The story with the most replies.' });
+  assert.deepEqual(featuredOf([a, b, c, x]), { t: c, why: 'The complete story with the most replies.' }, 'a complete story comes first');
+  assert.equal(featuredOf([{ no: 5, replies: 0, bumped: 1 }, { no: 6, replies: 0, bumped: 2 }]).t.no, 6, 'with no replies, the newest');
+  const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8');
+  assert.match(html, /<div class="glass feat" id="featured" aria-labelledby="featH" hidden>/, 'the panel starts hidden: an empty archive shows no empty panel');
+  // the story link gets its address with its title (app.js drawFeatured): a link with an address and no name is an unnamed control to a screen
+  // reader and to the tower gate's wider-use look (2026-10-29: the gate read 10.5 of 11 while it had one)
+  assert.match(html, /<a class="t" id="featLink" data-go translate="no"><\/a>/, 'the empty featured link has no address');
+  const DE = await import('../void-live-deploy/lib/fanfic-de.js');
+  for (const s of ['Featured story', 'Why it is featured:', 'The story with the most replies.', 'The complete story with the most replies (none have replies yet, so the newest).']) assert.notEqual(DE.de(s), s, 'German for ' + s);
+});
+
 test('the archive has site news, pinned first on the story lists, with a dated news archive in English and German', async () => {
   const html = fs.readFileSync(path.join(root, 'fanfic', 'index.html'), 'utf8'), app = fs.readFileSync(path.join(root, 'fanfic', 'app.js'), 'utf8');
   assert.match(app, /const NOTICES = \[\['news', 'Site news and the news archive'\],/, 'site news is the first pinned notice');

@@ -2,7 +2,7 @@
 // Run: node --test tools/notebook.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { linksOf, backlinksOf, dailyTitle, ensureDaily, missingOf, linkMention, tidyNotes, parseAsk, keyOf, cleanTitle, MAX_TITLE } from '../void-live-deploy/lib/notebook.js';
+import { linksOf, backlinksOf, dailyTitle, ensureDaily, missingOf, linkMention, tidyNotes, parseAsk, keyOf, cleanTitle, outlinksOf, padText, MAX_TITLE, MAX_TEXT } from '../void-live-deploy/lib/notebook.js';
 
 const N = (title, text = '') => ({ id: title, title, text, at: 0 });
 
@@ -68,4 +68,20 @@ test('the asks the notebook takes, and the look-alikes it leaves', () => {
   assert.deepEqual(parseAsk('Backlinks for Trip to Oslo?'), { backlinks: 'Trip to Oslo' }, 'a title keeps its case');
   assert.deepEqual(parseAsk('new note called Reading List'), { make: 'Reading List' });
   for (const a of ['daily notes app review', 'sticky note buy milk', 'buy a notebook computer', 'what am i missing', 'notepad: call the vet', 'note to self', 'what links to', 'open the daily']) assert.equal(parseAsk(a), null, a);
+});
+
+test('links out: the notes a note links to, in order, with the id of each made note and none for a note not made yet, never the note itself', () => {
+  const notes = [{ id: 'a', title: 'Alpha', text: 'see [[Gamma]], [[beta]] and [[Alpha]]', at: 0 }, { id: 'b', title: 'Beta', text: '', at: 0 }];
+  assert.deepEqual(outlinksOf(notes, notes[0]), [{ title: 'Gamma', id: '' }, { title: 'Beta', id: 'b' }]);
+  assert.deepEqual(outlinksOf(notes, notes[1]), []);
+  assert.deepEqual(outlinksOf(notes, null), []);
+  assert.deepEqual(outlinksOf(null, notes[0]).map((l) => l.id), ['', '']);
+});
+
+test('a note as notepad text: the title, then the text with each [[link]] as its plain title, cut to the most a note holds', () => {
+  assert.equal(padText({ title: 'Alpha', text: 'see [[Beta]] and [[Gamma Two]]\n\n' }), 'Alpha\nsee Beta and Gamma Two');
+  assert.equal(padText({ title: 'Only a title', text: '' }), 'Only a title');
+  assert.equal(padText({ title: '', text: 'just [[text]]' }), 'just text');
+  assert.equal(padText({ title: 'Long', text: 'x'.repeat(MAX_TEXT + 50) }).length, MAX_TEXT);
+  assert.equal(padText(null), '');
 });
