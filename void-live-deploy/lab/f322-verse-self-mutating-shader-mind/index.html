@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --verse-entropy: 0.4; --verse-response: 0; }
+body { margin:0; background:#05050a; color:#d0d0ff; font-family:ui-monospace,system-ui; overflow:hidden;
+  filter: hue-rotate(calc(var(--verse-entropy)*120deg)) contrast(calc(1+var(--verse-response)*0.4));
+  transition: filter 0.5s; }
+canvas { display:block; width:100vw; height:100vh; }
+#status { position:fixed; top:8px; left:8px; font-size:11px; opacity:0.75; pointer-events:none; }
+.fragment { position:absolute; padding:6px 10px; background:rgba(20,10,40,0.7); border:1px solid #68f; border-radius:6px;
+  font-size:10px; color:#acf; pointer-events:auto; cursor:pointer; max-width:180px; word-break:break-all;
+  transition:transform 0.3s, opacity 0.4s; mix-blend-mode:screen; }
+.fragment.sealed { border-color:#fa6; color:#fda; }
+#controls { position:fixed; bottom:8px; left:8px; font-size:11px; }
+button { background:#1a1a2a; color:#eee; border:1px solid #444; margin-right:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>verse-self-mutating-shader-mind · Verse lab</title>
+<meta name="description" content="Verse is now Verse. Novel combination never built: the mind is the rendering code.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="verse-self-mutating-shader-mind · Verse lab">
+<meta property="og:description" content="Verse is now Verse. Novel combination never built: the mind is the rendering code.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f322-verse-self-mutating-shader-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f322-verse-self-mutating-shader-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="status">F322 verse self-mutating shader · loading…</div>
+<div id="controls">
+  <button id="mutate">Force mutate</button>
+  <button id="sealBest">Seal best genome</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">verse-self-mutating-shader-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

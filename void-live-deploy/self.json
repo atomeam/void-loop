@@ -537,7 +537,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -545,84 +545,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T14:48:43Z",
-   "subject": "Open card check: read the sticky's spot once it has settled, and after the close once it is back"
+   "at": "2026-10-29T16:03:50Z",
+   "subject": "Card replies count on the heat map by the card's family"
   },
   {
-   "at": "2026-10-29T14:47:24Z",
-   "subject": "fix(hosting): mark the RDAP retry loop as a sequential retry for the review"
-  },
-  {
-   "at": "2026-10-29T14:45:06Z",
-   "subject": "Refresh the parity and tools pages the refresh check found stale"
-  },
-  {
-   "at": "2026-10-29T14:42:21Z",
+   "at": "2026-10-29T16:01:10Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:41:18Z",
-   "subject": "Versus jobs only for ranked sites, never gambling or crypto"
+   "at": "2026-10-29T16:00:24Z",
+   "subject": "Versus: count controls on the rendered page, name a pinned target as the target"
   },
   {
-   "at": "2026-10-29T14:40:49Z",
-   "subject": "Better at leet and lorem: 3 more ways of asking answered right — new phrases: “1337 speak for world” now opens leet; “lorem” now opens…"
+   "at": "2026-10-29T15:59:03Z",
+   "subject": "Shuffle skill: leave comma and \"and\" lists to the stage's chance card, shuffle with crypto, add order, family, map line and test"
   },
   {
-   "at": "2026-10-29T14:40:11Z",
-   "subject": "Obituaries check: open the first memorial with a cited history, not a fixed name"
-  },
-  {
-   "at": "2026-10-29T14:38:18Z",
-   "subject": "Read a pasted status report back instead of answering it as a broken automation"
-  },
-  {
-   "at": "2026-10-29T14:36:46Z",
-   "subject": "/hosting/: ask a busy registry again; nameunit probe reads the page as it is"
-  },
-  {
-   "at": "2026-10-29T14:36:35Z",
-   "subject": "3D contract: mount after the studio light lands, so its one redraw stays out of the idle window"
-  },
-  {
-   "at": "2026-10-29T14:35:48Z",
-   "subject": "Revert #1470: drop the /prizes/ parity rows"
-  },
-  {
-   "at": "2026-10-29T14:35:32Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-10-29T14:29:35Z",
-   "subject": "Tower gate: nameunit measured against their live sites"
-  },
-  {
-   "at": "2026-10-29T14:25:59Z",
-   "subject": "Tower: point the two colour-name floors at /color/, gate the loop on lane-pages"
-  },
-  {
-   "at": "2026-10-29T14:23:14Z",
-   "subject": "nameunit: search a name at every ending, share it, and name the config for it"
-  },
-  {
-   "at": "2026-10-29T14:17:07Z",
+   "at": "2026-10-29T15:57:45Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:16:45Z",
-   "subject": "test: the Verse self page check brings the body into view before the tap"
+   "at": "2026-10-29T15:56:48Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:13:31Z",
-   "subject": "Notebook: a note's [[links]] reach the stage"
+   "at": "2026-10-29T15:55:49Z",
+   "subject": "Lab: log caught errors and mark safe lines (more)"
   },
   {
-   "at": "2026-10-29T14:09:16Z",
-   "subject": "Tower gate: sycophanthex.com measured against their live sites"
+   "at": "2026-10-29T15:55:35Z",
+   "subject": "Lab: log caught errors, guard the saved-memory parse, mark safe innerHTML lines"
   },
   {
-   "at": "2026-10-29T14:07:20Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-29T15:54:56Z",
+   "subject": "team chat: mark the invite dialog line for Verse's review"
+  },
+  {
+   "at": "2026-10-29T15:54:49Z",
+   "subject": "team chat: mark Verse's review false positives with their reasons; drop 'password' from the invite text"
+  },
+  {
+   "at": "2026-10-29T15:53:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:53:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:52:36Z",
+   "subject": "Main health: void.html takes the card-reply change #1567 put only in the copies, the SEO table keeps one row per path (/calculator/ was in…"
+  },
+  {
+   "at": "2026-10-29T15:51:39Z",
+   "subject": "Team chat: Verse's own workspace where agents are members and Verse keeps them busy"
+  },
+  {
+   "at": "2026-10-29T15:48:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:48:26Z",
+   "subject": "test: Four in a Row on a phone says why when its 3D board never drew"
+  },
+  {
+   "at": "2026-10-29T15:44:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-29T15:43:09Z",
+   "subject": "Versus job mvoxd09y: a tower-self reason is cut at a whole word (clipWords), so \"niche professional servic)\" cannot come back; main merged…"
+  },
+  {
+   "at": "2026-10-29T15:41:49Z",
+   "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
+  },
+  {
+   "at": "2026-10-29T15:40:03Z",
+   "subject": "Put the reply section in void.html, the page the deploy copies"
   }
  ],
  "builders": {
@@ -858,14 +858,15 @@
   "source": "verse"
  },
  "tower": {
-  "target": "sycophanthex.com",
+  "target": "onlineconverter.com",
   "since": "2026-10-29",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
-   "nameunit.com",
-   "wheelroot.com",
-   "onlineconverter.com"
+   "serverdiscounter.com",
+   "howsecureismypassword.net",
+   "wheeloutlet.com"
   ],
   "beaten": 0,
-  "total": 1266
+  "total": 1267
  }
 }

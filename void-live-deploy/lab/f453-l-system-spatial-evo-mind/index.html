@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; background:#000; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#222; color:#eee; border:1px solid #444; cursor:pointer; }
+.rule-card { position:absolute; background:rgba(20,20,40,0.85); border:1px solid #6af; padding:8px; border-radius:6px; font-size:12px; max-width:180px; pointer-events:auto; cursor:grab; }
+.rule-card:active { cursor:grabbing; }
+#status { position:absolute; bottom:10px; left:10px; font-size:13px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>L-System Spatial Evo Mind · Verse lab</title>
+<meta name="description" content="Extends Verse Brain imagination rollouts / self region by adding an evolvable symbolic L-system generative substrate that can be rewarded, mutated, and manually">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="L-System Spatial Evo Mind · Verse lab">
+<meta property="og:description" content="Extends Verse Brain imagination rollouts / self region by adding an evolvable symbolic L-system generative substrate that can be rewarded, mutated, and manually">
+<meta property="og:url" content="https://a-to-mind.com/lab/f453-l-system-spatial-evo-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f453-l-system-spatial-evo-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="reward">Reward Growth</button>
+  <button id="mutate">Mutate Rules</button>
+  <button id="seal">Seal Champion</button>
+  <button id="load">Load</button>
+</div>
+<div id="status">Fitness: 0 | Depth: 0 | Rules: 0</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">L-System Spatial Evo Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

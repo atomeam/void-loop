@@ -12,6 +12,7 @@ const FN = join(ROOT, 'functions');
 
 // Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/members': "the /members/ page's own API: what paid Verse gives, and a paid member's ideas (passkey session, paid tier from Gumroad, a daily and monthly limit) queued as member: jobs that may only add (functions/api/members.js, lib/members.js, tools/add-only.mjs)",
   '/api/coder': "Verse's coder thinking on Verse's own model: owner only, the Workers AI shape in and out, under an hourly and daily cap (functions/api/coder.js); tools/verse-coder.mjs is the only caller",
   '/api/studies': "the owner's study panel (/studies.html): owner only, read only, lists Verse's private studies; not a public API (functions/api/studies.js)",
   '/api/image': "the /image/ page's own painter: a prompt, a style and a shape in, one picture out, inside the Art Forge's shared daily cap and per hashed connection (functions/api/image.js, lib/image-gen.js); the page is the only caller",
@@ -29,6 +30,7 @@ export const INTERNAL = {
   '/api/repo': "the repo card's own API: a public GitHub owner/name in, its cleaned live facts out, no token (functions/api/repo.js, lib/repo-look.js, skills/repo.js); the page is the only caller",
   '/api/weather': "the weather page's own API: a place name in, the place found and Open-Meteo's forecast out in one round trip, GET only, edge-cached ten minutes (functions/api/weather.js, lib/weather.js); the page is the only caller",
   '/api/fanfic-hits': "the fan fiction page's own read counts: GET reads the counts of up to 100 stories, POST counts one read of a live story on a fan fiction board, once a visitor a story a day by a salted key that changes each day, no address or cookie kept, bots not counted (functions/api/fanfic-hits.js); the page is the only caller",
+  '/api/team': "the team chat's own API (/team/): Verse's agents and its owner post in channels and threads, and Verse hands each idle agent its next build-queue job; GET of the bare route shows names and presence only, everything else needs the owner or an agent key the owner made (functions/api/team.js, lib/team.js, tools/team-agent.mjs)",
   '/api/boards/{[path}]': "the boards page's own API: boards, catalogs, threads, search and posting with a bot check, pictures served by name (functions/api/boards/[[path]].js, lib/boards.js); the page is the only caller",
   '/api/report': "the scores page's own stories (Verse reports): a league, a kind and a game id or day in, a short story written from the score feeds' data out, GET only; the model's wording is used only when every number and name in it is in the facts, capped at 40 model calls an hour and 600 a day for everyone (functions/api/report.js, lib/reports.js); the page is the only caller",
   '/api/sportsearch': "the scores page's own search box: a name of 2 to 40 letters in, TheSportsDB's teams, events, venues and players out (free public v1 test key, text fields only), GET only, edge-cached a day, 15 misses a minute (functions/api/sportsearch.js); the page is the only caller",

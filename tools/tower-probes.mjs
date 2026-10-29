@@ -670,6 +670,30 @@ export const PROBES = Object.freeze({
       ['back to Verse', /Back to Verse/],
     ],
   },
+  // wheelroot.com (2026-10-29): "Drawing Fundamentals" (line, shape, proportion, shading; daily exercises; see like an artist; progress you can see),
+  // a course page whose "Begin the course" button goes nowhere. The ask opens a shared drawing: a straight line laid dot to dot, which is 100.
+  'wheelroot.com': {
+    site: 'https://wheelroot.com/', verse: '/learn-to-draw/',
+    ask: { verse: '/learn-to-draw/?d=line&s=14461e461o461y4628462i462s4632463c463m463w4646464g464q4650465a465k465u4664466e466o466y467846' },
+    truth: [
+      ['a straight line laid dot to dot scores 100', /Score: 100 of 100/],
+      ['its distance from the line, measured (0.0 px)', /0\.0 px from the line on average/],
+      ['how much of the way it covers, measured (100%)', /100% of the way covered/],
+      ['the shared drawing scored again on open', /Scored again from the link/],
+    ],
+    askParts: {
+      'the four fundamentals': [['line', /\bLine\b/], ['shape', /\bShape\b/], ['proportion', /\bProportion\b/], ['shading', /\bShading\b/]],
+      'daily exercises': [['a drill of the day', /Today's drill/], ['a streak', /Streak: \d+/], ['short drills', /8 short drills/]],
+      'see like an artist': [['draw from memory', /Draw it from memory/], ['judge by eye', /Find the middle/], ['a circle by eye', /A circle by eye/]],
+      'progress you can see': [['first try and best', /first try and best/i], ['a score for each drill', /of 100/], ['how each drill is scored', /How each drill is scored/]],
+    },
+    facts: [
+      ['a course to begin', /Begin the course/], ['line', /\bLine\b/], ['shape', /\bShape\b/], ['proportion', /\bProportion\b/], ['shading', /\bShading\b/],
+      ['daily exercises', /Today's drill/], ['observation (drawing from memory)', /Draw it from memory/], ['progress you can see', /first try and best/i],
+      ['absolute beginners', /absolute beginners/i], ['no talent required', /No talent needed/i], ['a few minutes a day', /a few minutes a day/i],
+      ['no account', /No account/], ['no cookies', /no cookies/i], ['works offline', /works offline/i], ['back to Verse', /Back to Verse/],
+    ],
+  },
   emojis: {
     site: 'https://emojitracker.com/', verse: '/emojis/',
     ask: { verse: '/emojis/?pick=🔥' },
