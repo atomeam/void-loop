@@ -1,1 +1,0 @@
-{"at":"2026-10-29T08:56:10Z","by":"claude","kind":"grow","what":"The password page hands a password to the strength page in memory, never in an address","show":"Check it opens the strength page with the password, not in the address","try":"/password/ then Check it"}

@@ -1,1 +1,0 @@
-{"at":"2026-10-29T07:13:50Z","by":"claude","kind":"fix","what":"Verse's coder is told its budget: past 40% of its turns or tokens each result says how much is gone and, with no edit yet, to edit next; at a cap a change it checked green after its last edit is kept","show":"The coder sees its budget and edits before it runs out","try":"node --test tools/verse-coder.test.mjs"}

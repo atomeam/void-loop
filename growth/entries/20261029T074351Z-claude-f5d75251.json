@@ -1,1 +1,0 @@
-{"at":"2026-10-29T07:43:51Z","by":"claude","kind":"grow","what":"the calculator's stage card takes the sum that gave the answer, not the bare answer","show":"After =, the stage card link carries the sum, not the bare answer","try":"Open /calculator/?q=(3%2B4)*5 and read the stage card link"}
