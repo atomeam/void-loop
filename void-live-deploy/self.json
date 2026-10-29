@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,12 +550,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T18:19:32Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-29T18:20:45Z",
+   "subject": "Card header line: no empty \"(born )\" when the year moves to the header"
   },
   {
-   "at": "2026-10-29T18:19:26Z",
-   "subject": "verse brain: organ 20, Grains (F456), grains that pass their bounce and grip on touch"
+   "at": "2026-10-29T18:19:32Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-29T18:19:05Z",
