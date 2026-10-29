@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/members.js';
-import { checkIdea, perks, stateText, DAILY, LIVE } from '../void-live-deploy/lib/members.js';
+import { checkIdea, perks, stateText, queueIdea, DAILY, LIVE } from '../void-live-deploy/lib/members.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
 
 function d1() {
@@ -13,7 +13,10 @@ function d1() {
     run: async () => { const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; },
     all: async () => ({ results: db.prepare(sql).all(...a) }),
     first: async (col) => { const r = db.prepare(sql).get(...a) || null; return col ? (r ? r[col] : null) : r; } });
-  return { prepare: (sql) => stmt(sql), batch: async (list) => { const out = []; db.exec('BEGIN'); try { for (const s of list) out.push(await s.run()); db.exec('COMMIT'); } catch (e) { db.exec('ROLLBACK'); throw e; } return out; }, raw: db };
+  // a batch is one transaction, and D1 runs them one at a time: the chain keeps two batches from interleaving, as D1 does
+  let chain = Promise.resolve();
+  const batch = (list) => (chain = chain.then(async () => { const out = []; db.exec('BEGIN'); try { for (const s of list) out.push(await s.run()); db.exec('COMMIT'); } catch (e) { db.exec('ROLLBACK'); throw e; } return out; }, () => {}));
+  return { prepare: (sql) => stmt(sql), batch, raw: db };
 }
 const TOKEN = 'a'.repeat(43), USER = 'user-for-members-test';
 async function signIn(DB, tier) {
@@ -59,6 +62,17 @@ test('before go-live the API refuses even a member (the switch is lib/members.js
   assert.equal((await post(DB, IDEA, { MEMBERS_TRY: '' })).status, 503);
 });
 
+test('the pre-launch pilot lets a paid member send through every check, and still nothing else', async () => {
+  if (LIVE) return;
+  const pilot = (DB, idea) => onRequestPost({ env: { DB }, request: new Request('https://a-to-mind.com/api/members', { method: 'POST', headers: { authorization: 'Bearer ' + TOKEN, 'content-type': 'application/json', 'cf-connecting-ip': '10.1.0.' + (++ip) }, body: JSON.stringify({ idea, pilot: true }) }) });
+  const free = d1(); await signIn(free, null);
+  assert.equal((await pilot(free, IDEA)).status, 402, 'a free account cannot use the pilot');
+  const DB = d1(); await signIn(DB, 'paid');
+  assert.equal((await pilot(DB, 'Remove the games page from the site')).status, 400, 'the add-only check holds in the pilot');
+  const r = await pilot(DB, IDEA); assert.equal(r.status, 200);
+  assert.equal(DB.raw.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE target LIKE 'member:%'").get().n, 1);
+});
+
 test('a member idea becomes one member:<id> queue job, shows in their list, and the daily limit holds', async () => {
   const DB = d1(); await signIn(DB, 'paid');
   const r = await post(DB, IDEA); const j = await r.json();
@@ -78,4 +92,13 @@ test('a shipped job reads as built with its pull request', () => {
   assert.deepEqual(stateText('done', 'verse-job: PR https://github.com/atomeam/void-loop/pull/1600'), { state: 'shipped', status: 'Built in 1600', pr: 'https://github.com/atomeam/void-loop/pull/1600' });
   assert.equal(stateText('set aside', '').state, 'set aside');
   assert.equal(stateText('queued', '').state, 'queued');
+});
+
+test('sends at the same moment cannot pass the daily limit: the count is checked inside the insert', async () => {
+  const DB = d1(); await signIn(DB, 'paid');
+  const now = Date.now();
+  const all = await Promise.all(Array.from({ length: DAILY + 3 }, (_, i) => queueIdea({ DB }, USER, IDEA + ' Copy ' + i + '.', now + i)));
+  assert.equal(all.filter(Boolean).length, DAILY);
+  assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_member_ideas').get().n, DAILY);
+  assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_queue').get().n, DAILY, 'no queue job without its idea row');
 });

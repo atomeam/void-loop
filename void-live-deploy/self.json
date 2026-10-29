@@ -545,84 +545,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T15:09:09Z",
+   "at": "2026-10-29T15:41:49Z",
+   "subject": "Versus job mvoxrtv8: the calculator floor row names /calculator/ for what it is (scientific, history, memory, units), not BMI or darts it…"
+  },
+  {
+   "at": "2026-10-29T15:40:03Z",
+   "subject": "Put the reply section in void.html, the page the deploy copies"
+  },
+  {
+   "at": "2026-10-29T15:36:15Z",
+   "subject": "Queue ignores a shell control count under 2"
+  },
+  {
+   "at": "2026-10-29T15:35:04Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:08:57Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T15:07:52Z",
+   "at": "2026-10-29T15:34:04Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:07:28Z",
+   "at": "2026-10-29T15:33:45Z",
+   "subject": "MultiVerse, with a capital V (owner's spelling); the stage's source void.html carries the rename and both copies match it"
+  },
+  {
+   "at": "2026-10-29T15:33:37Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:07:05Z",
-   "subject": "Word the namedFixes comment without a bare count"
-  },
-  {
-   "at": "2026-10-29T15:06:42Z",
+   "at": "2026-10-29T15:31:45Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:05:46Z",
-   "subject": "uuid skill: take the asks util leaves (random, another, please), crypto ids, order file, family, map line, test"
+   "at": "2026-10-29T15:31:39Z",
+   "subject": "Tower size: how heavy each Versus site really is"
   },
   {
-   "at": "2026-10-29T15:05:20Z",
+   "at": "2026-10-29T15:30:22Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:05:02Z",
+   "at": "2026-10-29T15:29:59Z",
+   "subject": "Put \"Reply to what I said, or correct me\" on every card"
+  },
+  {
+   "at": "2026-10-29T15:29:47Z",
+   "subject": "Name the membership Multiverse: a Verse of your own (owner: something better than Paid Verse)"
+  },
+  {
+   "at": "2026-10-29T15:29:16Z",
+   "subject": "STL design doc: name held files by their branch so doc drift stays clean"
+  },
+  {
+   "at": "2026-10-29T15:28:08Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-29T15:27:46Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:04:44Z",
+   "at": "2026-10-29T15:27:32Z",
+   "subject": "feat(brain): organ 17, F453's L-system plant grown toward attention"
+  },
+  {
+   "at": "2026-10-29T15:27:20Z",
+   "subject": "Stability gauge: say \"at least\" when incidents.json is full, and how many checks failed"
+  },
+  {
+   "at": "2026-10-29T15:27:17Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T15:04:22Z",
-   "subject": "Answer cards for notes about my own card: no denial, no blame for a site's block, each fix's status"
-  },
-  {
-   "at": "2026-10-29T15:02:55Z",
-   "subject": "Members: perks from lib/members.js on the page, a real-pages spec, the route's limit, openapi note"
-  },
-  {
-   "at": "2026-10-29T15:01:49Z",
+   "at": "2026-10-29T15:25:37Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T14:59:55Z",
-   "subject": "Verse fixes its spanish skill: learn to handle \"how to say bread in spanish\""
-  },
-  {
-   "at": "2026-10-29T14:59:49Z",
-   "subject": "fix(tower): never count a default-bar score as a lead"
-  },
-  {
-   "at": "2026-10-29T14:59:43Z",
+   "at": "2026-10-29T15:25:18Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T14:59:18Z",
-   "subject": "Self card: waiting and built add up to the total"
-  },
-  {
-   "at": "2026-10-29T14:58:30Z",
-   "subject": "Verse uses its brain on every page: one host hears every ask, ranks the ask box, answers what it is thinking"
-  },
-  {
-   "at": "2026-10-29T14:55:57Z",
-   "subject": "Versus queue and picker rank on measured rows only"
-  },
-  {
-   "at": "2026-10-29T14:52:15Z",
-   "subject": "Paid Verse: members send ideas that only add (dark until go-live)"
   }
  ],
  "builders": {
@@ -861,9 +861,9 @@
   "target": "sycophanthex.com",
   "since": "2026-10-29",
   "next": [
-   "nameunit.com",
-   "wheelroot.com",
-   "onlineconverter.com"
+   "serverdiscounter.com",
+   "howsecureismypassword.net",
+   "wheeloutlet.com"
   ],
   "beaten": 0,
   "total": 1266

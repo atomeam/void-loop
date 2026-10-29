@@ -3,6 +3,7 @@
 import { perks as perksOf, LIVE, BUY } from '/lib/members.js';
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+const PILOT = new URLSearchParams(location.search).has('pilot'); // the pre-launch pilot (functions/api/members.js)
 let me = null; try { me = JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null'); } catch (_) { me = null; }
 const auth = () => { const h = { 'content-type': 'application/json' }; if (me && me.token) h.authorization = 'Bearer ' + me.token; return h; };
 
@@ -34,9 +35,10 @@ async function load() {
   if (me && me.userId) $('how').textContent = 'You are signed in, so joining unlocks this Verse.';
   const paid = j && j.signedIn && j.tier === 'paid';
   if (paid) { $('buy').hidden = true; $('how').textContent = 'You are a member. Thank you for building Verse.'; }
-  $('lab').hidden = !(paid && j.live);
-  $('soon').hidden = !(paid && !j.live);
-  if (paid && j.live) { $('left').textContent = String(j.left ?? 0); $('send').disabled = !(j.left > 0); ideas(j.ideas); }
+  const open = j && (j.live || PILOT);
+  $('lab').hidden = !(paid && open);
+  $('soon').hidden = !(paid && !open);
+  if (paid && open) { $('left').textContent = String(j.left ?? 0); $('send').disabled = !(j.left > 0); ideas(j.ideas); }
   const w = (j && j.wall) || [];
   $('built').hidden = !w.length;
   const wall = $('wall'); wall.textContent = '';
@@ -54,7 +56,7 @@ $('send').addEventListener('click', async () => {
   if (!idea) { say.textContent = 'Write your idea first.'; return; }
   $('send').disabled = true; say.textContent = 'Sending…';
   let r = null, j = null;
-  try { r = await fetch('/api/members', { method: 'POST', headers: auth(), body: JSON.stringify({ idea }) }); j = await r.json(); } catch (_) { j = null; }
+  try { r = await fetch('/api/members', { method: 'POST', headers: auth(), body: JSON.stringify(PILOT ? { idea, pilot: true } : { idea }) }); j = await r.json(); } catch (_) { j = null; }
   if (r && r.ok && j && j.ok) { say.textContent = 'Sent. Verse will build it and list it under your ideas.'; $('idea').value = ''; }
   else say.textContent = (j && j.error) || 'It did not send; try again.';
   await load();
