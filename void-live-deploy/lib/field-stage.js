@@ -17,6 +17,7 @@ import { morphOf, morphCss, audioMap, tiltOf, pointerIn, seal } from './field-ki
 import { motionThrottle } from './motion-throttle.js';
 import * as Field from './shared-field.js'; // the one shared field (also skills/field.js): every Mind Field mode's card is felt by Verse Brain there
 import { linkMode } from './mode-field.js';
+import { keepWhile } from './live-cards.js'; // a field card keeps running when the stage redraws (render() in void.html puts it back)
 import { MODES, BRAIN, isMode } from './mind-field-modes.js'; // every field mind is a Mind Field mode: its card gets the Mode switcher // asked by Verse: chaotic motion slows to a quarter while someone types in another card
 
 const reduced = () => { try { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { return false; } };
@@ -95,7 +96,7 @@ export function mountField(th, stageApi, idea) {
   q('.ff-frame').appendChild(cv);
   const hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
   for (const n of el.querySelectorAll('canvas,button')) n.addEventListener('pointerdown', (e) => e.stopPropagation());
-  stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
+  stageApi.bindDrag(el, th); keepWhile(el, th); stageApi.stage.appendChild(el);
 
   const input = { x: 0.5, y: 0.5, over: false, down: false, tiltX: 0, tiltY: 0, tilting: false };
   const at = (e) => { const p = pointerIn(e.clientX, e.clientY, cv.getBoundingClientRect()); input.x = p.x; input.y = p.y; };

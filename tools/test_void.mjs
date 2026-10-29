@@ -5671,6 +5671,17 @@ try {
     const joined = { modes: pickModes.length, stays: !!(await F.p.$(card)), swarm: !!(await F.p.$('.ff-swarm-mind')), line: await F.p.$eval(card + ' .vb-field', (e) => e.textContent).catch(() => ''), owners: await F.p.$eval(card, (e) => e.dataset.fieldOwners || '').catch(() => '') };
     check('verse brain and the Mind Field modes, one entity: its card opens any of the eleven choices beside it (it stays), and an open Swarm card is felt in the shared field and named on the brain ("Swarm (1)")',
       joined.modes === 11 && joined.stays && joined.swarm && /Swarm \(1\)/.test(joined.line) && /swarm-mind/.test(joined.owners), JSON.stringify(joined));
+    // a live card keeps running when another card opens (asked 2026-10-29: a new card restarted every mind on the stage): a clock redraws
+    // the stage, and the brain and Swarm are the same running cards after it, with their counts carrying on (lib/live-cards.js)
+    await until(async () => +(await F.p.$eval('.ff-swarm-mind', (e) => e.dataset.gen || 0).catch(() => 0)) >= 2, 8000).catch(() => {});
+    const was = await F.p.evaluate((c) => { const s = document.querySelector('.ff-swarm-mind'), b = document.querySelector(c); window.__liveCards = { s, b };
+      return { gen: +((s && s.dataset.gen) || 0), ticks: +((b && b.dataset.ticks) || 0) }; }, card).catch(() => null);
+    await F.ask('clock', 700); await until(async () => !!(await F.p.$('.clock')), 6000).catch(() => {});
+    const kept = await F.p.evaluate((c) => { const k = window.__liveCards || {}, s = document.querySelector('.ff-swarm-mind'), b = document.querySelector(c);
+      return { clock: !!document.querySelector('.clock'), swarm: !!s && s === k.s && s.isConnected, brain: !!b && b === k.b && b.isConnected, gen: +((s && s.dataset.gen) || 0), ticks: +((b && b.dataset.ticks) || 0),
+        swarms: document.querySelectorAll('.ff-swarm-mind').length, brains: document.querySelectorAll(c).length }; }, card).catch(() => null);
+    check('live cards keep running when another card opens: asking for a clock redraws the stage, and the brain and Swarm are the same running cards after it (one of each), their counts carrying on instead of starting over',
+      !!was && !!kept && kept.clock && kept.swarm && kept.brain && kept.swarms === 1 && kept.brains === 1 && kept.gen >= was.gen && was.gen >= 2 && kept.ticks >= was.ticks, JSON.stringify({ was, kept }));
     const errors = F.errors.slice(); await F.ctx.close();
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
