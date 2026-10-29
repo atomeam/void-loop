@@ -28,6 +28,7 @@ export const DICT = {
   'Nothing was posted this week. Choose All topics to see every story.': 'Diese Woche wurde nichts veröffentlicht. Wähle Alle Themen, um jede Geschichte zu sehen.',
   'New posts': 'Neue Beiträge', 'No new posts': 'Keine neuen Beiträge', Announcement: 'Ankündigung', Locked: 'Gesperrt', 'Site info': 'Statistik', Authors: 'Autor:innen',
   'Post a new story': 'Neue Geschichte veröffentlichen', 'The stories with the newest posts, in every fandom.': 'Die Geschichten mit den neuesten Beiträgen, aus allen Fandoms.',
+  'Follow the newest stories by feed (RSS)': 'Den neuesten Geschichten per Feed folgen (RSS)', 'New stories by feed:': 'Neue Geschichten als Feed:',
   Chapter: 'Kapitel', 'Add the next chapter': 'Nächstes Kapitel hinzufügen', 'Chapter title': 'Kapiteltitel', 'The chapter': 'Das Kapitel', 'Post chapter': 'Kapitel veröffentlichen',
   Reviews: 'Rezensionen', 'Your review': 'Deine Rezension', 'Pen name': 'Autorenname', 'Optional. Kept on this device for next time.': 'Freiwillig. Wird für das nächste Mal auf diesem Gerät gespeichert.',
   'Post review': 'Rezension veröffentlichen', 'Post a story': 'Geschichte veröffentlichen',
