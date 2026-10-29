@@ -1,19 +1,19 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T10:41:40.413Z",
+ "updated": "2026-10-29T11:43:07.815Z",
  "last24h": {
-  "ticks": 51,
-  "started": 83,
+  "ticks": 57,
+  "started": 87,
   "requeued": 1,
   "setAside": 0,
-  "probes": 7,
+  "probes": 8,
   "errors": 0
  },
  "broken": [
   {
    "wf": "tower-gate.yml",
    "fails": 10,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/40856075992"
+   "url": "https://github.com/atomeam/void-loop/actions/runs/40861423846"
   }
  ],
  "held": [
@@ -42,14 +42,6 @@
    "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mv5uxjua",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mv5uxkez",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
    "id": "mvpur2bk",
    "why": "verse-job.yml reached its 40 runs today"
   },
@@ -67,6 +59,14 @@
   },
   {
    "id": "mvpur47q",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
+   "id": "mv5uxjua",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
+   "id": "mv5uxkez",
    "why": "verse-job.yml reached its 40 runs today"
   },
   {
@@ -136,7 +136,11 @@
   "mvtc3etg": 1793267428489,
   "mvtc3fr2": 1793268042635,
   "mvte9v99": 1793269885893,
-  "mvte9w1w": 1793270500413
+  "mvte9w1w": 1793270500413,
+  "mvte9wu3": 1793271116796,
+  "mvte9xmi": 1793271731563,
+  "mvtgh6vg": 1793273574738,
+  "mvtgh7q4": 1793274187815
  },
  "ticks": [
   {
@@ -1456,6 +1460,136 @@
    "started": [
     {
      "id": "mvte9w1w",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T10:51:56.796Z",
+   "open": 108,
+   "started": [
+    {
+     "id": "mvte9wu3",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T11:02:11.563Z",
+   "open": 107,
+   "started": [
+    {
+     "id": "mvte9xmi",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T11:12:26.036Z",
+   "open": 106,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T11:22:39.455Z",
+   "open": 106,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": true,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T11:32:54.738Z",
+   "open": 110,
+   "started": [
+    {
+     "id": "mvtgh6vg",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 103,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T11:43:07.815Z",
+   "open": 109,
+   "started": [
+    {
+     "id": "mvtgh7q4",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40

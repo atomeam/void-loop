@@ -5745,13 +5745,14 @@ try {
     await F.p.click(card + ' .vb-tune'); await until(async () => /^Playing/.test(await F.p.$eval(card + ' .vb-tune', (e) => e.textContent)), 4000);
     const playing = await F.p.$eval(card + ' .vb-tune', (e) => e.textContent + '|' + e.getAttribute('aria-pressed'));
     await until(async () => (await F.p.$eval(card + ' .vb-tune', (e) => e.textContent)) === 'Play a tune', 30000); // 2 times through and the gap: about 13 s
-    await F.p.waitForTimeout(600);
-    const ear = await F.p.$eval(card, (e) => ({ heard: +(e.dataset.heard || 0), guessed: +(e.dataset.guessed || 0), hits: +(e.dataset.hits || 0), note: e.dataset.ear || '' }));
+    await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.tune || '')), 4000);
+    const ear = await F.p.$eval(card, (e) => ({ heard: +(e.dataset.heard || 0), guessed: +(e.dataset.guessed || 0), hits: +(e.dataset.hits || 0), note: e.dataset.ear || '', tune: e.dataset.tune || '', said: e.querySelector('.vb-said').textContent }));
     const after = await F.p.$eval(card + ' .vb-tune', (e) => e.textContent + '|' + e.getAttribute('aria-pressed')), asked = await F.p.evaluate(() => !!window.__micAsked);
     const self = await F.p.evaluate(() => ((window.verseBrain && window.verseBrain.state().self) || []).find((s) => /^Hearing:/.test(s)) || '');
     const errors = F.errors.slice(); await F.ctx.close();
-    check('verse brain hearing: Play a tune (no microphone asked for) plays Frere Jacques twice into the ear, the brain hears 24 or more of its 28 notes, guesses each next one and gets 8 or more right, the self says so, and the button stops by itself when the tune ends',
+    check('verse brain hearing: Play a tune (no microphone asked for) plays Frere Jacques twice into the ear, the brain hears 24 or more of its 28 notes, guesses each next one and gets 8 or more right, the self says so, the card says the count for the tune itself when it ends, and the button stops by itself when the tune ends',
       playing === 'Playing a tune (tap to stop)|true' && !asked && ear.heard >= 24 && ear.heard <= 30 && ear.guessed >= 20 && ear.hits >= 8 && /^[A-G]#?\d$/.test(ear.note) && /^Hearing: \d+ hummed notes; it guessed the next one right \d+% of the time/.test(self)
+      && ear.tune === [ear.heard, ear.guessed, ear.hits].join(',') && ear.said.startsWith('It heard ' + ear.heard + " of the tune's 28 notes and guessed the next one right " + ear.hits + ' of ' + ear.guessed + ' times')
       && after === 'Play a tune|false' && !errors.length, JSON.stringify({ playing, ear, after, asked, self, errors }));
   }
   if (want("field minds: nca mind runs Grok's lattices on one card, the pointer seeds it, ask words and the Rule picker switch drafts, portals keep a rule, with or without a Worker")) { // asked by Owner, 2026-10-18: F-036, F-039, F-043, F-045
