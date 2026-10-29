@@ -2,6 +2,33 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-29T02:45:34.486Z",
+   "sha": "aacf622314849ed8de00a76a5de6a8f157432869",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40807783914",
+   "suite": "browser suite on main",
+   "checks": [
+    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/art-floor.json",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tower.evidence.json",
+    "void-live-deploy/void.growth.json",
+    ".github/workflows/tower-size.yml",
+    "docs/MAP.md",
+    "docs/PARITY/emojitracker.com.md",
+    "docs/PARITY/isitchristmas.com.md",
+    "docs/PARITY/justflipacoin.com.md",
+    "docs/PARITY/timeanddate.com.md",
+    "docs/PARITY/unitconverters.net.md"
+   ]
+  },
+  {
    "at": "2026-10-29T02:38:25.025Z",
    "sha": "7e681ad7200b1140036f6b1983035d17c6e9f540",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40803639605",
@@ -931,37 +958,6 @@
    "touched": [
     "void-live-deploy/skills/tower.js",
     "void-live-deploy/tower.evidence.json"
-   ]
-  },
-  {
-   "at": "2026-10-25T20:18:27.860Z",
-   "sha": "defcc4b01d4bc53d3b7388673aba48d77740276d",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40223812513",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "stage pack g lamp: a quiet stage says nothing contradicts, two notes with two days for the dentist light one lamp and one plain line, and dismiss puts the line and the lamp out",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
-   ],
-   "touched": [
-    "domains/handoff.md"
    ]
   }
  ]
