@@ -1,0 +1,141 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], agentEntropy = 0.3, fieldEnergy = 0;
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+}
+addEventListener('resize', resize); resize();
+
+// Particle system approximating volumetric density (depth via size/alpha)
+class Particle {
+  constructor(x, y, z = Math.random()) {
+    this.x = x; this.y = y; this.z = z;
+    this.vx = 0; this.vy = 0; this.vz = 0;
+    this.life = 1; this.hue = 200;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy; this.z += this.vz * 0.1;
+    this.vx *= 0.98; this.vy *= 0.98; this.vz *= 0.98;
+    this.life *= 0.992;
+    this.z = Math.max(0.05, Math.min(0.95, this.z));
+  }
+  draw() {
+    const s = 2 + this.z * 6;
+    const a = this.life * (0.3 + this.z * 0.7);
+    ctx.fillStyle = `hsla(${this.hue}, 70%, 60%, ${a})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// Local mind Worker (blob)
+const workerCode = `
+let weights = Array.from({length: 10}, () => (Math.random() - 0.5) * 0.4);
+let fitness = 0;
+function tanh(x) { return Math.tanh(x); }
+function policy(input) {
+  // input: [px, py, alpha, beta, energy] normalized ~[-1,1]
+  let h = 0;
+  for (let i = 0; i < 5; i++) h += input[i] * weights[i];
+  h = tanh(h);
+  const out = [
+    tanh(h * weights[5] + input[0] * 0.3),
+    tanh(h * weights[6] + input[1] * 0.3),
+    tanh(h * weights[7] + 0.2),
+    Math.abs(tanh(h * weights[8])) * 0.8 + 0.2,
+    (tanh(h * weights[9]) + 1) * 90
+  ];
+  return out; // inject_x, y, z, intensity, hue
+}
+self.onmessage = e => {
+  const { pointer, orient, energy } = e.data;
+  const input = [
+    (pointer.x / (e.data.W || 800) - 0.5) * 2,
+    (pointer.y / (e.data.H || 600) - 0.5) * 2,
+    (orient.alpha || 0) / 180,
+    (orient.beta || 0) / 90,
+    energy
+  ];
+  const thought = policy(input);
+  // simple fitness: prefer moderate intensity and some motion
+  fitness = fitness * 0.95 + (thought[3] * 0.5 + Math.abs(thought[0]) * 0.2);
+  if (Math.random() < 0.05) {
+    const i = Math.floor(Math.random() * weights.length);
+    weights[i] += (Math.random() - 0.5) * 0.1;
+  }
+  self.postMessage({ thought, entropy: Math.abs(thought[0]) + Math.abs(thought[1]) * 0.5, fitness, weights: weights.slice() });
+};
+`;
+const blob = new Blob([workerCode], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+
+let pointer = { x: W/2, y: H/2 };
+let orient = { alpha: 0, beta: 0 };
+addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; });
+addEventListener('deviceorientation', e => {
+  orient.alpha = e.alpha || 0;
+  orient.beta = e.beta || 0;
+}, true);
+
+worker.onmessage = e => {
+  const { thought, entropy } = e.data;
+  agentEntropy = entropy;
+  // Inject particles as "thought"
+  const ix = (thought[0] * 0.5 + 0.5) * W;
+  const iy = (thought[1] * 0.5 + 0.5) * H;
+  const count = Math.floor(thought[3] * 12) + 3;
+  for (let i = 0; i < count; i++) {
+    const p = new Particle(ix + (Math.random()-0.5)*40, iy + (Math.random()-0.5)*40, thought[2]);
+    p.hue = 180 + thought[4];
+    p.vx = (Math.random()-0.5) * 2;
+    p.vy = (Math.random()-0.5) * 2;
+    particles.push(p);
+  }
+  // Morph UI
+  document.documentElement.style.setProperty('--hue', (agentEntropy * 80 - 20).toFixed(1));
+  document.documentElement.style.setProperty('--blur', (agentEntropy * 1.5).toFixed(1) + 'px');
+  document.documentElement.style.setProperty('--scale', (1 + agentEntropy * 0.02).toFixed(3));
+};
+
+// Optional simple audio
+let audioCtx, osc;
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0.02;
+  osc.type = 'sine';
+  osc.frequency.value = 120;
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start();
+}
+addEventListener('pointerdown', initAudio);
+
+function loop() {
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0, 0, W, H);
+  fieldEnergy = particles.length / 200;
+  particles.forEach(p => { p.update(); p.draw(); });
+  particles = particles.filter(p => p.life > 0.05);
+  if (particles.length > 400) particles.splice(0, particles.length - 400);
+  // Query mind
+  if (Math.random() < 0.1) {
+    worker.postMessage({ pointer, orient, energy: Math.min(1, fieldEnergy), W, H });
+  }
+  // Audio modulation
+  if (osc) {
+    osc.frequency.value = 80 + fieldEnergy * 140 + agentEntropy * 40;
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+
+// Seal on double-click
+addEventListener('dblclick', () => {
+  const seal = btoa(JSON.stringify({ t: Date.now(), e: agentEntropy.toFixed(2) })).slice(0, 16);
+  document.getElementById('seal').textContent = 'sealed:' + seal;
+  try { localStorage.setItem('f046-seal', seal); } catch(e) {}
+});

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 260; --sat: 45%; --lit: 7%; --blur: 0; --glow: 0; }
+  body { margin: 0; background: hsl(var(--hue), var(--sat), var(--lit)); color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.55); padding: 10px 14px; border-radius: 8px; font-size: 13px; pointer-events: none; backdrop-filter: blur(6px); }
+  .orb { position: absolute; width: 56px; height: 56px; border-radius: 50%; background: hsla(var(--oh), 75%, 50%, .65); border: 2px solid rgba(255,255,255,.35); cursor: grab; display: flex; align-items: center; justify-content: center; font-size: 9px; text-align: center; user-select: none; transform: translate(-50%, -50%); box-shadow: 0 0 16px hsla(var(--oh), 80%, 60%, calc(var(--glow)*0.7)); transition: box-shadow .2s; }
+  .orb:active { cursor: grabbing; }
+  #seal { position: absolute; bottom: 12px; right: 12px; padding: 8px 16px; background: #1a1a2e; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; font-size: 13px; }
+  #seal:hover { background: #2a2a4e; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spectral Resonance Lattice Mind · Verse lab</title>
+<meta name="description" content="Novel combination of a coarse Canvas2D lattice of coupled oscillators (spectral field), a local Web Worker evolutionary mind that adapts coupling/damping/prediction">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spectral Resonance Lattice Mind · Verse lab">
+<meta property="og:description" content="Novel combination of a coarse Canvas2D lattice of coupled oscillators (spectral field), a local Web Worker evolutionary mind that adapts coupling/damping/prediction">
+<meta property="og:url" content="https://a-to-mind.com/lab/f050-spectral-resonance-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f050-spectral-resonance-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  F-050 Spectral Resonance Lattice Mind<br>
+  residual: <span id="res">—</span> · coherence: <span id="coh">—</span> · gen: <span id="gen">0</span> · peakHz: <span id="hz">—</span>
+</div>
+<button id="seal">Seal best genes</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spectral Resonance Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

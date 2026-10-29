@@ -1,0 +1,16 @@
+/* /lab/ (tools/lab-import.mjs): the footer every experiment wears, and the notice for a browser that lacks what it needs */
+.vl-bar{position:fixed;left:8px;bottom:8px;z-index:2147483646;font:12px/1.4 system-ui,-apple-system,sans-serif;background:rgba(7,6,11,.78);color:#ecebf5;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:3px 12px;opacity:.6;transition:opacity .2s}
+.vl-bar:hover,.vl-bar:focus-within{opacity:1}.vl-bar a{color:inherit;margin-right:8px}.vl-bar a:last-child{margin-right:0}
+.vl-sr{position:fixed;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;padding:0;border:0}
+.vl-note{position:fixed;left:8px;right:8px;top:8px;z-index:2147483647;font:14px/1.45 system-ui,-apple-system,sans-serif;background:#2b1a05;color:#ffe3b0;border:1px solid #b8791b;border-radius:10px;padding:8px 12px}
+.vl-note button{font:inherit;float:right;margin-left:10px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:0 10px;cursor:pointer}
+/* the gallery */
+.lab{max-width:1000px;margin:0 auto;padding:20px 16px 56px;color:#ecebf5;font:16px/1.5 system-ui,-apple-system,sans-serif}
+.lab-page{margin:0;background:radial-gradient(ellipse at 50% 0,#1d1830,#07060b 70%) fixed;min-height:100vh}
+.lab h1{font-size:28px;margin:8px 0 4px}.lab .lead{opacity:.75;margin:0 0 18px}.lab a{color:inherit}
+.lab ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.lab li{border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(255,255,255,.04)}
+.lab li a{display:block;padding:12px 14px;text-decoration:none;min-height:44px}.lab li a:hover,.lab li a:focus-visible{background:rgba(255,255,255,.08);border-radius:12px}
+.lab h2{font-size:16px;margin:0 0 4px}.lab li p{margin:0;font-size:13px;opacity:.75}.lab .meta{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;opacity:.9}
+.badge{border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:0 8px}.badge.works{border-color:#4cc38a;color:#8ae6b6}.badge.needs-webgpu,.badge.needs-webxr{border-color:#e0a030;color:#ffd48a}
+.lab footer{margin-top:28px;font-size:13px;opacity:.65}

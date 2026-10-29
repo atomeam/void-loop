@@ -210,6 +210,30 @@
    "date": "2026-10-28",
    "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
    "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "my want card names the site Versus is on, and /api/will ranks my wants by the tower target",
+   "from": "PR #1406"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
+   "from": "PR #1410, owner card notes 1-5"
   }
  ],
  "open": [
@@ -509,91 +533,103 @@
  },
  "commits": [
   {
-   "at": "2026-10-28T20:31:23Z",
+   "at": "2026-10-29T05:25:14Z",
+   "subject": "List the morse skill so it loads, and narrow its match"
+  },
+  {
+   "at": "2026-10-29T05:22:00Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T20:30:57Z",
-   "subject": "Resize image: mark the preset labels as page text for the review"
-  },
-  {
-   "at": "2026-10-28T20:30:42Z",
+   "at": "2026-10-29T05:20:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T20:30:33Z",
-   "subject": "Colour: the readable-pairs job jumps to the contrast block itself"
+   "at": "2026-10-29T05:20:04Z",
+   "subject": "Green the fast checks that fail on main"
   },
   {
-   "at": "2026-10-28T20:29:17Z",
+   "at": "2026-10-29T05:16:56Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T20:29:05Z",
+   "at": "2026-10-29T05:16:47Z",
+   "subject": "Memory orbs: the agents pool the fluid themselves, orbs linger long enough to tap"
+  },
+  {
+   "at": "2026-10-29T05:15:38Z",
+   "subject": "Bring 6 stale browser checks up to date and end a routing collision"
+  },
+  {
+   "at": "2026-10-29T05:14:30Z",
+   "subject": "Verse fixes its kanban-board skill: learn to handle \"free kanban board\""
+  },
+  {
+   "at": "2026-10-29T05:14:21Z",
+   "subject": "Open the PR a helper pushed without one"
+  },
+  {
+   "at": "2026-10-29T05:13:36Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T20:27:58Z",
+   "at": "2026-10-29T05:13:05Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-29T05:12:43Z",
+   "subject": "Tower: sycophanthex.com is fought by /fanfic/"
+  },
+  {
+   "at": "2026-10-29T05:10:38Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T20:27:50Z",
+   "at": "2026-10-29T05:10:00Z",
+   "subject": "List the proverb skill so it loads"
+  },
+  {
+   "at": "2026-10-29T05:09:35Z",
+   "subject": "Own-card lists: end a cut row at its last whole clause"
+  },
+  {
+   "at": "2026-10-29T05:05:44Z",
+   "subject": "Memory orbs: generated cards after bringing main in (node tools/refresh.mjs)"
+  },
+  {
+   "at": "2026-10-29T05:05:41Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-28T20:27:15Z",
-   "subject": "Snippet / Note: the gist page with a plain name, a lead and templates"
+   "at": "2026-10-29T05:04:59Z",
+   "subject": "Memory orbs (F-321): agent-pushed fluid whose peaks become sealable orbs"
   },
   {
-   "at": "2026-10-28T20:21:02Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-29T05:04:25Z",
+   "subject": "Own-card notes: copy Fixed and Still open from the record, keep the record date"
   },
   {
-   "at": "2026-10-28T20:19:39Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:19:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:19:16Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:17:59Z",
-   "subject": "Colour: three everyday jobs above the picker"
-  },
-  {
-   "at": "2026-10-28T20:17:35Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:17:05Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:17:01Z",
-   "subject": "Incident: the browser suite failed on 6c3dad22 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-28T20:16:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-28T20:16:50Z",
-   "subject": "Is it: a holiday and event countdown under the one-word answer"
-  },
-  {
-   "at": "2026-10-28T20:16:14Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-29T05:02:56Z",
+   "subject": "Fan fiction: list /fanfic/ in the sitemap generator and update the hand-off note"
   }
  ],
  "builders": {
   "finished": [
    {
+    "name": "Claude (F321 thread, 2026-10-29)",
+    "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
+   },
+   {
+    "name": "Main green, tower checks (box, 2026-10-28)",
+    "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
+   },
+   {
     "name": "Lists run 7 (grok, 2026-10-28)",
     "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
+   },
+   {
+    "name": "Lists run 8 (grok, 2026-10-28)",
+    "line": "green foundation first, so red checks only. Fixed \"connected\" (/books/ links /notes/ and /translate/) and \"incident autopsy\" (the card's art seal is not an autopsy picture). Open counts: V01D asks 1 (milestone, blocked on Claude's growth…"
    },
    {
     "name": "Who visits (claude, 2026-10-26)",
@@ -602,18 +638,6 @@
    {
     "name": "IndexNow on every deploy (claude)",
     "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
-   },
-   {
-    "name": "Claude (pdf and kanban floors, 2026-10-26)",
-    "line": "the pdf floor (ilovepdf.com; lane codeshack.io, 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com) and the kanban floor (Trello; lane jasperbernaers.com, abacktools.com, wekan.fi, kanbanflow.com) with a page of its own for…"
-   },
-   {
-    "name": "Claude (perchance session)",
-    "line": "the random generators floor to perchance parity (main a3a708a9..): /image/ text to image (15 styles, 4 shapes, 1-4 a go, seed, leave out, download, gallery on the device; the Art Forge's painter, its Workers AI share counted with the…"
-   },
-   {
-    "name": "Claude (feature scan, 2026-10-25)",
-    "line": "Verse researches every Versus site's features by itself: tools/feature-scan.mjs reads each floor's sites at their own address, writes domains/features/<floor>.json (under…"
    }
   ],
   "ladders": [
@@ -644,6 +668,14 @@
   ],
   "lessons": [
    {
+    "name": "A new page says what it takes and gives",
+    "line": "add <meta name=\"verse-handoff\" content=\"in: ...; out: ...\"> when it ships (types in tools/handoff-scan.mjs); every lap builds the top connections in docs/HANDOFF-GAPS.md and plays them in tools/handoff-e2e.mjs (standing item in…"
+   },
+   {
+    "name": "The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)",
+    "line": "a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or \"coming soon\"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never…"
+   },
+   {
     "name": "Rumble's page id is not its embed id",
     "line": "rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing."
    },
@@ -658,14 +690,6 @@
    {
     "name": "Set the PR head in code and verify it",
     "line": "#713 merged another agent's unfinished branch because a sed edit of \"head\" silently missed; build the request as data and check the reply names your branch."
-   },
-   {
-    "name": "Wrangler only uploads functions/ from the current directory",
-    "line": "a deploy from a copied folder dropped every Function; deploy from inside void-live-deploy."
-   },
-   {
-    "name": "Never write a whole file through an API to change part of it",
-    "line": "a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout so the diff shows what changed."
    }
   ]
  },
@@ -673,7 +697,7 @@
   {
    "rank": 1,
    "item": "Stay inside Workers AI's free 10k neurons/day",
-   "free": "move answers from gpt-oss-120b to gemma; cache answers at the edge; on-page skills first",
+   "free": "done 2026-10-25 (commit 630e666fb): answers run on gemma-4-26b-a4b-it, gpt-oss-120b only as the second try. Still to do: cache answers at the edge; on-page skills first",
    "cost": "$0",
    "value": "high: answers stop failing after the cap (125% on Oct 14)",
    "why": "free and fixes a live outage"
@@ -820,5 +844,16 @@
   "line": "People this week: 22 (152 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
   "at": "2026-10-28T11:22Z",
   "source": "verse"
+ },
+ "tower": {
+  "target": "sycophanthex.com",
+  "since": "2026-10-29",
+  "next": [
+   "nameunit.com",
+   "wheelroot.com",
+   "onlineconverter.com"
+  ],
+  "beaten": 0,
+  "total": 1266
  }
 }

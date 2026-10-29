@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a0f; color:#eee; font-family:system-ui; overflow:hidden; }
+#c { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,.6); padding:8px; border-radius:8px; font-size:12px; }
+button { margin:2px; padding:4px 8px; }
+.card { position:absolute; background:rgba(20,30,50,.8); border:1px solid #4af; padding:4px; border-radius:4px; font-size:10px; pointer-events:none; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Compute Genome Physics · Verse lab</title>
+<meta name="description" content="True WebGPU compute shaders implement both particle physics and per-agent tiny MLP evaluation for a multi-agent competitive swarm.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Compute Genome Physics · Verse lab">
+<meta property="og:description" content="True WebGPU compute shaders implement both particle physics and per-agent tiny MLP evaluation for a multi-agent competitive swarm.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f181-webgpu-compute-genome-physics/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f181-webgpu-compute-genome-physics/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F181 WebGPU Compute Genome Physics</div>
+  <div id="status">Init...</div>
+  <button id="seal">Seal Champion</button>
+  <button id="transfer">Force Transfer</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Compute Genome Physics</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

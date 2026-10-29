@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<style>
+  :root { --fit: 0.3; --hue: 210; }
+  body {
+    margin: 0; background: #0a0a12; color: #e0e8ff;
+    font-family: system-ui, sans-serif; overflow: hidden; height: 100vh;
+    filter: hue-rotate(calc(var(--hue) * 1deg)) brightness(calc(0.9 + var(--fit) * 0.2));
+  }
+  #arena {
+    position: relative; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at 50% 50%, #12182a 0%, #05050a 70%);
+  }
+  .agent {
+    position: absolute; width: 72px; height: 48px; border-radius: 8px;
+    background: rgba(30, 60, 120, 0.7); border: 1px solid rgba(100, 180, 255, 0.6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #a0d0ff; pointer-events: none; user-select: none;
+    box-shadow: 0 0 12px rgba(80, 160, 255, calc(var(--fit) * 0.4));
+    transition: background 0.3s;
+  }
+  .agent.champ { border-color: #ffd700; background: rgba(80, 60, 20, 0.8); }
+  .deposit {
+    position: absolute; width: 16px; height: 16px; border-radius: 50%;
+    background: radial-gradient(circle, #ff6, #f80); pointer-events: none;
+    box-shadow: 0 0 20px #ff0; opacity: 0.9;
+  }
+  #hud {
+    position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6);
+    padding: 8px 12px; border-radius: 6px; font-size: 12px; z-index: 10;
+    border: 1px solid rgba(100,180,255,0.3);
+  }
+  button, input { margin: 2px; font-size: 12px; }
+  #status { font-family: monospace; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Neural Policy DOM Arena · Verse lab</title>
+<meta name="description" content="Novel combination deliberately branching from the recent particle-swarm / fluid-lattice / residual-attention / gesture-evolved field cluster (F232–F239):">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Neural Policy DOM Arena · Verse lab">
+<meta property="og:description" content="Novel combination deliberately branching from the recent particle-swarm / fluid-lattice / residual-attention / gesture-evolved field cluster (F232–F239):">
+<meta property="og:url" content="https://a-to-mind.com/lab/f240-webgpu-neural-dom-policy-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f240-webgpu-neural-dom-policy-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu webxr" defer></script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="arena"></div>
+<div id="hud">
+  <div id="status">init…</div>
+  <button id="seal">Seal champion</button>
+  <button id="xr">Enter XR (probe)</button>
+  <label>Agents <input id="nAgents" type="range" min="4" max="16" value="8"></label>
+  <div>Tilt device or click to place energy deposits. Agents compete via MLP policies.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Neural Policy DOM Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

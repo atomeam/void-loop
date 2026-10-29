@@ -166,6 +166,8 @@ async function run(text, api) {
   if (page && api.stage && api.stage.miniature) {
     const slot = document.createElement('div'); slot.className = 'tip-mini'; slot.style.cssText = 'height:170px;margin:10px 0 4px;border-radius:10px;overflow:hidden';
     const list = page.querySelector('ul'); if (list) list.after(slot); else page.appendChild(slot);
+    // the 3D piece is this card's picture (as coin.js's coins are): the art plate steps aside, or its 330 px push the piece below the card's fold, where it never draws; if WebGL fails the slot goes and the plate comes back
+    slot.insertAdjacentHTML('beforebegin', '<style>.vpage:has(.tip-mini) .vc-art{display:none}</style>'); /* void-review: ok: a fixed style, nothing from the ask */
     api.stage.miniature(slot, 'tip', { bill: q.bill + r.tax, tip: r.tip, total: r.total, people: q.people, pct: q.pct, currency: (moneyFmt(0, q.currency).match(/^[^\d]*/) || [''])[0] || '$' }, { key: 'tip-page', place: 'inside', label: '3D receipt and coins' }).catch(() => slot.remove());
   }
   return 'tip';

@@ -1,0 +1,197 @@
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const energyEl = document.getElementById('energy');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const N = 4;
+const agents = [];
+const cards = [];
+let energyX = W/2, energyY = H/2, energy = 0;
+let orient = { beta: 0, gamma: 0 };
+let useOrient = false;
+
+function randn() { return (Math.random() - 0.5) * 2; }
+function makeWeights() {
+  return {
+    wih: Array.from({length: 6}, () => Array.from({length: 4}, randn)),
+    bh: Array.from({length: 6}, randn),
+    who: Array.from({length: 3}, () => Array.from({length: 6}, randn)),
+    bo: Array.from({length: 3}, randn),
+    whh: Array.from({length: 6}, () => Array.from({length: 6}, () => randn() * 0.3))
+  };
+}
+function tanh(x) { return Math.tanh(x); }
+function forward(w, h, inp) {
+  const hidden = new Array(6);
+  for (let i = 0; i < 6; i++) {
+    let s = w.bh[i];
+    for (let j = 0; j < 4; j++) s += w.wih[i][j] * inp[j];
+    for (let j = 0; j < 6; j++) s += w.whh[i][j] * h[j];
+    hidden[i] = tanh(s);
+  }
+  const out = new Array(3);
+  for (let i = 0; i < 3; i++) {
+    let s = w.bo[i];
+    for (let j = 0; j < 6; j++) s += w.who[i][j] * hidden[j];
+    out[i] = tanh(s);
+  }
+  return { out, hidden };
+}
+function mutate(w, rate = 0.15) {
+  const m = JSON.parse(JSON.stringify(w));
+  for (const k of ['wih','who','whh']) {
+    for (let i = 0; i < m[k].length; i++)
+      for (let j = 0; j < m[k][i].length; j++)
+        if (Math.random() < rate) m[k][i][j] += randn() * 0.4;
+  }
+  for (const k of ['bh','bo'])
+    for (let i = 0; i < m[k].length; i++)
+      if (Math.random() < rate) m[k][i] += randn() * 0.3;
+  return m;
+}
+
+for (let i = 0; i < N; i++) {
+  const a = {
+    id: i,
+    w: makeWeights(),
+    h: Array(6).fill(0),
+    x: Math.random() * W, y: Math.random() * H,
+    vx: 0, vy: 0, scale: 1,
+    fitness: 0, energy: 0,
+    color: `hsl(${i * 90 + 200}, 70%, 60%)`
+  };
+  agents.push(a);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<strong>Agent ${i}</strong><div class="fit">0</div>`;
+  document.body.appendChild(card);
+  cards.push(card);
+}
+
+function updateOrientation(e) {
+  if (e.beta != null) { orient.beta = e.beta; orient.gamma = e.gamma; useOrient = true; }
+}
+addEventListener('deviceorientation', updateOrientation);
+
+let mx = W/2, my = H/2;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; energyX = mx; energyY = my; energy = Math.min(1, energy + 0.08); });
+addEventListener('pointerdown', e => { energyX = e.clientX; energyY = e.clientY; energy = 1; });
+
+async function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('void-f185', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('seals');
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function seal() {
+  try {
+    const best = agents.reduce((a, b) => a.fitness > b.fitness ? a : b);
+    const db = await openDB();
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').put({ w: best.w, h: best.h, fitness: best.fitness, t: Date.now() }, 'champion');
+    statusEl.textContent = `Sealed champion Agent ${best.id} (fit ${best.fitness.toFixed(2)}) to IndexedDB`;
+  } catch (e) { statusEl.textContent = 'Seal failed (IndexedDB blocked)'; }
+}
+async function loadSeal() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction('seals', 'readonly');
+    const req = tx.objectStore('seals').get('champion');
+    req.onsuccess = () => {
+      if (req.result) {
+        agents[0].w = req.result.w;
+        agents[0].h = req.result.h || Array(6).fill(0);
+        agents[0].fitness = req.result.fitness || 0;
+        statusEl.textContent = 'Loaded sealed champion into Agent 0';
+      }
+    };
+  } catch {}
+}
+loadSeal();
+
+document.getElementById('seal').onclick = seal;
+document.getElementById('transfer').onclick = () => transfer(true);
+document.getElementById('reset').onclick = () => { agents.forEach(a => { a.w = makeWeights(); a.h = Array(6).fill(0); a.fitness = 0; }); statusEl.textContent = 'Agents reset'; };
+
+let tick = 0, lastTransfer = 0;
+function transfer(force = false) {
+  if (!force && tick - lastTransfer < 480) return;
+  lastTransfer = tick;
+  const sorted = [...agents].sort((a, b) => b.fitness - a.fitness);
+  const champ = sorted[0];
+  const worst = sorted[sorted.length - 1];
+  worst.w = mutate(champ.w, 0.25);
+  worst.h = Array(6).fill(0);
+  worst.fitness *= 0.5;
+  statusEl.textContent = `Transfer: Agent ${champ.id} → Agent ${worst.id}`;
+}
+
+function step() {
+  tick++;
+  energy *= 0.985;
+  const ox = useOrient ? orient.gamma / 45 : (mx / W - 0.5) * 2;
+  const oy = useOrient ? orient.beta / 45 : (my / H - 0.5) * 2;
+  const t = Math.sin(tick * 0.02);
+
+  for (const a of agents) {
+    const inp = [ox, oy, a.fitness / 10, t];
+    const { out, hidden } = forward(a.w, a.h, inp);
+    a.h = hidden;
+    a.vx += out[0] * 1.8;
+    a.vy += out[1] * 1.8;
+    a.scale = 0.7 + (out[2] + 1) * 0.5;
+    a.vx *= 0.92; a.vy *= 0.92;
+    a.x += a.vx; a.y += a.vy;
+    a.x = Math.max(70, Math.min(W - 70, a.x));
+    a.y = Math.max(50, Math.min(H - 50, a.y));
+    const dx = a.x - energyX, dy = a.y - energyY;
+    const dist = Math.hypot(dx, dy);
+    const absorb = Math.max(0, 1 - dist / 180) * energy;
+    a.energy = absorb;
+    a.fitness = a.fitness * 0.99 + absorb * 2 + (1 / (1 + Math.hypot(a.vx, a.vy))) * 0.1;
+  }
+
+  if (tick % 480 === 0) transfer();
+
+  ctx.fillStyle = 'rgba(10,10,12,0.25)';
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(124,92,191,0.3)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < N; i++) {
+    const a = agents[i];
+    ctx.beginPath();
+    ctx.arc(a.x, a.y, 6 + a.energy * 20, 0, Math.PI * 2);
+    ctx.stroke();
+    if (i > 0) {
+      ctx.beginPath();
+      ctx.moveTo(agents[0].x, agents[0].y);
+      ctx.lineTo(a.x, a.y);
+      ctx.stroke();
+    }
+  }
+  if (energy > 0.05) {
+    ctx.fillStyle = `rgba(255,255,255,${energy * 0.4})`;
+    ctx.beginPath();
+    ctx.arc(energyX, energyY, 30 * energy, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const champ = agents.reduce((a, b) => a.fitness > b.fitness ? a : b);
+  for (let i = 0; i < N; i++) {
+    const a = agents[i];
+    const card = cards[i];
+    card.style.left = (a.x - 70) + 'px';
+    card.style.top = (a.y - 45) + 'px';
+    card.style.transform = `scale(${a.scale})`;
+    card.style.borderColor = a === champ ? '#f0c040' : a.color;
+    card.classList.toggle('champion', a === champ);
+    card.querySelector('.fit').textContent = a.fitness.toFixed(2);
+  }
+
+  requestAnimationFrame(step);
+}
+step();

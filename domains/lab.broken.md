@@ -1,0 +1,16 @@
+# Lab experiments that did not run (tools/lab-sync.mjs writes this file; do not edit by hand)
+
+Each line is a job for the free coder: the lab draft imported, opened in headless Chromium and failed, so it is NOT published at /lab/ (the catalog marks it broken).
+Fix the draft in the lab repo or in a copy, then run `node tools/lab-sync.mjs --drafts <drafts dir> --only <slug>`; a draft that now runs is published and leaves this list.
+
+- f311-webrtc-sealed-orientation-mlp-dom-arena | draft: drafts/F311-webrtc-sealed-orientation-mlp-dom-arena/index.html | error: pageerror: a is not defined | try: a name used and never declared (a helper or constant that was dropped): find the missing declaration and restore it
+- f275-webgpu-acoustic-residual-spatial-mind | draft: drafts/F275-webgpu-acoustic-residual-spatial-mind/index.html | error: pageerror: Cannot read properties of undefined (reading '0') | try: the script reads an element or value that is not there: check the element ids and the order the script runs in
+- f270-webgpu-nca-llm-steered-morph | draft: drafts/F270-webgpu-nca-llm-steered-morph/index.html | error: pageerror: Identifier 'e' has already been declared | try: two let or const of one name in one script: rename or merge them
+- f244-webxr-hand-neural-softbody | draft: drafts/F244-webxr-hand-neural-softbody/index.html | error: pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found. | try: IndexedDB store missing: create it in onupgradeneeded or bump the database version
+- f213-webgpu-neural-kernel-dom-chain | draft: drafts/F213-webgpu-neural-kernel-dom-chain/index.html | error: pageerror: Unexpected token '...' | try: a syntax error: run node --check on the page's app.js and fix the line it names
+- f205-rd-attention-kernel | draft: drafts/F205-rd-attention-kernel/index.html | error: truncated file: a <script> never closes, so the page ends mid-code | try: open it in a browser, read the console, fix the first error
+- f205-webrtc-orientation-dom-agent-competition | draft: drafts/F205-webrtc-orientation-dom-agent-competition/index.html | error: pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found. | try: IndexedDB store missing: create it in onupgradeneeded or bump the database version
+- f196-deviceorientation-webgpu-springmass-hybrid | draft: drafts/F196-deviceorientation-webgpu-springmass-hybrid/index.html | error: pageerror: Invalid left-hand side in assignment | try: a syntax error: run node --check on the page's app.js and fix the line it names
+- f196-webgpu-embedding-lattice-mind | draft: drafts/F196-webgpu-embedding-lattice-mind/index.html | error: pageerror: cemb is not defined | try: a name used and never declared (a helper or constant that was dropped): find the missing declaration and restore it
+- f026-spatial-graph-mind | draft: drafts/F026-spatial-graph-mind/index.html | error: pageerror: canvas.getContext is not a function | try: the script reads an element or value that is not there: check the element ids and the order the script runs in
+- f026-webxr-nca-mindscape | draft: drafts/F026-webxr-nca-mindscape/index.html | error: blank page: nothing was painted after 2 seconds | try: it paints nothing: open it, find why the script draws no canvas or text (a stub file, a missing element id)

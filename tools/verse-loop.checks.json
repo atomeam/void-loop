@@ -1,0 +1,4 @@
+[
+  { "name": "guard-source", "cmd": "node tools/guard-source.mjs", "timeoutMin": 5 },
+  { "name": "growth-suites", "cmd": "node tools/growth-suites.mjs", "timeoutMin": 15 }
+]

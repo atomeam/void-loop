@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root { --bg:#0a0a12; --fg:#e8e8f0; --acc:#6cf; --card:#1a1a28; }
+body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; }
+#ui { position:absolute; top:8px; left:8px; z-index:10; max-width:320px; background:rgba(10,10,18,.85); padding:10px; border-radius:8px; }
+button, input, textarea { background:#222; color:var(--fg); border:1px solid #444; padding:4px 8px; margin:2px; border-radius:4px; }
+textarea { width:100%; height:60px; font-size:11px; }
+.agent-card { position:absolute; background:var(--card); border:1px solid #3a3a50; border-radius:6px; padding:4px 6px; font-size:11px; pointer-events:auto; cursor:grab; min-width:80px; opacity:.9; }
+.agent-card.winner { border-color:#6f6; box-shadow:0 0 8px #6f6; }
+#status { font-size:12px; color:#aaa; margin-top:4px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebRTC Sealed RNN Orientation Shared Arena · Verse lab</title>
+<meta name="description" content="True WebRTC DataChannel shared multi-agent field. Each agent is a hybrid DOM card + canvas particle driven by a local tiny Elman RNN whose genome (weights) is">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebRTC Sealed RNN Orientation Shared Arena · Verse lab">
+<meta property="og:description" content="True WebRTC DataChannel shared multi-agent field. Each agent is a hybrid DOM card + canvas particle driven by a local tiny Elman RNN whose genome (weights) is">
+<meta property="og:url" content="https://a-to-mind.com/lab/f286-webrtc-sealed-rnn-orientation-shared-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f286-webrtc-sealed-rnn-orientation-shared-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <strong>F286 WebRTC Sealed RNN Orientation Shared Arena</strong><br>
+  <button id="oriBtn">Enable Orientation</button>
+  <button id="addBtn">Add Agent</button>
+  <button id="sealBtn">Seal Winner</button>
+  <button id="offerBtn">Create Offer</button>
+  <button id="answerBtn">Create Answer</button>
+  <div id="status">Local only. Tilt device or drag cards. Click canvas to attract.</div>
+  <textarea id="sdpIn" placeholder="Paste remote SDP here"></textarea>
+  <button id="connectBtn">Connect Peer</button>
+  <div id="sdpOut" style="font-size:10px; word-break:break-all; max-height:80px; overflow:auto; background:#111; padding:4px; margin-top:4px;"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebRTC Sealed RNN Orientation Shared Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

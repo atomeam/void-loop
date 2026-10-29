@@ -413,6 +413,21 @@
     ]
    }
   ],
-  "queued": []
+  "queued": [
+   {
+    "target": "feature:convertlive-com-e9d52132",
+    "feature": "Bright color theme",
+    "host": "convertlive.com",
+    "at": "2026-10-29",
+    "id": "mvswwxvd"
+   },
+   {
+    "target": "feature:convertlive-com-f78edf99",
+    "feature": "Dark color theme",
+    "host": "convertlive.com",
+    "at": "2026-10-29",
+    "id": "mvswwyjf"
+   }
+  ]
  }
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,20,0.7); padding:10px 14px; border-radius:8px; border:1px solid #446; max-width:280px; }
+button { background:#224; color:#cef; border:1px solid #68a; padding:6px 12px; margin:4px; border-radius:4px; cursor:pointer; }
+button:hover { background:#336; }
+.status { font-size:12px; margin-top:6px; opacity:0.8; }
+#anchors { position:absolute; pointer-events:none; }
+.anchor { position:absolute; width:40px; height:40px; background:rgba(100,180,255,0.3); border:2px solid #8cf; border-radius:50%; transform:translate(-50%,-50%); transition:transform 0.1s; pointer-events:auto; cursor:grab; }
+.anchor.dragging { cursor:grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand WebGPU Neural Cloth Mind · Verse lab</title>
+<meta name="description" content="True WebXR hand tracking as primary causal input into a particle-cloth field whose motion is modulated by a local tiny residual neural kernel (4-weight vector).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand WebGPU Neural Cloth Mind · Verse lab">
+<meta property="og:description" content="True WebXR hand tracking as primary causal input into a particle-cloth field whose motion is modulated by a local tiny residual neural kernel (4-weight vector).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f281-webxr-hand-webgpu-neural-cloth-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f281-webxr-hand-webgpu-neural-cloth-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="xrBtn">Enter WebXR Hand</button>
+  <button id="sealBtn">Seal Genome</button>
+  <button id="resetBtn">Reset</button>
+  <div class="status" id="status">Canvas2D fallback · pointer control</div>
+</div>
+<div id="anchors"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand WebGPU Neural Cloth Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

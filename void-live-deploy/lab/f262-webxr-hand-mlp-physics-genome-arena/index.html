@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { margin:0; overflow:hidden; background:#0a0a12; color:#ccc; font-family:system-ui,sans-serif; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:fixed; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:10px; border-radius:8px; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#224; color:#fff; border:1px solid #446; border-radius:4px; cursor:pointer; }
+#status { font-size:12px; margin-top:6px; }
+.agent-label { position:absolute; pointer-events:none; font-size:10px; color:#fff; text-shadow:0 0 2px #000; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand-Tracked Multi-Agent MLP Soft-Constraint Physics Arena with Sealed Genome Transfer · Verse lab</title>
+<meta name="description" content="Novel combination: True WebXR hand tracking (index fingertip) as causal spatial input into a multi-agent arena.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand-Tracked Multi-Agent MLP Soft-Constraint Physics Arena with Sealed Genome Transfer · Verse lab">
+<meta property="og:description" content="Novel combination: True WebXR hand tracking (index fingertip) as causal spatial input into a multi-agent arena.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f262-webxr-hand-mlp-physics-genome-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f262-webxr-hand-mlp-physics-genome-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>F262 Hand-MLP Physics Arena</div>
+  <button id="xrBtn">Enter WebXR Hand</button>
+  <button id="sealBtn">Seal Selected Genome</button>
+  <button id="loadBtn">Load Sealed → All</button>
+  <button id="resetBtn">Reset Agents</button>
+  <div id="status">Pointer mode. Click to select agent. XR for true hand.</div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand-Tracked Multi-Agent MLP Soft-Constraint Physics Arena with Sealed Genome Transfer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

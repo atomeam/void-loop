@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root { --hue: 200; --scale: 1; }
+body { margin:0; background:#0a0a12; color:#cde; font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+#hud { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:6px; max-width:320px; }
+#canvas { display:block; width:100vw; height:100vh; }
+.orb { position:absolute; width:48px; height:48px; border-radius:50%; background:hsla(var(--hue),70%,50%,.7); border:2px solid #fff3; display:flex; align-items:center; justify-content:center; font-size:11px; pointer-events:none; transform:translate(-50%,-50%); transition:none; will-change:transform; }
+button { background:#123; color:#cde; border:1px solid #456; padding:4px 8px; border-radius:4px; margin:2px; cursor:pointer; }
+button:hover { background:#234; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-hand-rnn-dom-physics · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: webxr-hand-rnn-dom-physics.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-hand-rnn-dom-physics · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: webxr-hand-rnn-dom-physics.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f200-webxr-hand-rnn-dom-physics/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f200-webxr-hand-rnn-dom-physics/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <strong>F200 WebXR Hand-RNN-DOM Physics</strong><br>
+  <button id="xrBtn">Enter XR</button>
+  <button id="sealBtn">Seal Genome</button>
+  <button id="resetBtn">Reset</button>
+  <div id="status">Flat mode · mouse/touch/orient</div>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-hand-rnn-dom-physics</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

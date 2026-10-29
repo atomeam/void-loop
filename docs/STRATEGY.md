@@ -30,6 +30,8 @@ Monetization first. Velocity. Every domain.
 
 Nothing is ever finished; everything upgrades for ever. No item is marked done anywhere: each keeps a rolling next upgrade.
 
+- **Parity inventory, a required step of every lap (owner, 2026-10-28: "we actually want to outdo them all in every way"):** for every tower site, `node tools/site-history.mjs --missing` (a cited timeline in `docs/HISTORY/<slug>.md`: every fact with its source link, unknowns marked unknown), `node tools/parity.mjs --scan <slug>` (the original's live menus and buttons), fix or add its rows in `tools/parity-catalog.mjs`, then `node tools/parity.mjs --write`. `docs/PARITY/<slug>.md` lists every feature the original offers as have, partial, missing or unreviewed, with evidence on both sides; `docs/PARITY/README.md` ranks the missing ones by the visitors they reach, and the lap builds from the top of that list. An obituary (/obituaries/) says "beaten" only when its parity page has 0 missing, partial or unreviewed rows and the tower gate's 9 of 9 has evidence (`lib/obituary.js`, `tools/parity.test.mjs`); until then it says "in progress" with its match % and what is still missing, and keeps its homage text.
+
 - **What a lap covers:** every item in `void-live-deploy/lap.items.json` (written by `node tools/lap-items.mjs --write`): each skill, the
   surfaces (games, cards, the book, the store, films, the podcast, Mind Field, Tilt Arena, the loop itself), every doc, every archived repo in
   `archive/repos/` (its reusable parts), every check and tool, every business plan in `domains/` and the Forethinkers research. Plans and

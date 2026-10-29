@@ -196,3 +196,17 @@ test('travel time: minutes on a timed event, kept in the .ics the way Apple writ
   assert.equal(C.normalize({ title: 'x', start: '2026-11-05T15:00', travel: 0 }).travel, undefined); assert.equal(C.normalize({ title: 'x', start: '2026-11-05', allDay: true, travel: 20 }).travel, undefined); assert.equal(C.normalize({ title: 'x', start: '2026-11-05T15:00', travel: 9999 }).travel, 300);
   const t = C.icsOf([e]); assert.match(t, /X-APPLE-TRAVEL-DURATION;VALUE=DURATION:PT25M/); assert.equal(C.parseIcs(t)[0].travel, 25);
 });
+test('a video call on an event, as Google Calendar adds one: made, kept, carried by .ics and invites, read back from Google and Zoom .ics', () => {
+  let i = 0; const rand = () => (i++ * 7 % 24) / 24;
+  const v = C.videoLink('Team sync: Q3 plans!', rand);
+  assert.match(v, /^https:\/\/meet\.jit\.si\/Verse-TeamSyncQ3Plans-[a-z]{12}$/); assert.notEqual(C.videoLink('x'), C.videoLink('x'));
+  assert.match(C.videoLink(''), /^https:\/\/meet\.jit\.si\/Verse-[a-z]{12}$/);
+  const e = C.normalize({ title: 'Sync', start: '2026-11-02T10:00', video: v }); assert.equal(e.video, v);
+  for (const bad of ['javascript:alert(1)', 'http://meet.jit.si/x', 'https://a b', '']) assert.equal(C.normalize({ title: 'S', start: '2026-11-02T10:00', video: bad }).video, undefined);
+  const ics = C.icsOf([e]); assert.match(ics, /\r\nURL:https:\/\/meet\.jit\.si\//); assert.match(ics, /CONFERENCE;VALUE=URI;FEATURE=VIDEO/);
+  assert.equal(C.parseIcs(ics)[0].video, v);
+  assert.equal(C.parseIcs('BEGIN:VEVENT\r\nSUMMARY:Call\r\nDTSTART:20261102T100000\r\nX-GOOGLE-CONFERENCE:https://meet.google.com/abc-defg-hij\r\nEND:VEVENT')[0].video, 'https://meet.google.com/abc-defg-hij');
+  assert.equal(C.parseIcs('BEGIN:VEVENT\r\nSUMMARY:Call\r\nDTSTART:20261102T100000\r\nURL:https://example.com/page\r\nEND:VEVENT')[0].video, undefined);
+  const inv = C.inviteLink({ ...e, invitees: ['a@b.co'] }, 'https://a-to-mind.com'); assert.match(decodeURIComponent(inv.mailto), /Video call: https:\/\/meet\.jit\.si\//);
+  assert.equal(C.eventFromLink(inv.url.split('?e=')[1]).video, v);
+});

@@ -1,0 +1,212 @@
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+addEventListener('resize', resize); resize();
+
+let audioCtx, analyser, micStream, dataArray, bins = 8;
+let spectrum = new Float32Array(bins).fill(0.3);
+let predicted = new Float32Array(bins).fill(0.3);
+let residual = new Float32Array(bins);
+let fitness = 0.5, accuracy = 0.5, interaction = 0;
+let weights = null; // best MLP
+let usingMic = false;
+
+const N = 80;
+const particles = Array.from({length: N}, () => ({
+  x: Math.random()*W, y: Math.random()*H,
+  vx: 0, vy: 0, life: 1
+}));
+
+// Simple MLP forward (8→12→8)
+function mlp(input, w) {
+  if (!w) return input.map(v => v * 0.8 + 0.1);
+  const h = new Float32Array(12);
+  for (let i = 0; i < 12; i++) {
+    let s = w.b1[i];
+    for (let j = 0; j < 8; j++) s += input[j] * w.w1[j*12 + i];
+    h[i] = Math.tanh(s);
+  }
+  const out = new Float32Array(8);
+  for (let i = 0; i < 8; i++) {
+    let s = w.b2[i];
+    for (let j = 0; j < 12; j++) s += h[j] * w.w2[j*8 + i];
+    out[i] = 1 / (1 + Math.exp(-s)); // sigmoid
+  }
+  return out;
+}
+
+// Worker for evolution
+const workerCode = `
+let pop = [];
+function randomGenome() {
+  return {
+    w1: Float32Array.from({length: 8*12}, () => (Math.random()-0.5)*0.5),
+    b1: Float32Array.from({length: 12}, () => (Math.random()-0.5)*0.2),
+    w2: Float32Array.from({length: 12*8}, () => (Math.random()-0.5)*0.5),
+    b2: Float32Array.from({length: 8}, () => (Math.random()-0.5)*0.2),
+    fit: 0
+  };
+}
+function mutate(g) {
+  const n = JSON.parse(JSON.stringify({w1:Array.from(g.w1),b1:Array.from(g.b1),w2:Array.from(g.w2),b2:Array.from(g.b2)}));
+  for (let k of ['w1','b1','w2','b2']) {
+    for (let i = 0; i < n[k].length; i++) if (Math.random() < 0.15) n[k][i] += (Math.random()-0.5)*0.3;
+  }
+  return {w1: Float32Array.from(n.w1), b1: Float32Array.from(n.b1), w2: Float32Array.from(n.w2), b2: Float32Array.from(n.b2), fit: 0};
+}
+self.onmessage = e => {
+  if (e.data.type === 'init') {
+    pop = Array.from({length: 6}, randomGenome);
+  }
+  if (e.data.type === 'eval') {
+    const {error, inter} = e.data;
+    pop.forEach(g => g.fit = (1 - error) * 0.7 + inter * 0.3 + Math.random()*0.05);
+    pop.sort((a,b) => b.fit - a.fit);
+    const best = pop[0];
+    // replace worst with mutants of best
+    for (let i = 3; i < 6; i++) pop[i] = mutate(best);
+    self.postMessage({type: 'best', weights: {w1:Array.from(best.w1), b1:Array.from(best.b1), w2:Array.from(best.w2), b2:Array.from(best.b2)}, fit: best.fit});
+  }
+};
+`;
+let worker;
+try {
+  const blob = new Blob([workerCode], {type: 'application/javascript'});
+  worker = new Worker(URL.createObjectURL(blob));
+  worker.postMessage({type: 'init'});
+  worker.onmessage = e => {
+    if (e.data.type === 'best') {
+      const d = e.data.weights;
+      weights = {w1: Float32Array.from(d.w1), b1: Float32Array.from(d.b1), w2: Float32Array.from(d.w2), b2: Float32Array.from(d.b2)};
+      fitness = e.data.fit;
+    }
+  };
+} catch(e) { statusEl.textContent += ' · Worker blocked'; }
+
+async function enableAudio() {
+  audioCtx = audioCtx || new AudioContext();
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({audio: true});
+    const src = audioCtx.createMediaStreamSource(micStream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    src.connect(analyser);
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    usingMic = true;
+    statusEl.textContent = 'Mic live · evolving mind';
+  } catch(err) {
+    // synthetic
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.frequency.value = 220;
+    gain.gain.value = 0.05;
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    gain.connect(analyser);
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    statusEl.textContent = 'Synthetic tone · evolving mind';
+  }
+}
+document.getElementById('mic').onclick = enableAudio;
+
+function sampleSpectrum() {
+  if (!analyser) {
+    // synthetic drift
+    for (let i = 0; i < bins; i++) spectrum[i] = 0.3 + 0.2*Math.sin(Date.now()/800 + i);
+    return;
+  }
+  analyser.getByteFrequencyData(dataArray);
+  const step = Math.floor(dataArray.length / bins);
+  for (let i = 0; i < bins; i++) {
+    let sum = 0;
+    for (let j = 0; j < step; j++) sum += dataArray[i*step + j];
+    spectrum[i] = sum / step / 255;
+  }
+}
+
+let lastEval = 0;
+function step(t) {
+  sampleSpectrum();
+  predicted = mlp(spectrum, weights);
+  let err = 0;
+  for (let i = 0; i < bins; i++) {
+    residual[i] = predicted[i] - spectrum[i];
+    err += residual[i]*residual[i];
+  }
+  err = Math.sqrt(err / bins);
+  accuracy = 1 - Math.min(1, err*2);
+
+  // particles
+  const forceScale = 80 * (1 + err);
+  for (const p of particles) {
+    const ang = (p.x / W + p.y / H) * Math.PI * 2;
+    const r = residual[Math.floor((p.x / W) * bins) % bins];
+    p.vx += Math.cos(ang) * r * forceScale * 0.01;
+    p.vy += Math.sin(ang) * r * forceScale * 0.01;
+    p.vx *= 0.92; p.vy *= 0.92;
+    p.x = (p.x + p.vx + W) % W;
+    p.y = (p.y + p.vy + H) % H;
+  }
+
+  // interaction from pointer
+  interaction *= 0.95;
+  if (pointer.active) {
+    for (const p of particles) {
+      const dx = p.x - pointer.x, dy = p.y - pointer.y;
+      if (dx*dx + dy*dy < 60*60) interaction += 0.02;
+    }
+  }
+
+  if (worker && t - lastEval > 1000) {
+    worker.postMessage({type: 'eval', error: err, inter: Math.min(1, interaction)});
+    lastEval = t;
+  }
+
+  // morph
+  const m = accuracy * 0.7 + fitness * 0.3;
+  document.documentElement.style.setProperty('--h', (220 + m*140) + 'deg');
+  document.documentElement.style.setProperty('--blur', (m*1.5) + 'px');
+  document.documentElement.style.setProperty('--scale', (1 + m*0.04));
+  statusEl.textContent = (usingMic ? 'Mic' : 'Synth') + ` · acc ${(accuracy*100).toFixed(0)}% · fit ${fitness.toFixed(2)}`;
+
+  // draw
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = `hsla(${220 + accuracy*80}, 70%, 65%, 0.8)`;
+  for (const p of particles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2.5 + accuracy*2, 0, Math.PI*2);
+    ctx.fill();
+  }
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+
+const pointer = {x:0, y:0, active:false};
+addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true; });
+addEventListener('pointerdown', e => { pointer.active = true; });
+addEventListener('pointerup', () => pointer.active = false);
+
+document.getElementById('seal').onclick = async () => {
+  if (!weights) return alert('No mind yet');
+  const data = {weights: {w1:Array.from(weights.w1), b1:Array.from(weights.b1), w2:Array.from(weights.w2), b2:Array.from(weights.b2)}, fitness, accuracy, ts: Date.now()};
+  const str = JSON.stringify(data);
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  try {
+    const db = await new Promise((res,rej) => {
+      const r = indexedDB.open('void-f042', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('seals');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').put({hash, data}, hash);
+    statusEl.textContent += ' · sealed ' + hash;
+  } catch(e) { alert('Seal failed: ' + e); }
+};

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body { margin: 0; font-family: system-ui, sans-serif; background: #0a0a12; color: #eee; overflow: hidden; }
+#hud { position: absolute; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px; border-radius: 6px; font-size: 13px; max-width: 280px; }
+button, input { margin: 2px; padding: 4px 8px; background: #222; color: #fff; border: 1px solid #555; border-radius: 4px; }
+.chain-card { position: absolute; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; pointer-events: none; border: 2px solid rgba(255,255,255,0.3); transition: transform 0.05s; }
+.orb { position: absolute; width: 18px; height: 18px; background: gold; border-radius: 50%; pointer-events: none; box-shadow: 0 0 10px gold; }
+#canvas { position: absolute; inset: 0; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand-Driven MLP DOM Chain Competition · Verse lab</title>
+<meta name="description" content="Up to 4 competitive chains (agents), each controlled by a 4-input → 2-output tiny MLP (~20 weights).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand-Driven MLP DOM Chain Competition · Verse lab">
+<meta property="og:description" content="Up to 4 competitive chains (agents), each controlled by a 4-input → 2-output tiny MLP (~20 weights).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f202-webxr-hand-mlp-dom-chain-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f202-webxr-hand-mlp-dom-chain-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <div>F202 · Hand-Driven MLP DOM Chains</div>
+  <div id="status">Pointer mode. Click to place orbs.</div>
+  <button id="startXR">Enter WebXR (hand)</button>
+  <button id="seal">Seal Winner</button>
+  <button id="inject">Inject Sealed</button>
+  <button id="reset">Reset</button>
+  <div id="scores"></div>
+  <div id="sealInfo"></div>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand-Driven MLP DOM Chain Competition</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

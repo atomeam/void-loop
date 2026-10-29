@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --hue: 210; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .card {
+    position: absolute; width: 140px; height: 90px; border-radius: 12px;
+    background: hsl(var(--hue), 60%, 18%); border: 1px solid hsl(var(--hue), 70%, 45%);
+    color: #fff; padding: 8px; box-sizing: border-box; pointer-events: none;
+    transition: background 0.3s; font-size: 13px; line-height: 1.3;
+    will-change: transform, left, top;
+  }
+  .hud {
+    position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  button {
+    background: #222; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  }
+  button:hover { background: #333; }
+  #status { position: absolute; bottom: 10px; left: 10px; z-index: 10; font-size: 12px; opacity: 0.8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Competitive MLP DOM Field · Verse lab</title>
+<meta name="description" content="True WebXR hand-tracking (XRHand joints: palm, index tip, thumb tip relative) as causal multi-channel input to a population of competitive local tiny MLPs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Competitive MLP DOM Field · Verse lab">
+<meta property="og:description" content="True WebXR hand-tracking (XRHand joints: palm, index tip, thumb tip relative) as causal multi-channel input to a population of competitive local tiny MLPs.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f188-webxr-hand-competitive-mlp-dom-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f188-webxr-hand-competitive-mlp-dom-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud">
+  <button id="xr">Enter XR</button>
+  <button id="seal">Seal Champion</button>
+  <button id="transfer">Force Transfer</button>
+  <button id="reset">Reset</button>
+</div>
+<div id="status">Pointer mode · 3 agents · fitness —</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Competitive MLP DOM Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

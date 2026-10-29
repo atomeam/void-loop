@@ -87,7 +87,7 @@ export function cardModel({ will, reflect, self } = {}) {
   // card puts the whole reason in brackets, and brackets inside brackets read as a glitch (owner, 2026-10-19)
   const wants = items(wl).map((w) => ({ text: sentence(w.i_want || w.title), because: sentence(w.because).replace(/\s*\(([^()]*)\)/g, ' · $1').replace(/^\((.*)\)$/, '$1'), kind: sentence(w.kind), ...whyOf([w.source ? 'Where it came from: ' + sentence(w.source) + '.' : '', w.evidence && sentence(w.evidence) !== sentence(w.because) ? 'Evidence: ' + sentence(w.evidence) + '.' : '']) })).filter((w) => w.text).slice(0, MAX);
   const ents = reflect && Array.isArray(reflect.entries) ? reflect.entries : [];
-  const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...whyOf(traceOf(a, ents)) })).filter((a) => a.text).slice(0, MAX);
+  const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...(a.held ? { held: sentence(a.held) } : {}), ...whyOf(traceOf(a, ents)) })).filter((a) => a.text).slice(0, MAX);
   const inbox = items(op).map((o) => ({ text: sentence(o.ask || o.title), from: sentence(o.from) })).filter((o) => o.text).slice(0, MAX);
   return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow), lap: will && will.lap && will.lap.line ? String(will.lap.line) + (will.lap.onlySite && will.lap.onlySite.line ? ' · ' + will.lap.onlySite.line : '') + (will.lap.tower && will.lap.tower.line ? ' · ' + will.lap.tower.line : '') : '' };
 }
@@ -100,8 +100,11 @@ export function traceOf(a, entries) {
   const e = (entries || []).find((x) => x && Array.isArray(x.asks) && x.asks.some((q) => q && ((id && q.id === id) || sentence(q.ask).toLowerCase() === k)));
   if (!e) return [];
   const clean = (t) => sentence(String(t || '').replace(/\s*\[[^\]]*\]/g, ''));
-  return [e.kind === 'build' && e.shipped ? 'Prompted by: "' + clean(e.shipped) + '" had just shipped.' : e.kind === 'daily' ? 'Prompted by: my daily reflection.' : '',
-    e.thoughts ? 'What I noticed: ' + clean(e.thoughts) : '', e.better ? 'What I said should change: ' + clean(e.better) : ''].filter(Boolean);
+  const prompted = e.kind === 'build' && e.shipped ? 'Prompted by: "' + clean(e.shipped) + '" had just shipped.' : e.kind === 'daily' ? 'Prompted by: my daily reflection.' : '';
+  // an ask that carries its own why shows that why, not the reflection's shared text: three asks under one reason read as one ask (owner, 2026-10-29)
+  const q = e.asks.find((x) => x && ((id && x.id === id) || sentence(x.ask).toLowerCase() === k)), own = clean((q && q.why) || (a && a.why));
+  if (own) return [prompted, 'Why: ' + own.replace(/[^.!?]$/, '$&.')].filter(Boolean);
+  return [prompted, e.thoughts ? 'What I noticed: ' + clean(e.thoughts) : '', e.better ? 'What I said should change: ' + clean(e.better) : ''].filter(Boolean);
 }
 const whyOf = (ls) => { const w = (ls || []).filter(Boolean); return w.length ? { why: w } : {}; };
 const WEEK = 7 * 864e5;
@@ -148,7 +151,7 @@ export function cardHtml(m, esc, { more = '' } = {}) {
     + (m.lap ? '<div class="wants-lap" data-lap="1">' + esc(m.lap) + '</div>' : '')
     + (m.velocity ? '<div class="wants-velocity" data-velocity="' + esc(m.velocity.pct) + '" data-trend="' + esc(m.velocity.trend) + '">' + esc(velocityLine(m.velocity)) + '<div class="wants-meter" data-share-skip="1"><i style="width:' + esc(m.velocity.pct) + '%"></i></div></div>' : '')
     + block('wants', 'My will', m.wants, (w) => w.because)
-    + block('asks', 'Asked, not built yet', m.asks, (a) => ['Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : a.kind === 'build' ? 'after a build' : 'by me') + (a.at ? ', ' + a.at : ''), a.small ? 'I called it small' : ''].filter(Boolean).join(' · '))
+    + block('asks', 'Asked, not built yet', m.asks, (a) => ['Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : a.kind === 'build' ? 'after a build' : 'by me') + (a.at ? ', ' + a.at : ''), a.small ? 'I called it small' : '', a.held ? 'held until ' + a.held + ' is beaten' : ''].filter(Boolean).join(' · '))
     + block('inbox', 'Growth inbox', m.inbox, (o) => o.from)
     + (more ? '<p class="wants-more">' + esc(more) + '</p>' : '')
     + '<div class="src">Source: my will (/api/will' + (m.at ? ', ' + esc(m.at) : '') + '), my asks and what became of them (/api/reflect) and my growth inbox (/self.json from domains/void.frontier.md). My own records, no model. Tap an item to copy it.</div>';
