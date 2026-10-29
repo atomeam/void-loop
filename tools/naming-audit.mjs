@@ -99,7 +99,7 @@ export async function renderedText(pages, siteDir = SITE, live = '') {
     res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' }); fsP.createReadStream(f).pipe(res);
   }).listen(0);
   const base = live ? live : 'http://127.0.0.1:' + server.address().port + '/';
-  const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((x) => x && fsP.existsSync(x));
+  const exe = [process.env.VOID_TEST_BROWSER, process.env.CHROME_PATH, '/usr/bin/google-chrome', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((x) => x && fsP.existsSync(x));
   const browser = await chromium.launch({ executablePath: exe });
   const out = {};
   try {
