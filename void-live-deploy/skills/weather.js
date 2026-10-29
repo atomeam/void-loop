@@ -18,7 +18,7 @@ const WX = {
   85: 'Snow showers', 86: 'Snow showers', 95: 'Thunderstorm', 96: 'Thunderstorm, hail', 99: 'Thunderstorm, hail'
 };
 
-function weatherPlace(text) {
+export function weatherPlace(text) {
   const m = text.match(/\b(?:in|at|for|near)\s+([^?.!]+)$/i);
   if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
   const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside|what should i wear|do i|should i|will i|need|bring|take|an?|umbrella|raincoat|jacket|coat)\b/ig, ' ').trim();
