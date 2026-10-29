@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 963,
+ "counted": 964,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1074,18 +1074,18 @@
    "tests": 1
   },
   {
+   "file": "lib/boards.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
    "file": "lib/noise.js",
    "skills": 1,
    "direct": 0,
    "dependants": 6,
    "tests": 0
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 2
   },
   {
    "file": "lib/scores.js",
@@ -1179,6 +1179,13 @@
    "tests": 1
   },
   {
+   "file": "lib/fanfic.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/fincalc.js",
    "skills": 1,
    "direct": 0,
@@ -1240,13 +1247,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
-  },
-  {
-   "file": "lib/fanfic.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/film-discovery.js",
@@ -1806,7 +1806,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 69,
-   "tests": 26
+   "tests": 27
   },
   {
    "file": "lib/models.js",
@@ -2499,7 +2499,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/fantasy.js",
@@ -3034,6 +3034,12 @@
     "lib/store-db.js",
     "lib/earnings.js",
     "lib/shortfall.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/fanfic-hits.js": {
+   "imports": [
+    "lib/fanfic.js"
    ],
    "importedBy": []
   },
@@ -4281,6 +4287,7 @@
     "lib/fanfic.js"
    ],
    "reachedBy": [
+    "functions/api/fanfic-hits.js",
     "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
@@ -5416,6 +5423,7 @@
     "lib/boards.js"
    ],
    "importedBy": [
+    "functions/api/fanfic-hits.js",
     "functions/fanfic/rss.js",
     "skills/fanfic.js"
    ]
