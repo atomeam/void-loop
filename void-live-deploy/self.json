@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-30T04:36:42Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,24 +550,20 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T10:17:02Z",
-   "subject": "fact: a fact about a topic comes from that topic's Wikipedia article"
-  },
-  {
-   "at": "2026-10-30T10:11:30Z",
+   "at": "2026-10-30T10:12:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T10:09:22Z",
-   "subject": "loan payoff: say 11 months and 1 year, not 0 years 11 months and 1 years 0 months"
+   "at": "2026-10-30T10:11:34Z",
+   "subject": "Autopilot: a live page of what Verse did on its own"
   },
   {
-   "at": "2026-10-30T10:08:58Z",
-   "subject": "Hand-off journeys: match broken words whole, so a scale named Lydian dominant is not read as NaN"
+   "at": "2026-10-30T10:10:40Z",
+   "subject": "Wiring test: verify's groups are one per head since #1839"
   },
   {
-   "at": "2026-10-30T10:08:53Z",
-   "subject": "converter: Make Stabilize Video (takes the shake out of a hand-held video, on the device)"
+   "at": "2026-10-30T10:10:03Z",
+   "subject": "Wiring test: verify's groups are one per head since #1839"
   },
   {
    "at": "2026-10-30T10:08:18Z",
@@ -626,8 +622,12 @@
    "subject": "converter: Make Split Screen Video (2 videos side by side or one above the other)"
   },
   {
-   "at": "2026-10-30T09:47:45Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T09:47:20Z",
+   "subject": "Router checks: the stub page backs the fake models' labelled replies"
+  },
+  {
+   "at": "2026-10-30T09:46:48Z",
+   "subject": "Team score asks: a sport's name is not a team (\"cricket scores\")"
   }
  ],
  "builders": {

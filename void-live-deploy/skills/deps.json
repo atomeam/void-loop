@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1059,
+ "counted": 1061,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2572,6 +2572,13 @@
    "tests": 1
   },
   {
+   "file": "lib/autopilot.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/bench-asks.js",
    "skills": 0,
    "direct": 0,
@@ -3403,6 +3410,12 @@
    "imports": [
     "lib/guard.js",
     "lib/automations-run.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/autopilot.js": {
+   "imports": [
+    "lib/autopilot.js"
    ],
    "importedBy": []
   },
@@ -4780,6 +4793,12 @@
     "lib/approval-core.js",
     "lib/approval-gate.js",
     "skills/approve-card.js"
+   ]
+  },
+  "lib/autopilot.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/autopilot.js"
    ]
   },
   "lib/autopsy.js": {
