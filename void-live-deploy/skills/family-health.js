@@ -98,7 +98,8 @@ export function deadHtml(esc, H, used, now = Date.now()) {
 }
 
 /** which families lift the daily growth score and which drag it (asked by Verse), above the families: the three each way, in score points, from lib/better.js familyDrivers.
- *  better = the rows of void.better.json (the newest sets the score and how many parts it has). '' without families. Pure. */
+ *  better = the rows of void.better.json (the newest sets the score and how many parts it has). '' without families; when no family moves it by
+ *  0.05 points either way, one line says so with the families' health range. Pure. */
 export function driversHtml(esc, fam, better = null) {
   const last = Array.isArray(better) ? better.filter((r) => r && Number.isFinite(+r.score)).slice(-1)[0] : null;
   const parts = last && last.parts ? Object.values(last.parts).filter((v) => v !== null && v !== undefined).length : 5;
@@ -110,6 +111,8 @@ export function driversHtml(esc, fam, better = null) {
   return '<div class="fh-drivers" style="margin:12px 0 0"><div class="vh">What moves my growth score' + (last ? ' (' + esc(last.score) + ' of 100)' : '') + '</div>'
     + (up.length ? '<div class="sub" style="font-size:12px">Lifting it</div><ul style="margin:2px 0 6px;padding-left:18px">' + up.map(li).join('') + '</ul>' : '')
     + (down.length ? '<div class="sub" style="font-size:12px">Dragging it</div><ul style="margin:2px 0 6px;padding-left:18px">' + down.map(li).join('') + '</ul>' : '')
+    // every family within 0.05 points of the average: say so, with how healthy they are, instead of an empty heading
+    + (up.length || down.length ? '' : (() => { const hs = d.map((x) => x.health).filter((h) => h !== null); return '<div class="sub fh-even" style="font-size:12px;margin:2px 0 6px">No family moves it by 0.05 points or more: every family is ' + (Math.min(...hs) === Math.max(...hs) ? esc(hs[0]) + '%' : esc(Math.min(...hs)) + '% to ' + esc(Math.max(...hs)) + '%') + ' healthy.</div>'; })())
     + '<div class="sub" style="font-size:12px">Points of the score, against the average skill: failing counts 0, barely checked half, the rest 1 (the friction part of the score).</div></div>';
 }
 
