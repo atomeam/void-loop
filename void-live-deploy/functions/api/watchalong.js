@@ -43,13 +43,13 @@ async function getJson(url, fetchFn) {
   try { const r = await fetchFn(url, { signal: ctl.signal, headers: { accept: 'application/json', 'user-agent': UA } }); if (!r.ok) throw new Error('status ' + r.status); return await r.json(); }
   finally { clearTimeout(t); }
 }
-/** a TV station from the site's own lists (/local/tv/<CC>.json, then /local/tv/world/<CC>.json): { name, network } or null. */
+/** a TV station from the site's own lists (/local/tv/<CC>.json stations, then /local/tv/world/<CC>.json channels): { name, network } or null. */
 export async function tvStation(env, origin, s) {
   if (!env || !env.ASSETS) return { name: s.name, network: s.network, unchecked: true };
   for (const path of ['/local/tv/' + s.cc + '.json', '/local/tv/world/' + s.cc + '.json']) {
     try {
       const r = await env.ASSETS.fetch(new Request(new URL(path, origin))); if (!r.ok) continue;
-      const file = await r.json(), st = (file.stations || []).find((x) => x && x.id === s.id);
+      const file = await r.json(), st = (file.stations || file.channels || []).find((x) => x && x.id === s.id);
       if (st) return { name: String(st.t || s.id).slice(0, 90), network: String(st.n || '').slice(0, 40) };
     } catch (_) {}
   }

@@ -56,6 +56,10 @@
   #watch-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } #watch-form input { flex: 1 1 200px; font: inherit; color: inherit; background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; min-height: 44px; box-sizing: border-box; min-width: 0; }
   #watch label.learn { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: var(--soft); margin-top: 10px; } #watch label.learn input { margin-top: 3px; accent-color: var(--accent); }
   #watch-learned { margin: 6px 0 0; padding-left: 18px; font-size: 14px; } #watch-learned small { color: var(--soft); }
+  .world { margin-top: 26px; padding-top: 6px; border-top: 1px solid var(--line); }
+  .world-filters select { font: inherit; font-size: 15px; color: inherit; background: var(--panel); border: 2px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 44px; max-width: 100%; }
+  .world-filters select:focus { outline: none; border-color: var(--accent); }
+  .world > button { margin: 10px 0; }
   [hidden] { display: none !important; }
   @media (max-width: 520px) { #bar input[type=range] { display: none; } }
 </style>
@@ -68,7 +72,7 @@
 <body>
 <main>
   <h1>Local TV and radio</h1>
-  <p class="hint">The stations near you, with their free live streams playing right here. Streams come straight from each station; a station whose stream cannot play in this page links to its own site.</p>
+  <p class="hint">The stations near you, with their free live streams playing right here. Under them come the free channels from your country and the rest of the world. Streams come straight from each station; a station whose stream cannot play in this page links to its own site.</p>
   <p id="where" role="status">Finding where you are…</p>
   <form class="box" id="form" role="search"><input id="q" type="search" autocomplete="off" aria-label="Town or city" placeholder="Another town or city: Boston, Tulsa, Madrid" enterkeyhint="search" maxlength="60"><button class="go" type="submit">Find stations</button><button type="button" id="gps">Use my exact location</button></form>
   <div class="tabs" role="tablist" aria-label="Radio or TV">
@@ -89,11 +93,13 @@
     <h2 id="radio-head">Radio stations near you</h2>
     <p class="note" id="radio-note"></p>
     <ul class="list" id="radio-list"></ul>
+    <div id="radio-world" class="world"></div>
   </section>
   <section id="tv" role="tabpanel" aria-labelledby="tab-tv" hidden>
     <h2 id="tv-head">TV stations near you</h2>
     <p class="note" id="tv-note"></p>
     <ul class="list" id="tv-list"></ul>
+    <div id="tv-world" class="world"></div>
   </section>
 
   <!-- asks -->

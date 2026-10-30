@@ -40,14 +40,14 @@ def tv_options(rng, n=8):
     """TV stations with a free stream a browser can play, from the site's own lists (local first, then the world lists when present)."""
     out = []
     for f in sorted((ROOT / "void-live-deploy" / "local" / "tv").glob("**/*.json")):
-        if f.name == "index.json":
+        if f.name in ("index.json", "names.json") or "topic" in f.parts:
             continue
         try:
             file = json.loads(f.read_text(encoding="utf-8"))
         except Exception:
             continue
         cc = str(file.get("cc") or f.stem).upper()[:2]
-        for s in file.get("stations") or []:
+        for s in file.get("stations") or file.get("channels") or []:
             urls = [u for u in (s.get("s") or []) if playable(u)]
             if urls and s.get("id"):
                 out.append({"kind": "tv", "cc": cc, "id": s["id"], "name": s.get("t") or s["id"], "network": s.get("n") or "", "streams": urls})

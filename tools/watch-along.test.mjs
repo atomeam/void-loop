@@ -180,3 +180,11 @@ test('bad requests get a reason, not a model call', async () => {
   assert.equal((await onRequestPost({ request: post({ mode: 'ask', station: STATION }), env: { ...env, AI: null } })).status, 503);
   assert.equal(env.calls.length, 0);
 });
+
+test('a world channel (local/tv/world/<CC>.json channels) is a station Verse can watch too', async () => {
+  const env = fakeEnv('A news desk in Paris.', {
+    ASSETS: { fetch: async (req) => new URL(req.url).pathname === '/local/tv/world/FR.json' ? Response.json({ cc: 'FR', channels: [{ id: 'France24.fr@English', t: 'France 24 English', s: ['https://cdn.example.com/f24.m3u8'] }] }) : new Response('no', { status: 404 }) } });
+  const j = await (await onRequestPost({ request: post({ mode: 'ask', station: { kind: 'tv', cc: 'FR', id: 'France24.fr@English' }, captions: 'GOOD EVENING FROM PARIS' }), env })).json();
+  assert.equal(j.text, 'A news desk in Paris.');
+  assert.match(env.calls[0].input.messages[0].content, /France 24 English/);
+});

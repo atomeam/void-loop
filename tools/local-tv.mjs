@@ -118,7 +118,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log('local-tv: up to date'); process.exit(0);
   }
   fs.mkdirSync(OUT, { recursive: true });
-  for (const n of fs.readdirSync(OUT)) if (!files[n]) fs.unlinkSync(path.join(OUT, n));
+  for (const n of fs.readdirSync(OUT)) if (!files[n] && fs.statSync(path.join(OUT, n)).isFile()) fs.unlinkSync(path.join(OUT, n)); // world/ is tools/world-tv.mjs's
   for (const [n, t] of Object.entries(files)) fs.writeFileSync(path.join(OUT, n), t);
   const total = Object.values(index.countries).reduce((a, c) => a + c.stations, 0), play = Object.values(index.countries).reduce((a, c) => a + c.playable, 0);
   console.log('local-tv: ' + Object.keys(countries).length + ' countries, ' + total + ' local stations, ' + play + ' with a stream that plays in the page');
