@@ -83,7 +83,7 @@ export const CATALOG = Object.freeze([
   tool('Image', 'Remove Image Background', 'no', { note: NO }),
   tool('Image', 'Resize Image', 'verse', { href: '/resize-image/', note: 'On Verse: resize by pixels or by percent.' }),
   tool('Image', 'Rotate Image', 'verse', { href: '/photos/?tab=crop', note: 'On Verse photo tools: Crop and rotate.' }),
-  tool('Image', 'Watermark Image', 'part', { href: '/photos/?tab=text', note: 'On Verse photo tools: Text. A text watermark only, not a picture.' }),
+  tool('Image', 'Watermark Image', 'here', { run: 'watermark-image', from: 'picture+picture?', note: 'Puts your words, or a picture you pick as the mark (the smallest one), in a corner of each picture, see-through by the amount you set. A JPG stays a JPG, a PNG a PNG. Still pictures only: not an animated GIF.' }),
   ...['EPUB', 'AZW', 'DOCX', 'HTML', 'MOBI', 'PDF', 'RTF', 'TXT'].map((f) => (['AZW', 'MOBI'].includes(f)
     ? conv('Ebook', f, 'no', { note: 'Not on Verse yet: Verse cannot write Kindle files.' })
     : conv('Ebook', f, f === 'TXT' ? 'here' : 'part', { to: f.toLowerCase(), from: 'text', note: f === 'TXT' ? 'Every word of an EPUB, DOCX, PDF, RTF or HTML file as plain text.' : WORDS }))),
