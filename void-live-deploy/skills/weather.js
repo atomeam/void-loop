@@ -20,7 +20,7 @@ const WX = {
 
 // the words of the asks match() takes that name no place ("chance of rain today", "is there a storm coming", "what's the high tonight"): with no
 // "in/at/for/near <place>", what is left after them is the place, and nothing left means here. Every match() pattern's own words are in it.
-const WHEN = "today'?s?|tonight'?s?|tomorrow'?s?|now|right now|this week(?:end)?|outside|here";
+const WHEN = "today'?s?|tonight'?s?|tomorrow'?s?|now|right now|this week(?:end)?|(?:on |this |next )?(?:mon|tues|wednes|thurs|fri|satur|sun)day'?s?|outside|here";
 // "high", "low" and "wind" go only as the forecast words ("the high", "low tonight", "wind speed"), so High Point and Wind Gap stay places
 const WX_WORDS = new RegExp("\\b(" + ["(?:the|today'?s|tonight'?s|tomorrow'?s) (?:high|low|wind)|(?:high|low)(?= (?:temp|today|tonight|tomorrow))", WHEN, "what should i wear|what to wear|what'?s|what is|what will be|the|weather|forecast|temp(?:erature)?|like|is it|will it|going to|is there|on the way|coming",
   "rain(?:ing)?|snow(?:ing)?|showers|(?:thunder)?storms?|stormy|sleet|hail|frost|freez(?:e|ing)|sunny|windy|cloudy|foggy|humid(?:ity)?|hurricane|tornado|blizzard|heat\\s*wave|cold snap",
@@ -52,6 +52,27 @@ export function weatherPrompt(hourly, now = Date.now(), hours = 8) {
 }
 
 /** the hourly arrays from index `i` on (the hour now), the same keys. Pure. */
+// the days an ask names past today ("tomorrow", "this weekend", "on Saturday"): their places in the 7-day forecast, whose
+// dates (daily.time, YYYY-MM-DD) are the place's own. "This weekend" is the first Saturday and Sunday ahead, or Sunday alone on a Sunday.
+const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+export function askedDays(text, times) {
+  const t = String(text || '').toLowerCase(), dow = (times || []).map((d) => new Date(String(d) + 'T12:00:00Z').getUTCDay()), want = new Set();
+  if (/\btomorrow/.test(t)) want.add(1);
+  if (/\bweekend\b/.test(t)) { const i = dow.findIndex((w) => w === 6 || w === 0); if (i >= 0) { want.add(i); if (dow[i] === 6 && dow[i + 1] === 0) want.add(i + 1); } }
+  DAYS.forEach((name, w) => { if (new RegExp('\\b' + name).test(t)) { const i = dow.indexOf(w); if (i >= 0) want.add(i); } });
+  want.delete(0); // today has its own line
+  return [...want].filter((i) => i < dow.length).sort((a, b) => a - b);
+}
+export function askedDayLabel(i, date) { const n = DAYS[new Date(String(date) + 'T12:00:00Z').getUTCDay()].replace(/^./, (c) => c.toUpperCase()); return i === 1 ? n + ' (tomorrow)' : n; }
+
+// the full Weather page for the place a card shows: its name and exact point (lib/card-frame.js PAGE_QUERY takes only
+// letters, digits and _.=&%-, so every other character is %-escaped); a long name falls back to the words asked
+export function weatherPageOf(loc, place) {
+  const en = (x) => encodeURIComponent(x).replace(/[!'()*~]/g, (ch) => '%' + ch.charCodeAt(0).toString(16).toUpperCase());
+  const qs = '?q=' + en(loc.name) + '&ll=' + en(loc.latitude + ',' + loc.longitude);
+  return '/weather/' + (qs.length <= 200 ? qs : '?q=' + en(place));
+}
+
 export function hourlyFrom(h, i) { const o = {}; for (const k of Object.keys(h || {})) o[k] = Array.isArray(h[k]) ? h[k].slice(i) : h[k]; return o; }
 /** a visibility in metres as people read it: "24 km", "800 m", "15 mi". Pure. */
 export function visText(m, us) { if (us) { const mi = m / 1609.344; return (mi >= 10 ? Math.round(mi) : Math.round(mi * 10) / 10) + ' mi'; } return m >= 10000 ? Math.round(m / 1000) + ' km' : m >= 1000 ? Math.round(m / 100) / 10 + ' km' : Math.round(m) + ' m'; }
@@ -110,6 +131,8 @@ async function run(text, api) {
     }
     const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude
       + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day,pressure_msl,visibility,dew_point_2m&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=7&timezone=auto';
+    // the card's full page shows the same place (weather/index.html reads ?q= and, with it, ?ll= for the exact point); "here" stays the bare page
+    if (place) el.dataset.page = weatherPageOf(loc, place);
     const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
     const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
     // fetch and draw, in place: the first time here, then every 15 minutes while the card is up (skills/live.js), so a
@@ -122,6 +145,7 @@ async function run(text, api) {
       // the hourly forecast runs seven days from midnight there: the row and the prompt start at the hour now (current.time is the place's own clock)
       const from = Math.max(0, c.time ? hAll.time.findIndex((t) => t >= String(c.time).slice(0, 13)) : 0), h = hourlyFrom(hAll, from);
       queueMicrotask(() => weatherMini(api, el, w, loc, place)); // after the card's text is in: the diorama goes on top
+      const days = askedDays(text, d.time); // "this weekend", "tomorrow", "on Saturday": those days' high, low and rain under today's
       const next = weatherPrompt(h); // asked by Verse: rain, snow, frost or heat in the next hours offers one reminder
       const nextLine = next ? '<p class="wx-next">' + esc(next.why) + ' <a href="#" data-ask="' + esc(next.ask) + '">' + esc(next.ask) + '</a> <span style="color:#8b90a0;font-size:12px">· a timer on the stage, to ' + esc(next.at) + '</span></p>' : '';
       const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
@@ -131,6 +155,7 @@ async function run(text, api) {
         + (Number.isFinite(c.pressure_msl) ? ' · pressure ' + (f ? (c.pressure_msl * 0.0295300).toFixed(2) + ' inHg' : Math.round(c.pressure_msl) + ' hPa') : '') + (Number.isFinite(c.visibility) ? ' · visibility ' + visText(c.visibility, f) : '') + (Number.isFinite(c.dew_point_2m) ? ' · dew point ' + T(c.dew_point_2m) : '') + '</div>'
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
         + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
+        + (days.length ? '<p class="wx-days">' + days.map((i) => esc(askedDayLabel(i, d.time[i])) + ' ' + T(d.temperature_2m_max[i]) + ' / ' + T(d.temperature_2m_min[i]) + (d.precipitation_probability_max && d.precipitation_probability_max[i] != null ? ' · rain chance ' + d.precipitation_probability_max[i] + '%' : '')).join('<br>') + '</p>' : '')
         + nextLine
         + '<div class="wx-hours" style="display:grid;grid-auto-flow:column;grid-auto-columns:minmax(46px,1fr);overflow-x:auto;gap:8px 2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
         + graph(hAll, from, f)

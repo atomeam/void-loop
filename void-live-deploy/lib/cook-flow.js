@@ -9,20 +9,24 @@ const KITCHEN_WORD = /\b(?:gas\s+mark|oven|bake|baking|roast|steak|doneness|rare
 const BODY_ONLY = /\b(?:miles?|mi|km|kilomet(?:er|re)s?|feet|ft|foot|yards?|yd|met(?:er|re)s?|inch(?:es)?|cm|mph|kph|knots?|acres?|hectares?|bytes?|kb|mb|gb)\b/;
 const DEFAULT_MIN = 10, OTHER_MIN = [5, 20];
 
-/** the timer chip a kitchen ask earns: { ask, label, others: [{ ask, label }] }, or null for anything that is not kitchen work. Pure. */
-export function cookNext(text) {
+/** the timer chip a kitchen ask earns: { ask, label, others: [{ ask, label }] }, or null for anything that is not kitchen work.
+ *  `minutes`: the time the card itself states, offered first. Pure. */
+export function cookNext(text, minutes = null) {
   const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
   if (!t || t.length > 120) return null;
   const kitchen = (KITCHEN_UNIT.test(t) && (/\d/.test(t) || /\bhow\s+many\b/.test(t)) && !(BODY_ONLY.test(t) && !KITCHEN_WORD.test(t))) || KITCHEN_WORD.test(t);
   if (!kitchen) return null;
   if (/\b(?:timer|countdown|alarm|stopwatch)\b/.test(t)) return null; // already one
   const one = (m) => ({ ask: 'set a ' + m + ' minute timer', label: m + ' min' });
-  return { ...one(DEFAULT_MIN), label: 'set a ' + DEFAULT_MIN + ' minute timer', others: OTHER_MIN.map(one) };
+  // a card that states its own time (a hard-boiled egg: 12 minutes) offers that time first, not the default
+  const first = Number.isInteger(minutes) && minutes >= 1 && minutes <= 180 ? minutes : DEFAULT_MIN;
+  return { ...one(first), label: 'set a ' + first + ' minute timer', others: [DEFAULT_MIN, ...OTHER_MIN].filter((m) => m !== first).slice(0, 2).map(one) };
 }
 
-/** the chip as HTML for a card (data-ask links the page already runs), or '' when the ask is not kitchen work. `esc` is the page's escaper. Pure. */
-export function cookChip(text, esc) {
-  const n = cookNext(text);
+/** the chip as HTML for a card (data-ask links the page already runs), or '' when the ask is not kitchen work. `esc` is the page's escaper;
+ *  `minutes` as cookNext. Pure. */
+export function cookChip(text, esc, minutes = null) {
+  const n = cookNext(text, minutes);
   if (!n) return '';
   const e = typeof esc === 'function' ? esc : (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   return '<p class="cook-flow" style="margin:10px 0 0;font-size:14px"><a href="#" data-ask="' + e(n.ask) + '" style="text-decoration:none;border:1px solid rgba(150,175,255,.35);border-radius:999px;padding:4px 12px;white-space:nowrap">⏱ ' + e(n.label) + '</a>'

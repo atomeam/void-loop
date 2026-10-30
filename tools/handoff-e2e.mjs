@@ -133,6 +133,51 @@ export const JOURNEYS = {
     if ((new URL(p.url()).searchParams.get('list') || '').split('\n').length !== 8) throw new Error('the random page dropped the list from its address (' + p.url() + '), so a reload or a copied link loses it');
     await check('the random page opened with the 8 players of the draft board, Cy Dee first, and keeps them in its link');
   },
+  'paint a picture, resize it, edit it in the photo tools, and paint a kept picture as a new sheet': async (p, check) => {
+    const open = () => p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
+    await open(); await check('the paint page opened with its picture');
+    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
+    if (new URL(p.url()).searchParams.has('img')) throw new Error('the resize page kept ?img=handoff in its address, so a reload opens the picture again');
+    await check('the resize page opened the painting and made a ' + (await p.locator('#result').getAttribute('data-bytes')) + '-byte copy');
+    await open();
+    await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit your painting in photo tools' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
+    await check('the photo tools opened the painting: ' + (await p.locator('#line').textContent()));
+    // the picture kept a moment ago is what a press on the picture page keeps too: opening paint with ?img=handoff cuts it into a sheet
+    await p.goto(ORIGIN + '/paint/?img=handoff', { waitUntil: 'load' });
+    await p.waitForFunction(() => document.body.innerText.includes('Your photo is now a colouring sheet'), null, { timeout: 15000 });
+    await check('the paint page cut the kept picture into a new colouring sheet');
+  },
+  "send a gradient to the photo tools as a picture, and take a painting's colours as a gradient": async (p, check) => {
+    await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the gradient page opened');
+    const before = new URL(p.url()).hash;
+    await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
+    const size = await p.locator('#note').textContent();
+    if (!/^1200 × 675 px/.test(size)) throw new Error('the photo tools opened a picture of "' + size + '", not the 1200 × 675 gradient');
+    await check('the photo tools opened the gradient as a ' + size.split(' · ')[0] + ' picture');
+    await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/gradient\//), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
+    await p.waitForFunction((was) => location.hash && location.hash !== was && !location.search, before, { timeout: 15000 });
+    const stops = await p.locator('#stops .stop').count();
+    if (stops < 2) throw new Error('the gradient page took the painting but shows ' + stops + ' stops');
+    await check('the gradient page read the painting into ' + stops + ' colour stops (' + new URL(p.url()).hash + ')');
+  },
+  'save a painting as a PDF: the PDF page opens its images-to-PDF tool with the painting in the list': async (p, check) => {
+    await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the paint page opened with its picture');
+    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save your painting as a PDF' }).click()]);
+    await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
+    const tab = await p.locator('[role=tab][aria-selected=true]').textContent(), u = new URL(p.url());
+    if (tab !== 'Images to PDF') throw new Error('the PDF page opened the "' + tab + '" tool, not Images to PDF');
+    if (u.searchParams.has('img') || u.searchParams.get('tool') !== 'img2pdf') throw new Error('the PDF page left its address as ' + u.search + ', not ?tool=img2pdf');
+    await check('the PDF page opened Images to PDF with ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
+    await p.locator('button.go', { hasText: 'Images to PDF' }).click();
+    await p.waitForSelector('a.dl', { timeout: 20000 });
+    const head = await p.evaluate(async () => { const b = new Uint8Array(await (await fetch(document.querySelector('a.dl').href)).arrayBuffer()); return String.fromCharCode(...b.slice(0, 5)) + ' ' + b.length; });
+    if (!head.startsWith('%PDF-')) throw new Error('the download is not a PDF: it starts "' + head + '"');
+    await check('the PDF page made a ' + head.split(' ')[1] + '-byte PDF of the painting');
+  },
 };
 
 async function run() {

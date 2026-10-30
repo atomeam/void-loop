@@ -1,7 +1,7 @@
 // lib/gradient.js: CSS out, CSS read back, the link, the fallback colour, the text contrast and the asks
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { css, read, pack, open, fallback, rule, textContrast, colourOf, normal, askGradient, PRESETS, reverse, adjust, inFormat, cssIn, scss, fromSamples } from '../void-live-deploy/lib/gradient.js';
+import { css, read, pack, open, fallback, rule, textContrast, colourOf, normal, askGradient, PRESETS, reverse, adjust, inFormat, cssIn, scss, fromSamples, geometry, drawGradient } from '../void-live-deploy/lib/gradient.js';
 
 const two = { type: 'linear', angle: 90, stops: [{ color: '#ff0000', pos: 0 }, { color: '#0000ff', pos: 100 }] };
 test('CSS out for each type, stops sorted, positions filled in evenly when missing', () => {
@@ -61,4 +61,24 @@ test('import from a picture: the fewest stops that redraw it', () => {
   const flag = Array.from({ length: 30 }, (_, i) => (i < 10 ? { r: 0, g: 85, b: 164 } : i < 20 ? { r: 255, g: 255, b: 255 } : { r: 239, g: 65, b: 53 }));
   const g = fromSamples(flag); assert.ok(g.stops.length >= 4 && g.stops.length <= 8, String(g.stops.length)); assert.equal(css(g).slice(0, 30), 'linear-gradient(90deg, #0055a4'); assert.match(css(g), /#ef4135 100%\)$/);
   assert.equal(fromSamples([{ r: 1, g: 2, b: 3 }]), null);
+});
+
+test('a gradient lies on a picture the way CSS draws it, and draws on a canvas', () => {
+  const st = [{ color: '#000000', pos: 0 }, { color: '#ffffff', pos: 100 }], near = (a, b) => Math.abs(a - b) < 1e-9;
+  const right = geometry({ type: 'linear', angle: 90, stops: st }, 200, 100); // to the right: left edge to right edge, through the middle
+  assert.ok(near(right.x0, 0) && near(right.x1, 200) && near(right.y0, 50) && near(right.y1, 50));
+  const down = geometry({ type: 'linear', angle: 180, stops: st }, 200, 100);
+  assert.ok(near(down.x0, 100) && near(down.y0, 0) && near(down.y1, 100));
+  const diag = geometry({ type: 'linear', angle: 45, stops: st }, 100, 100); // to the top right: the line's ends meet the corners' perpendiculars
+  assert.ok(near(diag.x0, 0) && near(diag.y0, 100) && near(diag.x1, 100) && near(diag.y1, 0));
+  const ell = geometry({ type: 'radial', stops: st }, 200, 100), circ = geometry({ type: 'radial', shape: 'circle', stops: st }, 200, 100);
+  assert.ok(near(ell.rx, 100 * Math.SQRT2) && near(ell.ry, 50 * Math.SQRT2), 'an ellipse reaches the farthest corner');
+  assert.ok(near(circ.rx, Math.hypot(100, 50)) && near(circ.ry, circ.rx));
+  assert.ok(near(geometry({ type: 'conic', angle: 90, stops: st }, 200, 100).start, 0), 'from 90deg in CSS is the canvas right');
+  assert.equal(geometry({ stops: st }, 0, 100), null); assert.equal(geometry({ stops: [st[0]] }, 10, 10), null);
+  const calls = [], fill = { addColorStop: (o, c) => calls.push([o, c]) };
+  const ctx = { createLinearGradient: () => fill, createRadialGradient: () => fill, save() {}, restore() {}, clearRect() {}, scale() {}, fillRect: (x, y, w, h) => calls.push(['rect', w, h]) };
+  assert.ok(drawGradient(ctx, { type: 'linear', angle: 90, stops: st }, 200, 100));
+  assert.deepEqual(calls, [[0, '#000000'], [1, '#ffffff'], ['rect', 200, 100]]);
+  assert.equal(drawGradient(ctx, { type: 'conic', stops: st }, 200, 100), false, 'no conic gradients in this canvas: nothing drawn, nothing sent');
 });
