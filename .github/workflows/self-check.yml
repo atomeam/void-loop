@@ -1,0 +1,65 @@
+# Verse's check of its own pages (tools/self-check.mjs, lib/selfcheck.js): after a deploy, every page of the live sitemap is opened in headless
+# Chrome and judged (does it open, script errors, its own files and APIs that fail, no text, a white page, dead links, retired wording, no
+# "Use with" row), and the report goes to /api/selfcheck, where the status card ("verse status") shows it and opens by itself for the owner
+# when a page is broken. It only reads: every non-GET request is answered inside the browser and the visit counter is never called.
+# Pages call Verse's own APIs as they load, and those are Workers requests on the free 100,000 a day, so a deploy-triggered run is skipped
+# when the last full run is under two hours old (a dispatch always runs). No secret but the owner key, to hand the report over.
+name: Verse self-check
+
+on:
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: Just these pages, comma separated (blank = the whole sitemap)
+        required: false
+        default: ''
+
+concurrency:
+  group: self-check
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checked in the last two hours?
+        id: due
+        run: |
+          if [ "${{ github.event_name }}" != "workflow_run" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          last=$(curl -sS -m 20 https://a-to-mind.com/api/selfcheck | jq -r '.report.at // ""' || true)
+          if [ -n "$last" ] && [ $(( $(date +%s) - $(date -d "$last" +%s) )) -lt 7200 ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "### Last full check started $last, under two hours ago: skipped" >> "$GITHUB_STEP_SUMMARY"
+          else echo "run=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/checkout@v4
+        if: steps.due.outputs.run == 'true'
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        if: steps.due.outputs.run == 'true'
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+        if: steps.due.outputs.run == 'true'
+      - name: Open every page and hand the report to the status card
+        if: steps.due.outputs.run == 'true'
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          ONLY: ${{ github.event.inputs.only }}
+        run: |
+          if [ -n "$ONLY" ]; then node tools/self-check.mjs --only "$ONLY" --json self-check.json # a few pages: the summary only, the card keeps the full report
+          else node tools/self-check.mjs --json self-check.json --post; fi
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.due.outputs.run == 'true'
+        with:
+          name: self-check
+          path: self-check.json
+          retention-days: 14

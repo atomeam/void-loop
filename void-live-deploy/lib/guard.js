@@ -85,6 +85,7 @@ export const LIMITS = {
   hook: { rpm: 60, body: 64000 },
   routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer waits for the owner; the route keeps 5 offers a minute itself
   actions: { rpm: 60, body: 4000 },
+  selfcheck: { rpm: 30, body: 60000 }, // Verse's check of its own pages (functions/api/selfcheck.js): public GET of the newest report; only the owner's job POSTs one (80 pages at most)
   watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
