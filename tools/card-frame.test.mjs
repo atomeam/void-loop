@@ -201,3 +201,28 @@ test('the Adds to Verse line ends at a whole clause or word, never in the middle
   const card = cardOf({ page: { line: long, chapter: 'world', n: 1 }, book: { pages: [{}] } });
   assert.equal(card.adds, addsLine(long));
 });
+
+test('a holiday card opens its day on the Calendar (2026-10-30: live, "how many days until christmas" had no link to any page)', async () => {
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const { parseLocal } = await import('../void-live-deploy/lib/calendar.js');
+  assert.deepEqual(pageOfCard('', '/calendar/?d=2026-12-25&view=day'), ['/calendar/?d=2026-12-25&view=day', 'Calendar']);
+  const src = readFileSync(resolve(root, '../../void.html'), 'utf8');
+  const line = src.match(/const holidayPage = (\(d\) => .+);/);
+  assert.ok(line, 'the holiday link is in void.html');
+  const holidayPage = new Function('return ' + line[1])();
+  const page = holidayPage(new Date(2026, 11, 25));
+  assert.equal(page, '/calendar/?d=2026-12-25&view=day', 'the local day, not the UTC one');
+  assert.equal(parseLocal(new URLSearchParams(page.split('?')[1]).get('d')).getDate(), 25, 'the Calendar reads the same day');
+  assert.equal(holidayPage(new Date(2027, 0, 1)), '/calendar/?d=2027-01-01&view=day');
+  // both holiday cards ("when is christmas", "how many days until christmas") pass it to bigPage, which sets the card's data-page
+  assert.equal((src.match(/\(h\.days === 1 \? '' : 's'\), holidayPage\(h\.d\)\);/g) || []).length, 2);
+  assert.match(src, /const bigPage = \(title, big, note, page\) => showPage\(\(p\) => \{ if \(page\) p\.dataset\.page = page;/);
+});
+
+test('a kept card read today is fresh (2026-10-30: the boiled-egg card, read that day, showed resistance 1, the mark for a year old)', () => {
+  const now = Date.UTC(2026, 9, 30, 13);
+  const d = editedDaysAgo('Source: American Egg Board · read 2026-10-30 · as of 1:14 PM', now);
+  assert.ok(d >= 0 && d < 1, String(d));
+  assert.equal(Math.floor(editedDaysAgo('Source: aa.com · read 2026-09-30', now)), 30);
+  assert.equal(cardOf({ kind: 'Answer', sources: 3, ageDays: d, kept: true }).toughness, 9, 'read today counts as edited today');
+});

@@ -2,7 +2,7 @@
 // to the calculator, the calendar and the kitchen. Run: node --test tools/weather-match.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import weather, { weatherPlace } from '../void-live-deploy/skills/weather.js';
+import weather, { weatherPlace, askedDays, askedDayLabel, weatherPageOf } from '../void-live-deploy/skills/weather.js';
 
 const takes = (a) => weather.match(a.toLowerCase(), a);
 
@@ -62,4 +62,38 @@ test('weather: an ask it takes names a place only when it has one', () => {
     ['weather in Tokyo', 'Tokyo'], ['Tokyo weather', 'Tokyo'], ['temperature Paris', 'Paris'], ['weather New York City', 'New York City'],
     ['what is the weather like in Cape Town today', 'Cape Town'], ['High Point weather', 'High Point'], ['Wind Gap forecast', 'Wind Gap'], ['Low Moor weather', 'Low Moor']])
     assert.equal(weatherPlace(a), place, a);
+});
+
+test('weather: a weekday in the ask is a day, not part of the place (2026-10-30: live, "weather in paris on saturday" looked for "paris on saturday")', () => {
+  for (const [a, place] of [['weather in paris on saturday', 'paris'], ['weather in paris saturday', 'paris'], ['forecast for Tokyo on Sunday', 'Tokyo'],
+    ['weather in Rome next monday', 'Rome'], ['weather on friday', ''], ['weather in paris this weekend', 'paris']]) {
+    assert.ok(takes(a), a);
+    assert.equal(weatherPlace(a), place, a);
+  }
+});
+
+test('weather: the days an ask names get their own line (2026-10-30: live, "weather in paris this weekend" showed today only)', () => {
+  const fri = ['2026-10-30', '2026-10-31', '2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04', '2026-11-05'];
+  const sun = ['2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04', '2026-11-05', '2026-11-06', '2026-11-07'];
+  assert.deepEqual(askedDays('weather in paris this weekend', fri), [1, 2]);
+  assert.deepEqual(askedDays('weather this weekend', sun), [], 'on a Sunday the weekend is today, which has its own line');
+  assert.deepEqual(askedDays('will it rain tomorrow', fri), [1]);
+  assert.deepEqual(askedDays('weather in tokyo on tuesday', fri), [4]);
+  assert.deepEqual(askedDays('weather on friday', fri), [], 'today');
+  assert.deepEqual(askedDays('weather in paris', fri), []);
+  assert.equal(askedDayLabel(1, fri[1]), 'Saturday (tomorrow)');
+  assert.equal(askedDayLabel(2, fri[2]), 'Sunday');
+});
+
+test("weather: the card's full page keeps the place (2026-10-30: live, \"weather in paris\" opened the bare /weather/)", async () => {
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const paris = weatherPageOf({ name: 'Paris, Île-de-France Region, France', latitude: 48.85341, longitude: 2.3488 }, 'paris');
+  assert.equal(paris, '/weather/?q=Paris%2C%20%C3%8Ele-de-France%20Region%2C%20France&ll=48.85341%2C2.3488');
+  assert.deepEqual(pageOfCard('weather', paris), [paris, 'Weather']);
+  const apos = weatherPageOf({ name: "Côte d'Ivoire", latitude: 7.5, longitude: -5.5 }, "cote d'ivoire");
+  assert.equal(pageOfCard('weather', apos)[0], apos, 'an apostrophe is escaped, so the link keeps the place');
+  const long = weatherPageOf({ name: 'X'.repeat(190), latitude: 1, longitude: 2 }, 'x town');
+  assert.equal(long, '/weather/?q=x%20town');
+  const page = new URLSearchParams(paris.slice(paris.indexOf('?')));
+  assert.equal(page.get('q'), 'Paris, Île-de-France Region, France'); assert.equal(page.get('ll'), '48.85341,2.3488');
 });

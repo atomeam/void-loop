@@ -11,8 +11,8 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Colour palettes | Colour | have | every site of this kind offers it | void-live-deploy/paint/index.html:130 `<h2>Colour palette</h2>` |
-| Generate palettes | Colour | have | every site of this kind offers it | void-live-deploy/paint/index.html:155 `a> <a href="/image/">AI image generator</a> <a href="/tools/">All tools</a></nav>` |
-| Hex, RGB and HSL codes | Colour | have | every site of this kind offers it | void-live-deploy/paint/app.js:15 `const rgb = (hex) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseI` |
+| Colour palettes | Colour | have | every site of this kind offers it | void-live-deploy/paint/index.html:131 `<h2>Colour palette</h2>` |
+| Generate palettes | Colour | have | every site of this kind offers it | void-live-deploy/paint/index.html:156 `a> <a href="/image/">AI image generator</a> <a href="/tools/">All tools</a></nav>` |
+| Hex, RGB and HSL codes | Colour | have | every site of this kind offers it | void-live-deploy/paint/app.js:16 `const rgb = (hex) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseI` |
 | Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "Free Available on you favorite platform Google Play App Store 10000+ amazing pics are waiting for you Follow a" | void-live-deploy/visit.js:16 `var w = navigator.serviceWorker; if (w && w.controller) return;` |
 | Play Free | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

@@ -23,3 +23,10 @@ test('clock: the skill takes only a clock by itself before the page', () => {
   for (const a of ['clock', 'make a clock', 'give me a clock', 'show the clock']) assert.ok(plainClock(a), a);
   for (const a of ['world clock', 'a big red clock', 'clock in tokyo', 'remove the clock']) assert.ok(!plainClock(a), a);
 });
+
+test('clock: the unlit "8:88:88" segments are drawn, not read aloud (2026-10-30: a screen reader read the Clock card as "8:88:88 PM 1:14:16 PM")', async () => {
+  const fs = await import('node:fs'), html = fs.readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+  const rule = /\.clock > span::before \{([^}]*)\}/.exec(html);
+  assert.ok(rule, 'the ghost rule is in the page');
+  assert.match(rule[1], /content: attr\(data-ghost\); content: attr\(data-ghost\) \/ "";/, 'an empty alternative text, after the plain content for a browser that does not know it');
+});

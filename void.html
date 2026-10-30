@@ -125,7 +125,7 @@
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.85), inset 0 0 0 1px rgba(0,0,0,0.6), 0 10px 24px rgba(0,0,0,0.45);
     }
     .clock > span { position: relative; display: inline-block; text-shadow: 0 0 0.12em currentColor, 0 0 0.45em currentColor; }
-    .clock > span::before { content: attr(data-ghost); position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
+    .clock > span::before { content: attr(data-ghost); content: attr(data-ghost) / ""; position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
     /* Caveat (SIL OFL 1.1, fonts/caveat-5.0.13/LICENSE), served from this site: the browser fetches it only once a note is up */
     @font-face { font-family: 'Verse Hand'; src: url('/fonts/caveat-5.0.13/caveat-latin-500-normal.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
     /* a real 3x3 in sticky note: square paper, sharp corners, the glue strip a shade darker along the top, the bottom edge
@@ -2495,7 +2495,9 @@ say('nothing selected to remove');
       const say = () => { if (vpageEl !== el) return; import('/lib/card-share.js').catch(() => null).then((sh) => { if (vpageEl !== el) return; const sr = document.getElementById('sr-say'); if (!sr) return;
         const h = el.querySelector('h2'), d = sh && sh.readCard ? sh.readCard(el) : null;
         const t = (d ? [d.t, d.b].filter(Boolean).join('. ') : el.innerText || '').replace(/\s+/g, ' ').trim();
-        if (h) el.setAttribute('aria-label', h.textContent.trim());
+        // the card's name for a screen reader: its heading, or, on a card drawn with none (the translation: "hello · French", then the words), its first line
+        const name = h ? h.textContent.trim() : (d && d.b ? d.b.split('\n')[0].trim().slice(0, 120) : '');
+        if (name) el.setAttribute('aria-label', name);
         sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; }); }; // ellipsis-ok: drawn picture or short label, the full text is on the card
       say(); let tm = 0; const mo = new MutationObserver(() => { clearTimeout(tm); tm = setTimeout(say, 400); });
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
@@ -3139,7 +3141,7 @@ say('nothing selected to remove');
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     // the weather page that used to be here (Open-Meteo, 2026-09) lives in skills/weather.js; its old code is on the salvage shelf (docs/SALVAGE.md)
 
     // calculation page: percentages, unit conversion, date math, currency
@@ -3275,7 +3277,8 @@ say('nothing selected to remove');
       let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
       if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
       // "roman numerals for 2026", "2026 in roman" is handled further down
-      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:for|of)\s+(\d{1,4})$/);
+      // also "roman numeral 2024" and "2024 roman numerals", with no "for" (2026-10-30: live, they went to the web and came back as a guess)
+      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:(?:for|of)\s+)?(\d{1,4})$/) || t.match(/^(\d{1,4})\s+roman\s+numerals?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
       // "0.2 as a percent", "0.875 to a percentage"
       m = t.match(/^(\d*\.\d+|\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?(?:percent|percentage|%)$/);
@@ -3729,7 +3732,8 @@ say('nothing selected to remove');
       // roman numerals both ways: "2024 in roman numerals", "what is XLII in numbers"
       m = t.match(/^(?:convert\s+)?(\d{1,4})\s+(?:in|to|into|as)\s+roman(?:\s+numerals?)?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
-      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/);
+      // also "roman numeral mmxxiv": the letters after the words, with nothing to say what to turn them into
+      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/) || t.match(/^(?:the\s+)?roman\s+numerals?\s+([mdclxvi]{1,15})$/);
       if (m) { const V = { i: 1, v: 5, x: 10, l: 50, c: 100, d: 500, m: 1000 }; let n = 0; const r = m[1];
         for (let k = 0; k < r.length; k++) { const a = V[r[k]], b = V[r[k + 1]] || 0; n += a < b ? -a : a; }
         return { value: String(n), note: m[1].toUpperCase() + ' = ' + n }; }
@@ -4136,7 +4140,7 @@ say('nothing selected to remove');
         { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
     }
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; }); el.dataset.page = '/calculator/'; // the card links to the full calculator (lib/card-frame.js pageOfCard)
@@ -4152,7 +4156,7 @@ say('nothing selected to remove');
         // a kitchen fact names the pages it came from, so the card is sourced and dated, not "from Verse"
         const wsrc = Array.isArray(wm.src) && wm.src.length ? 'Source: ' + wm.src.filter((x) => /^https:\/\/[^\s"'<>]+$/.test(x[1])).map((x) => '<a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + esc(x[0]) + '</a>').join(' · ') + (wm.read ? ' · read ' + esc(wm.read) : '') : '';
         if (wsrc) el.dataset.cardKept = ''; // read on a date and kept, not fetched for this ask (lib/card-frame.js)
-        setV(wm.value, wm.note, wsrc); cookFlow(el, query); return 'calc';
+        setV(wm.value, wm.note, wsrc); const wmin = /\b(\d{1,3}) min\b/.exec(String(wm.value)); cookFlow(el, query, wmin ? +wmin[1] : null); return 'calc';
       }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
@@ -5909,6 +5913,8 @@ say('nothing selected to remove');
       [/independence\s+day|(?:the\s+)?4th\s+of\s+july|fourth\s+of\s+july/, 'Independence Day (US)', (y) => new Date(y, 6, 4)], [/labou?r\s+day/, 'Labor Day (US)', (y) => nthWeekday(y, 8, 1, 1)],
       [/memorial\s+day/, 'Memorial Day (US)', (y) => lastWeekday(y, 4, 1)], [/st\.?\s*patrick'?s?(\s+day)?/, 'St Patrick\'s Day', (y) => new Date(y, 2, 17)],
     ];
+    // the holiday's own day on the Calendar page, where the person can add a reminder for it ("YYYY-MM-DD" in local time, as lib/calendar.js parseLocal reads it)
+    const holidayPage = (d) => '/calendar/?d=' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '&view=day';
     function holidayOf(l) {
       const m = l.replace(/[?.!]+$/, '').match(/^(?:when\s+is|what\s+(?:day|date)\s+is)\s+(.+?)(?:\s+(?:this|next)\s+year|\s+\d{4})?$/);
       if (!m) return null;
@@ -5960,13 +5966,14 @@ say('nothing selected to remove');
         el.querySelector('.sw-laps').innerHTML = sp.map((d, i) => '<li' + (d === lo ? ' style="color:#3fbf6a"' : d === hi ? ' style="color:#e0584a"' : '') + '>' + fmt(d) + (i ? ' <span style="color:#8a8a8a">(' + (d - sp[i - 1] >= 0 ? '+' : '\u2212') + fmt(Math.abs(d - sp[i - 1])) + ')</span>' : '') + ' <span style="color:#8a8a8a">· ' + fmt(laps[i]) + (d === lo ? ' · fastest' : d === hi ? ' · slowest' : '') + '</span></li>').join(''); });
       el.querySelector('.sw-reset').addEventListener('click', () => { acc = 0; t0 = performance.now(); laps = []; el.querySelector('.sw-laps').innerHTML = ''; el.querySelector('.sw').textContent = '0:00.0'; });
     }
-    const bigPage = (title, big, note) => showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : ''); });
+    // page: the full page the card links to (lib/card-frame.js pageOfCard), e.g. a holiday's day on the Calendar
+    const bigPage = (title, big, note, page) => showPage((p) => { if (page) p.dataset.page = page; p.innerHTML = '<h2>' + esc(title) + '</h2><div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : ''); });
     async function handleGrownAsk(text, lower0) {
       const l = lower0.replace(/\s+/g, ' ').trim();
       { const w = l.replace(/[?.!]+$/, '').match(/^how\s+many\s+(days|weeks|months)\s+(?:until|till|til|to|before)\s+(.+)$/), h = w && holidayOf('when is ' + w[2]);
         if (h) { const n = w[1] === 'days' ? h.days : w[1] === 'weeks' ? Math.round(h.days / 7 * 10) / 10 : Math.round(h.days / 30.44 * 10) / 10;
-          bigPage(h.name, n + ' ' + w[1], h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
-      { const h = holidayOf(l); if (h) { bigPage(h.name, h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), h.days === 0 ? 'today' : 'in ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
+          bigPage(h.name, n + ' ' + w[1], h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + h.days + ' day' + (h.days === 1 ? '' : 's'), holidayPage(h.d)); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
+      { const h = holidayOf(l); if (h) { bigPage(h.name, h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), h.days === 0 ? 'today' : 'in ' + h.days + ' day' + (h.days === 1 ? '' : 's'), holidayPage(h.d)); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
       { const a = ageOf(l); if (a) { bigPage('Age', a.big, a.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'age' }); return true; } }
       { const u = untilOf(l); if (u) { bigPage('Time until', u.big, u.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timeuntil' }); return true; } }
       if (/^(?:start|open|make|give\s+me)\s+(?:me\s+)?a\s+stop\s?watch$|^stop\s?watch$/.test(l.replace(/[?.!]+$/, ''))) { showStopwatch(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'stopwatch' }); return true; }
