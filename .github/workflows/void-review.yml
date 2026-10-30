@@ -128,6 +128,12 @@ jobs:
             echo "this PR does not touch void-live-deploy/skills/"
           fi
 
+      # every module the shared tool-page chain loads (lib/toolkit.js and its imports) stays named in the browser suite's shared list
+      # (tools/shared-chain.test.mjs): #1663 added one, the list did not name it, and shard 1 went red on main after the merge. Seconds, no browser.
+      - name: The shared tool-page chain matches the browser suite's list
+        if: ${{ inputs.report_only != true }}
+        run: node --test tools/shared-chain.test.mjs || { echo "::error title=Shared tool-page chain::a module the toolkit chain loads is not in SHARED_TOOL_FILES (tools/test_void.mjs); see the test output above"; exit 1; }
+
       # A review the automerge bot dispatched (after merging main into the PR) was started with the workflow's token, so its end
       # fires no workflow_run and automerge never hears it passed; the hourly schedule rarely fires, so #598 sat green for hours
       # (2026-10-13). Wake automerge here, pass or fail: it reads the check itself and only merges a clean head.
