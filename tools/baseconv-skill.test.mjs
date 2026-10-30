@@ -14,6 +14,11 @@ test('the asks: its examples and hand-written ones on both sides', () => {
   for (const t of ['4142 hex to decimal', '12 binary to hex', '-1 in hex']) assert.ok(sk.match(t.toLowerCase(), t), t);
   for (const t of ['z hex to binary', 'hello', '5 km to miles']) assert.ok(!sk.match(t.toLowerCase(), t), t);
 });
+test('the converter named first, then the number: "binary to decimal 1010", "hex to binary: ff"', () => {
+  assert.equal(out(card('binary to decimal 1010').h), '10'); assert.equal(out(card('hex to binary: ff').h), '1111 1111');
+  assert.equal(out(card('decimal to hex 255').h), 'FF');
+  for (const t of ['binary to decimal', 'binary to decimal converter', 'hex to rgb #ff0000']) assert.ok(!sk.match(t.toLowerCase(), t), 'no number, or not a base: ' + t);
+});
 test('ff hex to binary: grouped answer, all four bases, 8 bits, signed -1, the link back to base 16', () => {
   const { r, el, h } = card('ff hex to binary');
   assert.equal(r, 'baseconv'); assert.equal(el.dataset.cardKind, 'Converter');
