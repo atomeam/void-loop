@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "41017985240",
-  "at": "2026-10-30T07:06:49Z",
-  "what": "Verse hardened itself: 4 benchmark ask(s) for emoji, flights, scores.  Why these: tab (no benchmark ask, evidence tier: checked, 11 failed runs name it); eightball (no benchmark ask, evidence tier: checked); coin (only 1 benchmark ask, 3 failed runs name it); emoji (only 1 benchmark ask); flights (only 2 benchmark asks); scores (only 2 benchmark asks). New phrases: “random emoji” now opens emoji; “give me an emoji” now opens emoji; “flight time london new york” now opens flights; “bundesliga results” now opens scores. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; heads or tails.",
-  "try": "random emoji",
+  "run": "41046383162",
+  "at": "2026-10-30T11:14:48Z",
+  "what": "Verse hardened itself: 6 benchmark ask(s) for local-stations, open-tool.  Why these: tab (no benchmark ask, evidence tier: checked, 7 failed runs name it); eightball (no benchmark ask, evidence tier: checked); local-stations (no benchmark ask, evidence tier: tested); open-tool (no benchmark ask, evidence tier: tested); coin (only 1 benchmark ask). New phrases: “local radio” now opens local-stations; “radio stations near me” now opens local-stations; “local tv stations” now opens local-stations; “word counter” now opens open-tool; “open the piano” now opens open-tool; “base converter” now opens open-tool. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; heads or tails.",
+  "try": "local radio",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-30T05:03:21Z",
-    "try": "password of 20 characters",
-    "closedAt": "2026-10-30T07:06:34Z"
+    "at": "2026-10-30T07:06:49Z",
+    "try": "random emoji",
+    "closedAt": "2026-10-30T11:14:28Z"
   }
 }
