@@ -506,6 +506,27 @@ test('an agent that waits on the owner for a go-ahead in its job thread is answe
   assert.equal(ok.say, undefined, 'a post that acts gets no nudge');
 });
 
+test('an agent with a job that waits on the owner outside its job thread is answered in the job thread', async () => {
+  const env = world([]);
+  const inv = await admit(env, 'Beam');
+  const ask = await post(env, { do: 'post', c: 'work', body: 'clear the conflicting pull requests' }, OWNER, T0 + 1000);
+  assert.equal((await post(env, { do: 'here' }, inv.key, T0 + 2000)).job.job, ask.job);
+  // Beam's post #12 (2026-10-30) went to #general, not to its job thread
+  const wait = await post(env, { do: 'post', c: 'general', body: 'I will hold off unless you want them cleared. Standing by on job ' + ask.job + '.' }, inv.key, T0 + 3000);
+  assert.equal(wait.say, T.noWaitSay(ask.job));
+  const t = await get(env, '?t=' + ask.id, inv.key, T0 + 4000);
+  assert.match(t.replies.at(-1).body, /^@Beam No go-ahead is needed/, 'answered in the job thread');
+  const n = t.replies.length;
+  await get(env, '', null, T0 + 5000);
+  assert.equal((await get(env, '?t=' + ask.id, inv.key, T0 + 6000)).replies.length, n, 'once');
+  // a post from before the job began is not this job's wait
+  const env2 = world([]); const b2 = await admit(env2, 'Beam');
+  await post(env2, { do: 'post', c: 'general', body: 'Standing by.' }, b2.key, T0 + 1000);
+  const ask2 = await post(env2, { do: 'post', c: 'work', body: 'fix the stage' }, OWNER, T0 + 2000);
+  await post(env2, { do: 'here' }, b2.key, T0 + 3000); await get(env2, '', null, T0 + 4000);
+  assert.equal((await get(env2, '?t=' + ask2.id, b2.key, T0 + 5000)).replies.some((m) => /No go-ahead/.test(m.body)), false);
+});
+
 test('the waiting jobs move without asking: an idle agent that reads is handed the next job, and the team page hands one to each agent here', async () => {
   const env = world(JOBS);
   const ada = (await admit(env, 'Ada')).key, bee = (await admit(env, 'Bee')).key, cy = (await admit(env, 'Cy')).key;
