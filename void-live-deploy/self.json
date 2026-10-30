@@ -550,6 +550,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:43:24Z",
+   "subject": "Store: the changelog list shows the name Verse, not V01D"
+  },
+  {
+   "at": "2026-10-30T05:43:08Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T05:41:41Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:41:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:41:25Z",
+   "subject": "News: fix the page script so the headlines load again"
+  },
+  {
    "at": "2026-10-30T05:40:36Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -608,26 +628,6 @@
   {
    "at": "2026-10-30T05:32:43Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:29:24Z",
-   "subject": "quote: the motivational ask reads Perseverance or Courage, not Effort"
-  },
-  {
-   "at": "2026-10-30T05:29:11Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:28:19Z",
-   "subject": "Read model replies as text, then JSON or a stream; log the full why"
-  },
-  {
-   "at": "2026-10-30T05:28:10Z",
-   "subject": "team: Verse hands waiting jobs to idle agents without being asked"
-  },
-  {
-   "at": "2026-10-30T05:27:17Z",
-   "subject": "Rap at phone width: long words wrap, and the browser checks it at 375 px"
   }
  ],
  "builders": {
