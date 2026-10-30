@@ -20,9 +20,16 @@ export function sunDay(place, ymd, now = new Date()) {
   const alt = (t) => sunHor(t, c.lat, c.lon).alt; let best = start, top = -99;
   for (let t = start; t <= start + 86400000; t += 600000) { const a = alt(t); if (a > top) { top = a; best = t; } }
   let lo = best - 600000, hi = best + 600000; for (let k = 0; k < 40; k++) { const m1 = lo + (hi - lo) / 3, m2 = hi - (hi - lo) / 3; if (alt(m1) < alt(m2)) lo = m1; else hi = m2; }
-  const moon = riseSet('moon', start, c.lat, c.lon), phase = moonPhase(new Date(start + 43200000));
+  const moon = riseSet('moon', start, c.lat, c.lon), phase = moonOfDay(place.tz, [y, mo, d]);
   return { ...c, rise: r.rise, set: r.set, dayMin, state: r.state, noon: new Date(Math.round((lo + hi) / 2)), noonAlt: Math.round(top * 10) / 10,
     civil: { dawn: civil.rise, dusk: civil.set }, nautical: { dawn: nautical.rise, dusk: nautical.set }, astronomical: { dawn: astro.rise, dusk: astro.set },
     golden: { morning: [low.rise, high.rise], evening: [high.set, low.set] },
-    moon: { rise: moon.rise, set: moon.set, state: moon.state, name: phase.name, illumination: Math.round(phase.illumination * 1000) / 10 } };
+    moon: { rise: moon.rise, set: moon.set, state: moon.state, name: phase.name, illumination: phase.illumination } };
+}
+
+/** the moon's phase on a time zone's own day `ymd` ([y, mo0, d], today there by default), taken at noon there: the same everywhere on Earth, so it
+ *  needs no city (a time zone with no place on the map still gets it). { name, illumination (% lit, one decimal) }. Pure. */
+export function moonOfDay(tz, ymd, now = new Date()) {
+  const [y, mo, d] = ymd || ymdIn(tz, now), p = moonPhase(new Date(instantIn(tz, y, mo, d, 0, 0).getTime() + 43200000));
+  return { name: p.name, illumination: Math.round(p.illumination * 1000) / 10 };
 }
