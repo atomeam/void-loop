@@ -11,10 +11,10 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Play with the computer keyboard | Play | have | every site of this kind offers it | void-live-deploy/piano/index.html:106 `"kb" role="group" aria-label="Piano keyboard, press a key"><div class="kbi" id="kbi"></div` |
-| Song sheets to play along | Songs | have | every site of this kind offers it | void-live-deploy/piano/index.html:102 `ruments, sustain, key labels, sheets in plain letters, recording and reverb. Nothing is lo` |
-| Record and play back | Play | have | studied by hand: virtualpiano.net offers this (https://virtualpiano.net/) | void-live-deploy/piano/index.html:110 `tion class="pane" aria-label="Record and replay">` |
-| Other instruments | Play | have | studied by hand: virtualpiano.net offers this (https://virtualpiano.net/) | void-live-deploy/piano/index.html:105 `arimba</option><option value="harpsichord">Harpsichord</option><option value="musicbox">Mu` |
+| Play with the computer keyboard | Play | have | every site of this kind offers it | void-live-deploy/piano/index.html:107 `"kb" role="group" aria-label="Piano keyboard, press a key"><div class="kbi" id="kbi"></div` |
+| Song sheets to play along | Songs | have | every site of this kind offers it | void-live-deploy/piano/index.html:103 `ruments, sustain, key labels, sheets in plain letters, recording and reverb. Nothing is lo` |
+| Record and play back | Play | have | studied by hand: virtualpiano.net offers this (https://virtualpiano.net/) | void-live-deploy/piano/index.html:112 `tion class="pane" aria-label="Record and replay">` |
+| Other instruments | Play | have | studied by hand: virtualpiano.net offers this (https://virtualpiano.net/) | void-live-deploy/piano/index.html:106 `arimba</option><option value="harpsichord">Harpsichord</option><option value="musicbox">Mu` |
 | Lessons and a guided mode | Songs | missing | studied by hand: virtualpiano.net offers this (https://virtualpiano.net/) | no sign of it in the source of /piano/ |
 | Play from a MIDI keyboard | Play | missing | studied by hand: virtualpiano.net offers this (https://virtualpiano.net/) | no sign of it in the source of /piano/ |
 | Sheets added by players | Songs | missing | studied by hand: virtualpiano.net offers this (https://virtualpiano.net/) | no sign of it in the source of /piano/ |
