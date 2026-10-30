@@ -550,8 +550,48 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T14:28:20Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+  },
+  {
+   "at": "2026-10-30T14:26:32Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T14:25:30Z",
+   "subject": "Helper PR: no PR for a helper branch whose skills fail the skills check"
+  },
+  {
+   "at": "2026-10-30T14:24:33Z",
+   "subject": "QR code maker, case converter and lorem generator answer their tool names"
+  },
+  {
+   "at": "2026-10-30T14:22:00Z",
+   "subject": "photos: send the edited photo to the PDF, paint and gradient pages"
+  },
+  {
+   "at": "2026-10-30T14:20:29Z",
+   "subject": "Cite the sources for body temperature, the pound-of-fat figure and dog years"
+  },
+  {
+   "at": "2026-10-30T14:19:40Z",
+   "subject": "paint: send the whole picture's colours to the gradient page"
+  },
+  {
+   "at": "2026-10-30T14:17:26Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T14:13:24Z",
    "subject": "timer skill: simple countdown timer on the stage"
+  },
+  {
+   "at": "2026-10-30T14:13:07Z",
+   "subject": "Value asks open their calculator with the asker's own numbers"
+  },
+  {
+   "at": "2026-10-30T14:11:54Z",
+   "subject": "Size room AC from the ENERGY STAR chart, with its source and read date"
   },
   {
    "at": "2026-10-30T14:10:42Z",
@@ -588,46 +628,6 @@
   {
    "at": "2026-10-30T13:52:51Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T13:52:32Z",
-   "subject": "Gradient page: its links follow a picture it reads at once"
-  },
-  {
-   "at": "2026-10-30T13:48:24Z",
-   "subject": "Pictures into a PDF: paint and image hand a picture to /pdf/'s images-to-PDF tool"
-  },
-  {
-   "at": "2026-10-30T13:46:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T13:46:49Z",
-   "subject": "Stock and index asks get a quote card that opens Markets"
-  },
-  {
-   "at": "2026-10-30T13:44:48Z",
-   "subject": "Verse fixes its constellation skill: learn to handle \"can u see cassiopeia tonight\""
-  },
-  {
-   "at": "2026-10-30T13:43:42Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-30T13:43:07Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-30T13:42:52Z",
-   "subject": "Gradients as pictures: send a gradient to paint, photos and resize; read a picture's colours from image and paint"
-  },
-  {
-   "at": "2026-10-30T13:42:05Z",
-   "subject": "Site history: the next sites of the queue, each with a cited history"
-  },
-  {
-   "at": "2026-10-30T13:41:28Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   }
  ],
  "builders": {

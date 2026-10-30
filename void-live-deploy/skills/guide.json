@@ -2663,11 +2663,11 @@
    "chapter": "time",
    "name": "timer",
    "title": "Timer",
-   "line": "Countdowns on the stage: \"set a timer for 5 minutes\" (starts at once, like a phone's), \"make a timer\" (waits), \"another timer for 2 minutes\", \"pause / start / reset the timer\", \"make the timer bigger\", \"remove the timer\", \"set an alarm for 7am\", \"remind me to stretch in 20 minutes\", \"days until christmas\"",
+   "line": "A simple countdown timer on the stage",
    "examples": [
-    "set a timer for 5 minutes",
-    "a 2 second timer",
-    "timer"
+    "start a timer",
+    "5 minute timer",
+    "countdown 30 seconds"
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 34 real asks in the benchmark",
@@ -8080,8 +8080,8 @@
    "line": "A 12 cm hourglass, glass bulbs in a turned walnut frame with brass posts",
    "card": "Timer",
    "examples": [
-    "set a timer for 5 minutes",
-    "a 2 second timer"
+    "start a timer",
+    "5 minute timer"
    ],
    "owner": "timer",
    "ownerPage": 134,
@@ -8487,6 +8487,7 @@
     "team-chat",
     "emoji",
     "hangman",
+    "timer",
     "wordladder",
     "podcast-search",
     "emoji-combos",
@@ -10445,23 +10446,23 @@
     },
     {
      "rank": 325,
+     "name": "timer",
+     "catches": "start a timer"
+    },
+    {
+     "rank": 326,
      "name": "wordladder",
      "catches": "word ladder from cat to dog"
     },
     {
-     "rank": 326,
+     "rank": 327,
      "name": "podcast-search",
      "catches": "podcasts about history"
     },
     {
-     "rank": 327,
+     "rank": 328,
      "name": "emoji-combos",
      "catches": "cat emoji combos"
-    },
-    {
-     "rank": 328,
-     "name": "studios",
-     "catches": "cpan testers"
     }
    ],
    "n": 496
@@ -10469,25 +10470,30 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCXXIX–CCCXXXII",
+   "title": "Rules CCCXXIX–CCCXXXIII",
    "rules": [
     {
      "rank": 329,
+     "name": "studios",
+     "catches": "cpan testers"
+    },
+    {
+     "rank": 330,
      "name": "local-stations",
      "catches": "local radio"
     },
     {
-     "rank": 330,
+     "rank": 331,
      "name": "open-tool",
      "catches": "word counter"
     },
     {
-     "rank": 331,
+     "rank": 332,
      "name": "baggage",
      "catches": "how much luggage weight allowed"
     },
     {
-     "rank": 332,
+     "rank": 333,
      "name": "rentbuy",
      "catches": "should i rent or buy"
     }
