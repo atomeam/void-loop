@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1074,
+ "counted": 1077,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -325,6 +325,13 @@
    "tests": 1
   },
   {
+   "file": "lib/note-tools.js",
+   "skills": 8,
+   "direct": 4,
+   "dependants": 17,
+   "tests": 1
+  },
+  {
    "file": "lib/tool-sites.js",
    "skills": 8,
    "direct": 2,
@@ -455,7 +462,7 @@
    "skills": 5,
    "direct": 1,
    "dependants": 11,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/success-pulse.js",
@@ -577,6 +584,20 @@
    "tests": 1
   },
   {
+   "file": "lib/cssmin.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/csvjson.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/markdown.js",
    "skills": 4,
    "direct": 1,
@@ -678,13 +699,6 @@
    "file": "lib/field-cards.js",
    "skills": 4,
    "direct": 2,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/note-tools.js",
-   "skills": 4,
-   "direct": 4,
    "dependants": 4,
    "tests": 1
   },
@@ -2331,7 +2345,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 23,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/character.js",
@@ -2384,6 +2398,13 @@
   },
   {
    "file": "lib/news-report.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
+   "file": "lib/note-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 23,
@@ -3389,6 +3410,7 @@
     "lib/card-kinds.js",
     "lib/free-pics.js",
     "lib/answer-edge.js",
+    "lib/note-ask.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -6376,6 +6398,46 @@
     "skills/veto-council.js"
    ]
   },
+  "lib/cssmin.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
+   ]
+  },
+  "lib/csvjson.js": {
+   "imports": [
+    "lib/note-tools.js"
+   ],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
+   ]
+  },
   "lib/daily-art.js": {
    "imports": [],
    "importedBy": [
@@ -8793,6 +8855,36 @@
     "skills/miss-jobs.js"
    ]
   },
+  "lib/note-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
   "lib/note-extras.js": {
    "imports": [
     "lib/notes.js"
@@ -8807,10 +8899,25 @@
   "lib/note-tools.js": {
    "imports": [],
    "importedBy": [
+    "lib/csvjson.js",
     "skills/csv-table.js",
     "skills/note-tools.js",
     "skills/outline-note.js",
     "skills/qr-scan.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/util.js",
+    "skills/writing-aids.js"
    ]
   },
   "lib/notebook.js": {
@@ -16096,6 +16203,8 @@
     "lib/hash.js",
     "lib/textdiff.js",
     "lib/markdown.js",
+    "lib/csvjson.js",
+    "lib/cssmin.js",
     "lib/card-mini.js",
     "lib/pwcheck.js"
    ],
