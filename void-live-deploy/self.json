@@ -550,12 +550,28 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T06:10:23Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T06:09:27Z",
+   "subject": "Team jobs carry a brief: the repository, the kind's guide, the playbooks and how to deliver"
+  },
+  {
+   "at": "2026-10-30T06:09:25Z",
+   "subject": "openapi: mark /api/rapvoice as Verse's own (the rap page is its only caller)"
+  },
+  {
    "at": "2026-10-30T06:08:47Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T06:08:28Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T06:08:01Z",
+   "subject": "Rap: Verse's own voice on the beat, produced beats, and a music video for every song"
   },
   {
    "at": "2026-10-30T06:07:47Z",
@@ -568,6 +584,14 @@
   {
    "at": "2026-10-30T06:07:38Z",
    "subject": "converter: Change EPUB Cover on the device"
+  },
+  {
+   "at": "2026-10-30T06:07:10Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T06:06:53Z",
+   "subject": "Put the visit counter back on 4 pages, and file the studios skill"
   },
   {
    "at": "2026-10-30T06:02:57Z",
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-30T05:53:54Z",
    "subject": "Sitemap lists the 12 linked pages it missed; self-check counts a studio's own \"Use with\" row"
-  },
-  {
-   "at": "2026-10-30T05:53:39Z",
-   "subject": "verse brain: Pool header says what it does, preloads, deps and generated files"
-  },
-  {
-   "at": "2026-10-30T05:53:36Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T05:53:28Z",
-   "subject": "Cut cited caveats and notations the page does not make, convert stated quantities exactly"
-  },
-  {
-   "at": "2026-10-30T05:52:21Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:52:05Z",
-   "subject": "Checks parse the scripts inside each page"
-  },
-  {
-   "at": "2026-10-30T05:49:01Z",
-   "subject": "converter: Cut MP3 keeps the MP3, exact to the sample, with no new coding"
   }
  ],
  "builders": {
