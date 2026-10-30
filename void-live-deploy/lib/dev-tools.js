@@ -3,7 +3,7 @@
 // lorem ipsum already were there). Nothing here touches the page or the network; everything runs on the text you give it.
 
 const tidy = (s) => String(s == null ? '' : s).replace(/[ \t]+/g, ' ').trim();
-export const MODES = ['json', 'base64', 'regex', 'cron', 'http', 'dummy', 'commit'];
+export const MODES = ['json', 'base64', 'regex', 'cron', 'http', 'dummy', 'commit', 'jwt', 'html', 'xml'];
 
 // ---- JSON -----------------------------------------------------------------------------------------
 
@@ -278,6 +278,136 @@ export function polishCommit(raw) {
   return { plain, conventional, body, notes };
 }
 
+// ---- JWT decoder ----------------------------------------------------------------------------------
+
+/** one Base64url part of a token to its JSON value: { ok, value } or { ok:false, err }. Pure. */
+function jwtPart(part, name) {
+  const r = b64Decode(part);
+  if (!r.ok) return { ok: false, err: 'the ' + name + ' is not Base64url text' };
+  try { return { ok: true, value: JSON.parse(r.out) }; } catch (_) { return { ok: false, err: 'the ' + name + ' is not JSON' }; }
+}
+// the registered time claims (RFC 7519 section 4.1): seconds since 1970-01-01 UTC
+const JWT_TIMES = { exp: 'Expires', nbf: 'Not before', iat: 'Issued' };
+
+/**
+ * a JSON Web Token (RFC 7519) to { ok, header, payload, times, signed } or { ok:false, err }. It reads the token and does not check the
+ * signature: that needs the issuer's key, and a decoder that says "valid" without it misleads. times: the exp, nbf and iat claims as UTC
+ * dates, with exp and nbf held against now. Pure but for now.
+ */
+export function jwtDecode(token, now = Date.now()) {
+  const t = String(token == null ? '' : token).trim().replace(/^bearer\s+/i, '');
+  if (!t) return { ok: true, header: null, payload: null, times: [], signed: false };
+  const parts = t.split('.');
+  if (parts.length !== 3 && parts.length !== 2) return { ok: false, err: 'a JWT has 3 parts with a dot between each (header.payload.signature); this has ' + parts.length };
+  if (parts.length === 2 || parts.some((p, i) => i < 2 && !/^[A-Za-z0-9_-]+={0,2}$/.test(p))) {
+    if (parts.length === 2) return { ok: false, err: 'a JWT has 3 parts with a dot between each (header.payload.signature); this has 2' };
+    return { ok: false, err: 'a JWT part has characters outside Base64url (A-Z a-z 0-9 - _)' };
+  }
+  const h = jwtPart(parts[0], 'header'), p = jwtPart(parts[1], 'payload');
+  if (!h.ok) return h;
+  if (!p.ok) return p;
+  if (!h.value || typeof h.value !== 'object' || Array.isArray(h.value)) return { ok: false, err: 'the header is not a JSON object' };
+  const times = [];
+  const pl = p.value && typeof p.value === 'object' && !Array.isArray(p.value) ? p.value : {};
+  for (const [k, label] of Object.entries(JWT_TIMES)) {
+    const v = pl[k];
+    if (typeof v !== 'number' || !Number.isFinite(v) || Math.abs(v) > 8.64e12) continue;
+    const ms = v * 1000, state = k === 'exp' ? (ms <= now ? 'expired' : 'not expired yet') : k === 'nbf' ? (ms > now ? 'not valid yet' : 'in effect') : '';
+    times.push({ claim: k, label, iso: new Date(ms).toISOString().replace('.000Z', 'Z'), state });
+  }
+  return { ok: true, header: h.value, payload: p.value, times, signed: parts[2].length > 0 && String(h.value.alg || '').toLowerCase() !== 'none' };
+}
+
+// ---- HTML entities --------------------------------------------------------------------------------
+
+const ENTITY = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0', copy: '©', reg: '®', trade: '™', hellip: '…', mdash: '\u2014',
+  ndash: '\u2013', lsquo: '‘', rsquo: '’', ldquo: '“', rdquo: '”', laquo: '«', raquo: '»', euro: '€', pound: '£', yen: '¥', cent: '¢', deg: '°',
+  times: '×', divide: '÷', plusmn: '±', middot: '·', bull: '•', sect: '§', para: '¶', iexcl: '¡', iquest: '¿', shy: '\u00ad' };
+const ESCAPE = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+/** text to HTML-safe text: & < > " ' become entities, so it shows as text in a page or an attribute. Pure. */
+export const htmlEscape = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ESCAPE[c]);
+
+/** HTML entities back to text: the named ones above and every numeric one (&#60; &#x3C;); an unknown name stays as it is. Pure. */
+export function htmlUnescape(s) {
+  return String(s == null ? '' : s).replace(/&(#[xX][0-9a-fA-F]{1,6}|#\d{1,7}|[a-zA-Z][a-zA-Z0-9]{1,31});/g, (all, e) => {
+    if (e[0] !== '#') return Object.prototype.hasOwnProperty.call(ENTITY, e) ? ENTITY[e] : all;
+    const n = /^#[xX]/.test(e) ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+    return n > 0 && n <= 0x10ffff && !(n >= 0xd800 && n <= 0xdfff) ? String.fromCodePoint(n) : '�';
+  });
+}
+
+// ---- XML formatter --------------------------------------------------------------------------------
+
+/** XML text to its pieces in order: { t: 'open'|'close'|'empty'|'text'|'other', s, name? }, or { err }. Pure. */
+export function xmlTokens(text) {
+  const s = String(text == null ? '' : text), out = [];
+  const line = (i) => s.slice(0, i).split('\n').length;
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] !== '<') { const j = s.indexOf('<', i), end = j < 0 ? s.length : j; out.push({ t: 'text', s: s.slice(i, end) }); i = end; continue; }
+    let close = null, kind = 'other';
+    if (s.startsWith('<!--', i)) close = '-->';
+    else if (s.startsWith('<![CDATA[', i)) close = ']]>';
+    else if (s.startsWith('<?', i)) close = '?>';
+    else if (s.startsWith('<!', i)) { const b = s.indexOf('[', i), g = s.indexOf('>', i); close = b > 0 && (g < 0 || b < g) ? ']>' : '>'; }
+    if (close) {
+      const j = s.indexOf(close, i);
+      if (j < 0) return { err: 'line ' + line(i) + ': this ' + (close === '-->' ? 'comment' : close === ']]>' ? 'CDATA section' : 'declaration') + ' is never closed' };
+      out.push({ t: kind, s: s.slice(i, j + close.length) }); i = j + close.length; continue;
+    }
+    // a tag: up to the > that is not inside quotes
+    let j = i + 1, q = '';
+    while (j < s.length && (q || s[j] !== '>')) { if (q) { if (s[j] === q) q = ''; } else if (s[j] === '"' || s[j] === "'") q = s[j]; j++; }
+    if (j >= s.length) return { err: 'line ' + line(i) + ': a tag is never closed with >' };
+    const tag = s.slice(i, j + 1), m = /^<(\/?)([A-Za-z_][\w.:-]*)/.exec(tag);
+    if (!m) return { err: 'line ' + line(i) + ': "' + tag.slice(0, 20) + '" is not a tag (write < in text as &lt;)' };
+    out.push({ t: m[1] ? 'close' : /\/\s*>$/.test(tag) ? 'empty' : 'open', s: tag, name: m[2] });
+    i = j + 1;
+  }
+  return { tokens: out };
+}
+
+/**
+ * pretty-print (or minify) XML: { ok, out } or { ok:false, err } that names the line. It checks that every tag closes in order and that
+ * there is one root element. Text that is only white space between tags is dropped; other text is kept as written, trimmed at its ends
+ * when it is pretty-printed. An element that holds only a short text stays on one line. Pure.
+ */
+export function formatXml(text, { minify = false, indent = 2 } = {}) {
+  const s = String(text == null ? '' : text);
+  if (!s.trim()) return { ok: true, out: '' };
+  const r = xmlTokens(s);
+  if (r.err) return { ok: false, err: r.err };
+  const toks = r.tokens.filter((k) => !(k.t === 'text' && !k.s.trim()));
+  const stack = [];
+  let roots = 0;
+  for (const k of toks) {
+    if (k.t === 'text' && !stack.length) return { ok: false, err: 'there is text outside the root element: "' + k.s.trim().slice(0, 30) + '"' };
+    if ((k.t === 'open' || k.t === 'empty') && !stack.length) roots++;
+    if (k.t === 'open') stack.push(k.name);
+    else if (k.t === 'close') {
+      if (!stack.length) return { ok: false, err: '</' + k.name + '> closes a tag that was never opened' };
+      const top = stack.pop();
+      if (top !== k.name) return { ok: false, err: '</' + k.name + '> closes <' + top + '>: the tags close in the wrong order' };
+    }
+  }
+  if (stack.length) return { ok: false, err: '<' + stack[stack.length - 1] + '> is never closed' };
+  if (roots > 1) return { ok: false, err: 'XML has one root element; this has ' + roots };
+  if (minify) return { ok: true, out: toks.map((k) => (k.t === 'text' ? k.s.trim() : k.s)).join('') };
+  const pad = ' '.repeat(indent), lines = [];
+  let depth = 0;
+  for (let n = 0; n < toks.length; n++) {
+    const k = toks[n], a = toks[n + 1], b = toks[n + 2];
+    if (k.t === 'open' && a && a.t === 'text' && b && b.t === 'close' && a.s.trim().length <= 80 && !a.s.trim().includes('\n')) {
+      lines.push(pad.repeat(depth) + k.s + a.s.trim() + b.s); n += 2; continue;
+    }
+    if (k.t === 'close') depth--;
+    lines.push(pad.repeat(Math.max(0, depth)) + (k.t === 'text' ? k.s.trim() : k.s));
+    if (k.t === 'open') depth++;
+  }
+  return { ok: true, out: lines.join('\n') };
+}
+
 // ---- what an ask means ---------------------------------------------------------------------------------
 
 const LEADIN = '(?:please\\s+)?(?:(?:open|show|give|make|start|get)\\s+(?:me\\s+)?(?:a\\s+|an\\s+|the\\s+|my\\s+)?)?';
@@ -308,6 +438,17 @@ export function devOf(text) {
     return { mode: 'dummy', input: columnsIn(tail).join(',') || 'id,name,email,city', opts: { n: Math.min(DUMMY_MAX_ROWS, n), seed: 1 } };
   }
   if ((m = /^(?:please\s+)?(?:(?:polish|improve|tidy|clean\s*up|rewrite|reword|fix|check)\s+(?:up\s+)?(?:my\s+|this\s+|the\s+)?commit\s+(?:message|msg)|commit\s+(?:message|msg)\s+(?:polish|polisher|helper|tool|check(?:er)?))\s*:?\s*([\s\S]*)$/i.exec(t))) return { mode: 'commit', input: m[1].trim() };
+  // JWT, HTML entities and XML (2026-10-30: "jwt decoder", "html escape <b>" and "xml formatter" fell to an article that answered nothing)
+  if ((m = new RegExp('^(?:please\\s+)?(?:decode|parse|read|inspect|debug)\\s+(?:this\\s+|my\\s+|a\\s+|the\\s+)?(?:jwt|json\\s+web\\s+token)(?:\\s+token)?\\s*:?\\s*([\\s\\S]*)$|^' + LEADIN + '(?:jwt|json\\s+web\\s+token)\\s+(?:decoder|decode|debugger|parser|reader|viewer|inspector|tool)\\s*:?\\s*([\\s\\S]*)$', 'i').exec(t))) return { mode: 'jwt', input: (m[1] || m[2] || '').trim() };
+  if ((m = /^(?:bearer\s+)?(eyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*)$/.exec(t))) return { mode: 'jwt', input: m[1] };
+  if ((m = new RegExp('^(?:please\\s+)?(escape|unescape|encode|decode)\\s+(?:this\\s+|my\\s+|the\\s+|some\\s+)?html(?:\\s+entities)?\\s*:?\\s*([\\s\\S]*)$|^(?:please\\s+)?html\\s+(?:entity\\s+|entities\\s+)?(unescaper|escaper|encoder|decoder|unescape|escape|encode|decode)(?:\\s+tool)?(?=\\s|:|$)\\s*:?\\s*([\\s\\S]*)$|^' + LEADIN + 'html\\s+entit(?:y|ies)\\s+(?:converter|tool|lookup)\\s*:?\\s*([\\s\\S]*)$', 'i').exec(t))) {
+    const verb = (m[1] || m[3] || '').toLowerCase();
+    return { mode: 'html', input: (m[2] || m[4] || m[5] || '').trim(), opts: { dir: /^(?:un|dec)/.test(verb) ? 'decode' : 'encode' } };
+  }
+  if ((m = new RegExp('^(?:please\\s+)?(?:(format|pretty[- ]?print|prettify|beautify|indent|minify|minimi[sz]e|validate|check)\\s+(?:this\\s+|my\\s+|the\\s+|some\\s+)?xml|' + LEADIN + 'xml\\s+(?:formatter|pretty\\s*printer|validator|minifier|beautifier|viewer|tool))\\s*:?\\s*([\\s\\S]*)$', 'i').exec(t))) {
+    const verb = (m[1] || '').toLowerCase();
+    return { mode: 'xml', input: m[2].trim(), opts: { minify: /^mini/.test(verb) } };
+  }
   return null;
 }
 
