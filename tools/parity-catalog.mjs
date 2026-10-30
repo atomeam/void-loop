@@ -473,6 +473,16 @@ export const CATALOG = {
     ['export', 'Files', 'Export palettes', T('export|download'), T('export|download'), null, []],
     ...COMMON,
   ],
+  // the emoji combo catalog (2026-10-30): emojicombos.com studied by hand from its home page and its cat tag page; 'core' is what that page shows
+  '/emoji-combos/': [
+    ['search', 'Combos', 'Search combos by tag', T('search|tag'), T('search'), null, 'core'],
+    ['copy', 'Combos', 'Copy a combo', T('copy'), T('copy'), null, 'core'],
+    ['collect', 'Combos', 'Collect several into one', T('collect'), T('collect'), null, 'core'],
+    ['fancy', 'Text', 'Fancy text', T('fancy text|fonts?'), T('fancy text'), null, 'core'],
+    ['art', 'Text', 'Text art from an image', T('text art|dot art'), T('dot art|text art'), null, []],
+    ['yours', 'Combos', 'Make your own', T('submit|make your own'), T('make your own'), null, []],
+    ...COMMON,
+  ],
   '/emojis/': [
     ['live', 'Emoji', 'Live counts of emoji use', T('live|real-?time|count'), T('live|count'), null, 'core'],
     ['detail', 'Emoji', 'Details of each emoji', T('detail|emoji'), T('emoji'), null, 'core'],

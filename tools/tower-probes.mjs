@@ -228,6 +228,18 @@ export const PROBES = Object.freeze({
     facts: [['a strength rating', /\b(?:very weak|weak|fair|strong|very strong)\b|\bstrength\b/i], ['the time to crack', /\bcrack/i], ['why it is weak', /\bwhy\b|\breasons?\b/i], ['how to fix it', /\bfix\b|\btips?\b|\bimprove\b/i],
       ['a leak check', /\bleak|\bbreach|\bpwned\b/i], ['nothing sent anywhere', /never sent|not sent|on (?:this|your) device|in your browser/i], ['show the password', /\bshow\b/i]],
   },
+  'emoji combos': {
+    site: 'https://emojicombos.com/', verse: '/emoji-combos/',
+    // the question: cat, the site's own tag page (emojicombos.com/cat) against Verse's search for it in the link. The truth any tagged catalog
+    // agrees on: cat emoji, a cat kaomoji, the tag named and a way to copy one
+    ask: { site: 'https://emojicombos.com/cat', verse: '/emoji-combos/?q=cat' },
+    truth: [['cat emoji', /🐱|🐈|😺|😸|😻/u], ['a cat kaomoji', /ฅ|=\^|⟆|ﻌ/u], ['the cat tag named', /\bcat\b/i], ['a way to copy one', /\bcopy\b/i]],
+    // what the best emoji combo pages offer (emojicombos.com: a tagged search, copy, collect several into one, submit your own, fancy text,
+    // text art from an image, single emoji with similar ones, votes; Verse keeps saved ones and its own on the device and says nothing is sent)
+    facts: [['a search', /\bsearch\b/i], ['tags', /\btags?\b/i], ['copy', /\bcopy\b/i], ['collect several into one', /\bcollect/i], ['make or submit your own', /make your own|\bsubmit\b/i],
+      ['fancy text', /fancy text/i], ['text art from an image', /text art|dot art/i], ['single emoji', /individual emoji|single emoji/i], ['similar emoji', /\bsimilar\b/i],
+      ['saved or voted favourites', /\bsaved?\b|\bfavou?rites?\b|\bvotes?\b/i], ['a link to share', /copy link|\bshare\b/i], ['nothing sent anywhere', /nothing .{0,60}sent|on this device/i]],
+  },
   translate: {
     site: 'https://translate.google.com/', verse: '/translate/?q=hello&to=es',
     // the question: hello, into Spanish, in the page's link. The truth: hola (any correct translator agrees), with the language it came from named.
@@ -1094,6 +1106,7 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
   pdf: { 'merge and split': [['merge', /\bmerge\b/i], ['split', /\bsplit\b/i]], 'page tools': [['rotate', /\brotate\b/i], ['delete pages', /\bdelete\b|\bremove\b/i], ['reorder', /\breorder\b|\bdrag\b/i]], 'images to pdf': [['images to PDF', /\bimages?\b[\s\S]{0,20}\bPDF\b/i]], compress: [['compress', /\bcompress/i]] },
   kanban: { 'boards and columns': [['boards', /\bboards?\b/i], ['columns', /\bcolumns?\b|\blists?\b/i]], 'card details': [['labels', /\blabels?\b/i], ['due dates', /\bdue\b/i], ['checklists', /\bchecklists?\b/i]], 'drag and drop': [['drag', /\bdrag\b/i]], 'import and export': [['export', /\bexport\b/i], ['import', /\bimport\b/i]] },
   encoder: { 'decode too': [['decoding', /\bdecod/i]], 'files and character sets': [['files', /\bfiles?\b/i], ['character sets', /\bchar(?:acter)?\s?sets?\b|\bcharset\b/i]] },
+  'emoji combos': { 'fancy text': [['fancy text', /fancy text/i]], 'text art from an image': [['text art from an image', /text art|dot art/i]], 'collect and copy': [['collect several into one', /\bcollect/i]] },
   'password strength': { 'leak check': [['a leak check', /\bleak/i]] }, // crack time and the reasons are read off the typed answer (askParts)
   wheel: { 'entries list': [['entries', /\bentries\b|\bnames\b/i]], weights: [['weights', /\bweights?\b|times as likely/i]] }, // 'remove the winner' shows only after a spin, on both sites: unmeasured,
   'random number': { 'true randomness': [['names where its randomness comes from', /atmospheric noise|\bdrand\b|randomness beacon|getRandomValues|\bhardware\b/i], ['a draw others can check', /\bcheckable\b|\bverifiab|\bre-deriv|\bsigned\b/i]], 'range choice': [['a range', /\bmin(?:imum)?\b[\s\S]{0,120}\bmax|\bfrom\b[\s\S]{0,60}\bto\b|\bbetween\b[\s\S]{0,40}\band\b/i], ['how many', /\bhow many\b|\bgenerate\s+\d+|\bnumber of\b/i], ['no repeats', /\bno repeats?\b|\bunique\b|\bwithout repe/i]] },

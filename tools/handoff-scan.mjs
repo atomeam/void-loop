@@ -12,7 +12,7 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, 
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), site = path.join(root, 'void-live-deploy');
 /** the types a handoff can carry, and how much a person gains when one page's result opens the next already filled in */
-export const TYPES = Object.freeze({ names: 3, items: 2, music: 3, numbers: 3, date: 3, event: 3, color: 3, palette: 3, image: 3, table: 3, location: 3, duration: 2, number: 2, url: 2, text: 1, code: 1 });
+export const TYPES = Object.freeze({ names: 3, items: 2, music: 3, numbers: 3, date: 3, event: 3, color: 3, palette: 3, image: 3, table: 3, location: 3, video: 3, duration: 2, number: 2, url: 2, text: 1, code: 1 });
 /** the routes that are not tools a person carries a result between (articles, money and admin pages, games' own boards) */
 const SKIP = /^\/(?:obituaries|privacy|fix|podcast|cheat-codes|keep-it-running|first-automation-setup|full-stack-audit|one-time-fix|hosting|store|ledger|identity|conquered|claims|models|studies|og|g|tools|music|humans|remediation|review|cpan|code-review|data|compare)\b/;
 
