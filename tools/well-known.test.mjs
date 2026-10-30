@@ -16,7 +16,8 @@ const SITE = 'https://a-to-mind.com';
 /** the Pages Function routes, from functions/ (functions/api/hook/[id].js -> /api/hook/[id]). */
 function functionRoutes() {
   const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
-  return walk(join(dep, 'functions')).filter((f) => f.endsWith('.js')).map((f) => '/' + f.slice(join(dep, 'functions').length + 1).replace(/\\/g, '/').replace(/\.js$/, '').replace(/\/index$/, ''));
+  // a _middleware.js wraps the routes beside it and is no route itself (Cloudflare Pages Functions)
+  return walk(join(dep, 'functions')).filter((f) => f.endsWith('.js') && !f.endsWith('_middleware.js')).map((f) => '/' + f.slice(join(dep, 'functions').length + 1).replace(/\\/g, '/').replace(/\.js$/, '').replace(/\/index$/, ''));
 }
 const FN = functionRoutes();
 // only the paths _routes.json sends to Functions reach one (functions/[handle].js would match any one-segment path otherwise)

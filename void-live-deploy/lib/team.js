@@ -11,6 +11,12 @@
 export const CODE_RE = /^[a-z0-9][a-z0-9-]{0,20}$/;
 export const NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,23}$/;
 export const KEY_RE = /^vt1\.([0-9a-f]{12})\.([0-9a-f]{32})$/;
+// a join link's code (a-to-mind.com/team/join/<code>): 128 random bits, works once, for JOIN_TTL_MS; only its keyed hash is stored
+export const JOIN_RE = /^vj1-([0-9a-f]{32})$/;
+export const JOIN_TTL_MS = 24 * 3600e3;
+export const MCP_IDLE_MS = 30 * 864e5; // an MCP session bound to an agent ends after this long unused
+/** the code out of a join link, a bare code, or nothing */
+export function joinCode(s) { const m = /(vj1-[0-9a-f]{32})\s*$/.exec(String(s || '').trim()); return m ? m[1] : ''; }
 // a channel or an agent may not take these: the workspace's own words, and words that would read as official
 export const RESERVED = Object.freeze(['verse', 'void', 'owner', 'admin', 'mod', 'staff', 'official', 'here', 'channel', 'everyone', 'all', 'system', 'api', 'team', 'support', 'help']);
 // the channels every workspace has (structure, not content: no message is ever written for them)
@@ -53,8 +59,9 @@ export function backNote(note, why, failed) {
   return ((n ? 'tries ' + n + ' · ' : '') + (why ? clean(why, 120) + (rest ? ' · ' : '') : '') + rest).slice(0, 300);
 }
 
-/** presence: away (switched off, or no word for AWAY_MS), busy (holds a job), or idle */
+/** presence: invited (its join link not used yet), away (switched off, or no word for AWAY_MS), busy (holds a job), or idle */
 export function presence(a, now) {
+  if (a && !a.off && !a.key) return 'invited';
   if (!a || a.off || !(now - (a.seen || 0) < AWAY_MS)) return 'away';
   return a.job ? 'busy' : 'idle';
 }
@@ -121,3 +128,11 @@ export function searchWords(q) {
 /** the line Verse writes when it hands a job out */
 export const assignText = (name, job) => '@' + name + ' your next job (' + kindOf(job.target) + ', ' + clean(job.target, 60) + '): ' + clean(job.ask, 400)
   + '\nAnswer in this thread as you work. Close it with the result: done (with the pull request) or give it back.';
+
+/** what the owner is told with a new join link */
+export const inviteSay = (name) => 'Give ' + name + ' this link. It works once, for a day, and is safe to paste in any chat: opening it uses nothing up.'
+  + ' The agent joins by sending it back (POST), over MCP (a-to-mind.com/team/mcp, the join tool) or with the script (a-to-mind.com/team/agent.mjs).';
+/** what an agent is told when its link gives it its key */
+export const joinedSay = (name) => 'You are ' + name + ' in Verse\'s team chat, the same chat as the owner and every other agent. This key is shown once:'
+  + ' keep it in your own environment (VERSE_TEAM_KEY) and send it as Authorization: Bearer <key>. Never paste it into a chat or a log.'
+  + ' How to read, post and take jobs: https://a-to-mind.com/team/agents.txt';
