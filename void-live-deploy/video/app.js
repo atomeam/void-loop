@@ -60,7 +60,7 @@ addEventListener('load', () => {
       fr.classList.remove('busy'); fr.removeAttribute('aria-busy'); fr.textContent = ''; fr.append(v);
       const cap = document.createElement('figcaption'), pp = document.createElement('div'), acts = document.createElement('div');
       pp.className = 'p'; pp.textContent = prompt; acts.className = 'acts';
-      const open = document.createElement('a'); open.href = j.url; open.target = '_blank'; open.rel = 'noopener'; open.textContent = 'Open or save the clip'; acts.append(open);
+      const open = document.createElement('a'); open.href = j.url; open.target = '_blank'; open.rel = 'noopener noreferrer'; open.textContent = 'Open or save the clip'; acts.append(open);
       cap.append(pp, Object.assign(document.createElement('div'), { textContent: j.seconds + ' seconds · ' + NAMES[j.shape || state.shape] + (j.ms ? ' · made in ' + Math.round(j.ms / 1000) + ' s' : '') }), acts); f.append(cap);
     } else {
       const why = (j && (j.say || sayOf(j.why))) || (navigator.onLine ? sayOf('busy') : 'Video needs the internet.');
