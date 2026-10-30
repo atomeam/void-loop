@@ -550,24 +550,20 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T07:28:02Z",
-   "subject": "Local TV and radio: drop signed-token streams, list /api/local as Verse's own, refresh the fanfic module list and hand-off gaps"
-  },
-  {
-   "at": "2026-10-30T07:21:10Z",
-   "subject": "Local TV and radio: escape the card heading and time out the iptv-org clones"
-  },
-  {
-   "at": "2026-10-30T07:18:45Z",
-   "subject": "Local TV and radio: fix the quote that stopped /local/app.js from parsing"
-  },
-  {
-   "at": "2026-10-30T07:16:49Z",
-   "subject": "Local TV and radio: /local/ finds the stations near you and plays them"
-  },
-  {
    "at": "2026-10-30T07:16:13Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T07:15:15Z",
+   "subject": "Verse Brain on every page: window.verseBrain reads and writes the one brain"
+  },
+  {
+   "at": "2026-10-30T07:13:51Z",
+   "subject": "A published page fits a phone: every card in reach, one under the other"
+  },
+  {
+   "at": "2026-10-30T07:13:27Z",
+   "subject": "members-paid tests the merged PR; two ideas in one millisecond no longer clash"
   },
   {
    "at": "2026-10-30T07:11:33Z",
@@ -628,6 +624,10 @@
   {
    "at": "2026-10-30T06:55:05Z",
    "subject": "Copy the stage change to void.html"
+  },
+  {
+   "at": "2026-10-30T06:54:20Z",
+   "subject": "Rap: Verse listens to a track, scores its own take against it and retunes the take"
   }
  ],
  "builders": {
