@@ -27,6 +27,13 @@ test('what counts: a page that does not open stops there; errors, failed files, 
   assert.equal(pageProblems({ ...fine, bg: 'rgba(0, 0, 0, 0)' }).length, 0, 'transparent is not light');
   assert.equal(pageProblems({ ...fine, path: '/', text: '↵', controls: 4 }).length, 0, 'the front page is one box to type in: not empty');
 });
+test('what looks unfinished: a loader alone on its line, filler text, a note left for a builder; a word inside a sentence or an honest coming soon is not', () => {
+  const k = (text) => pageProblems({ ...fine, text }).filter((p) => p.kind === 'unfinished').map((p) => p.why);
+  assert.equal(k('Verse Out Loud\nLoading\u2026\nRSS feed').length, 1); assert.equal(k('Prices\nLoading...').length, 1); assert.equal(k('Fetching').length, 1);
+  assert.match(k('Lorem ipsum dolor sit amet')[0], /filler/); assert.match(k('Under construction')[0], /construction/); assert.match(k('Totals: TODO')[0], /TODO/);
+  assert.deepEqual(k('Loading a file is fast here'), [], 'loading inside a sentence'); assert.deepEqual(k('Coming soon: the next pack'), [], 'the store says it honestly');
+  assert.deepEqual(k('Make a todo list'), [], 'a todo list is a feature'); assert.deepEqual(k(fine.text), []);
+});
 test('luminance: white is bright, the void is dark, an unreadable colour is null', () => {
   assert.ok(luminance('rgb(255, 255, 255)') > 0.9); assert.ok(luminance('rgb(5, 5, 5)') < 0.01); assert.equal(luminance('nonsense'), null);
 });
