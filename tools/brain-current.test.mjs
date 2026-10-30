@@ -48,10 +48,10 @@ test('evolved swimmers gather more life than random search with the same scoring
   assert.ok(rows.every((r) => Math.abs(r.mass - K.NX * K.NY) < 1), 'the swimmers push the fluid without making or losing mass ' + say);
 });
 
-test('it runs in the brain as one of twenty organs: your drag stirs it, it evolves, feeds the tissue, is kept, and the self says so', () => {
+test('it runs in the brain as one of twenty-one organs: your drag stirs it, it evolves, feeds the tissue, is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('current') && B.ORGAN_IDS.length === 20);
+  assert.ok(B.ORGAN_IDS.includes('current') && B.ORGAN_IDS.length === 21);
   assert.ok(b.current.lives >= 8 && b.runs.current > 200, 'lives ' + b.current.lives + ' runs ' + b.runs.current);
   assert.ok(b.current.fed > 0, 'it fed the tissue where it swam');
   assert.ok(b.board.current && b.board.current.lives === b.current.lives, JSON.stringify(b.board.current));

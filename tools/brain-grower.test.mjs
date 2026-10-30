@@ -51,13 +51,13 @@ test('evolution beats random search with the same number of scorings, on states 
   assert.ok(diffs.reduce((a, d) => a + d, 0) / diffs.length > 0.2, 'mean ' + diffs.map((d) => d.toFixed(3)).join(' '));
 });
 
-test('it runs in the brain as one of twenty organs: the plant bends toward attention, feeds the tissue, is kept, and the self says so', () => {
+test('it runs in the brain as one of twenty-one organs: the plant bends toward attention, feeds the tissue, is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light'); const held = [];
   for (let t = 0; t < 1400; t++) {
     const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true });
     if (t >= 1200 && t % 20 === 0) held.push(G.envOf(b));
   }
-  assert.ok(B.ORGAN_IDS.includes('grower') && B.ORGAN_IDS.length === 20);
+  assert.ok(B.ORGAN_IDS.includes('grower') && B.ORGAN_IDS.length === 21);
   assert.ok(b.grower.gen > 30 && b.runs.grower > 30, 'gen ' + b.grower.gen + ' runs ' + b.runs.grower);
   assert.ok(b.grower.fed > 0, 'its tips fed the tissue');
   assert.ok(b.board.grow && b.board.grow.segs.length > 0 && b.board.grow.segs.every((v) => v > -1 && v < 2));
