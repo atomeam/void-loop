@@ -64,7 +64,7 @@ export const CATALOG = Object.freeze([
   tool('Audio', 'Merge Audio', 'here', { run: 'merge', from: 'sound', many: true, note: 'Plays 2 or more sounds one after another, in the order you pick them, as one WAV.' }),
   tool('Audio', 'Mix Audio', 'here', { run: 'mix', from: 'sound', many: true, note: 'Plays 2 or more sounds at the same time, as one WAV; it turns the mix down if it would clip, and says so.' }),
   vid('Audio', 'Remove Audio from Video', 'mute', 'The same video with no sound.'),
-  tool('Audio', 'Remove Noise from Audio', 'no', { note: NO }),
+  tool('Audio', 'Remove Noise from Audio', 'here', { run: 'denoise', from: 'sound', note: 'Takes a steady noise (hiss, hum, a fan, room tone) out of a sound, on your device. Verse learns the noise from the quietest part, or from the seconds you mark, then takes down each frequency band that is not above it (spectral gating). It says how far the noise went down. A noise that changes like the sound (voices, traffic) stays.' }),
   tool('Audio', 'Remove Silence from Audio', 'here', { run: 'silence', from: 'sound', note: 'Takes out every quiet stretch longer than you set, as a WAV, and says how much it took out.' }),
   tool('Audio', 'Repair M4A', 'no', { note: NO }),
   ...['JPG', 'BMP', 'DNG', 'GIF', 'PDF', 'PNG', 'TIFF', 'WEBP'].map((f) => (f === 'DNG'
