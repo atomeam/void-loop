@@ -12,8 +12,8 @@ const load = (k) => { try { return JSON.parse(localStorage.getItem(k)) || {}; } 
 
 /** draw the tab into c.out. c: { S, h, out, say, W, lang, mem, open(leagueId) } */
 export async function view(c) {
-  const { S, h, out } = c, de = /^de\b/i.test(c.lang), T = de ? { browse: 'Sport wählen', nofeed: 'Für diese Sportart hat Verse noch keine kostenlose Live-Quelle.', where: 'Mehr dazu in der Datenbank', search: 'Suche in allen Sportarten: Teams, Spiele, Stadien, Spieler', go: 'Suchen', born: 'Heute geboren', stats: 'Auf diesem Gerät', api: 'Kostenlose API', none: 'Nichts gefunden.', away: 'Die Sportdatenbank hat gerade nicht geantwortet.' }
-    : { browse: 'Click a sport to browse', nofeed: 'Verse has no free live feed for this sport yet.', where: 'Look it up in the database', search: 'Search every sport: teams, events, venues, players', go: 'Search', born: 'Born on this day', stats: 'On this device', api: 'Free API', none: 'Nothing found.', away: 'The sports database did not answer just now.' };
+  const { S, h, out } = c, de = /^de\b/i.test(c.lang), T = de ? { browse: 'Sport wählen', nofeed: 'Für diese Sportart hat Verse noch keine kostenlose Live-Quelle.', where: 'Mehr dazu in der Datenbank', search: 'Suche in allen Sportarten: Teams, Spiele, Stadien, Spieler', go: 'Suchen', born: 'Heute geboren', stats: 'Auf diesem Gerät', api: 'Kostenlose API', cal: 'In meinen Kalender', none: 'Nichts gefunden.', away: 'Die Sportdatenbank hat gerade nicht geantwortet.' }
+    : { browse: 'Click a sport to browse', nofeed: 'Verse has no free live feed for this sport yet.', where: 'Look it up in the database', search: 'Search every sport: teams, events, venues, players', go: 'Search', born: 'Born on this day', stats: 'On this device', api: 'Free API', cal: 'Add to my calendar', none: 'Nothing found.', away: 'The sports database did not answer just now.' };
   const leaguesOf = (ids) => ids.map((id) => S.leagueOf(id));
   const pane = (title, ...kids) => h('div', { class: 'pane' }, h('h2', { text: title, style: 'margin-top:0' }), ...kids);
   // 1. the grid
@@ -24,12 +24,19 @@ export async function view(c) {
   } }, h('span', { 'aria-hidden': 'true', text: ico }), h('span', { text: name }))));
   // 2. the search
   const res = h('div', { 'aria-live': 'polite' }), inp = h('input', { type: 'search', id: 'gq', maxlength: 40, placeholder: T.search, 'aria-label': T.search, style: 'font:inherit;font-size:16px;min-height:40px;border:1px solid var(--line);border-radius:10px;padding:4px 12px;background:var(--box);color:inherit;box-sizing:border-box;flex:1 1 200px;min-width:0' });
+  // an event still to come opens the calendar with it filled in (/calendar/?e=, lib/calendar.js eventFromLink): all day, because the search answer has the date and no start time
+  const today = ((d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'))(new Date());
+  const calLink = (x) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(x.date || '') || x.date < today) return '';
+    const ev = { ...(x.id ? { id: 'sportsdb-' + String(x.id).replace(/[^\w-]/g, '') } : {}), title: x.name, start: x.date, end: x.date, allDay: true,
+      notes: [x.league, x.sport].filter(Boolean).join(', ') + (x.league || x.sport ? '. ' : '') + 'The date is from ' + (x.src || 'TheSportsDB') + '; the start time was not in the search answer. https://a-to-mind.com/sports/?q=' + encodeURIComponent(x.name) };
+    let bin = ''; for (const b of new TextEncoder().encode(JSON.stringify(ev))) bin += String.fromCharCode(b);
+    return '/calendar/?e=' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
   // every kind is always listed, as plain text: the items with the source of each, or "No team found." so a search that finds nothing says so instead of showing nothing
-  const groups = [['teams', 'Teams', 'No team found.', (x) => x.name + (x.league ? ' · ' + x.league : '') + (x.sport ? ' (' + x.sport + ')' : '')], ['events', 'Events', 'No event found.', (x) => (x.date ? x.date + ' · ' : '') + x.name + (x.hs !== '' && x.as !== '' ? ' ' + x.hs + '-' + x.as : '') + (x.league ? ' · ' + x.league : '')],
+  const groups = [['teams', 'Teams', 'No team found.', (x) => x.name + (x.league ? ' · ' + x.league : '') + (x.sport ? ' (' + x.sport + ')' : '')], ['events', 'Events', 'No event found.', (x) => (x.date ? x.date + ' · ' : '') + x.name + (x.hs !== '' && x.as !== '' ? ' ' + x.hs + '-' + x.as : '') + (x.league ? ' · ' + x.league : ''), calLink],
     ['venues', 'Venues', 'No venue found.', (x) => x.name + (x.city ? ', ' + x.city : '') + (x.capacity ? ' · ' + x.capacity + ' seats' : '')], ['players', 'Players', 'No player found.', (x) => x.name + (x.team ? ' · ' + x.team : '') + (x.sport ? ' (' + x.sport + ')' : '') + (x.born ? ' · b. ' + x.born : '')]];
   const find = async () => { const q = inp.value.trim(); if (q.length < 2) return; res.replaceChildren(h('p', { class: 'note', style: 'min-height:0', text: c.W.loading + '…' }));
     try { const j = await (await fetch('/api/sportsearch?q=' + encodeURIComponent(q))).json(); if (!j.ok) throw 0;
-      const parts = groups.map(([k, t, none, f]) => h('div', null, h('h2', { text: t }), h('ul', { class: 'ev' }, j[k].length ? j[k].map((x) => h('li', null, h('span', { text: f(x) }), h('span', { class: 'note', style: 'min-height:0;margin-left:auto', text: x.src || '' }))) : [h('li', null, h('span', { text: none }))])));
+      const parts = groups.map(([k, t, none, f, go]) => h('div', null, h('h2', { text: t }), h('ul', { class: 'ev' }, j[k].length ? j[k].map((x, _, __, to = go && go(x)) => h('li', null, h('span', { text: f(x) }), ...(to ? [h('a', { href: to, text: T.cal, style: 'white-space:nowrap' })] : []), h('span', { class: 'note', style: 'min-height:0;margin-left:auto', text: x.src || '' }))) : [h('li', null, h('span', { text: none }))])));
       res.replaceChildren(...parts, h('p', { class: 'srcs' }, 'Sources: ', h('a', { href: 'https://www.thesportsdb.com/', rel: 'noopener', text: 'TheSportsDB' }), ' (a free community database, may be incomplete) and ESPN\'s public search' + (j.source ? '; this answer came from ' + j.source : '') + '.')); }
     catch (_) { res.replaceChildren(h('p', { class: 'empty', text: T.away })); } };
   if (c.q && /^[\p{L}\p{N} .'’&-]{2,40}$/u.test(c.q)) { inp.value = c.q; find(); } // a link that carries a search (/sports/?q=arsenal) runs it
