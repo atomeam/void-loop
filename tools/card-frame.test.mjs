@@ -130,6 +130,18 @@ test('a card from a skill with a full page links to it (owner, 2026-10-25)', asy
   for (const [, [href]] of Object.entries(PAGE_OF)) assert.match(href, /^(?:\/[a-z0-9-]+)+\/(?:[a-z-]+)?$/);
 });
 
+test('the full-page link keeps what the card shows when the card links to its own page with a query (2026-10-30: the translate card opened an empty translator)', async () => {
+  const { ownPageOf, pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  assert.equal(ownPageOf('translate', ['https://translate.google.com/', '/translate/?q=good%20morning&to=fr']), '/translate/?q=good%20morning&to=fr');
+  assert.deepEqual(pageOfCard('translate', ownPageOf('translate', ['/translate/?q=good%20morning&to=fr'])), ['/translate/?q=good%20morning&to=fr', 'Translate']);
+  assert.equal(ownPageOf('translate', ['/translate/']), '', 'no query: the plain page link stays');
+  assert.equal(ownPageOf('translate', ['/notes/?q=x']), '', 'another page is not its own');
+  assert.equal(ownPageOf('translate', ['/translate/?q=<b>']), '', 'a query that is not plain is not carried');
+  assert.equal(ownPageOf('nope', ['/translate/?q=a']), '', 'a skill with no page has none');
+  assert.equal(ownPageOf('stl-check', ['/stl/', '/stl/?sample=hole']), '', 'a card that links to its plain page too keeps it: the sample is an extra');
+  assert.equal(ownPageOf('baseconv', ['/base-converter/?b=16&v=ff']), '/base-converter/?b=16&v=ff');
+});
+
 test('a card whose art box shows the answer\'s photo does not show the same photo again in its body (2026-10-30: the recipe card showed its dish twice)', () => {
   const css = CARD_CSS.join ? CARD_CSS.join('') : String(CARD_CSS);
   assert.match(css, /\.vpage\.vcard>img\[data-vc-art-src\]\{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none\}/);
