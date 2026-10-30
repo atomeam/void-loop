@@ -3141,7 +3141,7 @@ say('nothing selected to remove');
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     // the weather page that used to be here (Open-Meteo, 2026-09) lives in skills/weather.js; its old code is on the salvage shelf (docs/SALVAGE.md)
 
     // calculation page: percentages, unit conversion, date math, currency
@@ -4140,7 +4140,7 @@ say('nothing selected to remove');
         { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
     }
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; }); el.dataset.page = '/calculator/'; // the card links to the full calculator (lib/card-frame.js pageOfCard)
@@ -4156,7 +4156,7 @@ say('nothing selected to remove');
         // a kitchen fact names the pages it came from, so the card is sourced and dated, not "from Verse"
         const wsrc = Array.isArray(wm.src) && wm.src.length ? 'Source: ' + wm.src.filter((x) => /^https:\/\/[^\s"'<>]+$/.test(x[1])).map((x) => '<a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + esc(x[0]) + '</a>').join(' · ') + (wm.read ? ' · read ' + esc(wm.read) : '') : '';
         if (wsrc) el.dataset.cardKept = ''; // read on a date and kept, not fetched for this ask (lib/card-frame.js)
-        setV(wm.value, wm.note, wsrc); cookFlow(el, query); return 'calc';
+        setV(wm.value, wm.note, wsrc); const wmin = /\b(\d{1,3}) min\b/.exec(String(wm.value)); cookFlow(el, query, wmin ? +wmin[1] : null); return 'calc';
       }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
