@@ -62,7 +62,9 @@ function createCards() {
   for (let i = 0; i < N; i++) {
     const el = document.createElement('div');
     el.className = 'card';
-    el.innerHTML = `<h4>Card ${i+1}</h4><div class="meta">idle</div>`;
+    const h = document.createElement('h4'); h.textContent = `Card ${i+1}`;
+    const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = 'idle';
+    el.append(h, meta);
     el.dataset.i = i;
     field.appendChild(el);
     const c = {
@@ -217,5 +219,5 @@ requestAnimationFrame(step);
         status.textContent = `Loaded sealed MLP · ${req.result.hash}`;
       }
     };
-  } catch (e) {}
+  } catch (e) { console.warn('saved MLP not loaded', e); }
 })();

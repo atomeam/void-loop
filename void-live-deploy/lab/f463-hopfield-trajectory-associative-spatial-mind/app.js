@@ -107,7 +107,8 @@ function updateCards() {
   patterns.forEach((p, idx) => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `<h4>Memory ${idx+1}</h4>Click to recall`;
+    const h = document.createElement('h4'); h.textContent = `Memory ${idx+1}`;
+    card.append(h, 'Click to recall');
     const mini = document.createElement('canvas');
     mini.className = 'mini';
     mini.width = 140; mini.height = 40;
@@ -245,7 +246,7 @@ document.getElementById('load').onclick = async () => {
         document.getElementById('status').textContent = 'Loaded memory';
       }
     };
-  } catch(e) {}
+  } catch(e) { console.warn('saved memory not loaded', e); }
 };
 document.getElementById('clear').onclick = () => {
   patterns = [];

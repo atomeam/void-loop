@@ -78,7 +78,8 @@ function updateCards() {
   population.slice(0, 3).forEach((ind, idx) => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `<h4>Candidate ${idx+1}</h4>Fit: ${ind.fitness.toFixed(1)}<br>Drag to adjust pos`;
+    const h = document.createElement('h4'); h.textContent = `Candidate ${idx+1}`;
+    card.append(h, `Fit: ${ind.fitness.toFixed(1)}`, document.createElement('br'), 'Drag to adjust pos');
     card.dataset.idx = idx;
     makeDraggable(card, ind);
     cards.appendChild(card);
@@ -216,7 +217,7 @@ document.getElementById('load').onclick = async () => {
         updateCards();
       }
     };
-  } catch(e) {}
+  } catch(e) { console.warn('saved champion not loaded', e); }
 };
 document.getElementById('mutate').onclick = () => evolve();
 

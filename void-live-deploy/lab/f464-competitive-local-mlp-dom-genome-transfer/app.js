@@ -2,6 +2,8 @@ const N = 10;
 const agents = [];
 const field = document.getElementById('field');
 const statusEl = document.getElementById('status');
+function setStatus(...lines) { statusEl.replaceChildren(...lines.flatMap((l, i) => i ? [document.createElement('br'), l] : [l])); }
+function addStatus(line) { statusEl.append(document.createElement('br'), line); }
 const orientEl = document.getElementById('orient');
 let gamma = 0, beta = 0; // device orientation
 let pointer = {x:0, y:0, active:false};
@@ -112,7 +114,7 @@ function loop() {
   agents.forEach(a => a.step());
   collide();
   const top = agents.reduce((m,a)=>a.fitness>m.fitness?a:m, agents[0]);
-  statusEl.innerHTML = `Top fitness: A${top.id} ${top.fitness.toFixed(2)}<br>Agents competing · genome transfer on contact<br>Click agent to reward · tilt device for bias`;
+  setStatus(`Top fitness: A${top.id} ${top.fitness.toFixed(2)}`, 'Agents competing · genome transfer on contact', 'Click agent to reward · tilt device for bias');
   requestAnimationFrame(loop);
 }
 loop();
@@ -135,14 +137,14 @@ document.getElementById('seal').onclick = async () => {
     const db = await new Promise((res,rej)=>{ const r=indexedDB.open('f464',1); r.onupgradeneeded=e=>e.target.result.createObjectStore('genomes'); r.onsuccess=e=>res(e.target.result); r.onerror=rej; });
     const tx = db.transaction('genomes','readwrite');
     tx.objectStore('genomes').put(data, 'top');
-    statusEl.innerHTML += '<br>Sealed top genome to IndexedDB';
-  } catch(e) { statusEl.innerHTML += '<br>IndexedDB unavailable'; }
+    addStatus('Sealed top genome to IndexedDB');
+  } catch(e) { addStatus('IndexedDB unavailable'); }
 };
 
 document.getElementById('share').onclick = () => {
   const top = agents.reduce((m,a)=>a.fitness>m.fitness?a:m, agents[0]);
   bc.postMessage(top.serialize());
-  statusEl.innerHTML += '<br>Broadcast top genome';
+  addStatus('Broadcast top genome');
 };
 
 bc.onmessage = e => {
@@ -150,7 +152,7 @@ bc.onmessage = e => {
   const low = agents.reduce((m,a)=>a.fitness<m.fitness?a:m, agents[0]);
   low.load(e.data);
   low.fitness = Math.max(low.fitness, 0.4);
-  statusEl.innerHTML += '<br>Received genome → lowest';
+  addStatus('Received genome → lowest');
 };
 
 // auto load seal
@@ -160,6 +162,6 @@ bc.onmessage = e => {
     if(!db) return;
     const tx = db.transaction('genomes','readonly');
     const req = tx.objectStore('genomes').get('top');
-    req.onsuccess = () => { if(req.result) { agents[0].load(req.result); statusEl.innerHTML += '<br>Loaded sealed genome into A0'; } };
-  } catch(e){}
+    req.onsuccess = () => { if(req.result) { agents[0].load(req.result); addStatus('Loaded sealed genome into A0'); } };
+  } catch(e){ console.warn('saved genome not loaded', e); }
 })();

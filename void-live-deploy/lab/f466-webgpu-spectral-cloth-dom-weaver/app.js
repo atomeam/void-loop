@@ -67,7 +67,8 @@ const tiles = [];
 function addTile(text = 'Verse fragment…') {
   const el = document.createElement('div');
   el.className = 'tile';
-  el.innerHTML = `<div class="content" contenteditable="true">${text}</div>`;
+  const content = document.createElement('div'); content.className = 'content'; content.contentEditable = 'true'; content.textContent = text;
+  el.append(content);
   tilesEl.appendChild(el);
   const t = {
     el,
