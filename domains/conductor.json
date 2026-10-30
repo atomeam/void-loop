@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-30T10:41:18.999Z",
+ "updated": "2026-10-30T11:12:03.638Z",
  "last24h": {
   "ticks": 145,
-  "started": 130,
+  "started": 128,
   "requeued": 3,
   "setAside": 0,
-  "probes": 15,
+  "probes": 16,
   "errors": 0
  },
  "broken": [],
@@ -29,10 +29,6 @@
   },
   {
    "id": "mvr9jgxe",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvr9jhlw",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
@@ -90,6 +86,10 @@
   {
    "id": "mvop0beq",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
+  {
+   "id": "mvoxkjn0",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   }
  ],
  "coder": {
@@ -115,9 +115,6 @@
   "mvpuq9g6": 1793319879788,
   "mvpuqaee": 1793320496977,
   "mvpuqb4r": 1793321113968,
-  "mvte9w1w": 1793270500413,
-  "mvte9wu3": 1793271116796,
-  "mvte9xmi": 1793271731563,
   "mvtgh6vg": 1793273574738,
   "mvtgh7q4": 1793274187815,
   "mvtgh8m9": 1793274803375,
@@ -180,81 +177,10 @@
   "mvur4o7u": 1793353801312,
   "mvuteg4a": 1793355647601,
   "mvuteh1w": 1793356263307,
-  "mvutehvg": 1793356878999
+  "mvutehvg": 1793356878999,
+  "mvuteioq": 1793358108254
  },
  "ticks": [
-  {
-   "at": "2026-10-29T10:41:40.413Z",
-   "open": 109,
-   "started": [
-    {
-     "id": "mvte9w1w",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 103,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-29T10:51:56.796Z",
-   "open": 108,
-   "started": [
-    {
-     "id": "mvte9wu3",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 103,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-29T11:02:11.563Z",
-   "open": 107,
-   "started": [
-    {
-     "id": "mvte9xmi",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 103,
-   "warnings": 0
-  },
   {
    "at": "2026-10-29T11:12:26.036Z",
    "open": 106,
@@ -3281,6 +3207,58 @@
    "healed": [],
    "probe": false,
    "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 98,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T10:51:34.616Z",
+   "open": 105,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 98,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T11:01:48.254Z",
+   "open": 104,
+   "started": [
+    {
+     "id": "mvuteioq",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 98,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T11:12:03.638Z",
+   "open": 103,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": true,
    "will": false,
    "lap": false,
    "revived": [],
