@@ -47,6 +47,7 @@ function audioEntry(a) {
   const head = (rate) => cat([zeros(6), u16(1), zeros(8), u16(a.channels), u16(16), u16(0), u16(0), u32((rate >= 65536 ? 0 : rate) * 65536)]);
   if (/^mp4a/.test(a.codec)) return box('mp4a', head(a.rate), esds(a.description || u8(0x11, 0x90), a.bitrate));
   if (a.codec === 'opus') return box('Opus', head(48000), dOps(opusHeadOf(a.description, a.channels, a.rate)));
+  if (a.codec === 'alac') return box('alac', head(a.rate), full('alac', 0, 0, a.description)); // the 24-byte ALACSpecificConfig
   throw new Error('Verse cannot put ' + a.codec + ' sound in an MP4.');
 }
 // stts: the length of each sample, run-length coded
@@ -74,15 +75,15 @@ function trak(id, kind, info, samples, offsets, movieMs) {
   return box('trak', tkhd, box('mdia', mdhd, hdlr, box('minf', head, dinf, stbl)));
 }
 /** an MP4 file from coded video samples (and sound samples, if any). video: { codec, width, height, description, samples };
- *  audio: { codec: 'mp4a.40.2' | 'opus', rate, channels, description, bitrate, samples } or null. opts.qt: a QuickTime MOV (the same boxes, the
- *  QuickTime brand). Pure. */
+ *  audio: { codec: 'mp4a.40.2' | 'opus' | 'alac', rate, channels, description, bitrate, samples } or null. opts.qt: a QuickTime MOV (the same
+ *  boxes, the QuickTime brand). opts.m4a: the M4A brand, for a sound-only file. Pure. */
 export function mp4(video, audio = null, opts = {}) {
   const tracks = [video && video.samples.length && { kind: 'vide', info: video, samples: video.samples }, audio && audio.samples.length && { kind: 'soun', info: audio, samples: audio.samples }].filter(Boolean);
   if (!tracks.length) throw new Error('nothing to write: no video and no sound.');
   // the order of the data: by time, so a player reads sound and pictures together
   const order = tracks.flatMap((tr, k) => tr.samples.map((s, i) => ({ k, i, t: s.t }))).sort((a, b) => a.t - b.t || a.k - b.k);
   const endMs = Math.max(...tracks.map((tr) => { const l = tr.samples[tr.samples.length - 1]; return Math.ceil((l.t + (l.d || 0)) / 1000); }));
-  const ftyp = opts.qt ? box('ftyp', str('qt  '), u32(0x200), str('qt  ')) : box('ftyp', str('isom'), u32(0x200), str('isom'), str('iso2'), str(tracks.some((t) => /^avc/.test(t.info.codec)) ? 'avc1' : 'iso6'), str('mp41'));
+  const ftyp = opts.qt ? box('ftyp', str('qt  '), u32(0x200), str('qt  ')) : opts.m4a ? box('ftyp', str('M4A '), u32(0), str('M4A '), str('mp42'), str('isom')) : box('ftyp', str('isom'), u32(0x200), str('isom'), str('iso2'), str(tracks.some((t) => /^avc/.test(t.info.codec)) ? 'avc1' : 'iso6'), str('mp41'));
   const moovOf = (offs) => box('moov', full('mvhd', 0, 0, u32(0), u32(0), u32(1000), u32(endMs), u32(0x00010000), u16(0x0100), zeros(10), MATRIX, zeros(24), u32(tracks.length + 1)),
     ...tracks.map((tr, k) => trak(k + 1, tr.kind, tr.info, tr.samples, offs[k], endMs)));
   const blank = tracks.map((tr) => tr.samples.map(() => 0)), size = moovOf(blank).length; // co64: the index is the same size whatever the offsets
