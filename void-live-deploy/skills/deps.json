@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1072,
+ "counted": 1074,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -574,6 +574,20 @@
    "skills": 4,
    "direct": 1,
    "dependants": 13,
+   "tests": 1
+  },
+  {
+   "file": "lib/markdown.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/textdiff.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -8031,6 +8045,25 @@
     "skills/local-stations.js"
    ]
   },
+  "lib/markdown.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
+   ]
+  },
   "lib/markets-card.js": {
    "imports": [
     "lib/markets.js",
@@ -11638,6 +11671,25 @@
    "imports": [],
    "importedBy": [
     "skills/text-tools.js"
+   ]
+  },
+  "lib/textdiff.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
    ]
   },
   "lib/tilt-arena-idea.js": {
@@ -16042,6 +16094,8 @@
     "lib/colour.js",
     "lib/qr.js",
     "lib/hash.js",
+    "lib/textdiff.js",
+    "lib/markdown.js",
     "lib/card-mini.js",
     "lib/pwcheck.js"
    ],
