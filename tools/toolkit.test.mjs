@@ -72,6 +72,13 @@ test('every tool page links to its own card on the stage, and every page has a c
   assert.equal(links[0].className, 'tk-card'); assert.equal(links[0].href, '/?q=flip%20a%20coin');
 });
 
+test('every page\'s stage ask reaches a card, so "See it as a card" never falls through to a generic answer', async () => {
+  const { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js');
+  const CORE = new Set(['random number between 1 and 100', 'start a stopwatch']); // answered by the stage itself (index.html), before the skills
+  for (const [p, ask] of Object.entries(CARD_ASK)) if (!CORE.has(ask)) assert.ok(await firstSkill(ask), p + ' sends "' + ask + '" to a skill');
+  assert.equal(await firstSkill(CARD_ASK['/calculator/']), 'calc', 'the calculator page opens the calculator on the stage');
+});
+
 test('the colour page\'s card opens on the colour open there, not the example, and follows it as it changes', async () => {
   const { mountRelated, cardLinkOf } = await import('../void-live-deploy/lib/toolkit.js');
   const mk = (tag) => { const on = {}; return { tag, on, children: [], className: '', href: '', textContent: '', style: {}, append(...c) { this.children.push(...c); }, prepend(...c) { this.children.unshift(...c); }, setAttribute() {}, addEventListener(ev, fn) { (on[ev] ||= []).push(fn); }, replaceChildren(...c) { this.children = c; } }; };
