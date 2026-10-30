@@ -2352,7 +2352,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 4,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/mcp.js",
