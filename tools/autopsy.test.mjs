@@ -110,12 +110,18 @@ test('stability gauge: a full incidents.json says "at least", and the red suites
   const g = stabilityOf(full, now);
   assert.deepEqual([g.week, g.checks, g.capped, g.score, g.label], [30, 2, true, 0, 'shaky'], 'the stall is not a check; the score is the same as before');
   const said = stabilityHtml(g).replace(/<[^>]+>/g, '');
-  assert.match(said, /^Stability: shaky 0\/100At least 30 red browser suites on main in the last 7 days \(\d+ in the last day\), with 2 different checks failing, from incidents\.json, which keeps only the newest 30\.$/);
+  assert.match(said, /^Stability: shaky 0\/100At least 30 red runs of the browser checks on main this week \(\d+ in the last 24 hours\), with 2 different checks failing\.$/);
+  assert.doesNotMatch(said, /incidents\.json|suites/, 'the card says it in plain words, no file names (owner, 2026-10-30)');
   // the same file with its oldest red suite more than a week old: the week is counted in full, so no "at least"
   full.incidents[29].at = at(24 * 8); const h = stabilityOf(full, now);
   assert.deepEqual([h.week, h.capped], [29, false]); assert.doesNotMatch(stabilityHtml(h), /At least|keeps only/);
   // fewer than the log keeps: never "at least"
   assert.equal(stabilityOf({ incidents: full.incidents.slice(0, 5) }, now).capped, false);
+  // nothing failing that counts: one plain line, with the fixed ones said once (owner, 2026-10-30: "No failing checks on main this week")
+  for (const i of full.incidents) i.closedAt = at(0);
+  const z = stabilityOf(full, now); assert.equal(z.week, 0);
+  assert.equal(stabilityHtml(z).replace(/<[^>]+>/g, '').replace(/^Stability: \w+ \d+\/100/, ''), 'No failing checks on main this week. 29 earlier red runs were fixed by a later green run.');
+  assert.doesNotMatch(stabilityHtml(z), /At least 0/);
 });
 test('culprit pointer: a changed skill file whose skill has a failing check is the likely cause; none changed says so (asked by Verse)', () => {
   assert.equal(skillOfPath('void-live-deploy/skills/convert.js'), 'convert'); assert.equal(skillOfPath('void-live-deploy/skills/order/0480-watch'), null); assert.equal(skillOfPath('tools/convert.js'), null);

@@ -75,7 +75,7 @@ export function pagesHtml(r, esc, now = Date.now()) {
   if (!r) return '<h3 style="margin:12px 0 4px;font-size:15px">Verse’s own pages</h3><p style="color:#8a8a92;margin:4px 0">Not checked yet: the page check runs after a deploy.</p>';
   const ago = Math.max(0, Math.round((now - Date.parse(r.at)) / 60000)), when = ago < 90 ? ago + ' min ago' : Math.round(ago / 60) + ' h ago';
   const dot = (serious) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (serious ? '#e0584a' : '#d29922') + '"></span>';
-  const head = r.broken ? '<span style="color:#e0584a">' + r.broken + ' of ' + r.checked + ' pages need a fix</span>' + (r.serious ? ' · ' + r.serious + ' broken' : '') : 'all ' + r.checked + ' pages fine';
+  const head = r.broken ? '<span style="color:#e0584a">' + r.broken + ' of ' + r.checked + ' pages ' + (r.serious === r.broken ? 'broken' : r.serious ? 'need a fix (' + r.serious + ' broken)' : 'need a fix') + '</span>' : 'all ' + r.checked + ' pages fine';
   const kinds = Object.entries(r.kinds || {}).map(([k, n]) => esc(KINDS[k] || k) + ' ' + n).join(' · ');
   return '<h3 style="margin:12px 0 4px;font-size:15px">Verse’s own pages · ' + head + '</h3>'
     + '<p class="status-pages-how" style="color:#8a8a92;margin:4px 0">' + r.checked + (r.of && r.of !== r.checked ? ' of the ' + r.of : '') + ' pages in the sitemap ' + esc(r.how) + ', ' + when + (r.sha ? ' on ' + esc(r.sha.slice(0, 7)) : '') + (kinds ? ' · ' + kinds : '') + '</p>'

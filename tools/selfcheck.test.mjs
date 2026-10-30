@@ -54,7 +54,10 @@ test('the route: anyone reads the newest report; only the owner writes one', asy
 test('the card section: says when and how it was checked, links each page, escapes, and says so before the first run', () => {
   const r = reportOf([{ path: '/a/', problems: [{ kind: 'script', why: '<b>boom</b>' }] }, { path: '/b/', problems: [] }], { at: '2026-10-30T04:00:00Z', sha: 'abc1234def', how: 'opened in headless Chrome after the deploy' });
   const h = pagesHtml(r, esc, Date.parse('2026-10-30T04:10:00Z'));
-  assert.match(h, /1 of 2 pages need a fix/); assert.match(h, /10 min ago on abc1234/); assert.match(h, /opened in headless Chrome/);
+  assert.match(h, /1 of 2 pages broken/); assert.doesNotMatch(h, /need a fix/, 'all the pages that need a fix are broken: the count is said once');
+  const mixed = reportOf([{ path: '/a/', problems: [{ kind: 'status', why: 'x' }] }, { path: '/b/', problems: [{ kind: 'unwired', why: 'y' }] }, { path: '/c/', problems: [] }], { at: '2026-10-30T04:00:00Z' });
+  assert.match(pagesHtml(mixed, esc), /2 of 3 pages need a fix \(1 broken\)/);
+  assert.match(pagesHtml(reportOf([{ path: '/b/', problems: [{ kind: 'unwired', why: 'y' }] }], { at: '2026-10-30T04:00:00Z' }), esc), /1 of 1 pages need a fix</); assert.match(h, /10 min ago on abc1234/); assert.match(h, /opened in headless Chrome/);
   assert.match(h, /<a href="\/a\/">/); assert.ok(h.includes('&lt;b&gt;boom')); assert.ok(!h.includes('<b>boom'));
   assert.match(pagesHtml(null, esc), /Not checked yet/);
   assert.match(pagesHtml(reportOf([{ path: '/b/', problems: [] }], { at: '2026-10-30T04:00:00Z' }), esc), /all 1 pages fine/);
