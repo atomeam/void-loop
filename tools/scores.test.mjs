@@ -28,6 +28,16 @@ test('an ESPN scoreboard becomes games: final, live and upcoming, with goals and
   assert.doesNotMatch(ev.home.name, /[<>\u0007]/, 'markup and control characters are stripped'); assert.equal(ev.home.score, ''); assert.equal(ev.away.score, '3');
   assert.equal(readScoreboard(null).length, 0); assert.equal(readScoreboard({ events: 'x' }).length, 0);
 });
+test('a game carries the town of its ground, for the weather there; the summary fills it from gameInfo when the header has none', () => {
+  const comp = (venue) => ({ id: 7, competitions: [{ venue, competitors: [{ homeAway: 'home', team: { displayName: 'A' } }, { homeAway: 'away', team: { displayName: 'B' } }] }] });
+  const g = readEvent(comp({ fullName: 'Stamford Bridge', address: { city: 'London', country: 'England' } })); assert.equal(g.venue, 'Stamford Bridge'); assert.equal(g.city, 'London');
+  assert.equal(readEvent(comp(undefined)).city, ''); assert.doesNotMatch(readEvent(comp({ address: { city: '<i>X</i>' } })).city, /[<>]/);
+  const s = readSummary({ header: { id: 7, competitions: [comp(undefined).competitions[0]] }, gameInfo: { venue: { fullName: 'Anfield', address: { city: 'Liverpool' } } } });
+  assert.equal(s.game.venue, 'Anfield'); assert.equal(s.game.city, 'Liverpool');
+  const kept = readSummary({ header: { id: 7, competitions: [comp({ fullName: 'Emirates Stadium', address: { city: 'London' } }).competitions[0]] }, gameInfo: { venue: { fullName: 'Elsewhere', address: { city: 'Nowhere' } } } });
+  assert.equal(kept.game.venue, 'Emirates Stadium', 'the header venue wins'); assert.equal(kept.game.city, 'London');
+  assert.equal(wordsFor('en').vwx, 'Weather at the ground'); assert.equal(wordsFor('de').vwx, 'Wetter am Stadion');
+});
 test('standings: ranked rows, the sport\'s columns', () => {
   const s = readStandings(STANDINGS, 'soccer'); assert.equal(s.groups.length, 1); assert.deepEqual(s.groups[0].cols, ['P', 'W', 'D', 'L', 'GD', 'Pts']);
   assert.equal(s.groups[0].rows[0].name, 'Liverpool'); assert.deepEqual(s.groups[0].rows[0].cells, ['38', '25', '9', '4', '+45', '84']); assert.equal(s.groups[0].rows[1].rank, 2);

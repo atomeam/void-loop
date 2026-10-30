@@ -117,6 +117,8 @@ async function mineView(tk) {
   });
   setNote(worst); out.replaceChildren(...(parts.length ? parts : [h('p', { class: 'empty', text: W.noMineDay })])); return live;
 }
+// the forecast at the ground, by the venue's town (the weather page looks the name up)
+const vwx = (g) => (g && g.city ? h('a', { id: 'vwx', href: '/weather/?place=' + encodeURIComponent(g.city), text: W.vwx }) : null);
 async function gameView(tk) {
   const lg = state.league, isF1 = S.leagueOf(lg).kind === 'f1';
   if (isF1) { const r = await api({ league: lg, date: state.date }); if (tk !== token) return; const g = r && (r.j.games || []).find((x) => x.id === state.game); if (!g) return sorry(); setNote(r);
@@ -132,7 +134,9 @@ async function gameView(tk) {
     // the same game on Verse's own calendar, its time in this device's zone: the calendar opens it as "Add to my calendar" (lib/calendar.js ?e=)
     (() => { let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {} const e = S.calendarEvent(g, S.leagueOf(lg), tz); return e ? h('a', { id: 'vcal', href: '/calendar/?e=' + e, text: W.vcal }) : null; })(),
     // the same moment on the time page, in each city the visitor keeps there
-    (() => { const t = Date.parse(g.start); return Number.isFinite(t) ? h('a', { id: 'vtime', href: '/time/?at=' + encodeURIComponent(new Date(t).toISOString().replace(/\.000Z$/, 'Z')), text: W.vtime }) : null; })()));
+    (() => { const t = Date.parse(g.start); return Number.isFinite(t) ? h('a', { id: 'vtime', href: '/time/?at=' + encodeURIComponent(new Date(t).toISOString().replace(/\.000Z$/, 'Z')), text: W.vtime }) : null; })(),
+    vwx(g)));
+  else if (g && g.state === 'live' && g.city) kids.push(h('div', { class: 'row' }, vwx(g)));
   const wp = g && S.winProb(g, S.leagueOf(lg).grp);
   if (wp) { let pts = []; try { pts = JSON.parse(sessionStorage.getItem('a2m.void.scores.wp.' + g.id)) || []; } catch (_) {} pts.push(Math.round(wp.home * 100)); pts = pts.slice(-90); try { sessionStorage.setItem('a2m.void.scores.wp.' + g.id, JSON.stringify(pts)); } catch (_) {}
     const ns = 'http://www.w3.org/2000/svg', sv = document.createElementNS(ns, 'svg'); sv.setAttribute('viewBox', '0 0 100 24'); sv.setAttribute('width', '100%'); sv.setAttribute('height', '40'); sv.setAttribute('role', 'img'); sv.setAttribute('aria-label', 'Home win chance over this visit'); const pl = document.createElementNS(ns, 'polyline'); pl.setAttribute('fill', 'none'); pl.setAttribute('stroke', 'currentColor'); pl.setAttribute('stroke-width', '1.5'); pl.setAttribute('points', pts.map((v, i) => (pts.length < 2 ? 0 : i * 100 / (pts.length - 1)) + ',' + (24 - v * 0.24)).join(' ')); sv.append(pl);
