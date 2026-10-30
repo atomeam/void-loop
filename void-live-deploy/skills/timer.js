@@ -1,58 +1,53 @@
 /**
  * timer skill — a simple countdown timer on the stage
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "start a timer", "5 minute timer", "countdown 30 seconds", "timer".
- * Empty surface stays empty: the card appears only when summoned.
+ * "timer", "start a timer", "countdown 5 minutes", "set a 10 minute timer".
+ * Empty surface stays empty; the timer is an outcome page.
  */
 export function isTimer(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:please\s+)?(?:(?:start|set|make|begin|run)\s+(?:a\s+)?(?:\d+\s+(?:minute|min|second|sec|hour|hr)s?\s+)?timer|(?:\d+\s+(?:minute|min|second|sec|hour|hr)s?\s+)?timer|(?:countdown|count\s+down)\s+(?:for\s+)?\d+\s+(?:minute|min|second|sec|hour|hr)s?)$/i.test(t);
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
+  return /^(?:please\s+)?(?:(?:start|set|begin)\s+(?:a\s+)?(?:countdown\s+)?timer(?:\s+(?:for\s+)?(?:\d+\s*)?(?:minutes?|mins?|seconds?|secs?|hours?|hrs?)?)?|timer(?:\s+(?:for\s+)?(?:\d+\s*)?(?:minutes?|mins?|seconds?|secs?|hours?|hrs?)?)?|countdown\s+(?:timer\s+)?(?:\d+\s*)?(?:minutes?|mins?|seconds?|secs?))$/i.test(t);
 }
 
 function parseDuration(text) {
   const t = String(text || '').toLowerCase();
-  let ms = 5 * 60 * 1000; // default 5 min
-  const m = /(\d+)\s*(minute|min|second|sec|hour|hr)/i.exec(t);
-  if (m) {
-    const n = +m[1];
-    const unit = m[2][0];
-    if (unit === 's') ms = n * 1000;
-    else if (unit === 'h') ms = n * 3600 * 1000;
-    else ms = n * 60 * 1000;
-  }
-  return Math.max(1000, Math.min(ms, 24 * 3600 * 1000));
+  const m = t.match(/(\d+)\s*(?:minutes?|mins?)/);
+  if (m) return parseInt(m[1], 10) * 60;
+  const s = t.match(/(\d+)\s*(?:seconds?|secs?)/);
+  if (s) return parseInt(s[1], 10);
+  const h = t.match(/(\d+)\s*(?:hours?|hrs?)/);
+  if (h) return parseInt(h[1], 10) * 3600;
+  return 60; // default 1 minute
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const duration = parseDuration(text);
-  const end = Date.now() + duration;
+  const total = parseDuration(text);
+  let left = total;
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Timer</h2><p id="t" style="font-size:48px;font-weight:300;text-align:center;font-variant-numeric:tabular-nums">—</p><div class="sub">say “stop timer” or close the card</div>';
+    p.innerHTML = '<h2>Timer</h2><p id="t" style="font-size:48px;font-weight:300;text-align:center">' + Math.floor(left/60) + ':' + String(left%60).padStart(2,'0') + '</p><div class="sub">say “timer” again for a new one</div>';
   });
   const tick = () => {
     if (!api._pageStill(el)) return;
-    const left = Math.max(0, end - Date.now());
-    const s = Math.floor(left / 1000);
-    const mm = String(Math.floor(s / 60)).padStart(2, '0');
-    const ss = String(s % 60).padStart(2, '0');
-    const display = el.querySelector('#t');
-    if (display) display.textContent = mm + ':' + ss;
-    if (left > 0) setTimeout(tick, 250);
-    else if (display) display.textContent = '00:00';
+    left--;
+    const display = Math.floor(left/60) + ':' + String(left%60).padStart(2,'0');
+    const p = el.querySelector('#t');
+    if (p) p.textContent = display;
+    if (left > 0) setTimeout(tick, 1000);
+    else if (p) p.textContent = 'Done';
   };
-  tick();
+  setTimeout(tick, 1000);
   return 'timer';
 }
 
 export default {
   name: 'timer',
-  examples: ['start a timer', '5 minute timer', 'countdown 30 seconds', 'timer', 'set a 10 min timer'],
-  nearMisses: ['what time is it', 'days until new year', 'stopwatch', 'how long is a timer'],
+  examples: ['timer', 'start a timer', 'countdown 5 minutes', 'set a 10 minute timer', 'timer for 30 seconds'],
+  nearMisses: ['what is a timer', 'kitchen timer manual', 'days until new year'],
   match(lower, text) { return isTimer(text); },
   run,
   suite() {
-    const ok = isTimer('start a timer') && isTimer('5 minute timer') && isTimer('countdown 30 seconds') && !isTimer('what time is it');
+    const ok = isTimer('timer') && isTimer('start a timer') && isTimer('countdown 5 minutes') && !isTimer('what is a timer');
     return { ok, got: 'match works' };
   }
 };
