@@ -109,3 +109,17 @@ test('Himalayas category slugs read as words, cut at a word, and old hyphenated 
   assert.equal(C.checkJob({ ...j, cat: 'Accounting-Analyst', tags: ['Accounting-Analyst'] }).cat, 'Accounting Analyst', 'a listing stored before the fix reads as words too');
   assert.equal(C.search([j], { tag: 'Accounting-Analyst' }).length, 1, 'an alert saved with the hyphenated tag still finds the job');
 });
+
+test('a free-text salary that is not one: two unrelated figures, or a small sum with no period', () => {
+  assert.equal(C.parseSalary('$35 - $3,000'), null, 'ends tenfold apart');
+  assert.equal(C.parseSalary('$1000'), null, 'no period and too small for a year');
+  assert.equal(C.parseSalary('USD 1,000 per year'), null);
+  assert.deepEqual(C.parseSalary('$1,000/month'), { min: 1000, max: 1000, cur: 'USD', per: 'month' });
+  assert.deepEqual(C.parseSalary('$25 - $35 /hour'), { min: 25, max: 35, cur: 'USD', per: 'hour' });
+  assert.deepEqual(C.parseSalary('$80k - $100k'), { min: 80000, max: 100000, cur: 'USD', per: 'year' });
+  assert.deepEqual(C.parseSalary('€60,000–70,000 per year'), { min: 60000, max: 70000, cur: 'EUR', per: 'year' });
+  const base = { id: 'himalayas:1', src: 'himalayas', title: 'T', company: 'C', url: 'https://himalayas.app/companies/c/jobs/t', loc: 'Worldwide', date: '2026-10-20T00:00:00Z' };
+  assert.equal(C.checkJob({ ...base, salary: { min: 96300, max: 1515360, cur: 'USD', per: 'year' } }).salary, null, 'a stored figure no year of pay reaches');
+  assert.equal(C.checkJob({ ...base, salary: { min: 35, max: 3000, cur: 'USD', per: 'year' } }).salary, null, 'a stored snapshot row from before');
+  assert.deepEqual(C.checkJob({ ...base, salary: { min: 50, max: 70, cur: 'EUR', per: 'hour' } }).salary, { min: 50, max: 70, cur: 'EUR', per: 'hour' });
+});
