@@ -550,8 +550,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:09:41Z",
-   "subject": "quote: mark the retry loop as right for the review"
+   "at": "2026-10-30T05:09:38Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T05:09:37Z",
@@ -562,12 +562,8 @@
    "subject": "tower queue: rendered rows that lost most raw controls are block pages, not rankable"
   },
   {
-   "at": "2026-10-30T05:07:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:07:13Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T05:08:53Z",
+   "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
   },
   {
    "at": "2026-10-30T05:05:23Z",
@@ -582,16 +578,8 @@
    "subject": "Better at password, random and boards: 3 more ways of asking answered right — new phrases: “password of 20 characters” now opens password…"
   },
   {
-   "at": "2026-10-30T05:03:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-30T05:03:06Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:02:50Z",
-   "subject": "Team: Verse pushes each job to an agent's own address, signed, so no agent has to stay online"
   },
   {
    "at": "2026-10-30T05:02:43Z",
@@ -602,16 +590,20 @@
    "subject": "Team chat: a mangled body is read, ?t= takes the job id, here says to work the job, an agent changes its own key"
   },
   {
+   "at": "2026-10-30T05:01:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:01:23Z",
+   "subject": "News: the stage card shows the topic searched or the Technology section"
+  },
+  {
    "at": "2026-10-30T05:00:57Z",
    "subject": "Hand off the code-review MultiVerse card to /members/"
   },
   {
    "at": "2026-10-30T05:00:03Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T04:58:44Z",
-   "subject": "quote: show a Wikiquote quote of the day, with its source, instead of one fixed line"
   },
   {
    "at": "2026-10-30T04:58:43Z",
@@ -622,12 +614,20 @@
    "subject": "Verse Brain: watch skills lean again on top of the page-order fix, and the reload line names only the words from before"
   },
   {
-   "at": "2026-10-30T04:56:02Z",
-   "subject": "Team join page: the Join button works (same-origin referrer policy, so the form sends its real Origin)"
+   "at": "2026-10-30T04:53:12Z",
+   "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
   },
   {
-   "at": "2026-10-30T04:56:02Z",
-   "subject": "team-live: write the check's lines as one annotation too, so they can be read without the log"
+   "at": "2026-10-30T04:51:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:51:04Z",
+   "subject": "Markets: its stage card shows the coin open on the page"
+  },
+  {
+   "at": "2026-10-30T04:51:00Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
