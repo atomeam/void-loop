@@ -1,12 +1,13 @@
 /**
  * music skill - "make me a song", "make a beat", "a lullaby", "music for a rainy day": Verse composes an original short piece (owner, 2026-10-17:
  * "void should also learn how to make music"). The tempo, key, scale, chords, melody and drum pattern come from the mood word and a seed made of the
- * ask's own words (lib/compose.js), so the same ask gives the same piece; it is synthesised in the browser with Web Audio, no model, no sample, no
- * paid service. The card shows what was composed as a piano roll, plays and stops it, saves it as a WAV (OfflineAudioContext) and copies the notes.
+ * ask's own words (lib/compose.js), so the same ask gives the same piece. It plays in the browser with Web Audio on real recordings (owner,
+ * 2026-10-30: "needs real beats and music ... not just rap all music"): a Steinway grand piano and a recorded drum kit or TR-808, loaded before
+ * the first note; a part whose recordings do not load is synthesised, and the card says which. No model, no paid service. The card shows what was composed as a piano roll, plays and stops it, saves it as a WAV (OfflineAudioContext) and copies the notes.
  * Evidence: a new skill starts as an experiment (tools/families.mjs rates it from its tests; nothing here claims more).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { compose, describe, notesText, renderWav, schedule, noteName } from '../lib/compose.js';
+import { compose, describe, notesText, renderWav, schedule, noteName, instrumentsFor, playedLine } from '../lib/compose.js';
 import { arrange, scheduleArranged, arrangedWav, sectionsLine, sectionsSvg } from '../lib/arrange.js'; // a heavy ask (lib/arrange.js): a song with a shape
 
 const KINDS = '(?:song|songs|tune|beat|beats|lullaby|melody|jingle|music|soundtrack|ditty|loop)';
@@ -35,23 +36,31 @@ function run(text, api) {
     el.dataset.cardKind = 'Song';
     el.innerHTML = '<h2>' + esc(p.title) + '</h2><p>' + esc(describe(p)) + '</p>' + (p.sections ? '<p class="mu-form">Built in sections: ' + esc(sectionsLine(p)) + '. Quiet intro and bridge, hard drop, breakdown and climax; the pad and lead duck on every kick.</p>' : '') + rollSvg(p)
       + '<p class="mu-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" class="mu-play">Play</button><button type="button" class="mu-wav">Save as WAV</button><button type="button" class="mu-copy">Copy the notes</button><span class="mu-msg" role="status" style="align-self:center;color:var(--ink-3)"></span></p>'
-      + '<div class="src">Made by Verse from the words of your ask, synthesised in this browser (Web Audio). Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
+      + '<p class="mu-played" style="color:var(--ink-3);margin:0 0 8px"></p>'
+      + '<div class="src">Made by Verse from the words of your ask, played in this browser (Web Audio)' + (p.sections ? ', synthesised' : ' on real piano and drum recordings (free, public domain)') + '. Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
     const q = (s) => el.querySelector(s), msg = (t) => { const m = q('.mu-msg'); if (m) m.textContent = t; };
     for (const ev of ['pointerdown', 'keydown']) for (const b of el.querySelectorAll('button')) b.addEventListener(ev, (e) => e.stopPropagation());
-    let ac = null, timer = 0, raf = 0, t0 = 0, dur = 0;
+    let ac = null, timer = 0, raf = 0, t0 = 0, dur = 0, inst = null, busy = false;
+    // the real instruments, loaded once per card; decoded buffers play on any context, live or offline
+    const instruments = async (ctx) => { if (p.sections) return {}; if (!inst) { inst = await instrumentsFor(p, ctx); const pl = q('.mu-played'); if (pl) pl.textContent = playedLine(p, inst); } return inst; };
     const stop = () => { clearTimeout(timer); cancelAnimationFrame(raf); try { ac && ac.close(); } catch (_) {} ac = null; const h = q('.mu-head'); if (h) h.setAttribute('opacity', '0'); const b = q('.mu-play'); if (b) b.textContent = 'Play'; };
-    q('.mu-play').addEventListener('click', () => {
+    q('.mu-play').addEventListener('click', async () => {
+      if (busy) return;
       if (ac) { stop(); return; }
       const AC = window.AudioContext || window.webkitAudioContext; if (!AC) { msg('This browser has no Web Audio.'); return; }
       try { ac = new AC(); ac.resume && ac.resume(); } catch (_) { msg('Could not start sound.'); ac = null; return; }
-      dur = (p.sections ? scheduleArranged : schedule)(ac, p, ac.currentTime + 0.1); t0 = ac.currentTime + 0.1; q('.mu-play').textContent = 'Stop'; msg('');
+      const mine = ac; busy = true; if (!inst && !p.sections) msg('loading the piano…');
+      const kit = await instruments(ac).catch(() => ({})); busy = false; if (ac !== mine) return;
+      dur = p.sections ? scheduleArranged(ac, p, ac.currentTime + 0.1) : schedule(ac, p, ac.currentTime + 0.1, kit); t0 = ac.currentTime + 0.1; q('.mu-play').textContent = 'Stop'; msg('');
       const head = q('.mu-head'), tick = () => { if (!ac) return; const f = Math.max(0, Math.min(1, (ac.currentTime - t0) / (p.steps * 60 / p.bpm / 4))); if (head) { head.setAttribute('x1', f * 320); head.setAttribute('x2', f * 320); head.setAttribute('opacity', '.8'); } raf = requestAnimationFrame(tick); };
       tick(); timer = setTimeout(stop, dur * 1000 + 300);
     });
     q('.mu-wav').addEventListener('click', async () => {
       msg('rendering…');
       try {
-        const bytes = await (p.sections ? arrangedWav(p) : renderWav(p)); if (!bytes) { msg('This browser cannot render audio offline.'); return; }
+        const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext; if (!OAC) { msg('This browser cannot render audio offline.'); return; }
+        const kit = p.sections ? {} : await instruments(new OAC(1, 1, 48000)).catch(() => ({}));
+        const bytes = await (p.sections ? arrangedWav(p) : renderWav(p, OAC, kit)); if (!bytes) { msg('This browser cannot render audio offline.'); return; }
         const u = URL.createObjectURL(new Blob([bytes], { type: 'audio/wav' })), a = document.createElement('a');
         a.href = u; a.download = (p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'song') + '.v01d.wav'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); msg('saved');
       } catch (_) { msg('could not render'); }
