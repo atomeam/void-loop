@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T02:37:48Z",
+   "subject": "Incident: the browser suite failed on 83797004 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-30T02:36:25Z",
+   "subject": "Bench: the sky asks accept the sky skills' own names, and the eat asks get a map stand-in"
+  },
+  {
    "at": "2026-10-30T02:30:14Z",
    "subject": "Refresh generated files: families, deps, guide, self, asks links, churn, sitemap"
   },
@@ -558,8 +566,32 @@
    "subject": "Self card: the bars' least proven family everywhere, site-named asks need site evidence, no doubled ledger lines, no review prompts on the…"
   },
   {
+   "at": "2026-10-30T02:26:15Z",
+   "subject": "Services card names MultiVerse and links its page, not \"your own custom Verse\""
+  },
+  {
+   "at": "2026-10-30T02:24:21Z",
+   "subject": "Regenerate churn after the merge"
+  },
+  {
+   "at": "2026-10-30T02:24:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T02:23:50Z",
+   "subject": "voice test: its own held list, so lifting a real hold keeps it green"
+  },
+  {
+   "at": "2026-10-30T02:20:46Z",
+   "subject": "Verse loop: task, Queue job mvpur3cd (versus: font.im): Versus: font.im (Googl"
+  },
+  {
    "at": "2026-10-30T02:16:29Z",
    "subject": "Base converter: \"what is 101010 in decimal\" reads 0s and 1s as binary"
+  },
+  {
+   "at": "2026-10-30T02:16:20Z",
+   "subject": "STL checker: lift the hold, the owner said ship it"
   },
   {
    "at": "2026-10-30T02:11:17Z",
@@ -596,38 +628,6 @@
   {
    "at": "2026-10-30T00:51:50Z",
    "subject": "Incident: the browser suite failed on 58ac85bc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T00:46:26Z",
-   "subject": "Verse fixes its converter skill: learn to handle \"mp4 to mp3\""
-  },
-  {
-   "at": "2026-10-30T00:36:04Z",
-   "subject": "Bench: the kept first-run results are keyed without the day"
-  },
-  {
-   "at": "2026-10-30T00:33:53Z",
-   "subject": "Incident: the browser suite failed on 9055d19c (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T00:21:55Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 4b5b234374735c0c62061e7bad472389be027f03 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-30T00:18:05Z",
-   "subject": "Verse loop: task, Queue job mvpi0joe (versus: emojitracker.com): Versus: emoji"
-  },
-  {
-   "at": "2026-10-30T00:14:11Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T23:57:20Z",
-   "subject": "Incident: the browser suite failed on ec492c32 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-29T23:54:23Z",
-   "subject": "The book: a page for hangman (it was in no family, so the book checks failed on main)"
   }
  ],
  "builders": {

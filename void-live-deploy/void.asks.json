@@ -2217,11 +2217,6 @@
       "words": "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b.",
       "ledgerAt": "2026-10-25T01:16:56Z",
       "why": "built: answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done (tools/asks-link.json)"
-    },
-    {
-      "words": "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js",
-      "ledgerAt": "2026-10-29T04:48:05Z",
-      "why": "built: The daily reflection gives each ask its own why, puts the site Versus is on (sycophanthex.com) first in its facts, and the wants card holds the STL checker and the repo merge until that site is beaten; a new lane site mu (linked by tools/asks-link.mjs, shared words: add, page, com, lane, pag, lib, tow)"
     }
   ],
   "held": [
@@ -2234,7 +2229,7 @@
   ],
   "totals": {
     "asked": 241,
-    "built": 237,
+    "built": 236,
     "through": "2026-10-29T22:41:00Z",
     "open": [
       {
@@ -2257,6 +2252,13 @@
         "kind": "daily",
         "small": true,
         "times": 6
+      },
+      {
+        "ask": "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js",
+        "at": "2026-10-29T22:41:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 1
       },
       {
         "ask": "Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status",

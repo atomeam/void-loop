@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { weakestFamily, wrongWeakest, weakestSentence } from '../void-live-deploy/lib/weakest.js';
 import { familyBars } from '../void-live-deploy/lib/skill-confidence.js';
 import { familyFacts, followThrough, voiceFacts, sitesIn } from '../void-live-deploy/lib/voice.js';
+import { matchOf, idfOf } from './asks-link.mjs';
 import { selfSections } from '../void-live-deploy/lib/self-blocks.js';
 import { builtByFamily } from '../void-live-deploy/lib/built-detail.js';
 import calendar from '../void-live-deploy/skills/calendar.js';
@@ -46,6 +47,11 @@ test('an ask naming a site is built only by evidence that names that site', () =
   assert.ok(followThrough(entries, [other]).open.some((g) => g.ask === ask), 'not built by the other site\'s line');
   const real = { at: '2026-10-30T02:24:46Z', what: 'Verse assimilates onlineconverter.com as /converter/', asked: ask };
   assert.ok(followThrough(entries, [other, real]).built.some((g) => g.ask === ask && g.builtAt === real.at));
+  // a word link copies the ask back, so its own words are not evidence: the linked line must name the site
+  const link = { words: ask, ledgerAt: other.at };
+  assert.ok(followThrough(entries, [other], [link]).open.some((g) => g.ask === ask), 'a word link to the other site\'s line is not built');
+  assert.ok(followThrough(entries, [other, real], [link]).built.some((g) => g.ask === ask && g.builtAt === real.at), 'the line that names the site wins');
+  assert.equal(matchOf({ ask }, [other], idfOf([other])), null, 'asks-link does not link it either');
 });
 
 test('one hardening run logged twice shows once under each skill', () => {
