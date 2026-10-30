@@ -66,6 +66,7 @@ async function run(text, api) {
       const v = j.value || {};
       out.innerHTML = (v.person ? '<p class="ap-person">' + esc(j.text) + '</p>'
         : '<div style="font-size:40px;font-weight:300;line-height:1.1;margin:8px 0 4px" class="ap-value">' + esc(v.text || '') + '</div><p class="ap-text">' + esc(j.text || '') + '</p>')
+        + (Array.isArray(j.heard) && j.heard.length ? '<p class="sub ap-heard">' + j.heard.map(esc).join('<br>') + '</p>' : '') // what Verse heard on TV about things like this (functions/api/watchalong.js)
         + (j.seen ? '<p class="sub ap-seen">What I saw: ' + esc(j.seen) + '</p>' : '');
       // what Verse saw is a thing its forge can model: one tap makes it (asked by Verse, ask-20261015-2008-1); the mesher loads only then
       if (!v.person && j.seen) import('./forge-rules.js').then((F) => {
