@@ -1,5 +1,5 @@
 /**
- * walls skill - wallpaper rolls and drywall sheets for a room or one wall (no key; pure math), next to home.js's paint and flooring
+ * walls skill - wallpaper rolls and drywall sheets for a room or one wall, next to the paint and flooring answers (no key; pure math; home.js)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Wallpaper: "how many rolls of wallpaper for a 12x14 room", "...with 9 foot ceilings", "...with a 21 inch repeat", "half drop",
  *   "wallpaper for an accent wall 12 feet wide", "how much wallpaper for a 4 by 3 metre room", "wallpaper calculator".
