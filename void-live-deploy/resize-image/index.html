@@ -127,9 +127,14 @@
     const said = 'Photo size: ' + $('w').value + ' × ' + $('h').value + ' ' + $('u').value + ($('kb').value ? ', up to ' + $('kb').value + ' KB' : '');
     try { if (navigator.share) await navigator.share({ title: document.title, text: said, url: u.href }); else { await navigator.clipboard.writeText(u.href); $('share').textContent = 'Link copied'; setTimeout(() => { $('share').textContent = 'Share this size'; }, 1500); } } catch (_) {}
   });
-  // the stage card shows a resizer for the size on the form (never the picture: lib/resize-card.js)
-  import('/lib/resize-card.js').then((m) => mountRelated(document.getElementById('related'), '/resize-image/', [], { card: () => m.cardAsk({ w: $('w').value, h: $('h').value, u: $('u').value, kb: $('kb').value }) }))
-    .catch(() => mountRelated(document.getElementById('related'), '/resize-image/'));
+  // the stage card shows a resizer for the size on the form (never the picture: lib/resize-card.js). It is loaded at the first touch of the
+  // page, not with it, so opening the resizer costs no file beyond its own (tools/test_void.mjs "photo resizer": 3 own loads at most);
+  // until then the link keeps the example card, and tk:card points it at the size once the module is in
+  let rc = null;
+  mountRelated(document.getElementById('related'), '/resize-image/', [], { card: () => rc ? rc.cardAsk({ w: $('w').value, h: $('h').value, u: $('u').value, kb: $('kb').value }) : '' });
+  const TOUCH = ['pointerdown', 'pointerover', 'keydown', 'focusin', 'input', 'change'];
+  const loadCard = () => { for (const ev of TOUCH) removeEventListener(ev, loadCard, true); import('/lib/resize-card.js').then((m) => { rc = m; document.dispatchEvent(new Event('tk:card')); }).catch(() => {}); };
+  for (const ev of TOUCH) addEventListener(ev, loadCard, true);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
