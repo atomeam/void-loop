@@ -69,7 +69,7 @@ function stop(msg) {
 const toggle = () => (st.playing ? stop() : start());
 
 // ---- controls ----
-boot('/metronome/', say_); mountRelated($('related'), '/metronome/');
+boot('/metronome/', say_); mountRelated($('related'), '/metronome/', [], { card: () => 'metronome ' + Math.round(st.bpm) + ' bpm' + (st.sig === '4/4' ? '' : ' ' + st.sig) }); // the card at the tempo on the page
 dots(); show(); $('vol').value = m.vol == null ? 80 : m.vol;
 wire($('play'), 'click', toggle);
 for (const [id, d] of [['m10', -10], ['m1', -1], ['p1', 1], ['p10', 10]]) wire($(id), 'click', () => setBpm(st.bpm + d));
