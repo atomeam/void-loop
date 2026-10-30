@@ -68,13 +68,13 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-29 | password skill: generate a random secure password | new idea by growth agent; helper/growth-password |
 | building | 2026-10-29 | shuffle skill: shuffle a list of items | new idea by growth agent; helper/shuffle |
 | building | 2026-10-29 | random emoji skill: pick a random emoji or a few | new idea by growth agent; helper/emoji |
-| building | 2026-10-29 | timer skill: a simple countdown timer on the stage | new idea by growth agent; helper/timer |
+| shipped cad9d90 | 2026-10-29 | timer skill: a simple countdown timer on the stage | new idea by growth agent; already on main (skills/timer.js) |
 | building | 2026-10-29 | rock paper scissors skill: play a quick game | new idea by growth agent; helper/rps |
 | open | 2026-10-29 | stopwatch skill: a simple stopwatch on the stage | new idea by growth agent |
-| open | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent |
-| open | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent |
+| building | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent; helper/anagram |
+| building | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent; helper/palindrome |
 | building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
-| open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
-| open | 2026-10-30 | haiku skill: generate a simple haiku on a topic | new idea by growth agent |
-| open | 2026-10-30 | compliment skill: a random genuine compliment | new idea by growth agent |
-| open | 2026-10-30 | riddle skill: a random riddle with answer on demand | new idea by growth agent |
+| shipped cad9d90 | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent; already on main (skills/wordladder.js) |
+| open | 2026-10-30 | base64 skill: encode or decode base64 | new idea by growth agent |
+| open | 2026-10-30 | hash skill: generate a hash of text | new idea by growth agent |
+| open | 2026-10-30 | stopwatch skill: a simple stopwatch on the stage | new idea by growth agent |
