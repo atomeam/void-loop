@@ -1,5 +1,7 @@
   import { mountRelated } from '/lib/toolkit.js';
-  import { receiveImage } from '/lib/image-handoff.js';
+  import { receiveImage, sendImage } from '/lib/image-handoff.js';
+  // the photo on screen as it now comes out (edits, size and format), once it is ready; the send links below read it
+  let edited = () => null;
   const boot = async () => {
   const E = await import('/lib/photo-edit.js'), { stripMeta } = await import('/lib/safety.js');
   const $ = (id) => document.getElementById(id), qa = (s, r = document) => [...r.querySelectorAll(s)];
@@ -85,7 +87,7 @@
     $('line').textContent = say('ba') + ': ' + E.sizeLabel(it.size) + ' → ' + E.sizeLabel(r.bytes.length) + ' · ' + (pct > 0 ? pct + '% ' + say('saved') : pct < 0 ? -pct + '% ' + say('bigger') : say('same')); $('line').className = pct > 0 ? 'ok' : '';
     $('note').textContent = r.w + ' × ' + r.h + ' px · ' + r.mime.replace('image/', '').toUpperCase() + (it.scaled ? ' · ' + say('big') : ''); $('batchnote').textContent = items.length > 1 ? items.length + ' ' + say('files') + ' · ' + say('zip') : '';
     // before and after: the original file against the result, side by side with a slider
-    const geo = Math.abs(it.base.width / it.base.height - (it.meta.width || it.base.width) / (it.meta.height || it.base.height)) > 0.01; $('cb').src = geo ? it.base.toDataURL('image/jpeg', 0.9) : it.url; $('ca').src = url; it.out.ready = true; setCmp($('cmpr').value); layout();
+    const geo = Math.abs(it.base.width / it.base.height - (it.meta.width || it.base.width) / (it.meta.height || it.base.height)) > 0.01; $('cb').src = geo ? it.base.toDataURL('image/jpeg', 0.9) : it.url; $('ca').src = url; it.out.ready = true; setCmp($('cmpr').value); layout(); document.dispatchEvent(new Event('tk:card'));
   }
   function setCmp(v) { $('ca').style.clipPath = 'inset(0 0 0 ' + v + '%)'; }
   $('cmpr').addEventListener('input', (e) => setCmp(e.target.value)); $('cmp').addEventListener('pointermove', (e) => { if (e.buttons) { const r = $('cmp').getBoundingClientRect(), v = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100)); $('cmpr').value = v; setCmp(v); } });
@@ -164,11 +166,14 @@
   $('share').addEventListener('click', async () => { const u = location.origin + location.pathname + (cur ? '?tab=' + tab : ''); try { if (navigator.share) await navigator.share({ title: document.title, text: $('sub').textContent, url: u }); else { await navigator.clipboard.writeText(u); $('share').textContent = say('linkcopied'); setTimeout(() => { $('share').textContent = say('share'); }, 1600); } } catch (_) {} });
   $('lang').addEventListener('click', () => { L = L === 'de' ? 'en' : 'de'; tr(); fbox.firstChild.textContent = say('none'); if (cur) { refresh(); infoPanel(); } });
   tr(); fbox.firstChild.textContent = say('none');
+  edited = () => (cur && cur.out && cur.out.ready ? { blob: new Blob([cur.out.bytes], { type: cur.out.mime }), name: E.outName(cur.name, cur.out.mime) } : null);
   window.__photos = { items: () => items, show };
   document.documentElement.dataset.photos = 'ready';
   // a picture handed over by another page (lib/image-handoff.js, ?img=handoff) opens as if it was chosen here
   await receiveImage((f) => add([f]));
   };
-  mountRelated(document.getElementById('related'), '/photos/');
+  // the edited photo, already open on the next picture page: a press keeps one copy on this device and opens the page
+  mountRelated(document.getElementById('related'), '/photos/', [['Save your edit as a PDF', '/pdf/?img=handoff'], ['Paint your edit by number', '/paint/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff']].map(([label, path]) => ({ label, href: () => (edited() ? path : null),
+    go: () => { const got = edited(); if (!got) return false; sendImage(path, () => got.blob, { name: got.name, fromPage: '/photos/' }).then((ok) => { if (!ok) document.getElementById('line').textContent = 'This browser could not keep the photo for the next page.'; }); return false; } })));
   // the editor loads after the first paint, so the page itself is instant
   if (document.readyState === 'complete') boot(); else addEventListener('load', () => setTimeout(boot, 0));

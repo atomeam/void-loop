@@ -203,6 +203,26 @@ export const JOURNEYS = {
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
     await check('the PDF page opened Images to PDF with the gradient ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
   },
+  'edit a photo in the photo tools, then save the edit as a PDF, paint it by number and take its colours as a gradient': async (p, check) => {
+    const toPhotos = async () => {
+      await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+      await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
+      // the send links stay off until the edit is ready, then carry their page at once, with no hover or press first
+      await p.waitForFunction(() => [...document.querySelectorAll('#related a.tk-hand')].some((a) => a.textContent === 'Save your edit as a PDF' && a.getAttribute('aria-disabled') === 'false'), null, { timeout: 15000 });
+    };
+    await toPhotos(); await check('the photo tools opened the gradient and its send links turned on');
+    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save your edit as a PDF' }).click()]);
+    await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
+    await check('the PDF page opened Images to PDF with the edit ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
+    await toPhotos();
+    await Promise.all([p.waitForURL(/\/paint\//), p.locator('#related a', { hasText: 'Paint your edit by number' }).click()]);
+    await p.waitForFunction(() => document.body.innerText.includes('Your photo is now a colouring sheet'), null, { timeout: 15000 });
+    await check('the paint page cut the edit into a new colouring sheet');
+    await toPhotos(); const was = new URL(p.url()).hash;
+    await Promise.all([p.waitForURL(/\/gradient\//), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
+    await p.waitForFunction(() => location.hash.split('-').length > 2 && !location.search, null, { timeout: 15000 });
+    await check('the gradient page read the edit into ' + (await p.locator('#stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
+  },
 };
 
 async function run() {
