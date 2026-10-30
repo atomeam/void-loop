@@ -4183,6 +4183,7 @@ say('nothing selected to remove');
       const cm = parseCurrency(lower);
       if (cm && !hit) {
         const { amount, from, to } = cm;
+        if (from !== to) el.dataset.page = '/markets/?s=' + from + to; // the full link opens the pair on Markets: the same ECB rate over time, with a chart
         setV('…', 'checking rates');
         const src = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
         if (from === to) { setV(fmtNum(amount) + ' ' + to, 'Same currency.', ''); return 'currency'; }
