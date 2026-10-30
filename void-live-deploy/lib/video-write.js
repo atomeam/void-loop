@@ -342,6 +342,113 @@ export async function writeStill(pictures, opts = {}) {
   return finish(container, E, sound, notes, say);
 }
 
+// ---- two videos at once: side by side, or one above the other -----------------------------------------------------------------------------
+/** every picture a playing video shows, in order, from its start: the video plays muted and each picture is kept as a VideoFrame with its
+ *  time until it is taken. The video waits while 6 pictures are not taken yet. A picture that goes by with no callback makes the video play
+ *  slower and go back, as in writeVideo; at the slowest speed the loss is counted. step: the length of one picture, in seconds. */
+function pictures(v, step) {
+  const q = []; let last = -1, ended = false, stopped = false, error = null, wake = null, held = 0, waiting = false, handle = 0;
+  const nudge = () => { if (wake) { const w = wake; wake = null; w(); } };
+  const play = () => { if (held) { clearTimeout(held); held = 0; } if (!stopped) v.play().catch((e) => { error = e; nudge(); }); };
+  const watch = () => { handle = v.requestVideoFrameCallback(onFrame); };
+  const seekThenPlay = (t) => { watch(); v.currentTime = t; held = setTimeout(play, 3000); };
+  const src = { skipped: 0 };
+  function onFrame(_, meta) {
+    if (stopped) return; const mt = meta.mediaTime;
+    if (last >= 0 && mt > last + step * 1.5) {
+      if (v.playbackRate > SLOWEST) { v.pause(); v.playbackRate = Math.max(SLOWEST, v.playbackRate / 4); seekThenPlay(last + step / 2); return; }
+      src.skipped += Math.max(0, Math.round((mt - last) / step) - 1);
+    }
+    if (mt > last) { last = mt; q.push({ t: mt, f: new VideoFrame(v, { timestamp: Math.round(mt * 1e6) }) }); nudge(); }
+    if (held) play();
+    if (q.length >= 6 && !v.paused) { v.pause(); waiting = true; }
+    if (!v.ended) watch();
+  }
+  v.addEventListener('ended', () => { ended = true; nudge(); }, { once: true });
+  v.playbackRate = 1;
+  if (Math.abs(v.currentTime) > 1e-6) seekThenPlay(0); else { watch(); play(); }
+  /** the next picture without taking it, or null at the end */
+  src.peek = async () => { while (!q.length) { if (error) throw error; if (ended || stopped) return null; if (waiting) { waiting = false; play(); } await new Promise((r) => { wake = r; }); } return q[0]; };
+  src.take = () => { const x = q.shift(); if (waiting && q.length <= 2) { waiting = false; play(); } return x; };
+  src.stop = () => { stopped = true; clearTimeout(held); if (handle && v.cancelVideoFrameCallback) v.cancelVideoFrameCallback(handle); v.pause(); for (const x of q.splice(0)) x.f.close(); nudge(); };
+  return src;
+}
+
+const PLACE = { lr: ['on the left', 'on the right'], tb: ['at the top', 'at the bottom'] };
+/** two videos played at the same time, side by side (layout 'lr') or one above the other ('tb'), as one video. The second is scaled to the
+ *  height (lr) or width (tb) of the first. opts.length: 'longest' (the shorter video plays again from its start), '1-loop', '2-loop' (as long
+ *  as video 1 or 2; the other plays again), '1-hold', '2-hold' (as long as video 1 or 2; the other plays once and then holds its last
+ *  picture, its sound silent). opts.sound: 'mix' | '1' | '2'. With container, quality, onProgress as writeVideo. Returns what writeVideo
+ *  returns. */
+export async function writeSplit(files, opts = {}) {
+  if (!files || files.length !== 2) throw new Error('a split screen video needs 2 videos.');
+  const container = CONTAINERS.includes(opts.container) ? opts.container : 'mp4', say = opts.onProgress || (() => {}), layout = opts.layout === 'tb' ? 'tb' : 'lr';
+  const length = ['longest', '1-loop', '2-loop', '1-hold', '2-hold'].includes(opts.length) ? opts.length : 'longest', soundOpt = ['mix', '1', '2'].includes(String(opts.sound)) ? String(opts.sound) : 'mix';
+  if (!canEncode()) throw new Error('this browser has no video encoder (WebCodecs), so Verse cannot make a split screen video here. Chrome, Edge and Safari 17 or later have one.');
+  const vids = [], sides = [], notes = [];
+  try {
+    for (const f of files) { const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = URL.createObjectURL(f); vids.push(v); await wait(v, 'loadeddata'); if (!v.videoWidth) throw new Error(f.name + ': this file has no picture: it is a sound. Pick a video.'); }
+    const d = vids.map((v, i) => { if (!isFinite(v.duration) || !(v.duration > 0)) throw new Error(files[i].name + ': this browser gives no length for this video, so Verse cannot line the two up.'); return v.duration; });
+    const total = length === 'longest' ? Math.max(...d) : d[+length[0] - 1], loops = Array(2).fill(!length.endsWith('hold')); // the side that sets the length never reaches its end
+    // the size: video 1 as it is, video 2 scaled to its height (side by side) or width (one above the other); then all of it made smaller if
+    // the encoder cannot take it so large
+    const [w1, h1] = [vids[0].videoWidth, vids[0].videoHeight], [w2, h2] = [vids[1].videoWidth, vids[1].videoHeight];
+    const a = layout === 'lr' ? [w1, h1, w2 * h1 / h2, h1] : [w1, h1, w1, h2 * w1 / w2], fullW = layout === 'lr' ? a[0] + a[2] : a[0], fullH = layout === 'lr' ? a[1] : a[1] + a[3];
+    let E = null, W = 0, H = 0, err = null;
+    for (const cap of [3840, 2560, 1920]) { ({ width: W, height: H } = evenSize(fullW, fullH, cap)); try { E = await encoder(container, W, H, opts.quality, 30); break; } catch (e) { err = e; } }
+    if (!E) throw err;
+    const k = layout === 'lr' ? H / a[1] : W / a[0], first = Math.round((layout === 'lr' ? a[0] : a[1]) * k);
+    const cells = layout === 'lr' ? [[0, 0, first, H], [first, 0, W - first, H]] : [[0, 0, W, first], [0, first, W, H - first]];
+    for (let i = 0; i < 2; i++) {
+      const v = vids[i], { step } = await frameStep(v, 0), cell = new OffscreenCanvas(cells[i][2], cells[i][3]).getContext('2d');
+      cell.fillStyle = '#000'; cell.fillRect(0, 0, cells[i][2], cells[i][3]);
+      sides.push({ v, step, d: d[i], loop: loops[i], base: 0, shown: false, cell, src: pictures(v, step), skipped: 0 });
+    }
+    // the pictures due by `local` seconds into this play of the video are taken, and the last of them is drawn in the side's place
+    const upTo = async (s, local) => {
+      let got = null;
+      for (;;) { const nx = await s.src.peek(); if (!nx || (s.shown && nx.t > local + 1e-4)) break; if (got) got.f.close(); got = s.src.take(); s.shown = true; }
+      if (got) { s.cell.drawImage(got.f, 0, 0, s.cell.canvas.width, s.cell.canvas.height); got.f.close(); }
+    };
+    const n = Math.max(1, Math.round(total * 30));
+    for (let j = 0; j < n; j++) {
+      const t = j / 30;
+      for (const s of sides) {
+        let local = t - s.base;
+        // the end of a looping video: it plays again from its start
+        if (s.loop && local >= s.d - 1e-6) { s.skipped += s.src.skipped; s.src.stop(); s.base += s.d; local -= s.d; s.shown = false; s.src = pictures(s.v, s.step); }
+        await upTo(s, local);
+      }
+      sides.forEach((s, i) => E.x.drawImage(s.cell.canvas, cells[i][0], cells[i][1]));
+      E.push(Math.round(t * 1e6)); say(Math.min(0.99, (j + 1) / n));
+      if (E.enc.encodeQueueSize > 4) while (E.enc.encodeQueueSize > 1) await new Promise((r) => E.enc.addEventListener('dequeue', r, { once: true }));
+    }
+    const fmt = (x) => x.toFixed(2) + ' s';
+    notes.push(files[0].name + ' ' + PLACE[layout][0] + ', ' + files[1].name + ' ' + PLACE[layout][1] + (layout === 'lr' ? ', at the height of the first' : ', at the width of the first') + (W < fullW - 2 || H < fullH - 2 ? ', both made smaller to ' + W + ' x ' + H : ''));
+    const other = length === 'longest' ? (d[0] >= d[1] ? 1 : 0) : +length[0] === 1 ? 1 : 0;
+    if (length === 'longest') notes.push(d[0] === d[1] ? 'both ' + fmt(d[0]) + ' long' : 'as long as the longer video (' + fmt(total) + '); ' + files[other].name + ' (' + fmt(d[other]) + ') plays again from its start');
+    else if (d[other] < total - 1e-3) notes.push('as long as ' + files[1 - other].name + ' (' + fmt(total) + '); ' + files[other].name + ' (' + fmt(d[other]) + ') ' + (loops[other] ? 'plays again from its start' : 'plays once, then holds its last picture and its sound stops'));
+    else notes.push('as long as ' + files[1 - other].name + ' (' + fmt(total) + '); ' + files[other].name + ' (' + fmt(d[other]) + ') is cut there');
+    // the sound: each video's, played again or ended as its pictures are, then mixed or one picked
+    const N = Math.max(1, Math.round(total * RATE)), track = async (i) => {
+      const s = await soundOf48(files[i]); if (!s) return null;
+      const P = Math.max(1, Math.round(d[i] * RATE));
+      return { rate: RATE, notes: [], channels: s.channels.map((c) => { const o = new Float32Array(N); for (let at = 0; at < N; at += P) { if (at && !loops[i]) break; o.set(c.subarray(0, Math.min(c.length, P, N - at)), at); } return o; }) };
+    };
+    const want = soundOpt === 'mix' ? [0, 1] : [+soundOpt - 1], got = []; for (const i of want) got.push([i, await track(i)]);
+    const have = got.filter((x) => x[1]), heard = notes.length; let sound = null;
+    if (have.length === 2) { sound = mix(have.map((x) => x[1])); notes.push('the sound of both videos, mixed' + (/turned down/.test(sound.notes[1] || '') ? ', ' + sound.notes[1] : '')); }
+    else if (have.length === 1) { sound = have[0][1]; notes.push('the sound of ' + files[have[0][0]].name + (want.length === 2 ? ' only: ' + files[1 - have[0][0]].name + ' has no sound this browser can read' : ' only')); }
+    else notes.push(want.length === 2 ? 'no sound: neither video has a sound this browser can read' : 'no sound: ' + files[want[0]].name + ' has none this browser can read');
+    const skipped = sides.reduce((x, s) => x + s.skipped + s.src.skipped, 0);
+    if (skipped) notes.push(skipped + ' picture' + (skipped === 1 ? '' : 's') + ' went by before this device could draw ' + (skipped === 1 ? 'it' : 'them') + ', so ' + (skipped === 1 ? 'it is' : 'they are') + ' not in the new video');
+    const r = await finish(container, E, sound, notes, say);
+    // a file that cannot hold the sound this browser codes (a 3GP with no AAC) says so; the line on whose sound it is then goes
+    if (sound && r.notes.some((x) => /^no sound: /.test(x))) r.notes = r.notes.filter((x) => x !== notes[heard]);
+    return r;
+  } finally { for (const s of sides) s.src.stop(); for (const v of vids) { v.pause(); URL.revokeObjectURL(v.src); v.removeAttribute('src'); v.load(); } }
+}
+
 // no VideoEncoder: record the playing video with MediaRecorder (the browser picks the codecs; it takes as long as the video)
 async function record(v, container, say) {
   const dur = isFinite(v.duration) ? v.duration : 0, types = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
