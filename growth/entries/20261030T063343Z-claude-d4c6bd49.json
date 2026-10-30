@@ -1,0 +1,1 @@
+{"at":"2026-10-30T06:33:43Z","by":"claude","kind":"fix","what":"Stage calendar card settles still after its first sway (days hold under a pointer, frame loop stops on phones); the tools page card follows the tool opened last on the bench","show":"Calendar card rests still; tools card opens the bench tool","try":"https://a-to-mind.com/tools/?open=calculator"}
