@@ -339,6 +339,13 @@
    "tests": 1
   },
   {
+   "file": "lib/movies.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 13,
+   "tests": 0
+  },
+  {
    "file": "lib/art-source.js",
    "skills": 7,
    "direct": 0,
@@ -458,6 +465,13 @@
    "tests": 1
   },
   {
+   "file": "lib/media.js",
+   "skills": 5,
+   "direct": 3,
+   "dependants": 6,
+   "tests": 3
+  },
+  {
    "file": "lib/prints.js",
    "skills": 5,
    "direct": 3,
@@ -540,13 +554,6 @@
    "direct": 0,
    "dependants": 26,
    "tests": 1
-  },
-  {
-   "file": "lib/movies.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 10,
-   "tests": 0
   },
   {
    "file": "lib/field-resonance.js",
@@ -951,13 +958,6 @@
    "file": "lib/list-goal.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 3,
-   "tests": 2
-  },
-  {
-   "file": "lib/media.js",
-   "skills": 2,
-   "direct": 2,
    "dependants": 3,
    "tests": 2
   },
@@ -7109,8 +7109,13 @@
    ],
    "importedBy": [
     "functions/api/media.js",
+    "skills/calendar.js",
     "skills/media-pick.js",
     "skills/pick-for-me.js"
+   ],
+   "reachedBy": [
+    "skills/calendar-fill.js",
+    "skills/dates.js"
    ]
   },
   "lib/members.js": {
@@ -7430,6 +7435,9 @@
    ],
    "reachedBy": [
     "functions/api/filmfind.js",
+    "skills/calendar-fill.js",
+    "skills/calendar.js",
+    "skills/dates.js",
     "skills/film-metadata.js",
     "skills/media-pick.js"
    ]
@@ -10880,6 +10888,7 @@
    "imports": [
     "skills/calendar3d.js",
     "skills/countdown.js",
+    "lib/media.js",
     "lib/chat-calendar.js",
     "lib/agenda.js"
    ],
