@@ -31,10 +31,16 @@ becomes a Verse film with fake explosions). The alternative never helps with the
 ## Rotation
 
 1. Anything that ever reached GitHub is public: rotate it, even if the commit is gone (forks, caches, clones).
-2. Adam rotates in the dashboard: Cloudflare (Pages → Settings → Variables and Secrets, or `wrangler secret put` on his machine),
-   Stripe (Developers → API keys → Roll), Gumroad (Settings → Advanced), GitHub (Settings → Developer settings / repo secrets).
-   Agents never mint, paste or hold the new value.
-3. Remove the value from the tree, add a test that would have caught it, and note the type and file (never the value) here.
+2. Cloudflare keys rotate themselves. Verse holds one bootstrap key, `CF_KEYMASTER_TOKEN`: an account-owned Cloudflare token with
+   Account > Account API Tokens > Edit, made once by the account owner and saved as a repo secret. From it, `tools/key-keeper.mjs`
+   mints each job its own child key at the start of every run (scoped to that job, owned by the account, expiring in 1 to 3 hours),
+   hands it over masked through `$GITHUB_ENV`, and a daily sweep (`.github/workflows/key-keeper.yml`) deletes Verse's own expired
+   `verse-*` keys. No child key can make keys. No value is printed, logged, committed or stored. Without the keymaster, jobs fall
+   back to the old `CLOUDFLARE_API_TOKEN` repo secret. Key health (names and yes/no only) shows on /autopilot/.
+3. Keys from other providers (Stripe, Gumroad, Modal, GitHub) still need their first value from the account that owns them, once,
+   saved as a repo secret. Modal mints new tokens only from a Team plan's service users; Stripe and Gumroad have no token API.
+   Agents never paste or hold a value in chat.
+4. Remove the value from the tree, add a test that would have caught it, and note the type and file (never the value) here.
 
 Rotation log: none needed (2026-10-15 full-history scan: test fixtures only).
 

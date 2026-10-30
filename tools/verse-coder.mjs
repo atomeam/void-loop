@@ -34,7 +34,9 @@ export function providersFrom(env = process.env) {
   const out = [];
   // Verse's own model on the site's binding (functions/api/coder.js, the owner token): needs no Workers AI permission on any API token
   if (env.VOID_OWNER_TOKEN) out.push({ name: 'verse', model: FREE_MODEL, key: env.VOID_OWNER_TOKEN, url: String(env.VOID_SITE || 'https://a-to-mind.com').replace(/\/+$/, '') + '/api/coder', shape: 'workers' });
-  if (env.CLOUDFLARE_API_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: env.CLOUDFLARE_API_TOKEN,
+  // the key Verse minted for this run (tools/key-keeper.mjs, Workers AI only, expires in hours) first, else the old repo secret
+  const cfKey = env.CLOUDFLARE_AI_TOKEN || env.CLOUDFLARE_API_TOKEN;
+  if (cfKey && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: cfKey,
     url: 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + (env.VERSE_CODER_CF_MODEL || FREE_MODEL), shape: 'workers' });
   // GitHub Models (a free pool that needs no key to fetch: the workflow's own token with `models: read`); unverified against GitHub's docs from the sandbox, a refusal shows in the run log
   // GitHub Models is gone: GitHub retired it on 2026-07-30 (docs.github.com/en/rest/models/inference), and its old endpoint answers 200 "OK" to every call
@@ -45,7 +47,7 @@ export function providersFrom(env = process.env) {
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
 }
-export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
+export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_AI_TOKEN (minted by tools/key-keeper.mjs) or CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
 
 /** a reply body as JSON. It reads the body once as text, then tries JSON, then a server-sent-event stream (data: lines).
  * A 2xx that is neither says what came back first (status, type, size), never its body, so a 90-character note still holds the cause. */

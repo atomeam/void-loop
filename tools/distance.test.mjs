@@ -2,14 +2,14 @@
 // from canned Open-Meteo geocoding answers (fetch stubbed): the bigger of two same-named places, the miles, the route links, a place it cannot find.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import distance, { placesOf, flightTime, km, geo } from '../void-live-deploy/skills/distance.js';
+import distance, { placesOf, placeName, flightTime, km, geo } from '../void-live-deploy/skills/distance.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const LON = { name: 'London', country: 'United Kingdom', latitude: 51.50853, longitude: -0.12574, population: 8961989 };
 const PAR = { name: 'Paris', country: 'France', latitude: 48.85341, longitude: 2.3488, population: 2138551 };
 const PTX = { name: 'Paris', country: 'United States', latitude: 33.66094, longitude: -95.55551, population: 24782 };
 const NYC = { name: 'New York', country: 'United States', latitude: 40.71427, longitude: -74.00597, population: 8804190 };
-const PLACES = { London: [LON], Paris: [PTX, PAR], 'New York': [NYC] };
+const PLACES = { London: [LON], london: [LON], Paris: [PTX, PAR], 'New York': [NYC] };
 const withGeo = async (fn) => { const real = globalThis.fetch, urls = []; globalThis.fetch = async (u) => { urls.push(String(u)); const n = new URL(u).searchParams.get('name'); return { json: async () => (PLACES[n] ? { results: PLACES[n] } : {}) }; }; try { return await fn(urls); } finally { globalThis.fetch = real; } };
 const apiOf = () => { const pages = []; return { pages, esc, showPage: (fn) => { const el = { innerHTML: '' }; fn(el); pages.push(el); return el; }, _pageStill: () => true }; };
 
@@ -70,4 +70,33 @@ test('run: a place it cannot find, a dead service, an ask it does not read', asy
   const real = globalThis.fetch; globalThis.fetch = async () => { throw new Error('offline'); };
   try { const api = apiOf(); assert.equal(await distance.run('distance from London to Paris', api), 'none'); assert.ok(api.pages[0].innerHTML.includes("didn't answer")); } finally { globalThis.fetch = real; }
   const api = apiOf(); assert.equal(await distance.run('map of Paris', api), 'none'); assert.equal(api.pages.length, 0);
+});
+
+// Adam's card (2026-10-30): "is nyc → london" said "I couldn't find “is nyc”". The lead word was read as part of the place, and the
+// place search finds nothing for "nyc" anyway; both are fixed here, and the arrow form is read as a distance
+test('the arrow, the lead words and the short names: "is nyc → london" is New York to London', () => {
+  assert.deepEqual(placesOf('is nyc → london'), { a: 'New York', b: 'london' });
+  assert.deepEqual(placesOf('how far is nyc to london'), { a: 'New York', b: 'london' });
+  assert.deepEqual(placesOf('how far is LA from NYC?'), { a: 'New York', b: 'Los Angeles' });
+  assert.deepEqual(placesOf('nyc -> la'), { a: 'New York', b: 'Los Angeles' });
+  assert.deepEqual(placesOf('is LA → SF'), { a: 'Los Angeles', b: 'San Francisco' });
+  assert.deepEqual(placesOf('Paris → Rome'), { a: 'Paris', b: 'Rome' });
+  assert.deepEqual(placesOf('distance from D.C. to Boston'), { a: 'Washington', b: 'Boston' });
+  assert.deepEqual(placesOf('distance between ldn and brum'), { a: 'London', b: 'Birmingham' });
+  assert.deepEqual(placesOf('how far from manc to edi please'), { a: 'Manchester', b: 'Edinburgh' });
+  assert.deepEqual(placesOf('distance from The Hague to Paris'), { a: 'The Hague', b: 'Paris' }, '"the" is part of some names');
+  for (const n of ['usd → eur', 'USD → EUR', '5 km -> miles', 'Celsius -> Fahrenheit', 'KG → LB', 'hello → world', 'London → Paris → Rome']) {
+    assert.equal(placesOf(n), null, n); assert.ok(!distance.match(n.toLowerCase(), n), n);
+  }
+  for (const [k, v] of Object.entries({ nyc: 'New York', 'N.Y.C.': 'New York', 'L.A.': 'Los Angeles', 'Washington, DC': 'Washington', ldn: 'London', ' is nyc ': 'New York', Boston: 'Boston' })) assert.equal(placeName(k), v, k);
+});
+
+test('run: "is nyc → london" asks the place search for New York and London and draws the real distance', async () => {
+  await withGeo(async (urls) => {
+    const api = apiOf(); assert.equal(await distance.run('is nyc → london', api), 'distance');
+    const h = api.pages[0].innerHTML;
+    assert.ok(urls.some((u) => u.includes('name=New%20York')) && urls.some((u) => u.includes('name=london')), urls.join(' '));
+    assert.ok(!urls.some((u) => /name=is|name=nyc/i.test(u)), urls.join(' '));
+    assert.ok(h.includes('<h2>New York → London</h2>') && h.includes('>5,570 km<') && h.includes('3,461 miles'), h);
+  });
 });

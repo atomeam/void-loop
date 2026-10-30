@@ -99,6 +99,11 @@ jobs:
           path: ${{ runner.temp }}/verse-loop
           key: verse-loop-state-${{ github.run_id }}
           restore-keys: verse-loop-state-
+      - name: Verse's own key for this run (minted from the keymaster, expires in hours; the old secret if there is no keymaster)
+        env:
+          CF_KEYMASTER_TOKEN: ${{ secrets.CF_KEYMASTER_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tools/key-keeper.mjs mint coder
       - name: One lap
         env:
           VERSE_LOOP_STATE: ${{ runner.temp }}/verse-loop/state.json

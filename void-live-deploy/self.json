@@ -550,6 +550,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T16:59:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T16:48:19Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-30T16:26:00Z",
    "subject": "Close the video dollar-cap race; The stage reads a copied chat right"
-  },
-  {
-   "at": "2026-10-30T16:24:34Z",
-   "subject": "Read pasted chats and reports, never a keys refusal or a guessed secret name"
   }
  ],
  "builders": {

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1082,
+ "counted": 1083,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -14,7 +14,7 @@
    "skills": 33,
    "direct": 23,
    "dependants": 37,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/field-kit.js",
@@ -613,6 +613,13 @@
   },
   {
    "file": "lib/textdiff.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/yamljson.js",
    "skills": 4,
    "direct": 1,
    "dependants": 12,
@@ -12839,6 +12846,25 @@
     "lib/team-mcp.js"
    ]
   },
+  "lib/yamljson.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
+   ]
+  },
   "lib/zones.js": {
    "imports": [
     "skills/worldtime.js",
@@ -16552,6 +16578,7 @@
     "lib/textdiff.js",
     "lib/markdown.js",
     "lib/csvjson.js",
+    "lib/yamljson.js",
     "lib/cssmin.js",
     "lib/card-mini.js",
     "lib/pwcheck.js"
