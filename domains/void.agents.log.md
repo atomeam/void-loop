@@ -1147,3 +1147,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T04:05:20Z | claude | build | Self-check: tools/self-check.mjs + lib/selfcheck.js + /api/selfcheck + .github/workflows/self-check.yml; the status card shows Verse's own pages (owner, 2026-10-30: build anything you need right into Verse). Also: MAP named two stage skills that were never written (doc-drift 7 > 5).
 2026-10-30T03:51:05Z | claude | grow | Memory orbs show what Verse remembers: the brain's words float in the fluid
 2026-10-30T04:14:30Z | claude | grow | Verse Brain keeps which ideas were lit across a reload: the host saves the glow on hide and puts it back, dimmed by the time away
+2026-10-30T04:22:21Z | claude | fix | Versus queue: unrendered rows sort behind rendered ones; bot walls and country pickers (shell wall/gateway) no longer rank as small sites
