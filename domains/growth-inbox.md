@@ -73,6 +73,6 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-29 | stopwatch skill: a simple stopwatch on the stage | new idea by growth agent |
 | open | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent |
 | open | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent |
-| building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
+| building | 2026-10-28 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
 | open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
-| building | 2026-10-30 | reverse skill: reverse a string or words | new idea by growth agent; helper/reverse |
+| building | 2026-10-30 | reverse skill: reverse a word or phrase | new idea by growth agent; helper/reverse |
