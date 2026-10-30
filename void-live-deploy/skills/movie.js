@@ -23,7 +23,7 @@ const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes
 
 /** the card of one movie: art, facts, the player, the links. Pure given a lookup result. */
 export function movieCard(f, esc) {
-  if (!f.verified) return '<h2>' + esc(f.title) + (f.year ? ' (' + f.year + ')' : '') + '</h2><p>Not verified: no source I check knows a movie by this name, so I will not state anything about it.</p>';
+  if (!f.verified) return '<h2>' + esc(f.title) + (f.year ? ' (' + f.year + ')' : '') + '</h2><p>' + (f.unreachable ? 'Not checked: the movie sources did not answer just now, so I will not state anything about it. Ask again in a moment.' : 'Not verified: no source I check knows a movie by this name, so I will not state anything about it.') + '</p>';
   const price = [money(f.price, f.currency) && 'buy ' + money(f.price, f.currency), money(f.rentPrice, f.currency) && 'rent ' + money(f.rentPrice, f.currency)].filter(Boolean).join(' · ');
   // the structured facts (asked by Verse, 2026-10-17): only what the source returned, never a guess; iTunes gives no cast, so none is shown
   const facts = [['Year', f.year], ['Genre', f.genre], ['Rated', f.rating], ['Director', f.director], ['Runtime', f.runtime ? f.runtime + ' min' : '']].filter((x) => x[1]);
@@ -83,7 +83,8 @@ export async function runPick(api) {
   if (picks.length < 3) picks = FREE_PICKS.slice(0, 5); // the model was away: the free, legal films
   const found = await Promise.all(picks.slice(0, 6).map(lookup));
   if (!api._pageStill(el)) return 'movie';
-  const real = found.filter((f) => f.verified), fake = found.filter((f) => !f.verified);
+  const real = found.filter((f) => f.verified), fake = found.filter((f) => !f.verified && !f.unreachable), away = found.filter((f) => !f.verified && f.unreachable);
+  const used = [...new Set(real.flatMap((f) => f.sources || []))];
   const row = (f) => '<div class="mv-row" style="display:flex;gap:10px;margin:10px 0;align-items:flex-start">'
     + (f.poster ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" loading="lazy" style="width:56px;border-radius:5px;flex:none">' : '')
     + '<div><a href="#" data-ask="' + esc(cardAskText(f.title, f.year)) + '"><b>' + esc(f.title) + '</b>' + (f.year ? ' (' + f.year + ')' : '') + '</a> ' + badge(f, esc)
@@ -94,9 +95,10 @@ export async function runPick(api) {
     ? (real[0].poster ? '<img src="' + esc(real[0].poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '')
       + '<h2>A movie to watch</h2><div class="sub">every title below was found in a real source; open one to watch or see the trailer</div>' + real.map(row).join('')
       + (fake.length ? '<div class="sub">Not verified (no source knows them, so not shown as fact): ' + fake.map((f) => esc(f.title)).join(', ') + '</div>' : '')
+      + (away.length ? '<div class="sub">Not checked (the movie sources did not answer just now, so not shown as fact): ' + away.map((f) => esc(f.title)).join(', ') + '</div>' : '')
       + '<details class="mv-picks-json"><summary>These picks as JSON</summary><pre style="white-space:pre-wrap;font-size:12px;max-height:300px;overflow:auto">'
       + esc(JSON.stringify({ count: real.length, films: pickJson(real) }, null, 2)) + '</pre></details>'
-      + SRC({ sources: ['iTunes Search API', 'Internet Archive'] }, esc)
+      + SRC({ sources: used.length ? used : undefined }, esc)
     : '<h2>A movie to watch</h2><p>I could not reach the movie sources just now, so I will not name a movie from memory. Ask again in a moment.</p>';
   return 'movie';
 }
