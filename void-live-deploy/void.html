@@ -2495,7 +2495,9 @@ say('nothing selected to remove');
       const say = () => { if (vpageEl !== el) return; import('/lib/card-share.js').catch(() => null).then((sh) => { if (vpageEl !== el) return; const sr = document.getElementById('sr-say'); if (!sr) return;
         const h = el.querySelector('h2'), d = sh && sh.readCard ? sh.readCard(el) : null;
         const t = (d ? [d.t, d.b].filter(Boolean).join('. ') : el.innerText || '').replace(/\s+/g, ' ').trim();
-        if (h) el.setAttribute('aria-label', h.textContent.trim());
+        // the card's name for a screen reader: its heading, or, on a card drawn with none (the translation: "hello · French", then the words), its first line
+        const name = h ? h.textContent.trim() : (d && d.b ? d.b.split('\n')[0].trim().slice(0, 120) : '');
+        if (name) el.setAttribute('aria-label', name);
         sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; }); }; // ellipsis-ok: drawn picture or short label, the full text is on the card
       say(); let tm = 0; const mo = new MutationObserver(() => { clearTimeout(tm); tm = setTimeout(say, 400); });
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
