@@ -124,3 +124,51 @@ export async function relinkRecorded(env, voidId) {
   await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ? WHERE id = ?').bind('tier ' + hit.unlock.tier + ' (applied later)', hit.id).run();
   return hit.unlock.tier;
 }
+
+// A buyer links their own purchase to their own Verse, with the Order ID from the Gumroad receipt and the email they paid with
+// (owner, 2026-10-30: "i paid and everything just now and it went nowhere"). This covers a purchase made with no ?void= on the
+// link (bought signed out, from another page, or from Gumroad itself). The sale must be a keyed ping already in void_sales, or,
+// with GUMROAD_ACCESS_TOKEN set, a sale Gumroad's API returns. The same rules as the ping apply: verifySale, no later refund,
+// dispute, cancellation or end, and one sale links to one Verse only. A ping made for another Verse (url_params.void) stays
+// with that Verse. -> { ok: true, tier } or { ok: false, status, why }. Called by POST /api/members { do: 'claim' }.
+const DOWN_SQL = "SELECT COUNT(*) AS n FROM void_sales d WHERE d.resource IN ('refund', 'dispute', 'cancellation', 'subscription_ended') AND (d.sale_id = ? OR (? IS NOT NULL AND d.subscription_id = ?))";
+export async function claimSale(env, voidId, ref, email) {
+  const sid = String(ref || '').trim(), mail = String(email || '').trim().toLowerCase();
+  if (!voidId) return { ok: false, status: 401, why: 'sign in with your passkey first' };
+  if (!/^[A-Za-z0-9=_+/-]{6,80}$/.test(sid) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return { ok: false, status: 400, why: 'give the Order ID from your Gumroad receipt and the email you paid with' };
+  await ensureStoreTables(env); await ensureTables(env);
+  let rows = (await env.DB.prepare("SELECT id, raw FROM void_sales WHERE resource = 'sale' AND sale_id = ? ORDER BY at DESC LIMIT 5").bind(sid).all()).results || [];
+  if (!rows.length && /^\d{4,20}$/.test(sid)) { // the receipt can show the order number in place of the sale id
+    const recent = (await env.DB.prepare("SELECT id, raw FROM void_sales WHERE resource = 'sale' ORDER BY at DESC LIMIT 500").all()).results || [];
+    rows = recent.filter((r) => String(parsePing(r.raw).order_number || '') === sid);
+  }
+  let p = null, rowId = null;
+  for (const r of rows) { const q = parsePing(r.raw); if (unlockFor(q)) { p = q; rowId = r.id; break; } }
+  if (!p && env.GUMROAD_ACCESS_TOKEN && !/^\d+$/.test(sid)) { // no ping on record: read the sale back from Gumroad itself
+    let j = null;
+    try { j = await (await (env.GUMROAD_FETCH || fetch)('https://api.gumroad.com/v2/sales/' + encodeURIComponent(sid), { headers: { authorization: 'Bearer ' + env.GUMROAD_ACCESS_TOKEN } })).json(); } catch (_) { j = null; }
+    const s = j && j.success && j.sale;
+    if (s && s.id === sid) p = { sale_id: s.id, email: s.email, product_id: s.product_id, product_permalink: s.product_permalink, subscription_id: s.subscription_id || '', refunded: String(!!(s.refunded || s.chargedback || s.disputed)) };
+  }
+  if (!p) return { ok: false, status: 404, why: 'Verse has no record of that order yet. Gumroad sends it a minute after you pay, so try again soon.' };
+  const unlock = unlockFor(p);
+  if (!unlock) return { ok: false, status: 404, why: 'that order is not a MultiVerse membership' };
+  if (String(p.email || '').trim().toLowerCase() !== mail) return { ok: false, status: 403, why: 'that email is not the one on this order' };
+  const owner = p.url_params && p.url_params.void;
+  if (owner && owner !== voidId) return { ok: false, status: 409, why: 'that order was made for another Verse' };
+  if (String(p.refunded) === 'true') return { ok: false, status: 403, why: 'that order was refunded' };
+  const sub = p.subscription_id || null;
+  const down = await env.DB.prepare(DOWN_SQL).bind(p.sale_id, sub, sub).first();
+  if (down && down.n > 0) return { ok: false, status: 403, why: 'that membership was refunded, disputed or cancelled' };
+  const v = rowId ? await verifySale(env, p, unlock) : { ok: true, subscription_id: sub }; // an API sale was verified as it was read
+  if (!v.ok) return { ok: false, status: 403, why: 'Verse cannot confirm that order (' + v.why + ')' };
+  const held = await env.DB.prepare('SELECT user_id FROM void_accounts WHERE sale_id = ?').bind(p.sale_id).first();
+  if (held && held.user_id !== voidId) return { ok: false, status: 409, why: 'that order already unlocks another Verse' };
+  const now = new Date().toISOString();
+  try {
+    await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated')
+      .bind(voidId, unlock.tier, p.sale_id, v.subscription_id, now).run();
+  } catch (_) { return { ok: false, status: 409, why: 'that order already unlocks another Verse' }; }
+  if (rowId) await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ?, void_id = ? WHERE id = ?').bind('tier ' + unlock.tier + ' (claimed with the receipt)', voidId, rowId).run();
+  return { ok: true, tier: unlock.tier };
+}
