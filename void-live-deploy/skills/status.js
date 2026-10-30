@@ -4,13 +4,15 @@
  * (index entries whose module is missing or misshapen are named). This browser: storage (a throwaway value written and
  * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Verse reads,
  * pinged once each, only now, in parallel, with a 6 s limit, showing up / down and how long each took. The translation
- * service is not pinged: a ping would spend its small daily quota. Verse's own build: the newest checks and deploy on main (GitHub's
+ * service is not pinged: a ping would spend its small daily quota. Verse's own pages: the newest check of every page in the sitemap, opened in headless Chrome after a deploy (/api/selfcheck,
+ * lib/selfcheck.js). Verse's own build: the newest checks and deploy on main (GitHub's
  * public API), and the actions Verse took for the owner that failed in the last day (owner-only /api/actions). For the owner, the card
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
 import { stabilityOf, stabilityHtml } from '../lib/autopsy.js';
 import { recovered, loadFailed, keepFailed, keepHealth, successPulse } from '../lib/success-pulse.js';
+import { pagesHtml } from '../lib/selfcheck.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
   { name: 'Open-Meteo places', for: 'maps, places, local time', url: 'https://geocoding-api.open-meteo.com/v1/search?count=1&name=Paris' },
@@ -199,6 +201,7 @@ export async function autoOpen(open, { fetchFn, store = typeof sessionStorage !=
   if (sup && sup.open) { await open(); return true; }
   const acts = await failedActions(fetchFn, undefined, now); // an action Verse took for the owner that failed (the other half of Verse's ask)
   if (acts && acts.length) { await open(); return true; }
+  if (ownerKey()) { const pg = await pagesState(fetchFn); if (pg && pg.serious) { await open(); return true; } } // a page of Verse's own that is broken (lib/selfcheck.js)
   return false;
 }
 
@@ -229,8 +232,14 @@ export async function supportState(fetchFn = (u, o) => fetch(u, o), key = ownerK
   try { const r = await fetchFn('/api/support', { headers: { authorization: 'Bearer ' + key } }); if (!r.ok) return null; const j = await r.json(); return { open: Number(j.open) || 0, tickets: (j.tickets || []).filter((t) => t.status === 'open').slice(0, 5) }; } catch (_) { return null; }
 }
 
+// Verse's own pages, opened in headless Chrome after each deploy (tools/self-check.mjs, lib/selfcheck.js): the newest report, public.
+export async function pagesState(fetchFn = (u, o) => fetch(u, o)) {
+  // undefined (the section is left out) when the report could not be read; null when there is no report yet
+  try { const r = await fetchFn('/api/selfcheck', { cache: 'no-cache' }); if (!r.ok) return undefined; return (await r.json()).report || null; } catch (_) { return undefined; }
+}
+
 const dot = (ok) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (ok ? '#3fbf6a' : '#e0584a') + '"></span>';
-export function statusHtml(esc, skills, browser, sources, at, build, support, actions, stability, waiting) {
+export function statusHtml(esc, skills, browser, sources, at, build, support, actions, stability, waiting, pages) {
   const row = (ok, name, note, ms) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + dot(ok) + esc(name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(note) + (ms != null ? ' · ' + ms + ' ms' : '') + '</td></tr>';
   const up = sources ? sources.filter((s) => s.ok).length : 0;
   return '<h2>Verse status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
@@ -241,6 +250,7 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
     + (sources ? '<table style="border-collapse:collapse">' + sources.map((s) => row(s.ok, s.name, 'for ' + s.for + (s.note ? ' · ' + s.note : ''), s.ok ? s.ms : null)).join('') + '</table>'
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
     + (stability ? stabilityHtml(stability, esc) : '')
+    + (pages !== undefined ? pagesHtml(pages, esc) : '')
     + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">Verse’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
       + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.stage ? ' · <b class="status-stage">' + esc(b.stage) + '</b>' : '') + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '')
         + (b.last ? '<br><span class="status-last">' + dot(b.last.state === 'passed') + 'last finished: ' + esc(b.last.state) + ' on ' + esc(b.last.sha) + ' · ' + esc(b.last.at) + (b.last.stage ? ' · <b class="status-stage">' + esc(b.last.stage) + '</b>' : '') + (b.last.url ? ' · <a href="' + esc(b.last.url) + '" target="_blank" rel="noopener">that run</a>' : '') + '</span>' : '') + '</td></tr>'
@@ -267,14 +277,14 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>Verse status</h2><div class="sub">checking…</div>'; });
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
-  const [skills, sources, build, support, recent] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? recentActions() : Promise.resolve(null)]);
+  const [skills, sources, build, support, recent, pages] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? recentActions() : Promise.resolve(null), online ? pagesState() : Promise.resolve(undefined)]);
   const actions = recent && recent.failed, waiting = recent && recent.waiting;
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   const stability = online ? await fetch('/incidents.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((j) => j ? stabilityOf(j) : null).catch(() => null) : null;
-  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions, stability, waiting);
+  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions, stability, waiting, pages);
   // a Success Pulse (asked by Verse): something that failed at the last check and is fine now (a skill that did not load and does)
-  const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
-  const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
+  const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind), ...((pages && pages.pages) || []).map((x) => 'page:' + x.path)];
+  const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind), ...((pages && pages.pages) || []).filter((x) => x.problems.some((q) => ['status', 'script', 'request', 'empty', 'link'].includes(q.kind))).map((x) => 'page:' + x.path)];
   const back = recovered(loadFailed(), failing, [...checked, ...(skills.error ? [] : (loadFailed().filter((n) => n.startsWith('skill:'))))]);
   keepFailed(failing); keepHealth(failing.length, checked.length + (skills.error ? 0 : 1)); // the book's parchment reads this (lib/tome.js parchmentFilter)
   if (back.length) { successPulse(); api.say('working again: ' + back.map((n) => n.replace(/^[a-z]+:/, '')).slice(0, 3).join(', ')); }

@@ -311,7 +311,12 @@ export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
   const label = d.createElement('span'); label.className = 'tk-label'; label.textContent = 'Use with';
   // the ask bar: any ask, to the tool that does it
   const form = d.createElement('form'); form.className = 'tk-ask'; const inp = d.createElement('input'); inp.type = 'search'; inp.placeholder = 'Ask any tool: 100 c to f, flip a coin, weather in boston'; inp.setAttribute('aria-label', 'Ask any tool'); inp.autocomplete = 'off';
-  form.append(inp); form.addEventListener('submit', (e) => { e.preventDefault(); const to = routeAsk(inp.value); if (to) d.defaultView.location.href = to; });
+  form.append(inp); form.addEventListener('submit', (e) => {
+    e.preventDefault(); const to = routeAsk(inp.value); if (!to) return;
+    // Verse Brain hears it next time it runs (lib/brain-host.js): kept on this device only, never sent, and never an owner key
+    if (!/^\s*(?:unlock\s*)+\S{16,}/i.test(inp.value)) try { const ls = d.defaultView.localStorage, k = 'a2m.brain.heard.v1', q = JSON.parse(ls.getItem(k) || '[]'); q.push({ text: inp.value.trim().slice(0, 120), from: path, to, at: Date.now() }); ls.setItem(k, JSON.stringify(q.slice(-24))); } catch (_) { /* no storage: the ask still goes */ }
+    d.defaultView.location.href = to;
+  });
   const style = d.createElement('style');
   style.textContent = '.tk-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:14px 0 4px;font-size:13px}.tk-label{color:var(--soft,var(--muted,#888))}'
     + '.tk-row a,.tk-row button{font:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:4px 12px;border:1px solid var(--line,#8884);border-radius:999px;color:inherit;text-decoration:none}'

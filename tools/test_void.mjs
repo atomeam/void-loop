@@ -50,8 +50,9 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
 // the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
-// converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too
-const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask)\.js)(\?|$)/;
+// converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too,
+// and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;
@@ -7900,7 +7901,10 @@ try {
       check('family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Verse)',
         !!src && src.open && !!wf.sources && src.line === wf.sources.words && /^Source reliability: \d+ skills answer from outside sources/.test(src.line)
         && src.rows.length === wf.skills.length && src.rows.every((x) => (truthW[x.name].source ? x.text === truthW[x.name].source.words && x.next === (truthW[x.name].source.next || '') : x.text === null))
-        && src.rows.some((x) => x.next === 'live') && !src.wide && !F.errors.length,
+        // the rows marked one live answer from proven are exactly the ones the family line names (tools/source-reliability.mjs one_live_from_proven);
+        // since #1665 made fact proven the list can be empty, and the data-next="live" markup itself is pinned by the skill's own self-test
+        && JSON.stringify(src.rows.filter((x) => x.next === 'live').map((x) => x.name).sort()) === JSON.stringify([...(wf.sources.one_live_from_proven || [])].sort())
+        && !src.wide && !F.errors.length,
         JSON.stringify({ src: src && { ...src, rows: src.rows.slice(0, 4) }, errors: F.errors })); }
     { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
       check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Verse)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }

@@ -85,6 +85,7 @@ export const LIMITS = {
   hook: { rpm: 60, body: 64000 },
   routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer waits for the owner; the route keeps 5 offers a minute itself
   actions: { rpm: 60, body: 4000 },
+  selfcheck: { rpm: 30, body: 60000 }, // Verse's check of its own pages (functions/api/selfcheck.js): public GET of the newest report; only the owner's job POSTs one (80 pages at most)
   watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
@@ -105,12 +106,36 @@ export async function sameSecret(given, secret) {
   for (let i = 0; i < x.length; i++) d |= x[i] ^ y[i];
   return d === 0;
 }
-// Bearer READ_TOKEN (the owner) or an owner session (below). Fails closed when READ_TOKEN isn't set.
+// The one owner check for the whole site (owner, 2026-10-30: "make it to where i have access to everything stop locking me out of
+// things"). The owner is: Bearer READ_TOKEN, an owner session (below), or the signed-in session of the owner's account, which is any
+// account with a passkey the owner bound with the key (void_owner_passkeys, /api/passkey 'owner-bind'). Every route that asks
+// "is this the owner?" asks ownerOk, so signing in with the owner's passkey opens every owner page. Fails closed on any error.
 export async function ownerOk(request, env) {
   const h = request.headers.get('authorization') || '';
   if (!h.startsWith('Bearer ')) return false;
   const t = h.slice(7);
-  return t.startsWith(OWNER_SESSION_PREFIX) ? ownerSessionOk(t, env) : sameSecret(t, env && env.READ_TOKEN);
+  if (t.startsWith(OWNER_SESSION_PREFIX)) return ownerSessionOk(t, env);
+  if (await sameSecret(t, env && env.READ_TOKEN)) return true;
+  return !!(await ownerAccountSession(t, env));
+}
+// An account is the owner's when one of its passkeys was bound by the owner key. Any read error is false.
+export async function ownerAccount(env, userId) {
+  if (!env || !env.DB || !userId) return false;
+  try {
+    // void-review: ok (bound parameter)
+    const row = await env.DB.prepare('SELECT 1 AS y FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(userId).first();
+    return !!(row && row.y);
+  } catch (_) { return false; }
+}
+// A Verse account session token (the stage's a2m.void.me.v1) -> the owner's user id when it is a live session of the owner's account,
+// else null. Only the SHA-256 of a session token is stored (lib/void-me.js sessionId uses the same 'void-session:' prefix).
+export async function ownerAccountSession(token, env) {
+  if (!env || !env.DB || typeof token !== 'string' || !/^[A-Za-z0-9_-]{40,64}$/.test(token)) return null;
+  try {
+    const row = await env.DB.prepare('SELECT user_id, expires FROM void_sessions WHERE id = ?').bind(hex(await digest('void-session:' + token))).first();
+    if (!row || Number(row.expires) <= Date.now()) return null;
+    return (await ownerAccount(env, row.user_id)) ? row.user_id : null;
+  } catch (_) { return null; }
 }
 // The key itself, never a session. Binding a passkey as the owner's login needs this, so a copied session can't make itself permanent.
 export function ownerKeyOk(request, env) {
