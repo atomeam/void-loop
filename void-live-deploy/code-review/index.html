@@ -191,6 +191,7 @@ jobs:
   }).catch(function (e) { console.warn('[code-review] the scoreboard line could not load', e); }); // the line simply stays hidden
   // buying while signed in carries your Verse's id, so the purchase unlocks that Verse
   if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
+  else { var bb = document.getElementById('buy'); bb.href = '/?q=' + encodeURIComponent('remember me'); bb.textContent = 'Sign in to get Verse Pro'; } // signed out: sign in first, so the purchase carries the Verse id
   fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
     if (!o || !o.standalone || !/^https:\/\//.test(o.standalone.url)) return;
     var b = document.getElementById('sbuy'); b.href = o.standalone.url; b.hidden = false; document.getElementById('ssoon').hidden = true;

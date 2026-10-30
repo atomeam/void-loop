@@ -26,7 +26,9 @@ function showPerks(list) {
   for (const p of list) { const li = el('li'); li.append(el('b', null, p.title), el('span', null, p.text)); ul.append(li); }
 }
 showPerks(perksOf(LIVE));
-$('buy').href = buyLink(BUY);
+// a membership belongs to a Verse, so a signed-out visitor signs in first: then every purchase made here carries the Verse's id
+if (me && me.userId) $('buy').href = buyLink(BUY);
+else { $('buy').href = '/?q=' + encodeURIComponent('remember me'); $('buy').removeAttribute('target'); $('buy').firstChild.textContent = 'Sign in to join MultiVerse'; }
 
 async function load() {
   let j = null;
