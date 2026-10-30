@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1025,
+ "counted": 1027,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -616,7 +616,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 12
+   "tests": 13
   },
   {
    "file": "lib/field-cards.js",
@@ -1004,6 +1004,13 @@
    "tests": 2
   },
   {
+   "file": "lib/photo-ask.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/prizes.js",
    "skills": 2,
    "direct": 0,
@@ -1093,13 +1100,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
-  },
-  {
-   "file": "lib/photo-ask.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/template-list.js",
@@ -1459,6 +1459,13 @@
    "tests": 1
   },
   {
+   "file": "lib/imgfit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
    "file": "lib/news-week.js",
    "skills": 1,
    "direct": 1,
@@ -1719,13 +1726,6 @@
   },
   {
    "file": "lib/heat-dose.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/imgfit.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2993,6 +2993,13 @@
   },
   {
    "file": "lib/reinvest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/resize-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -6893,6 +6900,7 @@
   "lib/imgfit.js": {
    "imports": [],
    "importedBy": [
+    "lib/resize-card.js",
     "skills/imgfit.js"
    ]
   },
@@ -8532,6 +8540,9 @@
    "importedBy": [
     "skills/imgfit.js",
     "skills/photo-tools.js"
+   ],
+   "reachedBy": [
+    "lib/resize-card.js"
    ]
   },
   "lib/photo-edit.js": {
@@ -9202,6 +9213,13 @@
    "importedBy": [
     "functions/api/report.js"
    ]
+  },
+  "lib/resize-card.js": {
+   "imports": [
+    "lib/imgfit.js",
+    "skills/imgfit.js"
+   ],
+   "importedBy": []
   },
   "lib/review-api.js": {
    "imports": [
@@ -12662,7 +12680,9 @@
     "lib/imgfit.js",
     "lib/photo-ask.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/resize-card.js"
+   ]
   },
   "skills/incident-autopsy.js": {
    "imports": [
