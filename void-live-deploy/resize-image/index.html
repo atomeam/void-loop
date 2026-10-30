@@ -127,7 +127,9 @@
     const said = 'Photo size: ' + $('w').value + ' × ' + $('h').value + ' ' + $('u').value + ($('kb').value ? ', up to ' + $('kb').value + ' KB' : '');
     try { if (navigator.share) await navigator.share({ title: document.title, text: said, url: u.href }); else { await navigator.clipboard.writeText(u.href); $('share').textContent = 'Link copied'; setTimeout(() => { $('share').textContent = 'Share this size'; }, 1500); } } catch (_) {}
   });
-  mountRelated(document.getElementById('related'), '/resize-image/');
+  // the stage card shows a resizer for the size on the form (never the picture: lib/resize-card.js)
+  import('/lib/resize-card.js').then((m) => mountRelated(document.getElementById('related'), '/resize-image/', [], { card: () => m.cardAsk({ w: $('w').value, h: $('h').value, u: $('u').value, kb: $('kb').value }) }))
+    .catch(() => mountRelated(document.getElementById('related'), '/resize-image/'));
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
