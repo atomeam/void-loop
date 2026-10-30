@@ -7,6 +7,7 @@ import { writeVideo, writeStill, soundOf48, encodeSound, drawOver } from '/lib/v
 import { flac, alacFile, opusFile, m4aFile } from '/lib/audio-write.js';
 import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 import { denoise } from '/lib/denoise.js';
+import { TRANSITIONS } from '/lib/transition.js';
 import { changeCover, mergeBooks, compressBook, compressComic } from '/lib/epub-edit.js';
 
 const $ = (id) => document.getElementById(id);
@@ -119,8 +120,10 @@ function videoOpts(vop, o) {
     'gif-video': () => [field('See-through parts become', colour('bcol', '#ffffff'))],
     'pictures-video': () => [field('Seconds for each picture', num('each', 2, 'any', 0.1, 600))],
     'pdf-video': () => [field('Seconds for each page', num('each', 3, 'any', 0.1, 600))],
+    transition: () => [field('Options', pick('tmode', [['join', '2 Files'], ['start', '1 File (Start)'], ['end', '1 File (End)'], ['both', '1 File (Start & End)']], 'join')), field('Transition', pick('tkind', TRANSITIONS.map((x) => [...x]), 'fade')), field('Duration (seconds, 1-10)', num('tsec', 3, 'any', 1, 10))],
   }[vop];
   o.append(...(f ? f() : []), field('Save as', pick('vfmt', VIDEO_OUT.map((x) => [x, x.toUpperCase()]), 'mp4')), QUALITY(vop === 'compress' ? 'small' : 'medium'));
+  if (vop === 'transition') $('tmode').onchange = ready; // 2 files, or 1
 }
 // a quality slider for JPG and WebP only
 function qual() {
@@ -151,7 +154,7 @@ async function setFiles(list) {
   clearOut();
 }
 function ready() {
-  const need = cur && (cur.many || cur.run === 'pdf-image') ? 2 : cur && NEED[cur.from] ? NEED[cur.from][0] : 1, auto = !cur && !($('to') && $('to').value);
+  const need = cur && cur.vop === 'transition' ? ($('tmode') && $('tmode').value !== 'join' ? 1 : 2) : cur && (cur.many || cur.run === 'pdf-image') ? 2 : cur && NEED[cur.from] ? NEED[cur.from][0] : 1, auto = !cur && !($('to') && $('to').value);
   $('go').disabled = files.length < need || auto;
   $('status').textContent = files.length && files.length < need ? 'Pick ' + need + ' or more files for this tool.' : '';
 }
@@ -416,6 +419,16 @@ async function runVideo(t, list, taken, add, fail, say) {
   if (v === 'gif-video') { for (const { f, fmt } of list) { try { if (fmt !== 'gif') throw new Error('this is not a GIF.'); const fr = await gifFrames(f); await still(fr, { color: $('bcol').value }, f.name, 'video', 'Making a video of ' + f.name + ' (' + fr.length + ' frames)'); } catch (e) { fail(f, e); } } return; }
   if (v === 'pdf-video') { for (const { f, fmt } of list) { try { if (fmt !== 'pdf') throw new Error('this is not a PDF.'); const pages = await pdfPages(f, say), each = Math.max(0.1, val('each', 3)); await still(pages.map((pic) => ({ pic, d: each })), { color: '#fff' }, f.name, 'video', 'Making a video of ' + pages.length + ' page' + (pages.length === 1 ? '' : 's')); } catch (e) { fail(f, e); } } return; }
   if (!vids.length) throw new Error('pick a video.');
+  if (v === 'transition') {
+    const mode = $('tmode').value, kind = $('tkind').value, seconds = Math.max(1, Math.min(10, val('tsec', 3))), name = TRANSITIONS.find((x) => x[0] === kind)[1];
+    if (mode === 'join') {
+      if (vids.length < 2) throw new Error('pick 2 or more videos to join with a transition, or pick a 1 File option.');
+      const w = 'Joining ' + vids.length + ' videos with ' + name; say(w);
+      add(result(vids[0].f.name, 'with transitions', await writeVideo(vids.map((x) => x.f), { container: ext, quality: q, transition: { kind, seconds, mode }, onProgress: progress(w) }), [vids.length + ' videos one after another'])); return;
+    }
+    for (const { f } of vids) { const w = 'Adding ' + name + ' to ' + f.name; say(w); try { add(result(f.name, 'with transition', await writeVideo(f, { container: ext, quality: q, transition: { kind, seconds, mode }, onProgress: progress(w) }))); } catch (e) { fail(f, e); } }
+    return;
+  }
   if (v === 'merge') { const w = 'Joining ' + vids.length + ' videos'; say(w); add(result(vids[0].f.name, 'joined', await writeVideo(vids.map((x) => x.f), { container: ext, quality: q, onProgress: progress(w) }), [vids.length + ' videos one after another'])); return; }
   // one video with a second file: a sound, or a picture
   if (v === 'add-sound') {

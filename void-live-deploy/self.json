@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:36:05Z",
+   "subject": "Keep both brain-map and brain-trace checks after the merge"
+  },
+  {
+   "at": "2026-10-30T07:35:00Z",
+   "subject": "Keep generated files at main's version"
+  },
+  {
+   "at": "2026-10-30T07:34:18Z",
+   "subject": "brain: a live map anyone can read, organs light when they really fire"
+  },
+  {
    "at": "2026-10-30T07:34:06Z",
    "subject": "Team gate: read only the compare status, and run after each deploy"
   },
@@ -568,10 +580,6 @@
   {
    "at": "2026-10-30T07:31:11Z",
    "subject": "Tower gate: onlineconverter.com,emoji combos,calendar: calendar.online measured against their live sites"
-  },
-  {
-   "at": "2026-10-30T07:28:02Z",
-   "subject": "Local TV and radio: drop signed-token streams, list /api/local as Verse's own, refresh the fanfic module list and hand-off gaps"
   },
   {
    "at": "2026-10-30T07:27:45Z",
@@ -602,16 +610,8 @@
    "subject": "Members perk: a shared /@name link shows that page, not the Verse home card"
   },
   {
-   "at": "2026-10-30T07:21:10Z",
-   "subject": "Local TV and radio: escape the card heading and time out the iptv-org clones"
-  },
-  {
    "at": "2026-10-30T07:21:06Z",
    "subject": "Team gate: replay merged PRs as if handed in, and read every changed file"
-  },
-  {
-   "at": "2026-10-30T07:18:45Z",
-   "subject": "Local TV and radio: fix the quote that stopped /local/app.js from parsing"
   },
   {
    "at": "2026-10-30T07:18:41Z",

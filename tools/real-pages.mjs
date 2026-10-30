@@ -153,14 +153,29 @@ export const SPECS = {
     const fit = () => t.p.evaluate(() => {
       const c = document.querySelector('#field canvas'), r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), live = document.querySelector('#live');
       const top = document.querySelector('#bar').getBoundingClientRect().bottom, hud = live.hidden ? innerHeight : live.getBoundingClientRect().top;
-      return { w: Math.round(r.width), h: Math.round(r.height), top: Math.round(r.top), bottom: Math.round(r.bottom), bar: Math.round(top), hud: Math.round(hud), vw: innerWidth, vh: innerHeight, cw: c.width, ch: c.height, d, sw: document.documentElement.scrollWidth };
+      const mv = document.querySelector('#mapView'), m = mv && !mv.hidden ? mv.getBoundingClientRect() : null, wide = innerWidth > 720; // the live map beside the field (a phone: above it)
+      return { w: Math.round(r.width), h: Math.round(r.height), top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), bar: Math.round(top), hud: Math.round(hud), mw: m && wide ? Math.round(m.width) : 0, mh: m && !wide ? Math.round(m.height) : 0, vw: innerWidth, vh: innerHeight, cw: c.width, ch: c.height, d, sw: document.documentElement.scrollWidth };
     });
-    const docked = (f) => Math.abs(f.top - f.bar) <= 2 && Math.abs(f.bottom - f.hud) <= 2; // the field starts under the bar and ends at the numbers: neither covers it
+    const docked = (f) => Math.abs(f.top - f.bar - f.mh) <= 2 && Math.abs(f.bottom - f.hud) <= 2 && Math.abs(f.left - f.mw) <= 2; // the field starts under the bar (and the map) and ends at the numbers: neither covers it
     const side = await fit(), pw = await t.p.locator('#panel').evaluate((e) => e.getBoundingClientRect().width);
-    t.ok(Math.abs(side.w + pw - side.vw) <= 2 && Math.abs(side.cw - side.w * side.d) <= 2 && docked(side), 'with the panel open the field fills the rest of the window, nothing over it or under the panel: ' + JSON.stringify(side));
+    t.ok(side.mw > 200 && Math.abs(side.w + pw + side.mw - side.vw) <= 2 && Math.abs(side.cw - side.w * side.d) <= 2 && docked(side), 'with the map and the panel open the field fills the rest of the window, nothing over it or under the panel: ' + JSON.stringify(side));
     await t.click('#panelBtn'); await t.p.waitForTimeout(400);
     const a = await fit();
-    t.ok(Math.abs(a.w - a.vw) <= 2 && docked(a) && Math.abs(a.cw - a.vw * a.d) <= 2 && Math.abs(a.ch - a.h * a.d) <= 2 && a.sw <= a.vw, 'the field fills the window between the bar and the numbers, drawn at the pixel ratio: ' + JSON.stringify(a));
+    t.ok(Math.abs(a.w + a.mw - a.vw) <= 2 && docked(a) && Math.abs(a.cw - a.w * a.d) <= 2 && Math.abs(a.ch - a.h * a.d) <= 2 && a.sw <= a.vw, 'the field fills the window beside the map, between the bar and the numbers, drawn at the pixel ratio: ' + JSON.stringify(a));
+    // the map: organs light when they take a turn, the feed says what changed, and the box shows the path of a thought
+    await t.p.waitForTimeout(1500);
+    const lit = await t.p.evaluate(() => [...document.querySelectorAll('#map .organ')].filter((g) => +getComputedStyle(g).getPropertyValue('--lit') > 0).length);
+    const nodes = await t.p.locator('#map .organ').count();
+    t.ok(nodes >= 21 && lit >= 1, 'the map draws every organ and lights the ones that took a turn: ' + lit + ' of ' + nodes + ' lit');
+    t.ok(/thoughts a second/.test(await t.text('#mapCounts')), 'the map counts what the brain does: ' + (await t.text('#mapCounts')).slice(0, 80));
+    await t.fill('#mapWord', 'lighthouse storm'); await t.click('#mapAsk button'); await t.p.waitForTimeout(5200);
+    const feed = await t.text('#feed');
+    t.ok(/After you asked, in order/.test(feed) && /"lighthouse"/.test(feed), 'an ask shows the path of the thought in the feed: ' + feed.slice(0, 120));
+    t.ok(((await t.p.locator('#map .path').getAttribute('points')) || '').split(' ').length >= 2, 'and draws it on the map');
+    await t.click('#viewBtn'); await t.p.waitForTimeout(400);
+    const solo = await fit();
+    t.ok(solo.mw === 0 && Math.abs(solo.w - solo.vw) <= 2 && docked(solo), 'Tissue only gives the field the whole window: ' + JSON.stringify(solo));
+    await t.click('#viewBtn'); await t.p.waitForTimeout(400);
     t.ok(await t.p.locator('#panel').evaluate((e) => e.hidden), 'the panel folds away');
     await t.click('#numBtn'); await t.p.waitForTimeout(400);
     const n = await fit();
@@ -176,7 +191,7 @@ export const SPECS = {
     await t.click('.vb-good'); t.ok(/Rewarded/.test(await t.waitText('.vb-said', /Rewarded/, 3000)), 'Good rewards the will');
     await t.p.setViewportSize({ width: 390, height: 780 }); await t.p.waitForTimeout(500);
     const b = await fit();
-    t.ok(Math.abs(b.w - 390) <= 2 && docked(b) && b.h >= 780 * 0.6 && b.sw <= 390, 'a phone-sized window refits the field between the bar and the numbers with no sideways scroll: ' + JSON.stringify(b));
+    t.ok(Math.abs(b.w - 390) <= 2 && docked(b) && b.mh > 250 && b.h >= 120 && b.sw <= 390, 'a phone-sized window puts the map on top and the field under it, between the bar and the numbers, with no sideways scroll: ' + JSON.stringify(b));
     await t.p.setViewportSize({ width: 1200, height: 900 }); await t.p.waitForTimeout(300);
     // a link that asks it something (?t=, the common asks): answered from its own state on load
     const p2 = await t.p.context().newPage(); await p2.goto(new URL('/brain/?t=' + encodeURIComponent('what are you doing?'), t.p.url()).href, { waitUntil: 'load' });
