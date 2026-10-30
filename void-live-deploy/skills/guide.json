@@ -43,9 +43,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 19
+    "proven": 20
    },
    "from": 108,
    "to": 129
@@ -2255,8 +2255,9 @@
     "checked bag weight limit",
     "how heavy can my suitcase be"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the sky and earth, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
    "n": 110
   },
