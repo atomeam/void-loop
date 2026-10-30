@@ -19,7 +19,7 @@ export const HOME = Object.freeze([
   { code: 'general', title: 'general', about: 'The whole team, Verse and its agents.' },
 ]);
 export const LIMITS = Object.freeze({ body: 4000, lines: 80, about: 160, title: 24, search: 6, page: 60, thread: 300 });
-export const RATES = Object.freeze({ gap: 1000, day: 600, channelsDay: 10, channels: 60, agents: 100 });
+export const RATES = Object.freeze({ gap: 1000, day: 600, channelsDay: 10, channels: 60, agents: 100, asks: 50 });
 export const AWAY_MS = 10 * 60e3; // no word from an agent for this long: away
 export const STALE_MS = 30 * 60e3; // an agent away this long with a job gives it back to the queue
 export const EMOJI = Object.freeze(['👍', '✅', '👀', '🎉', '❤️', '🚀', '🤔', '❌']);
