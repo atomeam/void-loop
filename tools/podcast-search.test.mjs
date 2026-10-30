@@ -22,17 +22,18 @@ test('the card: shows from the directory, best match first, each opening on the 
   const p = page();
   await withFetch(() => ({ ok: true, shows }), async (seen) => { assert.equal(await S.run('podcasts about history', p.api), 'podcast-search'); assert.deepEqual(seen, ['/api/podcasts?q=history']); });
   assert.equal(p.el.dataset.page, '/podcasts/?q=history');
-  assert.match(p.el.innerHTML, /<h2>Podcasts about history<\/h2>.*2 shows, best match first.*href="\/podcasts\/\?id=123">Hardcore History<\/a>.*Dan Carlin · History.*href="\/podcasts\/\?feed=https%3A%2F%2Ffeeds\.example%2Frest\.xml">The Rest Is History.*Source: .*Apple Podcasts directory/s);
+  assert.match(p.el.innerHTML, /<h2>Podcasts about history<\/h2>.*2 shows, best match first.*href="\/podcasts\/\?show=123">Hardcore History<\/a>.*Dan Carlin · History.*href="\/podcasts\/\?feed=https%3A%2F%2Ffeeds\.example%2Frest\.xml">The Rest Is History.*Source: .*Apple Podcasts directory/s);
   assert.doesNotMatch(p.el.innerHTML, /No way to open it/, 'a show the page cannot open is left out');
   assert.equal(pageOfPodcasts('true crime'), '/podcasts/?q=true%20crime'); assert.equal(pageOfPodcasts("rock 'n' roll"), '', 'a topic that does not fit a plain query keeps the plain Podcasts link');
-  assert.equal(showHref({ id: 'a b' }), '/podcasts/?id=a%20b'); assert.equal(showHref({}), '');
+  assert.equal(showHref({ id: '1200361736' }), '/podcasts/?show=1200361736'); assert.equal(showHref({ id: 1200361736 }), '/podcasts/?show=1200361736');
+  assert.equal(showHref({ id: 'a b' }), ''); assert.equal(showHref({ id: 'a b', feed: 'https://x.test/f.xml' }), '/podcasts/?feed=https%3A%2F%2Fx.test%2Ff.xml'); assert.equal(showHref({}), '');
   assert.doesNotMatch(showsHtml([{ id: '1', title: '<img onerror=x>', author: '"x"', image: 'javascript:alert(1)' }], esc), /<img onerror|javascript:|"x"/, 'every field is escaped and only https pictures show');
 });
 
 test('the edge does not answer: Apple straight; fyyd is named; a miss and a silent directory say so', async () => {
   let p = page();
   await withFetch((u) => (u.startsWith('/api/') ? new Error('away') : { results: [{ collectionId: 9, collectionName: 'Cooking Show', artistName: 'A Cook', primaryGenreName: 'Food' }] }), async (seen) => { await S.run('find a podcast about cooking', p.api); assert.match(seen[1], /^https:\/\/itunes\.apple\.com\/search\?media=podcast&entity=podcast&limit=25&term=cooking$/); });
-  assert.match(p.el.innerHTML, /href="\/podcasts\/\?id=9">Cooking Show/);
+  assert.match(p.el.innerHTML, /1 show, best match first.*href="\/podcasts\/\?show=9">Cooking Show/);
   p = page(); await withFetch(() => ({ ok: true, shows: [{ id: '', feed: 'https://f.example/a', title: 'A' }], source: 'fyyd' }), async () => { await S.run('podcasts about birds', p.api); });
   assert.match(p.el.innerHTML, /fyyd\.de.*Apple did not answer/s);
   p = page(); await withFetch(() => ({ ok: true, shows: [] }), async () => { await S.run('podcasts about zzqx', p.api); });
