@@ -124,3 +124,9 @@ test('the stage ask: local radio and TV, near me or in a place; questions and lo
   for (const x of skill.examples) assert.ok(skill.match(x.toLowerCase(), x), x);
   assert.equal(skill.suite().ok, true);
 });
+
+test('a place handed over in the link (a flight\'s arrival airport): the exact point and country, or nothing when a part is off', () => {
+  assert.deepEqual(L.placeFromLink('?place=Heathrow&ll=51.4700,-0.4543&cc=gb'), { city: 'Heathrow', region: '', regionCode: '', country: 'GB', lat: 51.47, lon: -0.45 });
+  for (const bad of ['?place=London', '?place=London&ll=51.5,-0.1', '?place=London&ll=51.5&cc=GB', '?place=London&ll=91,0&cc=GB', '?place=London&ll=51.5,x&cc=GB', '?place=London&ll=,&cc=GB', '?ll=51.5,-0.1&cc=GB', '?place=London&ll=51.5,-0.1&cc=GBR'])
+    assert.equal(L.placeFromLink(bad), null, bad);
+});
