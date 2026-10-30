@@ -19,7 +19,7 @@ const plain = (x) => String(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g
 export function constAsk(text) {
   const { core, place } = splitPlace(text); const t = plain(core);
   if (/^(?:what(?:s| is) )?(?:that|this|the) constellation$|^(?:identify|find|spot) (?:that|this|the|a) constellation$|^(?:which|what) constellations? (?:are|is|can i see|do i see)(?: up| visible| out| in the sky| above)?(?: tonight| now| right now| today| overhead)?$|^constellations?(?: tonight| now| right now| overhead| above me| i can see| visible tonight| up tonight)?$|^(?:what|which) constellation(?:s)? (?:is|are) (?:that|those|overhead|above me)$|^star patterns(?: tonight| now| right now)?$/.test(t)) return { kind: 'list', place };
-  let m = /^(?:where is|where are|where(?:s| is) the|when can i see|when (?:is|are)|find|show me|is|are|how do i find|how to find|look for|spot)\s+(?:the\s+)?(.+?)(?: constellation)?(?: visible| up| out| tonight| in the sky| rising| tonight| now| right now| overhead)*$/.exec(t) || /^(?:the\s+)?(.+?) constellation(?: tonight| now| visible| tonight| in the sky)*$/.exec(t) || /^constellation (.+?)$/.exec(t);
+  let m = /^(?:where is|where are|where(?:s| is) the|when can i see|when (?:is|are)|find|show me|is|are|how do i find|how to find|look for|spot|can (?:u|you) see)\s+(?:the\s+)?(.+?)(?: constellation)?(?: visible| up| out| tonight| in the sky| rising| tonight| now| right now| overhead)*$/.exec(t) || /^(?:the\s+)?(.+?) constellation(?: tonight| now| visible| tonight| in the sky)*$/.exec(t) || /^constellation (.+?)$/.exec(t);
   if (m) { const key = plain(m[1]).replace(/^the\s+/, ''); const abbr = ALIAS[key] || ALIAS['the ' + key] || BYNAME[key]; if (abbr && (/constellation|where|when can i|how do i find|how to find|look for|find|spot|visible|up|out|tonight|now/.test(t) || ALIAS[key])) return { kind: 'one', abbr, place }; }
   return null;
 }
@@ -107,7 +107,7 @@ async function run(text, api) {
 export default {
   name: 'constellation',
   constAsk,
-  examples: ['what\'s that constellation', 'which constellations are up tonight', 'constellations tonight', 'where is Orion', 'when can I see the Big Dipper', 'find the southern cross', 'orion constellation', 'is cassiopeia visible tonight', 'constellations I can see', 'where is ursa major', 'star patterns tonight'],
+  examples: ['what\'s that constellation', 'which constellations are up tonight', 'constellations tonight', 'where is Orion', 'when can I see the Big Dipper', 'find the southern cross', 'orion constellation', 'is cassiopeia visible tonight', 'can u see cassiopeia tonight', 'constellations I can see', 'where is ursa major', 'star patterns tonight'],
   nearMisses: ['orion pictures', 'orion car insurance', 'cassiopeia the movie', 'constellation brands stock', 'constellation energy', 'what is a constellation', 'is the big dipper a constellation', 'orion nebula distance', 'taurus personality traits', 'leo horoscope today'],
   match(lower, text) { return !!constAsk(text); },
   run,

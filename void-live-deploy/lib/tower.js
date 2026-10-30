@@ -212,7 +212,7 @@ export function selfLanes(lanes, rows) {
 export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || []).filter((r) => r && r.lane && r.page).map((r) => [r.lane, r.page])),
   'photos: exifeditor.io': '/photos/exifeditor/', 'photos: exif.tools': '/photos/exif/', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/photopea/', 'photos: iloveimg.com': '/photos/iloveimg/',
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
-  'sports: thesportsdb.com': '/sports/',
+  'sports: thesportsdb.com': '/sports/', emojis: '/emojis/', // emojitracker.com's own page (2026-10-30: the floor came with /emojis/ but no row here, so the lane-page ratchet failed on main)
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
   // neuralframes.com's rap lyrics generator (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is") is assimilated by /rap/ (domains/targets/neuralframes.json)

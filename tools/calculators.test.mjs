@@ -5,12 +5,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CALCULATORS, CATEGORIES, BY_ID, FORMULA_COUNT, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt, molarMass } from '../void-live-deploy/lib/calculators.js';
 import { KINDS, findUnit, toSI, fromSI, evaluate, parseSpec, specText, runSpec } from '../void-live-deploy/lib/calc-units.js';
-import formulas, { pick, isLibrary } from '../void-live-deploy/skills/formulas.js';
+import formulas, { pick, isLibrary, filled } from '../void-live-deploy/skills/formulas.js';
 
 const out = (id, given = {}, units = {}, opts = {}) => { const r = run(id, given, units, opts); assert.equal(r.error, '', id + ': ' + r.error); return Object.fromEntries(r.outputs.map((o) => [o.k, o.text])); };
 
-test('the library: 218 hand-built calculators (164, the 21 calculator.net home-page gap-fills in tools/calc-net.test.mjs, the 16 Maths gap-fills in tools/calc-math.test.mjs and the 17 Other gap-fills in tools/calc-other.test.mjs) plus the formula library (tools/formulas.test.mjs), in 21 kinds, each id once, each with a formula, inputs and outputs, and each works out with its own defaults', () => {
-  assert.equal(CALCULATORS.filter((c) => !c.def).length, 219); assert.equal(FORMULA_COUNT.before, 219); assert.equal(CATEGORIES.length, 21); assert.equal(BY_ID.size, CALCULATORS.length);
+test('the library: 220 hand-built calculators (164, the 21 calculator.net home-page gap-fills in tools/calc-net.test.mjs, the 16 Maths gap-fills in tools/calc-math.test.mjs, the 17 Other gap-fills in tools/calc-other.test.mjs and the Unix time converter) plus the formula library (tools/formulas.test.mjs), in 21 kinds, each id once, each with a formula, inputs and outputs, and each works out with its own defaults', () => {
+  assert.equal(CALCULATORS.filter((c) => !c.def).length, 220); assert.equal(FORMULA_COUNT.before, 220); assert.equal(CATEGORIES.length, 21); assert.equal(BY_ID.size, CALCULATORS.length);
   for (const c of CALCULATORS) {
     assert.ok(CATEGORIES.includes(c.cat), c.id); assert.ok(c.formula && c.inputs.length && c.outputs.length, c.id);
     const r = run(c, {}, {}, { kind: 'length' }); assert.equal(r.error, '', c.id + ': ' + r.error);
@@ -84,6 +84,37 @@ test('the stage card: a calculator asked by name, the library by "formula calcul
   return formulas.run('pipe surface area calculator', api).then((name) => {
     assert.equal(name, 'formulas'); assert.equal(page, '/calculators/?calc=pipe-surface-area'); assert.match(html, /5\.23599 ft²/); assert.match(html, /href="\/calculators\/\?calc=pipe-surface-area"/);
   });
+});
+
+// the known answers: 1700000000 is 2023-11-14 22:13:20 UTC, a Tuesday (date -u -d @1700000000); 1000 at 5% for 10 years compounded monthly
+// is 1000 × (1 + 0.05/12)^120 = 1647.01, compounded yearly 1000 × 1.05^10 = 1628.89; simple interest 5000 × 0.04 × 3 = 600
+test('Unix time both ways, UTC only', () => {
+  const o = (v) => { const r = run('unix-time', { v }); assert.equal(r.error, '', v); return Object.fromEntries(r.outputs.map((x) => [x.k, x.si])); };
+  assert.deepEqual(o('1700000000'), { utc: 'Tuesday 14 November 2023, 22:13:20', iso: '2023-11-14T22:13:20.000Z', s: '1700000000', ms: '1700000000000', as: 'seconds' });
+  assert.equal(o('1700000000000').as, 'milliseconds'); assert.equal(o('1700000000000').s, '1700000000'); assert.equal(o('1700000000000000').as, 'microseconds');
+  assert.equal(o('0').iso, '1970-01-01T00:00:00.000Z'); assert.equal(o('-1').iso, '1969-12-31T23:59:59.000Z');
+  assert.equal(o('2026-10-30 14:05').s, '1793369100'); assert.equal(o('2023-11-14T22:13:20Z').s, '1700000000'); assert.equal(o('2026-10-30').s, '1793318400');
+  for (const v of ['2026-02-30', '2026-10-30 24:00', 'abc', '']) assert.notEqual(run('unix-time', { v }).error, '', v);
+});
+
+test('the stage card with the asker\'s own numbers: the epoch, percent-encoding and interest, and a tool by its everyday name', async () => {
+  const now = Date.UTC(2026, 9, 30, 14, 0, 0), f = (a) => { const x = filled(a, now); return x && [x.calc.id, x.given]; };
+  assert.deepEqual(f('unix timestamp 1700000000'), ['unix-time', { v: '1700000000' }]); assert.deepEqual(f('convert 1700000000 to date'), ['unix-time', { v: '1700000000' }]);
+  assert.deepEqual(f('1700000000000 to date'), ['unix-time', { v: '1700000000000' }]); assert.deepEqual(f('2026-10-30 14:05 to unix timestamp'), ['unix-time', { v: '2026-10-30 14:05' }]);
+  assert.deepEqual(f('unix timestamp for 2026-10-30'), ['unix-time', { v: '2026-10-30' }]); assert.deepEqual(f('current unix time'), ['unix-time', { v: '1793368800' }]);
+  assert.deepEqual(f('url encode hello world'), ['url-encode', { s: 'hello world', how: 'part' }]); assert.deepEqual(f('URL decode a%20B'), ['url-encode', { s: 'a%20B', how: 'dec' }]);
+  assert.deepEqual(f('compound interest 1000 at 5% for 10 years'), ['compound-interest', { P: '1000', r: '5', t: '10', 't.u': 'yr' }]);
+  assert.deepEqual(f('compound interest on $10k at 6% for 18 months compounded daily'), ['compound-interest', { P: '10000', r: '6', t: '18', 't.u': 'month', n: '365' }]);
+  assert.deepEqual(f('simple interest on 5000 at 4% for 3 years'), ['simple-interest', { P: '5000', r: '4', t: '3', 't.u': 'yr' }]);
+  for (const a of ['simple interest 5000 at 4% for 3 years compounded daily', 'what is compound interest', 'unix', 'timestamp', '1700000000', 'call 1700000000', 'encode', 'compound interest']) assert.equal(f(a), null, a);
+  for (const [a, id] of [['epoch converter', 'unix-time'], ['url encoder', 'url-encode'], ['roman numeral converter', 'roman-numerals'], ['days between dates', 'days-between'], ['date difference', 'days-between']]) assert.equal(pick(a).id, id, a);
+  let html = '', page = ''; const api = { esc: (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]), showPage: (fn) => { const el = { dataset: {} }; fn(el); html = el.innerHTML; page = el.dataset.page; return el; } };
+  assert.equal(await formulas.run('compound interest 1000 at 5% for 10 years', api), 'formulas');
+  assert.match(html, /\$1,647\.01/); assert.match(html, /\$647\.01/); assert.equal(page, '/calculators/?calc=compound-interest&P=1000&r=5&t=10&t.u=yr');
+  assert.equal(run('compound-interest', { P: '1000', r: '5', t: '10', n: '1' }).outputs[0].text, '$1,628.89'); assert.equal(run('simple-interest', { P: '5000', r: '4', t: '3' }).outputs[0].text, '$600.00');
+  await formulas.run('unix timestamp 1700000000', api); assert.match(html, /Tuesday 14 November 2023, 22:13:20/); assert.equal(page, '/calculators/?calc=unix-time&v=1700000000');
+  await formulas.run('url encode hello world', api); assert.match(html, /hello%20world/); assert.equal(page, '/calculators/?calc=url-encode&s=hello%20world&how=part');
+  await formulas.run('epoch converter', api); assert.equal(page, '/calculators/?calc=unix-time');
 });
 
 test('the floor: vcalc.com on the tower, its ask answered by /calculators/, a probe for its four extras (library size held to vcalc.com\'s published count)', async () => {

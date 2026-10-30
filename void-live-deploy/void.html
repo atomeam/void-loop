@@ -125,7 +125,7 @@
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.85), inset 0 0 0 1px rgba(0,0,0,0.6), 0 10px 24px rgba(0,0,0,0.45);
     }
     .clock > span { position: relative; display: inline-block; text-shadow: 0 0 0.12em currentColor, 0 0 0.45em currentColor; }
-    .clock > span::before { content: attr(data-ghost); position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
+    .clock > span::before { content: attr(data-ghost); content: attr(data-ghost) / ""; position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
     /* Caveat (SIL OFL 1.1, fonts/caveat-5.0.13/LICENSE), served from this site: the browser fetches it only once a note is up */
     @font-face { font-family: 'Verse Hand'; src: url('/fonts/caveat-5.0.13/caveat-latin-500-normal.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
     /* a real 3x3 in sticky note: square paper, sharp corners, the glue strip a shade darker along the top, the bottom edge
@@ -3141,7 +3141,7 @@ say('nothing selected to remove');
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     // the weather page that used to be here (Open-Meteo, 2026-09) lives in skills/weather.js; its old code is on the salvage shelf (docs/SALVAGE.md)
 
     // calculation page: percentages, unit conversion, date math, currency
@@ -3202,8 +3202,13 @@ say('nothing selected to remove');
       const size = lines.length > 1 ? (lines.length > 6 ? 18 : 24) : long > 28 ? 24 : long > 14 ? 36 : 56;
       return 'font-size:' + size + 'px;font-weight:300;line-height:' + (size > 30 ? 1.15 : 1.45) + ';margin:6px 0 4px;white-space:pre-line;overflow-wrap:anywhere';
     }
-    // cup weights for baking (US cup, spooned and levelled), from the King Arthur ingredient chart
-    const CUP_GRAMS = { flour: 120, 'bread flour': 120, 'whole wheat flour': 113, sugar: 200, 'brown sugar': 213, 'powdered sugar': 113, 'icing sugar': 113, butter: 227, rice: 185, oats: 90, 'rolled oats': 90, honey: 340, milk: 227, water: 236, 'cocoa': 84, 'cocoa powder': 84, 'chocolate chips': 170, 'maple syrup': 312, oil: 198, 'vegetable oil': 198, 'olive oil': 198, cornstarch: 112, 'almond flour': 96, yogurt: 227, 'peanut butter': 270, salt: 288 };
+    // cup weights for baking (US cup, spooned and levelled), from the King Arthur ingredient chart (read 2026-10-30). 2026-10-30: seven of
+    // them were off the chart (sugar 200 for 198, butter 227 for 226, rice 185 for 198, oats 90 for 89, honey 340 for 336, olive oil 198
+    // for 200) and the cards gave no source. A row the chart gives for less than a cup (rice, honey, olive oil...) is scaled to a cup.
+    // Water is not from the chart: a US cup is 236.6 ml and water weighs 1 g a ml (KA_NOT).
+    const KA = [['King Arthur Baking: ingredient weight chart', 'https://www.kingarthurbaking.com/learn/ingredient-weight-chart']], KA_READ = '2026-10-30', KA_NOT = { water: 1 };
+    const cupSrc = (k) => (KA_NOT[k] ? {} : { src: KA, read: KA_READ });
+    const CUP_GRAMS = { flour: 120, 'bread flour': 120, 'whole wheat flour': 113, sugar: 198, 'brown sugar': 213, 'powdered sugar': 113, 'icing sugar': 113, butter: 226, rice: 198, oats: 89, 'rolled oats': 89, honey: 336, milk: 227, water: 237, 'cocoa': 84, 'cocoa powder': 84, 'chocolate chips': 170, 'maple syrup': 312, oil: 198, 'vegetable oil': 198, 'olive oil': 200, cornstarch: 112, 'almond flour': 96, yogurt: 227, 'peanut butter': 270, salt: 288 };
     function numberWords(n) {
       if (n < 0) return 'minus ' + numberWords(-n); if (n === 0) return 'zero';
       const O = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'], T = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -3216,12 +3221,18 @@ say('nothing selected to remove');
     // the asked-for character keeps its case ("ascii code for A" is 65, not 97): find it in the original ask
     let lastAskRaw = '';
     function text0Char(lower, c) { const raw = lastAskRaw || ''; const m = raw.match(/(?:for|of)\s+["'“]?(.)["'”]?\s*\??\s*$/i); return m && m[1].toLowerCase() === c.toLowerCase() ? m[1] : c; }
-    // fixed facts for standard sizes and quantities, with the caveat people need
+    // fixed facts for standard sizes and quantities, with the caveat people need. 2026-10-30: the speed of sound, bulb lumens and drink
+    // sizes now carry the page they come from (read that day): The Physics Factbook for sound (343 m/s at 20 °C; 1,450 to 1,498 m/s in
+    // water), Energy Saver for lumens (it gives no LED wattage, so the old "LED equivalents use 8–10 W" is gone) and NIAAA for a 1.5 fl oz
+    // shot and a 5 fl oz glass of wine; the counts per bottle are worked out from those. A fifth element is the date its page was read.
+    const SOUND = [['The Physics Factbook: speed of sound in air', 'https://hypertextbook.com/facts/2000/CheukWong.shtml'], ['The Physics Factbook: speed of sound in water', 'https://hypertextbook.com/facts/2000/NickyDu.shtml']];
+    const LUMENS = [['Energy Saver: buy lumens, not watts', 'https://www.energy.gov/node/380665']];
+    const DRINKS = [['NIAAA: what is a standard drink', 'https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink']];
     const SIZE_FACTS = [
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
       [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs; cinema 4K (DCI) is 4096 × 2160'],
       [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD'],
-      [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; faster in warm air, much faster in water (about 1,480 m/s)'],
+      [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; about 0.6 m/s faster for each °C warmer, and about 1,450–1,500 m/s in water at room temperature', SOUND, '2026-10-30'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?queen(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '60 × 80 in', 'a US queen mattress (152 × 203 cm)'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?(?:full|double)(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '54 × 75 in', 'a US full (double) mattress (137 × 191 cm)'],
@@ -3232,15 +3243,15 @@ say('nothing selected to remove');
       [/^how\s+(?:tall|high)\s+is\s+an?\s+(?:basketball\s+)?(?:hoop|rim|basket)$/, '10 ft (3.05 m)', 'the rim, from the floor, in the NBA and most leagues'],
       [/^(?:what\s+is\s+(?:the\s+|a\s+)?)?standard\s+(?:interior\s+|front\s+|exterior\s+)?door\s+(?:width|size)$/, '36 in (exterior)', 'US: front doors 36 in wide; interior doors 28–32 in; both usually 80 in tall'],
       [/^how\s+many\s+(?:fl(?:uid)?\s+)?ounces\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?can\s+of\s+(?:soda|pop|coke|beer)$/, '12 fl oz', '355 ml in the US; 330 ml is common elsewhere'],
-      [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses'],
-      [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5-oz shots in a 750 ml bottle; about 39 in a 1.75 l handle'],
+      [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses (a standard glass of wine is 5 fl oz)', DRINKS, '2026-10-30'],
+      [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5 fl oz shots (a standard drink of spirits) in a 750 ml bottle; about 39 in a 1.75 l handle', DRINKS, '2026-10-30'],
       [/^how\s+many\s+cups\s+of\s+coffee\s+(?:in|from)\s+a\s+pound(?:\s+of\s+coffee)?$/, 'about 48', '6-oz cups at 2 tablespoons of grounds each; stronger brewing gives fewer'],
       [/^how\s+many\s+slices\s+(?:are\s+)?in\s+a\s+large\s+pizza$/, 'usually 8', 'a 14-inch large; some shops cut 10 or 12'],
-      [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level; a tablespoon is about 12.5 g'],
-      [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g'],
+      [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level: 198 g a cup ÷ 48 teaspoons is 4.1 g; a tablespoon is about 12.4 g', KA],
+      [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g', KA],
       [/^how\s+many\s+watts\s+does\s+a\s+(?:fridge|refrigerator)\s+use$/, 'about 100–250 W running', 'a modern fridge, while the compressor runs; it cycles, so about 1–2 kWh a day in all'],
-      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; LED equivalents use about 8–10 W (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)'],
-      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; an LED equivalent uses about 14–16 W'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; to replace a bulb, match its lumens, not its watts (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)', LUMENS, '2026-10-30'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; to replace a bulb, match its lumens, not its watts (60 W ≈ 800, 75 W ≈ 1,100)', LUMENS, '2026-10-30'],
       [/^how\s+many\s+(?:people|adults)\s+(?:per|does\s+a)\s+(?:large\s+)?pizza(?:\s+feed)?$/, '2–3 adults', 'a 14-inch large has 8 slices: about 3 slices each for adults, 2 for kids (so 4 kids)'],
       [/^how\s+much\s+(?:uncooked\s+|dry\s+)?rice\s+(?:per|for\s+(?:each|one|a))\s+person$/, '¼–½ cup uncooked', 'about 45–90 g dry, which cooks to ¾–1½ cups; use the smaller amount for a side'],
       [/^(?:what\s+is\s+the\s+)?(?:rice\s+to\s+water|water\s+to\s+rice)\s+ratio(?:\s+for\s+(?:white\s+)?rice)?$|^how\s+much\s+water\s+(?:for|per)\s+(?:a\s+|1\s+|one\s+)?cup\s+of\s+rice$/, '1 : 2', '1 cup white rice to 2 cups water on the stove; jasmine and basmati about 1 : 1½, brown rice 1 : 2½'],
@@ -3277,7 +3288,8 @@ say('nothing selected to remove');
       let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
       if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
       // "roman numerals for 2026", "2026 in roman" is handled further down
-      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:for|of)\s+(\d{1,4})$/);
+      // also "roman numeral 2024" and "2024 roman numerals", with no "for" (2026-10-30: live, they went to the web and came back as a guess)
+      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:(?:for|of)\s+)?(\d{1,4})$/) || t.match(/^(\d{1,4})\s+roman\s+numerals?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
       // "0.2 as a percent", "0.875 to a percentage"
       m = t.match(/^(\d*\.\d+|\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?(?:percent|percentage|%)$/);
@@ -3337,9 +3349,9 @@ say('nothing selected to remove');
       // "0xff in decimal", "0b1010 in decimal"
       m = t.match(/^(0x[0-9a-f]+|0b[01]+|0o[0-7]+)(?:\s+(?:in|to|as)\s+(?:decimal|base\s*10|a\s+number))?$/);
       if (m) { const v = Number(m[1]); return { value: v.toLocaleString(), note: m[1] + ' = ' + v + ' in decimal' }; }
-      // dog years (the simple vets' rule: 15 for year one, 9 for year two, then about 5 a year for a medium dog)
+      // dog years: the AVMA rule for a medium-sized dog (15 for year one, about 9 for year two, about 5 a year after), as the AKC page gives it (read 2026-10-30)
       m = t.match(/(?:how\s+old\s+is\s+)?(?:my\s+|a\s+)?dog(?:'s)?.*?(?:in\s+human\s+years|human\s+age).*?(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*(?:-|\s)?(?:year|yr)s?(?:\s+|-)old\s+dog\s+in\s+human\s+years|(\d+(?:\.\d+)?)\s+dog\s+years\s+in\s+human\s+years/);
-      if (m && /dog/.test(t) && /human/.test(t)) { const a = +(m[1] || m[2] || m[3]); if (a > 0 && a <= 30) { const v = a <= 1 ? Math.round(15 * a) : a <= 2 ? Math.round(15 + 9 * (a - 1)) : Math.round(24 + 5 * (a - 2)); return { value: 'about ' + v, note: 'a ' + a + '-year-old medium dog in human years (15 for the first year, 9 for the second, about 5 a year after; big dogs age faster)' }; } }
+      if (m && /dog/.test(t) && /human/.test(t)) { const a = +(m[1] || m[2] || m[3]); if (a > 0 && a <= 30) { const v = a <= 1 ? Math.round(15 * a) : a <= 2 ? Math.round(15 + 9 * (a - 1)) : Math.round(24 + 5 * (a - 2)); return { value: 'about ' + v, note: 'a ' + a + '-year-old medium-sized dog in human years (15 for the first year, about 9 for the second, about 5 a year after); larger breeds tend to have shorter lives', src: [['AKC: dog years to human years (the AVMA rule)', 'https://www.akc.org/expert-advice/health/how-to-calculate-dog-years-to-human-years/']], read: '2026-10-30' }; } }
       // dates from today: "what date is 90 days from today", "45 days from now", "the date next friday"
       m = t.match(/^(?:(?:what(?:'s|\s+is|\s+will\s+be)\s+)?the\s+date\s+|(?:what\s+)?date\s+(?:is|will\s+it\s+be)\s+|what\s+day\s+is\s+)?(\d{1,5})\s+(days?|weeks?|months?)\s+(?:from\s+(?:today|now)|after\s+today)$/);
       if (m) { const d = new Date(); d.setHours(12, 0, 0, 0); if (/^m/.test(m[2])) { const day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + +m[1]); d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); } else d.setDate(d.getDate() + +m[1] * (/^w/.test(m[2]) ? 7 : 1));
@@ -3358,8 +3370,8 @@ say('nothing selected to remove');
       if (m) { const n = +(m[1] || m[2]).replace(/,/g, ''); if (Number.isSafeInteger(n)) return { value: numberWords(n), note: n.toLocaleString() + ' in words' }; }
       // baking by weight: "2 cups of flour in grams", "how many grams in a cup of sugar"
       m = t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s+cups?\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+(grams|g|ounces|oz)$/) || ((mm) => mm && [mm[0], '1', mm[2], mm[1]])(t.match(/^how\s+many\s+(grams|g|ounces|oz)\s+(?:is|are|in)\s+(?:a|one|1)\s+cup\s+of\s+([a-z -]+)$/));
-      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
-        return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (about ' + g + ' g a cup, spooned and levelled; scooping packs more in)' }; } }
+      if (m) { const k = m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, ''), g = CUP_GRAMS[k]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
+        return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (' + (KA_NOT[k] ? '236.6 ml a cup, 1 g a ml' : 'about ' + g + ' g a cup, spooned and levelled; scooping packs more in') + ')', ...cupSrc(k) }; } }
       // food safety: "what temperature to cook chicken", "safe internal temp for pork"
       m = t.match(/^(?:what(?:'s|\s+is)?\s+)?(?:the\s+)?(?:safe\s+|internal\s+|minimum\s+|cooking\s+)*(?:temperature|temp)\s+(?:to\s+cook|for|of|should)\s+(?:a\s+)?(chicken|turkey|poultry|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|hamburgers?|fish|salmon|ham|eggs?|leftovers)(?:\s+be(?:\s+cooked\s+to)?|\s+cooked\s+to)?$|^(?:what\s+)?temp(?:erature)?\s+(?:is|should)\s+(chicken|pork|beef|steak|fish|salmon|turkey|lamb)\s+(?:done|be\s+done|be\s+cooked\s+to|cooked\s+to)$|^(?:how\s+hot|what\s+temp(?:erature)?)\s+(?:to|should\s+i)\s+cook\s+(chicken|pork|beef|steak|fish|salmon|turkey|burgers?)(?:\s+to)?$|^how\s+hot\s+(?:should|does|do)\s+(chicken|turkey|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|fish|salmon|leftovers)\s+(?:need\s+to\s+)?be\s+cooked(?:\s+to)?$/);
       // the chart's own page (FoodSafety.gov, last reviewed 2024-11-21, read 2026-10-30): the card said "(USDA)" with no link before
@@ -3378,8 +3390,8 @@ say('nothing selected to remove');
           src: [...(k === 'well done' ? [] : [CAB]), ...(!k || k === 'well done' ? [TW] : []), ['FoodSafety.gov: safe minimum internal temperatures', 'https://www.foodsafety.gov/food-safety-charts/safe-minimum-internal-temperatures']], read: '2026-10-30' }; }
       // grams to cups: "how many cups is 500g of flour", "250 g sugar in cups"
       m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
-      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
-        return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup (spooned and levelled)' }; } }
+      if (m) { const k = m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, ''), g = CUP_GRAMS[k]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
+        return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup' + (KA_NOT[k] ? ' (236.6 ml, 1 g a ml)' : ' (spooned and levelled)'), ...cupSrc(k) }; } }
       return WM_NEXT;
     }
     // gas marks, dozens, eggs, durations, mileage, weekdays, temperatures, heights, ratios, number theory, scores, rounding, discounts, tiles, coins
@@ -3506,9 +3518,9 @@ say('nothing selected to remove');
       // counting words: "how many is a baker's dozen", "how many in a gross", "what is a score"
       m = t.match(/^(?:how\s+many\s+(?:is|are|in)\s+(?:a|one)\s+|(?:what(?:'s|\s+is)\s+)?(?:a|one)\s+)(baker'?s\s+dozen|dozen|gross|score|great\s+gross|pair|brace|myriad|ream)(?:\s+in\s+numbers)?$/);
       if (m) { const k = m[1].replace(/\s+/g, ' ').replace(/'/g, ''), N = { 'bakers dozen': 13, dozen: 12, gross: 144, score: 20, 'great gross': 1728, pair: 2, brace: 2, myriad: 10000, ream: 500 }[k]; return { value: String(N), note: 'a ' + m[1] + (k === 'gross' ? ' (12 dozen)' : k === 'ream' ? ' (sheets of paper)' : k === 'bakers dozen' ? ' (12 plus one)' : '') }; }
-      // little body and health facts with their usual ranges
-      if (/^(?:what(?:'s|\s+is)\s+(?:a\s+)?)?(?:the\s+)?normal\s+(?:human\s+)?body\s+temp(?:erature)?$/.test(t)) return { value: '98.6 °F (37 °C)', note: 'the classic average; healthy adults range about 97–99 °F (36.1–37.2 °C), lower in the morning; 100.4 °F (38 °C) or more counts as a fever' };
-      if (/^how\s+many\s+calories\s+(?:to\s+lose|in|are\s+in)\s+(?:a|one)\s+pound(?:\s+of\s+(?:fat|weight))?$/.test(t)) return { value: 'about 3,500', note: 'the old rule of thumb for a pound of body fat; real weight loss slows as the body adapts, so it is a rough guide' };
+      // little body and health facts: body temperature from MedlinePlus, the pound-of-fat figure from Mayo Clinic (both read 2026-10-30); steps a mile has no source yet
+      if (/^(?:what(?:'s|\s+is)\s+(?:a\s+)?)?(?:the\s+)?normal\s+(?:human\s+)?body\s+temp(?:erature)?$/.test(t)) return { value: '98.6 °F (37 °C)', note: 'the generally accepted average; some studies put normal at 97–99 °F (36.1–37.2 °C), lowest early in the morning; above 100.4 °F (38 °C) is usually a fever', src: [['MedlinePlus: body temperature norms', 'https://medlineplus.gov/ency/article/001982.htm']], read: '2026-10-30' };
+      if (/^how\s+many\s+calories\s+(?:to\s+lose|in|are\s+in)\s+(?:a|one)\s+pound(?:\s+of\s+(?:fat|weight))?$/.test(t)) return { value: 'about 3,500', note: 'the commonly accepted figure for a pound of fat (500 fewer a day is about a pound a week); a pound lost is fat, muscle and water, and metabolism changes the sum, so it is a rough guide', src: [['Mayo Clinic News Network: calories and weight loss', 'https://newsnetwork.mayoclinic.org/discussion/its-complicated-calories-and-other-factors-affect-weight-loss/']], read: '2026-10-30' };
       if (/^how\s+many\s+steps\s+(?:are\s+)?(?:in|per)\s+(?:a|one)\s+mile$/.test(t)) return { value: 'about 2,000–2,500', note: 'walking; it depends on stride length (taller people take fewer); running is about 1,400–1,700' };
       if (/^how\s+many\s+(?:work(?:ing)?\s+hours|hours\s+of\s+work)\s+(?:are\s+)?in\s+a\s+year$/.test(t)) return { value: '2,080', note: '40 hours a week × 52 weeks, before holidays and time off' };
       // fever and other temperatures: "102 f fever in celsius"
@@ -3559,12 +3571,12 @@ say('nothing selected to remove');
       // "speed of light in mph"
       m = t.match(/^(?:the\s+)?speed\s+of\s+(light|sound)\s+in\s+(mph|km\/?h|kph|m\/s|miles?\s+per\s+(?:hour|second)|km\/s)$/);
       if (m) { const ms = m[1] === 'light' ? 299792458 : 343, u = m[2]; const v = /mph|miles?\s+per\s+hour/.test(u) ? ms / 0.44704 : /miles?\s+per\s+second/.test(u) ? ms / 1609.344 : /km\/?h|kph/.test(u) ? ms * 3.6 : /km\/s/.test(u) ? ms / 1000 : ms;
-        return { value: Math.round(v).toLocaleString() + ' ' + u, note: m[1] === 'light' ? 'exactly 299,792,458 m/s in a vacuum' : 'about 343 m/s in dry air at 20 °C; it changes with temperature' }; }
+        return { value: Math.round(v).toLocaleString() + ' ' + u, note: m[1] === 'light' ? 'exactly 299,792,458 m/s in a vacuum' : 'about 343 m/s in dry air at 20 °C; it changes with temperature', ...(m[1] === 'sound' ? { src: [SOUND[0]], read: '2026-10-30' } : {}) }; }
       // tiny definitions with numbers
       if (/^(?:(?:1|one|a)\s+)?megapixels?\s+(?:is|=|equals)\s+how\s+many\s+pixels$|^how\s+many\s+pixels\s+(?:are\s+)?in\s+a\s+megapixel$/.test(t)) return { value: '1,000,000 pixels', note: 'a million pixels, e.g. about 1155 × 866' };
       if (/^(?:(?:1|one|a)\s+)?hertz\s+(?:is|=|equals)\s+how\s+many\s+cycles\s+per\s+second$|^what\s+is\s+(?:a\s+)?hertz$/.test(t)) return { value: '1 cycle per second', note: '1 Hz = one cycle (or event) each second; 1 kHz = 1,000, 1 MHz = 1,000,000' };
       // standard sizes and everyday quantities: fixed facts answered here, each with its usual caveat
-      for (const [re, value, note] of SIZE_FACTS) if (re.test(t)) return { value, note };
+      for (const [re, value, note, src, read] of SIZE_FACTS) if (re.test(t)) return src ? { value, note, src, read: read || KA_READ } : { value, note };
       // paper in other units: "a4 in inches", "us letter size in mm"
       m = t.match(/^(?:what\s+(?:size|dimensions?)\s+is\s+)?(a[0-6]|us\s+letter|letter|legal|tabloid)(?:\s+(?:paper|size|sheet))*(?:\s+(?:in|to)\s+(mm|cm|inches|in))?$/);
       if (m) { const P = { a0: [841, 1189], a1: [594, 841], a2: [420, 594], a3: [297, 420], a4: [210, 297], a5: [148, 210], a6: [105, 148], letter: [215.9, 279.4], 'us letter': [215.9, 279.4], legal: [215.9, 355.6], tabloid: [279.4, 431.8] }[m[1].replace(/\s+/g, ' ')], u = m[2] || (/^a/.test(m[1]) ? 'mm' : 'in');
@@ -3596,12 +3608,19 @@ say('nothing selected to remove');
       // ring sizes: "ring size 7 diameter", "17 mm ring size"
       m = t.match(/^(?:us\s+)?ring\s+size\s+(\d{1,2}(?:\.\d+)?)\s+(?:diameter|in\s+mm|inside\s+diameter|circumference)$/);
       if (m) { const dmm = 11.63 + 0.8128 * +m[1], r = (x) => Math.round(x * 100) / 100; return { value: /circum/.test(t) ? r(dmm * Math.PI) + ' mm around' : r(dmm) + ' mm', note: 'US ring size ' + m[1] + ': ' + r(dmm) + ' mm inside diameter, ' + r(dmm * Math.PI) + ' mm around' }; }
-      // turkey: "how long to cook a 12 pound turkey" (325 °F, unstuffed, USDA chart), "how long to thaw a 15 lb turkey in the fridge"
+      // turkey: "how long to cook a 12 pound turkey", "how long to thaw a 15 lb turkey in the fridge". 2026-10-30: the rows are the USDA FSIS
+      // "Let's Talk Turkey" tables (325 °F oven, read 2026-10-30), with the stuffed time from its own table (it was "add about 30 min"), the
+      // 4-8 lb row as a breast, a bird past 24 lb as past the table (it was "about 5 h or more"), and the thaw rows as the page gives them.
+      const TK = [['USDA FSIS: Let\u2019s Talk Turkey, roasting', 'https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/lets-talk-turkey-roasting']], TK_READ = '2026-10-30';
       m = t.match(/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:cook|roast|bake)\s+(?:an?\s+)?(\d{1,2}(?:\.\d+)?)\s*(?:pounds?|lbs?|-?\s*lb)\s+turkey(?:\s+for)?$/);
-      if (m) { const w = +m[1], R = [[12, '2¾–3 h'], [14, '3–3¾ h'], [18, '3¾–4¼ h'], [20, '4¼–4½ h'], [24, '4½–5 h']], r = (R.find((x) => w <= x[0]) || [0, 'about 5 h or more'])[1];
-        return { value: r, note: 'a ' + w + '-lb turkey, unstuffed, at 325 °F (USDA); add about 30 min if stuffed; it is done at 165 °F in the thickest part of the thigh, wing and breast' }; }
+      if (m) { const w = +m[1], R = [[8, '1½–3¼ h', '2½–3½ h', ' (a breast: USDA times a whole bird from 8 lb)'], [12, '2¾–3 h', '3–3½ h'], [14, '3–3¾ h', '3½–4 h'], [18, '3¾–4¼ h', '4–4¼ h'], [20, '4¼–4½ h', '4¼–4¾ h'], [24, '4½–5 h', '4¾–5¼ h']], r = R.find((x) => w <= x[0]);
+        if (!r || w < 4) return { value: w < 4 ? 'below the USDA table' : 'past the USDA table', note: 'the USDA roasting table at 325 °F runs from 4 to 24 lb; cook until a food thermometer reads 165 °F in the thickest part of the thigh, wing and breast', src: TK, read: TK_READ };
+        return { value: r[1], note: 'a ' + w + '-lb turkey' + (r[3] || '') + ', unstuffed, in a 325 °F oven; stuffed: ' + r[2] + '. It is safe at 165 °F on a food thermometer in the thickest part of the thigh, wing and breast', src: TK, read: TK_READ }; }
       m = t.match(/^how\s+long\s+(?:does\s+it\s+take\s+)?to\s+(?:thaw|defrost)\s+(?:an?\s+)?(\d{1,2}(?:\.\d+)?)\s*(?:pounds?|lbs?|-?\s*lb)\s+turkey(?:\s+in\s+(?:the\s+)?(fridge|refrigerator|cold\s+water))?$/);
-      if (m) { const w = +m[1], cold = /water/.test(m[2] || ''); return cold ? { value: 'about ' + Math.ceil(w / 2) + ' h', note: 'in cold water: 30 min per pound, changing the water every 30 minutes (USDA)' } : { value: 'about ' + Math.ceil(w / 4) + ' days', note: 'in the fridge: about one day for every 4–5 lb (USDA); keeps 1–2 more days thawed' }; }
+      if (m) { const w = +m[1], cold = /water/.test(m[2] || ''), F = [[12, '1–3 days'], [16, '3–4 days'], [20, '4–5 days'], [24, '5–6 days']], C = [[12, '2–6 h'], [16, '6–8 h'], [20, '8–10 h'], [24, '10–12 h']], r = (cold ? C : F).find((x) => w <= x[0]), hrs = w / 2;
+        const value = r ? r[1] : cold ? 'about ' + (hrs % 1 ? hrs.toFixed(1) : hrs) + ' h' : 'about ' + Math.ceil(w / 4) + ' days';
+        return cold ? { value, note: 'a ' + w + '-lb turkey in cold water: about 30 minutes per pound' + (r ? '' : ' (past the 24-lb table)') + '; change the water every 30 minutes and cook it right away (USDA)', src: TK, read: TK_READ }
+          : { value, note: 'a ' + w + '-lb turkey in the fridge: about 24 hours for every 4 to 5 pounds' + (r ? '' : ' (past the 24-lb table)') + '; it keeps 1–2 more days thawed (USDA)', src: TK, read: TK_READ }; }
       // recipe fractions: "double 3/4 cup", "half of 2/3 cup", "triple 1/3 cup"
       m = t.match(/^(double|triple|halve|half\s+of|a\s+third\s+of|quarter\s+of)\s+(\d+)\s*\/\s*(\d+)(?:\s+(cups?|tablespoons?|tbsp|teaspoons?|tsp|pounds?|lbs?|ounces?|oz))?$/);
       if (m && +m[3]) { const k = { double: [2, 1], triple: [3, 1], halve: [1, 2], 'half of': [1, 2], 'a third of': [1, 3], 'quarter of': [1, 4] }[m[1].replace(/\s+/g, ' ')], num = +m[2] * k[0], den = +m[3] * k[1], g = gcdOf(num, den), n = num / g, d = den / g, whole = Math.floor(n / d), rem = n % d;
@@ -3698,17 +3717,26 @@ say('nothing selected to remove');
       // range on fuel: "how many miles can i drive on 12 gallons at 30 mpg"
       m = t.match(/^how\s+(?:many\s+miles|far)\s+can\s+(?:i|you)\s+(?:drive|go)\s+on\s+(\d+(?:\.\d+)?)\s*(?:gallons?|gal)\s+(?:at|with|getting)\s+(\d+(?:\.\d+)?)\s*mpg$/);
       if (m) { const v = +m[1] * +m[2]; return { value: v.toLocaleString() + ' miles', note: m[1] + ' gal × ' + m[2] + ' mpg' }; }
-      // home projects: paint, mulch, concrete, heating and cooling
+      // home projects: paint, mulch, concrete, heating and cooling. Paint coverage is the low end of This Old House's 350-400 sq ft a gallon;
+      // concrete bag yields are Quikrete's Concrete Mix data sheet (40 lb 0.30, 50 lb 0.375, 60 lb 0.45, 80 lb 0.60 cu ft); both read 2026-10-30
       m = t.match(/^how\s+(?:many\s+gallons\s+of|much)\s+paint\s+(?:do\s+i\s+need\s+)?(?:for|to\s+cover)\s+(\d+(?:\.\d+)?)\s*(?:square\s+feet|sq\s*ft|sqft)(?:\s+(?:with\s+)?(one|two|1|2|three|3)\s+coats?)?$/);
-      if (m) { const coats = { one: 1, '1': 1, two: 2, '2': 2, three: 3, '3': 3 }[m[2] || 'two'], g = +m[1] * coats / 350; return { value: 'about ' + (Math.round(g * 10) / 10) + ' gallons', note: coats + (coats === 1 ? ' coat' : ' coats') + ' at about 350 sq ft per gallon; buy ' + Math.ceil(g) + '; rough or porous walls take more' }; }
+      if (m) { const coats = { one: 1, '1': 1, two: 2, '2': 2, three: 3, '3': 3 }[m[2] || 'two'], g = +m[1] * coats / 350; return { value: 'about ' + (Math.round(g * 10) / 10) + ' gallons', note: coats + (coats === 1 ? ' coat' : ' coats') + ' at about 350 sq ft per gallon (a gallon usually covers 350 to 400); buy ' + Math.ceil(g) + '; porous surfaces like stucco or unpainted drywall take more', src: [['This Old House: how much paint do I need', 'https://www.thisoldhouse.com/painting/how-much-paint-do-i-need']], read: '2026-10-30' }; }
       m = t.match(/^how\s+much\s+(mulch|soil|topsoil|gravel|sand|compost|stone)\s+(?:do\s+i\s+need\s+)?(?:for|to\s+cover)\s+(\d+(?:\.\d+)?)\s*(?:square\s+feet|sq\s*ft|sqft)\s+(?:at\s+)?(\d+(?:\.\d+)?)\s*(?:inches?|in|")\s*(?:deep|thick)?$/);
       if (m) { const cf = +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet of ' + m[1] + ' · about ' + Math.ceil(cf / 2) + ' bags of 2 cu ft' }; }
       m = t.match(/^how\s+much\s+concrete\s+(?:do\s+i\s+need\s+)?(?:for|to\s+pour)\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:x|by|×)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|foot|')?\s*(?:slab|patio|pad|floor)?\s*,?\s*(\d+(?:\.\d+)?)\s*(?:inches?|in|")\s*(?:thick|deep)?$/);
-      if (m) { const cf = +m[1] * +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet · about ' + Math.ceil(cf / 0.6) + ' bags of 80 lb (0.6 cu ft each); order 10% extra' }; }
+      if (m) { const cf = +m[1] * +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet · about ' + Math.ceil(cf / 0.6) + ' bags of 80 lb (0.6 cu ft each); order 10% extra', src: [['Quikrete Concrete Mix data sheet (yield per bag)', 'https://www.quikrete.com/PDFs/DATA_SHEET-Concrete%20Mix%201101.pdf']], read: '2026-10-30' }; }
       m = t.match(/^how\s+many\s+(?:bags\s+of\s+)?(\d{2})\s*(?:-?\s*lbs?|\s*pounds?)\s+(?:bags\s+of\s+)?concrete(?:\s+bags)?\s+(?:for|in|make)\s+(?:a|one|1|(\d+(?:\.\d+)?))\s+cubic\s+yards?$/);
-      if (m) { const y = { 40: 0.3, 50: 0.375, 60: 0.45, 80: 0.6 }[m[1]]; if (y) { const n = Math.ceil(27 * +(m[2] || 1) / y); return { value: n + ' bags', note: m[1] + '-lb bags yield about ' + y + ' cu ft each; a cubic yard is 27 cu ft' }; } }
+      if (m) { const y = { 40: 0.3, 50: 0.375, 60: 0.45, 80: 0.6 }[m[1]]; if (y) { const n = Math.ceil(27 * +(m[2] || 1) / y); return { value: n + ' bags', note: m[1] + '-lb bags yield about ' + y + ' cu ft each; a cubic yard is 27 cu ft', src: [['Quikrete Concrete Mix data sheet (yield per bag)', 'https://www.quikrete.com/PDFs/DATA_SHEET-Concrete%20Mix%201101.pdf']], read: '2026-10-30' }; } }
       m = t.match(/^(?:how\s+many\s+)?btus?\s+(?:do\s+i\s+need\s+|needed\s+)?(?:for|to\s+(?:cool|heat))\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:square\s+(?:foot|feet)|sq\s*ft|sqft)(?:\s+(?:room|space|area|house|home))?$|^what\s+size\s+(?:ac|air\s+conditioner|a\/c)(?:\s+unit)?\s+(?:do\s+i\s+need\s+)?for\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:square\s+(?:foot|feet)|sq\s*ft|sqft)(?:\s+(?:room|space|house|home))?$/);
-      if (m) { const a = +(m[1] || m[2]), btu = Math.round(a * 20 / 500) * 500, tons = btu / 12000; return { value: btu.toLocaleString() + ' BTU' + (tons >= 1 ? ' (' + (Math.round(tons * 2) / 2) + ' tons)' : ''), note: 'about 20 BTU per square foot (ENERGY STAR); add 10% for a sunny room, 600 BTU per person over two, 4,000 for a kitchen' }; }
+      // 2026-10-30: this said "about 20 BTU per square foot (ENERGY STAR)", which ENERGY STAR does not say: it gives a room AC chart by
+      // area (400 sq ft got 8,000 BTU; the chart says 9,000). Now the chart rows, as ENERGY STAR prints them (100 to 1,000 sq ft; its
+      // 450-550 and 500-700 rows overlap, and its own example puts 525 sq ft at 14,000), and its adjustments, both read 2026-10-30.
+      // Heating, and an area off the chart, get no number: the chart is for cooling one room.
+      if (m) { const a = +(m[1] || m[2]), ES = [['ENERGY STAR: how to choose the right sized window AC', 'https://www.energystar.gov/products/ask-the-experts/how-choose-right-sized-window-ac'], ['ENERGY STAR: room air conditioners (sizing chart, PDF)', 'https://www.energystar.gov/ia/partners/manuf_res/marketing_res/ROOM_AIRCONDITIONER.pdf']];
+        const ADJ = 'adjust it: 10% less for a heavily shaded room, 10% more for a very sunny one, 600 BTU for each person over two, 4,000 more in a kitchen; then round down to the nearest thousand';
+        const R = [[150, 5000, '100 to 150'], [250, 6000, '150 to 250'], [300, 7000, '250 to 300'], [350, 8000, '300 to 350'], [400, 9000, '350 to 400'], [450, 10000, '400 to 450'], [500, 12000, '450 to 550'], [700, 14000, '500 to 700'], [1000, 18000, '700 to 1,000']], r = a >= 100 ? R.find((x) => a <= x[0]) : null;
+        if (/heat/.test(t) || !r) return { value: 'off the ENERGY STAR chart', note: 'the ENERGY STAR sizing chart is for cooling one room of 100 to 1,000 sq ft' + (/heat/.test(t) ? '; it gives no figure for heating' : '') + '; ' + a.toLocaleString() + ' sq ft' + (/heat/.test(t) ? ' to heat' : '') + ' is outside it', src: ES, read: '2026-10-30' };
+        const tons = Math.round(r[1] / 6000) / 2; return { value: r[1].toLocaleString() + ' BTU' + (r[1] >= 12000 ? ' (about ' + tons + (tons === 1 ? ' ton)' : ' tons)') : ''), note: a.toLocaleString() + ' sq ft is in the ' + r[2] + ' sq ft row of the ENERGY STAR room AC chart; ' + ADJ + (r[1] >= 12000 ? ' (a ton is 12,000 BTU an hour)' : ''), src: ES, read: '2026-10-30' }; }
       // gatherings: pizzas, drinks, seating
       m = t.match(/^how\s+many\s+(?:large\s+)?pizzas?\s+(?:do\s+i\s+need\s+)?(?:for|to\s+feed)\s+(\d+)\s+(?:people|guests|adults|kids|children)$/);
       if (m) { const n = +m[1], kids = /kids|children/.test(t); return { value: Math.ceil(n * (kids ? 2 : 3) / 8) + ' large pizzas', note: (kids ? 2 : 3) + ' slices each, 8 slices per 14-inch large' }; }
@@ -3731,7 +3759,8 @@ say('nothing selected to remove');
       // roman numerals both ways: "2024 in roman numerals", "what is XLII in numbers"
       m = t.match(/^(?:convert\s+)?(\d{1,4})\s+(?:in|to|into|as)\s+roman(?:\s+numerals?)?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
-      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/);
+      // also "roman numeral mmxxiv": the letters after the words, with nothing to say what to turn them into
+      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/) || t.match(/^(?:the\s+)?roman\s+numerals?\s+([mdclxvi]{1,15})$/);
       if (m) { const V = { i: 1, v: 5, x: 10, l: 50, c: 100, d: 500, m: 1000 }; let n = 0; const r = m[1];
         for (let k = 0; k < r.length; k++) { const a = V[r[k]], b = V[r[k + 1]] || 0; n += a < b ? -a : a; }
         return { value: String(n), note: m[1].toUpperCase() + ' = ' + n }; }
@@ -3810,8 +3839,8 @@ say('nothing selected to remove');
         return { value: out, note: m[1] + 'd: every amount × ' + k }; }
       // butter: "2 sticks of butter in grams" (US stick = 113 g = 8 tbsp = ½ cup)
       m = t.match(/^(?:convert\s+|how\s+many\s+(grams|tablespoons|tbsp|cups|ounces|oz)\s+(?:is|are|in)\s+)?(\d+(?:\.\d+)?)\s+sticks?\s+(?:of\s+)?butter(?:\s+(?:in|to|into)\s+(grams|tablespoons|tbsp|cups|ounces|oz))?$/);
-      if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113.4, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
-        const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 113 g, 8 tbsp, ½ cup)' }; }
+      if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
+        const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 8 tbsp, ½ cup, 4 oz, 113 g)', src: KA, read: KA_READ }; }
       // "healthy weight for 5 foot 8", "ideal weight for 170 cm": the weights in the standard adult BMI band (18.5-24.9)
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:a\s+|the\s+|my\s+)?(?:healthy|ideal|normal|good|target)\s+weight\s+(?:range\s+)?(?:for|at)\s+(?:a\s+|someone\s+)?(?:(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?|(1[4-9]\d|2[0-2]\d)\s*cm)(?:\s+tall)?(?:\s+(?:man|woman|male|female|person|adult))?$/);
       if (m) { const inches = m[3] ? +m[3] / 2.54 : +m[1] * 12 + +(m[2] || 0), lo = 18.5 * inches * inches / 703, hi = 24.9 * inches * inches / 703;
@@ -3976,9 +4005,10 @@ say('nothing selected to remove');
       // "8 percent tax on 49.99", "sales tax of 7% on $120": the tax and the total
       m = t.match(/^(?:(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:sales\s+)?tax\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$|^(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$/);
       if (m) { const r = +(m[1] || m[3]), amt = +(m[2] || m[4]), tax = Math.round(amt * r) / 100; return { value: '$' + (amt + tax).toFixed(2), note: r + '% tax on $' + amt.toFixed(2) + ' is $' + tax.toFixed(2) + ' · total $' + (amt + tax).toFixed(2) }; }
-      // "0.75 as a fraction": the simplest fraction within a tiny tolerance (continued fractions)
-      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$/);
-      if (m) { const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
+      // "0.75 as a fraction", "decimal to fraction 0.75" (2026-10-30: this one fell to an article), "convert decimal 0.75 to fraction",
+      // "0.75 decimal to fraction": the simplest fraction within a tiny tolerance (continued fractions)
+      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$|^(?:convert\s+)?(?:a\s+|the\s+)?decimal\s+(-?\d*\.\d+|-?\d+)\s+(?:to|into)\s+(?:a\s+)?fraction$|^(?:convert\s+)?(?:a\s+)?decimal\s+(?:to|into)\s+(?:a\s+)?fraction:?\s+(-?\d*\.\d+|-?\d+)$|^(-?\d*\.\d+|-?\d+)\s+decimal\s+(?:to|into)\s+(?:a\s+)?fraction$/);
+      if (m) { m[1] = m[1] ?? m[2] ?? m[3] ?? m[4]; const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
         for (let i = 0; i < 32; i++) { const a = Math.floor(b); [h1, h0] = [a * h1 + h0, h1]; [k1, k0] = [a * k1 + k0, k1]; if (Math.abs(x - h1 / k1) < 1e-9 || b === a) break; b = 1 / (b - a); }
         return { value: h1 + '/' + k1, note: m[1] + ' = ' + h1 + '/' + k1 }; }
       // "average of 4 8 15 16", "mean of 2, 4, 9", "median of 3 9 4 7": a list of numbers
@@ -4138,7 +4168,7 @@ say('nothing selected to remove');
         { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
     }
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; }); el.dataset.page = '/calculator/'; // the card links to the full calculator (lib/card-frame.js pageOfCard)
@@ -4154,7 +4184,7 @@ say('nothing selected to remove');
         // a kitchen fact names the pages it came from, so the card is sourced and dated, not "from Verse"
         const wsrc = Array.isArray(wm.src) && wm.src.length ? 'Source: ' + wm.src.filter((x) => /^https:\/\/[^\s"'<>]+$/.test(x[1])).map((x) => '<a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + esc(x[0]) + '</a>').join(' · ') + (wm.read ? ' · read ' + esc(wm.read) : '') : '';
         if (wsrc) el.dataset.cardKept = ''; // read on a date and kept, not fetched for this ask (lib/card-frame.js)
-        setV(wm.value, wm.note, wsrc); cookFlow(el, query); return 'calc';
+        setV(wm.value, wm.note, wsrc); const wmin = /\b(\d{1,3}) min\b/.exec(String(wm.value)); cookFlow(el, query, wmin ? +wmin[1] : null); return 'calc';
       }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
@@ -5752,6 +5782,10 @@ say('nothing selected to remove');
         .replace(/^(?:what(?:'s|\s+is)\s+)?my\s+age\s+in\s+(days|weeks|months)\s+(?:if\s+i\s+was\s+)?born\s+(?:on\s+|in\s+)?(.+?)\s*[?.!]*$/i, 'how many $1 old am i if i was born on $2')
         // "what day was i born if my birthday is july 4 1990", "what day of the week was i born on 3/14/2001": the weekday of that date
         .replace(/^(?:what|which)\s+day\s+(?:of\s+the\s+week\s+)?was\s+i\s+born(?:\s+on|\s+if\s+(?:my\s+birthday\s+is|i\s+was\s+born\s+on)|\s*,?\s*(?:my\s+)?birthday\s+(?:is\s+)?)\s+(.*\d{4})\s*[?.!]*$/i, 'what day of the week was $1')
+        // "what day is 2026-10-30", "2026-10-30 day of week", a bare "2026-10-30" (2026-10-30: read as the sum 2026 − 10 − 30 = 1986): the weekday of that date
+        .replace(/^(?:((?:what|which)\s+day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{4})-(\d{1,2})-(\d{1,2})|(\d{4})-(\d{1,2})-(\d{1,2})(?:\s+(?:day\s+of\s+(?:the\s+)?week|weekday))?)\s*[?.!]*$/i, (all, a, y1, m1, d1, y2, m2, d2) => {
+          const mo = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'][+(m1 || m2) - 1];
+          return mo ? (a || 'what day of the week is ') + mo + ' ' + +(d1 || d2) + ' ' + (y1 || y2) : all; })
         // "what day of the week was 12 october 1999": the day first, read as "october 12 1999"
         .replace(/^((?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([a-z]{3,}),?(\s+\d{4})?\s*[?.!]*$/i, (_, a, d, mo, y) => a + mo + ' ' + d + (y || ''))
         .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')

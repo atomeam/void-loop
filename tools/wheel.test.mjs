@@ -38,7 +38,7 @@ test('the link holds the wheel, any language', () => {
   const e = entriesOf('Zoë *2\n寿司\n🍕 pizza'); assert.deepEqual(open(pack(e)), e); assert.equal(open('!!!'), null); assert.doesNotMatch(pack(e), /[+/=]/);
 });
 test('the asks', () => {
-  assert.deepEqual(askWheel('spin the wheel'), { entries: [] }); assert.deepEqual(askWheel('wheel of names'), { entries: [] }); assert.ok(askWheel('spinner wheel')); assert.ok(askWheel('random name picker wheel'));
+  assert.deepEqual(askWheel('spin the wheel'), { entries: [] }); assert.deepEqual(askWheel('wheel of names'), { entries: [] }); assert.ok(askWheel('spinner wheel')); assert.ok(askWheel('random name picker wheel')); assert.deepEqual(askWheel('random name picker'), { entries: [] }); assert.deepEqual(askWheel('name picker'), { entries: [] });
   assert.deepEqual(askWheel('spin a wheel with pizza, tacos and sushi').entries.map((x) => x.label), ['pizza', 'tacos', 'sushi']);
   for (const no of ['wheel', 'fortune wheel prices', 'how does a wheel work', 'spin a wheel with pizza', 'the wheel of time', 'wheel alignment near me', 'pick for me']) assert.equal(askWheel(no), null, no);
 });
