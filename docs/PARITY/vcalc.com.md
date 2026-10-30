@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: vcalc.com (https://www.vcalc.com/)
-- Verse: /calculators/ (formula calculators, tower gate 0 of 16)
+- Verse: /calculators/ (formula calculators, tower gate 2 of 16)
 - Live scan: not scanned yet
 - History: [docs/HISTORY/vcalc.com.md](../HISTORY/vcalc.com.md)
 

@@ -139,6 +139,8 @@ jobs:
         timeout-minutes: 3
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          CF_KEYMASTER_TOKEN: ${{ secrets.CF_KEYMASTER_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tools/autopilot-snapshot.mjs
 
       # Deploys run side by side (owner, 2026-10-25: "no need to serialize we should be able to do many things at once"): each run has its own

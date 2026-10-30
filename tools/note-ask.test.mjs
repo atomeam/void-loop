@@ -97,7 +97,8 @@ const CHAT = [
   'Edited', 'Today 8:03 AM', 'Every genre now plays live on real instruments.',
   "Should I set it up once you've made the account? Meanwhile I'll swap in real bass and guitar recordings.",
 ].join('\n');
-const NO_MODAL = /^No Verse code reads a Modal secret yet, so there is no Modal name to save/;
+// the live names (void-live-deploy/lib/verse-secrets.js): modal-sing.yml reads the Modal pair as GitHub repository secrets
+const MODAL_FACT = /^Verse's code reads these Modal names: MODAL_TOKEN_ID and MODAL_TOKEN_SECRET as GitHub repository secrets\./;
 
 test('a copied chat is read as a chat, with ⏎ or new lines; an ordinary ask is not', () => {
   assert.equal(isChatLog(CHAT), true);
@@ -111,7 +112,7 @@ test('a copied chat is read as a chat, with ⏎ or new lines; an ordinary ask is
 test('the setup facts come from the names Verse reads, never a guess', () => {
   const facts = setupFacts(CHAT);
   assert.equal(facts.length, 1, 'Cloudflare settings is where a secret goes, not a Cloudflare secret: ' + facts.join(' | '));
-  assert.match(facts[0], NO_MODAL);
+  assert.match(facts[0], MODAL_FACT);
   const fake = { cloudflare: ['MODAL_TOKEN_ID', 'MODAL_TOKEN_SECRET'], github: [] };
   assert.equal(setupFacts(CHAT, fake)[0], "Verse's code reads these Modal names: MODAL_TOKEN_ID and MODAL_TOKEN_SECRET in the site's Cloudflare settings.");
   assert.deepEqual(setupFacts('Good, Beam has it. I am checking it. You make the account whenever you want.'), [], 'no service named, no fact');
@@ -125,22 +126,22 @@ test('the model is given the facts and told never to guess or ask a name; the re
   assert.match(rule, /never guess one, and never ask what one is called/);
   assert.doesNotMatch(noteRule(null), /Facts from Verse/);
   const r = noteReading(CHAT);
-  assert.match(r, /No Verse code reads a Modal secret yet/);
+  assert.match(r, /Verse's code reads these Modal names: MODAL_TOKEN_ID and MODAL_TOKEN_SECRET/);
   assert.match(r, /https:\/\/a-to-mind\.com\/rap\/ \(Verse raps\)\.$/);
 });
 
 test('the model answer is made true: a guessed name, a question back and "broken automation" go; the cut line and the facts are added', () => {
   const live = 'This looks like a broken automation. Save MODAL_TOKEN in your Cloudflare settings. What is the variable called in your code? The chat says Verse now plays every genre live.\nhttps://a-to-mind.com/rap/ (Verse raps)';
   const out = noteFinish(live, CHAT);
-  assert.doesNotMatch(out, /MODAL_TOKEN|broken automation|\?/);
+  assert.doesNotMatch(out, /\bMODAL_TOKEN\b|broken automation|\?/);
   assert.match(out, /The chat says Verse now plays every genre live\./);
-  assert.match(out, /No Verse code reads a Modal secret yet/);
+  assert.match(out, /Verse's code reads these Modal names: MODAL_TOKEN_ID and MODAL_TOKEN_SECRET/);
   assert.match(out, /\nhttps:\/\/a-to-mind\.com\/rap\/ \(Verse raps\)$/, 'the page line stays last');
   // the cut note of 2026-10-30, as the live model read it: no word that it was cut
   const cutLive = 'The note states that Beam has the item and that the sender is checking #1795. It asks you to create a Modal account and add two repository secrets.\nhttps://a-to-mind.com/music/ (Music tools)';
   const c = noteFinish(cutLive, CUT);
   assert.match(c, /It stops mid-sentence at “Until then the music”, so the rest is not here\./);
-  assert.match(c, /No Verse code reads a Modal secret yet/);
+  assert.match(c, /Verse's code reads these Modal names: MODAL_TOKEN_ID and MODAL_TOKEN_SECRET/);
   assert.equal(noteFinish(cutLive, WHOLE).includes('stops mid-sentence'), false, 'a whole note is not called cut');
   assert.equal(noteFinish('It is cut off at "the music". ' + cutLive, CUT).match(/stops mid-sentence/g), null, 'said once, not twice');
   // a real name Verse reads is kept

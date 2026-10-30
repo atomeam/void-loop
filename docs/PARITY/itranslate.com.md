@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: itranslate.com (https://itranslate.com/translate)
-- Verse: /translate/?q=hello&to=es (translate: itranslate.com, tower gate 12 of 15)
+- Verse: /translate/?q=hello&to=es (translate: itranslate.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Translate"
 - History: [docs/HISTORY/itranslate.com.md](../HISTORY/itranslate.com.md)
 
@@ -22,7 +22,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | An on-screen keyboard for other scripts | Input | have | its live page (2026-10-28): "Camera Translation Offline Translation Keyboard Extension Translate Online Translator Supported Languages Dic" | void-live-deploy/translate/index.html:123 `<button type="button" id="kbdB" aria-expanded="false" aria-controls="kbd" title="A` |
 | Two-way conversation mode | Speech | have | studied by hand: itranslate.com offers this (https://itranslate.com/translate) | void-live-deploy/translate/index.html:174 `d="convD"><summary id="convS">Conversation</summary>` |
 | A browser extension | Apps | partial | its live page (2026-10-28): "ranslation Offline Translation Keyboard Extension Translate Online Translator Supported Languages Dictionary L" | void-live-deploy/translate/index.html:182 `<p class="hint">Drag this bookmarklet to your bookmarks bar. On any page, click it: yo` |
-| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "erty of their respective owners. Apple, App Store, the App Store logo, and iPhone are trademarks of Apple, Inc" | void-live-deploy/translate/index.html:679 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
+| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "erty of their respective owners. Apple, App Store, the App Store logo, and iPhone are trademarks of Apple, Inc" | void-live-deploy/translate/index.html:685 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
 | Works offline | Apps | have | its live page (2026-10-28): "on Voice Translation Camera Translation Offline Translation Keyboard Extension Translate Online Translator Sup" | void-live-deploy/translate/index.html:99 `read a photo, see them again offline.</p>` |
 | Supported Languages | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Language Learning | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

@@ -185,7 +185,7 @@ export async function modelText(messages, schema, max = 900) {
       console.log('::warning::Verse\'s model route answered ' + r.status + ': trying the REST API');
     } catch (e) { console.log('::warning::Verse\'s model route did not answer (' + clip(e && e.message || e, 80) + ')'); }
   }
-  const acct = process.env.CLOUDFLARE_ACCOUNT_ID, tok = process.env.CLOUDFLARE_API_TOKEN; if (!acct || !tok) return { error: 'no model reachable' };
+  const acct = process.env.CLOUDFLARE_ACCOUNT_ID, tok = process.env.CLOUDFLARE_AI_TOKEN || process.env.CLOUDFLARE_API_TOKEN; if (!acct || !tok) return { error: 'no model reachable' };
   try {
     const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/' + FREE_MODEL, { method: 'POST', signal: AbortSignal.timeout(90000), headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages, max_tokens: max, response_format: { type: 'json_schema', json_schema: schema } }) });
     if (!r.ok) return { error: 'the model answered ' + r.status };
