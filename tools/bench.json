@@ -6980,5 +6980,8 @@
   {"ask": "check my edits", "want": "skill:homotopy-edit"},
   {"ask": "check my argument edits", "want": "skill:homotopy-edit"},
   {"ask": "make today's misses into jobs", "want": "skill:miss-jobs"},
-  {"ask": "today's misses as jobs", "want": "skill:miss-jobs"}
+  {"ask": "today's misses as jobs", "want": "skill:miss-jobs"},
+  {"ask": "password of 20 characters", "want": "skill:password"},
+  {"ask": "d20", "want": "skill:random"},
+  {"ask": "image boards", "want": "skill:boards"}
 ]
