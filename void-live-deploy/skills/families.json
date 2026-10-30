@@ -1629,13 +1629,13 @@
     "proven": 42
    },
    "sources": {
-    "read": 25,
-    "named": 23,
+    "read": 26,
+    "named": 24,
     "second": 14,
     "answered": 0,
-    "points": 1.48,
+    "points": 1.46,
     "one_live_from_proven": [],
-    "words": "Source reliability: 25 skills answer from outside sources; 23 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.48 of 3 on average)."
+    "words": "Source reliability: 26 skills answer from outside sources; 24 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.46 of 3 on average)."
    },
    "skills": [
     {
@@ -1967,7 +1967,17 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "wikiquote.org"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "words": "source 1 of 3: wikiquote.org; named on the card; no second source; no kept live answer yet"
+     }
     },
     {
      "name": "magic8",

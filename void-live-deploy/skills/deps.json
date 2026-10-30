@@ -14384,7 +14384,9 @@
    "importedBy": []
   },
   "skills/proverb.js": {
-   "imports": [],
+   "imports": [
+    "skills/quote.js"
+   ],
    "importedBy": []
   },
   "skills/providers.js": {
@@ -14448,7 +14450,9 @@
   },
   "skills/quote.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/proverb.js"
+   ]
   },
   "skills/rack.js": {
    "imports": [
