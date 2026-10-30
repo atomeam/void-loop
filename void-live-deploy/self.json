@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T15:21:07Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,12 +550,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:30:32Z",
+   "subject": "self.json: regenerated after the merge"
+  },
+  {
    "at": "2026-10-30T04:27:26Z",
    "subject": "map: the team live check (tools/team-live.mjs, team-live.yml)"
   },
   {
    "at": "2026-10-30T04:26:57Z",
    "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-30T04:26:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:25:55Z",
+   "subject": "One owner: the owner can name their own account; /team/ shows the account id"
   },
   {
    "at": "2026-10-30T04:25:46Z",
@@ -606,28 +618,16 @@
    "subject": "deps.json: count functions/api/holidays.js"
   },
   {
+   "at": "2026-10-30T04:19:05Z",
+   "subject": "converter: write MOV and MKV, and 15 video edits on the device"
+  },
+  {
+   "at": "2026-10-30T04:19:03Z",
+   "subject": "Versus heycolor.com: keep the journey, drop the paint row from the PDF table"
+  },
+  {
    "at": "2026-10-30T04:18:37Z",
    "subject": "Holidays: the page asks Verse's own address, Verse asks Nager.Date"
-  },
-  {
-   "at": "2026-10-30T04:17:56Z",
-   "subject": "Preload brain-route.js on the brain page, as the preload check asks"
-  },
-  {
-   "at": "2026-10-30T04:15:25Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:15:24Z",
-   "subject": "Any agent joins /team/ with a one-time join link: plain HTTP, MCP at /team/mcp, the script /team/agent.mjs, or a browser"
-  },
-  {
-   "at": "2026-10-30T04:14:48Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:14:32Z",
-   "subject": "Brain keeps what it was just told after a reload"
   }
  ],
  "builders": {
