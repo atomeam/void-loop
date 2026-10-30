@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-25T19:58:18Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,56 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:02:43Z",
-   "subject": "Safety-check: run a lib's own tests before the far ones, and openapi-check for an /api route"
+   "at": "2026-10-30T04:58:32Z",
+   "subject": "Verse Brain: watch skills lean again on top of the page-order fix, and the reload line names only the words from before"
   },
   {
-   "at": "2026-10-30T05:00:57Z",
-   "subject": "Hand off the code-review MultiVerse card to /members/"
-  },
-  {
-   "at": "2026-10-30T05:00:03Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T04:58:43Z",
+   "at": "2026-10-30T04:44:07Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T04:53:12Z",
-   "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
-  },
-  {
-   "at": "2026-10-30T04:51:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:51:04Z",
-   "subject": "Markets: its stage card shows the coin open on the page"
-  },
-  {
-   "at": "2026-10-30T04:51:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:50:39Z",
-   "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
-  },
-  {
-   "at": "2026-10-30T04:49:53Z",
-   "subject": "converter: write FLAC, OGG and OPUS sound on the device"
-  },
-  {
-   "at": "2026-10-30T04:49:43Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-30T04:46:43Z",
-   "subject": "Team: the owner's #work posts go before every other job, oldest first"
-  },
-  {
-   "at": "2026-10-30T04:44:32Z",
-   "subject": "sw: page code goes back marked no-cache, so a returning tab runs the new deploy"
+   "at": "2026-10-30T04:43:46Z",
+   "subject": "Verse Brain routing keeps the page's order until it has really learned"
   },
   {
    "at": "2026-10-30T04:40:49Z",
@@ -628,6 +588,46 @@
   {
    "at": "2026-10-30T04:38:49Z",
    "subject": "Team live: the workflow that runs tools/team-live.mjs by hand (two agents in one chat, the queue counts, old keys stopped)"
+  },
+  {
+   "at": "2026-10-30T04:38:43Z",
+   "subject": "Verse Brain keeps the words just told when it is full"
+  },
+  {
+   "at": "2026-10-30T04:38:17Z",
+   "subject": "One owner: /team/ shows this account's Verse id from the server too, with a Copy button"
+  },
+  {
+   "at": "2026-10-30T04:37:28Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:36:18Z",
+   "subject": "Book holds still at 1920 and the claims list saves before the clip check"
+  },
+  {
+   "at": "2026-10-30T04:36:04Z",
+   "subject": "families.json after the 5 new benchmark asks"
+  },
+  {
+   "at": "2026-10-30T04:35:59Z",
+   "subject": "team-live: fetch the 4 agent pages at once"
+  },
+  {
+   "at": "2026-10-30T04:35:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:33:32Z",
+   "subject": "/team/: the live check's workflow moves to its own PR (a new workflow file needs the owner's approval to run)"
+  },
+  {
+   "at": "2026-10-30T04:33:09Z",
+   "subject": "Use with row on /is-it/ pages; the services pages and articles are not tools"
+  },
+  {
+   "at": "2026-10-30T04:32:23Z",
+   "subject": "Verse Brain reads what Verse decided: its will and its team"
   }
  ],
  "builders": {

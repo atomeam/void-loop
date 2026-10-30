@@ -40,7 +40,7 @@ test('while a break stands the brain attends to the skills that answer for it, a
   const w = W.createWatch(); W.takeIn(w, W.observe({ rows: rows() }, NOW), NOW);
   assert.deepEqual(W.focusOf(w), ['status', 'incident']);
   assert.equal(R.route(R.createRoutes(), 'is verse working', ['services', 'status']).pick, 'services', 'with no break the page order holds');
-  assert.equal(R.route(R.createRoutes(), 'is verse working', ['services', 'status'], W.focusOf(w)).pick, 'status');
+  assert.equal(R.route(R.createRoutes(), 'is verse working', ['services', 'status'], [], NOW, W.focusOf(w)).pick, 'status');
   const id = w.log[0].id; assert.ok(W.dismiss(w, id)); assert.deepEqual(W.focusOf(w), []); assert.equal(W.breaksOf(w)[0].marked, true);
   assert.ok(W.undismiss(w, id)); assert.deepEqual(W.focusOf(w), ['status', 'incident']);
 });
@@ -114,7 +114,8 @@ test('the host reads /api/will and /api/team in the same look and keeps the deci
   await h.ready; const r = await h.watchNow();
   assert.deepEqual(r.breaks.map((b) => b.key).sort(), ['team', 'will']); assert.ok(r.news.some((n) => n.kind === 'decided'));
   assert.equal(h.decision().site, 'onlineconverter.com');
-  assert.equal(h.route('show my wants', ['status', 'wants']).pick, 'wants', 'a stuck will pulls toward the skill that answers for it');
+  assert.equal(h.route('show my wants', ['status', 'wants']).pick, 'wants', 'a stuck will pulls toward the skill that answers for it, though the ask names it too');
+  assert.equal(h.route('who is on the team', ['team', 'team-chat']).pick, 'team-chat', 'a whole skill name counts: jobs with no agent here pull toward team-chat');
   h.stop();
 });
 

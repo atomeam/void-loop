@@ -57,8 +57,9 @@ export function startHost(opts = {}) {
    *  Returns { pick, first, changed, why, id } or null when there is no choice. The page tells it what happened with judge(id, good). */
   const routes = () => host.brain.routes || (host.brain.routes = Route.createRoutes());
   host.route = (text, names) => {
-    const b = host.brain, focus = b.mind.goals.filter((g) => g.strength > 0.1).map((g) => b.concepts.words[g.idx]).filter(Boolean).concat(Watch.focusOf(watch()));
-    const r = Route.route(routes(), text, names, focus); if (r) { host.changed = true; emit('route', r); } return r;
+    const b = host.brain, focus = b.mind.goals.filter((g) => g.strength > 0.1).map((g) => b.concepts.words[g.idx]).filter(Boolean);
+    // the words it thinks about, and the skills that answer for a break that stands
+    const r = Route.route(routes(), text, names, focus, Date.now(), Watch.focusOf(watch())); if (r) { host.changed = true; emit('route', r); } return r;
   };
   host.judge = (id, good) => { const ok = Route.outcome(routes(), id, good); if (ok) { host.changed = true; emit('judged', { id, good }); } return ok; };
   host.undoRoute = (id) => { const ok = Route.undo(routes(), id); if (ok) { host.changed = true; emit('undone', { id }); } return ok; };

@@ -38,6 +38,14 @@ test('a kept card holds its place, and words it attends to now lean toward a ski
   assert.equal(c.pick, 'piano'); assert.match(c.why, /it is thinking about piano/);
 });
 
+test('the ask\'s own words are not attention: with nothing learned the page\'s first choice stands (2026-10-30, shard 1)', () => {
+  // the brain hears each ask as a goal before the page routes it, so "stage" is in its focus when "find milk on the stage" is routed
+  const p = R.route(R.createRoutes(), 'find milk on the stage', ['note-tools', 'stage-find'], ['find', 'milk', 'stage']);
+  assert.equal(p.pick, 'note-tools'); assert.equal(p.changed, false);
+  assert.equal(R.route(R.createRoutes(), 'find milk on the stage', ['note-tools', 'stage-find'], ['stage', 'garden']).pick, 'note-tools');
+  assert.equal(R.route(R.createRoutes(), 'search notes for milk', ['note-tools', 'stage-find'], ['stage']).pick, 'stage-find', 'a word from before this ask still leans');
+});
+
 test('measured: a visitor who wants the second skill gets it far more often once the brain learns (simulated, 200 asks)', () => {
   // the page always picks the first skill; this visitor keeps "convert" cards and leaves "converter-story" ones
   const asks = ['convert 5 miles to km', 'convert 100 usd to eur', '5 km to miles convert', 'convert 30 c to f'], cands = ['converter-story', 'convert'];
@@ -88,7 +96,10 @@ test('the stage asks the brain to choose among every skill that can answer, and 
   assert.match(html, /async function firstSkill\(lower0, text, deadline, all = false\)/);
   assert.match(html, /return all \? learnedSkills\.filter\(fits\) : \(learnedSkills\.find\(fits\) \|\| null\)/);
   assert.match(html, /routed = window\.verseBrainHost\.route\(text, all\.map\(\(sk\) => sk\.name\)\)/);
-  assert.match(html, /settleRoute\('ask', text\)/); assert.match(html, /settleRoute\('undo'\)/); assert.match(html, /setTimeout\(\(\) => settleRoute\('time'\), 20000\)/);
+  assert.match(html, /settleRoute\('ask', text\)/);
+  // a next ask the page sends to the same skill is that skill used again, not a correction (three period dates in a row)
+  assert.match(html, /firstSkill\(String\(next \|\| ''\)\.toLowerCase\(\), next, Date\.now\(\)\)\.then\(\(sk\) => \{ if \(!sk \|\| sk\.name !== w\.pick\) h\.judge\(w\.id, false\); \}\)/);
+  assert.match(html, /watchRoute\(routed\.id, vpageEl, text, routed\.pick\)/); assert.match(html, /settleRoute\('undo'\)/); assert.match(html, /setTimeout\(\(\) => settleRoute\('time'\), 20000\)/);
   assert.match(read('void-live-deploy/lib/toolkit.js'), /'a2m\.brain\.heard\.v1'/);
   const page = read('void-live-deploy/brain/index.html'), app = read('void-live-deploy/brain/app.js');
   assert.match(page, /id="didBox"/); assert.match(app, /host\.undoRoute\(a\.id\)/); assert.match(app, /\['Routes', /);
