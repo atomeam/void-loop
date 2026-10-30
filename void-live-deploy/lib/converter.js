@@ -67,9 +67,7 @@ export const CATALOG = Object.freeze([
   tool('Audio', 'Remove Noise from Audio', 'here', { run: 'denoise', from: 'sound', note: 'Takes a steady noise (hiss, hum, a fan, room tone) out of a sound, on your device. Verse learns the noise from the quietest part, or from the seconds you mark, then takes down each frequency band that is not above it (spectral gating). It says how far the noise went down. A noise that changes like the sound (voices, traffic) stays.' }),
   tool('Audio', 'Remove Silence from Audio', 'here', { run: 'silence', from: 'sound', note: 'Takes out every quiet stretch longer than you set, as a WAV, and says how much it took out.' }),
   tool('Audio', 'Repair M4A', 'part', { run: 'repair', from: 'repair', note: 'In part: mends an M4A that will not play, on your device, by writing its index (the moov) again. A file cut short keeps every whole piece of sound, and a fragmented file is joined into one. A recording that lost its index cannot be mended: its AAC or ALAC frames do not say where they end, so without the index Verse cannot find them. The sound is not coded again.' }),
-  ...['JPG', 'BMP', 'DNG', 'GIF', 'PDF', 'PNG', 'TIFF', 'WEBP'].map((f) => (f === 'DNG'
-    ? conv('Image', f, 'no', { note: 'Not on Verse yet: Verse cannot write camera raw files.' })
-    : conv('Image', f, 'here', { to: f.toLowerCase(), from: 'picture', note: { JPG: 'With a quality you set.', BMP: '24-bit colour; see-through parts become white.', GIF: '256 colours with error diffusion; see-through parts stay see-through.', PDF: 'One picture to a page, the page the size of the picture.', PNG: 'Lossless, see-through parts kept.', TIFF: 'Uncompressed 8-bit colour, see-through parts kept.', WEBP: 'With a quality you set.' }[f] }))),
+  ...['JPG', 'BMP', 'DNG', 'GIF', 'PDF', 'PNG', 'TIFF', 'WEBP'].map((f) => conv('Image', f, 'here', { to: f.toLowerCase(), from: 'picture', note: { JPG: 'With a quality you set.', BMP: '24-bit colour; see-through parts become white.', DNG: 'A linear DNG, Adobe\'s raw format: the colours of the picture as 16-bit linear red, green and blue, with a small preview, for raw editors. It has the detail and the range of the picture, not the sensor data of a camera. See-through parts become white.', GIF: '256 colours with error diffusion; see-through parts stay see-through.', PDF: 'One picture to a page, the page the size of the picture.', PNG: 'Lossless, see-through parts kept.', TIFF: 'Uncompressed 8-bit colour, see-through parts kept.', WEBP: 'With a quality you set.' }[f] })),
   tool('Image', 'Blur Image', 'verse', { href: '/photos/?tab=adj', note: 'On Verse photo tools: Adjust, Blur.' }),
   tool('Image', 'Brighten Image', 'verse', { href: '/photos/?tab=adj', note: 'On Verse photo tools: Adjust, Brightness.' }),
   tool('Image', 'Change GIF Speed', 'here', { run: 'gif-speed', from: 'gif', note: 'Every frame of an animated GIF shown faster or slower; the pictures are not touched.' }),
@@ -153,7 +151,7 @@ export function formatOf(bytes, name = '') {
 /** what a format can become on this page */
 export function targetsOf(f) {
   const k = kindOf(f), x = normFormat(f);
-  if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'].filter((t) => t !== x);
+  if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'dng', 'pdf'].filter((t) => t !== x);
   if (k === 'sound') return ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'].filter((t) => t !== x);
   if (k === 'video') return ['mp4', 'mov', '3gp', 'webm', 'mkv', 'avi', 'flv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'].filter((t) => t !== x);
   if (['pdf', 'docx', 'rtf', 'html', 'txt', 'epub'].includes(x)) return ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'].filter((t) => t !== x);
@@ -339,6 +337,41 @@ export function tiff(img) {
   if (alpha) b.set(d, pix); else for (let i = 0, p = pix; i < w * h; i++) { b[p++] = d[i * 4]; b[p++] = d[i * 4 + 1]; b[p++] = d[i * 4 + 2]; }
   return b;
 }
+/**
+ * a linear DNG (DNG 1.4, Adobe's raw format): the picture's colours, made linear again (the sRGB curve taken off) and kept as 16-bit
+ * red, green and blue, with the colour matrix of linear sRGB (D65) so a raw tool shows the same colours. IFD 0 is a small 8-bit
+ * preview (256 pixels on the long side), as the DNG specification asks; the full picture is in its SubIFD. See-through parts go on white.
+ * It is not a camera's sensor data: it has the detail and the range of the picture, no more.
+ */
+export function dng(img, { model = 'Verse picture' } = {}) {
+  const { width: w, height: h, data: d } = img, s = Math.min(1, 256 / Math.max(w, h)), tw = Math.max(1, Math.round(w * s)), th = Math.max(1, Math.round(h * s));
+  const on = (i, k) => { const a = d[i * 4 + 3] / 255; return d[i * 4 + k] * a + 255 * (1 - a); };
+  const lin = new Float64Array(256).map((_, v) => { const c = v / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
+  // the preview: each preview pixel is the mean of the picture pixels it covers
+  const thumb = new Uint8Array(tw * th * 3);
+  for (let y = 0; y < th; y++) for (let x = 0; x < tw; x++) {
+    const x0 = Math.floor((x * w) / tw), x1 = Math.max(x0 + 1, Math.floor(((x + 1) * w) / tw)), y0 = Math.floor((y * h) / th), y1 = Math.max(y0 + 1, Math.floor(((y + 1) * h) / th)), sum = [0, 0, 0];
+    for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) for (let k = 0; k < 3; k++) sum[k] += on(yy * w + xx, k);
+    for (let k = 0; k < 3; k++) thumb[(y * tw + x) * 3 + k] = Math.round(sum[k] / ((x1 - x0) * (y1 - y0)));
+  }
+  // XYZ (D65) to linear sRGB, IEC 61966-2-1: the DNG ColorMatrix goes from XYZ to the camera's colours, and here the camera is linear sRGB
+  const CM = [3.2404542, -1.5371385, -0.4985314, -0.969266, 1.8760108, 0.041556, 0.0556434, -0.2040259, 1.0572252];
+  const name = new TextEncoder().encode(model + '\0'), soft = new TextEncoder().encode('Verse (a-to-mind.com/converter/)\0');
+  const T0 = 22, T1 = 12, ifd0 = 8, ifd1 = ifd0 + 2 + T0 * 12 + 4; let at = ifd1 + 2 + T1 * 12 + 4;
+  const room = (n) => { const o = at; at += n + (n & 1); return o; };
+  const bps0 = room(6), nameAt = room(name.length), softAt = room(soft.length), cmAt = room(72), neutralAt = room(24), bps1 = room(6), whiteAt = room(12), thumbAt = room(thumb.length), pixAt = room(w * h * 6);
+  const b = new Uint8Array(at), v = new DataView(b.buffer); b.set([0x49, 0x49, 42, 0]); v.setUint32(4, ifd0, true);
+  // an IFD: the tags in rising order; a value of 4 bytes or less sits in the entry, a longer one at its offset
+  const dir = (start, list) => { list.sort((p, q) => p[0] - q[0]); v.setUint16(start, list.length, true); let t = start + 2; for (const [id, type, count, value] of list) { v.setUint16(t, id, true); v.setUint16(t + 2, type, true); v.setUint32(t + 4, count, true); if (type === 3 && count === 1) v.setUint16(t + 8, value, true); else if (type === 1) b.set(value, t + 8); else v.setUint32(t + 8, value, true); t += 12; } v.setUint32(t, 0, true); };
+  dir(ifd0, [[254, 4, 1, 1], [256, 4, 1, tw], [257, 4, 1, th], [258, 3, 3, bps0], [259, 3, 1, 1], [262, 3, 1, 2], [271, 2, name.length, nameAt], [272, 2, name.length, nameAt], [273, 4, 1, thumbAt], [274, 3, 1, 1], [277, 3, 1, 3], [278, 4, 1, th], [279, 4, 1, thumb.length], [284, 3, 1, 1], [305, 2, soft.length, softAt], [330, 4, 1, ifd1],
+    [50706, 1, 4, [1, 4, 0, 0]], [50707, 1, 4, [1, 1, 0, 0]], [50708, 2, name.length, nameAt], [50721, 10, 9, cmAt], [50728, 5, 3, neutralAt], [50778, 3, 1, 21]]);
+  dir(ifd1, [[254, 4, 1, 0], [256, 4, 1, w], [257, 4, 1, h], [258, 3, 3, bps1], [259, 3, 1, 1], [262, 3, 1, 34892], [273, 4, 1, pixAt], [277, 3, 1, 3], [278, 4, 1, h], [279, 4, 1, w * h * 6], [284, 3, 1, 1], [50717, 4, 3, whiteAt]]);
+  for (let i = 0; i < 3; i++) { v.setUint16(bps0 + i * 2, 8, true); v.setUint16(bps1 + i * 2, 16, true); v.setUint32(whiteAt + i * 4, 65535, true); v.setUint32(neutralAt + i * 8, 1, true); v.setUint32(neutralAt + i * 8 + 4, 1, true); }
+  b.set(name, nameAt); b.set(soft, softAt); b.set(thumb, thumbAt);
+  CM.forEach((c, i) => { v.setInt32(cmAt + i * 8, Math.round(c * 1e7), true); v.setInt32(cmAt + i * 8 + 4, 1e7, true); });
+  for (let i = 0, p = pixAt; i < w * h; i++) for (let k = 0; k < 3; k++, p += 2) { const a = d[i * 4 + 3] / 255, c = lin[d[i * 4 + k]] * a + (1 - a); v.setUint16(p, Math.round(c * 65535), true); }
+  return b;
+}
 // the GIF palette: 6 levels of red, 7 of green, 6 of blue (252 colours), 3 greys, and index 255 for see-through
 const RL = [0, 51, 102, 153, 204, 255], GL = [0, 42, 85, 128, 170, 213, 255], BL = RL;
 const near = (L, x) => { let k = 0; for (let i = 1; i < L.length; i++) if (Math.abs(L[i] - x) < Math.abs(L[k] - x)) k = i; return k; };
@@ -521,4 +554,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', avi: 'video/x-msvideo', flv: 'video/x-flv', '3gp': 'video/3gpp', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', m4a: 'audio/mp4', m4r: 'audio/mp4', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', cbz: 'application/vnd.comicbook+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', avi: 'video/x-msvideo', flv: 'video/x-flv', '3gp': 'video/3gpp', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', m4a: 'audio/mp4', m4r: 'audio/mp4', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', dng: 'image/x-adobe-dng', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', cbz: 'application/vnd.comicbook+zip', zip: 'application/zip' });

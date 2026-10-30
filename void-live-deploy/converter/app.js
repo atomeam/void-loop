@@ -1,7 +1,7 @@
 // a-to-mind.com/converter (2026-10-29): the page script. Every file is opened and written on this device: nothing is uploaded, and no file
 // is ever put in a link. The tools and their honest status come from /lib/converter.js; this file only reads files, runs a tool, and shows
 // the results.
-import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
+import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, dng, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
 import { writeVideo, writeStill, writeSplit, writeStabilize, soundOf48, encodeSound, drawOver } from '/lib/video-write.js';
 import { flac, alacFile, opusFile, m4aFile } from '/lib/audio-write.js';
@@ -19,7 +19,7 @@ const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'vi
 const ACCEPT = { sound: SND + ',video/*', video: VID, 'video+video': VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', 'picture+picture?': 'image/*', epub: 'application/epub+zip,.epub', cbz: '.cbz,.cbr,application/vnd.comicbook+zip,application/zip', repair: VID + ',.3gp,.3g2,.m4v,.m4a,audio/mp4' };
 // how many files a tool needs, and what to say about them
 const NEED = { 'video+video': [2, ' Pick 2 videos: the first you pick is Video 1, the second Video 2.'], 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'], 'picture+picture?': [1, ' Pick 1 or more pictures; for a picture mark, pick the mark too.'], repair: [1, ' Pick the broken file. With Have Reference Video, pick a good video from the same phone or camera too, second.'] };
-const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', '3gp', 'webm', 'mkv', 'avi', 'flv'];
+const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'dng', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', '3gp', 'webm', 'mkv', 'avi', 'flv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
 let cur = null, files = [], heads = [], lastQ = '', results = [], urls = [];
@@ -230,6 +230,7 @@ function shrinker() {
 async function pictureFile(c, to, q) {
   if (to === 'bmp') return bmp(pixels(c));
   if (to === 'tiff') return tiff(pixels(c));
+  if (to === 'dng') return dng(pixels(c));
   if (to === 'gif') return gif(pixels(c));
   let src = c;
   if (to === 'jpg') { src = make('canvas', { width: c.width, height: c.height }); const x = src.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(c, 0, 0); }
