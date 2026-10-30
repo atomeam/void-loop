@@ -1,47 +1,48 @@
 /**
  * stopwatch skill — a simple stopwatch on the stage
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "stopwatch", "start a stopwatch", "open stopwatch".
+ * "start a stopwatch", "stopwatch", "time this".
+ * Empty surface stays empty: the card appears only when summoned.
  */
 export function isStopwatch(text) {
-  return /^(?:please\s+)?(?:(?:start|open|make|show)\s+(?:a\s+)?)?stopwatch(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  const t = String(text || '').trim().replace(/[?!.]+$/, '');
+  return /^(?:please\s+)?(?:(?:start|run|begin)\s+(?:a\s+)?stopwatch|stopwatch|time\s+this)$/i.test(t);
 }
 
 function run(text, api) {
-  const { showPage, esc } = api;
-  let running = false, start = 0, elapsed = 0, interval;
-  const format = (ms) => {
-    const s = Math.floor(ms / 1000), m = Math.floor(s / 60), ss = s % 60, cs = Math.floor((ms % 1000) / 10);
-    return String(m).padStart(2, '0') + ':' + String(ss).padStart(2, '0') + '.' + String(cs).padStart(2, '0');
+  const { showPage } = api;
+  let start = Date.now(), running = true;
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Stopwatch</h2><p id="t" style="font-size:48px;font-weight:300;text-align:center;font-variant-numeric:tabular-nums">00:00.0</p><div class="sub">click the card or say “stop” to pause</div>';
+  });
+  const tick = () => {
+    if (!api._pageStill(el) || !running) return;
+    const elapsed = Date.now() - start;
+    const s = Math.floor(elapsed / 1000);
+    const mm = String(Math.floor(s / 60)).padStart(2, '0');
+    const ss = String(s % 60).padStart(2, '0');
+    const d = Math.floor((elapsed % 1000) / 100);
+    const display = el.querySelector('#t');
+    if (display) display.textContent = mm + ':' + ss + '.' + d;
+    setTimeout(tick, 100);
   };
-  const update = (p) => {
-    const now = running ? elapsed + (Date.now() - start) : elapsed;
-    p.innerHTML = '<h2>Stopwatch</h2><p style="font-size:48px;font-weight:300;text-align:center;font-family:monospace">' + esc(format(now)) + '</p><div style="text-align:center"><button id="sw-toggle" class="g-btn">' + (running ? 'Stop' : 'Start') + '</button> <button id="sw-reset" class="g-btn">Reset</button></div><div class="sub">say “stopwatch” for another</div>';
-    const toggle = p.querySelector('#sw-toggle'), reset = p.querySelector('#sw-reset');
-    toggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (running) { elapsed += Date.now() - start; running = false; if (interval) clearInterval(interval); }
-      else { start = Date.now(); running = true; interval = setInterval(() => update(p), 50); }
-      update(p);
-    });
-    reset.addEventListener('click', (e) => {
-      e.stopPropagation();
-      running = false; elapsed = 0; if (interval) clearInterval(interval);
-      update(p);
-    });
-  };
-  showPage((p) => update(p));
+  tick();
+  // simple click to toggle
+  el.addEventListener('click', () => {
+    if (running) { running = false; }
+    else { start = Date.now() - (Date.now() - start); running = true; tick(); }
+  });
   return 'stopwatch';
 }
 
 export default {
   name: 'stopwatch',
-  examples: ['stopwatch', 'start a stopwatch', 'open stopwatch'],
-  nearMisses: ['what is a stopwatch', 'timer', 'countdown'],
+  examples: ['start a stopwatch', 'stopwatch', 'time this'],
+  nearMisses: ['what time is it', 'timer', 'how long'],
   match(lower, text) { return isStopwatch(text); },
   run,
   suite() {
-    const ok = isStopwatch('stopwatch') && isStopwatch('start a stopwatch') && !isStopwatch('what is a stopwatch');
+    const ok = isStopwatch('start a stopwatch') && isStopwatch('stopwatch') && !isStopwatch('what time is it');
     return { ok, got: 'match works' };
   }
 };
