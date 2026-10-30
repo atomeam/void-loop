@@ -13,6 +13,10 @@ on:
         description: Say what it would do, move nothing
         type: boolean
         default: false
+      replay:
+        description: 'Judge merged pull requests as if handed in, moving nothing: 1766:versus:emojicombos.com,1786:versus:diffuse.tools'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -37,9 +41,11 @@ jobs:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           DRY: ${{ inputs.dry }}
+          REPLAY: ${{ inputs.replay }}
         run: |
           set --
           if [ "$DRY" = "true" ]; then set -- --dry; fi
+          if [ -n "$REPLAY" ]; then set -- "$@" "--replay=$REPLAY"; fi
           code=0; node tools/team-gate.mjs "$@" > out.txt 2>&1 || code=$?
           cat out.txt; cat out.txt >> "$GITHUB_STEP_SUMMARY"
           echo "::notice title=Team gate::$(sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g' out.txt)"
