@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dropUnbackedClaims, unbacked, citesUnbacked, titledReadings, supportedOnly, INVENT_RULE } from '../void-live-deploy/lib/answer-honesty.js';
 import { measureOf, measureRule, withMeasure, shown } from '../void-live-deploy/lib/measure-ask.js';
+import { isNoAnswer } from '../void-live-deploy/lib/no-answer.js';
 
 const read = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
 // the pages the live answers cited (Wikipedia summaries, cut as functions/api/answer.js cuts them)
@@ -86,11 +87,26 @@ test('the conversion leads the answer only when the model left it out', () => {
   assert.match(measureRule(m), /never say it varies/);
 });
 
+test('a refusal on a stated quantity becomes the conversion, not Not found', () => {
+  // live, 2026-10-30 06:12Z after #1759: the model refused from the Mile run and 5000 metres pages, the conversion led the refusal, and the card said Not found
+  const m = measureOf('the 3 mile run');
+  for (const refusal of ['I do not have information about "the 3 mile run" in the provided sources.', 'I could not find any information regarding the 3 mile run. The sources describe the mile run and the 5000 metres [1][2].']) {
+    assert.equal(isNoAnswer(refusal), true, refusal);
+    const out = withMeasure(isNoAnswer(refusal) ? '' : refusal, m);
+    assert.equal(out, '3 miles is 4.83 km (4,828 m).');
+    assert.equal(isNoAnswer(out), false);
+  }
+  assert.equal(withMeasure('', m), '3 miles is 4.83 km (4,828 m).');
+  assert.equal(withMeasure('', null), '');
+});
+
 test('the answer engine runs the checks on every sourced answer and gives the model both rules', () => {
   const src = read('../void-live-deploy/functions/api/answer.js');
   assert.match(src, /dropUnbackedClaims\(answer, src\)/);
   assert.match(src, /if \(guess\) answer = titledReadings\(answer, src\)/);
-  assert.match(src, /if \(measure\) answer = withMeasure\(answer, measure\)/);
+  assert.match(src, /if \(measure\) answer = withMeasure\(isNoAnswer\(answer\) \? '' : answer, measure\)/, 'a refusal does not hide the computed conversion');
+  // the conversion is put in before the refusal check, so a stated quantity never ends as Not found
+  assert.ok(src.indexOf('withMeasure(isNoAnswer(answer)') < src.indexOf('if (!self && !told && isNoAnswer(answer)) return'));
   assert.match(src, /INVENT_RULE/); assert.match(src, /measureRule\(measure\)/);
   assert.match(src, /!citesUnbacked\(hit\.answer\)/, 'the D1 cache does not serve an answer written before the check');
   // the checks run before supportedOnly renumbers the markers, while [n] is still src[n - 1]

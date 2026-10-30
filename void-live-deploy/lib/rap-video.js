@@ -9,6 +9,7 @@ import { encodeSound } from './video-write.js';
 import { endWordOf, schemeOf, STYLES } from './rap.js';
 import { mixStems, evenWords, RATE } from './rap-song.js';
 import { beatEvents } from './rap-beat.js';
+import { splitBar } from './rap-voice.js';
 
 export const W = 1280, H = 720, FPS = 30, BANDS = 48;
 const KEY = '158,178,255', INK = '242,244,251', FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
@@ -46,7 +47,8 @@ export function kickPulse(kicks, t) { let p = 0; for (const k of kicks) { if (k 
 export function frameState(timing, words, seconds, t) {
   const first = timing.length ? timing[0].at : seconds, last = timing.length ? timing[timing.length - 1] : null;
   let bar = -1; for (let i = 0; i < timing.length; i++) if (timing[i].at <= t + 1e-6) bar = i;
-  const phase = t < first - 0.05 ? 'title' : last && t > last.at + last.len + 0.4 ? 'outro' : 'bar';
+  // the title holds until the first bar has started: a bar shown before its own start has no words to show
+  const phase = bar < 0 || t < first - 0.05 ? 'title' : last && t > last.at + last.len + 0.4 ? 'outro' : 'bar';
   const lit = bar < 0 ? 0 : words.filter((w) => w.bar === timing[bar].bar && w.at <= t + 1e-6).length;
   return { phase, bar: phase === 'title' ? -1 : bar, lit, progress: Math.max(0, Math.min(1, t / Math.max(1e-6, seconds))) };
 }
@@ -93,15 +95,16 @@ function draw(x, v, t) {
     if (prev) { x.fillStyle = 'rgba(' + INK + ',0.32)'; fit(x, prev.text, W - 200); x.fillText(prev.text, cx, 420); }
     if (next) { x.fillStyle = 'rgba(' + INK + ',0.26)'; x.font = '400 26px ' + FONT; fit(x, next.text, W - 200); x.fillText(next.text, cx, 640); }
     // the bar being rapped: each word lit as it is said, the rhyme word in the key colour, the word just said a little larger
-    const ws = String(b.text).split(/\s+/).filter(Boolean), rhyme = v.rhymes[st.bar] ? v.endWords[st.bar] : '';
+    const ws = String(b.text).split(/\s+/).filter(Boolean), rhyme = v.rhymes[st.bar] ? v.endWords[st.bar] : '', toks = splitBar(b.text).tokens;
+    let ri = ws.length - 1; while (ri > 0 && toks[ri] && toks[ri].adlib >= 0) ri--; // the rhyme is the last word rapped, not an ad-lib after it
     let size = 50; x.font = '700 ' + size + 'px ' + FONT; let lines = linesOf(ws, (w) => x.measureText(w).width, W - 180, x.measureText(' ').width);
     while (lines.length > 2 && size > 30) { size -= 4; x.font = '700 ' + size + 'px ' + FONT; lines = linesOf(ws, (w) => x.measureText(w).width, W - 180, x.measureText(' ').width); }
     const lh = size * 1.25, top = 530 - ((lines.length - 1) * lh) / 2; x.textAlign = 'left';
     lines.forEach((line, li) => {
       const last = line[line.length - 1], width = last.x + last.width, left = cx - width / 2, y = top + li * lh;
       for (const w of line) {
-        const on = w.i < st.lit, now = w.i === st.lit - 1, isRhyme = rhyme && w.i === ws.length - 1 && w.w.toLowerCase().replace(/[^a-z']/g, '').startsWith(rhyme);
-        x.fillStyle = on ? (isRhyme ? 'rgb(' + KEY + ')' : 'rgb(' + INK + ')') : 'rgba(' + INK + ',0.34)';
+        const on = w.i < st.lit, now = w.i === st.lit - 1, isRhyme = rhyme && w.i === ri && w.w.toLowerCase().replace(/[^a-z']/g, '').startsWith(rhyme), lib = toks[w.i] && toks[w.i].adlib >= 0;
+        x.fillStyle = on ? (isRhyme ? 'rgb(' + KEY + ')' : lib ? 'rgba(' + KEY + ',0.7)' : 'rgb(' + INK + ')') : 'rgba(' + INK + ',0.34)';
         if (now) { x.save(); x.translate(left + w.x + w.width / 2, y); x.scale(1.06, 1.06); x.fillText(w.w, -w.width / 2, 0); x.restore(); } else x.fillText(w.w, left + w.x, y);
       }
     });

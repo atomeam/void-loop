@@ -637,7 +637,9 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // conversion first (lib/answer-honesty.js, lib/measure-ask.js); this runs before the markers are renumbered, while [n] is still src[n - 1]
   if (!self && !told && src.length) answer = dropUnbackedClaims(answer, src) || answer;
   if (guess) answer = titledReadings(answer, src);
-  if (measure) answer = withMeasure(answer, measure);
+  // a refusal ("I do not have information about the 3 mile run") is dropped when the ask states a quantity: the computed conversion answers it
+  // (coordinator, 2026-10-30: the refusal led by the conversion still read as a refusal, and the card said Not found)
+  if (measure) answer = withMeasure(isNoAnswer(answer) ? '' : answer, measure);
   ({ answer, sources: pub } = supportedOnly(answer, src, pub));
   // a refusal ("I do not have information ...") is not an answer: nothing is cached or labelled as one, and the page gets the closest guess to offer as a question
   if (!self && !told && isNoAnswer(answer)) return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, ...(guessOf(src) ? { guess: guessOf(src) } : {}), route: route.kind, ...nearOut });

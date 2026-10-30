@@ -560,7 +560,7 @@
    "skills": 4,
    "direct": 0,
    "dependants": 27,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",

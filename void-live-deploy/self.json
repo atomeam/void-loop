@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T06:19:31Z",
-   "subject": "Calendar card opens on the day the page shows"
+   "at": "2026-10-30T06:16:52Z",
+   "subject": "A stated quantity is answered with its conversion even when the model refuses"
   },
   {
    "at": "2026-10-30T06:13:47Z",
