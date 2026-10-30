@@ -11,7 +11,7 @@ test('a tool name of two words, an alias, or open + any tool name', () => {
   assert.equal(toolAsk('kanban board tool').href, '/kanban/');
 });
 test('not a tool: one word alone, the stage keeps, other asks', () => {
-  for (const s of ['gradient', 'piano', 'calculator', 'timer', 'open a bank account', 'show me the news', 'word counter for my essay hello world', '']) assert.equal(toolAsk(s), null, s);
+  for (const s of ['gradient', 'piano', 'calculator', 'timer', 'open a bank account', 'show me the news', 'word counter for my essay hello world', 'open a calculator', 'wheel of names', 'open the team chat', '']) assert.equal(toolAsk(s), null, s);
 });
 test('the card links to the tool page', () => {
   const el = { innerHTML: '', dataset: {} };

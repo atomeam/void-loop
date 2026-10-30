@@ -10,17 +10,21 @@ import { allTools, toolNamed } from '../lib/toolkit.js';
 
 // other names people type for a tool's page
 const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-count/', 'word count': '/word-count/', 'online timer': '/stopwatch/', 'countdown timer': '/stopwatch/' };
+const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
+// pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there
+const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/wheel/']);
 const OPEN = /^(?:open|show(?: me)?|go to|take me to|launch|bring up)\s+(?:the |my |a |an )?/i;
 
 /** the tool an ask names, as { href, label }, or null. Pure. */
 export function toolAsk(text) {
   const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
   if (!t || t.length > 60) return null;
-  const opened = OPEN.test(t), name = t.replace(OPEN, '').replace(/^(?:an? |the )?(?:online |free |simple )?/, '').replace(/ (?:tool|page|app)$/, '').trim();
+  const opened = OPEN.test(t) || / (?:tool|page|app)$/.test(t), name = t.replace(OPEN, '').replace(/^(?:an? |the )?(?:online |free |simple )?/, '').replace(/ (?:tool|page|app)$/, '').trim();
   const alias = ALIASES[t.replace(OPEN, '')] || ALIASES[name];
-  if (!alias && (!name || (!opened && !/ /.test(name)))) return null;
+  // a bare name with no verb must read as a tool ("word counter", "base converter"): a bare "wheel of names" or "piano" stays with its own skill
+  if (!alias && (!name || (!opened && !TOOL_NOUN.test(name)))) return null;
   const href = alias || toolNamed(name);
-  if (!href) return null;
+  if (!href || OWNED.has(href)) return null;
   const label = (allTools().find(([p]) => p === href) || [href, name])[1];
   return { href, label };
 }
