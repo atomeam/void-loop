@@ -201,3 +201,20 @@ test('the Adds to Verse line ends at a whole clause or word, never in the middle
   const card = cardOf({ page: { line: long, chapter: 'world', n: 1 }, book: { pages: [{}] } });
   assert.equal(card.adds, addsLine(long));
 });
+
+test('a holiday card opens its day on the Calendar (2026-10-30: live, "how many days until christmas" had no link to any page)', async () => {
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const { parseLocal } = await import('../void-live-deploy/lib/calendar.js');
+  assert.deepEqual(pageOfCard('', '/calendar/?d=2026-12-25&view=day'), ['/calendar/?d=2026-12-25&view=day', 'Calendar']);
+  const src = readFileSync(resolve(root, '../../void.html'), 'utf8');
+  const line = src.match(/const holidayPage = (\(d\) => .+);/);
+  assert.ok(line, 'the holiday link is in void.html');
+  const holidayPage = new Function('return ' + line[1])();
+  const page = holidayPage(new Date(2026, 11, 25));
+  assert.equal(page, '/calendar/?d=2026-12-25&view=day', 'the local day, not the UTC one');
+  assert.equal(parseLocal(new URLSearchParams(page.split('?')[1]).get('d')).getDate(), 25, 'the Calendar reads the same day');
+  assert.equal(holidayPage(new Date(2027, 0, 1)), '/calendar/?d=2027-01-01&view=day');
+  // both holiday cards ("when is christmas", "how many days until christmas") pass it to bigPage, which sets the card's data-page
+  assert.equal((src.match(/\(h\.days === 1 \? '' : 's'\), holidayPage\(h\.d\)\);/g) || []).length, 2);
+  assert.match(src, /const bigPage = \(title, big, note, page\) => showPage\(\(p\) => \{ if \(page\) p\.dataset\.page = page;/);
+});

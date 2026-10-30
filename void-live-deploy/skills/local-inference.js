@@ -57,6 +57,13 @@ export async function checkLedgerDiff(diff, schemaState, model = MODEL) {
   }
 }
 
+/** what the card says when the check fails. A fetch that never reaches Ollama (a TypeError: nothing listens at localhost:11434, or Ollama
+ *  refuses this site's origin) says how to make it answer, not the browser's bare "Failed to fetch". Pure. */
+export function reachMessage(e) {
+  if (e && e.name === 'TypeError') return 'Ollama did not answer at ' + OLLAMA_BASE + '. This check runs on your own computer: start Ollama with OLLAMA_ORIGINS=' + (typeof location !== 'undefined' && location.origin ? location.origin : 'https://a-to-mind.com') + ', run ollama pull ' + MODEL + ', then press Validate Locally again.';
+  return 'Error: ' + (e && e.message ? e.message : String(e));
+}
+
 export function localInferenceOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:validate|check)\s+(?:this\s+)?(?:diff|ledger|draft)/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
@@ -138,7 +145,7 @@ export default {
         outEl.textContent = JSON.stringify({ pass: result.pass, issues: result.issues }, null, 2);
       } catch (e) {
         outEl.className = 'result fail';
-        outEl.textContent = 'Error: ' + e.message;
+        outEl.textContent = reachMessage(e);
       } finally {
         runBtn.disabled = false;
         runBtn.classList.remove('loading');

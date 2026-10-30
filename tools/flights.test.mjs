@@ -165,7 +165,12 @@ test('the stage card: takes flight asks, leaves distance asks to the distance sk
   for (const n of names) { const sk = (await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default; mods.push(...(sk.family ? sk.members : [sk])); }
   for (const s of FLIGHT_SITES) { const k = mods.find((m) => m.match(s.card.toLowerCase(), s.card)); assert.equal(k && k.name, 'flights', 'the stage gives the card ask of ' + s.path + ' to the flights card: ' + s.card); }
   let html = ''; const el = { dataset: {}, set innerHTML(v) { html = v; } }; assert.equal(skill.run('flights to lisbon', { showPage: (f) => f(el), esc: (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;') }), 'flights');
-  assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/');
+  assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/?toq=lisbon', 'the full page link keeps the places too');
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js'), api = { showPage: (f) => f(el), esc: (s) => String(s) };
+  skill.run('where can i fly from berlin', api); assert.deepEqual(pageOfCard('flights', el.dataset.page)[0], '/flights/routes/?fromq=berlin', 'the full page opens on Berlin');
+  skill.run('flights to sao paulo', api); assert.equal(el.dataset.page, '/flights/?toq=sao%20paulo');
+  skill.run("flights to xi'an", api); assert.equal(el.dataset.page, '/flights/', 'a query card-frame would refuse drops to the plain page');
+  skill.run('cheap flights', api); assert.equal(el.dataset.page, '/flights/');
 });
 
 test('the leg links: the landing moment in both cities with their zones, the weather at the arrival airport, and the flight as a calendar event', async () => {
@@ -183,4 +188,11 @@ test('the leg links: the landing moment in both cities with their zones, the wea
   assert.equal(lo.pathname, '/local/'); assert.deepEqual(placeFromLink(lo.search), { city: 'Kahului Maui', region: '', regionCode: '', country: 'US', lat: 20.9, lon: -156.43 }, 'the stations are found at the arrival airport, with no name to look up');
   assert.equal(C.legLinks(a, { ...b, cc: '' }, f).local, '', 'no country, no local link');
   for (const s of ['Landing time in both cities', 'Weather where it lands', 'Add the flight to my calendar', 'Radio and TV where it lands']) assert.ok(DE[s], 'German for ' + s);
+});
+
+test('the airport near a place another page found: the nearest large one, else a medium one, never a small field or a far one', () => {
+  const n = (lat, lon) => (C.airportNear(idx, lat, lon) || {}).iata || null;
+  assert.equal(n(51.507, -0.128), 'LHR'); assert.equal(n(42.36, -71.06), 'BOS'); assert.equal(n(35.68, 139.69), 'HND');
+  assert.equal(n(39.78, -89.65), 'SPI', 'no large airport within reach: the medium one of the town');
+  assert.equal(n(30, -40), null, 'mid ocean: no airport, the page asks'); for (const bad of [NaN, 91, 'x']) assert.equal(n(bad, 0), null, String(bad)); assert.equal(n(0, 181), null);
 });

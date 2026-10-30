@@ -119,6 +119,12 @@ export function placeFromLink(search) {
   if (!city || ll.length !== 2 || ll.some((x) => x.trim() === '') || !Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180 || !/^[A-Z]{2}$/.test(cc)) return null;
   return { city, region: '', regionCode: '', country: cc, lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 };
 }
+/** /flights/ with this place as where the trip lands (the page picks the airport near it), or null without a position. Pure. */
+export function flightsLink(place) {
+  const lat = Number(place && place.lat), lon = Number(place && place.lon);
+  if (!place || place.lat == null || place.lon == null || !Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return null;
+  return '/flights/?tonear=' + (Math.round(lat * 1e4) / 1e4) + ',' + (Math.round(lon * 1e4) / 1e4);
+}
 /** the place in words: "Philadelphia, Pennsylvania" (the country code after it when it is not the US). Pure. */
 export const placeName = (p) => !p ? '' : [p.city, p.region].filter(Boolean).filter((x, i, a) => a.indexOf(x) === i).join(', ') + (p.country && p.country !== 'US' ? ' (' + p.country + ')' : '');
 /** TV rows of one station folded together: a call sign carries each network it airs (KYW-DT: CBS, Dabl, Start TV), each with its own stream

@@ -87,6 +87,7 @@ for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
   ['telemetry-route', 'telemetry-route.test.mjs'],
   ['about-skill', 'about-skill.test.mjs'],
+  ['local-inference', 'local-inference.test.mjs'],
   ['grades', 'grades.test.mjs'],
   ['ritual', 'ritual.test.mjs'],
   ['podcast', 'podcast.test.mjs'],
