@@ -17,9 +17,14 @@ test('quantities as people write them, read and written back', () => {
 });
 test('scaling multiplies every quantity in a line (mixed numbers, fractions, ranges, the metric weight in brackets) and leaves temperatures and pan sizes alone', () => {
   assert.equal(scale('1 ½ cups all-purpose flour (190 g)', 2), '3 cups all-purpose flour (380 g)');
-  assert.equal(scale('3 ½ teaspoons baking powder', 0.5), '1 ¾ teaspoons baking powder'); assert.equal(scale('1 egg', 3), '3 egg'); assert.equal(scale('¼ teaspoon salt', 2), '½ teaspoon salt');
-  assert.equal(scale('2 to 3 cloves garlic', 2), '4 to 6 cloves garlic'); assert.equal(scale('1/2 cup milk', 3), '1 ½ cup milk'); assert.equal(scale('1,5 l water', 2), '3 l water');
+  assert.equal(scale('3 ½ teaspoons baking powder', 0.5), '1 ¾ teaspoons baking powder'); assert.equal(scale('1 egg', 3), '3 eggs'); assert.equal(scale('¼ teaspoon salt', 2), '½ teaspoon salt');
+  assert.equal(scale('2 to 3 cloves garlic', 2), '4 to 6 cloves garlic'); assert.equal(scale('1/2 cup milk', 3), '1 ½ cups milk'); assert.equal(scale('1,5 l water', 2), '3 l water');
   assert.equal(scale('Heat the oven to 375°F and butter a 9x5-inch loaf pan.', 2), 'Heat the oven to 375°F and butter a 9x5-inch loaf pan.');
+  // the word after the leading quantity agrees with the new number, both ways; other words are left as written
+  assert.equal(scale('1 tablespoon sugar', 2), '2 tablespoons sugar'); assert.equal(scale('2 cups milk', 0.5), '1 cup milk'); assert.equal(scale('3 eggs', 1 / 3), '1 egg');
+  assert.equal(scale('1 small tomato, diced', 2), '2 small tomatoes, diced'); assert.equal(scale('1 lime, juiced', 2), '2 limes, juiced'); assert.equal(scale('1 avocado', 3), '3 avocados');
+  assert.equal(scale('1 to 2 cloves garlic', 2), '2 to 4 cloves garlic'); assert.equal(scale('½ teaspoon salt', 4), '2 teaspoons salt'); assert.equal(scale('2 egg yolks', 0.5), '1 egg yolks');
+  assert.equal(scale('1 can crushed tomatoes (400 g)', 2), '2 cans crushed tomatoes (800 g)'); assert.equal(scale('14 oz spaghetti (400 g)', 0.5), '7 oz spaghetti (200 g)');
   assert.equal(scale('a pinch of salt', 2), 'a pinch of salt'); assert.equal(scale('1 egg', 1), '1 egg'); assert.equal(scale('1 egg', 0), '1 egg'); assert.equal(scale('1 egg', NaN), '1 egg');
 });
 test('units swapped both ways: cups, spoons, ounces, pounds, °F and inches to ml, g, °C and cm; a bracketed weight is used as written', () => {
