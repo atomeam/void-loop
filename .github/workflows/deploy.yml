@@ -131,6 +131,16 @@ jobs:
         if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && vars.CSP_HASHES == 'true'
         run: node tools/csp-hashes.mjs --write
 
+      # a-to-mind.com/autopilot/ shows Verse's own commits and deploys; GitHub answers the live Worker 403 from Cloudflare's shared addresses
+      # without a token, so this run reads them with its own and ships the file with the deploy (never committed, never blocks the deploy)
+      - name: Autopilot snapshot (Verse's own commits and deploys, read with this run's token)
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true'
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/autopilot-snapshot.mjs
+
       # Deploys run side by side (owner, 2026-10-25: "no need to serialize we should be able to do many things at once"): each run has its own
       # group. What serializing protected is that an older run never lands after a newer one, so just before the upload a run asks whether a
       # newer main head already has a deploy queued or running; if it does, this one stops (that run deploys a superset of it).
