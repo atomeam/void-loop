@@ -542,13 +542,29 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T03:49:47Z",
+   "subject": "Verse Brain full screen: gains tiles wear warm, shorter strip labels"
+  },
+  {
+   "at": "2026-10-30T03:49:31Z",
+   "subject": "Promote 11 more skills to proven on evidence, link the shipped STL and promotion asks"
+  },
+  {
+   "at": "2026-10-30T03:45:10Z",
+   "subject": "Verse Brain full screen: nothing covers the field"
+  },
+  {
+   "at": "2026-10-30T03:41:39Z",
+   "subject": "Site tester: keep the claims check running when the test pass is slow or the screenshot upload times out"
+  },
   {
    "at": "2026-10-30T03:41:27Z",
    "subject": "Verse fixes its media-pick skill: learn to handle \"best sci-fi movies 2024\""
@@ -560,6 +576,10 @@
   {
    "at": "2026-10-30T03:32:55Z",
    "subject": "What's new in the book reads for visitors, by their own day"
+  },
+  {
+   "at": "2026-10-30T03:32:51Z",
+   "subject": "Verse loop: task, Queue job mvqf0d75 (versus: communitydragon.org): Versus: co"
   },
   {
    "at": "2026-10-30T03:32:50Z",
@@ -590,6 +610,10 @@
    "subject": "Words and the world: 7 common asks reach their skills"
   },
   {
+   "at": "2026-10-30T03:12:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T03:09:16Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-30T03:03:24Z",
    "subject": "brain: build the live numbers and says lines with textContent"
-  },
-  {
-   "at": "2026-10-30T03:00:20Z",
-   "subject": "Better at backdrop and stl check: 5 more ways of asking answered right — new phrases: “set the stage to a retro server room” now opens…"
-  },
-  {
-   "at": "2026-10-30T02:56:52Z",
-   "subject": "brain: Verse Brain full screen at /brain/"
-  },
-  {
-   "at": "2026-10-30T02:56:35Z",
-   "subject": "Move loan through its order file and regenerate the book"
-  },
-  {
-   "at": "2026-10-30T02:51:41Z",
-   "subject": "Verse loop: task, Queue job mvpur47q (versus: uptimer.dev): Versus: uptimer.de"
-  },
-  {
-   "at": "2026-10-30T02:48:52Z",
-   "subject": "relinkRecorded: one query, no query per loop turn (Verse's review)"
-  },
-  {
-   "at": "2026-10-30T02:47:58Z",
-   "subject": "Self card: a site's ask is built only by a ledger line that names the site"
   }
  ],
  "builders": {
