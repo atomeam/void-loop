@@ -1,7 +1,7 @@
 // lib/zones.js: the time in any city, a converter and a meeting planner, all from the browser's own zone data (Intl), daylight saving included
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
+import { findPlace, placeAt, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
 import { sunDay, moonOfDay } from '../void-live-deploy/lib/sun-day.js';
 
 test('a city, a zone id, an alias, an abbreviation or an offset finds its zone; nonsense finds none', () => {
@@ -76,4 +76,10 @@ test('the next clock change: forward in spring, back in autumn, to the minute; n
   assert.equal(lon.at.toISOString(), '2026-10-25T01:00:00.000Z'); assert.equal(lon.forward, false); assert.deepEqual([lon.before, lon.after], [[2, 0], [1, 0]]);
   assert.equal(nextChange('Asia/Tokyo', new Date(Date.UTC(2026, 0, 1))), null);
   const syd = nextChange('Australia/Sydney', new Date(Date.UTC(2026, 0, 1))); assert.equal(syd.at.toISOString(), '2026-04-04T16:00:00.000Z'); assert.equal(syd.forward, false);
+});
+
+test('a link place "City@Area/Zone" keeps its name and zone; no "@", an empty name or a zone the clock does not know gives none', () => {
+  assert.deepEqual(placeAt('Kahului@Pacific/Honolulu'), { name: 'Kahului', tz: 'Pacific/Honolulu' }); assert.deepEqual(placeAt('Kolkata@Asia/Kolkata'), { name: 'Kolkata', tz: 'Asia/Kolkata' });
+  for (const x of ['London', '@UTC', 'x@Mars/Olympus', 'x@<b>', 'x@', '']) assert.equal(placeAt(x), null, x);
+  assert.equal(placeAt('a'.repeat(80) + '@UTC').name.length, 60);
 });
