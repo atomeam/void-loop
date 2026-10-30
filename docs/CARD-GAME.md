@@ -34,7 +34,7 @@ The rules fit on one screen:
   - Spark: it answered a direct question.
   - Swift: under 40 words.
 
-Every card you've been shown is in your deck. A new player's deck is topped up with starter cards from the Verse Book's skill pages,
+Every card you've been shown is in your deck. A new player's deck is topped up with starter cards from the Book of Verse's skill pages,
 which are real lines too. Verse's deck is drawn from those same pages.
 
 ### Learning, levels and the daily challenge

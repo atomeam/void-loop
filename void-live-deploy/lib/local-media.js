@@ -111,6 +111,35 @@ export function placeFromGeocoder(g) {
   return { city: cleanText(g.name, 80), region: cleanText(g.admin1, 80), regionCode: '', country: String(g.country_code).toUpperCase(),
     lat: Math.round(g.latitude * 100) / 100, lon: Math.round(g.longitude * 100) / 100 };
 }
+// US states and Canadian provinces by their two-letter codes, so "Lufkin TX" finds Lufkin in Texas (owner, 2026-10-30: "lufkin texas" was not found)
+export const REGION_CODES = Object.freeze({ AL: 'alabama', AK: 'alaska', AZ: 'arizona', AR: 'arkansas', CA: 'california', CO: 'colorado', CT: 'connecticut', DE: 'delaware',
+  FL: 'florida', GA: 'georgia', HI: 'hawaii', ID: 'idaho', IL: 'illinois', IN: 'indiana', IA: 'iowa', KS: 'kansas', KY: 'kentucky', LA: 'louisiana', ME: 'maine', MD: 'maryland',
+  MA: 'massachusetts', MI: 'michigan', MN: 'minnesota', MS: 'mississippi', MO: 'missouri', MT: 'montana', NE: 'nebraska', NV: 'nevada', NH: 'new hampshire', NJ: 'new jersey',
+  NM: 'new mexico', NY: 'new york', NC: 'north carolina', ND: 'north dakota', OH: 'ohio', OK: 'oklahoma', OR: 'oregon', PA: 'pennsylvania', RI: 'rhode island', SC: 'south carolina',
+  SD: 'south dakota', TN: 'tennessee', TX: 'texas', UT: 'utah', VT: 'vermont', VA: 'virginia', WA: 'washington', WV: 'west virginia', WI: 'wisconsin', WY: 'wyoming',
+  DC: 'district of columbia', PR: 'puerto rico', AB: 'alberta', BC: 'british columbia', MB: 'manitoba', NB: 'new brunswick', NL: 'newfoundland and labrador', NS: 'nova scotia',
+  ON: 'ontario', PE: 'prince edward island', QC: 'quebec', SK: 'saskatchewan' });
+/** the geocoder asks for a typed place, best first, at most 3: { q, hint }. The free geocoder matches a bare town name only, so "Lufkin Texas",
+ *  "Lufkin, TX" and "Paris France" become the town ("Lufkin", "Paris") with the rest as a hint that must match the result's region or country.
+ *  The whole text is tried first, so a town whose name has several words ("New York", "Salt Lake City") still works. Pure. */
+export function placeTries(name) {
+  const raw = String(name || '').replace(/\s+/g, ' ').trim(); if (!raw) return [];
+  const out = [{ q: raw, hint: '' }];
+  const comma = raw.indexOf(',');
+  if (comma > 0) { const town = raw.slice(0, comma).trim(), hint = raw.slice(comma + 1).replace(/,/g, ' ').trim(); if (town && hint) out.push({ q: town, hint }); }
+  else {
+    const w = raw.split(' ');
+    for (let cut = w.length - 1; cut >= 1 && out.length < 3; cut--) out.push({ q: w.slice(0, cut).join(' '), hint: w.slice(cut).join(' ') });
+  }
+  return out.slice(0, 3);
+}
+/** the first geocoder result that a hint allows: with no hint the first result; with one, the first whose region, county, country or
+ *  country code (or the state a two-letter code names) is the hint. null when none matches, so a hint never lands on a wrong town. Pure. */
+export function pickPlace(results, hint) {
+  const list = Array.isArray(results) ? results : []; if (!hint) return list[0] || null;
+  const h = fold(hint), full = REGION_CODES[h.toUpperCase()] || '';
+  return list.find((g) => { const names = [g.admin1, g.admin2, g.country, g.country_code].map(fold).filter(Boolean); return names.includes(h) || (full && fold(g.admin1) === full); }) || null;
+}
 /** a place another page hands over in the link, in the same shape: ?place=<name>&ll=<lat>,<lon>&cc=<country code>, as a flight's arrival
  *  airport sends it, so the stations are found at that exact point with no name to look up. null when any part is missing or wrong. Pure. */
 export function placeFromLink(search) {

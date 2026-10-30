@@ -278,7 +278,22 @@ export function judgeRows(floor, ev, sw = '') {
   }
   return { n: g.n, m: g.m, beaten: g.beaten, fixes, jobs };
 }
-export const reportLine = (took, next, other = {}) => 'Versus: took on ' + (took.length ? took.map((t) => t.host + ' (' + t.family + ', ' + t.page + '), surpassed ' + t.n + ' of ' + t.m + ' rows' + (t.beaten ? ', beaten' : '')).join('; ') : 'no site') + (Object.keys(other).length ? ' (also read: ' + Object.entries(other).map(([k, v]) => v + ' ' + k).join(', ') + ')' : '') + '; next ' + (next || 'the next site the scan finds');
+// `next` is the tower's target (tower.target.json) while one stands, never the frontier site the loop reads next: the Versus card names the
+// target first, so a lap that named another site said something the tower did not (owner's review, 2026-10-30: "next randomarea.com" while
+// the target was onlineconverter.com). `cause` says why nothing was judged when every read failed the same way (the model answered 401).
+export const reportLine = (took, next, other = {}, cause = '') => 'Versus: took on ' + (took.length ? took.map((t) => t.host + ' (' + t.family + ', ' + t.page + '), surpassed ' + t.n + ' of ' + t.m + ' rows' + (t.beaten ? ', beaten' : '')).join('; ') : 'no site') + (Object.keys(other).length ? ' (also read: ' + Object.entries(other).map(([k, v]) => v + ' ' + k).join(', ') + ')' : '') + (cause ? '; ' + cause : '') + '; next ' + (next || 'the next site the scan finds');
+/** why the lap's unjudged sites went unjudged, when they share one reason ("the model answered 401 on 7 of 8 reads, so those were not judged"),
+ *  else ''. Pure. */
+export function causeOfLap(state = {}) {
+  const v = Object.values(state || {}), nj = v.filter((x) => x && x.outcome === 'not-judged'); if (!nj.length) return '';
+  const whys = [...new Set(nj.map((x) => clip(x.why || 'no answer', 80)))];
+  return whys.length === 1 ? whys[0] + (nj.length === v.length ? ' on every read, so no site was judged' : ' on ' + nj.length + ' of ' + v.length + ' reads, so those were not judged') : '';
+}
+/** a lap that changed nothing: no site taken on, no page built, no job queued, no fix. Its line stays in domains/tower-self.json and stays out of the
+ *  growth ledger (tools/tower-self-report.sh): a lap with no growth is not growth. Pure. */
+export const isNoop = (r) => !!r && !/^Versus: took on (?!no site)/.test(r.line || '') && !r.built && !r.queued && !(r.fixed || []).length;
+/** the site named as next: the target while tower.target.json names one, else the frontier's next read. Pure. */
+export const nextOf = (target, pick) => (target && target.id ? hostOf(target.id) + ' (the target)' : pick ? pick.host : '');
 async function queueJobs(jobs) {
   const tok = process.env.VOID_OWNER_TOKEN, H = { authorization: 'Bearer ' + tok, 'content-type': 'application/json', 'user-agent': 'a2m-tower-self/1.0' };
   if (!tok) { for (const j of jobs) console.log('would queue ' + j.target + ': ' + j.ask); return 0; }
@@ -309,8 +324,9 @@ async function judge(idsFile, { queue = false, decisionFile = null } = {}) {
   let swNext = sw; for (const r of SELF_SITES) swNext = swWith(swNext, r.path); if (swNext !== sw) fs.writeFileSync(SW, swNext); const rewrote = writePages();
   const next = pickCandidates(readJson(path.join(SITE_DIR, 'tower.frontier.json'), null), st, { max: 1 })[0];
   const other = {}; for (const v of Object.values((d && d.state) || {})) if (v.outcome !== 'built') other[v.outcome] = (other[v.outcome] || 0) + 1;
-  const line = reportLine(took, next && next.host, other);
-  st.runs = [...(st.runs || []), { at: now(), line, built: ((d && d.rows) || []).length, queued, fixed: fixed.map((x) => x.id + ': ' + x.fixes.join(', ')), pages_per_day: pagesPerDay(SELF_SITES) }].slice(-40);
+  const line = reportLine(took, nextOf(readJson(path.join(SITE_DIR, 'tower.target.json'), null), next), other, took.length ? '' : causeOfLap(d && d.state));
+  const run = { at: now(), line, built: ((d && d.rows) || []).length, queued, fixed: fixed.map((x) => x.id + ': ' + x.fixes.join(', ')), pages_per_day: pagesPerDay(SELF_SITES), ...(next ? { reads_next: next.host } : {}) };
+  st.runs = [...(st.runs || []), { ...run, ...(isNoop(run) ? { noop: true } : {}) }].slice(-40);
   writeState(st);
   console.log(line); if (fixed.length) console.log('fixed: ' + fixed.map((x) => x.id + ' (' + x.fixes.join(', ') + ')').join('; ') + (rewrote.length ? '; pages rewritten: ' + rewrote.join(', ') : ''));
   if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, 'line=' + line.replace(/\n/g, ' ') + '\nfixed=' + (fixed.length || swNext !== sw || rewrote.length ? 'yes' : '') + '\n');
