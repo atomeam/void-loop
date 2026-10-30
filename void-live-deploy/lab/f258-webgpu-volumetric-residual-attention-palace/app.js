@@ -14,6 +14,7 @@ async function initWebGPU() {
     return false;
   }
   const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) { status.textContent = 'WebGPU unavailable — 2D fallback'; return false; }
   device = await adapter.requestDevice();
   context = canvas.getContext('webgpu');
   const format = navigator.gpu.getPreferredCanvasFormat();
