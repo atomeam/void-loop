@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as L from '../void-live-deploy/lib/local-media.js';
-import { askIn, radioPaths, lookRadio, onRequestGet } from '../void-live-deploy/functions/api/local.js';
+import { askIn, radioPaths, lookRadio, lookPlace, onRequestGet } from '../void-live-deploy/functions/api/local.js';
 import { csvRows, csvObjects, m3uEntries, build } from './local-tv.mjs';
 import skill from '../void-live-deploy/skills/local-stations.js';
 
@@ -134,4 +134,23 @@ test('a place handed over in the link (a flight\'s arrival airport): the exact p
 test('flights to the place shown: its point in the link for /flights/ to pick the airport, or nothing without one', () => {
   assert.equal(L.flightsLink({ city: 'London', lat: 51.50735, lon: -0.12776 }), '/flights/?tonear=51.5074,-0.1278');
   for (const bad of [null, {}, { city: 'London' }, { lat: 51.5 }, { lat: 'x', lon: 0 }, { lat: 91, lon: 0 }, { lat: 0, lon: 181 }]) assert.equal(L.flightsLink(bad), null, JSON.stringify(bad));
+});
+
+// owner, 2026-10-30: "lufkin texas" was not found: the free geocoder matches a bare town name only
+test('a town typed with its state or country is found in that state or country, never in a wrong one', async () => {
+  assert.deepEqual(L.placeTries('lufkin texas'), [{ q: 'lufkin texas', hint: '' }, { q: 'lufkin', hint: 'texas' }]);
+  assert.deepEqual(L.placeTries('Lufkin, TX'), [{ q: 'Lufkin, TX', hint: '' }, { q: 'Lufkin', hint: 'TX' }]);
+  assert.deepEqual(L.placeTries('salt lake city utah').map((t) => t.q), ['salt lake city utah', 'salt lake city', 'salt lake']);
+  const lufkins = [{ name: 'Lufkin', admin1: 'Georgia', country: 'United States', country_code: 'US', latitude: 1, longitude: 1 },
+    { name: 'Lufkin', admin1: 'Texas', admin2: 'Angelina', country: 'United States', country_code: 'US', latitude: 31.34, longitude: -94.73 }];
+  assert.equal(L.pickPlace(lufkins, 'texas').admin1, 'Texas');
+  assert.equal(L.pickPlace(lufkins, 'TX').admin1, 'Texas', 'a two-letter state code');
+  assert.equal(L.pickPlace(lufkins, 'ohio'), null, 'a hint that matches nothing finds nothing');
+  assert.equal(L.pickPlace(lufkins, '').admin1, 'Georgia');
+  const asked = [], fetchFn = async (url) => { const q = new URL(url).searchParams.get('name'); asked.push(q); return Response.json(q === 'lufkin' ? { results: lufkins } : {}); };
+  const out = await lookPlace('lufkin texas', fetchFn);
+  assert.deepEqual(asked, ['lufkin texas', 'lufkin']);
+  assert.equal(out.ok, true); assert.equal(out.place.region, 'Texas'); assert.equal(out.place.city, 'Lufkin');
+  assert.deepEqual(await lookPlace('nowhere at all', async () => Response.json({})), { ok: false, kind: 'missing' });
+  assert.deepEqual(await lookPlace('lufkin', async () => { throw new Error('down'); }), { ok: false, kind: 'away' });
 });

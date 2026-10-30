@@ -10,11 +10,11 @@
 //     the stations near one point (two numbers rounded to a tenth of a degree), in one two-letter country and one region name of at most 60
 //     letters: the hosts and paths are fixed here, the caller picks no host, path or header;
 //   - spend those free services' allowance: answers are kept on the edge (a place a day, a point's stations 30 minutes), a miss costs at most
-//     two calls, and the caller has 20 misses a minute (rateLimited(), its own bucket) on top of the guard's per-connection limit;
+//     three calls, and the caller has 20 misses a minute (rateLimited(), its own bucket) on top of the guard's per-connection limit;
 //   - learn its own connection's coarse place (the no-input ask), which is never cached, so one visitor's place is never served to another.
 // No model, no token, no database, no write; a failure is never cached.
 import { rateLimited } from './answer.js';
-import { mergeRadio, placeFromCf, placeFromGeocoder, MAX_RADIO, RADIO_KM } from '../../lib/local-media.js';
+import { mergeRadio, placeFromCf, placeFromGeocoder, placeTries, pickPlace, MAX_RADIO, RADIO_KM } from '../../lib/local-media.js';
 
 export const RL_MAX = 20, PLACE_TTL = 86400, RADIO_TTL = 1800, TIMEOUT_MS = 8000;
 export const RADIO_HOSTS = Object.freeze(['de1.api.radio-browser.info', 'all.api.radio-browser.info']);
@@ -57,10 +57,15 @@ export async function lookRadio(ask, fetchFn = fetch) {
   if (lists.every((l) => l == null)) return { ok: false, kind: 'away' };
   return { ok: true, stations: mergeRadio(...lists) };
 }
-/** a typed place: { ok, place } or { ok: false, kind: 'missing' | 'away' }. */
+/** a typed place: { ok, place } or { ok: false, kind: 'missing' | 'away' }. Tries the whole name, then the town with the rest as its region or
+ *  country (placeTries: "Lufkin Texas" -> Lufkin in Texas), at most 3 geocoder calls, stopping at the first match. */
 export async function lookPlace(name, fetchFn = fetch) {
-  let g; try { g = await getJson('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(name), fetchFn); } catch (_) { return { ok: false, kind: 'away' }; }
-  const place = placeFromGeocoder(g && g.results && g.results[0]); return place ? { ok: true, place } : { ok: false, kind: 'missing' };
+  let answered = false;
+  for (const t of placeTries(name)) {
+    let g; try { g = await getJson('https://geocoding-api.open-meteo.com/v1/search?count=' + (t.hint ? 10 : 1) + '&language=en&name=' + encodeURIComponent(t.q), fetchFn); answered = true; } catch (_) { continue; }
+    const place = placeFromGeocoder(pickPlace(g && g.results, t.hint)); if (place) return { ok: true, place };
+  }
+  return { ok: false, kind: answered ? 'missing' : 'away' };
 }
 export async function onRequestGet({ request, env, fetchFn = fetch }) {
   const ask = askIn(request.url);
