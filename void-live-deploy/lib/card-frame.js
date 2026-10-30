@@ -70,10 +70,21 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
-    adds: page && page.line ? String(page.line).replace(/\s+/g, ' ').slice(0, 120) : fetched ? 'A fact it did not have to be taught: fetched, sourced and dated.' : '',
+    adds: page && page.line ? addsLine(page.line) : fetched ? 'A fact it did not have to be taught: fetched, sourced and dated.' : '',
     name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
     keywords: keywordsOf({ tier, tested: skill && skill.last_tested, arrows: stats && deps ? (deps.imports || []).length : 0, fetched, sources, today }),
   };
+}
+
+/** the Adds to Verse line: one line of plain spaces, at most n letters. A longer line ends at its last whole clause (a comma, semicolon or
+ *  colon) or else its last whole word, never in the middle of a word ("and the role first or with a pl"), and with no ellipsis. Pure. */
+export function addsLine(s, n = 120) {
+  const t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  if (t.length <= n) return t;
+  const head = t.slice(0, n + 1); let end = -1, m; const re = /[,;:](?=\s)/g;
+  while ((m = re.exec(head))) if (m.index > 40) end = m.index;
+  if (end < 0) { const sp = head.lastIndexOf(' '); end = sp > 40 ? sp : n; }
+  return t.slice(0, end).replace(/[\s,;:(“-]+$/, '');
 }
 
 /** a card whose numbers were worked out elsewhere (a merged card, lib/merge-rules.js): { tier, chapter, typeLine, cost, power, resistance, income, adds, name } -> what cardOf returns. Pure. */
@@ -82,7 +93,7 @@ export function ownCard(o = {}) {
   const chapter = String(o.chapter || 'games').slice(0, 20);
   return { rarity: RARITY[o.tier] || null, chapter, hue: hueOf(chapter), fetched: false, cost: n(o.cost, 9), typeLine: String(o.typeLine || '').slice(0, 80),
     power: n(o.power, 99), toughness: n(o.resistance, 99), income: n(o.income, 9), arrowsOut: 0, arrowIn: false, number: '', tested: '',
-    adds: String(o.adds || '').replace(/\s+/g, ' ').slice(0, 120), name: String(o.name || '').slice(0, 40) };
+    adds: addsLine(o.adds), name: String(o.name || '').slice(0, 40) };
 }
 
 const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color:' + r.gem + '" title="' + r.name + '"></i>' : '');

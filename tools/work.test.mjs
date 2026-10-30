@@ -74,3 +74,18 @@ test('run: no match links the jobs page with the search; a dead service and an a
   await withJobs(new Error('offline'), async () => { const api = apiOf(); assert.equal(await work.run('jobs as a writer', api), 'work'); assert.ok(api.pages[0].innerHTML.includes('No remote listings turned up for that.')); });
   await withJobs({ jobs: JOBS }, async (urls) => { const api = apiOf(); assert.equal(await work.run('good job', api), 'none'); assert.equal(urls.length, 0); assert.equal(api.pages.length, 0); });
 });
+
+test('run: the count says job for one listing, and says how many show when there are more than 8', async () => {
+  await withJobs({ jobs: JOBS }, async () => {
+    const api = apiOf(); assert.equal(await work.run('remote designer jobs', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('>1 remote job<') && !h.includes('1 remote jobs'), h);
+  });
+  const many = Array.from({ length: 11 }, (_, i) => ({ id: 'r' + i, src: 'remotive', title: 'Python Developer ' + i, company: 'Co ' + i, url: 'https://remotive.com/remote-jobs/software-dev/p-' + i, loc: 'Worldwide', type: 'full-time', tags: ['python'], date: '2026-10-2' + (i % 9) + 'T00:00:00Z' }));
+  await withJobs({ jobs: many }, async () => {
+    const api = apiOf(); assert.equal(await work.run('remote jobs for python', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('>11 remote jobs, the first 8 here<'), h);
+    assert.equal((h.match(/<li>/g) || []).length, 8);
+  });
+});

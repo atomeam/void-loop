@@ -183,3 +183,17 @@ test('a card whose art box shows the answer\'s photo does not show the same phot
   assert.match(src, /if \(source === 'photo' && photoImg && photoImg\.parentNode === el\) photoImg\.dataset\.vcArtSrc = '1';/, 'only a photo that stands on its own in the card is the one hidden');
   assert.match(src, /if \(source !== 'photo' \|\| i !== photoImg\) delete i\.dataset\.vcArtSrc;/, 'a card that no longer shows that photo as art shows it in its body again');
 });
+
+test('the Adds to Verse line ends at a whole clause or word, never in the middle of a word (2026-10-30: the jobs card ended "or with a pl")', async () => {
+  const { addsLine } = await import('../void-live-deploy/lib/card-frame.js');
+  const long = 'Remote jobs: "find me work as a designer", "remote jobs for python", "jobs as a writer", and the role first or with a place';
+  assert.equal(addsLine(long), 'Remote jobs: "find me work as a designer", "remote jobs for python", "jobs as a writer"');
+  const words = 'A card that names every planet and every moon of the outer solar system in the order of their distance from the sun today';
+  const w = addsLine(words);
+  assert.ok(w.length <= 120 && words.startsWith(w) && words.charAt(w.length) === ' ' && !w.endsWith('\u2026'), w);
+  assert.equal(addsLine('A short line'), 'A short line');
+  assert.equal(addsLine('  two   spaces  '), 'two spaces');
+  assert.equal(addsLine(null), '');
+  const card = cardOf({ page: { line: long, chapter: 'world', n: 1 }, book: { pages: [{}] } });
+  assert.equal(card.adds, addsLine(long));
+});

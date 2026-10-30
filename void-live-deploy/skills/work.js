@@ -59,7 +59,7 @@ async function run(text, api) {
       return '<li><a href="' + esc(d.url) + '" target="_blank" rel="noopener">' + esc(d.title) + '</a>'
         + '<br><span style="color:#8a8a8a">' + esc(bits) + ' · via ' + esc(C.SOURCES[d.src].name) + '</span></li>';
     }).join('');
-    el.innerHTML = '<h2>Remote work · ' + esc(what) + '</h2><p style="color:#8a8a8a;font-size:13px">' + esc(jobs.length + ' remote jobs') + '</p><ul>' + rows + '</ul>'
+    el.innerHTML = '<h2>Remote work · ' + esc(what) + '</h2><p style="color:#8a8a8a;font-size:13px">' + esc(jobs.length === 1 ? '1 remote job' : jobs.length + ' remote jobs' + (jobs.length > 8 ? ', the first 8 here' : '')) + '</p><ul>' + rows + '</ul>'
       + '<p style="color:#8a8a8a;font-size:13px">Listings from Remotive, Jobicy and Himalayas, each linked to its original posting · check the company yourself before you apply.</p>' + there
       + '<div class="src"><a href="' + esc(page) + '">Open the full jobs page</a>: filters, saved jobs, alerts and an application tracker</div>';
     return 'work';
