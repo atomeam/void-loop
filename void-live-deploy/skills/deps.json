@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1059,
+ "counted": 1060,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -172,9 +172,9 @@
   },
   {
    "file": "lib/self-sites.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 1
   },
   {
@@ -262,6 +262,13 @@
    "tests": 0
   },
   {
+   "file": "lib/flight-sites.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 14,
+   "tests": 1
+  },
+  {
    "file": "lib/game-kit.js",
    "skills": 9,
    "direct": 1,
@@ -311,11 +318,18 @@
    "tests": 1
   },
   {
-   "file": "lib/flight-sites.js",
+   "file": "lib/job-sites.js",
    "skills": 8,
-   "direct": 1,
+   "direct": 0,
    "dependants": 13,
    "tests": 1
+  },
+  {
+   "file": "lib/tool-sites.js",
+   "skills": 8,
+   "direct": 2,
+   "dependants": 12,
+   "tests": 4
   },
   {
    "file": "lib/bridges.js",
@@ -358,20 +372,6 @@
    "direct": 0,
    "dependants": 12,
    "tests": 1
-  },
-  {
-   "file": "lib/job-sites.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/tool-sites.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 11,
-   "tests": 4
   },
   {
    "file": "lib/card-image.js",
@@ -731,6 +731,13 @@
    "tests": 1
   },
   {
+   "file": "lib/local-ask.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 0
+  },
+  {
    "file": "lib/selfcheck.js",
    "skills": 3,
    "direct": 1,
@@ -755,6 +762,20 @@
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-ask.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/converter-ask.js",
+   "skills": 3,
+   "direct": 1,
    "dependants": 4,
    "tests": 1
   },
@@ -969,32 +990,11 @@
    "tests": 2
   },
   {
-   "file": "lib/local-ask.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 0
-  },
-  {
    "file": "lib/generators.js",
    "skills": 2,
    "direct": 1,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/brain-ask.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/converter-ask.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/field-fluid-orbs.js",
@@ -1114,6 +1114,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/toolkit.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 17
   },
   {
    "file": "lib/translate-card.js",
@@ -2101,13 +2108,6 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/toolkit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 17
   },
   {
    "file": "lib/tower-rank.js",
@@ -4982,6 +4982,7 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -6156,6 +6157,7 @@
     "skills/converter.js"
    ],
    "reachedBy": [
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -6869,6 +6871,7 @@
     "skills/forge-table.js",
     "skills/kanban-board.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/pdf-tools.js",
     "skills/toolkit.js"
    ]
@@ -7445,6 +7448,7 @@
     "skills/forge-table.js",
     "skills/kanban-board.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/pdf-tools.js",
     "skills/toolkit.js"
    ]
@@ -7871,6 +7875,7 @@
    "reachedBy": [
     "functions/api/local.js",
     "skills/local-stations.js",
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -10314,6 +10319,7 @@
     "skills/forge-table.js",
     "skills/kanban-board.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/pdf-tools.js",
     "skills/studios.js",
     "skills/toolkit.js",
@@ -11512,6 +11518,7 @@
     "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -11525,6 +11532,7 @@
     "lib/local-ask.js"
    ],
    "importedBy": [
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -14422,6 +14430,12 @@
    "importedBy": [
     "skills/heart.js"
    ]
+  },
+  "skills/open-tool.js": {
+   "imports": [
+    "lib/toolkit.js"
+   ],
+   "importedBy": []
   },
   "skills/oracle.js": {
    "imports": [
