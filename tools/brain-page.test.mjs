@@ -54,3 +54,10 @@ test('the stage skill answers the full-screen asks with a link to /brain/, and i
   assert.match(html, /href="\/brain\/"/); assert.match(said, /a-to-mind\.com\/brain\//);
   assert.match(readFileSync(new URL('../void-live-deploy/skills/verse-brain.js', import.meta.url), 'utf8'), /full\.href = '\/brain\/'/);
 });
+
+test('nothing covers the field: the bar and the numbers are docked above and below it, and the numbers fold away', () => {
+  const read = (f) => readFileSync(new URL('../void-live-deploy/brain/' + f, import.meta.url), 'utf8'), html = read('index.html'), app = read('app.js');
+  assert.match(html, /#field \{ position: fixed; top: var\(--top, 60px\); bottom: var\(--hud, 0px\)/);
+  assert.match(html, /id="numBtn" aria-controls="live"/);
+  assert.match(app, /setProperty\('--top', bar\.offsetHeight/); assert.match(app, /setProperty\('--hud', \(live\.hidden \? 0 : live\.offsetHeight\)/);
+});
