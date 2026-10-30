@@ -171,6 +171,7 @@ for (const [name, file] of [
   ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
+  ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
   ['fuzzy', 'fuzzy.test.mjs'],
