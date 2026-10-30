@@ -30,7 +30,8 @@ const ownerVideoCap = (env) => { const n = Number(env && env.OWNER_VIDEO_DAILY_U
 let ready = null;
 async function ensure(env) {
   if (!ready) ready = env.DB.batch([
-    env.DB.prepare('CREATE TABLE IF NOT EXISTS void_studio_runs (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT NOT NULL, model TEXT NOT NULL, bench TEXT NOT NULL, size INTEGER NOT NULL, score REAL NOT NULL, match REAL NOT NULL, flaws REAL NOT NULL, look REAL NOT NULL, w INTEGER, h INTEGER, ms INTEGER NOT NULL, neurons INTEGER NOT NULL, worst TEXT)'),
+    // void_studio_runs2: the first table held 'flaws' scores the judge read as a flaw count (inverted); those rows are not mixed in
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS void_studio_runs2 (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT NOT NULL, model TEXT NOT NULL, bench TEXT NOT NULL, size INTEGER NOT NULL, score REAL NOT NULL, match REAL NOT NULL, clean REAL NOT NULL, look REAL NOT NULL, w INTEGER, h INTEGER, ms INTEGER NOT NULL, neurons INTEGER NOT NULL, worst TEXT)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS void_studio_spend (day TEXT NOT NULL, who TEXT NOT NULL, usd REAL NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (day, who))'),
   ]).catch((e) => { ready = null; throw e; });
   await ready;
@@ -48,11 +49,11 @@ export async function b64Of(r) {
   return '';
 }
 /** one picture from one image model: { img, ms, w, h } or a thrown error naming what the model said */
-export async function paintWith(env, slug, prompt, size, seed) {
+export async function paintWith(env, slug, prompt, size, seed, ms = PAINT_MS) {
   const m = IMAGE_MODELS[slug], ask = paintAskOf(slug, prompt, size, seed); if (!m || !ask) throw new Error('no such painter');
   let input = ask.json;
   if (ask.form) { const f = new FormData(); for (const [k, v] of Object.entries(ask.form)) f.append(k, v); const body = new Response(f); input = { multipart: { body: body.body, contentType: body.headers.get('content-type') } }; }
-  const t0 = Date.now(), r = await timed(env.AI.run(m.id, input), PAINT_MS, slug);
+  const t0 = Date.now(), r = await timed(env.AI.run(m.id, input), ms, slug);
   const img = pictureOf(await b64Of(r));
   if (!img) throw new Error('not a picture: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 60) : typeof r));
   const got = sizeOf(img) || [0, 0];
@@ -83,15 +84,15 @@ async function bench(env, b) {
     try {
       const pic = await paintWith(env, p.model, ref.prompt, dims, seed);
       Object.assign(row, { ms: pic.ms, w: pic.w, h: pic.h });
-      try { const j = await judge(env, pic.img, ref.prompt, ref.checks); Object.assign(row, { score: scoreOf(j, [pic.w, pic.h], dims), match: j.match, flaws: j.flaws, look: j.look, worst: j.worst, checks: j.checks }); }
+      try { const j = await judge(env, pic.img, ref.prompt, ref.checks); Object.assign(row, { score: scoreOf(j, [pic.w, pic.h], dims), match: j.match, clean: j.clean, look: j.look, worst: j.worst, checks: j.checks }); }
       catch (e) { row.judgeError = why(e); }
       if (b.images) row.img = pic.img;
     } catch (e) { row.error = why(e); }
     runs.push(row);
   }
   const judged = runs.filter((r) => r.score !== undefined); // kept as one batch, after the paintings
-  if (judged.length) await env.DB.batch(judged.map((r) => env.DB.prepare('INSERT INTO void_studio_runs (day, model, bench, size, score, match, flaws, look, w, h, ms, neurons, worst) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(day, r.model, r.bench, size, r.score, r.match, r.flaws, r.look, r.w || 0, r.h || 0, r.ms, r.neurons, r.worst || ''))).catch(() => {});
+  if (judged.length) await env.DB.batch(judged.map((r) => env.DB.prepare('INSERT INTO void_studio_runs2 (day, model, bench, size, score, match, clean, look, w, h, ms, neurons, worst) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(day, r.model, r.bench, size, r.score, r.match, r.clean, r.look, r.w || 0, r.h || 0, r.ms, r.neurons, r.worst || ''))).catch(() => {});
   return { ok: true, size, cap, planned: plan.length, neurons, runs };
 }
 
@@ -138,9 +139,21 @@ export async function onRequestPost({ request, env }) {
 /** the scoreboard and the painter it picks (public: numbers only) */
 export async function boardNow(env) {
   await ensure(env);
-  const { results } = await env.DB.prepare('SELECT model, bench, score, ms FROM void_studio_runs WHERE day >= ? ORDER BY id DESC LIMIT 2000').bind(dayOf(Date.now() - 30 * 864e5)).all();
+  const { results } = await env.DB.prepare('SELECT model, bench, score, ms FROM void_studio_runs2 WHERE day >= ? ORDER BY id DESC LIMIT 2000').bind(dayOf(Date.now() - 30 * 864e5)).all();
   const board = boardOf(results || []);
   return { board, champion: championOf(board), models: Object.keys(IMAGE_MODELS).map((m) => ({ model: m, neurons1024: neuronsOf(m, [1024, 1024]) })), prompts: BENCH.map((x) => x.id) };
+}
+// The public painter /image/ uses (functions/api/image.js): the board's best model that costs no more at 1024 x 1024 than klein-4b's 110
+// neurons, so the page's daily share (AI_SHARE pictures, ~4,000 neurons with the forge) stays what it was. Read once an hour per isolate.
+export const PUBLIC_NEURONS = 120;
+let painterCache = { at: 0, slug: '' };
+export const resetPainter = () => { painterCache = { at: 0, slug: '' }; };
+export async function publicPainter(env, now = Date.now()) {
+  if (painterCache.slug && now - painterCache.at < 3600e3) return painterCache.slug;
+  let slug = 'klein-4b';
+  try { const { board } = await boardNow(env); slug = championOf(board, { maxNeurons: PUBLIC_NEURONS }); } catch (_) {}
+  painterCache = { at: now, slug };
+  return slug;
 }
 export async function onRequestGet({ env }) {
   if (!env || !env.DB) return json({ ok: false, off: true });

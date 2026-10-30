@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as I from '../void-live-deploy/lib/image-gen.js';
 import * as route from '../void-live-deploy/functions/api/image.js';
+import { ART_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { FREE_CAP } from '../void-live-deploy/functions/api/card-art.js';
 import { resetGuard } from '../void-live-deploy/lib/guard.js';
 
@@ -98,4 +99,21 @@ test('the route: per connection, a minute and a day', async () => {
   env.DB.raw.prepare("UPDATE void_image_days SET n = ? WHERE k LIKE 'c:%'").run(I.PER_CONN); resetGuard(); store.clear();
   const mine = await post(env, { prompt: 'a fox y' }); assert.equal(mine.status, 429); assert.equal((await mine.json()).why, 'mine');
   const left = await (await route.onRequestGet({ env })).json(); assert.equal(left.left, I.POLL_CAP - I.PER_MINUTE);
+});
+test('the route: the studio bench picks the painter inside klein-4b\'s cost; a square-only pick paints squares only; its miss falls back to klein', async () => {
+  const studio = await import('../void-live-deploy/functions/api/studio.js');
+  const { env, calls } = world(); studio.resetReady(); studio.resetPainter();
+  env.DB.batch = async (stmts) => Promise.all(stmts.map((s) => s.run()));
+  await studio.boardNow(env); // makes the studio's tables
+  const ins = env.DB.raw.prepare('INSERT INTO void_studio_runs2 (day, model, bench, size, score, match, clean, look, w, h, ms, neurons, worst) VALUES (?, ?, ?, 1024, ?, 1, 9, 8, 1024, 1024, 900, 80, \'\')');
+  for (const b of ['fox', 'hands', 'sign', 'robot']) { ins.run(today, 'schnell', b, 90); ins.run(today, 'klein-4b', b, 80); ins.run(today, 'lucid-origin', b, 99); }
+  const sq = await (await post(env, { prompt: 'a red apple', shape: 'square', seed: 3 })).json();
+  assert.equal(sq.state, 'art'); assert.equal(calls[0].model, ART_FALLBACK, 'the best model inside the cost (lucid scores more but costs more)');
+  assert.equal(calls[0].input.seed, undefined);
+  const wide = await (await post(env, { prompt: 'a red pear', shape: 'landscape', seed: 3 })).json();
+  assert.equal(wide.state, 'art'); assert.ok(calls[1].input.multipart, 'schnell paints squares only, so klein paints the wide one');
+  env.AI.run = async (model, input) => { calls.push({ model, input }); if (/schnell/.test(model)) throw new Error('down'); return { image: JPEG }; };
+  const back = await (await post(env, { prompt: 'a green apple', shape: 'square', seed: 4 })).json();
+  assert.equal(back.state, 'art'); assert.ok(calls.at(-1).input.multipart, 'klein paints when the pick fails');
+  studio.resetPainter();
 });
