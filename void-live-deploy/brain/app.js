@@ -147,7 +147,7 @@ const read = () => {
     C && C.gain != null ? ['Current', 'gain ' + C.gain + 'x over ' + C.lives + (C.lives === 1 ? ' life' : ' lives')] : null,
     R && R.gain != null ? ['Grains', 'gain ' + R.gain + 'x over ' + R.lives + (R.lives === 1 ? ' life' : ' lives')] : null,
     L && L.gain != null ? ['Pool', 'gain ' + L.gain + 'x over ' + L.lives + (L.lives === 1 ? ' life' : ' lives')] : null,
-    Q && Q.asks ? ['Dialogue', Q.asks + (Q.asks === 1 ? ' ask' : ' asks') + ' kept here · ' + Q.repeats + (Q.repeats === 1 ? ' repeat' : ' repeats') + ' · ' + Q.follows + (Q.follows === 1 ? ' follow-up' : ' follow-ups') + (Q.kept ? ' · ' + Q.kept + ' kept on ' + Q.days + (Q.days === 1 ? ' day' : ' days') : '')] : null,
+    Q && Q.asks ? ['Dialogue', ((n) => n(Q.asks, ' ask') + ' kept here · ' + n(Q.repeats, ' repeat') + ' · ' + n(Q.follows, ' follow-up') + (Q.kept ? ' · ' + Q.kept + ' kept on ' + n(Q.days, ' day') : ''))((v, w) => (v || 0) + w + (v === 1 ? '' : 's'))] : null, // a count the self lacks reads 0, never undefined
     T && T.gain != null ? ['Trace', 'gain ' + T.gain + 'x over ' + T.lives + (T.lives === 1 ? ' life' : ' lives') + (T.hold != null ? ' · holds ' + T.hold : '')] : null,
     D && D.blinks ? ['Gardener', D.inBand + ' of ' + tiles + ' patches at the edge of chaos'] : null,
     H ? ['Hearing', Math.round(H.hit * 100) + '% of next notes right over ' + H.notes] : null,
