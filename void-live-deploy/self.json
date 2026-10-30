@@ -550,6 +550,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:28:10Z",
+   "subject": "team: Verse hands waiting jobs to idle agents without being asked"
+  },
+  {
+   "at": "2026-10-30T05:27:17Z",
+   "subject": "Rap at phone width: long words wrap, and the browser checks it at 375 px"
+  },
+  {
+   "at": "2026-10-30T05:26:52Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:26:38Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T05:26:26Z",
+   "subject": "video-write: keep every picture on slow devices"
+  },
+  {
    "at": "2026-10-30T05:26:11Z",
    "subject": "tower journeys: script the password strength floor (howsecureismypassword.net)"
   },
@@ -578,6 +598,10 @@
    "subject": "team-live: check the push signature without importing the site's lib"
   },
   {
+   "at": "2026-10-30T05:19:31Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:19:07Z",
    "subject": "quote: a motivational or \"about X\" ask gets a quote from Wikiquote's page on that theme"
   },
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-30T05:15:35Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:15:15Z",
-   "subject": "Generators: the page's card shows its generator, and the card opens the same five"
-  },
-  {
-   "at": "2026-10-30T05:13:43Z",
-   "subject": "Put /emojis/ and /g/ back in the sitemap: the merge with main took main's copy"
-  },
-  {
-   "at": "2026-10-30T05:12:30Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:12:22Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T05:12:00Z",
-   "subject": "Verse Brain: /brain/ lines read whole, and the Current line says when it is too young to compare"
-  },
-  {
-   "at": "2026-10-30T05:11:56Z",
-   "subject": "The last breaks the full self-check found: a lab crash, a light lab page, the old name on /store/"
   }
  ],
  "builders": {
