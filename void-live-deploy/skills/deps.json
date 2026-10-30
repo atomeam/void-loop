@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1052,
+ "counted": 1053,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1302,7 +1302,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 8,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/rap-kit.js",
@@ -2422,6 +2422,13 @@
    "skills": 0,
    "direct": 0,
    "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-dream.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
    "tests": 1
   },
   {
@@ -4008,7 +4015,8 @@
     "lib/void-me.js",
     "lib/automation-fix.js",
     "lib/team.js",
-    "lib/job-guide.js"
+    "lib/job-guide.js",
+    "lib/brain-dream.js"
    ],
    "importedBy": [
     "functions/team/join/[code].js",
@@ -4971,6 +4979,16 @@
     "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js"
+   ]
+  },
+  "lib/brain-dream.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/team.js"
+   ],
+   "reachedBy": [
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
    ]
   },
   "lib/brain-everywhere.js": {
