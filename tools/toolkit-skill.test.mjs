@@ -14,8 +14,11 @@ test('the asks: its examples and hand-written ones on both sides', () => {
   for (const t of ['what tools do you have?', 'which tools are there', 'list all tools', 'show me all the tools', 'tool list', 'list of tools', 'how many rolls of tape for my boxes']) assert.ok(sk.match(t.toLowerCase(), t), t);
   for (const t of ['tools', 'how many rolls of wallpaper for 200ft', 'all tools are broken', 'buy some tools', 'what tools do you have for gardening']) assert.ok(!sk.match(t.toLowerCase(), t), t);
 });
-test('the card: one link per tool page, the count in the title, /tools/ as the page it opens', () => {
-  const { r, el } = card('all tools'), list = allTools();
+test('the card: one link per tool name, the count in the title, /tools/ as the page it opens', () => {
+  const { r, el } = card('all tools'), seen = new Set();
+  const list = allTools().filter(([, label]) => !seen.has(label.toLowerCase()) && seen.add(label.toLowerCase()));
+  assert.ok(list.length < allTools().length, 'a tool built twice is in the list twice: ' + allTools().length);
+  assert.ok(!el.innerHTML.includes('href="/convert/unit-converter-2/"'), 'the second unit converter is not a second chip');
   assert.equal(r, 'toolkit'); assert.equal(el.dataset.page, '/tools/');
   assert.ok(el.innerHTML.startsWith('<h2>' + list.length + ' tools</h2>'), el.innerHTML.slice(0, 40));
   assert.equal((el.innerHTML.match(/<a href=/g) || []).length, list.length);
@@ -27,7 +30,7 @@ test('the card: one link per tool page, the count in the title, /tools/ as the p
 test('the card and the Tools page list the same pages: the card once missed the eleven the page lists by hand', () => {
   const html = readFileSync(new URL('../void-live-deploy/tools/index.html', import.meta.url), 'utf8');
   const main = html.slice(html.indexOf('<main'), html.indexOf('<nav id="related"'));
-  const page = new Set([...main.matchAll(/<li><a href="(\/[^"]*)"/g)].map((m) => m[1]));
+  const page = new Set([...main.matchAll(/<li[^>]*><a href="(\/[^"]*)"/g)].map((m) => m[1]));
   const onCard = new Set([...card('all tools').el.innerHTML.matchAll(/<a href="([^"]*)"/g)].map((m) => m[1]));
   assert.ok(page.size > 80, 'the page lists its tools: ' + page.size);
   assert.deepEqual([...page].filter((h) => !onCard.has(h)), [], 'on /tools/ but not on the card');
