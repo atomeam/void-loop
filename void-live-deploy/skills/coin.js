@@ -5,6 +5,8 @@
  * flip again. "flip 5 coins" lays out five; "flip a coin 70% heads" weights it; "flip a euro", "a silver coin", "a bitcoin" change the face
  * (a currency sign, never a logo). A soft ring made in the browser, off until you turn it on. Fair: the device's crypto random, no network.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * The card's full-page link (data-page) opens /flip/ on the same ask, and the page's own card (lib/flip-card.js) asks for the coin open on
+ * it, so the card and the page lead to each other.
  */
 const N = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
 const STYLES = {
@@ -92,7 +94,18 @@ function worthButton(el, getImage, note) {
   });
 }
 
+/** the coin page on an ask, as a plain query the card frame takes (lib/card-frame.js pageOfCard), else the page itself. Pure. */
+export function pageOfFlip(text) {
+  const q = encodeURIComponent(String(text || '').trim().replace(/\s+/g, ' '));
+  return /^[A-Za-z0-9_.%-]{1,180}$/.test(q) ? '/flip/?q=' + q : '/flip/';
+}
+
 function run(text, api) {
+  const page = pageOfFlip(text), show = api.showPage;
+  return runCoin(text, { ...api, showPage: (build) => show((card) => { build(card); if (card.dataset) card.dataset.page = page; }) });
+}
+
+function runCoin(text, api) {
   const more = coinAsk(text), plain = more ? null : coinOf(text);
   if (!more && !plain) return 'none';
   if (more && more.kind === 'make') return designer(api);

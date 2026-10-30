@@ -96,15 +96,24 @@ test('what Verse decided is read from its will: a will run stuck after 2 tries a
 
 test('a new decision is an action in the log once, with what Verse wants next, why, and the site it is assimilating; it is kept', () => {
   const d = W.decisionOf(WILL);
-  assert.deepEqual(d, { want: 'Offer its proven skills as MCP tools too', because: 'It lets Verse work inside other AIs.', site: 'onlineconverter.com', tower: WILL.lap.tower.line });
+  assert.deepEqual(d, { want: 'Offer its proven skills as MCP tools too', because: 'it lets Verse work inside other AIs', site: 'onlineconverter.com', tower: WILL.lap.tower.line });
   const w = W.createWatch(), a = W.decide(w, d, NOW);
-  assert.equal(a.kind, 'decided'); assert.equal(a.what, 'Verse decided next: "Offer its proven skills as MCP tools too"'); assert.match(a.why, /other AIs\.; Versus: now onlineconverter\.com/);
+  assert.equal(a.kind, 'decided'); assert.equal(a.what, 'Verse decided next: "Offer its proven skills as MCP tools too"'); assert.match(a.why, /^it lets Verse work inside other AIs; Versus: now onlineconverter\.com/);
   assert.equal(W.decide(w, W.decisionOf(WILL), NOW + 1), null, 'the same decision is not news');
   assert.equal(W.decide(w, W.decisionOf({ ...WILL, wants: [{ title: 'Something else' }] }), NOW + 2).what, 'Verse decided next: "Something else"');
   assert.equal(W.decisionOf(null), null); assert.equal(W.decisionOf({ wants: 3 }), null);
   const w2 = W.createWatch(); assert.ok(W.loadWatch(w2, JSON.parse(JSON.stringify(W.watchOf(w)))));
   assert.equal(w2.next.want, 'Something else'); assert.deepEqual(w2.log.map((x) => x.kind), ['decided', 'decided']);
   assert.equal(W.dismiss(w, a.id), false, 'a decision is not a break to mark seen');
+  // lines read whole (seen live 2026-10-30: "each with , because It allows", "not J ... turn c."): cut at a word, "because" reads on
+  const long = W.decisionOf({ wants: [{ title: 'Offer its proven skills as MCP tools too (world clock, country facts, word definitions), each with an example call', because: 'It allows me to function as a utility within broader intelligence ecosystems.' }] });
+  assert.equal(long.want, 'Offer its proven skills as MCP tools too (world clock, country facts, word definitions)...');
+  assert.equal(long.because, 'it allows me to function as a utility within broader intelligence ecosystems');
+  assert.equal(W.decisionOf({ wants: [{ title: 'x', because: 'I can do it.' }] }).because, 'I can do it');
+  assert.ok(W.decide(W.createWatch(), long, NOW).what.length <= 120);
+  const stuck = W.observe({ will: { lastRun: { title: 'Overhaul surface:ask: persona playtest and best-site comparison, then ship', state: 'idle', tries: 2, shipped: false, why: 'idle: Verse\'s coder: no model answered (verse 503, workers-ai 401, github-models 200 not JSON) · no-change: Verse\'s coder: stopped at the turn cap' } } })[0];
+  assert.match(stuck.what, /stuck on "Overhaul surface:ask: persona playtest and best-site comparison,?\.\.\."$/); assert.match(stuck.why, /\w\.\.\.$/);
+  assert.equal(W.clip('short', 10), 'short');
 });
 
 test('the host reads /api/will and /api/team in the same look and keeps the decision', async () => {

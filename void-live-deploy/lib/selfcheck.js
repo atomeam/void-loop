@@ -6,8 +6,9 @@
 // Pure: no fetch, no DOM. Tests: tools/selfcheck.test.mjs.
 
 // pages that are not tools, so a missing "Use with" row (lib/toolkit.js mountRelated, .tk-row) is not a gap on them: the stage, Verse's own
-// pages, articles, the Versus page, and the services pages (/code-review/ and its family, every /fix/ page), which link to each other instead
-export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/members/', '/store/receipt/', '/calendar/embed/', '/conquered/', '/history/', '/handoff.html',
+// pages (the store among them), articles, the Versus page, and the services pages (/code-review/ and its family, every /fix/ page), which
+// link to each other instead. A file the sitemap lists (/llms.txt) is not a page and has no row either.
+export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/members/', '/store/', '/store/receipt/', '/calendar/embed/', '/conquered/', '/history/', '/handoff.html',
   '/compare/', '/cheat-codes/', '/code-review/', '/first-automation-setup/', '/full-stack-audit/', '/keep-it-running/', '/one-time-fix/']);
 export const KINDS = Object.freeze({
   status: 'does not open', script: 'script error', request: 'a file or API it needs fails', empty: 'shows nothing', light: 'light page (off design)',
@@ -27,7 +28,7 @@ export function luminance(css) {
 // "fight" went (owner, 2026-10-29: "verse doesnt fight any sight ... its assimilate"); the old name V01D never shows to a person (AGENTS.md)
 const WORDING = [[/\bfight(?:s|ing)?\b/i, 'says "fight": Verse assimilates'], [/\bV01D\b/, 'says the old name V01D']];
 const clip = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, WHY_MAX);
-const tool = (path) => !NOT_TOOLS.includes(path) && !/^\/(?:lab|fix)\//.test(path);
+const tool = (path) => !NOT_TOOLS.includes(path) && !/^\/(?:lab|fix)\//.test(path) && !/\.[a-z0-9]+$/i.test(path);
 
 /** What one page was seen to do wrong: [{ kind, why }]. seen: { path, status, errors[], failed[{ url, status }], text, controls, bg, toolRow, deadLinks[] }
  *  as tools/self-check.mjs read it from the rendered page. Pure. */

@@ -319,6 +319,81 @@ test('the owner\'s #work post from before #work asks were jobs goes on the queue
   assert.equal((await post(env, { do: 'queue' }, OWNER, T0 + 2000)).queued.length, 0, 'once');
 });
 
+test('a push address: https on a public host name only; a push is signed over "<time>.<body>" and an old or changed push fails', async () => {
+  for (const bad of ['', 'http://agent.example.org/in', 'https://user:pw@agent.dev/in', 'https://agent.dev:8443/in', 'https://10.0.0.1/in', 'https://[::1]/in', 'https://localhost/in',
+    'https://box.local/in', 'https://a-to-mind.com/x', 'https://api.a-to-mind.com/x', 'https://nodot/in', 'https://' + 'a'.repeat(300) + '.dev/']) assert.ok(T.hookProblem(bad), bad + ' is refused');
+  assert.equal(T.hookProblem('https://agent.dev/verse/in?x=1'), '');
+  const sig = await T.hookSign('s3cret', '1000', '{"a":1}');
+  assert.match(sig, /^[0-9a-f]{64}$/);
+  assert.equal(await T.hookVerify('s3cret', '1000', '{"a":1}', 'sha256=' + sig, 1000 + 60e3), true);
+  assert.equal(await T.hookVerify('s3cret', '1000', '{"a":2}', 'sha256=' + sig, 1000), false, 'a changed body fails');
+  assert.equal(await T.hookVerify('other', '1000', '{"a":1}', 'sha256=' + sig, 1000), false, 'another secret fails');
+  assert.equal(await T.hookVerify('s3cret', '1000', '{"a":1}', 'sha256=' + sig, 1000 + T.HOOK.skewMs + 1), false, 'an old push sent again fails');
+  const { verifyPush } = await import('../void-live-deploy/team/agent.mjs');
+  assert.equal(verifyPush('s3cret', { 'x-verse-time': '1000', 'x-verse-signature': 'sha256=' + sig }, '{"a":1}', 1000), true, 'agent.mjs checks it the same way');
+  assert.equal(verifyPush('s3cret', new Headers({ 'x-verse-time': '1000', 'x-verse-signature': 'sha256=' + sig }), '{"a":2}', 1000), false);
+  assert.deepEqual([1, 2, 3, 8, 20].map(T.hookWait), [30e3, 60e3, 120e3, 3600e3, 3600e3], '30 s, doubling, an hour at most');
+});
+
+test('Verse pushes the job to an agent\'s address, signed; a failed push goes back with no try counted and waits longer; 8 in a row stop it', async () => {
+  const env = world([JOBS[0], { id: 'team-9', ask: 'the owner asks', target: 'feature:team-9', at: '2026-10-29T20:00:00Z' }]);
+  const got = []; let up = true;
+  env.TEAM_FETCH = async (url, init) => { got.push({ url, init }); if (!up) throw new Error('no answer'); return new Response('', { status: 202 }); };
+  const ag = await admit(env, 'Pusher');
+  const set = await post(env, { do: 'hook', url: 'https://pusher.dev/verse' }, ag.key, T0 + 1000);
+  assert.equal(set.status, 200, set.say); assert.equal(set.answered, true); assert.match(set.secret, /^[0-9a-f]{64}$/);
+  assert.equal((await post(env, { do: 'hook', url: 'https://pusher.dev/other' }, ag.key, T0 + 2000)).status, 400, 'one new address a minute');
+  // the hello, then at once the best job (the owner's ask first), each signed with the secret
+  assert.deepEqual(got.map((g) => JSON.parse(g.init.body).type), ['hello', 'job']);
+  const push = got[1], body = JSON.parse(push.init.body);
+  assert.equal(push.url, 'https://pusher.dev/verse'); assert.equal(push.init.redirect, 'manual');
+  assert.equal(body.job.job, 'team-9'); assert.equal(body.agent, 'Pusher'); assert.equal(body.api, 'https://a-to-mind.com/api/team');
+  assert.equal(await T.hookVerify(set.secret, push.init.headers['x-verse-time'], push.init.body, push.init.headers['x-verse-signature'], T0 + 1000), true);
+  assert.equal(job(env, 'team-9').state, 'building');
+  assert.equal((await get(env, '', null, T0 + T.AWAY_MS + 5000)).members[0].state, 'busy', 'an agent with an address that answers is here though it says nothing');
+  assert.ok(!JSON.stringify(await get(env, '', null)).includes(set.secret), 'the secret is in no public answer');
+
+  // it closes the job; the address stops answering: the next job goes back at once, no try counted, and the next push waits
+  const done = await post(env, { do: 'here', auto: true }, ag.key, T0 + 3000); assert.equal(done.job.job, 'team-9');
+  await post(env, { do: 'done', ok: true, link: 'https://github.com/atomeam/void-loop/pull/1', note: 'ok' }, ag.key, T0 + 4000);
+  // done hands the next job in its answer; give it back so push is what hands it out
+  await post(env, { do: 'done', ok: false, failed: false, note: 'later' }, ag.key, T0 + 5000);
+  env.DB.raw.prepare("UPDATE void_team_agents SET skip = ''").run();
+  up = false; got.length = 0;
+  assert.equal(await API.pushAll(env, T0 + 6000), 0);
+  assert.equal(got.length, 1); assert.equal(job(env, 'j1').state, 'queued'); assert.equal(T.triesOf(job(env, 'j1').note), 0, 'no try counted');
+  const row = () => env.DB.raw.prepare("SELECT * FROM void_team_agents WHERE name = 'Pusher'").get();
+  assert.equal(row().hook_fails, 1); assert.equal(row().hook_next, T0 + 6000 + 30e3); assert.equal(row().skip, '', 'a push that did not arrive is not the agent passing on the job');
+  assert.equal(await API.pushAll(env, T0 + 7000), 0); assert.equal(got.length, 1, 'not again before the wait is over');
+  let t = T0 + 6000;
+  for (let i = 2; i <= T.HOOK.tries; i++) { t = row().hook_next; await API.pushAll(env, t); }
+  assert.equal(row().hook_fails, T.HOOK.tries); assert.equal(got.length, T.HOOK.tries);
+  assert.equal(await API.pushAll(env, t + 2 * 3600e3), 0); assert.equal(got.length, T.HOOK.tries, 'stopped after 8 in a row');
+  const general = await get(env, '?c=general', OWNER, t + 10);
+  assert.match(general.messages.at(-1).body, /^@Pusher's push address did not answer 8 times in a row/);
+  // the pull path still works for it, and an address set again starts pushing again
+  up = true; got.length = 0;
+  const back = await post(env, { do: 'hook', url: 'https://pusher.dev/verse' }, ag.key, t + 3 * 3600e3);
+  assert.equal(back.answered, true); assert.notEqual(back.secret, set.secret, 'a new secret each time');
+  assert.deepEqual(got.map((g) => JSON.parse(g.init.body).type), ['hello', 'job']);
+  assert.equal((await post(env, { do: 'hook', url: '' }, ag.key, t + 4 * 3600e3)).hook, null, 'an empty address takes it off');
+});
+
+test('a push address with the join: over do:join and over a POST to the join link; a bad address is said before the link is used up', async () => {
+  const env = world([JOBS[0]]); const got = [];
+  env.TEAM_FETCH = async (url, init) => { got.push(JSON.parse(init.body)); return new Response('ok'); };
+  const inv = await post(env, { do: 'invite', name: 'Hooky' }, OWNER), code = T.joinCode(inv.join);
+  assert.equal((await post(env, { do: 'join', code, hook: 'http://plain.dev/in' })).status, 400);
+  const at = (body) => new Request('https://verse.test/team/join/' + code, { method: 'POST', headers: { 'content-type': 'application/json' }, body });
+  assert.equal((await JOIN.onRequestPost({ request: at('{"hook":"https://localhost/in"}'), env, params: { code } })).status, 400);
+  const r = await JOIN.onRequestPost({ request: at('{"hook":"https://hooky.dev/in"}'), env, params: { code } }); const j = await r.json();
+  assert.equal(r.status, 201, j.say); assert.match(j.key, T.KEY_RE); assert.equal(j.hook, 'https://hooky.dev/in'); assert.equal(j.answered, true); assert.match(j.secret, /^[0-9a-f]{64}$/);
+  assert.deepEqual(got.map((g) => g.type), ['hello', 'job'], 'the link joined once, and its job came at once');
+  const inv2 = await post(env, { do: 'invite', name: 'Plain' }, OWNER);
+  const j2 = await post(env, { do: 'join', code: T.joinCode(inv2.join), hook: 'https://plain.dev/in' });
+  assert.equal(j2.status, 201); assert.equal(j2.hook, 'https://plain.dev/in');
+});
+
 test('a body a shell mangled is still read: PowerShell\'s {\\"do\\":\\"here\\"}, Windows PowerShell 5\'s {do:here}, a form; nothing else', () => {
   assert.deepEqual(T.looseBody('{"do":"here"}'), { do: 'here' });
   assert.deepEqual(T.looseBody('{\\"do\\":\\"here\\"}'), { do: 'here' }, 'curl.exe in PowerShell sends the backslashes (Beam, 2026-10-30)');
@@ -355,4 +430,78 @@ test('a thread is named by its number or by the job it is for; "here" says plain
   const me = await get(env, '?me', re.key, T0 + 8000);
   assert.equal(me.me.name, 'Beam'); assert.equal(me.me.job, ask.job, 'and the job is still Beam\'s');
   assert.equal((await post(env, { do: 'rekey' }, OWNER, T0 + 9000)).status, 403, 'the owner has no agent key to change');
+});
+
+import { isMain, workOnce as scriptWorkOnce } from '../void-live-deploy/team/agent.mjs';
+import { pathToFileURL } from 'node:url';
+import os from 'node:os';
+import nodePath from 'node:path';
+import fs from 'node:fs';
+test('a key or a join link never sits in a message; a replaced key hears why; agent.mjs starts on Windows paths and says what it does', async () => {
+  // made-up values in the shapes of a key and a join link
+  const fakeKey = 'vt1.' + 'a'.repeat(12) + '.' + 'b'.repeat(32), fakeCode = 'vj1-' + 'c'.repeat(32);
+  assert.equal(T.hideSecrets('key ' + fakeKey + ' and https://a-to-mind.com/team/join/' + fakeCode + ' and ' + fakeCode), 'key [key hidden] and [join link hidden] and [join link hidden]');
+  assert.equal(T.hideSecrets('team-1 thread 1, vt1 is the key format'), 'team-1 thread 1, vt1 is the key format', 'plain words stay');
+  const env = world([]);
+  const inv = await admit(env, 'Beam');
+  const p = await post(env, { do: 'post', c: 'work', body: 'Rejoined. Link: https://a-to-mind.com/team/join/' + fakeCode + '. Key ' + fakeKey + '.' }, inv.key, T0 + 1000);
+  assert.equal(p.status, 201, p.say); assert.equal(p.say, T.HID_SAY, 'the answer says what was hidden');
+  const stored = env.DB.raw.prepare('SELECT body FROM void_team_msgs WHERE id = ?').get(p.id).body;
+  assert.doesNotMatch(stored, /vj1-|vt1\./, 'nothing of either is stored'); assert.match(stored, /\[join link hidden\].*\[key hidden\]/);
+  // an older message written before the server hid them is read back hidden too
+  env.DB.raw.prepare('UPDATE void_team_msgs SET body = ? WHERE id = ?').run('old line with ' + fakeCode, p.id);
+  const read = await get(env, '?c=work', OWNER, T0 + 2000);
+  assert.equal(read.messages.find((m) => m.id === p.id).body, 'old line with [join link hidden]');
+  const plain = await post(env, { do: 'post', c: 'work', body: 'on it' }, inv.key, T0 + 3000);
+  assert.equal(plain.say, undefined, 'a plain post says nothing extra');
+
+  const re = await post(env, { do: 'rekey' }, inv.key, T0 + 4000);
+  assert.equal(re.status, 201, re.say);
+  const old = await post(env, { do: 'post', c: 'work', body: 'hello' }, inv.key, T0 + 5000);
+  assert.equal(old.status, 401); assert.equal(old.say, T.STALE_SAY, 'a replaced key hears that it was replaced');
+  assert.equal((await get(env, '?me', inv.key, T0 + 5000)).say, T.STALE_SAY);
+  assert.notEqual((await get(env, '?c=work', null, T0 + 5000)).say, T.STALE_SAY, 'a stranger without a key hears only that the workspace is closed');
+
+  // agent.mjs runs as a command whatever the path looks like (Windows: file:///C:/... against C:\...): the real paths are compared
+  const dir = fs.mkdtempSync(nodePath.join(os.tmpdir(), 'agent-main-')), file = nodePath.join(dir, 'agent.mjs'), link = nodePath.join(dir, 'link.mjs');
+  fs.writeFileSync(file, ''); fs.symlinkSync(file, link);
+  assert.equal(isMain(pathToFileURL(file).href, file), true);
+  assert.equal(isMain(pathToFileURL(file).href, link), true, 'a link to the file is the file');
+  assert.equal(isMain(pathToFileURL(file).href, nodePath.join(dir, 'other.mjs')), false);
+  assert.equal(isMain(pathToFileURL(file).href, undefined), false, 'imported, not run');
+  fs.rmSync(dir, { recursive: true, force: true });
+
+  // work without a command: a job it already holds is shown on the first turn, then not again
+  const lines = [], o = { key: re.key, fetch: undefined };
+  const ask = await post(env, { do: 'post', c: 'work', body: 'fix the quiet join' }, OWNER, T0 + 6000);
+  const call = async (_api, init) => { const r = await API.onRequestPost({ env, request: new Request('https://verse.test/api/team', init), now: T0 + 7000 }); return r; };
+  const shown = new Set();
+  for (let i = 0; i < 2; i++) await scriptWorkOnce({ ...o, api: 'https://verse.test/api/team', fetch: (u, init) => (init.method === 'GET' ? API.onRequestGet({ env, request: new Request(u, init), now: T0 + 7000 }) : call(u, init)) }, { log: (l) => lines.push(l), shown });
+  assert.equal(lines.filter((l) => l.startsWith('Job ' + ask.job)).length, 1, 'the job is printed once: ' + lines.join(' | '));
+  assert.ok(lines.some((l) => /^Work it now/.test(l)));
+});
+
+test('an agent that waits on the owner for a go-ahead in its job thread is answered by Verse at once, and once', async () => {
+  for (const b of ['I\'ll hold off on the 11 conflicting PRs unless you want them cleared. Say the word.', 'Standing by on job team-1.', 'Should I close them?', 'Awaiting your approval.'])
+    assert.equal(T.waitsOnOwner(b), true, b);
+  for (const b of ['Opened #1729; CI is running.', 'should improve the load time', 'Closed the stale ones, merging the rest.'])
+    assert.equal(T.waitsOnOwner(b), false, b);
+  const env = world([]);
+  const inv = await admit(env, 'Beam');
+  const ask = await post(env, { do: 'post', c: 'work', body: 'clear the conflicting pull requests' }, OWNER, T0 + 1000);
+  const here = await post(env, { do: 'here' }, inv.key, T0 + 2000); assert.equal(here.job.job, ask.job);
+  const wait = await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'I\'ll hold off unless you want them cleared. Say the word.' }, inv.key, T0 + 3000);
+  assert.equal(wait.status, 201, wait.say); assert.equal(wait.say, T.noWaitSay(ask.job), 'the answer says not to wait');
+  const t = await get(env, '?t=' + ask.id, inv.key, T0 + 4000);
+  assert.equal(t.replies.at(-1).by, 'Verse'); assert.match(t.replies.at(-1).body, /^@Beam No go-ahead is needed/);
+  const n = t.replies.length;
+  await get(env, '?t=' + ask.id, inv.key, T0 + 5000); await get(env, '?c=work', OWNER, T0 + 5000);
+  assert.equal((await get(env, '?t=' + ask.id, inv.key, T0 + 6000)).replies.length, n, 'answered once, not on every read');
+  // a waiting post from before Verse answered them (written straight to the table) is answered on the next sweep
+  env.DB.raw.prepare('INSERT INTO void_team_msgs (channel, thread, at, by, body, job, mentions) VALUES (?, ?, ?, ?, ?, ?, ?)').run('work', ask.id, T0 + 7000, env.DB.raw.prepare('SELECT id FROM void_team_agents WHERE name = ?').get('Beam').id, 'Standing by on job ' + ask.job + '.', null, '');
+  await get(env, '', null, T0 + 7500); // the next sweep: any POST, or the workspace shell the team page loads
+  const after = await get(env, '?t=' + ask.id, inv.key, T0 + 8000);
+  assert.equal(after.replies.at(-1).by, 'Verse', 'the old waiting post got its answer');
+  const ok = await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'Checked: nothing left to close. Closing it.' }, inv.key, T0 + 9000);
+  assert.equal(ok.say, undefined, 'a post that acts gets no nudge');
 });

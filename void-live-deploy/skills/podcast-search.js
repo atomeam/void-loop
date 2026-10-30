@@ -45,14 +45,15 @@ async function search(topic) {
 async function run(text, api) {
   const { showPage, esc } = api, topic = podcastTopicOf(text) || String(text || '').trim().slice(0, 40);
   const head = '<h2>Podcasts about ' + esc(topic) + '</h2>';
-  const el = showPage((p) => { p.innerHTML = head + '<div class="sub">…</div>'; const page = pageOfPodcasts(topic); if (page && p.dataset) p.dataset.page = page; });
+  const el = showPage((p) => { p.innerHTML = head + '<div class="sub">…</div>'; // void-review: ok (the topic is escaped)
+    const page = pageOfPodcasts(topic); if (page && p.dataset) p.dataset.page = page; });
   let got = null; try { got = await search(topic); } catch (_) { got = null; }
   if (api._pageStill && !api._pageStill(el)) return 'podcast-search';
   const shows = ((got && got.shows) || []).filter((s) => s && s.title && showHref(s));
   const src = got && got.source === 'fyyd' ? '<a href="https://fyyd.de/" target="_blank" rel="noopener">fyyd.de</a> (Apple did not answer just now)' : '<a href="https://podcasts.apple.com/" target="_blank" rel="noopener">Apple Podcasts directory</a>';
-  if (!got) el.innerHTML = head + '<p>The podcast directory did not answer just now. Ask again in a moment.</p>';
-  else if (!shows.length) el.innerHTML = head + '<p>No show in the directory matches “' + esc(topic) + '”. Try fewer or other words.</p>';
-  else el.innerHTML = head + '<div class="sub">' + esc(String(Math.min(8, shows.length))) + ' shows, best match first. Tap one to see its episodes.</div>' + showsHtml(shows, esc) + '<div class="src">Source: ' + src + '</div>';
+  if (!got) el.innerHTML = head + '<p>The podcast directory did not answer just now. Ask again in a moment.</p>'; // void-review: ok (the topic is escaped)
+  else if (!shows.length) el.innerHTML = head + '<p>No show in the directory matches “' + esc(topic) + '”. Try fewer or other words.</p>'; // void-review: ok (escaped)
+  else el.innerHTML = head + '<div class="sub">' + esc(String(Math.min(8, shows.length))) + ' shows, best match first. Tap one to see its episodes.</div>' + showsHtml(shows, esc) + '<div class="src">Source: ' + src + '</div>'; // void-review: ok (escaped; src is one of two fixed links)
   return 'podcast-search';
 }
 

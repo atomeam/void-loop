@@ -64,7 +64,7 @@
     if (navigator.share) { navigator.share({ title, url }).catch(() => {}); return ''; }
     try { navigator.clipboard.writeText(url); return 'Link copied'; } catch (_) { return 'Copy the address bar'; } };
   // the "Use with" row comes after the load event, which the tower times: nothing a person is not waiting for loads before it
-  addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/flip/', [{ label: 'Share this coin', run: share }])).catch(() => {}); });
+  addEventListener('load', () => { Promise.all([import('/lib/toolkit.js'), import('/lib/flip-card.js')]).then(([m, f]) => m.mountRelated(document.getElementById('related'), '/flip/', [{ label: 'Share this coin', run: share }], { card: () => f.cardAsk(location.search) })).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

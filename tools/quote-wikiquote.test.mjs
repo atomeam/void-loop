@@ -4,7 +4,7 @@
 //   node --test tools/quote-wikiquote.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import quote, { qotdTitle, qotdFrom } from '../void-live-deploy/skills/quote.js';
+import quote, { qotdTitle, qotdFrom, themeOf, pickSection, themeQuotes } from '../void-live-deploy/skills/quote.js';
 
 // the two shapes Wikiquote's parse API gave on 2026-10-30, trimmed (October 30, 2024: a nested table; March 3, 2011: paragraphs)
 const adams = '<div class="mw-parser-output"><table><tbody><tr><td align="center"><span typeof="mw:File"><a href="/wiki/File:X.jpg"><img src="//x"/></a></span>\n</td>\n<td align="center"> \n</td>\n'
@@ -46,7 +46,7 @@ async function ask(text, pages) {
 }
 
 test('an ask shows a Wikiquote quote with its author and that day\'s page as the source', async () => {
-  const { r, html, asked } = await ask('give me a motivational quote', [{ parse: { text: adams } }]);
+  const { r, html, asked } = await ask('tell me a quote', [{ parse: { text: adams } }]);
   assert.equal(r, 'quote');
   assert.ok(asked[0].startsWith('https://en.wikiquote.org/w/api.php?') && asked[0].includes('origin=*') && asked[0].includes('Quote%20of%20the%20day%2F'), asked[0]);
   assert.ok(html.includes('kill a flea.”') && html.includes('>John Adams</p>'), html);
@@ -65,4 +65,49 @@ test('a missing day is skipped for another, and no answer at all says so instead
 test('the asks it claims are unchanged', () => {
   for (const a of ['tell me a quote', 'random quote', 'inspirational quote', 'another quote', 'give me a motivational quote', 'famous quotes']) assert.ok(quote.match(a.toLowerCase(), a), a);
   for (const a of ['what is a quote', 'stock quotes', 'quote of the day news']) assert.ok(!quote.match(a.toLowerCase(), a), a);
+});
+
+// the shape of a Wikiquote theme page on 2026-10-30 (Perseverance, section "F"; Motivation, section "Quotes"), trimmed
+const persevere = '<div class="mw-parser-output"><div class="mw-heading mw-heading2"><h2 id="F">F</h2></div>\n<ul><li>Run every day. If you can\'t run, walk fast. If you can\'t walk fast, walk as fast as you can.\n'
+  + '<ul><li>Michael Fitzgerald, quoted in <i>The Writer\'s Hustle</i> by Joey Franklin (2023)</li></ul></li></ul>\n'
+  + '<ul><li>Motivation is a battle for the heart, not just an appeal to the mind.\n<ul><li><a href="/wiki/Patrick_Dixon" title="Patrick Dixon">Patrick Dixon</a>, <i>Building a Better Business</i> (2005), p. 159.</li></ul></li></ul>\n'
+  + '<ul><li>When the going gets tough, the tough get going.\n<ul><li>First attestation: John Thomas (football coach); quoted September 15, 1953</li></ul></li></ul></div>';
+
+test('a theme ask names its Wikiquote page; other asks name none', () => {
+  assert.equal(themeOf('give me a motivational quote', () => 0), 'Perseverance');
+  assert.equal(themeOf('inspirational quote', () => 0.9), 'Effort');
+  assert.equal(themeOf('quote about the sea'), 'Sea');
+  assert.equal(themeOf('quotes about courage please'), 'Courage');
+  for (const a of ['tell me a quote', 'random quote', 'another quote', 'famous quotes']) assert.equal(themeOf(a), null, a);
+});
+
+test('a section of quotes is picked, never Misattributed, Disputed or See also', () => {
+  const secs = [{ level: '2', line: 'A', index: '1', anchor: 'A' }, { level: '3', line: 'Sub', index: '2' }, { level: '2', line: 'Misattributed', index: '3' },
+    { level: '2', line: 'Disputed', index: '4' }, { level: '2', line: 'See also', index: '5' }, { level: '2', line: '<i>Hoyt\'s New Cyclopedia</i>', index: '6', anchor: 'Hoyt' }];
+  for (const r of [0, 0.5, 0.99]) assert.ok(['1', '6'].includes(pickSection(secs, () => r).index));
+  assert.equal(pickSection([{ level: '2', line: 'Misattributed', index: '1' }]), null);
+  assert.equal(pickSection(undefined), null);
+});
+
+test('a theme page gives each quote with the author named under it, and drops an author line that is not a name', () => {
+  assert.deepEqual(themeQuotes(persevere), [
+    { quote: 'Run every day. If you can\'t run, walk fast. If you can\'t walk fast, walk as fast as you can.', author: 'Michael Fitzgerald' },
+    { quote: 'Motivation is a battle for the heart, not just an appeal to the mind.', author: 'Patrick Dixon' },
+  ]);
+  assert.deepEqual(themeQuotes(''), []);
+});
+
+test('a motivational ask shows a quote from the theme page, linked to that section', async () => {
+  const { r, html, asked } = await ask('give me a motivational quote', [{ parse: { title: 'Perseverance', sections: [{ level: '2', line: 'F', index: '5', anchor: 'F' }] } }, { parse: { text: persevere } }]);
+  assert.equal(r, 'quote'); assert.equal(asked.length, 2);
+  assert.ok(asked[0].includes('prop=sections') && asked[0].includes('redirects=1') && asked[1].includes('section=5'), asked.join(' '));
+  assert.ok(/Michael Fitzgerald|Patrick Dixon/.test(html), html);
+  assert.match(html, /Source: <a href="https:\/\/en\.wikiquote\.org\/wiki\/Perseverance#F"[^>]*>Wikiquote, Perseverance<\/a>/);
+});
+
+test('no theme page: the quote of the day, and an "about" ask says so', async () => {
+  const o = await ask('quote about zzyzx', [{ error: { code: 'missingtitle' } }, { parse: { text: adams } }]);
+  assert.equal(o.r, 'quote'); assert.match(o.html, /Wikiquote has no quotes page on “Zzyzx”, so this is its quote of the day/); assert.ok(o.html.includes('John Adams'));
+  const m = await ask('inspirational quote', [new Error('offline'), { parse: { text: jorn } }]);
+  assert.equal(m.r, 'quote'); assert.ok(m.html.includes('Asger Jorn') && !m.html.includes('no quotes page'), m.html);
 });
