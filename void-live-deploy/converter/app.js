@@ -3,13 +3,14 @@
 // the results.
 import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
+import { writeVideo } from '/lib/video-write.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
 const ACCEPT = { sound: 'audio/*,video/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', video: 'video/*,.mp4,.mov,.webm,.mkv', picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*' };
-const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'];
+const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'webm'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
 let cur = null, files = [], heads = [], lastQ = '', results = [], urls = [];
@@ -18,11 +19,13 @@ let cur = null, files = [], heads = [], lastQ = '', results = [], urls = [];
 function rowOf(t, why = '') {
   const li = make('li', { class: 'row' }, make('span', { class: 'nm' }, t.name + (t.kind === 'converter' ? ' (' + t.cat.toLowerCase() + ')' : '')), make('span', { class: 'badge b-' + t.status }, STATUS_TEXT[t.status]));
   if (why) li.append(make('span', { class: 'why' }, why));
-  li.append(make('span', { class: 'nt' }, String(t.note || '').replace(STATUS_TEXT[t.status] + ': ', ''))); // the badge already says it
+  li.append(make('span', { class: 'nt' }, noteOf(t))); // the badge already says the status
   if (runnable(t)) li.append(make('button', { type: 'button', textContent: 'Use', onclick: () => { openTool(t); $('panel').scrollIntoView({ block: 'start' }); } }));
   else if (t.href) li.append(make('a', { class: 'go', href: t.href, textContent: 'Open' }));
   return li;
 }
+// a tool's note without the status the badge already shows, starting with a capital
+function noteOf(t) { const s = String(t.note || '').replace(STATUS_TEXT[t.status] + ': ', ''); return s.charAt(0).toUpperCase() + s.slice(1); }
 function catalog() {
   const c = counts();
   $('counts').textContent = c.all + ' tools: ' + c.here + ' on this page, ' + c.verse + ' on another Verse page, ' + c.part + ' in part, ' + c.no + ' not on Verse yet.';
@@ -31,6 +34,10 @@ function catalog() {
     const list = CATALOG.filter((t) => t.cat === cat), k = counts(list);
     box.append(make('h3', {}, cat + ' (' + list.length + ')'), make('p', { class: 'lead' }, [k.here && k.here + ' on this page', k.verse && k.verse + ' on another Verse page', k.part && k.part + ' in part', k.no && k.no + ' not on Verse yet'].filter(Boolean).join(', ') + '.'), make('ul', {}, ...list.map((t) => rowOf(t))));
   }
+  // what Verse cannot do yet: made from the same list, so it changes when a tool lands
+  const no = CATALOG.filter((t) => t.status === 'no'), cant = $('cannot'); cant.replaceChildren();
+  $('cannotLead').textContent = no.length ? no.length + ' of the ' + c.all + ' tools are not on Verse yet. Each one says why in the list above.' : 'Every tool is on Verse.';
+  for (const cat of CATS) { const list = no.filter((t) => t.cat === cat); if (list.length) cant.append(make('li', {}, make('strong', {}, cat + ': '), list.map((t) => (t.kind === 'converter' ? 'to ' : '') + t.name).join(', ') + '.')); }
 }
 
 // ---- search -------------------------------------------------------------------------------------------------------------------------------
@@ -58,9 +65,11 @@ function opts() {
     const fmt = heads[0] || '', can = fmt ? targetsOf(fmt) : [];
     if (fmt && !can.length) o.append(make('p', { class: 'lead' }, 'Verse cannot convert a ' + fmt.toUpperCase() + ' file yet. Search above for the tool you need: the list says what Verse has.'));
     if (can.length) o.append(field('Make it', pick('to', can.map((x) => [x, x.toUpperCase()]), can.includes(to) ? to : can[0])));
-    const s = $('to'); if (s) s.onchange = () => { qual(); ready(); };
+    if (VIDEO_OUT.includes(($('to') && $('to').value) || '')) o.append(field('Quality', pick('vq', [['high', 'High (larger file)'], ['medium', 'Medium'], ['small', 'Small file']], 'medium')));
+    const s = $('to'); if (s) s.onchange = () => opts();
     qual(); ready(); return;
   }
+  if (VIDEO_OUT.includes(to)) o.append(field('Quality', pick('vq', [['high', 'High (larger file)'], ['medium', 'Medium'], ['small', 'Small file']], 'medium')));
   if (run === 'cut') o.append(field('From (seconds)', num('from', 0, 'any', 0)), field('To (seconds, empty: the end)', make('input', { id: 'upto', type: 'number', step: 'any', min: '0', inputMode: 'decimal' })), SOUND_AS());
   if (run === 'speed') o.append(field('Times as fast', num('factor', 1.5, 'any', 0.25, 4)), SOUND_AS());
   if (run === 'gain') o.append(field('Louder by (dB, minus: quieter)', num('db', 6, 'any', -40, 40)), SOUND_AS());
@@ -187,8 +196,13 @@ async function docFile(d, to, name) {
 
 // ---- run ----------------------------------------------------------------------------------------------------------------------------------
 function clearOut() { for (const u of urls) URL.revokeObjectURL(u); urls = []; results = []; $('out').replaceChildren(); $('zip').hidden = true; }
-async function convertTo(f, fmt, to, taken) {
+async function convertTo(f, fmt, to, taken, say = () => {}) {
   const k = kindOf(fmt);
+  if (VIDEO_OUT.includes(to)) {
+    if (k !== 'video') throw new Error('this is not a video.');
+    const r = await writeVideo(f, { container: to, quality: ($('vq') && $('vq').value) || 'medium', onProgress: (x) => say(Math.round(x * 100) + '%') });
+    return { name: outName(f.name, to, taken), ext: to, bytes: r.bytes, notes: r.notes };
+  }
   if (SOUND_OUT.includes(to)) { if (k && k !== 'sound' && k !== 'video') throw new Error('this is not a sound or a video.'); const s = await soundOf(f); return { name: outName(f.name, to, taken), ext: to, bytes: soundFile(s, to), notes: [soundNote(s)] }; }
   if (TEXT_OUT.includes(to) && k !== 'picture') { const { doc } = await docOf(f); if (fmt === to) throw new Error('this is already a ' + to.toUpperCase() + ' file.'); const r = await docFile(doc, to, f.name); return { name: outName(f.name, to, taken), ext: to, bytes: r.bytes, notes: [doc.paras.length + ' paragraph' + (doc.paras.length === 1 ? '' : 's')].concat(r.notes || []) }; }
   if (PICTURE_OUT.includes(to)) { if (k !== 'picture') throw new Error('this is not a picture.'); if (fmt === to) throw new Error('this is already a ' + to.toUpperCase() + ' picture.'); if (to === 'pdf') return { name: outName(f.name, 'pdf', taken), ext: 'pdf', bytes: await picturesPdf([{ f, fmt }]), notes: ['1 page'] }; const c = await canvasOf(f), bytes = await pictureFile(c, to, val('qual', 90) / 100); return { name: outName(f.name, to, taken), ext: to, bytes, notes: [c.width + ' x ' + c.height + ' pixels'] }; }
@@ -201,7 +215,7 @@ async function go() {
   try {
     const to = t ? t.to : $('to') && $('to').value;
     if (to === 'pdf' && list.every((x) => kindOf(x.fmt) === 'picture')) { say('Working: ' + list.length + ' picture' + (list.length === 1 ? '' : 's') + ' into one PDF'); add({ name: outName(list[0].f.name, 'pdf', taken), ext: 'pdf', bytes: await picturesPdf(list), notes: [list.length + ' page' + (list.length === 1 ? '' : 's') + ', a picture to a page'] }); }
-    else if (to) { for (let i = 0; i < list.length; i++) { say('Working on ' + (i + 1) + ' of ' + list.length + ': ' + list[i].f.name); try { add(await convertTo(list[i].f, list[i].fmt, to, taken)); } catch (e) { fail(list[i].f, e); } } }
+    else if (to) { for (let i = 0; i < list.length; i++) { const w = 'Working on ' + (i + 1) + ' of ' + list.length + ': ' + list[i].f.name; say(w); try { add(await convertTo(list[i].f, list[i].fmt, to, taken, (p) => say(w + ' (' + p + ', the video plays through once)'))); } catch (e) { fail(list[i].f, e); } } }
     else if (['cut', 'speed', 'gain', 'silence', 'extract-audio'].includes(t.run)) {
       for (let i = 0; i < list.length; i++) {
         const { f } = list[i]; say('Working on ' + (i + 1) + ' of ' + list.length + ': ' + f.name);
@@ -249,6 +263,7 @@ function show() {
     if (r.notes && r.notes.length) li.append(make('p', { class: 'notes' }, r.notes.join(' · ')));
     if (SHOWN.has(r.ext)) li.append(make('img', { src: url, alt: 'The new picture: ' + r.name }));
     if (r.ext === 'wav') li.append(make('audio', { controls: true, src: url, preload: 'metadata' }));
+    if (VIDEO_OUT.includes(r.ext)) li.append(make('video', { controls: true, src: url, preload: 'metadata', playsInline: true }));
     ul.append(li);
   }
   $('zip').hidden = ok.length < 2;

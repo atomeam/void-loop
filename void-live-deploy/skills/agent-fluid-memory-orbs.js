@@ -10,15 +10,22 @@
  * When Verse has its shared field (skills/field.js), live orbs are written into it and a seal is also sealed there (lib/orb-field.js,
  * tools/orb-field.test.mjs): the orbs are the field's episodic memory. Without it, nothing changes.
  * Open its colour hands the last sealed orb's colour (or the densest orb's) to /color/, which hands it on to /gradient/ and /wheel/.
+ * Verse's own memories float in the fluid too (lib/orb-memories.js, tools/orb-memories.test.mjs): each word the visitor told Verse, where
+ * Verse Brain's workspace holds it and as bright as it is there, and every other card's live slot in the shared field. Each pulls a little
+ * dye where it sits, so the fluid's orbs pool on them. Tap a word to remind Verse of it; Spin its words hands them to /wheel/. The newest
+ * sealed orb comes back by itself when the card opens again (a reload included), checked against its SHA-256 first.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { fieldSkill, keepSeal } from '../lib/field-stage.js';
 import { spawnMind } from '../lib/field-worker.js';
 import * as F from '../lib/field-fluid-orbs.js';
 import { fieldLink } from '../lib/orb-field.js';
+import * as Mem from '../lib/orb-memories.js';
+import { connectBrain } from '../lib/brain-bridge.js';
+import { wheelLink } from '../lib/handoff.js';
 
 const NAME = 'agent-fluid-memory-orbs';
-const SAY = 'Memory orbs (F-321): small agents push a fluid, and where it pools a memory orb is born · tap an orb to seal it, Recall brings the last one back';
+const SAY = 'Memory orbs (F-321): small agents push a fluid, and where it pools a memory orb is born · the words you told Verse float in it too · tap an orb to seal it, Recall brings the last one back';
 const SYNC = new WeakMap(); // card canvas -> the function that moves its orb elements (draw runs every frame and has only the canvas)
 const tabSeals = []; // this tab's orb seals, for Recall when IndexedDB is blocked
 
@@ -63,6 +70,15 @@ function mount({ el, q, th, cv, still, redraw }) {
   toColor.addEventListener('focus', aim);
   toColor.addEventListener('click', (e) => { if (!aim()) { e.preventDefault(); sealed.textContent = 'No orb yet to take a colour from: wait for one to form.'; } });
   recall.after(toColor);
+  // and Verse's remembered words to the wheel, in the link's hash (it never reaches a server)
+  const toWheel = document.createElement('a');
+  toWheel.className = 'g-btn fo-wheel'; toWheel.href = '/wheel/'; toWheel.textContent = 'Spin its words';
+  toWheel.title = 'put the words Verse remembers on the wheel of names'; toWheel.style.cssText = 'text-decoration:none;color:inherit';
+  const aimWheel = () => { const u = wheelLink(Mem.wordsOf(mems)); toWheel.href = u || '/wheel/'; return u; };
+  toWheel.addEventListener('pointerdown', (e) => { e.stopPropagation(); aimWheel(); });
+  toWheel.addEventListener('focus', aimWheel);
+  toWheel.addEventListener('click', (e) => { if (!aimWheel()) { e.preventDefault(); sealed.textContent = 'Verse remembers no words yet: tell it something first.'; } });
+  toColor.after(toWheel);
 
   const els = new Map(); // orb id -> its element
   let pop = null, busy = false; // the mind's population (a recalled seal resets it) and whether a generation is out
@@ -106,6 +122,46 @@ function mount({ el, q, th, cv, still, redraw }) {
     const hand = F.handOrb(s), hx = hand ? F.orbHex(hand) : ''; // keep the hand-off's swatch on the orb it would carry
     if (hx !== (el.dataset.handColor || '')) { el.dataset.handColor = hx; dot.style.background = hx || 'transparent'; toColor.href = hx ? '/color/?c=' + hx.slice(1) : '/color/'; }
   };
+  // Verse's own memories as orbs (lib/orb-memories.js): the page's brain when it has one (window.verseBrainHost, the same brain the Verse
+  // Brain card shows), else what a brain on another tab posts; then the other cards' live slots in the shared field
+  const memEls = new Map(), memLine = document.createElement('div');
+  let mems = [], heard = null;
+  memLine.className = 'fo-memories'; memLine.setAttribute('aria-live', 'polite'); memLine.style.cssText = 'font-size:12px;opacity:.85;margin-top:4px';
+  sealed.after(memLine);
+  const pageBrain = () => { const h = window.verseBrainHost; return h && h.alive !== false && h.brain ? h.brain : null; };
+  const remind = (word) => {
+    const api = window.verseBrain, done = api && typeof api.tell === 'function' ? api.tell(word) !== null : !!(heard && heard.tell(word));
+    sealed.textContent = done ? 'Reminded Verse of "' + word + '": that idea is bright again.' : 'Verse Brain is not running here, so it could not be reminded.';
+    if (done) el.dataset.reminded = word; remember();
+  };
+  const memOf = (m) => {
+    let b = memEls.get(m.key); if (b) return b;
+    b = document.createElement(m.word ? 'button' : 'span'); b.className = 'fo-mem'; b.dataset.mem = m.kind;
+    if (m.word) {
+      b.type = 'button'; b.textContent = m.word;
+      b.style.cssText = 'position:absolute;transform:translate(-50%,-50%);padding:1px 7px;border-radius:999px;font:11px/1.5 system-ui,sans-serif;color:#e8f6ff;white-space:nowrap;cursor:pointer;pointer-events:auto;border:1px solid hsla(190,90%,72%,.55);background:radial-gradient(circle at 50% 40%, hsla(190,95%,62%,.38), hsla(230,80%,30%,.25));box-shadow:0 0 10px hsla(190,90%,60%,.35);transition:opacity .4s';
+      b.addEventListener('pointerdown', (e) => e.stopPropagation());
+      b.addEventListener('click', (e) => { e.stopPropagation(); remind(m.word); });
+    } else b.style.cssText = 'position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;pointer-events:none;border:1.5px solid hsla(320,85%,70%,.8);box-shadow:0 0 8px hsla(320,85%,60%,.5)';
+    layer.appendChild(b); memEls.set(m.key, b); return b;
+  };
+  const remember = () => {
+    const brain = pageBrain();
+    if (!brain && !heard) { try { heard = connectBrain(); } catch (_) { heard = null; } } // no brain on this page: hear one on another tab
+    mems = Mem.memoriesOf({ brain, heard: heard && heard.live ? heard.state : null, slots: field ? field.slots() : [], own: field ? field.code : 0 });
+    th.state.pulls = Mem.pullsOf(mems, F.GW, F.GH); th.state.memories = mems.length;
+    const live = new Set();
+    for (const m of mems) {
+      live.add(m.key); const b = memOf(m);
+      b.style.left = (m.x * 100).toFixed(2) + '%'; b.style.top = (m.y * 100).toFixed(2) + '%'; b.style.opacity = (0.45 + 0.55 * m.act).toFixed(2);
+      const what = m.word ? m.from + ' remembers "' + m.word + '"' + (m.kind === 'heard' ? ' (on another tab)' : '') + ': tap to remind it' : m.from + ': its slot in the shared field';
+      b.title = what; if (m.word) b.setAttribute('aria-label', what);
+    }
+    for (const [k, b] of memEls) if (!live.has(k)) { b.remove(); memEls.delete(k); }
+    const words = Mem.wordsOf(mems), t = Mem.memorySays(mems);
+    if (memLine.textContent !== t) memLine.textContent = t;
+    Object.assign(el.dataset, { memories: String(mems.length), memoryWords: words.join(','), memoryFrom: brain ? 'page' : heard && heard.live ? 'tab' : mems.length ? 'field' : 'none' });
+  };
   SYNC.set(cv, sync);
 
   recall.addEventListener('click', async () => {
@@ -119,6 +175,14 @@ function mount({ el, q, th, cv, still, redraw }) {
     if (field) field.sync(th.state).catch(() => {}); // the recalled memory is back in the shared field too
   });
 
+  // a memory that vanished on reload would be no memory: the newest sealed orb comes back by itself, checked against its SHA-256 first
+  lastOrbSeal().then((rec) => {
+    if (!el.isConnected || !rec || !rec.orb || el.dataset.recalled || !F.verifySnap(rec.orb, rec.hash)) return;
+    const o = F.loadOrb(th.state, rec.orb, rec.hash), again = F.sealOrbSync(th.state, o).hash; o.sealedAt = Date.now(); pop = null;
+    el.dataset.restoredOrb = rec.hash.slice(0, 12); el.dataset.restoredSame = String(again === rec.hash);
+    sealed.textContent = 'Back from before: orb ' + rec.hash.slice(0, 12) + (again === rec.hash ? ', it seals to the same SHA-256' : ', its hash changed'); redraw();
+  }).catch(() => {});
+
   const mind = spawnMind(new URL('../lib/field-fluid-orbs.js', import.meta.url).href, 'evolveOrbs', F.evolveOrbs);
   const show = () => { const s = th.state; s.minded = mind.mode === 'worker' ? 'thinking in a Worker' : 'thinking on the page'; Object.assign(el.dataset, { mind: mind.mode, gen: String(s.gen || 0) }); };
   const think = () => {
@@ -130,11 +194,13 @@ function mount({ el, q, th, cv, still, redraw }) {
   };
   show();
   const timer = setInterval(() => { if (!el.isConnected) { dispose(); return; } show(); think(); }, F.MIND_EVERY * 1000);
-  const toField = setInterval(() => { // live orbs into the shared field, a pass at a time
+  remember();
+  const toField = setInterval(() => { // Verse's memories onto the card, then live orbs into the shared field, a pass at a time
+    if (el.isConnected && !document.hidden) remember();
     if (!field || fieldBusy || still() || document.hidden || !el.isConnected) return; fieldBusy = true;
     field.sync(th.state).catch(() => {}).finally(() => { fieldBusy = false; });
   }, 500);
-  function dispose() { clearInterval(timer); clearInterval(toField); try { mind.close(); } catch (_) { /* gone */ } if (field) field.close().catch(() => {}); SYNC.delete(cv); }
+  function dispose() { clearInterval(timer); clearInterval(toField); try { mind.close(); } catch (_) { /* gone */ } if (field) field.close().catch(() => {}); if (heard) heard.close(); SYNC.delete(cv); }
   return { dispose };
 }
 
@@ -152,13 +218,16 @@ function densityImage(s) {
 
 const idea = {
   id: NAME, title: 'Memory orbs', sub: 'F-321 · agents in a fluid', W: 360, H: 270, warm: 40,
-  how: 'Small agents share one tiny neural policy and push a fluid. Where it pools, a memory orb is born: it drifts with the current, grows with the density under it and turns with the swirl. Tap one to seal it; Recall brings the last sealed orb back.',
+  how: 'Small agents share one tiny neural policy and push a fluid. Where it pools, a memory orb is born: it drifts with the current, grows with the density under it and turns with the swirl. Tap one to seal it; Recall brings the last sealed orb back. The words you told Verse float in it too, where Verse Brain holds them, and the fluid pools on them: tap a word to remind Verse of it.',
   create(seed) { return F.create(seed); },
-  step(s, dt, input) { F.step(s, dt, input); s.lastOver = input.over ? { x: input.x, y: input.y } : s.lastOver || null; }, // one point, overwritten: never a path
+  step(s, dt, input) {
+    F.step(s, dt, input);
+    const h = Math.max(0, Math.min(3, (+dt || 1 / 60) * 60)); for (const p of s.pulls || []) F.splat(s, p.x, p.y, 0, 0, p.dye * h, 2); // Verse's memories pull the fluid
+    s.lastOver = input.over ? { x: input.x, y: input.y } : s.lastOver || null; }, // one point, overwritten: never a path
   metrics: (s) => F.metrics(s),
   params: (s) => F.params(s),
   vars: (s, m) => F.chromeOf(m),
-  status: (s, m) => 'F-321 · gen ' + (s.gen || 0) + ' · fitness ' + (s.fit || 0).toFixed(2) + ' · ' + m.orbs + (m.orbs === 1 ? ' orb' : ' orbs') + ' · swirl ' + m.vorticity.toFixed(2) + ' · entropy ' + m.entropy.toFixed(2) + ' · ' + (s.minded || 'starting') + (s.fielded ? ' · in the shared field' : ''),
+  status: (s, m) => 'F-321 · gen ' + (s.gen || 0) + ' · fitness ' + (s.fit || 0).toFixed(2) + ' · ' + m.orbs + (m.orbs === 1 ? ' orb' : ' orbs') + ' · swirl ' + m.vorticity.toFixed(2) + ' · entropy ' + m.entropy.toFixed(2) + ' · ' + (s.minded || 'starting') + (s.fielded ? ' · in the shared field' : '') + (s.memories ? ' · ' + s.memories + ' of Verse\'s memories' : ''),
   mount,
   draw(g, s, W, H) {
     const im = densityImage(s);

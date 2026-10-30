@@ -168,8 +168,9 @@ test('a buyer unlocks their own Verse with the receipt Order ID and email, and e
   DB = await fresh(null); assert.equal((await claim(DB, SALE, MAIL, { GUMROAD_ACCESS_TOKEN: 't', GUMROAD_FETCH: api(null) })).status, 404, 'Gumroad does not know the sale');
 });
 
-// The owner's own purchase with no Verse id links itself to the owner's account on the next load (a test ping is only ever the creator's).
-test('a test purchase with no Verse id unlocks the owner\'s own account on load, and no other account', async () => {
+// A purchase with no Verse id: the owner's account is a member whatever the sale says (the owner is always a member),
+// and a signed-in account that is not the owner's is never given someone else's sale.
+test('a test purchase with no Verse id: the owner is a member on load, and no other account gets it', async () => {
   const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', SALE = 'ownTestNoIdSaleXXXXXX==';
   const ping = (extra) => new URLSearchParams({ sale_id: SALE, seller_id: SELLER, email: 'owner@example.com', product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_permalink: 'https://moonbeam846.gumroad.com/l/yinmj', subscription_id: 'sub-o', test: 'true', resource_name: 'sale', ...extra }).toString();
   const setup = async (raw, owner) => {
@@ -180,17 +181,26 @@ test('a test purchase with no Verse id unlocks the owner\'s own account on load,
     DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES ('sale:o:t', 'sale', ?, 'sub-o', 'yinmj', NULL, 1, 'verified, no Verse id: link by hand', ?, ?)").run(SALE, raw, at);
     return DB;
   };
-  let DB = await setup(ping({}), true);
-  assert.equal((await get(DB)).tier, 'paid', 'the owner sees member with nothing to type');
-  assert.equal(DB.raw.prepare('SELECT sale_id FROM void_accounts WHERE user_id = ?').get(USER).sale_id, SALE);
-  assert.equal(DB.raw.prepare("SELECT void_id FROM void_sales WHERE id = 'sale:o:t'").get().void_id, USER);
+  for (const extra of [{}, { test: 'false' }, { seller_id: 'zzOtherSellerZZzzzzzzz==' }]) {
+    assert.equal((await get(await setup(ping(extra), true))).tier, 'paid', 'the owner sees member with nothing to type: ' + JSON.stringify(extra));
+  }
   assert.equal((await get(await setup(ping({}), false))).tier, 'free', 'a signed-in account that is not the owner\'s gets nothing');
-  assert.equal((await get(await setup(ping({ test: 'false' }), true))).tier, 'free', 'a real sale with no id is never guessed onto the owner');
-  assert.equal((await get(await setup(ping({ seller_id: 'zzOtherSellerZZzzzzzzz==' }), true))).tier, 'free', 'another seller');
-  DB = await setup(ping({}), true);
-  DB.raw.prepare("INSERT INTO void_accounts (user_id, tier, sale_id, updated) VALUES ('other-verse', 'paid', ?, ?)").run(SALE, new Date().toISOString());
-  assert.equal((await get(DB)).tier, 'free', 'a sale already linked stays where it is');
-  DB = await setup(ping({}), true);
+  assert.equal((await get(await setup(ping({ test: 'false' }), false))).tier, 'free', 'a real sale with no id is never guessed onto an account');
+  const DB = await setup(ping({}), true);
   DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES ('cancellation:sub-o:x', 'cancellation', NULL, 'sub-o', 'yinmj', NULL, 0, 'x', 'resource_name=cancellation', ?)").run(new Date().toISOString());
-  assert.equal((await get(DB)).tier, 'free', 'a cancelled test membership');
+  assert.equal((await get(DB)).tier, 'paid', 'a cancelled test membership does not take the owner off');
+});
+
+test('the owner is always a member: an account with an owner-bound passkey is paid with no sale; others stay free', async () => {
+  const DB = d1(); await signIn(DB, null);
+  assert.equal((await get(DB)).tier, 'free', 'no sale and no owner passkey: free');
+  const now = new Date().toISOString();
+  DB.raw.prepare('INSERT INTO void_passkeys (id, user_id, public_key, alg, sign_count, at) VALUES (?, ?, ?, ?, ?, ?)').run('pk-not-owner', USER, 'x', -7, 0, now);
+  assert.equal((await get(DB)).tier, 'free', 'a plain passkey is not an owner passkey');
+  DB.raw.prepare('INSERT INTO void_owner_passkeys (id, at) VALUES (?, ?)').run('pk-not-owner', now);
+  assert.equal((await get(DB)).tier, 'paid', 'an owner-bound passkey makes the account a member');
+  assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_accounts').get().n, 0, 'nothing written to void_accounts');
+  const { tierOf } = await import('../void-live-deploy/lib/void-me.js');
+  assert.equal(await tierOf({ DB }, 'someone-else'), 'free', 'another account stays free');
+  assert.equal(await tierOf({ DB: { prepare() { throw new Error('down'); } } }, USER), 'free', 'a read error is free');
 });

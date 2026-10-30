@@ -12,8 +12,12 @@ const PICK_PROMPT = 'Suggest 5 well-regarded movies for someone to watch tonight
 const money = (n, c) => (n ? (c === 'USD' || !c ? '$' : c + ' ') + n.toFixed(2) : '');
 const dayPick = () => FREE_PICKS[Math.floor(Date.now() / 864e5) % FREE_PICKS.length];
 
+// LOOKUP_V names the lookup's answers: before 2026-10-30 a well-known film came back "not verified" (iTunes refused, no second source) and
+// browsers and the edge kept that answer for a day. A new v is a new address, so no answer cached by the old lookup is read again.
+export const LOOKUP_V = 2;
+export const lookupUrl = (m) => '/api/movies?title=' + encodeURIComponent(m.title) + (m.year ? '&year=' + m.year : '') + '&v=' + LOOKUP_V;
 async function lookup(m) {
-  try { const r = await fetch('/api/movies?title=' + encodeURIComponent(m.title) + (m.year ? '&year=' + m.year : '')); if (!r.ok) return { verified: false, title: m.title, year: m.year }; return await r.json(); } catch (_) { return { verified: false, title: m.title, year: m.year }; }
+  try { const r = await fetch(lookupUrl(m)); if (!r.ok) return { verified: false, title: m.title, year: m.year }; return await r.json(); } catch (_) { return { verified: false, title: m.title, year: m.year }; }
 }
 const badge = (f, esc) => '<span class="mv-badge" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid var(--edge,#3a3a44)">' + esc(f.free ? 'plays here' : f.trailer ? 'trailer here' : 'links only') + '</span>';
 const artMeta = (el, f) => { if (f && f.verified) { el.dataset.artGenre = f.genre || ''; el.dataset.artYear = f.year || ''; } }; // the card's art follows the source's genre and year (lib/art-meta.js)

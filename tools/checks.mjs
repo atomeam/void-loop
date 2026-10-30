@@ -171,6 +171,8 @@ for (const [name, file] of [
   ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
+  ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
+  ['dark-pages', 'dark-pages.test.mjs'], // every page stays deep space in a light-mode browser too
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
   ['fuzzy', 'fuzzy.test.mjs'],
@@ -314,6 +316,7 @@ for (const [name, file] of [
   ['field-resonance', 'field-resonance.test.mjs'],
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
+  ['orb-memories', 'orb-memories.test.mjs'], // the memory orbs show Verse's memories: a brain's told words where it holds them, other cards' slots, the fluid pulled to them
   ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty organs, attention, imagination, the mind layers, kept knowledge
   ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
   ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load
@@ -383,6 +386,8 @@ for (const [name, file] of [
   ['ledger-today', 'ledger-today.test.mjs'],
   ['will-last', 'will-last.test.mjs'],
   ['approval-gate', 'approval-gate.test.mjs'],
+  ['shared-chain', 'shared-chain.test.mjs'],
+  ['confirm-line-strict', 'confirm-line-strict.test.mjs'],
   ['churn', 'churn.test.mjs'],
   ['coder-route', 'coder-route.test.mjs'],
   ['will-guard', 'will-guard.test.mjs'],

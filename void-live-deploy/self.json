@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T03:41:27Z",
-   "subject": "Verse fixes its media-pick skill: learn to handle \"best sci-fi movies 2024\""
+   "at": "2026-10-30T04:22:18Z",
+   "subject": "Verse fixes its meteors skill: learn to handle \"meteor shower dates\""
   },
   {
-   "at": "2026-10-30T03:33:32Z",
-   "subject": "Incidents closed: shard(s) 4 passed on 7ed8ce7b (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T04:21:45Z",
+   "subject": "Growth entry: link PR #1691"
   },
   {
-   "at": "2026-10-30T03:32:55Z",
-   "subject": "What's new in the book reads for visitors, by their own day"
+   "at": "2026-10-30T04:21:32Z",
+   "subject": "Join card: a rate limit for /api/joins, the community line after the will's line"
   },
   {
-   "at": "2026-10-30T03:32:50Z",
-   "subject": "MultiVerse owner link: mark the one-at-a-time writes in the loop for Verse's review"
+   "at": "2026-10-30T04:20:58Z",
+   "subject": "deps.json: count functions/api/holidays.js"
   },
   {
-   "at": "2026-10-30T03:31:02Z",
-   "subject": "Verse fixes its quote skill: learn to handle \"quote about perseverance\""
+   "at": "2026-10-30T04:18:37Z",
+   "subject": "Holidays: the page asks Verse's own address, Verse asks Nager.Date"
   },
   {
-   "at": "2026-10-30T03:30:26Z",
-   "subject": "MultiVerse: the owner's own purchase links itself; signed-out Join asks to sign in first"
-  },
-  {
-   "at": "2026-10-30T03:25:26Z",
-   "subject": "MultiVerse: a buyer unlocks their Verse with the receipt Order ID and email"
-  },
-  {
-   "at": "2026-10-30T03:22:55Z",
-   "subject": "Recipe: \"what can I make with chicken and rice\" finds meals with both"
-  },
-  {
-   "at": "2026-10-30T03:16:18Z",
+   "at": "2026-10-30T04:15:25Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T03:15:41Z",
-   "subject": "Words and the world: 7 common asks reach their skills"
+   "at": "2026-10-30T04:13:52Z",
+   "subject": "Copy the stage change into void.html and its copy; add the growth entry"
   },
   {
-   "at": "2026-10-30T03:09:16Z",
+   "at": "2026-10-30T04:13:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:12:55Z",
+   "subject": "PR guard: the shared tool-page chain must match the browser suite's list before merge"
+  },
+  {
+   "at": "2026-10-30T04:12:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:12:08Z",
+   "subject": "Verse Brain watches Verse's own health and raises breaks on /brain/"
+  },
+  {
+   "at": "2026-10-30T04:10:49Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-30T03:08:11Z",
-   "subject": "Word ladder: finish the skill (order, Games family, MAP, test); a bare \"ladder\" is no longer its"
+   "at": "2026-10-30T04:09:53Z",
+   "subject": "One owner across Verse: the owner's signed-in account is the owner on every page"
   },
   {
-   "at": "2026-10-30T03:04:40Z",
-   "subject": "team: an owner's post in #work is a job on the build queue"
+   "at": "2026-10-30T04:08:21Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T03:03:24Z",
-   "subject": "brain: build the live numbers and says lines with textContent"
+   "at": "2026-10-30T04:07:55Z",
+   "subject": "Confirm line: pin what #1444 changed in the approval gate, and what it did not"
   },
   {
-   "at": "2026-10-30T03:00:20Z",
-   "subject": "Better at backdrop and stl check: 5 more ways of asking answered right — new phrases: “set the stage to a retro server room” now opens…"
+   "at": "2026-10-30T04:06:07Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T02:56:52Z",
-   "subject": "brain: Verse Brain full screen at /brain/"
+   "at": "2026-10-30T04:06:00Z",
+   "subject": "Incidents closed: shard(s) 2 passed on f85055a7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-30T02:56:35Z",
-   "subject": "Move loan through its order file and regenerate the book"
+   "at": "2026-10-30T04:05:57Z",
+   "subject": "deps.json after main came in"
   },
   {
-   "at": "2026-10-30T02:51:41Z",
-   "subject": "Verse loop: task, Queue job mvpur47q (versus: uptimer.dev): Versus: uptimer.de"
+   "at": "2026-10-30T04:05:29Z",
+   "subject": "Verse checks its own pages after each deploy and shows them on the status card"
   },
   {
-   "at": "2026-10-30T02:48:52Z",
-   "subject": "relinkRecorded: one query, no query per loop turn (Verse's review)"
-  },
-  {
-   "at": "2026-10-30T02:47:58Z",
-   "subject": "Self card: a site's ask is built only by a ledger line that names the site"
+   "at": "2026-10-30T04:05:14Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

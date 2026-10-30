@@ -7,14 +7,15 @@
 // POST { step: 'get', credential }           -> { token, userId }  | 404 { error: 'unknown passkey', credentialId }
 // POST { step: 'sign-out' }  (Bearer)        -> ends that session
 // POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session, synced byte, tier row, code review key and public /@name page of that Verse -> { userId, credentialIds }
-// POST { step: 'tier' }      (Bearer)        -> { tier: 'free' | 'paid' }  (plan item 12; no row or a read error = free)
-// POST { step: 'owner' }   (Bearer key or owner session) -> 200 { owner: true, renewed? } | 401. No D1 needed.
+// POST { step: 'tier' }      (Bearer)        -> { tier: 'free' | 'paid', owner }  (plan item 12; no row or a read error = free; the owner's account is paid)
+// POST { step: 'owner' }   (Bearer key, owner session or the owner's account session) -> 200 { owner: true, renewed?, session? } | 401. The key and an owner session need no D1.
 // POST { step: 'owner-bind', credentialId } (Bearer READ_TOKEN only) -> that passkey becomes the owner's login.
+// POST { step: 'owner-bind-account', session } (Bearer READ_TOKEN only) -> every passkey of that signed-in account becomes the owner's.
 //   'get' with an owner passkey also returns { owner: { token, expires } }, an owner session (never READ_TOKEN).
 // Every challenge is stored in D1, good for 5 minutes, and deleted before it's checked, so it can only be used once.
 // Origin and rpId are a-to-mind.com; signatures are verified with WebCrypto (lib/webauthn.js).
 import { verifyRegistration, verifyAuthentication, randomB64u, unb64u, ALGS } from '../../lib/webauthn.js';
-import { ownerOk, ownerKeyOk, mintOwnerSession, OWNER_SESSION_PREFIX } from '../../lib/guard.js';
+import { ownerOk, ownerKeyOk, mintOwnerSession, ownerAccount, ownerAccountSession, OWNER_SESSION_PREFIX } from '../../lib/guard.js';
 import { RP_NAME, CHALLENGE_TTL_MS, rp, ensureTables, bad, good, session, newSession, newUserId, brake, tierOf } from '../../lib/void-me.js';
 
 async function mintChallenge(env, kind, userId) {
@@ -121,12 +122,26 @@ async function ownerBind(request, env, b) {
   await env.DB.prepare('INSERT INTO void_owner_passkeys (id, at) VALUES (?, ?) ON CONFLICT(id) DO NOTHING').bind(id, new Date().toISOString()).run();
   return good({ ok: true, owner: true });
 }
-// The key or an owner session -> 200, and a session comes back renewed (30 more days). Anything else is a 401, which lib/guard.js
-// counts per connection (10 wrong keys a minute and every /api call from it waits).
+// The key binds a whole signed-in account as the owner's (owner, 2026-10-30): every passkey on the account whose session is in the
+// body becomes an owner passkey, so that account is the owner on every page and device it signs in on. Only the key itself can do it.
+async function ownerBindAccount(request, env, b) {
+  if (!(await ownerKeyOk(request, env))) return bad(401, 'no');
+  const tok = typeof b.session === 'string' && /^[A-Za-z0-9_-]{40,64}$/.test(b.session) ? b.session : '';
+  const me = tok ? await session(new Request('https://a-to-mind.com/', { headers: { authorization: 'Bearer ' + tok } }), env) : null;
+  if (!me) return bad(400, 'not a signed-in Verse');
+  const at = new Date().toISOString();
+  const r = await env.DB.prepare('INSERT INTO void_owner_passkeys (id, at) SELECT id, ? FROM void_passkeys WHERE user_id = ? ON CONFLICT(id) DO NOTHING').bind(at, me.userId).run();
+  return good({ ok: true, owner: await ownerAccount(env, me.userId), bound: (r && r.meta && r.meta.changes) || 0 });
+}
+// The key, an owner session or a signed-in session of the owner's account -> 200. An owner session comes back renewed (30 more days),
+// and the owner's account session gets a fresh owner session, so every page that reads a2m.void.owner.v1 opens for the owner without
+// a second sign-in (lib/owner-link.js). Anything else is a 401, which lib/guard.js counts per connection (10 wrong keys a minute).
 async function ownerStep(request, env) {
   if (!(await ownerOk(request, env))) return bad(401, 'no');
   const t = (request.headers.get('authorization') || '').slice(7);
-  return good({ ok: true, owner: true, ...(t.startsWith(OWNER_SESSION_PREFIX) ? { renewed: await mintOwnerSession(env, null, Date.now(), t.split('.')[2]) } : {}) });
+  if (t.startsWith(OWNER_SESSION_PREFIX)) return good({ ok: true, owner: true, renewed: await mintOwnerSession(env, null, Date.now(), t.split('.')[2]) });
+  const acct = await ownerAccountSession(t, env);
+  return good({ ok: true, owner: true, ...(acct ? { session: await mintOwnerSession(env, 'acct:' + acct) } : {}) });
 }
 
 async function signOut(request, env) {
@@ -139,7 +154,7 @@ async function signOut(request, env) {
 async function tier(request, env) {
   const me = await session(request, env);
   if (!me) return bad(401, 'not signed in');
-  return good({ tier: await tierOf(env, me.userId) });
+  return good({ tier: await tierOf(env, me.userId), owner: await ownerAccount(env, me.userId) });
 }
 
 async function forget(request, env) {
@@ -174,6 +189,7 @@ export async function onRequestPost({ request, env }) {
     if (b.step === 'forget') return await forget(request, env);
     if (b.step === 'tier') return await tier(request, env);
     if (b.step === 'owner-bind') return await ownerBind(request, env, b);
+    if (b.step === 'owner-bind-account') return await ownerBindAccount(request, env, b);
     return bad(400, 'unknown step');
   } catch (_) { return bad(503, 'passkeys unavailable'); } // fails closed: nobody is signed in, nothing is saved
 }

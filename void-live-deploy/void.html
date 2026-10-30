@@ -4226,6 +4226,9 @@ say('nothing selected to remove');
       const b = await ownerCheck(t);
       if (b && b.renewed && typeof b.renewed.token === 'string' && ownerToken() === t) { try { localStorage.setItem(OWNER_KEY, b.renewed.token); } catch (_) {} }
     }
+    // one owner identity (lib/owner-link.js): a signed-in owner account gets an owner session here, so every owner page opens with no second sign-in
+    const ownerLinkNow = () => import('/lib/owner-link.js').then((m) => m.ownerLink()).catch(() => '');
+    ownerLinkNow();
     setTimeout(() => { ownerRenew(); setInterval(ownerRenew, 6 * 3600e3); }, 2000);
     async function bindOwner(credentialId, key) {
       let ok = false;
@@ -4665,12 +4668,13 @@ say('nothing selected to remove');
       const sk = await firstSkill(r.text.toLowerCase(), r.text, Date.now());
       return fuzzy.confirm(r, sk && sk.name) ? r.text : t;
     }
-    async function firstSkill(lower0, text, deadline) {
+    async function firstSkill(lower0, text, deadline, all = false) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
       let ecl = null; try { const now = Date.now(); const l = JSON.parse(localStorage.getItem('a2m.void.eclipse.v1') || '[]'); ecl = new Set(l.filter((e) => e && e.until > now && Array.isArray(e.names)).flatMap((e) => e.names)); for (const k of ['skill-eclipse', 'guide', 'status', 'stage']) ecl.delete(k); } catch (_) { ecl = null; }
       const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
-      if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
+      if (skillsLoaded || !skillSlots) return all ? learnedSkills.filter(fits) : (learnedSkills.find(fits) || null); // all: every skill that can answer, for Verse Brain to choose from
+      if (all) return [];
       for (const slot of skillSlots) {
         // past the deadline a skill still loading is passed over at once: a zero timer per slot cost 4 ms or more each (nested timers),
         // a second or more across a couple of hundred slots on a busy page
@@ -4755,8 +4759,25 @@ say('nothing selected to remove');
     let skillAliases = {};
     fetch('/skills/aliases.json').then((r) => r.ok ? r.json() : {}).then((j) => { skillAliases = j && typeof j === 'object' ? j : {}; }).catch(() => {});
     const aliasOf = (lower) => { const k = String(lower || '').trim().replace(/[\s?!.]+$/, ''); return Object.prototype.hasOwnProperty.call(skillAliases, k) ? String(skillAliases[k]) : ''; };
+    // Verse Brain routes the ask (lib/brain-route.js; owner, 2026-10-30: "give the brain more to do and more power in the site"): when more
+    // than one skill can answer, the brain picks, from what the page would pick, what happened after its past picks on this device, and
+    // what it is thinking about. What happens next teaches it: a card still up 20 s later was kept; one closed by then, undone, or followed
+    // by the same ask in other words was left. Its picks, with why, are on /brain/, where each lesson can be undone.
+    let routeWatch = null;
+    const routeWords = (t) => new Set(String(t || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 3));
+    function settleRoute(why, next) {
+      const w = routeWatch; if (!w) return; routeWatch = null; clearTimeout(w.t);
+      const h = window.verseBrainHost; if (!h || !h.judge) return;
+      if (why === 'time') h.judge(w.id, vpageEl === w.el);
+      else if (why === 'undo') h.judge(w.id, false);
+      else if (why === 'ask') { const a = routeWords(w.text); if ([...routeWords(next)].some((x) => a.has(x))) h.judge(w.id, false); } // the same ask in other words: it was not what they wanted; a new subject teaches nothing
+    }
+    function watchRoute(id, el, text) { settleRoute(); routeWatch = { id, el, text, t: setTimeout(() => settleRoute('time'), 20000) }; }
     async function runLearnedSkills(text, lower0, deadline = Date.now()) {
-      const skill = await firstSkill(lower0, text, deadline);
+      let skill = await firstSkill(lower0, text, deadline), routed = null;
+      if (skill && skillsLoaded && window.verseBrainHost && window.verseBrainHost.route) {
+        try { const all = await firstSkill(lower0, text, deadline, true); if (all.length > 1) { routed = window.verseBrainHost.route(text, all.map((sk) => sk.name)); const p = routed && all.find((sk) => sk.name === routed.pick); if (p) skill = p; } } catch (_) { routed = null; }
+      }
       {
         if (skill) {
           const api = {
@@ -4783,6 +4804,7 @@ say('nothing selected to remove');
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) { vpageEl.dataset.skill = who; keepCard(vpageEl); } // the card learns which skill made it: its rarity, cost and stats
           if (src !== 'none') graphNote(who, text, vpageEl && vpageEl !== cardBefore ? vpageEl : null);
           if (src === 'none') reportMiss(text, 'skill:' + who);
+          if (routed) { if (src !== 'none' && vpageEl && vpageEl !== cardBefore) watchRoute(routed.id, vpageEl, text); else if (src === 'none' && window.verseBrainHost) window.verseBrainHost.judge(routed.id, false); }
           return true;
         }
       }
@@ -4796,6 +4818,7 @@ say('nothing selected to remove');
       try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY), agenda: localStorage.getItem(AGENDA_KEY) })); } catch (_) {}
     }
     function undoLast() {
+      settleRoute('undo'); // undoing the card the brain picked teaches it that pick was wrong
       let snap = null;
       try { snap = JSON.parse(localStorage.getItem(UNDO_KEY) || 'null'); } catch (_) {}
       const nowState = localStorage.getItem(STATE_KEY), nowLook = localStorage.getItem(LOOK_KEY), nowAgenda = localStorage.getItem(AGENDA_KEY);
@@ -5193,7 +5216,8 @@ say('nothing selected to remove');
       pkLastId = r.body.credentialId || cred.id;
       const oSession = r.body.owner && typeof r.body.owner.token === 'string' ? r.body.owner.token : '';
       if (oSession && !rawOwnerKey()) { try { localStorage.setItem(OWNER_KEY, oSession); } catch (_) {} } // the key itself, if this browser has it, stays
-      say(oSession ? 'welcome back · owner' : 'welcome back');
+      const ownerNow = oSession || (await ownerLinkNow());
+      say(ownerNow ? 'welcome back · owner' : 'welcome back');
       loopLog({ domain: 'void.me', ask: 'sign in', score: 'pass', note: immediate ? 'signed in (immediate)' : 'signed in' });
       return 'ok';
     }
@@ -5911,13 +5935,14 @@ say('nothing selected to remove');
       const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Verse' : 'void')); // a taught wording runs as the ask it means
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
-      { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
+      { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} ownerLinkNow(); say('unlocked'); showBoard(); return; } return handle('unlock'); } }
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
       // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
       { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
+      if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
@@ -6378,6 +6403,15 @@ say('nothing selected to remove');
         }).catch(() => {});
       };
       for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
+    }
+    // the community milestone card (asked by Verse, 2026-10-17; lib/join-watch.js): when someone joins MultiVerse, one quiet line under the
+    // stage with the join link. Read once the page is idle, then every 5 minutes while visible; the first ask clears it.
+    if (!PAGE) {
+      const startJoins = () => import('/lib/join-watch.js').then((J) => {
+        J.watch(document, awayNote);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') for (const c of document.querySelectorAll('.join-card')) c.remove(); });
+      }).catch(() => {});
+      if ('requestIdleCallback' in window) requestIdleCallback(() => skillsReady.then(startJoins), { timeout: 8000 }); else setTimeout(() => skillsReady.then(startJoins), 4000);
     }
     // a tab left open while a new version deployed keeps the old page code (owner, 2026-10-17: "nothing showed just now"): the tab remembers the id of the build it
     // loaded with (lib/stale-tab.js: the commit the deploy writes to /build.json, else the page's ETag) and looks again when it comes back into view and about every
