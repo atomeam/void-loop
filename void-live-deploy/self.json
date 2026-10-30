@@ -335,7 +335,7 @@
    "state": "open",
    "date": "",
    "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
   },
   {
    "state": "open",
@@ -347,19 +347,19 @@
   {
    "state": "open",
    "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the…",
    "from": "claude 2026-10-18"
   },
   {
@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T17:48:01Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+   "at": "2026-10-30T17:39:22Z",
+   "subject": "Hints while typing: a one-word hint the typed letters begin comes first"
   },
   {
    "at": "2026-10-30T17:38:34Z",
