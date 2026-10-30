@@ -1164,9 +1164,9 @@
     {
      "name": "calendar",
      "tier": "proven",
-     "why": "12 browser-suite mentions, 14 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 12 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {

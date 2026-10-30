@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 993,
+ "counted": 994,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -161,7 +161,7 @@
    "skills": 14,
    "direct": 5,
    "dependants": 43,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/sky-math.js",
@@ -199,6 +199,13 @@
    "tests": 1
   },
   {
+   "file": "lib/weakest.js",
+   "skills": 9,
+   "direct": 0,
+   "dependants": 39,
+   "tests": 1
+  },
+  {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
@@ -231,7 +238,7 @@
    "skills": 9,
    "direct": 1,
    "dependants": 37,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/will-last.js",
@@ -1946,14 +1953,14 @@
    "skills": 0,
    "direct": 0,
    "dependants": 26,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
    "dependants": 25,
-   "tests": 6
+   "tests": 7
   },
   {
    "file": "lib/router.js",
@@ -2555,7 +2562,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/calc-panels.js",
@@ -3495,6 +3502,7 @@
     "lib/models.js",
     "lib/self-context.js",
     "lib/shortfall.js",
+    "lib/weakest.js",
     "lib/voice.js",
     "lib/tower.js"
    ],
@@ -8845,7 +8853,8 @@
   },
   "lib/self-blocks.js": {
    "imports": [
-    "lib/spark.js"
+    "lib/spark.js",
+    "lib/weakest.js"
    ],
    "importedBy": [
     "lib/voice.js"
@@ -9080,7 +9089,8 @@
   },
   "lib/skill-confidence.js": {
    "imports": [
-    "lib/card-art.js"
+    "lib/card-art.js",
+    "lib/weakest.js"
    ],
    "importedBy": [
     "skills/growth.js"
@@ -10191,7 +10201,8 @@
     "lib/persona.js",
     "lib/automation-fix.js",
     "skills/growth-tree.js",
-    "lib/self-blocks.js"
+    "lib/self-blocks.js",
+    "lib/weakest.js"
    ],
    "importedBy": [
     "functions/api/reflect.js",
@@ -10311,6 +10322,52 @@
     "lib/approval-gate.js",
     "lib/keep-going.js",
     "skills/approve-card.js"
+   ]
+  },
+  "lib/weakest.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/reflect.js",
+    "lib/self-blocks.js",
+    "lib/skill-confidence.js",
+    "lib/voice.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "lib/about-skill.js",
+    "lib/bench-asks.js",
+    "lib/built-detail.js",
+    "lib/self-context.js",
+    "skills/about-skill.js",
+    "skills/cartoon.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/guide.js",
+    "skills/merges.js",
+    "skills/mini/growthtree.js",
+    "skills/own-parts.js",
+    "skills/showcase.js",
+    "skills/walker.js"
    ]
   },
   "lib/weather.js": {
