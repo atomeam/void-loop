@@ -79,3 +79,25 @@ test('the host keeps the glow when the page hides, and the next page\'s host giv
   b.forgot(); const n = st.box.glows; assert.equal(await b.save(true), false); assert.equal(st.box.glows, n, 'after Forget nothing is kept');
   b.stop();
 });
+
+test('a full brain takes the words just told in place of its dimmest ideas, and a reload keeps them', () => {
+  const a = B.createBrain(11), MAX = 24;
+  for (let i = 0; i < 12; i++) { B.ask(a, 'alpha' + 'abcdefghijkl'[i] + ' beta' + 'abcdefghijkl'[i]); run(a, 20); }
+  const C = a.concepts; assert.equal(C.words.length, MAX, 'the brain is full');
+  const linked = [...C.edges].map(([k, v]) => { const [p, q] = k.split(':').map(Number); return [C.words[p], C.words[q], v]; });
+  B.ask(a, 'zeppelin marmalade');
+  assert.equal(C.words.length, MAX, 'still the same size');
+  for (const w of ['zeppelin', 'marmalade']) assert.equal(actOf(a, w), 1, w + ' is held, as bright as can be');
+  assert.ok(['zeppelin', 'marmalade'].every((w) => ideasOf(a).map((m) => m.word).includes(w)), 'among the brightest ideas');
+  assert.equal(C.words[C.words.length - 1], 'marmalade', 'the newest word is last, as the bridge reads it');
+  assert.equal(new Set(C.node).size, MAX, 'each idea has its own node');
+  for (const [k, v] of C.edges) { const [p, q] = k.split(':').map(Number); assert.ok(p < q && q < MAX, k); const was = linked.find(([x, y]) => [x, y].sort().join() === [C.words[p], C.words[q]].sort().join()); assert.ok(was ? v >= was[2] : [C.words[p], C.words[q]].sort().join() === 'marmalade,zeppelin', 'a link stays between the same two words (' + C.words[p] + ', ' + C.words[q] + ')'); }
+  for (const g of a.mind.goals) assert.equal(C.words[g.idx], g.word, 'goal ' + g.word + ' still points at its word');
+  assert.ok(a.mind.goals.some((g) => g.word === 'zeppelin'));
+  const kept = structuredClone(B.knowledgeOf(a)), glow = structuredClone(G.glowOf(a, 1000)), work = structuredClone(B.workingOf(a));
+  const now = B.createBrain(11); B.loadKnowledge(now, kept); B.loadWorking(now, work); const lit = G.loadGlow(now, glow, 3000);
+  assert.ok(lit.includes('zeppelin') && lit.includes('marmalade'), 'the reloaded page lights them again');
+  assert.ok(['zeppelin', 'marmalade'].every((w) => ideasOf(now).map((m) => m.word).includes(w)), 'still among the brightest after a reload');
+  const old = B.createBrain(11); B.loadKnowledge(old, kept); for (let i = 0; i < 12; i++) B.tell(old, 'gamma' + 'abcdefghijkl'[i]);
+  B.tell(old, 'lighthouse'); assert.equal(actOf(old, 'lighthouse'), 1, 'a full brain told one more word holds it');
+});
