@@ -12,6 +12,7 @@ import { flightAskOf } from './flight-sites.js';
 import { jobAskOf } from './job-sites.js';
 import { converterAskOf } from './converter-ask.js';
 import { brainFullAsk } from './brain-ask.js';
+import { localAsk, linkOf as localLink } from './local-ask.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -20,7 +21,7 @@ export const TOOLS = Object.freeze({
   '/ledger/': 'Repo activity ledger',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
   '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team chat', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team chat', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
@@ -54,13 +55,15 @@ const HAND_RELATED = Object.freeze({
   '/calculator/': ['/base-converter/', '/convert/', '/random/', '/calculators/'],
   '/calculators/': ['/calculator/', '/convert/', '/base-converter/'],
   '/time/': ['/stopwatch/', '/weather/'],
-  '/weather/': ['/time/', '/stopwatch/'],
+  '/weather/': ['/time/', '/stopwatch/', '/local/'],
   '/translate/': ['/word-count/', '/time/', '/notes/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/scores/': ['/sports/', '/time/', '/calendar/'],
   '/sports/': ['/scores/', '/calendar/', '/time/'],
   '/fantasy/': ['/scores/', '/sports/', '/calculator/'],
-  '/podcasts/': ['/stopwatch/', '/translate/', '/word-count/'],
+  '/podcasts/': ['/stopwatch/', '/translate/', '/word-count/', '/local/'],
+  // local TV and radio (owner, 2026-10-30: "Verse should pick up local tv and radio"): the weather and the time of the same place, the news, and podcasts to listen to next
+  '/local/': ['/weather/', '/news/', '/podcasts/', '/time/'],
   '/calendar/': ['/time/', '/stopwatch/', '/weather/'],
   '/markets/': ['/convert/', '/calculator/', '/time/'],
   '/generators/': ['/image/', '/random/', '/flip/', '/wheel/'],
@@ -73,7 +76,7 @@ const HAND_RELATED = Object.freeze({
   '/learn-to-draw/': ['/stopwatch/', '/color/', '/resize-image/', '/notes/'],
   '/brain/': ['/piano/', '/tuner/', '/notes/', '/rap/', '/learn-to-draw/'],
   '/converter/': ['/photos/', '/pdf/', '/convert/', '/resize-image/'],
-  '/news/': ['/translate/', '/notes/', '/weather/'],
+  '/news/': ['/translate/', '/notes/', '/weather/', '/local/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/rap/'],
   '/rap/': ['/music/', '/metronome/', '/word-count/', '/translate/'],
   '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/', '/rap/'],
@@ -122,7 +125,7 @@ const HAND_CARD_ASK = Object.freeze({
   '/random/': 'random number between 1 and 100', '/flip/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
   '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
-  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
+  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
   '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 // a self-built page opens its family's card on the stage
@@ -210,6 +213,8 @@ const ROUTES = [
   // podcasts: 'search podcasts', 'podcasts about history', 'top podcasts', 'podcast charts', 'podcast player' (the plain 'podcast' and 'play the podcast' stay with Verse's own show on the stage)
   [/^(?:search |find |browse )?podcasts? (?:about|on|for) (.+)$|^(?:search|find) (?:for )?(?:a )?podcasts?(?: (?:about|on|for) )?(.*)$/i, (m) => '/podcasts/' + (m[1] || m[2] ? '?q=' + encodeURIComponent((m[1] || m[2]).trim()) : '')],
   [/^(?:top |best |popular )?podcasts$|^podcast (?:charts?|player|directory|app)$/i, () => '/podcasts/'],
+  // local TV and radio (2026-10-30): 'local radio', 'radio stations near me', 'tv stations in denver' open /local/ with the place and the tab
+  [{ exec: (t) => (localAsk(t) ? [t] : null) }, (m, t) => { const a = localAsk(t); return localLink({ place: a.place, tab: a.kind === 'tv' ? 'tv' : '' }); }],
   // calendar: 'add dentist tomorrow 3pm to my calendar', 'remind me to call mum tomorrow 6pm', 'my calendar', "what's on tomorrow", 'my week'
   [/^(?:add|put) (.+?) (?:to|on|in) (?:my |the )?(?:calendar|verse|void)$|^(?:calendar|schedule|new event)[:,] (.+)$|^remind me (?:to |about |of )?(.+)$/i, (m) => '/calendar/?q=' + encodeURIComponent(m[1] || m[2] || m[3])],
   // generators: 'fantasy name', 'name generator', 'writing prompt', 'band name generator'
