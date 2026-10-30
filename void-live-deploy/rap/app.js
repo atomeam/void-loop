@@ -24,7 +24,7 @@ function drawRelated() {
     { label: 'Translate it', href: () => (text() ? '/translate/?q=' + encodeURIComponent(text().slice(0, 5000)) : null) },
     { label: 'Make a song of it', href: () => '/?q=' + encodeURIComponent('make a hip hop song about ' + (settings.topic || rap.title || 'verse')) },
     { label: 'Practise at its tempo', href: () => '/metronome/?bpm=' + beatFor(settings).bpm },
-  ], { card: () => cardAsk(settings) });
+  ], { card: () => cardAsk(settings || readForm()) });
 }
 
 function readForm() { return settingsOf({ topic: $('topic').value, style: $('style').value, mood: $('mood').value, flow: $('flow').value, view: $('view').value, words: $('words').value, seed: settings ? settings.seed : 0 }); }
