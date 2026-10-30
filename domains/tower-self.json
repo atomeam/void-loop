@@ -166,7 +166,8 @@
    "at": "2026-10-26T22:52:28Z",
    "outcome": "no-family",
    "why": "no floor does its job (The website provides a way to browse, preview, and get embed codes for Google Fonts, but Verse does not have a font library, typography tool)",
-   "title": "Google Fonts | 谷歌字体中文版 | GoogleFonts"
+   "title": "Google Fonts | 谷歌字体中文版 | GoogleFonts",
+   "family": "typography"
   },
   "processchecker.com": {
    "at": "2026-10-26T22:52:33Z",
