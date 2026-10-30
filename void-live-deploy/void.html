@@ -457,7 +457,7 @@
     .doc-map ol { margin: 4px 0 6px; padding-left: 18px; }
     #hints { max-width: 720px; margin: 0 auto 6px; padding: 0 10px; display: none; }
     #hints.on { display: block; }
-    #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; }
+    #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #hints div.sel, #hints div:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
     #hints b { font-weight: inherit; color: var(--fg); }
     #dock {
@@ -6211,7 +6211,7 @@ say('nothing selected to remove');
       } catch (_) { return []; }
     }
     function rememberAsk(text) {
-      const t = String(text || '').trim().slice(0, 240);
+      const t = String(text || '').trim().slice(0, 4000); // kept whole (skills/recent.js KEPT_ASK_MAX): a tap on it asks it again, and at 240 a pasted note was asked cut
       if (!t || /^(?:unlock\s*)+\S{16,}\s*$/i.test(t)) return;
       try {
         const prev = recentAsks(12).filter((s) => s.toLowerCase() !== t.toLowerCase());
