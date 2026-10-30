@@ -1,6 +1,6 @@
-// the sound files Verse writes on the device beside WAV and AIFF: FLAC (its own lossless encoder, pure) and Ogg Opus (.ogg and .opus: the
+// the sound files Verse writes on the device beside WAV and AIFF: FLAC and ALAC (its own lossless encoders, pure) and Ogg Opus (.ogg and .opus: the
 // browser's own Opus encoder, in Verse's own Ogg pages). Every byte is written here; nothing is uploaded.
-import { opusHead, opusHeadOf } from './video-mux.js';
+import { opusHead, opusHeadOf, mp4 } from './video-mux.js';
 
 // ---- bits ---------------------------------------------------------------------------------------------------------------------------------
 class Bits {
@@ -192,4 +192,122 @@ export async function opusFile(s, encodeSound, bitrate = 128000) {
   const s48 = await to48(s), audio = await encodeSound(s48, cfg), notes = ['Opus at ' + bitrate / 1000 + ' kbps, coded by this browser'];
   if (s.channels.length > 2) notes.push('the first 2 of ' + s.channels.length + ' channels');
   return { bytes: oggOpus(audio, { inputRate: Math.round(s.rate), samples: s48.channels[0].length }), notes };
+}
+
+// ---- ALAC (Apple Lossless) ----------------------------------------------------------------------------------------------------------------
+// Verse's own encoder, pure: the frames Apple's ALAC decoder reads (adaptive Golomb residuals, the sign-LMS predictor, mid/side for stereo),
+// put in an .m4a by video-mux.js. 16-bit, mono or stereo, 4096 samples to a frame, the Apple defaults (pb 40, mb 10, kb 14).
+const ALAC_FRAME = 4096, PB = 40, MB = 10, KB = 14, QUANT = 9;
+const log2i = (x) => 31 - Math.clz32(x | 1);
+const sext = (v, bits) => (v << (32 - bits)) >> (32 - bits);
+/** one value of the adaptive Golomb code (the decoder's decode_scalar) */
+function scalar(w, x, k, bps) {
+  if (k === 1) { if (x > 8) { w.put(0x1ff, 9); w.put(x, bps); } else w.put(((1 << x) - 1) << 1, x + 1); return; }
+  const div = (1 << k) - 1, q = Math.floor(x / div), r = x - q * div;
+  if (q > 8) { w.put(0x1ff, 9); w.put(x, bps); return; }
+  w.put(((1 << q) - 1) << 1, q + 1);
+  if (r) w.put(r + 1, k); else w.put(0, k - 1);
+}
+/** the residuals of one channel, with the history, the zero runs and the sign modifier exactly as the decoder reads them back */
+function riceOut(w, e, bps) {
+  const n = e.length; let history = MB, mod = 0;
+  for (let i = 0; i < n; i++) {
+    // after a zero run the decoder adds 1 back (the sign modifier); a run takes every zero, so the value after it is never 0
+    const z = ((e[i] << 1) ^ (e[i] >> 31)) >>> 0;
+    scalar(w, z - mod, Math.min(log2i((history >>> 9) + 3), KB), bps); mod = 0;
+    history = z > 0xffff ? 0xffff : history + z * PB - Math.floor((history * PB) / 512);
+    if (history < 128 && i + 1 < n) {
+      let run = 0; while (i + 1 + run < n && e[i + 1 + run] === 0) run++;
+      scalar(w, run, Math.min(7 - log2i(history) + ((history + 16) >> 6), KB), 16);
+      i += run; mod = 1; history = 0;
+    }
+  }
+}
+/** the residuals of the decoder's lpc_prediction run backwards; coefs (newest sample last) adapt as the decoder adapts them */
+function predictOut(x, order, coefs, bps) {
+  const n = x.length, e = new Int32Array(n), c = Int16Array.from(coefs); if (!n) return e;
+  e[0] = x[0];
+  if (order === 0) { e.set(x); return e; }
+  if (order === 31) { for (let i = 1; i < n; i++) e[i] = sext(x[i] - x[i - 1], bps); return e; }
+  let i = 1; for (; i <= order && i < n; i++) e[i] = sext(x[i] - x[i - 1], bps);
+  const half = 1 << (QUANT - 1);
+  for (; i < n; i++) {
+    const base = i - order, d = x[base - 1]; let acc = 0;
+    for (let j = 0; j < order; j++) acc = (acc + Math.imul(x[base + j] - d, c[j])) | 0;
+    const p = (Math.floor((acc + half) / (1 << QUANT)) + d) | 0, err = sext(x[i] - p, bps); e[i] = err;
+    const sg = Math.sign(err); if (!sg) continue;
+    let ev = err;
+    for (let j = 0; j < order && ev * sg > 0; j++) {
+      const v = d - x[base + j], s = Math.sign(v) * sg;
+      c[j] = c[j] - s; ev = (ev - Math.imul((Math.imul(v, s) >> QUANT), j + 1)) | 0;
+    }
+  }
+  coefs.set(c); return e;
+}
+const bitsOf = (fn) => { const w = new Bits(1 << 14); fn(w); return w.p * 8 + w.k; };
+/** linear prediction of order p for one frame (a Hann window, autocorrelation, Levinson-Durbin), as ALAC coefficients: 9-bit fixed point,
+ *  the newest sample last */
+function lpcOf(x, p) {
+  const n = x.length, y = new Float64Array(n); for (let i = 0; i < n; i++) y[i] = x[i] * (0.5 - 0.5 * Math.cos((2 * Math.PI * (i + 0.5)) / n));
+  const r = new Float64Array(p + 1); for (let k = 0; k <= p; k++) { let a = 0; for (let i = k; i < n; i++) a += y[i] * y[i - k]; r[k] = a; }
+  const c = new Int16Array(p); if (!(r[0] > 0)) return c;
+  r[0] *= 1 + 1e-9; let a = new Float64Array(p + 1), err = r[0];
+  for (let m = 1; m <= p; m++) {
+    let acc = r[m]; for (let j = 1; j < m; j++) acc -= a[j] * r[m - j];
+    const k = acc / err, b = a.slice(); b[m] = k; for (let j = 1; j < m; j++) b[j] = a[j] - k * a[m - j]; a = b; err *= 1 - k * k; if (!(err > 0)) break;
+  }
+  for (let m = 1; m <= p; m++) c[p - m] = Math.max(-32768, Math.min(32767, Math.round(a[m] * (1 << QUANT))));
+  return c;
+}
+/** the best way to code one channel of one frame: a first difference, or the adaptive predictor started from this frame's own coefficients */
+function channelOf(x, bps) {
+  const first = predictOut(x, 31, new Int16Array(0), bps), ways = [{ order: 31, coefs: new Int16Array(0), e: first }];
+  for (const p of [8]) { const start = lpcOf(x, p); ways.push({ order: p, coefs: start, e: predictOut(x, p, start.slice(), bps) }); }
+  for (const w of ways) w.bits = 16 + 16 * w.order + bitsOf((b) => riceOut(b, w.e, bps)); // order 31 still sends 31 (unused) coefficients
+  return ways.reduce((a, b) => (b.bits < a.bits ? b : a));
+}
+/** samples (Float32 channels, -1 to 1) -> { config (the 24-byte ALACSpecificConfig), frames: [Uint8Array], rate, channels }. Pure. */
+export function alac(channels, rate) {
+  if (channels.length > 2) throw new Error('Verse writes ALAC in mono or stereo: this sound has ' + channels.length + ' channels.');
+  const c = channels.length, n = channels[0] ? channels[0].length : 0;
+  const pcm = channels.map((x) => { const o = new Int32Array(n); for (let i = 0; i < n; i++) o[i] = s16(x[i]); return o; });
+  const frames = [];
+  for (let start = 0; start < n; start += ALAC_FRAME) {
+    const len = Math.min(ALAC_FRAME, n - start), blk = pcm.map((x) => x.subarray(start, start + len)), bps = 16 + c - 1;
+    // stereo: left and right as they are, mid and side (weight 1), or left and side (weight 2): the decoder takes R = u - (weight*v >> 1),
+    // L = R + v. The pair whose first differences are smallest is coded (a cheap estimate, so each frame is predicted only once).
+    let pick = [0, 0, blk];
+    if (c === 2) {
+      const L = blk[0], R = blk[1], v = new Int32Array(len), mid = new Int32Array(len); for (let i = 0; i < len; i++) { v[i] = L[i] - R[i]; mid[i] = R[i] + (v[i] >> 1); }
+      const cost = (x) => { let a = 0; for (let i = 1; i < x.length; i++) a += Math.abs(x[i] - x[i - 1]); return a; }, cL = cost(L), cR = cost(R), cS = cost(v), cM = cost(mid);
+      const ways = [[cL + cR, [0, 0, blk]], [cM + cS, [1, 1, [mid, v]]], [cL + cS, [1, 2, [L, v]]]];
+      pick = ways.reduce((a, b) => (b[0] < a[0] ? b : a))[1];
+    }
+    const [shift, weight, chans] = pick, ways = chans.map((x) => channelOf(x, bps)), best = { shift, weight, ways, bits: ways.reduce((a, w) => a + w.bits, 0) };
+    const w = new Bits(len * c * 3 + 64);
+    w.put(c === 2 ? 1 : 0, 3); w.put(0, 4); w.put(0, 12); w.put(len < ALAC_FRAME ? 1 : 0, 1); w.put(0, 2);
+    const raw = len * c * 16;
+    if (best.bits + 16 < raw) {
+      w.put(0, 1); if (len < ALAC_FRAME) w.put(len, 32);
+      w.put(best.shift, 8); w.put(best.weight, 8);
+      for (const way of best.ways) { w.put(0, 4); w.put(QUANT, 4); w.put(4, 3); w.put(way.order, 5); for (let j = way.order - 1; j >= 0; j--) w.put((way.coefs[j] || 0) & 0xffff, 16); }
+      for (const way of best.ways) riceOut(w, way.e, bps);
+    } else {
+      // verbatim: the 16-bit samples as they are, interleaved
+      w.put(1, 1); if (len < ALAC_FRAME) w.put(len, 32);
+      for (let i = 0; i < len; i++) for (let k = 0; k < c; k++) w.put(blk[k][i] & 0xffff, 16);
+    }
+    w.put(7, 3); w.align(); frames.push(w.bytes().slice());
+  }
+  const max = frames.reduce((a, f) => Math.max(a, f.length), 0), total = frames.reduce((a, f) => a + f.length, 0), secs = n / rate;
+  const cfg = new Uint8Array(24), dv = new DataView(cfg.buffer);
+  dv.setUint32(0, ALAC_FRAME); cfg[4] = 0; cfg[5] = 16; cfg[6] = PB; cfg[7] = MB; cfg[8] = KB; cfg[9] = c; dv.setUint16(10, 255); dv.setUint32(12, max); dv.setUint32(16, secs ? Math.round(total * 8 / secs) : 0); dv.setUint32(20, Math.round(rate));
+  return { config: cfg, frames, rate: Math.round(rate), channels: c, length: n };
+}
+/** samples -> an Apple Lossless .m4a (the ALAC frames in an MP4 with the M4A brand). Pure. */
+export function alacFile(channels, rate) {
+  const a = alac(channels, rate), us = 1e6 / a.rate;
+  const samples = a.frames.map((data, i) => ({ data, t: i * ALAC_FRAME * us, d: Math.min(ALAC_FRAME, a.length - i * ALAC_FRAME) * us, key: true }));
+  if (!samples.length) throw new Error('the sound is empty: there is nothing to write.');
+  return mp4(null, { codec: 'alac', rate: a.rate, channels: a.channels, description: a.config, samples }, { m4a: true });
 }
