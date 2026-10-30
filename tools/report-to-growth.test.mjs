@@ -32,8 +32,10 @@ test('what the frontier or the inbox already holds is not added again, even rewo
   assert.equal(addWishes(FRONTIER, [], 'x'), FRONTIER);
 });
 
-test('a wish over 160 characters ends on a whole word with an ellipsis, never mid-word', () => {
-  const long = 'a spectator mode for the chess history table '.repeat(6).trim(), [w] = wishlistOf('Next: ' + long);
-  assert.ok(w.length <= 160 && w.endsWith('…') && !/\s…$/.test(w), w);
-  assert.equal(long[w.length - 1], ' ', 'the next character of the original is a space: the cut fell between words');
+test('a wish over the limit ends at a whole clause or word, never mid-word and never with an ellipsis', () => {
+  const long = 'a spectator mode for the chess history table '.repeat(12).trim(), [w] = wishlistOf('Next: ' + long);
+  assert.ok(w.length <= 300 && !/…$|\.\.\.$/.test(w), w);
+  assert.equal(long[w.length], ' ', 'the next character of the original is a space: the cut fell between words');
+  const clauses = 'wait for the card to settle before checking it, then click the button, then read the result back from the page ' + 'and compare it with what the test expects to see there '.repeat(5), [c] = wishlistOf('Next: ' + clauses);
+  assert.equal(c, 'wait for the card to settle before checking it, then click the button', c);
 });

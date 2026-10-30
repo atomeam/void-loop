@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-30T19:02:16.898Z",
+   "sha": "e28d7d217319ef4e952613dc99f6aa61d8ff730a",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41072999631",
+   "suite": "browser suite on main",
+   "checks": [
+    "hints while typing",
+    "money/GPA near misses (#110): no figures, behavior or aggravation skill claims loan payment, $5 a day for a year, compound interest or a GPA; only loan takes the loan ask"
+   ],
+   "touched": [
+    "tools/home-projects.test.mjs",
+    "tools/word-math.golden.json",
+    "void-live-deploy/index.html",
+    "void-live-deploy/void.html",
+    "void.html"
+   ],
+   "shards": [
+    2
+   ]
+  },
+  {
    "at": "2026-10-30T16:44:46.167Z",
    "sha": "3bf3d4479117ed62c1854e6026656c0a2c63ceb2",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41059219180",
@@ -968,47 +988,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 956
-  },
-  {
-   "at": "2026-10-29T02:51:44.116Z",
-   "sha": "66dd2e52a38213f9d4a31c4355e56b68d5c9e5a7",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40805842721",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line shows before a send (item 7)",
-    "confirm line: no = it does not run",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache",
-    "self-grounding: with the model busy or switched off, a self ask gets Verse's own facts, never a Wikipedia extract"
-   ],
-   "touched": [
-    "domains/verse-loop.pause"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 965
   }
  ]
 }
