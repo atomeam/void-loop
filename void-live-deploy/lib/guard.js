@@ -6,6 +6,7 @@
 // Every /api route gets: a per-connection budget per minute, a request-size cap, a brake on repeated wrong keys, no
 // cross-site writes from other websites' pages (Gumroad's server-to-server ping and Verse's own tools send no Origin), no CORS,
 // nosniff and no-store by default. Owner keys are compared in constant time.
+import { OWNER_ACCOUNTS, ACCOUNT_ID_RE } from './owner-accounts.js';
 
 export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
@@ -119,9 +120,17 @@ export async function ownerOk(request, env) {
   if (await sameSecret(t, env && env.READ_TOKEN)) return true;
   return !!(await ownerAccountSession(t, env));
 }
-// An account is the owner's when one of its passkeys was bound by the owner key. Any read error is false.
+// An account is the owner's when the owner named it (lib/owner-accounts.js, or env.OWNER_ACCOUNTS, comma separated), or when one of
+// its passkeys was bound by the owner key. Any read error is false.
+export function ownerListed(env, userId) {
+  if (!ACCOUNT_ID_RE.test(String(userId || ''))) return false;
+  const extra = String((env && env.OWNER_ACCOUNTS) || '').split(',').map((x) => x.trim()).filter((x) => ACCOUNT_ID_RE.test(x));
+  return OWNER_ACCOUNTS.includes(userId) || extra.includes(userId);
+}
 export async function ownerAccount(env, userId) {
-  if (!env || !env.DB || !userId) return false;
+  if (!userId) return false;
+  if (ownerListed(env, userId)) return true;
+  if (!env || !env.DB) return false;
   try {
     // void-review: ok (bound parameter)
     const row = await env.DB.prepare('SELECT 1 AS y FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(userId).first();
