@@ -439,7 +439,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /prizes/ | names | names, table | yes | handoff-types.json |
 | /random-user/ | number | names, table | yes | handoff-types.json |
 | /random/ | number, names | number, numbers, names | yes | handoff-types.json |
-| /rap/ | text | text, music | yes | its tag |
+| /rap/ | text | text, music, video | yes | its tag |
 | /recipes/ | text, items, number | items, text | yes | handoff-types.json |
 | /resize-image/ | image | image | yes | handoff-types.json |
 | /scores/ | date, text | event, table, date | yes | handoff-types.json |
