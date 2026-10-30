@@ -15,6 +15,9 @@ const UNIT = '(business days?|working days?|weekdays?|days?|weeks?|months?|years
 const re = (src, flags = '') => new RegExp(src, flags); // void-review: ok (src is one of this file's own fixed pattern strings, never the person's text)
 const fmt = (iso) => M.formatDay(iso, 'long');
 const plural = (n, w) => n + ' ' + w + (Math.abs(n) === 1 ? '' : 's');
+// "1 week 1 day", "3 days", "2 months": no "1 weeks" and no "0 weeks" (the days alone when under a week)
+const weeksDays = (n) => (n < 7 ? plural(n, 'day') : plural(Math.floor(n / 7), 'week') + (n % 7 ? ' ' + plural(n % 7, 'day') : ''));
+const monthsDays = (mo, d) => (mo ? plural(mo, 'month') + (d ? ' ' + plural(d, 'day') : '') : plural(d, 'day'));
 const signed = (n) => (n > 0 ? 'in ' + plural(n, 'day') : n < 0 ? plural(-n, 'day') + ' ago' : 'today');
 const hm = (min) => { const m = Math.max(0, Math.round(min)); return Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') + ' min'; };
 const hasYear = (s) => /\d{4}/.test(s);
@@ -138,8 +141,8 @@ export function dateAsk(text, opts = {}) {
     const days = M.daysBetween(a, b);
     const rows = [['Calendar days', String(days)]];
     if (/^(business day|working day|weekday)$/.test(unit)) { const hol = holidayList(m[4], today); rows.unshift(['Business days (Mon-Fri)', String(M.businessDaysBetween(a, b, hol))]); }
-    else if (unit === 'week') rows.unshift(['Weeks', Math.floor(Math.abs(days) / 7) + ' weeks ' + (Math.abs(days) % 7) + ' days']);
-    else { const lo = days >= 0 ? [a, b] : [b, a], ap = M.ageParts(lo[0], lo[1]); rows.unshift(['Months', ap.totalMonths + ' months ' + ap.days + ' days']); }
+    else if (unit === 'week') rows.unshift(['Weeks', weeksDays(Math.abs(days))]);
+    else { const lo = days >= 0 ? [a, b] : [b, a], ap = M.ageParts(lo[0], lo[1]); rows.unshift(['Months', monthsDays(ap.totalMonths, ap.days)]); }
     return ans('between', fmt(a) + ' to ' + fmt(b), rows, { note: 'The start day is not counted, the end day is.' });
   }
   // 357: do two ranges overlap
@@ -186,7 +189,7 @@ export function dateAsk(text, opts = {}) {
     const target = dayIn(m[1], today);
     if (!target) return null;
     const d = M.daysBetween(today, target), a = Math.abs(d);
-    return ans('countdown', d >= 0 ? 'Until ' + fmt(target) : 'Since ' + fmt(target), [[d >= 0 ? 'Days to go' : 'Days ago', String(a)], ['Weeks and days', Math.floor(a / 7) + ' weeks ' + (a % 7) + ' days'], ['Business days', String(Math.abs(M.businessDaysBetween(d >= 0 ? today : target, d >= 0 ? target : today)))]]);
+    return ans('countdown', d >= 0 ? 'Until ' + fmt(target) : 'Since ' + fmt(target), [[d >= 0 ? 'Days to go' : 'Days ago', String(a)], ['Weeks and days', weeksDays(a)], ['Business days', String(Math.abs(M.businessDaysBetween(d >= 0 ? today : target, d >= 0 ? target : today)))]]);
   }
   if ((m = re('^(?:how many )?days (?:since|after) (' + DP + ')$').exec(t)) || (m = re('^(?:how long (?:has it been )?since|count ?up (?:from|since)|days (?:elapsed )?since) (' + DP + ')$').exec(t))) {
     let start = dayIn(m[1], today);
@@ -195,7 +198,7 @@ export function dateAsk(text, opts = {}) {
     const d = M.daysBetween(start, today);
     if (d < 0) return null;
     const ap = M.ageParts(start, today);
-    return ans('countup', 'Since ' + fmt(start), [['Days since', String(d)], ['Weeks and days', Math.floor(d / 7) + ' weeks ' + (d % 7) + ' days'], ['Years, months, days', ap.years + ' y ' + ap.months + ' m ' + ap.days + ' d']]);
+    return ans('countup', 'Since ' + fmt(start), [['Days since', String(d)], ['Weeks and days', weeksDays(d)], ['Years, months, days', ap.years + ' y ' + ap.months + ' m ' + ap.days + ' d']]);
   }
 
   // 363 and 392: next birthday / anniversary
