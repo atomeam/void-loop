@@ -259,3 +259,19 @@ test('letGoJob: an ask an earlier skill takes first becomes a routing correction
   assert.deepEqual(jobAsk(j), { ask: 'sun times chicago', skill: 'dates', want: 'skill:suntimes', mode: 'narrow' });
   assert.ok(pickJob({ items: [{ ...j, id: 'q1', state: 'queued', at: '2026-10-30' }] }, '', () => true), 'the forge picks it up on its next run');
 });
+
+test('the ledger line says when the ask came from a probe, so the growth card counts it (2026-10-30: 70 forge fixes that week, the card read 0)', async () => {
+  const { sourceOf, ledgerWhat } = await import('./propose-fix.mjs');
+  assert.equal(sourceOf({ target: 'probe:current-sky' }), 'probe');
+  assert.equal(sourceOf({ target: 'route:sky-x' }), 'route');
+  assert.equal(sourceOf({ target: 'miss:draw-a-mandala' }), 'miss');
+  assert.equal(sourceOf(null), null);
+  const t = 'Verse fixes its sky skill: learn to handle "current sky"';
+  assert.equal(ledgerWhat(t, 'probe'), t + ' (from my probes)');
+  assert.equal(ledgerWhat(t, 'miss'), t, 'a person\'s missed ask is not a probe');
+  const { measure } = await import('../void-live-deploy/lib/better.js');
+  const now = Date.parse('2026-10-30T20:00:00Z'), line = (what) => ({ at: '2026-10-30T19:00:00Z', by: 'verse', kind: 'fix', what });
+  assert.equal(measure({ ledger: [line(ledgerWhat(t, 'probe')), line(ledgerWhat(t, 'miss'))], now }).probeFixes, 1, 'the growth card counts the probe\'s fix and only it');
+  const wf = (await import('node:fs')).readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
+  assert.match(wf, /grow\.mjs fix "\$\{LEDGER:-\$TITLE\}"/, 'the workflow writes the ledger line, not the bare title');
+});

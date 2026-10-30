@@ -109,6 +109,14 @@ export function titleFor(miss, outcome) {
   return outcome === 'answered' ? 'Verse fixes its ' + miss.skill + ' skill: learn to handle "' + miss.ask + '"' : 'Verse routes "' + miss.ask + '" to its ' + miss.skill + ' skill (the answer is not checked)';
 }
 
+// where the job came from: 'probe' (a probe: job, an ask Verse wrote for itself and missed), 'route' (a routing correction the forge
+// queued), 'miss' (a person's missed ask the router pinned on a skill). The growth card counts "fixes from my own probes" from the
+// ledger line's words (lib/better.js PROBE), and the forge's line never said where its ask came from: 70 forge fixes in the week to
+// 2026-10-30 and the card read 0. Pure.
+export const sourceOf = (job) => { const m = /^(probe|route|miss):/.exec(String((job && job.target) || '')); return m ? m[1] : null; };
+/** The growth-ledger line: the title, and "(from my probes)" when the ask came from a probe: job. Pure. */
+export const ledgerWhat = (title, source) => String(title || '') + (source === 'probe' ? ' (from my probes)' : '');
+
 /** a gateway error worth one more try (the edge or the model's route hiccupped); 4xx and 500 are answers, not hiccups. Pure. */
 export const retryable = (status) => status === 502 || status === 503 || status === 504;
 export const RETRY_MS = 8000;
@@ -186,7 +194,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   delete process.env.ANTHROPIC_API_KEY; // the checks below run the edited skill: none of them gets the key
   if (!proposal) await bail('no proposal');
   if (!next) await bail('the edits do not apply to the file as it stands');
-  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), risk: riskOf(proposal.edits), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn',
+  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), risk: riskOf(proposal.edits), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn', source: sourceOf(job),
     title: titleFor(miss, ''), passed: false, failed: '', detail: '', tries: n, collisions: lines.slice(0, 12), lands: land ? (land.loadError ? 'did not load' : land.by || 'nothing') : null };
   let committed = false;
   writeFileSync(file, next);
@@ -224,6 +232,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     }
   } catch (e) { stop(result.failed || 'checks', e.message); }
   result.passed = !result.failed;
+  result.ledger = ledgerWhat(result.title, result.source);
   const diff = committed ? run('git', ['diff', 'HEAD~1', 'HEAD', '--', 'void-live-deploy/skills/' + miss.skill + '.js']) : run('git', ['diff', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
   if (result.passed) writeFileSync(join(outDir, 'propose-fix.patch'), diff.stdout);
   // the tree is left as it was either way; the patch carries the change to the write job
