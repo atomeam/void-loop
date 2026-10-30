@@ -542,13 +542,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T06:19:31Z",
+   "subject": "Calendar card opens on the day the page shows"
+  },
+  {
+   "at": "2026-10-30T06:13:47Z",
+   "subject": "converter: Merge EPUB on the device"
+  },
+  {
+   "at": "2026-10-30T06:12:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T06:10:23Z",
    "subject": "Regenerate the generated files after the merge"
@@ -560,6 +572,10 @@
   {
    "at": "2026-10-30T06:09:25Z",
    "subject": "openapi: mark /api/rapvoice as Verse's own (the rap page is its only caller)"
+  },
+  {
+   "at": "2026-10-30T06:09:00Z",
+   "subject": "Family health: the growth score part says when no family moves it, and its check holds on a fixture"
   },
   {
    "at": "2026-10-30T06:08:47Z",
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T06:00:10Z",
    "subject": "converter: Remove Noise from Audio on the device"
-  },
-  {
-   "at": "2026-10-30T05:55:44Z",
-   "subject": "Growth: \"What got built\" opens the growth ledger, not a not-found card"
-  },
-  {
-   "at": "2026-10-30T05:55:09Z",
-   "subject": "Refresh deps.json for lib/measure-ask.js"
-  },
-  {
-   "at": "2026-10-30T05:54:52Z",
-   "subject": "converter: Increase MP3 Volume keeps the MP3, with no new coding"
-  },
-  {
-   "at": "2026-10-30T05:53:54Z",
-   "subject": "Sitemap lists the 12 linked pages it missed; self-check counts a studio's own \"Use with\" row"
   }
  ],
  "builders": {

@@ -497,7 +497,7 @@
    "skills": 5,
    "direct": 4,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/field-doodle.js",
