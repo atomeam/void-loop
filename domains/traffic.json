@@ -1,13 +1,13 @@
 {
- "at": "2026-10-29T11:33Z",
+ "at": "2026-10-30T11:26Z",
  "source": "verse",
  "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
  "week": {
-  "since": "2026-10-23",
+  "since": "2026-10-24",
   "unique": true,
-  "people": 30,
-  "views": 227,
-  "ours": 4964,
+  "people": 46,
+  "views": 309,
+  "ours": 8337,
   "bots": 0
  },
  "days": [
@@ -37,17 +37,33 @@
   },
   {
    "day": "2026-10-29",
-   "all": 927,
-   "people": 41,
-   "ours": 886,
+   "all": 3453,
+   "people": 45,
+   "ours": 3408,
    "bots": 0,
-   "uniquePeople": 2
+   "uniquePeople": 3
+  },
+  {
+   "day": "2026-10-30",
+   "all": 929,
+   "people": 78,
+   "ours": 851,
+   "bots": 0,
+   "uniquePeople": 15
   }
  ],
  "pages": [
   {
    "k": "/",
-   "n": 164
+   "n": 196
+  },
+  {
+   "k": "/team/",
+   "n": 27
+  },
+  {
+   "k": "/news/",
+   "n": 9
   },
   {
    "k": "/flip/",
@@ -62,6 +78,10 @@
    "n": 5
   },
   {
+   "k": "/chords/",
+   "n": 5
+  },
+  {
    "k": "/conquered/",
    "n": 5
   },
@@ -70,41 +90,33 @@
    "n": 5
   },
   {
-   "k": "/paint/",
+   "k": "/members/",
    "n": 5
-  },
-  {
-   "k": "/hosting/",
-   "n": 4
-  },
-  {
-   "k": "/compare/",
-   "n": 3
-  },
-  {
-   "k": "/tournaments/",
-   "n": 3
   }
  ],
  "referrers": [
   {
    "k": "google.com",
-   "n": 12
+   "n": 13
+  },
+  {
+   "k": "bing.com",
+   "n": 6
   },
   {
    "k": "github.com",
    "n": 4
-  },
-  {
-   "k": "bing.com",
-   "n": 2
   }
  ],
  "countries": [
   {
    "k": "US",
-   "n": 219
+   "n": 300
+  },
+  {
+   "k": "SG",
+   "n": 2
   }
  ],
- "line": "People this week: 30 (227 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
+ "line": "People this week: 46 (309 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
 }
