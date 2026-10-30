@@ -142,6 +142,15 @@ test('the full-page link keeps what the card shows when the card links to its ow
   assert.equal(ownPageOf('baseconv', ['/base-converter/?b=16&v=ff']), '/base-converter/?b=16&v=ff');
 });
 
+test('a unit answer opens the unit converter on that ask, not the plain calculator (2026-10-30: "convert 5 miles to km" linked to an empty /calculator/)', async () => {
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const q = '/convert/?q=' + encodeURIComponent('5 miles to km');
+  assert.deepEqual(pageOfCard('calc', q), [q, 'Unit converter']);
+  assert.deepEqual(pageOfCard('calc', '/calculator/'), ['/calculator/', 'Calculator'], 'a sum keeps the calculator');
+  const src = readFileSync(resolve(root, '../../void.html'), 'utf8');
+  assert.match(src, /const um = lower\.match\(CALC_UNIT_RE\);\n\s+if \(um && !hit\) \{\n\s+el\.dataset\.page = '\/convert\/\?q=' \+ encodeURIComponent\(um\[0\]\.trim\(\)\);/);
+});
+
 test('a card whose art box shows the answer\'s photo does not show the same photo again in its body (2026-10-30: the recipe card showed its dish twice)', () => {
   const css = CARD_CSS.join ? CARD_CSS.join('') : String(CARD_CSS);
   assert.match(css, /\.vpage\.vcard>img\[data-vc-art-src\]\{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none\}/);
