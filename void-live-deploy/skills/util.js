@@ -26,6 +26,13 @@ export function utilOf(text) {
   const raw = String(text || '').trim(), t = raw.replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
   let m = l.match(/^(?:generate|make|create|give me|new)\s+(?:me\s+)?(?:a\s+)?(?:strong\s+|secure\s+|random\s+)*password(?:\s+(?:with|of)\s+(\d{1,3})\s+(?:characters|chars|letters))?$|^password\s+generator$/);
   if (m) return { kind: 'password', n: Math.min(128, Math.max(8, +m[1] || 20)) };
+  // the length or the kind said another way (2026-10-30: "16 character password", "generate a password 16 characters", "strong password" and
+  // "random password generator" fell to an article). password.js keeps "random password", "another password" and "password of 20 characters"
+  const PW_LEAD = '^(?:please\\s+)?(?:(?:generate|make|create|give\\s+me|get\\s+me|i\\s+need|i\\s+want)\\s+(?:me\\s+)?)?(?:an?\\s+)?';
+  const PW_ADJ = '(?:(?:strong|secure|random|safe|complex|long|new)\\s+)*', PW_N = '(\\d{1,3})[\\s-]?(?:characters?|chars?|letters?)(?:\\s+long)?';
+  m = l.match(new RegExp(PW_LEAD + PW_ADJ + PW_N + '\\s+' + PW_ADJ + 'password(?:\\s+generator)?$|' + PW_LEAD + PW_ADJ + 'password\\s+' + PW_N + '$')); // void-review: ok (built from the constants above)
+  if (m) return { kind: 'password', n: Math.min(128, Math.max(8, +(m[1] || m[2]))) };
+  if (/^(?:an?\s+)?(?=(?:\w+\s+)*(?:strong|secure|safe|complex)\s)(?:(?:strong|secure|random|safe|complex|long|new)\s+)+password$|^(?:an?\s+)?(?:free\s+|online\s+)?(?:(?:strong|secure|random|safe|complex)\s+)*password\s+(?:generator|maker|creator)$/.test(l)) return { kind: 'password', n: 20 };
   m = t.match(/^(?:make\s+(?:me\s+)?|create\s+|generate\s+)?(?:a\s+)?qr(?:\s+code)?\s+(?:for|of|with)\s+(.{1,300})$/i);
   if (m) return { kind: 'qr', data: m[1].trim() };
   // the tool asked for by its name, with no text yet (2026-10-30: "qr code generator" and "case converter" fell to an article): a card that does it as you type
@@ -235,8 +242,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world'],
-  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns'],
+  examples: ['generate a password', '16 character password', 'strong password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world'],
+  nearMisses: ['what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

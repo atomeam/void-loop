@@ -3210,8 +3210,8 @@
    "line": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes",
    "examples": [
     "generate a password",
-    "qr code for a-to-mind.com",
-    "what color is #ff8800"
+    "16 character password",
+    "strong password"
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 71 real asks in the benchmark",
