@@ -1,36 +1,37 @@
-// brain-pool, Verse Brain's pool: a smoothed-particle fluid pulled toward the brain's focus, and tiny networks that set the fluid's own
-// viscosity, stiffness and kernel size from what they sense, from F459 (WebGPU SPH MLP agent mind, atomeam/a-to-mind.com drafts/).
-// Owner, 2026-10-29: "combine all the builds into one entity", "dont fake it". F459's idea: a tiny MLP (6 -> 12 -> 3) that reads the
-// motion and the fluid's own density and outputs the parameters of a smoothed particle hydrodynamics (SPH) fluid, a causal modulator of
-// the fluid and not a policy that moves the particles. F459's network was random and never learned. Here:
+// brain-pool, Verse Brain's pool: a smoothed-particle fluid that flows after the brain's focus, and a tiny network that sets the fluid's
+// own viscosity, stiffness and kernel size from what it senses, from F459 (WebGPU SPH MLP agent mind, atomeam/a-to-mind.com drafts/;
+// F184 and F432 are SPH drafts too). Owner, 2026-10-29: "combine all the builds into one entity", "dont fake it". F459's idea: a tiny MLP
+// (6 -> 12 -> 3) that reads the motion and the fluid's own density and outputs the parameters of a smoothed particle hydrodynamics (SPH)
+// fluid: a causal modulator of the fluid, not a policy that moves the particles. F459's network was random and never learned. Here:
 //   1. the fluid: NP particles in a box with walls, SPH as Mueller et al. (2003) wrote it for 2D: density by the poly6 kernel, pressure
 //      by the stiffness times the density over the rest density, the pressure force by the spiky kernel's gradient, the viscosity force
 //      by the viscosity kernel's Laplacian. The rest density is the density the same kernel gives a still square lattice, so a change of
-//      kernel size does not count as a change of density.
-//   2. the pull: the brain's focus pulls every particle toward it with the same strength (a gravity that points at the focus), so the
-//      fluid flows after the focus and gathers round it as a drop.
-//   3. the controllers: PC tiny networks (6 senses: where the focus is from the drop's centre, the drop's velocity, how fast the focus
-//      moves and the drop's density error; 12 hidden units; 3 outputs: viscosity, stiffness, kernel size). Each runs its own copy of
-//      the fluid, from the same start, after the same focus.
-//   4. the cost: each step a fluid pays for how far its density is from the rest density (it must not be crushed or torn), for how far
-//      its particles are from the focus, and for its kinetic energy (it must not slosh). A constant setting is a compromise: a stiff fluid
-//      keeps its density but jumps when the focus moves, a soft one follows smoothly and is crushed.
-//   5. evolution: a life is LIFE steps. At its end each controller's mean cost is folded into its score, and KIDS children (mutated or
-//      crossed from tournament winners) take the places of the highest costs. With blind set every child is a fresh random network
-//      (random search). With fixed set the networks are only their output biases: one constant setting each (the best constant setting
-//      the same search finds), the control a network that senses is measured against.
-//   6. the control in the brain: one more copy of the fluid runs at the starter setting. Its cost over the best controller's cost is the
-//      organ's gain.
-//   Once the controllers beat the starter setting, the drop's centre leaves a little life where it settles (the input layer).
+//      kernel size does not count as a change of density. The viscosity also drags on the still air round the drop (a thick fluid moves
+//      slowly), so one setting decides both how fast the drop follows and how fast it calms down.
+//   2. the pull and the stir: the brain's focus pulls every particle toward it like a spring (capped), so the fluid flows after the focus
+//      and gathers round it as a drop. Your pointer is a spoon: particles near it are dragged along at its speed. Your tilt leans it.
+//   3. the cost: each step a fluid pays for its density error (it must not be crushed or torn), for its lag (the drop's centre from the
+//      focus) and for its slosh (the kinetic energy inside the drop, not the drop's own travel). A constant setting is a compromise: a
+//      thin fluid follows the focus closely but sloshes for long after a stir, a thick one is calm but lags. A network that senses can
+//      thicken the fluid while it sloshes and thin it again to follow.
+//   4. the network: 6 senses (where the focus is from the drop's centre, the drop's velocity, its slosh and its density error), 12 hidden
+//      units, 3 outputs (viscosity, stiffness, kernel size). It starts close to one constant setting (small weights from the senses).
+//   5. learning: a life is LIFE steps. Each life PC copies of the fluid run from the same start after the same focus and the same stir,
+//      as PC / 2 mirrored pairs of tries (the network plus a small random change, and minus the same change). At the end, the cheaper
+//      side of each pair says which way to move the network (an evolution strategy with mirrored sampling). With fixed set the same
+//      tries move only the output biases: one constant setting (the best constant setting the same search finds), the control a network
+//      that senses is measured against. With blind set it is random search: the best network so far against PC - 1 fresh ones.
+//   6. the control in the brain: one more copy of the fluid runs at the starter setting. Its cost over the network's cost is the gain.
+//   Once the network beats the starter setting, the drop's centre leaves a little life where it settles (the input layer).
 // Pure: no DOM, no clock, no Math.random (a seeded generator).
 import { clamp, rng } from './field-kit.js';
 import { deposit } from './brain-workspace.js';
 
 export const NP = 30, PC = 6, IN = 6, HID = 12, OUT = 3, LIFE = 120, SUB = 6, EVERY = 6;
-export const GENES = HID * IN + HID + OUT * HID + OUT; // 123 numbers a controller
-// the settings a controller's outputs map to (tanh -1..1 onto these ranges), and the starter setting (the middle of each)
+export const GENES = HID * IN + HID + OUT * HID + OUT; // 123 numbers a network
+// the settings the outputs map to (tanh -1..1 onto these ranges), and the starter setting (the middle of each)
 export const RANGE = { visc: [0.002, 0.2], stiff: [0.2, 6], size: [0.75, 1.35] };
-const H0 = 0.12, DT = 0.01, PULL = 30, AMAX = 6, DRAG = 150, VMAX = 1.5, WALL = 0.4, WMAX = 4, KEEP = 0.5, SPACE = H0 * 0.5, MASS = 1, WD = 1, WS = 2, WK = 20, SPOON = 40, SPOON_R = 0.15;
+const H0 = 0.12, DT = 0.01, PULL = 30, AMAX = 6, DRAG = 150, VMAX = 1.5, WALL = 0.4, WMAX = 4, SPACE = H0 * 0.5, MASS = 1, WD = 1, WS = 2, WK = 20, SPOON = 40, SPOON_R = 0.15;
 const r3 = (v) => Math.round(v * 1000) / 1000;
 const mean = (v) => (v.length ? v.reduce((a, x) => a + x, 0) / v.length : null);
 const lerp = ([lo, hi], t) => lo + (hi - lo) * (t + 1) / 2;
@@ -94,9 +95,9 @@ export const costOf = (c) => WD * c.err + WS * c.lag + WK * c.ke;
 /** the drop's centre and its numbers. Pure. */
 export function dropOf(F) { let cx = 0, cy = 0, vx = 0, vy = 0; for (let p = 0; p < NP; p++) { cx += F.x[p]; cy += F.y[p]; vx += F.vx[p]; vy += F.vy[p]; } return { x: cx / NP, y: cy / NP, vx: vx / NP, vy: vy / NP }; }
 
-// ---- the controllers ------------------------------------------------------------------------------------------------------------------
+// ---- the network ----------------------------------------------------------------------------------------------------------------------
 const O = HID * IN + HID + OUT * HID; // where the output biases start
-/** what a controller's network says: a setting from its 6 senses. With fixed set only the output biases count (a constant setting). Pure. */
+/** what the network says: a setting from its 6 senses. With fixed set only the output biases count (a constant setting). Pure. */
 export function think(w, sv, fixed = false) {
   const o = [w[O], w[O + 1], w[O + 2]];
   if (!fixed) for (let h = 0; h < HID; h++) {
@@ -112,8 +113,6 @@ export function senseOf(F, last, tx, ty) {
 }
 /** a random network that starts close to one constant setting: small weights from the senses, any output biases. */
 export const fresh = (r) => Float32Array.from({ length: GENES }, (_, k) => (r() - 0.5) * (k < O ? 0.4 : 2));
-export function mutate(w, r, fixed = false) { const c = Float32Array.from(w); for (let k = fixed ? O : 0; k < GENES; k++) if (r() < (fixed ? 0.6 : 0.1)) c[k] = clamp(c[k] + (r() - 0.5) * (fixed ? 0.6 : 0.5), -WMAX, WMAX); return c; }
-export function cross(a, b, r) { const c = Float32Array.from(a); for (let k = 0; k < GENES; k++) if (r() < 0.5) c[k] = b[k]; return c; }
 export const valid = (w) => (Array.isArray(w) || w instanceof Float32Array) && w.length === GENES && Array.from(w).every((v) => Number.isFinite(v) && Math.abs(v) <= WMAX);
 
 // ---- the pool: one network learning from mirrored tries, their fluids, the starter control ------------------------------------------------
