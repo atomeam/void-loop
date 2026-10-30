@@ -791,7 +791,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 4,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/wheel.js",
