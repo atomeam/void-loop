@@ -457,7 +457,7 @@
     .doc-map ol { margin: 4px 0 6px; padding-left: 18px; }
     #hints { max-width: 720px; margin: 0 auto 6px; padding: 0 10px; display: none; }
     #hints.on { display: block; }
-    #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; overflow-wrap: anywhere; max-height: 4.6em; overflow-y: auto; }
     #hints div.sel, #hints div:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
     #hints b { font-weight: inherit; color: var(--fg); }
     #dock {
