@@ -19,7 +19,7 @@
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import crypto from 'node:crypto'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 import { execFileSync } from 'node:child_process';
-import { envName, latencyOf, assess } from './bench-load.mjs';
+import { envName, latencyOf, assess, againOf } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
@@ -44,14 +44,14 @@ if (probeFile) { const have = new Set(JSON.parse(fs.readFileSync(path.join(here,
 { const seen = new Set(), dup = asks.map((a) => a.ask.toLowerCase()).filter((k) => seen.has(k) || !seen.add(k));
   if (dup.length) { console.error('bench.json repeats: ' + dup.join(' | ')); process.exit(1); } }
 // the cache key: every file the benchmark serves or reads, plus the browser and the day
-function benchKey() {
+function benchKey(withDay = true) {
   const h = crypto.createHash('sha256');
   const walk = (d) => { for (const n of fs.readdirSync(d).sort()) { const f = path.join(d, n), rel = path.relative(root, f);
     if (rel === 'functions' || n.startsWith('.')) continue;
     if (fs.statSync(f).isDirectory()) walk(f); else { h.update(rel + '\0'); h.update(fs.readFileSync(f)); } } };
   walk(root);
   for (const f of ['bench.json', 'bench.mjs']) h.update(fs.readFileSync(path.join(here, f)));
-  h.update(String(exeForKey()) + '\0' + new Date().toISOString().slice(0, 10));
+  h.update(String(exeForKey()) + '\0' + (withDay ? new Date().toISOString().slice(0, 10) : ''));
   return h.digest('hex');
 }
 const exeForKey = () => [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
@@ -70,12 +70,23 @@ const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Pro
 const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 // no host but this machine resolves: every outside service is a stand-in below, and one that has none (a worker's request, a map in an iframe) fails at once
 // 2026-10-29: --disable-gl-drawing-for-tests was tried (#1627): an ask took 1.40 s on 3 pages, not 0.89 s, so it is gone again
-// --disable-gpu (2026-10-29): with one tab for each slot (#1630), the GPU process took 1.67 s of CPU for each ask, more than the renderers
-// (1.34 s). On a runner it draws in software GL. Without a GPU process the page is drawn by Skia in software, which costs less.
-const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1', '--disable-gpu'];
+// 2026-10-29: --disable-gpu was tried (#1631): the GPU process still took 1.68 s of CPU for each ask and an ask took 0.93 s, so it is gone again
+const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'];
+// The window is 800 by 540 (2026-10-29), not Playwright's 1280 by 720. With no GPU on a runner, every frame is drawn and composited in
+// software, and the GPU process took 1.68 s of CPU for each ask (#1631), more than the renderers. 800 is wider than every breakpoint in
+// index.html (700 at most), so the page keeps its desktop layout with 47% of the pixels.
+const VIEWPORT = { width: 800, height: 540 };
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
+// A second run in the same CI run, after an inconclusive first one, runs again only the asks the first run missed (againOf, tools/bench-load.mjs).
+// The first run's results are kept for that in AGAIN_FILE, and the file is used once. Its key leaves out the day: on 2026-10-30 the first run
+// ended after midnight UTC, the day in `key` changed, and the second run ran all the asks again.
+const AGAIN_FILE = CACHE.replace('void-bench-pass-', 'void-bench-again-'), ciRun = process.env.GITHUB_RUN_ID ? process.env.GITHUB_RUN_ID + '.' + (process.env.GITHUB_RUN_ATTEMPT || '1') : '';
+const againKey = cacheable && ciRun ? benchKey(false) : ''; let prior = null; if (againKey) { try { prior = JSON.parse(fs.readFileSync(AGAIN_FILE, 'utf8')); } catch (_) {} try { fs.rmSync(AGAIN_FILE, { force: true }); } catch (_) {} }
+const again = againOf(prior, todo, { key: againKey, run: ciRun });
+if (again) { prior.out.forEach((x, i) => { out[i] = x; }); console.error('bench: second run after the inconclusive one of ' + prior.at + ': ' + again.length + ' of ' + todo.length + ' asks run again (the ones it missed); the rest keep their result'); }
+const order = again || todo.map((_, i) => i);
 // --ground: the semantic validator's measurement (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"). Every answer the
 // right skill gave, with no "says" to check it, is read off the page and asked: is this card about the ask's subject? Reported
 // apart (tools/bench.ground.json); it never changes the score. A skill's trigger words are read off its own asks in bench.json.
@@ -94,7 +105,7 @@ if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(p
 // still stopped at 1600 of 3187 asks. Each slot is its own browser on its own empty profile, removed at the end of the run.
 const slotDirs = [];
 const slot = () => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'void-bench-slot-')); slotDirs.push(dir);
-  return chromium.launchPersistentContext(dir, { executablePath: exe, headless: true, args: ARGS, reducedMotion: 'reduce', serviceWorkers: 'block' }); };
+  return chromium.launchPersistentContext(dir, { executablePath: exe, headless: true, args: ARGS, viewport: VIEWPORT, reducedMotion: 'reduce', serviceWorkers: 'block' }); };
 const CLEAR_STORAGE = async () => { localStorage.clear(); sessionStorage.clear();
   for (const d of (indexedDB.databases ? await indexedDB.databases() : [])) if (d.name) await new Promise((r) => { const q = indexedDB.deleteDatabase(d.name); q.onsuccess = q.onerror = q.onblocked = () => r(); });
   if (self.caches) for (const k of await caches.keys()) await caches.delete(k); };
@@ -135,6 +146,9 @@ async function one(ctx, { ask: a, want, says, before }) {
     // the place found is the place asked for (the coordinates and the rest stay the fixed stand-in), so a card names what was asked
     if (u.includes('geocoding-api.open-meteo.com')) { const q = String(new URL(u).searchParams.get('name') || 'Paris').trim(); const name = q.replace(/\b\w/g, (c) => c.toUpperCase());
       return r.fulfill(json({ results: [{ name, country: 'France', country_code: 'FR', latitude: 48.85, longitude: 2.35, timezone: 'Europe/Paris', population: 2100000 }] })); }
+    // the eat skill's map search (skills/eat.js findPlace): one restaurant named for what was asked, so "order food from lovebird" finds a place to order from
+    if (u.includes('nominatim.openstreetmap.org/search')) { const q = String(new URL(u).searchParams.get('q') || 'Restaurant').trim(); const name = q.replace(/\b\w/g, (c) => c.toUpperCase());
+      return r.fulfill(json([{ name, type: 'restaurant', display_name: name + ', Main Street', lat: '48.85', lon: '2.35', address: { house_number: '1', road: 'Main Street' }, extratags: { cuisine: 'chicken' } }])); }
     if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
     if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10);
       return r.fulfill(json({ timezone: 'Europe/Paris', current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5, relative_humidity_2m: 50 },
@@ -234,8 +248,8 @@ const sampleCpu = () => { let pids = []; try { pids = fs.readdirSync('/proc').fi
 const sampler = fs.existsSync('/proc/stat') ? setInterval(sampleCpu, 1000) : null; if (sampler) sampler.unref(); // never what keeps the run alive
 const procLine = () => { if (!sampler) return ''; const per = (k) => Math.round(procCpu[k] / done); const idle = idle0 && idleNow && idleNow.all > idle0.all ? Math.round(100 * (idleNow.idle - idle0.idle) / (idleNow.all - idle0.all)) : 0;
   return '; machine CPU per ask: renderers ' + per('renderer') + ' ms, gpu ' + per('gpu') + ', other chrome ' + per('utility') + ', chrome main ' + per('browser') + ', bench ' + per('bench') + ', idle ' + idle + '%'; };
-await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { const ctx = await slot(); try { while (next < todo.length) { const i = next++; out[i] = await one(ctx, todo[i]);
-  if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
+await Promise.all(Array.from({ length: Math.min(PAR, order.length) }, async () => { const ctx = await slot(); try { while (next < order.length) { const i = order[next++]; out[i] = await one(ctx, todo[i]);
+  if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + order.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
     + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in, load ' + os.loadavg()[0].toFixed(1)
     + '; page CPU per ask ' + Math.round(pace.task / done) + ' ms (script ' + Math.round(pace.script / done) + ', layout ' + Math.round(pace.layout / done) + ', style ' + Math.round(pace.style / done) + ')' + procLine()); } } finally { await ctx.close(); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
@@ -253,7 +267,9 @@ if (process.argv.includes('--score')) {
   const result = { score: a.score, total: a.total, wrong: a.wrong, env, cores: os.cpus().length, pages: PAR, latency, sha, at: new Date().toISOString() };
   if (a.loadMisses.length) result.loadMisses = a.loadMisses;
   if (a.unreplayed) result.unreplayed = a.unreplayed;
+  if (again) result.rerun = { of: prior.at, asks: again.length }; // the second run of an inconclusive one: only its misses ran again
   if (a.inconclusive) { result.inconclusive = true; result.note = a.note; }
+  if (againKey && a.inconclusive && !again) try { fs.writeFileSync(AGAIN_FILE, JSON.stringify({ key: againKey, run: ciRun, at: result.at, out: out.map(({ ask, by, want, right, ms }) => ({ ask, by, want, right, ms })) })); } catch (_) {}
   const floor = Number.isFinite(best.score) ? best.score : Infinity;
   if (cacheable && !a.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: result.at, result })); } catch (_) {}
   console.log(JSON.stringify(result)); process.exit(a.failed ? 1 : 0); }

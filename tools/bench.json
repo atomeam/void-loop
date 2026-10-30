@@ -637,7 +637,7 @@
   },
   {
     "ask": "what was the date 30 days ago",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "which day was it 100 days ago",
@@ -1490,7 +1490,7 @@
   },
   {
     "ask": "what is the date in 10 days",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "how many hours until midnight",
@@ -2006,22 +2006,22 @@
   },
   {
     "ask": "42 in binary",
-    "want": "calc",
-    "says": "101010"
+    "want": "calc|skill:baseconv",
+    "says": "101010|0010 1010"
   },
   {
     "ask": "convert 255 to hex",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "\\bff\\b|0xff"
   },
   {
     "ask": "what is my zodiac sign if i was born march 3",
-    "want": "calc|answer",
+    "want": "calc|answer|skill:date-calc",
     "says": "pisces"
   },
   {
     "ask": "how many days old am i if born on june 1 1990",
-    "want": "calc|age"
+    "want": "calc|age|skill:date-calc"
   },
   {
     "ask": "how to tie a tie",
@@ -2079,7 +2079,7 @@
   },
   {
     "ask": "is today a weekend",
-    "want": "today|calc|answer"
+    "want": "today|calc|answer|skill:is-it"
   },
   {
     "ask": "how many business days until christmas",
@@ -2087,7 +2087,7 @@
   },
   {
     "ask": "what's the date 3 weeks from today",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "add 2 hours to 3:30 pm",
@@ -2995,12 +2995,12 @@
   },
   {
     "ask": "what is 255 in binary",
-    "want": "calc",
-    "says": "11111111"
+    "want": "calc|skill:baseconv",
+    "says": "11111111|1111 1111"
   },
   {
     "ask": "what is 0xff in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "255"
   },
   {
@@ -3010,7 +3010,7 @@
   },
   {
     "ask": "what is the date 30 days from today",
-    "want": "calc|skill:calendar"
+    "want": "calc|skill:calendar|skill:date-calc"
   },
   {
     "ask": "how many weeks is 100 days",
@@ -3088,7 +3088,7 @@
   },
   {
     "ask": "what is the date next friday",
-    "want": "calc|skill:calendar"
+    "want": "calc|skill:calendar|skill:date-calc"
   },
   {
     "ask": "convert 2 cups of flour to grams",
@@ -3152,7 +3152,7 @@
   },
   {
     "ask": "what is the date this sunday",
-    "want": "calc",
+    "want": "calc|skill:date-calc",
     "says": "Sunday"
   },
   {
@@ -3450,7 +3450,7 @@
   },
   {
     "ask": "is it a weekend",
-    "want": "today|calc|said",
+    "want": "today|calc|said|skill:is-it",
     "says": "[Nn]o|[Yy]es"
   },
   {
@@ -3968,7 +3968,7 @@
   },
   {
     "ask": "what is 101010 in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "42"
   },
   {
@@ -4632,8 +4632,8 @@
   {"ask": "what is the gcd of 48 and 180", "want": "calc", "says": "12"},
   {"ask": "lcm of 6 and 8", "want": "calc", "says": "24"},
   {"ask": "roman numerals for 2026", "want": "calc", "says": "MMXXVI"},
-  {"ask": "what is 1010 in binary to decimal", "want": "calc", "says": "\\b10\\b"},
-  {"ask": "255 in hex", "want": "calc", "says": "FF|ff"},
+  {"ask": "what is 1010 in binary to decimal", "want": "calc|skill:baseconv", "says": "\\b10\\b"},
+  {"ask": "255 in hex", "want": "calc|skill:baseconv", "says": "FF|ff"},
   {"ask": "review this python: except: pass", "want": "review", "says": "hides every error|silently|bare"},
   {"ask": "is this code safe? eval(userInput)", "want": "review", "says": "runs text as code"},
   {"ask": "review this sql: DELETE FROM users;", "want": "review", "says": "every row"},
@@ -5035,8 +5035,8 @@
   {"ask": "what time zone is it in tokyo", "want": "skill:worldtime", "says": null},
   {"ask": "when is thanksgiving this year", "want": "holiday|skill:holidays|calc", "says": null},
   {"ask": "what day is new years eve", "want": "holiday|skill:holidays|calc", "says": null},
-  {"ask": "what was the date 100 days ago", "want": "calc|today", "says": null},
-  {"ask": "what's 2 weeks from today", "want": "calc|today", "says": null},
+  {"ask": "what was the date 100 days ago", "want": "calc|today|skill:date-calc", "says": null},
+  {"ask": "what's 2 weeks from today", "want": "calc|today|skill:date-calc", "says": null},
   {"ask": "180 lbs in kg", "want": "calc", "says": "81\\.6"},
   {"ask": "6 feet 2 inches in cm", "want": "calc", "says": "18[78]"},
   {"ask": "what is 1 mile in steps", "want": "calc|answer|article", "says": null},
@@ -5420,7 +5420,7 @@
   {"ask": "what is 2 hours and 15 minutes in minutes", "want": "calc", "says": "135"},
   {"ask": "how many weekdays in november", "want": "calc|today", "says": "2[01]"},
   {"ask": "gas mileage 300 miles 10 gallons", "want": "calc|skill:fuel", "says": "30"},
-  {"ask": "what is my age in days born march 5 1990", "want": "calc|age", "says": null},
+  {"ask": "what is my age in days born march 5 1990", "want": "calc|age|skill:date-calc", "says": null},
   {"ask": "review this js: const data = await fetch(url); const json = data.json();", "want": "review", "says": "await|promise"},
   {"ask": "review this js: arr.map(x => { x * 2 })", "want": "review", "says": "return|undefined"},
   {"ask": "review this js: res.redirect(req.query.next)", "want": "review", "says": "redirect|open"},
@@ -5586,10 +5586,10 @@
   {"ask": "what do you offer", "want": "skill:services"},
   {"ask": "can i hire you", "want": "skill:services"},
   {"ask": "what's for sale", "want": "skill:services"},
-  {"ask": "pricing", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "price list", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does void cost", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "how much is void", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "pricing", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "price list", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does void cost", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "how much is void", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "give me five minutes with this", "want": "skill:challenge"},
   {"ask": "give me 5 minutes with that", "want": "skill:challenge"},
   {"ask": "turn the questions i missed into a five-minute challenge", "want": "skill:challenge"},
@@ -6083,8 +6083,8 @@
   {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "what upgrades do you want", "want": "skill:wants"},
   {"ask": "verse status", "want": "skill:status", "says": "Verse status"},
-  {"ask": "how much is verse", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does verse cost", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "how much is verse", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does verse cost", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "what is verse", "want": "self|speaks|what"},
   {"ask": "make my verse dark", "want": "skill:dark-look"},
   {"ask": "what did verse get wrong", "want": "skill:make"},
@@ -6721,13 +6721,13 @@
   {"ask": "memory preview", "want": "skill:memory-preview"},
   {"ask": "show my memory snippets", "want": "skill:memory-preview"},
   {"ask": "what memories do I have", "want": "skill:memory-preview"},
-  {"ask": "hide the sky", "want": "skill:night-sky"},
+  {"ask": "hide the sky", "want": "skill:night-sky|skill:nightsky"},
   {"ask": "morning routine as calendar events", "want": "skill:ritual-template"},
   {"ask": "export my evening routine to my calendar", "want": "skill:ritual-template"},
   {"ask": "ritual template: meditate 10, stretch 15, journal 10 at 6:30am", "want": "skill:ritual-template"},
-  {"ask": "where is jupiter", "want": "skill:sky-card"},
-  {"ask": "where is the moon tonight", "want": "skill:sky-card"},
-  {"ask": "is venus up", "want": "skill:sky-card"},
+  {"ask": "where is jupiter", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "where is the moon tonight", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "is venus up", "want": "skill:sky-card|skill:skycard"},
   {"ask": "mind field", "want": "skill:doodle-mind"},
   {"ask": "show me the mind field", "want": "skill:doodle-mind"},
   {"ask": "living field", "want": "skill:doodle-mind"},
@@ -6914,5 +6914,22 @@
   {"ask": "random password", "want": "skill:password"},
   {"ask": "another password", "want": "skill:password"},
   {"ask": "another emoji", "want": "skill:emoji"},
-  {"ask": "8 ball", "want": "skill:magic8"}
+  {"ask": "8 ball", "want": "skill:magic8"},
+  {"ask": "mp4 to mp3", "want": "skill:converter"},
+  {"ask": "file converter", "want": "skill:converter"},
+  {"ask": "audio converter", "want": "skill:converter"},
+  {"ask": "write me a rap about pizza", "want": "skill:rap"},
+  {"ask": "rap about my dog", "want": "skill:rap"},
+  {"ask": "spit some bars about mondays", "want": "skill:rap"},
+  {"ask": "team chat", "want": "skill:team-chat"},
+  {"ask": "open the team chat", "want": "skill:team-chat"},
+  {"ask": "agent workspace", "want": "skill:team-chat"},
+  {"ask": "random uuid", "want": "skill:uuid"},
+  {"ask": "another uuid", "want": "skill:uuid"},
+  {"ask": "random guid", "want": "skill:uuid"},
+  {"ask": "hangman", "want": "skill:hangman"},
+  {"ask": "play hangman", "want": "skill:hangman"},
+  {"ask": "start hangman", "want": "skill:hangman"},
+  {"ask": "should I go", "want": "skill:yesno"},
+  {"ask": "yesno", "want": "skill:yesno"}
 ]

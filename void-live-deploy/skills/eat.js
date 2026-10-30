@@ -25,22 +25,44 @@ export function eatOf(text) {
 }
 
 const NOM = 'https://nominatim.openstreetmap.org/search?format=jsonv2&extratags=1&addressdetails=1&limit=8&q=';
+const NOM_TOWN = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&featureType=settlement&q=';
 const EATS = /^(?:restaurant|fast_food|cafe|food_court|bar|pub|ice_cream|bakery|deli|confectionery)$/;
 const isEats = (r) => EATS.test(r.type || '') || !!(r.extratags && r.extratags.cuisine);
 const saysTown = (q) => /\s(?:in|near|at|on)\s/i.test(q);
 
 async function where() { try { const r = await fetch('/api/where'); const j = await r.json(); return j && j.ok ? j : null; } catch (_) { return null; } }
 
-/** find the restaurant from the whole phrase ("lovebird almost famous chicken lakeland", "lovebird in lakeland"), near the visitor when no town is said */
-async function findPlace(q, here) {
-  for (const s of [...new Set([q.replace(/\s+(?:in|near|at|on)\s+/i, ' '), q.replace(/\s+(?:in|near|at|on)\s+.*$/i, '')])]) {
-    let url = NOM + encodeURIComponent(s);
-    if (here && !saysTown(q)) url += '&viewbox=' + [here.lon - 0.6, here.lat + 0.6, here.lon + 0.6, here.lat - 0.6].join(',');
-    const rs = await fetch(url, { headers: { accept: 'application/json' } }).then((r) => r.json()).catch(() => []);
-    const eats = (Array.isArray(rs) ? rs : []).filter(isEats);
-    if (eats.length) return eats;
-  }
-  return [];
+const TOWN = /\s+(?:in|near|at|on)\s+(.+)$/i;
+/** the town said in the ask ("lovebird in lakeland" -> "lakeland"), or ''. Pure. */
+export function townOf(q) { return ((String(q || '').match(TOWN) || [])[1] || '').trim(); }
+
+// box: [west, north, east, south]; bounded keeps the results inside it, otherwise it only ranks them
+async function search(s, box, bounded) {
+  const url = NOM + encodeURIComponent(s) + (box ? '&viewbox=' + box.join(',') + (bounded ? '&bounded=1' : '') : '');
+  const rs = await fetch(url, { headers: { accept: 'application/json' } }).then((r) => r.json()).catch(() => []);
+  return (Array.isArray(rs) ? rs : []).filter(isEats);
+}
+
+// the area of a town by name, widened a little so a place on its edge counts, or null
+async function townBox(town) {
+  const rs = await fetch(NOM_TOWN + encodeURIComponent(town), { headers: { accept: 'application/json' } }).then((r) => r.json()).catch(() => []);
+  const b = Array.isArray(rs) && rs[0] && rs[0].boundingbox; // [south, north, west, east], as text
+  const [s, n, w, e] = Array.isArray(b) ? b.map(Number) : [];
+  return [s, n, w, e].every(Number.isFinite) ? [w - 0.1, n + 0.1, e + 0.1, s - 0.1] : null;
+}
+
+/**
+ * find the restaurant from the whole phrase ("lovebird almost famous chicken lakeland", "lovebird in lakeland"), near the visitor when no
+ * town is said. A town said is kept: when the name and the town together find nothing, the name alone is looked for inside that town only,
+ * never anywhere in the world (2026-10-30: "order food from lovebird in lakeland" showed a Lovebird in Pennsylvania).
+ */
+export async function findPlace(q, here) {
+  const town = townOf(q), name = q.replace(TOWN, '');
+  const near = here && !town ? [here.lon - 0.6, here.lat + 0.6, here.lon + 0.6, here.lat - 0.6] : null;
+  const first = await search(town ? name + ' ' + town : q, near);
+  if (first.length || !town) return first;
+  const box = await townBox(town);
+  return box ? search(name, box, true) : [];
 }
 
 const addrOf = (r) => { const a = r.address || {}; return [[a.house_number, a.road].filter(Boolean).join(' '), a.city || a.town || a.village || a.suburb, a.state].filter(Boolean).join(', '); };
@@ -115,8 +137,10 @@ async function run(text, api) {
     const rs = await findPlace(e.q, saysTown(e.q) ? null : await where());
     if (api._pageStill && !api._pageStill(el)) return 'eat';
     if (!rs.length) {
-      el.innerHTML = '<h2>' + esc(e.q) + '</h2><p>Verse couldn\'t find that restaurant on the map. Add the town ("… in Lakeland"), or order through these:</p>' // void-review: ok (escaped)
-        + '<p class="eat-order">' + buttons(orderLinks(e.q, '', null), esc) + '</p>';
+      const town = townOf(e.q), name = town ? e.q.replace(TOWN, '') : e.q;
+      el.innerHTML = '<h2>' + esc(e.q) + '</h2><p>' + (town ? 'Verse couldn\'t find ' + esc(name) + ' in ' + esc(town) + ' on the map. Order through these:' // void-review: ok (escaped)
+        : 'Verse couldn\'t find that restaurant on the map. Add the town ("… in Lakeland"), or order through these:') + '</p>'
+        + '<p class="eat-order">' + buttons(orderLinks(name, town, null), esc) + '</p>';
       if (api.reportMiss) api.reportMiss(text);
       return 'eat';
     }
