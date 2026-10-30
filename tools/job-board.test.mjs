@@ -88,6 +88,17 @@ test('every English string of the screen has its German', () => {
   for (const v of [...Object.values(C.SORTS), ...Object.values(C.TYPES), ...Object.values(C.STAGES), ...Object.values(C.REGIONS)]) if (!DE[v]) missing.push(v);
   assert.deepEqual(missing, []);
 });
+test('a job reads as tracked only while the tracker holds its title, company and link', () => {
+  const j = { title: 'Product Designer', company: 'Acme', url: 'https://example.com/jobs/1' };
+  assert.equal(C.isTracked([], j), false); assert.equal(C.isTracked(undefined, j), false);
+  const apps = [C.cleanApp({ ...j, stage: 'saved' })];
+  assert.equal(C.isTracked(apps, j), true);
+  assert.equal(C.isTracked(apps, { ...j, url: 'https://example.com/jobs/2' }), false);
+  assert.equal(C.isTracked(apps.filter(() => false), j), false);
+  assert.equal(C.isTracked(apps, { title: '' }), false);
+  const src = fs.readFileSync(new URL('../void-live-deploy/lib/jobs-ui.js', import.meta.url), 'utf8');
+  assert.match(src, /'\.rm'\)\.addEventListener\('click', \(\) => \{[^}]*\}\); emitSaved\(\); \}\)/, 'Remove in the tracker tells the cards');
+});
 test('Himalayas category slugs read as words, cut at a word, and old hyphenated tags still match', () => {
   assert.equal(C.slugWords('SaaS-Sales-Specialist'), 'SaaS Sales Specialist');
   assert.equal(C.slugWords('Vice-President-of-Data-Strategy'), 'Vice President of Data Strategy');

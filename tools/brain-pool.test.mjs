@@ -59,10 +59,10 @@ test('the network that senses learns a lower cost than the best constant setting
   assert.ok(rows.every((r) => r.corr > 0.15 && r.still < 1e-9), 'viscosity follows the slosh ' + say);
 });
 
-test('it runs in the brain as one of twenty-one organs: your pointer stirs it, it is kept, and the self says so', () => {
+test('it runs in the brain as one of twenty-two organs: your pointer stirs it, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('pool') && B.ORGAN_IDS.length === 21);
+  assert.ok(B.ORGAN_IDS.includes('pool') && B.ORGAN_IDS.length === 22);
   assert.ok(b.pool.lives >= 8 && b.runs.pool > 150, 'lives ' + b.pool.lives + ' runs ' + b.runs.pool);
   assert.ok(b.board.pool && b.board.pool.lives === b.pool.lives, JSON.stringify(b.board.pool));
   const sp = K.spoonOf(b.senses); assert.ok(sp && Number.isFinite(sp.vx) && Math.hypot(sp.vx, sp.vy) > 0, 'the pointer is a spoon ' + JSON.stringify(sp));

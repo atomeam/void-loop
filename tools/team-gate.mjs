@@ -10,12 +10,14 @@
 // Pass: the job goes live ("live: <pr> · checked <page>"). Fail: back on the queue with why and one more try. Open, or not deployed
 // yet: it waits for the next run. Runs in .github/workflows/team-gate.yml; the repository is public, so it prints job ids, pull
 // request numbers and verdicts, never a job's text.
-//   node tools/team-gate.mjs [--dry]
+//   node tools/team-gate.mjs [--dry] [--replay=<pr>:<target>,...]
+// --replay judges merged pull requests as if an agent had handed each in for that target, and moves nothing: the way to see the
+// gate close a good job and send a bad one back on the live site without waiting for a hand-in.
 // Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN) and gh with a token; without the owner token it says so and exits 0.
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { backNote, kindOf } from '../void-live-deploy/lib/team.js';
+import { backNote, kindOf, reviewNote } from '../void-live-deploy/lib/team.js';
 
 export const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
 export const REPO = 'atomeam/void-loop';
@@ -50,12 +52,21 @@ export function judge(job, pr, files) {
   return { pages };
 }
 
+/** the handed-in jobs a --replay list stands for: [{ id, target, state, note }]; bad items are left out. Pure. */
+export function replayJobs(list) {
+  return String(list || '').split(',').map((x) => /^(\d{1,6}):([a-z]+(?::[a-z0-9.-]{1,80}){0,2})$/.exec(x.trim())).filter(Boolean)
+    .map((m) => ({ id: 'replay-' + m[1], target: m[2], state: 'building', note: reviewNote('replay', 'https://github.com/' + REPO + '/pull/' + m[1]) }));
+}
+
 /** what a live page answered says it works: 200 and an HTML page with a body. Pure. */
 export const pageOk = (status, text) => status === 200 && /<html[\s>]/i.test(String(text || '')) && String(text).length > 500;
 
 const owner = () => process.env.VOID_OWNER_TOKEN || process.env.VOID_MISSES_TOKEN || '';
 const headers = (json) => ({ authorization: 'Bearer ' + owner(), 'user-agent': 'a2m-team-gate/1.0', ...(json ? { 'content-type': 'application/json' } : {}) });
 const gh = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60e3 }) || 'null');
+// every changed file, past the first page of 100 (a stale branch can carry hundreds)
+const ghFiles = (path) => execFileSync('gh', ['api', '--paginate', path, '--jq', '.[]'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 120e3, maxBuffer: 64 << 20 })
+  .split('\n').filter(Boolean).map((l) => JSON.parse(l));
 
 /** the newest successful deploy holds this merge commit (the compare from the merge to the deploy is ahead or identical) */
 function deployed(sha) {
@@ -73,17 +84,23 @@ async function move(id, state, note, dry) {
 }
 
 async function main() {
-  const dry = process.argv.includes('--dry');
-  if (!owner()) { console.log('team gate: no VOID_OWNER_TOKEN, nothing checked'); return 0; }
-  const res = await fetch(SITE + '/api/queue?state=building&limit=500', { headers: headers() });
-  if (!res.ok) { console.log('team gate: GET /api/queue answered HTTP ' + res.status); return 1; }
-  const jobs = ((await res.json()).items || []).map((j) => ({ j, h: handedIn(j) })).filter((x) => x.h);
-  console.log('team gate: ' + jobs.length + ' handed-in job' + (jobs.length === 1 ? '' : 's') + ' to check');
+  const replay = (process.argv.find((a) => a.startsWith('--replay=')) || '').slice(9).trim();
+  const dry = !!replay || process.argv.includes('--dry');
+  let rows;
+  if (replay) rows = replayJobs(replay);
+  else {
+    if (!owner()) { console.log('team gate: no VOID_OWNER_TOKEN, nothing checked'); return 0; }
+    const res = await fetch(SITE + '/api/queue?state=building&limit=500', { headers: headers() });
+    if (!res.ok) { console.log('team gate: GET /api/queue answered HTTP ' + res.status); return 1; }
+    rows = (await res.json()).items || [];
+  }
+  const jobs = rows.map((j) => ({ j, h: handedIn(j) })).filter((x) => x.h);
+  console.log('team gate: ' + jobs.length + (replay ? ' replayed' : ' handed-in') + ' job' + (jobs.length === 1 ? '' : 's') + ' to check' + (dry ? ' (moves nothing)' : ''));
   for (const { j, h } of jobs) {
     let v;
     try {
       const pr = gh(`repos/${REPO}/pulls/${h.number}`);
-      v = judge(j, pr, pr && pr.merged_at ? gh(`repos/${REPO}/pulls/${h.number}/files?per_page=100`) : []);
+      v = judge(j, pr, pr && pr.merged_at ? ghFiles(`repos/${REPO}/pulls/${h.number}/files?per_page=100`) : []);
       if (v.pages) {
         if (!deployed(pr.merge_commit_sha)) v = { wait: 'its merge is not deployed yet' };
         else {

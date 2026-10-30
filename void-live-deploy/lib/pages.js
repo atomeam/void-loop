@@ -21,6 +21,25 @@ export function cleanPage(d) {
     cards: cards.slice(0, 12).map((c) => ({ name: text(c && c.name, 80), ask: text(c && c.ask, 200), text: text(c && c.text, 1200) })).filter((c) => c.name || c.text),
   };
 }
+// A published page's own link card (members perk, 2026-10-30): its title, canonical address and preview text name the page
+// and its cards, so a shared /@name link shows that page, not the Verse home card. Only the page's public cards go in.
+const attr = (v) => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+export function shareTags(html, handle, page) {
+  const url = 'https://a-to-mind.com/@' + handle, title = '@' + handle + '\u2019s Verse';
+  const names = page.cards.map((c) => c.name || c.text.slice(0, 40).trim()).filter(Boolean);
+  const list = names.slice(0, 4).join(', ') + (names.length > 4 ? ' and ' + (names.length - 4) + ' more' : '');
+  const desc = (names.length ? names.length + (names.length === 1 ? ' card: ' : ' cards: ') + list + '. ' : '') + 'A published Verse on A-to-Mind.';
+  const set = (re, v) => { html = html.replace(re, (m, a, b) => a + attr(v) + b); };
+  html = html.replace(/<title>[^<]*<\/title>/, '<title>' + attr('@' + handle + ' \u00b7 Verse') + '</title>');
+  set(/(<link rel="canonical" href=")[^"]*(")/, url);
+  set(/(<meta property="og:url" content=")[^"]*(")/, url);
+  set(/(<meta property="og:title" content=")[^"]*(")/, title);
+  set(/(<meta name="twitter:title" content=")[^"]*(")/, title);
+  set(/(<meta property="og:description" content=")[^"]*(")/, desc);
+  set(/(<meta name="twitter:description" content=")[^"]*(")/, desc);
+  set(/(<meta name="description" content=")[^"]*(")/, desc);
+  return html;
+}
 export async function ensurePages(env) { await env.DB.prepare(PAGE_TABLE).run(); }
 // Whether the page's owner is a MultiVerse member right now (the published page shows the mark then). The account id stays here.
 export async function pageMember(env, handle, tierOf) {

@@ -1904,7 +1904,7 @@
     {
      "name": "joke",
      "tier": "proven",
-     "why": "a self-test, 9 real asks in the benchmark",
+     "why": "a self-test, 10 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
@@ -1923,7 +1923,7 @@
     {
      "name": "quote",
      "tier": "proven",
-     "why": "a self-test, 5 real asks in the benchmark",
+     "why": "a self-test, 7 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
@@ -1942,7 +1942,7 @@
     {
      "name": "fact",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
@@ -1962,7 +1962,7 @@
     {
      "name": "proverb",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
@@ -2040,7 +2040,7 @@
     {
      "name": "book",
      "tier": "proven",
-     "why": "a self-test, 5 real asks in the benchmark",
+     "why": "a self-test, 6 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,

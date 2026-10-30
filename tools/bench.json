@@ -2596,7 +2596,7 @@
   },
   {
     "ask": "tell me a fun fact",
-    "want": "said|answer|skill:joke|skill:fact"
+    "want": "skill:fact"
   },
   {
     "ask": "motivate me",
@@ -7001,5 +7001,14 @@
   {"ask": "random emoji", "want": "skill:emoji"},
   {"ask": "give me an emoji", "want": "skill:emoji"},
   {"ask": "flight time london new york", "want": "skill:flights"},
-  {"ask": "bundesliga results", "want": "skill:scores"}
+  {"ask": "bundesliga results", "want": "skill:scores"},
+  {"ask": "give me a random fact", "want": "skill:fact"},
+  {"ask": "tell me something interesting", "want": "skill:fact"},
+  {"ask": "ask the 8 ball will it work", "want": "chance"},
+  {"ask": "quote of the day", "want": "skill:quote"},
+  {"ask": "what is the quote of the day", "want": "skill:quote"},
+  {"ask": "a joke about cats", "want": "skill:joke"},
+  {"ask": "tell me a dad joke about pizza", "want": "skill:joke"},
+  {"ask": "an old saying", "want": "skill:proverb"},
+  {"ask": "book recommendations like the hobbit", "want": "skill:book"}
 ]
