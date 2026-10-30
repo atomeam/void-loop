@@ -54,6 +54,10 @@ test('the age of a source is read from its own source line', () => {
   const now = Date.parse('2026-10-16T12:00:00Z');
   assert.equal(Math.round(editedDaysAgo('Source: Wikipedia · last edited Sep 3, 2026 · as of 3:00 PM', now)), 44);
   assert.equal(editedDaysAgo('Source: Wikipedia', now), null);
+  // a dated rate is a fresh source, not a year-old one: the currency card printed R 1 for yesterday's ECB rate
+  assert.equal(Math.round(editedDaysAgo('100 USD = 89.85 EUR · ECB rate of Thu, Oct 29, 2026', Date.UTC(2026, 9, 30, 12))), 2);
+  assert.equal(Math.round(editedDaysAgo('updated Oct 30, 2026', Date.UTC(2026, 9, 30, 12))), 1);
+  assert.equal(editedDaysAgo('as of 12:19 PM', now), null, 'a clock time alone is when it was fetched, not how old the data is');
 });
 
 test('the Illuminati layer: income and control arrows come from the real dependency map', () => {

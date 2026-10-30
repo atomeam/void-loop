@@ -17,8 +17,10 @@ export function pageOfNews(topic) {
   const q = encodeURIComponent(String(topic).trim());
   return /^[A-Za-z0-9_.%-]{1,120}$/.test(q) ? '/news/?q=' + q : '';
 }
+/** a story's score, "1 point" or "14 points". Pure. */
+export const pointsText = (n) => { const k = Number.isFinite(+n) && +n > 0 ? Math.floor(+n) : 0; return k + (k === 1 ? ' point' : ' points'); };
 const list = (esc, items) => '<ul>' + items.map((h) => { const u = /^https:\/\//.test(h.url || '') ? h.url : 'https://news.ycombinator.com/item?id=' + encodeURIComponent(h.objectID || '');
-  return '<li style="margin:6px 0"><a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(h.title) + '</a> <span style="color:#8a8a8a">· ' + esc(String(h.points || 0)) + ' points</span></li>'; }).join('') + '</ul>';
+  return '<li style="margin:6px 0"><a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(h.title) + '</a> <span style="color:#8a8a8a">· ' + esc(pointsText(h.points)) + '</span></li>'; }).join('') + '</ul>';
 // "tech news", "technology news today", "hacker news": the Hacker News front page (Algolia API, no key). Other topics
 // (sports, business…) have no keyless source yet, so they are not claimed.
 export function isTechNews(text) {
