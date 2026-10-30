@@ -5,7 +5,7 @@ import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
 import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write.js';
 import { flac, opusFile } from '/lib/audio-write.js';
-import { addCover } from '/lib/mp3-edit.js';
+import { addCover, cutMp3 } from '/lib/mp3-edit.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
@@ -62,7 +62,7 @@ function field(label, input) { return make('label', {}, label, input); }
 const num = (id, value, step = 'any', min = '', max = '') => make('input', { id, type: 'number', value: String(value), step, ...(min !== '' ? { min } : {}), ...(max !== '' ? { max } : {}), inputMode: 'decimal' });
 const pick = (id, options, value) => { const s = make('select', { id }); for (const [v, t] of options) s.append(make('option', { value: v, textContent: t })); if (value) s.value = value; return s; };
 const val = (id, d = 0) => { const e = $(id); const n = e ? parseFloat(e.value) : NaN; return isFinite(n) ? n : d; };
-const SOUND_AS = () => field('Save as', pick('as', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC (lossless, smaller)'], ['ogg', 'OGG (Opus)'], ['opus', 'OPUS']], 'wav'));
+const SOUND_AS = (label = 'Save as') => field(label, pick('as', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC (lossless, smaller)'], ['ogg', 'OGG (Opus)'], ['opus', 'OPUS']], 'wav'));
 
 function opts() {
   const t = cur, run = t && t.run, to = t ? t.to : ($('to') && $('to').value) || '', o = $('opts'); o.replaceChildren();
@@ -75,7 +75,7 @@ function opts() {
     qual(); ready(); return;
   }
   if (VIDEO_OUT.includes(to)) o.append(QUALITY());
-  if (run === 'cut') o.append(field('From (seconds)', num('from', 0, 'any', 0)), field('To (seconds, empty: the end)', make('input', { id: 'upto', type: 'number', step: 'any', min: '0', inputMode: 'decimal' })), SOUND_AS());
+  if (run === 'cut') o.append(field('From (seconds)', num('from', 0, 'any', 0)), field('To (seconds, empty: the end)', make('input', { id: 'upto', type: 'number', step: 'any', min: '0', inputMode: 'decimal' })), SOUND_AS('Save as (an MP3 stays an MP3)'));
   if (run === 'speed') o.append(field('Times as fast', num('factor', 1.5, 'any', 0.25, 4)), SOUND_AS());
   if (run === 'gain') o.append(field('Louder by (dB, minus: quieter)', num('db', 6, 'any', -40, 40)), SOUND_AS());
   if (run === 'silence') o.append(field('Quiet under (dB)', num('thr', -45, 'any', -90, -10)), field('Longer than (ms)', num('minms', 400, '50', 50)), SOUND_AS());
@@ -258,6 +258,7 @@ async function go() {
       for (let i = 0; i < list.length; i++) {
         const { f } = list[i]; say('Working on ' + (i + 1) + ' of ' + list.length + ': ' + f.name);
         try {
+          if (t.run === 'cut' && list[i].fmt === 'mp3') { const r = cutMp3(await bytesOf(f), val('from', 0), $('upto').value); add({ name: outName(f.name, 'mp3', taken), ext: 'mp3', bytes: r.bytes, notes: r.notes }); continue; }
           const s = await soundOf(f), r = t.run === 'cut' ? cut(s, val('from', 0), $('upto').value) : t.run === 'speed' ? speed(s, val('factor', 1.5)) : t.run === 'gain' ? gain(s, val('db', 6)) : t.run === 'silence' ? removeSilence(s, val('thr', -45), val('minms', 400)) : { ...s, notes: [] };
           const o = await soundFile(r, as); add({ name: outName(f.name, as, taken), ext: as, bytes: o.bytes, notes: [...r.notes, soundNote(r), ...o.notes] });
         } catch (e) { fail(f, e); }
