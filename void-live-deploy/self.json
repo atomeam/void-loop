@@ -550,8 +550,40 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:46:52Z",
+   "subject": "Local TV and radio: refresh the generated files after merging main"
+  },
+  {
+   "at": "2026-10-30T07:44:44Z",
+   "subject": "proverb: a proverb from Wikiquote's English proverbs page, linked to its keyword"
+  },
+  {
+   "at": "2026-10-30T07:43:29Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T07:39:09Z",
+   "subject": "converter: Add Transition to Video (58 transitions, drawn on the device)"
+  },
+  {
+   "at": "2026-10-30T07:38:17Z",
+   "subject": "Sitemap: list /privacy/, /boards/rules/ and the four /generators/ pages so the self-check opens them"
+  },
+  {
+   "at": "2026-10-30T07:36:50Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T07:36:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T07:36:05Z",
    "subject": "Keep both brain-map and brain-trace checks after the merge"
+  },
+  {
+   "at": "2026-10-30T07:35:51Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T07:35:00Z",
@@ -582,6 +614,10 @@
    "subject": "Tower gate: onlineconverter.com,emoji combos,calendar: calendar.online measured against their live sites"
   },
   {
+   "at": "2026-10-30T07:28:02Z",
+   "subject": "Local TV and radio: drop signed-token streams, list /api/local as Verse's own, refresh the fanfic module list and hand-off gaps"
+  },
+  {
    "at": "2026-10-30T07:27:45Z",
    "subject": "Verse fixes its meteors skill: learn to handle \"is there a meteor shower soon\""
   },
@@ -592,42 +628,6 @@
   {
    "at": "2026-10-30T07:25:43Z",
    "subject": "rap: fit the master by ear (separate sub and low bands, peaking EQ), share renders across master-only retunes, hide the action row until a…"
-  },
-  {
-   "at": "2026-10-30T07:25:20Z",
-   "subject": "SEO table matches the live /converter/ and /rap/ pages, so a refresh no longer rolls them back"
-  },
-  {
-   "at": "2026-10-30T07:24:08Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T07:21:54Z",
-   "subject": "cards: show the answer's photo once, in the art box"
-  },
-  {
-   "at": "2026-10-30T07:21:32Z",
-   "subject": "Members perk: a shared /@name link shows that page, not the Verse home card"
-  },
-  {
-   "at": "2026-10-30T07:21:06Z",
-   "subject": "Team gate: replay merged PRs as if handed in, and read every changed file"
-  },
-  {
-   "at": "2026-10-30T07:18:41Z",
-   "subject": "markets: 24h move from yesterday's close, screener coins fall back to snapshot + Yahoo, honest sources"
-  },
-  {
-   "at": "2026-10-30T07:18:06Z",
-   "subject": "Regenerate families, deps and guide for the words asks"
-  },
-  {
-   "at": "2026-10-30T07:18:06Z",
-   "subject": "Words asks: fun facts reach the fact skill, quote of the day, jokes on a topic, 8 ball and saying phrasing"
-  },
-  {
-   "at": "2026-10-30T07:17:03Z",
-   "subject": "jobs: keep both new tests after the merge with main"
   }
  ],
  "builders": {
