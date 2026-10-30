@@ -86,8 +86,12 @@ export const JOURNEYS = {
     if (new URL(wx, ORIGIN).searchParams.get('place') !== 'Lisbon') throw new Error('"Weather that day" on ' + soon + ' goes to "' + wx + '", not the weather in Lisbon');
     if (!/^\/stopwatch\/\?t=\d+%20minutes$/.test(cd)) throw new Error('"Countdown to the next event" goes to "' + cd + '"');
     await check('"Weather that day" on ' + soon + ' carries Lisbon and the countdown counts to the event');
+    if ((await rel('Flights that day')) !== '/flights/?d=' + soon || (await p.locator('#detFlights').getAttribute('href')) !== '/flights/?d=' + soon) throw new Error('"Flights that day" or the event\'s flights link does not carry ' + soon);
+    await Promise.all([p.waitForURL(/\/flights\/\?d=/), p.locator('#detFlights').click()]); await p.waitForSelector('#f-d');
+    if ((await p.locator('#f-d').inputValue()) !== soon) throw new Error('the flights page opened with the date "' + (await p.locator('#f-d').inputValue()) + '", not ' + soon);
+    await check('the flights page opened on the event day ' + soon);
   },
-  'work out a flight, see its landing in both cities on the time page, the weather and the local radio and TV where it lands, and add it to the calendar': async (p, check) => {
+  'work out a flight, see its landing in both cities on the time page, the weather and the local radio and TV where it lands (and fly back there from it), and add it to the calendar': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/flights/?from=JFK&to=LHR&d=2026-11-20&t=19:00', { waitUntil: 'load' }).then(() => p.waitForSelector('#fa-time'));
     await open(); await check('the flights page worked out JFK to LHR');
     const at = new URL(await p.locator('#fa-time').getAttribute('href'), ORIGIN).searchParams.get('at'), want = await p.evaluate(() => import('/lib/flights-core.js').then((C) => new Date(C.legFacts({ lat: 40.6413, lon: -73.7781, tz: 'America/New_York' }, { lat: 51.47, lon: -0.4543, tz: 'Europe/London' }, '2026-11-20T19:00').arrUtc).toISOString().replace(/\.000Z$/, 'Z')));
@@ -103,6 +107,12 @@ export const JOURNEYS = {
     const here = new URL(p.url()).searchParams;
     if (!/^London\b/.test(await p.locator('#q').inputValue()) || here.get('cc') !== 'GB' || !/^51\.4\d*,-0\.4\d*$/.test(here.get('ll') || '')) throw new Error('the local page opened on "' + (await p.locator('#q').inputValue()) + '" at ' + p.url() + ', not London at Heathrow');
     await check('the local radio and TV page opened at Heathrow, London');
+    // and back: flights to the place a local page shows pick the airport near it, over the London the flights page remembers
+    await p.goto(ORIGIN + '/local/?place=Lisbon&ll=38.72,-9.14&cc=PT', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/flights\/\?tonear=/), p.locator('#related a', { hasText: 'Flights to here' }).click()]); await p.waitForFunction(() => document.documentElement.dataset.flightsReady === '1' && new URLSearchParams(location.search).get('to'));
+    const back = new URL(p.url()).searchParams;
+    if (back.get('to') !== 'LIS' || back.get('from') !== 'JFK') throw new Error('flights to Lisbon from the local page opened ' + back.get('from') + ' to ' + back.get('to') + ', not JFK to LIS');
+    await check('from the local page at Lisbon, the flights page picked Lisbon airport and kept JFK');
     await open(); await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('#fa-cal').click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
     await p.locator('#invAdd').click(); await p.waitForSelector('#detTime');
     if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
@@ -120,7 +130,8 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/random\/\?list=/), p.locator('#related a', { hasText: 'Pick one of these players at random' }).click()]); await p.waitForSelector('#list');
     const list = (await p.locator('#list').inputValue()).split('\n');
     if (list.length !== 8 || list[0] !== 'Cy Dee') throw new Error('the random page opened with ' + list.length + ' names starting "' + list[0] + '", not the 8 players of the board best first');
-    await check('the random page opened with the 8 players of the draft board, Cy Dee first');
+    if ((new URL(p.url()).searchParams.get('list') || '').split('\n').length !== 8) throw new Error('the random page dropped the list from its address (' + p.url() + '), so a reload or a copied link loses it');
+    await check('the random page opened with the 8 players of the draft board, Cy Dee first, and keeps them in its link');
   },
 };
 

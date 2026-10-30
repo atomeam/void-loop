@@ -2,7 +2,7 @@
 // /local/tv/<CC>.json for TV, written by tools/local-tv.mjs). A stream plays from the station's own server: an <audio> for radio, a <video>
 // for TV, with hls.js (vendor/, loaded only when an HLS stream is played) where the browser has no HLS of its own. A stream that does not
 // play says so on its row and offers the station's own link. Saved stations stay on this device.
-import { tvNear, groupTv, placeName, linkOf, httpsOf, placeFromLink } from '/lib/local-media.js';
+import { tvNear, groupTv, placeName, linkOf, httpsOf, placeFromLink, flightsLink } from '/lib/local-media.js';
 import { mountRelated } from '/lib/toolkit.js';
 
 const $ = (id) => document.getElementById(id);
@@ -192,6 +192,7 @@ $('gps').addEventListener('click', () => {
 mountRelated($('related'), '/local/', [
   { label: 'The weather here', href: () => (place && place.city ? '/weather/?q=' + encodeURIComponent(place.city) : null) },
   { label: 'The time here', href: () => (place && place.city ? '/time/?c=' + encodeURIComponent(place.city) : null) },
+  { label: 'Flights to here', href: () => flightsLink(place) },
 ], { card: () => (place && place.city ? 'local radio in ' + place.city : '') });
 
 const params = new URLSearchParams(location.search);

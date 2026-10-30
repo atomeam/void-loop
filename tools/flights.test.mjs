@@ -184,3 +184,10 @@ test('the leg links: the landing moment in both cities with their zones, the wea
   assert.equal(C.legLinks(a, { ...b, cc: '' }, f).local, '', 'no country, no local link');
   for (const s of ['Landing time in both cities', 'Weather where it lands', 'Add the flight to my calendar', 'Radio and TV where it lands']) assert.ok(DE[s], 'German for ' + s);
 });
+
+test('the airport near a place another page found: the nearest large one, else a medium one, never a small field or a far one', () => {
+  const n = (lat, lon) => (C.airportNear(idx, lat, lon) || {}).iata || null;
+  assert.equal(n(51.507, -0.128), 'LHR'); assert.equal(n(42.36, -71.06), 'BOS'); assert.equal(n(35.68, 139.69), 'HND');
+  assert.equal(n(39.78, -89.65), 'SPI', 'no large airport within reach: the medium one of the town');
+  assert.equal(n(30, -40), null, 'mid ocean: no airport, the page asks'); for (const bad of [NaN, 91, 'x']) assert.equal(n(bad, 0), null, String(bad)); assert.equal(n(0, 181), null);
+});
