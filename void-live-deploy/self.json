@@ -550,6 +550,50 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T14:13:24Z",
+   "subject": "timer skill: simple countdown timer on the stage"
+  },
+  {
+   "at": "2026-10-30T14:10:42Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T14:02:26Z",
+   "subject": "Scores: mark the early fetch's catch as intended for Verse's review"
+  },
+  {
+   "at": "2026-10-30T14:00:33Z",
+   "subject": "Tower gate: every floor measured against its live site (3 slices)"
+  },
+  {
+   "at": "2026-10-30T13:59:40Z",
+   "subject": "Hand-offs: gradient to PDF, calendar to scores, flights and local to remote jobs"
+  },
+  {
+   "at": "2026-10-30T13:59:16Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T13:56:44Z",
+   "subject": "\"binary to decimal 1010\" converts, not an article"
+  },
+  {
+   "at": "2026-10-30T13:54:57Z",
+   "subject": "Tool names people type open the tool page, not an article"
+  },
+  {
+   "at": "2026-10-30T13:54:38Z",
+   "subject": "Kitchen weights and turkey times: King Arthur and USDA rows, with source and read date"
+  },
+  {
+   "at": "2026-10-30T13:52:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T13:52:32Z",
+   "subject": "Gradient page: its links follow a picture it reads at once"
+  },
+  {
    "at": "2026-10-30T13:48:24Z",
    "subject": "Pictures into a PDF: paint and image hand a picture to /pdf/'s images-to-PDF tool"
   },
@@ -584,50 +628,6 @@
   {
    "at": "2026-10-30T13:41:28Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-10-30T13:41:11Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-30T13:38:46Z",
-   "subject": "Weather card: keep the place on the full page and show the asked days"
-  },
-  {
-   "at": "2026-10-30T13:37:55Z",
-   "subject": "Incident: the browser suite failed on 961bfbb2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T13:37:39Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
-  },
-  {
-   "at": "2026-10-30T13:33:49Z",
-   "subject": "Better at video gen, rentbuy and baggage: 5 more ways of asking answered right — new phrases: “animate a cat chasing yarn” now opens…"
-  },
-  {
-   "at": "2026-10-30T13:32:07Z",
-   "subject": "Clock: screen readers skip the ghost digits"
-  },
-  {
-   "at": "2026-10-30T13:30:43Z",
-   "subject": "Word math: roman numeral asks with no \"for\""
-  },
-  {
-   "at": "2026-10-30T13:30:23Z",
-   "subject": "Tower: emojis lane opens its own page"
-  },
-  {
-   "at": "2026-10-30T13:28:21Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T13:27:53Z",
-   "subject": "Kept kitchen cards: fresh when read today, and the timer offers the card's own time"
-  },
-  {
-   "at": "2026-10-30T13:23:38Z",
-   "subject": "Work card: a thin search offers the same remote search on the boards"
   }
  ],
  "builders": {

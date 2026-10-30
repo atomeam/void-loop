@@ -170,9 +170,11 @@ export default {
    {
     "name": "timer",
     "examples": [
-     "set a timer for 5 minutes",
-     "a 2 second timer",
-     "timer"
+     "start a timer",
+     "5 minute timer",
+     "countdown 30 seconds",
+     "timer",
+     "set a 10 min timer"
     ]
    },
    {
