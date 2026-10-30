@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DRAFT. Do not serve. status:candidate hold:true entries:0 run:034 -->
+<!-- Not valid Atom. RFC 4287 requires exactly one atom:updated. It is omitted on purpose. -->
+<!-- A date stamp here would be a claim. 404 is the public response until seal. -->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>A-to-Mind attested feed (unsealed draft)</title>
+  <id>urn:a-to-mind:feed:034:unsealed</id>
+  <link rel="self" href="https://a-to-mind.com/feed.atom"/>
+  <!-- updated omitted -->
+  <!-- entries: none. changelog and status drafts are not entries. -->
+</feed>

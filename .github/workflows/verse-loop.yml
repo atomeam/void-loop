@@ -1,0 +1,128 @@
+# The Verse loop in Actions (docs/VERSE-LOOP.md): once an hour, one lap of tools/verse-loop.mjs --once. No human in the loop.
+# A lap first heals an open loop/* PR whose check failed (fix on that branch, plain push, nothing else that lap). Otherwise it pulls
+# main, runs the fast checks (tools/verse-loop.checks.json), re-ranks Verse's queue in docs/NEXT.md when it changed, and Verse's own
+# brain on the free model stack (Workers AI first) fixes the first red check or takes the top of the queue; a probe miss goes to
+# tools/propose-fix.mjs, retried twice under the confidence bar, then dropped and logged. Only a change with no new red after the
+# checks is committed to loop/<time>, pushed (never forced), opened as a PR labelled automerge, and verify.yml is started on it.
+# Three laps in a row that fail or do not merge pause the loop for 6 hours (issue 'Verse loop paused'); it resumes by itself.
+# On unless domains/verse-loop.pause exists in the repository or the repo variable VERSE_LOOP_ENABLED is 'false' (the kill switches: a commit, never
+# a chore; a dry run goes through a paused loop). The conductor (tools/conductor.mjs) also starts a lap hourly when the coder has no queue job, so
+# this schedule is the independent backstop. Keys come from repo secrets by name, never from a file:
+# CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID (Verse's brain, first), VOID_OWNER_TOKEN (probes), optional VERSE_LOOP_TOKEN (else the
+# workflow token), and the optional fallbacks OPENROUTER_API_KEY / GROQ_API_KEY / GEMINI_API_KEY / CEREBRAS_API_KEY.
+name: Verse loop
+
+on:
+  schedule:
+    - cron: '41 */6 * * *' # the backstop (the conductor starts a lap hourly); propose-fix.yml keeps its own every-2-hours run
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: "the brain: verse (free, Workers AI), opencode or aider (a free-tier model from the secrets)"
+        type: choice
+        options: [verse, opencode, aider]
+        default: verse
+      dry:
+        description: "run the checks and the brain, commit and open nothing"
+        type: boolean
+        default: false
+
+concurrency:
+  group: verse-coder # shared with verse-job.yml: one coder at a time (the free model budget; both append to docs/TAGTEAM.md)
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write # the 'Verse loop paused' issue, opened and closed by the loop itself
+  actions: write # gh workflow run verify.yml, and the failure log for self-heal
+  checks: read
+  statuses: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.pause.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: domains
+      - id: pause
+        env:
+          DRY: ${{ inputs.dry }}
+          OFF: ${{ vars.VERSE_LOOP_ENABLED }}
+        run: |
+          if [ "$DRY" != "true" ] && { [ -f domains/verse-loop.pause ] || [ "$OFF" = "false" ]; }; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "::notice title=Verse loop::paused (domains/verse-loop.pause)"
+          else echo "run=true" >> "$GITHUB_OUTPUT"; fi
+
+  lap:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Who commits
+        run: |
+          git config user.name "verse-loop"
+          git config user.email "verse-loop@users.noreply.github.com"
+      - name: Install Chromium (the free brain's benchmark gate)
+        if: (inputs.agent || 'verse') == 'verse'
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+          git update-index --assume-unchanged void-live-deploy/index.html void-live-deploy/void.html
+      - name: Install opencode
+        if: inputs.agent == 'opencode'
+        run: npm i -g opencode-ai
+      - name: Install aider
+        if: inputs.agent == 'aider'
+        run: python3 -m pip install --quiet aider-chat
+      - name: The loop's memory (failure streak, open PRs, heal tries)
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/verse-loop
+          key: verse-loop-state-${{ github.run_id }}
+          restore-keys: verse-loop-state-
+      - name: One lap
+        env:
+          VERSE_LOOP_STATE: ${{ runner.temp }}/verse-loop/state.json
+          VERSE_LOOP_AGENT: ${{ inputs.agent || 'verse' }}
+          DRY: ${{ inputs.dry && '--dry-run' || '' }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+        run: |
+          if [ -z "$GH_TOKEN" ] && [ -z "$DRY" ]; then
+            echo "::warning title=Verse loop runs dry::No token to open pull requests."
+            DRY=--dry-run
+          fi
+          node tools/verse-loop.mjs --once $DRY | tee lap.txt
+          { echo '### Verse loop'; echo; echo '```'; tail -n 20 lap.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the loop's memory
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/verse-loop
+          key: verse-loop-state-${{ github.run_id }}

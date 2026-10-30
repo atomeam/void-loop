@@ -1,0 +1,260 @@
+{
+ "site": "squoosh.app",
+ "url": "https://squoosh.app/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "Compress-5b50107e.js",
+   "t": "js",
+   "b": 106336
+  },
+  {
+   "f": "blob-anim-97c315b2.js",
+   "t": "js",
+   "b": 4251
+  },
+  {
+   "f": "idb-keyval-c33d3116.js",
+   "t": "js",
+   "b": 727
+  },
+  {
+   "f": "sw-bridge-ceda69b8.js",
+   "t": "js",
+   "b": 1445
+  },
+  {
+   "f": "util-06ce6ead.js",
+   "t": "js",
+   "b": 3303
+  },
+  {
+   "f": "www.google-analytics.com/analytics.js",
+   "t": "js",
+   "b": 52310,
+   "ext": true
+  }
+ ],
+ "assetCount": 6,
+ "bytes": 168372,
+ "html": {
+  "mobile": {
+   "title": "Squoosh",
+   "lang": "en",
+   "manifest": "https://squoosh.app/manifest.json",
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 8,
+    "twitter": true,
+    "themeColor": true,
+    "appleCapable": true
+   },
+   "inputTypes": {
+    "file": 1
+   },
+   "live": true,
+   "noscript": true
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "1.6MB",
+   "w": "md"
+  },
+  {
+   "l": "13KB",
+   "w": "md"
+  },
+  {
+   "l": "2.8MB",
+   "w": "md"
+  },
+  {
+   "l": "2.9MB",
+   "w": "md"
+  },
+  {
+   "l": "DISMISS",
+   "w": "md"
+  },
+  {
+   "l": "Paste",
+   "w": "md"
+  },
+  {
+   "l": "Privacy",
+   "w": "md"
+  },
+  {
+   "l": "Source on Github",
+   "w": "md"
+  }
+ ],
+ "manifest": {
+  "name": "Squoosh",
+  "display": "standalone",
+  "displayOverride": [],
+  "orientation": "any",
+  "scope": "",
+  "icons": 2,
+  "screenshots": 6,
+  "categories": [
+   "photo",
+   "productivity",
+   "utilities"
+  ],
+  "shortcuts": [],
+  "shareTarget": {
+   "method": "POST",
+   "enctype": "multipart/form-data",
+   "params": [
+    "files"
+   ],
+   "files": [
+    "image/*"
+   ]
+  },
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": "en"
+ },
+ "serviceWorker": {
+  "url": "serviceworker.js",
+  "bytes": 10078,
+  "workbox": false,
+  "precache": false,
+  "fetchHandler": true,
+  "skipWaiting": true,
+  "sync": false,
+  "periodicSync": false,
+  "push": false,
+  "notificationClick": false,
+  "cacheNames": []
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "Compress-5b50107e.js",
+   "own": true,
+   "flags": [
+    "enableSharpYUV@5859",
+    "showAdvanced@21725",
+    "allowChangeEvent@48540",
+    "showLoadingState@90716"
+   ],
+   "storage": [
+    "leftSideSettings@72860",
+    "rightSideSettings@72919"
+   ],
+   "apis": [
+    "Background worker threads",
+    "Fast image decoding"
+   ],
+   "mimes": [
+    "application/pdf",
+    "image/gif",
+    "image/png",
+    "image/jpeg",
+    "image/bmp",
+    "image/tiff",
+    "image/webp",
+    "image/webp2",
+    "image/avif",
+    "image/jxl",
+    "image/qoi"
+   ],
+   "keydownHandlers": 3
+  }
+ ],
+ "thirdParty": [
+  "www.google-analytics.com"
+ ],
+ "services": [
+  "Google Analytics"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": [
+   "keyval-store"
+  ]
+ },
+ "candidates": [
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Works offline (service worker)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "service worker serviceworker.js"
+  },
+  {
+   "name": "Receives shared files (share target)",
+   "kind": "share",
+   "tag": "observed",
+   "evidence": "manifest.share_target"
+  },
+  {
+   "name": "Feature flag allowChangeEvent",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "Compress-5b50107e.js@48540"
+  },
+  {
+   "name": "Feature flag enableSharpYUV",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "Compress-5b50107e.js@5859"
+  },
+  {
+   "name": "Feature flag showAdvanced",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "Compress-5b50107e.js@21725"
+  },
+  {
+   "name": "Feature flag showLoadingState",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "Compress-5b50107e.js@90716"
+  },
+  {
+   "name": "Keeps a database in the browser: keyval-store",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "indexedDB"
+  },
+  {
+   "name": "Background worker threads",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "Compress-5b50107e.js@93267"
+  },
+  {
+   "name": "Fast image decoding",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "Compress-5b50107e.js@94472"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  }
+ ]
+}

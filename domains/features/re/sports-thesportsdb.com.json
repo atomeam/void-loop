@@ -1,0 +1,371 @@
+{
+ "site": "www.thesportsdb.com",
+ "url": "https://www.thesportsdb.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "bootstrap.min.css",
+   "t": "css",
+   "b": 232116,
+   "map": true
+  },
+  {
+   "f": "font-awesome.min.css",
+   "t": "css",
+   "b": 17783
+  },
+  {
+   "f": "main2.css",
+   "t": "css",
+   "b": 54134
+  },
+  {
+   "f": "bootstrap.bundle.min.js",
+   "t": "js",
+   "b": 80502,
+   "map": true
+  },
+  {
+   "f": "webmcp.js",
+   "t": "js",
+   "b": 4620
+  }
+ ],
+ "assetCount": 6,
+ "bytes": 421008,
+ "html": {
+  "mobile": {
+   "title": "TheSportsDB | Open Sports Database & Fre",
+   "lang": "en",
+   "manifest": "https://www.thesportsdb.com/images/ico/manifest.json",
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 9,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "inputTypes": {
+    "text": 2
+   },
+   "forms": 2,
+   "ariaLabels": [
+    "Free Sports API",
+    "Go Premium",
+    "Main navigation",
+    "Navigation search",
+    "Search",
+    "Sports search",
+    "Toggle navigation"
+   ],
+   "roles": {
+    "search": 2
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "About",
+   "w": "md"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Data",
+   "w": "d"
+  },
+  {
+   "l": "Develop",
+   "w": "d"
+  },
+  {
+   "l": "Edit",
+   "w": "d"
+  },
+  {
+   "l": "Free Sports API",
+   "w": "md"
+  },
+  {
+   "l": "Login",
+   "w": "d"
+  },
+  {
+   "l": "Privacy",
+   "w": "md"
+  },
+  {
+   "l": "Refunds",
+   "w": "md"
+  },
+  {
+   "l": "Search",
+   "w": "md"
+  },
+  {
+   "l": "Search Teams, Events, Venues or Players",
+   "w": "md"
+  },
+  {
+   "l": "Search TheSportsDB",
+   "w": "d"
+  },
+  {
+   "l": "Signup",
+   "w": "d"
+  },
+  {
+   "l": "Terms",
+   "w": "md"
+  },
+  {
+   "l": "Toggle navigation",
+   "w": "m"
+  },
+  {
+   "l": "Tools",
+   "w": "d"
+  }
+ ],
+ "manifest": {
+  "name": "App",
+  "display": "",
+  "displayOverride": [],
+  "orientation": "",
+  "scope": "",
+  "icons": 6,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": null,
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "robots": {
+  "disallow": [
+   "/nfo/",
+   "/nfo.php"
+  ],
+  "sitemaps": [
+   "https://www.thesportsdb.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 59,
+  "index": false,
+  "sections": [
+   {
+    "s": "Sport",
+    "n": 35
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "activity",
+    "n": 1
+   },
+   {
+    "s": "browse_calendar",
+    "n": 1
+   },
+   {
+    "s": "browse_events",
+    "n": 1
+   },
+   {
+    "s": "browse_highlights",
+    "n": 1
+   },
+   {
+    "s": "browse_honours",
+    "n": 1
+   },
+   {
+    "s": "browse_milestones",
+    "n": 1
+   },
+   {
+    "s": "browse_players",
+    "n": 1
+   },
+   {
+    "s": "browse_teams",
+    "n": 1
+   },
+   {
+    "s": "browse_tv",
+    "n": 1
+   },
+   {
+    "s": "contribute_guide",
+    "n": 1
+   },
+   {
+    "s": "docs_kodi_scraper",
+    "n": 1
+   },
+   {
+    "s": "forum",
+    "n": 1
+   },
+   {
+    "s": "free_sports_api",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "bootstrap.min.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  },
+  {
+   "file": "main2.css",
+   "own": true,
+   "apis": [
+    "Respects high-contrast settings"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "fontawesome.io",
+   "file": "font-awesome.min.css",
+   "at": 44
+  },
+  {
+   "host": "getbootstrap.com",
+   "file": "bootstrap.min.css",
+   "at": 44
+  },
+  {
+   "host": "popper.js.org",
+   "file": "bootstrap.bundle.min.js",
+   "at": 44262
+  }
+ ],
+ "thirdParty": [
+  "fontawesome.io",
+  "getbootstrap.com",
+  "popper.js.org",
+  "static.cloudflareinsights.com"
+ ],
+ "services": [
+  "Cloudflare",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://www.thesportsdb.com/cdn-cgi/rum"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "bootstrap.min.css"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Respects high-contrast settings",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "main2.css@54017"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "bootstrap.min.css@5669"
+  },
+  {
+   "name": "Path kept from crawlers /nfo.php",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /nfo/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /Sport/ (35 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /activity/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /browse_calendar/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /browse_events/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /browse_highlights/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /browse_honours/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /browse_milestones/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; overflow: hidden; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; transition: background 0.5s, filter 0.5s; }
+  canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  #info { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; pointer-events: none; z-index: 10; }
+  #seal { position: absolute; bottom: 20px; right: 20px; padding: 10px 16px; background: #2a2a4a; color: white; border: none; border-radius: 8px; cursor: pointer; z-index: 20; }
+  .thought-card {
+    position: absolute; background: rgba(20,20,40,0.75); backdrop-filter: blur(4px);
+    border: 1px solid rgba(100,150,255,0.4); border-radius: 12px; padding: 12px; min-width: 140px;
+    max-width: 200px; color: #cce; font-size: 13px; cursor: grab; user-select: none;
+    transition: transform 0.3s, opacity 0.3s; z-index: 5; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .thought-card:active { cursor: grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-fluid-policy-mind · Verse lab</title>
+<meta name="description" content="WebGPU/Canvas2D fluid-particle substrate (400 agents with velocity, damping, orientation bias, pointer injection).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-fluid-policy-mind · Verse lab">
+<meta property="og:description" content="WebGPU/Canvas2D fluid-particle substrate (400 agents with velocity, damping, orientation bias, pointer injection).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f197-webgpu-fluid-policy-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f197-webgpu-fluid-policy-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="info">F197 Fluid Policy Mind — drag cards to inject force · tilt for bias</div>
+<button id="seal">Seal Mind</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-fluid-policy-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

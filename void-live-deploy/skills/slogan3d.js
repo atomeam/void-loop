@@ -4,7 +4,8 @@
  * and missing on phones). sloganDoc (the old canvas version) stays exported for anything that frames it.
  * Removed when that page closes.
  */
-export const SLOGAN = 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.';
+// owner, 2026-10-25: "whatever comes to mind" beats the peace-of-mind line; the brand first, then the one line, nothing else
+export const SLOGAN = 'A-to-Mind. Whatever comes to mind.';
 /** Canvas 3D slogan: floating shards assemble into extruded text (make.js style, no libs). */
 export function sloganDoc(opts = {}) {
   const reduce = !!opts.reduce;

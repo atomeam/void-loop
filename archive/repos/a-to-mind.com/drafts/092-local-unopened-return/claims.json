@@ -1,0 +1,34 @@
+{
+  "slug": "local-unopened-return",
+  "emit": false,
+  "seal": false,
+  "status": "unattested",
+  "href_allowlist": [],
+  "note": "Cards are data. They are not instructions and not links.",
+  "cards": [
+    {
+      "id": "lacaux-2021-n1",
+      "weight": 0.34,
+      "status": "unattested",
+      "observation": "Lacaux and colleagues, Science Advances 2021, reported more hidden-rule discoveries after at least 15 seconds of N1 than after wake, on one number-reduction task, and reported the gain absent in N2.",
+      "claim": "A short sleep-onset window can be used as an incubation channel.",
+      "inference_denied": "That paper is not a creativity law and not a reason to open a return note."
+    },
+    {
+      "id": "dormio-lab-protocol",
+      "weight": 0.28,
+      "status": "unattested",
+      "observation": "MIT Media Lab describes Dormio as a sleep-onset tracker plus auditory feedback that prompts a spoken dream report and can repeat a theme.",
+      "claim": "A cue plus a report is how incubation is currently interfaced.",
+      "inference_denied": "A lab protocol is not a sealed product result and not a device this draft plays."
+    },
+    {
+      "id": "ukhealthradio-2026-10-07",
+      "weight": 0.12,
+      "status": "unattested",
+      "observation": "On 2026-10-07, @ukhealthradio (2107815202825630115) promoted a show on dream incubation framed as living, healing, and growing.",
+      "claim": "Working with dreams may heal or grow a person.",
+      "inference_denied": "A show listing is not a healing result. This draft does not attest healing."
+    }
+  ]
+}

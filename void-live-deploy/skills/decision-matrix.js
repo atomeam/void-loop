@@ -8,9 +8,11 @@ import { escHtml, addThing, cardEl, keepOut, tidy } from '../lib/stage-pack.js';
 const MAXOPT = 6, MAXCRIT = 8;
 
 /** the title and options an ask names, or null when it is not a decision-matrix ask. Pure. */
+// a bare "france vs spain", "show the grid" or "2x2 matrix" belong to country, stage-arrange and decide-cards: the ask names a
+// decision matrix (or a decision grid) to be ours (lists run 2, 2026-10-21, the overlap check)
 export function parseDecision(text) {
   const t = tidy(text);
-  const m = /^(?:please\s+)?(?:(?:make|build|create|show|start|give|open|set\s+up)\s+(?:me\s+)?(?:a\s+|an\s+|my\s+|the\s+)?)?(?:(?:(?:weighted\s+)?(?:decision\s+)?(?:matrix|grid))|(?:weighted\s+matrix)|(?:.+?\s+vs\s+.+?))(?:\s+(?:for|about|on|of)\s+(.+?))?(?:\s+please)?$/i.exec(t);
+  const m = /^(?:please\s+)?(?:(?:make|build|create|show|start|give|open|set\s+up)\s+(?:me\s+)?(?:a\s+|an\s+|my\s+|the\s+)?)?(?:(?:weighted\s+)?(?:decision\s+)?matrix|(?:weighted\s+)?decision\s+grid)(?:\s+(?:for|about|on|of)\s+(.+?))?(?:\s+please)?$/i.exec(t);
   if (!m) return null;
   const topic = (m[1] || '').trim().slice(0, 80);
   const vs = topic.split(/\s+(?:vs\.?|versus)\s+/i).map((s) => s.trim()).filter(Boolean);

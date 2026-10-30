@@ -141,7 +141,7 @@ async function run(text, api) {
       if (!files.length) return;
       try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (_) {}
       const n = el.querySelector('[data-ph-summary]');
-      const r = await addFiles(files, st, (k) => { if (n) n.textContent = 'Keeping ' + k + ' of ' + files.length + '…'; });
+      const r = await addFiles(files, st, (k) => { if (n) n.textContent = 'Keeping ' + k + ' of ' + files.length + '…'; }); // ellipsis-ok: progress text, not a cut
       await load();
       draw(['Added ' + r.added + (r.added === 1 ? ' photo' : ' photos'), r.same ? r.same + ' already here' : '', r.skipped ? r.skipped + ' not pictures' : ''].filter(Boolean).join(' · ') + '.');
     });

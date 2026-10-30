@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-052 Spatial Causal Portal Lattice — The Void</title>
+<style>
+  :root {
+    --hue: 220;
+    --contrast: 1;
+    --blur: 0px;
+    --perspective: 800px;
+    --rotateX: 0deg;
+    --rotateY: 0deg;
+    --scale: 1;
+    --entropy: 0;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; background: #0a0a12; color: #e0e0ff;
+    font-family: system-ui, sans-serif; overflow: hidden;
+    filter: contrast(var(--contrast)) hue-rotate(calc(var(--hue) * 1deg));
+  }
+  #stage {
+    position: relative; width: 100%; height: 100%;
+    perspective: var(--perspective);
+    transform: rotateX(var(--rotateX)) rotateY(var(--rotateY)) scale(var(--scale));
+    transition: transform 0.4s ease, filter 0.6s ease;
+  }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  #hud {
+    position: absolute; top: 12px; left: 12px; z-index: 10;
+    background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px;
+    font-size: 12px; pointer-events: none; backdrop-filter: blur(4px);
+  }
+  button {
+    position: absolute; bottom: 16px; right: 16px; z-index: 10;
+    background: #224; color: #aaf; border: 1px solid #446; padding: 8px 14px;
+    border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  button:hover { background: #336; }
+  #orbs {
+    position: absolute; inset: 0; pointer-events: none; z-index: 5;
+  }
+  .portal-orb {
+    position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(180,220,255,0.9), transparent 70%);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 12px rgba(100,180,255,0.8);
+    transition: left 0.3s, top 0.3s, transform 0.3s;
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="orbs"></div>
+  <div id="hud">F-052 Portal Lattice · draw to seed portals · <span id="stats">init</span></div>
+  <button id="seal">Seal params</button>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const orbsEl = document.getElementById('orbs');
+const statsEl = document.getElementById('stats');
+const sealBtn = document.getElementById('seal');
+
+let W = 0, H = 0, gridW = 80, gridH = 50;
+let grid = new Float32Array(gridW * gridH);
+let next = new Float32Array(gridW * gridH);
+const portals = [];
+const agents = [];
+let mouse = {x: -1, y: -1, down: false};
+let tilt = {x: 0, y: 0};
+let params = {decay: 0.96, diffuse: 0.15, threshold: 0.35, linkGain: 1.2};
+let entropy = 0, transport = 0;
+let worker = null;
+let audioCtx = null;
+const oscillators = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  gridW = Math.min(96, Math.floor(W / 12));
+  gridH = Math.min(64, Math.floor(H / 12));
+  grid = new Float32Array(gridW * gridH);
+  next = new Float32Array(gridW * gridH);
+}
+window.addEventListener('resize', resize);
+resize();
+
+try {
+  const workerCode = `
+    self.onmessage = function(e) {
+      const {portals, params} = e.data;
+      if (!portals || portals.length < 2) {
+        self.postMessage({links: [], adapted: params});
+        return;
+      }
+      const n = portals.length;
+      const embeds = portals.map(p => [p.x / 1000, p.y / 1000, p.e, p.age / 100]);
+      const scores = [];
+      for (let i = 0; i < n; i++) {
+        scores[i] = [];
+        for (let j = 0; j < n; j++) {
+          if (i === j) { scores[i][j] = 0; continue; }
+          let s = 0;
+          for (let k = 0; k < 4; k++) s += embeds[i][k] * embeds[j][k];
+          scores[i][j] = Math.tanh(s * params.linkGain);
+        }
+      }
+      let varSum = 0, count = 0;
+      for (let i = 0; i < n; i++) for (let j = i+1; j < n; j++) {
+        varSum += scores[i][j] * scores[i][j]; count++;
+      }
+      const v = count ? varSum / count : 0;
+      const adapted = {...params, linkGain: Math.max(0.4, Math.min(2.5, params.linkGain + (v - 0.3) * 0.05))};
+      self.postMessage({links: scores, adapted});
+    };
+  `;
+  const blob = new Blob([workerCode], {type: 'application/javascript'});
+  worker = new Worker(URL.createObjectURL(blob));
+  worker.onmessage = (e) => {
+    const {links, adapted} = e.data;
+    if (adapted) Object.assign(params, adapted);
+    if (links && portals.length > 1) {
+      for (let a of agents) {
+        if (Math.random() < 0.02 && links[a.from]) {
+          let best = -1, bestS = 0.4;
+          for (let j = 0; j < links[a.from].length; j++) {
+            if (links[a.from][j] > bestS) { bestS = links[a.from][j]; best = j; }
+          }
+          if (best >= 0 && portals[best]) {
+            a.x = portals[best].x + (Math.random()-0.5)*20;
+            a.y = portals[best].y + (Math.random()-0.5)*20;
+            a.from = best;
+            transport++;
+          }
+        }
+      }
+    }
+  };
+} catch (err) { console.warn('Worker blocked', err); }
+
+function idx(x, y) { return y * gridW + x; }
+
+function updateLattice() {
+  for (let y = 1; y < gridH-1; y++) {
+    for (let x = 1; x < gridW-1; x++) {
+      const i = idx(x,y);
+      let sum = grid[i];
+      sum += grid[idx(x-1,y)] + grid[idx(x+1,y)] + grid[idx(x,y-1)] + grid[idx(x,y+1)];
+      sum *= 0.2;
+      next[i] = sum * params.diffuse + grid[i] * (1 - params.diffuse);
+      next[i] *= params.decay;
+      next[i] += tilt.x * 0.002 * (x / gridW - 0.5) + tilt.y * 0.002 * (y / gridH - 0.5);
+    }
+  }
+  if (mouse.down && mouse.x >= 0) {
+    const gx = Math.floor((mouse.x / W) * gridW);
+    const gy = Math.floor((mouse.y / H) * gridH);
+    for (let dy = -2; dy <= 2; dy++) {
+      for (let dx = -2; dx <= 2; dx++) {
+        const xx = gx + dx, yy = gy + dy;
+        if (xx > 0 && xx < gridW-1 && yy > 0 && yy < gridH-1) {
+          const d = Math.sqrt(dx*dx + dy*dy);
+          next[idx(xx,yy)] = Math.min(1, next[idx(xx,yy)] + Math.max(0, 0.4 - d*0.12));
+        }
+      }
+    }
+  }
+  [grid, next] = [next, grid];
+}
+
+function extractPortals() {
+  portals.length = 0;
+  for (let y = 2; y < gridH-2; y++) {
+    for (let x = 2; x < gridW-2; x++) {
+      const e = grid[idx(x,y)];
+      if (e > params.threshold) {
+        let isMax = true;
+        for (let dy = -1; dy <= 1 && isMax; dy++)
+          for (let dx = -1; dx <= 1; dx++)
+            if (grid[idx(x+dx,y+dy)] > e) isMax = false;
+        if (isMax) {
+          portals.push({
+            x: (x / gridW) * W,
+            y: (y / gridH) * H,
+            e, age: 0, id: portals.length
+          });
+        }
+      }
+    }
+  }
+  for (let p of portals) p.age++;
+  if (portals.length > 12) portals.splice(12);
+  while (agents.length < Math.min(40, portals.length * 3)) {
+    if (portals.length) {
+      const p = portals[Math.floor(Math.random() * portals.length)];
+      agents.push({x: p.x, y: p.y, from: portals.indexOf(p), vx: 0, vy: 0});
+    } else break;
+  }
+  if (agents.length > 60) agents.length = 60;
+}
+
+function updateAgents() {
+  for (let a of agents) {
+    a.x += (Math.random()-0.5) * 1.5;
+    a.y += (Math.random()-0.5) * 1.5;
+    a.x = Math.max(0, Math.min(W, a.x));
+    a.y = Math.max(0, Math.min(H, a.y));
+  }
+}
+
+function computeEntropy() {
+  if (portals.length < 2) { entropy = 0; return; }
+  let mx = 0, my = 0, me = 0;
+  for (let p of portals) { mx += p.x; my += p.y; me += p.e; }
+  mx /= portals.length; my /= portals.length; me /= portals.length;
+  let v = 0;
+  for (let p of portals) {
+    v += (p.x - mx)**2 + (p.y - my)**2 + (p.e - me)**2 * 10000;
+  }
+  entropy = Math.min(1, Math.sqrt(v / portals.length) / 400);
+}
+
+function morphUI() {
+  document.documentElement.style.setProperty('--hue', 180 + entropy * 140 + transport * 0.5);
+  document.documentElement.style.setProperty('--contrast', 1 + entropy * 0.6);
+  document.documentElement.style.setProperty('--blur', (entropy * 2) + 'px');
+  document.documentElement.style.setProperty('--perspective', (600 + entropy * 400) + 'px');
+  document.documentElement.style.setProperty('--rotateX', (tilt.y * 8 + Math.sin(Date.now()/2000)*entropy*4) + 'deg');
+  document.documentElement.style.setProperty('--rotateY', (tilt.x * 8 + Math.cos(Date.now()/1800)*entropy*4) + 'deg');
+  document.documentElement.style.setProperty('--scale', 1 + entropy * 0.08);
+  document.documentElement.style.setProperty('--entropy', entropy);
+}
+
+function render() {
+  ctx.fillStyle = 'rgba(8,8,16,0.25)';
+  ctx.fillRect(0, 0, W, H);
+  const cellW = W / gridW, cellH = H / gridH;
+  for (let y = 0; y < gridH; y++) {
+    for (let x = 0; x < gridW; x++) {
+      const e = grid[idx(x,y)];
+      if (e > 0.05) {
+        const a = Math.min(0.7, e * 0.8);
+        ctx.fillStyle = `hsla(${200 + e*80}, 70%, 60%, ${a})`;
+        ctx.fillRect(x * cellW, y * cellH, cellW+1, cellH+1);
+      }
+    }
+  }
+  orbsEl.innerHTML = '';
+  for (let p of portals) {
+    const orb = document.createElement('div');
+    orb.className = 'portal-orb';
+    orb.style.left = p.x + 'px';
+    orb.style.top = p.y + 'px';
+    orb.style.transform = `translate(-50%,-50%) scale(${0.6 + p.e})`;
+    orbsEl.appendChild(orb);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 8 + p.e * 16, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(160,200,255,${0.4 + p.e*0.5})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(255,220,160,0.7)';
+  for (let a of agents) {
+    ctx.fillRect(a.x-1.5, a.y-1.5, 3, 3);
+  }
+  if (portals.length > 1) {
+    ctx.strokeStyle = 'rgba(100,160,255,0.15)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < portals.length; i++) {
+      for (let j = i+1; j < portals.length; j++) {
+        const d = Math.hypot(portals[i].x - portals[j].x, portals[i].y - portals[j].y);
+        if (d < 280) {
+          ctx.beginPath();
+          ctx.moveTo(portals[i].x, portals[i].y);
+          ctx.lineTo(portals[j].x, portals[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+}
+
+function updateAudio() {
+  if (!audioCtx) return;
+  while (oscillators.length < Math.min(6, portals.length)) {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    const p = audioCtx.createStereoPanner();
+    o.type = 'sine';
+    o.frequency.value = 180 + oscillators.length * 40;
+    g.gain.value = 0;
+    o.connect(g); g.connect(p); p.connect(audioCtx.destination);
+    o.start();
+    oscillators.push({o, g, p});
+  }
+  oscillators.forEach((osc, i) => {
+    if (i < portals.length) {
+      const p = portals[i];
+      osc.o.frequency.setTargetAtTime(140 + p.e * 220 + entropy * 80, audioCtx.currentTime, 0.1);
+      osc.g.gain.setTargetAtTime(Math.min(0.08, p.e * 0.12 * (1 + entropy)), audioCtx.currentTime, 0.15);
+      osc.p.pan.setTargetAtTime((p.x / W - 0.5) * 1.6, audioCtx.currentTime, 0.1);
+    } else {
+      osc.g.gain.setTargetAtTime(0, audioCtx.currentTime, 0.2);
+    }
+  });
+}
+
+function loop() {
+  updateLattice();
+  extractPortals();
+  updateAgents();
+  computeEntropy();
+  morphUI();
+  render();
+  updateAudio();
+  statsEl.textContent = `portals:${portals.length} agents:${agents.length} ent:${entropy.toFixed(2)} tx:${transport}`;
+  if (worker && portals.length >= 2 && Math.random() < 0.1) {
+    worker.postMessage({
+      portals: portals.map(p => ({x: p.x, y: p.y, e: p.e, age: p.age})),
+      params
+    });
+  }
+  transport *= 0.995;
+  requestAnimationFrame(loop);
+}
+
+canvas.addEventListener('pointerdown', e => { mouse.down = true; mouse.x = e.clientX; mouse.y = e.clientY; if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } });
+canvas.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+canvas.addEventListener('pointerup', () => mouse.down = false);
+canvas.addEventListener('pointerleave', () => mouse.down = false);
+
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    tilt.x = (e.gamma || 0) / 45;
+    tilt.y = (e.beta || 0) / 45;
+  });
+}
+
+sealBtn.addEventListener('click', async () => {
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('void-f052', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('seals');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+    const tx = db.transaction('seals', 'readwrite');
+    const store = tx.objectStore('seals');
+    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(params) + entropy + Date.now()));
+    const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+    store.put({params, entropy, transport, at: Date.now()}, hex.slice(0,16));
+    sealBtn.textContent = 'Sealed ' + hex.slice(0,8);
+    setTimeout(() => sealBtn.textContent = 'Seal params', 2000);
+  } catch (err) {
+    sealBtn.textContent = 'Seal failed';
+    console.warn(err);
+  }
+});
+
+(async () => {
+  try {
+    const db = await new Promise(res => {
+      const r = indexedDB.open('void-f052', 1);
+      r.onsuccess = () => res(r.result);
+    });
+    if (db.objectStoreNames.contains('seals')) {
+      const tx = db.transaction('seals', 'readonly');
+      const store = tx.objectStore('seals');
+      const req = store.getAll();
+      req.onsuccess = () => {
+        if (req.result && req.result.length) {
+          const last = req.result[req.result.length-1];
+          if (last.params) Object.assign(params, last.params);
+        }
+      };
+    }
+  } catch (_) {}
+})();
+
+loop();
+</script>
+</body>
+</html>

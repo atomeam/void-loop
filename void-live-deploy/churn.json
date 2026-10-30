@@ -1,0 +1,164 @@
+{
+ "at": "2026-10-30T06:06:56.278Z",
+ "max": 12,
+ "days": 7,
+ "sweep": 100,
+ "hot": [
+  {
+   "file": "void-live-deploy/lib/tower.js",
+   "changes": 49
+  },
+  {
+   "file": "tools/tower-probes.mjs",
+   "changes": 32
+  },
+  {
+   "file": "domains/conductor.json",
+   "changes": 31
+  },
+  {
+   "file": "domains/tower-self.json",
+   "changes": 30
+  },
+  {
+   "file": "tools/bench.json",
+   "changes": 30
+  },
+  {
+   "file": "tools/families.mjs",
+   "changes": 30
+  },
+  {
+   "file": "void-live-deploy/sw.js",
+   "changes": 28
+  },
+  {
+   "file": "void-live-deploy/fanfic/index.html",
+   "changes": 26
+  },
+  {
+   "file": "void-live-deploy/skills/verse-brain.js",
+   "changes": 24
+  },
+  {
+   "file": "domains/growth-inbox.md",
+   "changes": 23
+  },
+  {
+   "file": "tools/fanfic.test.mjs",
+   "changes": 23
+  },
+  {
+   "file": "void-live-deploy/fanfic/app.js",
+   "changes": 23
+  },
+  {
+   "file": "void-live-deploy/tower.size.json",
+   "changes": 22
+  },
+  {
+   "file": "domains/handoff.md",
+   "changes": 21
+  },
+  {
+   "file": "tools/toolkit.test.mjs",
+   "changes": 20
+  },
+  {
+   "file": "void-live-deploy/lib/toolkit.js",
+   "changes": 20
+  },
+  {
+   "file": "docs/PARITY/github.md",
+   "changes": 19
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 19
+  },
+  {
+   "file": "docs/PARITY/lichess.md",
+   "changes": 19
+  },
+  {
+   "file": "tools/bench.mjs",
+   "changes": 19
+  },
+  {
+   "file": "void-live-deploy/lib/brain.js",
+   "changes": 17
+  },
+  {
+   "file": "void-live-deploy/lib/fanfic-de.js",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/lib/fanfic.js",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/lib/seo.js",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/tools/index.html",
+   "changes": 16
+  },
+  {
+   "file": "tools/card-cycle.json",
+   "changes": 15
+  },
+  {
+   "file": "tools/grow-self.state.json",
+   "changes": 15
+  },
+  {
+   "file": "docs/PARITY/README.md",
+   "changes": 14
+  },
+  {
+   "file": "docs/TAGTEAM.md",
+   "changes": 14
+  },
+  {
+   "file": "tools/brain.test.mjs",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/lib/brain-mind.js",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/lib/brain-organs.js",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/skills/tower.js",
+   "changes": 14
+  },
+  {
+   "file": "docs/HANDOFF-GAPS.md",
+   "changes": 13
+  },
+  {
+   "file": "tools/real-pages.mjs",
+   "changes": 13
+  },
+  {
+   "file": "tools/team.test.mjs",
+   "changes": 13
+  },
+  {
+   "file": "tools/tower.test.mjs",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/identity/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/lib/similar-index.js",
+   "changes": 13
+  }
+ ]
+}

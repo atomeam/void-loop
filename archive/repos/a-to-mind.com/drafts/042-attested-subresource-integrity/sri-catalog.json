@@ -1,0 +1,16 @@
+{
+  "slug": "attested-subresource-integrity",
+  "run": "042",
+  "status": "unattested",
+  "seal": null,
+  "emit_integrity_policy": false,
+  "third_party_src": "deny",
+  "fallback_unhashed": "deny",
+  "cdn_fetch_to_hash": "deny",
+  "report_collector": null,
+  "algorithms": {
+    "browser_integrity": "sha384",
+    "ledger": "sha256"
+  },
+  "assets": []
+}

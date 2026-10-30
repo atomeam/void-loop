@@ -1,0 +1,34 @@
+{
+  "slug": "local-stamp-not-plot",
+  "run": 110,
+  "family": "anomalous-event timeline",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": 0.2,
+  "one_line": "A sealed stamp class hashes to a plot-refusal id. The plot sentence and any era gloss are discarded and are not in the hash. A stamp is not a plot and not a chronology.",
+  "canonical": "stamp-not-plot|v1|<kind>|<grain>|<place>|plot-refusal",
+  "catalog": [
+    ["report", "year-only", "unplaced"],
+    ["report", "day-label", "unplaced"],
+    ["publication", "year-only", "unplaced"],
+    ["counterclaim", "year-only", "unplaced"],
+    ["abstain", "abstain", "abstain"],
+    ["local-only", "untimed", "unplaced"]
+  ],
+  "discarded_fields": ["plot_sentence", "era_gloss"],
+  "allowlist": [],
+  "denied": [
+    "date-axis",
+    "connecting-line",
+    "wave-badge",
+    "flap-score",
+    "era-name",
+    "sequence-id",
+    "next-prev",
+    "contact",
+    "healing",
+    "crash-retrieval",
+    "extraterrestrial-hardware"
+  ]
+}

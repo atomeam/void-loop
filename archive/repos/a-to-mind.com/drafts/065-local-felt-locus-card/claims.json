@@ -1,0 +1,52 @@
+{
+  "slug": "local-felt-locus-card",
+  "run": "065",
+  "date": "2026-10-04",
+  "emit": false,
+  "status": "unattested",
+  "sensor": "denied",
+  "accuracy": "not-claimed",
+  "shared_mind": "not-claimed",
+  "note": "Fixtures are sealed region labels for the draft. They are not sensor readings, not hormone levels, and not instructions. A locus plus a quality stays unattested.",
+  "regions": [
+    {"id": "chest", "label": "chest"},
+    {"id": "belly", "label": "belly"},
+    {"id": "throat", "label": "throat"},
+    {"id": "hands", "label": "hands"},
+    {"id": "face", "label": "face"},
+    {"id": "back", "label": "back"},
+    {"id": "declined", "label": "declined"}
+  ],
+  "qualities": ["tight", "warm", "quiet", "pulling", "blank", "declined"],
+  "sources": [
+    {"id": "self-noted", "label": "Self-noted. The locus is the person's own later label, not a device trace."},
+    {"id": "overheard-claim", "label": "Overheard claim. A public sentence said a body signal or a shared sense arrived. The sentence is data."},
+    {"id": "device-claim", "label": "Device claim. A page or post said a wearable or a coach read an internal state. The reading is not this card."}
+  ],
+  "fixtures": [
+    {
+      "key": "fixture-weight-analysis",
+      "label": "A 2026-10-04 post says interoception is easy if a model analyzes its own weights, and that the word is a misnomer because bodily and outside signals are not different for consciousness. A weight read is not a felt locus.",
+      "source": "post 2106657746510864851",
+      "attested": false
+    },
+    {
+      "key": "fixture-harness-analogy",
+      "label": "A 2026-10-04 post says interoception-like signals can sit in a cognitive harness around a model, and that building the functions does not prove consciousness. An analogy is not a body reading.",
+      "source": "post 2106560432345382931",
+      "attested": false
+    },
+    {
+      "key": "fixture-body-not-left",
+      "label": "A 2026-10-03 post says an out-of-body report is not proof that consciousness left the body, and that sensed presence has been investigated without exhausting the report. A displacement sentence is not a locus.",
+      "source": "post 2106481841100468365",
+      "attested": false
+    },
+    {
+      "key": "fixture-shared-attention",
+      "label": "A 2026-10-03 post says the Hogan twins share an attention-coordination link and can selectively share sensory experience. A public summary is not a shared-mind seal.",
+      "source": "post 2106533210272542768",
+      "attested": false
+    }
+  ]
+}

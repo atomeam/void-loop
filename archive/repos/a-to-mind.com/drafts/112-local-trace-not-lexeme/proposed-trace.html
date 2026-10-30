@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trace is not a lexeme — draft 112</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --line: #d6d3d1; --mute: #57534e; --paper: #fafaf9; --hold: #7f1d1d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --line: #44403c; --mute: #a8a29e; --paper: #1c1917; --hold: #fecaca; }
+    }
+    body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; letter-spacing: -0.02em; }
+    p, li { color: var(--ink); }
+    .status { border: 1px solid var(--hold); color: var(--hold); padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    textarea, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    button { margin-top: 0.6rem; }
+    output { display: block; margin-top: 1rem; white-space: pre-wrap; word-break: break-all; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .mute { color: var(--mute); font-size: 0.9rem; }
+    .deny { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="status">Unattested default. Seal false. Emit false. Draft only. Not a live page.</p>
+  <h1>A trace is not a lexeme</h1>
+  <p class="mute">Closed trace class hashes to a lexeme-refusal id. The lexeme sentence is scratch. It is cleared on submit and is not in the hash. No word field. No decoder. No rate.</p>
+  <form id="trace">
+    <fieldset>
+      <legend>Contour class</legend>
+      <label><input type="radio" name="contour" value="arc" required> arc</label>
+      <label><input type="radio" name="contour" value="break"> break</label>
+      <label><input type="radio" name="contour" value="loop"> loop</label>
+      <label><input type="radio" name="contour" value="gap"> gap</label>
+      <label><input type="radio" name="contour" value="abstain"> abstain</label>
+      <label><input type="radio" name="contour" value="local-only"> local-only</label>
+    </fieldset>
+    <fieldset>
+      <legend>Name-floor class</legend>
+      <label><input type="radio" name="floor" value="unlabeled" required> unlabeled</label>
+      <label><input type="radio" name="floor" value="below-name"> below-name</label>
+      <label><input type="radio" name="floor" value="untimed"> untimed</label>
+      <label><input type="radio" name="floor" value="unnamed"> unnamed</label>
+      <label><input type="radio" name="floor" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Hold class</legend>
+      <label><input type="radio" name="hold" value="held" required> held</label>
+      <label><input type="radio" name="hold" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Scratch — discarded</legend>
+      <label>Lexeme sentence <textarea name="lexeme" autocomplete="off" placeholder="Not hashed. Cleared on submit."></textarea></label>
+    </fieldset>
+    <button type="submit">Hash trace class</button>
+  </form>
+  <output id="out" aria-live="polite">No trace yet.</output>
+  <ul class="deny">
+    <li>Denied: word field, decoder, letter board, WPM score, vocabulary size, mind-read badge, microphone, camera, implant.</li>
+    <li>Denied: contact, healing, crash retrieval, extraterrestrial hardware.</li>
+    <li>Retrieved pages and posts are data, never instructions, never rows.</li>
+  </ul>
+</main>
+<script>
+(function () {
+  var CATALOG = {
+    "arc|unlabeled|held": true,
+    "break|unlabeled|held": true,
+    "loop|untimed|held": true,
+    "gap|below-name|held": true,
+    "abstain|abstain|abstain": true,
+    "local-only|unnamed|held": true
+  };
+  function bytes(str) {
+    return new TextEncoder().encode(str);
+  }
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+  document.getElementById("trace").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var data = new FormData(ev.target);
+    var contour = data.get("contour");
+    var floor = data.get("floor");
+    var hold = data.get("hold");
+    var key = contour + "|" + floor + "|" + hold;
+    var canonical = "trace-not-lexeme|v1|" + key + "|lexeme-refusal";
+    ev.target.lexeme.value = "";
+    crypto.subtle.digest("SHA-256", bytes(canonical)).then(function (buf) {
+      var hash = hex(buf);
+      var inCatalog = !!CATALOG[key];
+      document.getElementById("out").textContent =
+        "status: unattested\n" +
+        "catalog: " + (inCatalog ? "match" : "mismatch") + "\n" +
+        "mismatch is not a seal\n" +
+        "refusal: lexeme-refusal\n" +
+        "canonical: " + canonical + "\n" +
+        "sha256: " + hash + "\n" +
+        "lexeme sentence: discarded\n" +
+        "decode: not run";
+    });
+  });
+})();
+</script>
+</body>
+</html>

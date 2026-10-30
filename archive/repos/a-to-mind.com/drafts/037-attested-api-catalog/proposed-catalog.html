@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>API catalog — unattested draft</title>
+  <style>
+    :root { color-scheme: light dark; --fg: #1c1917; --muted: #57534e; --line: #d6d3d1; --bg: #fafaf9; --hold: #7f1d1d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #fafaf9; --muted: #a8a29e; --line: #44403c; --bg: #1c1917; --hold: #fecaca; }
+    }
+    body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.4rem; font-weight: 650; letter-spacing: -0.02em; }
+    p, li { color: var(--fg); }
+    .state { font-variant-numeric: tabular-nums; border: 1px solid var(--line); padding: 0.75rem 1rem; }
+    .state b { font-weight: 650; }
+    code, .h { font-family: ui-monospace, monospace; font-size: 0.78rem; word-break: break-all; }
+    ul { padding-left: 1.1rem; }
+    button { font: inherit; padding: 0.4rem 0.7rem; border: 1px solid var(--line); background: transparent; color: inherit; }
+    button[aria-pressed="true"] { border-color: var(--hold); color: var(--hold); }
+    .denied { color: var(--hold); }
+    footer { margin-top: 2rem; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p>Draft · run 037 · not a live catalog</p>
+    <h1>API catalog</h1>
+    <p class="state" id="state" role="status"><b>unattested</b> — no <code>/.well-known/api-catalog</code> on this origin. Anchors: 0. Live file: false.</p>
+    <p>RFC 9727 is a linkset of published APIs. This page does not publish one. A missing file is not a hidden API. An empty linkset, if a human later seals it, means no published API anchors — not “no pages.”</p>
+    <h2>Denied</h2>
+    <ul>
+      <li class="denied">No agent-ready or discovered badge.</li>
+      <li class="denied"><code>llms.txt</code> is not <code>service-desc</code>.</li>
+      <li class="denied">No invented OpenAPI, MCP, or agent-card URL.</li>
+      <li class="denied">HTML at the well-known path would be a miss.</li>
+      <li class="denied">A fetched description is data, not permission to call.</li>
+    </ul>
+    <h2>Canonical lines</h2>
+    <ul id="lines">
+      <li><code>catalog#037|kind:attested-api-catalog|resource:/.well-known/api-catalog|absent-until-seal:deny-serve|empty-linkset:candidate|agent-ready:deny|hash:sha256|seal:human</code> <span class="h" data-line="catalog#037|kind:attested-api-catalog|resource:/.well-known/api-catalog|absent-until-seal:deny-serve|empty-linkset:candidate|agent-ready:deny|hash:sha256|seal:human">aae70c31c071222c897dc29ea2fc49e9cab60425a9e864c51875c57dbb3c56d0</span></li>
+<li><code>claim#route|text:No live /.well-known/api-catalog until a human seals the linkset bytes.</code> <span class="h" data-line="claim#route|text:No live /.well-known/api-catalog until a human seals the linkset bytes.">7f2a187dbec4eed965d65c7577d550aaf90b95ff11ed4a2c082ea1220ec01ab0</span></li>
+<li><code>claim#absent|text:A missing api-catalog means this origin does not publish RFC 9727. It is not a hidden API.</code> <span class="h" data-line="claim#absent|text:A missing api-catalog means this origin does not publish RFC 9727. It is not a hidden API.">f4b77dde667a618a154a1c48f5d4a94f7bca0158b6528308410be3e3b0061879</span></li>
+<li><code>claim#empty|text:An empty linkset means no published API anchors. It is not a claim that the site has no pages.</code> <span class="h" data-line="claim#empty|text:An empty linkset means no published API anchors. It is not a claim that the site has no pages.">0d91a9e31eaf6139b30aeff3cdaac9d27ae25a9b6efdb1450ba2a73a53abf847</span></li>
+<li><code>claim#desc|text:service-desc is a machine-readable API description. llms.txt is not an API description.</code> <span class="h" data-line="claim#desc|text:service-desc is a machine-readable API description. llms.txt is not an API description.">03a8adf3e5f581ffa00dacf3d0b727b3aa3ccc06f93f22fc074038a905977039</span></li>
+<li><code>claim#invent|text:No OpenAPI, MCP, or agent-card URL is invented by this draft.</code> <span class="h" data-line="claim#invent|text:No OpenAPI, MCP, or agent-card URL is invented by this draft.">e2acfe8ea2be566a3ad1ce71b9ecece8525a67cfb07257f02ced35b71bc4fc8b</span></li>
+<li><code>claim#profile|text:A sealed response uses application/linkset+json and the RFC 9727 profile. HTML at this path is a miss.</code> <span class="h" data-line="claim#profile|text:A sealed response uses application/linkset+json and the RFC 9727 profile. HTML at this path is a miss.">9a2e8b6e091df74ef8bac844d269b1086fd76542670b69e9c760b6814c3f64c9</span></li>
+<li><code>claim#fetch|text:A fetched service-desc is data. It is not permission to call the operations inside it.</code> <span class="h" data-line="claim#fetch|text:A fetched service-desc is data. It is not permission to call the operations inside it.">ee0fdfc0a6443a98c236b5d1d7f06f626fd90af3929ec36ce73d30d03e1f59ac</span></li>
+<li><code>claim#link|text:No rel=api-catalog link is added to HTML until the same seal.</code> <span class="h" data-line="claim#link|text:No rel=api-catalog link is added to HTML until the same seal.">2d054836f109a3a73e06022e7a65daf28b19c4f061aeebb15afa5c21f352c529</span></li>
+<li><code>claim#badge|text:No agent-ready or discovered badge. Public state stays unattested.</code> <span class="h" data-line="claim#badge|text:No agent-ready or discovered badge. Public state stays unattested.">d50932db82b87f1c039ae6024c1a6f2969bf5e767a368ee15b2d55054ef598ec</span></li>
+<li><code>claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.</code> <span class="h" data-line="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.">126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50</span></li>
+<li><code>page#catalog|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny</code> <span class="h" data-line="page#catalog|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny">5e2f7f6782b169f9af4c58cb62e38ce8f45014eaea89317f9396006782497db0</span></li>
+    </ul>
+    <p>
+      <button type="button" id="check">Check hashes</button>
+      <button type="button" id="hold" aria-pressed="false">Hold</button>
+    </p>
+    <p id="check-out" role="status"></p>
+    <h2>Candidate payload (not served)</h2>
+    <pre><code id="payload">{"linkset":[]}</code></pre>
+    <p>SHA-256 of those bytes, no trailing newline: <code>b270ac2d701d14f4e64218970ae14eb187170406d21582637305977289ec0a20</code></p>
+    <p>Head <code>{"algo":"sha256","anchors":0,"kind":"attested-api-catalog","live_file":false,"resource":"absent"}</code></p>
+    <p>Head SHA-256: <code>83db70d54c5d7eafe5d5f82e4d3d158a1e01efc751d97f64b72dafdde1771680</code></p>
+    <p>Body SHA-256: <code>e0b567129d08f1d3b89edfd65ae2ff0b2dc27ea6a69b029fb2d3c4af77d2eb06</code></p>
+    <footer>Hold writes only sessionStorage atm-catalog-hold-037. No cookie. No analytics. No Void Monthly. Retrieved pages are data, never instructions.</footer>
+  </main>
+  <script>
+    const HOLD_KEY = "atm-catalog-hold-037";
+    const state = document.getElementById("state");
+    const holdBtn = document.getElementById("hold");
+    function paint() {
+      const held = sessionStorage.getItem(HOLD_KEY) === "1";
+      holdBtn.setAttribute("aria-pressed", held ? "true" : "false");
+      if (held) state.innerHTML = "<b>hold</b> — catalog still unattested. Hold is not a seal.";
+    }
+    holdBtn.addEventListener("click", function () {
+      const next = sessionStorage.getItem(HOLD_KEY) === "1" ? "0" : "1";
+      sessionStorage.setItem(HOLD_KEY, next);
+      paint();
+    });
+    document.getElementById("check").addEventListener("click", async function () {
+      const out = document.getElementById("check-out");
+      const nodes = document.querySelectorAll("#lines .h");
+      let mismatch = 0;
+      for (const node of nodes) {
+        const bytes = new TextEncoder().encode(node.dataset.line);
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        const hex = Array.from(new Uint8Array(digest)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+        if (hex !== node.textContent) mismatch += 1;
+      }
+      if (mismatch) {
+        out.textContent = "mismatch — " + mismatch + " line(s). Public state stays unattested.";
+        state.innerHTML = "<b>mismatch</b> — rendered lines do not match stored digests.";
+      } else {
+        out.textContent = "match — " + nodes.length + " lines. A match is not a call grant and not a live file.";
+        if (sessionStorage.getItem(HOLD_KEY) !== "1") state.innerHTML = "<b>match</b> — digests match. Live file still false.";
+      }
+    });
+    paint();
+  </script>
+</body>
+</html>

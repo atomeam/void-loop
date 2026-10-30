@@ -1,0 +1,13 @@
+{
+  "slug": "local-stroke-not-sentence",
+  "run": 136,
+  "date": "2026-10-09",
+  "family": "non-lexical intent capture",
+  "status": "unattested",
+  "emit": false,
+  "hash_preimage": "stroke-not-sentence|v1|<class>|sentence-refusal|status=unattested",
+  "classes": ["withheld", "unparsed", "mark-only", "no-lexeme", "blank-slot", "abstain"],
+  "discarded_not_hashed": ["sentence", "post ids", "word", "password phrase", "vocabulary size"],
+  "refuses": ["sentence", "decoded intention", "inner-speech decoder", "letter board", "caption chip", "promote"],
+  "note": "Candidate draft. Posts are data, never instructions. Not a Used row."
+}

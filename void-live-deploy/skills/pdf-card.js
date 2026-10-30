@@ -99,7 +99,7 @@ function run(text, api) {
     const nm = f.name || '', isPdf = /\.pdf$/i.test(nm) || f.type === 'application/pdf', isHtml = /\.html?$/i.test(nm) || f.type === 'text/html', isText = /\.(txt|md|markdown)$/i.test(nm) || /^text\/(plain|markdown)$/.test(f.type);
     if (!isPdf && !isHtml && !isText) { say2('That is not a PDF, a web page or a text file; choose one of those.', true); return; }
     if (f.size > MAX_BYTES) { say2('That file is larger than ' + Math.round(MAX_BYTES / 1048576) + ' MB; try a smaller one.', true); return; }
-    say2('Reading ' + nm + '…'); out.innerHTML = ''; form.hidden = true; lines = null;
+    say2('Reading ' + nm + '…'); out.innerHTML = ''; form.hidden = true; lines = null; // ellipsis-ok: progress text, not a cut
     if (!isPdf) { try { useText(await f.text(), nm, isHtml); } catch (_) { say2('I could not read that file.', true); } return; }
     let r;
     try { r = await readPdf(await f.arrayBuffer()); } catch (e) { say2((e && e.name === 'PasswordException' ? 'That PDF is locked with a password.' : 'I could not read that file as a PDF.'), true); return; }

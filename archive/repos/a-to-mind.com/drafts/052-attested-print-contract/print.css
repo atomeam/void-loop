@@ -1,0 +1,53 @@
+/* Candidate print contract. Not linked from the live site.
+   emit: false. No remote @import. No blanket attr(href) suffix.
+   No origin prefix on relative hrefs. No print-color-adjust: exact. */
+
+@media print {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: #111;
+    font: 11pt/1.4 "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  }
+
+  .noprint,
+  nav,
+  footer,
+  button,
+  dialog {
+    display: none !important;
+  }
+
+  .print-banner {
+    display: block;
+    margin: 0 0 12pt;
+    padding-bottom: 6pt;
+    border-bottom: 0.6pt solid #111;
+    font: 9pt/1.3 ui-sans-serif, system-ui, sans-serif;
+  }
+
+  main a {
+    color: #111;
+    text-decoration: underline;
+  }
+
+  /* Authorized suffixes are emitted by the page as text nodes
+     inside .print-suffix, not by attr(href). Empty allowlist:
+     those nodes stay empty. */
+  .print-suffix {
+    font-size: 9pt;
+    word-break: break-all;
+  }
+
+  h1, h2 {
+    break-after: avoid;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+}

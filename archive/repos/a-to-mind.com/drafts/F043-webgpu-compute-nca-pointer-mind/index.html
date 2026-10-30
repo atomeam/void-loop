@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F-043 Evolving RD Mind</title>
+<style>
+body { margin: 0; background: #0a0a0a; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; transition: filter 0.5s, transform 0.5s; }
+canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+#ui { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 8px; pointer-events: auto; }
+button { background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; margin: 4px; cursor: pointer; }
+#status { font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F-043: Evolving Parameter Reaction-Diffusion Mind</div>
+  <div>Click/drag to seed chemical B. Mind evolves F/K for complex patterns.</div>
+  <button id="seal">Seal best genome</button>
+  <button id="reset">Reset field</button>
+  <div id="status">Initializing…</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+let W = 96, H = 96;
+let gridA = new Float32Array(W * H);
+let gridB = new Float32Array(W * H);
+let nextA = new Float32Array(W * H);
+let nextB = new Float32Array(W * H);
+let F = 0.055, K = 0.062;
+let bestF = F, bestK = K, bestFit = 0;
+let seeds = 0, recentGrowth = 0;
+
+function initGrid() {
+  gridA.fill(1);
+  gridB.fill(0);
+  const cx = W/2|0, cy = H/2|0;
+  for (let y = cy-2; y <= cy+2; y++) for (let x = cx-2; x <= cx+2; x++) {
+    if (x>=0 && x<W && y>=0 && y<H) gridB[y*W+x] = 1;
+  }
+}
+
+function laplacian(grid, i, x, y) {
+  const xm = (x-1+W)%W, xp = (x+1)%W, ym = (y-1+H)%H, yp = (y+1)%H;
+  return grid[y*W+xm] + grid[y*W+xp] + grid[ym*W+x] + grid[yp*W+x]
+       + 0.5*(grid[ym*W+xm] + grid[ym*W+xp] + grid[yp*W+xm] + grid[yp*W+xp])
+       - 6 * grid[i];
+}
+
+function stepRD() {
+  const Du = 0.16, Dv = 0.08, dt = 1.0;
+  let varB = 0, sumB = 0, n = W*H;
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const i = y * W + x;
+      const a = gridA[i], b = gridB[i];
+      const lapA = laplacian(gridA, i, x, y);
+      const lapB = laplacian(gridB, i, x, y);
+      const abb = a * b * b;
+      nextA[i] = Math.max(0, Math.min(1, a + (Du * lapA - abb + F * (1 - a)) * dt));
+      nextB[i] = Math.max(0, Math.min(1, b + (Dv * lapB + abb - (K + F) * b) * dt));
+      sumB += nextB[i];
+    }
+  }
+  [gridA, nextA] = [nextA, gridA];
+  [gridB, nextB] = [nextB, gridB];
+  const meanB = sumB / n;
+  for (let i = 0; i < n; i++) varB += (gridB[i] - meanB) ** 2;
+  return { variance: varB / n, mean: meanB };
+}
+
+function draw() {
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+  const img = ctx.createImageData(W, H);
+  const data = img.data;
+  for (let i = 0; i < W*H; i++) {
+    const b = gridB[i];
+    const v = Math.floor(Math.min(255, b * 255 * 2));
+    const j = i * 4;
+    data[j] = v; data[j+1] = v * 0.6; data[j+2] = 255 - v; data[j+3] = 255;
+  }
+  const tmp = document.createElement('canvas');
+  tmp.width = W; tmp.height = H;
+  tmp.getContext('2d').putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(tmp, 0, 0, canvas.width, canvas.height);
+}
+
+let painting = false;
+function seedAt(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((clientX - rect.left) / rect.width * W);
+  const y = Math.floor((clientY - rect.top) / rect.height * H);
+  const r = 4;
+  for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+    const xx = x+dx, yy = y+dy;
+    if (xx>=0 && xx<W && yy>=0 && yy<H && dx*dx+dy*dy <= r*r) {
+      gridB[yy*W+xx] = 1;
+      gridA[yy*W+xx] = 0.5;
+    }
+  }
+  seeds++;
+}
+canvas.addEventListener('pointerdown', e => { painting = true; seedAt(e.clientX, e.clientY); });
+canvas.addEventListener('pointermove', e => { if (painting) seedAt(e.clientX, e.clientY); });
+window.addEventListener('pointerup', () => painting = false);
+
+const workerCode = `
+let pop = [];
+function rand() { return Math.random(); }
+function init() {
+  pop = Array.from({length: 8}, () => ({
+    F: 0.02 + rand()*0.06,
+    K: 0.04 + rand()*0.04,
+    fit: 0
+  }));
+}
+init();
+self.onmessage = (e) => {
+  const { variance, mean, seeds, growth } = e.data;
+  const fit = variance * 10 + (1 - Math.abs(mean - 0.3)) + growth * 0.5 + seeds * 0.01;
+  const idx = Math.floor(rand() * pop.length);
+  pop[idx].fit = fit;
+  pop.sort((a,b) => b.fit - a.fit);
+  const best = pop[0];
+  for (let i = 1; i < pop.length; i++) {
+    pop[i].F = best.F + (rand()-0.5)*0.01;
+    pop[i].K = best.K + (rand()-0.5)*0.008;
+    pop[i].F = Math.max(0.01, Math.min(0.1, pop[i].F));
+    pop[i].K = Math.max(0.03, Math.min(0.08, pop[i].K));
+  }
+  self.postMessage({ F: best.F, K: best.K, fit: best.fit });
+};
+`;
+const blob = new Blob([workerCode], {type: 'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+worker.onmessage = (e) => {
+  F = e.data.F; K = e.data.K;
+  if (e.data.fit > bestFit) { bestFit = e.data.fit; bestF = F; bestK = K; }
+  status.textContent = `F=${F.toFixed(4)} K=${K.toFixed(4)} fit=${e.data.fit.toFixed(2)} best=${bestFit.toFixed(2)}`;
+  const m = Math.min(1, e.data.fit / 5);
+  document.body.style.filter = `hue-rotate(${m*180}deg) contrast(${1+m*0.5}) blur(${(1-m)*2}px)`;
+};
+
+function loop() {
+  const stats = stepRD();
+  recentGrowth = stats.variance > 0.01 ? 1 : 0;
+  worker.postMessage({ variance: stats.variance, mean: stats.mean, seeds, growth: recentGrowth });
+  draw();
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('reset').onclick = () => { initGrid(); seeds = 0; };
+document.getElementById('seal').onclick = async () => {
+  const data = { F: bestF, K: bestK, fit: bestFit, t: Date.now() };
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('void-f043', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('genomes');
+      r.onsuccess = () => res(r.result);
+      r.onerror = rej;
+    });
+    const tx = db.transaction('genomes', 'readwrite');
+    tx.objectStore('genomes').put(data, 'best');
+    status.textContent += ' | sealed';
+  } catch (e) {
+    localStorage.setItem('f043-best', JSON.stringify(data));
+    status.textContent += ' | sealed (ls)';
+  }
+};
+
+initGrid();
+status.textContent = 'Running. Click to seed. Mind evolving F/K…';
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

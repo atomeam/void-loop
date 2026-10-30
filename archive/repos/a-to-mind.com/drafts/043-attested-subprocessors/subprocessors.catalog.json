@@ -1,0 +1,12 @@
+{
+  "schema": "a-to-mind.subprocessors.v1",
+  "run": "043",
+  "emit": false,
+  "status": "unattested",
+  "notice_window_days": null,
+  "notice_channel": null,
+  "subscribe": "deny",
+  "vendor_scrape": "deny",
+  "rows": [],
+  "note": "Empty rows means the list is not sealed. It does not attest that A-to-Mind has zero processors."
+}

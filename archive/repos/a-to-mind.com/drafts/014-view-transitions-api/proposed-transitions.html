@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 014 — view transitions · A-to-Mind</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. Same-document pane fade is off until Allow. Cross-document auto is denied.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --fg: #ece8df;
+      --muted: #8a8478;
+      --rule: #2a2a28;
+      --amber: #d4a017;
+      --ok: #7d9a6a;
+      --bad: #c45c4a;
+      view-transition-name: none;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Source Sans 3", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    header, main, footer {
+      max-width: 46rem;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+    }
+    header, footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-color: var(--rule);
+    }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.15rem;
+      text-decoration: none;
+    }
+    nav a {
+      margin-left: 1rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    h1 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.6rem, 3.6vw, 2.1rem);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+    .lede { margin-top: 0.75rem; color: var(--muted); max-width: 36rem; }
+    .hold {
+      margin-top: 1rem;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 1.4rem;
+    }
+    button {
+      font: inherit;
+      color: var(--fg);
+      background: transparent;
+      border: 1px solid var(--rule);
+      padding: 0.45rem 0.75rem;
+      cursor: pointer;
+    }
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 2px;
+    }
+    button[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); }
+    button:disabled { color: var(--muted); cursor: not-allowed; }
+    .tabs[role="tablist"] { display: flex; gap: 0.4rem; }
+    .stage {
+      margin-top: 1rem;
+      min-height: 9.5rem;
+      border: 1px solid var(--rule);
+      padding: 1.1rem 1.15rem;
+      view-transition-name: vt-pane;
+    }
+    .stage h2 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+    .stage p { margin-top: 0.55rem; color: var(--muted); }
+    .pane[hidden] { display: none; }
+    .meta {
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .meta code { color: var(--fg); font-size: 0.75rem; word-break: break-all; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.78rem; }
+    th, td { text-align: left; padding: 0.35rem 0.4rem 0.35rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+    .stamp { margin-top: 1rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .muted { color: var(--muted); }
+
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-group(*),
+      ::view-transition-old(*),
+      ::view-transition-new(*) {
+        animation: none !important;
+        animation-duration: 0s !important;
+      }
+    }
+
+    html[data-vt="on"]:not([data-motion="reduce"])::view-transition-old(vt-pane) {
+      animation: vt-fade 240ms ease-out both;
+    }
+    html[data-vt="on"]:not([data-motion="reduce"])::view-transition-new(vt-pane) {
+      animation: vt-fade 240ms ease-in both reverse;
+    }
+    @keyframes vt-fade {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main id="main" tabindex="-1">
+    <p class="hold">Hold-gate · run 014 · not live copy</p>
+    <h1>Same-document pane fade, off until you allow it.</h1>
+    <p class="lede">Instant swap is the published path. Cross-document <code>navigation: auto</code> is denied. Only the name <code>vt-pane</code> may snapshot. Writes still wait for a human seal.</p>
+
+    <div class="toolbar">
+      <button type="button" id="allow" aria-pressed="false">Allow pane fade</button>
+      <span id="gate" class="muted">Fade denied · instant swap</span>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Attested panes">
+      <button type="button" role="tab" id="tab-plan" aria-controls="pane-plan" aria-selected="true">Plan</button>
+      <button type="button" role="tab" id="tab-ledger" aria-controls="pane-ledger" aria-selected="false">Ledger</button>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="pane" id="pane-plan" role="tabpanel" aria-labelledby="tab-plan" data-canonical="copy#pane-plan|text:Plan stays on the table until a human seals the write.">
+        <h2>Plan</h2>
+        <p>Plan stays on the table until a human seals the write.</p>
+      </div>
+      <div class="pane" id="pane-ledger" role="tabpanel" aria-labelledby="tab-ledger" hidden data-canonical="copy#pane-ledger|text:The ledger records sealed rows. Unsealed drafts are not history.">
+        <h2>Ledger</h2>
+        <p>The ledger records sealed rows. Unsealed drafts are not history.</p>
+      </div>
+    </div>
+
+    <p class="meta" id="support">Checking View Transition support…</p>
+
+    <section class="meta" aria-labelledby="claims-h">
+      <h2 id="claims-h" style="font-size:0.95rem;font-weight:500;color:var(--fg);">Attested claims</h2>
+      <table>
+        <thead>
+          <tr><th>id</th><th>status</th><th>sha-256</th></tr>
+        </thead>
+        <tbody id="claim-rows"></tbody>
+      </table>
+      <p class="stamp">Draft 014 · 2026-09-30 · source: atomeam/a-to-mind.com</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">A to Z</span>
+  </footer>
+  <script>
+    const CLAIMS = [
+      ["vt", "vt#014|kind:view-transitions|scope:same-document|cross-doc:deny|motion:opt-in|hash:sha256|seal:human", "039e8c61f9221a4b10b7179b7b5db2d327743ff175f4154917fc74cf9a058ded"],
+      ["default", "claim#default|text:View transitions are off until Allow. Instant DOM swap is the published path.", "bef4414981f0eb604154495008ed4276873aacef81d1243d0cc4f1c7c557f5c4"],
+      ["scope", "claim#scope|text:Only same-document pane swaps on attested names. Cross-document navigation auto is denied.", "251491add4135b7556c5f0af5293d7d0999c4d174b10ab48e08728c23529e2f5"],
+      ["motion", "claim#motion|text:Transitions run only after Allow and only when prefers-reduced-motion is no-preference.", "6cdd3351f48de5a8cd13c889d45ff69603c6ec29eb852a3c2b1846fbf8ca264d"],
+      ["names", "claim#names|text:Only the allowlisted name vt-pane may be assigned. Root snapshots are named none.", "3e0cbb6c24319e09ed1ce5c425732dd9ffcfd2abd4a4657176b58ebfca37d8e3"],
+      ["once", "claim#once|text:Swap animation is a single 240ms cross-fade. Reveals, slides, and shared-element morphs are denied.", "0c8d70eeb5d429051013d1a1f9a5b1710903b970f56e86e7459f536a1971d546"],
+      ["page", "page#vt|route:draft|index:noindex|cookie:deny|analytics:deny|spa-hijack:deny", "8af023c03aa1e4bfd6c0e9b46a023b487abd73b76553b925d33d17a75511f954"]
+    ];
+    const COPY = {
+      "pane-plan": ["copy#pane-plan|text:Plan stays on the table until a human seals the write.", "ee0e3e5c59e797f537003214eed037ff5a4462061d68090274a6b561ec4b4754"],
+      "pane-ledger": ["copy#pane-ledger|text:The ledger records sealed rows. Unsealed drafts are not history.", "f1badfe826cf616217e0fb111858a4db015fd51fcf6c5c1019632aec7db1675e"]
+    };
+    const BODY = "f584de33cdbec577b3f4701627aa05cc2f1956dd782cd2b94a793c8ca0c203fd";
+    const ALLOWED_NAME = "vt-pane";
+
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const sha = async (s) => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const hasVT = typeof document.startViewTransition === "function";
+    const html = document.documentElement;
+    const allowBtn = document.getElementById("allow");
+    const gate = document.getElementById("gate");
+    const support = document.getElementById("support");
+    const rows = document.getElementById("claim-rows");
+    let allowed = false;
+    let claimsOk = false;
+    let current = "plan";
+
+    function motionReduce() {
+      return reduce.matches;
+    }
+    function setGate() {
+      html.dataset.motion = motionReduce() ? "reduce" : "ok";
+      html.dataset.vt = allowed && !motionReduce() && hasVT && claimsOk ? "on" : "off";
+      allowBtn.setAttribute("aria-pressed", allowed ? "true" : "false");
+      allowBtn.disabled = motionReduce() || !hasVT;
+      if (!hasVT) gate.textContent = "API absent \u00b7 instant swap";
+      else if (motionReduce()) gate.textContent = "Reduced motion \u00b7 instant swap";
+      else if (!claimsOk) gate.textContent = "Claims mismatch \u00b7 instant swap";
+      else if (!allowed) gate.textContent = "Fade denied \u00b7 instant swap";
+      else gate.textContent = "Fade allowed \u00b7 \u2264240ms pane-swap";
+    }
+
+    function panesMatch() {
+      return Object.entries(COPY).every(([id, [canonical]]) => {
+        const el = document.getElementById(id);
+        return el && el.getAttribute("data-canonical") === canonical;
+      });
+    }
+
+    function showPane(id) {
+      const next = id === "ledger" ? "ledger" : "plan";
+      document.getElementById("pane-plan").hidden = next !== "plan";
+      document.getElementById("pane-ledger").hidden = next !== "ledger";
+      document.getElementById("tab-plan").setAttribute("aria-selected", next === "plan" ? "true" : "false");
+      document.getElementById("tab-ledger").setAttribute("aria-selected", next === "ledger" ? "true" : "false");
+      current = next;
+    }
+
+    function canFade() {
+      const name = getComputedStyle(document.getElementById("stage")).viewTransitionName;
+      return html.dataset.vt === "on" && name === ALLOWED_NAME && panesMatch();
+    }
+
+    function swap(id) {
+      if (id === current) return;
+      if (!canFade()) {
+        showPane(id);
+        return;
+      }
+      const update = () => showPane(id);
+      let vt;
+      try {
+        vt = document.startViewTransition({ update, types: ["pane-swap"] });
+      } catch (err) {
+        vt = document.startViewTransition(update);
+      }
+      if (vt && vt.ready) vt.ready.catch(() => showPane(id));
+    }
+
+    allowBtn.addEventListener("click", () => {
+      if (allowBtn.disabled) return;
+      allowed = !allowed;
+      setGate();
+    });
+    document.getElementById("tab-plan").addEventListener("click", () => swap("plan"));
+    document.getElementById("tab-ledger").addEventListener("click", () => swap("ledger"));
+    reduce.addEventListener("change", () => {
+      if (motionReduce()) allowed = false;
+      setGate();
+    });
+
+    (async () => {
+      const bits = [];
+      for (const [id, line, expect] of CLAIMS) {
+        const got = await sha(line);
+        const ok = got === expect;
+        bits.push(ok);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${id}</td><td class="${ok ? "ok" : "bad"}">${ok ? "match" : "mismatch"}</td><td><code>${got}</code></td>`;
+        rows.appendChild(tr);
+      }
+      const bodyGot = await sha(CLAIMS.map((c) => c[1]).join("\n") + "\n");
+      const bodyOk = bodyGot === BODY;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>body</td><td class="${bodyOk ? "ok" : "bad"}">${bodyOk ? "match" : "mismatch"}</td><td><code>${bodyGot}</code></td>`;
+      rows.appendChild(tr);
+      for (const [id, [line, expect]] of Object.entries(COPY)) {
+        const el = document.getElementById(id);
+        const got = await sha(el.getAttribute("data-canonical") || "");
+        const ok = got === expect && el.getAttribute("data-canonical") === line;
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${id}</td><td class="${ok ? "ok" : "bad"}">${ok ? "match" : "mismatch"}</td><td><code>${got}</code></td>`;
+        rows.appendChild(row);
+        bits.push(ok);
+      }
+      claimsOk = bits.every(Boolean) && bodyOk && panesMatch();
+      support.textContent = hasVT
+        ? "document.startViewTransition is present. Cross-document auto is not declared on this page."
+        : "document.startViewTransition is absent. Instant swap remains the published path.";
+      setGate();
+    })();
+  </script>
+</body>
+</html>

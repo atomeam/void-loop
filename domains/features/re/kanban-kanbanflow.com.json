@@ -1,0 +1,148 @@
+{
+ "site": "kanbanflow.com",
+ "url": "https://kanbanflow.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "public-27d3de7f6.css",
+   "t": "css",
+   "b": 47818
+  },
+  {
+   "f": "public-pages-934a86e264.js",
+   "t": "js",
+   "b": 61469
+  }
+ ],
+ "assetCount": 2,
+ "bytes": 109287,
+ "html": {
+  "mobile": {
+   "title": "KanbanFlow - Lean project management. Si",
+   "lang": "en",
+   "manifest": null,
+   "appleTouch": true,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": true
+   },
+   "inputTypes": {
+    "checkbox": 1,
+    "email": 1
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "Bluesky",
+   "w": "d"
+  },
+  {
+   "l": "Facebook",
+   "w": "d"
+  },
+  {
+   "l": "Features",
+   "w": "d"
+  },
+  {
+   "l": "LOGIN",
+   "w": "d"
+  },
+  {
+   "l": "Press",
+   "w": "d"
+  },
+  {
+   "l": "Pricing",
+   "w": "d"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "SIGN UP",
+   "w": "md"
+  },
+  {
+   "l": "Terms of Service",
+   "w": "md"
+  },
+  {
+   "l": "[email]",
+   "w": "d"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/health",
+   "/io/",
+   "/unsupported-browser",
+   "[token]"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "public-pages-934a86e264.js",
+   "own": true,
+   "storage": [
+    "abTestPublic@52865"
+   ],
+   "keydownHandlers": 1
+  }
+ ],
+ "hosts": [
+  {
+   "host": "kanbanflowbackup.com",
+   "file": "public-pages-934a86e264.js",
+   "at": 9514
+  }
+ ],
+ "thirdParty": [
+  "kanbanflowbackup.com"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Path kept from crawlers /health",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /io/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /unsupported-browser",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers [token]",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

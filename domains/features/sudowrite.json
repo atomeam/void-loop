@@ -1,0 +1,357 @@
+{
+ "floor": "sudowrite",
+ "verse_page": "/books/",
+ "researched": "2026-10-28",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "sudowrite.com": {
+   "url": "https://www.sudowrite.com/",
+   "scanned": "2026-10-28",
+   "leader": true,
+   "pages": [
+    "https://sudowrite.com/",
+    "https://sudowrite.com/features/sudowrite-chat",
+    "https://sudowrite.com/features/plugins",
+    "https://sudowrite.com/pricing",
+    "https://sudowrite.com/faq",
+    "https://sudowrite.com/faq"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Try the AI writing tool with unparalleled story smarts",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"try\", \"writ\", \"unparallel\", \"story\""
+    },
+    {
+     "name": "Chat built with novelists in mind (sorry engineers)",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"chat\", \"built\", \"novelist\", \"mind\""
+    },
+    {
+     "name": "Blank page, begone",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"blank\", \"begone\""
+    },
+    {
+     "name": "Write a novel from start to finish. FAST",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"write\", \"novel\", \"start\", \"finish\""
+    },
+    {
+     "name": "Pacing too fast? Presto expand–o",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"pacing\", \"too\", \"fast\", \"presto\""
+    },
+    {
+     "name": "Everyone knows it’s 10% writing and 90% editing",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"everyone\", \"know\", \"10\", \"writ\""
+    },
+    {
+     "name": "Find the perfect word, every time",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"find\", \"perfect\", \"word\", \"every\""
+    },
+    {
+     "name": "Planning makes it perfect",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"plann\", \"make\", \"perfect\""
+    },
+    {
+     "name": "Find the perfect name, magic item, or title",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"find\", \"perfect\", \"name\", \"magic\""
+    },
+    {
+     "name": "A writing app should feel like home",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"writ\", \"should\", \"feel\", \"like\""
+    },
+    {
+     "name": "Look mom, we’re famous",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"look\", \"mom\", \"famou\""
+    },
+    {
+     "name": "Fall in love with writing all over again",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"fall\", \"love\", \"writ\", \"over\""
+    },
+    {
+     "name": "Plugins",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"plugin\""
+    },
+    {
+     "name": "Make writing magical",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"make\", \"writ\", \"magical\""
+    },
+    {
+     "name": "Write, edit, or analyze anything with a click",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"write\", \"edit\", \"analyze\", \"anyth\""
+    },
+    {
+     "name": "Discover that button you’ve always needed",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"discover\", \"button\", \"alway\", \"need\""
+    },
+    {
+     "name": "Build the writing tool of your dreams",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"build\", \"writ\", \"dream\""
+    },
+    {
+     "name": "Award-winning workflows",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"award\", \"winn\", \"workflow\""
+    },
+    {
+     "name": "Free weekly classes, every Monday",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"weekly\", \"classe\", \"every\", \"monday\""
+    },
+    {
+     "name": "There’s a plugin for everything",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"there\", \"plugin\", \"everyth\""
+    },
+    {
+     "name": "Learn how plugins work in under 2 minutes",
+     "detail": "a heading on /features/plugins",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"learn\", \"how\", \"plugin\", \"work\""
+    },
+    {
+     "name": "Say goodbye to writer’s block",
+     "detail": "a heading on /pricing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"say\", \"goodbye\", \"writer\", \"block\""
+    },
+    {
+     "name": "Made by writers, for writers",
+     "detail": "a heading on /pricing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"made\", \"writer\""
+    },
+    {
+     "name": "Feedback hall of fame",
+     "detail": "a heading on /pricing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"feedback\", \"hall\", \"fame\""
+    },
+    {
+     "name": "There are no bad questions",
+     "detail": "a heading on /pricing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"there\", \"bad\", \"question\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Try the AI writing tool with unparalleled story smarts",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Chat built with novelists in mind (sorry engineers)",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Blank page, begone",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Write a novel from start to finish. FAST",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Pacing too fast? Presto expand–o",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Everyone knows it’s 10% writing and 90% editing",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Find the perfect word, every time",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Planning makes it perfect",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Find the perfect name, magic item, or title",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "A writing app should feel like home",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Look mom, we’re famous",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Fall in love with writing all over again",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Plugins",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Make writing magical",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Write, edit, or analyze anything with a click",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Discover that button you’ve always needed",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Build the writing tool of your dreams",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Award-winning workflows",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Free weekly classes, every Monday",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "There’s a plugin for everything",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Learn how plugins work in under 2 minutes",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Say goodbye to writer’s block",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Made by writers, for writers",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "Feedback hall of fame",
+   "sites": [
+    "sudowrite.com"
+   ]
+  },
+  {
+   "name": "There are no bad questions",
+   "sites": [
+    "sudowrite.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-28",
+  "queued": []
+ }
+}

@@ -7,10 +7,6 @@ import { cleanTitle, cleanYear, onHost } from './movies.js';
 
 export const MAX_FILMS = 12, MAX_YEARS = 10, SOURCE = 'iTunes Search API';
 const SEARCH = 'https://itunes.apple.com/search?media=movie&entity=movie&country=us';
-// Apple's movie search can answer nothing at all for media=movie (it returns 0 for every title while the same term without
-// the media filter still lists films). The wide search is the fallback: same host, no media filter, and the results are
-// checked against the ask before they are kept, so a degraded source never invents a film (issue #1152).
-const WIDE = 'https://itunes.apple.com/search?country=us';
 const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
 
 // user words -> the iTunes genre they mean (matched against the genre the source gives each film)
@@ -68,8 +64,8 @@ export function parseDiscoveryAsk(text) {
 }
 
 /** the iTunes searches an ask needs (at most MAX_YEARS), as urls. Pure. */
-export function searchUrls(q, base = SEARCH) {
-  const u = (term, attr, limit) => base + '&limit=' + limit + (attr ? '&attribute=' + attr : '') + '&term=' + encodeURIComponent(term);
+export function searchUrls(q) {
+  const u = (term, attr, limit) => SEARCH + '&limit=' + limit + (attr ? '&attribute=' + attr : '') + '&term=' + encodeURIComponent(term);
   if (q.kind === 'title') return [u(q.title, '', 15)];
   if (q.kind === 'topic') return [u(q.topic, '', 25)];
   if (q.director) return [u(q.director, 'directorTerm', 50)];
@@ -83,7 +79,7 @@ export function toFilm(r) {
   const year = cleanYear(String(r.releaseDate || '').slice(0, 4)), g = one(r.primaryGenreName);
   const plot = String(r.shortDescription || r.longDescription || '').replace(/\s+/g, ' ').trim();
   const head = plot.slice(0, 220), i = head.lastIndexOf('. ');
-  const cut = plot.length <= 220 ? plot : i > 80 ? head.slice(0, i + 1) : head.replace(/\s+\S*$/, '') + '…';
+  const cut = plot; void head; void i; // the whole plot (owner, 2026-10-21: whole sentences)
   return {
     title: one(r.trackName), year, director: one(r.artistName), runtime_min: r.trackTimeMillis > 0 ? Math.round(r.trackTimeMillis / 60000) : null,
     genres: g ? [g] : [], plot: cut || null,
@@ -112,29 +108,14 @@ const sayAsk = (q) => (q.kind === 'title' ? q.title : q.kind === 'topic' ? 'film
  * Run an ask: { ask, count, films, sources, note }. getJson(url) -> parsed JSON (the route passes a fetch with a timeout; tests pass recordings).
  * A search that fails is skipped; when every search failed the note says the source did not answer (not "no such film"). Never invents.
  */
-const fetchAll = (urls, getJson) => Promise.all(urls.map((u) => Promise.resolve().then(() => getJson(u)).then((j) => (j && Array.isArray(j.results) ? j.results : null)).catch(() => null)));
-
-/** a film from the wide search answers the ask only when its title or director matches it (never a guess). Pure. */
-const askedMatches = (f, q) => {
-  if (q.kind === 'title') { const t = norm(f.title), a = norm(q.title); return !!t && !!a && (t.includes(a) || a.includes(t)); }
-  if (q.director) { const d = norm(f.director), a = norm(q.director); return !!d && !!a && (d.includes(a) || a.includes(d)); }
-  return true;
-};
-
 export async function discover(text, getJson) {
   const q = parseDiscoveryAsk(text) || (cleanTitle(text) ? { kind: 'title', title: cleanTitle(text) } : null);
   if (!q) return { ask: '', count: 0, films: [], sources: [], note: 'Ask for films by a director, a genre and a decade, or a title.' };
   const urls = searchUrls(q);
   if (!urls.length) return { ask: sayAsk(q), count: 0, films: [], sources: [], note: 'Say a genre, a director or a year as well, so there is something to look up.' };
-  const answers = await fetchAll(urls, getJson);
+  const answers = await Promise.all(urls.map((u) => Promise.resolve().then(() => getJson(u)).then((j) => (j && Array.isArray(j.results) ? j.results : null)).catch(() => null)));
   if (answers.every((a) => a === null)) return { ask: sayAsk(q), count: 0, films: [], sources: [], note: 'The film source did not answer just now, so nothing is listed. Ask again in a moment.' };
-  let films = selectFilms(answers.flat().filter(Boolean), q).map(toFilm);
-  // the movie search came back empty (Apple can answer nothing for media=movie): retry without the media filter and keep
-  // only a film whose title or director matches the ask, so a degraded source still lists nothing rather than guessing
-  if (!films.length) {
-    const wide = await fetchAll(searchUrls(q, WIDE), getJson);
-    films = selectFilms(wide.flat().filter(Boolean), q).map(toFilm).filter((f) => askedMatches(f, q));
-  }
+  const films = selectFilms(answers.flat().filter(Boolean), q).map(toFilm);
   return { ask: sayAsk(q), count: films.length, films, sources: films.length ? [SOURCE] : [],
     note: films.length ? '' : 'The film source I check has no film matching this, so I list none rather than guess.' };
 }

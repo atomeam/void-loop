@@ -2,7 +2,7 @@
 // to the calculator, the calendar and the kitchen. Run: node --test tools/weather-match.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import weather from '../void-live-deploy/skills/weather.js';
+import weather, { weatherPlace } from '../void-live-deploy/skills/weather.js';
 
 const takes = (a) => weather.match(a.toLowerCase(), a);
 
@@ -37,4 +37,29 @@ test('weather prompt: rain, snow, frost and heat, timed to the hour before; a dr
   assert.equal(weatherPrompt(H({}), NOW), null); assert.equal(weatherPrompt(null, NOW), null);
   assert.equal(weatherPrompt(H({ precipitation_probability: [5, 5, 5, 5, 5, 5, 5, 5, 90] }), NOW), null, 'past the hours shown is not a prompt');
   for (const p of [rain, weatherPrompt(H({ weather_code: [1, 1, 1, 73, 73, 1, 1, 1] }), NOW), weatherPrompt(H({ temperature_2m: [3, 1, -1, -2, -2, 0, 2, 3] }), NOW)]) assert.ok(wantsCreate(p.ask.toLowerCase()), p.ask + ' is an ask the timer skill takes');
+});
+
+test('the weather card: hours from the hour now, visibility as people read it, and a seven-day graph with a line, bars and the days named', async () => {
+  const { hourlyFrom, visText, graph } = await import('../void-live-deploy/skills/weather.js');
+  assert.deepEqual(hourlyFrom({ time: ['a', 'b', 'c'], temperature_2m: [1, 2, 3], units: 'x' }, 1), { time: ['b', 'c'], temperature_2m: [2, 3], units: 'x' });
+  assert.equal(visText(24140), '24 km'); assert.equal(visText(2500), '2.5 km'); assert.equal(visText(800), '800 m'); assert.equal(visText(24140, true), '15 mi');
+  const time = Array.from({ length: 168 }, (_, i) => { const d = new Date(Date.UTC(2026, 9, 26) + i * 36e5); return d.toISOString().slice(0, 13) + ':00'; });
+  const g = graph({ time, temperature_2m: time.map((_, i) => 10 + (i % 24)), precipitation_probability: time.map((_, i) => (i < 10 ? 50 : 0)) }, 5, false);
+  assert.match(g, /Hour by hour to 7 days/); assert.equal((g.match(/<rect /g) || []).length, 10); assert.equal((g.match(/>(Sun|Mon|Tue|Wed|Thu|Fri|Sat)</g) || []).length, 7);
+  assert.equal(g.match(/points="([^"]+)"/)[1].split(' ').length, 168); assert.match(g, />33°</); assert.match(g, />10°</);
+  assert.equal(graph({ time: ['x'], temperature_2m: [1] }, 0, false), '', 'one hour is no graph');
+});
+
+// the miss board, 2026-10-29: "chance of rain today" was taken, then answered 'I couldn't find "chance of"' (203 asks): every ask match() takes
+// with no place in it is a forecast for here, and a place named with or without "in" is still the place
+test('weather: an ask it takes names a place only when it has one', () => {
+  for (const a of ['chance of rain today', 'chance of snow this weekend', 'chance of thunderstorms tonight', 'is there a storm coming',
+    'is there a hurricane on the way', "what's the high today", 'the low tonight', "tomorrow's high", 'what is the high temperature today',
+    'dew point today', 'wind chill right now', 'heat index outside', 'what should i wear', 'should i bring a jacket', 'is it going to be foggy',
+    'how cold will it get tonight', 'will it freeze tonight', 'is it going to rain tomorrow', 'weather tomorrow', 'will it snow this week', 'weather here'])
+    assert.equal(weatherPlace(a), '', a);
+  for (const [a, place] of [['chance of rain in London', 'London'], ['do i need an umbrella today in seattle', 'seattle'], ['humidity in Miami', 'Miami'],
+    ['weather in Tokyo', 'Tokyo'], ['Tokyo weather', 'Tokyo'], ['temperature Paris', 'Paris'], ['weather New York City', 'New York City'],
+    ['what is the weather like in Cape Town today', 'Cape Town'], ['High Point weather', 'High Point'], ['Wind Gap forecast', 'Wind Gap'], ['Low Moor weather', 'Low Moor']])
+    assert.equal(weatherPlace(a), place, a);
 });

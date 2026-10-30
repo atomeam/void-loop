@@ -1,0 +1,41 @@
+{
+  "slug": "local-beside-not-because",
+  "run": 121,
+  "date": "2026-10-08",
+  "family": "correlation-not-causation sync view",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "hypothesis": "A beside mark of two sealed class seats is not a because.",
+  "confidence": "low",
+  "confidence_note": "Design-material weight, not a measurement.",
+  "canonical": "beside-not-because|v1|{left}|{right}|confound=empty|because-refusal|status=unattested",
+  "seats": [
+    "note-class",
+    "clock-bin",
+    "post-id",
+    "abstain"
+  ],
+  "confound": "empty",
+  "excluded_from_hash": [
+    "because sentence",
+    "disconfirm line",
+    "post body",
+    "coefficient"
+  ],
+  "refusal_ids": {
+    "note-class|clock-bin": "9dd0416982cd8139647502ddb44294b3926888a8bdc554ce74ba4e3c35f0a7ec",
+    "note-class|post-id": "2b1ee159a5634eda154ab766433a27be14f5b7987aa063d3e40f4a62f812183a",
+    "note-class|abstain": "b35f245df3b063e3fc55085fe4d3da81eea6c16910d76c3bf59418a50fc3b5df",
+    "clock-bin|note-class": "24d361e96fcc4856edb0a1fff2f178c2f16cf4480b3359212ce676dbb5234b96",
+    "clock-bin|post-id": "0f3b859f9ff4151d8b59e0d62be8129b3e92c486b67b6368725d88897f3ecf7f",
+    "clock-bin|abstain": "94e82b0385529325e1f1ebfbbf21a7b81db808ea8322f68b7ee23c339274144a",
+    "post-id|note-class": "b5ae3e92e9adb431dd86e44b12310ab156ae73a690dccbb52e75f4eb509491b8",
+    "post-id|clock-bin": "7fcbe28195fec7874c087029bac9cf35ff53d4f2d41cae2c26d06011ac37bc0b",
+    "post-id|abstain": "9341eaee776426da696bc57110fae62fa46cb967bd05ffa224dfc63c0f6ca025",
+    "abstain|note-class": "aed621b63dbc72aaa9ffa0ddfd48027a28dcd6212c4437c14113287dfdb76e72",
+    "abstain|clock-bin": "2a7f29e9f2b4f066d5fb22b78c75faae2bf63b8b8687c8497d75fb7cc777951d",
+    "abstain|post-id": "1eeb4caf41e4abbb506254ca0ca7f0801348fd351e1739b5c0f1cfc7f1742c8b",
+    "abstain|abstain": "779cae936e24da0ba2e501e89076a8431d44129f471176d91379dcc546237252"
+  }
+}

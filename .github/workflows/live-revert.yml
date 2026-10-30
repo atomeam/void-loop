@@ -1,0 +1,50 @@
+# A failed live check reverts the deploy that caused it, through a pull request (docs/LOOP-GAPS.md: canary + automatic rollback).
+# MCP live runs Verse's tools against a-to-mind.com after every main deploy. When it fails on a main commit, this opens one pull
+# request that reverts that commit (labelled automerge, so the full checks still decide; never a push to main, never a force-push).
+# It does nothing when the commit is itself an automatic revert, is no longer on main's first-parent line, was already reverted,
+# or a revert pull request is already open.
+name: Live check reverts
+
+on:
+  workflow_run:
+    workflows: ["MCP live"]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: live-revert
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  revert:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 300
+      - name: Open a revert pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN: ${{ github.event.workflow_run.html_url }}
+        run: |
+          short=${SHA:0:8}
+          git log -1 --format=%B "$SHA" | grep -q '^Verse-auto-revert:' && { echo "::notice::$short is an automatic revert; not reverted again"; exit 0; }
+          git rev-list --first-parent HEAD | grep -qx "$SHA" || { echo "::notice::$short is not on main's first-parent line"; exit 0; }
+          git log --format=%B "$SHA"..HEAD | grep -q "This reverts commit $SHA" && { echo "::notice::$short was already reverted"; exit 0; }
+          open=$(gh pr list --state open --search "head:live-revert-" --json number --jq length) || exit 0
+          [ "$open" = "0" ] || { echo "::notice::a live-revert pull request is already open"; exit 0; }
+          git config user.name "verse-bot"; git config user.email "verse-bot@users.noreply.github.com"
+          branch="live-revert-$short"; git checkout -q -b "$branch"
+          parents=$(git rev-list --parents -n1 "$SHA" | wc -w)
+          if [ "$parents" -gt 2 ]; then git revert --no-edit -m 1 "$SHA"; else git revert --no-edit "$SHA"; fi || { git revert --abort || true; echo "::warning::the revert of $short conflicts; a builder looks"; exit 0; }
+          git commit --amend -q -m "$(git log -1 --format=%B)" -m "Verse-auto-revert: live check failed ($RUN)"
+          git push -q origin "$branch"
+          gh pr create --base main --head "$branch" --label automerge --title "Revert $short: the live check failed after its deploy" --body "MCP live failed against a-to-mind.com after $short deployed: $RUN. This reverts it; the full checks decide whether it merges."

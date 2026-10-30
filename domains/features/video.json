@@ -1,0 +1,239 @@
+{
+ "floor": "video",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "youtube.com": {
+   "sources": [
+    "https://www.youtube.com/",
+    "https://support.google.com/youtube/answer/6308116?hl=en",
+    "https://support.google.com/youtube/answer/6060858?hl=en",
+    "https://support.google.com/youtube/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search",
+     "detail": "Search videos, channels, playlists with filters (upload date, duration, type, features)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/video.js: plays any video from YouTube (youtube-nocookie), Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee, Twitch on the stage; \"skip to 2:30\", \"speed 1.5x\", \"captions on\", \"queue\", \"next\", \"recently watched\"; search through functions/api/video.js"
+    },
+    {
+     "group": "core",
+     "name": "Player",
+     "detail": "Play, seek, volume, quality, fullscreen, theatre mode",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/video.js: plays any video from YouTube (youtube-nocookie), Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee, Twitch on the stage; \"skip to 2:30\", \"speed 1.5x\", \"captions on\", \"queue\", \"next\", \"recently watched\""
+    },
+    {
+     "group": "core",
+     "name": "Playback speed",
+     "detail": "0.25x-2x (Premium up to 4x)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "video.js \"speed 1.5x\""
+    },
+    {
+     "group": "core",
+     "name": "Captions",
+     "detail": "Auto and creator captions, auto-translate",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "video.js \"captions on\""
+    },
+    {
+     "group": "core",
+     "name": "Chapters and key moments",
+     "detail": "Chapter markers in the timeline",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "video.js \"skip to 2:30\"; chapters not listed"
+    },
+    {
+     "group": "core",
+     "name": "Home recommendations",
+     "detail": "Personalised home feed and up-next",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Verse plays what you ask; skills/media-pick.js picks one for a mood"
+    },
+    {
+     "group": "core",
+     "name": "Channels and subscriptions",
+     "detail": "Subscribe to channels, subscriptions feed, bell notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Comments",
+     "detail": "Comments with replies, likes, pinned",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Like / dislike",
+     "detail": "Rate videos",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "History",
+     "detail": "Watch history, pause and clear",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "video.js \"recently watched\""
+    },
+    {
+     "group": "core",
+     "name": "Watch Later and playlists",
+     "detail": "Save to Watch Later, playlists, queue",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "video.js queue; no saved playlists"
+    },
+    {
+     "group": "power",
+     "name": "Shorts",
+     "detail": "Vertical short videos feed",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Live streams and premieres",
+     "detail": "Live chat, Super Chat, DVR",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Miniplayer and picture-in-picture",
+     "detail": "Keep watching while browsing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Keyboard shortcuts",
+     "detail": "K/J/L, arrows, numbers, C for captions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Transcript",
+     "detail": "Show transcript beside the video",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Ask about this video (AI)",
+     "detail": "Gemini answers about the video",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Many platforms in one place",
+     "detail": "YouTube shows YouTube only",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "video.js covers eight platforms in one player"
+    },
+    {
+     "group": "power",
+     "name": "Privacy-enhanced embeds",
+     "detail": "youtube-nocookie domain",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "video.js uses youtube-nocookie"
+    },
+    {
+     "group": "power",
+     "name": "Upload and Studio",
+     "detail": "Upload, edit, analytics for creators",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share at timestamp, embed, clips",
+     "detail": "Share link at a time, embed code, 5-60 s clips",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/share.js shares a card link"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile, TV and console apps",
+     "detail": "Apps everywhere, cast to TV",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Captions styling, audio descriptions, multi-language audio",
+     "detail": "Caption fonts/colours, dubbed tracks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "YouTube Premium",
+     "detail": "No ads, background play, downloads, up to 4x speed, Jump Ahead, cross-device resume",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Channel memberships and Super Chat",
+     "detail": "Pay creators",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "YouTube TV / Primetime channels",
+     "detail": "Live TV and add-on channels",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "a full video page with search results grid",
+  "saved playlists and Watch Later on the device",
+  "subscriptions to channels by RSS (keyless) with a new-videos feed",
+  "share at a timestamp",
+  "chapters list",
+  "transcript beside the video"
+ ],
+ "verse_extra": [
+  "eight platforms in one player and one search",
+  "no tracking embeds",
+  "watch controls by plain words"
+ ],
+ "first_page": "Video page /watch/ for viewers who want videos without the feed pulling at them. First: one search across platforms with a results grid, the player with speed/captions/queue as on the card, Watch Later and playlists kept on the device, channel follows read from public YouTube RSS into a \"new from your channels\" list, share at a timestamp. Will not build: uploads, comments, recommendations, Shorts feed or live chat."
+}

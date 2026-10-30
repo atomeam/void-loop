@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: url; out: text">
+<meta name="theme-color" content="#050505">
+<title>Is my STL watertight? STL checker · Verse</title>
+<meta name="description" content="Check an STL print file before the slicer: watertight or not, open edges and holes, non-manifold edges, flipped normals, degenerate and duplicate faces, shells, self-intersections, size, volume and area, with a 3D view of where. Checked on your device: the file is never uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="STL checker · Verse">
+<meta property="og:description" content="Is my STL watertight? Open edges, holes, flipped normals and more, shown in 3D, checked on your device.">
+<meta property="og:url" content="https://a-to-mind.com/stl/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/stl/ (asked by Verse, 2026-10-29: "Create a browser-based utility to check the watertightness of STL print files."; owner: build it now).
+     A file someone brings is read here, never sent: lib/stl-check.js does the check (the forge's own rule, made for any file), stl/app.js the page.
+     Deep space dark mode, as /fanfic/ (docs/design.md): glass panels with a lit rim, one cool key light. */
+  :root {
+    color-scheme: dark;
+    --bg: #050505; --ink: #f2f4fb; --ink-2: #c3c8d8; --ink-3: #8e94a8;
+    --key: 158 178 255; --warm: 255 170 214; --teal: 92 232 205;
+    --glass: linear-gradient(165deg, rgba(40,46,70,.80) 0%, rgba(16,18,28,.88) 46%, rgba(20,22,40,.90) 100%);
+    --rim: conic-gradient(from 200deg, rgb(var(--key) / .55), rgba(255,255,255,.05) 22%, rgb(var(--warm) / .32) 50%, rgba(255,255,255,.05) 74%, rgb(var(--teal) / .38) 90%, rgb(var(--key) / .55));
+    --lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42);
+    --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.14); --field: rgba(6,8,14,.55);
+    --bad: #ff8a9a; --good: rgb(var(--teal)); --warn: #ffc76b; --open: #ff4d6d; --nm: #ffa53b; --flip: #d77bff; --cross: #ffe14d;
+    --accent: rgb(var(--key)); --on-accent: #0b0d16;
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; overflow-x: hidden;
+    background: radial-gradient(60vmax 38vmax at 50% -12%, rgb(var(--key) / .16), transparent 70%), radial-gradient(40vmax 26vmax at 10% 34%, rgb(92 70 190 / .13), transparent 70%),
+      radial-gradient(36vmax 24vmax at 92% 70%, rgb(40 130 170 / .10), transparent 70%), var(--bg); background-attachment: fixed; }
+  a { color: rgb(var(--key)); text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid rgb(var(--key)); outline-offset: 2px; border-radius: 6px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 30px 16px 40px; min-height: 100svh; box-sizing: border-box; }
+  h1 { font-weight: 280; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 8px;
+    background: linear-gradient(180deg, #fff 30%, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h2 { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 10px; }
+  .lead { color: var(--ink-2); max-width: 44em; margin: 0 0 20px; }
+  .glass { position: relative; background: var(--glass); border-radius: 18px; box-shadow: var(--lift); margin: 0 0 18px; padding: 18px; isolation: isolate; }
+  .glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--rim); pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  #drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 150px; border: 1.5px dashed var(--line-2); border-radius: 14px;
+    background: var(--field); cursor: pointer; text-align: center; padding: 18px; transition: border-color .2s, background .2s; }
+  #drop.over, #drop:hover { border-color: rgb(var(--key)); background: rgb(var(--key) / .07); }
+  #drop b { font-size: 18px; font-weight: 600; } #drop span { color: var(--ink-3); font-size: 14px; }
+  #file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  button { font: inherit; font-size: 14px; color: var(--ink); background: rgba(255,255,255,.04); border: 1px solid var(--line-2); border-radius: 999px; padding: 0 16px; min-height: 40px; cursor: pointer; }
+  button:hover { background: rgba(255,255,255,.08); } button.go { background: rgb(var(--key)); color: var(--on-accent); border-color: transparent; font-weight: 600; }
+  button[hidden] { display: none; }
+  label.tol { font-size: 14px; color: var(--ink-3); display: inline-flex; align-items: center; gap: 8px; margin-left: auto; }
+  label.tol input { width: 84px; font: inherit; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 8px; padding: 6px 8px; }
+  #status { color: var(--ink-3); font-size: 14px; min-height: 1.4em; margin: 10px 0 0; }
+  #out[hidden] { display: none; }
+  #verdict { font-size: clamp(19px, 2.6vw, 24px); font-weight: 600; line-height: 1.3; padding: 14px 16px; border-radius: 12px; margin: 0 0 14px; border: 1px solid; }
+  #verdict.ok { color: var(--good); border-color: rgb(var(--teal) / .4); background: rgb(var(--teal) / .07); }
+  #verdict.bad { color: var(--bad); border-color: rgba(255,138,154,.4); background: rgba(255,138,154,.07); }
+  #verdict.warn { color: var(--warn); border-color: rgba(255,199,107,.4); background: rgba(255,199,107,.07); }
+  #fname { color: var(--ink-3); font-size: 14px; margin: -6px 0 12px; overflow-wrap: anywhere; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } label.tol { margin-left: 0; } #drop { min-height: 110px; } }
+  #view { position: relative; aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 35%, #1a1e30, #07080d 70%); border: 1px solid var(--line); touch-action: none; }
+  #view canvas { display: block; width: 100%; height: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+  .legend i { display: inline-block; width: 12px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .legend .hide { display: none; }
+  dl { display: grid; grid-template-columns: 1fr auto; margin: 0; font-size: 15px; }
+  dt, dd { padding: 7px 0; border-bottom: 1px solid var(--line); margin: 0; } dt { color: var(--ink-2); } dd { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  dd.bad { color: var(--bad); } dd.good { color: var(--good); } dd.warn { color: var(--warn); }
+  #where { margin: 10px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 14px; } #notes { color: var(--ink-3); font-size: 14px; margin: 8px 0 0; }
+  .about dt { font-weight: 600; color: var(--ink); border: 0; padding: 10px 0 0; } .about dd { text-align: left; font-weight: 400; color: var(--ink-2); border: 0; padding: 2px 0 0; }
+  .about dl { grid-template-columns: 1fr; }
+  nav#related { margin-top: 20px; font-size: 14px; color: var(--ink-3); } nav#related a { margin-right: 10px; }
+  footer { font-size: 13px; color: var(--ink-3); margin-top: 18px; text-align: center; } footer a { color: inherit; }
+</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/stl/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Is my STL watertight? STL checker","url":"https://a-to-mind.com/stl/","description":"Check an STL print file, binary or ASCII, before the slicer: watertight or not, open edges and holes with where they are, non-manifold edges, flipped normals, inside-out shells, degenerate and duplicate faces, shells and self-intersections, its size, volume and area, a 3D view with the problems drawn on it, a report to copy or download and a mended copy. Checked on your device: the file is never uploaded.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"stl checker, is my stl watertight, check stl file online, stl watertight check, stl non-manifold edges, stl flipped normals, repair stl holes, stl volume calculator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/stl/?sample={sample}"},"sample-input":"required name=sample"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Is my STL watertight? STL checker","item":"https://a-to-mind.com/stl/"}]}]}</script>
+<!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/stl/app.js">
+<link rel="modulepreload" href="/lib/stl-check.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Is my STL watertight?</h1>
+  <p class="lead">Check an STL print file before the slicer: watertight or not, open edges and holes, non-manifold edges, flipped normals, inside-out shells, degenerate and duplicate faces, separate shells and faces that cross, with its size, volume and area, and a 3D view of where each problem is. <b>Checked on this device: the file is never uploaded.</b></p>
+  <section class="glass" aria-label="Pick a file">
+    <label id="drop" for="file"><b>Drop an STL here, or pick one</b><span>Binary or ASCII .stl, any size your device can hold</span></label>
+    <input id="file" type="file" accept=".stl,model/stl,application/sla,application/vnd.ms-pki.stl">
+    <div class="row">
+      <button type="button" id="sCube">Try a watertight cube</button>
+      <button type="button" id="sHole">Try a cube with a hole</button>
+      <button type="button" id="sFlip">Try a flipped face</button>
+      <label class="tol" title="Corners closer than this are one corner. A slicer welds within about 0.001 mm.">Weld within <input id="tol" type="number" min="0" max="1" step="0.0001" value="0.001" aria-label="Weld tolerance in millimetres"> mm</label>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+  </section>
+  <section class="glass" id="out" hidden aria-label="The check">
+    <div id="verdict" aria-live="polite"></div>
+    <div id="fname"></div>
+    <div class="grid">
+      <div>
+        <div id="view" role="img" aria-label="3D view of the mesh with its problems highlighted: drag to turn it, pinch or scroll to zoom"></div>
+        <div class="legend" id="legend"><span data-k="open"><i style="background:var(--open)"></i>open edges</span><span data-k="nm"><i style="background:var(--nm)"></i>non-manifold edges</span><span data-k="flip"><i style="background:var(--flip)"></i>flipped faces</span><span data-k="cross"><i style="background:var(--cross)"></i>crossing faces</span><span><i style="background:#5a1f33"></i>inside of a face (seen through a hole, or a part inside out)</span><span>drag to turn · scroll or pinch to zoom</span></div>
+      </div>
+      <div>
+        <h2>The numbers</h2>
+        <dl id="stats"></dl>
+        <ul id="where"></ul>
+        <p id="notes"></p>
+      </div>
+    </div>
+    <div class="row">
+      <button type="button" class="go" id="copy">Copy the report</button>
+      <button type="button" id="dlTxt">Download report (.txt)</button>
+      <button type="button" id="dlJson">Download report (.json)</button>
+      <button type="button" id="dlMend" hidden title="Degenerate and duplicate faces dropped, every face turned to agree with its shell, inside-out shells turned outward, holes closed. Non-manifold edges and crossing faces are left as they are.">Download a mended copy</button>
+      <button type="button" id="link">Copy link</button>
+    </div>
+  </section>
+  <section class="glass about" aria-label="What each line means">
+    <h2>What each line means</h2>
+    <dl>
+      <dt>Watertight</dt><dd>Every edge is shared by exactly two faces, so the surface closes with no gap. A slicer needs this to know what is inside the part.</dd>
+      <dt>Open edges and holes</dt><dd>An edge used by one face only: the rim of a gap. The edges that join end to end make one hole; the 3D view draws them in red.</dd>
+      <dt>Non-manifold edges</dt><dd>An edge shared by three faces or more, as where two cubes touch along an edge. A slicer cannot tell which side is inside.</dd>
+      <dt>Flipped faces</dt><dd>A face wound the other way from the faces around it, so its normal points in while theirs point out. Inside-out shells are whole parts wound inward.</dd>
+      <dt>Degenerate and duplicate faces</dt><dd>Faces with no area, or the same three corners twice. Most slicers drop them; the mended copy does too.</dd>
+      <dt>Shells and crossing faces</dt><dd>Separate closed parts in one file, and faces that pass through each other (often two parts overlapping without being joined).</dd>
+      <dt>Vertices and the weld</dt><dd>An STL repeats each corner for every face that uses it. Corners within the weld distance are counted once, the way slicers read them.</dd>
+    </dl>
+  </section>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/stl/?sample=hole">A cube with a hole</a><a href="/stl/?sample=flipped">A flipped face</a><a href="/stl/?sample=cube">A watertight cube</a><a href="/stl/?forge=vase">The forge's vase</a><a href="/stl/?forge=rocket">The forge's rocket</a><a href="/stl/?sample=hole&amp;tol=0.0001">Weld within 0.0001 mm</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/calculator/">Calculator</a> <a href="/calculators/">Formula calculators</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Read and checked in this page with <a href="/lib/stl-check.js">lib/stl-check.js</a>; nothing is sent anywhere or stored. STL has no units: sizes are read as millimetres. Made something with the forge? Say "make me a vase" on <a href="/">Verse</a>, then check it here.</footer>
+</main>
+<script type="module">import '/stl/app.js';</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

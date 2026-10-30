@@ -1,0 +1,26 @@
+{
+  "slug": "local-question-not-hit",
+  "run": 129,
+  "family": "weak-signal hypothesis ledger",
+  "status": "candidate-draft",
+  "default": "unattested",
+  "emit": false,
+  "hash_excludes": ["hit_sentence", "post_text", "source_url", "engagement"],
+  "questions": [
+    {
+      "id": "q-ordinary-account-missing",
+      "class": "ordinary-account-missing",
+      "label": "An ordinary instrument or aircraft account is still missing."
+    },
+    {
+      "id": "q-repeat-sensor-missing",
+      "class": "repeat-under-other-sensor-missing",
+      "label": "A repeat under a different sensor is still missing."
+    },
+    {
+      "id": "q-public-record-missing",
+      "class": "public-record-of-recovery-missing",
+      "label": "A public instrument record of the claimed recovery is still missing."
+    }
+  ]
+}

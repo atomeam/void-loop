@@ -16,8 +16,9 @@ export function gearsOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   // discovery mode (frontier #19): the answer is hidden, the gears and their controls stay; Reveal brings it back
   if (/^(?:let\s+me\s+)?(?:find|figure\s+out|discover)\s+(?:the\s+)?(?:gear\s+)?(?:rule|ratio)(?:\s+(?:myself|for\s+the\s+gears|of\s+the\s+gears))?$|^(?:gears?|gear\s+pair)\s+(?:discovery|mystery)(?:\s+mode)?$|^(?:mystery|discovery)\s+gears?$/.test(t)) return { presentation: 'discovery' };
-  if (/^(?:(?:please|can you|could you)\s+)?(?:explain|show(?:\s+me)?|teach\s+me|let\s+me\s+(?:play\s+with|turn|see))\s+(?:how\s+)?(?:two\s+|a\s+pair\s+of\s+|some\s+)?gears?(?:\s+(?:work|i\s+can\s+turn|turning|meshing|that\s+mesh))?$|^how\s+do\s+gears\s+work$|^(?:a\s+)?gear\s+(?:pair|train|ratio|ratios)(?:\s+explainer)?$|^gears$/.test(t)) return {};
+  if (/^(?:(?:please|can you|could you)\s+)?(?:explain|show(?:\s+me)?|teach\s+me|let\s+me\s+(?:play\s+with|turn|see))\s+(?:how\s+)?(?:two\s+|a\s+pair\s+of\s+|some\s+)?gears?(?:\s+(?:work|i\s+can\s+turn|turning|meshing|that\s+mesh))?$|^how\s+do\s+gears\s+work$|^(?:a\s+)?gear\s+(?:pair|train|ratio|ratios)(?:\s+explainer)?$|^gears$|^steampunk\s+clockwork$|^clockwork$|^make\s+a\s+gear\s+assembly$/.test(t)) return {};
   if (/^make\s+(?:one|the\s+(?:second|driven|other))\s+gear\s+(?:turn|spin|go)\s+twice\s+as\s+fast$/.test(t)) return { driverTeeth: 32, drivenTeeth: 16 };
+  if (/^(?:spin|turn)\s+the\s+gears$/.test(t)) return {};
   if (/^make\s+(?:one|the\s+(?:second|driven|other))\s+gear\s+(?:turn|spin|go)\s+half\s+as\s+fast$/.test(t)) return { driverTeeth: 16, drivenTeeth: 32 };
   const m = /^(?:what\s+happens\s+(?:with|when)\s+|show\s+(?:me\s+)?)?(?:a\s+)?(\d{1,2})[- ]?(?:teeth|tooth)(?:\s+gear)?\s+(?:and|with|driving|turning|to|vs\.?)\s+(?:a\s+)?(\d{1,2})[- ]?(?:teeth|tooth)(?:\s+gears?)?$/.exec(t);
   if (m) return { driverTeeth: clampTeeth(+m[1]), drivenTeeth: clampTeeth(+m[2]) };
@@ -172,7 +173,7 @@ async function run(text, api) {
 export default {
   name: 'gears',
   gearsOf,
-  examples: ['find the rule', 'mystery gears', 'explain gears', 'show me two gears i can turn', 'how do gears work', 'gear ratio', 'make one gear turn twice as fast', 'what happens with 12 teeth and 24 teeth', 'gears'],
+  examples: ['find the rule', 'mystery gears', 'explain gears', 'show me two gears i can turn', 'how do gears work', 'gear ratio', 'make one gear turn twice as fast', 'what happens with 12 teeth and 24 teeth', 'gears', 'steampunk clockwork', 'make a gear assembly', 'spin the gears'],
   nearMisses: ['gears of war', 'bike gears', 'shift gears', 'gear up', 'what is a gear', 'buy gear'],
   match(lower, text) { return !!gearsOf(text); },
   run,

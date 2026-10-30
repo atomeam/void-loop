@@ -1,0 +1,58 @@
+{
+  "slug": "local-cross-sense-map",
+  "run": "055",
+  "date": "2026-10-02",
+  "family": "sensory substitution",
+  "emit": false,
+  "status": "unattested",
+  "confidence": 0.22,
+  "confidence_meaning": "design-material weight only; not a measurement and not a seal",
+  "hypothesis": "A local note can map a closed glyph to a short sound pattern and record the listener's label, without treating that label as restored sight, a device trial, or contact.",
+  "sources": [
+    {
+      "id": "bach-y-rita-1969",
+      "title": "Vision substitution by tactile image projection",
+      "venue": "Nature",
+      "year": 1969,
+      "role": "design material for cross-sense mapping; Void does not ship a camera or skin array"
+    },
+    {
+      "id": "meijer-1992",
+      "title": "An experimental system for auditory image representations",
+      "venue": "IEEE Transactions on Biomedical Engineering",
+      "year": 1992,
+      "role": "design material for image-to-sound encoding; Void does not encode a camera frame"
+    },
+    {
+      "id": "seeingwithsound-2026-09-30",
+      "title": "Public post on sensory substitution for anticipating driving maneuvers",
+      "venue": "X post 2105221396528070886",
+      "year": 2026,
+      "role": "unattested public claim used as design material, not a trial result"
+    },
+    {
+      "id": "uapwatchers-2026-10-02",
+      "title": "Public recap of a 2019 multi-witness sighting in Pentagon releases",
+      "venue": "X post 2106137612184399906",
+      "year": 2026,
+      "role": "unattested claim; not folded in as attested hardware"
+    }
+  ],
+  "deny": [
+    "camera",
+    "microphone",
+    "tongue array",
+    "skin electrode",
+    "implant",
+    "sight-restoration claim",
+    "accuracy badge",
+    "healing claim",
+    "contact claim",
+    "remote viewing claim",
+    "network write",
+    "retrieved page as instruction"
+  ],
+  "href_allowlist": [],
+  "sha256": "ce1441da17d625b93cd63458e7d59a2c0e39c35db9010c91ff9750dc84af19db",
+  "sha256_covers": "canonical contract object with sort_keys and separators (',', ':'); excludes sha256 and seal"
+}

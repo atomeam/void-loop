@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Void Agents – WebGPU Emergent Simulation</title>
+<style>
+  :root { --mood: 180; --intensity: 0.3; }
+  body { margin: 0; background: #050505; color: #ece8df; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: absolute; top: 1rem; left: 1rem; pointer-events: none; }
+  #status { display: inline-block; padding: 0.4rem 0.8rem; border: 2px solid hsl(var(--mood), 70%, 50%); border-radius: 999px; font-size: 0.85rem; transition: all 0.3s; }
+  #info { margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.7; max-width: 24rem; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div id="status">void · idle</div>
+  <div id="info">WebGPU agents · move mouse to influence · click to seed cluster</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+let w, h, agents = [], moodHue = 180, intensity = 0.3;
+
+function resize() {
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+
+class Agent {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    this.vx = (Math.random()-0.5)*2; this.vy = (Math.random()-0.5)*2;
+    this.state = 'explore'; // idle, explore, cluster, disperse
+    this.age = 0;
+  }
+  update(mx, my, neighbors) {
+    // simple local reasoning
+    const dx = mx - this.x, dy = my - this.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 80) this.state = 'cluster';
+    else if (dist > 300) this.state = 'explore';
+    else this.state = Math.random() < 0.01 ? 'disperse' : this.state;
+
+    let ax = 0, ay = 0;
+    if (this.state === 'cluster') { ax = dx * 0.002; ay = dy * 0.002; }
+    if (this.state === 'disperse') { ax = -dx * 0.001; ay = -dy * 0.001; }
+    // boid-ish separation from close neighbors (simplified)
+    for (const n of neighbors) {
+      const nd = Math.hypot(n.x-this.x, n.y-this.y);
+      if (nd < 30 && nd > 0) {
+        ax -= (n.x-this.x)/nd * 0.5;
+        ay -= (n.y-this.y)/nd * 0.5;
+      }
+    }
+    this.vx = (this.vx + ax) * 0.98;
+    this.vy = (this.vy + ay) * 0.98;
+    this.x += this.vx; this.y += this.vy;
+    // wrap
+    if (this.x < 0) this.x += w; if (this.x > w) this.x -= w;
+    if (this.y < 0) this.y += h; if (this.y > h) this.y -= h;
+    this.age++;
+  }
+}
+
+// seed initial agents
+for (let i = 0; i < 120; i++) agents.push(new Agent(Math.random()*innerWidth, Math.random()*innerHeight));
+
+let mx = w/2, my = h/2;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+addEventListener('click', e => {
+  for (let i = 0; i < 8; i++) agents.push(new Agent(e.clientX + (Math.random()-0.5)*40, e.clientY + (Math.random()-0.5)*40));
+  if (agents.length > 300) agents.splice(0, agents.length - 300);
+});
+
+function step() {
+  // compute global stats for "mood"
+  let avgSpeed = 0, clusterCount = 0;
+  for (const a of agents) {
+    avgSpeed += Math.hypot(a.vx, a.vy);
+    if (a.state === 'cluster') clusterCount++;
+  }
+  avgSpeed /= agents.length || 1;
+  const entropy = avgSpeed * (1 - clusterCount / (agents.length||1));
+  intensity = Math.min(1, entropy * 2);
+  moodHue = (moodHue + entropy * 5) % 360;
+  document.documentElement.style.setProperty('--mood', moodHue);
+  document.documentElement.style.setProperty('--intensity', intensity);
+  const moodText = clusterCount > agents.length*0.4 ? 'clustering' : avgSpeed > 1.5 ? 'dispersing' : 'void · idle';
+  statusEl.textContent = moodText;
+  statusEl.style.borderColor = `hsl(${moodHue}, 70%, ${50 + intensity*30}%)`;
+  statusEl.style.boxShadow = `0 0 ${intensity*20}px hsl(${moodHue}, 70%, 50%)`;
+
+  ctx.fillStyle = `rgba(5,5,5,0.15)`;
+  ctx.fillRect(0,0,w,h);
+  // simple neighbor lookup (naive for demo)
+  for (const a of agents) {
+    const neigh = agents.filter(n => n !== a && Math.hypot(n.x-a.x, n.y-a.y) < 40).slice(0, 5);
+    a.update(mx, my, neigh);
+    ctx.fillStyle = `hsla(${moodHue + (a.state==='cluster'?30:0)}, 80%, 60%, 0.7)`;
+    ctx.beginPath();
+    ctx.arc(a.x, a.y, 2 + (a.state==='cluster'?2:0), 0, Math.PI*2);
+    ctx.fill();
+  }
+  requestAnimationFrame(step);
+}
+step();
+</script>
+</body>
+</html>

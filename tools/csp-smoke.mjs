@@ -13,13 +13,15 @@ export function headerFor(file = path.join(root, '_headers')) {
   for (const l of lines) { if (/^\S/.test(l)) inAll = l.trim() === '/*'; else if (inAll && l.includes(':')) { const i = l.indexOf(':'); out[l.slice(0, i).trim()] = l.slice(i + 1).trim(); } }
   return out;
 }
-/** the headers a path gets: every block whose path is the path itself or a matching splat; a CSP from several blocks is sent twice (both enforced, as Cloudflare does) */
+/** the headers a path gets: every block whose path is the path itself or a matching splat; a CSP from several blocks is sent twice (both enforced, as Cloudflare does),
+ *  and a `! Name` line in a later block drops the Name an earlier block set (Cloudflare's detach), so that block's own value is the only one sent */
 export function headersFor(urlPath, file = path.join(root, '_headers')) {
   const out = {}; let on = false;
   for (const l of fs.readFileSync(file, 'utf8').split('\n')) {
     if (/^\s*#/.test(l) || !l.trim()) continue;
     if (/^\S/.test(l)) { const p = l.trim(); on = p === urlPath || (p.endsWith('*') && urlPath.startsWith(p.slice(0, -1))); continue; }
     if (!on) continue;
+    const d = l.match(/^\s*!\s*(\S+)\s*$/); if (d) { delete out[d[1]]; continue; }
     const i = l.indexOf(':'), k = l.slice(0, i).trim(), v = l.slice(i + 1).trim();
     out[k] = out[k] ? [].concat(out[k], v) : v;
   }

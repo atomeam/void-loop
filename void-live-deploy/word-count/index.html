@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Word counter: words, characters and sentences as you type · Verse</title>
+<meta name="description" content="Type or paste text and see words, characters (with and without spaces), sentences, paragraphs, reading and speaking time, reading level and keyword density change as you type. Kept on this device, works offline, no ads, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Word counter · Verse">
+<meta property="og:description" content="Words, characters, sentences, paragraphs, reading time and keyword density, live as you type. Kept on this device; works offline.">
+<meta property="og:url" content="https://a-to-mind.com/word-count/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/word-count/ (the tower's wordcounter.net floor): one file and one small module, no third party */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 10px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 16px 0 6px; }
+  .big { text-align: center; font-size: clamp(30px, 8vw, 46px); font-weight: 700; margin: 4px 0 8px; font-variant-numeric: tabular-nums; }
+  textarea { box-sizing: border-box; width: 100%; min-height: 240px; font: 16px/1.6 system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; resize: vertical; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 10px 0; padding: 0; list-style: none; }
+  .stats li { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .stats b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .stats span { color: var(--soft); font-size: 13px; }
+  ol.kw { margin: 0; padding-left: 22px; } ol.kw li { font-variant-numeric: tabular-nums; }
+  .note { font-size: 13px; color: var(--soft); }
+  h3 { font-size: 13px; font-weight: 600; color: var(--soft); margin: 4px 0; }
+  .kws { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 4px 16px; }
+  input[type=number], select { font: inherit; font-size: 15px; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 6px 8px; min-height: 40px; box-sizing: border-box; }
+  #goal { width: 7em; } progress { width: 120px; height: 12px; accent-color: var(--accent); } .reached { color: var(--accent); font-weight: 600; }
+  .fits { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2px 16px; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .fits .over { color: var(--bad); } details { margin: 12px 0; } summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--soft); min-height: 28px; }
+  #vlist { padding-left: 22px; font-size: 14px; } #vlist li { margin: 4px 0; } #vlist button { min-height: 32px; padding: 3px 12px; margin-left: 6px; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/word-count/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Word counter","url":"https://a-to-mind.com/word-count/","description":"Words, characters with and without spaces, sentences, paragraphs, pages, reading and speaking time and repeated phrases as you type, with a word goal, read aloud, earlier versions kept on your device and the limits your text fits. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"word counter, character counter, count words online, sentence counter, reading time calculator, speaking time calculator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Word counter","item":"https://a-to-mind.com/word-count/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/wordcount.js">
+<link rel="modulepreload" href="/skills/util.js">
+<link rel="modulepreload" href="/lib/colour.js">
+<link rel="modulepreload" href="/lib/card-mini.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Word counter</h1>
+  <div class="big" id="big" aria-live="polite">0 words · 0 characters</div>
+  <label for="text" class="note">Type or paste your text; everything below counts as you type.</label>
+  <textarea id="text" spellcheck="true" placeholder="Start typing, or paste a document here"></textarea>
+  <div class="row">
+    <button type="button" id="upper">UPPERCASE</button><button type="button" id="lower">lowercase</button><button type="button" id="title">Title Case</button>
+    <button type="button" id="copy">Copy text</button><button type="button" id="link">Copy link</button><button type="button" id="clear">Clear</button>
+  </div>
+  <div class="row" id="goalrow"><label for="goal">Goal</label><input type="number" id="goal" min="0" max="1000000" placeholder="e.g. 500" inputmode="numeric">
+    <select id="goalunit" aria-label="Goal counts"><option value="words">words</option><option value="characters">characters</option></select>
+    <progress id="goalbar" max="1" value="0" aria-label="Progress to the goal"></progress><span class="note" id="goalnote">Set a goal to see how far you are.</span></div>
+  <div class="row"><button type="button" id="speak">Read aloud</button><button type="button" id="hush" disabled>Stop</button>
+    <label for="rate" class="note">Speed</label><select id="rate"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+    <span class="note" id="speaknote">Reads the selected words, or all of it, in this browser's voice.</span></div>
+  <h2>Details</h2>
+  <ul class="stats" id="stats"><li><b>0</b><span>Words</span></li><li><b>0</b><span>Characters</span></li><li><b>0</b><span>Characters without spaces</span></li><li><b>0</b><span>Sentences</span></li><li><b>0</b><span>Paragraphs</span></li><li><b>0 sec</b><span>Reading time</span></li><li><b>0 sec</b><span>Speaking time</span></li><li><b>n/a</b><span>Reading level</span></li><li><b>0</b><span>Pages (single-spaced)</span></li><li><b>0</b><span>Pages (double-spaced)</span></li></ul>
+  <details id="settings"><summary>Settings</summary><div class="row">
+    <label for="rwpm">Reading speed</label><input type="number" id="rwpm" min="50" max="1500" value="238" style="width:5em"><span class="note">words a minute</span>
+    <label for="swpm">Speaking speed</label><input type="number" id="swpm" min="50" max="400" value="183" style="width:5em"><span class="note">words a minute</span>
+    <label for="fsize">Text size</label><select id="fsize"><option value="14">Small</option><option value="16" selected>Normal</option><option value="19">Large</option><option value="22">Larger</option></select></div></details>
+  <h2>Keyword density</h2>
+  <div class="kws"><div><h3>Words</h3><ol class="kw" id="kw"><li>Start typing to see the words you use most</li></ol></div><div><h3>Two-word phrases</h3><ol class="kw" id="kw2"><li>None repeated yet</li></ol></div><div><h3>Three-word phrases</h3><ol class="kw" id="kw3"><li>None repeated yet</li></ol></div></div>
+  <h2>Fits in</h2>
+  <ul class="fits" id="fits"></ul>
+  <details id="versions"><summary id="vsum">Earlier versions</summary><p class="note">A version is kept on this device each minute you write (and before a big change), the last 30. <button type="button" id="keepnow">Keep this version now</button></p><ol id="vlist"></ol></details>
+  <p class="note" id="saved"></p>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/fanfic/">Fan fiction</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Counted on this device as you type: your text is saved in this browser only (auto-save) and never sent anywhere, and the page works offline after one visit. A sentence ends at . ! or ?, but not after Mr., Dr., e.g. or U.S., and never inside a number like 3.5. Reading time at 238 words a minute, speaking time at 183; reading level is the Flesch-Kincaid grade. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { count, duration, phrases, goal, pages, LIMITS, keepVersion, cardAsk } from '/lib/wordcount.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.wordcount.v1', box = $('text');
+  const q = new URLSearchParams(location.search);
+  let saved = ''; try { saved = localStorage.getItem(KEY) || ''; } catch (_) {}
+  box.value = q.has('t') ? q.get('t') : saved;
+  const n = (x) => x.toLocaleString('en');
+  const item = (v, label) => { const li = document.createElement('li'), b = document.createElement('b'), s = document.createElement('span'); b.textContent = v; s.textContent = label; li.append(b, s); return li; };
+  let timer = 0;
+  // settings, the goal and the earlier versions are kept on this device; a goal can come in the link (?goal=500 or ?goal=2000c)
+  const SET = KEY + '.settings', VER = KEY + '.versions';
+  let opt = { rwpm: 238, swpm: 183, fsize: 16, goal: 0, unit: 'words' }; try { opt = { ...opt, ...JSON.parse(localStorage.getItem(SET) || '{}') }; } catch (_) {}
+  const gq = /^(\d{1,7})(c|chars?|characters?)?$/i.exec(q.get('goal') || ''); if (gq) { opt.goal = +gq[1]; opt.unit = gq[2] ? 'characters' : 'words'; }
+  let versions = []; try { versions = JSON.parse(localStorage.getItem(VER) || '[]').filter((v) => v && typeof v.text === 'string').slice(0, 30); } catch (_) {}
+  const keepOpt = () => { try { localStorage.setItem(SET, JSON.stringify(opt)); } catch (_) {} };
+  $('goal').value = opt.goal || ''; $('goalunit').value = opt.unit; $('rwpm').value = opt.rwpm; $('swpm').value = opt.swpm; $('fsize').value = String(opt.fsize); box.style.fontSize = opt.fsize + 'px';
+  for (const id of ['goal', 'goalunit', 'rwpm', 'swpm', 'fsize']) $(id).addEventListener('input', () => { opt = { ...opt, goal: Math.max(0, +$('goal').value || 0), unit: $('goalunit').value, rwpm: Math.min(1500, Math.max(50, +$('rwpm').value || 238)), swpm: Math.min(400, Math.max(50, +$('swpm').value || 183)), fsize: +$('fsize').value || 16 }; box.style.fontSize = opt.fsize + 'px'; keepOpt(); draw(); });
+  const when = (t) => new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  function drawVersions() {
+    $('vsum').textContent = 'Earlier versions (' + versions.length + ')';
+    $('vlist').replaceChildren(...versions.map((v) => { const li = document.createElement('li'), b = document.createElement('button'), words = count(v.text).words;
+      li.textContent = when(v.at) + ' · ' + n(words) + (words === 1 ? ' word' : ' words') + ' · “' + v.text.trim().slice(0, 40).replace(/\s+/g, ' ') + (v.text.trim().length > 40 ? '…”' : '”');
+      b.type = 'button'; b.textContent = 'Restore'; b.setAttribute('aria-label', 'Restore the version from ' + when(v.at)); b.addEventListener('click', () => { keep(true); set(v.text); }); li.append(b); return li; }));
+  }
+  function keep(force) { const next = keepVersion(versions, box.value, Date.now(), { force }); if (next !== versions) { versions = next; try { localStorage.setItem(VER, JSON.stringify(versions)); } catch (_) {} drawVersions(); } }
+  $('keepnow').addEventListener('click', () => keep(true));
+  function draw() {
+    const c0 = count(box.value), c = { ...c0, readSec: (c0.words / opt.rwpm) * 60, speakSec: (c0.words / opt.swpm) * 60 }, pg = pages(c.words);
+    $('big').textContent = n(c.words) + (c.words === 1 ? ' word' : ' words') + ' · ' + n(c.characters) + (c.characters === 1 ? ' character' : ' characters');
+    $('stats').replaceChildren(item(n(c.words), 'Words'), item(n(c.characters), 'Characters'), item(n(c.noSpaces), 'Characters without spaces'), item(n(c.sentences), 'Sentences'),
+      item(n(c.paragraphs), 'Paragraphs'), item(duration(c.readSec), 'Reading time'), item(duration(c.speakSec), 'Speaking time'), item(c.grade === null ? 'n/a' : 'grade ' + Math.max(0, c.grade), 'Reading level'), item(String(pg.single), 'Pages (single-spaced)'), item(String(pg.double), 'Pages (double-spaced)'));
+    const list = (id, rows, empty) => $(id).replaceChildren(...(rows.length ? rows.map((k) => Object.assign(document.createElement('li'), { textContent: (k.word || k.phrase) + ' · ' + k.count + ' (' + (k.share * 100).toFixed(1) + '%)' })) : [Object.assign(document.createElement('li'), { textContent: empty })]));
+    list('kw2', phrases(box.value, 2), 'None repeated yet'); list('kw3', phrases(box.value, 3), 'None repeated yet');
+    $('fits').replaceChildren(...LIMITS.map(([name, cap]) => { const li = document.createElement('li'), left = cap - c.characters; li.className = left < 0 ? 'over' : ''; li.textContent = (left < 0 ? '✗ ' : '✓ ') + name + ': ' + (left < 0 ? n(-left) + ' over' : n(left) + ' left') + ' of ' + n(cap); return li; }));
+    if (opt.goal) { const g = goal(c, opt.goal, opt.unit); $('goalbar').value = g.share; $('goalnote').textContent = g.reached ? 'Goal reached: ' + n(g.done) + ' of ' + n(g.of) + ' ' + opt.unit + '.' : n(g.done) + ' of ' + n(g.of) + ' ' + opt.unit + ' · ' + n(g.left) + ' to go (' + Math.floor(g.share * 100) + '%)'; $('goalnote').className = g.reached ? 'note reached' : 'note'; }
+    else { $('goalbar').value = 0; $('goalnote').textContent = 'Set a goal to see how far you are.'; $('goalnote').className = 'note'; }
+    $('kw').replaceChildren(...(c.keywords.length ? c.keywords.map((k) => { const li = document.createElement('li'); li.textContent = k.word + ' · ' + k.count + ' (' + (k.share * 100).toFixed(1) + '%)'; return li; }) : [Object.assign(document.createElement('li'), { textContent: 'Start typing to see the words you use most' })]));
+    clearTimeout(timer); timer = setTimeout(() => { keep(false); try { localStorage.setItem(KEY, box.value); $('saved').textContent = box.value ? 'Saved on this device (auto-save).' : ''; } catch (_) { $('saved').textContent = 'This browser will not keep the text; copy it before you leave.'; } }, 400);
+  }
+  box.addEventListener('input', draw);
+  const set = (v) => { box.value = v; draw(); box.focus(); };
+  $('upper').addEventListener('click', () => set(box.value.toUpperCase()));
+  $('lower').addEventListener('click', () => set(box.value.toLowerCase()));
+  $('title').addEventListener('click', () => set(box.value.toLowerCase().replace(/(^|[\s"(\[\-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())));
+  $('clear').addEventListener('click', () => { keep(true); set(''); });
+  // read aloud: the browser's own voice (speechSynthesis), the selection if there is one, else everything
+  const synth = window.speechSynthesis;
+  if (!synth) { $('speak').disabled = true; $('speaknote').textContent = 'This browser has no voice to read with.'; }
+  $('speak').addEventListener('click', () => { if (!synth) return; const sel = box.value.slice(box.selectionStart, box.selectionEnd).trim(), text = sel || box.value.trim(); if (!text) { $('speaknote').textContent = 'Type something to read first.'; return; }
+    synth.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = +$('rate').value || 1; u.lang = document.documentElement.lang || 'en';
+    u.onend = u.onerror = () => { $('hush').disabled = true; $('speak').textContent = 'Read aloud'; $('speaknote').textContent = 'Reads the selected words, or all of it, in this browser\'s voice.'; };
+    $('hush').disabled = false; $('speak').textContent = 'Reading…'; $('speaknote').textContent = 'Reading ' + (sel ? 'the selection' : 'all of it') + ' aloud.'; synth.speak(u); });
+  $('hush').addEventListener('click', () => { if (synth) synth.cancel(); });
+  const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+  $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(box.value); toast($('copy'), 'Copied'); } catch (_) {} });
+  $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + (box.value && box.value.length <= 4000 ? '?t=' + encodeURIComponent(box.value) : ''); try { await navigator.clipboard.writeText(u); toast($('link'), box.value.length > 4000 ? 'Link copied (text too long to carry)' : 'Copied'); } catch (_) {} });
+  draw(); drawVersions();
+  mountRelated($('related'), '/word-count/', [{ label: 'Rehearse it: a countdown of its speaking time', href: () => { const c = count(box.value); return c.words ? '/stopwatch/?t=' + Math.max(1, Math.round(c.speakSec)) + 's' : null; } }], { card: () => cardAsk(box.value) });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

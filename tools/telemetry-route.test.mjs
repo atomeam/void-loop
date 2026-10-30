@@ -78,25 +78,6 @@ test('a builder\'s report that quotes a timeout is a report, not a broken automa
   assert.equal(isBuildersReport(zap), false); assert.equal(isFixAsk(zap), true);
 });
 
-test('a close-out gate status update is read as a report, not answered as a broken automation (2026-10-21)', async () => {
-  const { intentOf, isFixAsk } = await import('../void-live-deploy/lib/automation-fix.js');
-  const { isBuildersReport } = await import('../void-live-deploy/lib/telemetry.js');
-  const status = [
-    'Gate is sealed and the gate/workflow tests pass 8/8. It now reads grow-self.state.json first and fails closed, blocks on an open `made by Verse`/`verse hardens` PR, verifies the last preview\'s `try` live before probing, closes it only when it answers, and persists a close-only record. The PR job also creates the labels the gate reads.',
-    '',
-    'Changed but **uncommitted**: `.github/workflows/grow-self.yml`, `tools/grow-gate.mjs`, the two gate tests, and `docs/MAP.md`. `lacks.test.mjs` fails only locally because it passes a `/C:/...` path to Node on Windows; CI\'s Linux run is unaffected.',
-    '',
-    'The first run will verify `something unkeepable` live. I did not commit because the tree is shared and the closeout-gate lane is actively committing. Commit/push these five files, or leave them for that lane?',
-  ].join('\n');
-  const t = telemetryOf(status);
-  assert.ok(t, 'it is a developer report'); assert.deepEqual(t.passed, { ok: 8, of: 8 });
-  assert.equal(isBuildersReport(status), true, 'a pass count plus uncommitted/commit is the builder reporting');
-  assert.equal(intentOf(status).intent, 'report');
-  assert.equal(isFixAsk(status), false, 'it must not open the automation fixer');
-  for (const ask of ['my workflow tests pass 8/8 but the deploy is blocked, can you fix it?', 'why do my tests pass locally but the workflow fails on main?'])
-    assert.equal(isFixAsk(ask), true, 'a real ask for a fix is still one: ' + ask);
-});
-
 test('a failure caused on purpose to prove a check bites is not still failing (2026-10-18 card: a gap 2 report)', () => {
   assert.deepEqual(failuresOf('The check bites: with the mutation it fails, and the zip check also fails, as expected. page.js is restored.'), []);
   assert.deepEqual(failuresOf('- Found: Without the refusal, the gap 2 check fails.'), []);
@@ -132,4 +113,36 @@ test('a short builder status update that links this repo\'s own pull request ope
     "Nothing to act on in those PR notices: two are paid review bots out of credits, two are subscription confirmations. [atomeam/void-loop#1176](https://github.com/atomeam/void-loop/pull/1176) is waiting on Verse's own review, and I'll act on whatever that review finds.",
   ]) { const r = telemetryOf(t); assert.ok(r, t.slice(0, 40)); assert.deepEqual(r.prs, ['1176']); assert.deepEqual(r.failures, []); }
   for (const t of ['review this PR https://github.com/atomeam/void-loop/pull/1176 and tell me what is wrong with it', 'what does https://github.com/atomeam/void-loop/pull/1176 change in the self card?', 'see https://github.com/someone/else/pull/12 for the details of that change, thanks']) assert.equal(telemetryOf(t), null, t);
+});
+
+// The exact report the owner pasted on 2026-10-29 (9 lines, 724 characters). Verse answered it with the broken-automation fix card.
+export const PASTED_STATUS = "Putting a thread on Verse's own asks: promote the 60 checked and tested skills, start with Words and the world, then edge caching for answers and the STL checker\n\nThat thread didn't start. A safety check blocked it because it would merge and deploy to the live site, and your message was only the screenshot.\n\nIf you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.\n\nVerse's own job loop merged #1470 by itself. It adds a /prizes/ row for crypto rewards and gambling, marked core. Nobody chose that, so it's worth a look.\n\nAlso, the sprite sheet cleaner is live, and the fix for the will's coder is set to ship after the 8 PM run limit resets.";
+
+test('a pasted status report is read back as what changed, what waits and the next step (owner, 2026-10-29)', async () => {
+  const { statusReadOf, isStatusReport } = await import('../void-live-deploy/lib/telemetry.js');
+  assert.equal(PASTED_STATUS.length, 724); assert.equal(PASTED_STATUS.split('\n').length, 9);
+  assert.equal(isStatusReport(PASTED_STATUS), true);
+  assert.deepEqual(statusReadOf(PASTED_STATUS), {
+    changed: ["Verse's own job loop merged #1470 by itself.", 'It adds a /prizes/ row for crypto rewards and gambling, marked core.', 'The sprite sheet cleaner is live.'],
+    waits: ["That thread didn't start.", 'A safety check blocked it because it would merge and deploy to the live site, and your message was only the screenshot.', "Nobody chose that, so it's worth a look.", "The fix for the will's coder is set to ship after the 8 PM run limit resets."],
+    next: 'If you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.',
+  });
+  const t = telemetryOf(PASTED_STATUS);
+  assert.ok(t); assert.equal(t.kind, 'status'); assert.deepEqual(t.prs, ['1470']); assert.deepEqual(t.failures, []);
+  assert.equal(skill.match(PASTED_STATUS.toLowerCase(), PASTED_STATUS), true);
+  const lines = summaryOf(t);
+  assert.ok(lines.includes("Changed: Verse's own job loop merged #1470 by itself."));
+  assert.ok(lines.includes("Waiting: That thread didn't start."));
+  assert.ok(lines.includes('Next step: If you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.'));
+  assert.ok(!lines.some((l) => /broken|automation|troubleshoot/i.test(l)));
+});
+
+test('a status read needs both a change and a wait, and never takes a complaint that something is broken', async () => {
+  const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');
+  for (const t of [
+    'My zap stopped firing after the update went live. It is blocked on something and the webhook is pending. I added a filter yesterday and nothing works since then, so what do I change?',
+    'The new header is live. The footer is live too. The about page shipped this morning and the menu was fixed. Everything from the list is done now and merged into main.',
+    'why did the deploy not start? It was merged an hour ago and it is still pending on the queue with nothing in the log at all, which is odd for this repo.',
+    "That thread didn't start.",
+  ]) assert.equal(statusReadOf(t), null, t.slice(0, 50));
 });

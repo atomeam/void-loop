@@ -14,7 +14,7 @@ test('mcp: initialize names Verse and its tools capability; tools/list gives its
   const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: PROTOCOL, capabilities: {}, clientInfo: { name: 't', version: '1' } } });
   assert.equal(init.id, 1); assert.equal(init.result.serverInfo.name, 'void'); assert.ok(init.result.capabilities.tools); assert.equal(init.result.protocolVersion, PROTOCOL);
   const list = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers', 'drive_time', ...SKILL_TOOLS.map((s) => s.tool), 'skill_health', 'skill_discovery']);
+  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers', 'drive_time', ...SKILL_TOOLS.map((s) => s.tool), 'seo_audit', 'readability', 'colour_contrast', 'skill_health', 'skill_discovery']);
   for (const t of list.result.tools) { assert.equal(t.inputSchema.type, 'object'); assert.ok(t.description.length > 20); assert.equal(t.annotations.readOnlyHint, true); }
   assert.equal(await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' }), null, 'a notification gets no reply');
   assert.deepEqual((await rpc({ jsonrpc: '2.0', id: 3, method: 'ping' })).result, {});
@@ -272,4 +272,20 @@ test('mcp skill_discovery (asked by Verse): the families as a distribution with 
   const top = (await call({ tier: 'proven' })).result.structuredContent; assert.ok(top.families.every((f) => f.members.every((m) => m.tier === 'proven')));
   assert.equal((await call({ tier: 'shiny' })).result.isError, true); assert.match((await call({ family: 'nope' })).result.content[0].text, /No family "nope"/);
   assert.equal((await call({}, null)).result.isError, true); assert.equal((await call({}, { families: async () => null })).result.isError, true);
+});
+
+// Verse's own tools over MCP (owner, 2026-10-26: "Verse uses its own tools"): the SEO audit, readability and contrast it runs on its own pages
+test('mcp: seo_audit, readability and colour_contrast answer from the libraries Verse runs on itself', async () => {
+  const call = async (name, args) => (await rpc({ jsonrpc: '2.0', id: 7, method: 'tools/call', params: { name, arguments: args } })).result;
+  const page = '<html lang="en"><head><title>Pricing for small teams · Example</title><meta name="description" content="What it costs, what you get and how to cancel, in plain words for small teams."><link rel="canonical" href="https://a-to-mind.com/x/"></head><body><h1>A</h1><h1>B</h1><a href="/y/">y</a></body></html>';
+  const a = await call('seo_audit', { html: page, path: '/pricing/' });
+  assert.ok(!a.isError); const kinds = a.structuredContent.defects.map((d) => d.kind);
+  assert.ok(kinds.includes('canonical') && kinds.includes('h1') && kinds.includes('share'), kinds.join());
+  assert.deepEqual(a.structuredContent.internal_links, ['/y/']);
+  assert.ok((await call('seo_audit', {})).isError);
+  const r = await call('readability', { text: 'The cat sat on the the mat. it was warm.' });
+  assert.ok(r.structuredContent.grade < 5 && r.structuredContent.proofread.includes('doubled word'), r.content[0].text);
+  const c = await call('colour_contrast', { text: 'black', background: '#ffffff' });
+  assert.equal(c.structuredContent.ratio, 21); assert.equal(c.structuredContent.aaa, true);
+  assert.ok((await call('colour_contrast', { text: 'nope', background: 'white' })).isError);
 });

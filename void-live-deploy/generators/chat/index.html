@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Character chat: talk to a made-up character · Verse</title>
+<meta name="description" content="Pick a character or write your own (a name, who they are, the scene, how they say hello), then chat. The chat and what they remember stay on your device; share a character as a link. Free, no sign-up, safe for work.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Character chat · Verse">
+<meta property="og:description" content="Write a character, chat with them, share them as a link. The chat stays on your device.">
+<meta property="og:url" content="https://a-to-mind.com/generators/chat/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/generators/chat/">
+<style>
+  /* a-to-mind.com/generators/chat/ (the random generators floor's character chat): rules in lib/character.js; replies from /api/answer mode 'character' */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #221c3a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
+  .sub { font-size: 14px; color: var(--soft); margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 14px 0 6px; }
+  input, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; width: 100%; }
+  textarea { resize: vertical; min-height: 64px; }
+  label.f { display: block; font-size: 14px; color: var(--soft); margin: 8px 0 4px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button[aria-pressed="true"] { background: var(--hi); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .55; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .chips { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 6px; padding-bottom: 6px; min-height: 46px; box-sizing: border-box; } .chips button { flex: none; white-space: nowrap; }
+  details { margin-top: 10px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--box); }
+  summary { cursor: pointer; font-weight: 600; min-height: 36px; display: flex; align-items: center; }
+  ol.log { list-style: none; margin: 12px 0 0; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--box); min-height: 240px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 88%; padding: 8px 12px; border-radius: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.user { align-self: flex-end; background: var(--hi); }
+  .msg.character { align-self: flex-start; border: 1px solid var(--line); }
+  .msg .who { display: block; font-size: 12px; color: var(--soft); font-weight: 600; }
+  .msg .acts { display: flex; gap: 6px; margin-top: 4px; } .msg .acts button { font-size: 12px; min-height: 32px; padding: 2px 10px; }
+  .typing { color: var(--soft); font-style: italic; }
+  .compose { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; align-items: end; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; overflow-wrap: anywhere; }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; }
+</style>
+<!-- the page's module and what it imports, by hand (sw.js keeps these for offline) -->
+<link rel="modulepreload" href="/generators/chat/app.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/character.js">
+<link rel="modulepreload" href="/lib/art-rules.js">
+<link rel="modulepreload" href="/lib/merge-rules.js">
+<link rel="modulepreload" href="/lib/keeper.js">
+</head>
+<body>
+<main>
+  <h1 id="h" style="min-height:1.5em">Character chat</h1>
+  <p class="sub" id="sub">Pick a character or write your own, then talk. The chat and what they remember stay on this device. <a href="/generators/">All generators</a></p>
+  <h2 id="charsH">Characters</h2>
+  <div class="chips" id="chars" role="group" aria-labelledby="charsH"></div>
+  <div class="row"><button type="button" id="newChar">New character</button><button type="button" id="share">Share this character</button><button type="button" id="keepShared" hidden>Keep this character</button></div>
+  <details id="sheet">
+    <summary id="sheetH">Character sheet</summary>
+    <label class="f" for="cName">Name</label><input id="cName" maxlength="40">
+    <label class="f" for="cPersona">Who they are (personality, way of talking)</label><textarea id="cPersona" maxlength="1200" rows="3"></textarea>
+    <label class="f" for="cScenario">The scene</label><textarea id="cScenario" maxlength="600" rows="2"></textarea>
+    <label class="f" for="cGreeting">How they say hello</label><input id="cGreeting" maxlength="300">
+    <label class="f" for="cMemory">What they remember about you (kept on this device; edit it any time)</label><textarea id="cMemory" maxlength="600" rows="2"></textarea>
+    <div class="row"><button type="button" class="go" id="saveChar">Save</button><button type="button" id="clearChat">Clear the chat</button><button type="button" id="delChar">Delete character</button></div>
+  </details>
+  <ol class="log" id="log" role="log" aria-live="polite" aria-label="Chat"></ol>
+  <div class="compose"><label class="f" for="say" style="position:absolute;left:-9999px">Your message</label><textarea id="say" rows="2" maxlength="600" placeholder="Say something…"></textarea><button type="button" class="go" id="send">Send</button></div>
+  <div class="note" id="note" role="status"></div>
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer id="foot">Replies come from Verse's own free language model, a few a minute. Characters are made up; real people are not played. The chat is kept only in this browser; a shared link carries the character, never the chat.</footer>
+</main>
+<script type="module" src="/generators/chat/app.js"></script>
+</body>
+</html>

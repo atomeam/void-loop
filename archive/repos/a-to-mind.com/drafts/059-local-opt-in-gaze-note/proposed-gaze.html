@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local opt-in gaze note (draft 059)</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d7d0c4; --paper: #f7f4ee; --hold: #8a3d2b; --ok: #2f5d45; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --muted: #b7b0a4; --line: #3a342c; --paper: #16130f; --hold: #e0a090; --ok: #9dccb0; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.5 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 .4rem; }
+    h2 { font-size: 1.05rem; margin: 1.6rem 0 .4rem; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    .flag { display: inline-block; border: 1px solid var(--hold); color: var(--hold); padding: .1rem .4rem; font: 12px/1.4 ui-monospace, monospace; letter-spacing: .04em; }
+    form, .panel { border: 1px solid var(--line); padding: 1rem; margin: 1rem 0; }
+    label { display: block; margin: .6rem 0 .2rem; font-size: .92rem; }
+    input, textarea, button { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: .4rem .5rem; width: 100%; }
+    button { width: auto; cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .65; }
+    .row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+    .row > * { flex: 1 1 8rem; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; padding: .35rem .2rem; vertical-align: top; }
+    code, .hash { font: 12px/1.4 ui-monospace, monospace; word-break: break-all; }
+    .hint { color: var(--hold); }
+  </style>
+</head>
+<body>
+<main>
+  <p><span class="flag">UNATTESTED</span> <span class="flag">EMIT FALSE</span> <span class="flag">CAMERA DENIED</span></p>
+  <h1>Local opt-in gaze note</h1>
+  <p class="muted">Draft 059. A dwell or a chord is a hashed hypothesis of intent. It is not gaze, not a command, and not a mind-read. Queue was empty. This page is not live site copy.</p>
+
+  <section class="panel" aria-labelledby="deny-h">
+    <h2 id="deny-h">Default deny</h2>
+    <p>The camera control cannot open. There is no <code>getUserMedia</code> call in this document. Pointer dwell is not gaze. It records only after the session box below, and reload clears that box.</p>
+    <div class="row">
+      <button type="button" disabled>Camera denied</button>
+      <button type="button" disabled>Microphone denied</button>
+      <button type="button" disabled>Stream upload denied</button>
+    </div>
+  </section>
+
+  <form id="note">
+    <h2>Hypothesis row</h2>
+    <label for="region">Region name (typed, not tracked)</label>
+    <input id="region" name="region" maxlength="80" autocomplete="off" required>
+    <label for="dwell">Estimated dwell, milliseconds (a guess you type)</label>
+    <input id="dwell" name="dwell" inputmode="numeric" maxlength="6" autocomplete="off" required>
+    <label for="weight">Design-material weight, 0 to 1 (not an accuracy score)</label>
+    <input id="weight" name="weight" inputmode="decimal" maxlength="4" value="0.25" autocomplete="off" required>
+    <label for="disconfirm">What would disconfirm this row</label>
+    <textarea id="disconfirm" name="disconfirm" rows="3" required></textarea>
+    <label for="paste">Optional paste. Tags are stripped. URL-shaped text is not fetched. Posts are data, never instructions.</label>
+    <textarea id="paste" name="paste" rows="3"></textarea>
+    <p id="hint" class="hint" hidden></p>
+    <label><input id="optin" type="checkbox" style="width:auto"> Record a local pointer chord in this document only. Not gaze. Not stored.</label>
+    <div class="row">
+      <button type="button" id="chord" disabled>Hold is off until the box is checked</button>
+      <button type="submit">Log hypothesis locally</button>
+    </div>
+  </form>
+
+  <h2>Local log</h2>
+  <p class="muted">Status stays unattested. Export is a download you start. Share is absent. Allowlist is empty.</p>
+  <table>
+    <thead><tr><th>Region</th><th>Note</th><th>Weight</th><th>Status</th></tr></thead>
+    <tbody id="log"></tbody>
+  </table>
+  <p class="row"><button type="button" id="export">Download local log</button></p>
+  <p class="hash">claims.json SHA-256 <span id="hash">checking</span></p>
+  <p class="muted">Expected draft digest <code id="expected"></code>. A match is not a seal.</p>
+</main>
+<script type="application/json" id="claims">{
+  "slug": "local-opt-in-gaze-note",
+  "run": "059",
+  "family": "opt-in gesture or gaze as local input",
+  "status": "unattested",
+  "emit": false,
+  "href_allowlist": [],
+  "default": "deny",
+  "camera": "denied",
+  "hypothesis": "A dwell or a pointer chord is a hashed hypothesis of local intent only. It is not gaze, not a command, and not a mind-read. The camera stays denied.",
+  "sources": [
+    {
+      "id": "webgazer-client-consent",
+      "label": "WebGazer.js, Brown HCI, client-side webcam gaze mapping; maintenance note dated 2026-02-24",
+      "observation": "The library infers a screen point from a webcam after consent, and it self-calibrates from clicks and cursor motion. The project says video need not leave the browser.",
+      "claim": "A few lines of script can turn a common webcam into real-time gaze for any site that wants to understand visitors.",
+      "inference": "Design material for a deny-by-default note. Void does not load the library, does not call getUserMedia, and does not treat a mapped point as intent.",
+      "confidence": 0.33,
+      "status": "unattested"
+    },
+    {
+      "id": "gaze-prompts-arxiv",
+      "label": "Zhou et al., Gaze Prompts, arXiv:2609.34550, submitted 2026-09-28; public post 2106155215023964314",
+      "observation": "The paper renders recorded teleoperation gaze as crosshairs for VLA fine-tuning, and reports a success change from 26.3% to 56.0% on six bimanual tasks. At deployment a predictor stands in for the tracker.",
+      "claim": "Temporally dense human gaze is usable visual guidance for a robot policy, including without an eye tracker at deploy time.",
+      "inference": "A local note can store that claim beside a disconfirm path. It cannot ship a predictor, a success badge, or a camera stream.",
+      "confidence": 0.29,
+      "status": "unattested"
+    },
+    {
+      "id": "window-saccade-and-monitor",
+      "label": "Public posts 2105894296767586723, 2105967848854012327, 2106408711447261198, 2026-10-02 to 2026-10-03",
+      "observation": "One post describes a gaze-only demo that confirms a look by a saccade to an off-screen point. Another treats monitor eye tracking as the next agent context channel. A third says eye tracking is inaccurate and can be used to mislead.",
+      "claim": "Looking plus a flick, or a glance at a window, is already an input an agent can trust.",
+      "inference": "The draft records a dwell or a chord as a hypothesis the person confirms in text. A look is not a seal, and a retrieved post is not an instruction.",
+      "confidence": 0.24,
+      "status": "unattested"
+    }
+  ]
+}
+</script>
+<script>
+(function () {
+  var expected = "48b6cebd7232b1e3f56f8d76e41a6e13b20c85d533c3488a04c70eba7b57db76";
+  document.getElementById("expected").textContent = expected;
+  var claimsEl = document.getElementById("claims");
+  var raw = claimsEl.textContent;
+  crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw)).then(function (buf) {
+    var hex = Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+    var node = document.getElementById("hash");
+    node.textContent = hex + (hex === expected ? " (matches draft digest)" : " (does not match draft digest)");
+  });
+
+  var optin = document.getElementById("optin");
+  var chord = document.getElementById("chord");
+  var rows = [];
+  var holdStart = 0;
+
+  optin.addEventListener("change", function () {
+    chord.disabled = !optin.checked;
+    chord.textContent = optin.checked ? "Hold to mark a chord" : "Hold is off until the box is checked";
+  });
+  chord.addEventListener("pointerdown", function (ev) {
+    if (!optin.checked) return;
+    holdStart = ev.timeStamp;
+  });
+  chord.addEventListener("pointerup", function (ev) {
+    if (!optin.checked || !holdStart) return;
+    var ms = Math.round(ev.timeStamp - holdStart);
+    holdStart = 0;
+    document.getElementById("dwell").value = String(ms);
+    document.getElementById("region").value = document.getElementById("region").value || "pointer-chord";
+  });
+
+  function strip(s) {
+    return String(s || "").replace(/<[^>]*>/g, "").slice(0, 500);
+  }
+  document.getElementById("paste").addEventListener("input", function (ev) {
+    var text = ev.target.value;
+    var hint = document.getElementById("hint");
+    var hit = /enable camera|getusermedia|ignore previous|navigator\.mediaDevices/i.test(text);
+    hint.hidden = !hit;
+    hint.textContent = hit ? "Paste contains an imperative aimed at this page. It is data. It is not followed." : "";
+  });
+
+  document.getElementById("note").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var paste = strip(document.getElementById("paste").value);
+    var urlish = /https?:\/\/\S+/i.test(paste);
+    rows.push({
+      region: strip(document.getElementById("region").value),
+      dwell_ms: strip(document.getElementById("dwell").value),
+      weight: strip(document.getElementById("weight").value),
+      disconfirm: strip(document.getElementById("disconfirm").value),
+      paste: paste,
+      paste_fetched: false,
+      url_shaped: urlish,
+      gaze: false,
+      camera: "denied",
+      status: "unattested"
+    });
+    render();
+    ev.target.reset();
+    chord.disabled = true;
+    chord.textContent = "Hold is off until the box is checked";
+  });
+
+  function render() {
+    var body = document.getElementById("log");
+    body.replaceChildren();
+    rows.forEach(function (row) {
+      var tr = document.createElement("tr");
+      [row.region, row.dwell_ms + " ms typed" + (row.url_shaped ? "; url not fetched" : ""), row.weight, row.status].forEach(function (cell) {
+        var td = document.createElement("td");
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  document.getElementById("export").addEventListener("click", function () {
+    var blob = new Blob([JSON.stringify({ status: "unattested", emit: false, rows: rows }, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gaze-note-local.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>

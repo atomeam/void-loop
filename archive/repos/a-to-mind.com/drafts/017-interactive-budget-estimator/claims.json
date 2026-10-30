@@ -1,0 +1,116 @@
+{
+  "slug": "interactive-budget-estimator",
+  "run": "017",
+  "date": "2026-09-30",
+  "status": "specified",
+  "hold": true,
+  "algo": "sha256",
+  "cookie": false,
+  "server": false,
+  "checkout": "hold",
+  "tokenPrice": false,
+  "membershipCents": 4900,
+  "allowlistedMonths": [1, 3, 12],
+  "allowlistedCaps": [5000, 25000, 100000],
+  "contract": "budget#017|kind:rate-card-estimator|membership:4900usd-cents|token-price:deny|checkout:hold|hash:sha256|seal:human",
+  "contractSha": "a0ec9f885b8338936a81490037c392d57eee15960f201c6f3dc167d2a6089d02",
+  "bodySha": "30cd1bfaf18381bebc18884d3b7028a6569911c7dec90c114b6df9433f659101",
+  "head": "{\"algo\":\"sha256\",\"kind\":\"rate-card-estimator\",\"membership_cents\":4900,\"token_price\":false,\"checkout\":\"hold\"}",
+  "headSha": "c0d3049d4436f777c36701f3b000a6ec45022bff444afa8404948ebfae16dc37",
+  "formula": "membership_cents = 4900 * months. provider_cents = null.",
+  "claims": [
+    {
+      "id": "contract",
+      "canonical": "budget#017|kind:rate-card-estimator|membership:4900usd-cents|token-price:deny|checkout:hold|hash:sha256|seal:human",
+      "sha256": "a0ec9f885b8338936a81490037c392d57eee15960f201c6f3dc167d2a6089d02"
+    },
+    {
+      "id": "membership",
+      "canonical": "claim#membership|text:Void Monthly is $49 per month. That is the only dollar figure this estimator may print.",
+      "sha256": "e7348a94f7f5d65373ac21cc88462bb1fa306d9778e017cb0adee13db4e10f21"
+    },
+    {
+      "id": "byok",
+      "canonical": "claim#byok|text:Provider tokens are not sold here. A-to-Mind does not mark up tokens.",
+      "sha256": "8f0c6beb9be7b68490641d834f4ebe07e6346e057b07e59940bc6627ed1ced3c"
+    },
+    {
+      "id": "cap",
+      "canonical": "claim#cap|text:A token cap is a hard stop, not a price. Caps come from the attested list only.",
+      "sha256": "1025fbef77ea904e46b01a02fdc9a9b2fc2464bdaf2391a83d41f55df89e94f6"
+    },
+    {
+      "id": "quote",
+      "canonical": "claim#quote|text:This page is not a quote, invoice, or checkout.",
+      "sha256": "b9f9cc75e1f594c97809ab54fdd37adedd22577d226bb980ba88c95f61410996"
+    },
+    {
+      "id": "formula",
+      "canonical": "claim#formula|text:membership_cents = 4900 * months. provider_cents = null.",
+      "sha256": "8d96b8da3406f5b477cd7c7a9a6b7379596243af5c0c78e8a0fef7b847a1414f"
+    },
+    {
+      "id": "hold",
+      "canonical": "claim#hold|text:Checkout and billing writes hold until a human seals a separate grant.",
+      "sha256": "2dce6d3802642db353963e70c17b6b794b3ea5d657ad96818f12075cec1e28f0"
+    },
+    {
+      "id": "page",
+      "canonical": "page#budget|route:draft|index:noindex|cookie:deny|analytics:deny|checkout:deny",
+      "sha256": "99aa96c568e9ebef31547171e36eee1d2e10ef861fb8b3fb53d7a3113c01d76d"
+    }
+  ],
+  "rates": [
+    {
+      "id": "void-monthly",
+      "canonical": "rate#void-monthly|usd-cents:4900|cadence:month|sku:void-monthly",
+      "sha256": "cce4ad228916830c5dc7114d0105168313a1e471120188e2fa0ee883aa63ca52"
+    }
+  ],
+  "caps": [
+    {
+      "id": "5000",
+      "canonical": "cap#5000|unit:tokens-per-run|kind:planning-cap|price:none",
+      "sha256": "847079beb46c0c60e0cf1a631737683a465618ac9e1822d828e2cb1a00acfe49"
+    },
+    {
+      "id": "25000",
+      "canonical": "cap#25000|unit:tokens-per-run|kind:planning-cap|price:none",
+      "sha256": "cfe71fe3c3dfbba22ec604302bce7c90c3e7fee0626601f5a44ddcf151981209"
+    },
+    {
+      "id": "100000",
+      "canonical": "cap#100000|unit:tokens-per-run|kind:planning-cap|price:none",
+      "sha256": "cf1754bd4b5b668a331c9088ac55d0240a6f4dbf2798c717209e68d19a9e81df"
+    }
+  ],
+  "terms": [
+    {
+      "id": "1",
+      "canonical": "term#1|months:1",
+      "sha256": "43be013250b1976c4dca3091e2ec980d2fef7bfee086d31bcbd67321d891ea2b"
+    },
+    {
+      "id": "3",
+      "canonical": "term#3|months:3",
+      "sha256": "14c3bab0515aca387f569a4debf72de02301d223dab2c9c0dd88a69835328f4d"
+    },
+    {
+      "id": "12",
+      "canonical": "term#12|months:12",
+      "sha256": "ad03115b62f85d23dfb44386bf59a5db805c8598e42ef2c5b1c030a43b666a44"
+    }
+  ],
+  "invokers": [
+    {
+      "id": "hold-envelope",
+      "canonical": "invoker#hold|id:hold-envelope|write:local-receipt|network:deny",
+      "sha256": "cd8f43ef36103bf25e2663f55114ce3cf5068c7edaae91c3e01a45343fa2219e"
+    },
+    {
+      "id": "open-checkout",
+      "canonical": "invoker#checkout|id:open-checkout|write:hold|network:deny",
+      "sha256": "05e1fb82c8d5f2e3ef922a99b1b01cb4749678ec537c9450c2c1d9acbee69ebf"
+    }
+  ]
+}

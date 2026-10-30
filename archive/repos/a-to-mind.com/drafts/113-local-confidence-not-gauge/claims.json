@@ -1,0 +1,39 @@
+{
+  "slug": "local-confidence-not-gauge",
+  "run": 113,
+  "family": "attention/interoception",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": 0.19,
+  "one_line": "A sealed confidence class hashes to a gauge-refusal id. The gauge sentence is discarded and is not in the hash. A confidence mark is not a gauge and not a body map.",
+  "canonical": "confidence-not-gauge|v1|<confidence>|<report>|<hold>|gauge-refusal",
+  "catalog": [
+    ["certain", "unlabeled", "held"],
+    ["unsure", "unlabeled", "held"],
+    ["withheld", "mismatched", "held"],
+    ["certain", "withheld", "held"],
+    ["unsure", "mismatched", "held"],
+    ["abstain", "abstain", "abstain"]
+  ],
+  "discarded_fields": ["gauge_sentence"],
+  "allowlist": [],
+  "denied": [
+    "gauge",
+    "body-map",
+    "bpm-field",
+    "hrv-score",
+    "quality-score",
+    "calm-stressed-gauge",
+    "accuracy-badge",
+    "camera",
+    "microphone",
+    "ppg",
+    "web-bluetooth",
+    "beat-timer",
+    "contact",
+    "healing",
+    "crash-retrieval",
+    "extraterrestrial-hardware"
+  ]
+}

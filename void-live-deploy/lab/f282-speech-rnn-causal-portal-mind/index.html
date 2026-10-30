@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.5); padding:10px; border-radius:8px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #446; cursor:pointer; }
+.portal { position:absolute; min-width:80px; padding:8px 12px; background:rgba(40,60,100,.75); border:1px solid #88a; border-radius:12px; cursor:grab; user-select:none; transform-style:preserve-3d; transition:transform .2s; pointer-events:auto; z-index:5; font-size:13px; }
+.portal.dragging { cursor:grabbing; }
+#log { position:absolute; bottom:12px; left:12px; font-size:12px; opacity:.7; max-width:40%; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Speech-Driven Causal RNN WebGPU Portal Mind · Verse lab</title>
+<meta name="description" content="Continuous local speech recognition (Web Speech API) as primary causal input.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Speech-Driven Causal RNN WebGPU Portal Mind · Verse lab">
+<meta property="og:description" content="Continuous local speech recognition (Web Speech API) as primary causal input.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f282-speech-rnn-causal-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f282-speech-rnn-causal-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="listen">Start Listening</button>
+  <button id="demo">Demo Words</button>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Speech: idle | Residual: 0</div>
+</div>
+<div id="log"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Speech-Driven Causal RNN WebGPU Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

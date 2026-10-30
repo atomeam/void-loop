@@ -1,0 +1,27 @@
+{
+  "slug": "local-offer-not-act",
+  "run": 118,
+  "family": "human-machine co-agency",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "preimage": "void-offer-not-act|v1|class=<id>|status=unattested",
+  "discarded_from_hash": ["act_sentence"],
+  "classes": ["withheld", "human-offer", "machine-offer"],
+  "refusals": ["act", "handoff", "shared-will", "authorship", "execute"],
+  "hypotheses": [
+    {
+      "id": "offer-is-not-act",
+      "confidence": "design-material",
+      "statement": "A catalog offer class can be sealed without becoming an executed step.",
+      "default": "unattested"
+    },
+    {
+      "id": "verb-grey-zone",
+      "confidence": "low",
+      "statement": "Public wording that splits goal-setting from step execution does not name a single actor.",
+      "source_post": "2107801801164575096",
+      "default": "unattested"
+    }
+  ]
+}

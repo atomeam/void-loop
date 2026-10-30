@@ -41,7 +41,7 @@ test('since the last visit, newest first, all of them, each ask once', () => {
 test('a line is cut to what a person reads', () => {
   assert.equal(lineOf('Shop this list: the list card has Walmart buttons'), 'Shop this list');
   assert.equal(lineOf('The coral card (NOAA) reads live'), 'The coral card (NOAA) reads live');
-  assert.ok(lineOf('x '.repeat(80)).length <= 90);
+  assert.ok(!lineOf('x '.repeat(80)).includes('\u2026')); // whole sentences, never an ellipsis (owner, 2026-10-21)
 });
 
 test('every known build in the real ledger still matches a line, and its ask is one a person would type', () => {
@@ -128,7 +128,7 @@ test('the tray (asked by Verse: grab a newly shipped skill from the walkthrough 
   assert.deepEqual(trayOf(steps, 0).map((x) => x.j), [1, 2, 3, 4, 5, 6]); assert.equal(TRAY, 6);
   assert.deepEqual(trayOf(steps, 8), [{ j: 9, line: 'step 9' }]); assert.deepEqual(trayOf(steps, 9), []);
   const long = trayOf([{ line: 'x' }, { line: 'the coral card reads the Florida Keys reef live, every hour of the day' }], 0)[0].line;
-  assert.ok(long.length <= 38 && long.endsWith('…'), long);
+  assert.ok(!long.endsWith('…'), long); // whole lines on the chips too (owner, 2026-10-21)
 });
 test('a drop moves the step\'s things to where it landed, kept inside the stage', async () => {
   const { dropDelta } = await import('../void-live-deploy/skills/showcase.js');
@@ -152,4 +152,27 @@ test('Verse\'s own upgrades say what got better, not "Verse hardened itself" eve
   assert.ok(steps.every((s) => !/hardened itself/i.test(s.line)), JSON.stringify(steps.slice(0, 3)));
   const chips = trayOf([{ line: 'x' }].concat(steps), 0, 6).map((c) => c.line);
   assert.equal(new Set(chips).size, chips.length, JSON.stringify(chips));
+});
+
+// recently built stays reachable after it was previewed (owner, 2026-10-21: "still not seeing i made this anymore")
+{
+  const { recentOf } = await import('../void-live-deploy/skills/showcase.js');
+  const now = Date.parse('2026-10-22T03:00:00Z');
+  const L = [
+    { at: '2026-10-21T02:00:00Z', kind: 'build', what: 'ritual', show: 'routine as events', try: 'morning routine as calendar events' },
+    { at: '2026-10-01T02:00:00Z', kind: 'build', what: 'old', show: 'old thing', try: 'old thing' },
+    { at: '2026-10-21T03:00:00Z', kind: 'build', what: 'unchecked', show: 'not answering', try: 'not answering yet' },
+  ];
+  const r = recentOf(L, new Set(['morning routine as calendar events', 'old thing']), now);
+  if (!(r.length === 1 && r[0].ask === 'morning routine as calendar events')) { console.log('FAIL recentOf keeps only verified builds of the last week, seen or not', JSON.stringify(r)); process.exitCode = 1; }
+  else console.log('ok recentOf: verified builds of the last week, previewed or not');
+}
+
+test("one of Verse's own upgrades reads as what got better and two new phrases, never a bare ': new phrases' list", async () => {
+  const { playable, phrasesLine } = await import('../void-live-deploy/skills/showcase.js');
+  const phrases = [['memory preview', 'memory-preview'], ['hide the sky', 'night-sky'], ['where is jupiter', 'sky-card'], ['is venus up', 'sky-card'], ['ritual template', 'ritual-template']].map(([ask, skill]) => ({ ask, skill }));
+  const p = playable({ at: '2026-10-22T02:52:58Z', by: 'verse', kind: 'grow', what: "Verse hardened itself: 'memory preview', 'hide the sky' for memory-preview, night-sky. Why these: x.", try: 'memory preview', phrases });
+  assert.equal(p.line, 'Better at memory preview, night sky, sky card and 1 more: 5 more ways of asking answered right, like “memory preview” and “hide the sky”');
+  assert.equal(phrasesLine([{ ask: 'flip a coin', skill: 'coin' }]), 'Better at coin: 1 more way of asking answered right, like “flip a coin”');
+  assert.equal(phrasesLine([]), '');
 });

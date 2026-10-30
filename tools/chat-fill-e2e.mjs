@@ -1,0 +1,23 @@
+// node tools/chat-fill-e2e.mjs: asks the stage to fill Notes, then opens /notes/ in the same browser and checks the note is there, Undo removes it.
+import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
+const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml' };
+const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p.endsWith('/')) p += 'index.html'; const f = path.join(root, p); if (!f.startsWith(root)) { res.writeHead(403); return res.end(); } fs.readFile(f, (e, d) => { if (e) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(d); }); }).listen(0);
+await new Promise((r) => server.once('listening', r));
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || (fs.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined), headless: true });
+const page = await browser.newPage(); const base = 'http://127.0.0.1:' + server.address().port; let bad = 0;
+const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) bad++; };
+await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' })); await page.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+await page.goto(base + '/'); await page.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
+const ask = async (t) => { await page.fill('#input', t); await page.keyboard.press('Enter'); await page.waitForTimeout(1800); };
+const notes = () => page.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.v1') || '{"docs":[]}').docs);
+await ask('add a note: Shopping list - milk, eggs'); let d = await notes(); ok(d.length === 1 && d[0].title === 'Shopping list' && /Milk/.test(d[0].html), 'note made in the notes store');
+await ask('add bread to my shopping list'); d = await notes(); ok(/Bread/.test(d[0].html) && d[0].versions.length >= 1, 'item added, earlier state kept as a version');
+await ask('tick milk'); d = await notes(); ok(/chk done">Milk/.test(d[0].html), 'milk ticked');
+const card = await page.locator('.vpage').last().innerText(); ok(/Ticked "Milk"/.test(card) && /Undo/.test(card), 'card says what changed and offers Undo');
+await page.getByRole('button', { name: 'Undo' }).last().click(); await page.waitForTimeout(300); d = await notes(); ok(!/done/.test(d[0].html), 'Undo put the tick back');
+const id = d[0].id; await page.goto(base + '/notes/?id=' + id); await page.waitForTimeout(800);
+ok(/Bread/.test(await page.locator('#body').innerText()) && (await page.locator('#dtitle').innerText()) === 'Shopping list', '/notes/ opens it with the added item');
+await page.goto(base + '/'); await page.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
+await ask('delete my shopping list note'); d = await notes(); ok(d.length === 0, 'deleted'); await page.getByRole('button', { name: 'Undo' }).last().click(); await page.waitForTimeout(300); d = await notes(); ok(d.length === 1 && d[0].versions.length >= 2, 'Undo brought it back with its history');
+await browser.close(); server.close(); process.exit(bad ? 1 : 0);

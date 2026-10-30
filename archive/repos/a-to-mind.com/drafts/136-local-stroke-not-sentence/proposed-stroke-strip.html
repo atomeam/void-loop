@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-stroke-not-sentence — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1a1c1e;
+      --paper: #eef1f2;
+      --line: #b7c0c4;
+      --hold: #6d3a4a;
+      --quiet: #555e63;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #eef1f2; --paper: #16181a; --line: #3a4246; --hold: #e0b0bc; --quiet: #b4bcc0; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .stroke {
+      width: 2.4rem;
+      height: 0.7rem;
+      margin: 0.7rem 0 0.2rem;
+      background: linear-gradient(118deg, transparent 42%, var(--ink) 42%, var(--ink) 58%, transparent 58%);
+    }
+    .seat {
+      border: 1px dashed var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+    }
+    .ids { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-stroke-not-sentence</h1>
+    <p>Draft only. A stroke mark is not a sentence and not a decoded intention. Status stays unattested. The sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="stroke-form">
+      <fieldset>
+        <legend>Stroke class</legend>
+        <label><input type="radio" name="stroke-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="stroke-class" value="unparsed"> unparsed</label>
+        <label><input type="radio" name="stroke-class" value="mark-only"> mark-only</label>
+        <label><input type="radio" name="stroke-class" value="no-lexeme"> no-lexeme</label>
+        <label><input type="radio" name="stroke-class" value="blank-slot"> blank-slot</label>
+        <label><input type="radio" name="stroke-class" value="abstain"> abstain</label>
+      </fieldset>
+      <fieldset>
+        <legend>Stroke seat</legend>
+        <div class="stroke" aria-hidden="true"></div>
+        <p>One short mark. No word field. Not a lexeme. Not hashed as a decode.</p>
+      </fieldset>
+      <div class="seat" aria-label="Empty sentence seat">Sentence seat stays empty. No caption. No decoded intention.</div>
+      <p class="ids">Inert scan ids, not seats: 2108483240420086214, 2108512927393468565, 2108477354373009704, 2108445768180978065.</p>
+      <label for="sentence">Sentence (cleared on seal, not hashed)</label>
+      <textarea id="sentence" name="sentence" autocomplete="off"></textarea>
+      <button type="submit">Seal stroke class</button>
+    </form>
+    <p>Sentence-refusal id</p>
+    <output id="refusal" for="stroke-form">none</output>
+  </main>
+  <script>
+    const form = document.getElementById("stroke-form");
+    const sentence = document.getElementById("sentence");
+    const refusal = document.getElementById("refusal");
+    const status = document.getElementById("status");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const picked = form.querySelector("input[name=stroke-class]:checked");
+      if (!picked) {
+        refusal.textContent = "default-deny: no class";
+        return;
+      }
+      const preimage = "stroke-not-sentence|v1|" + picked.value + "|sentence-refusal|status=unattested";
+      sentence.value = "";
+      const bytes = new TextEncoder().encode(preimage);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      refusal.textContent = hex;
+      status.textContent = "status: unattested";
+    });
+  </script>
+</body>
+</html>

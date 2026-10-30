@@ -1,0 +1,36 @@
+# ROM files - NEVER commit these
+*.bin
+*.rom
+*.a26
+*.zip
+
+# Environment variables with API keys
+.env
+
+# Node modules (if we add any build tools later)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+build/
+
+# Agent play outputs
+output/
+frames/
+*.png
+
+# Audit logs and manifests (optional - comment out if you want to commit these)
+# manifest.json
+# audit_log.json
+# ram_dump.json
+
+# Vercel deployment config
+.vercel/

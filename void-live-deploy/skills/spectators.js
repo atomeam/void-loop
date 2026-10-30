@@ -108,7 +108,7 @@ export function middle(s, max) {
   const t = String(s == null ? '' : s), n = Math.max(5, Math.floor(+max) || 0);
   if (t.length <= n) return t;
   const head = Math.ceil((n - 1) * 0.62), tail = n - 1 - head;
-  return t.slice(0, head) + '…' + t.slice(t.length - tail);
+  return t.slice(0, head) + '…' + t.slice(t.length - tail); // ellipsis-ok: drawn picture or short label, the full text is on the card
 }
 /** a link as people read it: no https://. Pure. */
 export const shownLink = (link) => String(link || '').replace(/^https?:\/\//, '');
@@ -119,7 +119,6 @@ export function thingName(s) {
   let words = squeeze(s && s.t);
   if (words.toLowerCase().startsWith(label + ' ')) words = words.slice(label.length + 1).replace(/^[:\s-]+/, '');
   else if (words.toLowerCase() === label || words.toLowerCase() === k) words = '';
-  if (words.length > 28) words = words.slice(0, 27).replace(/\s+\S*$/, '') + '…';
   return { name, words };
 }
 /** what the snapshot holds, in the card's words: { n, line, names: [{ name, words }], more }. Pure. */
@@ -135,11 +134,11 @@ const CSS = '.spx-card{--spx-ink:#eef0f7;--spx-ink2:#c3c8d8;--spx-ink3:#a7adc0;c
   + '.spx-card h2{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:600;margin:0 40px 6px 0;color:var(--spx-ink)}'
   + '.spx-card .spx-dot{width:10px;height:10px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,.18);flex:none}.spx-card[data-spectate=closed] .spx-dot{background:#8b90a0;box-shadow:none}'
   + '.spx-card .spx-lede{margin:0 0 10px;color:var(--spx-ink2);font-size:15px;line-height:1.45}'
-  + '.spx-card .spx-things{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 16px;padding:0}.spx-card .spx-things li{max-width:100%;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:13px;color:var(--spx-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spx-card .spx-things li span{color:var(--spx-ink3)}'
+  + '.spx-card .spx-things{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 16px;padding:0}.spx-card .spx-things li{max-width:100%;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:13px;color:var(--spx-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spx-card .spx-things li span{color:var(--spx-ink3)}' // ellipsis-ok: drawn picture or short label, the full text is on the card
   + '.spx-card .spx-grid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px 20px;align-items:start;margin-top:16px}'
   + '.spx-card .spx-label{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--spx-ink3);margin:0 0 6px}'
   + '.spx-card .spx-row{display:flex;gap:8px;min-width:0}'
-  + '.spx-card .spx-field{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:13px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:13px 12px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16);color:var(--spx-ink);cursor:text;user-select:all;-webkit-user-select:all}'
+  + '.spx-card .spx-field{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:13px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:13px 12px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.16);color:var(--spx-ink);cursor:text;user-select:all;-webkit-user-select:all}' // ellipsis-ok: drawn picture or short label, the full text is on the card
   + '.spx-card .spx-field:focus-visible,.spx-card button:focus-visible,.spx-card a:focus-visible{outline:2px solid #9db8ff;outline-offset:2px}'
   + '.spx-card .spx-body button,.spx-card .spx-open{font:inherit;font-size:14px;border-radius:10px;cursor:pointer;min-height:40px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}'
   + '.spx-card .spx-copy{flex:none;font-weight:600;background:#a9c1ff;color:#0b1020;border:1px solid #a9c1ff}.spx-card .spx-copy:hover{background:#c3d4ff}.spx-card .spx-copy[data-done]{background:#86efac;border-color:#86efac}'

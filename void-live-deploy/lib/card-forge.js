@@ -40,7 +40,7 @@ export function worthy(el, c) {
   // a card still loading is never painted ("Repository — looking" painted the word "looking"), nor a fragment of a word ("rt")
   const sk = String(subjectFor(el, c) || '').trim();
   if (sk.replace(/[^a-z0-9]/gi, '').length < 3 || /^(?:looking|loading|thinking|searching)\b/i.test(sk) || /\b(?:looking|loading)\b|…$/i.test(String(c.typeLine || ''))) return false;
-  return kind !== 'person' && !!String(c.key || '').trim();
+  return kind !== 'person' && !c.notFound && !!String(c.key || '').trim(); // a Not found card is never painted: a picture would dress a refusal as an answer
 }
 /** the text of the answer on a card: its own paragraphs, not the frame, the sources, the share bar, the title or the .thin "Closest match I found for ..." line (the search, not the subject). */
 export function answerText(el) {

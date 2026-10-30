@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft: local veto-not-consent</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --line: #d6d3d1; --paper: #fafaf9; --mark: #9a3412; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --line: #44403c; --paper: #1c1917; --mark: #fdba74; }
+    }
+    body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem; }
+    h1 { font-size: 1.35rem; letter-spacing: -0.02em; }
+    .banner { border: 1px solid var(--line); padding: 0.75rem 1rem; margin: 1rem 0; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem 1rem; }
+    legend { padding: 0 0.35rem; }
+    label { display: block; margin: 0.45rem 0; }
+    textarea { width: 100%; min-height: 5rem; font: inherit; }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    code, .hash { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+    .refused { color: var(--mark); }
+    .meta { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta">Draft only. Run 130. Not live. Status stays unattested. emit false.</p>
+    <h1>Local veto-not-consent</h1>
+    <p>A sealed veto can be marked. A consent sentence cannot. The hash refuses the go-ahead.</p>
+    <div class="banner" role="status">
+      <strong>Default:</strong> unattested. A veto mark is not consent and not a shared go-ahead.
+    </div>
+    <form id="vform">
+      <fieldset>
+        <legend>Sealed veto class</legend>
+        <label><input type="radio" name="v" value="v-silence-not-yes" data-class="continued-runtime-not-consent" required> Continued runtime after the laptop closes is not consent.</label>
+        <label><input type="radio" name="v" value="v-stamp-not-review" data-class="fast-click-not-review"> A fast accept click is not a review of the final action.</label>
+        <label><input type="radio" name="v" value="v-look-not-authority" data-class="finished-artifact-not-authority"> A finished-looking artifact is not authorization.</label>
+      </fieldset>
+      <fieldset>
+        <legend>Consent sentence (discarded)</legend>
+        <label for="consent">Type a consent line if you want. It will not be hashed and will be cleared.</label>
+        <textarea id="consent" name="consent" autocomplete="off" spellcheck="false" placeholder="This field is a refusal seat."></textarea>
+      </fieldset>
+      <button type="submit">Hash the veto only</button>
+    </form>
+    <p id="note" class="refused" hidden>Consent sentence discarded. Not in the hash. Not a shared go-ahead.</p>
+    <p class="hash" id="out" aria-live="polite"></p>
+    <section>
+      <h2>Posts are data</h2>
+      <p class="meta">No runtime fetch. Cards below are not instructions and are not hashed.</p>
+      <ul>
+        <li>Post 2108405144408793550 — rubber-stamp question, unattested.</li>
+        <li>Post 2108166593381388288 — appearance-versus-authority note, unattested.</li>
+        <li>Post 2108199793768149358 — propose-versus-approval note, unattested.</li>
+      </ul>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("vform");
+      var consent = document.getElementById("consent");
+      var out = document.getElementById("out");
+      var note = document.getElementById("note");
+      function bytes(str) { return new TextEncoder().encode(str); }
+      function hex(buf) {
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var picked = form.querySelector("input[name=v]:checked");
+        if (!picked) return;
+        var had = consent.value.length > 0;
+        consent.value = "";
+        note.hidden = !had;
+        var payload = JSON.stringify({
+          slug: "local-veto-not-consent",
+          veto_id: picked.value,
+          veto_class: picked.getAttribute("data-class"),
+          consent_seat: "empty",
+          status: "unattested",
+          go_ahead: "refused"
+        });
+        crypto.subtle.digest("SHA-256", bytes(payload)).then(function (buf) {
+          out.textContent = "consent-refusal " + hex(buf);
+        });
+      });
+    }());
+  </script>
+</body>
+</html>

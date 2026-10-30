@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>One-Time Fix: one broken automation, repaired with proof</title>
-  <meta name="description" content="Send the workflow that quietly stopped - the zap that will not fire, the orders that stopped syncing, the form that goes nowhere. We diagnose it, fix it, and show you proof it runs again. $25 flat.">
+  <meta name="description" content="Send the automation that quietly stopped: the zap that will not fire, the orders that no longer sync. We find the fault, fix it and prove it runs. $25 flat.">
   <link rel="canonical" href="https://a-to-mind.com/one-time-fix/">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="One-Time Fix">
@@ -37,7 +37,7 @@
   </script>
   <style>
     :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; --ok: #56d364; }
-    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; --ok: #1f7a33; } }
+    :root { color-scheme: dark; } /* deep space in every colour scheme (owner, 2026-10-29: never a stark-white page) */
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
     main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
@@ -52,6 +52,7 @@
     .buy { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; padding: 10px 18px; text-decoration: none; display: inline-block; }
     .muted { color: var(--muted); font-size: 14px; }
   </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
@@ -82,8 +83,11 @@
   </ul>
 
   <h2>Is this the right one?</h2>
-  <p>One workflow with one trigger and its steps - a single zap, scenario or connection. Problem spans several? The Full Stack Audit is built for that.</p>
+  <p>One workflow with one trigger and its steps - a single zap, scenario or connection. Problem spans several? The <a href="/full-stack-audit/">Full Stack Audit</a> is built for that.</p>
   <p class="muted">Not sure? <a href="/?q=what%20do%20you%20sell">Ask Verse</a> &mdash; it shows everything for sale with live prices &mdash; or email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> before you buy.</p>
+<!-- offers -->
+<p class="muted offers">More ways Verse helps: <a href="/code-review/">Verse Code Review Pro</a> (the closer read: an AI reviewer on every pull request, on top of the free instant checks); <a href="/keep-it-running/">Keep-It-Running Plan</a> (your automations watched around the clock, repairs when something breaks, a monthly plain-words report); <a href="/full-stack-audit/">Full Stack Audit</a> (a top-to-bottom review of every automation you have, with a written repair plan ranked by priority); <a href="/first-automation-setup/">First Automation Setup</a> (your first automation built for you, end to end, from the task you do by hand); or <a href="/fix/">look your error up free</a>.</p>
+<!-- /offers -->
 </main>
 <script>
 (function () {

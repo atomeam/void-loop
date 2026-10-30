@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F-048 Resonant Spatial Audio Mind</title>
+<style>
+  :root { --hue: 260; --blur: 0px; --scale: 1; }
+  body { margin: 0; background: hsl(var(--hue), 30%, 8%); color: #eee; font-family: system-ui, sans-serif; overflow: hidden; filter: blur(var(--blur)); transform: scale(var(--scale)); transform-origin: center; transition: filter .3s, transform .3s; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; pointer-events: none; }
+  #seal { position: absolute; bottom: 16px; right: 16px; padding: 8px 16px; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
+  #start { position: absolute; bottom: 16px; left: 16px; padding: 8px 16px; background: #1a3; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  F-048 Resonant Spatial Audio Mind<br>
+  resonance: <span id="res">—</span> · gen: <span id="gen">0</span> · particles: <span id="np">180</span>
+</div>
+<button id="start">Start Audio</button>
+<button id="seal">Seal best policy</button>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+const N = 180;
+const particles = [];
+for (let i = 0; i < N; i++) {
+  particles.push({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+    dens: 0
+  });
+}
+let px = W/2, py = H/2;
+let resonance = 0.3;
+let audioStarted = false;
+let ac, analyser, oscillators = [], gains = [], panners = [];
+
+// Worker: evolutionary audio policy
+const workerCode = `
+let pop = [];
+const P = 6, G = 12;
+function rand() { return Math.random()*2-1; }
+for (let i = 0; i < P; i++) pop.push({ genes: Array.from({length:G}, rand), fit: 0 });
+function forward(genes, feat) {
+  // simple 6→8 linear + tanh
+  const out = [];
+  for (let o = 0; o < 8; o++) {
+    let s = genes[o*1.5|0] * 0.1;
+    for (let f = 0; f < 6; f++) s += genes[(o*6+f)%G] * feat[f];
+    out.push(Math.tanh(s));
+  }
+  return out;
+}
+self.onmessage = e => {
+  const { feat, res, prox } = e.data;
+  for (const ind of pop) {
+    const params = forward(ind.genes, feat);
+    // fitness proxy: resonance + proximity + spectral coherence (higher params variance penalized mildly)
+    const varp = params.reduce((s,p)=>s+p*p,0)/8;
+    ind.fit = res * 0.6 + prox * 0.3 + (1-Math.min(1,varp)) * 0.1 + Math.random()*0.02;
+  }
+  pop.sort((a,b)=>b.fit-a.fit);
+  const best = pop[0];
+  const child = { genes: best.genes.map(g => g + (Math.random()-0.5)*0.25), fit: 0 };
+  pop[P-1] = child;
+  self.postMessage({ best: best.genes, gen: Date.now()%1000 });
+};
+`;
+const blob = new Blob([workerCode], {type:'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let bestGenes = Array.from({length:12}, ()=>Math.random()*2-1);
+worker.onmessage = e => { bestGenes = e.data.best; document.getElementById('gen').textContent = Math.floor(e.data.gen/10); };
+
+function startAudio() {
+  if (audioStarted) return;
+  ac = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = ac.createAnalyser();
+  analyser.fftSize = 256;
+  analyser.connect(ac.destination);
+  for (let i = 0; i < 4; i++) {
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    const pan = ac.createStereoPanner();
+    osc.type = 'sine';
+    osc.frequency.value = 110 * (i+1);
+    gain.gain.value = 0.08;
+    osc.connect(gain); gain.connect(pan); pan.connect(analyser);
+    osc.start();
+    oscillators.push(osc); gains.push(gain); panners.push(pan);
+  }
+  audioStarted = true;
+  document.getElementById('start').textContent = 'Audio on';
+  document.getElementById('start').disabled = true;
+}
+
+document.getElementById('start').onclick = startAudio;
+
+function computeDensity() {
+  const bins = 8;
+  const dens = new Array(bins).fill(0);
+  for (const p of particles) {
+    const bx = Math.floor((p.x / W) * bins);
+    if (bx >= 0 && bx < bins) dens[bx]++;
+  }
+  const maxd = Math.max(...dens, 1);
+  return dens.map(d => d / maxd);
+}
+
+function applyPolicy(params) {
+  if (!audioStarted) return;
+  // params: baseFreq, pan, gain, detune, harm2, harm3, harm5, spatial
+  const base = 80 + (params[0]*0.5+0.5)*220;
+  for (let i = 0; i < 4; i++) {
+    const harm = [1, 2, 3, 5][i];
+    oscillators[i].frequency.setTargetAtTime(base * harm * (1 + params[4+i%3]*0.05), ac.currentTime, 0.05);
+    gains[i].gain.setTargetAtTime(0.04 + Math.max(0, params[2]*0.5+0.5)*0.12, ac.currentTime, 0.05);
+    panners[i].pan.setTargetAtTime(Math.max(-1, Math.min(1, params[1] + (i-1.5)*0.2)), ac.currentTime, 0.05);
+  }
+}
+
+function spectrumForce() {
+  if (!audioStarted || !analyser) return 0;
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
+  // simple resonance: concentration in low-mid bins vs flat
+  let low = 0, mid = 0, high = 0, sum = 0;
+  for (let i = 0; i < data.length; i++) {
+    const v = data[i]/255;
+    sum += v;
+    if (i < 20) low += v; else if (i < 60) mid += v; else high += v;
+  }
+  const total = low+mid+high || 1;
+  const conc = Math.max(low, mid, high) / total;
+  const flat = sum / data.length;
+  resonance = Math.max(0, Math.min(1, conc * 0.7 + (1-flat)*0.3));
+  // residual force: particles attracted to high-energy bins mapped to x
+  for (const p of particles) {
+    const bin = Math.floor((p.x / W) * 8);
+    const energy = data[Math.min(data.length-1, bin* (data.length/8))] / 255;
+    const targetX = (bin + 0.5) / 8 * W;
+    p.vx += (targetX - p.x) * 0.0008 * energy * resonance;
+  }
+  return resonance;
+}
+
+let last = performance.now();
+function loop(t) {
+  const dt = Math.min(32, t - last)/1000;
+  last = t;
+  // density features
+  const dens = computeDensity();
+  const meanD = dens.reduce((a,b)=>a+b,0)/dens.length;
+  let nearP = 0, velVar = 0;
+  for (const p of particles) {
+    const d = Math.hypot(p.x-px, p.y-py);
+    if (d < 80) nearP++;
+    velVar += p.vx*p.vx + p.vy*p.vy;
+  }
+  nearP /= N; velVar = Math.sqrt(velVar/N);
+  const feat = [meanD, nearP, Math.min(1,velVar/4), resonance, Math.sin(t*0.001), Math.cos(t*0.0007)];
+  // policy
+  const params = [];
+  for (let o = 0; o < 8; o++) {
+    let s = 0;
+    for (let f = 0; f < 6; f++) s += bestGenes[(o*6+f)%12] * feat[f];
+    params.push(Math.tanh(s));
+  }
+  applyPolicy(params);
+  const res = spectrumForce();
+  document.getElementById('res').textContent = res.toFixed(2);
+  // morph
+  document.documentElement.style.setProperty('--hue', 200 + res*120);
+  document.documentElement.style.setProperty('--blur', (1-res)*2 + 'px');
+  document.documentElement.style.setProperty('--scale', 1 + (res-0.5)*0.04);
+  // particle step
+  for (const p of particles) {
+    p.vx *= 0.98; p.vy *= 0.98;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -1;
+    if (p.y < 0 || p.y > H) p.vy *= -1;
+    p.x = Math.max(0, Math.min(W, p.x));
+    p.y = Math.max(0, Math.min(H, p.y));
+    // mild repulsion
+    for (const q of particles) {
+      if (p === q) continue;
+      const dx = p.x-q.x, dy = p.y-q.y, d2 = dx*dx+dy*dy;
+      if (d2 < 400 && d2 > 0) { p.vx += dx/d2*2; p.vy += dy/d2*2; }
+    }
+  }
+  // pointer seed
+  const ix = Math.floor(px), iy = Math.floor(py);
+  for (const p of particles) {
+    if (Math.hypot(p.x-px, p.y-py) < 40) { p.vx += (px-p.x)*0.01; p.vy += (py-p.y)*0.01; }
+  }
+  // worker ~1Hz
+  if (Math.random() < 0.016) {
+    const prox = nearP;
+    worker.postMessage({ feat, res, prox });
+  }
+  // draw
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = `hsla(${200+res*80}, 70%, 60%, 0.8)`;
+  for (const p of particles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2 + res*2, 0, Math.PI*2);
+    ctx.fill();
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+canvas.addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; });
+document.getElementById('seal').onclick = () => {
+  const payload = { bestGenes, resonance, ts: Date.now() };
+  localStorage.setItem('f048-policy', JSON.stringify(payload));
+  alert('Sealed policy to localStorage');
+};
+try {
+  const s = JSON.parse(localStorage.getItem('f048-policy') || 'null');
+  if (s?.bestGenes) bestGenes = s.bestGenes;
+} catch {}
+</script>
+</body>
+</html>

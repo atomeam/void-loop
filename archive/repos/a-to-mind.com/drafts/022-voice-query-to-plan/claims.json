@@ -1,0 +1,115 @@
+{
+  "slug": "voice-query-to-plan",
+  "run": "022",
+  "date": "2026-09-30",
+  "status": "specified",
+  "algo": "sha256",
+  "seal": "human",
+  "head": {
+    "json": "{\"algo\":\"sha256\",\"kind\":\"voice-query-to-plan\",\"listen\":\"gesture\",\"plan\":\"catalog\",\"run\":\"hold\",\"tts\":false}",
+    "sha256": "21cc14b800aea7bc3225e049522feff8d70e1d4e9ab12bd53c1bb96b535a5b9b"
+  },
+  "body": {
+    "sha256": "5a7e32509f575c2c80da939a41af7f5945ac124618814dd06899e198ac4fc00b",
+    "note": "Eight canonical lines joined by LF, trailing LF."
+  },
+  "catalog_body": {
+    "sha256": "819469310e585fab04825c6bf9b6c2b68f010e60d51738b8090cb16d3c2a2a03",
+    "note": "Three plan lines joined by LF, trailing LF."
+  },
+  "receipts_allowed": [
+    "idle",
+    "listening",
+    "interim",
+    "final",
+    "matched",
+    "unmatched",
+    "hold",
+    "denied",
+    "mismatch",
+    "unsupported",
+    "failed"
+  ],
+  "lines": [
+    {
+      "id": "voice#022",
+      "canonical": "voice#022|kind:voice-query-to-plan|listen:gesture|plan:catalog|run:hold|tts:deny|hash:sha256|seal:human",
+      "sha256": "7144a678cc22f59cbedb2d7d706fee33c15af3b195b1bd787613a721f08eb4ba"
+    },
+    {
+      "id": "claim#listen",
+      "canonical": "claim#listen|text:Microphone starts only after a click. There is no wake word and no always-on listener.",
+      "sha256": "3acd68d85f5cdaf4198838f8e7304f82cadfd4e06f5a9d82145eb52e5010faae"
+    },
+    {
+      "id": "claim#transcript",
+      "canonical": "claim#transcript|text:A transcript is data. It is not a run, a grant, or a tool call.",
+      "sha256": "2c371ddde00598f11958f82638006575d313829e863263ea618e2d43dcc3cd02"
+    },
+    {
+      "id": "claim#plan",
+      "canonical": "claim#plan|text:Plans come from an attested catalog. Unmatched speech stays unmatched. No model call on this page.",
+      "sha256": "3de064db91f165dbe16454ea2bd499e4f7a23e885a284745cb6dbbf881e0b029"
+    },
+    {
+      "id": "claim#run",
+      "canonical": "claim#run|text:Start run holds. Voice never starts, steers, or resumes a live executor.",
+      "sha256": "7512ab15c56de365cfbf2937332d170a6186f2ca905fc2894f17f3368e5e6e48"
+    },
+    {
+      "id": "claim#privacy",
+      "canonical": "claim#privacy|text:Chrome SpeechRecognition may send audio to a vendor. This page says so and offers typed input first.",
+      "sha256": "536e04c4e2bab96e78599a958a1dfa679f3354e16845b7bb4f4570c3a34f1e46"
+    },
+    {
+      "id": "claim#tokens",
+      "canonical": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page#voice",
+      "canonical": "page#voice|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "c3c441142cc98685032d362022506eda3601d898bfcbb4563ccf0fdf247b67ad"
+    },
+    {
+      "id": "invoker#listen",
+      "canonical": "invoker#listen|id:listen-once|mode:oneshot|continuous:deny|network:browser-vendor",
+      "sha256": "a754b74aaecf3da06f0aa62245fad56ee6c429f0044e131ff60301062f651777"
+    },
+    {
+      "id": "invoker#stop",
+      "canonical": "invoker#stop|id:stop-listen|mode:abort|network:deny",
+      "sha256": "c0df24097d9aecff12b29f6befcecd8efeff9eab013a7077b54dff450eafcfa5"
+    },
+    {
+      "id": "invoker#match",
+      "canonical": "invoker#match|id:match-plan|source:catalog|model:deny",
+      "sha256": "dabbae140fc5dcf59767e35e89d43638575abeef35b9ff06bbc0eabdf2baf677"
+    },
+    {
+      "id": "invoker#start-run",
+      "canonical": "invoker#start-run|id:start-run|write:hold|network:deny",
+      "sha256": "021f3bc1befd9045f19315517f8f81f3c71aa5065af901244e668f0ec39366ac"
+    },
+    {
+      "id": "invoker#speak-plan",
+      "canonical": "invoker#speak-plan|id:speak-plan|tts:deny",
+      "sha256": "2cc0093f569d09744155ace1dafe2ef4ccf45675c0aa585f117516d3ccf19515"
+    },
+    {
+      "id": "plan#census",
+      "canonical": "plan#census|id:census|tools:file.read,http.read,model.call|writes:deny|budget.maxTokens:5000",
+      "sha256": "dcaefe0ffa836734c41fafb0d506e3e6731bab547506f23ae84c756542e8e847"
+    },
+    {
+      "id": "plan#pricing",
+      "canonical": "plan#pricing|id:pricing|tools:http.read,model.call|writes:deny|budget.maxTokens:5000",
+      "sha256": "8a929419484e29d2e9c09022186c804c8774fd41611a34edd9a5705487bb86fd"
+    },
+    {
+      "id": "plan#notes",
+      "canonical": "plan#notes|id:notes|tools:file.read,model.call|writes:deny|budget.maxTokens:5000",
+      "sha256": "fde274d7c290e90ad4ae9ec2aa22ba4586cd4c70735b22d6d2d9630211b42529"
+    }
+  ]
+}

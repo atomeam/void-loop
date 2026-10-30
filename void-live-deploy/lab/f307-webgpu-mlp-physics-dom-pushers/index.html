@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root { --bg:#05070c; --ink:#e8f0ff; --dim:#8aa0c0; --acc:#7cf; }
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:radial-gradient(ellipse at 40% 30%,#0a1428 0%,var(--bg) 70%);color:var(--ink);font:13px/1.4 system-ui,sans-serif;overflow:hidden}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hud{position:absolute;left:12px;top:12px;width:min(320px,calc(100vw - 24px));padding:12px 14px;background:#0a1220cc;border:1px solid #2a4566;backdrop-filter:blur(6px);border-radius:10px;z-index:10}
+#hud h1{margin:0 0 4px;font-size:14px;letter-spacing:.05em}
+#hud p{margin:0 0 8px;color:var(--dim);font-size:11px}
+.row{display:flex;justify-content:space-between;margin:2px 0;font-variant-numeric:tabular-nums}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+button{background:#12233a;color:var(--ink);border:1px solid #2f507a;border-radius:6px;padding:5px 8px;font:11px system-ui;cursor:pointer}
+button:hover{background:#1b3354}
+.card{position:absolute;width:70px;height:46px;background:#1a2a44ee;border:1px solid var(--acc);border-radius:8px;color:var(--acc);font:11px system-ui;display:grid;place-items:center;cursor:grab;user-select:none;z-index:5;transition:transform .1s}
+.card.claimed{border-color:#f7c;box-shadow:0 0 12px #f7c}
+#status{font-size:10px;color:var(--dim);margin-top:6px}
+@media (max-width:600px){#hud{top:auto;bottom:8px;left:8px;right:8px;width:auto}}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU MLP Physics DOM Pushers · Verse lab</title>
+<meta name="description" content="True WebGPU compute shader runs a multi-particle physics kernel (velocity/position update with damping and bounds).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU MLP Physics DOM Pushers · Verse lab">
+<meta property="og:description" content="True WebGPU compute shader runs a multi-particle physics kernel (velocity/position update with damping and bounds).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f307-webgpu-mlp-physics-dom-pushers/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f307-webgpu-mlp-physics-dom-pushers/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="hud">
+  <h1>WebGPU MLP Physics DOM Pushers</h1>
+  <p>Local tiny MLPs compete to steer a WebGPU particle physics field. Orientation + pointer train them. Cards are pushed by the field. Seal the champion.</p>
+  <div class="row"><span>Agents</span><b id="mA">3</b></div>
+  <div class="row"><span>Particles</span><b id="mP">–</b></div>
+  <div class="row"><span>Champion fit</span><b id="mF">–</b></div>
+  <div class="row"><span>Gen</span><b id="mG">0</b></div>
+  <div class="btns">
+    <button id="bReward">Reward field</button>
+    <button id="bSeal">Seal champion</button>
+    <button id="bSpawn">Spawn offspring</button>
+    <button id="bReset">Reset</button>
+  </div>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

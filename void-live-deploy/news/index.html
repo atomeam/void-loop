@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>News: headlines from many sources, with followed topics · Verse</title>
+<meta name="description" content="Headlines from the BBC, the Guardian, NPR, Al Jazeera, DW and more in one calm list: the source and age on every story, the same story from several sources grouped, sections, search, topics you follow and a read-later list on your device. Links out; no ads, no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="News · Verse">
+<meta property="og:description" content="Headlines from many open sources in one list, the same story grouped across sources, topics you follow, a read-later list; no ads, no account.">
+<meta property="og:url" content="https://a-to-mind.com/news/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/news/ (Versus' BBC News floor): one file and two small modules; stored on the device: followed topics and sources, the read-later list, the last headlines */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --tint: #efe9ff; --fs: 16px; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: var(--fs)/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  input, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
+  input[type=search] { width: 100%; border-radius: 12px; font-size: 17px; }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed="true"], button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .row > select { flex: 1 1 130px; min-width: 0; }
+  #secs { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px; margin: 8px 0 0; scrollbar-width: thin; }
+  #secs button { flex: 0 0 auto; }
+  #status { font-size: 13px; color: var(--soft); min-height: 20px; margin: 6px 0; }
+  #list { list-style: none; margin: 0; padding: 0; min-height: 704px; }
+  #week h2 { font-size: 15px; margin: 8px 0; } #week ul { margin: 0 0 12px; padding-left: 20px; } #week li { margin: 6px 0; } #week span { color: var(--soft); }
+  .story { display: grid; grid-template-columns: 1fr auto; gap: 0 6px; border-top: 1px solid var(--line); padding: 8px 0; min-height: 87px; box-sizing: border-box; align-content: start; }
+  .story .main { min-width: 0; }
+  .story .t { color: var(--ink); font-weight: 600; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; overflow-wrap: anywhere; }
+  .story .t { min-height: 26px; }
+  .story .t:hover { text-decoration: underline; }
+  .story .s { margin: 2px 0 0; font-size: 0.875em; color: var(--soft); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; min-height: 1.3em; }
+  .story .m { margin: 2px 0 0; font-size: 0.8125em; color: var(--soft); }
+  .story .m .src { font-weight: 600; color: var(--ink); }
+  .story .acts { display: flex; flex-direction: column; }
+  .story .acts button { border: 0; background: none; padding: 0; font-size: 18px; line-height: 1; }
+  .story .more { background: none; border: 0; padding: 0 2px; min-height: 44px; color: var(--accent); text-decoration: underline; font-size: inherit; }
+  .also { grid-column: 1 / -1; margin: 4px 0 0; padding: 6px 10px; background: var(--tint); border-radius: 10px; font-size: 0.875em; list-style: none; }
+  .also li { margin: 3px 0; } .also a { color: var(--ink); }
+  .sk { border-top: 1px solid var(--line); height: 87px; box-sizing: border-box; padding: 12px 0; }
+  .sk i { display: block; height: 14px; border-radius: 7px; background: var(--line); margin: 0 0 9px; opacity: .7; } .sk i:nth-child(1) { width: 92%; } .sk i:nth-child(2) { width: 60%; } .sk i:nth-child(3) { width: 30%; }
+  .compact .story { min-height: 64px; } .compact .story .s { display: none; } .compact #list { min-height: 520px; } .compact .sk { height: 64px; }
+  #reportBox .pic { aspect-ratio: 16 / 9; max-width: 280px; margin: 0 0 8px; border-radius: 12px; overflow: hidden; background: rgba(127,127,127,.12); } #reportBox .pic img, #artBox img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #reportBox article { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; background: var(--box); }
+  #reportBox h2 { font-size: 15px; margin: 0 0 6px; } #reportBox p { margin: 4px 0; } #reportBox .by { font-size: 12px; color: var(--soft); }
+  .pane { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; background: var(--box); }
+  .pane[hidden] { display: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; padding: 0; list-style: none; }
+  .srcs { font-size: 12px; color: var(--soft); margin: 18px 0 6px; } .srcs a { color: var(--soft); }
+  footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
+  #related, #asks { margin-top: 14px; }
+  @media print { html, body { background: #fff; color: #000; } #secs, .row, .acts, #pane, #status { display: none !important; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/news/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"News","url":"https://a-to-mind.com/news/","description":"Headlines from the BBC, the Guardian, NPR, Al Jazeera, DW and more in one calm list: the source and age on every story, the same story from several sources grouped with the list of who carries it, sections from world to sport and regions, search, topics and sources you follow, a read-later list, four languages, bigger text and a headlines-only view. Every story links to its source; no ads, no account; it opens offline with the last headlines.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"news, world news today, headlines from many sources, news aggregator no ads, follow topics news, bbc news alternative, read later news list","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/news/?q={words}"},"words-input":"required name=words"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"News","item":"https://a-to-mind.com/news/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main id="app" aria-busy="true">
+  <h1>News</h1>
+  <p class="sub" id="sub">Headlines from many sources, the source and age on each. Every story links to the source. Works offline with the last headlines.</p>
+  <form id="f" role="search" autocomplete="off" onsubmit="return false">
+    <label class="vh" for="q">Search the headlines</label>
+    <input type="search" id="q" placeholder="Search the headlines" maxlength="60" enterkeyhint="search">
+  </form>
+  <nav id="secs" aria-label="Sections">
+    <button type="button" data-sec="top" aria-pressed="true">Top stories</button><button type="button" data-sec="world" aria-pressed="false">World</button><button type="button" data-sec="uk" aria-pressed="false">UK</button><button type="button" data-sec="us" aria-pressed="false">US</button><button type="button" data-sec="business" aria-pressed="false">Business</button><button type="button" data-sec="tech" aria-pressed="false">Technology</button><button type="button" data-sec="science" aria-pressed="false">Science</button><button type="button" data-sec="sport" aria-pressed="false">Sport</button><button type="button" data-sec="culture" aria-pressed="false">Culture</button><button type="button" data-sec="africa" aria-pressed="false">Africa</button><button type="button" data-sec="asia" aria-pressed="false">Asia</button><button type="button" data-sec="europe" aria-pressed="false">Europe</button><button type="button" data-sec="middle-east" aria-pressed="false">Middle East</button><button type="button" data-sec="latin-america" aria-pressed="false">Latin America</button><button type="button" data-sec="report" aria-pressed="false">Verse reports</button><button type="button" data-sec="my" aria-pressed="false">My news</button><button type="button" data-sec="saved" aria-pressed="false">Saved</button>
+  </nav>
+  <div class="row">
+    <label class="vh" for="lang">Language</label>
+    <select id="lang"><option value="en">English</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option></select>
+    <label class="vh" for="src">Source</label>
+    <select id="src"><option value="">All sources</option></select>
+    <button type="button" id="size" aria-label="Text size: make the text larger">Aa +</button>
+    <button type="button" id="smaller" aria-label="Text size: make the text smaller">Aa −</button>
+    <button type="button" id="compact" aria-pressed="false">Headlines only</button>
+  </div>
+  <section class="pane" id="pane" hidden aria-label="Topics and sources you follow">
+    <div class="row" style="margin:0"><label class="vh" for="topic">A topic to follow</label><input id="topic" maxlength="30" placeholder="Follow a topic, like climate" style="flex:1 1 180px"><button type="button" id="addTopic">Follow</button><button type="button" id="followSrc" hidden>Follow this source</button></div>
+    <ul class="chips" id="chips"></ul>
+    <p class="sub" style="text-align:left;margin:0">Followed topics and sources are kept on this device. My news shows the stories that mention a topic or come from a source you follow.</p>
+  </section>
+  <div id="artBox" style="aspect-ratio:16 / 9;max-width:280px;margin:8px auto 0;border-radius:12px;overflow:hidden;background:rgba(127,127,127,.12)"></div>
+  <p class="sub" id="artCredit" style="margin:2px 0 0;min-height:20px"></p>
+  <p id="status" role="status" aria-live="polite">Loading the headlines…</p>
+  <ol id="list" aria-label="Headlines"><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li></ol>
+  <div id="week" hidden></div>
+  <div id="reportBox" hidden></div>
+  <div class="row"><button type="button" id="follow">Follow topics</button><button type="button" id="copyLink">Copy link to this view</button></div>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/news/?sec=world">World</a><a href="/news/?sec=tech">Technology</a><a href="/news/?sec=science">Science</a><a href="/news/?sec=business">Business</a><a href="/news/?sec=sport">Sport</a><a href="/news/?lang=es">Noticias en español</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/translate/">Translate</a> <a href="/notes/">Notes</a> <a href="/weather/">Weather</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+
+  <p class="srcs" id="srcs">Sources: BBC News, The Guardian, NPR, Al Jazeera, DW, France 24, CBS News, ABC Australia, Sky News, Euronews and more, each through its public feed. Only headlines, links and the short summaries the feeds carry are shown; open the story at the source to read it.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<script type="module">
+  // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, L, { cardAsk }, W] = await Promise.all([import('/lib/toolkit.js'), import('/lib/news.js'), import('/lib/news-card.js'), import('/lib/news-week.js')]);
+    const $ = (id) => document.getElementById(id), KEY = 'a2m.void.news.v1';
+    const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
+    // the device's memory: followed topics and sources, the saved stories, the text size, the language, and the last headlines per section
+    const mem = (() => { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) { return {}; } })();
+    mem.topics = mem.topics || []; mem.sources = mem.sources || []; mem.saved = mem.saved || []; mem.cache = mem.cache || {};
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch (_) { /* full or blocked: the page still works */ } };
+    const url = new URLSearchParams(location.search);
+    const st = { sec: L.SECTIONS[url.get('sec')] || url.get('sec') === 'my' || url.get('sec') === 'saved' || url.get('sec') === 'report' ? url.get('sec') : 'top', lang: L.LANGS[url.get('lang')] ? url.get('lang') : (L.LANGS[mem.lang] ? mem.lang : 'en'), q: url.get('q') || '', src: '', list: [], sources: [], at: 0, offline: false };
+    $('q').value = st.q; $('lang').value = st.lang;
+    const setSize = (px) => { mem.fs = Math.min(24, Math.max(13, px)); document.documentElement.style.setProperty('--fs', mem.fs + 'px'); keep(); };
+    if (mem.fs) document.documentElement.style.setProperty('--fs', mem.fs + 'px');
+    $('size').onclick = () => setSize((mem.fs || 16) + 2); $('smaller').onclick = () => setSize((mem.fs || 16) - 2);
+    const setCompact = (on) => { mem.compact = on; document.body.classList.toggle('compact', on); $('compact').setAttribute('aria-pressed', String(on)); keep(); };
+    $('compact').onclick = () => setCompact(!mem.compact); if (mem.compact) setCompact(true);
+    const status = (t) => { $('status').textContent = t; };
+
+    const isSaved = (id) => mem.saved.some((s) => s.id === id);
+    const say = (s) => L.shareText(s) + ' ' + s.link;
+    async function share(s) {
+      try { if (navigator.share) { await navigator.share({ title: s.title, text: L.shareText(s), url: s.link }); return; } } catch (_) { return; }
+      try { await navigator.clipboard.writeText(say(s)); status('Copied the headline, its sources and the link.'); } catch (_) { status(say(s)); }
+    }
+    function row(s, now) {
+      const li = el('li', 'story'), main = el('div', 'main');
+      const a = el('a', 't', s.title); a.href = s.link; a.target = '_blank'; a.rel = 'noopener noreferrer'; main.append(a);
+      main.append(el('p', 's', s.summary || ''));
+      const m = el('p', 'm'), name = (L.SOURCES[s.src] || [s.src])[0];
+      m.append(el('span', 'src', name), document.createTextNode(' · ' + (L.ageText(s.t, now) || 'time unknown')));
+      let panel = null;
+      if (s.n > 1) {
+        const b = el('button', 'more', s.n + ' sources'); b.type = 'button'; b.setAttribute('aria-expanded', 'false');
+        b.onclick = () => {
+          if (panel) { panel.remove(); panel = null; b.setAttribute('aria-expanded', 'false'); return; }
+          panel = el('ul', 'also'); for (const x of [{ src: s.src, title: s.title, link: s.link }, ...s.also]) { const l = el('li'); const aa = el('a', null, (L.SOURCES[x.src] || [x.src])[0] + ': ' + x.title); aa.href = x.link; aa.target = '_blank'; aa.rel = 'noopener noreferrer'; l.append(aa); panel.append(l); }
+          li.append(panel); b.setAttribute('aria-expanded', 'true');
+        };
+        m.append(document.createTextNode(' · '), b);
+      }
+      main.append(m);
+      const acts = el('div', 'acts'), sv = el('button', null, isSaved(s.id) ? '★' : '☆'); sv.type = 'button'; sv.setAttribute('aria-pressed', String(isSaved(s.id))); sv.setAttribute('aria-label', (isSaved(s.id) ? 'Remove from saved: ' : 'Save for later: ') + s.title);
+      sv.onclick = () => { if (isSaved(s.id)) mem.saved = mem.saved.filter((x) => x.id !== s.id); else mem.saved.unshift({ id: s.id, title: s.title, link: s.link, src: s.src, t: s.t, summary: s.summary, n: s.n, also: s.also || [] }); keep(); if (st.sec === 'saved') draw(); else { const on = isSaved(s.id); sv.textContent = on ? '★' : '☆'; sv.setAttribute('aria-pressed', String(on)); sv.setAttribute('aria-label', (on ? 'Remove from saved: ' : 'Save for later: ') + s.title); status(on ? 'Saved for later, on this device.' : 'Removed from saved.'); } };
+      const sh = el('button', null, '⤴'); sh.type = 'button'; sh.setAttribute('aria-label', 'Share: ' + s.title); sh.onclick = () => share(s);
+      acts.append(sv, sh); li.append(main, acts); return li;
+    }
+    // every story we know for this language: the sections fetched now and kept from before
+    const known = () => { const seen = new Map(); for (const [k, v] of Object.entries(mem.cache)) if (k.startsWith(st.lang + ':')) for (const s of v.stories) if (!seen.has(s.id)) seen.set(s.id, s); for (const s of st.list) seen.set(s.id, s); return [...seen.values()].sort((a, b) => b.t - a.t); };
+    function chips() {
+      const ul = $('chips'); ul.textContent = '';
+      for (const [kind, v, label] of [...mem.topics.map((t) => ['t', t, t]), ...mem.sources.map((s) => ['s', s, (L.SOURCES[s] || [s])[0]])]) {
+        const li = el('li'), b = el('button', null, label + ' ×'); b.type = 'button'; b.setAttribute('aria-label', 'Stop following ' + label);
+        b.onclick = () => { if (kind === 't') mem.topics = mem.topics.filter((x) => x !== v); else mem.sources = mem.sources.filter((x) => x !== v); keep(); chips(); draw(); }; li.append(b); ul.append(li);
+      }
+    }
+    function sourceMenu() {
+      const sel = $('src'), want = st.src; sel.textContent = ''; sel.append(new Option('All sources', ''));
+      for (const s of st.sources) sel.append(new Option(s.name + (s.ok ? '' : ' (not answering)'), s.src));
+      sel.value = st.sources.some((s) => s.src === want) ? want : ''; st.src = sel.value;
+      $('followSrc').hidden = !st.src; if (st.src) $('followSrc').textContent = mem.sources.includes(st.src) ? 'Following ' + (L.SOURCES[st.src] || [st.src])[0] : 'Follow ' + (L.SOURCES[st.src] || [st.src])[0];
+    }
+    // a search the headlines miss: the past week's Hacker News stories about it, the same ones the stage's "news about" card shows (lib/news-week.js)
+    let weekQ = '', weekHits = [];
+    function drawWeek(q) {
+      const box = $('week'); box.textContent = ''; box.hidden = !q || q !== weekQ || !weekHits.length; if (box.hidden) return;
+      const ul = el('ul'); box.append(el('h2', null, 'Stories from the past week about “' + q + '” (Hacker News)'), ul);
+      for (const h of weekHits) { const li = el('li'), a = el('a', null, h.title); a.href = h.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; li.append(a, el('span', null, ' · ' + h.points + ' points')); ul.append(li); }
+      status('No headline matches “' + q + '”. Below: stories from the past week on Hacker News.');
+    }
+    function week(q) {
+      if (q && q !== weekQ) { weekQ = q; weekHits = []; fetch(W.weekUrl(q)).then((r) => r.json()).then((j) => { if (weekQ !== q) return; weekHits = W.weekItems(j); drawWeek(st.q === q ? q : ''); }).catch(() => {}); }
+      drawWeek(q);
+    }
+    function draw() {
+      const now = Date.now(); let list = st.sec === 'saved' ? mem.saved : st.sec === 'my' ? L.followed(known(), mem.topics, mem.sources) : st.list;
+      if (st.src) list = list.filter((s) => s.src === st.src || (s.also || []).some((a) => a.src === st.src));
+      list = L.search(list, st.q);
+      const ol = $('list'); ol.textContent = ''; ol.style.minHeight = list.length ? '' : '0';
+      for (const s of list) ol.append(row(s, now));
+      $('pane').hidden = !(st.sec === 'my' || st.showFollow); $('follow').setAttribute('aria-pressed', String(!$('pane').hidden));
+      if (!list.length) status(st.sec === 'saved' ? 'Nothing saved yet. Tap the star on a story to keep it for later.' : st.sec === 'my' ? (mem.topics.length || mem.sources.length ? 'No story matches what you follow right now.' : 'Follow a topic or a source and the stories that match appear here.') : st.q ? 'No headline matches “' + st.q + '”.' : st.at ? 'No stories.' : 'Loading the headlines…');
+      else if (st.sec === 'saved') status(list.length + ' saved, on this device.');
+      else status((st.offline ? 'Offline: the headlines kept ' + L.ageText(st.at, now) + '. ' : '') + list.length + ' ' + (list.length === 1 ? 'story' : 'stories') + (st.at && !st.offline ? ', updated ' + L.ageText(st.at, now) : '') + '.');
+      week(!list.length && st.q && st.at && st.sec !== 'saved' && st.sec !== 'my' ? st.q : '');
+      const ok = st.sources.filter((s) => s.ok);
+      $('srcs').textContent = ''; if (st.sources.length) { $('srcs').append(document.createTextNode('Sources (' + ok.length + ' of ' + st.sources.length + ' answered): ')); st.sources.forEach((s, i) => { const a = el('a', null, s.name + (s.ok ? ' ' + s.count : ' (no answer)')); a.href = (L.SOURCES[s.src] || [])[1] || '#'; a.target = '_blank'; a.rel = 'noopener noreferrer'; $('srcs').append(a, document.createTextNode(i < st.sources.length - 1 ? ', ' : '. ')); }); $('srcs').append(document.createTextNode('Headlines, links and short summaries as the feeds publish them; read the story at the source.')); }
+      const u = L.shareLink(st, location.origin); try { history.replaceState(null, '', u.replace(location.origin, '')); } catch (_) { /* a sandboxed frame */ }
+    }
+    for (const b of $('secs').children) b.setAttribute('aria-pressed', String(b.dataset.sec === st.sec));
+    async function load(sec) {
+      const real = L.SECTIONS[sec] ? sec : 'top', key = st.lang + ':' + real, kept = mem.cache[key];
+      if (kept) { st.list = kept.stories; st.sources = kept.sources; st.at = kept.at; sourceMenu(); draw(); }
+      $('app').setAttribute('aria-busy', 'true'); if (!kept) status('Loading the headlines…');
+      try {
+        const r = await fetch('/api/news?sec=' + encodeURIComponent(real) + '&lang=' + st.lang); const j = await r.json(); if (!j.ok) throw new Error('away');
+        if (real !== (L.SECTIONS[st.sec] ? st.sec : 'top') && st.sec !== 'my') return;
+        mem.cache[key] = { stories: j.stories, sources: j.sources, at: j.at }; keep(); st.list = j.stories; st.sources = j.sources; st.at = j.at; st.offline = false;
+      } catch (_) { st.offline = !!kept; if (!kept) { st.list = []; st.sources = []; st.at = 0; status('The news feeds did not answer. Check your connection and try again.'); } }
+      finally { $('app').removeAttribute('aria-busy'); }
+      sourceMenu(); draw();
+    }
+
+    // the day's illustration (lib/daily-art.js, the route /api/daily-art): one per section, drawn once a day for everyone, loaded after the first draw so the speed does not move;
+    // its box is reserved in the HTML and in the brief, so nothing shifts. Illustration only: no photograph is ever asked for here
+    const ART_KEY = { top: 'top', world: 'world', uk: 'world', us: 'us', business: 'business', tech: 'tech', science: 'science', sport: 'top', culture: 'culture', africa: 'world', asia: 'world', europe: 'world', 'middle-east': 'world', 'latin-america': 'world', report: 'top' };
+    let DA = null; const daily = () => (DA = DA || import('/lib/daily-art.js').catch(() => null));
+    async function paintArt(sec, box, credit) {
+      const A = await daily(), key = ART_KEY[sec]; if (!A || !key || !box) return; const a = A.dailyArtImg('news', key); if (!a.src) return;
+      const img = new Image(); img.width = a.width; img.height = a.height; img.alt = a.alt; img.decoding = 'async'; img.src = a.src; box.textContent = ''; box.append(img);
+      if (credit) A.dailyArtInfo('news', key).then((i) => { if (i) A.mountCredit(credit, i); else credit.textContent = A.LABEL; }).catch(() => { credit.textContent = A.LABEL; });
+    }
+    // Verse reports (lib/news-report.js): loaded only when the tab is opened, never before the load event. Drafts are built here from the feeds' own words
+    // and shown at once; the polish (a text model, checked again here) is asked for the brief on opening and for the rest only when pressed.
+    async function showReport() {
+      const R = await import('/lib/news-report.js'), box = $('reportBox'); box.textContent = ''; status('Writing from today\'s headlines…'); $('app').setAttribute('aria-busy', 'true');
+      const secs = ['top', 'business', 'tech', 'science', 'sport'], got = {};
+      await Promise.all(secs.map(async (sec) => { const key = st.lang + ':' + sec; if (!mem.cache[key]) { try { const j = await (await fetch('/api/news?sec=' + sec + '&lang=' + st.lang)).json(); if (j.ok) { mem.cache[key] = { stories: j.stories, sources: j.sources, at: j.at }; keep(); } } catch (_) { /* offline: the kept ones */ } } got[sec] = (mem.cache[key] || { stories: [] }).stories; }));
+      $('app').removeAttribute('aria-busy'); if (st.sec !== 'report') return;
+      const srcsOf = (s) => [...new Set([s.src, ...(s.also || []).map((a) => a.src)])];
+      const ask = async (kind, items) => { try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'report', kind, items }) }); return await r.json(); } catch (_) { return null; } };
+      function card(title, kind, items, auto) {
+        const p = R.prepare({ kind, items }); if (p.error) return null;
+        const art = el('article'), h = el('h2', null, title), body = el('p', null, p.draft), by = el('p', 'by', R.label(p.names, Date.now(), false)); art.append(h, body, by);
+        const polish = async (btn) => { if (btn) { btn.disabled = true; btn.textContent = 'Writing…'; } const j = await ask(kind, items); const v = R.settle(j && j.polished && j.text !== p.draft ? j.text : null, p.draft, p.source, p.names);
+          if (v.polished) { body.textContent = v.text; by.textContent = R.label(p.names, Date.now(), true); } if (btn) btn.remove(); };
+        if (auto) polish(null); else { const b = el('button', null, 'Write it up in plain words'); b.type = 'button'; b.onclick = () => polish(b); art.append(b); }
+        return art;
+      }
+      const lead = (sec) => (got[sec] || []).slice().sort((a, b) => b.n - a.n || b.t - a.t);
+      const briefItems = secs.flatMap((sec, i) => lead(sec).slice(0, sec === 'top' ? 2 : 1).map((s) => ({ sec, srcs: srcsOf(s), title: s.title, summary: s.summary || '' })));
+      const b = briefItems.length ? card('Verse brief', 'brief', briefItems, true) : null; if (b) { const pic = el('div', 'pic'); b.insertBefore(pic, b.firstChild.nextSibling); box.append(b); paintArt('top', pic, null); }
+      // changes since 06:00 on the followed topics
+      if (mem.topics.length) { const all = [...new Map(secs.flatMap((s) => got[s]).map((s) => [s.id, s])).values()], found = R.changedOn(all, mem.topics, R.morning()); const items = found.map((f) => ({ topic: f.topic, srcs: f.srcs, title: f.title, sec: 'top' }));
+        const c = items.length ? card('Since this morning on your topics', 'changes', items, false) : null; if (c) box.append(c); else box.append(el('p', 'sub', 'Nothing new on ' + mem.topics.join(', ') + ' since this morning.')); }
+      else box.append(el('p', 'sub', 'Follow a topic (My news) and what changed on it since this morning appears here.'));
+      const clusters = [...new Map([...(got.top || []), ...(got.business || []), ...(got.tech || []), ...(got.science || []), ...(got.sport || [])].filter((s) => s.n > 1).map((s) => [s.id, s])).values()].sort((a, b) => b.n - a.n).slice(0, 12);
+      if (clusters.length) { box.append(el('h2', null, 'Stories several sources are telling')); for (const s of clusters) { const c = card(s.n + ' sources', 'cluster', [{ src: s.src, title: s.title, summary: s.summary || '' }, ...(s.also || []).map((a) => ({ src: a.src, title: a.title, summary: '' }))], false); if (c) box.append(c); } }
+      if (!box.children.length) box.append(el('p', 'sub', 'No headlines to write from yet. Try again when you are online.'));
+      status('Written by Verse from the headlines on this page: every sentence names the sources that said it, and the links to read them are in each section.');
+    }
+    async function pick(sec) {
+      st.sec = sec; for (const b of $('secs').children) b.setAttribute('aria-pressed', String(b.dataset.sec === sec));
+      const art = sec !== 'saved' && sec !== 'my'; $('artBox').hidden = !art || sec === 'report'; $('artCredit').hidden = !art || sec === 'report'; if (art && sec !== 'report') paintArt(sec, $('artBox'), $('artCredit'));
+      $('list').hidden = sec === 'report'; $('reportBox').hidden = sec !== 'report'; if (sec === 'report') { $('pane').hidden = true; return showReport(); }
+      if (sec === 'saved') { st.src = ''; sourceMenu(); draw(); return; }
+      if (sec === 'my') { draw(); await Promise.all(['top', 'world'].filter((s) => !mem.cache[st.lang + ':' + s]).map((s) => fetch('/api/news?sec=' + s + '&lang=' + st.lang).then((r) => r.json()).then((j) => { if (j.ok) { mem.cache[st.lang + ':' + s] = { stories: j.stories, sources: j.sources, at: j.at }; keep(); } }).catch(() => {}))); draw(); return; }
+      await load(sec);
+    }
+    for (const b of $('secs').children) b.onclick = () => pick(b.dataset.sec);
+    $('lang').onchange = () => { st.lang = $('lang').value; mem.lang = st.lang; keep(); const other = st.lang !== 'en'; for (const b of $('secs').children) b.hidden = other && !['top', 'my', 'saved'].includes(b.dataset.sec); document.documentElement.lang = st.lang; pick(other && L.SECTIONS[st.sec] && st.sec !== 'top' ? 'top' : st.sec); };
+    $('src').onchange = () => { st.src = $('src').value; sourceMenu(); draw(); };
+    $('followSrc').onclick = () => { st.src && (mem.sources.includes(st.src) ? (mem.sources = mem.sources.filter((x) => x !== st.src)) : mem.sources.push(st.src)); keep(); sourceMenu(); chips(); draw(); };
+    $('addTopic').onclick = () => { const t = $('topic').value.trim().toLowerCase(); if (t && !mem.topics.includes(t) && mem.topics.length < 30) { mem.topics.push(t); keep(); } $('topic').value = ''; chips(); draw(); };
+    $('topic').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); $('addTopic').click(); } };
+    $('follow').onclick = () => { st.showFollow = !st.showFollow; draw(); };
+    let tm; $('q').oninput = () => { clearTimeout(tm); tm = setTimeout(() => { st.q = $('q').value.trim(); draw(); }, 120); };
+    $('copyLink').onclick = async () => { const u = L.shareLink(st, location.origin); try { await navigator.clipboard.writeText(u); status('Copied the link to this view.'); } catch (_) { status(u); } };
+    if (st.lang !== 'en') { for (const b of $('secs').children) b.hidden = !['top', 'my', 'saved'].includes(b.dataset.sec); document.documentElement.lang = st.lang; }
+    chips(); mountRelated($('related'), '/news/', [], { card: () => cardAsk(st.sec, $('q').value) });
+    await pick(st.sec);
+    addEventListener('online', () => pick(st.sec));
+    setInterval(() => { if (!document.hidden && st.sec !== 'saved') pick(st.sec); }, 10 * 60e3); // the edge keeps it seven minutes, so this costs the publishers nothing extra
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

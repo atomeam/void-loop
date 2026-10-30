@@ -14,6 +14,7 @@ export function downloadPrintOf(text) {
   if (/^(?:please\s+)?download the print file offline$/.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?save the print file for offline$/.test(t)) return { what: 'stage' };
   if (/^(?:please\s+)?get the print file$/.test(t)) return { what: 'stage' };
+  if (/^(?:please\s+)?get me the (?:3mf|print file) for the (?:\w+)$/.test(t)) return { what: 'stage' };
   return null;
 }
 
@@ -66,7 +67,7 @@ async function run(text, api) {
 
 export default {
   name: 'print-download',
-  examples: ['download the print file', 'download the print file offline', 'save the print file for offline', 'get the print file'],
+  examples: ['download the print file', 'download the print file offline', 'save the print file for offline', 'get the print file', 'get me the 3mf for the rotor'],
   nearMisses: ['export a print file', 'download motelet', 'download a 3mf of the stage', 'what is a slicer'],
   downloadPrintOf,
   offlinePackage,

@@ -1,0 +1,1001 @@
+{
+ "site": "www.sejda.com",
+ "url": "https://www.sejda.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "a.sejda.com/pa-pTbOttubxy_kKIavRgNtA.js",
+   "t": "js",
+   "b": 6132
+  },
+  {
+   "f": "libs-and-partials.min.js",
+   "t": "js",
+   "b": 803543
+  },
+  {
+   "f": "index.min.css",
+   "t": "css",
+   "b": 162057
+  }
+ ],
+ "assetCount": 3,
+ "bytes": 971732,
+ "html": {
+  "mobile": {
+   "title": "Sejda helps with your PDF tasks",
+   "lang": "en",
+   "manifest": null,
+   "hreflang": [
+    "en",
+    "fr",
+    "de",
+    "ro",
+    "nl",
+    "no",
+    "it",
+    "pt",
+    "es",
+    "pl",
+    "sv",
+    "fi",
+    "ja",
+    "id",
+    "hu",
+    "th",
+    "vi",
+    "tr",
+    "ko",
+    "cs",
+    "zh-Hans",
+    "zh-Hant",
+    "ar",
+    "ru",
+    "hi",
+    "he",
+    "uk",
+    "el",
+    "da",
+    "x-default"
+   ],
+   "canonical": true,
+   "share": {
+    "og": 5,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "accepts": [
+    ".png,.jpg,.jpeg,.bmp"
+   ],
+   "inputTypes": {
+    "checkbox": 2,
+    "email": 1,
+    "file": 1,
+    "radio": 2,
+    "search": 1,
+    "text": 1
+   },
+   "textareas": 1,
+   "forms": 2,
+   "ariaLabels": [
+    "Close"
+   ],
+   "roles": {
+    "menu": 1,
+    "menuitem": 2,
+    "dialog": 1
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "About",
+   "w": "md"
+  },
+  {
+   "l": "Add PDF Page Numbers",
+   "w": "md"
+  },
+  {
+   "l": "All Tools",
+   "w": "md"
+  },
+  {
+   "l": "Alternate & Mix PDF",
+   "w": "md"
+  },
+  {
+   "l": "Bahasa Indonesia",
+   "w": "md"
+  },
+  {
+   "l": "Bates Numbering PDF",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "md"
+  },
+  {
+   "l": "Compress",
+   "w": "d"
+  },
+  {
+   "l": "Compress PDF",
+   "w": "md"
+  },
+  {
+   "l": "Cookies",
+   "w": "md"
+  },
+  {
+   "l": "Create PDF Bookmarks",
+   "w": "md"
+  },
+  {
+   "l": "Crop",
+   "w": "d"
+  },
+  {
+   "l": "Crop PDF",
+   "w": "md"
+  },
+  {
+   "l": "Dansk",
+   "w": "md"
+  },
+  {
+   "l": "Delete PDF Annotations",
+   "w": "md"
+  },
+  {
+   "l": "Delete PDF Pages",
+   "w": "md"
+  },
+  {
+   "l": "Delete Pages",
+   "w": "d"
+  },
+  {
+   "l": "Deskew PDF",
+   "w": "md"
+  },
+  {
+   "l": "Desktop",
+   "w": "d"
+  },
+  {
+   "l": "Deutsch",
+   "w": "md"
+  },
+  {
+   "l": "Developer Docs",
+   "w": "md"
+  },
+  {
+   "l": "Edit",
+   "w": "d"
+  },
+  {
+   "l": "Edit PDF Metadata",
+   "w": "md"
+  },
+  {
+   "l": "English",
+   "w": "md"
+  },
+  {
+   "l": "Español",
+   "w": "md"
+  },
+  {
+   "l": "Extract Images from PDF",
+   "w": "md"
+  },
+  {
+   "l": "Extract PDF Pages",
+   "w": "md"
+  },
+  {
+   "l": "Fill & Sign",
+   "w": "d"
+  },
+  {
+   "l": "Fill & Sign PDF",
+   "w": "md"
+  },
+  {
+   "l": "Flatten PDF",
+   "w": "md"
+  },
+  {
+   "l": "Flip PDF",
+   "w": "md"
+  },
+  {
+   "l": "Français",
+   "w": "md"
+  },
+  {
+   "l": "Grayscale PDF",
+   "w": "md"
+  },
+  {
+   "l": "HTML to PDF",
+   "w": "md"
+  },
+  {
+   "l": "HTML to PDF API",
+   "w": "md"
+  },
+  {
+   "l": "Header & Footer PDF",
+   "w": "md"
+  },
+  {
+   "l": "Italiano",
+   "w": "md"
+  },
+  {
+   "l": "JPG to PDF",
+   "w": "md"
+  },
+  {
+   "l": "Log in",
+   "w": "md"
+  },
+  {
+   "l": "Magyar",
+   "w": "md"
+  },
+  {
+   "l": "Merge",
+   "w": "d"
+  },
+  {
+   "l": "Merge PDF",
+   "w": "md"
+  },
+  {
+   "l": "N-up PDF",
+   "w": "md"
+  },
+  {
+   "l": "Nederlands",
+   "w": "md"
+  },
+  {
+   "l": "Norsk",
+   "w": "md"
+  },
+  {
+   "l": "OCR PDF",
+   "w": "md"
+  },
+  {
+   "l": "PDF Editor",
+   "w": "md"
+  },
+  {
+   "l": "PDF Page Numbers",
+   "w": "md"
+  },
+  {
+   "l": "PDF to Excel",
+   "w": "md"
+  },
+  {
+   "l": "PDF to JPG",
+   "w": "md"
+  },
+  {
+   "l": "PDF to PowerPoint",
+   "w": "md"
+  },
+  {
+   "l": "PDF to Text",
+   "w": "md"
+  },
+  {
+   "l": "PDF to Word",
+   "w": "md"
+  },
+  {
+   "l": "Polski",
+   "w": "md"
+  },
+  {
+   "l": "Português",
+   "w": "md"
+  },
+  {
+   "l": "Pricing",
+   "w": "md"
+  },
+  {
+   "l": "Pricing & Upgrade",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Settings",
+   "w": "md"
+  },
+  {
+   "l": "Protect PDF",
+   "w": "md"
+  },
+  {
+   "l": "Repair PDF",
+   "w": "md"
+  },
+  {
+   "l": "Resize PDF",
+   "w": "md"
+  },
+  {
+   "l": "Română",
+   "w": "md"
+  },
+  {
+   "l": "Rotate PDF",
+   "w": "md"
+  },
+  {
+   "l": "SLA",
+   "w": "md"
+  },
+  {
+   "l": "Security",
+   "w": "md"
+  },
+  {
+   "l": "Sejda",
+   "w": "d"
+  },
+  {
+   "l": "Sejda for Desktop",
+   "w": "md"
+  },
+  {
+   "l": "Sejda for Education",
+   "w": "md"
+  },
+  {
+   "l": "Sejda for G Suite",
+   "w": "md"
+  },
+  {
+   "l": "Sejda.com logo",
+   "w": "m"
+  },
+  {
+   "l": "Split PDF by bookmarks",
+   "w": "md"
+  },
+  {
+   "l": "Split PDF by pages",
+   "w": "md"
+  },
+  {
+   "l": "Split PDF by size",
+   "w": "md"
+  },
+  {
+   "l": "Split PDF by text",
+   "w": "md"
+  },
+  {
+   "l": "Split PDF in half",
+   "w": "md"
+  },
+  {
+   "l": "Suomi",
+   "w": "md"
+  },
+  {
+   "l": "Svenska",
+   "w": "md"
+  },
+  {
+   "l": "Terms of Use",
+   "w": "md"
+  },
+  {
+   "l": "Tiếng Việt",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/api/"
+  ],
+  "sitemaps": [
+   "https://www.sejda.com/sitemap.xml",
+   "https://www.sejda.com/blog/sitemap.xml"
+  ],
+  "crawlDelay": "10"
+ },
+ "sitemap": {
+  "urls": 555,
+  "index": false,
+  "sections": [
+   {
+    "s": "ro",
+    "n": 20
+   },
+   {
+    "s": "ar",
+    "n": 19
+   },
+   {
+    "s": "cs",
+    "n": 19
+   },
+   {
+    "s": "da",
+    "n": 19
+   },
+   {
+    "s": "de",
+    "n": 19
+   },
+   {
+    "s": "el",
+    "n": 19
+   },
+   {
+    "s": "es",
+    "n": 19
+   },
+   {
+    "s": "fi",
+    "n": 19
+   },
+   {
+    "s": "fr",
+    "n": 19
+   },
+   {
+    "s": "he",
+    "n": 19
+   },
+   {
+    "s": "hi",
+    "n": 19
+   },
+   {
+    "s": "hu",
+    "n": 19
+   },
+   {
+    "s": "id",
+    "n": 19
+   },
+   {
+    "s": "it",
+    "n": 19
+   },
+   {
+    "s": "ja",
+    "n": 19
+   }
+  ],
+  "langs": [
+   "en",
+   "ro",
+   "nl",
+   "no",
+   "es",
+   "pt",
+   "de",
+   "it",
+   "sv",
+   "pl",
+   "fi",
+   "fr",
+   "ja",
+   "id",
+   "hu",
+   "th",
+   "vi",
+   "tr",
+   "ko",
+   "cs",
+   "zh-Hans",
+   "zh-Hant",
+   "ar",
+   "da",
+   "el",
+   "hi",
+   "he",
+   "ru",
+   "uk"
+  ]
+ },
+ "code": [
+  {
+   "file": "libs-and-partials.min.js",
+   "own": true,
+   "apiPaths": [
+    "/api@528427",
+    "/api/files@712072",
+    "/api/files/client-view@722682",
+    "/api/files/upload-check@748089",
+    "/api/tasks@761426"
+   ],
+   "flags": [
+    "useDefault@253205",
+    "showSubtext@255937",
+    "showIcon@255952",
+    "showContent@255964",
+    "showTick@256153",
+    "disableAutoOpen@311270",
+    "allowSelect@432160",
+    "allowMove@432175",
+    "allowResize@432188",
+    "useIntKeysAsArrayIndex@444664",
+    "disableMetaDataParsers@459801",
+    "disableSubmitBtn@648121",
+    "disableStream@677975",
+    "disableAutoFetch@677992",
+    "useWorkerFetch@678025",
+    "showAuthPopup@703792",
+    "disableRange@722836",
+    "useWebWorkers@748821"
+   ],
+   "storage": [
+    "visited@611618",
+    "gdrive.logging@692248"
+   ],
+   "apis": [
+    "Off-thread image drawing",
+    "Syncs between tabs",
+    "Use the camera or microphone"
+   ],
+   "langs": 17,
+   "mimes": [
+    "image/jpeg",
+    "image/png",
+    "application/x-shockwave-flash",
+    "application/pdf",
+    "application/vnd.google-apps.folder",
+    "application/zip",
+    "image/tiff",
+    "image/webp"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "index.min.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "a.sejda.com",
+   "file": "a.sejda.com/pa-pTbOttubxy_kKIavRgNtA.js",
+   "at": 4022
+  },
+  {
+   "host": "accounts.google.com",
+   "file": "libs-and-partials.min.js",
+   "at": 701676
+  },
+  {
+   "host": "apis.google.com",
+   "file": "libs-and-partials.min.js",
+   "at": 702445
+  },
+  {
+   "host": "bit.ly",
+   "file": "libs-and-partials.min.js",
+   "at": 362547
+  },
+  {
+   "host": "drive.google.com",
+   "file": "libs-and-partials.min.js",
+   "at": 761662
+  },
+  {
+   "host": "fontawesome.com",
+   "file": "index.min.css",
+   "at": 50248
+  },
+  {
+   "host": "getbootstrap.com",
+   "file": "libs-and-partials.min.js",
+   "at": 110
+  },
+  {
+   "host": "jqueryui.com",
+   "file": "libs-and-partials.min.js",
+   "at": 97904
+  },
+  {
+   "host": "js.live.net",
+   "file": "libs-and-partials.min.js",
+   "at": 673846
+  },
+  {
+   "host": "sejda.com",
+   "file": "libs-and-partials.min.js",
+   "at": 672116
+  },
+  {
+   "host": "silviomoreto.github.io",
+   "file": "index.min.css",
+   "at": 45034
+  },
+  {
+   "host": "tinyurl.com",
+   "file": "libs-and-partials.min.js",
+   "at": 300419
+  },
+  {
+   "host": "twitter.com",
+   "file": "libs-and-partials.min.js",
+   "at": 801955
+  },
+  {
+   "host": "www.dropbox.com",
+   "file": "libs-and-partials.min.js",
+   "at": 673478
+  },
+  {
+   "host": "www.google.com",
+   "file": "libs-and-partials.min.js",
+   "at": 668218
+  },
+  {
+   "host": "www.googleapis.com",
+   "file": "libs-and-partials.min.js",
+   "at": 699077
+  },
+  {
+   "host": "www.macromedia.com",
+   "file": "libs-and-partials.min.js",
+   "at": 612779
+  },
+  {
+   "host": "www.opensource.org",
+   "file": "libs-and-partials.min.js",
+   "at": 444110
+  },
+  {
+   "host": "www.sejda.com",
+   "file": "libs-and-partials.min.js",
+   "at": 672432
+  }
+ ],
+ "thirdParty": [
+  "accounts.google.com",
+  "apis.google.com",
+  "bit.ly",
+  "drive.google.com",
+  "fontawesome.com",
+  "getbootstrap.com",
+  "jqueryui.com",
+  "js.live.net",
+  "sejda.com",
+  "silviomoreto.github.io",
+  "tinyurl.com",
+  "twitter.com",
+  "www.dropbox.com",
+  "www.google.com",
+  "www.googleapis.com",
+  "www.macromedia.com",
+  "www.opensource.org"
+ ],
+ "services": [
+  "Web fonts"
+ ],
+ "storage": {
+  "local": [
+   "agreedTerms",
+   "thumbnails-size"
+  ],
+  "session": [],
+  "idb": [
+   "recent-files"
+  ]
+ },
+ "candidates": [
+  {
+   "name": "Opens files: .png,.jpg,.jpeg,.bmp",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "index.min.css"
+  },
+  {
+   "name": "API path /api",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@528427"
+  },
+  {
+   "name": "API path /api/files",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@712072"
+  },
+  {
+   "name": "API path /api/files/client-view",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@722682"
+  },
+  {
+   "name": "API path /api/files/upload-check",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@748089"
+  },
+  {
+   "name": "API path /api/tasks",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@761426"
+  },
+  {
+   "name": "Feature flag allowMove",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@432175"
+  },
+  {
+   "name": "Feature flag allowResize",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@432188"
+  },
+  {
+   "name": "Feature flag allowSelect",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@432160"
+  },
+  {
+   "name": "Feature flag disableAutoFetch",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@677992"
+  },
+  {
+   "name": "Feature flag disableAutoOpen",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@311270"
+  },
+  {
+   "name": "Feature flag disableMetaDataParsers",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@459801"
+  },
+  {
+   "name": "Feature flag disableRange",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@722836"
+  },
+  {
+   "name": "Feature flag disableStream",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@677975"
+  },
+  {
+   "name": "Feature flag disableSubmitBtn",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@648121"
+  },
+  {
+   "name": "Feature flag showAuthPopup",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@703792"
+  },
+  {
+   "name": "Feature flag showContent",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@255964"
+  },
+  {
+   "name": "Feature flag showIcon",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@255952"
+  },
+  {
+   "name": "Feature flag showSubtext",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@255937"
+  },
+  {
+   "name": "Feature flag showTick",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@256153"
+  },
+  {
+   "name": "Feature flag useDefault",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@253205"
+  },
+  {
+   "name": "Feature flag useIntKeysAsArrayIndex",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@444664"
+  },
+  {
+   "name": "Feature flag useWebWorkers",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@748821"
+  },
+  {
+   "name": "Feature flag useWorkerFetch",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "libs-and-partials.min.js@678025"
+  },
+  {
+   "name": "Widget menu",
+   "kind": "setting",
+   "tag": "observed",
+   "evidence": "[role=menu] x1"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Input of type search",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=search] x1"
+  },
+  {
+   "name": "Use the camera or microphone",
+   "kind": "input",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@601479"
+  },
+  {
+   "name": "Keeps a database in the browser: recent-files",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "indexedDB"
+  },
+  {
+   "name": "Remembers a setting in the browser: agreedTerms",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: thumbnails-size",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Interface languages: 17 (jp, nl, kr, se, eu, ie)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@480792"
+  },
+  {
+   "name": "Language versions in the sitemap: 29",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Language versions: 30 (en, fr, de, ro, nl, no)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Off-thread image drawing",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@455849"
+  },
+  {
+   "name": "Syncs between tabs",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "libs-and-partials.min.js@390761"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "index.min.css@56194"
+  },
+  {
+   "name": "Path kept from crawlers /api/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /ar/ (19 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /cs/ (19 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /da/ (19 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /de/ (19 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /el/ (19 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /es/ (19 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /fi/ (19 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /ro/ (20 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

@@ -28,11 +28,16 @@ export function eventsOf(rows) {
     return title && !isNaN(at.getTime()) ? { id: String(r.id || '').replace(/[^a-z0-9]/gi, '').slice(0, 40), title, at, allDay: r.allDay === true } : null;
   }).filter(Boolean).slice(0, 500);
 }
-/** the whole calendar text, CRLF line ends; null when there is nothing to write. */
-export function icsOf(rows, now = new Date()) {
+/** a time zone name worth writing (IANA style like America/New_York or UTC), else ''. Pure. */
+export const tzName = (tz) => (/^(?:UTC|[A-Z][A-Za-z_+-]{1,30}(?:\/[A-Za-z0-9_+-]{1,30}){1,2})$/.test(String(tz || '')) ? String(tz) : '');
+/** the whole calendar text, CRLF line ends; null when there is nothing to write. tz (asked by Verse, 'time-zone-detect'): the browser's
+ * own zone, written as X-WR-TIMEZONE so an importing app files the calendar under it; times stay absolute UTC, so every app shows them
+ * at the reader's local time. */
+export function icsOf(rows, now = new Date(), { tz = '' } = {}) {
   const ev = eventsOf(rows);
   if (!ev.length) return null;
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//a-to-mind//Verse agenda//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  if (tzName(tz)) lines.push('X-WR-TIMEZONE:' + tzName(tz));
   ev.forEach((e, i) => {
     lines.push('BEGIN:VEVENT', 'UID:' + (e.id || 'e' + i) + '-' + utc(e.at) + '@a-to-mind.com', 'DTSTAMP:' + utc(now));
     if (e.allDay) { const next = new Date(e.at.getFullYear(), e.at.getMonth(), e.at.getDate() + 1); lines.push('DTSTART;VALUE=DATE:' + day(e.at), 'DTEND;VALUE=DATE:' + day(next)); }

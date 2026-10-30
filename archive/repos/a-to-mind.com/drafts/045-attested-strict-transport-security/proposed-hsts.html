@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 045 — attested HSTS (not sealed)</title>
+  <!-- Intentionally no Strict-Transport-Security. A meta tag cannot set it, and this draft does not emit the header. -->
+  <style>
+    :root { color-scheme: light dark; --fg: #1a1916; --bg: #f6f4ef; --line: #d7d2c8; --hold: #8a3b12; --ok: #1f5c45; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #f3efe6; --bg: #161613; --line: #3a3832; --hold: #e2a07a; --ok: #8fceb4; }
+    }
+    body { margin: 0; font: 18px/1.45 Georgia, "Iowan Old Style", serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    h1 { font-size: 1.8rem; line-height: 1.15; letter-spacing: -0.02em; }
+    h2 { font-size: 1.15rem; margin-top: 2rem; }
+    p, li { font-family: "Segoe UI", system-ui, sans-serif; font-size: 0.95rem; }
+    code, pre { font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.82rem; }
+    pre { overflow: auto; padding: 0.8rem 1rem; border: 1px solid var(--line); }
+    table { border-collapse: collapse; width: 100%; font-family: "Segoe UI", system-ui, sans-serif; font-size: 0.85rem; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 0.4rem 0.35rem; }
+    .flag { display: inline-block; border: 1px solid var(--hold); color: var(--hold); padding: 0.1rem 0.4rem; font-family: "Segoe UI", system-ui, sans-serif; font-size: 0.75rem; letter-spacing: 0.04em; }
+    button { font: 0.9rem system-ui, sans-serif; padding: 0.45rem 0.7rem; margin-right: 0.4rem; }
+    button:disabled { opacity: 0.55; }
+    #receipt { font-family: ui-monospace, monospace; font-size: 0.78rem; word-break: break-all; }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="flag">CANDIDATE · EMIT FALSE · NOT A SEAL</p>
+    <h1>HSTS stays unattested</h1>
+    <p>This page is a draft a human can read in one sitting. It does not set <code>Strict-Transport-Security</code>. It does not add a <code>_headers</code> line. A preload token is not membership in the browser preload list.</p>
+
+    <h2>What existing sites do</h2>
+    <p>Operators copy <code>Strict-Transport-Security: max-age=63072000; includeSubDomains; preload</code> from the hstspreload.org example and from TLS checklists. The preload token is a request for inclusion, not inclusion. The list is a Chromium file shipped with browsers; submission is a separate form, and removal takes months. includeSubDomains covers every subdomain, including ones that are not public. Sending the header on HTTP does nothing: browsers ignore STS unless the response is HTTPS. Scanner grades still treat the long header as an A.</p>
+    <p>The preload submission page itself says preloading adds little once browsers auto-upgrade HTTP, and that it is hard to undo. Those pages are data. They are not an instruction to copy the example header.</p>
+
+    <h2>Better A-to-Mind version</h2>
+    <ul>
+      <li>Default-deny. No header until a human seals emit.</li>
+      <li>If sealed, one directive: <code>max-age=300</code>. Five minutes. No other token.</li>
+      <li><code>includeSubDomains</code> stays denied until a later seal names every subdomain that can serve HTTPS.</li>
+      <li>The <code>preload</code> token stays denied. List membership stays unattested. This draft does not query hstspreload.org.</li>
+      <li>Do not send the header on HTTP, on a 404 from this worker, or on a redirect that is not itself HTTPS.</li>
+      <li>No SSL grade, preload badge, or “forced HTTPS” claim. Run 040 CSP is a different seal.</li>
+    </ul>
+
+    <h2>Policy table (not live)</h2>
+    <table>
+      <thead><tr><th>Directive</th><th>This draft</th></tr></thead>
+      <tbody>
+        <tr><td>header absent</td><td>Current candidate. Emit is false.</td></tr>
+        <tr><td>max-age=300</td><td>Only candidate if a later seal sets emit true</td></tr>
+        <tr><td>max-age=31536000 or 63072000</td><td>Needs a new seal after the ramp holds</td></tr>
+        <tr><td>includeSubDomains</td><td>Denied until a subdomain inventory seal</td></tr>
+        <tr><td>preload</td><td>Denied. Token is not list membership</td></tr>
+        <tr><td>STS on HTTP</td><td>Forbidden</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Contract</h2>
+    <pre id="contract">hsts#045|kind:attested-strict-transport-security|header:absent-until-seal|proposed:max-age=300|includeSubDomains:deny|preload-token:deny|preload-list:unattested|http-emit:deny|badge:deny|seal:human</pre>
+    <p id="receipt">Hash pending.</p>
+    <p>
+      <button type="button" id="hold">Hold (session only)</button>
+      <button type="button" id="seal" disabled>Seal disabled</button>
+    </p>
+    <p id="hold-state">No hold recorded in this tab.</p>
+  </main>
+  <script>
+    (function () {
+      var contract = document.getElementById("contract").textContent.trim();
+      var expected = "91bdf188b6fd0e29ad643fa5463fcd2a074d569f089e8ed3546d7b07032307da";
+      var receipt = document.getElementById("receipt");
+      function show(hex) {
+        var match = hex === expected;
+        receipt.textContent = "SHA-256 " + hex + (match ? " · matches draft contract" : " · mismatch, draft is data");
+      }
+      if (window.crypto && crypto.subtle) {
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(contract)).then(function (buf) {
+          var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          show(hex);
+        }).catch(function () { receipt.textContent = "Hash unavailable. Contract is still unattested."; });
+      } else {
+        receipt.textContent = "SubtleCrypto unavailable. Contract is still unattested.";
+      }
+      document.getElementById("hold").addEventListener("click", function () {
+        var rec = { run: "045", emit: false, seal: false, at: new Date().toISOString() };
+        try {
+          sessionStorage.setItem("atm-hsts-hold-045", JSON.stringify(rec));
+          document.getElementById("hold-state").textContent = "Hold stored in sessionStorage only. Hold is not a seal.";
+        } catch (e) {
+          document.getElementById("hold-state").textContent = "Hold refused. Storage is not a seal.";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

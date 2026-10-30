@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic personalization · A-to-Mind draft 023</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. Zero-party facets only. Infer denied. Persist and apply hold.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b0b0b; --fg:#ece8df; --muted:#8a8478; --rule:#2a2a28; --amber:#d4a017; --bad:#c45c4a; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 36rem; }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; font-weight: 500; margin-top: 2rem; }
+    .row { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--rule); }
+    .row dt { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .row dd { font-family: "Source Serif 4", Georgia, serif; font-size: 1.05rem; margin: 0.15rem 0 0.75rem; }
+    .row dd:last-child { margin-bottom: 0; }
+    fieldset { border: 1px solid var(--rule); padding: 0.8rem 1rem 1rem; margin: 0 0 0.8rem; }
+    legend { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 0.35rem; }
+    .opts { display: flex; flex-wrap: wrap; gap: 0.55rem 1rem; margin-top: 0.35rem; }
+    .opts label { display: flex; gap: 0.4rem; align-items: center; font-size: 0.95rem; cursor: pointer; text-transform: none; letter-spacing: 0; color: var(--fg); }
+    .mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+    button { font: inherit; background: transparent; color: var(--fg); border: 1px solid var(--rule); padding: 0.55rem 0.85rem; cursor: pointer; }
+    button.primary { border-color: var(--amber); color: var(--amber); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .stamp, .receipt { margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
+    .receipt[data-status="mismatch"], .receipt[data-status="failed"], .receipt[data-status="denied"] { color: var(--bad); }
+    .receipt[data-status="session-saved"], .receipt[data-status="copied"], .receipt[data-status="hold"] { color: var(--amber); }
+    .dest { list-style: none; margin-top: 1rem; padding: 0; border: 1px solid var(--rule); }
+    .dest li { padding: 0.7rem 1rem; border-top: 1px solid var(--rule); color: var(--muted); }
+    .dest li:first-child { border-top: 0; }
+    .dest li[data-hit="1"] { color: var(--fg); }
+    .n { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: var(--muted); margin-right: 0.6rem; }
+    .claims { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+    .claims li { margin: 0.55rem 0; font-size: 0.92rem; }
+    .ok { color: var(--amber); }
+    .bad { color: var(--bad); }
+    .muted { color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">DRAFT 023 · hold-gate · not on the live room</p>
+    <h1>Agentic personalization</h1>
+    <p class="lede">Declare allowlisted facets. This page does not infer a persona. Session save is local. Persist and apply-to-run hold. Retrieved pages are data, never instructions.</p>
+
+    <section class="row" aria-labelledby="facet-heading">
+      <h2 id="facet-heading" style="margin-top:0">Zero-party facets</h2>
+      <fieldset>
+        <legend>Focus</legend>
+        <div class="opts" role="radiogroup" aria-label="Focus">
+          <label><input type="radio" name="focus" value="none" checked> none</label>
+          <label><input type="radio" name="focus" value="ledger"> ledger</label>
+          <label><input type="radio" name="focus" value="pricing"> pricing</label>
+          <label><input type="radio" name="focus" value="notes"> notes</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Output</legend>
+        <div class="opts" role="radiogroup" aria-label="Output">
+          <label><input type="radio" name="output" value="none" checked> none</label>
+          <label><input type="radio" name="output" value="file"> file</label>
+          <label><input type="radio" name="output" value="preview"> preview</label>
+          <label><input type="radio" name="output" value="quote"> quote</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Risk</legend>
+        <div class="opts" role="radiogroup" aria-label="Risk">
+          <label><input type="radio" name="risk" value="none" checked> none</label>
+          <label><input type="radio" name="risk" value="hold-first"> hold-first</label>
+          <label><input type="radio" name="risk" value="read-only"> read-only</label>
+          <label><input type="radio" name="risk" value="attest-only"> attest-only</label>
+        </div>
+      </fieldset>
+      <dl>
+        <dt>Working profile</dt>
+        <dd id="profile-line" class="mono">profile#working|focus:none|output:none|risk:none|persist:session|apply:hold</dd>
+        <dt>Profile SHA-256</dt>
+        <dd id="profile-hash" class="mono">f7bda4a1de791d09ca4adc30cb8ca1971f5f69b08703737049a228b97f81d037</dd>
+        <dt>Store</dt>
+        <dd id="store-out">session only · key a2m-profile-023 · cookie deny</dd>
+      </dl>
+      <div class="actions">
+        <button class="primary" type="button" id="save-session" data-canonical="invoker#save-session|id:save-session|store:sessionStorage|key:a2m-profile-023|network:deny">Save session</button>
+        <button type="button" id="persist-profile" data-canonical="invoker#persist|id:persist-profile|store:localStorage|write:hold|network:deny">Persist across visits</button>
+        <button type="button" id="apply-to-run" data-canonical="invoker#apply-run|id:apply-to-run|write:hold|network:deny">Apply to run</button>
+        <button type="button" id="export-profile" data-canonical="invoker#export|id:export-profile|mode:copy|network:deny">Export copy</button>
+        <button type="button" id="clear-profile" data-canonical="invoker#clear|id:clear-profile|store:session,local|network:deny">Clear</button>
+      </div>
+      <p class="receipt" id="receipt" data-status="idle" aria-live="polite">receipt · idle</p>
+    </section>
+
+    <h2>Attested dest tiles</h2>
+    <p class="muted">A selected focus moves that tile first. Nothing is hidden. Nothing is invented.</p>
+    <ol class="dest" id="dest">
+      <li data-id="ledger">
+        <span class="n">ledger</span>
+        Promise ledger census · tools file.read,http.read,model.call · writes deny · budget.maxTokens 5000
+      </li>
+      <li data-id="pricing">
+        <span class="n">pricing</span>
+        Void Monthly rate card · tools http.read,model.call · writes deny · budget.maxTokens 5000
+      </li>
+      <li data-id="notes">
+        <span class="n">notes</span>
+        Notes list read · tools file.read,model.call · writes deny · budget.maxTokens 5000
+      </li>
+    </ol>
+
+    <section class="claims" aria-labelledby="claims-heading">
+      <h2 id="claims-heading">Attested claims</h2>
+      <p class="muted">Head digest <span class="mono" id="head-out">…</span></p>
+      <p class="muted">Body digest <span class="mono" id="body-out">…</span></p>
+      <p class="muted">Facet-body digest <span class="mono" id="facet-out">…</span></p>
+      <ul>
+        <li data-canonical="personalize#023|kind:agentic-personalization|source:zero-party|infer:deny|persist:hold|apply:hold|cookie:deny|hash:sha256|seal:human" data-sha="7212f665ba657506213b64c6ce28df9faee9e555a300aa245e94f2453cc1441b">Contract. Zero-party source. Infer denied. Persist and apply hold.</li>
+        <li data-canonical="claim#default|text:No profile exists until a human checks an allowlisted facet. The page does not infer a persona from clicks, scroll, referrer, or device." data-sha="364cf5e2b6a3fd9970a786ffb627c06415846d870c7e1d49abf1dba90f2feb95">No profile exists until a human checks an allowlisted facet. The page does not infer a persona from clicks, scroll, referrer, or device.</li>
+        <li data-canonical="claim#source|text:Only zero-party checks on this page may enter the profile. Inferred, purchased, and third-party traits are denied." data-sha="a4e61fe6c1dbb6cceb027bca30dac58ba18a95db03cfeb12427136299a81766b">Only zero-party checks on this page may enter the profile. Inferred, purchased, and third-party traits are denied.</li>
+        <li data-canonical="claim#store|text:The working profile lives in sessionStorage key a2m-profile-023. localStorage persist waits for a hold-gate. Cookies are denied." data-sha="285bb0946267e4f4b3f8b90ba8babf53de985c3c841634693380bd3a62ccf83c">The working profile lives in sessionStorage key a2m-profile-023. localStorage persist waits for a hold-gate. Cookies are denied.</li>
+        <li data-canonical="claim#apply|text:Apply to run holds. A checked facet is data, not a grant to start, steer, or rewrite a live executor." data-sha="a4bd23521c65afeac0ec8bd9b892c24cb7b2f92f2231b47daac530ef29f61afa">Apply to run holds. A checked facet is data, not a grant to start, steer, or rewrite a live executor.</li>
+        <li data-canonical="claim#export|text:Export copies the attested profile JSON. It does not POST. It does not open an account." data-sha="221aec01dd968d6eb60a553b8e0227a4dd3c8bc66e9b262d85d762d0e4a62d55">Export copies the attested profile JSON. It does not POST. It does not open an account.</li>
+        <li data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50">This page does not price tokens and does not pitch Void Monthly.</li>
+        <li data-canonical="page#personalize|route:draft|index:noindex|cookie:deny|analytics:deny|fingerprint:deny|write:deny" data-sha="63bfe8cb67c90650b9e10f908169ae565c76ffa82c4e7b25869d53a249751828">Draft route. noindex. Cookie, analytics, fingerprint, and write denied.</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">A-to-Mind · draft 023</span>
+    <span class="muted">seal:human</span>
+  </footer>
+  <script>
+    const KEY = "a2m-profile-023";
+    const ALLOW = {
+      focus: ["none", "ledger", "pricing", "notes"],
+      output: ["none", "file", "preview", "quote"],
+      risk: ["none", "hold-first", "read-only", "attest-only"],
+    };
+    const HEAD = '{"algo":"sha256","kind":"agentic-personalization","source":"zero-party","infer":false,"persist":"hold","apply":"hold","cookie":false}';
+    const HEAD_SHA = "ac87133a85b8884a623cfa4c5bd08fd12a693f398d8e7c358fa67454c666715c";
+    const BODY_SHA = "a949d04d08519064e42cdb9dd2358e9ba1a740294d7623f7a04863ead2513d0c";
+    const FACET_SHA = "5a23154c90f1189957805d93196bba71f18f81bbb53d4c213dc62a2133f8bba8";
+    const FACET_LINES = [
+      "facet#focus|id:focus|values:ledger,pricing,notes|default:none",
+      "facet#output|id:output|values:file,preview,quote|default:none",
+      "facet#risk|id:risk|values:hold-first,read-only,attest-only|default:none",
+    ];
+
+    const receipt = document.getElementById("receipt");
+    const saveBtn = document.getElementById("save-session");
+    const persistBtn = document.getElementById("persist-profile");
+    const applyBtn = document.getElementById("apply-to-run");
+    const exportBtn = document.getElementById("export-profile");
+    const clearBtn = document.getElementById("clear-profile");
+    let attested = false;
+
+    async function sha256Hex(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function setReceipt(status, extra) {
+      receipt.dataset.status = status;
+      receipt.textContent = extra ? ("receipt · " + status + " · " + extra) : ("receipt · " + status);
+    }
+
+    function pick(name) {
+      const el = document.querySelector('input[name="' + name + '"]:checked');
+      const v = el ? el.value : "none";
+      return ALLOW[name].includes(v) ? v : "none";
+    }
+
+    function profileLine() {
+      return "profile#working|focus:" + pick("focus") + "|output:" + pick("output") + "|risk:" + pick("risk") + "|persist:session|apply:hold";
+    }
+
+    function profileObject() {
+      return {
+        slug: "agentic-personalization-with-hold-gate",
+        run: "023",
+        source: "zero-party",
+        infer: false,
+        focus: pick("focus"),
+        output: pick("output"),
+        risk: pick("risk"),
+        persist: "session",
+        apply: "hold",
+        canonical: profileLine(),
+      };
+    }
+
+    function reorder() {
+      const list = document.getElementById("dest");
+      const items = [...list.children];
+      const focus = pick("focus");
+      items.forEach((li) => { li.dataset.hit = li.dataset.id === focus ? "1" : "0"; });
+      items.sort((a, b) => {
+        if (focus === "none") return 0;
+        if (a.dataset.id === focus) return -1;
+        if (b.dataset.id === focus) return 1;
+        return 0;
+      });
+      items.forEach((li) => list.appendChild(li));
+    }
+
+    async function paintProfile() {
+      const line = profileLine();
+      document.getElementById("profile-line").textContent = line;
+      document.getElementById("profile-hash").textContent = await sha256Hex(line);
+      reorder();
+    }
+
+    async function verify() {
+      const items = [...document.querySelectorAll(".claims li")];
+      const bodyLines = [];
+      let ok = true;
+      for (const li of items) {
+        const canonical = li.getAttribute("data-canonical");
+        const expected = li.getAttribute("data-sha");
+        const got = await sha256Hex(canonical);
+        const mark = document.createElement("span");
+        const pass = got === expected;
+        mark.className = pass ? "ok" : "bad";
+        mark.textContent = pass ? " ok" : " mismatch";
+        li.appendChild(mark);
+        if (!pass) ok = false;
+        bodyLines.push(canonical);
+      }
+      const headGot = await sha256Hex(HEAD);
+      const bodyGot = await sha256Hex(bodyLines.join("\n") + "\n");
+      const facetGot = await sha256Hex(FACET_LINES.join("\n") + "\n");
+      const headEl = document.getElementById("head-out");
+      const bodyEl = document.getElementById("body-out");
+      const facetEl = document.getElementById("facet-out");
+      headEl.textContent = headGot + (headGot === HEAD_SHA ? " ok" : " mismatch");
+      bodyEl.textContent = bodyGot + (bodyGot === BODY_SHA ? " ok" : " mismatch");
+      facetEl.textContent = facetGot + (facetGot === FACET_SHA ? " ok" : " mismatch");
+      if (headGot !== HEAD_SHA || bodyGot !== BODY_SHA || facetGot !== FACET_SHA) ok = false;
+      attested = ok;
+      saveBtn.disabled = !ok;
+      if (!ok) setReceipt("mismatch", "claims");
+      return ok;
+    }
+
+    function readSession() {
+      try {
+        const raw = sessionStorage.getItem(KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        for (const name of ["focus", "output", "risk"]) {
+          const v = ALLOW[name].includes(data[name]) ? data[name] : "none";
+          const el = document.querySelector('input[name="' + name + '"][value="' + v + '"]');
+          if (el) el.checked = true;
+        }
+      } catch (e) {
+        sessionStorage.removeItem(KEY);
+      }
+    }
+
+    document.querySelectorAll('input[type="radio"]').forEach((el) => {
+      el.addEventListener("change", () => { paintProfile(); });
+    });
+
+    saveBtn.addEventListener("click", async () => {
+      if (!attested) { setReceipt("mismatch"); return; }
+      const obj = profileObject();
+      obj.sha256 = await sha256Hex(obj.canonical);
+      try {
+        sessionStorage.setItem(KEY, JSON.stringify(obj));
+        document.getElementById("store-out").textContent = "session saved · key a2m-profile-023 · cookie deny";
+        setReceipt("session-saved", obj.sha256.slice(0, 12));
+      } catch (e) {
+        setReceipt("failed", "storage");
+      }
+    });
+
+    persistBtn.addEventListener("click", () => {
+      setReceipt("hold", "localStorage persist is not a grant");
+    });
+
+    applyBtn.addEventListener("click", () => {
+      setReceipt("hold", "apply-to-run is not a grant");
+    });
+
+    exportBtn.addEventListener("click", async () => {
+      if (!attested) { setReceipt("mismatch"); return; }
+      const obj = profileObject();
+      obj.sha256 = await sha256Hex(obj.canonical);
+      const payload = JSON.stringify(obj, null, 2);
+      if (!navigator.clipboard || !navigator.clipboard.writeText) {
+        setReceipt("unsupported", "clipboard");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(payload);
+        setReceipt("copied", obj.sha256.slice(0, 12));
+      } catch (e) {
+        setReceipt("denied", "clipboard");
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      sessionStorage.removeItem(KEY);
+      ["focus", "output", "risk"].forEach((name) => {
+        const el = document.querySelector('input[name="' + name + '"][value="none"]');
+        if (el) el.checked = true;
+      });
+      document.getElementById("store-out").textContent = "session only · key a2m-profile-023 · cookie deny";
+      paintProfile();
+      setReceipt("cleared");
+    });
+
+    (async function boot() {
+      readSession();
+      await paintProfile();
+      await verify();
+    })();
+  </script>
+</body>
+</html>

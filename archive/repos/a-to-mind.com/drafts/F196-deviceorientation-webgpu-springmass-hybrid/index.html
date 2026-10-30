@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>F196 · Orientation Spring-Mass Hybrid</title>
+<style>
+  :root { --bg:#0a0a0f; --fg:#e0e0ff; --a:#6af; --b:#f6a; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; height:100dvh; }
+  #c { display:block; width:100%; height:100%; touch-action:none; }
+  #ui { position:fixed; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.6); padding:10px 14px; border-radius:8px; max-width:280px; }
+  button { background:#222; color:#fff; border:1px solid #444; padding:6px 10px; margin:2px; border-radius:4px; cursor:pointer; }
+  button:active { background:#333; }
+  .bead { position:absolute; width:28px; height:28px; border-radius:50%; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; cursor:pointer; user-select:none; pointer-events:auto; z-index:5; transition:transform .1s; }
+  .bead.pinned { border-color:#ff0; box-shadow:0 0 8px #ff0; }
+  .bead.a { background:var(--a); }
+  .bead.b { background:var(--b); }
+  #status { font-size:12px; opacity:.8; margin-top:6px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F196 Orientation Spring-Mass</strong><br>
+  <button id="perm">Enable Orientation</button>
+  <button id="reset">Reset</button>
+  <button id="transfer">Transfer Impulse A→B</button>
+  <button id="save">Seal State</button>
+  <div id="status">Tilt device or drag mouse. Click beads to pin.</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+let W, H, orient = {x:0, y:0.3}, hasOrient = false;
+const N = 8, rest = 42, k = 0.18, damp = 0.92;
+let chains = [[], []]; // A and B
+let pins = [[], []];
+let beads = [];
+const dbName = 'f196-spring';
+
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+  initChains();
+}
+function initChains() {
+  chains = [[], []];
+  pins = [[], []];
+  beads.forEach(b => b.remove());
+  beads = [];
+  for (let c = 0; c < 2; c++) {
+    const cx = W * (0.3 + c * 0.4);
+    for (let i = 0; i < N; i++) {
+      const y = 80 + i * rest;
+      chains[c].push({ x: cx, y, px: cx, py: y, pinned: i === 0 });
+      pins[c].push(i === 0);
+      const bead = document.createElement('div');
+      bead.className = 'bead ' + (c ? 'b' : 'a') + (i === 0 ? ' pinned' : '');
+      bead.textContent = c ? 'B' + i : 'A' + i;
+      bead.dataset.c = c;
+      bead.dataset.i = i;
+      bead.onclick = () => {
+        const ci = +bead.dataset.c, ii = +bead.dataset.i;
+        pins[ci][ii] = !pins[ci][ii];
+        chains[ci][ii].pinned = pins[ci][ii];
+        bead.classList.toggle('pinned', pins[ci][ii]);
+      };
+      document.body.appendChild(bead);
+      beads.push(bead);
+    }
+  }
+}
+function verlet(c) {
+  const g = { x: orient.x * 0.4, y: orient.y * 0.4 };
+  for (let i = 0; i < N; i++) {
+    const p = chains[c][i];
+    if (p.pinned) { p.px = p.x; p.py = p.y; continue; }
+    const vx = (p.x - p.px) * damp;
+    const vy = (p.y - p.py) * damp;
+    p.px = p.x; p.py = p.y;
+    p.x += vx + g.x;
+    p.y += vy + g.y;
+  }
+  // springs
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = 0; i < N - 1; i++) {
+      const a = chains[c][i], b = chains[c][i+1];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const diff = (dist - rest) / dist * k;
+      const ox = dx * diff * 0.5, oy = dy * diff * 0.5;
+      if (!a.pinned) { a.x += ox; a.y += oy; }
+      if (!b.pinned) { b.x -= ox; b.y -= oy; }
+    }
+  }
+}
+function draw() {
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0, 0, W, H);
+  for (let c = 0; c < 2; c++) {
+    ctx.strokeStyle = c ? '#f6a' : '#6af';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    chains[c].forEach((p, i) => {
+      if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+      const bead = beads[c * N + i];
+      if (bead) {
+        bead.style.left = (p.x - 14) + 'px';
+        bead.style.top = (p.y - 14) + 'px';
+      }
+    });
+    ctx.stroke();
+    chains[c].forEach(p => {
+      ctx.fillStyle = p.pinned ? '#ff0' : (c ? '#f6a' : '#6af');
+      ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, 6.28); ctx.fill();
+    });
+  }
+}
+function loop() {
+  verlet(0); verlet(1);
+  draw();
+  requestAnimationFrame(loop);
+}
+async function requestOrient() {
+  if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+    try {
+      const p = await DeviceOrientationEvent.requestPermission();
+      if (p === 'granted') hasOrient = true;
+    } catch(e) {}
+  } else hasOrient = true;
+  if (hasOrient) {
+    window.addEventListener('deviceorientation', e => {
+      orient.x = (e.gamma || 0) / 45;
+      orient.y = ((e.beta || 0) - 30) / 45;
+    });
+    status.textContent = 'Orientation active. Tilt to change gravity.';
+  } else {
+    status.textContent = 'No sensors. Drag mouse to tilt gravity.';
+  }
+}
+canvas.addEventListener('pointermove', e => {
+  if (hasOrient) return;
+  orient.x = (e.clientX / W - 0.5) * 2;
+  orient.y = (e.clientY / H - 0.5) * 1.2;
+});
+document.getElementById('perm').onclick = requestOrient;
+document.getElementById('reset').onclick = () => { initChains(); };
+document.getElementById('transfer').onclick = () => {
+  // sealed impulse: take avg velocity from A top free and inject into B
+  const freeA = chains[0].find(p => !p.pinned) || chains[0][1];
+  const freeB = chains[1].find(p => !p.pinned) || chains[1][1];
+  if (freeA && freeB) {
+    const vx = freeA.x - freeA.px, vy = freeA.y - freeA.py;
+    freeB.x += vx * 1.5; freeB.y += vy * 1.5;
+    freeA.x -= vx * 0.3; freeA.y -= vy * 0.3;
+    status.textContent = 'Impulse sealed & transferred A→B';
+  }
+};
+async function seal() {
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open(dbName, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('state');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+    const tx = db.transaction('state', 'readwrite');
+    tx.objectStore('state').put({ chains: chains.map(ch => ch.map(p => ({x:p.x,y:p.y,px:p.px,py:p.py,pinned:p.pinned}))), orient, t: Date.now() }, 'last');
+    status.textContent = 'State sealed to IndexedDB';
+  } catch(e) { status.textContent = 'Seal failed (no IDB)'; }
+}
+document.getElementById('save').onclick = seal;
+window.addEventListener('resize', resize);
+resize();
+loop();
+// WebGPU probe
+if (navigator.gpu) {
+  navigator.gpu.requestAdapter().then(a => a && status.textContent += ' · WebGPU available (JS Verlet active)');
+}
+</script>
+</body>
+</html>

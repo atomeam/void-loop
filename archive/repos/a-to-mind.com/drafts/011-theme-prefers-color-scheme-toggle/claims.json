@@ -1,0 +1,59 @@
+{
+  "slug": "theme-prefers-color-scheme-toggle",
+  "run": "011",
+  "date": "2026-09-29",
+  "status": "specified",
+  "hold": true,
+  "algo": "sha256",
+  "storageKey": "a2m-color-scheme",
+  "allowed": ["system", "light", "dark"],
+  "default": "system",
+  "cookie": false,
+  "server": false,
+  "contract": "theme#011|kind:color-scheme|modes:system,light,dark|default:system|persist:localStorage|cookie:deny|server:deny|hash:sha256|seal:human",
+  "contractSha": "9b2753c83cc845e47938acc95c8a5f03fd7efb816271a3fc274eb7a0d291b4e7",
+  "bodySha": "9d4bee6970fac3872d82588eee93126f70c8fabe2492a31571ce39d9fd541d4e",
+  "head": "{\"algo\":\"sha256\",\"kind\":\"color-scheme\",\"modes\":3,\"default\":\"system\",\"cookie\":false}",
+  "headSha": "df8cab1e565771f2866d6397b8e035dcd0eed408d17e785aa58b72466b8a841e",
+  "boot": "boot#011|read:localStorage:a2m-color-scheme|allow:system,light,dark|else:system|write-attr:data-scheme|paint:before",
+  "bootSha": "254906c6ba934544347f0336609c1fdbd4aef2abdcbcebea80094dca39063102",
+  "control": "control#011|kind:radiogroup|name:scheme|values:system,light,dark|default:system|os-follow:when-system|storage-event:sync|motion:none",
+  "controlSha": "a9d9f5cf6195eaa2d61bc1d7623d42d488dc9a0c7d3cf43289ceae81919d648a",
+  "claims": [
+    {
+      "id": "contract",
+      "canonical": "theme#011|kind:color-scheme|modes:system,light,dark|default:system|persist:localStorage|cookie:deny|server:deny|hash:sha256|seal:human",
+      "sha256": "9b2753c83cc845e47938acc95c8a5f03fd7efb816271a3fc274eb7a0d291b4e7"
+    },
+    {
+      "id": "default",
+      "canonical": "claim#default|text:Scheme follows the operating system until a human picks Light or Dark on this origin.",
+      "sha256": "74f68288e061e3fe72e3082def2780f910afea34dd7059fea6de76aa3fec2c90"
+    },
+    {
+      "id": "persist",
+      "canonical": "claim#persist|text:Only the values system, light, and dark may be written to localStorage key a2m-color-scheme.",
+      "sha256": "c17ded403f3c0bd0e37b2444804ea12c4b3b7e9d25bbb2c8eafea3fe3d92b875"
+    },
+    {
+      "id": "flash",
+      "canonical": "claim#flash|text:A blocking inline boot script may set html[data-scheme] before first paint. No other script may set it.",
+      "sha256": "96a800820812c4a2ae6b594b64f578610c39f961baec2fbbc1c89ee84ff698ad"
+    },
+    {
+      "id": "motion",
+      "canonical": "claim#motion|text:The control does not animate. prefers-reduced-motion is already the house default.",
+      "sha256": "81865fa51290a4dc5d2a31347d6d67fbadf9e134f07bdfa7dbe63ff56573b1a7"
+    },
+    {
+      "id": "not-account",
+      "canonical": "claim#not-account|text:A scheme choice is not a session, a passkey, or a $49 grant.",
+      "sha256": "b3aa42153f18c71f803514ffe5c504e49259faef4866472802619f979c62ab00"
+    },
+    {
+      "id": "page",
+      "canonical": "page#theme|route:draft|index:noindex|cookie:deny|analytics:deny|exec:allowlist-only",
+      "sha256": "44b55b8c9193a333165df08c5406e36cde20989a47edc7fdfa543e64cc48e66d"
+    }
+  ]
+}

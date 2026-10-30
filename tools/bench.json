@@ -397,7 +397,7 @@
   },
   {
     "ask": "remind me to call mom at 6pm",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "make a shopping list",
@@ -441,7 +441,7 @@
   },
   {
     "ask": "add dentist appointment tomorrow at 3pm",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "what time is it in sydney",
@@ -637,7 +637,7 @@
   },
   {
     "ask": "what was the date 30 days ago",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "which day was it 100 days ago",
@@ -1490,7 +1490,7 @@
   },
   {
     "ask": "what is the date in 10 days",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "how many hours until midnight",
@@ -1621,7 +1621,7 @@
   },
   {
     "ask": "add milk to my shopping list",
-    "want": "list"
+    "want": "list|skill:notes-fill"
   },
   {
     "ask": "show me a clock",
@@ -1897,7 +1897,8 @@
   },
   {
     "ask": "how many days until summer",
-    "want": "calc|holiday|skill:holidays|skill:countdown|answer"
+    "want": "calc",
+    "says": "\\d"
   },
   {
     "ask": "when is easter",
@@ -2006,22 +2007,22 @@
   },
   {
     "ask": "42 in binary",
-    "want": "calc",
-    "says": "101010"
+    "want": "calc|skill:baseconv",
+    "says": "101010|0010 1010"
   },
   {
     "ask": "convert 255 to hex",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "\\bff\\b|0xff"
   },
   {
     "ask": "what is my zodiac sign if i was born march 3",
-    "want": "calc|answer",
+    "want": "calc|answer|skill:date-calc",
     "says": "pisces"
   },
   {
     "ask": "how many days old am i if born on june 1 1990",
-    "want": "calc|age"
+    "want": "calc|age|skill:date-calc"
   },
   {
     "ask": "how to tie a tie",
@@ -2079,7 +2080,7 @@
   },
   {
     "ask": "is today a weekend",
-    "want": "today|calc|answer"
+    "want": "today|calc|answer|skill:is-it"
   },
   {
     "ask": "how many business days until christmas",
@@ -2087,7 +2088,7 @@
   },
   {
     "ask": "what's the date 3 weeks from today",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "add 2 hours to 3:30 pm",
@@ -2419,7 +2420,7 @@
   },
   {
     "ask": "add dentist tomorrow at 3pm",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "what's on my calendar today",
@@ -2427,7 +2428,7 @@
   },
   {
     "ask": "lunch with sam on friday at noon",
-    "want": "skill:calendar"
+    "want": "skill:calendar|skill:calendar-fill"
   },
   {
     "ask": "add milk to the list",
@@ -2595,7 +2596,7 @@
   },
   {
     "ask": "tell me a fun fact",
-    "want": "said|answer|skill:joke"
+    "want": "said|answer|skill:joke|skill:fact"
   },
   {
     "ask": "motivate me",
@@ -2995,12 +2996,12 @@
   },
   {
     "ask": "what is 255 in binary",
-    "want": "calc",
-    "says": "11111111"
+    "want": "calc|skill:baseconv",
+    "says": "11111111|1111 1111"
   },
   {
     "ask": "what is 0xff in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "255"
   },
   {
@@ -3010,7 +3011,7 @@
   },
   {
     "ask": "what is the date 30 days from today",
-    "want": "calc|skill:calendar"
+    "want": "calc|skill:calendar|skill:date-calc"
   },
   {
     "ask": "how many weeks is 100 days",
@@ -3088,7 +3089,7 @@
   },
   {
     "ask": "what is the date next friday",
-    "want": "calc|skill:calendar"
+    "want": "calc|skill:calendar|skill:date-calc"
   },
   {
     "ask": "convert 2 cups of flour to grams",
@@ -3152,7 +3153,7 @@
   },
   {
     "ask": "what is the date this sunday",
-    "want": "calc",
+    "want": "calc|skill:date-calc",
     "says": "Sunday"
   },
   {
@@ -3450,7 +3451,7 @@
   },
   {
     "ask": "is it a weekend",
-    "want": "today|calc|said",
+    "want": "today|calc|said|skill:is-it",
     "says": "[Nn]o|[Yy]es"
   },
   {
@@ -3855,7 +3856,7 @@
   },
   {
     "ask": "how many days until spring",
-    "want": "calc|holiday|skill:countdown",
+    "want": "calc",
     "says": "\\d"
   },
   {
@@ -3968,7 +3969,7 @@
   },
   {
     "ask": "what is 101010 in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "42"
   },
   {
@@ -4632,8 +4633,8 @@
   {"ask": "what is the gcd of 48 and 180", "want": "calc", "says": "12"},
   {"ask": "lcm of 6 and 8", "want": "calc", "says": "24"},
   {"ask": "roman numerals for 2026", "want": "calc", "says": "MMXXVI"},
-  {"ask": "what is 1010 in binary to decimal", "want": "calc", "says": "\\b10\\b"},
-  {"ask": "255 in hex", "want": "calc", "says": "FF|ff"},
+  {"ask": "what is 1010 in binary to decimal", "want": "calc|skill:baseconv", "says": "\\b10\\b"},
+  {"ask": "255 in hex", "want": "calc|skill:baseconv", "says": "FF|ff"},
   {"ask": "review this python: except: pass", "want": "review", "says": "hides every error|silently|bare"},
   {"ask": "is this code safe? eval(userInput)", "want": "review", "says": "runs text as code"},
   {"ask": "review this sql: DELETE FROM users;", "want": "review", "says": "every row"},
@@ -5035,8 +5036,8 @@
   {"ask": "what time zone is it in tokyo", "want": "skill:worldtime", "says": null},
   {"ask": "when is thanksgiving this year", "want": "holiday|skill:holidays|calc", "says": null},
   {"ask": "what day is new years eve", "want": "holiday|skill:holidays|calc", "says": null},
-  {"ask": "what was the date 100 days ago", "want": "calc|today", "says": null},
-  {"ask": "what's 2 weeks from today", "want": "calc|today", "says": null},
+  {"ask": "what was the date 100 days ago", "want": "calc|today|skill:date-calc", "says": null},
+  {"ask": "what's 2 weeks from today", "want": "calc|today|skill:date-calc", "says": null},
   {"ask": "180 lbs in kg", "want": "calc", "says": "81\\.6"},
   {"ask": "6 feet 2 inches in cm", "want": "calc", "says": "18[78]"},
   {"ask": "what is 1 mile in steps", "want": "calc|answer|article", "says": null},
@@ -5140,7 +5141,7 @@
   {"ask": "savings calculator", "want": "skill:savings"},
   {"ask": "compound interest calculator", "want": "skill:savings"},
   {"ask": "if i put away 300 a month for 10 years how much will i have", "want": "skill:savings"},
-  {"ask": "remind me to go to bed at 11pm", "want": "skill:calendar|skill:remind|timer"},
+  {"ask": "remind me to go to bed at 11pm", "want": "skill:calendar|skill:remind|timer|skill:calendar-fill"},
   {"ask": "due date if my last period was march 1", "want": "skill:pregnancy"},
   {"ask": "how many weeks pregnant am i if my last period was august 10", "want": "skill:pregnancy"},
   {"ask": "i conceived on january 10 when is my baby due", "want": "skill:pregnancy"},
@@ -5420,7 +5421,7 @@
   {"ask": "what is 2 hours and 15 minutes in minutes", "want": "calc", "says": "135"},
   {"ask": "how many weekdays in november", "want": "calc|today", "says": "2[01]"},
   {"ask": "gas mileage 300 miles 10 gallons", "want": "calc|skill:fuel", "says": "30"},
-  {"ask": "what is my age in days born march 5 1990", "want": "calc|age", "says": null},
+  {"ask": "what is my age in days born march 5 1990", "want": "calc|age|skill:date-calc", "says": null},
   {"ask": "review this js: const data = await fetch(url); const json = data.json();", "want": "review", "says": "await|promise"},
   {"ask": "review this js: arr.map(x => { x * 2 })", "want": "review", "says": "return|undefined"},
   {"ask": "review this js: res.redirect(req.query.next)", "want": "review", "says": "redirect|open"},
@@ -5586,10 +5587,10 @@
   {"ask": "what do you offer", "want": "skill:services"},
   {"ask": "can i hire you", "want": "skill:services"},
   {"ask": "what's for sale", "want": "skill:services"},
-  {"ask": "pricing", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "price list", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does void cost", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "how much is void", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "pricing", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "price list", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does void cost", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "how much is void", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "give me five minutes with this", "want": "skill:challenge"},
   {"ask": "give me 5 minutes with that", "want": "skill:challenge"},
   {"ask": "turn the questions i missed into a five-minute challenge", "want": "skill:challenge"},
@@ -5930,7 +5931,7 @@
   {"ask": "what does it mean to be pragmatic", "want": "skill:define"},
   {"ask": "dictionary definition of empathy", "want": "skill:define"},
   {"ask": "use serendipity in a sentence", "want": "skill:define"},
-  {"ask": "what language does the word kindergarten come from", "want": "answer|article|skill:define"},
+  {"ask": "what language does the word kindergarten come from", "want": "skill:define"},
   {"ask": "what's the italian word for window", "want": "skill:translate"},
   {"ask": "how long is the flight from paris to new york", "want": "skill:distance", "says": "in the air"},
   {"ask": "miles from chicago to denver", "want": "skill:distance"},
@@ -6083,8 +6084,8 @@
   {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "what upgrades do you want", "want": "skill:wants"},
   {"ask": "verse status", "want": "skill:status", "says": "Verse status"},
-  {"ask": "how much is verse", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does verse cost", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "how much is verse", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does verse cost", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "what is verse", "want": "self|speaks|what"},
   {"ask": "make my verse dark", "want": "skill:dark-look"},
   {"ask": "what did verse get wrong", "want": "skill:make"},
@@ -6271,6 +6272,9 @@
   {"ask": "ranked list of my movies", "want": "skill:decide-cards"},
   {"ask": "rank pizza, tacos, sushi", "want": "skill:decide-cards"},
   {"ask": "weighted pros and cons for moving to Berlin", "want": "skill:decide-cards"},
+  {"ask": "triangulate: should I learn rust", "want": "skill:triangulate"},
+  {"ask": "three perspectives on quitting my job", "want": "skill:triangulate"},
+  {"ask": "triangulate should I buy a house", "want": "skill:triangulate"},
   {"ask": "do you love me", "want": "skill:feelings"},
   {"ask": "do you have feelings", "want": "skill:feelings"},
   {"ask": "are you conscious", "want": "skill:feelings"},
@@ -6714,5 +6718,278 @@
   {"ask": "ask the glitch oracle why is the sky blue", "want": "skill:oracle"},
   {"ask": "spectral review", "want": "skill:spectral-review"},
   {"ask": "spectral review of A good map shows the way, because every road has a name. However, it honestly really needs a legend.", "want": "skill:spectral-review"},
-  {"ask": "something unkeepable", "want": "skill:unkeepable"}
+  {"ask": "something unkeepable", "want": "skill:unkeepable"},
+  {"ask": "memory preview", "want": "skill:memory-preview"},
+  {"ask": "show my memory snippets", "want": "skill:memory-preview"},
+  {"ask": "what memories do I have", "want": "skill:memory-preview"},
+  {"ask": "hide the sky", "want": "skill:night-sky|skill:nightsky"},
+  {"ask": "morning routine as calendar events", "want": "skill:ritual-template"},
+  {"ask": "export my evening routine to my calendar", "want": "skill:ritual-template"},
+  {"ask": "ritual template: meditate 10, stretch 15, journal 10 at 6:30am", "want": "skill:ritual-template"},
+  {"ask": "where is jupiter", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "where is the moon tonight", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "is venus up", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "mind field", "want": "skill:doodle-mind"},
+  {"ask": "show me the mind field", "want": "skill:doodle-mind"},
+  {"ask": "living field", "want": "skill:doodle-mind"},
+  {"ask": "play my cards", "want": "skill:rally"},
+  {"ask": "card battle", "want": "skill:rally"},
+  {"ask": "my cards", "want": "skill:rally"},
+  {"ask": "audit your fixes", "want": "skill:fix-audit"},
+  {"ask": "post-fix audit", "want": "skill:fix-audit"},
+  {"ask": "fix evidence audit", "want": "skill:fix-audit"},
+  {"ask": "echo field", "want": "skill:echo-field"},
+  {"ask": "show me the echo field", "want": "skill:echo-field"},
+  {"ask": "acoustic lattice", "want": "skill:echo-field"},
+  {"ask": "gaze chase", "want": "skill:gaze-chase"},
+  {"ask": "look to steer", "want": "skill:gaze-chase"},
+  {"ask": "steer with my gaze", "want": "skill:gaze-chase"},
+  {"ask": "gpu swarm", "want": "skill:gpu-swarm"},
+  {"ask": "show me the gpu swarm", "want": "skill:gpu-swarm"},
+  {"ask": "webgpu swarm", "want": "skill:gpu-swarm"},
+  {"ask": "hand arena", "want": "skill:hand-arena"},
+  {"ask": "steer with my hand", "want": "skill:hand-arena"},
+  {"ask": "hand tracking arena", "want": "skill:hand-arena"},
+  {"ask": "tilt arena modes", "want": "skill:tilt-arena-mode"},
+  {"ask": "tilt arena gaze", "want": "skill:tilt-arena-mode"},
+  {"ask": "tilt arena in hand mode", "want": "skill:tilt-arena-mode"},
+  {"ask": "is it christmas", "want": "skill:is-it"},
+  {"ask": "is it christmas yet?", "want": "skill:is-it"},
+  {"ask": "is it friday", "want": "skill:is-it"},
+  {"ask": "game box", "want": "skill:gamebox"},
+  {"ask": "games", "want": "skill:gamebox"},
+  {"ask": "show me the games", "want": "skill:gamebox"},
+  {"ask": "genome arena", "want": "skill:tilt-mode"},
+  {"ask": "tilt game", "want": "skill:tilt-mode"},
+  {"ask": "classify files: main.go, notes.txt", "want": "skill:file-sorter"},
+  {"ask": "play the podcast", "want": "skill:podcast"},
+  {"ask": "latest episode", "want": "skill:podcast"},
+  {"ask": "verse podcast", "want": "skill:podcast"},
+  {"ask": "mind field swarm", "want": "skill:mind-field-mode"},
+  {"ask": "listen field", "want": "skill:mind-field-mode"},
+  {"ask": "swarm field", "want": "skill:mind-field-mode"},
+  {"ask": "the tower", "want": "skill:tower"},
+  {"ask": "verse tower", "want": "skill:tower"},
+  {"ask": "versus", "want": "skill:tower"},
+  {"ask": "verse versus", "want": "skill:tower"},
+  {"ask": "show me versus", "want": "skill:tower"},
+  {"ask": "which sites have you beaten", "want": "skill:tower"},
+  {"ask": "inspirational quote", "want": "skill:quote"},
+  {"ask": "resonant membrane", "want": "skill:resonant-membrane"},
+  {"ask": "modes of mind field", "want": "skill:similar"},
+  {"ask": "tell me a fact", "want": "skill:fact"},
+  {"ask": "sort these files: app.py, LICENSE, data.csv, logo.png", "want": "skill:file-sorter"},
+  {"ask": "what kind of files are these: README.md, config.yaml", "want": "skill:file-sorter"},
+  {"ask": "order food from lovebird in lakeland", "want": "skill:eat"},
+  {"ask": "what's good at lovebird almost famous chicken lakeland", "want": "skill:eat"},
+  {"ask": "lovebird lakeland menu", "want": "skill:eat"},
+  {"ask": "random quote", "want": "skill:quote"},
+  {"ask": "tilt arena", "want": "skill:tilt-mode"},
+  {"ask": "tell me a quote", "want": "skill:quote"},
+  {"ask": "pluck the membrane", "want": "skill:resonant-membrane"},
+  {"ask": "membrane mind", "want": "skill:resonant-membrane"},
+  {"ask": "what's similar to swarm mind", "want": "skill:similar"},
+  {"ask": "what is similar to the mind field", "want": "skill:similar"},
+  {"ask": "how secure is my password", "want": "skill:pwcheck"},
+  {"ask": "is my password strong", "want": "skill:pwcheck"},
+  {"ask": "check my password strength", "want": "skill:pwcheck"},
+  {"ask": "ff hex to binary", "want": "skill:baseconv"},
+  {"ask": "resize a photo to 3.5 x 2.5 cm under 50 kb", "want": "skill:imgfit"},
+  {"ask": "compress my image to 100kb", "want": "skill:imgfit"},
+  {"ask": "image resizer", "want": "skill:imgfit"},
+  {"ask": "random user generator", "want": "skill:fakeuser"},
+  {"ask": "fake name generator", "want": "skill:fakeuser"},
+  {"ask": "generate 5 fake german women", "want": "skill:fakeuser"},
+  {"ask": "spin the wheel", "want": "skill:wheel"},
+  {"ask": "wheel of names", "want": "skill:wheel"},
+  {"ask": "spin a wheel with pizza, tacos and sushi", "want": "skill:wheel"},
+  {"ask": "gradient generator", "want": "skill:gradient"},
+  {"ask": "css gradient", "want": "skill:gradient"},
+  {"ask": "make a gradient from red to blue", "want": "skill:gradient"},
+  {"ask": "1010 binary to decimal", "want": "skill:baseconv"},
+  {"ask": "add a note: buy milk", "want": "skill:notes-fill"},
+  {"ask": "add eggs to my shopping list", "want": "skill:notes-fill"},
+  {"ask": "what did I write about Lisbon", "want": "skill:notes-fill"},
+  {"ask": "guitar tuner", "want": "skill:music-tools"},
+  {"ask": "split a pdf", "want": "skill:pdf-tools"},
+  {"ask": "fantasy tools", "want": "skill:fantasy"},
+  {"ask": "start or sit", "want": "skill:fantasy"},
+  {"ask": "coin toss", "want": "skill:coin"},
+  {"ask": "make a generator of pirate ship names: Black Pearl, Sea Wolf, Revenge", "want": "skill:generators-fill"},
+  {"ask": "keep the name Sea Wolf", "want": "skill:generators-fill"},
+  {"ask": "kanban board", "want": "skill:kanban-board"},
+  {"ask": "make a kanban board", "want": "skill:kanban-board"},
+  {"ask": "photo editor", "want": "skill:photo-tools"},
+  {"ask": "compress an image", "want": "skill:photo-tools"},
+  {"ask": "save this recipe: Lemon cake, ingredients: 200 g flour, 3 eggs; steps: mix. bake", "want": "skill:recipes-fill"},
+  {"ask": "save this recipe: Toast, ingredients: bread, butter; steps: toast it", "want": "skill:recipes-fill"},
+  {"ask": "browse sports", "want": "skill:sports-browse"},
+  {"ask": "list of sports", "want": "skill:sports-browse"},
+  {"ask": "random generators", "want": "skill:textgen"},
+  {"ask": "backdrop: a cyberpunk rooftop", "want": "skill:backdrop"},
+  {"ask": "text boards", "want": "skill:boards"},
+  {"ask": "open the image boards", "want": "skill:boards"},
+  {"ask": "what tools do you have", "want": "skill:toolkit"},
+  {"ask": "all tools", "want": "skill:toolkit"},
+  {"ask": "every tool", "want": "skill:toolkit"},
+  {"ask": "flights to lisbon", "want": "skill:flights"},
+  {"ask": "cheap flights", "want": "skill:flights"},
+  {"ask": "verse brain", "want": "skill:verse-brain"},
+  {"ask": "show me your brain", "want": "skill:verse-brain"},
+  {"ask": "your brain", "want": "skill:verse-brain"},
+  {"ask": "let it walk", "want": "skill:walker"},
+  {"ask": "make it walk", "want": "skill:walker"},
+  {"ask": "walk around", "want": "skill:walker"},
+  {"ask": "give me advice", "want": "skill:advice"},
+  {"ask": "random advice", "want": "skill:advice"},
+  {"ask": "tell me something wise", "want": "skill:advice"},
+  {"ask": "give me a color", "want": "skill:color"},
+  {"ask": "fan fiction", "want": "skill:fanfic"},
+  {"ask": "fan fiction archive", "want": "skill:fanfic"},
+  {"ask": "calculator for molar mass", "want": "skill:formulas"},
+  {"ask": "1337 speak for world", "want": "skill:leet"},
+  {"ask": "lorem", "want": "skill:lorem"},
+  {"ask": "give me some lorem", "want": "skill:lorem"},
+  {"ask": "show me the memory orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "color palette", "want": "skill:color"},
+  {"ask": "show this image https://example.org/cat.png", "want": "skill:image"},
+  {"ask": "add an image https://example.org/dog.jpg", "want": "skill:image"},
+  {"ask": "metronome 120 bpm", "want": "skill:music-tools"},
+  {"ask": "clean up a sprite sheet", "want": "skill:sprite-sheet"},
+  {"ask": "remove the magenta background from a sprite sheet", "want": "skill:sprite-sheet"},
+  {"ask": "base64 encode hello world", "want": "skill:dev-tools"},
+  {"ask": "regex tester /\\d+/g on call 555 or 911", "want": "skill:dev-tools"},
+  {"ask": "explain cron 0 9 * * 1-5", "want": "skill:dev-tools"},
+  {"ask": "generate 5 rows of dummy data with name email city", "want": "skill:dev-tools"},
+  {"ask": "link card https://example.org", "want": "skill:link"},
+  {"ask": "CI report: the browser suite failed on commit 57ab1f2e after PR 1083 merged. FAIL fly stars move: the streak never showed. 159/162 passed, unit tests pass, the rest are unconfirmed.", "want": "skill:telemetry-route"},
+  {"ask": "ascii for hello", "want": "skill:ascii"},
+  {"ask": "https://raw.githubusercontent.com/nodejs/node/main/README.md", "want": "skill:gh-file"},
+  {"ask": "combine pdf files", "want": "skill:pdf-tools"},
+  {"ask": "tell me a proverb", "want": "skill:proverb"},
+  {"ask": "random proverb", "want": "skill:proverb"},
+  {"ask": "nba scores", "want": "skill:scores"},
+  {"ask": "premier league scores today", "want": "skill:scores"},
+  {"ask": "watch our vocabulary drift", "want": "skill:term-orbits"},
+  {"ask": "set my ambition temperature for the garden", "want": "skill:anneal-ambition"},
+  {"ask": "set my ambition temperature for the novel, hot 3 days, cool 7 days, keep 1", "want": "skill:anneal-ambition"},
+  {"ask": "make a generator of band names: The Static, Low Tide, Glasshouse", "want": "skill:generators-fill"},
+  {"ask": "save this recipe: Pancakes, ingredients: flour, milk, 2 eggs; steps: whisk. fry", "want": "skill:recipes-fill"},
+  {"ask": "save this recipe: Rice, ingredients: 1 cup rice, 2 cups water; steps: boil. simmer 15 minutes", "want": "skill:recipes-fill"},
+  {"ask": "stop the riot", "want": "skill:riot"},
+  {"ask": "fantasy mock draft", "want": "skill:fantasy"},
+  {"ask": "browse all sports", "want": "skill:sports-browse"},
+  {"ask": "what sports do you cover", "want": "skill:sports-browse"},
+  {"ask": "show this image https://example.org/sunset.png", "want": "skill:image"},
+  {"ask": "add a link https://a-to-mind.com/films/", "want": "skill:link"},
+  {"ask": "what else almost answered that", "want": "skill:near-choir"},
+  {"ask": "CI report: the browser suite failed on commit 3f9e2a10 after PR 1201 merged. FAIL weather card: the chart never drew. 160/162 passed, unit tests pass, the rest are unconfirmed.", "want": "skill:telemetry-route"},
+  {"ask": "open the fanfic archive", "want": "skill:fanfic"},
+  {"ask": "online piano", "want": "skill:music-tools"},
+  {"ask": "tinypng", "want": "skill:photo-tools"},
+  {"ask": "split a sprite sheet into frames", "want": "skill:sprite-sheet"},
+  {"ask": "slice a spritesheet 4x2 64px", "want": "skill:sprite-sheet"},
+  {"ask": "leave a trail on the budget", "want": "skill:stigmergy-board"},
+  {"ask": "generate placeholder text", "want": "skill:lorem"},
+  {"ask": "merge pdf", "want": "skill:pdf-tools"},
+  {"ask": "compress pdf", "want": "skill:pdf-tools"},
+  {"ask": "give me a proverb", "want": "skill:proverb"},
+  {"ask": "agent fluid", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "fluid orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "fantasy name generator", "want": "skill:textgen"},
+  {"ask": "kinetic energy calculator", "want": "skill:formulas"},
+  {"ask": "formula calculators", "want": "skill:formulas"},
+  {"ask": "char codes of world", "want": "skill:ascii"},
+  {"ask": "leet hello", "want": "skill:leet"},
+  {"ask": "convert cool to leet", "want": "skill:leet"},
+  {"ask": "leet speak for gamer", "want": "skill:leet"},
+  {"ask": "encode in morse sos", "want": "skill:morse"},
+  {"ask": "mix the list a b c d", "want": "skill:shuffle"},
+  {"ask": "random palette", "want": "skill:palette"},
+  {"ask": "give me a fact", "want": "skill:fact"},
+  {"ask": "2d6", "want": "skill:random"},
+  {"ask": "3d8", "want": "skill:random"},
+  {"ask": "memory orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "fluid memory orbs", "want": "skill:agent-fluid-memory-orbs"},
+  {"ask": "what is the ascii of A", "want": "skill:ascii"},
+  {"ask": "random password", "want": "skill:password"},
+  {"ask": "another password", "want": "skill:password"},
+  {"ask": "another emoji", "want": "skill:emoji"},
+  {"ask": "8 ball", "want": "skill:magic8"},
+  {"ask": "mp4 to mp3", "want": "skill:converter"},
+  {"ask": "file converter", "want": "skill:converter"},
+  {"ask": "audio converter", "want": "skill:converter"},
+  {"ask": "write me a rap about pizza", "want": "skill:rap"},
+  {"ask": "rap about my dog", "want": "skill:rap"},
+  {"ask": "spit some bars about mondays", "want": "skill:rap"},
+  {"ask": "team chat", "want": "skill:team-chat"},
+  {"ask": "open the team chat", "want": "skill:team-chat"},
+  {"ask": "agent workspace", "want": "skill:team-chat"},
+  {"ask": "random uuid", "want": "skill:uuid"},
+  {"ask": "another uuid", "want": "skill:uuid"},
+  {"ask": "random guid", "want": "skill:uuid"},
+  {"ask": "hangman", "want": "skill:hangman"},
+  {"ask": "play hangman", "want": "skill:hangman"},
+  {"ask": "start hangman", "want": "skill:hangman"},
+  {"ask": "should I go", "want": "skill:yesno"},
+  {"ask": "yesno", "want": "skill:yesno"},
+  {"ask": "set the stage to a retro server room", "want": "skill:backdrop"},
+  {"ask": "stage: an atmospheric study", "want": "skill:backdrop"},
+  {"ask": "check my stl file", "want": "skill:stl-check"},
+  {"ask": "is my stl watertight", "want": "skill:stl-check"},
+  {"ask": "stl checker", "want": "skill:stl-check"},
+  {"ask": "whats in the news today", "want": "skill:news"},
+  {"ask": "what is in the news right now", "want": "skill:news"},
+  {"ask": "give me a motivational quote", "want": "skill:quote"},
+  {"ask": "famous quotes", "want": "skill:quote"},
+  {"ask": "what can i make with chicken and rice", "want": "skill:recipe"},
+  {"ask": "good movies to watch tonight", "want": "skill:media-pick|skill:movie"},
+  {"ask": "what should i watch on netflix", "want": "skill:media-pick|skill:movie|skill:show"},
+  {"ask": "convert hello to morse code", "want": "skill:morse"},
+  {"ask": "magic 8 ball will i pass my test", "want": "chance", "says": "pass my test"},
+  {"ask": "a colour", "want": "skill:color"},
+  {"ask": "ask the magic 8 ball", "want": "chance"},
+  {"ask": "new guid", "want": "skill:util"},
+  {"ask": "random color", "want": "skill:color"},
+  {"ask": "random colour", "want": "skill:color"},
+  {"ask": "night sky tonight", "want": "skill:sky"},
+  {"ask": "band name generator", "want": "skill:textgen"},
+  {"ask": "give me a story prompt", "want": "skill:textgen"},
+  {"ask": "story prompt generator", "want": "skill:textgen"},
+  {"ask": "complementary palette", "want": "skill:palette"},
+  {"ask": "another palette", "want": "skill:palette"},
+  {"ask": "pastel color palette", "want": "skill:palette"},
+  {"ask": "triadic palette from #ff8800", "want": "skill:palette"},
+  {"ask": "generate a color scheme", "want": "skill:palette"},
+  {"ask": "should i", "want": "skill:yesno"},
+  {"ask": "shuffle these: apple banana cherry", "want": "skill:shuffle"},
+  {"ask": "randomize my list red green blue", "want": "skill:shuffle"},
+  {"ask": "shuffle: north south east west", "want": "skill:shuffle"},
+  {"ask": "word ladder from cat to dog", "want": "skill:wordladder"},
+  {"ask": "ladder from cold to warm", "want": "skill:wordladder"},
+  {"ask": "word ladder", "want": "skill:wordladder"},
+  {"ask": "free kanban board", "want": "skill:kanban-board"},
+  {"ask": "kanban", "want": "skill:kanban-board"},
+  {"ask": "start a kanban board", "want": "skill:kanban-board"},
+  {"ask": "online kanban", "want": "skill:kanban-board"},
+  {"ask": "morse code hello", "want": "skill:morse"},
+  {"ask": "morse hello world", "want": "skill:morse"},
+  {"ask": "translate to morse hello", "want": "skill:morse"},
+  {"ask": "what would the echo say should i learn to code", "want": "skill:echo-disagrees"},
+  {"ask": "please check my edit", "want": "skill:homotopy-edit"},
+  {"ask": "check my edits", "want": "skill:homotopy-edit"},
+  {"ask": "check my argument edits", "want": "skill:homotopy-edit"},
+  {"ask": "make today's misses into jobs", "want": "skill:miss-jobs"},
+  {"ask": "today's misses as jobs", "want": "skill:miss-jobs"},
+  {"ask": "password of 20 characters", "want": "skill:password"},
+  {"ask": "d20", "want": "skill:random"},
+  {"ask": "image boards", "want": "skill:boards"},
+  {"ask": "search podcasts for true crime", "want": "skill:podcast-search"},
+  {"ask": "podcasts about history", "want": "skill:podcast-search"},
+  {"ask": "find a podcast about cooking", "want": "skill:podcast-search"},
+  {"ask": "best podcasts about science", "want": "skill:podcast-search"},
+  {"ask": "any good podcasts about space", "want": "skill:podcast-search"},
+  {"ask": "What got built", "want": "skill:growth"},
+  {"ask": "what got built today", "want": "skill:growth"},
+  {"ask": "what got shipped recently", "want": "skill:growth"}
 ]

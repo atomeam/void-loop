@@ -151,6 +151,9 @@
       "ask": "turn the questions i missed into a five-minute challenge"
     },
     {
+      "ask": "test me on that"
+    },
+    {
       "ask": "yo bitcoin price"
     },
     {
@@ -248,6 +251,37 @@
     },
     {
       "ask": "my photos"
+    },
+    {
+      "ask": "contéstame en español"
+    },
+    {
+      "ask": "start despacito",
+      "taught": "video-play"
+    },
+    {
+      "ask": "yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "taught": "digest"
+    },
+    {
+      "ask": "can we play despacito",
+      "taught": "video-play"
+    },
+    {
+      "ask": "yo play despacito",
+      "taught": "video-play"
+    },
+    {
+      "ask": "yo what does ephemeral mean",
+      "taught": "define"
+    },
+    {
+      "ask": "what did this video teach? pls",
+      "taught": "digest"
+    },
+    {
+      "ask": "yo watch the apollo 11 landing",
+      "taught": "video-play"
     }
   ],
   "candidates": [],
@@ -257,43 +291,7 @@
     "othello": "reversi",
     "stratego": "fog of v01d"
   },
-  "teach": [
-    {
-      "ask": "yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
-      "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
-      "feature": "skill:digest"
-    },
-    {
-      "ask": "can we play despacito",
-      "means": "play despacito",
-      "feature": "skill:video-play"
-    },
-    {
-      "ask": "start despacito",
-      "means": "play despacito",
-      "feature": "skill:video-play"
-    },
-    {
-      "ask": "yo play despacito",
-      "means": "play despacito",
-      "feature": "skill:video-play"
-    },
-    {
-      "ask": "yo what does ephemeral mean",
-      "means": "define serendipity",
-      "feature": "skill:define"
-    },
-    {
-      "ask": "what did this video teach? pls",
-      "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
-      "feature": "skill:digest"
-    },
-    {
-      "ask": "yo watch the apollo 11 landing",
-      "means": "play despacito",
-      "feature": "skill:video-play"
-    }
-  ],
+  "teach": [],
   "priority": [
     "skill:video-play",
     "skill:book",

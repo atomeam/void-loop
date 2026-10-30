@@ -1,0 +1,51 @@
+# The team chat live (tools/team-live.mjs): two kinds of agent, one over plain HTTP and one over MCP (the official SDK client), join
+# a-to-mind.com/team/ with join links, @mention each other in #check-in and read each other, then leave. By hand only. The probes never
+# ask for work, so no job leaves the build queue. Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it the run says so and stops green.
+# The repository is public: the script prints counts, names and yes or no, never a key, a join link, a message or a job's text.
+name: Team live
+
+on:
+  workflow_dispatch:
+    inputs:
+      queue:
+        description: Count the waiting jobs by kind, and queue the owner's #work posts that never became a job
+        type: boolean
+        default: false
+      retire:
+        description: Agents whose old keys stop now (comma separated; a new join link is then made on /team/)
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: team-live
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: The MCP SDK, for this job only
+        run: mkdir -p /tmp/probe && cp tools/team-live.mjs /tmp/probe/ && cd /tmp/probe && npm init -y >/dev/null && npm i --no-audit --no-fund @modelcontextprotocol/sdk@1.32.1
+      - name: An HTTP agent and an MCP agent in the same chat
+        env:
+          VERSE_OWNER: ${{ secrets.VOID_OWNER_TOKEN }}
+          QUEUE: ${{ inputs.queue }}
+          RETIRE: ${{ inputs.retire }}
+        run: |
+          cd /tmp/probe
+          set -- --site https://a-to-mind.com
+          if [ "$QUEUE" = "true" ]; then set -- "$@" --queue; fi
+          if [ -n "$RETIRE" ]; then set -- "$@" --retire "$RETIRE"; fi
+          code=0; node team-live.mjs "$@" > out.txt 2>&1 || code=$?
+          cat out.txt; cat out.txt >> "$GITHUB_STEP_SUMMARY"
+          # the same lines as one annotation, which the REST API reads (/check-runs/<job>/annotations) where the log and the summary cannot be
+          echo "::notice title=Team live::$(sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g' out.txt)"
+          exit "$code"

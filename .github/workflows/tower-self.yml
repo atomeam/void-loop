@@ -1,0 +1,92 @@
+# Versus by itself (owner, 2026-10-26: "use all your energy into making fully autonomous verse continue the tower without you"; "all sites get a
+# page"): tools/tower-self.mjs takes the next frontier sites easiest first, reads each at its own address, has Verse's own free model (Workers AI)
+# say which of Verse's floors does its job and write the new page's words, writes a DATA row (lib/self-sites.js) that gives the site a page of its
+# own built from that floor's page, checks it like any change (the tower, lane-page, tool-table, search and privacy tests, the generated cards and
+# the secret scan; a failing build is discarded and logged), pushes it to main with this workflow's token, deploys, gates each new site against its
+# live rival (tools/tower-gate.mjs, landed as tower-gate.yml lands), applies the mechanical fixes for the rows it lost (offline list, link-preview
+# tags) and redeploys once, queues the rest with the gate's evidence, and writes one line to the agent log and the growth ledger. A site no floor
+# covers becomes a queued job, never invented code. Every step runs on Verse's own model and tools (tools/tower-self.test.mjs). Playbook:
+# docs/playbooks/tower-self.md.
+# Budget: three runs a day, at most 8 sites read, 4 pages built and 16 model calls a run (about 12 pages a day), one or two deploys a run.
+name: Versus by itself
+
+on:
+  schedule:
+    - cron: '37 2,10,18 * * *'
+  workflow_dispatch:
+    inputs:
+      site:
+        description: hosts to take on, separated by commas (e.g. anycolorid.com); empty takes the next frontier sites, easiest first
+        default: ''
+      built:
+        description: at most this many pages built this run
+        default: '4'
+
+permissions:
+  contents: write # the rows, pages and verdicts go to main
+  actions: write # start the deploy after the push (a push made with this token starts no workflow)
+
+concurrency:
+  group: tower-self
+  cancel-in-progress: false
+
+jobs:
+  climb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      CHROME_PATH: /usr/bin/google-chrome
+      TOWER_PRIVATE: ${{ github.workspace }}/../tower-private
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Pick, read, classify and research
+        env:
+          SITE: ${{ inputs.site }}
+          BUILT: ${{ inputs.built || '4' }}
+        run: |
+          if [ -n "$SITE" ]; then node tools/tower-self.mjs plan --site "$SITE" --out "$RUNNER_TEMP/plan.json"; else node tools/tower-self.mjs plan --out "$RUNNER_TEMP/plan.json"; fi
+          node tools/tower-self.mjs build "$RUNNER_TEMP/plan.json" "$RUNNER_TEMP/decision.json" --built "$BUILT"
+          node tools/tower-self.mjs ids "$RUNNER_TEMP/decision.json" > "$RUNNER_TEMP/ids.txt"; echo "built: $(paste -sd, "$RUNNER_TEMP/ids.txt")"
+      - name: Build the rows, check them and push (a build that fails a check is discarded and logged)
+        id: push
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ids=$(paste -sd, "$RUNNER_TEMP/ids.txt" | cut -c1-200); sh tools/tower-self-land.sh "$RUNNER_TEMP/decision.json" "Versus by itself: ${ids:-no page built}, the sites read recorded"
+      - name: Deploy and wait for the new pages
+        continue-on-error: true # a page not live in 15 minutes is measured as it stands, and the run says so
+        if: steps.push.outputs.pushed == 'yes' && steps.push.outputs.built == 'yes'
+        run: |
+          gh workflow run deploy.yml --ref main -f after_merge=true
+          node tools/tower-self-live.mjs "$RUNNER_TEMP/decision.json" 900
+      - name: Gate each new site against its live rival
+        if: steps.push.outputs.built == 'yes'
+        run: |
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 480 node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured (or stopped after 8 minutes)"; }; done < "$RUNNER_TEMP/ids.txt"
+          node tools/gate-land.mjs take "$RUNNER_TEMP/ids.txt" "$RUNNER_TEMP/mine.json"
+      - name: Judge the rows, fix what has a template, queue the rest, report
+        id: judge
+        if: always() && steps.push.outcome == 'success'
+        run: |
+          [ -s "$RUNNER_TEMP/mine.json" ] && { git fetch -q origin main && git reset -q --hard origin/main && node tools/gate-land.mjs put "$RUNNER_TEMP/mine.json"; }
+          node tools/tower-self.mjs judge "$RUNNER_TEMP/ids.txt" --queue --decision "$RUNNER_TEMP/decision.json"
+          sh tools/tower-self-report.sh
+      - name: Redeploy the fixes and gate again
+        if: steps.judge.outputs.fixed == 'yes'
+        run: |
+          gh workflow run deploy.yml --ref main -f after_merge=true
+          sleep 150
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 480 node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured"; }; done < "$RUNNER_TEMP/ids.txt"
+          node tools/gate-land.mjs take "$RUNNER_TEMP/ids.txt" "$RUNNER_TEMP/mine2.json"
+          git fetch -q origin main && git reset -q --hard origin/main && node tools/gate-land.mjs put "$RUNNER_TEMP/mine2.json"
+          node tools/tower-self.mjs judge "$RUNNER_TEMP/ids.txt"
+          sh tools/tower-self-report.sh

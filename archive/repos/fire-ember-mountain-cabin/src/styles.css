@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Liberation Serif", "Bitstream Charter", "DejaVu Serif", serif;
+  --font-mono: "Liberation Mono", "DejaVu Sans Mono", ui-monospace, monospace;
+  --color-paper: #f3efe4;
+  --color-ink: #1c1914;
+  --color-muted: #5e584e;
+  --color-rule: #d9d0c1;
+  --color-stamp: #8f3d1b;
+  --color-proven: #1e5c40;
+  --color-card: #fffdf8;
+  --color-bay: #ebe4d4;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html,
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+}

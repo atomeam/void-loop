@@ -108,3 +108,9 @@ test('queue (dry): plain routing gaps become probe jobs within the open limit; a
   assert.match(lines[0], /probe:fly-around/); assert.doesNotMatch(r.stdout, /https|rm -rf/);
   assert.equal(spawnSync(process.execPath, [new URL('./lacks.mjs', import.meta.url).pathname, 'queue'], { encoding: 'utf8' }).status, 2);
 });
+
+test('a finished study with strong evidence moves its skill up the plan, never off it', () => {
+  const base = plan({ guide, families, bench: [] }, { n: 5 }).picks.map((x) => x.name);
+  const boosted = plan({ guide, families, bench: [], studyBoost: { [base[base.length - 1]]: 1000 } }, { n: 5 }).picks.map((x) => x.name);
+  assert.equal(boosted[0], base[base.length - 1]); assert.deepEqual([...boosted].sort(), [...base].sort());
+});

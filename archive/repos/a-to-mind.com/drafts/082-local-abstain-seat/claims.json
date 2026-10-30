@@ -1,0 +1,18 @@
+{
+  "slug": "local-abstain-seat",
+  "run": "082",
+  "family": "human-machine co-agency",
+  "status": "unattested",
+  "emit": false,
+  "seat_allowlist": ["abstain"],
+  "seat_denied": ["instrument", "both", "unset"],
+  "disconfirm_allowlist": [
+    "a-person-could-have-acted",
+    "the-paste-could-be-unrelated",
+    "no-second-seat-was-present"
+  ],
+  "hash_fields": ["seat", "disconfirm", "weight", "status"],
+  "excluded_from_hash": ["proposal_text", "instrument_seat"],
+  "default": "unattested",
+  "note": "An abstain seat is a hashed hypothesis of a local refusal. It is not a partner, not a waiting agent, and not an oversight equilibrium."
+}

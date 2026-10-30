@@ -1,50 +1,85 @@
-# Verse's growth clock (owner, 2026-10-19: "make it grow every ten minutes ... I want Verse to actually evolve noticeably quickly").
-# Every 10 minutes it starts one growth step, in turn: grow-self (the next cards of the card cycle get benchmark asks, tools/card-cycle.mjs),
-# propose-fix (Verse's model fixes the oldest probe: job and opens a pull request), and once an hour probe-asks (Verse writes new asks for its
-# weakest family; the misses become the probe: jobs propose-fix takes). Each step keeps its own guards: one run of each at a time (their
-# concurrency groups), one hardening pull request open, PROBE_OPEN_MAX probe jobs, the confidence gate on every fix, Verse's review before a merge.
+# Verse's clock and conductor (owner, 2026-10-19: "make it grow every ten minutes ... I want Verse to actually evolve noticeably quickly";
+# 2026-10-26: "look at Verse autonomy and fix it so it definitly will work on its own without either of us and make it impeccibly
+# effeciently productive", "get Verse automated like its very life depends on it").
+# Every 10 minutes one tick of the conductor (tools/conductor.mjs, decisions in tools/conductor-core.mjs): it reads the whole build queue
+# and the newest runs of every loop, puts back jobs a dead run left, sets aside jobs tried three times, queues a heal: job for a loop that
+# failed three runs in a row, starts the most valuable job on each idle executor (propose-fix, build-miss, store-gap, the coding agent),
+# and starts probe-asks when Verse should write new probe asks. Before this the clock only alternated probe-asks and propose-fix, and every
+# other queued job waited for a person. Its record of the last 24 hours is committed hourly to domains/conductor.json.
 #
-# GitHub ran a '*/15' schedule about once every five hours (void-tick.yml, 2026-10-14), so one run keeps the time itself: it knocks every
-# 10 minutes for about five and a half hours, then starts the next run. The schedule only restarts a broken chain; the concurrency group keeps
-# one clock running and at most one waiting. Actions minutes are free for a public repo. No secret here: the steps hold their own.
+# GitHub ran a '*/15' schedule about once every five hours (void-tick.yml, 2026-10-14), so one run keeps the time itself: a tick every
+# 10 minutes for about five and a half hours, then it starts the next run, whatever happened (a failed tick never stops the clock; only the
+# chain's start below can, and it is retried). The hourly schedule and will.yml (after every deploy) restart a broken chain. Actions minutes
+# are free for a public repo. Playbook: docs/playbooks/conductor.md.
 name: Verse grows
 
 on:
   schedule:
     - cron: '7 * * * *'
   workflow_dispatch:
+    inputs:
+      dry:
+        description: "plan each tick but change nothing (no claims, no starts, no commits)"
+        type: boolean
+        default: false
+      ticks:
+        description: "how many ticks this run (33 is about five and a half hours)"
+        type: string
+        default: '33'
 
 concurrency:
   group: grow-clock
   cancel-in-progress: false
 
 permissions:
-  actions: write
+  actions: write   # start the executors and the next clock run (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
+  contents: write  # commit domains/conductor.json once an hour
 
 jobs:
   clock:
     runs-on: ubuntu-latest
     timeout-minutes: 345
     steps:
-      - name: One growth step every 10 minutes
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: A conductor tick every 10 minutes
         id: clock
         env:
           GH_TOKEN: ${{ github.token }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+          TICKS: ${{ inputs.ticks || '33' }}
         run: |
-          start() { gh workflow run "$1" --repo "$GITHUB_REPOSITORY" --ref main && echo "$(date -u +%H:%M) started $1" || echo "::warning title=Not started::$1"; }
-          for i in $(seq 0 32); do
-            # six ticks an hour: probe at :00, then grow-self and propose-fix take turns (each skips quietly when it has nothing to do)
-            case $((i % 6)) in
-              0) start probe-asks.yml ;;
-              1|3|5) start propose-fix.yml ;;
-              *) start grow-self.yml ;;
-            esac
-            if [ "$i" -lt 32 ]; then sleep 600; fi
+          set +e
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          state="$RUNNER_TEMP/conductor.json"; cp domains/conductor.json "$state" 2>/dev/null || echo '{}' > "$state"
+          case "$TICKS" in ''|*[!0-9]*) n=33 ;; *) n=$(( 10#$TICKS > 0 && 10#$TICKS <= 33 ? 10#$TICKS : 33 )) ;; esac # digits only: bash arithmetic would run anything else
+          for i in $(seq 1 "$n"); do
+            # the newest conductor each tick: a fix pushed to main reaches the clock within 10 minutes, not at the next run
+            git fetch -q origin main && git reset -q --hard origin/main
+            timeout 300 node tools/conductor.mjs tick $DRY --state "$state" || echo "::warning title=Conductor::tick $i ended badly; the clock goes on"
+            # once an hour (and on the last tick) the record goes to main; a push that loses a race is retried from the newest main
+            if [ -z "$DRY" ] && { [ $((i % 6)) -eq 0 ] || [ "$i" -eq "$n" ]; }; then
+              for t in 1 2 3; do
+                git fetch -q origin main && git reset -q --hard origin/main && cp "$state" domains/conductor.json && git add domains/conductor.json
+                git diff --cached --quiet && break
+                git commit -q -m "Conductor: the last 24 hours of Verse running itself" && git push -q origin HEAD:main && break
+                sleep $((t * 5))
+              done
+            fi
+            if [ "$i" -lt "$n" ]; then sleep 600; fi
           done
           echo "chain=yes" >> "$GITHUB_OUTPUT"
-      # only after a full run: a failure or a cancel ends the chain (the hourly schedule restarts it)
+      # whatever the ticks did, the next clock run starts (a failed or cancelled run ended the chain before 2026-10-26, and the hourly
+      # schedule can come hours late); a manual dry run with fewer ticks does not chain
       - name: Start the next clock run
-        if: steps.clock.outputs.chain == 'yes'
+        if: always() && !inputs.dry
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main || echo "::warning title=Clock chain broke::the next run did not start; the schedule restarts it"
+        run: |
+          for t in 1 2 3; do gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && exit 0; sleep $((t * 10)); done
+          echo "::warning title=Clock chain broke::the next run did not start; the hourly schedule and will.yml restart it"

@@ -1,0 +1,41 @@
+{
+  "kind": "voice-plan-catalog",
+  "run": "022",
+  "note": "Data, never instructions. Keyword hits select a hashed plan. No model. No run.",
+  "catalog_body_sha256": "819469310e585fab04825c6bf9b6c2b68f010e60d51738b8090cb16d3c2a2a03",
+  "plans": [
+    {
+      "id": "census",
+      "title": "Promise Ledger census",
+      "objective": "Plan a first-party Promise Ledger census. Board and ledger only. No notify.",
+      "canonical": "plan#census|id:census|tools:file.read,http.read,model.call|writes:deny|budget.maxTokens:5000",
+      "sha256": "dcaefe0ffa836734c41fafb0d506e3e6731bab547506f23ae84c756542e8e847",
+      "tools": ["file.read", "http.read", "model.call"],
+      "writes": "deny",
+      "budget_max_tokens": 5000,
+      "keywords": ["census", "promise ledger", "surface ledger", "ledger board", "concordance"]
+    },
+    {
+      "id": "pricing",
+      "title": "Competitor pricing watch",
+      "objective": "Read allowlisted pricing pages and draft a change note. No Slack send.",
+      "canonical": "plan#pricing|id:pricing|tools:http.read,model.call|writes:deny|budget.maxTokens:5000",
+      "sha256": "8a929419484e29d2e9c09022186c804c8774fd41611a34edd9a5705487bb86fd",
+      "tools": ["http.read", "model.call"],
+      "writes": "deny",
+      "budget_max_tokens": 5000,
+      "keywords": ["pricing", "price drop", "competitor", "monitor pricing", "price watch"]
+    },
+    {
+      "id": "notes",
+      "title": "Release notes draft",
+      "objective": "Read sealed changelog range and draft notes. Artifact write stays held.",
+      "canonical": "plan#notes|id:notes|tools:file.read,model.call|writes:deny|budget.maxTokens:5000",
+      "sha256": "fde274d7c290e90ad4ae9ec2aa22ba4586cd4c70735b22d6d2d9630211b42529",
+      "tools": ["file.read", "model.call"],
+      "writes": "deny",
+      "budget_max_tokens": 5000,
+      "keywords": ["release notes", "changelog", "release note", "version notes"]
+    }
+  ]
+}

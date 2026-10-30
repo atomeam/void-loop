@@ -130,3 +130,7 @@ test('the live-stage half: targets read the stage through its api, the picked ca
   assert.equal(D.plural(1, 'card'), '1 card'); assert.equal(D.plural(3, 'card'), '3 cards');
   assert.equal(D.read('k', 7), 7); assert.equal(D.write('k', { a: 1 }), false); // no localStorage in node: read falls back, write reports its failure
 });
+test('blur off in plain words: "blur the background off" and "background sharp again" clear the blur (the restore of 2026-10-21 kept this change)', () => {
+  for (const t of ['blur the background off', 'turn the blur background off', 'background sharp again', 'make the background sharp again', 'the background clear again']) assert.deepEqual(T.styleOf(t), { op: 'blur', px: 0 }, t);
+  assert.deepEqual(T.styleOf('blur the background'), { op: 'blur', px: 8 }); assert.equal(typeof T.resolveWho, 'function', 'stage-tools-dom.js imports it');
+});

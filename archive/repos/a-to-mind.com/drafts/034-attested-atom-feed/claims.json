@@ -1,0 +1,27 @@
+{
+  "kind": "attested-atom-feed",
+  "run": "034",
+  "status": "candidate",
+  "hold": true,
+  "live_file": false,
+  "alternate_link": false,
+  "format": "atom-1.0",
+  "updated": null,
+  "entries": [],
+  "denied_paths": ["/feed.atom", "/atom.xml", "/feed.xml", "/rss.xml", "/feed.json"],
+  "head": {"algo":"sha256","format":"atom-1.0","invented_entry":false,"kind":"attested-atom-feed","rel_alternate":false},
+  "head_sha256": "0f1faf9caece87d412340a0485b68d17c8f5da1bce3eb5fae3b54732b6f902d9",
+  "body_sha256": "e2ada1eed663d7601e8ec7794afdd36871d57b84ec473403fc439f6f7b8e438c",
+  "lines": [
+    {"id": "feed#034", "text": "feed#034|kind:attested-atom-feed|format:atom-1.0|empty-until-seal:deny-serve|rel-alternate:deny|tracking-pixel:deny|relative-url:deny|hash:sha256|seal:human", "sha256": "b212f4ac87743f057522325487dd2aa50748c301b55ac677d708e7ecb84cf86d"},
+    {"id": "claim#route", "text": "claim#route|text:No live /feed.atom until a human seals at least one attested entry.", "sha256": "a993ba24e28124ae96a04ebeeda88f3bf5bee6ab94d45ec61ccbb2372bc0fce6"},
+    {"id": "claim#format", "text": "claim#format|text:Atom 1.0 only. RSS and JSON Feed stay 404 until Atom is sealed. No second surface first.", "sha256": "b391ba1c9af65aa373f990b24374dca2bcb08096785b1b1250995aa2f5375224"},
+    {"id": "claim#entries", "text": "claim#entries|text:Entries stay empty. A generator must not invent posts from unsealed pages.", "sha256": "254c492db2b47a6edcfe2e078346ffa49adbe61b8403156de1bfdb3e8697e99d"},
+    {"id": "claim#updated", "text": "claim#updated|text:Feed updated stays null until seal. A deploy must not bump updated.", "sha256": "306a5215df3a9eb0be3c3ece8d7b61daf8a959c7e8c1684977e2bfc1947973ef"},
+    {"id": "claim#urls", "text": "claim#urls|text:Entry links must be absolute https IRIs. Relative URLs are denied.", "sha256": "4703f1c3724cba0313784bef1bce820469b2920aef9d70e4b4b6d423c688c925"},
+    {"id": "claim#discover", "text": "claim#discover|text:No rel=alternate head link until the root feed is sealed and hashed.", "sha256": "a3bfa6f68e0124a8fb2ec57b268642ffef884c47917365a6f9eb76b3c2a850d8"},
+    {"id": "claim#track", "text": "claim#track|text:No tracking pixels, query utm, or email-subscribe enclosure in the feed.", "sha256": "2d3f4d73311abc3b2090b6840d856761d8361187e7bc76829e8b10865ab6fb4e"},
+    {"id": "claim#tokens", "text": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.", "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"},
+    {"id": "page#atom-feed", "text": "page#atom-feed|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny", "sha256": "184f1cb615d73483750a6ec815bb5a3e3e0eb71fe3dd036c7426a40e422069e8"}
+  ]
+}

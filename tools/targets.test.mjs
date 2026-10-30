@@ -10,4 +10,10 @@ assert.ok(problems({ site: 'Z', features: [{ id: 'q', theirs: 'Q', void: 'beats'
 assert.ok(problems({ site: 'Z', features: [{ id: 'q', theirs: 'Q', plus_one: 'Q+1', void: 'copied' }] }).some((p) => /void must be/.test(p)));
 // the targets in the repo are well formed
 for (const tg of load()) assert.deepEqual(problems(tg), [], tg.file);
+// a target measured by its controls (the tower ranks sites by interactive elements on the home page): the sections add up to the total
+for (const tg of load()) for (const k of ['home', 'archiveHome']) if (tg[k]) {
+  assert.equal(tg[k].sections.reduce((n, x) => n + x.count, 0), tg[k].total, tg.file + ' ' + k + ' sections');
+  assert.equal(Object.values(tg[k].byKind).reduce((n, x) => n + x, 0), tg[k].total, tg.file + ' ' + k + ' kinds');
+}
+assert.equal(load().find((tg) => tg.site === 'sycophanthex.com').home.total, 34);
 console.log('targets: all passed');

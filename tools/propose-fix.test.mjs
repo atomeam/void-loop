@@ -185,3 +185,16 @@ test('a gateway error (502, 503, 504) gets one more try; an answer (2xx, 4xx, 50
   for (const s of [502, 503, 504]) assert.equal(retryable(s), true, String(s));
   for (const s of [200, 400, 401, 404, 409, 429, 500]) assert.equal(retryable(s), false, String(s));
 });
+
+test('the source window: a small file whole, a big one as its head and its tail (where match() lives) within the model\'s limit and the route\'s body cap', async () => {
+  const { sourceWindow } = await import('./propose-fix.mjs');
+  const { MAX_SOURCE } = await import('../void-live-deploy/lib/propose-fix.js');
+  assert.equal(sourceWindow('export default { match() {} }'), 'export default { match() {} }');
+  const big = 'const css = "' + 'x'.repeat(60000) + '";\nexport default { name: "big", match(lower) { return /big/.test(lower); } };\n';
+  const w = sourceWindow(big);
+  assert.ok(w.length <= MAX_SOURCE, 'fits the model: ' + w.length);
+  assert.ok(Buffer.byteLength(JSON.stringify({ ask: 'x'.repeat(160), skill: 'big', source: w })) < 40000, 'fits the route\'s 40,000-byte guard');
+  assert.ok(w.startsWith('const css = "'), 'the head is there');
+  assert.ok(w.endsWith('match(lower) { return /big/.test(lower); } };\n'), 'the tail with match() is there');
+  assert.match(w, /clipped/);
+});

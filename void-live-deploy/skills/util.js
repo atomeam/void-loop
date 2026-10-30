@@ -3,6 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Everything runs in the browser (crypto for passwords, maths for the moon); only the QR image comes from goqr.me (no key).
  */
+import { askColour, parse, toHex, describe } from '../lib/colour.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
@@ -10,6 +11,7 @@ const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUppe
   reverse: (s) => Array.from(s).reverse().join(''), 'reverse words': (s) => s.trim().split(/\s+/).reverse().join(' ') };
 const SMALL = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'via', 'vs']);
 // syllables by vowel groups, with the usual English corrections (silent final e, -le, -ed); right for most words, labelled "about"
+import { bandMini } from '../lib/card-mini.js';
 export function syllables(w) {
   w = String(w).toLowerCase().replace(/[^a-z]/g, ''); if (!w) return 0; if (w.length <= 3) return 1;
   let s = w.replace(/(?:[^laeiouy]es|[^laeiouy]ed|[^laeiouy]e)$/, '').replace(/^y/, '');
@@ -25,6 +27,8 @@ export function utilOf(text) {
   if (m) return { kind: 'qr', data: m[1].trim() };
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/);
   if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
+  m = l.match(/^(#[0-9a-f]{6}|#[0-9a-f]{3})$/); // a bare hex code, the way people paste one into a colour site
+  if (m) return { kind: 'color', c: m[1] };
   // the converter forms (tools pack 7, owner 2026-10-18, "Color hex <-> rgb"): "#ff8800 to rgb", "hex to rgb #ff8800", "rgb 255 136 0 to hex", "rgb to hex 255 136 0"; the same colour card
   m = l.match(/^(?:convert\s+)?(#[0-9a-f]{6}|#[0-9a-f]{3})\s+(?:to|in|into|as)\s+(?:rgb|hsl|hex|colou?r)$/) || l.match(/^(?:convert\s+)?(?:hex|colou?r)\s+(?:code\s+)?(#?[0-9a-f]{6}|#?[0-9a-f]{3})\s+to\s+(?:rgb|hsl)$/) || l.match(/^hex\s+to\s+(?:rgb|hsl)\s*:?\s*(#?[0-9a-f]{6}|#?[0-9a-f]{3})$/);
   if (m) return { kind: 'color', c: m[1] };
@@ -33,7 +37,16 @@ export function utilOf(text) {
   // "what color is rgb 255 0 0", "rgb(0, 128, 255)"
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?)?rgb\s*\(?\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})\s*\)?$/);
   if (m && [m[1], m[2], m[3]].every((v) => +v <= 255)) return { kind: 'color', c: '#' + [m[1], m[2], m[3]].map((v) => (+v).toString(16).padStart(2, '0')).join('') };
-  m = t.match(/^(?:word\s+count|count\s+(?:the\s+)?words)(?:\s+(?:of|in|for)\s+|\s*:\s*)(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
+  // what the forms above miss, from the colour page's own reader (lib/colour.js): "hsl(11, 100%, 60%)", "ff5733 color", "colour picker", "html color codes"
+  { const c = askColour(t); if (c) return { kind: 'color', c: toHex(parse(c)) }; }
+  // counted as typed: the cleaned ask drops a closing "!" or "?", and "word count: ... amused!" came out one character short (the tower gate's
+  // accuracy question for wordcounter.net); "how many words in X?" still loses its question mark, which is the ask's, not the text's
+  const typed = raw.replace(/\s+/g, ' ');
+  // the word counter's card (lib/wordcount.js cardAsk): its text as base64url, read back only when it is that exact code, so a typed "#tag" stays a word
+  m = raw.match(/^count\s+words\s+#([A-Za-z0-9_-]{2,1100})$/);
+  if (m) { try { const b = atob(m[1].replace(/-/g, '+').replace(/_/g, '/')), s = new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(b, (c) => c.charCodeAt(0)));
+    if (s.trim() && btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') === m[1]) return { kind: 'count', s }; } catch (_) { /* not a card code: an ask about a tag */ } }
+  m = typed.match(/^(?:word\s+count|count\s+(?:the\s+)?words)(?:\s+(?:of|in|for)\s+|\s*:\s*)(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
   if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, '') };
   // "make it uppercase: hello world", "turn this into title case: ..."
   m = t.match(/^(?:make|turn|convert|change|put)\s+(?:it|this|that|the\s+text)\s+(?:in(?:to)?\s+|to\s+)?(uppercase|upper case|lowercase|lower case|title case|all caps|caps)\s*:\s*(.+)$/i);
@@ -108,9 +121,11 @@ async function run(text, api) {
     el = showPage((p) => { p.innerHTML = '<h2>QR code</h2><div class="sub">' + esc(q.data) + '</div><img alt="QR code for ' + esc(q.data) + '" src="' + esc(src) + '" style="float:none;max-width:240px;max-height:240px;background:#fff;border-radius:8px;margin:8px 0">'
       + '<div class="src">Source: <a href="https://goqr.me/api/" target="_blank" rel="noopener">goqr.me</a></div>'; });
   } else if (q.kind === 'color') {
-    const h = hex(q.c), v = hsl(h);
+    const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
-      + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li></ul>'; });
+      + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li>'
+      + (d ? '<li><b>Nearest name</b> ' + esc(d.name.name) + (d.name.exact ? '' : ' (' + esc(d.name.hex) + ')') + '</li><li><b>Text on it</b> ' + (d.contrast.text === '#000000' ? 'black, ' + d.contrast.black : 'white, ' + d.contrast.white) + ':1' + (Math.max(d.contrast.black, d.contrast.white) >= 4.5 ? ' (passes AA)' : ' (large text only)') + '</li>' : '') + '</ul>'
+      + '<p><a class="cc-open" href="/color/?c=' + esc(h.slice(1)) + '">Every model, shades, tones and schemes</a></p>'; });
   } else if (q.kind === 'letters') {
     // a, e, i, o, u are vowels (y is counted as a consonant, the usual school answer)
     const ls = Array.from(q.s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()).filter((c) => /[a-z]/.test(c)), v = ls.filter((c) => 'aeiou'.includes(c)).length, n = q.which === 'vowels' ? v : ls.length - v;
@@ -119,7 +134,8 @@ async function run(text, api) {
     const words = (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, chars = Array.from(q.s).length, noSp = Array.from(q.s.replace(/\s/g, '')).length;
     el = q.chars
       ? showPage((p) => { p.innerHTML = '<h2>Characters</h2>' + big(chars + (chars === 1 ? ' character' : ' characters'), 44) + '<p style="color:#8a8a8a">' + noSp + ' without spaces · ' + words + (words === 1 ? ' word' : ' words') + '</p>'; })
-      : showPage((p) => { p.innerHTML = '<h2>Word count</h2>' + big(words + (words === 1 ? ' word' : ' words'), 44) + '<p style="color:#8a8a8a">' + chars + ' characters (' + noSp + ' without spaces)</p>'; });
+      : showPage((p) => { p.innerHTML = '<h2>Word count</h2>' + big(words + (words === 1 ? ' word' : ' words'), 44) + '<p style="color:#8a8a8a">' + chars + ' characters (' + noSp + ' without spaces)</p>'
+        + (q.s.length <= 4000 ? '<p><a class="wc-open" href="/word-count/?t=' + encodeURIComponent(q.s) + '">Sentences, reading time and keywords, counted as you type</a></p>' : ''); });
   } else if (q.kind === 'uuid') {
     const id = (crypto.randomUUID && crypto.randomUUID()) || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => { const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16; return (c === 'x' ? r : (r & 3) | 8).toString(16); });
     el = showPage((p) => { p.innerHTML = '<h2>UUID</h2>' + big(id, 22) + copyBtn + '<p style="color:#8a8a8a">version 4, random, made in your browser · ask again for another</p>'; });
@@ -146,6 +162,13 @@ async function run(text, api) {
   } else if (q.kind === 'lorem') {
     el = showPage((p) => { p.innerHTML = '<h2>Lorem ipsum</h2><div class="util-out">' + Array.from({ length: q.n || 1 }, () => '<p>' + esc(LOREM) + '</p>').join('\n\n') + '</div>' + copyBtn; });
   }
+  // the card links to the tool page that does the same thing in full (lib/card-frame.js pageOfCard; owner, 2026-10-25: "why are you not linking the cards to the pages?")
+  const page = { password: '/password/', color: '/color/', count: '/word-count/' }[q.kind];
+  if (el && el.dataset && page) el.dataset.page = q.kind === 'password' ? page + '?len=' + q.n : page; /* the password page opens on the same length, never the password */
+  // and a 3D figure of the thing (owner, 2026-10-25: "3d figure if possible"): a paint-chip fan in the colour, a padlock rated by lib/pwcheck.js
+  if (el && q.kind === 'color') { const hx = (el.querySelector('ul li') || {}).textContent || ''; const m = /#[0-9a-f]{6}/i.exec(hx); if (m) bandMini(api, el, 'swatch', { hex: m[0] }, '3D paint-chip fan in ' + m[0]); }
+  if (el && q.kind === 'count' && !q.chars) bandMini(api, el, 'page', { words: (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length }, '3D page of writing, ' + (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length + ' words');
+  if (el && q.kind === 'password') { const pw = (el.querySelector('.util-out') || el.querySelector('.big') || {}).textContent || ''; import('../lib/pwcheck.js').then((P) => bandMini(api, el, 'padlock', { score: P.check(pw).score }, '3D padlock: ' + P.check(pw).label.toLowerCase())).catch(() => {}); }
   const b = el && el.querySelector && el.querySelector('.util-copy');
   if (b) b.addEventListener('click', async () => { const s = (el.querySelector('.util-out') || el.querySelector('p')).textContent; let ok = false; try { await navigator.clipboard.writeText(s); ok = true; } catch (_) {} b.textContent = ok ? 'copied' : 'select it to copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600); });
   return 'util';

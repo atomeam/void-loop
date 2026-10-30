@@ -1,0 +1,33 @@
+{
+  "slug": "local-notice-lag-bin",
+  "run": "077",
+  "date": "2026-10-06",
+  "emit": false,
+  "default_status": "unattested",
+  "claims": [
+    {
+      "id": "lag-is-a-word",
+      "text": "A sealed lag label is a hashed hypothesis of when a notice seemed to arrive. The label is not a clock reading.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    },
+    {
+      "id": "clock-held",
+      "text": "A millisecond, a Date read, or a performance clock refuses the hash. The held number is not a discrete-perception proof.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    },
+    {
+      "id": "model-not-signal",
+      "text": "The signal field stays refused. A model of attention is not the body signal and not a sender.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    },
+    {
+      "id": "disconfirm-not-present",
+      "text": "The disconfirm line is what would show the lag was a story. It does not fill the raw present.",
+      "status": "unattested",
+      "confidence": "design-material only"
+    }
+  ]
+}

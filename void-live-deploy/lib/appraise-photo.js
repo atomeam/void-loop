@@ -51,6 +51,43 @@ export const CUES = [
   [/\b(set of|collection of|lot of|several|multiple|pair of|two|three|four|five|dozen)\b/i, 1.8, 'more than one piece'],
   [/\b(replica|fake|counterfeit|knock-?off|imitation|reproduction|costume jewel(?:le)?ry|plastic|toy version)\b/i, 0.3, 'a replica or imitation'],
 ];
+// ---- bullion (owner, 2026-10-26: the appraiser said \$20 for a 1 oz gold Krugerrand): a named bullion coin is worth its metal,
+// not a multiplier on a pocket-coin base. The table is the coin's metal and weight in troy ounces; the price is the live spot the
+// caller passes (Stooq, functions/api/appraise.js). No spot, no number: the fact is said instead, never invented.
+const SIZE = [[/(?:\btenth\b|\b1\s*\/\s*10\b)/i, 0.1], [/(?:\bquarter\b|\b1\s*\/\s*4\b)/i, 0.25], [/(?:\bhalf\b|\b1\s*\/\s*2\b)/i, 0.5]];
+const BULLION_NAME = '(?:krugerrand|eagles?|maple|philharmonic|britannia|kangaroo|sovereign|buffalo)';
+export const BULLION = [
+  { re: /\bsilver\s+eagles?\b/i, metal: 'silver', ozt: 1, label: 'American Silver Eagle' },
+  { re: /\bsilver\s+maple\s+leaves?\b|\bsilver\s+maple\s+leaf\b/i, metal: 'silver', ozt: 1, label: 'Silver Maple Leaf' },
+  { re: /\b(?:morgan|peace)\s+dollars?\b/i, metal: 'silver', ozt: 0.7735, label: 'Morgan/Peace dollar (0.7735 troy oz of silver)' },
+  { re: /\bkrugerrands?\b/i, metal: 'gold', ozt: 1, label: 'Krugerrand' },
+  { re: /\b(?:american?\s+)?(?:gold\s+)?eagles?\b/i, metal: 'gold', ozt: 1, label: 'American Gold Eagle' },
+  { re: /\bgold\s+buffaloes?\b/i, metal: 'gold', ozt: 1, label: 'Gold Buffalo' },
+  { re: /\bgold\s+maple\s+leaves?\b|\bmaple\s+leaves?\b/i, metal: 'gold', ozt: 1, label: 'Maple Leaf' },
+  { re: /\b(?:vienna\s+)?philharmonics?\b/i, metal: 'gold', ozt: 1, label: 'Philharmonic' },
+  { re: /\bbritannias?\b/i, metal: 'gold', ozt: 1, label: 'Britannia' },
+  { re: /\bkangaroos?\b/i, metal: 'gold', ozt: 1, label: 'Kangaroo' },
+  { re: /\bgold\s+pandas?\b/i, metal: 'gold', ozt: 1, label: 'Gold Panda' },
+  { re: /\bsovereigns?\b/i, metal: 'gold', ozt: 0.2354, label: 'full sovereign' },
+];
+/** the bullion a description names: { metal, ozt, label } or null. Named coins beat stated weights; a fractional ('half krugerrand') resizes. Pure. */
+export function bullionOf(text) {
+  const t = String(text || '');
+  const silverEagle = /\bsilver\s+eagles?\b/i.test(t);
+  for (const b of BULLION) {
+    if (!b.re.test(t)) continue;
+    if (b.label === 'American Gold Eagle' && silverEagle) continue; // 'silver eagle' is its own coin, not a fractional Gold Eagle
+    let ozt = b.ozt;
+    for (const [re, n] of SIZE) if (new RegExp(re.source + '[\\s\\S]{0,16}' + BULLION_NAME, 'i').test(t) || new RegExp(BULLION_NAME + '[\\s\\S]{0,16}' + re.source, 'i').test(t)) { ozt = n; break; }
+    return { metal: b.metal, ozt, label: b.label };
+  }
+  const m = /\b(\d+(?:\.\d+)?|one|half|quarter|tenth)\s*(?:troy\s*)?o(?:z|unces?)[\s\S]{0,40}?\b(gold|silver|platinum)\b|\b(gold|silver|platinum)\b[\s\S]{0,40}?\b(\d+(?:\.\d+)?|one|half|quarter|tenth)\s*(?:troy\s*)?o(?:z|unces?)\b/i.exec(t);
+  if (!m) return null;
+  const w = String(m[1] || m[4] || '').toLowerCase();
+  const n = w === 'one' ? 1 : /half/.test(w) ? 0.5 : /quarter/.test(w) ? 0.25 : /tenth/.test(w) ? 0.1 : parseFloat(w);
+  const metal = String(m[2] || m[3] || '').toLowerCase();
+  return n > 0 && n <= 10 ? { metal, ozt: n, label: n + ' troy oz of ' + metal } : null;
+}
 const PERSON = /\b(person|people|man|woman|men|women|boy|girl|child|children|kid|baby|infant|toddler|teenager|adult|lady|gentleman|guy|someone|human|portrait|selfie|smiling|posing|crowd|couple|family|friend|bride|groom|athlete|his face|her face|their face|a face)\b/i;
 const PERSON_ASK = /\b(what am i worth|how much am i worth|value me|appraise me|price me|how much (?:is|are) (?:my|our) (?:friend|mom|mother|dad|father|wife|husband|partner|girlfriend|boyfriend|son|daughter|brother|sister|kid|child|children|baby|family|dog|cat|pet)s?(?: worth)?|what (?:is|are) (?:my|our) (?:friend|mom|dad|wife|husband|partner|son|daughter|brother|sister|kid|child|baby|family|dog|cat|pet)s? worth|how much is (?:a|this) (?:person|human|man|woman|boy|girl|child|baby) worth|value (?:of )?(?:a |this )?(?:person|human|man|woman|boy|girl|child|baby))\b/i;
 const PET = /\b(dog|puppy|cat|kitten|pet|hamster|rabbit|bunny|parrot|bird|horse|pony|goldfish)\b/i;
@@ -85,10 +122,21 @@ export const usd = (c) => '$' + (c % 100 ? (c / 100).toLocaleString('en-US', { m
  * Verse's valuation from what the vision model saw (and what the person typed with the photo).
  * -> { kind, cents, text: '$240', says: [reasons], expert: bool, person: bool } (person: no cents, no text). Pure.
  */
-export function valueFrom(desc, note = '') {
+export function valueFrom(desc, note = '', spot = null) {
   const d = String(desc || '') + ' ' + String(note || '');
   if (!String(desc || '').trim()) return { kind: 'unknown', cents: 0, text: '', says: ['I could not make out what is in the photo. Try a closer, brighter one, or tell me what it is.'], expert: false, person: false, unknown: true };
   if (personIn(d) || petIn(d)) return { kind: petIn(d) && !PERSON.test(d) ? 'pet' : 'person', cents: 0, text: '', says: [complimentFor(d, d.length)], expert: false, person: true };
+  const b = bullionOf(d);
+  if (b) {
+    const px = spot && spot[b.metal];
+    const ozt = b.ozt === 1 ? 'one troy ounce' : b.ozt + ' troy ounces';
+    const why = 'a ' + b.label + ' is ' + ozt + ' of ' + b.metal + ' \u2014 it prices at the ' + b.metal + ' spot plus a small dealer premium, not a collector multiple';
+    if (!(px > 0)) return { kind: 'coin', cents: 0, text: '', bullion: b, expert: true, person: false,
+      says: ['what I see: a coin', why, 'my live ' + b.metal + ' quote did not come back just now, so I am not inventing a number: check the ' + b.metal + ' spot before you buy or sell'] };
+    const step = px * b.ozt >= 50000 ? 2500 : 100, cents = Math.round((px * b.ozt) / step) * step;
+    return { kind: 'coin', cents, text: usd(cents), bullion: b, expert: true, person: false,
+      says: ['what I see: a coin', why, b.metal + ' spot ' + usd(px) + ' per troy ounce' + (spot.source || spot.at ? ' (' + [spot.source, spot.at].filter(Boolean).join(', ') + ')' : ''), 'condition barely moves it: the metal is the value, wear included'] };
+  }
   const k = KINDS.find((x) => x.re.test(d)) || { kind: 'object', base: 1500 };
   let cents = k.base; const says = ['what I see: ' + (k.kind === 'object' ? 'an everyday object' : k.kind.replace(/^(?:a |an )/, ''))];
   let condition = null;
@@ -105,6 +153,7 @@ export function appraisalText(v) {
   if (!v) return '';
   if (v.unknown) return v.says[0];
   if (v.person) return v.says[0];
+  if (!v.text) return v.says.join(' ') + ' An estimate from one photo, not a certified appraisal or an authentication.';
   const lines = ['Verse values this at ' + v.text + '.', 'Why: ' + v.says.join('; ') + '.'];
   if (v.expert) lines.push('This kind can be worth far more or far less than a photo shows: have it looked at in hand before you sell or insure it.');
   lines.push('An estimate from one photo, not a certified appraisal or an authentication; no comparable sales were checked.');

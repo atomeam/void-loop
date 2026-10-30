@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-window-not-wire — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e8;
+      --line: #c8bfb0;
+      --hold: #8a3d2f;
+      --quiet: #5e584f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --paper: #1b1916; --line: #3c3832; --hold: #e0a090; --quiet: #b7b0a4; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .seats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .empty-link { border: 1px dashed var(--line); min-height: 4.5rem; padding: 0.6rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-window-not-wire</h1>
+    <p>Draft only. A window mark is not a wire and not a directed cause. Status stays unattested. The wire sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="window-form">
+      <fieldset>
+        <legend>Window class</legend>
+        <label><input type="radio" name="window-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="window-class" value="same-bin"> same-bin</label>
+        <label><input type="radio" name="window-class" value="empty-bin"> empty-bin</label>
+        <label><input type="radio" name="window-class" value="order-unknown"> order-unknown</label>
+        <label><input type="radio" name="window-class" value="confound-empty"> confound-empty</label>
+        <label><input type="radio" name="window-class" value="abstain"> abstain</label>
+      </fieldset>
+      <div class="seats">
+        <fieldset>
+          <legend>Left label seat</legend>
+          <p>Catalog name only. Not an order. Not hashed.</p>
+        </fieldset>
+        <fieldset>
+          <legend>Right label seat</legend>
+          <p>Catalog name only. Not an order. Not hashed.</p>
+        </fieldset>
+      </div>
+      <div class="empty-link" aria-label="Empty link seat">Link seat stays empty. No arrow.</div>
+      <label for="wire">Wire sentence (cleared on seal, not hashed)</label>
+      <textarea id="wire" name="wire" autocomplete="off"></textarea>
+      <button type="submit">Seal window class</button>
+    </form>
+    <p>Wire-refusal id</p>
+    <output id="refusal" for="window-form">none</output>
+  </main>
+  <script>
+    const form = document.getElementById("window-form");
+    const wire = document.getElementById("wire");
+    const refusal = document.getElementById("refusal");
+    const status = document.getElementById("status");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const picked = form.querySelector("input[name=window-class]:checked");
+      if (!picked) {
+        refusal.textContent = "default-deny: no class";
+        return;
+      }
+      const preimage = "window-not-wire|v1|" + picked.value + "|wire-refusal|status=unattested";
+      wire.value = "";
+      const bytes = new TextEncoder().encode(preimage);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      refusal.textContent = hex;
+      status.textContent = "status: unattested";
+    });
+  </script>
+</body>
+</html>

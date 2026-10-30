@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 210; }
+  body { margin:0; background:hsl(var(--hue), 20%, 8%); color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+  #canvas { display:block; width:100vw; height:100vh; cursor:crosshair; }
+  #status { position:fixed; top:12px; left:12px; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; font-size:13px; pointer-events:none; }
+  .orb { position:absolute; width:64px; height:64px; border-radius:50%; background:hsla(var(--hue),70%,50%,.7); border:2px solid hsla(var(--hue),90%,70%,.9); box-shadow:0 0 20px hsla(var(--hue),80%,60%,.6); pointer-events:auto; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:11px; text-align:center; user-select:none; transition:border-radius .3s, transform .2s; }
+  .orb:active { cursor:grabbing; }
+  .orb.high { border-radius:30% 70% 50% 50% / 50% 40% 60% 50%; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local Causal Echo Chamber · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Local Causal Echo Chamber.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local Causal Echo Chamber · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Local Causal Echo Chamber.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f048-local-causal-echo-chamber/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f048-local-causal-echo-chamber/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="status">Loading…</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Local Causal Echo Chamber</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

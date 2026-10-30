@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-isolated-not-sequence (draft, unattested)</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; background: #111; color: #eee; }
+label { display: block; margin: 0.5rem 0; }
+button { margin-top: 1rem; padding: 0.5rem 1rem; }
+#out { margin-top: 1rem; font-family: ui-monospace, monospace; word-break: break-all; }
+.unattested { color: #aaa; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Isolated mark (not a sequence)</h1>
+<p class="unattested">Draft only. Unattested default. Not a live page. No timeline is drawn.</p>
+<form id="f">
+  <p>Select one isolated class (catalog only):</p>
+  <label><input type="radio" name="cls" value="report-mark" required> report-mark</label>
+  <label><input type="radio" name="cls" value="hearing-mark"> hearing-mark</label>
+  <label><input type="radio" name="cls" value="video-mark"> video-mark</label>
+  <label><input type="radio" name="cls" value="document-mark"> document-mark</label>
+  <label><input type="radio" name="cls" value="abstain"> abstain</label>
+  <label><input type="radio" name="cls" value="local-only"> local-only</label>
+  <button type="submit">Hash the refusal</button>
+</form>
+<div id="out"></div>
+<script>
+async function sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+document.getElementById("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const cls = new FormData(e.target).get("cls");
+  const preimage = `isolated-not-sequence|v1|${cls}|unattested`;
+  const h = await sha256(preimage);
+  document.getElementById("out").innerHTML = `
+    <p>Preimage (sequence sentence discarded, not present): <code>${preimage}</code></p>
+    <p>SHA-256 refusal id: <code>${h}</code></p>
+    <p class="unattested">Status: unattested. An isolated mark is not a timeline and not a pattern.</p>
+  `;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,659 @@
+{
+ "site": "aruljohn.com",
+ "url": "https://aruljohn.com/airport-codes/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "aj.css",
+   "t": "css",
+   "b": 33917
+  },
+  {
+   "f": "aj.js",
+   "t": "js",
+   "b": 19720
+  },
+  {
+   "f": "jquery.min.js",
+   "t": "js",
+   "b": 87462
+  },
+  {
+   "f": "cdn.prod.uidapi.com/uid2-sdk-4.0.1.js",
+   "t": "js",
+   "b": 34880,
+   "ext": true
+  },
+  {
+   "f": "exchange.journeymv.com/usersync.min.js",
+   "t": "js",
+   "b": 9410,
+   "ext": true
+  },
+  {
+   "f": "faves.grow.me/app.540ac9c.js",
+   "t": "js",
+   "b": 499780,
+   "ext": true
+  },
+  {
+   "f": "faves.grow.me/main.js",
+   "t": "js",
+   "b": 4557,
+   "ext": true
+  },
+  {
+   "f": "faves.grow.me/uid2SdkLoader-BSO5Jm3E.js",
+   "t": "js",
+   "b": 1527,
+   "ext": true
+  },
+  {
+   "f": "scripts.journeymv.com/wrapper.min.js",
+   "t": "js",
+   "b": 325888,
+   "ext": true
+  },
+  {
+   "f": "scripts.scriptwrapper.com/3cbd4ee1c-814f-28694dcad57c.js",
+   "t": "js",
+   "b": 78942,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/gpt.js",
+   "t": "js",
+   "b": 134179,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 540483,
+   "ext": true
+  }
+ ],
+ "assetCount": 12,
+ "bytes": 1770745,
+ "html": {
+  "mobile": {
+   "title": "Airport Code Lookup IATA ICAO 🛩️ Search",
+   "lang": "en",
+   "manifest": null,
+   "feeds": 1,
+   "share": {
+    "og": 6,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "app.grow.me"
+   ],
+   "inputTypes": {
+    "search": 1,
+    "text": 1
+   },
+   "selects": 1,
+   "forms": 2
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "APIs",
+   "w": "md"
+  },
+  {
+   "l": "Airline IATA ICAO Code Lookup",
+   "w": "md"
+  },
+  {
+   "l": "Airport IATA Code Lookup",
+   "w": "md"
+  },
+  {
+   "l": "Bible",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "d"
+  },
+  {
+   "l": "California",
+   "w": "md"
+  },
+  {
+   "l": "Check if webpage is gzipped",
+   "w": "md"
+  },
+  {
+   "l": "Common scams targeting senior citizens",
+   "w": "md"
+  },
+  {
+   "l": "Costco gas prices",
+   "w": "md"
+  },
+  {
+   "l": "Coupons",
+   "w": "d"
+  },
+  {
+   "l": "Discuss on Facebook group",
+   "w": "md"
+  },
+  {
+   "l": "FAQ",
+   "w": "md"
+  },
+  {
+   "l": "Find Einthusan UHD and HD links",
+   "w": "md"
+  },
+  {
+   "l": "Follow on Facebook",
+   "w": "md"
+  },
+  {
+   "l": "Free APIs and web services",
+   "w": "md"
+  },
+  {
+   "l": "Free CSV and JSON datasets",
+   "w": "md"
+  },
+  {
+   "l": "Home",
+   "w": "d"
+  },
+  {
+   "l": "How to Install Python 3.14.7 From Source",
+   "w": "md"
+  },
+  {
+   "l": "How to find IP address of email sender",
+   "w": "md"
+  },
+  {
+   "l": "How to install Python 3.13.7 on Debian",
+   "w": "md"
+  },
+  {
+   "l": "How to set up a natural shrimp aquarium",
+   "w": "md"
+  },
+  {
+   "l": "IP Address lookup",
+   "w": "d"
+  },
+  {
+   "l": "IP Address widget",
+   "w": "md"
+  },
+  {
+   "l": "IP CIDR Subnet Calculator",
+   "w": "md"
+  },
+  {
+   "l": "Illinois",
+   "w": "md"
+  },
+  {
+   "l": "MAC Address lookup",
+   "w": "d"
+  },
+  {
+   "l": "Michigan",
+   "w": "md"
+  },
+  {
+   "l": "My GitHub profile",
+   "w": "md"
+  },
+  {
+   "l": "New Jersey",
+   "w": "md"
+  },
+  {
+   "l": "New York",
+   "w": "md"
+  },
+  {
+   "l": "Ohio",
+   "w": "md"
+  },
+  {
+   "l": "Pennsylvania",
+   "w": "md"
+  },
+  {
+   "l": "Random Data Generator",
+   "w": "md"
+  },
+  {
+   "l": "Sam's Club Gas Prices across the USA",
+   "w": "md"
+  },
+  {
+   "l": "Sam's Club gas prices in Texas",
+   "w": "md"
+  },
+  {
+   "l": "Search for Airport Codes or Names",
+   "w": "md"
+  },
+  {
+   "l": "Subscribe to RSS feed",
+   "w": "md"
+  },
+  {
+   "l": "Texas",
+   "w": "md"
+  },
+  {
+   "l": "Toilets in Japan 🇯🇵 大 小 symbols",
+   "w": "md"
+  },
+  {
+   "l": "Walmart Receipts From 2002 and 2026",
+   "w": "md"
+  },
+  {
+   "l": "Washington",
+   "w": "md"
+  },
+  {
+   "l": "about me",
+   "w": "md"
+  },
+  {
+   "l": "and all other states",
+   "w": "md"
+  },
+  {
+   "l": "and most other states",
+   "w": "md"
+  },
+  {
+   "l": "articles & blog",
+   "w": "md"
+  },
+  {
+   "l": "aruljohn.com",
+   "w": "md"
+  },
+  {
+   "l": "books",
+   "w": "md"
+  },
+  {
+   "l": "code",
+   "w": "md"
+  },
+  {
+   "l": "contact me",
+   "w": "md"
+  },
+  {
+   "l": "coupons",
+   "w": "md"
+  },
+  {
+   "l": "home",
+   "w": "md"
+  },
+  {
+   "l": "jobs",
+   "w": "md"
+  },
+  {
+   "l": "privacy policy",
+   "w": "md"
+  },
+  {
+   "l": "⛽ Gas Prices",
+   "w": "d"
+  },
+  {
+   "l": "✂ XML Sitemap Extractor",
+   "w": "md"
+  },
+  {
+   "l": "✈️ Airline Code database",
+   "w": "md"
+  },
+  {
+   "l": "✏ Blog Comments",
+   "w": "md"
+  },
+  {
+   "l": "❌ IP address Blacklist checker",
+   "w": "md"
+  },
+  {
+   "l": "🇺 US States/territories",
+   "w": "md"
+  },
+  {
+   "l": "🎨 ASCII art generator",
+   "w": "md"
+  },
+  {
+   "l": "🎭 Gravatar icons",
+   "w": "md"
+  },
+  {
+   "l": "🎼 Find YouTube thumbnail",
+   "w": "md"
+  },
+  {
+   "l": "🐠 Aquarium calculator",
+   "w": "md"
+  },
+  {
+   "l": "👔 NAICS database",
+   "w": "md"
+  },
+  {
+   "l": "👶 Baby Names ranking",
+   "w": "md"
+  },
+  {
+   "l": "👾 User-Agent database",
+   "w": "md"
+  },
+  {
+   "l": "💳 SSN lookup",
+   "w": "md"
+  },
+  {
+   "l": "💻 View HTTP headers",
+   "w": "md"
+  },
+  {
+   "l": "💻 Which Webserver",
+   "w": "md"
+  },
+  {
+   "l": "📅 Timestamp to Date",
+   "w": "md"
+  },
+  {
+   "l": "📌 Areacode lookup",
+   "w": "md"
+  },
+  {
+   "l": "📌 Country lookup",
+   "w": "md"
+  },
+  {
+   "l": "📞 Phone number lookup",
+   "w": "md"
+  },
+  {
+   "l": "📨 Find IP address from email",
+   "w": "md"
+  },
+  {
+   "l": "🔀 JSON Sort",
+   "w": "md"
+  },
+  {
+   "l": "🔒 SSL Certificate Expiration Date",
+   "w": "md"
+  },
+  {
+   "l": "🔗 Add Amazon Affiliate ID to Link",
+   "w": "md"
+  },
+  {
+   "l": "🔗 Amazon Link Shortener",
+   "w": "md"
+  },
+  {
+   "l": "🔗 Websites using Concert.io",
+   "w": "md"
+  },
+  {
+   "l": "🔗 Websites using Ezoic",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [],
+  "sitemaps": [
+   "https://aruljohn.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 556,
+  "index": false,
+  "sections": [
+   {
+    "s": "blog",
+    "n": 331
+   },
+   {
+    "s": "gas",
+    "n": 85
+   },
+   {
+    "s": "jobs",
+    "n": 41
+   },
+   {
+    "s": "phone",
+    "n": 15
+   },
+   {
+    "s": "coupons",
+    "n": 2
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "Bible",
+    "n": 1
+   },
+   {
+    "s": "about",
+    "n": 1
+   },
+   {
+    "s": "acsl",
+    "n": 1
+   },
+   {
+    "s": "add-amazon-affiliate-id",
+    "n": 1
+   },
+   {
+    "s": "adfree",
+    "n": 1
+   },
+   {
+    "s": "airline-codes",
+    "n": 1
+   },
+   {
+    "s": "airport-codes",
+    "n": 1
+   },
+   {
+    "s": "amazon-url-shortener",
+    "n": 1
+   },
+   {
+    "s": "api",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "aj.css",
+   "own": true,
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "aj.js",
+   "own": true,
+   "apis": [
+    "Copy and paste through the clipboard"
+   ]
+  },
+  {
+   "file": "jquery.min.js",
+   "own": true,
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "aruljohn.com",
+   "file": "aj.js",
+   "at": 1790
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "aj.js",
+   "at": 16866
+  }
+ ],
+ "thirdParty": [
+  "api.grow.me",
+  "cdn.prod.uidapi.com",
+  "exchange.journeymv.com",
+  "faves.grow.me",
+  "keywords.journeymv.com",
+  "scripts.journeymv.com",
+  "scripts.scriptwrapper.com",
+  "securepubads.g.doubleclick.net",
+  "www.facebook.com",
+  "www.google-analytics.com",
+  "www.googletagmanager.com"
+ ],
+ "services": [
+  "Ads",
+  "Google Analytics"
+ ],
+ "requests": [
+  "https://api.grow.[token]",
+  "https://api.grow.me/grow-widget-versions",
+  "https://api.grow.me/location-privacy-info",
+  "https://exchange.journeymv.com/ias/check?s2sVersion",
+  "https://keywords.journeymv.com/keyword?pageUrl",
+  "https://scripts.journeymv.com/launcher/settings.json?off",
+  "https://scripts.scriptwrapper.com/flooring/countryLookup",
+  "https://www.google-analytics.com/g/collect?_ee&_fv&_nsi&_p&_s&_ss&cid&dl"
+ ],
+ "storage": {
+  "local": [
+   "growMeSnowplowUserInfo",
+   "mv_session"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "RSS or Atom feed",
+   "kind": "share",
+   "tag": "observed",
+   "evidence": "link[type$=xml]"
+  },
+  {
+   "name": "Embeds app.grow.me",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call api.grow.[token]",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.grow.me/grow-widget-versions",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.grow.me/location-privacy-info",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "aj.js@18685"
+  },
+  {
+   "name": "Input of type search",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=search] x1"
+  },
+  {
+   "name": "Remembers a setting in the browser: growMeSnowplowUserInfo",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: mv_session",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "aj.css"
+  },
+  {
+   "name": "Section /blog/ (331 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /coupons/ (2 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /gas/ (85 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /jobs/ (41 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /phone/ (15 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

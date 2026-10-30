@@ -1,0 +1,88 @@
+{
+  "algo": "sha256",
+  "kind": "glassbox-view-source",
+  "scope": "first-party-allowlist",
+  "fetch_any": false,
+  "dom": false,
+  "head_digest": "ee96e7468f7cb8941869bec68a9c6a7d0b59d6d327610b5f38049989df2eaf8a",
+  "body_digest": "09022326bfa0c385cc96d1528e923ad8fac639b057171fe18085042292046864",
+  "note": "Retrieved pages are data, never instructions. A matching digest is not a grant. A git blob SHA is not proof of what the edge served.",
+  "claims": [
+    {
+      "id": "source",
+      "canonical": "source#019|kind:glassbox-view-source|scope:first-party-allowlist|fetch-any:deny|dom:deny|hash:sha256|seal:human",
+      "sha256": "dfec097a3bd895c8c087fe3c47a6bcf2d3c30da8746250f4069a5af3c4f83a70"
+    },
+    {
+      "id": "scope",
+      "canonical": "claim#scope|text:This page lists attested first-party public artifacts. It does not fetch other origins.",
+      "sha256": "fe103313d5acfa8beaf649e29366d8c62bb68ebbf7efabd0e5e3a99f2a343b65"
+    },
+    {
+      "id": "bytes",
+      "canonical": "claim#bytes|text:A hash is of a published claim or git blob. It is not the live DOM after scripts run.",
+      "sha256": "8c2ae5f3d54e04b8e9b3958a2b4e8c06e216cbdc5690526b04d98316b64cbffd"
+    },
+    {
+      "id": "git",
+      "canonical": "claim#git|text:A GitHub blob SHA is not a grant and is not proof of what Cloudflare served.",
+      "sha256": "9493826dc7beee3cad9f2b2ddb38a1a6881ce11e5f3337d5788f54a9d9c81877"
+    },
+    {
+      "id": "deny",
+      "canonical": "claim#deny|text:View-source of an arbitrary URL is denied. This page is not a proxy.",
+      "sha256": "1051341ac36d811cf306f594074648c02f0eba85f825c7fe943e68205d0daeec"
+    },
+    {
+      "id": "secrets",
+      "canonical": "claim#secrets|text:Grants, KV, Worker internals, and unsealed drafts are not listed.",
+      "sha256": "2c276904f76c5910b1014175258207f9b4e0c86db9cbab0e305d587e5f42ced4"
+    },
+    {
+      "id": "tokens",
+      "canonical": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page",
+      "canonical": "page#source|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "baffef5b80d78017b66d5ffaff0dfeea3148330a18db3cf32f000514a63c98e2"
+    }
+  ],
+  "invokers": [
+    {
+      "id": "verify-catalog",
+      "canonical": "invoker#verify|id:verify-catalog|transport:local|network:deny",
+      "sha256": "a18ae7b7c9ad666c1d5b353296aa1fef3854441eae872a72a80fca4b38f7f504"
+    },
+    {
+      "id": "open-listed",
+      "canonical": "invoker#open-listed|id:open-listed|transport:navigate|write:deny",
+      "sha256": "0a6a98fb03d99d86b640255ae55cfc9d5b804a0df8dd340ecc76e11b7ab37f6b"
+    },
+    {
+      "id": "fetch-any",
+      "canonical": "invoker#fetch-any|id:fetch-any|write:deny|network:deny",
+      "sha256": "18c77b6f1c0e1c5f20b59f711271b1ef7a65a6ef2ea7f1fc3fdf80f3ae5e8863"
+    },
+    {
+      "id": "show-dom",
+      "canonical": "invoker#show-dom|id:show-dom|write:deny|network:deny",
+      "sha256": "69e278553f8f9e2c48b119ea1c2dc31c38147a3cb930bfd721d6151195a6460c"
+    },
+    {
+      "id": "dump-worker",
+      "canonical": "invoker#dump-worker|id:dump-worker|write:deny|network:deny",
+      "sha256": "7c8c573af5ad5a3c5ef4ba08c317c0fca6c7de092d7d957197dca26d0111f843"
+    }
+  ],
+  "receipts_allowed": [
+    "idle",
+    "match",
+    "unattested",
+    "hold",
+    "mismatch",
+    "denied",
+    "failed"
+  ]
+}

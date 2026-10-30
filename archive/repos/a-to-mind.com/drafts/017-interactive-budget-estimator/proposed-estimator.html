@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Budget envelope · A-to-Mind draft 017</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Hold-gate draft. Attested Void Monthly rate card. Not a quote. Not checkout.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b0b0b; --fg:#ece8df; --muted:#8a8478; --rule:#2a2a28; --amber:#d4a017; --bad:#c45c4a; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { background: var(--bg); color: var(--fg); font-family: "Source Sans 3", system-ui, sans-serif; line-height: 1.55; }
+    a { color: inherit; }
+    header, main, footer { max-width: 42rem; margin: 0 auto; padding: 1.25rem 1.5rem; }
+    header, footer { display: flex; justify-content: space-between; align-items: center; border-color: var(--rule); }
+    header { border-bottom: 1px solid var(--rule); }
+    footer { border-top: 1px solid var(--rule); }
+    .name { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; text-decoration: none; }
+    nav a { margin-left: 1rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+    h1 { font-family: "Source Serif 4", Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.15; font-weight: 500; }
+    .lede { margin-top: 0.85rem; color: var(--muted); max-width: 36rem; }
+    h2 { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; font-weight: 500; margin-top: 2rem; }
+    fieldset { border: 1px solid var(--rule); margin-top: 0.85rem; padding: 0.85rem 1rem; }
+    legend { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 0.35rem; }
+    label { display: block; margin: 0.35rem 0; }
+    .row { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--rule); }
+    .row dt { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .row dd { font-family: "Source Serif 4", Georgia, serif; font-size: 1.35rem; margin: 0.15rem 0 0.75rem; }
+    .row dd:last-child { margin-bottom: 0; }
+    .mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+    button { font: inherit; background: transparent; color: var(--fg); border: 1px solid var(--rule); padding: 0.55rem 0.85rem; cursor: pointer; }
+    button.primary { border-color: var(--amber); color: var(--amber); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .stamp, .receipt { margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
+    .receipt[data-status="mismatch"], .receipt[data-status="failed"] { color: var(--bad); }
+    .receipt[data-status="held"], .receipt[data-status="previewed"] { color: var(--amber); }
+    .claims { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+    .claims li { margin: 0.55rem 0; font-size: 0.92rem; }
+    .ok { color: var(--amber); }
+    .bad { color: var(--bad); }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="name" href="/">A-to-Mind</a>
+    <nav>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/agent-card.json">Agent card</a>
+    </nav>
+  </header>
+  <main>
+    <p class="stamp">DRAFT 017 · hold-gate · not on the live room</p>
+    <h1>Rate-card envelope</h1>
+    <p class="lede">Void Monthly is $49 per month. That is the only dollar figure this estimator may print. Provider tokens are not sold here. This page is not a quote, invoice, or checkout.</p>
+
+    <form id="envelope" action="#" method="get">
+      <fieldset>
+        <legend>Term</legend>
+        <label><input type="radio" name="months" value="1" data-canonical="term#1|months:1" data-sha="43be013250b1976c4dca3091e2ec980d2fef7bfee086d31bcbd67321d891ea2b" checked> 1 month</label>
+        <label><input type="radio" name="months" value="3" data-canonical="term#3|months:3" data-sha="14c3bab0515aca387f569a4debf72de02301d223dab2c9c0dd88a69835328f4d"> 3 months</label>
+        <label><input type="radio" name="months" value="12" data-canonical="term#12|months:12" data-sha="ad03115b62f85d23dfb44386bf59a5db805c8598e42ef2c5b1c030a43b666a44"> 12 months</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Token cap per run</legend>
+        <p class="muted">A cap is a hard stop, not a price.</p>
+        <label><input type="radio" name="cap" value="5000" data-canonical="cap#5000|unit:tokens-per-run|kind:planning-cap|price:none" data-sha="847079beb46c0c60e0cf1a631737683a465618ac9e1822d828e2cb1a00acfe49" checked> 5,000 tokens</label>
+        <label><input type="radio" name="cap" value="25000" data-canonical="cap#25000|unit:tokens-per-run|kind:planning-cap|price:none" data-sha="cfe71fe3c3dfbba22ec604302bce7c90c3e7fee0626601f5a44ddcf151981209"> 25,000 tokens</label>
+        <label><input type="radio" name="cap" value="100000" data-canonical="cap#100000|unit:tokens-per-run|kind:planning-cap|price:none" data-sha="cf1754bd4b5b668a331c9088ac55d0240a6f4dbf2798c717209e68d19a9e81df"> 100,000 tokens</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Writes</legend>
+        <label><input type="radio" name="writes" value="deny" checked> Default-deny. Tools stay closed.</label>
+        <label><input type="radio" name="writes" value="hold"> Allowlisted writes still need a human grant. Dollars do not change.</label>
+      </fieldset>
+    </form>
+
+    <section class="row" aria-live="polite">
+      <dl>
+        <dt>A-to-Mind membership</dt>
+        <dd id="membership-out">$49 × 1 = $49</dd>
+        <dt>Provider tokens</dt>
+        <dd id="provider-out">null · BYOK · no markup</dd>
+        <dt>Planning cap</dt>
+        <dd id="cap-out">5,000 tokens / run</dd>
+      </dl>
+      <p class="mono" id="envelope-line">envelope#017|months:1|cap:5000|writes:deny|membership-cents:4900|provider-cents:null</p>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="primary" id="hold-envelope" data-canonical="invoker#hold|id:hold-envelope|write:local-receipt|network:deny" data-sha="cd8f43ef36103bf25e2663f55114ce3cf5068c7edaae91c3e01a45343fa2219e">Hold this envelope</button>
+      <button type="button" id="open-checkout" data-canonical="invoker#checkout|id:open-checkout|write:hold|network:deny" data-sha="05e1fb82c8d5f2e3ef922a99b1b01cb4749678ec537c9450c2c1d9acbee69ebf">Open checkout</button>
+      <button type="button" id="price-tokens">Price tokens at $0.003 / 1k</button>
+    </div>
+    <p class="receipt" id="receipt" data-status="previewed" role="status">previewed · contract a0ec9f88…</p>
+
+    <section class="claims" id="claims">
+      <h2>Attested lines</h2>
+      <ul>
+        <li data-canonical="budget#017|kind:rate-card-estimator|membership:4900usd-cents|token-price:deny|checkout:hold|hash:sha256|seal:human" data-sha="a0ec9f885b8338936a81490037c392d57eee15960f201c6f3dc167d2a6089d02">
+          <span class="hash-flag">…</span>
+          Contract. Rate-card estimator. Token price denied. Checkout holds.
+        </li>
+        <li id="membership-claim" data-canonical="claim#membership|text:Void Monthly is $49 per month. That is the only dollar figure this estimator may print." data-sha="e7348a94f7f5d65373ac21cc88462bb1fa306d9778e017cb0adee13db4e10f21">
+          <span class="hash-flag">…</span>
+          Void Monthly is $49 per month. That is the only dollar figure this estimator may print.
+        </li>
+        <li data-canonical="claim#byok|text:Provider tokens are not sold here. A-to-Mind does not mark up tokens." data-sha="8f0c6beb9be7b68490641d834f4ebe07e6346e057b07e59940bc6627ed1ced3c">
+          <span class="hash-flag">…</span>
+          Provider tokens are not sold here. A-to-Mind does not mark up tokens.
+        </li>
+        <li data-canonical="claim#cap|text:A token cap is a hard stop, not a price. Caps come from the attested list only." data-sha="1025fbef77ea904e46b01a02fdc9a9b2fc2464bdaf2391a83d41f55df89e94f6">
+          <span class="hash-flag">…</span>
+          A token cap is a hard stop, not a price. Caps come from the attested list only.
+        </li>
+        <li data-canonical="claim#quote|text:This page is not a quote, invoice, or checkout." data-sha="b9f9cc75e1f594c97809ab54fdd37adedd22577d226bb980ba88c95f61410996">
+          <span class="hash-flag">…</span>
+          This page is not a quote, invoice, or checkout.
+        </li>
+        <li data-canonical="claim#formula|text:membership_cents = 4900 * months. provider_cents = null." data-sha="8d96b8da3406f5b477cd7c7a9a6b7379596243af5c0c78e8a0fef7b847a1414f">
+          <span class="hash-flag">…</span>
+          membership_cents = 4900 * months. provider_cents = null.
+        </li>
+        <li data-canonical="claim#hold|text:Checkout and billing writes hold until a human seals a separate grant." data-sha="2dce6d3802642db353963e70c17b6b794b3ea5d657ad96818f12075cec1e28f0">
+          <span class="hash-flag">…</span>
+          Checkout and billing writes hold until a human seals a separate grant.
+        </li>
+        <li data-canonical="page#budget|route:draft|index:noindex|cookie:deny|analytics:deny|checkout:deny" data-sha="99aa96c568e9ebef31547171e36eee1d2e10ef861fb8b3fb53d7a3113c01d76d">
+          <span class="hash-flag">…</span>
+          Draft route. noindex. No cookie. No checkout.
+        </li>
+      </ul>
+      <p class="mono" id="verify">verifying…</p>
+    </section>
+  </main>
+  <footer>
+    <span class="muted">Human seal required</span>
+    <span class="muted">Run 017</span>
+  </footer>
+  <script>
+    const MONTHS_OK = new Set([1, 3, 12]);
+    const CAPS_OK = new Set([5000, 25000, 100000]);
+    const RATE_CENTS = 4900;
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const sha256 = async (text) => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)));
+
+    let attested = true;
+
+    async function checkNode(el) {
+      const line = el.getAttribute("data-canonical");
+      const expect = el.getAttribute("data-sha");
+      if (!line || !expect) return false;
+      const got = await sha256(line);
+      const ok = got === expect;
+      const flag = el.querySelector(".hash-flag");
+      if (flag) {
+        flag.textContent = ok ? "ok " + got.slice(0, 8) : "mismatch";
+        flag.className = "hash-flag " + (ok ? "ok" : "bad");
+      }
+      return ok;
+    }
+
+    async function verifyAll() {
+      const nodes = [...document.querySelectorAll("[data-canonical][data-sha]")];
+      const flags = await Promise.all(nodes.map(checkNode));
+      attested = flags.every(Boolean);
+      const bodyLines = [
+        "budget#017|kind:rate-card-estimator|membership:4900usd-cents|token-price:deny|checkout:hold|hash:sha256|seal:human",
+        "claim#membership|text:Void Monthly is $49 per month. That is the only dollar figure this estimator may print.",
+        "claim#byok|text:Provider tokens are not sold here. A-to-Mind does not mark up tokens.",
+        "claim#cap|text:A token cap is a hard stop, not a price. Caps come from the attested list only.",
+        "claim#quote|text:This page is not a quote, invoice, or checkout.",
+        "claim#formula|text:membership_cents = 4900 * months. provider_cents = null.",
+        "claim#hold|text:Checkout and billing writes hold until a human seals a separate grant.",
+        "page#budget|route:draft|index:noindex|cookie:deny|analytics:deny|checkout:deny",
+      ];
+      const bodySha = await sha256(bodyLines.join("\n") + "\n");
+      const headSha = await sha256('{"algo":"sha256","kind":"rate-card-estimator","membership_cents":4900,"token_price":false,"checkout":"hold"}');
+      const bodyOk = bodySha === "30cd1bfaf18381bebc18884d3b7028a6569911c7dec90c114b6df9433f659101";
+      const headOk = headSha === "c0d3049d4436f777c36701f3b000a6ec45022bff444afa8404948ebfae16dc37";
+      attested = attested && bodyOk && headOk;
+      document.getElementById("verify").textContent =
+        "body " + bodySha.slice(0, 12) + (bodyOk ? " ok" : " mismatch") +
+        " · head " + headSha.slice(0, 12) + (headOk ? " ok" : " mismatch");
+      if (!attested) setReceipt("mismatch", "mismatch · refuse writes");
+      document.getElementById("hold-envelope").disabled = !attested;
+      document.getElementById("open-checkout").disabled = !attested;
+      return attested;
+    }
+
+    function selected(name) {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : null;
+    }
+
+    function dollars(cents) {
+      return "$" + (cents / 100).toFixed(cents % 100 === 0 ? 0 : 2);
+    }
+
+    function setReceipt(status, text) {
+      const node = document.getElementById("receipt");
+      node.dataset.status = status;
+      node.textContent = text;
+    }
+
+    function preview() {
+      if (!attested) {
+        setReceipt("mismatch", "mismatch · refuse writes");
+        return null;
+      }
+      const months = Number(selected("months"));
+      const cap = Number(selected("cap"));
+      const writes = selected("writes") === "hold" ? "hold" : "deny";
+      if (!MONTHS_OK.has(months) || !CAPS_OK.has(cap)) {
+        setReceipt("denied", "denied · input not on the allowlist");
+        return null;
+      }
+      const membership = RATE_CENTS * months;
+      document.getElementById("membership-out").textContent =
+        dollars(RATE_CENTS) + " × " + months + " = " + dollars(membership);
+      document.getElementById("provider-out").textContent = "null · BYOK · no markup";
+      document.getElementById("cap-out").textContent = cap.toLocaleString("en-US") + " tokens / run";
+      const line = "envelope#017|months:" + months + "|cap:" + cap + "|writes:" + writes +
+        "|membership-cents:" + membership + "|provider-cents:null";
+      document.getElementById("envelope-line").textContent = line;
+      setReceipt("previewed", "previewed · contract a0ec9f88… · " + dollars(membership) + " membership");
+      return line;
+    }
+
+    document.getElementById("envelope").addEventListener("change", preview);
+    document.getElementById("envelope").addEventListener("submit", (e) => e.preventDefault());
+
+    document.getElementById("hold-envelope").addEventListener("click", async () => {
+      if (!attested) return setReceipt("mismatch", "mismatch · refuse writes");
+      const line = preview();
+      if (!line) return;
+      try {
+        sessionStorage.setItem("a2m-budget-017-hold", line);
+      } catch (_) { /* storage may be blocked; receipt still stands */ }
+      setReceipt("held", "held · " + line + " · a0ec9f88… · no network");
+    });
+
+    document.getElementById("open-checkout").addEventListener("click", () => {
+      if (!attested) return setReceipt("mismatch", "mismatch · refuse writes");
+      setReceipt("hold", "hold · checkout is a separate sealed grant · no Stripe · no fetch");
+    });
+
+    document.getElementById("price-tokens").addEventListener("click", () => {
+      setReceipt("denied", "denied · token price is not on the rate card");
+      document.getElementById("provider-out").textContent = "null · BYOK · no markup");
+    });
+
+    verifyAll().then(preview);
+  </script>
+</body>
+</html>

@@ -1,10 +1,12 @@
 // Verse's will engine: Verse decides what it wants to become next.
 // GET  (public)  -> Verse's current wants, in its own words ("what do you want to be?")
+//                   and lastRun: the newest tried will job, { title, state, at, tries, shipped, pr, why } (lib/will-last.js)
 // POST (owner)   { candidates: [{ kind, title, why, weight, cost_cents?, source? }] } -> Verse chooses, saves its will, queues its top want for the builders.
 // Verse's earnings (plan item 12: every Gumroad sale, net of refunds) are its budget: the will reads them when it ranks, and a
 // candidate whose monthly cost the budget covers weighs more. Money never shows in the public will; real spend needs the confirm line.
 // Rule for every want: if an existing tool or feature already does it, use that instead of building it.
 // `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Verse); it is kept on the want.
+import { splitBuilt } from '../../lib/voice.js';
 import { PERSONA } from '../../lib/persona.js';
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
@@ -13,15 +15,34 @@ import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
+import { tower, towerLine, towerArgs } from '../../lib/tower.js';
+import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLine } from '../../lib/lap.js';
+import { hotOf } from '../../lib/churn.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
+import { WILL_LAST_SQL, lastRun } from '../../lib/will-last.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ request, env }) {
   const v = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'will'").first('v');
-  return Response.json(v ? JSON.parse(v) : { wants: [], at: null }, { headers: { 'cache-control': 'public, max-age=60' } });
+  const will = v ? JSON.parse(v) : { wants: [], at: null };
+  // a want the ledger already names as built is not a want any more: it moves to "got" (owner, 2026-10-21; lib/voice.js splitBuilt)
+  try {
+    const asset = async (path) => { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? r.json() : null; };
+    const [ledger, answered] = await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]);
+    if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; }
+  } catch (_) { /* the ledger could not be read: the will as it was chosen */ }
+  // the will's last run (lib/will-last.js, for the growth card's today view): the newest tried will job's title, state and the PR or the
+  // reason it did not ship. An open read of one queue row, cut to that public shape (its why redacted); the rest of the queue
+  // stays owner only (functions/api/queue.js). It costs one indexed SELECT per read, behind the same 60-second public cache.
+  try { const last = lastRun(await env.DB.prepare(WILL_LAST_SQL).first(), redact); if (last) will.lastRun = last; } catch (_) { /* no queue table yet */ }
+  // the public lap tracker (counts only): ?lap=1, or will.lap on every read
+  let only = null; try { const inv = await (await env.ASSETS.fetch(new Request(new URL('/lap.items.json', request.url)))).json(); if (inv && inv.onlySite) only = { counts: inv.onlySiteCounts, line: onlySiteLine(inv.onlySiteCounts), categories: inv.onlySite.map((r) => ({ category: r.category, status: r.status, skills: r.skills })) }; } catch (_) { /* no inventory */ }
+  try { const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v'); will.lap = publicLap(raw ? JSON.parse(raw) : null, only); try { const file = async (p) => { try { const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; } catch (_) { return null; } }; const [ev, fr, rk, sz, tg] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json'].map(file)); if (!ev) throw new Error('no tower evidence'); const t = tower(...towerArgs((only && only.categories || []).map((c) => ({ category: c.category, status: c.status, skills: c.skills })), { ev, fr, rk, sz, tg })); will.lap.tower = { line: towerLine(t), floor: t.marker, floors: t.total, beaten: t.beaten }; } catch (_) { /* no tower evidence */ } } catch (_) { /* no lap yet */ }
+  if (new URL(request.url).searchParams.has('lap')) return Response.json(will.lap || publicLap(null), { headers: { 'cache-control': 'public, max-age=60' } });
+  return Response.json(will, { headers: { 'cache-control': 'public, max-age=60' } });
 }
 
 export async function onRequestPost({ request, env }) {
@@ -76,16 +97,31 @@ export async function onRequestPost({ request, env }) {
   // the guard on the build loop (lib/will-guard.js): a want whose earlier jobs were set aside or failed twice in 14 days waits, and the next want is queued;
   // a history that cannot be read means no guard, never no will
   let rows = []; if (!open) { try { rows = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN ('set aside','failed') AND COALESCE(updated, at) > ?").bind(sinceOf()).all()).results) || []; } catch (_) { rows = []; } }
-  const chosenWant = pickWant(will.wants, rows); skipped = chosenWant.skipped;
+  // churn caps (lib/churn.js): a want whose reason names a file changed more than 12 times in 7 days waits; the list is /churn.json, written by the deploy
+  // from git. A list that cannot be read, or is older than the window, means no churn cap, never no will.
+  let hot = []; if (!open) { try { hot = hotOf(await (await env.ASSETS.fetch(new Request(new URL('/churn.json', request.url)))).json(), Date.parse(at)); } catch (_) { hot = []; } }
+  let chosenWant = pickWant(will.wants.map((w, i) => ({ ...w, why: [wants[i] && wants[i].c.why, wants[i] && wants[i].i_want].filter(Boolean).join(' ') })), rows, undefined, hot); skipped = chosenWant.skipped;
+  // the full-cycle lap (lib/lap.js): each item in turn is upgraded, then new features (the will's own wants) until the lap's quota,
+  // then the next lap over the bigger set. The position is kept in void_kv 'lap', so an interruption resumes. A lap that cannot be read
+  // means the will as before, never no will.
+  let lap = null;
+  if (!open) { try {
+    const inv = await (await env.ASSETS.fetch(new Request(new URL('/lap.items.json', request.url)))).json(), items = (inv && inv.items) || [];
+    const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v');
+    const ids = items.map((i) => i.id), r = nextStep(raw ? JSON.parse(raw) : null, ids, overhaulWeights(ids)); const facts = r.step.kind === 'upgrade' ? ((items.find((i) => i.id === r.step.skill) || {}).facts || null) : null;
+    if (r.step.kind === 'upgrade') { const c = candidateOf(r.step, {}, facts); chosenWant = { want: { ...c, because: c.why }, skipped: [] }; }
+    if (r.step.kind === 'upgrade' || chosenWant.want) lap = advance(r.state, r.step, at, facts);
+  } catch (_) { lap = null; } }
   if (!open && chosenWant.want) {
     const w = chosenWant.want; const id = Date.now().toString(36), target = 'will:' + slug(w.title);
     // the execution record (lib/actions.js): written before the job is queued; no record, no job
     await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
       await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(id, w.title, target, 'queued', ('Verse chose this: ' + w.because + skippedNote(skipped)).slice(0, 300), at, at).run();
+        .bind(id, w.title, target, 'queued', ('Verse chose this: ' + w.because + skippedNote(skipped, chosenWant.overCap)).slice(0, 300), at, at).run();
       return 'queued ' + id + ': ' + w.title;
     });
     queued = id;
+    if (lap) await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('lap', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(lap)).run();
   }
-  return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}) });
+  return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}), ...(chosenWant.overCap ? { overCap: chosenWant.overCap } : {}) });
 }

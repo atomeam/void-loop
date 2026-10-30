@@ -38,7 +38,9 @@ export function gate(req, history = [], now = Date.now(), opts = {}) {
   const same = past.find((h) => h.fp && h.fp === r.fp && t - Date.parse(h.at) < REPEAT_MS);
   if (same) return { ok: false, need: 'repeat', risk, why: 'this exact request already ran ' + Math.round((t - Date.parse(same.at)) / 60e3) + ' minutes ago; change it to run it again', rollback };
   const last = Math.max(0, ...past.filter((h) => h.tool === r.tool).map((h) => Date.parse(h.at))), gap = COOLDOWN_MS[risk] - (t - last);
-  if (last && gap > 0) return { ok: false, need: 'wait', waitMs: gap, risk, why: 'one ' + r.tool + ' ran a moment ago; wait ' + Math.ceil(gap / 1000) + ' seconds', rollback };
+  // stopping a standing spend ($0, the rollback rollbackOf names for models.spend) never waits out the cooldown: a held stop would leave the spend running
+  const stop = r.tool === 'models.spend' && !!(r.args && r.args.cost) && Number(r.args.cost.amount) === 0;
+  if (last && gap > 0 && !stop) return { ok: false, need: 'wait', waitMs: gap, risk, why: 'one ' + r.tool + ' ran a moment ago; wait ' + Math.ceil(gap / 1000) + ' seconds', rollback };
   if (risk !== 'low') {
     const owner = opts.owner;
     const signed = r.cosigner && r.cosigner !== r.actor && (!owner || r.cosigner === owner);

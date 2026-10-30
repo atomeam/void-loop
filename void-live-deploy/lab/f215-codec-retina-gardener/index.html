@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{--bg:#020205;--ink:#d9dcff;--dim:#6b6f99}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.4 ui-sans-serif,system-ui,sans-serif}
+main{display:grid;grid-template-columns:minmax(0,min(78vh,62vw)) minmax(260px,1fr);gap:18px;padding:18px;min-height:100%;align-items:start}
+#stage{position:relative;aspect-ratio:1;width:100%}
+#world{width:100%;height:100%;display:block;border-radius:6px;image-rendering:auto;box-shadow:0 0 80px #2a2a7a33}
+#overlay{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);pointer-events:none}
+#overlay i{border:1px solid transparent;transition:border-color .3s, box-shadow .3s}
+#overlay i.focus{border-color:#ffffffaa;box-shadow:inset 0 0 24px #ffffff33}
+h1{font-size:15px;margin:0 0 4px;letter-spacing:.08em;font-weight:600}
+p.sub{margin:0 0 12px;color:var(--dim)}
+#retina{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cell{--s:0;--m:0;all:unset;cursor:pointer;display:block;padding:8px 7px;min-height:64px;font:11px/1.3 ui-monospace,monospace;color:var(--ink);
+ background:color-mix(in oklab,#0b0b1c calc(100% - var(--s)*60%),#4b3cff calc(var(--s)*60%));
+ border-radius:calc(4px + (1 - var(--s))*18px);
+ transform:scale(calc(.86 + var(--s)*.14)) skewX(calc(var(--m)*-8deg));
+ letter-spacing:calc(var(--m)*.12em);
+ outline:1px solid #ffffff14;transition:all .45s cubic-bezier(.2,.9,.2,1)}
+.cell[data-c=dead]{opacity:.55;filter:saturate(.3)}
+.cell[data-c=flow]{outline-color:#7fd8ff88}
+.cell[data-c=novel]{outline-color:#ffb44a99;clip-path:polygon(0 6%,8% 0,92% 0,100% 8%,100% 94%,90% 100%,6% 100%,0 92%)}
+.cell[data-c=noise]{outline-color:#ff4a6a99;filter:contrast(1.3)}
+.cell b{display:block;font-size:10px;color:var(--dim);font-weight:400}
+#hud{margin-top:14px;display:grid;gap:6px;font:12px/1.4 ui-monospace,monospace}
+#hud .row{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff10;padding-bottom:3px}
+.bar{height:4px;background:#ffffff12;border-radius:2px;overflow:hidden}.bar>span{display:block;height:100%;background:linear-gradient(90deg,#4b3cff,#7fd8ff)}
+.btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+button.b{background:#12122a;color:var(--ink);border:1px solid #ffffff22;border-radius:6px;padding:6px 10px;cursor:pointer;font:inherit}
+[popover]{background:#0b0b1c;color:var(--ink);border:1px solid #ffffff33;border-radius:10px;padding:12px 14px;font:12px/1.5 ui-monospace,monospace;max-width:320px}
+[popover]::backdrop{background:#0006}
+.legend{color:var(--dim);font-size:11px;margin-top:10px}
+@media (max-width:800px){main{grid-template-columns:1fr}}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Codec Retina Gardener · Verse lab</title>
+<meta name="description" content="Open index.html over http(s) or localhost (WebCodecs needs a secure context). Chrome or Edge gives the full path;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Codec Retina Gardener · Verse lab">
+<meta property="og:description" content="Open index.html over http(s) or localhost (WebCodecs needs a secure context). Chrome or Edge gives the full path;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f215-codec-retina-gardener/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f215-codec-retina-gardener/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <div id="stage"><canvas id="world" width="512" height="512"></canvas><div id="overlay"></div></div>
+  <section>
+    <h1>CODEC RETINA GARDENER</h1>
+    <p class="sub">A living reaction-diffusion world, watched by 16 tiny video encoders. What the codec cannot predict is what the gardener calls surprise, and it tends each patch toward the edge of chaos.</p>
+    <div id="retina"></div>
+    <div id="hud"></div>
+    <div class="btns">
+      <button class="b" id="tAgent">Pause gardener</button>
+      <button class="b" id="tStorm">Storm (scramble patches)</button>
+      <button class="b" id="tKill">Drought (kill patches)</button>
+    </div>
+    <p class="legend">Click a patch in the world to seed life there. Click a retina card for what the gardener has learned about it. Card shapes: dim means dead, blue outline means flowing (it moves but the codec predicts it), amber cut corners means novel (the gardener's target), red means noise.</p>
+  </section>
+</main>
+<div id="pop" popover></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

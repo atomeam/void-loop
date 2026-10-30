@@ -1,0 +1,23 @@
+{
+  "slug": "local-quorum-not-edit",
+  "run": 108,
+  "date": "2026-10-08",
+  "family": "collective-memory miss board",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": "design-material weight only",
+  "canonical": "quorum-not-edit|v1|<class>|edit-refusal",
+  "classes": ["logo-miss", "line-miss", "spelling-miss", "date-miss", "abstain"],
+  "discarded_not_hashed": ["edit sentence", "disconfirm line"],
+  "href_allowlist": [],
+  "hypotheses": [
+    {
+      "id": "quorum-not-edit",
+      "claim": "A local quorum class can mark a shared miss without becoming an edit or a residue of another record.",
+      "confidence": 0.22,
+      "status": "unattested",
+      "source": "drafts/108-local-quorum-not-edit/x-scan.md"
+    }
+  ]
+}

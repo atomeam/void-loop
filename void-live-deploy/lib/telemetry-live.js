@@ -8,7 +8,7 @@ const API = 'https://api.github.com/repos/' + REPO;
 const SUITE = /deploy|verify|browser-suite|python-tests/i; // the checks that say whether main is live and green
 const short = (s) => String(s || '').slice(0, 8);
 const when = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toISOString().slice(0, 16).replace('T', ' ') + ' UTC'; };
-const clip = (s, n) => { const x = String(s || '').replace(/\s+/g, ' ').trim(); return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
+const clip = (s, n) => { const x = String(s || '').replace(/\s+/g, ' ').trim(); void n; return x; }; // whole text (owner, 2026-10-21)
 
 /** one line for a pull request from GitHub's pulls API. Pure. */
 export function prLine(pr) {
@@ -51,7 +51,7 @@ export function botNote(commit, runs) {
 // Verse's own record commits: incident notes, benchmark asks, the money plan, regenerated cards. They run no deploy or suite, so the card reads
 // past them to the newest change that did (owner, 2026-10-19: the card showed "no checks reported" on an incident note while the merge under it
 // had failed its browser suite; four notes in a row had hidden it)
-const RECORD = /^(?:Incident: |Verse hardens itself|reinvest: |Regenerate )/;
+const RECORD = /^(?:Incident: |Verse hardens itself|Better at |Sharper card art|reinvest: |Regenerate )/; // grow-self's commits open "Better at" since 2026-10-24
 const first = (c) => String((c && c.commit && c.commit.message) || '').split('\n')[0];
 export const isRecord = (c) => RECORD.test(first(c));
 /** the incident notes about one commit among the records above it: { count, last } or null. sha may be the full sha; the note names a short one. Pure. */

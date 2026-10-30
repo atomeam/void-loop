@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yield not author — draft 106 — unattested</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { --ink:#1a2428; --paper:#eef2f1; --line:#b7c4c2; --deny:#6e3a3a; --muted:#5c6b6e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink:#e6eeec; --paper:#141c1e; --line:#3a4a4c; --deny:#e0b4b0; --muted:#9aadaf; }
+    }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.45 ui-sans-serif, system-ui, sans-serif; }
+    main { max-width:38rem; margin:2rem auto; padding:0 1rem 3rem; }
+    .status { letter-spacing:.04em; text-transform:uppercase; font-size:.78rem; color:var(--muted); }
+    h1 { font-size:1.6rem; font-weight:600; margin:.2rem 0 .6rem; }
+    .lede { margin:0 0 1rem; }
+    dl { display:grid; grid-template-columns:9rem 1fr; gap:.35rem .75rem; margin:0 0 1.2rem; }
+    dt { color:var(--muted); }
+    dd { margin:0; }
+    dd.empty { color:var(--deny); }
+    fieldset { border:1px solid var(--line); margin:0 0 1rem; padding:.6rem .8rem; }
+    legend { padding:0 .3rem; }
+    label { display:block; margin:.25rem 0; }
+    input[type="text"], select, button {
+      font:inherit; color:inherit; background:transparent; border:1px solid var(--line); padding:.35rem .5rem;
+    }
+    button { margin-top:.4rem; cursor:pointer; }
+    output { display:block; white-space:pre-wrap; margin-top:.8rem; font-family:ui-monospace, monospace; font-size:.85rem; }
+    .note { color:var(--muted); font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">unattested · draft 106 · not a seal</p>
+    <h1>Yield not author</h1>
+    <p class="lede">A yield class is a label. It does not become authorship, a transferred will, or a fused agent. The author sentence is cleared and is not hashed.</p>
+    <dl>
+      <dt>author</dt><dd class="empty">empty</dd>
+      <dt>will</dt><dd class="empty">empty</dd>
+      <dt>cession</dt><dd class="empty">empty</dd>
+      <dt>fused agent</dt><dd class="empty">empty</dd>
+      <dt>shared memory</dt><dd class="empty">empty</dd>
+      <dt>sign-off</dt><dd class="empty">empty</dd>
+      <dt>execute</dt><dd class="empty">empty</dd>
+    </dl>
+    <form id="yield">
+      <fieldset>
+        <legend>Yield class</legend>
+        <label><input type="radio" name="yield" value="catalog-step" required> catalog-step</label>
+        <label><input type="radio" name="yield" value="hold"> hold</label>
+        <label><input type="radio" name="yield" value="abstain"> abstain</label>
+        <label><input type="radio" name="yield" value="split-seat"> split-seat</label>
+        <label><input type="radio" name="yield" value="local-only"> local-only</label>
+      </fieldset>
+      <label>Author sentence (cleared, not hashed)
+        <input type="text" name="scratch" id="scratch" autocomplete="off" placeholder="typed text is discarded">
+      </label>
+      <label>Disconfirm line (not hashed)
+        <select name="disconfirm" id="disconfirm">
+          <option value="none">none selected</option>
+          <option value="same-seat-both">one seat both proposed and committed</option>
+          <option value="no-second-mark">no second mark on the step</option>
+          <option value="log-is-not-will">authorization log is present and still not a will</option>
+        </select>
+      </label>
+      <p><button type="submit">Hash yield class</button></p>
+      <output id="out" for="yield">No hash yet. Default status unattested.</output>
+    </form>
+    <p class="note">Posts and pages stay off this page. A sign-off sentence is not a row. No agent starts.</p>
+  </main>
+  <script>
+    const form = document.getElementById("yield");
+    const out = document.getElementById("out");
+    const scratch = document.getElementById("scratch");
+    const allow = new Set(["catalog-step", "hold", "abstain", "split-seat", "local-only"]);
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const yieldClass = data.get("yield");
+      const discarded = scratch.value.length;
+      scratch.value = "";
+      if (!allow.has(yieldClass)) {
+        out.textContent = "class-denied. status unattested.";
+        return;
+      }
+      const canonical = "yield-not-author|v1|" + yieldClass + "|author-refusal";
+      const hash = await sha256(canonical);
+      const disconfirm = data.get("disconfirm");
+      out.textContent = [
+        "status: unattested",
+        "seal: false",
+        "yield: " + yieldClass,
+        "canonical: " + canonical,
+        "sha256: " + hash,
+        "scratch-discarded-chars: " + discarded,
+        "disconfirm-not-hashed: " + disconfirm,
+        "denied: author, will, cession, fused-agent, shared-memory, sign-off, execute"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

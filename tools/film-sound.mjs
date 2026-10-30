@@ -39,6 +39,38 @@ export function channel(score, detune = 0) {
   return `0.07*${env}*(${pad})+0.16*${edge}*(${bass})+0.22*${pulse}`;
 }
 
+// beat-locked cuts (owner, 2026-10-24: music and film that hit together; frontier #26): the film's score has a tempo (scoreOf), and the cut plays 15% faster than the take
+// (.github/workflows/record.yml: setpts=PTS/1.15), so a beat of the finished film is 15% longer in the take. The recorder waits for the next beat before each change of scene
+// (a tap, a card, the ending), so what changes on the screen changes on the beat the score is pulsing.
+export const SPEEDUP = 1.15;
+/** one beat of the score, in the take's own milliseconds. Pure. */
+export const takeBeatMs = (score, speedup = SPEEDUP) => +((60000 / score.bpm) * speedup).toFixed(2);
+/** how long to wait, from `elapsedMs` into the take, to land on a beat at least `minMs` away; `every` 2 or 4 lands on every second or fourth beat (half a bar, a bar). Pure. */
+export function toBeat(elapsedMs, beatMs, minMs = 0, every = 1) {
+  const p = beatMs * Math.max(1, every), k = Math.ceil((elapsedMs + Math.max(0, minMs)) / p - 1e-9);
+  return Math.max(0, Math.round(k * p - elapsedMs));
+}
+
+/** how many seconds of the score to skip so its beats meet the scene changes in the finished film. The take's clock (when the recorder's page was made) runs ahead of the video's
+ *  own clock (its first frame comes later, by a different amount each time: 0.3 s and 0.9 s were measured). The recorder flashes one pure magenta frame pair at a known take time
+ *  (`syncAt`, ms) and findSync() finds that frame in the video (`videoSec`); the difference is the lag. A scene change the take put on beat k lands `lag / SPEEDUP` early in the
+ *  finished film (sped up by SPEEDUP), so the score starts that much into itself. Clamped to 0 to 1.5 s: a larger gap means something else is wrong, and a wrong guess is
+ *  worse than none. Pure. */
+export function skewSeconds(syncAt, videoSec, speedup = SPEEDUP) {
+  const lag = Number(syncAt) - Number(videoSec) * 1000; if (!Number.isFinite(lag)) return 0;
+  return +Math.max(0, Math.min(1500, lag) / 1000 / speedup).toFixed(3);
+}
+/** the video time (seconds) of the sync mark, from ffmpeg's `signalstats,metadata=print` text: the first frame that is magenta (U and V averages both high; white and every dark or pastel
+ *  frame of a film are not), or null. Pure. */
+export function findSync(text) {
+  const frames = []; let cur = null;
+  for (const line of String(text).split('\n')) {
+    const f = /pts_time:([\d.]+)/.exec(line); if (f) { cur = { t: Number(f[1]) }; frames.push(cur); continue; }
+    const m = /lavfi\.signalstats\.(UAVG|VAVG|YAVG)=([\d.]+)/.exec(line); if (m && cur) cur[m[1]] = Number(m[2]);
+  }
+  const hit = frames.find((x) => x.UAVG > 185 && x.VAVG > 205 && x.YAVG > 80 && x.YAVG < 140); return hit ? hit.t : null;
+}
+
 /** the ffmpeg arguments that write the score for a film of `seconds` to `out` (AAC in an .m4a). Pure. */
 export function ffmpegArgs(out, seconds, seed) {
   const s = Math.max(1, Math.min(180, Number(seconds) || 20)), sc = scoreOf(seed);
@@ -47,6 +79,16 @@ export function ffmpegArgs(out, seconds, seed) {
   return ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', src, '-af', shape, '-c:a', 'aac', '-b:a', '160k', out];
 }
 
+if (process.argv[1] && import.meta.url === new URL('file://' + process.argv[1]).href && process.argv[2] === '--skew') {
+  // node tools/film-sound.mjs --skew <film.json> <take.webm>: the seconds of the score to skip (record.yml); 0 when the take has no sync mark or it cannot be found
+  const fs = await import('node:fs'); let sync = 0; try { sync = JSON.parse(fs.readFileSync(process.argv[3], 'utf8')).syncAt; } catch (_) { /* an older film has none */ }
+  let out = 0;
+  if (sync) {
+    const r = spawnSync(process.env.FFMPEG || 'ffmpeg', ['-hide_banner', '-loglevel', 'error', '-t', '8', '-i', process.argv[4], '-vf', 'scale=96:170,signalstats,metadata=print:file=-', '-an', '-f', 'null', '-'], { encoding: 'utf8', maxBuffer: 1 << 26 });
+    const at = findSync((r.stdout || '') + '\n' + (r.stderr || '')); if (at !== null) out = skewSeconds(sync, at);
+  }
+  console.log(String(out)); process.exit(0);
+}
 if (process.argv[1] && import.meta.url === new URL('file://' + process.argv[1]).href) {
   const a = process.argv.slice(2), opt = (k) => { const i = a.indexOf(k); return i >= 0 ? a[i + 1] : undefined; };
   const out = a[0];

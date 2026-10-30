@@ -9,7 +9,19 @@ export const OPEN_HEADER = '**Folded in from the old lists';
 export const TARGETS_HEADER = '**After the cleanup';
 const plain = (s) => String(s || '').replace(/\*\*|`/g, '').replace(/\s+/g, ' ').trim();
 
-/** the open items: [{ title, why, from }] from the bullets under OPEN_HEADER, up to the first blank line */
+/** what an open item waits on, from its own words: "the owner" when it says it needs or waits for the owner ("Needs the owner.",
+ *  "(waits for the owner)", "waits for the owner to decide"), or a thing it names in brackets ("(needs the miss board)"); '' when
+ *  it waits on nothing. "Waits on the owner:" opens a list of parts that wait while the rest goes on, so it is not read as the item's own
+ *  wait. Pure. */
+export function waitsOf(title, why) {
+  const t = plain(title + ' ' + why);
+  if (/\b(?:needs|waits for|waiting for) the owner\b/i.test(t)) return 'the owner';
+  const m = /\((?:needs|waits for|waiting for) (the [a-z][a-z -]{2,40})\)/i.exec(t);
+  return m ? m[1].trim() : '';
+}
+
+/** the open items: [{ title, why, from, waits? }] from the bullets under OPEN_HEADER, up to the first blank line; `waits` only when the
+ *  item says what it waits on (waitsOf) */
 export function openItems(text) {
   const lines = String(text || '').split('\n');
   const at = lines.findIndex((l) => l.startsWith(OPEN_HEADER));
@@ -23,7 +35,8 @@ export function openItems(text) {
     const src = /\(`([^`]+)`([^)]*)\)/.exec(title + ' ' + rest); // void-review: ok (RegExp.exec on frontier text, not a shell: nothing runs)
     title = plain(title.replace(/\s*\(`[^)]*\)\s*/, ' '));
     rest = rest.replace(/^\s*\(`[^)]*\)\s*:?\s*/, '');
-    out.push({ title, why: plain(rest).replace(/^:\s*/, ''), from: src ? plain(src[1] + src[2]) : '' });
+    const why = plain(rest).replace(/^:\s*/, ''), waits = waitsOf(title, why);
+    out.push({ title, why, from: src ? plain(src[1] + src[2]) : '', ...(waits ? { waits } : {}) });
   }
   return out;
 }

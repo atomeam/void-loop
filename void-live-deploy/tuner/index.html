@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Online tuner: guitar, bass, ukulele, violin · Verse</title>
+<meta name="description" content="A free online chromatic tuner that listens through your microphone: guitar, bass, ukulele, violin, viola, cello, mandolin and banjo presets and alternate tunings, a needle in cents, an adjustable A4 reference and reference tones. The sound never leaves your device.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Tuner · Verse">
+<meta property="og:description" content="A free online chromatic tuner that listens through your microphone: guitar, bass, ukulele, violin, viola, cello, mandolin and banjo presets and alternate tunings, a needle in cents, an adjustable A4 reference and reference tones. The sound never leaves your device.">
+<meta property="og:url" content="https://a-to-mind.com/tuner/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { color-scheme: light; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --key: #fff; --blk: #1b1826; --hit: #8f73ff; }
+  :root:not([data-theme=light]) { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 20px; margin: 0 0 4px; text-align: center; font-weight: 650; }
+  h2 { font-size: 16px; margin: 0 0 8px; }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 40px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #mnav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 12px; min-height: 120px; align-content: flex-start; }
+  #mnav a { font-size: 14px; padding: 8px 12px; min-height: 24px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #mnav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; max-width: 100%; }
+  textarea { width: 100%; min-height: 92px; font-family: ui-monospace, monospace; font-size: 14px; }
+  input[type=range] { padding: 0; accent-color: var(--accent); min-height: 44px; }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  #tries a { padding: 8px 4px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 130px; min-width: 0; }
+  .row > label select, .row > label input { width: 100%; }
+  .row.c { justify-content: center; }
+  .chk { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 8px !important; color: var(--ink) !important; font-size: 15px !important; min-height: 44px; }
+  .row > label.chk input { min-height: 0; width: 20px; height: 20px; flex: 0 0 auto; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 20px; }
+  .big { text-align: center; font-size: 64px; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; min-height: 70px; }
+  .big small { font-size: 18px; font-weight: 500; color: var(--soft); }
+  .dots { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; min-height: 56px; align-items: center; }
+  .dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line); background: var(--box); padding: 0; min-height: 40px; min-width: 40px; font-size: 12px; color: var(--soft); }
+  .dot[data-lv="3"] { border-color: var(--accent); } .dot[data-lv="2"] { border-color: var(--soft); } .dot[data-lv="0"] { opacity: .45; border-style: dashed; }
+  .dot.on { background: var(--accent); color: var(--on-accent); transform: scale(1.12); }
+  .flash { transition: background .08s; } .flash.on { background: var(--tint); }
+  .pend { position: relative; height: 90px; overflow: hidden; } .pend i { position: absolute; left: 50%; bottom: 0; width: 4px; height: 82px; background: var(--accent); border-radius: 2px; transform-origin: 50% 100%; transform: translateX(-50%) rotate(-22deg); } .pend i::after { content: ''; position: absolute; left: -7px; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); }
+  .tapbtn { width: 100%; min-height: 96px; font-size: 22px; border-radius: 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; } th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; } th { color: var(--soft); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 6px 0; list-style: none; }
+  .chips li { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--tint); font-size: 15px; min-height: 24px; }
+  .kb { position: relative; display: flex; overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; height: 190px; border: 1px solid var(--line); border-radius: 10px; background: var(--box); touch-action: pan-x; user-select: none; -webkit-user-select: none; }
+  .wk { flex: 0 0 44px; height: 180px; border: 1px solid var(--line); border-radius: 0 0 8px 8px; background: var(--key); color: #444; font-size: 11px; padding: 0 0 6px; display: flex; align-items: flex-end; justify-content: center; position: relative; min-height: 0; min-width: 0; box-sizing: border-box; z-index: 1; text-align: center; line-height: 1.1; }
+  .wk.on { background: var(--hit); color: #fff; }
+  .bk { position: absolute; top: 0; width: 28px; height: 112px; margin-left: -14px; background: var(--blk); border: 1px solid var(--line); border-radius: 0 0 6px 6px; color: #ddd; font-size: 10px; padding: 0 0 4px; display: flex; align-items: flex-end; justify-content: center; z-index: 3; min-height: 0; min-width: 0; box-sizing: border-box; }
+  .bk.on { background: var(--hit); }
+  .kbi { position: relative; display: flex; flex: 0 0 auto; }
+  .strobe { height: 54px; border-radius: 10px; margin: 8px 0; background: repeating-linear-gradient(90deg, var(--accent) 0 14px, var(--tint) 14px 28px); background-size: 28px 100%; } .strobe.ok { background: repeating-linear-gradient(90deg, var(--good) 0 14px, var(--tint) 14px 28px); }
+  .neck { width: 100%; min-height: 150px; } .neck svg { width: 100%; height: auto; display: block; } .neck text { fill: var(--ink); font: 9px system-ui; }
+  .meter { position: relative; height: 54px; border-radius: 10px; background: var(--tint); overflow: hidden; margin: 8px 0; }
+  .meter i { position: absolute; top: 0; bottom: 0; width: 4px; left: 50%; margin-left: -2px; background: var(--accent); transition: left .12s; } .meter b { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--good); }
+  .meter.ok i { background: var(--good); }
+  .read { text-align: center; font-size: 56px; font-weight: 700; line-height: 1.1; min-height: 62px; } .read small { font-size: 16px; font-weight: 500; color: var(--soft); display: block; }
+  .strings { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; min-height: 48px; }
+  svg.dia { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; } svg.dia text { fill: var(--ink); font: 11px system-ui; } svg.dia line, svg.dia rect.fr { stroke: var(--soft); } svg.dia .dotf { fill: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media print { #mnav, button, .row { display: none !important; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/tuner/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Tuner","url":"https://a-to-mind.com/tuner/","description":"A free online chromatic tuner that listens through your microphone and shows how many cents flat or sharp you are: guitar (standard, drop D, DADGAD, open tunings, 7-string), bass, ukulele, violin, viola, cello, mandolin and banjo presets, an adjustable A4 reference, reference tones and a pitch pipe. The sound never leaves your device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"online tuner, guitar tuner, ukulele tuner, violin tuner, bass tuner, chromatic tuner online, tuner with microphone no download","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/tuner/?tun={tuning}"},"tuning-input":"required name=tuning"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://a-to-mind.com/tuner/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/tuner/app.js">
+<link rel="modulepreload" href="/lib/music-tools.js">
+<link rel="modulepreload" href="/lib/music-audio.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/music-ui.js">
+<link rel="modulepreload" href="/lib/music-de.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main id="app">
+  <h1>Tuner</h1>
+  <p class="sub" id="lede">A free online tuner: it listens through your microphone, finds the note and shows how many cents flat or sharp. Guitar, bass, ukulele, violin and more, alternate tunings, reference tones. The sound never leaves your device.</p>
+  <nav id="mnav" aria-label="Music tools"><a href="/metronome/">Metronome</a><a href="/piano/">Piano</a><a href="/tuner/" aria-current="page">Tuner</a><a href="/bpm/">BPM counter</a><a href="/chords/">Chords and scales</a><a href="/music/">Setlists and catalogue</a><a href="/?q=make%20me%20a%20song">Make me a song</a></nav>
+  <section class="pane" aria-label="Tuner">
+    <div class="row"><label>Instrument and tuning<select id="tun"><option value="guitar-standard" selected>Guitar, standard (E A D G B E)</option><option value="guitar-dropd">Guitar, drop D</option><option value="guitar-dadgad">Guitar, DADGAD</option><option value="guitar-opeg">Guitar, open G</option><option value="guitar-opend">Guitar, open D</option><option value="guitar-halfdown">Guitar, half step down</option><option value="guitar-7">Guitar, 7-string</option><option value="bass4">Bass, 4-string</option><option value="bass5">Bass, 5-string</option><option value="ukulele">Ukulele (G C E A)</option><option value="violin">Violin (G D A E)</option><option value="viola">Viola (C G D A)</option><option value="cello">Cello (C G D A)</option><option value="mandolin">Mandolin (G D A E)</option><option value="banjo">Banjo, open G</option><option value="chromatic">Any note (chromatic)</option></select></label><label>Reference pitch A4 (Hz)<input type="number" id="a4" min="410" max="470" value="440" step="1" inputmode="numeric"></label></div>
+    <div class="read" id="note" aria-live="polite">–<small id="hz">Turn the microphone on and play a note</small></div>
+    <div class="row c" role="group" aria-label="Display"><button type="button" id="dispNeedle" aria-pressed="true">Needle</button><button type="button" id="dispStrobe" aria-pressed="false">Strobe</button></div>
+    <div class="meter" id="meter" role="img" aria-label="How flat or sharp the note is"><b></b><i id="needle"></i></div>
+    <div class="strobe" id="strobe" role="img" aria-label="Strobe: the stripes stand still when the note is in tune" hidden></div>
+    <p class="note" id="verdict" role="status" aria-live="polite" style="text-align:center;font-size:16px;color:var(--ink)">Waiting for a note.</p>
+    <div class="row c"><button type="button" id="mic" class="go" aria-pressed="false">Turn the microphone on</button></div>
+    <p class="note" id="status" role="status" aria-live="polite">The microphone is used only to find the pitch, on this device. Nothing is recorded or sent.</p>
+  </section>
+  <section class="pane" aria-label="Strings and reference tones">
+    <h2>Strings and reference tones</h2>
+    <div class="strings" id="strings" role="group" aria-label="Press a string to hear its note"></div>
+    <div class="row"><label>Any note (pitch pipe)<select id="pipe"><option value="C">C</option><option value="C#">C#</option><option value="D">D</option><option value="D#">D#</option><option value="E">E</option><option value="F">F</option><option value="F#">F#</option><option value="G">G</option><option value="G#">G#</option><option value="A" selected>A</option><option value="A#">A#</option><option value="B">B</option></select></label><label>Octave<input type="number" id="pipeOct" min="0" max="8" value="4" inputmode="numeric"></label><button type="button" id="pipeBtn" style="flex:0 0 auto" aria-pressed="false">Play the note</button></div>
+    <p class="note">The usual reference is A4 = 440 Hz; change it above for other pitch standards. Press a string to hear its note and tune to it by ear. The tuner picks the nearest string by itself and shows how far off you are; within 5 cents is in tune.</p>
+  </section>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/tuner/?tun=guitar-standard">Guitar tuner</a><a href="/tuner/?tun=guitar-dropd">Drop D</a><a href="/tuner/?tun=bass4">Bass tuner</a><a href="/tuner/?tun=ukulele">Ukulele tuner</a><a href="/tuner/?tun=violin">Violin tuner</a><a href="/tuner/?tun=chromatic">Any note</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/piano/">Piano</a> <a href="/chords/">Chords and scales</a> <a href="/metronome/">Metronome</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="note" id="trust" style="text-align:center;min-height:40px">Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.</p>
+  <p class="note" id="share" style="text-align:center"><button type="button" id="shareBtn">Share this page</button></p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words and controls are in the HTML, and the code that makes the sound is a small module its head preloads
+  import '/tuner/app.js';
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>

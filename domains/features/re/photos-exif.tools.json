@@ -1,0 +1,737 @@
+{
+ "site": "exif.tools",
+ "url": "https://exif.tools/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "exiftool-viewer.min.js",
+   "t": "js",
+   "b": 37271
+  },
+  {
+   "f": "file-receiver-20260802.min.js",
+   "t": "js",
+   "b": 4741
+  },
+  {
+   "f": "homepage-i18n.min.js",
+   "t": "js",
+   "b": 6082
+  },
+  {
+   "f": "photo-provenance.min.js",
+   "t": "js",
+   "b": 2207
+  },
+  {
+   "f": "photo-summary.min.js",
+   "t": "js",
+   "b": 16294
+  },
+  {
+   "f": "site-runtime.min.js",
+   "t": "js",
+   "b": 9052
+  },
+  {
+   "f": "url-file-loader.min.js",
+   "t": "js",
+   "b": 3323
+  },
+  {
+   "f": "home.bundle.min.61cee06844b6.css",
+   "t": "css",
+   "b": 22641
+  },
+  {
+   "f": "print.min.fa6a1aab83f1.css",
+   "t": "css",
+   "b": 1032
+  },
+  {
+   "f": "site-theme.min.27fe6c696141.css",
+   "t": "css",
+   "b": 9433
+  }
+ ],
+ "assetCount": 10,
+ "bytes": 112076,
+ "html": {
+  "mobile": {
+   "title": "EXIF & File Metadata Viewer — Photos, PD",
+   "lang": "en",
+   "manifest": "https://exif.tools/manifests/en.webmanifest",
+   "hreflang": [
+    "en",
+    "id",
+    "es",
+    "pt",
+    "fr",
+    "de",
+    "it",
+    "nl",
+    "pl",
+    "tr",
+    "vi",
+    "th",
+    "ja",
+    "ko",
+    "zh-Hans",
+    "hi",
+    "ar",
+    "ru",
+    "uk",
+    "cs",
+    "ro",
+    "hu",
+    "el",
+    "sv",
+    "fi",
+    "ms",
+    "x-default"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 12,
+    "twitter": true,
+    "themeColor": true,
+    "appleCapable": true
+   },
+   "iframes": [
+    "exif.tools"
+   ],
+   "inputTypes": {
+    "file": 1,
+    "search": 1
+   },
+   "details": 9,
+   "ariaLabels": [
+    "Background scan controls",
+    "Category tools",
+    "Detailed metadata",
+    "Every photo has a story.",
+    "File analysis",
+    "File results",
+    "Language",
+    "Related file tools",
+    "Site information",
+    "What your photo can tell you",
+    "exif.tools home"
+   ],
+   "roles": {
+    "status": 5
+   },
+   "live": true
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "Barcode Scanner ↗",
+   "w": "md"
+  },
+  {
+   "l": "Choose a file to inspect",
+   "w": "md"
+  },
+  {
+   "l": "Choose a file ↗",
+   "w": "md"
+  },
+  {
+   "l": "Data methodology",
+   "w": "md"
+  },
+  {
+   "l": "Data privacy",
+   "w": "md"
+  },
+  {
+   "l": "Does this upload my file?",
+   "w": "md"
+  },
+  {
+   "l": "Escape Excel",
+   "w": "md"
+  },
+  {
+   "l": "ExifTool",
+   "w": "md"
+  },
+  {
+   "l": "Extract Assets",
+   "w": "md"
+  },
+  {
+   "l": "Extract Links",
+   "w": "md"
+  },
+  {
+   "l": "Flatten",
+   "w": "md"
+  },
+  {
+   "l": "Flip",
+   "w": "md"
+  },
+  {
+   "l": "Gene Excel Updater",
+   "w": "md"
+  },
+  {
+   "l": "Gene Updater",
+   "w": "md"
+  },
+  {
+   "l": "Invert",
+   "w": "md"
+  },
+  {
+   "l": "Language: English",
+   "w": "md"
+  },
+  {
+   "l": "Lock",
+   "w": "md"
+  },
+  {
+   "l": "Metadata Viewer",
+   "w": "md"
+  },
+  {
+   "l": "Optimize",
+   "w": "md"
+  },
+  {
+   "l": "Paste a link",
+   "w": "md"
+  },
+  {
+   "l": "Recovery",
+   "w": "md"
+  },
+  {
+   "l": "Remove BG",
+   "w": "md"
+  },
+  {
+   "l": "Repair",
+   "w": "md"
+  },
+  {
+   "l": "Resize",
+   "w": "md"
+  },
+  {
+   "l": "Rotate",
+   "w": "md"
+  },
+  {
+   "l": "Site information (JSON)",
+   "w": "md"
+  },
+  {
+   "l": "Strip",
+   "w": "md"
+  },
+  {
+   "l": "Unlock",
+   "w": "md"
+  },
+  {
+   "l": "What else can I inspect?",
+   "w": "md"
+  },
+  {
+   "l": "Why are some details missing?",
+   "w": "md"
+  },
+  {
+   "l": "exif.tools home",
+   "w": "md"
+  },
+  {
+   "l": "file(1)",
+   "w": "md"
+  }
+ ],
+ "manifest": {
+  "name": "exif.tools Metadata Viewer",
+  "display": "standalone",
+  "displayOverride": [],
+  "orientation": "",
+  "scope": "/",
+  "icons": 2,
+  "screenshots": 0,
+  "categories": [
+   "utilities",
+   "productivity",
+   "photo"
+  ],
+  "shortcuts": [
+   "Metadata Viewer"
+  ],
+  "shareTarget": {
+   "method": "POST",
+   "enctype": "multipart/form-data",
+   "params": [
+    "files",
+    "text",
+    "title",
+    "url"
+   ],
+   "files": [
+    "image/*",
+    "application/pdf",
+    "application/octet-st"
+   ]
+  },
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": "en"
+ },
+ "serviceWorker": {
+  "url": "sw.js",
+  "bytes": 23770,
+  "workbox": false,
+  "precache": false,
+  "fetchHandler": true,
+  "skipWaiting": true,
+  "sync": false,
+  "periodicSync": false,
+  "push": false,
+  "notificationClick": false,
+  "cacheNames": []
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [
+   "https://exif.tools/sitemap.xml",
+   "https://exif.tools/sitemap.txt"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 215,
+  "index": false,
+  "sections": [
+   {
+    "s": "de",
+    "n": 22
+   },
+   {
+    "s": "es",
+    "n": 22
+   },
+   {
+    "s": "fr",
+    "n": 22
+   },
+   {
+    "s": "id",
+    "n": 22
+   },
+   {
+    "s": "it",
+    "n": 22
+   },
+   {
+    "s": "pl",
+    "n": 22
+   },
+   {
+    "s": "pt",
+    "n": 22
+   },
+   {
+    "s": "ru",
+    "n": 22
+   },
+   {
+    "s": "excel-escape-gene",
+    "n": 3
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "ar",
+    "n": 1
+   },
+   {
+    "s": "cs",
+    "n": 1
+   },
+   {
+    "s": "el",
+    "n": 1
+   },
+   {
+    "s": "escape-excel",
+    "n": 1
+   },
+   {
+    "s": "excel-gene-updater",
+    "n": 1
+   }
+  ],
+  "langs": [
+   "en",
+   "id",
+   "es",
+   "pt",
+   "fr",
+   "de",
+   "it",
+   "nl",
+   "pl",
+   "tr",
+   "vi",
+   "th",
+   "ja",
+   "ko",
+   "zh-Hans",
+   "hi",
+   "ar",
+   "ru",
+   "uk",
+   "cs",
+   "ro",
+   "hu",
+   "el",
+   "sv",
+   "fi",
+   "ms"
+  ]
+ },
+ "code": [
+  {
+   "file": "exiftool-viewer.min.js",
+   "own": true,
+   "params": [
+    "debug@626"
+   ],
+   "flags": [
+    "disableStream@21652",
+    "disableAutoFetch@21669"
+   ],
+   "apis": [
+    "Background worker threads",
+    "Drag and drop files or items",
+    "Paste images or text straight in"
+   ],
+   "mimes": [
+    "image/jpeg",
+    "image/tiff",
+    "image/png",
+    "image/webp",
+    "image/heic",
+    "image/bmp",
+    "image/gif"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "file-receiver-20260802.min.js",
+   "own": true,
+   "params": [
+    "handoff@168",
+    "shared@4097"
+   ],
+   "apis": [
+    "Paste images or text straight in"
+   ],
+   "mimes": [
+    "image/avif",
+    "image/gif",
+    "image/heic",
+    "image/heif",
+    "image/jpeg",
+    "image/png",
+    "image/tiff",
+    "image/webp"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "homepage-i18n.min.js",
+   "own": true,
+   "apiPaths": [
+    "/embed@112"
+   ],
+   "langs": 8,
+   "usesLocationSearch": true
+  },
+  {
+   "file": "photo-summary.min.js",
+   "own": true,
+   "apis": [
+    "Background worker threads",
+    "Respects the reduced-motion setting"
+   ],
+   "mimes": [
+    "image/jpeg",
+    "image/png",
+    "image/heic",
+    "image/heif",
+    "image/webp",
+    "image/avif",
+    "image/tiff",
+    "application/pdf"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "site-runtime.min.js",
+   "own": true,
+   "apis": [
+    "Drag and drop files or items"
+   ],
+   "install": true,
+   "registersWorker": "/sw.js"
+  },
+  {
+   "file": "home.bundle.min.61cee06844b6.css",
+   "own": true,
+   "apis": [
+    "Respects high-contrast settings",
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "site-theme.min.27fe6c696141.css",
+   "own": true,
+   "apis": [
+    "Respects high-contrast settings"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "exif.tools",
+   "file": "homepage-i18n.min.js",
+   "at": 2133
+  },
+  {
+   "host": "proxy.cors.sh",
+   "file": "url-file-loader.min.js",
+   "at": 34
+  },
+  {
+   "host": "www.openstreetmap.org",
+   "file": "exiftool-viewer.min.js",
+   "at": 16154
+  }
+ ],
+ "thirdParty": [
+  "proxy.cors.sh",
+  "www.openstreetmap.org"
+ ],
+ "services": [
+  "Maps"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?debug",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "exiftool-viewer.min.js@626"
+  },
+  {
+   "name": "URL parameter ?handoff",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "file-receiver-20260802.min.js@168"
+  },
+  {
+   "name": "URL parameter ?shared",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "file-receiver-20260802.min.js@4097"
+  },
+  {
+   "name": "Drag and drop files or items",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "exiftool-viewer.min.js@36866"
+  },
+  {
+   "name": "Paste images or text straight in",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "exiftool-viewer.min.js@34752"
+  },
+  {
+   "name": "App shortcut Metadata Viewer",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest.shortcuts"
+  },
+  {
+   "name": "Install prompt (beforeinstallprompt)",
+   "kind": "pwa",
+   "tag": "read",
+   "evidence": "site-runtime.min.js"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Works offline (service worker)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "service worker sw.js"
+  },
+  {
+   "name": "Receives shared files (share target)",
+   "kind": "share",
+   "tag": "observed",
+   "evidence": "manifest.share_target"
+  },
+  {
+   "name": "Embeds exif.tools",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API path /embed",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "homepage-i18n.min.js@112"
+  },
+  {
+   "name": "Feature flag disableAutoFetch",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "exiftool-viewer.min.js@21669"
+  },
+  {
+   "name": "Feature flag disableStream",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "exiftool-viewer.min.js@21652"
+  },
+  {
+   "name": "Input of type search",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=search] x1"
+  },
+  {
+   "name": "Interface languages: 8 (de, fr, pl, es, id, ru)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "homepage-i18n.min.js@3338"
+  },
+  {
+   "name": "Language versions in the sitemap: 26",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Language versions: 27 (en, id, es, pt, fr, de)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Background worker threads",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "exiftool-viewer.min.js@26393"
+  },
+  {
+   "name": "Uses Maps",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "script hosts"
+  },
+  {
+   "name": "Respects high-contrast settings",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "home.bundle.min.61cee06844b6.css@1491"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "photo-summary.min.js@455"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Section /de/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /es/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /fr/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /id/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /it/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /pl/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /pt/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /ru/ (22 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

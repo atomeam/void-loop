@@ -72,9 +72,12 @@ jobs:
           for m in media/*.json; do
             b="${m%.json}"
             # the film's own score (tools/film-sound.mjs): a short piece picked by the film's id, at the cut's length (15% faster than the take)
-            len="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$b.webm" | awk '{printf "%.2f", $1/1.15}')"
+            dur="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$b.webm")"
+            # beat-locked cuts (tools/record.mjs waits for the score's beats before each scene change, and flashes one magenta sync frame): the video's clock starts a little after the recorder's, found from that frame, so the score starts that much into itself
+            skew="$(node tools/film-sound.mjs --skew "$m" "$b.webm")"
+            len="$(awk -v d="$dur" -v k="$skew" 'BEGIN{printf "%.2f", d/1.15 + k}')"
             node tools/film-sound.mjs "$b.m4a" --seconds "$len" --seed "$(basename "$b")"
-            ffmpeg -loglevel error -y -i "$b.webm" -i "$b.m4a" -map 0:v -map 1:a -vf "setpts=PTS/1.15,scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -c:a aac -b:a 160k -shortest -movflags +faststart "$b.mp4"
+            ffmpeg -loglevel error -y -i "$b.webm" -ss "$skew" -i "$b.m4a" -map 0:v -map 1:a -vf "setpts=PTS/1.15,scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -c:a aac -b:a 160k -shortest -movflags +faststart "$b.mp4"
             node -e 'const m=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));process.stdout.write("TITLE\n"+m.title+"\n\nDESCRIPTION\n"+m.description+"\n\nTAGS\n"+(m.tags||[]).join(", ")+"\n")' "$m" > "$b.txt"
           done
       # one draft release per film: a private copy only people with write access to the repo can see (the films are for people

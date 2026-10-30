@@ -50,7 +50,7 @@ export default {
     'next birthday 1990-05-03',
     'zodiac sign for march 3',
     'deadline risk 2026-10-20',
-    'convert 9am new york to tokyo',
+    'meeting 9am new york across london and tokyo', // not "convert 9am new york to tokyo": worldtime (the time family) takes that one too, and an example is an ask only this skill claims
     'visa expires 2027-03-01',
     'sprint 2 weeks starting 2026-10-05',
     'fiscal year starting april'

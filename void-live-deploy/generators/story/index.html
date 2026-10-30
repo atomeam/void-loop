@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Story writer: an AI story from your idea · Verse</title>
+<meta name="description" content="Give an idea, a genre and a length, and get a story written part by part: continue it, steer what happens next, try another version of the last part, copy or download it. Stories stay on your device. Free, no sign-up, safe for work.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Story writer · Verse">
+<meta property="og:description" content="An idea in, a story out, part by part. Stories stay on your device.">
+<meta property="og:url" content="https://a-to-mind.com/generators/story/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/generators/story/">
+<style>
+  /* a-to-mind.com/generators/story/ (the random generators floor's character chat): rules in lib/character.js; replies from /api/answer mode 'character' */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #221c3a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
+  .sub { font-size: 14px; color: var(--soft); margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 14px 0 6px; }
+  select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; }
+  input, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; width: 100%; }
+  textarea { resize: vertical; min-height: 64px; }
+  label.f { display: block; font-size: 14px; color: var(--soft); margin: 8px 0 4px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button[aria-pressed="true"] { background: var(--hi); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .55; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .chips { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 6px; padding-bottom: 6px; min-height: 46px; box-sizing: border-box; } .chips button { flex: none; white-space: nowrap; }
+  details { margin-top: 10px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--box); }
+  summary { cursor: pointer; font-weight: 600; min-height: 36px; display: flex; align-items: center; }
+  ol.log { list-style: none; margin: 12px 0 0; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--box); min-height: 240px; display: flex; flex-direction: column; gap: 10px; }
+  #story p { margin: 0 0 12px; white-space: pre-wrap; } #story p.part-new { border-left: 3px solid var(--accent); padding-left: 8px; }
+  .msg { max-width: 88%; padding: 8px 12px; border-radius: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.user { align-self: flex-end; background: var(--hi); }
+  .msg.character { align-self: flex-start; border: 1px solid var(--line); }
+  .msg .who { display: block; font-size: 12px; color: var(--soft); font-weight: 600; }
+  .msg .acts { display: flex; gap: 6px; margin-top: 4px; } .msg .acts button { font-size: 12px; min-height: 32px; padding: 2px 10px; }
+  .typing { color: var(--soft); font-style: italic; }
+  .compose { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; align-items: end; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; overflow-wrap: anywhere; }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; }
+</style>
+<!-- the page's module and what it imports, by hand (sw.js keeps these for offline) -->
+<link rel="modulepreload" href="/generators/story/app.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/story.js">
+<link rel="modulepreload" href="/lib/art-rules.js">
+<link rel="modulepreload" href="/lib/merge-rules.js">
+<link rel="modulepreload" href="/lib/keeper.js">
+</head>
+<body>
+<main>
+  <h1 id="h">Story writer</h1>
+  <p class="sub" id="sub">An idea in, a story out, one part at a time. Your stories stay on this device. <a href="/generators/">All generators</a></p>
+  <label class="f" for="idea" id="ideaL">The idea</label><textarea id="idea" maxlength="600" rows="2" placeholder="a lighthouse keeper finds a map that redraws itself every night"></textarea>
+  <div class="row"><label class="f" for="genre" id="genreL" style="margin:0">Genre</label><select id="genre" style="width:auto"></select><label class="f" for="len" id="lenL" style="margin:0">Length of a part</label><select id="len" style="width:auto"><option value="short">Short</option><option value="medium" selected>Medium</option><option value="long">Long</option></select></div>
+  <div class="row"><button type="button" class="go" id="write">Write the opening</button></div>
+  <h2 id="storyH">The story</h2>
+  <article class="log" id="story" aria-live="polite" style="display:block;min-height:200px"></article>
+  <label class="f" for="steer" id="steerL">What happens next (optional)</label><input id="steer" maxlength="300" placeholder="a storm rolls in">
+  <div class="row"><button type="button" class="go" id="more">Continue</button><button type="button" id="again">Try another last part</button><button type="button" id="undo">Remove the last part</button><button type="button" id="copy">Copy</button><button type="button" id="dl">Download .txt</button><button type="button" id="newS">New story</button></div>
+  <div class="note" id="note" role="status"></div>
+  <h2 id="mineH">Your stories on this device</h2>
+  <div class="chips" id="mine"></div>
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer id="foot">Stories are written by Verse's own free language model, a few parts a minute. Kept only in this browser; nothing you write is stored anywhere else.</footer>
+</main>
+<script type="module" src="/generators/story/app.js"></script>
+</body>
+</html>

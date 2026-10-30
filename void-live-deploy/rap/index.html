@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: text; out: text, music, video">
+<meta name="theme-color" content="#050505">
+<title>Verse raps: a rap written for your topic, performed over its own beat · Verse</title>
+<meta name="description" content="Give Verse a topic and it writes a rap for it: boom bap, trap, drill, melodic or conscious, in the mood, flow and point of view you pick, with your words worked in. Two verses and a hook, the rhyme scheme shown, rapped in Verse's own voice over a beat produced for the style, saved as a song or made into a music video in your browser. Free, no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Verse raps · Verse">
+<meta property="og:description" content="A rap written for your topic, its rhymes shown, rapped in Verse's own voice over a produced beat, saved as a song or a music video in your browser. Free, no account.">
+<meta property="og:url" content="https://a-to-mind.com/rap/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/rap/ (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is"). Dark only, in
+     Verse's design (deep space, one cool key light, glass panels with a lit rim), like /fanfic/. The rap is written by /api/answer mode 'rap'
+     (lib/rap.js); the bars, the beat and the voice are drawn and played here (lib/rap-stage.js); rap/app.js wires the form. */
+  :root {
+    color-scheme: dark;
+    --bg: #050505; --ink: #f2f4fb; --ink-2: #c3c8d8; --ink-3: #8e94a8;
+    --key: 158 178 255; --warm: 255 170 214; --teal: 92 232 205;
+    --glass: linear-gradient(165deg, rgba(40,46,70,.80) 0%, rgba(16,18,28,.88) 46%, rgba(20,22,40,.90) 100%);
+    --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.16); --field: rgba(6,8,14,.55);
+    --lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42);
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--sans); -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; overflow-x: hidden;
+    background: radial-gradient(60vmax 38vmax at 50% -12%, rgb(var(--key) / .16), transparent 70%), radial-gradient(40vmax 26vmax at 10% 34%, rgb(92 70 190 / .14), transparent 70%),
+      radial-gradient(36vmax 24vmax at 92% 70%, rgb(var(--warm) / .08), transparent 70%), var(--bg); background-attachment: fixed; }
+  a { color: rgb(var(--key)); text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid rgb(var(--key)); outline-offset: 2px; border-radius: 6px; }
+  main, footer { max-width: 760px; margin: 0 auto; padding: 0 18px; }
+  header { text-align: center; padding: 34px 18px 8px; }
+  h1 { font-weight: 300; font-size: clamp(30px, 6vw, 46px); letter-spacing: -.03em; margin: 0; background: linear-gradient(180deg, #fff, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { color: var(--ink-2); margin: 8px auto 0; max-width: 560px; min-height: 52px; }
+  .glass { background: var(--glass); border: 1px solid var(--line-2); border-radius: 18px; box-shadow: var(--lift); padding: 16px; margin: 16px 0; }
+  form .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink-3); min-width: 0; }
+  label.wide { grid-column: 1 / -1; }
+  input, select, button, .btn { font: inherit; font-size: 16px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 12px; padding: 9px 12px; min-height: 44px; box-sizing: border-box; max-width: 100%; }
+  button, .btn { cursor: pointer; border-radius: 999px; padding: 8px 16px; background: rgba(255,255,255,.06); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  button.go, .rp-btn.go { background: rgb(var(--key)); color: #0b0d18; border-color: rgb(var(--key)); font-weight: 650; }
+  button:disabled { opacity: .55; cursor: default; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  .note { color: var(--ink-3); font-size: 13px; margin: 6px 0 0; min-height: 20px; }
+  /* phone width (2026-10-30): a word longer than the screen (a link, a name run together) breaks instead of pushing the rap past the edge */
+  #out { min-height: 120px; overflow-wrap: anywhere; }
+  .rp-t { min-width: 0; }
+  #out h2 { font-weight: 400; font-size: 26px; letter-spacing: -.02em; margin: 0 0 2px; }
+  .rp-meta, .rp-msg { color: var(--ink-3); font-size: 13px; margin: 6px 0; }
+  .rp-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .rp-btn, .rp-voice { min-height: 44px; }
+  .rp-vl { font-size: 13px; color: var(--ink-3); }
+  .rp-vol { accent-color: rgb(var(--key)); padding: 0; background: none; border: 0; min-width: 110px; }
+  .rp-sec { margin: 14px 0 4px; }
+  .rp-name { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--key)); margin: 0 0 4px; font-weight: 600; }
+  .rp-bars { list-style: none; margin: 0; padding: 0; }
+  .rp-bar { display: flex; gap: 12px; align-items: baseline; padding: 4px 8px; border-radius: 10px; font-size: 18px; line-height: 1.5; transition: background .12s, transform .12s; }
+  .rp-bar.on { background: rgb(var(--key) / .18); transform: translateX(4px); }
+  .rp-l { flex: 0 0 1.2em; font: 600 12px ui-monospace, monospace; opacity: .8; text-align: center; }
+  mark.rp-r { background: none; color: inherit; border-bottom: 2px solid currentColor; font-weight: 600; }
+  .rp-A { color: #b9a6ff; } .rp-B { color: #7fe3cf; } .rp-C { color: #ffaad6; } .rp-D { color: #ffd38a; } .rp-E { color: #9ecbff; } .rp-F { color: #c6f28d; } .rp-G { color: #ff9f8a; } .rp-H { color: #e3a6ff; } .rp-I { color: #8affea; } .rp-J { color: #fff08a; }
+  details { margin: 10px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; color: var(--ink-2); }
+  details p, details li { color: var(--ink-2); font-size: 15px; }
+  #asks, #related { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; }
+  #asks > a, #related > a { display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line-2); border-radius: 999px; color: inherit; text-decoration: none; }
+  .tk-label { color: var(--ink-3); margin-right: 4px; }
+  footer { color: var(--ink-3); font-size: 13px; padding-bottom: 40px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .rp-bar.on { transform: none; } }
+  @media print { form, .rp-ctl, footer nav { display: none !important; } body { background: #fff; color: #000; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/rap/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse raps: a rap written for your topic, performed over its own beat","url":"https://a-to-mind.com/rap/","description":"Give it a topic and Verse writes a rap for it: boom bap, trap, drill, melodic or conscious, in the mood, flow and point of view you pick, with your words worked in. Two verses and a hook with the rhyme scheme shown, performed bar by bar over a beat made for the style in your browser, or rap it yourself over the beat. Copy the lyrics, save the beat, share the whole rap in a link. Free, no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"rap lyrics generator, write me a rap, rap about pizza, make a rap song, freestyle rap, trap rap lyrics, boom bap lyrics, rap beat and lyrics","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/rap/?t={topic}"},"topic-input":"required name=topic"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Verse raps: a rap written for your topic, performed over its own beat","item":"https://a-to-mind.com/rap/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Verse raps</h1>
+  <p class="lead">Give me a topic and I write the rap for it, then perform it over a beat I make for its style, right here in your browser. Every rap is written for your words, never pulled from a list.</p>
+</header>
+<main>
+  <form id="rapForm" class="glass" autocomplete="off">
+    <div class="grid">
+      <label class="wide">What should the rap be about?<input id="topic" name="topic" maxlength="160" placeholder="my dog, Monday mornings, the moon, your own name"></label>
+      <label>Style<select id="style" name="style"><option value="boom bap">Boom bap</option><option value="trap">Trap</option><option value="drill">Drill (kept clean)</option><option value="melodic">Melodic</option><option value="conscious">Conscious</option></select></label>
+      <label>Mood<select id="mood" name="mood"><option value="confident">Confident</option><option value="hungry">Hungry</option><option value="reflective">Reflective</option><option value="party">Party</option><option value="gritty">Gritty</option><option value="funny">Funny</option></select></label>
+      <label>Flow<select id="flow" name="flow"><option value="steady">Steady, a line a bar</option><option value="double">Double time, fast and packed</option><option value="laid">Laid back, behind the beat</option></select></label>
+      <label>Perspective<select id="view" name="view"><option value="first">First person (I)</option><option value="second">To the listener (you)</option><option value="third">A story (they)</option></select></label>
+      <label class="wide">Words or ad-libs to work in (optional)<input id="words" name="words" maxlength="160" placeholder="a name, a place, a catchphrase, (yeah!)"></label>
+    </div>
+    <div class="acts"><button type="submit" class="go" id="write">Write my rap</button><span class="note" id="formNote" role="status"></span></div>
+  </form>
+  <section id="out" class="glass" aria-labelledby="title" hidden>
+    <h2 id="title">Your rap</h2>
+    <div id="rap"></div>
+    <div class="acts"><button type="button" id="again">Another take</button><button type="button" id="share">Share this rap</button><span class="note" id="shareNote" role="status"></span></div>
+  </section>
+  <details class="glass"><summary>How Verse raps</summary>
+    <ul>
+      <li>Written for your settings each time by Verse's free model (Gemma on Workers AI): two verses of eight bars and a four-bar hook, rhyming in couplets. Kept clean, and never about a real person by name.</li>
+      <li>Each bar is lettered by its end rhyme, so the rhyme scheme shows (the same letter rhymes). The rhymes are found from the words' spelling, so a slant rhyme can go unlettered.</li>
+      <li>The beat is produced for the style in your browser: drums with swing, a sliding 808 for trap, drill and melodic or a round sub bass for boom bap, seventh chords on keys or pads, the music ducking under each kick, then a bus compressor and a limiter. An intro, the verses, an outro. Boom bap sits at about 90 BPM, trap and drill at half time.</li>
+      <li>Perform it and Verse raps in Verse's own voice: each bar is said by a speech model, cut into syllables and put on the beat's grid, the rhyme landing on the snare and doubled left and right. The bar being rapped lights up. You can pick your browser's own voice instead, and Rap it yourself plays only the beat and the lights.</li>
+      <li>Save the beat or the whole song as a stereo WAV, or Make the video: a 1280 x 720 music video with the words lit as they are rapped over a deep space scene that moves with the beat, made and coded in your browser as an MP4 to play or download.</li>
+      <li>Share this rap puts the whole rap in the link, so it opens exactly as written. The same settings bring back the same rap for a week; Another take writes a new one. No account, nothing kept but what the link carries.</li>
+    </ul>
+  </details>
+</main>
+<footer>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/rap/?t=pizza">A rap about pizza</a><a href="/rap/?t=monday%20mornings&amp;s=trap&amp;m=funny">A funny trap rap about Mondays</a><a href="/rap/?t=the%20moon&amp;s=melodic&amp;m=reflective">A melodic rap about the moon</a><a href="/rap/?t=never%20giving%20up&amp;s=conscious&amp;m=hungry">A conscious rap about never giving up</a><a href="/rap/?t=my%20birthday&amp;m=party">A birthday party rap</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/music/">Music tools</a> <a href="/metronome/">Metronome</a> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p id="brainSay" hidden></p>
+  <p>Raps here are written by Verse for the words you give it. <a href="/?q=write%20me%20a%20rap">Ask Verse for a rap on the stage</a> · <a href="/music/">Music tools</a> · <a href="/privacy/">Privacy</a> · <a href="/">Back to Verse</a></p>
+</footer>
+<script>
+// the module after load, as /fanfic/ does: nothing fetched holds the load event back
+addEventListener('load', () => { import('/rap/app.js').catch(() => { const n = document.getElementById('formNote'); if (n) n.textContent = 'The rap writer did not load. Reload the page to try again.'; }); });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

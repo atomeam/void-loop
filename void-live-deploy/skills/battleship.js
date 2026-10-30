@@ -7,6 +7,7 @@
  */
 import * as B from './battleship-rules.js';
 import { lift3d } from './lift3d.js';
+import { rulesLine } from './game-rules-line.js';
 
 export function battleshipOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -75,7 +76,7 @@ function mount(th, stageApi) {
     log.textContent = '';
     for (const l of s.log.slice(-12).reverse()) { const line = document.createElement('div'); line.textContent = l.who + ' ' + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; line.appendChild(w); } log.appendChild(line); }
   }
-  el.append(wrap, status, fleets, bar, log);
+  el.append(wrap, status, fleets, bar, log, rulesLine('tap a square on Verse\u2019s sea to fire; a hit lets you keep track of its ship. Sink the whole fleet before Verse sinks yours.'));
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

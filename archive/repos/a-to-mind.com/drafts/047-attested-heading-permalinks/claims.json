@@ -1,0 +1,20 @@
+{
+  "schema": "a-to-mind.claims/047",
+  "slug": "attested-heading-permalinks",
+  "run": 47,
+  "status": "candidate",
+  "used": false,
+  "emit": false,
+  "contract": "permalinks#047|kind:attested-heading-permalinks|ids:catalog-only|autoslug:deny|hover-only:deny|copy-replaces-nav:deny|fragment-miss:honest|smooth-scroll:deny|jsonld:deny|seal:human",
+  "contract_sha256": "3bad58ad38220f3b93cb4b392eeae6ae1594e77192fc087d5013e15ea0d2f122",
+  "catalog_sha256": "40e8e9d65a03ee379dc1f64da591525d10c999e51bdcefdbb8399360e775cf26",
+  "denies": [
+    "autoslug from heading text",
+    "hover-only permalink",
+    "aria-hidden permalink as the only control",
+    "copy that replaces navigation",
+    "smooth scroll",
+    "BreadcrumbList or FAQPage JSON-LD",
+    "live id attributes before seal"
+  ]
+}

@@ -6,6 +6,7 @@
   <title>Verse Tube · VERSE FILMS</title>
   <link rel="alternate" type="application/rss+xml" title="Verse Tube" href="/films/rss">
   <meta name="description" content="Short films Verse makes of its own experiments, newest first. Free to watch.">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Verse"><meta property="og:title" content="Verse Films"><meta property="og:description" content="Short films Verse makes of its own experiments, newest first. Free to watch."><meta property="og:url" content="https://a-to-mind.com/films/"><meta property="og:image" content="https://a-to-mind.com/og.png"><meta name="twitter:card" content="summary_large_image">
   <meta name="robots" content="noindex">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#07070d">
@@ -37,14 +38,18 @@
     .note { color: var(--muted); font-size: 14px; }
     #status { color: var(--muted); }
     /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
+    /* the whole word is ONE box (owner, 2026-10-22: "VERSE F   I   LMS"): a card title is a flex row spread with space-between, so loose
+       text and the glitch span were spread apart as three items; wrapped, the word stays whole and the glitch shakes all of it */
+    .glw { display: inline-block; white-space: nowrap; animation: gl-w var(--gl-d, 10s) ease-in-out -3s infinite; }
+    @keyframes gl-w { 0%, 94.5% { transform: none; text-shadow: none; } 96.5% { transform: translateX(1px); text-shadow: -2px 0 rgba(255,61,127,.7), 2px 0 rgba(122,92,255,.7); } 98% { transform: translateX(-1px); text-shadow: 2px 0 rgba(255,61,127,.7), -2px 0 rgba(122,92,255,.7); } 99.5%, 100% { transform: none; text-shadow: none; } }
     .gl { position: relative; display: inline-block; }
-    .gl b { font-weight: inherit; animation: gl-l 6s steps(1, end) infinite; }
-    .gl i { position: absolute; left: 50%; top: 0; font-style: normal; visibility: hidden; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
-      text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 6s steps(1, end) infinite; }
-    .gl.fast b, .gl.fast i { animation-duration: 2.6s; animation-delay: -1.1s; } /* the I flickers more often (owner: "the i flickers") */
-    @keyframes gl-l { 0%, 88% { visibility: visible; } 89% { visibility: hidden; } 91% { visibility: visible; } 94% { visibility: hidden; } 95%, 100% { visibility: visible; } }
-    @keyframes gl-1 { 0%, 88% { visibility: hidden; } 89% { visibility: visible; } 91% { visibility: hidden; } 94% { visibility: visible; } 95%, 100% { visibility: hidden; } }
-    @media (prefers-reduced-motion: reduce) { .gl b, .gl i { animation: none; } }
+    .gl b { font-weight: inherit; animation: gl-l var(--gl-d, 10s) ease-in-out -3s infinite; }
+    .gl i { position: absolute; left: 50%; top: 0; font-style: normal; opacity: 0; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
+      text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 var(--gl-d, 10s) ease-in-out -3s infinite; }
+    /* rare and slow (owner, 2026-10-22: "rarer and slower"): one eased ~400ms swap per 8-12 s cycle; the page re-rolls the cycle length each time (--gl-d) */
+    @keyframes gl-l { 0%, 94% { opacity: 1; } 95.5% { opacity: 0; } 98% { opacity: 0; } 99.6%, 100% { opacity: 1; } }
+    @keyframes gl-1 { 0%, 94% { opacity: 0; } 95.5% { opacity: 1; } 98% { opacity: 1; } 99.6%, 100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .gl b, .gl i, .glw { animation: none; } }
     footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
     @media (prefers-reduced-motion: reduce) { .film, .btn { transition: none; } .film:hover { transform: none; } }
     .review { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -67,6 +72,7 @@
     .kick { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 6px 0 0; }
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
   </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
@@ -75,9 +81,9 @@
        that runs out in hours. .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube:
        download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
   <p><a class="home" href="/">← Verse</a></p>
-  <p class="kicker">Verse Tube · new videos daily · <a href="/films/rss">RSS</a></p>
-  <h1 aria-label="VERSE FILMS">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h1>
-  <p class="sub">Every day Verse films one of its own experiments. Watch them free, and post any of them anywhere: every film is an ad for Verse, and anyone can upload it.</p>
+  <p class="kicker">Watch short films free · Verse Tube, new videos daily · <a href="/films/rss">follow by feed (RSS)</a></p>
+  <h1 aria-label="VERSE FILMS"><span class="glw">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</span></h1>
+  <p class="sub">Every day Verse films one of its own experiments. Watch them free, and post any of them anywhere: every film is an ad for Verse, and anyone can upload it. Short clips, good for a break or a class on how AI tools behave.</p>
   <!-- no sign-in here (owner, 2026-10-15: "i just need the sign in gone honestly just give the films to everyone"): everyone gets
        the films. A sign-in this browser already holds (the owner's, a member's from Verse) still brings the owner's YouTube steps
        and the review box, without asking. -->
@@ -87,6 +93,8 @@
   <footer><a href="/films/rss">Subscribe (RSS)</a> · <a href="https://www.youtube.com/@atombomb983">Verse on YouTube</a> · <a href="/store/">Support Verse</a> · <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=films&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip $1</a> · <a href="/privacy/">Privacy</a> · <a href="/">a-to-mind.com</a></footer>
 </main>
 <script>
+  // the glitch word re-rolls its cycle to 8-12 s at random after each glitch (owner, 2026-10-22: "rarer and slower")
+  document.querySelectorAll('.glw').forEach((w) => { const roll = () => w.style.setProperty('--gl-d', (8 + Math.random() * 4).toFixed(2) + 's'); roll(); w.addEventListener('animationiteration', (e) => { if (e.target === w) roll(); }); });
 (() => {
   const UPLOAD = 'https://www.youtube.com/upload', KEY = 'a2m.void.filmkey';
   const VERDICTS = { post: 'Post it', fix: 'Needs work', skip: 'Skip it' };

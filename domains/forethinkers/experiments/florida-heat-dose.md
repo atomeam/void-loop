@@ -22,3 +22,7 @@ CRW's own rule of thumb: DHW ≥ 4 means significant bleaching is likely; DHW �
 | Looe Key Reef | 17.97 | 8.72 | 16.50 |
 
 So the Flondurans' first Miami summer (2025) never crossed the severe-mortality DHW line, and Andrew Baker said on record it "wasn't really a hard test" ([WLRN, 8 Jul 2026](https://www.wlrn.org/environment/2026-07-08/coral-bleaching-heat-florida)). Their first Dry Tortugas bleaching summer (2026) peaked at 13.70 DHW — within about 0.65 of that site's 2023 kill dose — so the coming six-month check is against a real heatwave, not a mild one.
+
+## Refresh 2026-10-28 14:15 ET
+
+Re-ran `heat-dose.mjs` against NOAA Coral Reef Watch files through 27 Oct 2026. `peak_date` is the last day the season sits at its peak DHW (the script keeps a later day on a tie), so refreshed NOAA files moved some earlier peak dates later while peak values stayed the same. Dry Tortugas 2026: peak 13.70, 59 days at DHW 8 or more, DHW 11.47 and alert level 0 on 27 Oct.

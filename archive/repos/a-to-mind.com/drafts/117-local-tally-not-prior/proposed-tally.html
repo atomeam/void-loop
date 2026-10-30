@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tally, not prior — draft 117</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f4efe6; --mark: #6b4a2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe6; --line: #4a433c; --paper: #1c1915; --mark: #e0c4a4; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+    p.note { font-size: 0.92rem; }
+    .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 1.5rem 0; }
+    .bin { height: 4.2rem; border: 1px solid var(--line); display: flex; align-items: flex-end; padding: 0.35rem; }
+    .bin i { display: block; width: 100%; height: 0; background: var(--mark); }
+    .bin.on i { height: 100%; }
+    fieldset { border: 1px solid var(--line); padding: 0.75rem 1rem 1rem; margin: 0 0 1rem; }
+    legend { padding: 0 0.4rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; background: transparent; color: inherit; border: 1px solid var(--mark); padding: 0.4rem 0.8rem; margin-right: 0.4rem; }
+    output { display: block; margin-top: 1rem; font-family: ui-monospace, monospace; font-size: 0.85rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="note">Draft 117. Not sealed. Not live. Status defaults to unattested.</p>
+    <h1>A tally is not a prior</h1>
+    <p>Weak-signal hypotheses count mentions and call the count a prior. This page seals the tally class only. A claim sentence and the mention count are discarded from the hash. Repeating a mark does not update a prior and is not a detection.</p>
+    <div class="bins" id="bins" aria-hidden="true">
+      <div class="bin"><i></i></div><div class="bin"><i></i></div><div class="bin"><i></i></div>
+    </div>
+    <form id="tally-form">
+      <fieldset>
+        <legend>Tally class</legend>
+        <label><input type="radio" name="tally_class" value="withheld" checked> Withheld — no tally recorded</label>
+        <label><input type="radio" name="tally_class" value="single"> Single — one mention class; not a prior</label>
+        <label><input type="radio" name="tally_class" value="repeated"> Repeated — count may rise; prior still refused</label>
+      </fieldset>
+      <fieldset>
+        <legend>Claim sentence (discarded)</legend>
+        <label for="claim">Write a weak-signal claim if you need to see it dropped. It is not stored and not hashed.</label>
+        <textarea id="claim" name="claim_sentence" maxlength="240" placeholder="not a detection"></textarea>
+      </fieldset>
+      <button type="submit">Seal tally class</button>
+      <button type="button" id="bump">Increment visible tally</button>
+      <output id="out" for="tally-form">status: unattested
+prior-refusal id: none
+mention count: not a prior</output>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById("tally-form");
+    const out = document.getElementById("out");
+    const bins = document.querySelectorAll("#bins .bin");
+    const claim = document.getElementById("claim");
+    const bump = document.getElementById("bump");
+    let visible = 0;
+    let sealed = "withheld";
+    let refusal = "none";
+    function selected() {
+      const node = form.querySelector("input[name=tally_class]:checked");
+      return node ? node.value : "withheld";
+    }
+    function paint(tally) {
+      const filled = tally === "single" ? 1 : tally === "repeated" ? 3 : 0;
+      bins.forEach((bin, i) => bin.classList.toggle("on", i < filled));
+    }
+    function render(dropped) {
+      out.textContent = [
+        "status: unattested",
+        "tally class: " + sealed,
+        "prior-refusal id: " + refusal,
+        "visible tally: " + visible + " (not in hash)",
+        "prior updated: no",
+        dropped ? "dropped chars: " + dropped : "dropped chars: 0"
+      ].join("\n");
+    }
+    form.addEventListener("change", () => { paint(selected()); });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      sealed = selected();
+      const dropped = claim.value.length;
+      claim.value = "";
+      visible = sealed === "withheld" ? 0 : sealed === "single" ? 1 : Math.max(visible, 2);
+      const preimage = "void-tally-not-prior|v1|class=" + sealed + "|status=unattested";
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage));
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      refusal = hex.slice(0, 16);
+      paint(sealed);
+      render(dropped);
+    });
+    bump.addEventListener("click", () => {
+      if (sealed !== "repeated") return;
+      visible += 1;
+      render(0);
+    });
+  </script>
+</body>
+</html>

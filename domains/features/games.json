@@ -1,0 +1,239 @@
+{
+ "floor": "games",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "lichess.org": {
+   "sources": [
+    "https://lichess.org/",
+    "https://lichess.org/features",
+    "https://lichess.org/faq",
+    "https://www.mintlify.com/lichess-org/lila/introduction"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Play online vs people",
+     "detail": "Quick pairing by time control (bullet to classical), lobby, custom challenges, correspondence",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Verse games are against Verse on one device; invite (skills/invite.js) shares a stage but no chess pairing"
+    },
+    {
+     "group": "core",
+     "name": "Play vs computer",
+     "detail": "Stockfish at 8 levels, any side, from any position",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/chess.js: 3D wooden set vs Verse, full rules (skills/chess-rules.js: castling, en passant, promotion, mate, stalemate, draws), search in a Web Worker, flat-board fallback; strength from skills/game-level.js, you are always white"
+    },
+    {
+     "group": "core",
+     "name": "Full rules and clocks",
+     "detail": "Legal moves, all draws, time controls with increment",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "chess-rules.js has every rule; no game clock"
+    },
+    {
+     "group": "core",
+     "name": "Ratings",
+     "detail": "Glicko-2 ratings per time control, rating history graph",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Puzzles",
+     "detail": "3M+ tactics rated, by theme, Puzzle Storm, Streak, Racer, daily puzzle",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Analysis board",
+     "detail": "Engine analysis (Stockfish NNUE, in browser and cloud), eval bar, best lines, move list editing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Game review",
+     "detail": "Computer analysis of a finished game: inaccuracies, mistakes, blunders, accuracy",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Move list and replay",
+     "detail": "PGN move list, step through, flip board, takeback",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "chess.js plays and shows moves; replay/PGN not confirmed"
+    },
+    {
+     "group": "core",
+     "name": "Chess variants",
+     "detail": "Chess960, Crazyhouse, King of the Hill, Three-check, Antichess, Atomic, Horde, Racing Kings",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Tournaments",
+     "detail": "Arena and Swiss tournaments, scheduled and user-made",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Simuls",
+     "detail": "Simultaneous exhibitions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Studies",
+     "detail": "Collaborative annotated chapters with arrows, comments, shared editing",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Opening explorer",
+     "detail": "Masters and Lichess game database, tablebase for endgames",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Board editor and FEN/PGN import/export",
+     "detail": "Set up any position, import games",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Learn and practice",
+     "detail": "Chess basics lessons, practice positions, coordinate trainer",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Broadcasts and TV",
+     "detail": "Live top events, Lichess TV of best games",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Teams, clubs and forum",
+     "detail": "Teams with team battles, forums, blogs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Bots and API",
+     "detail": "Open API, bot accounts, board API",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Board and piece themes",
+     "detail": "Many board/piece sets, 3D boards, sounds",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "chess.js renders a real wooden 3D set (skills/mini/chess.js)"
+    },
+    {
+     "group": "power",
+     "name": "Other board games catalogue",
+     "detail": "Lichess is chess only",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/games.js family: checkers, Four in a Row, Reversi, mancala, go, battleship, poker, tic-tac-toe and more, one picker"
+    },
+    {
+     "group": "sharing",
+     "name": "Share game link and GIF",
+     "detail": "Link, embed, PGN and animated GIF of a game",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Friends, follow and messages",
+     "detail": "Follow players, inbox, chat in game",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app",
+     "detail": "Free open-source app; offline vs computer",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "chess vs Verse runs in the browser with no server"
+    },
+    {
+     "group": "accessibility",
+     "name": "Blind mode",
+     "detail": "Screen-reader mode with move announcements and keyboard input",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Zen mode and piece/board contrast",
+     "detail": "Distraction-free play, high-contrast boards",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Patron",
+     "detail": "Voluntary donation, wings icon; no features locked",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "puzzles with a daily one",
+  "analysis board with eval and best line",
+  "play another person by link",
+  "game clock",
+  "PGN/FEN import and export",
+  "ratings kept on the device",
+  "game review after a loss"
+ ],
+ "verse_extra": [
+  "a dozen other board games in the same family with one strength setting",
+  "real 3D wooden pieces"
+ ],
+ "first_page": "Chess page /chess/ for players who want to play and learn without an account. First: board vs Verse with a clock, move list, PGN/FEN in and out, a daily puzzle from the open Lichess puzzle set, an analysis mode with eval bar from the existing search, and a link that carries a game so a friend can play by correspondence. Will not build: live pairing servers, ratings ladders, tournaments or forums."
+}

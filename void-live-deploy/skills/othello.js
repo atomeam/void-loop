@@ -10,6 +10,7 @@ import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 import { showArena } from '../lib/arena-say.js';
 import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
+import { rulesLine } from './game-rules-line.js';
 const N = 8;
 const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -174,7 +175,7 @@ function mount(th, stageApi) {
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(thinking); thinking = null; th.state = createOthelloState(); prev = null; paint(); stageApi.save && stageApi.save(); });
-  el.append(wrap, bar);
+  el.append(wrap, bar, rulesLine('place a disc so it traps Verse\u2019s discs in a line between yours; they flip to your colour. No move means you pass. Most discs at the end wins.'));
   paint();
   voidTurn(); // a board reloaded mid-game on Verse's turn picks up where it was
   stageApi.bindDrag(el, th);

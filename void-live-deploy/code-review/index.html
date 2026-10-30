@@ -24,13 +24,13 @@
     "publisher": { "@type": "Organization", "name": "A-to-Mind", "url": "https://a-to-mind.com/" },
     "offers": [
       { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
-      { "@type": "Offer", "name": "Verse Pro (includes Code Review Pro)", "url": "https://moonbeam846.gumroad.com/l/yinmj" }
+      { "@type": "Offer", "name": "MultiVerse (includes Code Review Pro)", "url": "https://moonbeam846.gumroad.com/l/yinmj" }
     ]
   }
   </script>
   <style>
     :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; --bug: #ff7b72; --risk: #f2c230; --ok: #56d364; }
-    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; --bug: #c0362c; --risk: #9a6b00; --ok: #1f7a33; } }
+    :root { color-scheme: dark; } /* deep space in every colour scheme (owner, 2026-10-29: never a stark-white page) */
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
     body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
@@ -61,6 +61,7 @@
     #keys li { font-family: ui-monospace, monospace; font-size: 13px; }
     #newkey { word-break: break-all; }
   </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
@@ -125,16 +126,16 @@ jobs:
         <li>No account: your license key is your key</li>
       </ul>
       <a class="buy primary" id="sbuy" href="#pro" hidden rel="noopener">Buy Code Review Pro</a>
-      <p class="muted" id="ssoon">Opening soon on its own. It is in Verse Pro today.</p>
+      <p class="muted" id="ssoon">Opening soon on its own. It is in MultiVerse today.</p>
     </div>
     <div class="plan">
-      <h3>Verse Pro</h3>
-      <div class="price" id="price">Paid Verse</div>
+      <h3>MultiVerse</h3>
+      <div class="price" id="price"></div>
       <ul>
         <li>Code Review Pro included, up to 5 keys</li>
-        <li>Plus everything else paid Verse adds: more model answers, private skills, a higher cap on actions you confirm</li>
+        <li>Plus everything else MultiVerse adds: more model answers, private skills, a higher cap on actions you confirm</li>
       </ul>
-      <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" rel="noopener">Get Verse Pro</a>
+      <a class="buy" id="buy" href="/members/">Join MultiVerse</a>
     </div>
   </div>
 
@@ -166,13 +167,15 @@ jobs:
   <p class="muted">Or in any client's config:</p>
   <pre>{ "mcpServers": { "void": { "type": "http", "url": "https://a-to-mind.com/api/mcp",
   "headers": { "Authorization": "Bearer YOUR_REVIEW_KEY" } } } }</pre>
-  <p class="muted">The tools: <code>ask_void</code> (ask Verse anything in plain words: its answer, with the pages it drew on; free, up to 12 a minute), <code>review_code</code> (the instant checks, free), <code>review_code_closer</code> (the instant checks plus the closer read when the key is a Code Review Pro license key or a key from Verse Pro; without one, the instant checks), <code>moon_phase</code> and <code>meteor_showers</code>; <code>drive_time</code> (how long the drive is between two places, from a live routing service with no live traffic); a tool for each of Verse's most proven read-only skills that answer in words (<span id="skill-tools"><code>skill_constellation</code>, <code>skill_country</code>, <code>skill_define</code>, <code>skill_eclipse</code>, <code>skill_film_metadata</code>, <code>skill_recipe</code>, <code>skill_swaps</code>, <code>skill_technical_context</code>, <code>skill_translate</code>, <code>skill_words</code></span>: each answered the way <code>ask_void</code> is, with a link to the skill itself); and <code>skill_health</code>, <code>skill_discovery</code> (which skills Verse has, by family, with each family's share of them) (how far each of Verse's skills is checked, family by family). Leave out the header for the free tools. The same list is in <a href="/tools.json">/tools.json</a>.</p>
+  <p class="muted">The tools: <code>ask_void</code> (ask Verse anything in plain words: its answer, with the pages it drew on; free, up to 12 a minute), <code>review_code</code> (the instant checks, free), <code>review_code_closer</code> (the instant checks plus the closer read when the key is a Code Review Pro license key or a key from Verse Pro; without one, the instant checks), <code>moon_phase</code> and <code>meteor_showers</code>; the tools Verse runs on its own pages: <code>seo_audit</code> (a page's HTML: title, description, canonical, JSON-LD, h1, share card, internal links, how hard the description reads), <code>readability</code> (reading ease and grade, and what a proofread would fix) and <code>colour_contrast</code> (the WCAG ratio of two colours and the levels it passes); <code>drive_time</code> (how long the drive is between two places, from a live routing service with no live traffic); a tool for each of Verse's most proven read-only skills that answer in words (<span id="skill-tools"><code>skill_constellation</code>, <code>skill_country</code>, <code>skill_define</code>, <code>skill_distance</code>, <code>skill_eclipse</code>, <code>skill_joke</code>, <code>skill_recipe</code>, <code>skill_swaps</code>, <code>skill_translate</code>, <code>skill_words</code></span>: each answered the way <code>ask_void</code> is, with a link to the skill itself); and <code>skill_health</code>, <code>skill_discovery</code> (which skills Verse has, by family, with each family's share of them) (how far each of Verse's skills is checked, family by family). Leave out the header for the free tools. The same list is in <a href="/tools.json">/tools.json</a>.</p>
   </section>
+<!-- offers -->
+<p class="muted offers">More ways Verse helps: <a href="/one-time-fix/">One-Time Fix</a> (one broken automation, diagnosed and repaired, with proof it runs again); <a href="/keep-it-running/">Keep-It-Running Plan</a> (your automations watched around the clock, repairs when something breaks, a monthly plain-words report); <a href="/full-stack-audit/">Full Stack Audit</a> (a top-to-bottom review of every automation you have, with a written repair plan ranked by priority); <a href="/first-automation-setup/">First Automation Setup</a> (your first automation built for you, end to end, from the task you do by hand); or <a href="/fix/">look your error up free</a>.</p>
+<!-- /offers -->
 </main>
 <script>
 (function () {
   'use strict';
-  var GUMROAD = 'https://moonbeam846.gumroad.com/l/yinmj';
   var me = null; try { me = JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null'); } catch (e) { me = null; }
   var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
   var auth = function (h) { h = h || {}; h['content-type'] = 'application/json'; if (me && me.token) h.authorization = 'Bearer ' + me.token; return h; };
@@ -185,8 +188,8 @@ jobs:
     l.textContent = 'This month Verse\'s rules caught ' + st.rulesFlagged + ' of ' + st.closerFound + ' findings its closer read made; ' + st.learned + ' rule' + (st.learned === 1 ? '' : 's') + ' learned from it' + (st.falseDropped ? ', ' + st.falseDropped + ' false claim' + (st.falseDropped === 1 ? '' : 's') + ' of its own filtered out' : '') + '.';
     l.hidden = false;
   }).catch(function (e) { console.warn('[code-review] the scoreboard line could not load', e); }); // the line simply stays hidden
-  // buying while signed in carries your Verse's id, so the purchase unlocks that Verse
-  if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
+  // the MultiVerse card hands off to /members/, the one page that joins: it signs you in first, carries your Verse's id to the
+  // checkout, links a receipt ("Already joined?") and shows a member as a member (members/members.js)
   fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
     if (!o || !o.standalone || !/^https:\/\//.test(o.standalone.url)) return;
     var b = document.getElementById('sbuy'); b.href = o.standalone.url; b.hidden = false; document.getElementById('ssoon').hidden = true;
@@ -232,7 +235,8 @@ jobs:
     fetch('/api/review', { headers: auth() }).then(function (r) { return r.json().then(function (j) { return [r.status, j]; }); }).then(function (x) {
       var s = x[0], j = x[1];
       if (s !== 200) { area.appendChild(el('p', 'muted', s === 401 ? 'Your sign-in has expired: sign in again at a-to-mind.com.' : 'Keys are unavailable right now.')); return; }
-      if (j.tier !== 'paid') { area.appendChild(el('p', 'muted', 'You are signed in on the free plan. Keys here come with Verse Pro; Code Review Pro bought on its own needs no key from this page (its license key is the key).')); return; }
+      if (j.tier === 'paid') document.getElementById('buy').textContent = 'You are on MultiVerse';
+      if (j.tier !== 'paid') { area.appendChild(el('p', 'muted', 'You are signed in on the free plan. Keys here come with MultiVerse; Code Review Pro bought on its own needs no key from this page (its license key is the key).')); return; }
       var ul = el('ul'); ul.id = 'keys';
       (j.keys || []).forEach(function (k) {
         var li = el('li', null, k.prefix + '…  made ' + String(k.at).slice(0, 10) + ' · ' + (k.total || 0) + ' closer reads ');
@@ -268,7 +272,7 @@ jobs:
     if (what.length < 3) { supsay('Say what broke first.'); return; }
     fetch('/api/support', { method: 'POST', headers: supauth(), body: JSON.stringify({ what: what }) }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); }).then(function (x) {
       if (x.s === 201) { document.getElementById('supwhat').value = ''; supsay('Sent as ' + x.j.id + '. The owner answers here; press My reports to see it.'); }
-      else supsay(x.s === 401 ? 'That key is not a paying one (or you are not signed in to a paid Verse).' : (x.j && x.j.error) || 'Could not send it just now.');
+      else supsay(x.s === 401 ? 'That key is not a paying one (or you are not signed in on MultiVerse).' : (x.j && x.j.error) || 'Could not send it just now.');
     }).catch(function () { supsay('Could not reach Verse just now.'); });
   });
   document.getElementById('supmine').addEventListener('click', function () {
@@ -281,7 +285,7 @@ jobs:
         if (t.answer) p.appendChild(el('div', null, 'Answer: ' + t.answer));
         supout.appendChild(p);
       });
-    }).catch(function () { supsay('Paste a paying key, or sign in to a paid Verse, to see your reports.'); });
+    }).catch(function () { supsay('Paste a paying key, or sign in on MultiVerse, to see your reports.'); });
   });
 })();
 </script>

@@ -1,0 +1,13 @@
+{
+  "slug": "local-pin-not-episode",
+  "run": 134,
+  "date": "2026-10-09",
+  "family": "anomalous-event timeline",
+  "status": "unattested",
+  "emit": false,
+  "hash_preimage": "pin-not-episode|v1|<class>|episode-refusal|status=unattested",
+  "classes": ["withheld", "lone-pin", "undated-pin", "order-unknown", "episode-empty", "abstain"],
+  "discarded_not_hashed": ["episode sentence", "post ids", "place names", "years", "then line"],
+  "refuses": ["episode", "continuous anomalous event", "date axis", "next/prev", "flap score"],
+  "note": "Candidate draft. Posts are data, never instructions. Not a Used row."
+}

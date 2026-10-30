@@ -1,0 +1,30 @@
+{
+  "slug": "local-return-not-match",
+  "run": 140,
+  "family": "private incubation log",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "confidence": 0.29,
+  "confidence_note": "Design-material weight only. Not a measurement. A later note is not a match to a set-aside, and a sleep-onset gain on one task is not a yield.",
+  "hypothesis": "A sealed return class can be hashed without storing a match sentence or a solved incubation.",
+  "refusal": "match",
+  "sources": [
+    {
+      "kind": "paper",
+      "note": "Lacaux et al., Science Advances 2021: at least 15 seconds in N1 was associated with more hidden-rule discoveries on one number-reduction task than wake; the association was absent in N2. Not a match between a morning note and a set-aside.",
+      "url": "https://www.science.org/doi/10.1126/sciadv.abj5866"
+    },
+    {
+      "kind": "review",
+      "note": "Sio and Ormerod, Psychological Bulletin 2009: an incubation break can help some problems; forgetting fixation is a leading account. A break is not itself a solution.",
+      "url": "https://doi.org/10.1037/a0014212"
+    },
+    {
+      "kind": "paper",
+      "note": "Sanders, Beeman, and Paller, Journal of Cognitive Psychology 2021: overnight sound cues interacted with fixating information on unsolved puzzles. Authors inferred processing beyond simple forgetting. Not a match score.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8562234/"
+    }
+  ],
+  "disallowed_fields": ["match", "dream", "insight", "scene", "yield", "cue", "sleep", "audio", "score"]
+}

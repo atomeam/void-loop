@@ -1,0 +1,1 @@
+<opml><body><outline text="Imp" xmlUrl="https://feeds.example.com/f.xml"/><outline text="Two" xmlUrl="https://other.example.org/rss"/><outline text="Bad" xmlUrl="https://127.0.0.1/x"/></body></opml>

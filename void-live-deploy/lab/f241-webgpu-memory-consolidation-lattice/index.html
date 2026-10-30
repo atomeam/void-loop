@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root {
+    --orb-hue: 180;
+    --orb-scale: 1;
+    --chrome-blur: 0px;
+    --chrome-opacity: 0.85;
+  }
+  body {
+    margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif;
+    overflow: hidden; touch-action: none;
+  }
+  #canvas {
+    display: block; width: 100vw; height: 100vh; background: #050508;
+    cursor: crosshair;
+  }
+  #hud {
+    position: fixed; top: 12px; left: 12px; z-index: 10;
+    background: rgba(10,10,20,0.7); padding: 10px 14px; border-radius: 8px;
+    backdrop-filter: blur(4px); font-size: 13px; max-width: 280px;
+    border: 1px solid rgba(100,100,255,0.3);
+  }
+  button {
+    margin: 4px 4px 0 0; padding: 6px 10px; background: #1a1a3a; color: #ccc;
+    border: 1px solid #446; border-radius: 4px; cursor: pointer;
+  }
+  button:hover { background: #2a2a5a; }
+  .orb {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, hsl(var(--orb-hue), 70%, 60%), transparent 70%);
+    transform: translate(-50%, -50%) scale(var(--orb-scale));
+    filter: blur(var(--chrome-blur)); opacity: var(--chrome-opacity);
+    transition: transform 0.15s, filter 0.2s;
+    box-shadow: 0 0 20px hsl(var(--orb-hue), 80%, 50%);
+  }
+  #status { font-size: 11px; opacity: 0.8; margin-top: 6px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Memory Consolidation Lattice · Verse lab</title>
+<meta name="description" content="Novel combination branching from the recent swarm/policy/lattice cluster (F238–F240):">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Memory Consolidation Lattice · Verse lab">
+<meta property="og:description" content="Novel combination branching from the recent swarm/policy/lattice cluster (F238–F240):">
+<meta property="og:url" content="https://a-to-mind.com/lab/f241-webgpu-memory-consolidation-lattice/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f241-webgpu-memory-consolidation-lattice/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <strong>F-241 Memory Lattice</strong><br>
+  Click: deposit · Tilt/Drag: drift<br>
+  <button id="orient">Enable Orientation</button>
+  <button id="seal">Seal Snapshot</button>
+  <button id="clear">Clear Field</button>
+  <div id="status">Canvas2D · WebGPU probe pending</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Memory Consolidation Lattice</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

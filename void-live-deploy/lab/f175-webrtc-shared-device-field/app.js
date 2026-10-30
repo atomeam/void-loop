@@ -1,0 +1,181 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+window.addEventListener('resize', resize); resize();
+
+const N = 180;
+let particles = [];
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
+      energy: 0.5 + Math.random()*0.5, hue: Math.random()*60 + 200
+    });
+  }
+}
+initParticles();
+
+let orient = { alpha:0, beta:0, gamma:0 };
+let pointer = { x: W/2, y: H/2, active: false };
+let hasOrient = false;
+
+window.addEventListener('deviceorientation', e => {
+  if (e.alpha != null) {
+    orient.alpha = e.alpha || 0;
+    orient.beta = e.beta || 0;
+    orient.gamma = e.gamma || 0;
+    hasOrient = true;
+  }
+});
+document.getElementById('perm').onclick = () => {
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(s => { if (s==='granted') hasOrient=true; }).catch(()=>{});
+  } else hasOrient = true;
+};
+canvas.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true; });
+canvas.addEventListener('pointerleave', () => pointer.active = false);
+
+function getInjection() {
+  if (hasOrient) {
+    const cx = W/2 + (orient.gamma / 45) * (W*0.4);
+    const cy = H/2 + (orient.beta / 45) * (H*0.4);
+    return { x: Math.max(0,Math.min(W,cx)), y: Math.max(0,Math.min(H,cy)), strength: 1.2 };
+  }
+  if (pointer.active) return { x: pointer.x, y: pointer.y, strength: 0.8 };
+  return { x: W/2, y: H/2, strength: 0.3 };
+}
+
+// WebRTC
+let pc = null, dc = null, isInitiator = false;
+const peersEl = document.getElementById('peers');
+let peerCount = 0;
+
+function setupPC() {
+  pc = new RTCPeerConnection({ iceServers: [{urls:'stun:stun.l.google.com:19302'}] });
+  pc.onicecandidate = e => { if (!e.candidate && document.getElementById('sdp').value === '') document.getElementById('sdp').value = JSON.stringify(pc.localDescription); };
+  pc.ondatachannel = e => { dc = e.channel; setupDC(); };
+  pc.onconnectionstatechange = () => {
+    document.getElementById('status').textContent = 'WebRTC: ' + pc.connectionState + (dc && dc.readyState==='open' ? ' • Shared' : '');
+    if (pc.connectionState === 'connected') peerCount = 1; else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') peerCount = 0;
+    peersEl.textContent = 'Peers: ' + peerCount;
+  };
+}
+function setupDC() {
+  dc.onopen = () => { document.getElementById('status').textContent = 'DataChannel open • Shared field'; peerCount=1; peersEl.textContent='Peers: 1'; };
+  dc.onmessage = e => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'inject') {
+        remoteInject = { x: msg.x * W, y: msg.y * H, strength: msg.s, until: performance.now()+800 };
+      } else if (msg.type === 'snapshot') {
+        if (msg.particles && msg.particles.length === N) particles = msg.particles.map(p => ({...p, x:p.x*W, y:p.y*H}));
+      }
+    } catch(err) {}
+  };
+}
+let remoteInject = null;
+
+document.getElementById('offer').onclick = async () => {
+  setupPC();
+  dc = pc.createDataChannel('field');
+  setupDC();
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  document.getElementById('sdp').value = 'Generating...';
+  setTimeout(() => { if (pc.localDescription) document.getElementById('sdp').value = JSON.stringify(pc.localDescription); }, 800);
+};
+document.getElementById('answer').onclick = async () => {
+  const raw = document.getElementById('sdp').value.trim();
+  if (!raw) return;
+  try {
+    const desc = JSON.parse(raw);
+    if (!pc) setupPC();
+    await pc.setRemoteDescription(desc);
+    if (desc.type === 'offer') {
+      const ans = await pc.createAnswer();
+      await pc.setLocalDescription(ans);
+      document.getElementById('sdp').value = JSON.stringify(pc.localDescription);
+    }
+  } catch(err) { console.error(err); document.getElementById('status').textContent = 'SDP error'; }
+};
+
+// IndexedDB
+const DB_NAME = 'void-field-f175', STORE = 'snapshots';
+let db;
+const req = indexedDB.open(DB_NAME, 1);
+req.onupgradeneeded = e => e.target.result.createObjectStore(STORE);
+req.onsuccess = e => { db = e.target.result; loadSnapshot(); };
+function saveSnapshot() {
+  if (!db) return;
+  const norm = particles.map(p => ({ x: p.x/W, y: p.y/H, vx: p.vx, vy: p.vy, energy: p.energy, hue: p.hue }));
+  const tx = db.transaction(STORE, 'readwrite');
+  tx.objectStore(STORE).put(norm, 'last');
+  document.getElementById('status').textContent = 'Snapshot sealed';
+}
+function loadSnapshot() {
+  if (!db) return;
+  const tx = db.transaction(STORE, 'readonly');
+  const get = tx.objectStore(STORE).get('last');
+  get.onsuccess = () => {
+    if (get.result && get.result.length === N) {
+      particles = get.result.map(p => ({ ...p, x: p.x*W, y: p.y*H }));
+    }
+  };
+}
+document.getElementById('seal').onclick = saveSnapshot;
+document.getElementById('reset').onclick = () => { initParticles(); remoteInject=null; };
+
+function update() {
+  const inj = getInjection();
+  if (dc && dc.readyState === 'open' && Math.random() < 0.05) {
+    dc.send(JSON.stringify({ type:'inject', x: inj.x/W, y: inj.y/H, s: inj.strength }));
+  }
+  const forces = [inj];
+  if (remoteInject && performance.now() < remoteInject.until) forces.push(remoteInject);
+
+  for (let p of particles) {
+    let ax=0, ay=0;
+    for (let f of forces) {
+      const dx = f.x - p.x, dy = f.y - p.y;
+      const d2 = dx*dx + dy*dy + 40;
+      const att = f.strength * 80 / d2;
+      ax += dx * att; ay += dy * att;
+    }
+    for (let q of particles) {
+      if (q === p) continue;
+      const dx = p.x - q.x, dy = p.y - q.y;
+      const d2 = dx*dx + dy*dy + 25;
+      if (d2 < 400) { ax += dx*0.8/d2; ay += dy*0.8/d2; }
+    }
+    p.vx = (p.vx + ax*0.016) * 0.96;
+    p.vy = (p.vy + ay*0.016) * 0.96;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x<0||p.x>W) p.vx*=-0.7;
+    if (p.y<0||p.y>H) p.vy*=-0.7;
+    p.x = Math.max(0, Math.min(W, p.x));
+    p.y = Math.max(0, Math.min(H, p.y));
+    p.energy = Math.min(1, p.energy + 0.002);
+  }
+}
+function draw() {
+  ctx.fillStyle = 'rgba(5,5,12,0.18)';
+  ctx.fillRect(0,0,W,H);
+  for (let p of particles) {
+    const r = 1.5 + p.energy*2.5;
+    ctx.beginPath();
+    ctx.fillStyle = `hsla(${p.hue},70%,${50+p.energy*30}%,${0.6+p.energy*0.3})`;
+    ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+    ctx.fill();
+  }
+  const inj = getInjection();
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(120,200,255,0.6)';
+  ctx.lineWidth = 2;
+  ctx.arc(inj.x, inj.y, 18, 0, Math.PI*2);
+  ctx.stroke();
+}
+function loop() { update(); draw(); requestAnimationFrame(loop); }
+loop();

@@ -1,6 +1,6 @@
 /**
- * showcase skill: "look what I made". Verse puts what it built since you were last here on the real stage, one thing at a
- * time, instead of a changelog to read (the owner, 2026-10-11: overnight growth should hit you when you open the page).
+ * showcase skill: "look what I made". Verse shows what it built since you were last here, on the real stage.
+ * One thing at a time, instead of a changelog to read (the owner, 2026-10-11: overnight growth should hit you when you open the page).
  * "show me what you made", "what's new", "what did you make for me", "look what you did": everything built since you were last here,
  * newest first, with no ceiling (owner, 2026-10-16: "there should not be a limit or stopping point to what it makes or can show you";
  * it used to stop at five). One at a time, so a thousand is as easy to page through as three; Done ends it whenever you like. A returning
@@ -40,28 +40,45 @@ export const KNOWN = [
   { match: /^Ask whether coral can survive heatwaves/i, show: 'the coral card reads the Florida Keys reef live', try: 'can coral survive heatwaves' },
 ];
 
-/** a ledger line cut to what a person reads: the first clause, at most 90 characters. Pure. */
+/** a ledger line cut to what a person reads: the first clause, at most 180 characters so the richer "Why these / Added" detail survives. Pure. */
 export function lineOf(what) {
   const s = publicWhat(what).replace(/\s+/g, ' ').trim();
   const cut = s.split(/(?<=[a-z0-9)"])[:;](?=\s)/i)[0].trim();
-  return cut.length > 90 ? cut.slice(0, 89).replace(/\s+\S*$/, '') + '…' : cut;
+  return cut; // whole sentences, never cut with an ellipsis (owner, 2026-10-21: "i need to see the whole sentences")
 }
 
-/** what one of Verse's own upgrades did, from the line grow-self writes ("Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock,
- *  web4[, and the card art floors rise to …]"): "Better at calendar file, clock and web4: 9 more ways of asking answered right". The first
+/** what one of Verse's own upgrades did, from the line grow-self writes (it opens "Verse hardened itself:" and names the benchmark asks and
+ *  the skills they are for, calendar-file, clock and web4, say): "Better at calendar file, clock and web4: 9 more ways of asking answered right". The first
  *  clause alone read "Verse hardened itself" on every one of them (owner, 2026-10-20: "it should be saying the upgrade not just Verse hardened
  *  itself a bunch of times"). null for any other line. Pure. */
 export function hardenedLine(what) {
   const m = /^(?:Verse|Void|V01D) hardened itself:\s*(.+)$/i.exec(String(what || '').replace(/\s+/g, ' ').trim());
   if (!m) return null;
-  const [asksPart, ...rest] = m[1].split(/,? and (?=the card art)/i);
+  const [asksPart, ...rest] = m[1].split(/\.\s+(?=Why these|New phrases|Added:|Did not route)/)[0].replace(/\.$/, '').split(/,? and (?=the card art)/i);
   const art = /card art/i.test(rest.join(' ') + ' ' + asksPart);
   const a = /^(\d+) benchmark ask\(s\) for (.+)$/i.exec(asksPart.trim());
   if (!a) return art ? 'Sharper card art: my art scores went up' : null;
+  // keep the richer "Why these / Added / Did not route" tail when present (owner 2026-10-21)
+  // the actual new phrases and the skill each now opens (owner, 2026-10-21: "list the actual new phrases and which skill they now open, not just a count")
+  const ph = /New phrases:\s*(.+?)\.(?:\s+Did not route|\s*$)/.exec(m[1]);
+  const tail = ph ? ' — new phrases: ' + ph[1].trim() : m[1].includes('Added:') ? ' — added: ' + m[1].split('Added:')[1].split(/\.\s+Did not route/)[0].replace(/\.$/, '').trim() : '';
   const names = a[2].split(/,\s*/).map((x) => x.replace(/-/g, ' ').trim()).filter(Boolean);
   const shown = names.length > 3 ? names.slice(0, 3).concat(names.length - 3 + ' more') : names;
   const list = shown.length > 1 ? shown.slice(0, -1).join(', ') + ' and ' + shown[shown.length - 1] : shown[0];
-  return 'Better at ' + list + ': ' + a[1] + ' more ways of asking answered right' + (art ? ', and sharper card art' : '');
+  return 'Better at ' + list + ': ' + a[1] + ' more ways of asking answered right' + (art ? ', and sharper card art' : '') + tail;
+}
+
+/** one of Verse's own upgrades from the phrases it proved: what got better and two of the new ways of asking, short enough for one line and a
+ *  tray chip. The whole list ran to ten phrases, and a line whose first clause did not parse opened with ": new phrases" (owner's screenshot,
+ *  2026-10-24). '' when there are none. Pure. */
+export function phrasesLine(phrases) {
+  const ps = (Array.isArray(phrases) ? phrases : []).filter((p) => p && p.ask && p.skill);
+  if (!ps.length) return '';
+  const names = [...new Set(ps.map((p) => String(p.skill).replace(/-/g, ' ').trim()))];
+  const shown = names.length > 3 ? names.slice(0, 3).concat(names.length - 3 + ' more') : names;
+  const list = shown.length > 1 ? shown.slice(0, -1).join(', ') + ' and ' + shown[shown.length - 1] : shown[0];
+  const eg = ps.slice(0, 2).map((p) => '\u201c' + String(p.ask).slice(0, 40) + '\u201d');
+  return 'Better at ' + list + ': ' + ps.length + ' more way' + (ps.length === 1 ? '' : 's') + ' of asking answered right, like ' + eg.join(' and ');
 }
 
 /** { line, ask } for a ledger entry that can be shown on the stage, or null. Pure. */
@@ -72,7 +89,7 @@ export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
   if (RETIRED.some((r) => r.test(String(e.show || '')))) return null;
   if (!lineOf(e.what)) return null; // a line about what Verse studies is never shown
-  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || hardenedLine(e.what) || lineOf(e.what), ask: e.try }; // never the walkthrough itself
+  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || phrasesLine(e.phrases) || hardenedLine(e.what) || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));
   return k ? { line: k.show, ask: k.try } : null;
 }
@@ -107,7 +124,7 @@ export function whatsNew(entries, { shown = new Set(), verified = null, n = Infi
 export const TRAY = 6;
 export function trayOf(steps, i, max = TRAY) {
   const out = [];
-  for (let j = i + 1; j < (steps || []).length && out.length < max; j++) { const l = String(steps[j].line || ''); out.push({ j, line: l.length > 38 ? l.slice(0, 37).replace(/\s+\S*$/, '') + '…' : l }); }
+  for (let j = i + 1; j < (steps || []).length && out.length < max; j++) { const l = String(steps[j].line || ''); out.push({ j, line: l }); }
   return out;
 }
 /** where a chip dropped at (x, y) puts its things: the delta that brings the first new thing's corner to the drop point, kept inside
@@ -131,6 +148,20 @@ export function markShown(steps) {
   write(SHOWN_KEY, JSON.stringify(all.slice(-3000)));
 }
 export const VERIFIED_URL = '/claims-verified.json';
+/** how far back "recently built" reaches: what Verse built in these days stays one tap away even after it was previewed
+ *  (owner, 2026-10-21: "still not seeing i made this anymore": a device that had seen every build, or had said "show me everything",
+ *  had every ask in a2m.void.shown.v1, so nothing ever showed again and there was no way back to it) */
+export const RECENT_DAYS = 7;
+/** the verified playable builds of the last `days` days, newest first, previewed before or not. Pure. */
+export function recentOf(entries, verified, now = Date.now(), days = RECENT_DAYS, done = '') {
+  let after = new Date(now - days * 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+  if (done && done > after) after = done; // closed with Done: only what was built since then
+  return whatsNew(sinceLast(entries, after), { verified }).steps;
+}
+/** when this device last closed "Recently built" with Done: the sparkle and the quiet line stay away until something newer is built
+ *  (owner, 2026-10-24: "so why are we back to unclearable recently built"); asking "what's new" still replays them */
+export const RECENT_DONE_KEY = 'a2m.void.recentDone.v1';
+let recentSteps = null; // the last recent list, so the sparkle comes back when a walkthrough ends
 async function ledger() {
   const r = await fetch(LEDGER_URL, { cache: 'no-cache' });
   if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -212,12 +243,25 @@ function button(label, on) {
   return b;
 }
 
+/** the Clear list button: everything in this walkthrough is seen, Recently built is empty until something newer ships, and nothing is left on
+ *  screen asking for a look. */
+export function clearAll(stageApi, steps) {
+  markShown(steps || []); write(RECENT_DONE_KEY, nowIso()); recentSteps = null;
+  if (tour) { tour.done = true; end(stageApi); }
+  const b = document.getElementById('whatsnew-bell'); if (b) b.remove();
+  const note = document.getElementById('away-note'); if (note) note.textContent = '';
+  if (stageApi && stageApi.say) stageApi.say('Cleared · new builds will show here when Verse makes them');
+}
+
 function end(stageApi) {
   if (!tour) return;
   const el = document.getElementById('showcase-bar'); if (el) { removeEventListener('resize', el._place); clearInterval(el._tick); el.remove(); }
   const s = document.getElementById('showcase-scrim'); if (s) s.remove();
   removeEventListener('keydown', tour.esc, true);
+  const closedRecent = tour.done && /recently built/i.test(tour.label);
   tour = null;
+  if (closedRecent) { write(RECENT_DONE_KEY, nowIso()); recentSteps = null; return; } // Done means done: no sparkle comes back for these
+  if (recentSteps && recentSteps.length) bell(stageApi, recentSteps, { recent: true }); // recently built stays one tap away
 }
 
 // take away what the last step put up (Next), unless it was kept
@@ -237,7 +281,7 @@ async function step(stageApi) {
   const s = tour.steps[tour.i], el = bar();
   el.textContent = '';
   const head = document.createElement('span');
-  head.style.cssText = 'color:var(--ink-3,#8b90a0);white-space:nowrap';
+  head.style.cssText = 'color:var(--ink-3,#8b90a0);overflow-wrap:anywhere;min-width:0;max-width:100%'; // wraps: nowrap pushed "1 of N · …" past the panel's right edge
   head.textContent = (tour.i + 1).toLocaleString('en') + ' of ' + tour.steps.length.toLocaleString('en') + ' · ' + tour.label;
   const line = document.createElement('span');
   line.className = 'showcase-line';
@@ -246,8 +290,12 @@ async function step(stageApi) {
   const ctl = document.createElement('span');
   ctl.style.cssText = 'display:flex;gap:6px;margin-left:auto';
   const last = tour.i === tour.steps.length - 1;
-  ctl.append(button(last ? 'Done' : 'Next →', () => { clear(stageApi); tour.i++; step(stageApi); }),
-    button('Keep', () => { tour.made = null; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); end(stageApi); })]));
+  ctl.append(button(last ? 'Done' : 'Next →', () => { clear(stageApi); if (last) tour.done = true; tour.i++; step(stageApi); }),
+    button('Keep', () => { tour.made = null; if (last) tour.done = true; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); tour.done = true; end(stageApi); })]),
+    // one tap clears the whole list on this device (owner, 2026-10-24: "just make a clear list button for the builds that stays cleared"):
+    // every step is marked seen, Recently built starts again from now, and the sparkle and the line go; "show me everything you made" still walks it all
+    button('Clear list', () => { clear(stageApi); clearAll(stageApi, tour.steps); }));
+  ctl.lastChild.dataset.showcase = 'clear';
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
   const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what Verse made; hidden unless /api/react answers
@@ -367,20 +415,37 @@ export async function nudge(stageApi, note) {
   if (!floor) { write(SEEN_KEY, nowIso()); return 0; }
   let list = [];
   try { list = await ledger(); } catch (_) { return 0; }
-  const { steps } = whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: await verifiedSet() });
-  if (!steps.length) return 0;
-  markShown(steps); // previewed once: from here on these are never offered again on this device, whether or not the line is tapped
+  const V = await verifiedSet();
+  const { steps } = whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: V });
+  recentSteps = recentOf(list, V, Date.now(), RECENT_DAYS, read(RECENT_DONE_KEY));
+  if (!steps.length) {
+    // nothing unseen: what was built recently still shows, as a quiet line and the sparkle, never gone after one look
+    if (!recentSteps.length) return 0;
+    const old = document.getElementById('whatsnew-bell'); if (old && old.dataset.mode !== 'recent') return 0;
+    if (old) old.remove();
+    bell(stageApi, recentSteps, { recent: true });
+    if (note && !note.querySelector('.showcase-pill')) pill(stageApi, note, recentSteps, 'Recently built: ', false);
+    return recentSteps.length;
+  }
+  // marked shown only when it is seen through (the walkthrough starts): a line that flashed by while you typed used to use up every build,
+  // so nothing was ever previewed again (owner, 2026-10-21: "I am not even seeing I built this previews")
+  const old = document.getElementById('whatsnew-bell'); if (old && old.dataset.mode === 'recent') old.remove(); // something new outranks the recent sparkle
   if (!note) return steps.length;
+  if (note.querySelector('.showcase-pill')) note.textContent = '';
+  pill(stageApi, note, steps, 'I built this: ', true);
+  bell(stageApi, steps);
+  return steps.length;
+}
+// the quiet line: the newest thing by name and what it does, never only a count (owner, 2026-10-21: details on every preview)
+function pill(stageApi, note, steps, head, isNew) {
   const n = steps.length;
   const lead = document.createElement('span');
-  lead.className = 'showcase-pill';
-  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + 'I made ' + (n === 1 ? 'a new thing' : n.toLocaleString('en') + ' new things') + ' while you were away · ';
+  lead.className = 'showcase-pill'; lead.dataset.mode = isNew ? 'new' : 'recent';
+  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + head + steps[0].line + (n > 1 ? ' (and ' + (n - 1).toLocaleString('en') + ' more)' : '') + ' · ';
   const go = document.createElement('a');
   go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
-  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; start(stageApi, steps); });
+  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; const b = document.getElementById('whatsnew-bell'); if (b) b.remove(); if (isNew) markShown(steps); start(stageApi, steps, { label: isNew ? 'Built while you were away' : 'Recently built' }); });
   note.textContent = ''; note.append(lead, go);
-  bell(stageApi, steps);
-  return n;
 }
 
 /** while the tab stays open, look again for what Verse built (owner, 2026-10-19: "its supposed to pop up when Verse builds something"): the
@@ -390,7 +455,7 @@ export async function nudge(stageApi, note) {
 export const WATCH_MS = 4 * 60 * 1000;
 export function watch(stageApi, note, ms = WATCH_MS) {
   if (typeof document === 'undefined' || watch.on) return; watch.on = true;
-  const look = () => { if (document.visibilityState !== 'visible' || tour || document.getElementById('whatsnew-bell')) return; nudge(stageApi, note).catch(() => {}); };
+  const look = () => { const b = document.getElementById('whatsnew-bell'); if (document.visibilityState !== 'visible' || tour || (b && b.dataset.mode !== 'recent')) return; nudge(stageApi, note).catch(() => {}); };
   setInterval(look, ms);
   document.addEventListener('visibilitychange', look);
 }
@@ -399,18 +464,20 @@ export function watch(stageApi, note, ms = WATCH_MS) {
  * notification icon on the stage to prevent users from having to type it"): a bell-less sparkle with the count, pulsing quietly; a tap
  * starts the same walkthrough as typing "what's new", and the icon and the quiet line both go. It appears only when something is new
  * (so a first visit and an empty page stay empty) and never moves anything. Pure DOM, nothing sent anywhere. */
-export function bell(stageApi, steps) {
+export function bell(stageApi, steps, { recent = false } = {}) {
   if (typeof document === 'undefined' || !steps || !steps.length || document.getElementById('whatsnew-bell')) return null;
   const b = document.createElement('button'); b.type = 'button'; b.id = 'whatsnew-bell'; b.className = 'whatsnew-bell';
-  const n = steps.length; b.dataset.count = String(n);
-  b.setAttribute('aria-label', (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' Verse made while you were away: show me');
-  b.title = 'What\'s new: tap to see what Verse made';
+  const n = steps.length; b.dataset.count = String(n); b.dataset.mode = recent ? 'recent' : 'new';
+  b.setAttribute('aria-label', recent ? 'Recently built: ' + n.toLocaleString('en') + (n === 1 ? ' thing' : ' things') + ' Verse made this week: show me'
+    : (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' Verse made while you were away: show me');
+  b.title = recent ? 'Recently built: tap to see what Verse made this week' : 'What\'s new: tap to see what Verse made';
   b.innerHTML = '<style>.whatsnew-bell{position:fixed;left:14px;bottom:14px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,18,34,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 0 rgba(158,178,255,.55);animation:wn-pulse 2.4s ease-out infinite}' // void-review: ok: static markup, the only variable is a number
     + '.whatsnew-bell svg{width:20px;height:20px;animation:wn-spin 6s linear infinite}.whatsnew-bell b{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:#ff6a3d;color:#fff;font:700 11px/17px system-ui,sans-serif;text-align:center;padding:0 4px;box-sizing:border-box}'
     + '@keyframes wn-pulse{0%{box-shadow:0 0 0 0 rgba(158,178,255,.55)}70%,100%{box-shadow:0 0 0 14px rgba(158,178,255,0)}}@keyframes wn-spin{to{transform:rotate(360deg)}}'
     + '@media (prefers-reduced-motion:reduce){.whatsnew-bell,.whatsnew-bell svg{animation:none}}</style>'
     + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z" fill="currentColor"/></svg><b aria-hidden="true">' + (n > 99 ? '99+' : n) + '</b>'; // void-review: ok: static markup, the count is a number
-  b.addEventListener('click', (e) => { e.preventDefault(); const note = document.getElementById('away-note'); if (note) note.textContent = ''; b.remove(); start(stageApi, steps); });
+  b.addEventListener('click', (e) => { e.preventDefault(); const note = document.getElementById('away-note'); if (note) note.textContent = ''; b.remove(); if (!recent) markShown(steps); start(stageApi, steps, { label: recent ? 'Recently built' : 'Built while you were away' }); });
+  if (recent) b.style.animation = 'none'; // seen before: still there, no longer pulsing for attention
   document.body.appendChild(b);
   return b;
 }
@@ -440,6 +507,8 @@ async function run(text, api) {
   const wip = fresh.waiting.length ? ' · ' + fresh.waiting.length + ' more in progress (not answering yet)' : '';
   // a thing is previewed once (owner, 2026-10-16): with nothing new there is no replay, only the count and the way to see it all
   if (!fresh.steps.length) {
+    const recent = recentOf(list, V, Date.now(), RECENT_DAYS, read(RECENT_DONE_KEY));
+    if (recent.length) { recentSteps = recent; start(stageApi, recent, { label: 'Nothing unseen since you last looked · recently built' + wip }); return 'showcase'; }
     const n = whatsNew(sinceLast(list), { verified: V }).steps.length;
     say((floor ? 'nothing new since you last looked' : 'nothing new to show yet') + wip + (n ? ' · say "show me everything you made" for all ' + n.toLocaleString('en') : ''));
     return 'showcase'; // it answered (the count and how to see it all): 'none' let the ask fall through to the encyclopedia, so claims-verify dropped "what's new"

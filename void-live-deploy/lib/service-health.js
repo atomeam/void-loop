@@ -7,7 +7,7 @@
 // Pure apart from `check`, which takes its fetch and clock as arguments.
 // The stability gauge (asked by Verse, 2026-10-18: "a 'stability-gauge' on the Service Health card that fluctuates in real-time based on
 // the frequency of incident reports in incidents.json"): Verse's own browser suite on main is a service too; its dial reads lib/autopsy.js
-// stabilityOf over incidents.json (100 with no red suite in 7 days, 12 less per red one) and the card redraws it on "Check again" and once
+// stabilityOf over incidents.json (100 with no red suite in 7 days, 12 less per red one, halving every 12 hours) and the card redraws it on "Check again" and once
 // a minute while open, so the needle moves as incidents land or age out.
 
 export const SLOW_MS = 1500, TIMEOUT_MS = 8000, GAUGE_EVERY_MS = 60000;
@@ -62,7 +62,7 @@ export const needleOf = (score) => Math.round(-90 + 1.8 * Math.max(0, Math.min(1
 export function gaugeHtml(esc, g) {
   const known = !!(g && g.known), score = known ? g.score : 100, label = known ? g.label : 'none', deg = needleOf(score);
   const col = label === 'steady' ? '#3fb950' : label === 'wobbly' ? '#d29922' : label === 'shaky' ? '#f85149' : '#888';
-  const said = !known ? 'no red suite recorded yet' : g.week + ' red suite' + (g.week === 1 ? '' : 's') + ' on main in 7 days' + (g.day ? ', ' + g.day + ' in the last day' : '');
+  const said = !known ? 'no red suite recorded yet' : (g.capped ? 'at least ' : '') + g.week + ' red suite' + (g.week === 1 ? '' : 's') + ' on main in 7 days' + (g.fixed ? ' not yet fixed' : '') + (g.day ? ', ' + g.day + ' in the last day' : '') + (g.last != null ? '; the last one ' + (g.last < 1 ? 'under an hour' : g.last + (g.last === 1 ? ' hour' : ' hours')) + ' ago, and each counts for less as it ages' : '') + (g.fixed ? '; ' + g.fixed + ' fixed by a later green run no longer count' : '');
   return '<div class="sh-gauge" data-stability="' + esc(label) + '" data-score="' + esc(score) + '" role="img" aria-label="' + esc('Verse stability ' + score + ' of 100: ' + label + ', ' + said) + '">'
     + '<svg viewBox="0 0 120 70" width="120" height="70" aria-hidden="true"><path d="M10 62 A50 50 0 0 1 110 62" fill="none" stroke="rgba(128,128,128,.3)" stroke-width="8" stroke-linecap="round"/>'
     + '<path d="M10 62 A50 50 0 0 1 110 62" fill="none" stroke="' + col + '" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + esc(Math.round(157 * score / 100)) + ' 157"/>'

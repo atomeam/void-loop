@@ -8,7 +8,7 @@
  */
 import { parseMusic, MUSIC_FALLBACK, KINDS } from '../lib/media.js';
 import { parseSuggestions, FREE_PICKS, cleanTitle } from '../lib/movies.js';
-import { MOODS, load, save, forget, rate, markSeen, allowed, likedKind, tasteCmd, moodWord, interests, choose, whyPick, parseTakeout, parseList } from '../lib/taste.js';
+import { MOODS, load, save, forget, rate, markSeen, allowed, likedKind, tasteCmd, moodWord, interests, choose, whyPick, pickRecord, parseTakeout, parseList } from '../lib/taste.js';
 import { movieCard, wirePlayers } from './movie.js';
 import { songCard, wire as wireSong } from './media-pick.js';
 
@@ -83,6 +83,10 @@ async function pickOne(api, { kind: forced = '', mood = '', reroll = false } = {
   last = { kind, f, at: Date.now() };
   const lead = 'How about ' + f.title + (kind === 'music' ? (f.artist ? ' by ' + f.artist : '') : (f.year ? ' (' + f.year + ')' : '')) + '? ';
   show(api, el, kind, f, taste, lead + whyPick({ mode: r.mode, hit: r.hit, mood: taste.mood, genre: f.genre, liked: kindBy === 'liked' && lk ? lk.title : '', kindBy, reroll, kind }));
+  const rec = pickRecord(r, { kind }); last.record = rec;
+  if (rec && api._pageStill(el)) { const say = el.querySelector('.pick-say'), m = document.createElement('div'); m.className = 'sub pk-match'; m.setAttribute('data-nospeak', ''); m.setAttribute('data-pick', JSON.stringify(rec));
+    m.textContent = 'Match ' + Math.round(rec.similarity * 100) + '% · chosen by ' + rec.reasoning.skill + (rec.reasoning.signal ? ' from ' + rec.reasoning.signal.source + ' ("' + rec.reasoning.signal.word + '")' : rec.mode === 'explore' ? ', exploring on purpose' : ', no taste signal yet');
+    if (say) say.after(m); }
   return 'pick-for-me';
 }
 function play(api) {

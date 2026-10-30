@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Translate: 100 languages, documents, dictionary, websites · Verse</title>
+<meta name="description" content="Translate text between 100 languages. The language is found as you type. Translate words, documents, photos and whole websites, then listen or speak.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Translate · Verse">
+<meta property="og:description" content="100 languages, detected as you type. Documents with their layout, a dictionary, other words for any word, formal or informal, websites, listen, speak, read a photo; your history stays on your device and opens offline.">
+<meta property="og:url" content="https://a-to-mind.com/translate/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/translate/ (the tower's Google Translate floor): one file and small modules after load, nothing stored but the history, saved phrases and glossary */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; --hi: #ece6ff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #2a2342; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  h3 { font-size: 15px; margin: 12px 0 4px; }
+  .langs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin: 8px 0; }
+  select { font: inherit; font-size: 15px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  select option { background: var(--bg); color: var(--ink); }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); }
+  button:disabled { opacity: .5; cursor: default; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .panes { grid-template-columns: 1fr; } }
+  .pane { position: relative; border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 10px 12px; min-height: 180px; display: flex; flex-direction: column; }
+  #in { font: inherit; font-size: 22px; line-height: 1.35; color: inherit; background: transparent; border: 0; outline: 0; resize: vertical; width: 100%; min-height: 120px; box-sizing: border-box; flex: 1 1 auto; }
+  #in:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+  output.big { display: block; font-size: 26px; line-height: 1.3; min-height: 120px; white-space: pre-wrap; overflow-wrap: anywhere; flex: 1 1 auto; }
+  output.big.wait { color: var(--soft); font-size: 18px; }
+  .w { cursor: pointer; border-radius: 4px; } .w:hover, .w:focus-visible, .w.on { background: var(--hi); outline: none; }
+  .roman { font-size: 14px; color: var(--soft); margin: 4px 0 0; overflow-wrap: anywhere; } .roman:empty { display: none; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .row .count { margin-left: auto; font-size: 12px; color: var(--soft); white-space: nowrap; }
+  .tone { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--soft); } .tone select { width: 11.5em; min-height: 40px; font-size: 14px; padding: 4px 8px; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; } .note.bad { color: var(--bad); }
+  .prog { display: flex; gap: 8px; align-items: center; margin: 4px 0; } .prog progress { flex: 1 1 auto; height: 10px; accent-color: var(--accent); }
+  .pop { position: absolute; z-index: 5; width: min(300px, calc(100% - 16px)); box-sizing: border-box; background: var(--box); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.2); padding: 10px 12px; font-size: 14px; }
+  .pop b { font-size: 17px; } .pop .row { margin: 4px 0; }
+  .pop ul, .dict ul, .dict ol { margin: 6px 0 0; padding: 0 0 0 0; list-style: none; }
+  .pop li button { width: 100%; text-align: left; border-radius: 10px; margin: 2px 0; font-size: 14px; }
+  .pop li small, .dict small { color: var(--soft); }
+  .dict { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 8px 14px 12px; margin: 10px 0; font-size: 15px; }
+  .dict ol { list-style: decimal; padding-left: 22px; } .dict li { margin: 4px 0; } .dict i { color: var(--soft); }
+  .dict .alt { display: flex; gap: 10px; align-items: baseline; padding: 4px 0; border-top: 1px solid var(--line); } .dict .alt:first-child { border-top: 0; }
+  .dict .alt b { font-weight: 600; min-width: 7em; } .freq { display: inline-flex; gap: 2px; } .freq i { width: 8px; height: 8px; border-radius: 2px; background: var(--line); display: inline-block; } .freq i.on { background: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+  .chips a, .chips span { font-size: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
+  .chips span { min-height: 32px; padding: 3px 10px; }
+  details.more { border-top: 1px solid var(--line); padding: 2px 0; } details.more[open] { padding-bottom: 10px; }
+  details.more summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--soft); min-height: 44px; display: flex; align-items: center; }
+  .more input, .more textarea { font: inherit; font-size: 15px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  .more textarea { min-height: 88px; resize: vertical; }
+  .more .hint { font-size: 12px; color: var(--soft); margin: 4px 0; }
+  .web { font-size: 16px; } .web h3, .web h4 { margin: 14px 0 4px; } .web p { margin: 6px 0; overflow-wrap: anywhere; }
+  .web .links button { font-size: 13px; min-height: 36px; padding: 4px 10px; margin: 2px 4px 2px 0; text-align: left; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+  .list li:first-child { border-top: 0; }
+  .list li a { color: inherit; text-decoration: none; flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; }
+  .list li a b { font-weight: 500; } .list li a span { color: var(--soft); font-size: 13px; }
+  .list li small { color: var(--soft); font-size: 12px; }
+  .list li button { min-height: 32px; padding: 3px 10px; font-size: 13px; }
+  .empty { font-size: 13px; color: var(--soft); }
+  .hrow { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; } .hrow button { min-height: 32px; padding: 3px 12px; font-size: 13px; }
+  .card { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; margin: 6px 0; font-size: 20px; }
+  .card small { display: block; font-size: 12px; color: var(--soft); }
+  [hidden] { display: none !important; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; } .srcs a { color: inherit; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; margin: 6px 0 0; font-size: 12px; color: var(--soft); }
+  .chips button { min-height: 32px; padding: 3px 10px; font-size: 13px; }
+  .lsearch input { font: inherit; font-size: 14px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; min-height: 34px; width: 13em; }
+  .kbd { display: flex; flex-direction: column; gap: 4px; margin: 8px 0 0; }
+  .kbd .keys { display: flex; flex-wrap: wrap; gap: 4px; }
+  .kbd .keys button { min-width: 36px; min-height: 36px; padding: 2px 6px; border-radius: 8px; font-size: 17px; }
+  .pad { width: 100%; max-width: 600px; height: 180px; background: #fff; border-radius: 10px; touch-action: none; display: block; margin: 8px 0 0; }
+  #fb textarea, #convT { width: 100%; }
+  .conv li b { display: block; } .conv li span { color: var(--soft); font-size: 13px; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/translate/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Translate","url":"https://a-to-mind.com/translate/","description":"Translate text between 100 languages with the language detected as you type: listen to the translation, speak instead of typing, read the text in a photo or from the camera, copy it, share a link that carries it, keep a history and saved phrases, and see them again offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"translate, translate english to spanish, spanish to english translation, translate to french, japanese translator, translate photo text, free translator 100 languages","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/translate/?q={text}&to=es"},"text-input":"required name=text"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Translate","item":"https://a-to-mind.com/translate/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1 id="title">Translate</h1>
+  <p class="sub" id="sub">100 languages, detected as you type. Documents, a dictionary, other words for any word, formal or informal, websites; listen, speak, read a photo, see them again offline.</p>
+
+  <form id="f" autocomplete="off">
+    <div class="langs">
+      <label class="vh" for="from" id="fromL">From</label>
+      <select id="from" aria-labelledby="fromL"><option value="auto" selected>Detect language</option><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="am">Amharic</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="ast">Asturian</option><option value="az">Azerbaijani</option><option value="ba">Bashkir</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="br">Breton</option><option value="bg">Bulgarian</option><option value="my">Burmese</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="zh">Chinese</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="en">English</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="fy">Frisian</option><option value="ff">Fulah</option><option value="gl">Galician</option><option value="lg">Ganda</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="ht">Haitian Creole</option><option value="ha">Hausa</option><option value="he">Hebrew</option><option value="hi">Hindi</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="ig">Igbo</option><option value="ilo">Ilocano</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jv">Javanese</option><option value="kn">Kannada</option><option value="kk">Kazakh</option><option value="km">Khmer</option><option value="ko">Korean</option><option value="lo">Lao</option><option value="lv">Latvian</option><option value="ln">Lingala</option><option value="lt">Lithuanian</option><option value="lb">Luxembourgish</option><option value="mk">Macedonian</option><option value="mg">Malagasy</option><option value="ms">Malay</option><option value="ml">Malayalam</option><option value="mr">Marathi</option><option value="mn">Mongolian</option><option value="ne">Nepali</option><option value="ns">Northern Sotho</option><option value="no">Norwegian</option><option value="oc">Occitan</option><option value="or">Odia</option><option value="ps">Pashto</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="pa">Punjabi</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="gd">Scottish Gaelic</option><option value="sr">Serbian</option><option value="sd">Sindhi</option><option value="si">Sinhala</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="so">Somali</option><option value="es">Spanish</option><option value="su">Sundanese</option><option value="sw">Swahili</option><option value="ss">Swati</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="th">Thai</option><option value="tn">Tswana</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="uz">Uzbek</option><option value="vi">Vietnamese</option><option value="cy">Welsh</option><option value="wo">Wolof</option><option value="xh">Xhosa</option><option value="yi">Yiddish</option><option value="yo">Yoruba</option><option value="zu">Zulu</option></select>
+      <button type="button" id="swap" aria-label="Swap languages" title="Swap languages">⇄</button>
+      <label class="vh" for="to" id="toL">To</label>
+      <select id="to" aria-labelledby="toL"><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="am">Amharic</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="ast">Asturian</option><option value="az">Azerbaijani</option><option value="ba">Bashkir</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="br">Breton</option><option value="bg">Bulgarian</option><option value="my">Burmese</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="zh">Chinese</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="en">English</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="fy">Frisian</option><option value="ff">Fulah</option><option value="gl">Galician</option><option value="lg">Ganda</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="ht">Haitian Creole</option><option value="ha">Hausa</option><option value="he">Hebrew</option><option value="hi">Hindi</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="ig">Igbo</option><option value="ilo">Ilocano</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jv">Javanese</option><option value="kn">Kannada</option><option value="kk">Kazakh</option><option value="km">Khmer</option><option value="ko">Korean</option><option value="lo">Lao</option><option value="lv">Latvian</option><option value="ln">Lingala</option><option value="lt">Lithuanian</option><option value="lb">Luxembourgish</option><option value="mk">Macedonian</option><option value="mg">Malagasy</option><option value="ms">Malay</option><option value="ml">Malayalam</option><option value="mr">Marathi</option><option value="mn">Mongolian</option><option value="ne">Nepali</option><option value="ns">Northern Sotho</option><option value="no">Norwegian</option><option value="oc">Occitan</option><option value="or">Odia</option><option value="ps">Pashto</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="pa">Punjabi</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="gd">Scottish Gaelic</option><option value="sr">Serbian</option><option value="sd">Sindhi</option><option value="si">Sinhala</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="so">Somali</option><option value="es" selected>Spanish</option><option value="su">Sundanese</option><option value="sw">Swahili</option><option value="ss">Swati</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="th">Thai</option><option value="tn">Tswana</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="uz">Uzbek</option><option value="vi">Vietnamese</option><option value="cy">Welsh</option><option value="wo">Wolof</option><option value="xh">Xhosa</option><option value="yi">Yiddish</option><option value="yo">Yoruba</option><option value="zu">Zulu</option></select>
+    </div>
+    <div class="chips" id="recentRow" hidden><span id="recentL">Recent languages:</span> <span class="chips" id="recentLangs" role="group" aria-labelledby="recentL"></span></div>
+    <div class="chips lsearch"><label class="vh" for="langQ">Search the languages</label><input type="search" id="langQ" placeholder="Search languages" autocomplete="off" enterkeyhint="go"><label class="vh" for="langFor">Set it as</label><select id="langFor"><option value="to">as the language to translate into</option><option value="from">as the language typed</option></select><span class="chips" id="langHits" aria-live="polite"></span></div>
+    <div class="panes">
+      <div class="pane">
+        <label class="vh" for="in">Text to translate</label>
+        <textarea id="in" placeholder="Type to translate" maxlength="5000" rows="4" spellcheck="true"></textarea>
+        <div class="row">
+          <button type="submit" class="go" id="go">Translate</button>
+          <button type="button" id="speak" aria-pressed="false" title="Speak instead of typing (your microphone, on this device)">Speak</button>
+          <button type="button" id="listenIn" title="Hear the text read aloud (tap again to hear it slowly)">Listen</button>
+          <button type="button" id="camera" title="Read the text in a photo or from the camera">Camera or photo</button>
+          <input type="file" id="pic" accept="image/*" capture="environment" hidden>
+          <button type="button" id="file" title="Translate a Word, PowerPoint, Excel or PDF document, or a text, subtitle (SRT, VTT) or JSON file: its layout, timings and keys kept">Document</button>
+          <input type="file" id="doc" accept=".docx,.pptx,.xlsx,.pdf,.txt,.srt,.vtt,.json,.md,text/plain,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+          <button type="button" id="kbdB" aria-expanded="false" aria-controls="kbd" title="An on-screen keyboard for the language you type in">Keyboard</button>
+          <button type="button" id="handB" aria-expanded="false" aria-controls="hand" title="Write with a finger, pen or mouse; Verse reads it">Handwriting</button>
+          <button type="button" id="clear">Clear</button>
+          <span class="count" id="count">0 / 5000 characters</span>
+        </div>
+        <div class="kbd" id="kbd" role="group" aria-label="On-screen keyboard" hidden></div>
+        <div id="hand" hidden><canvas class="pad" id="pad" width="600" height="180" aria-label="Handwriting pad: write here with a finger, pen or mouse"></canvas>
+          <div class="row"><button type="button" class="go" id="handGo">Read my handwriting</button><button type="button" id="handClear">Clear the pad</button></div></div>
+      </div>
+      <div class="pane" id="outPane">
+        <output class="big" id="out" aria-live="polite" for="in"></output>
+        <p class="roman" id="roman"></p>
+        <p class="roman" id="backT"></p>
+        <div class="row">
+          <button type="button" id="listen" title="Hear the translation read aloud (tap again to hear it slowly)">Listen</button>
+          <button type="button" id="copy">Copy</button>
+          <button type="button" id="share" title="A link that carries this text and both languages">Share link</button>
+          <button type="button" id="save" title="Keep it in your saved phrases">Save</button>
+          <button type="button" id="dictB" title="The dictionary for a single word: meanings, other translations and how common each is, examples">Dictionary</button>
+          <button type="button" id="backB" title="Translate the result back, to check it">Back-translate</button>
+          <button type="button" id="fbB" aria-expanded="false" aria-controls="fb" title="Suggest a better translation: yours is kept on this device and comes back whenever you translate the same words">Suggest an edit</button>
+          <button type="button" id="fbUndo" hidden title="Drop your own correction and show the machine's translation again">Back to the machine's</button>
+          <label class="tone" id="toneL">Tone <select id="tone" disabled><option value="">Default</option></select></label>
+        </div>
+        <div id="fb" hidden><label class="vh" for="fbT">Your translation</label><textarea id="fbT" rows="2"></textarea>
+          <div class="row"><button type="button" class="go" id="fbSave">Use mine</button></div></div>
+        <div class="pop" id="pop" role="dialog" aria-labelledby="popW" hidden></div>
+      </div>
+    </div>
+    <div class="note" id="note" role="status"></div>
+    <div class="prog" id="progRow" hidden><progress id="prog" max="1" value="0" aria-label="Progress"></progress><button type="button" id="stop">Stop</button></div>
+  </form>
+  <p class="srcs">Click any word of a translation for other words; a single word gets the dictionary.</p>
+
+  <section class="dict" id="dict" aria-labelledby="dictH" hidden></section>
+
+  <details class="more" id="webD"><summary id="webS">Translate a website</summary>
+    <form id="webF" autocomplete="off" novalidate><label class="vh" for="url">Web address</label><input type="url" id="url" inputmode="url" placeholder="https://example.com/page" required>
+      <div class="row"><button type="submit" class="go" id="webGo">Translate page</button><span class="hint">Verse reads the page's words only (no scripts, no pictures), then translates them.</span></div></form>
+    <div class="web" id="web"></div>
+  </details>
+  <details class="more" id="multiD"><summary id="multiS">Into several languages</summary>
+    <label class="vh" for="multi">Languages</label><input type="text" id="multi" placeholder="French, German, Japanese">
+    <div class="row"><button type="button" class="go" id="multiGo">Translate into all</button><span class="hint">Up to 8 languages, by name or code.</span></div>
+    <ul class="list" id="multiOut"></ul>
+  </details>
+  <details class="more" id="glossD"><summary id="glossS">Glossary</summary>
+    <label class="hint" for="gloss" id="glossL">Your own terms for this language, one per line: term = translation. Used for text and documents; kept on this device.</label>
+    <textarea id="gloss" placeholder="Verse = Verse&#10;checkout = caja"></textarea>
+  </details>
+
+  <details class="more" id="convD"><summary id="convS">Conversation</summary>
+    <p class="hint">Two people, two languages, one device: each taps their side and speaks (or types); Verse translates it and reads it aloud for the other.</p>
+    <div class="row"><button type="button" class="go" id="convA">Speak</button><button type="button" class="go" id="convB">Speak</button></div>
+    <label class="vh" for="convT">Or type a line</label><input type="text" id="convT" placeholder="Or type a line, then send it as either side">
+    <div class="row"><button type="button" id="convTA">Send</button><button type="button" id="convTB">Send</button><button type="button" id="convClear">Clear the conversation</button></div>
+    <ul class="list conv" id="convLog" aria-live="polite"></ul>
+  </details>
+  <details class="more" id="bmD"><summary>Translate any page you visit</summary>
+    <p class="hint">Drag this bookmarklet to your bookmarks bar. On any page, click it: your selected words open here translated, or with nothing selected, the whole page.</p>
+    <p><a id="bm" href="javascript:(function(){var s=String(getSelection()).trim();location.href='https://a-to-mind.com/translate/?'+(s?'q='+encodeURIComponent(s.slice(0,5000)):'url='+encodeURIComponent(location.href));})()">Verse Translate</a></p>
+  </details>
+
+  <div class="hrow"><h2 id="savedH">Saved phrases</h2><button type="button" id="practice" title="Flashcards from your saved phrases">Practice</button></div>
+  <div class="card" id="card" hidden></div>
+  <ul class="list" id="saved"><li class="empty" id="savedEmpty">Nothing saved yet: Save keeps a translation here, on this device.</li></ul>
+  <h2 id="histH">History</h2>
+  <ul class="list" id="hist"><li class="empty" id="histEmpty">Your last 30 translations stay here, on this device, and open offline.</li></ul>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/translate/?q=hello&amp;to=es">hello in Spanish</a><a href="/translate/?q=thank%20you&amp;to=ja">thank you in Japanese</a><a href="/translate/?q=good%20morning&amp;to=fr">good morning in French</a><a href="/translate/?from=es&amp;to=en">Spanish to English</a><a href="/translate/?from=de&amp;to=en">German to English</a><a href="/translate/?from=en&amp;to=zh">English to Chinese</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/time/">Time zones</a> <a href="/notes/">Notes</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+
+  <p class="srcs" id="srcs">Translations come from Meta's many-to-many model (100 languages) on Verse's own compute, with MyMemory's free translation memory as the stand-in; tone, glossary, other words and examples from Verse's free model; meanings from Wiktionary. Only the text goes to Verse; nothing is stored. Documents are opened and put back together on this device. Listening and speaking use the voices and microphone of this device.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // everything after the first paint: the page shows its boxes and its words at once, the modules land after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, L, X, C] = await Promise.all([import('/lib/toolkit.js'), import('/lib/translate-langs.js'), import('/lib/translate-extras.js'), import('/lib/translate-card.js')]);
+    const docs = () => import('/lib/translate-docs.js'); // only when a document is translated
+    const $ = (id) => document.getElementById(id), KEY = 'a2m.void.translate.v1', MAX_HIST = 30, RTL = /^(?:ar|fa|he|ur|ps|sd|yi)$/;
+    const W = L.wordsFor(navigator.language);
+    // the language lists ship with English names only: shaping each name in its own script (Amharic, Thai, Tamil and the rest) made the
+    // first layout 30 to 40 ms slower, so each name gets its own spelling here, after load (lib/translate-langs.js)
+    for (const s of [$('from'), $('to')]) for (const o of s.options) { const n = L.LANGS[o.value]; if (n && n[1] !== n[0]) o.textContent = n[0] + ' · ' + n[1]; }
+    const savedEmpty = document.getElementById('savedEmpty'), histEmpty = document.getElementById('histEmpty'); // kept: a list emptied and refilled loses them from the page
+    const de = /^de\b/i.test(navigator.language || ''), ui = de ? 'de' : 'en';
+    if (de) {
+      document.documentElement.lang = 'de'; document.title = 'Übersetzer: 100 Sprachen, Dokumente, Wörterbuch, Webseiten · Verse';
+      $('title').textContent = W.title; $('sub').textContent = '100 Sprachen, beim Tippen erkannt. Dokumente, ein Wörterbuch, andere Wörter für jedes Wort, förmlich oder locker, Webseiten; anhören, sprechen, ein Foto lesen, offline wiedersehen.';
+      $('fromL').textContent = W.from; $('toL').textContent = W.to; $('from').options[0].textContent = W.detect; $('swap').setAttribute('aria-label', W.swap); $('swap').title = W.swap;
+      $('in').placeholder = W.placeholder; $('go').textContent = W.translate; $('speak').textContent = W.speak; $('camera').textContent = W.camera; $('clear').textContent = W.clear; $('file').textContent = W.file;
+      $('listen').textContent = W.listen; $('listenIn').textContent = W.listen; $('copy').textContent = W.copy; $('share').textContent = W.share; $('save').textContent = W.save; $('savedH').textContent = W.phrasebook; $('histH').textContent = W.history;
+      $('dictB').textContent = W.dictionary; $('backB').textContent = W.back; $('toneL').firstChild.textContent = W.tone + ' '; $('webS').textContent = W.website; $('webGo').textContent = W.websiteGo;
+      $('multiS').textContent = W.several; $('multiGo').textContent = W.severalGo; $('glossS').textContent = W.glossary; $('practice').textContent = W.practice; $('stop').textContent = W.stop;
+      savedEmpty.textContent = 'Noch nichts gemerkt: „Merken" hält eine Übersetzung hier, auf diesem Gerät.'; histEmpty.textContent = 'Die letzten 30 Übersetzungen bleiben hier, auf diesem Gerät, und sind auch offline da.';
+      $('srcs').textContent = 'Die Übersetzungen kommen von Metas Modell für 100 Sprachen auf Verses eigenem Rechner, mit MyMemory als Ersatz; Ton, Glossar, andere Wörter und Beispiele von Verses freiem Modell, Bedeutungen aus Wiktionary. ' + W.nothingSent + ' Dokumente werden auf diesem Gerät geöffnet und wieder zusammengesetzt. Anhören und Sprechen nutzen die Stimmen und das Mikrofon dieses Geräts.';
+    }
+    const q = new URLSearchParams(location.search);
+    const state = { from: 'auto', to: 'es', text: '', out: '', detected: '', via: '' };
+    let store = { hist: [], saved: [], to: '', tones: {}, gloss: {}, recentTo: [], recentFrom: [], fix: {} };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; store.tones = store.tones || {}; store.gloss = store.gloss || {}; store.fix = store.fix || {}; store.recentTo = store.recentTo || []; store.recentFrom = store.recentFrom || []; } catch (_) {}
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    // where to: the link, then the last choice, then the browser's own language unless that is what is typed in
+    const own = L.codeOf(navigator.language) || 'en';
+    state.to = L.codeOf(q.get('to')) || store.to || (own === 'en' ? 'es' : own);
+    state.from = L.codeOf(q.get('from')) || 'auto';
+    $('to').value = state.to; $('from').value = state.from; $('in').value = (q.get('q') || '').slice(0, L.MAX_CHARS);
+    const say = (msg, bad) => { $('note').textContent = msg || ''; $('note').className = 'note' + (bad ? ' bad' : ''); };
+    const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+    const copy = async (b, v) => { try { await navigator.clipboard.writeText(v); toast(b, W.copied); } catch (_) { toast(b, 'Select and copy it by hand'); } };
+    const count = () => { $('count').textContent = $('in').value.length.toLocaleString() + ' / ' + L.MAX_CHARS.toLocaleString() + ' ' + W.chars; };
+    const link = () => location.origin + '/translate/?q=' + encodeURIComponent($('in').value.trim()) + (state.from !== 'auto' ? '&from=' + state.from : '') + '&to=' + state.to;
+    const srcLang = () => (state.from === 'auto' ? state.detected || own : state.from);
+    const el = (tag, props, ...kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); e.append(...kids.filter((k) => k != null)); return e; };
+    const post = (body) => fetch('/api/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(async (r) => { const j = await r.json().catch(() => ({})); return { ok: r.ok, status: r.status, j }; });
+    // tone: the choices the target language has (formal / informal, Korean's three levels), kept per language
+    const tone = () => (L.tonesFor(state.to).some((t) => t.id === store.tones[state.to]) ? store.tones[state.to] : '');
+    function tones() {
+      const s = $('tone'), list = L.tonesFor(state.to);
+      s.replaceChildren(el('option', { value: '', textContent: list.length ? W.toneDefault : W.toneNone }), ...list.map((t) => el('option', { value: t.id, textContent: t.label })));
+      s.disabled = !list.length; s.value = tone();
+    }
+    // the glossary for the target language: "term = translation" lines
+    const glossary = () => String(store.gloss[state.to] || '').split('\n').map((l) => l.split(/\s*(?:=|→|->|\t)\s*/)).filter((p) => p.length >= 2 && p[0].trim() && p[1].trim()).map((p) => [p[0].trim(), p.slice(1).join(' ').trim()]).slice(0, 30);
+    const extras = () => { const g = glossary(), t = tone(); return { ...(t ? { tone: t } : {}), ...(g.length ? { glossary: g } : {}) }; };
+    const row = (it, saved) => {
+      const li = document.createElement('li'), a = document.createElement('a');
+      a.href = '/translate/?q=' + encodeURIComponent(it.q) + (it.from ? '&from=' + it.from : '') + '&to=' + it.to;
+      const b = document.createElement('b'); b.textContent = it.out; const s = document.createElement('span'); s.textContent = ' ' + it.q;
+      a.append(b, s); const sm = document.createElement('small'); sm.textContent = L.nameOf(it.from || it.detected || 'en') + ' → ' + L.nameOf(it.to);
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = saved ? (de ? 'Entfernen' : 'Remove') : W.save;
+      x.addEventListener('click', () => { if (saved) store.saved = store.saved.filter((y) => y !== it); else if (!store.saved.some((y) => y.q === it.q && y.to === it.to)) store.saved.unshift(it); keep(); lists(); });
+      li.append(a, sm, x); return li;
+    };
+    function lists() {
+      const sv = $('saved'), hs = $('hist'); sv.replaceChildren(); hs.replaceChildren();
+      if (!store.saved.length) sv.append(savedEmpty); else for (const it of store.saved) sv.append(row(it, true));
+      if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it, false));
+    }
+    // the result, every word a button: a click (or Enter) opens other words for it (DeepL's click-a-word)
+    function renderOut(text) {
+      const o = $('out'); o.replaceChildren();
+      if (!text || text.length > 4000 || !window.Intl || !Intl.Segmenter) { o.textContent = text; return; }
+      let first = true;
+      for (const s of new Intl.Segmenter(state.to, { granularity: 'word' }).segment(text)) {
+        if (!s.isWordLike) { o.append(s.segment); continue; }
+        o.append(el('span', { className: 'w', textContent: s.segment, tabIndex: first ? 0 : -1 })); o.lastChild.setAttribute('role', 'button'); o.lastChild.dataset.i = s.index; first = false;
+      }
+    }
+    function show(out, from, detected, via, note) {
+      state.out = out; state.detected = detected || ''; state.via = via || ''; closePop();
+      const o = $('out'); o.className = 'big'; o.lang = state.to; o.dir = RTL.test(state.to) ? 'rtl' : 'ltr'; renderOut(out);
+      $('roman').textContent = L.romanize(out, state.to); $('backT').textContent = '';
+      const parts = [];
+      if (detected && state.from === 'auto') parts.push(W.detected + ': ' + L.nameOf(detected));
+      if (via === 'mymemory') parts.push(de ? 'über MyMemory' : 'via MyMemory'); if (via === 'offline') parts.push(de ? 'aus dem Verlauf (offline)' : 'from your history (offline)');
+      if (via === 'yours') parts.push(de ? 'Ihre eigene Korrektur, auf diesem Gerät' : 'Your own correction, kept on this device');
+      if (via === 'same') parts.push(de ? 'Gleiche Sprache: nichts zu übersetzen' : 'Same language on both sides: nothing to translate');
+      if (note) parts.push(note);
+      say(parts.join(' · '));
+      for (const id of ['listen', 'copy', 'share', 'save', 'backB', 'fbB']) $(id).disabled = !out;
+      $('fb').hidden = true; $('fbB').setAttribute('aria-expanded', 'false');
+      $('fbUndo').hidden = !(via === 'yours' && out); // your own correction on screen: the way back to the machine's sits beside it
+      $('dictB').disabled = !wordy($('in').value);
+    }
+    const wordy = (t) => { const s = String(t || '').trim(); return !!s && s.length <= 60 && s.split(/\s+/).length <= 3 && !/[.!?。]\s/.test(s); };
+    let seq = 0, timer = 0, last = '', acted = false;
+    async function go(force) {
+      const text = $('in').value.trim(); count();
+      const ex = extras(), key = text + '␞' + state.from + '␞' + state.to + '␞' + JSON.stringify(ex);
+      if (!text) { show('', '', ''); last = ''; $('dict').hidden = true; return; }
+      if (key === last && !force) return; last = key;
+      const my = ++seq, had = store.hist.find((h) => h.q === text && h.to === state.to && (h.from || 'auto') === state.from && (h.tone || '') === (ex.tone || ''));
+      if (!navigator.onLine && had) return show(had.out, had.from, had.detected, 'offline');
+      const mine = X.correctionFor(store.fix, text, state.from, state.to);
+      if (mine) { state.machine = ''; return show(mine, state.from, '', 'yours'); }
+      $('out').className = 'big wait'; $('out').textContent = W.working + '…';
+      try {
+        const { ok, j } = await post({ text, from: state.from === 'auto' ? '' : state.from, to: state.to, ...ex }); if (my !== seq) return;
+        if (!ok || !j.text) throw new Error(j.error || 'no answer');
+        show(j.text, j.from, j.detected, j.via, j.note); state.machine = j.text; used();
+        const it = { q: text, out: j.text, from: state.from === 'auto' ? '' : state.from, detected: j.detected || '', to: state.to, at: Date.now(), ...(j.tone ? { tone: j.tone } : {}) };
+        store.hist = [it].concat(store.hist.filter((h) => !(h.q === text && h.to === state.to))).slice(0, MAX_HIST); store.to = state.to; keep(); lists();
+        if (acted && wordy(text)) dictionary(text, j.from || srcLang(), state.to); else if (!wordy(text)) $('dict').hidden = true;
+      } catch (e) {
+        if (my !== seq) return;
+        if (had) return show(had.out, had.from, had.detected, 'offline');
+        $('out').className = 'big'; $('out').textContent = ''; say(navigator.onLine ? W.none : W.offline, true);
+      }
+    }
+    const soon = () => { clearTimeout(timer); timer = setTimeout(() => go(false), 700); };
+    $('in').addEventListener('input', () => { acted = true; count(); soon(); });
+    $('f').addEventListener('submit', (e) => { e.preventDefault(); acted = true; clearTimeout(timer); go(true); });
+    $('from').addEventListener('change', () => { acted = true; state.from = $('from').value; go(true); });
+    $('to').addEventListener('change', () => { acted = true; state.to = $('to').value; store.to = state.to; keep(); tones(); $('gloss').value = store.gloss[state.to] || ''; go(true); });
+    $('tone').addEventListener('change', () => { acted = true; store.tones[state.to] = $('tone').value; keep(); go(true); });
+    $('swap').addEventListener('click', () => {
+      acted = true; const from = state.from === 'auto' ? (state.detected || own) : state.from, to = state.to;
+      state.from = to; state.to = from; $('from').value = to; $('to').value = from; tones(); $('gloss').value = store.gloss[state.to] || '';
+      if (state.out) { $('in').value = state.out; } go(true);
+    });
+    $('clear').addEventListener('click', () => { $('in').value = ''; $('in').focus(); go(true); });
+    $('copy').addEventListener('click', () => copy($('copy'), state.out));
+    $('save').addEventListener('click', () => { const it = store.hist[0]; if (it && it.out === state.out) { if (!store.saved.some((y) => y.q === it.q && y.to === it.to)) store.saved.unshift(it); keep(); lists(); toast($('save'), W.saved); } });
+    $('share').addEventListener('click', async () => {
+      const url = link();
+      if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + state.out, text: $('in').value.trim() + ' → ' + state.out, url }); return; } catch (_) {} }
+      copy($('share'), url); $('share').textContent = W.shared; setTimeout(() => { $('share').textContent = W.share; }, 1200);
+    });
+    // back-translate: the result put back into the language it came from, to check it (imtranslator's back translation)
+    $('backB').addEventListener('click', async () => {
+      if (!state.out) return; $('backT').textContent = W.working + '…';
+      const { ok, j } = await post({ text: state.out, from: state.to, to: srcLang() }).catch(() => ({ ok: false, j: {} }));
+      $('backT').textContent = ok && j.text ? W.backLabel + ' (' + L.nameOf(srcLang()) + '): ' + j.text : W.none;
+    });
+    // listen: the device's own voices; a second tap on the same words reads them slowly (Google's slow replay)
+    const voiceFor = (code) => { const vs = (speechSynthesis.getVoices && speechSynthesis.getVoices()) || []; return vs.find((v) => v.lang && v.lang.toLowerCase().startsWith(code)) || null; };
+    let spoke = { t: '', at: 0 };
+    const speak = (text, code) => {
+      if (!('speechSynthesis' in window) || !text) return say(de ? 'Dieses Gerät kann nicht vorlesen' : 'This device cannot read aloud', true);
+      const slow = spoke.t === text && Date.now() - spoke.at < 8000; spoke = { t: slow ? '' : text, at: Date.now() };
+      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = code; u.rate = slow ? 0.6 : 1; const v = voiceFor(code); if (v) u.voice = v; speechSynthesis.speak(u);
+    };
+    $('listen').addEventListener('click', () => speak(state.out, state.to));
+    $('listenIn').addEventListener('click', () => speak($('in').value.trim(), srcLang()));
+    // speak: the device's own recognition, in the source language
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null;
+    if (!SR) $('speak').title = de ? 'Dieser Browser kann nicht zuhören (Chrome und Safari können es)' : 'This browser cannot listen (Chrome and Safari can)';
+    $('speak').addEventListener('click', () => {
+      if (!SR) return say($('speak').title, true);
+      if (rec) { rec.stop(); return; }
+      rec = new SR(); rec.lang = state.from === 'auto' ? navigator.language : state.from; rec.interimResults = true; rec.continuous = false;
+      $('speak').setAttribute('aria-pressed', 'true'); say(de ? 'Ich höre zu' : 'Listening');
+      rec.onresult = (e) => { let s = ''; for (const r of e.results) s += r[0].transcript; $('in').value = s.slice(0, L.MAX_CHARS); count(); if (e.results[e.results.length - 1].isFinal) { acted = true; go(true); } };
+      rec.onerror = (e) => { say((de ? 'Mikrofon: ' : 'Microphone: ') + (e.error || 'no'), true); };
+      rec.onend = () => { rec = null; $('speak').setAttribute('aria-pressed', 'false'); };
+      try { rec.start(); } catch (_) { rec = null; }
+    });
+    // ---- catching up with the original (docs/PARITY/google-translate.md): recent languages, language search, keyboard, handwriting,
+    // your own corrections, conversation. The rules are in lib/translate-extras.js (tools/translate-extras.test.mjs) ----
+    const chip = (code, label, fn) => { const b = el('button', { type: 'button', textContent: label || L.nameOf(code) }); b.dataset.lang = code; b.addEventListener('click', fn); return b; };
+    const setTo = (c) => { if (!L.LANGS[c]) return; $('to').value = c; $('to').dispatchEvent(new Event('change')); };
+    const setFrom = (c) => { if (!L.LANGS[c]) return; $('from').value = c; $('from').dispatchEvent(new Event('change')); };
+    function recentShow() {
+      const to = store.recentTo.filter((c) => c !== state.to), from = store.recentFrom.filter((c) => c !== state.from);
+      $('recentLangs').replaceChildren(...to.map((c) => chip(c, '→ ' + L.nameOf(c), () => setTo(c))), ...from.map((c) => chip(c, L.nameOf(c) + ' →', () => setFrom(c))));
+      $('recentRow').hidden = !to.length && !from.length;
+    }
+    function used() {
+      store.recentTo = X.recentLangs(store.recentTo, state.to);
+      if (state.from !== 'auto') store.recentFrom = X.recentLangs(store.recentFrom, state.from);
+      keep(); recentShow(); convNames();
+    }
+    recentShow();
+    function langHits() {
+      const hits = X.matchLangs($('langQ').value, 8), side = $('langFor').value;
+      $('langHits').replaceChildren(...hits.map((c) => chip(c, L.LANGS[c][0] + (L.LANGS[c][1] !== L.LANGS[c][0] ? ' · ' + L.LANGS[c][1] : ''), () => { (side === 'from' ? setFrom : setTo)(c); $('langQ').value = ''; langHits(); })));
+      if ($('langQ').value.trim() && !hits.length) $('langHits').textContent = de ? 'Keine Sprache gefunden' : 'No language by that name';
+    }
+    $('langQ').addEventListener('input', langHits);
+    $('langFor').addEventListener('change', langHits);
+    $('langQ').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); const b = $('langHits').querySelector('button'); if (b) b.click(); } });
+    // the on-screen keyboard: the letters of the language you type in (or one you pick), put in at the caret
+    let kbdLang = '', kbdShift = false;
+    function kbd() {
+      const box = $('kbd'), code = kbdLang || (X.keyboardFor(srcLang()) ? srcLang() : X.keyboardFor(state.to) ? state.to : 'ru');
+      const pick = el('select', { id: 'kbdLang' }); pick.setAttribute('aria-label', de ? 'Tastatur für' : 'Keyboard for');
+      for (const c of X.KEYBOARD_LANGS.slice().sort((a, b) => L.nameOf(a).localeCompare(L.nameOf(b)))) pick.append(el('option', { value: c, textContent: L.nameOf(c), selected: c === code }));
+      pick.addEventListener('change', () => { kbdLang = pick.value; kbd(); });
+      const rows = (X.keyboardFor(code) || []).concat([['⇧', '␣', '⌫']]).map((r) => {
+        const d = el('div', { className: 'keys' });
+        for (const k0 of r) {
+          const k = kbdShift && k0.length === 1 ? k0.toLocaleUpperCase(code) : k0;
+          const b = el('button', { type: 'button', textContent: k }); b.setAttribute('aria-label', k === '␣' ? 'space' : k === '⌫' ? 'backspace' : k === '⇧' ? 'shift' : k);
+          if (k === '⇧') b.setAttribute('aria-pressed', String(kbdShift));
+          b.addEventListener('mousedown', (e) => e.preventDefault());
+          b.addEventListener('click', () => { if (k === '⇧') { kbdShift = !kbdShift; return kbd(); } press(k); if (kbdShift && k !== '␣' && k !== '⌫') { kbdShift = false; kbd(); } });
+          d.append(b);
+        }
+        return d;
+      });
+      box.replaceChildren(pick, ...rows); box.lang = code; box.dir = RTL.test(code) ? 'rtl' : 'ltr';
+    }
+    function press(k) {
+      const t = $('in'), r = X.typeKey(t.value, t.selectionStart, t.selectionEnd, k);
+      t.value = r.value.slice(0, L.MAX_CHARS); t.setSelectionRange(r.caret, r.caret); t.dispatchEvent(new Event('input'));
+    }
+    $('kbdB').addEventListener('click', () => { const open = $('kbd').hidden; if (open && !$('hand').hidden) $('handB').click(); $('kbd').hidden = !open; $('kbdB').setAttribute('aria-expanded', String(open)); $('kbdB').setAttribute('aria-pressed', String(open)); if (open) kbd(); });
+    $('from').addEventListener('change', () => { if (!$('kbd').hidden && !kbdLang) kbd(); });
+    // handwriting: draw on the pad, Verse reads the picture (the same reader as Camera or photo) and translates it
+    const pad = $('pad'), pen = pad.getContext('2d'); let drawing = false, inked = false;
+    const blank = () => { pen.fillStyle = '#fff'; pen.fillRect(0, 0, pad.width, pad.height); pen.lineWidth = 5; pen.lineCap = 'round'; pen.lineJoin = 'round'; pen.strokeStyle = '#111'; inked = false; };
+    blank();
+    const padAt = (e) => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
+    pad.addEventListener('pointerdown', (e) => { drawing = true; inked = true; pad.setPointerCapture(e.pointerId); const [x, y] = padAt(e); pen.beginPath(); pen.moveTo(x, y); pen.lineTo(x + 0.1, y + 0.1); pen.stroke(); });
+    pad.addEventListener('pointermove', (e) => { if (!drawing) return; const [x, y] = padAt(e); pen.lineTo(x, y); pen.stroke(); });
+    addEventListener('pointerup', () => { drawing = false; });
+    $('handB').addEventListener('click', () => { const open = $('hand').hidden; if (open && !$('kbd').hidden) $('kbdB').click(); $('hand').hidden = !open; $('handB').setAttribute('aria-expanded', String(open)); $('handB').setAttribute('aria-pressed', String(open)); });
+    $('handClear').addEventListener('click', blank);
+    $('handGo').addEventListener('click', async () => {
+      if (!inked) return say(de ? 'Schreiben Sie zuerst etwas auf die Fläche' : 'Write something on the pad first', true);
+      say(W.reading + '…');
+      try {
+        const { ok, j } = await post({ image: pad.toDataURL('image/jpeg', .9), from: state.from === 'auto' ? '' : state.from, to: state.to, ...extras() }); if (!ok || !j.text) throw new Error(j.error || 'no');
+        const t = $('in'), r = X.typeKey(t.value, t.selectionStart, t.selectionEnd, (t.value && !/\s$/.test(t.value) ? ' ' : '') + String(j.read || '').trim());
+        t.value = r.value.slice(0, L.MAX_CHARS); count(); blank(); acted = true; go(true);
+      } catch (e) { say(/no text/i.test(String(e.message)) ? W.nothingRead : W.none, true); }
+    });
+    // suggest an edit: your better translation, kept on this device, comes back whenever the same words are translated
+    $('fbB').addEventListener('click', () => { const open = $('fb').hidden; $('fb').hidden = !open; $('fbB').setAttribute('aria-expanded', String(open)); if (open) { $('fbT').value = state.out; $('fbT').focus(); } });
+    $('fbSave').addEventListener('click', () => {
+      const text = $('in').value.trim(), mine = $('fbT').value.trim(); if (!text) return;
+      store.fix = X.withCorrection(store.fix, text, state.from, state.to, mine, state.machine || ''); keep();
+      if (mine) { show(mine, state.from, state.detected, 'yours'); const h = store.hist.find((x) => x.q === text && x.to === state.to); if (h) { h.out = mine; keep(); lists(); } }
+    });
+    $('fbUndo').addEventListener('click', () => { const text = $('in').value.trim(); store.fix = X.withCorrection(store.fix, text, state.from, state.to, '', ''); store.fix = X.withCorrection(store.fix, text, 'auto', state.to, '', ''); keep(); last = ''; go(true); });
+    // conversation: each side speaks (or types) in their language; Verse translates it into the other's and reads it aloud
+    const convLangs = () => [srcLang(), state.to];
+    function convNames() {
+      const [a, b] = convLangs();
+      $('convA').textContent = (de ? 'Sprechen: ' : 'Speak ') + L.nameOf(a); $('convB').textContent = (de ? 'Sprechen: ' : 'Speak ') + L.nameOf(b);
+      $('convTA').textContent = (de ? 'Senden als ' : 'Send as ') + L.nameOf(a); $('convTB').textContent = (de ? 'Senden als ' : 'Send as ') + L.nameOf(b);
+    }
+    convNames(); $('to').addEventListener('change', convNames); $('from').addEventListener('change', convNames);
+    async function convSay(side, text) {
+      const [a, b] = convLangs(), t = X.turn(side, a, b), line = String(text || '').trim().slice(0, L.MAX_CHARS); if (!line) return;
+      const li = el('li', {}, el('b', { textContent: '…', lang: t.to }), el('span', { textContent: L.nameOf(t.from) + ': ' + line, lang: t.from }));
+      li.style.textAlign = t.side === 'b' ? 'right' : 'left'; $('convLog').append(li);
+      const mine = X.correctionFor(store.fix, line, t.from, t.to);
+      const { ok, j } = mine ? { ok: true, j: { text: mine } } : await post({ text: line, from: t.from, to: t.to }).catch(() => ({ ok: false, j: {} }));
+      li.firstChild.textContent = ok && j.text ? j.text : W.none; li.firstChild.dir = RTL.test(t.to) ? 'rtl' : 'ltr';
+      if (ok && j.text) speak(j.text, t.to);
+    }
+    let convRec = null;
+    function convListen(side) {
+      if (!SR) return say($('speak').title, true);
+      if (convRec) { convRec.stop(); return; }
+      const t = X.turn(side, ...convLangs()), b = $(side === 'b' ? 'convB' : 'convA');
+      convRec = new SR(); convRec.lang = t.from; convRec.interimResults = false; convRec.continuous = false; b.setAttribute('aria-pressed', 'true');
+      convRec.onresult = (e) => { let s2 = ''; for (const r of e.results) s2 += r[0].transcript; convSay(side, s2); };
+      convRec.onerror = (e) => say((de ? 'Mikrofon: ' : 'Microphone: ') + (e.error || 'no'), true);
+      convRec.onend = () => { convRec = null; b.setAttribute('aria-pressed', 'false'); };
+      try { convRec.start(); } catch (_) { convRec = null; b.setAttribute('aria-pressed', 'false'); }
+    }
+    $('convA').addEventListener('click', () => convListen('a')); $('convB').addEventListener('click', () => convListen('b'));
+    $('convTA').addEventListener('click', () => { convSay('a', $('convT').value); $('convT').value = ''; });
+    $('convTB').addEventListener('click', () => { convSay('b', $('convT').value); $('convT').value = ''; });
+    $('convT').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('convTA').click(); } });
+    $('convClear').addEventListener('click', () => $('convLog').replaceChildren());
+
+    // camera or photo: a picture downsized on the device, read by Verse, then translated
+    $('camera').addEventListener('click', () => $('pic').click());
+    $('pic').addEventListener('change', async () => {
+      const f = $('pic').files && $('pic').files[0]; if (!f) return;
+      say(W.reading + '…'); $('out').className = 'big wait'; $('out').textContent = W.reading + '…';
+      try {
+        const img = await createImageBitmap(f); const s = Math.min(1, 1024 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); const data = c.toDataURL('image/jpeg', .82);
+        const { ok, j } = await post({ image: data, from: state.from === 'auto' ? '' : state.from, to: state.to, ...extras() }); if (!ok || !j.text) throw new Error(j.error || 'no');
+        $('in').value = (j.read || '').slice(0, L.MAX_CHARS); count(); last = $('in').value.trim() + '␞' + state.from + '␞' + state.to + '␞' + JSON.stringify(extras());
+        show(j.text, j.from, j.detected, j.via, j.note);
+        const it = { q: $('in').value.trim(), out: j.text, from: state.from === 'auto' ? '' : state.from, detected: j.detected || '', to: state.to, at: Date.now() };
+        store.hist = [it].concat(store.hist).slice(0, MAX_HIST); keep(); lists();
+      } catch (e) { $('out').className = 'big'; $('out').textContent = ''; say(/no text/i.test(String(e.message)) ? W.nothingRead : W.none, true); }
+      $('pic').value = '';
+    });
+
+    // ---- many words at once: documents, websites, several languages. Chunks under the 5,000-character cap, with progress and a stop ----
+    let stopped = false;
+    $('stop').addEventListener('click', () => { stopped = true; });
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    async function one(text, to, label) { // one chunk, waiting out the per-minute cap when it is hit
+      for (let tries = 0; ; tries++) {
+        if (stopped) throw new Error(de ? 'Gestoppt' : 'Stopped');
+        const { ok, status, j } = await post({ text, from: state.from === 'auto' ? '' : state.from, to, ...extras() });
+        if (ok && j.text) return j.text;
+        if (status === 429 && tries < 8) { say(W.waiting + '…'); await wait(15000); say(label); continue; }
+        throw new Error(j.error || W.none);
+      }
+    }
+    async function translateAll(texts, label, to = state.to) {
+      const D = await docs(), B = D.batchesOf(texts), outs = []; let done = 0;
+      stopped = false; $('progRow').hidden = false; $('prog').value = 0;
+      try {
+        for (const batch of B.batches) {
+          say(label + ': ' + Math.round(done / B.pieces * 100) + '%');
+          let got = (await one(batch.join('\n\n'), to, label)).split(/\n{2,}/);
+          if (got.length !== batch.length) { got = []; for (const p of batch) got.push((await one(p, to, label)).replace(/\s*\n\s*/g, ' ')); } // the pieces did not come back one for one: ask for each alone
+          outs.push(...got); done += batch.length; $('prog').value = done / B.pieces;
+        }
+      } finally { $('progRow').hidden = true; }
+      return B.join(outs);
+    }
+    const download = (bytes, name, type) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bytes], { type })); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 8000); };
+    const TYPES = { docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
+    async function pdfPages(buf) { // pdf.js (bundled with the site) reads each page's text on this device
+      const m = await import('/vendor/pdfjs-6.4.299/build/pdf.min.js'); m.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js';
+      const task = m.getDocument({ data: new Uint8Array(buf), isEvalSupported: false, disableFontFace: true, useSystemFonts: false, stopAtErrors: false }), D = await docs();
+      try {
+        const doc = await task.promise, pages = [];
+        for (let i = 1; i <= Math.min(doc.numPages, 300); i++) {
+          const p = await doc.getPage(i); let out = '', y = null;
+          for (const it of (await p.getTextContent()).items) { if (typeof it.str !== 'string') continue; const iy = it.transform ? it.transform[5] : null; if (y != null && iy != null && Math.abs(iy - y) > 2 && !out.endsWith('\n')) out += '\n'; out += it.str + (it.hasEOL ? '\n' : ''); if (iy != null) y = iy; }
+          pages.push(D.pdfParagraphs(out)); p.cleanup();
+        }
+        return pages;
+      } finally { task.destroy(); }
+    }
+    $('file').addEventListener('click', () => $('doc').click());
+    $('doc').addEventListener('change', async () => {
+      const f = $('doc').files && $('doc').files[0]; $('doc').value = ''; if (!f) return;
+      const base = f.name.replace(/\.[a-z0-9]+$/i, ''), ext = (f.name.match(/\.[a-z0-9]+$/i) || [''])[0].toLowerCase(), label = W.translatingDoc + ' ' + f.name;
+      try {
+        const D = await docs(), kind = D.kindOf(f.name);
+        if (kind) {
+          if (f.size > 25e6) throw new Error(de ? 'Höchstens 25 MB' : 'At most 25 MB a document');
+          say(label + '…'); const buf = await f.arrayBuffer();
+          if (kind === 'pdf') {
+            const pages = await pdfPages(buf), flat = pages.flat(); if (!flat.length) throw new Error(de ? 'Keine Wörter im PDF (ein Scan? Dann ein Foto davon mit „Kamera oder Foto")' : 'No words in the PDF (a scan? Then take a photo of a page with Camera or photo)');
+            const tr = await translateAll(flat, label); let k = 0;
+            download(await D.docxOf(pages.map((p) => p.map(() => tr[k++])), state.to), base + '.' + state.to + '.docx', TYPES.docx);
+            return say((de ? 'Fertig: ' : 'Done: ') + base + '.' + state.to + '.docx (' + pages.length + (de ? ' Seiten). ' : ' pages). ') + W.pdfNote);
+          }
+          const doc = await D.readOffice(f.name, buf); if (!doc.parts.length) throw new Error(de ? 'Keine Wörter im Dokument' : 'No words in the document');
+          const tr = await translateAll(doc.parts, label);
+          download(await doc.rebuild(tr), base + '.' + state.to + ext, TYPES[kind]);
+          return say((de ? 'Fertig: ' : 'Done: ') + base + '.' + state.to + ext + ' (' + doc.parts.length + (de ? ' Absätze, Layout erhalten)' : ' paragraphs, layout kept)'));
+        }
+        if (f.size > 500000) throw new Error(de ? 'Höchstens 500 KB' : 'At most 500 KB a file');
+        const fp = L.fileParts(f.name, await f.text()); if (!fp.parts.length) throw new Error(de ? 'Keine Wörter in der Datei' : 'No words in the file');
+        const out = await translateAll(fp.parts, label);
+        download(fp.rebuild(out), base + '.' + state.to + (ext || '.txt'), fp.kind === 'json' ? 'application/json' : 'text/plain');
+        say((de ? 'Fertig: ' : 'Done: ') + base + '.' + state.to + (ext || '.txt') + ' (' + fp.parts.length + (de ? ' Teile' : ' parts') + ')');
+      } catch (e) { say(String(e.message || e), true); }
+    });
+
+    // ---- a word of the result: other words for it, each rewriting the sentence, and its dictionary ----
+    let popFor = null;
+    function closePop() { $('pop').hidden = true; if (popFor) popFor.classList.remove('on'); popFor = null; }
+    const sentenceAt = (text, i) => { if (!Intl.Segmenter) return { s: text, at: 0 }; for (const s of new Intl.Segmenter(state.to, { granularity: 'sentence' }).segment(text)) if (i >= s.index && i < s.index + s.segment.length) return { s: s.segment, at: s.index }; return { s: text, at: 0 }; };
+    async function openPop(w) {
+      closePop(); popFor = w; w.classList.add('on');
+      const word = w.textContent, i = +w.dataset.i, sent = sentenceAt(state.out, i), pop = $('pop'), pane = $('outPane');
+      const list = el('ul', {}, el('li', { className: 'empty', textContent: W.working + '…' }));
+      const head = el('div', { className: 'row' }, el('b', { id: 'popW', textContent: word, lang: state.to }));
+      const lis = el('button', { type: 'button', textContent: W.listen }); lis.addEventListener('click', () => speak(word, state.to));
+      const look = el('button', { type: 'button', textContent: W.lookUp }); look.addEventListener('click', () => { closePop(); dictionary(word, state.to, srcLang(), true); });
+      const x = el('button', { type: 'button', textContent: '×', title: W.close }); x.setAttribute('aria-label', W.close); x.addEventListener('click', () => { const ww = popFor; closePop(); if (ww) ww.focus(); });
+      head.append(lis, look, x);
+      pop.replaceChildren(head, el('small', { textContent: W.otherWords }), list); pop.hidden = false;
+      const top = w.offsetTop + w.offsetHeight + 6; pop.style.top = top + 'px'; pop.style.left = Math.max(8, Math.min(w.offsetLeft, pane.clientWidth - pop.offsetWidth - 8)) + 'px';
+      const { ok, j } = await post({ mode: 'alts', word, sentence: sent.s.trim(), source: $('in').value.trim().slice(0, 1200), from: state.from === 'auto' ? state.detected : state.from, to: state.to }).catch(() => ({ ok: false, j: {} }));
+      if (popFor !== w) return;
+      const alts = (ok && j.alternatives) || []; list.replaceChildren();
+      if (!alts.length) list.append(el('li', { className: 'empty', textContent: W.noAlts }));
+      for (const a of alts) {
+        const b = el('button', { type: 'button' }, el('b', { textContent: a.text }), a.sentence ? el('small', { textContent: ' · ' + a.sentence }) : null);
+        b.addEventListener('click', () => swapIn(a, i, word, sent)); list.append(el('li', {}, b));
+      }
+      const firstB = list.querySelector('button'); if (firstB) firstB.focus();
+    }
+    function swapIn(a, i, word, sent) { // the alternative put in: its rewritten sentence when it has one, else just the word
+      const s = sent.s, lead = s.match(/^\s*/)[0], tail = s.match(/\s*$/)[0];
+      const out = a.sentence ? state.out.slice(0, sent.at) + lead + a.sentence + tail + state.out.slice(sent.at + s.length) : state.out.slice(0, i) + a.text + state.out.slice(i + word.length);
+      const h = store.hist[0]; if (h && h.out === state.out) { h.out = out; keep(); lists(); }
+      state.out = out; renderOut(out); $('roman').textContent = L.romanize(out, state.to); closePop();
+      say((de ? 'Getauscht: ' : 'Swapped in: ') + a.text);
+      const nw = [...$('out').querySelectorAll('.w')].find((e) => e.textContent === a.text.split(/\s+/)[0]); if (nw) nw.focus();
+    }
+    $('out').addEventListener('click', (e) => { const w = e.target.closest && e.target.closest('.w'); if (w) openPop(w); });
+    $('out').addEventListener('keydown', (e) => {
+      const w = e.target.closest && e.target.closest('.w'); if (!w) return;
+      const ws = [...$('out').querySelectorAll('.w')], k = ws.indexOf(w);
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPop(w); }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const n = ws[Math.max(0, Math.min(ws.length - 1, k + (e.key === 'ArrowRight' ? 1 : -1)))]; w.tabIndex = -1; n.tabIndex = 0; n.focus(); }
+    });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('pop').hidden) { const w = popFor; closePop(); if (w) w.focus(); } });
+    addEventListener('click', (e) => { if (!$('pop').hidden && !$('pop').contains(e.target) && !(e.target.closest && e.target.closest('.w'))) closePop(); });
+
+    // ---- the dictionary for one word: meanings (Wiktionary), translations and how common each is, examples, forms ----
+    let dictSeq = 0;
+    async function dictionary(word, from, to, focus) {
+      const my = ++dictSeq, box = $('dict'); box.hidden = false;
+      box.replaceChildren(el('h2', { id: 'dictH', textContent: W.dictionary + ': ' + word }), el('p', { className: 'empty', textContent: W.working + '…' }));
+      const { ok, j } = await post({ mode: 'word', text: word, from, to, ui }).catch(() => ({ ok: false, j: {} }));
+      if (my !== dictSeq) return;
+      const kids = [el('h2', { id: 'dictH', textContent: W.dictionary + ': ' + word + ' (' + L.nameOf(j.from || from) + ' → ' + L.nameOf(j.to || to) + ')' })];
+      if (!ok || (!(j.pos || []).length && !(j.alternatives || []).length)) kids.push(el('p', { className: 'empty', textContent: ok ? W.noEntry : (j.error || W.none) }));
+      for (const p of j.pos || []) kids.push(el('h3', { textContent: p.pos }), el('ol', {}, ...p.senses.map((s) => el('li', {}, s.def, s.example ? el('div', {}, el('i', { textContent: '“' + s.example + '”', lang: j.from })) : null, s.example_tr ? el('div', {}, el('small', { textContent: s.example_tr, lang: j.to })) : null))));
+      if ((j.alternatives || []).length) {
+        const F = { common: [3, W.common], 'less common': [2, W.lessCommon], rare: [1, W.rare] };
+        kids.push(el('h3', { textContent: W.translations }), el('div', {}, ...j.alternatives.map((a) => { const f = F[a.freq] || F.rare, bar = el('span', { className: 'freq', title: f[1] }, ...[1, 2, 3].map((n) => el('i', { className: n <= f[0] ? 'on' : '' })));
+          bar.setAttribute('role', 'img'); bar.setAttribute('aria-label', f[1]); return el('div', { className: 'alt' }, el('b', { textContent: a.text, lang: j.to }), bar, el('small', { textContent: [f[1], a.means].filter(Boolean).join(' · ') })); })));
+      }
+      if ((j.examples || []).length) kids.push(el('h3', { textContent: W.examples }), el('ul', {}, ...j.examples.map((x) => el('li', {}, el('span', { textContent: x.src, lang: j.from }), el('br'), el('small', { textContent: x.tgt, lang: j.to })))));
+      if ((j.forms || []).length) kids.push(el('h3', { textContent: W.forms }), el('div', { className: 'chips' }, ...j.forms.map((f) => el('span', { textContent: f, lang: j.from }))));
+      if ((j.sources || []).length) kids.push(el('p', { className: 'srcs', textContent: (de ? 'Aus: ' : 'From: ') + j.sources.join(', ') }));
+      box.replaceChildren(...kids); if (focus) { box.tabIndex = -1; box.focus(); }
+    }
+    $('dictB').addEventListener('click', () => { const t = $('in').value.trim(); if (wordy(t)) dictionary(t, srcLang(), state.to, true); });
+
+    // ---- a website: its words fetched by Verse (nothing else of it), translated in chunks, shown here; its links open translated too ----
+    async function website(raw) {
+      const box = $('web'); $('webD').open = true; box.replaceChildren(el('p', { className: 'empty', textContent: W.working + '…' }));
+      try {
+        const { ok, j } = await post({ mode: 'page', url: raw }); if (!ok) throw new Error(j.error || W.none);
+        const texts = [j.title || '', ...j.blocks.map((b) => b.text), ...j.links.map((l) => l.text)].map((t) => t || '·');
+        const tr = await translateAll(texts, W.website + ' ' + new URL(j.url).hostname);
+        const host = new URL(j.url).hostname, kids = [el('p', { className: 'srcs' }, (de ? 'Übersetzt von ' : 'Translated from '), el('a', { href: j.url, textContent: host, rel: 'noopener nofollow noreferrer', target: '_blank' }), ' · ' + j.blocks.length + (de ? ' Absätze' : ' blocks') + (j.truncated ? (de ? ' (gekürzt)' : ' (the first part)') : ''))];
+        kids.push(el('h3', { textContent: tr[0] || host, lang: state.to }));
+        j.blocks.forEach((b, k) => kids.push(el(b.h ? (b.h <= 2 ? 'h3' : 'h4') : 'p', { textContent: tr[k + 1], lang: state.to, dir: RTL.test(state.to) ? 'rtl' : 'auto' })));
+        if (j.links.length) {
+          const ls = el('div', { className: 'links' }), off = 1 + j.blocks.length;
+          j.links.forEach((l, k) => { const b = el('button', { type: 'button', textContent: tr[off + k], title: l.url }); b.addEventListener('click', () => { $('url').value = l.url; website(l.url); $('webD').scrollIntoView({ block: 'start' }); }); ls.append(b); });
+          kids.push(el('h4', { textContent: de ? 'Links auf der Seite (übersetzt öffnen)' : 'Links on the page (open translated)' }), ls);
+        }
+        box.replaceChildren(...kids); say('');
+        history.replaceState(null, '', '/translate/?url=' + encodeURIComponent(j.url) + '&to=' + state.to);
+      } catch (e) { box.replaceChildren(); say(String(e.message || e), true); }
+    }
+    $('webF').addEventListener('submit', (e) => { e.preventDefault(); website($('url').value); });
+
+    // ---- one text into several languages at once (tradukka's grid) ----
+    $('multiGo').addEventListener('click', async () => {
+      const text = $('in').value.trim(), codes = [...new Set($('multi').value.split(/[,;\n]+/).map((s) => L.codeOf(s)).filter(Boolean))].slice(0, 8), ul = $('multiOut');
+      if (!text || !codes.length) return say(!text ? W.placeholder : (de ? 'Sprachen, z. B. Französisch, Japanisch' : 'Languages, like French, Japanese'), true);
+      ul.replaceChildren(...codes.map((c) => el('li', { id: 'm-' + c }, el('small', { textContent: L.nameOf(c) }), el('span', { className: 'empty', textContent: W.working + '…' }))));
+      for (const c of codes) {
+        const { ok, j } = await post({ text, from: state.from === 'auto' ? '' : state.from, to: c }).catch(() => ({ ok: false, j: {} }));
+        const li = $('m-' + c), b = el('b', { textContent: ok && j.text ? j.text : W.none, lang: c, dir: RTL.test(c) ? 'rtl' : 'auto' }), cp = el('button', { type: 'button', textContent: W.copy });
+        cp.addEventListener('click', () => copy(cp, b.textContent)); li.replaceChildren(el('small', { textContent: L.nameOf(c) }), b, cp);
+      }
+    });
+    // ---- the glossary, kept per target language ----
+    $('gloss').addEventListener('input', () => { store.gloss[state.to] = $('gloss').value.slice(0, 4000); keep(); last = ''; });
+    // ---- practice: flashcards from the saved phrases (or the history) ----
+    let deck = [], at = 0;
+    function card() {
+      const c = $('card'), it = deck[at % deck.length]; if (!it) { c.hidden = true; return; }
+      const ans = el('span', { textContent: it.out, lang: it.to, hidden: true }), sh = el('button', { type: 'button', textContent: W.show }), nx = el('button', { type: 'button', textContent: W.next });
+      sh.addEventListener('click', () => { ans.hidden = false; sh.hidden = true; speak(it.out, it.to); }); nx.addEventListener('click', () => { at++; card(); });
+      c.replaceChildren(el('small', { textContent: (at % deck.length + 1) + ' / ' + deck.length + ' · ' + L.nameOf(it.to) }), el('div', { textContent: it.q }), ans, el('div', { className: 'row' }, sh, nx)); c.hidden = false; sh.focus();
+    }
+    $('practice').addEventListener('click', () => { const c = $('card'); if (!c.hidden) { c.hidden = true; return; } deck = (store.saved.length ? store.saved : store.hist).slice().sort(() => Math.random() - 0.5); at = 0; if (!deck.length) return say(savedEmpty.textContent); card(); });
+
+    addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
+    tones(); $('gloss').value = store.gloss[state.to] || '';
+    lists(); count(); show('', '', '');
+    if ($('in').value.trim()) go(true); else if (!navigator.onLine) say(W.offline);
+    if (q.get('url')) { $('url').value = q.get('url'); website(q.get('url')); }
+    mountRelated($('related'), '/translate/', [{ label: de ? 'Wörter zählen' : 'Count the words', href: () => ($('in').value.trim() ? '/word-count/?t=' + encodeURIComponent($('in').value.trim()) : null) }], { card: () => C.cardAsk($('in').value, state.from, state.to) });
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

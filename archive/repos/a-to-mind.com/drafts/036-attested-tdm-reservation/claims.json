@@ -1,0 +1,75 @@
+{
+  "kind": "attested-tdm-reservation",
+  "run": "036",
+  "status": "candidate",
+  "hold": true,
+  "promoted": false,
+  "issue": "https://github.com/atomeam/a-to-mind.com/issues/36",
+  "resource": "/.well-known/tdmrep.json",
+  "live_file": false,
+  "reservation": null,
+  "policy_url": null,
+  "algo": "sha256",
+  "head": {
+    "json": {"algo":"sha256","kind":"attested-tdm-reservation","live_file":false,"reservation":null,"resource":"absent"},
+    "sha256": "2de2e7d09bdec0048686efe519f46df70f7bfc49f8ef1b2cf9c7c56e86dbddf6"
+  },
+  "body_sha256": "e7df591282d489170c62a4a306b3d9b367955b680e923602171d96622d4d735e",
+  "lines": [
+    {
+      "id": "tdm#036",
+      "line": "tdm#036|kind:attested-tdm-reservation|resource:/.well-known/tdmrep.json|absent-until-seal:deny-serve|reservation-1:candidate|honor-claim:deny|hash:sha256|seal:human",
+      "sha256": "1efcf0bac38f4665834716e851d138233d14a835b6c96c8caa5f5eb47727dba2"
+    },
+    {
+      "id": "claim#route",
+      "line": "claim#route|text:No live /.well-known/tdmrep.json until a human seals the reservation text.",
+      "sha256": "8908f5842f3469e1a1a003d35da8c5fa3db95d4531a0c45682506c7fb4813a02"
+    },
+    {
+      "id": "claim#absent",
+      "line": "claim#absent|text:A missing tdmrep.json means this origin does not implement TDMRep. It is not a grant to mine.",
+      "sha256": "58f7e483c916d3576e7acf09127098c944c960564c239b85e30154ce93343845"
+    },
+    {
+      "id": "claim#one",
+      "line": "claim#one|text:tdm-reservation 1 is a rights-reservation signal under the TDMRep note. It is not a crawler block.",
+      "sha256": "08dcc7a4bd809f30e4ed3c6b5b8192bccc2791516363f4b2d62241a3a5545729"
+    },
+    {
+      "id": "claim#zero",
+      "line": "claim#zero|text:tdm-reservation 0 is denied. This draft does not publish a permission to mine.",
+      "sha256": "39237082b74ac55fc95ca862ae7a8ffa1c9fb5fe3cabd56074ad4b0cf0b67ed6"
+    },
+    {
+      "id": "claim#policy",
+      "line": "claim#policy|text:No tdm-policy URL until seal. An ODRL file is not invented here.",
+      "sha256": "86c7dde002ecb1183b52f896f49dfbf7b1e9eb1907079091a9731478cfc5d3d7"
+    },
+    {
+      "id": "claim#robots",
+      "line": "claim#robots|text:Content-Signal and robots.txt Disallow are preferences. They do not prove a crawler stopped.",
+      "sha256": "f4ea0ed725c57fdf52b94a7a1caddb282d08531244e8db59f8cf1fc28a851a1e"
+    },
+    {
+      "id": "claim#names",
+      "line": "claim#names|text:IETF train-ai and Cloudflare ai-train are different names. This page does not collapse them into one standard.",
+      "sha256": "09684d63a505bfae6abf5dabdbef255bb45d44a0d2d0a6c191e51cf568d963e6"
+    },
+    {
+      "id": "claim#badge",
+      "line": "claim#badge|text:No opted-out or all-AI-blocked badge. Public state stays unattested.",
+      "sha256": "9e499825cadb2f2c07734b67c2661c3296d8be2a2e33a47a6305c66dab12040c"
+    },
+    {
+      "id": "claim#tokens",
+      "line": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page#tdm",
+      "line": "page#tdm|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "60b2e59e8f5a0a450ed5df6987ae44f7e151390cae707572655192f820a892fe"
+    }
+  ]
+}

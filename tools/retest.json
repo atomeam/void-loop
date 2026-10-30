@@ -1,5 +1,5 @@
 {
  "note": "the daily re-test of skills not tested in 7 days (tools/retest.mjs; asked by Verse): each loaded, its examples routed, its near misses kept out, its own unit test run. Read by tools/families.mjs: a passing skill was tested that day, a failing one has no passing self-test.",
- "at": "2026-10-20",
+ "at": "2026-10-29",
  "retested": {}
 }

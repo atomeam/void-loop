@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recipes: search by ingredient, scale servings, cook step by step · Verse</title>
+<meta name="description" content="Recipes by name or by what is in your fridge: every quantity scaled to your servings, cups to ml and °F to °C, one step at a time with timers to tap while you cook, a shopping list, a share link and a history on your device. A dozen classics work offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Recipes · Verse">
+<meta property="og:description" content="Search by name or ingredient, scale the servings, swap cups for ml, cook one step at a time with timers, keep a shopping list; a dozen classics offline.">
+<meta property="og:url" content="https://a-to-mind.com/recipes/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>if (location.search) document.documentElement.classList.add('pre'); // a recipe is coming from the link: hold the paint until it is drawn (html.pre)</script>
+<style>
+  /* a-to-mind.com/recipes/ (Versus' Allrecipes floor): one file and two small modules; nothing stored but the history and the ticks */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  h2.name { font-size: 24px; color: var(--ink); margin: 0 0 4px; line-height: 1.2; }
+  input[type=search] { font: inherit; font-size: 17px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go, button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .seg { display: inline-flex; gap: 0; } .seg button { border-radius: 0; } .seg button:first-child { border-radius: 999px 0 0 999px; } .seg button:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  @media (max-width: 640px) { .panes { grid-template-columns: 1fr; } }
+  .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; min-height: 120px; }
+  .meta { font-size: 14px; color: var(--soft); display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 4px 0 8px; }
+  .meta a { color: inherit; }
+  .serv { display: inline-flex; align-items: center; gap: 4px; } .serv button { min-height: 36px; min-width: 36px; padding: 2px 10px; font-size: 18px; line-height: 1; }
+  .serv input { font: inherit; font-size: 16px; width: 3.2em; text-align: center; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; min-height: 36px; box-sizing: border-box; }
+  ul.ings, ol.steps { margin: 0; padding: 0; list-style: none; }
+  ul.ings li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.4; }
+  ul.ings li:first-child, ol.steps li:first-child { border-top: 0; }
+  ul.ings input { width: 28px; height: 28px; margin: 0; flex: none; accent-color: var(--accent); } /* a tap target of its own, not only through its label (the gate counts under 24 px) */
+  /* a link that carries a recipe draws it after load; until that first draw the page stays unpainted, so nothing on it jumps (layout shift 0.52 before) */
+  /* only what comes after the search box is held: the title, its line and the box stay readable (a page read with the network cut, before the module
+     runs, must still show its words: innerText leaves out what visibility hides, and the offline check once read an empty page) */
+  html.pre main > :not(h1):not(.sub):not(#f) { visibility: hidden; }
+  ul.ings label { flex: 1 1 auto; cursor: pointer; } ul.ings li.done label { color: var(--soft); text-decoration: line-through; }
+  ol.steps li { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.45; }
+  ol.steps .n { flex: none; min-width: 2.6em; font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .02em; padding-top: 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+  .chips a, .list a.chip { font-size: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+  .list li:first-child { border-top: 0; }
+  .list li a { color: inherit; text-decoration: none; flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; display: flex; gap: 10px; align-items: center; }
+  .list li a b { font-weight: 500; } .list li small { color: var(--soft); font-size: 12px; }
+  .list img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex: none; background: var(--line); }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; } .note.bad { color: var(--bad); }
+  .empty { font-size: 13px; color: var(--soft); }
+  img.hero { width: 100%; height: 200px; /* its box is kept before the picture arrives: nothing below it moves */ object-fit: cover; border-radius: 10px; margin: 0 0 8px; display: block; }
+  [hidden] { display: none !important; }
+  /* the Common asks row as lib/toolkit.js styles it, here for the first paint (its style lands after load and moved the row: layout shift 0.13) */
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  /* saved recipes, the shopping list, diets: panes that open under the search; a recipe's nutrition, stars and notes */
+  .kit { margin-top: 10px; } .kit button { border-color: var(--accent); font-weight: 600; } .kit button[aria-expanded="true"] { background: var(--accent); color: var(--on-accent, #fff); }
+  .checks { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .checks label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; cursor: pointer; font-size: 15px; }
+  .checks input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
+  input.box, select.box, textarea.box { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
+  textarea.box { width: 100%; min-height: 64px; resize: vertical; }
+  .nutri { font-size: 15px; margin: 6px 0 0; } .nutri b { font-weight: 600; } .nutri small { color: var(--soft); font-size: 12px; }
+  .tags { font-size: 13px; color: var(--soft); margin: 2px 0 0; min-height: 1.4em; }
+  .stars { display: inline-flex; gap: 2px; } .stars button { min-width: 36px; min-height: 36px; padding: 0; border: 0; font-size: 22px; line-height: 1; color: var(--soft); background: transparent; }
+  .stars button[aria-pressed="true"] { background: transparent; border: 0; font-weight: 400; color: var(--soft); } .stars button.on { color: var(--accent); }
+  .shop li label { display: flex; gap: 10px; align-items: center; flex: 1 1 auto; min-height: 40px; cursor: pointer; } .shop li.done label { color: var(--soft); text-decoration: line-through; }
+  .shop input[type=checkbox] { width: 24px; height: 24px; margin: 0; flex: none; accent-color: var(--accent); } .shop .from { font-size: 12px; color: var(--soft); flex-basis: 100%; margin-top: 8px; }
+  .shop a.find { flex: none; font-size: 13px; color: var(--accent); padding: 4px 8px; min-height: 32px; display: inline-flex; align-items: center; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; } .srcs a { color: inherit; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* step mode: one step, large, the whole screen, while the hands are busy */
+  #cook { position: fixed; inset: 0; background: var(--bg); color: var(--ink); z-index: 10; display: flex; flex-direction: column; padding: 16px; box-sizing: border-box; }
+  #cook .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; color: var(--soft); }
+  #cook .text { flex: 1 1 auto; display: flex; align-items: center; font-size: clamp(22px, 4.5vw, 34px); line-height: 1.35; max-width: 760px; margin: 0 auto; width: 100%; }
+  #cook .timers { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0; min-height: 44px; }
+  #cook .count { font-size: 40px; font-variant-numeric: tabular-nums; text-align: center; min-height: 1.2em; }
+  #cook .voicebar { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 6px 0; min-height: 44px; } #cook #cookHeard { font-size: 14px; color: var(--soft); }
+  #cook .vnote { font-size: 12px; color: var(--soft); text-align: center; margin: 0 0 8px; }
+  #cook .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } #cook .nav button { min-height: 56px; font-size: 18px; }
+  @media print { button, form, #cook, #related, #asks, #histH, #hist, .srcs, .chips, .note, h1, .sub { display: none !important; } .panes { display: block; } .pane { border: 0; padding: 0; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/recipes/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Recipes","url":"https://a-to-mind.com/recipes/","description":"Recipes by name or by what is in your fridge: every quantity scaled to your servings, cups to ml and °F to °C, one step at a time with timers to tap while you cook, a shopping list, a share link and a history on your device. A dozen classics work offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"pancake recipe, what can i make with eggs, recipe by ingredients, scale a recipe servings, cups to ml recipe, step by step cooking, easy dinner recipes","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/recipes/?q={dish}"},"dish-input":"required name=dish"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Recipes","item":"https://a-to-mind.com/recipes/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1 id="title">Recipes</h1>
+  <p class="sub" id="sub">Search by name or by ingredient; every quantity scaled to your servings, one step at a time while you cook, timers to tap, cups to ml. A dozen classics work offline.</p>
+
+  <form id="f" autocomplete="off" role="search">
+    <label class="vh" for="q" id="qL">A dish, or ingredients with commas</label>
+    <input type="search" id="q" placeholder="A dish, or ingredients with commas" maxlength="60" enterkeyhint="search">
+    <div class="row">
+      <div class="seg" role="group" aria-label="Search by">
+        <button type="button" id="byName" aria-pressed="true">By name</button>
+        <button type="button" id="byIng" aria-pressed="false" title="What can I make with eggs, spinach: the recipes that use what you have">By ingredient</button>
+      </div>
+      <button type="submit" class="go" id="go">Search</button>
+    </div>
+    <div class="note" id="note" role="status"></div>
+  </form>
+  <!-- the dozen built in (lib/recipes.js BUILT_IN), in the HTML so they are there on the first paint: added after load they pushed the page down (layout shift 0.54) -->
+  <div class="row kit" id="kit">
+    <button type="button" id="savedBtn" aria-expanded="false" aria-controls="savedPane">Saved</button>
+    <button type="button" id="listBtn" aria-expanded="false" aria-controls="listPane">Shopping list</button>
+    <button type="button" id="filtBtn" aria-expanded="false" aria-controls="filt">Diets</button>
+    <button type="button" id="planBtn" aria-expanded="false" aria-controls="planPane">Meal plan</button>
+    <button type="button" id="browseBtn" aria-expanded="false" aria-controls="browse">Browse</button>
+    <button type="button" id="impBtn" aria-expanded="false" aria-controls="imp">Import</button>
+  </div>
+  <section class="pane" id="imp" hidden aria-labelledby="impH" style="margin-top:8px;min-height:0">
+    <h2 id="impH" style="margin:0 0 4px">Import a recipe</h2>
+    <form id="impLink" class="row" autocomplete="off"><label class="vh" for="impUrl" id="impUrlL">Address of a recipe page</label><input class="box" type="url" id="impUrl" inputmode="url" maxlength="500" placeholder="Address of a recipe page (https://…)" style="flex:1 1 200px"><button type="submit" class="go" id="impGo">Import</button></form>
+    <div class="row"><input type="file" id="impFile" accept="image/*" hidden><button type="button" id="impPhoto">From a photo</button></div>
+    <label class="vh" for="impText" id="impTextL">Or paste the text</label><textarea class="box" id="impText" maxlength="12000" placeholder="Title, then Ingredients, then Method" style="margin-top:6px;min-height:96px"></textarea>
+    <div class="row"><button type="button" id="impTextGo">Import text</button></div>
+    <p class="note" id="impNote" role="status"></p>
+    <p class="note" id="impNotes"></p>
+  </section>
+  <section class="pane" id="browse" hidden aria-labelledby="browseH" style="margin-top:8px;min-height:0">
+    <h2 id="browseH" style="margin:0 0 4px">Browse</h2>
+    <div class="row"><label class="vh" for="bArea" id="bAreaL">Cuisine</label><select class="box" id="bArea"></select><label class="vh" for="bCat" id="bCatL">Category</label><select class="box" id="bCat"></select></div>
+    <div class="row"><label class="vh" for="bOcc" id="bOccL">Occasion</label><select class="box" id="bOcc"></select><label class="vh" for="bTime" id="bTimeL">Time</label><select class="box" id="bTime"></select></div>
+    <p class="note" id="bNote"></p>
+  </section>
+  <section class="pane" id="planPane" hidden aria-labelledby="planH" style="margin-top:8px;min-height:0">
+    <h2 id="planH" style="margin:0 0 4px">Meal plan</h2>
+    <ul class="list" id="planList"></ul>
+    <div class="row"><button type="button" id="weekList">Add the week to the shopping list</button><button type="button" id="weekCal">Put the week on my calendar</button></div>
+  </section>
+  <section class="pane" id="filt" hidden aria-labelledby="filtH" style="margin-top:8px;min-height:0">
+    <h2 id="filtH" style="margin:0 0 4px">Diet and allergies</h2>
+    <div class="checks" id="dietBox"></div>
+    <label class="vh" for="without" id="withoutL">Without (e.g. onion, nuts)</label><input class="box" id="without" maxlength="80" placeholder="Without (e.g. onion, nuts)" style="width:100%;margin-top:6px">
+  </section>
+  <section class="pane" id="listPane" hidden aria-labelledby="listH" style="margin-top:8px;min-height:0">
+    <h2 id="listH" style="margin:0 0 4px">Shopping list</h2>
+    <div class="row"><label for="storePick" id="storePickL" style="font-size:14px;color:var(--soft)">Shop at</label><select class="box" id="storePick"></select></div>
+    <ul class="list shop" id="shop"></ul>
+    <p class="note" id="storeNote"></p>
+    <div class="row"><button type="button" id="shopCopy">Copy list</button><button type="button" id="shopDone">Clear ticked</button><button type="button" class="bad" id="shopAll">Clear all</button></div>
+  </section>
+  <section class="pane" id="savedPane" hidden aria-labelledby="savedH" style="margin-top:8px;min-height:0">
+    <h2 id="savedH" style="margin:0 0 4px">Saved</h2>
+    <div class="chips" id="colls"></div>
+    <ul class="list" id="savedList"></ul>
+  </section>
+  <div class="chips" id="builtin" aria-label="Built in, works offline"><a href="/recipes/?q=pancakes">Pancakes</a><a href="/recipes/?q=omelette">Omelette</a><a href="/recipes/?q=tomato%20pasta">Tomato pasta</a><a href="/recipes/?q=chicken%20soup">Chicken noodle soup</a><a href="/recipes/?q=guacamole">Guacamole</a><a href="/recipes/?q=rice">Steamed rice</a><a href="/recipes/?q=oatmeal">Oatmeal</a><a href="/recipes/?q=grilled%20cheese">Grilled cheese</a><a href="/recipes/?q=vinaigrette">Salad dressing (vinaigrette)</a><a href="/recipes/?q=chocolate%20chip%20cookies">Chocolate chip cookies</a><a href="/recipes/?q=lemonade">Lemonade</a><a href="/recipes/?q=banana%20bread">Banana bread</a></div>
+
+  <div class="panes" id="panes" hidden>
+    <section class="pane" aria-labelledby="name">
+      <img class="hero" id="hero" alt="" hidden>
+      <h2 class="name" id="name"></h2>
+      <div class="meta">
+        <span class="serv"><span id="servL">Servings</span>
+          <button type="button" id="less" aria-label="One serving fewer">−</button>
+          <label class="vh" for="serv">Servings</label><input type="number" id="serv" min="1" max="200" step="1" value="4" inputmode="numeric">
+          <button type="button" id="more" aria-label="One serving more">+</button><span id="yield"></span></span>
+        <span id="time"></span>
+        <span id="from"></span>
+      </div>
+      <p class="tags" id="tags"></p>
+      <p class="nutri" id="nutri"></p>
+      <p class="nutri" id="cost"></p>
+      <h2 id="ingH">Ingredients</h2>
+      <ul class="ings" id="ings"></ul>
+      <p class="note" id="shopNote">Tick what you already have; Copy list takes the rest.</p>
+      <div class="row">
+        <div class="seg" role="group" aria-label="Units">
+          <button type="button" id="uUs" aria-pressed="true">US</button>
+          <button type="button" id="uMetric" aria-pressed="false">Metric</button>
+        </div>
+        <button type="button" id="copy" title="Copy the ingredients still to buy">Copy list</button>
+        <button type="button" id="share" title="A link that carries this recipe, its servings and units">Share link</button>
+        <button type="button" id="print">Print</button>
+      </div>
+      <div class="row">
+        <button type="button" id="saveBtn" aria-pressed="false">Save</button>
+        <label class="vh" for="coll" id="collL">Collection</label><select class="box" id="coll" hidden></select>
+        <button type="button" id="toList">Add to shopping list</button>
+        <label class="vh" for="planDay" id="planDayL">Plan for a day</label><select class="box" id="planDay"></select>
+      </div>
+      <div class="row" style="margin-top:10px"><span id="rateL" style="font-size:14px;color:var(--soft)">Your rating</span><span class="stars" id="stars" role="group" aria-labelledby="rateL"></span></div>
+      <label class="vh" for="myNote" id="myNoteL">Your notes</label><textarea class="box" id="myNote" maxlength="2000" placeholder="Your notes" style="margin-top:6px"></textarea>
+    </section>
+    <section class="pane" aria-labelledby="stepsH">
+      <div class="row" style="margin:0 0 6px;justify-content:space-between">
+        <h2 id="stepsH" style="margin:0">Steps</h2>
+        <button type="button" class="go" id="cookBtn" title="One step at a time in large type, the screen kept on, timers to tap">Step mode</button>
+      </div>
+      <ol class="steps" id="steps"></ol>
+    </section>
+  </div>
+
+  <!-- below the recipe: the list of more recipes arrives from the API after the built-in one is drawn, and above it pushed the recipe down (layout shift 0.11 on the live page) -->
+  <ul class="list" id="results" hidden></ul>
+
+  <h2 id="mineH" hidden>My recipes</h2>
+  <ul class="list" id="mine" hidden></ul>
+
+  <h2 id="histH">History</h2>
+  <ul class="list" id="hist"><li class="empty" id="histEmpty">The last 20 recipes you opened stay here, on this device, and open offline.</li></ul>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/recipes/?q=pancakes">Pancakes</a><a href="/recipes/?q=omelette">Omelette</a><a href="/recipes/?q=tomato%20pasta">Tomato pasta</a><a href="/recipes/?q=chicken%20soup">Chicken soup</a><a href="/recipes/?q=cookies">Chocolate chip cookies</a><a href="/recipes/?i=eggs%2Cspinach">What can I make with eggs and spinach</a><a href="/recipes/?q=pancakes&amp;servings=8">Pancakes for 8</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/convert/">Unit converter</a> <a href="/translate/">Translate</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+
+  <p class="srcs" id="srcs">A dozen classics are built into the page and need no network. Every other recipe comes from <a href="https://www.themealdb.com/" rel="noopener">TheMealDB</a>, a free public recipe catalogue; its recipes carry no servings, so 4 is assumed and said. Nutrition per serving is an estimate from the ingredients (kcal, protein, fat, carbs), and so is the cost (typical US supermarket prices, a rough guide). Diets and allergies (vegetarian, vegan, gluten-free, dairy-free, egg-free, nut-free) and "without" any ingredient filter what you find. A shopping list collects from several recipes; save recipes into collections, with your own rating and notes. Only the words you search go to Verse; your history, list, saved recipes, ratings and ticks stay on this device.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<div id="cook" hidden role="dialog" aria-modal="true" aria-labelledby="cookName">
+  <div class="top"><span id="cookName"></span><span id="cookPos"></span><button type="button" id="cookClose">Close</button></div>
+  <div class="text" id="cookText"></div>
+  <div class="timers" id="cookTimers"></div>
+  <div class="count" id="cookCount" aria-live="polite"></div>
+  <div class="voicebar" id="voiceBar" hidden><button type="button" id="cookVoice" aria-pressed="false">Voice</button><span id="cookHeard" role="status"></span></div>
+  <p class="vnote" id="voiceNote" hidden></p>
+  <div class="nav"><button type="button" id="cookPrev">Previous</button><button type="button" id="cookNext">Next</button></div>
+</div>
+
+<script type="module">
+  // everything after the first paint: the page shows its box and its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, R, K, RI, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js'), import('/lib/kitchen.js'), import('/lib/recipeimport.js'), import('/lib/recipe-card.js')]);
+    const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
+    const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
+    const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
+    { const set = { savedBtn: KW.saved, listBtn: KW.list, filtBtn: KW.diets, filtH: KW.dietsH, withoutL: KW.withoutL, listH: KW.list, savedH: KW.saved, shopCopy: KW.copyAll, shopDone: KW.clearDone, cookVoice: KW.voice, shopAll: KW.clearAll, storePickL: KW.shopAt, toList: KW.toList, planBtn: KW.plan, planH: KW.plan, impBtn: KW.impBtn, impH: KW.impH, impGo: KW.impGo, impPhoto: KW.fromPhoto, impUrlL: KW.linkPh, impTextL: KW.pasteL, impTextGo: KW.impText, bOccL: KW.occasion, bTimeL: KW.time, browseBtn: KW.browse, browseH: KW.browse, bAreaL: KW.cuisine, bCatL: KW.category, weekList: KW.weekToList, weekCal: KW.weekToCal, planDayL: KW.planFor, rateL: KW.rating, myNoteL: KW.notes };
+      if (de) for (const [id, t] of Object.entries(set)) $(id).textContent = t; $('without').placeholder = KW.withoutL; $('impUrl').placeholder = KW.linkPh; $('impText').placeholder = KW.pastePh; $('myNote').placeholder = KW.notesPh; }
+    if (de) {
+      document.documentElement.lang = 'de'; document.title = 'Rezepte: nach Zutat suchen, Portionen umrechnen, Schritt für Schritt kochen · Verse';
+      $('title').textContent = W.title; $('sub').textContent = W.sub; $('q').placeholder = W.placeholder; $('qL').textContent = W.placeholder; $('go').textContent = W.search;
+      $('byName').textContent = W.byName; $('byIng').textContent = W.byIngredient; $('servL').textContent = W.servings; $('ingH').textContent = W.ingredients; $('stepsH').textContent = W.steps;
+      $('shopNote').textContent = W.shopping; $('uMetric').textContent = W.metric; $('copy').textContent = W.copyList; $('share').textContent = W.share; $('print').textContent = W.print; $('cookBtn').textContent = W.stepMode;
+      $('histH').textContent = W.history; histEmpty.textContent = W.histEmpty; $('cookClose').textContent = W.close; $('cookPrev').textContent = W.prev; $('cookNext').textContent = W.next;
+      $('builtin').setAttribute('aria-label', W.builtIn); $('srcs').textContent = 'Ein Dutzend Klassiker sind in die Seite eingebaut und brauchen kein Netz. Alle anderen Rezepte kommen von TheMealDB, einem freien öffentlichen Rezeptkatalog; seine Rezepte nennen keine Portionen, darum werden 4 angenommen. Nährwerte pro Portion sind eine Schätzung aus den Zutaten (kcal, Eiweiß, Fett, Kohlenhydrate), ebenso die Kosten (typische US-Supermarktpreise, ein grober Anhalt). Ernährung und Allergien (vegetarisch, vegan, glutenfrei, ohne Milchprodukte, ohne Ei, ohne Nüsse) und „ohne“ jede Zutat filtern, was du findest. Eine Einkaufsliste sammelt aus mehreren Rezepten; Rezepte in Sammlungen speichern, mit eigener Bewertung und Notizen. Nur die Suchwörter gehen an Verse; Verlauf, Liste, gespeicherte Rezepte, Bewertungen und Häkchen bleiben auf diesem Gerät.';
+    }
+    const q = new URLSearchParams(location.search);
+    let store = { hist: [], ticks: {}, units: '', mine: [] };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    if (!Array.isArray(store.mine)) store.mine = [];
+    // saved recipes in collections, the shopping list, your stars and notes, the diet filters: all on this device (lib/kitchen.js)
+    if (!Array.isArray(store.saved)) store.saved = []; if (!Array.isArray(store.plan)) store.plan = []; if (!Array.isArray(store.shop)) store.shop = []; if (!store.notes || typeof store.notes !== 'object') store.notes = {};
+    if (!store.filt || typeof store.filt !== 'object') store.filt = { diets: [], without: '' }; if (!Array.isArray(store.filt.diets)) store.filt.diets = []; // recipes saved by chat on the stage (skills/recipes-fill.js): found by name beside the built-in ones
+    const pool = () => store.mine.filter((x) => x && x.recipe).map((x) => x.recipe).concat(R.BUILT_IN);
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    // units: the link, then the last choice, then the browser's country (the US measures in cups; everyone else in grams)
+    const state = { mode: q.has('i') ? 'i' : 'q', q: q.get('q') || '', i: q.get('i') || '', id: q.get('id') || '', recipe: null, servings: 0, units: q.get('units') || store.units || (/-US$/i.test(navigator.language || '') ? 'us' : 'metric'), step: 0 };
+    const say = (msg, bad) => { $('note').textContent = msg || ''; $('note').className = 'note' + (bad ? ' bad' : ''); };
+    const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+    const copy = async (b, v) => { try { await navigator.clipboard.writeText(v); toast(b, W.copied); } catch (_) { toast(b, 'Select and copy it by hand'); } };
+    const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
+    const linkTo = (r) => (r.id.startsWith('mealdb-') ? '/recipes/?id=' + r.id.slice(7) : '/recipes/?q=' + encodeURIComponent(r.id.replace(/-/g, ' ')));
+    const setMode = (m) => { state.mode = m; $('byName').setAttribute('aria-pressed', String(m === 'q')); $('byIng').setAttribute('aria-pressed', String(m === 'i')); };
+    const link = () => R.shareLink(location.origin, { q: state.q, i: state.i, id: state.recipe && state.recipe.id.startsWith('mealdb-') ? state.recipe.id.slice(7) : state.id, servings: state.servings, base: state.recipe ? state.recipe.servings : 0, units: state.units });
+    const factor = () => (state.recipe && state.servings ? state.servings / state.recipe.servings : 1);
+    const line = (s) => { const t = R.scale(s, factor()); return state.units === 'metric' ? R.swapUnits(t, 'metric') : R.swapUnits(t, 'us'); };
+    const stepText = (s) => (state.units === 'metric' ? R.swapUnits(s, 'metric') : R.swapUnits(s, 'us'));
+
+    // the dozen built in, as chips: each a link, so the page answers with no network
+    // the page carries them already; drawn again only when the list in lib/recipes.js has changed since
+    if ([...$('builtin').children].map((a) => a.getAttribute('href')).join() !== R.BUILT_IN.map(linkTo).join()) $('builtin').replaceChildren(...R.BUILT_IN.map((r) => { const a = el('a', '', r.name); a.href = linkTo(r); return a; }));
+
+    function render() {
+      document.documentElement.classList.remove('pre'); // drawn in this same task: the page appears whole, nothing on it moves
+      const r = state.recipe; if (!r) { $('panes').hidden = true; return; }
+      $('panes').hidden = false; $('results').hidden = $('results').children.length === 0;
+      $('name').textContent = r.name; $('hero').hidden = !r.image; if (r.image) { $('hero').src = r.image; $('hero').alt = r.name; }
+      $('serv').value = state.servings; $('yield').textContent = r.yield ? ' ' + r.yield : (r.servingsGuessed ? ' (' + W.guessed + ')' : '');
+      $('time').textContent = r.time ? W.ready + ' ' + r.time + ' ' + W.minutes : '';
+      const from = $('from'); from.replaceChildren();
+      if (r.from) { from.append(r.from + (r.area ? ' · ' + r.area : '') + (r.category ? ' · ' + r.category : '')); if (r.source) { const a = el('a', '', W.source); a.href = r.source; a.rel = 'noopener'; from.append(' · ', a); } if (r.video) { const a = el('a', '', W.video); a.href = r.video; a.rel = 'noopener'; from.append(' · ', a); } }
+      else from.textContent = W.builtIn;
+      $('uUs').setAttribute('aria-pressed', String(state.units !== 'metric')); $('uMetric').setAttribute('aria-pressed', String(state.units === 'metric'));
+      // what it is for diets, and an estimate per serving (said as one, and from how many of its lines)
+      $('tags').textContent = K.dietsOf(r).map((d) => KW[d]).join(' · ');
+      const nu = K.nutritionOf(r.ingredients, r.servings), nb = $('nutri'); nb.replaceChildren();
+      if (nu.kcal > 0 && nu.counted >= Math.ceil(nu.of * 0.6)) { nb.append(KW.perServing + ': '); nb.append(el('b', '', nu.kcal + ' ' + KW.kcal)); nb.append(' · ' + nu.protein + ' g ' + KW.protein + ' · ' + nu.fat + ' g ' + KW.fat + ' · ' + nu.carbs + ' g ' + KW.carbs + ' '); nb.append(el('small', '', '(' + KW.fromN(nu.counted, nu.of) + ')')); }
+      const co = K.costOf(r.ingredients, r.servings), cb2 = $('cost'); cb2.replaceChildren();
+      if (co.total > 0 && co.counted >= Math.ceil(co.of * 0.6)) { cb2.append(KW.costL + ': '); cb2.append(el('b', '', '$' + co.perServing.toFixed(2) + ' ' + KW.perServ)); cb2.append(' · $' + co.total.toFixed(2) + ' ' + KW.forAll + ' '); cb2.append(el('small', '', '(' + KW.priceNote + '; ' + KW.fromN(co.counted, co.of) + ')')); }
+      drawMine(r);
+      const ticks = store.ticks[r.id] || [], ul = $('ings'); ul.replaceChildren();
+      r.ingredients.forEach((s, k) => {
+        const li = el('li', ticks.includes(k) ? 'done' : ''), cb = el('input'); cb.type = 'checkbox'; cb.id = 'ing' + k; cb.checked = ticks.includes(k);
+        const lb = el('label', '', line(s)); lb.htmlFor = cb.id;
+        cb.addEventListener('change', () => { const t = (store.ticks[r.id] || []).filter((x) => x !== k); if (cb.checked) t.push(k); store.ticks[r.id] = t; li.className = cb.checked ? 'done' : ''; keep(); });
+        li.append(cb, lb); ul.append(li);
+      });
+      const ol = $('steps'); ol.replaceChildren();
+      r.steps.forEach((s, k) => { const li = el('li'); li.append(el('span', 'n', W.step + ' ' + (k + 1)), el('span', '', stepText(s))); ol.append(li); });
+      if (!$('cook').hidden) cookShow();
+    }
+    function open(r, { note = '' } = {}) {
+      state.recipe = r; state.servings = +q.get('servings') > 0 && !state.opened ? Math.min(200, +q.get('servings')) : r.servings; state.opened = true;
+      render(); say(note); document.dispatchEvent(new Event('tk:card')); // a recipe that came back from the network: the stage card link follows it
+      const it = { id: r.id, name: r.name, at: Date.now(), recipe: r };
+      store.hist = [it].concat(store.hist.filter((h) => h.id !== r.id)).slice(0, MAX_HIST); keep(); lists();
+    }
+    function results(items, head) {
+      const ul = $('results'); ul.replaceChildren(); ul.hidden = !items.length; if (head) ul.append(el('li', 'empty', head));
+      for (const it of items) {
+        const li = el('li'), a = el('a'); a.href = it.href;
+        if (it.image) { const im = el('img'); im.src = it.image; im.alt = ''; im.loading = 'lazy'; a.append(im); }
+        a.append(el('b', '', it.name)); li.append(a); if (it.small) li.append(el('small', '', it.small));
+        if (it.recipe) a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', it.href); state.q = it.q || ''; state.i = ''; state.id = ''; open(it.recipe); window.scrollTo({ top: $('panes').offsetTop - 8, behavior: 'smooth' }); });
+        ul.append(li);
+      }
+    }
+    // Verse's own API first (cached on the edge an hour), TheMealDB itself when that does not answer; null when neither does
+    async function ask(params) {
+      try { const r = await fetch('/api/recipes?' + params); if (r.ok) { const j = await r.json(); if (j && j.ok) return j; } if (r.status === 400) return { ok: true, recipes: [], list: [] }; } catch (_) {}
+      try {
+        const p = new URLSearchParams(params); let j;
+        if (p.get('id')) { j = await (await fetch(MEALDB + 'lookup.php?i=' + encodeURIComponent(p.get('id')))).json(); return { ok: true, recipes: (j.meals || []).map(R.fromMeal).filter(Boolean) }; }
+        if (p.get('c') || p.get('a')) { const k = p.get('c') ? 'c' : 'a'; j = await (await fetch(MEALDB + 'filter.php?' + k + '=' + encodeURIComponent(p.get(k)))).json(); return { ok: true, list: (j.meals || []).slice(0, 30).map((m) => ({ id: String(m.idMeal), name: m.strMeal, image: m.strMealThumb })), all: true }; }
+        if (p.get('q')) { j = await (await fetch(MEALDB + 'search.php?s=' + encodeURIComponent(p.get('q')))).json(); return { ok: true, recipes: (j.meals || []).map(R.fromMeal).filter(Boolean).slice(0, 12) }; }
+        j = await (await fetch(MEALDB + 'filter.php?i=' + encodeURIComponent(R.ingredientsOf(p.get('i'))[0] || ''))).json(); return { ok: true, list: (j.meals || []).slice(0, 12).map((m) => ({ id: String(m.idMeal), name: m.strMeal, image: m.strMealThumb })), all: true };
+      } catch (_) { return null; }
+    }
+    const mealRows = (recipes, head) => results(recipes.map((r) => ({ name: r.name, href: linkTo(r), image: r.image, small: [r.from, r.area, r.category].filter(Boolean).join(' · '), recipe: r })), head);
+    async function go() {
+      const text = $('q').value.trim(); $('results').hidden = true; $('results').replaceChildren();
+      if (state.id) { // a TheMealDB recipe by id: from the history when it is there (offline too), else fetched
+        const had = store.hist.find((h) => h.id === 'mealdb-' + state.id); if (had) open(had.recipe);
+        const j = navigator.onLine ? await ask('id=' + encodeURIComponent(state.id)) : null;
+        if (j && j.recipes && j.recipes[0]) open(j.recipes[0]); else if (!had) say(navigator.onLine ? W.none : W.offline, true);
+        return;
+      }
+      if (!text) { state.recipe = null; render(); return; }
+      const f = filters(text), keepOut = (r) => K.fits(r, f), told = describe(f);
+      if (state.mode === 'i') {
+        state.i = text; state.q = '';
+        const mine = R.byIngredients(text, pool()).filter((x) => keepOut(x.recipe)), want = R.ingredientsOf(text);
+        const rows = mine.map((x) => ({ name: x.recipe.name, href: linkTo(x.recipe), small: W.have + ' ' + x.have.join(', ') + (x.missing.length ? ' · ' + W.missing + ': ' + x.missing.join(', ') : ''), recipe: x.recipe }));
+        results(rows, rows.length ? '' : (navigator.onLine ? '' : W.none)); if (mine.length) open(mine[0].recipe); else { state.recipe = null; render(); }
+        if (!navigator.onLine) return say(W.offline);
+        const j = await ask('i=' + encodeURIComponent(want.join(','))); if (!j || !j.list || !j.list.length) return;
+        const more = j.list.map((m) => ({ name: m.name, href: '/recipes/?id=' + m.id, image: m.image, small: 'TheMealDB' + (j.all ? '' : ' · ' + W.missing) + (told ? ' · ' + KW.unchecked : '') }));
+        results(rows.concat(more)); if (!mine.length) say(W.more + ': ' + j.list.length);
+        return;
+      }
+      state.q = text; state.i = '';
+      const mine = R.find(f.dish || text, pool()).filter(keepOut); if (mine.length) open(mine[0], { note: told ? KW.showing + ': ' + told : '' }); else { state.recipe = null; render(); }
+      if (mine.length > 1) mealRows(mine.slice(1));
+      if (!navigator.onLine) { if (!mine.length) say(W.offline, true); return; }
+      const j = await ask('q=' + encodeURIComponent(R.dishOf(f.dish || text) || f.dish || text));
+      if (!j) { if (!mine.length) say(told ? KW.fitNone + ': ' + told : W.none, true); return; }
+      const got = (j.recipes || []).filter((r) => !mine.some((m) => m.name.toLowerCase() === r.name.toLowerCase())).filter(keepOut);
+      if (!mine.length && got.length) { open(got[0], { note: told ? KW.showing + ': ' + told : '' }); if (got.length > 1) mealRows(got.slice(1), W.more); return; }
+      if (!mine.length && !got.length) return say(told ? KW.fitNone + ': ' + told : W.none, true);
+      if (got.length) mealRows(mine.slice(1).concat(got), W.more);
+    }
+    const row = (it) => { const li = el('li'), a = el('a'); a.href = linkTo(it.recipe); a.append(el('b', '', it.name)); const sm = el('small', '', new Date(it.at).toLocaleDateString()); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = it.id.startsWith('mealdb-') ? it.id.slice(7) : ''; state.q = state.id ? '' : it.recipe.id.replace(/-/g, ' '); state.i = ''; open(it.recipe); window.scrollTo({ top: 0, behavior: 'smooth' }); }); li.append(a, sm); return li; };
+    function lists() {
+      const ms = $('mine'); ms.replaceChildren(); $('mineH').hidden = ms.hidden = !store.mine.length;
+      for (const x of store.mine) { if (!x || !x.recipe) continue; const li = el('li'), a = el('a'); a.href = linkTo(x.recipe); a.append(el('b', '', x.name)); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = ''; state.q = x.name; state.i = ''; open(x.recipe); window.scrollTo({ top: 0, behavior: 'smooth' }); }); li.append(a, el('small', '', x.recipe.servings + ' ' + W.servings.toLowerCase())); ms.append(li); }
+      const hs = $('hist'); hs.replaceChildren(); if (!store.hist.length) hs.append(histEmpty); else for (const it of store.hist) hs.append(row(it)); }
+
+    // servings: every quantity on the page follows the number
+    const setServ = (n) => { n = Math.max(1, Math.min(200, Math.round(+n || 1))); state.servings = n; render(); };
+    $('less').addEventListener('click', () => setServ(state.servings - 1)); $('more').addEventListener('click', () => setServ(state.servings + 1));
+    $('serv').addEventListener('change', () => setServ($('serv').value)); $('serv').addEventListener('input', () => { if (+$('serv').value > 0) setServ($('serv').value); });
+    const setUnits = (u) => { state.units = u; store.units = u; keep(); render(); };
+    $('uUs').addEventListener('click', () => setUnits('us')); $('uMetric').addEventListener('click', () => setUnits('metric'));
+    $('copy').addEventListener('click', () => { const r = state.recipe; if (!r) return; const ticks = store.ticks[r.id] || []; const left = r.ingredients.map((s, k) => [s, k]).filter(([, k]) => !ticks.includes(k)).map(([s]) => '☐ ' + line(s)); copy($('copy'), r.name + ' (' + state.servings + ' ' + (r.yield || W.servings.toLowerCase()) + ')\n' + (left.length ? left : r.ingredients.map(line)).join('\n')); });
+    $('share').addEventListener('click', async () => { const url = link(); if (navigator.share) { try { await navigator.share({ title: 'Verse: ' + (state.recipe ? state.recipe.name : W.title), url }); return; } catch (_) {} } copy($('share'), url); toast($('share'), W.shared); });
+    $('print').addEventListener('click', () => window.print());
+    $('byName').addEventListener('click', () => { setMode('q'); if ($('q').value.trim()) go(); }); $('byIng').addEventListener('click', () => { setMode('i'); if ($('q').value.trim()) go(); });
+    $('f').addEventListener('submit', (e) => { e.preventDefault(); state.id = ''; const t = $('q').value.trim(); if (/,/.test(t) || /^what can i (?:make|cook)/i.test(t)) setMode('i'); history.replaceState(null, '', state.mode === 'i' ? '/recipes/?i=' + encodeURIComponent(t) : '/recipes/?q=' + encodeURIComponent(t)); go(); });
+
+    // diets and "without": the boxes in Diets, and what the search says ("pancakes without eggs", "vegan curry")
+    function filters(text) { const a = K.askOf(text), extra = String(store.filt.without || '').split(/,|\band\b|\bund\b/).map((x) => x.trim()).filter(Boolean); return { dish: a.dish, without: [...new Set([...a.without, ...extra])], diets: [...new Set([...a.diets, ...store.filt.diets])] }; }
+    const describe = (f) => [...f.diets.map((d) => KW[d] || d), ...f.without.map((w) => (de ? 'ohne ' : 'without ') + w)].join(', ');
+    function drawDiets() { const box = $('dietBox'); box.replaceChildren(); for (const d of Object.keys(K.DIETS)) { const lb = el('label'), cb = el('input'); cb.type = 'checkbox'; cb.checked = store.filt.diets.includes(d); cb.addEventListener('change', () => { store.filt.diets = cb.checked ? [...store.filt.diets, d] : store.filt.diets.filter((x) => x !== d); keep(); if ($('q').value.trim()) go(); }); lb.append(cb, el('span', '', KW[d])); box.append(lb); } $('without').value = store.filt.without || ''; }
+    $('without').addEventListener('change', () => { store.filt.without = $('without').value.trim().slice(0, 80); keep(); if ($('q').value.trim()) go(); });
+    const pane = (btn, id, draw) => $(btn).addEventListener('click', () => { const open = $(id).hidden; $(id).hidden = !open; $(btn).setAttribute('aria-expanded', String(open)); if (open) draw(); });
+    // a recipe of your own keeping: saved (in a collection), its stars and your notes
+    const savedOf = (r) => store.saved.find((x) => x.id === r.id);
+    const colls = () => [...new Set(store.saved.map((x) => x.coll).filter(Boolean))].sort();
+    function drawMine(r) {
+      const sv = savedOf(r), sb = $('saveBtn'); sb.setAttribute('aria-pressed', String(!!sv)); sb.textContent = sv ? KW.savedOn : KW.save;
+      const cs = $('coll'); cs.hidden = !sv; cs.setAttribute('aria-label', KW.collName); cs.replaceChildren(...[['', KW.noColl], ...colls().map((c) => [c, c]), ['__new', KW.newColl]].map(([v, t]) => { const o = el('option', '', t); o.value = v; return o; })); cs.value = (sv && sv.coll) || '';
+      const n = store.notes[r.id] || {}, st = $('stars'); st.replaceChildren();
+      for (let i = 1; i <= 5; i++) { const b = el('button', n.stars >= i ? 'on' : '', n.stars >= i ? '★' : '☆'); b.type = 'button'; b.setAttribute('aria-label', KW.stars(i)); b.setAttribute('aria-pressed', String(n.stars === i)); b.addEventListener('click', () => { const cur = store.notes[r.id] || {}; store.notes[r.id] = { ...cur, stars: cur.stars === i ? 0 : i, at: Date.now() }; keep(); drawMine(r); }); st.append(b); }
+      $('myNote').value = n.text || '';
+      // plan it for one of the next 7 days
+      const pd = $('planDay'); pd.replaceChildren(el('option', '', KW.planFor)); pd.firstChild.value = '';
+      for (const [i, d] of K.nextDays(new Date(), 7).entries()) { const o = el('option', '', (i === 0 ? KW.today : i === 1 ? KW.tomorrow : d.date.toLocaleDateString(navigator.language || 'en', { weekday: 'long' })) + (store.plan.some((x) => x.day === d.key && x.id === r.id) ? ' ✓' : '')); o.value = d.key; pd.append(o); }
+    }
+    $('planDay').addEventListener('change', () => { const r = state.recipe, day = $('planDay').value; if (!r || !day) return; store.plan = K.withPlanned(store.plan, day, r, state.servings, K.nextDays()[0].key); keep(); drawMine(r); say(KW.planned + ': ' + r.name); if (!$('planPane').hidden) drawPlan(); });
+    function drawPlan() {
+      const ul = $('planList'); ul.replaceChildren(); const days = K.nextDays(new Date(), 7); store.plan = store.plan.filter((x) => x.day >= days[0].key);
+      if (!store.plan.length) ul.append(el('li', 'empty', KW.planEmpty));
+      for (const [i, d] of days.entries()) { const on = store.plan.filter((x) => x.day === d.key); if (!on.length) continue; ul.append(el('li', 'from', (i === 0 ? KW.today : i === 1 ? KW.tomorrow : d.date.toLocaleDateString(navigator.language || 'en', { weekday: 'long', day: 'numeric', month: 'short' }))));
+        for (const x of on) { const li = el('li'), a = el('a'), del = el('button', '', '×'); a.href = linkTo(x.recipe); a.append(el('b', '', x.name)); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = x.id.startsWith('mealdb-') ? x.id.slice(7) : ''; state.q = state.id ? '' : x.name; state.i = ''; open(x.recipe); $('panes').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+          del.type = 'button'; del.setAttribute('aria-label', KW.remove + ': ' + x.name); del.addEventListener('click', () => { store.plan = store.plan.filter((y) => y !== x); keep(); drawPlan(); }); li.append(a, el('small', '', x.servings + ' ' + W.servings.toLowerCase()), del); ul.append(li); } }
+      $('weekList').disabled = $('weekCal').disabled = !store.plan.length;
+    }
+    // the week's recipes into the shopping list, each at its planned servings and in your units
+    $('weekList').addEventListener('click', () => { for (const x of store.plan) { const f = x.servings / (x.recipe.servings || 1), lines = x.recipe.ingredients.map((s2) => { const t = R.scale(s2, f); return state.units === 'metric' ? R.swapUnits(t, 'metric') : R.swapUnits(t, 'us'); }); store.shop = K.withLines(store.shop, x.name + ' (' + x.servings + ')', lines); } keep(); toast($('weekList'), KW.added); if (!$('listPane').hidden) drawShop(); });
+    // and onto the Calendar page's own calendar (lib/agenda.js: the one store the calendar keeps), an all-day "Meal: <recipe>" a day, once
+    $('weekCal').addEventListener('click', async () => { const [A, CL] = await Promise.all([import('/lib/agenda.js'), import('/lib/calendar.js')]); let evs = A.events();
+      for (const x of store.plan) { const title = KW.meal + ': ' + x.name; if (evs.some((e) => e.title === title && e.start === x.day)) continue; evs = CL.withEvent(evs, { title, start: x.day, end: x.day, allDay: true, notes: location.origin + linkTo(x.recipe) }); }
+      A.write(evs); toast($('weekCal'), KW.onCal); });
+    $('saveBtn').addEventListener('click', () => { const r = state.recipe; if (!r) return; store.saved = savedOf(r) ? store.saved.filter((x) => x.id !== r.id) : [{ id: r.id, name: r.name, recipe: r, coll: '', at: Date.now() }, ...store.saved].slice(0, 500); keep(); drawMine(r); if (!$('savedPane').hidden) drawSaved(); });
+    $('coll').addEventListener('change', () => { const r = state.recipe, sv = r && savedOf(r); if (!sv) return; let c = $('coll').value; if (c === '__new') { c = (prompt(KW.collName) || '').trim().slice(0, 40); } sv.coll = c; keep(); drawMine(r); if (!$('savedPane').hidden) drawSaved(); });
+    $('myNote').addEventListener('input', () => { const r = state.recipe; if (!r) return; store.notes[r.id] = { ...(store.notes[r.id] || {}), text: $('myNote').value.slice(0, 2000), at: Date.now() }; keep(); });
+    let showColl = '';
+    function drawSaved() {
+      const cs = $('colls'); cs.replaceChildren(); for (const c of ['', ...colls()]) { const b = el('button', '', c || KW.all); b.type = 'button'; b.setAttribute('aria-pressed', String(showColl === c)); b.addEventListener('click', () => { showColl = c; drawSaved(); }); cs.append(b); }
+      const ul = $('savedList'); ul.replaceChildren(); const list = store.saved.filter((x) => !showColl || x.coll === showColl);
+      if (!list.length) ul.append(el('li', 'empty', KW.savedEmpty));
+      for (const x of list) { const li = el('li'), a = el('a'); a.href = linkTo(x.recipe); a.append(el('b', '', x.name)); a.addEventListener('click', (e) => { e.preventDefault(); history.replaceState(null, '', a.href); state.id = x.id.startsWith('mealdb-') ? x.id.slice(7) : ''; state.q = state.id ? '' : x.name; state.i = ''; open(x.recipe); $('panes').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+        const st = (store.notes[x.id] || {}).stars; li.append(a, el('small', '', [x.coll, st ? '★'.repeat(st) : ''].filter(Boolean).join(' · '))); ul.append(li); }
+    }
+    // the shopping list: what is still to buy from each recipe added, at its servings and units, ticked off in the shop
+    function drawShop() {
+      const ul = $('shop'); ul.replaceChildren(); let last = null;
+      $('listH').textContent = KW.list + (store.shop.length ? ' (' + store.shop.filter((x) => !x.done).length + ' ' + KW.items + ')' : '');
+      if (!store.shop.length) ul.append(el('li', 'empty', KW.listEmpty));
+      for (const x of store.shop) {
+        if (x.from !== last) { last = x.from; ul.append(el('li', 'from', x.from)); }
+        const li = el('li', x.done ? 'done' : ''), lb = el('label'), cb = el('input'), del = el('button', '', '×'); cb.type = 'checkbox'; cb.checked = !!x.done; lb.append(cb, el('span', '', x.text)); del.type = 'button'; del.setAttribute('aria-label', KW.remove + ': ' + x.text);
+        cb.addEventListener('change', () => { x.done = cb.checked; keep(); drawShop(); }); del.addEventListener('click', () => { store.shop = store.shop.filter((y) => y !== x); keep(); drawShop(); });
+        const href = !x.done && K.storeLink(store.shopStore || K.defaultStore(navigator.language), x.text);
+        if (href) { const a = el('a', 'find', KW.find); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.setAttribute('aria-label', KW.find + ': ' + K.searchName(x.text)); li.append(lb, a, del); } else li.append(lb, del);
+        ul.append(li);
+      }
+      $('storeNote').textContent = store.shop.length ? KW.storeNote : '';
+    }
+    { const sp = $('storePick'), cur = store.shopStore || K.defaultStore(navigator.language); for (const st of K.STORES) sp.append(Object.assign(el('option', '', st.name), { value: st.id })); sp.value = cur; sp.addEventListener('change', () => { store.shopStore = sp.value; keep(); drawShop(); }); }
+    $('toList').addEventListener('click', () => { const r = state.recipe; if (!r) return; const ticks = store.ticks[r.id] || []; const lines = r.ingredients.map((s2, k) => [s2, k]).filter(([, k]) => !ticks.includes(k)).map(([s2]) => line(s2));
+      store.shop = K.withLines(store.shop, r.name + ' (' + state.servings + ')', lines); keep(); toast($('toList'), KW.added); if (!$('listPane').hidden) drawShop(); });
+    $('shopCopy').addEventListener('click', () => copy($('shopCopy'), K.listText(store.shop)));
+    $('shopDone').addEventListener('click', () => { store.shop = store.shop.filter((x) => !x.done); keep(); drawShop(); });
+    $('shopAll').addEventListener('click', () => { if (store.shop.length && !confirm(KW.clearAll + '?')) return; store.shop = []; keep(); drawShop(); });
+    pane('savedBtn', 'savedPane', drawSaved); pane('listBtn', 'listPane', drawShop); pane('filtBtn', 'filt', drawDiets); pane('planBtn', 'planPane', drawPlan); pane('impBtn', 'imp', () => { $('impNotes').textContent = KW.linkNote + ' ' + KW.photoNote; }); pane('browseBtn', 'browse', drawBrowse);
+    // browsing TheMealDB by cuisine or by category (its own closed lists, lib/recipes.js): the meals as a list to open
+    // importing: a recipe page's own recipe data (read by /api/recipeimport), a photo of a card (read by a vision model there, then dropped, and put in the box to check), or pasted text
+    // (lib/recipeimport.js); the recipe joins My recipes and opens, said to be checked
+    const note2 = (t, bad) => { $('impNote').textContent = t || ''; $('impNote').className = 'note' + (bad ? ' bad' : ''); };
+    function takeIn(r, from) {
+      if (!r) return note2(KW.noRecipe, true);
+      let id = r.id, n = 2; const same = store.mine.find((x) => x.recipe && r.source && x.recipe.source === r.source);
+      if (same) id = same.id; else while (store.mine.some((x) => x.id === id) || R.BUILT_IN.some((x) => x.id === id)) id = r.id + '-' + n++;
+      const rec = { ...r, id }; store.mine = [{ id, name: rec.name, recipe: rec }, ...store.mine.filter((x) => x.id !== id)].slice(0, 200); keep(); lists();
+      history.replaceState(null, '', '/recipes/?q=' + encodeURIComponent(rec.name)); state.q = rec.name; state.i = ''; state.id = ''; $('q').value = rec.name; open(rec, { note: KW.imported + (from ? ': ' + from : '') + '. ' + KW.checkIt + '.' }); note2(KW.imported + ': ' + rec.name); $('panes').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+    $('impLink').addEventListener('submit', async (e) => { e.preventDefault(); const u = $('impUrl').value.trim(); if (!u) return $('impUrl').focus(); if (!navigator.onLine) return note2(W.offline, true); note2(KW.reading);
+      const r = await fetch('/api/recipeimport?url=' + encodeURIComponent(u)).then(async (x) => ({ s: x.status, j: await x.json().catch(() => ({})) }), () => ({ s: 0, j: {} }));
+      if (!r.j.ok) return note2(r.j.error || W.none, true); takeIn(r.j.recipe, r.j.recipe.from); });
+    $('impTextGo').addEventListener('click', () => { const r = RI.parseRecipeText($('impText').value); if (!r) return note2(KW.noRecipe + ': ' + KW.pastePh, true); takeIn(r, ''); $('impText').value = ''; });
+    $('impPhoto').addEventListener('click', () => $('impFile').click());
+    $('impFile').addEventListener('change', async () => { const f = $('impFile').files[0]; $('impFile').value = ''; if (!f) return; if (!navigator.onLine) return note2(W.offline, true); note2(KW.reading);
+      try { const bmp = await createImageBitmap(f), k = Math.min(1, 1000 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(bmp.width * k)); c.height = Math.max(1, Math.round(bmp.height * k)); c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+        let url = c.toDataURL('image/jpeg', 0.82); if (url.length > 1000000) url = c.toDataURL('image/jpeg', 0.6);
+        const r = await fetch('/api/recipeimport', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ image: url }) }).then(async (x) => ({ s: x.status, j: await x.json().catch(() => ({})) }));
+        if (!r.j.ok) return note2(r.j.error || KW.photoFail, true); $('impText').value = r.j.text; note2(KW.photoRead); $('impText').focus(); $('impText').scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } catch (_) { note2(KW.photoFail, true); } });
+    // time and occasion: a time works over the recipes whose time Verse knows; an occasion is a TheMealDB category (or the quick-weeknight time)
+    const known = () => [...R.BUILT_IN, ...store.saved.map((x) => x.recipe), ...store.mine.map((x) => x.recipe), ...store.hist.map((x) => x.recipe)].filter(Boolean);
+    const timeRows = (max, head) => { const rs = K.byTime(known(), max); results(rs.map((r) => ({ name: r.name, href: linkTo(r), small: r.time + ' ' + KW.min, recipe: r })), rs.length ? head : KW.timeNone); $('results').hidden = false; $('results').scrollIntoView({ block: 'start', behavior: 'smooth' }); };
+    $('bTime').addEventListener('change', () => { const v = +$('bTime').value; if (!v) return; $('bOcc').value = ''; $('bArea').value = ''; $('bCat').value = ''; timeRows(v, KW.timeUnder(v) + ': ' + K.byTime(known(), v).length); });
+    $('bOcc').addEventListener('change', async () => { const o = K.OCCASIONS.find((x) => x.id === $('bOcc').value); if (!o) return; $('bTime').value = ''; $('bArea').value = ''; $('bCat').value = '';
+      if (o.time) return timeRows(o.time, KW[o.word] + ': ' + K.byTime(known(), o.time).length);
+      if (!navigator.onLine) return say(W.offline, true); const j = await ask('c=' + encodeURIComponent(o.c)); if (!j || !j.list || !j.list.length) return say(W.none, true);
+      results(j.list.map((m) => ({ name: m.name, href: '/recipes/?id=' + m.id, image: m.image, small: KW[o.word] + ' · TheMealDB' })), KW[o.word] + ': ' + j.list.length + ' ' + KW.found); $('results').hidden = false; $('results').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+    function drawBrowse() {
+      if (!$('bOcc').options.length) { $('bOcc').append(Object.assign(el('option', '', KW.occasion + ': ' + KW.pick), { value: '' })); for (const o of K.OCCASIONS) $('bOcc').append(Object.assign(el('option', '', KW[o.word]), { value: o.id }));
+        $('bTime').append(Object.assign(el('option', '', KW.time + ': ' + KW.timeAny), { value: '' })); for (const t of K.TIMES) $('bTime').append(Object.assign(el('option', '', KW.timeUnder(t)), { value: String(t) })); $('bNote').textContent = KW.timeNote; } for (const [id, list, label] of [['bArea', R.AREAS, KW.cuisine], ['bCat', R.CATEGORIES, KW.category]]) { const sel = $(id); if (sel.options.length) continue; sel.append(Object.assign(el('option', '', label + ': ' + KW.pick), { value: '' })); for (const x of list) sel.append(Object.assign(el('option', '', x), { value: x })); } }
+    for (const [id, k, other] of [['bArea', 'a', 'bCat'], ['bCat', 'c', 'bArea']]) $(id).addEventListener('change', async () => {
+      const v = $(id).value; if (!v) return; $(other).value = ''; if (!navigator.onLine) return say(W.offline, true);
+      const j = await ask(k + '=' + encodeURIComponent(v)); if (!j || !j.list || !j.list.length) return say(W.none, true);
+      results(j.list.map((m) => ({ name: m.name, href: '/recipes/?id=' + m.id, image: m.image, small: v + ' · TheMealDB' })), v + ': ' + j.list.length + ' ' + KW.found); $('results').hidden = false; $('results').scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+
+    // step mode: one step in large type, Previous and Next (the arrow keys too), the screen kept awake, every "for 10 minutes" a countdown to tap
+    let lock = null, timer = null, tLeft = 0, tEnd = 0;
+    const wake = async () => { try { if ('wakeLock' in navigator && !lock) { lock = await navigator.wakeLock.request('screen'); lock.addEventListener('release', () => { lock = null; }); } } catch (_) {} };
+    const unwake = () => { try { if (lock) lock.release(); } catch (_) {} lock = null; };
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && !$('cook').hidden) wake(); });
+    const beep = () => { try { const ac = new (window.AudioContext || window.webkitAudioContext)(); for (let i = 0; i < 3; i++) { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = 880; g.gain.value = .2; o.connect(g); g.connect(ac.destination); o.start(ac.currentTime + i * .4); o.stop(ac.currentTime + i * .4 + .25); } } catch (_) {} try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (_) {} };
+    const tick = () => { tLeft = Math.max(0, Math.round((tEnd - Date.now()) / 1000)); $('cookCount').textContent = R.clock(tLeft); document.title = (tLeft ? R.clock(tLeft) + ' · ' : '') + (state.recipe ? state.recipe.name : W.title); if (!tLeft) { clearInterval(timer); timer = null; $('cookCount').textContent = W.timeUp; beep(); cookShow(); } };
+    const startTimer = (secs) => { clearInterval(timer); tEnd = Date.now() + secs * 1000; timer = setInterval(tick, 250); tick(); cookShow(); };
+    const stopTimer = () => { clearInterval(timer); timer = null; tLeft = 0; $('cookCount').textContent = ''; document.title = (state.recipe ? state.recipe.name + ' · ' : '') + W.title; };
+    function cookShow() {
+      const r = state.recipe; if (!r) return; state.step = Math.max(0, Math.min(r.steps.length - 1, state.step));
+      $('cookName').textContent = r.name; $('cookPos').textContent = W.step + ' ' + (state.step + 1) + ' ' + W.of + ' ' + r.steps.length; $('cookText').textContent = stepText(r.steps[state.step]);
+      if (voiceOn) speakStep(false);
+      $('cookPrev').disabled = state.step === 0; $('cookNext').textContent = state.step === r.steps.length - 1 ? W.done : W.next;
+      const ts = $('cookTimers'); ts.replaceChildren();
+      if (timer) { const b = el('button', '', W.stop + ' (' + R.clock(tLeft) + ')'); b.type = 'button'; b.addEventListener('click', () => { stopTimer(); cookShow(); }); ts.append(b); }
+      else for (const t of R.timersIn(r.steps[state.step])) { const b = el('button', '', '⏱ ' + t.label); b.type = 'button'; b.title = W.start; b.addEventListener('click', () => startTimer(t.seconds)); ts.append(b); }
+    }
+    // voice: your browser's speech recognition (lib/kitchen.js voiceCommand reads what it heard): next, back, repeat, timers, ingredients, close; the step is read aloud and
+    // the listening pauses while it is, or it would hear itself. Some browsers send the audio to their maker to turn it into words: said before it is switched on.
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null, voiceOn = false, spokenKey = '';
+    const say2 = (text, then) => { try { if (!window.speechSynthesis) return then && then(); const u = new SpeechSynthesisUtterance(text); u.lang = navigator.language || 'en'; u.onend = u.onerror = () => then && then(); speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (_) { then && then(); } };
+    const listen = () => { if (!voiceOn || $('cook').hidden || !rec) return; try { rec.start(); } catch (_) {} };
+    function speakStep(force) { const r = state.recipe; if (!voiceOn || !r) return; const key = r.id + ':' + state.step; if (!force && key === spokenKey) return; spokenKey = key; try { rec.stop(); } catch (_) {} say2(stepText(r.steps[state.step]), listen); }
+    function voiceDo(cmd) {
+      const r = state.recipe; if (!r) return;
+      if (cmd === 'next') $('cookNext').click(); else if (cmd === 'prev') { if (!$('cookPrev').disabled) $('cookPrev').click(); } else if (cmd === 'repeat') speakStep(true);
+      else if (cmd === 'timer') { const t = R.timersIn(r.steps[state.step])[0]; if (t) startTimer(t.seconds); } else if (cmd === 'stopTimer' || (cmd === 'stop' && timer)) { stopTimer(); cookShow(); }
+      else if (cmd === 'ingredients') { try { rec.stop(); } catch (_) {} say2(r.ingredients.map(line).join('. '), listen); } else if (cmd === 'close') { voiceStop(); cookClose(); }
+    }
+    function voiceStart() {
+      if (!SR) return; rec = new SR(); rec.continuous = true; rec.interimResults = false; rec.lang = navigator.language || 'en';
+      rec.onresult = (e) => { for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) { const said = e.results[i][0].transcript.trim(), cmd = K.voiceCommand(said); $('cookHeard').textContent = KW.heard + ': ' + said.slice(0, 40); if (cmd) voiceDo(cmd); } };
+      rec.onend = () => { if (voiceOn && !$('cook').hidden && !(window.speechSynthesis && speechSynthesis.speaking)) setTimeout(listen, 250); };
+      rec.onerror = (e) => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { voiceStop(); $('cookHeard').textContent = KW.voiceDenied; } };
+      voiceOn = true; $('cookVoice').setAttribute('aria-pressed', 'true'); $('cookVoice').textContent = KW.voiceOn; $('voiceNote').textContent = KW.voiceHelp; spokenKey = ''; speakStep(true);
+    }
+    function voiceStop() { voiceOn = false; try { rec && rec.stop(); } catch (_) {} try { window.speechSynthesis && speechSynthesis.cancel(); } catch (_) {} rec = null; $('cookVoice').setAttribute('aria-pressed', 'false'); $('cookVoice').textContent = KW.voice; $('cookHeard').textContent = ''; $('voiceNote').textContent = KW.voiceNote; }
+    if (SR) { $('voiceBar').hidden = false; $('voiceNote').hidden = false; $('voiceNote').textContent = KW.voiceNote; $('cookVoice').addEventListener('click', () => (voiceOn ? voiceStop() : voiceStart())); }
+    const cookOpen = () => { if (!state.recipe) return; state.step = 0; $('cook').hidden = false; document.body.style.overflow = 'hidden'; wake(); cookShow(); $('cookNext').focus(); };
+    const cookClose = () => { if (voiceOn) voiceStop(); $('cook').hidden = true; document.body.style.overflow = ''; unwake(); $('cookBtn').focus(); };
+    $('cookBtn').addEventListener('click', cookOpen); $('cookClose').addEventListener('click', cookClose);
+    $('cookPrev').addEventListener('click', () => { state.step--; cookShow(); });
+    $('cookNext').addEventListener('click', () => { if (state.recipe && state.step >= state.recipe.steps.length - 1) return cookClose(); state.step++; cookShow(); });
+    addEventListener('keydown', (e) => { if ($('cook').hidden) return; if (e.key === 'ArrowRight' || e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); $('cookNext').click(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); $('cookPrev').click(); } else if (e.key === 'Escape') cookClose(); });
+    addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
+
+    lists(); setMode(state.mode); $('q').value = state.i || state.q;
+    if (state.id || state.q || state.i) go(); else if (!navigator.onLine) say(W.offline);
+    setTimeout(() => document.documentElement.classList.remove('pre'), 2500); // a recipe still on its way after 2.5 s: show the page as it stands
+    mountRelated($('related'), '/recipes/', [{ label: de ? 'Timer stellen' : 'Set a timer', href: () => '/stopwatch/?t=' + encodeURIComponent((state.recipe && R.timersIn(state.recipe.steps.join(' '))[0] && R.timersIn(state.recipe.steps.join(' '))[0].label) || '10 minutes') }, { label: de ? 'Mengen umrechnen' : 'Convert a measure', href: () => '/convert/?q=' + encodeURIComponent('1 cup to ml') }],
+      { card: () => cardAsk(state.recipe, state.servings, state.units) }); // its stage card shows the recipe open here, at its servings and units, not pancakes
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

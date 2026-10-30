@@ -1,0 +1,884 @@
+{
+ "site": "exifeditor.io",
+ "url": "https://exifeditor.io/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "exif-randomizer.js",
+   "t": "js",
+   "b": 3882
+  },
+  {
+   "f": "exif-tool-loader.js",
+   "t": "js",
+   "b": 3265
+  },
+  {
+   "f": "exif-tool.js",
+   "t": "js",
+   "b": 73635
+  },
+  {
+   "f": "footer-nav.js",
+   "t": "js",
+   "b": 6408
+  },
+  {
+   "f": "map.js",
+   "t": "js",
+   "b": 5366
+  },
+  {
+   "f": "metadata-core.js",
+   "t": "js",
+   "b": 10533
+  },
+  {
+   "f": "metadata-reader.js",
+   "t": "js",
+   "b": 5975
+  },
+  {
+   "f": "tailwind.css",
+   "t": "css",
+   "b": 31984
+  },
+  {
+   "f": "exifr-7.1.3.js",
+   "t": "js",
+   "b": 75848
+  },
+  {
+   "f": "piexif-1.0.6.js",
+   "t": "js",
+   "b": 78998
+  },
+  {
+   "f": "graph-tile.js",
+   "t": "js",
+   "b": 24585
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 10711,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 10711,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 11550,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/icon",
+   "t": "css",
+   "b": 569,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 2107,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 5431,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/150x600__ad_125x125.",
+   "t": "js",
+   "b": 54,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 7821,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 3294,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ca-pub-2767160986307404",
+   "t": "js",
+   "b": 226593,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63368,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63368,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 169225,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 169233,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/ufs_web_display.js",
+   "t": "js",
+   "b": 246218,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/ufs_web_display.js",
+   "t": "js",
+   "b": 246218,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/reactive_library_fy2021.js",
+   "t": "js",
+   "b": 239253,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 513979,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/abg_lite_fy2021.js",
+   "t": "js",
+   "b": 21520,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/abg_lite_fy2021.js",
+   "t": "js",
+   "b": 21520,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 1712,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 1712,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/qs_click_protection_fy2021.js",
+   "t": "js",
+   "b": 20918,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/window_focus_fy2021.js",
+   "t": "js",
+   "b": 2746,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/window_focus_fy2021.js",
+   "t": "js",
+   "b": 2746,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 16748,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 26234,
+   "ext": true
+  },
+  {
+   "f": "unpkg.com/cytoscape.min.js",
+   "t": "js",
+   "b": 361029,
+   "ext": true
+  },
+  {
+   "f": "unpkg.com/leaflet.css",
+   "t": "css",
+   "b": 14806,
+   "ext": true
+  },
+  {
+   "f": "unpkg.com/leaflet.js",
+   "t": "js",
+   "b": 147552,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 593637,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 44403,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 44403,
+   "ext": true
+  }
+ ],
+ "assetCount": 45,
+ "bytes": 3653414,
+ "html": {
+  "mobile": {
+   "title": "Free Online EXIF Viewer & Editor | Edit ",
+   "lang": "en",
+   "manifest": "https://exifeditor.io/manifest.json",
+   "hreflang": [
+    "en",
+    "x-default"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 12,
+    "twitter": true,
+    "themeColor": true,
+    "appleCapable": true
+   },
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "exifeditor.io",
+    "www.google.com",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net"
+   ],
+   "accepts": [
+    "image/*"
+   ],
+   "inputTypes": {
+    "checkbox": 9,
+    "file": 1,
+    "radio": 2,
+    "range": 1,
+    "search": 2,
+    "text": 1
+   },
+   "details": 3,
+   "ariaLabels": [
+    "Advanced EXIF tool",
+    "Advertisement",
+    "Bluesky",
+    "Browse Reference",
+    "Clean Your PC",
+    "Contact",
+    "Convert Files",
+    "Convert Videos",
+    "Data privacy consulting",
+    "EXIF cleaning service",
+    "EXIF editor software",
+    "Edit Photos",
+    "Explore Data",
+    "Find Stock Photos",
+    "Get Converters",
+    "Go to EXIFEditor.io home",
+    "Image metadata viewer",
+    "Metadata management tool",
+    "Online metadata viewer",
+    "Photo editing course",
+    "Photo location mapping",
+    "Randomize GPS metadata",
+    "Store Big Data",
+    "Try Photo Editors",
+    "Try Web Tools",
+    "Visit OSINT Arena",
+    "X (Twitter)",
+    "Zoom in",
+    "Zoom out"
+   ],
+   "roles": {
+    "status": 1
+   },
+   "skipLink": true,
+   "noscript": true
+  },
+  "desktop": {
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "exifeditor.io",
+    "www.google.com",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net"
+   ],
+   "ariaLabels": [
+    "Advanced EXIF tool",
+    "Advertisement",
+    "Bluesky",
+    "Contact",
+    "Convert Videos",
+    "Data privacy consulting",
+    "EXIF cleaning service",
+    "EXIF editor software",
+    "Get Converters",
+    "Go to EXIFEditor.io home",
+    "Metadata management tool",
+    "Online metadata viewer",
+    "Photo location mapping",
+    "Randomize GPS metadata",
+    "Visit OSINT Arena",
+    "X (Twitter)",
+    "Zoom in",
+    "Zoom out"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "About",
+   "w": "md"
+  },
+  {
+   "l": "Add metadata fields 28 fields available",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "md"
+  },
+  {
+   "l": "Bluesky",
+   "w": "d"
+  },
+  {
+   "l": "Contact",
+   "w": "d"
+  },
+  {
+   "l": "Exif Guide",
+   "w": "md"
+  },
+  {
+   "l": "Exif Quiz",
+   "w": "md"
+  },
+  {
+   "l": "FAQ",
+   "w": "md"
+  },
+  {
+   "l": "Fields/Values",
+   "w": "md"
+  },
+  {
+   "l": "Go to EXIFEditor.io home",
+   "w": "md"
+  },
+  {
+   "l": "Layers",
+   "w": "md"
+  },
+  {
+   "l": "Only available for JPEG images",
+   "w": "md"
+  },
+  {
+   "l": "Randomize GPS metadata",
+   "w": "md"
+  },
+  {
+   "l": "Raw metadata and file bytes",
+   "w": "md"
+  },
+  {
+   "l": "Search metadata",
+   "w": "md"
+  },
+  {
+   "l": "Show only selected image",
+   "w": "md"
+  },
+  {
+   "l": "Tools",
+   "w": "md"
+  },
+  {
+   "l": "X (Twitter)",
+   "w": "d"
+  },
+  {
+   "l": "Zoom in",
+   "w": "md"
+  },
+  {
+   "l": "Zoom out",
+   "w": "md"
+  },
+  {
+   "l": "cleaning_services Remove EXIF",
+   "w": "d"
+  },
+  {
+   "l": "content_copy",
+   "w": "md"
+  },
+  {
+   "l": "download",
+   "w": "md"
+  },
+  {
+   "l": "info File Information expand_more",
+   "w": "md"
+  },
+  {
+   "l": "settings",
+   "w": "md"
+  },
+  {
+   "l": "shuffle Randomize",
+   "w": "d"
+  },
+  {
+   "l": "zoom_out_map",
+   "w": "md"
+  }
+ ],
+ "manifest": {
+  "name": "EXIFEditor.io",
+  "display": "standalone",
+  "displayOverride": [],
+  "orientation": "",
+  "scope": "",
+  "icons": 2,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": null,
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "robots": {
+  "disallow": [
+   "/admin/"
+  ],
+  "sitemaps": [
+   "https://exifeditor.io/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 13,
+  "index": false,
+  "sections": [
+   {
+    "s": "blog",
+    "n": 5
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "about",
+    "n": 1
+   },
+   {
+    "s": "exif-quiz",
+    "n": 1
+   },
+   {
+    "s": "exif-viewer",
+    "n": 1
+   },
+   {
+    "s": "faq",
+    "n": 1
+   },
+   {
+    "s": "guides",
+    "n": 1
+   },
+   {
+    "s": "photo-location-finder",
+    "n": 1
+   },
+   {
+    "s": "privacy-policy",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "exif-tool.js",
+   "own": true,
+   "keys": [
+    "thumbnail@41470"
+   ],
+   "storage": [
+    "exifedit_tile_prefs@47199",
+    "exifedit_hide_customise_tag@68024"
+   ],
+   "downloads": [
+    "image-metadata.json@39796",
+    "exif-hex-dump.txt@40872"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard",
+    "Drag and drop files or items"
+   ]
+  },
+  {
+   "file": "footer-nav.js",
+   "own": true,
+   "routes": [
+    "/exif-viewer@153",
+    "/photo-location-finder@220",
+    "/about@350",
+    "/blog/@404",
+    "/guides@456",
+    "/exif-quiz@517",
+    "/faq@578"
+   ]
+  },
+  {
+   "file": "metadata-reader.js",
+   "own": true,
+   "apis": [
+    "Compresses data in the browser"
+   ]
+  },
+  {
+   "file": "graph-tile.js",
+   "own": true,
+   "storage": [
+    "exifedit_tile_prefs@16422"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "bsky.app",
+   "file": "footer-nav.js",
+   "at": 670
+  },
+  {
+   "host": "ns.adobe.com",
+   "file": "exifr-7.1.3.js",
+   "at": 42245
+  },
+  {
+   "host": "server.arcgisonline.com",
+   "file": "map.js",
+   "at": 625
+  },
+  {
+   "host": "tailwindcss.com*",
+   "file": "tailwind.css",
+   "at": 2268
+  },
+  {
+   "host": "unpkg.com",
+   "file": "exif-tool-loader.js",
+   "at": 2562
+  },
+  {
+   "host": "x.com",
+   "file": "footer-nav.js",
+   "at": 853
+  }
+ ],
+ "thirdParty": [
+  "analytics.google.com",
+  "bsky.app",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "fonts.googleapis.com",
+  "fundingchoicesmessages.google.com",
+  "googleads.g.doubleclick.net",
+  "ns.adobe.com",
+  "pagead2.googlesyndication.com",
+  "server.arcgisonline.com",
+  "tailwindcss.com*",
+  "tpc.googlesyndication.com",
+  "unpkg.com",
+  "www.googletagmanager.com",
+  "www.gstatic.com",
+  "x.com"
+ ],
+ "services": [
+  "Ads",
+  "Google Analytics",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://analytics.google.com/g/collect?_ee&_eu&_fv&_gaz&_nsi&_p&_s&_ss",
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://exifeditor.io/partials/tool-graph.html",
+  "https://exifeditor.io/partials/tool-metadata.html",
+  "https://exifeditor.io/partials/tool-upload-map.html",
+  "https://exifeditor.io/privacy-policy.html",
+  "https://fundingchoicesmessages.google.[token]",
+  "https://googleads.g.doubleclick.net/btr/view?ai&cid&ibtr&sigh&uach_m",
+  "https://googleads.g.doubleclick.net/pagead/adview?ai&cid&ebtr&sigh&uach_m&vis",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&name&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&proto&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&type",
+  "https://pagead2.googlesyndication.com/pagead/ping?e"
+ ],
+ "storage": {
+  "local": [
+   "__lsa__",
+   "google_adsense_settings",
+   "google_ama_config"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Drag and drop files or items",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "exif-tool.js@21838"
+  },
+  {
+   "name": "Opens files: image/*",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "Several files at once",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][multiple]"
+  },
+  {
+   "name": "Exports a file named like exif-hex-dump.txt",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "exif-tool.js@40872"
+  },
+  {
+   "name": "Exports a file named like image-metadata.json",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "exif-tool.js@39796"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Embeds exifeditor.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds googleads.g.doubleclick.net",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds www.google.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "exif-tool.js@39061"
+  },
+  {
+   "name": "Input of type range",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=range] x1"
+  },
+  {
+   "name": "Input of type search",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=search] x2"
+  },
+  {
+   "name": "Remembers a setting in the browser: __lsa__",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: google_adsense_settings",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: google_ama_config",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Language versions: 2 (en, x-default)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Compresses data in the browser",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "metadata-reader.js@1160"
+  },
+  {
+   "name": "Skip to content link",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "a[href^=\"#main\"]"
+  },
+  {
+   "name": "Path kept from crawlers /admin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Route /about",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "footer-nav.js@350"
+  },
+  {
+   "name": "Route /blog/",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "footer-nav.js@404"
+  },
+  {
+   "name": "Route /exif-quiz",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "footer-nav.js@517"
+  },
+  {
+   "name": "Route /exif-viewer",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "footer-nav.js@153"
+  },
+  {
+   "name": "Route /faq",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "footer-nav.js@578"
+  },
+  {
+   "name": "Route /guides",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "footer-nav.js@456"
+  },
+  {
+   "name": "Route /photo-location-finder",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "footer-nav.js@220"
+  },
+  {
+   "name": "Section /about/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /blog/ (5 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /exif-quiz/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /exif-viewer/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /faq/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /guides/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /photo-location-finder/ (1 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+{
+  "slug": "local-unfilled-span",
+  "run": 74,
+  "date": "2026-10-05",
+  "status": "unattested",
+  "cause": "not-claimed",
+  "fill": "denied",
+  "gap": "not-an-event",
+  "emit": false,
+  "hypothesis": "Two typed minute bounds hash to a span id. Interior bins stay unfilled. A gap is not an event, not a missing-time seal, and not a cause.",
+  "bin_min": 15,
+  "max_span_min": [
+    60,
+    120,
+    240
+  ],
+  "default_max_span_min": 120,
+  "order_is_not_cause": true,
+  "sources": [
+    {
+      "id": "eberhart-cufos-label",
+      "label": "CUFOS UFO timeline note is a public chronology label. Connections across cases are a reader effect. Not fetched. Not a seal."
+    },
+    {
+      "id": "geldreich-1947-label",
+      "label": "A public chronology note that Summer of 1947 has no firm date, and a compiler may insert a day so the row can sort. Not fetched. This card does not insert a day."
+    },
+    {
+      "id": "jisst-timeline-builder-label",
+      "label": "A 2026 browser timeline-builder abstract sorts analyst-typed events and says it does not validate timestamps. Label only. Not a measurement of this card."
+    }
+  ]
+}

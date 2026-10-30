@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Random number · Verse</title>
+<meta name="description" content="A random number between any two numbers, many at once, with or without repeats, or a pick from your own list. Your device's secure random numbers, no bias, no ads.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Random number · Verse">
+<meta property="og:description" content="A random number between any two numbers, many at once, with or without repeats, or a pick from your own list. Your device's secure random numbers, no bias, no ads.">
+<meta property="og:url" content="https://a-to-mind.com/random/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/random (owner, 2026-10-24: "beat speed" on random.org): one file, nothing else to load, the number on screen at once */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 6px; text-align: center; font-weight: 600; color: var(--soft); }
+  #out { text-align: center; font: 800 clamp(64px, 18vw, 132px)/1.05 system-ui, sans-serif; margin: 10px 0 4px; word-break: break-word; font-variant-numeric: tabular-nums; min-height: 1.1em; }
+  #out.many { font-size: clamp(22px, 5vw, 30px); font-weight: 700; line-height: 1.5; }
+  #note { text-align: center; color: var(--soft); font-size: 14px; min-height: 1.4em; }
+  form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 8px; }
+  label { font-size: 12px; color: var(--soft); display: grid; gap: 3px; }
+  select { font: inherit; font-size: 14px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 3px 6px; }
+  input, textarea { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; width: 100%; box-sizing: border-box; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center; align-items: center; margin: 6px 0; font-size: 14px; }
+  .row label { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--ink); white-space: nowrap; }
+  .row input[type=checkbox] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); } /* WCAG 2.5.8: a tap target at least 24 by 24 px */
+  button { font: inherit; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--accent); color: var(--on-accent, #fff); cursor: pointer; font-weight: 600; }
+  button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 5px 12px; font-weight: 400; font-size: 13px; }
+  details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 10px; }
+  summary { cursor: pointer; color: var(--soft); }
+  #dealt { display: grid; gap: 6px; margin-top: 6px; } .hand { font-size: 13px; color: var(--soft); } .cards { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+  .card { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 54px; padding: 0 4px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: #15131c; font: 700 17px/1 system-ui, sans-serif; }
+  .card.red { color: #c0192d; } #dates { font-variant-numeric: tabular-nums; } #dates li { margin: 2px 0; }
+  #hist { color: var(--soft); font-size: 13px; text-align: center; margin-top: 10px; }
+  footer { text-align: center; font-size: 12px; color: var(--soft); margin-top: 22px; }
+  footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/random/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Random number","url":"https://a-to-mind.com/random/","description":"A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random number generator, random number between 1 and 100, random number picker, random numbers no repeats, lottery number generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/random/?min=1&max={max}"},"max-input":"required name=max"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Random number","item":"https://a-to-mind.com/random/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/prizes.js">
+<link rel="modulepreload" href="/lib/random-card.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1 id="what">Random number</h1>
+  <p class="lead" id="lead" style="font-size:14px;color:var(--soft);text-align:center;margin:0 0 8px">Roll dice, flip a coin, draw raffle winners, shuffle cards or pick any number, fair and on this device.</p>
+  <div class="row" id="presets" role="group" aria-label="Everyday draws"><button type="button" class="quiet" data-q="dice">Dice</button><button type="button" class="quiet" data-q="coin">Coin</button><button type="button" class="quiet" data-q="raffle">Raffle draw</button><button type="button" class="quiet" data-q="deck">Shuffled deck</button><button type="button" class="quiet" data-q="beacon" title="Numbers from a public randomness beacon: anyone with the link can check them">Verifiable beacon draw</button></div>
+  <div id="out" aria-live="polite"></div>
+  <div id="note"></div>
+  <form id="f" autocomplete="off">
+    <label>From <input id="min" type="number" inputmode="decimal" step="any" value="1"></label>
+    <label>To <input id="max" type="number" inputmode="decimal" step="any" value="100"></label>
+    <label>How many <input id="n" type="number" inputmode="numeric" value="1" min="1" max="10000"></label>
+  </form>
+  <div class="row">
+    <label><input id="uniq" type="checkbox"> no repeats</label>
+    <label><input id="sort" type="checkbox"> sorted</label>
+    <label>Decimals <select id="dec"><option value="0">whole numbers</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option></select></label>
+    <label>Base <select id="base"><option value="10">decimal</option><option value="2">binary</option><option value="8">octal</option><option value="16">hex</option></select></label>
+    <label title="Numbers from drand, a public randomness beacon: anyone with the link re-derives the same numbers from the same public round"><input id="beacon" type="checkbox"> public, checkable draw</label>
+    <label>Columns <select id="cols"><option value="0">in a line</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option></select></label>
+  </div>
+  <div class="row"><button id="go" type="button">New number</button><button id="copy" class="quiet" type="button">Copy</button><button id="link" class="quiet" type="button">Copy link</button></div>
+  <div id="hist"></div>
+  <div id="proof" style="font-size:13px;color:var(--soft);text-align:center;margin-top:6px;overflow-wrap:anywhere"></div>
+  <details id="listbox"><summary>Pick from a list or shuffle it</summary>
+    <p style="font-size:13px;color:var(--soft)">One item a line. Pick one, or shuffle them all.</p>
+    <textarea id="list" rows="5" aria-label="Your list, one item a line" placeholder="Pizza&#10;Tacos&#10;Sushi"></textarea>
+    <div class="row"><button id="pick" type="button">Pick one</button><button id="shuffle" class="quiet" type="button">Shuffle all</button></div>
+  </details>
+  <details id="cardbox"><summary>Shuffle and deal playing cards</summary>
+    <div class="row"><label>Decks <select id="decks"><option>1</option><option>2</option><option>4</option><option>6</option><option>8</option></select></label><label><input id="jokers" type="checkbox"> jokers</label>
+      <label>Hands <select id="hands"><option>1</option><option>2</option><option selected>4</option><option>6</option><option>8</option></select></label><label>Cards each <select id="each"><option>1</option><option>2</option><option>3</option><option selected>5</option><option>7</option><option>13</option></select></label></div>
+    <div class="row"><button id="newdeck" type="button">Shuffle a new deck</button><button id="deal" class="quiet" type="button">Deal</button><button id="turn" class="quiet" type="button">Turn over one</button></div>
+    <p id="decknote" style="font-size:13px;color:var(--soft);text-align:center"></p><div id="dealt"></div>
+  </details>
+  <details id="datebox"><summary>Random dates and times</summary>
+    <div class="row"><label>From <input id="d0" type="date" value="2026-01-01" style="width:auto"></label><label>To <input id="d1" type="date" value="2026-12-31" style="width:auto"></label><label>How many <input id="dn" type="number" min="1" max="1000" value="5" style="width:5em"></label></div>
+    <div class="row"><label>With <select id="dkind"><option value="date">dates</option><option value="datetime">dates and times</option><option value="time">times of day</option></select></label><label><input id="dsort" type="checkbox"> sorted</label><label><input id="dwork" type="checkbox"> weekdays only</label></div>
+    <div class="row"><button id="dgo" type="button">Random dates</button><button id="dcopy" class="quiet" type="button">Copy</button></div>
+    <ol id="dates"></ol>
+  </details>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/random/?min=1&amp;max=100">1 to 100</a><a href="/random/?min=1&amp;max=10">1 to 10</a><a href="/random/?min=1&amp;max=6">Roll a die (1 to 6)</a><a href="/random/?min=1&amp;max=49&amp;n=6&amp;unique=1&amp;sort=1">6 lottery numbers from 1 to 49</a><a href="/random/?min=1&amp;max=100&amp;n=5&amp;unique=1">5 numbers from 1 to 100, no repeats</a><a href="/random/?min=0&amp;max=1&amp;dec=2">A number from 0 to 1</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/wheel/">Wheel of names</a> <a href="/flip/">Coin flip</a> <a href="/random-user/">Made-up people</a> <a href="/base-converter/">Base converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Your device’s secure random numbers (<code>crypto.getRandomValues</code>), each value equally likely: no bias at the ends of the range, no ads, nothing sent. A public, checkable draw instead fetches one round from the drand beacon (the only network use). <a href="/">Ask Verse anything</a></footer>
+</main>
+<script>
+  // an unbiased integer in [0, range) from 32-bit secure randoms: draws past the last whole multiple of the range are thrown away
+  const buf = new Uint32Array(1);
+  function below(range) { const lim = Math.floor(4294967296 / range) * range; for (;;) { crypto.getRandomValues(buf); if (buf[0] < lim) return buf[0] % range; } }
+  function between(a, b) { const span = b - a + 1; if (span <= 4294967296) return a + below(span); const hi = below(Math.ceil(span / 4294967296)); return a + Math.min(span - 1, hi * 4294967296 + below(4294967296)); }
+  const $ = (id) => document.getElementById(id), out = $('out'), note = $('note'), hist = [];
+  const num = (id, d) => { const v = Math.trunc(Number($(id).value)); return Number.isFinite(v) ? v : d; };
+  // a public, checkable draw (lib/beacon.js): the numbers come from a drand round, and the link carries the round so anyone re-derives them
+  let wantRound = 0, busy = false;
+  async function beaconDraw(a, b, n, uniq) {
+    if (busy) { $('proof').textContent = 'Still waiting for the public beacon\'s newest round: the numbers appear as soon as it answers.'; return null; } busy = true; $('proof').textContent = 'Asking the public beacon for its newest round…';
+    try {
+      const B = await import('/lib/beacon.js'), r = await B.fetchRound(wantRound); wantRound = 0;
+      const vals = await B.numbers(r.randomness, a, b, n, uniq); busy = false; return { vals, r, url: B.roundUrl(r.round) };
+    } catch (e) { busy = false; $('proof').textContent = 'The public beacon did not answer, so nothing was drawn. Untick "public, checkable draw" for this device\'s own random numbers.'; return null; }
+  }
+  // decimal fractions (random.org's decimal fraction generator): the draw is of whole steps of 10^-places, each equally likely, written exactly
+  const places = () => +$('dec').value || 0;
+  const fixed = (k, d) => { const neg = k < 0, m = Math.abs(k), sc = 10 ** d, w = Math.floor(m / sc), f = String(m - w * sc).padStart(d, '0'); return (neg ? '-' : '') + w.toLocaleString('en') + '.' + f; };
+  async function draw() {
+    const d = places(), sc = 10 ** d; let a, b;
+    if (d) { let fa = Number($('min').value), fb = Number($('max').value); if (!Number.isFinite(fa)) fa = 0; if (!Number.isFinite(fb)) fb = 1; if (fa > fb) [fa, fb] = [fb, fa]; a = Math.ceil(fa * sc - 1e-9); b = Math.floor(fb * sc + 1e-9); if (a > b) b = a; }
+    else { a = num('min', 1); b = num('max', 100); if (a > b) [a, b] = [b, a]; }
+    const span = b - a + 1, uniq = $('uniq').checked; let n = Math.min(10000, Math.max(1, num('n', 1)));
+    if (uniq && n > span) { n = span; note.textContent = 'Only ' + span.toLocaleString() + ' different numbers fit between ' + a + ' and ' + b + '.'; } else note.textContent = '';
+    let vals, pub = null;
+    if ($('beacon').checked) { if (span > 4294967296) { note.textContent = 'A public draw takes a range of up to 4,294,967,296 numbers.'; return; } pub = await beaconDraw(a, b, n, uniq); if (!pub) return; vals = pub.vals; }
+    else if (uniq) { const seen = new Set(); vals = []; if (n > span / 2 && span <= 200000) { const all = Array.from({ length: span }, (_, i) => a + i); for (let i = all.length - 1; i > 0; i--) { const j = below(i + 1); [all[i], all[j]] = [all[j], all[i]]; } vals = all.slice(0, n); } else while (vals.length < n) { const v = between(a, b); if (!seen.has(v)) { seen.add(v); vals.push(v); } } }
+    else vals = Array.from({ length: n }, () => between(a, b));
+    $('proof').innerHTML = ''; if (pub) { const l = document.createElement('a'); l.href = pub.url; l.textContent = 'drand round ' + pub.r.round; l.target = '_blank'; l.rel = 'noopener'; $('proof').append('From the public beacon, ', l, ': anyone opening this link gets these same numbers, re-derived from that round (SHA-256 of "randomness:index:try").'); }
+    if ($('sort').checked) vals.sort((x, y) => x - y);
+    // the base the numbers are written in (random.org's integer tool offers binary, octal, decimal and hex) and, for many, how many a row
+    const base = d ? 10 : +$('base').value || 10, cols = +$('cols').value || 0, word = (v) => (d ? fixed(v, d) : base === 10 ? v.toLocaleString('en') : (v < 0 ? '-' : '') + Math.abs(v).toString(base).toUpperCase());
+    $('base').disabled = !!d; const A = d ? fixed(a, d) : a, Bv = d ? fixed(b, d) : b;
+    out.className = n > 1 ? 'many' : ''; out.style.whiteSpace = cols && n > 1 ? 'pre' : '';
+    out.textContent = cols && n > 1 ? vals.map(word).reduce((rows, w, i) => { if (i % cols === 0) rows.push([]); rows[rows.length - 1].push(w); return rows; }, []).map((r) => r.join('\t')).join('\n') : vals.map(word).join(n > 1 ? ', ' : '');
+    $('go').textContent = n > 1 ? 'New numbers' : 'New number';
+    $('what').textContent = n > 1 ? n.toLocaleString() + ' random numbers, ' + A + ' to ' + Bv + (uniq ? ', no repeats' : '') : 'Random number, ' + A + ' to ' + Bv;
+    if (n === 1) { hist.unshift(word(vals[0])); hist.length = Math.min(hist.length, 12); $('hist').textContent = hist.length > 1 ? 'Before: ' + hist.slice(1).join(' · ') : ''; }
+    const q = new URLSearchParams({ min: d ? A.replace(/,/g, '') : a, max: d ? Bv.replace(/,/g, '') : b }); if (d) q.set('dec', d); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1'); if (base !== 10) q.set('base', base); if (cols) q.set('cols', cols); if (pub) q.set('round', pub.r.round);
+    history.replaceState(null, '', '?' + q);
+  }
+  function listItems() { return $('list').value.split('\n').map((s) => s.trim()).filter(Boolean); }
+  $('pick').onclick = () => { const l = listItems(); if (!l.length) { note.textContent = 'Write a few items first, one a line.'; return; } out.className = ''; out.textContent = l[below(l.length)]; $('what').textContent = 'Picked from your list of ' + l.length; note.textContent = ''; };
+  $('shuffle').onclick = () => { const l = listItems(); for (let i = l.length - 1; i > 0; i--) { const j = below(i + 1); [l[i], l[j]] = [l[j], l[i]]; } out.className = 'many'; out.textContent = l.map((s, i) => (i + 1) + '. ' + s).join('\n'); out.style.whiteSpace = 'pre-line'; $('what').textContent = 'Your list, shuffled'; note.textContent = ''; };
+  $('go').onclick = () => { out.style.whiteSpace = ''; draw(); };
+  $('copy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(out.textContent).then(() => { note.textContent = 'Copied.'; }, () => {}); };
+  $('link').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { note.textContent = 'Link copied: it opens with the same range.'; }, () => {}); };
+  $('f').addEventListener('submit', (e) => { e.preventDefault(); draw(); });
+  $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw; $('base').onchange = draw; $('cols').onchange = draw; $('beacon').onchange = draw; $('dec').onchange = draw;
+  addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|textarea|button|summary)$/i.test(e.target.tagName)) { e.preventDefault(); draw(); } });
+  // ?min=1&max=6 (a die), ?n=6&unique=1&min=1&max=49 (a lottery line): the page opens on that draw
+  const p = new URLSearchParams(location.search);
+  if (p.get('list')) { $('list').value = p.get('list').slice(0, 20000); $('listbox').open = true; } // a list handed over from the wheel (lib/toolkit.js)
+  for (const [k, id] of [['min', 'min'], ['max', 'max'], ['n', 'n']]) if (p.has(k)) $(id).value = p.get(k);
+  $('uniq').checked = p.get('unique') === '1'; $('sort').checked = p.get('sort') === '1';
+  if (/^\d{1,12}$/.test(p.get('round') || '')) { $('beacon').checked = true; wantRound = +p.get('round'); } // a shared public draw: the same round, the same numbers
+  if ([...$('dec').options].some((o) => o.value === p.get('dec'))) $('dec').value = p.get('dec');
+  if (['2', '8', '16'].includes(p.get('base'))) $('base').value = p.get('base'); if (/^(?:[1-68]|10)$/.test(p.get('cols') || '')) $('cols').value = p.get('cols');
+  draw();
+  // everyday presets (docs/WIDER-USE.md): each sets the same controls a person would, so the link, the copy and the proof work as before
+  const setRange = (a, b, n, u) => { $('min').value = a; $('max').value = b; $('n').value = n; $('uniq').checked = u; $('dec').value = '0'; $('base').value = '10'; };
+  $('presets').addEventListener('click', (e) => { const q = e.target.closest('button[data-q]'); if (!q) return; out.style.whiteSpace = '';
+    if (q.dataset.q === 'dice') { $('beacon').checked = false; setRange(1, 6, 1, false); draw(); }
+    else if (q.dataset.q === 'coin') { $('list').value = 'Heads\nTails'; $('listbox').open = true; $('pick').click(); $('what').textContent = 'Coin flip'; }
+    else if (q.dataset.q === 'raffle') { $('beacon').checked = false; setRange(1, 500, 3, true); draw(); $('note').textContent = 'Raffle: 3 winning tickets from 1 to 500, no repeats. Change the numbers above, or list names under "Pick from a list".'; }
+    else if (q.dataset.q === 'deck') { $('cardbox').open = true; newDeck(); $('cardbox').scrollIntoView({ block: 'nearest' }); }
+    else if (q.dataset.q === 'beacon') { $('beacon').checked = true; setRange(1, 100, 1, false); draw(); } });
+  // playing cards (random.org's card shuffler): whole decks shuffled with the same unbiased secure draws, dealt round the table or turned one by one
+  const SUITS = [['♠', 0], ['♥', 1], ['♦', 1], ['♣', 0]], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+  let deck = [];
+  const cardEl = (c) => { const e = document.createElement('span'); e.className = 'card' + (c.red ? ' red' : ''); e.textContent = c.t; e.setAttribute('aria-label', c.name); return e; };
+  function newDeck() {
+    deck = []; const decks = +$('decks').value || 1; for (let k = 0; k < decks; k++) { for (const [s, red] of SUITS) for (const r of RANKS) deck.push({ t: r + s, red: !!red, name: ({ A: 'ace', J: 'jack', Q: 'queen', K: 'king' }[r] || r) + ' of ' + ({ '♠': 'spades', '♥': 'hearts', '♦': 'diamonds', '♣': 'clubs' }[s]) });
+      if ($('jokers').checked) deck.push({ t: '🃏', red: false, name: 'joker' }, { t: '🃏', red: true, name: 'joker' }); }
+    for (let i = deck.length - 1; i > 0; i--) { const j = below(i + 1); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    $('dealt').replaceChildren(); $('decknote').textContent = 'Shuffled: ' + deck.length + ' cards in the deck.';
+  }
+  $('newdeck').onclick = newDeck; $('decks').onchange = newDeck; $('jokers').onchange = newDeck;
+  $('deal').onclick = () => { if (!deck.length) newDeck(); const hands = +$('hands').value, each = +$('each').value, rows = Array.from({ length: hands }, () => []);
+    for (let k = 0; k < each; k++) for (let h = 0; h < hands && deck.length; h++) rows[h].push(deck.pop());
+    $('dealt').replaceChildren(...rows.map((cs, h) => { const d = document.createElement('div'), l = document.createElement('div'), r = document.createElement('div'); d.className = 'hand'; l.textContent = 'Hand ' + (h + 1); r.className = 'cards'; r.append(...cs.map(cardEl)); d.append(l, r); return d; }));
+    $('decknote').textContent = deck.length + ' cards left in the deck' + (deck.length ? '.' : ': shuffle a new deck to go on.'); };
+  $('turn').onclick = () => { if (!deck.length) newDeck(); const c = deck.pop(), row = document.createElement('div'); row.className = 'cards'; row.append(cardEl(c)); if (!$('dealt').querySelector('.turned')) $('dealt').replaceChildren(); row.classList.add('turned'); $('dealt').prepend(row); $('decknote').textContent = 'Turned over the ' + c.name + '; ' + deck.length + ' left.'; };
+  // random dates and times (random.org's calendar dates and clock times): every day (or second) between the two equally likely
+  function dates() {
+    const kind = $('dkind').value, n = Math.min(1000, Math.max(1, Math.trunc(+$('dn').value) || 1)), day = 864e5;
+    let t0 = Date.parse($('d0').value + 'T00:00:00Z'), t1 = Date.parse($('d1').value + 'T00:00:00Z'); if (!Number.isFinite(t0) || !Number.isFinite(t1)) { $('dates').replaceChildren(Object.assign(document.createElement('li'), { textContent: 'Choose two dates.' })); return; } if (t0 > t1) [t0, t1] = [t1, t0];
+    const days = Math.round((t1 - t0) / day) + 1, pool = $('dwork').checked ? Array.from({ length: Math.min(days, 200000) }, (_, i) => i).filter((i) => ![0, 6].includes(new Date(t0 + i * day).getUTCDay())) : null;
+    const pickDay = () => (pool ? (pool.length ? pool[below(pool.length)] : 0) : below(days)), secs = () => below(86400), two = (x) => String(x).padStart(2, '0');
+    const time = (s) => two(Math.floor(s / 3600)) + ':' + two(Math.floor((s % 3600) / 60)) + ':' + two(s % 60), dateOf = (i) => new Date(t0 + i * day);
+    let rows = Array.from({ length: n }, () => (kind === 'time' ? { k: secs() } : { k: pickDay() * 86400 + (kind === 'datetime' ? secs() : 0) }));
+    if ($('dsort').checked) rows.sort((x, y) => x.k - y.k);
+    $('dates').replaceChildren(...rows.map(({ k }) => { const li = document.createElement('li'), dd = dateOf(Math.floor(k / 86400));
+      li.textContent = kind === 'time' ? time(k) : dd.toISOString().slice(0, 10) + ' (' + dd.toLocaleDateString('en', { weekday: 'short', timeZone: 'UTC' }) + ')' + (kind === 'datetime' ? ' ' + time(k % 86400) : ''); return li; }));
+  }
+  $('dgo').onclick = dates; $('dcopy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText([...$('dates').children].map((l) => l.textContent).join('\n')).catch(() => {}); };
+</script>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
+  import { mountStrip, prizesLink } from '/lib/handoff.js';
+  import { cardAsk } from '/lib/random-card.js';
+  const list = () => document.getElementById('list').value.split('\n').map((s) => s.trim()).filter(Boolean);
+  mountRelated(document.getElementById('related'), '/random/', [
+    { label: 'Spin your list on a wheel', href: () => (list().length ? '/wheel/#' + wheelCode(wheelEntries(list().join('\n'))) : null) },
+    { label: 'Prize odds for your list', href: () => (list().length ? prizesLink(list().join('\n')) : null) },
+    { label: 'This number in other bases', href: () => { const v = document.getElementById('out').textContent.trim(); return /^-?\d+$/.test(v) ? '/base-converter/?v=' + v + '&b=10' : null; } },
+  ], { card: () => cardAsk(document.getElementById('min').value, document.getElementById('max').value, document.getElementById('dec').value) });
+  mountStrip(document.getElementById('related'), '/random/');
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

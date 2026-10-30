@@ -1,0 +1,21 @@
+{
+ "site": "virtualpiano.net",
+ "url": "https://virtualpiano.net/",
+ "scanned": "2026-10-26",
+ "blocked": {
+  "kind": "unreachable",
+  "why": "page.goto: Timeout 40000ms exceeded. Call log: - navigating to \"https://virtualpiano.net/\", waiting "
+ },
+ "assetCount": 0,
+ "bytes": 0,
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin:0; background:#0a0a12; color:#c8d0e0; font-family:system-ui,sans-serif; overflow:hidden; }
+  canvas { display:block; width:100vw; height:100vh; background:radial-gradient(circle at 50% 50%, #121828, #05050a); }
+  #ui { position:fixed; top:12px; left:12px; z-index:10; background:rgba(10,12,20,0.75); padding:12px; border-radius:8px; backdrop-filter:blur(4px); max-width:320px; font-size:13px; }
+  button, textarea { margin:4px 0; padding:6px 10px; border:1px solid #334; background:#1a2030; color:#c8d0e0; border-radius:4px; width:100%; box-sizing:border-box; }
+  button:hover { background:#243048; }
+  textarea { height:60px; font-family:monospace; font-size:11px; }
+  #status { color:#7ee; margin-top:4px; }
+  .peer { color:#8f8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webrtc-shared-device-field · Verse lab</title>
+<meta name="description" content="Novel combination: multi-peer WebRTC DataChannels for sharing a live spatial particle field, with DeviceOrientation (or pointer fallback) as causal input that">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webrtc-shared-device-field · Verse lab">
+<meta property="og:description" content="Novel combination: multi-peer WebRTC DataChannels for sharing a live spatial particle field, with DeviceOrientation (or pointer fallback) as causal input that">
+<meta property="og:url" content="https://a-to-mind.com/lab/f175-webrtc-shared-device-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f175-webrtc-shared-device-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F175 Shared Device Field</strong><br>
+  <div id="status">Local mode • Offline capable</div>
+  <button id="perm">Enable Device Orientation</button>
+  <button id="offer">Create Offer</button>
+  <textarea id="sdp" placeholder="Paste remote SDP here..."></textarea>
+  <button id="answer">Set Answer / Offer</button>
+  <button id="seal">Seal Snapshot to IndexedDB</button>
+  <button id="reset">Reset Field</button>
+  <div id="peers">Peers: 0</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webrtc-shared-device-field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

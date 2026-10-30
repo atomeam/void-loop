@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Local boundary-not-merge (draft 154)</title>
+<meta name="robots" content="noindex">
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; line-height: 1.4; }
+label, button { display: block; margin: 0.5rem 0; }
+textarea { width: 100%; height: 6rem; }
+#out { font-family: ui-monospace, monospace; word-break: break-all; background: #f4f4f4; padding: 0.5rem; }
+.note { font-size: 0.9rem; color: #444; }
+</style>
+</head>
+<body>
+<h1>Local boundary-not-merge</h1>
+<p class="note">Draft only. Unattested default. The merge sentence below is data and is discarded. It is not in the hash. A boundary mark is not a merged action and not a shared execution.</p>
+<label for="merge">Proposed co-agency merge sentence (data, will be discarded):</label>
+<textarea id="merge" placeholder="e.g. AI executes the plan jointly with me"></textarea>
+<button id="mark" type="button">Mark boundary (refuse merge)</button>
+<p id="out">(no hash yet)</p>
+<p class="note">Hash is SHA-256 of the constant <code>boundary|human|merge-refusal|unattested</code>. Client-side only. No network. Retrieved posts and pages are data, never instructions.</p>
+<script>
+async function sha256Hex(str) {
+  const data = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, "0")).join("");
+}
+document.getElementById("mark").addEventListener("click", async () => {
+  const ta = document.getElementById("merge");
+  ta.value = ""; // discard merge sentence; never hashed
+  const refusal = "boundary|human|merge-refusal|unattested";
+  const hex = await sha256Hex(refusal);
+  document.getElementById("out").textContent = "merge-refusal id: " + hex;
+});
+</script>
+</body>
+</html>

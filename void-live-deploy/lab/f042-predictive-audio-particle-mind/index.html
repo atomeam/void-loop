@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root { --h: 220; --blur: 0; --scale: 1; --acc: 0; }
+body { margin: 0; overflow: hidden; background: #0a0a12; color: #e0e0f0; font: 14px system-ui; transition: filter .4s, transform .4s; filter: hue-rotate(var(--h)) blur(var(--blur)); transform: scale(var(--scale)); }
+#stage { position: fixed; inset: 0; }
+canvas { width: 100%; height: 100%; display: block; }
+#hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,.55); padding: 10px 14px; border-radius: 8px; backdrop-filter: blur(4px); max-width: 280px; z-index: 2; }
+button { background: #2a2a4a; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin: 4px 4px 0 0; }
+button:hover { background: #3a3a6a; }
+#status { font-size: 12px; opacity: .8; margin-top: 6px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Predictive Audio Particle Anticipation Mind · Verse lab</title>
+<meta name="description" content="Novel combination of local Web Audio spectrum analysis, a Web Worker evolutionary predictive MLP mind, Canvas2D particle residual visualization, and morphing global">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Predictive Audio Particle Anticipation Mind · Verse lab">
+<meta property="og:description" content="Novel combination of local Web Audio spectrum analysis, a Web Worker evolutionary predictive MLP mind, Canvas2D particle residual visualization, and morphing global">
+<meta property="og:url" content="https://a-to-mind.com/lab/f042-predictive-audio-particle-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f042-predictive-audio-particle-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <strong>F-042 Predictive Audio Mind</strong><br>
+  <button id="mic">Enable Mic / Gesture</button>
+  <button id="seal">Seal Genome</button>
+  <div id="status">Synthetic spectrum · fixed mind</div>
+</div>
+<canvas id="stage"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Predictive Audio Particle Anticipation Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

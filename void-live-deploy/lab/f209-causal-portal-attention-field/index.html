@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --hue: 200;
+    --scale: 1;
+    --blur: 0px;
+    --portal-glow: 0;
+  }
+  html, body {
+    margin: 0; height: 100%; background: #0a0a12; color: #e0e0ff;
+    font-family: system-ui, sans-serif; overflow: hidden;
+    transform: scale(var(--scale)); transform-origin: center;
+    filter: hue-rotate(calc(var(--hue) * 1deg)) blur(var(--blur));
+    transition: filter 0.4s, transform 0.3s;
+  }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud {
+    position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,0.7);
+    padding: 8px 12px; border-radius: 8px; font-size: 13px; pointer-events: none;
+    border: 1px solid rgba(100,150,255,0.3);
+  }
+  .portal-marker {
+    position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid rgba(100,200,255,0.6); background: rgba(80,160,255,0.15);
+    pointer-events: none; transform: translate(-50%, -50%);
+    box-shadow: 0 0 calc(var(--portal-glow) * 20px) rgba(100,180,255,0.5);
+  }
+  button {
+    position: fixed; bottom: 16px; right: 16px; background: #1a2a4a; color: #cce;
+    border: 1px solid #4af; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Causal Portal Attention Field · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Causal Portal Attention Field.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Causal Portal Attention Field · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Causal Portal Attention Field.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f209-causal-portal-attention-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f209-causal-portal-attention-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">F-209 Causal Portal Attention · particles: <span id="pc">0</span> · portals: <span id="pt">0</span> · residual: <span id="res">0</span></div>
+<button id="seal">Seal weights</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">Causal Portal Attention Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

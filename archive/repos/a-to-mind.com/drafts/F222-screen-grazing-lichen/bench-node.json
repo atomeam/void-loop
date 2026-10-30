@@ -1,0 +1,162 @@
+{
+ "scroll:surprise": {
+  "meanErrX1000": 8.878,
+  "updatesPerFrame": 495,
+  "rows": [
+   9.611,
+   8.392,
+   8.63
+  ]
+ },
+ "scroll:random": {
+  "meanErrX1000": 34.078,
+  "updatesPerFrame": 538,
+  "rows": [
+   33.61,
+   34.102,
+   34.523
+  ]
+ },
+ "scroll:sweep": {
+  "meanErrX1000": 54.879,
+  "updatesPerFrame": 563,
+  "rows": [
+   54.879,
+   54.879,
+   54.879
+  ]
+ },
+ "scroll:none": {
+  "meanErrX1000": 95.646,
+  "updatesPerFrame": 0,
+  "rows": [
+   95.646,
+   95.646,
+   95.646
+  ]
+ },
+ "ball:surprise": {
+  "meanErrX1000": 4.288,
+  "updatesPerFrame": 360,
+  "rows": [
+   4.187,
+   4.229,
+   4.448
+  ]
+ },
+ "ball:random": {
+  "meanErrX1000": 5.517,
+  "updatesPerFrame": 538,
+  "rows": [
+   5.409,
+   5.443,
+   5.698
+  ]
+ },
+ "ball:sweep": {
+  "meanErrX1000": 5.567,
+  "updatesPerFrame": 563,
+  "rows": [
+   5.567,
+   5.567,
+   5.567
+  ]
+ },
+ "ball:none": {
+  "meanErrX1000": 2.763,
+  "updatesPerFrame": 0,
+  "rows": [
+   2.763,
+   2.763,
+   2.763
+  ]
+ },
+ "video:surprise": {
+  "meanErrX1000": 2.324,
+  "updatesPerFrame": 508,
+  "rows": [
+   2.283,
+   2.305,
+   2.384
+  ]
+ },
+ "video:random": {
+  "meanErrX1000": 4.103,
+  "updatesPerFrame": 538,
+  "rows": [
+   4.086,
+   4.175,
+   4.048
+  ]
+ },
+ "video:sweep": {
+  "meanErrX1000": 4.883,
+  "updatesPerFrame": 563,
+  "rows": [
+   4.883,
+   4.883,
+   4.883
+  ]
+ },
+ "video:none": {
+  "meanErrX1000": 8.701,
+  "updatesPerFrame": 0,
+  "rows": [
+   8.701,
+   8.701,
+   8.701
+  ]
+ },
+ "mixed:surprise": {
+  "meanErrX1000": 21.754,
+  "updatesPerFrame": 507,
+  "rows": [
+   22.297,
+   20.111,
+   22.853
+  ]
+ },
+ "mixed:random": {
+  "meanErrX1000": 42.658,
+  "updatesPerFrame": 538,
+  "rows": [
+   42.08,
+   42.662,
+   43.232
+  ]
+ },
+ "mixed:sweep": {
+  "meanErrX1000": 64.295,
+  "updatesPerFrame": 563,
+  "rows": [
+   64.295,
+   64.295,
+   64.295
+  ]
+ },
+ "mixed:none": {
+  "meanErrX1000": 106.565,
+  "updatesPerFrame": 0,
+  "rows": [
+   106.565,
+   106.565,
+   106.565
+  ]
+ },
+ "scroll:all-cells": {
+  "meanErrX1000": 1.783,
+  "updatesPerFrame": 5752
+ },
+ "ball:all-cells": {
+  "meanErrX1000": 4.067,
+  "updatesPerFrame": 5752
+ },
+ "video:all-cells": {
+  "meanErrX1000": 1.62,
+  "updatesPerFrame": 5752
+ },
+ "mixed:all-cells": {
+  "meanErrX1000": 6.768,
+  "updatesPerFrame": 5752
+ }
+}

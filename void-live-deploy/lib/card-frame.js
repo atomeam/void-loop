@@ -12,15 +12,18 @@
 import { hueOf } from './guide.js';
 import { typeWords, kindOf, newInSub, repeatsTitle } from './card-kinds.js';
 import { lineageOf } from './lineage.js';
-import { bar as shareBar, SHARE_CSS } from './card-share.js';
+import { bar as shareBar, SHARE_CSS, SOURCE_BOX, SOURCE_LINKS } from './card-share.js';
+export { SOURCE_BOX, SOURCE_LINKS };
 import { artLook } from './art-meta.js';
 import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
 import { sealArt, SEAL_CSS } from './void-seal.js';
-import { subjectOf } from './card-subject.js';
+import { subjectOf, motifsFor } from './card-subject.js';
 import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Verse)
 import { artSource } from './art-source.js';
 import { sectionsOf } from './card-sections.js';
+import { badgesOf, noticeOf, themeOf } from './subject-kinds.js';
+import { isNoAnswer } from './no-answer.js'; // a refusal body is a Not found card, never a sourced answer with an "Adds to Verse" line
 
 export const RARITY = {
   proven: { name: 'Mythic', gem: '#f0852d', foil: '#ffb347,#c4561a,#ffd27a,#b8430f' }, checked: { name: 'Rare', gem: '#e3c15a', foil: '#f1dc8a,#a98a2e,#f6e7a6,#8a6d1c' },
@@ -45,7 +48,7 @@ const artLookOf = (m) => { const l = artLook(m); return { artHue: l.hue, artInk:
 /** what a card shows, from what the site already knows: { rarity, hue, chapter, cost, typeLine, power, toughness, number, tested, adds, name, fetched }. Pure.
  *  skill: a families.json skill ({ name, tier, why, last_tested, success_rate }) or null; page: its guide.json page or null; book: guide.json;
  *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is */
-export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null } = {}) {
+export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
   const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
@@ -53,14 +56,15 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
   const words = page && page.examples && page.examples[0] ? String(page.examples[0]).trim().split(/\s+/).length : 0;
   const sr = skill && Number.isFinite(+skill.success_rate) ? Math.max(0, Math.min(1, +skill.success_rate)) : null;
   const why = String((skill && skill.why) || (page && page.why) || ''), asks = (/(\d+)\s+real asks?/.exec(why) || [])[1];
-  const stats = !!(skill || page) && tier !== '', fetched = !stats && typeKind === 'Answer' && sources != null && sources > 0;
+  const stats = !!(skill || page) && tier !== '', fetched = !notFound && !stats && typeKind === 'Answer' && sources != null && sources > 0;
   const chapter = page ? page.chapter : entity && entity.chapter ? entity.chapter : 'words';
   return {
     artKind: ART_KINDS.includes(artKind) && artKind !== 'Skill' && artKind !== 'Answer' ? artKind : '', // a skill card of a song or a film paints that kind's art, not the generic one
     ...(artKind && artMeta ? artLookOf(artMeta) : {}), // a film's or song's genre and decade, as the source returned them (lib/art-meta.js)
-    rarity, chapter, hue: hueOf(chapter), fetched, kindName: entity && !page && !skill && entity.kind ? String(entity.kind).toLowerCase().replace(/[^a-z]/g, '') : '',
+    rarity, chapter, hue: hueOf(chapter), fetched, kindName: !notFound && entity && !page && !skill && entity.kind ? String(entity.kind).toLowerCase().replace(/[^a-z]/g, '') : '',
     cost: words ? Math.min(6, words) : 0,
-    typeLine: entity && !page && !skill ? typeWords(entity.kind, entity.also, entity.detail) : typeKind + (typeKind === 'Answer' ? ' \u2014 ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from Verse') : chap && chap.name ? ' \u2014 ' + chap.name : ''),
+    notFound: !!notFound,
+    typeLine: notFound ? 'Not found' : entity && !page && !skill ? typeWords(entity.kind, entity.also, entity.detail) : typeKind + (typeKind === 'Answer' ? ' \u2014 ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from Verse') : chap && chap.name ? ' \u2014 ' + chap.name : ''),
     power: stats ? (sr == null ? ti * 2 : Math.round(sr * 9)) : fetched ? Math.min(9, sources) : null,
     toughness: stats ? (asks ? asksResistance(+asks) : ti + 1) : fetched ? freshness(ageDays) : null,
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
@@ -88,7 +92,9 @@ export function chromeHtml(c, esc) {
   const lineage = lineageOf(c.chapter), trace = lineage ? ' title="' + esc(lineage) + '" data-lineage="' + esc(lineage) + '"' : '';
   const type = '<div class="vc-type"' + trace + '><span>' + esc(c.typeLine) + '</span>' + gem(c.rarity) + '</div>';
   const kws = (c.keywords || []).filter((k) => KEYWORDS[k]).map((k) => '<span class="vc-kw" title="' + esc(k + ': ' + KEYWORDS[k]) + '">' + esc(k) + '</span>').join('');
-  const adds = c.adds || kws ? '<div class="vc-adds">' + (kws ? '<div class="vc-kws">' + kws + '</div>' : '') + (c.adds ? '<b' + trace + '>Adds to Verse</b> ' + esc(c.adds) : '') + '</div>' : '';
+  const badges = (c.badges || []).length ? '<div class="vc-badges" role="list">' + c.badges.map(([k, v]) => '<span role="listitem" class="vc-badge"><i>' + esc(k) + '</i> ' + esc(v) + '</span>').join('') + '</div>' : '';
+  const notice = c.notice ? '<div class="vc-notice">' + esc(c.notice) + '</div>' : '';
+  const adds = c.adds || kws || badges || notice ? '<div class="vc-adds"' + (badges || notice ? ' data-facts="1"' : '') + '>' + badges + (kws ? '<div class="vc-kws">' + kws + '</div>' : '') + (c.adds ? '<span class="vc-addstext"><b' + trace + '>Adds to Verse</b> ' + esc(c.adds) + '</span>' : '') + notice + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
   const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? stat('P', c.power, 'power: the sources it stands on') + stat('R', c.toughness, 'resistance: how fresh the source is, 9 if edited today, 1 if a year or more')
     : stat('P', c.power, 'power: success rate out of nine') + stat('R', c.toughness, 'resistance: the real asks that proved it, about 3 more for each tenfold') + (c.income == null ? '' : stat('I', c.income, 'income: how many other files lean on it'))) + '</div>';
@@ -106,7 +112,7 @@ export const CARD_CSS = [
   '.vcard>*:not(.vc-art):not(.vc-type):not(.vc-foot):not(.vc-adds):not(.vc-title):not(style){margin-left:18px;margin-right:18px}',
   '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 12px 0!important;padding:5px 12px;background:linear-gradient(90deg,hsl(var(--h) 28% 22%),hsl(var(--h) 24% 15%));border:2px solid var(--edge);border-radius:12px 12px 6px 6px/16px 16px 6px 6px;font-weight:600;letter-spacing:.02em;font-size:20px;line-height:1.2;overflow-wrap:anywhere;min-width:0}',
   '.vcard .vc-title::after{content:attr(data-cost);font-size:13px;letter-spacing:.18em;color:hsl(var(--h) 60% 74%);white-space:nowrap}',
-  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:auto;aspect-ratio:16/9;max-height:min(300px,38vh);margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;max-height:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo::before{content:none}.vpage.skyc .vc-art{height:72px}',
+  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:auto;aspect-ratio:16/10;max-height:min(380px,46vh);margin:6px 8px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;max-height:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo::before{content:none}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:7px 12px 12px;padding:3px 12px;background:linear-gradient(90deg,hsl(var(--h) 26% 21%),hsl(var(--h) 22% 16%));border:2px solid var(--edge);border-radius:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 40% 78%)}',
   '.vcard .vc-gem{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 9px currentColor}',
   '.vcard .vc-kws{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px;font-style:normal}.vcard .vc-kw{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:999px;border:1px solid hsl(var(--h) 40% 60% / .55);color:hsl(var(--h) 50% 80%)}.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
@@ -143,7 +149,7 @@ export const CARD_CSS = [
   '.vpage.vcard[data-poster] .vc-title{margin-top:14px!important;justify-content:flex-start;text-align:left}',
   '.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-share,.vpage.vcard[data-poster] .vc-route,.vpage.vcard[data-poster] .vc-foot,.vpage.vcard[data-poster] .vc-arrows{grid-column:1 / -1}',
   '.vpage.vcard[data-poster]>img{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none}', // the source's own thumbnail is the poster in the art box: not shown twice
-  '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(40vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vcard .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
+  '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(60vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vpage.skyc .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vpage.vcard:not(.skyc) .vc-art{max-height:28vh;margin-top:4px}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds:not([data-facts]){height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds[data-facts] .vc-addstext,.vcard .vc-adds[data-facts] .vc-kws{display:block;height:0;margin:0;padding:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
   '@media (max-width:520px){.vpage.vcard[data-poster]{grid-template-columns:minmax(0,1fr)}.vpage.vcard[data-poster]>*{grid-column:1}.vpage.vcard[data-poster] .vc-art{grid-row:auto;justify-self:center;width:min(46%,170px);height:auto!important;margin:12px auto 4px!important;overflow:hidden}.vpage.vcard[data-poster] .vc-title{margin:8px 6px 0!important;justify-content:center;text-align:center}.vpage.vcard[data-poster] .vc-type,.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-foot{margin-left:6px}}',
   // the comic-ink layer (owner, 2026-10-18: "design the almost comic like epic v01d cards"): heavy black ink round every panel with an offset
   // shadow like a printed panel, a bold outlined title banner, the stats in an inked plate, and halftone dots over the art
@@ -158,6 +164,20 @@ export const CARD_CSS = [
   '.vcard-plain .vc-share .vc-grp::before{content:attr(data-label);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#a9afc2}',
   '.vcard-plain .vc-share button{font:inherit;font-size:12px;padding:4px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.16);background:transparent;color:#c9cede;cursor:pointer;min-height:28px}',
   '.vcard-plain .vc-share button:hover,.vcard-plain .vc-share button:focus-visible{background:rgba(255,255,255,.08);outline:2px solid rgba(160,190,255,.7);outline-offset:1px}.vcard-plain .vc-share .vc-full{font-size:10.5px;color:#a9afc2}',
+  // subject themes (lib/subject-kinds.js): the frame follows what the card is about. Facts as small badges, and a plain "not affiliated" line on someone else's work.
+  '.vcard .vc-badges{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;font-style:normal}.vcard .vc-badge{font-size:11.5px;letter-spacing:.04em;padding:2px 9px;border-radius:999px;background:hsl(var(--h) 30% 20%);border:1px solid hsl(var(--h) 40% 56% / .6);color:hsl(var(--h) 30% 90%)}.vcard .vc-badge i{font-style:normal;text-transform:uppercase;font-size:10px;letter-spacing:.1em;color:hsl(var(--h) 55% 74%);margin-right:3px}',
+  '.vcard .vc-notice{margin-top:6px;font-size:11px;font-style:normal;letter-spacing:.04em;color:hsl(var(--h) 14% 72%)}',
+  // collectible: a toy or a character in a blister pack. A bright card back (the foil border), a die-cut window round the art, a hang hole, a corner sticker and a bold name plate. Original colours and shapes: no show, studio or brand trade dress.
+  '.vpage.vcard[data-theme=collectible]{--foil:linear-gradient(135deg,#ffd447,#ff7a3d,#ffe27a,#f2562b)!important;position:relative}.vpage.vcard[data-theme=collectible]::before{content:"";position:absolute;top:-5px;left:50%;width:34px;height:12px;margin-left:-17px;border-radius:0 0 12px 12px;background:#0b0d14;box-shadow:inset 0 -3px 0 rgba(255,255,255,.18);z-index:3}',
+  '.vpage.vcard[data-theme=collectible] .vc-title{text-transform:uppercase;letter-spacing:.08em;font-weight:800;justify-content:center;background:linear-gradient(90deg,#c8372d,#ff7a3d);color:#fff;border-color:#ffe27a;border-radius:6px}.vpage.vcard[data-theme=collectible] .vc-title::after{content:none}',
+  '.vpage.vcard[data-theme=collectible] .vc-art{border:4px solid #fff7d6;border-radius:18px;box-shadow:inset 0 0 0 3px #c8372d,0 3px 0 rgba(0,0,0,.4)}.vpage.vcard[data-theme=collectible] .vc-type{justify-content:center;gap:10px}',
+  '.vpage.vcard[data-theme=collectible] .vc-art::after{content:"FIGURE";position:absolute;top:8px;right:8px;transform:rotate(5deg);padding:2px 10px;font:700 11px/1.4 system-ui,sans-serif;letter-spacing:.14em;color:#3a1608;background:#ffe27a;border-radius:3px;box-shadow:0 1px 0 rgba(0,0,0,.4)}',
+  // plain: a company, a concept, a book: a quiet fact card, no foil, a thin rule
+  '.vpage.vcard[data-theme=plain]{--foil:linear-gradient(135deg,#59616f,#2b303a,#59616f,#262b34)!important}.vpage.vcard[data-theme=plain] .vc-art{aspect-ratio:16/5;max-height:92px}',
+  // specimen: an animal, a plant, a dish: a field-guide plate, the art in a ruled frame
+  '.vpage.vcard[data-theme=specimen]{--foil:linear-gradient(135deg,#8fbf7a,#3f6b3a,#c7e2a8,#2e5230)!important}.vpage.vcard[data-theme=specimen] .vc-art{border-style:double;border-width:5px}',
+  '.vpage.vcard[data-kind=place] .vc-art.has-photo{height:auto;aspect-ratio:16/9;max-height:220px}',
+  '.vpage.vcard[data-theme=portrait] .vc-art{box-shadow:inset 0 0 0 4px rgba(255,255,255,.12)}.vpage.vcard[data-theme=sleeve] .vc-art{aspect-ratio:1/1;max-height:min(260px,36vh);width:min(260px,70%);margin-left:auto;margin-right:auto}',
 ].join('') + LOOK_CSS + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 
 // Skill evolution (asked by Verse: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
@@ -205,25 +225,60 @@ export function editedDaysAgo(text, now = Date.now()) {
   const t = month == null ? NaN : Date.UTC(Number(m[3]), month, Number(m[2])); return Number.isFinite(t) ? Math.max(0, (now - t) / 864e5) : null;
 }
 
+// the full page of a skill that has one (owner, 2026-10-25: "why are you not linking the cards to the pages?"): a card from one of these skills
+// carries a link to its page, the one the Versus fights are measured on
+import { SITE_PAGES } from './tool-sites.js';
+export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) => ['site ' + p.path, [p.path, p.name]])), 'pdf-tools': ['/pdf/', 'PDF tools'], 'kanban-board': ['/kanban/', 'Kanban board'], calendar: ['/calendar/', 'Calendar'], 'calendar-file': ['/calendar/', 'Calendar'], translate: ['/translate/', 'Translate'],
+  weather: ['/weather/', 'Weather'], recipe: ['/recipes/', 'Recipes'], calc: ['/calculator/', 'Calculator'], 'calc-more': ['/calculator/', 'Calculator'],
+  convert: ['/convert/', 'Unit converter'], gradient: ['/gradient/', 'Gradient'], wheel: ['/wheel/', 'Wheel of names'], coin: ['/flip/', 'Coin flip'],
+  'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base-converter/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
+  words: ['/word-count/', 'Word counter'], fakeuser: ['/random-user/', 'Made-up people'], time: ['/time/', 'Time zones'], colour: ['/color/', 'Colour codes'], color: ['/color/', 'Colour codes'],
+  password: ['/password/', 'Password generator'], base64: ['/base64/', 'Base64'], random: ['/random/', 'Random number'],
+  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], 'photo-tools': ['/photos/', 'Photo tools'], pwcheck: ['/password-strength/', 'Password strength'], 'stl-check': ['/stl/', 'STL checker'], toolkit: ['/tools/', 'Every tool'],
+  podcast: ['/podcasts/', 'Podcasts'], 'podcast-search': ['/podcasts/', 'Podcasts'], notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'], boards: ['/boards/', 'Boards'], fanfic: ['/fanfic/', 'Fan fiction'], 'team-chat': ['/team/', 'Team chat'], draw: ['/learn-to-draw/', 'Learn to draw'], 'verse-brain': ['/brain/', 'Verse Brain'], converter: ['/converter/', 'File converter'], rap: ['/rap/', 'Verse raps'], markets: ['/markets/', 'Markets'], news: ['/news/', 'News'], scores: ['/scores/', 'Scores'], 'sports-browse': ['/sports/', 'Sports'], fantasy: ['/fantasy/', 'Fantasy tools'], metronome: ['/metronome/', 'Metronome'], piano: ['/piano/', 'Piano'], tuner: ['/tuner/', 'Tuner'], bpm: ['/bpm/', 'BPM counter'], chordfinder: ['/chords/', 'Chords and scales'], 'music-tools': ['/music/', 'Music tools'], cartoon: ['/image/', 'AI image generator'], formulas: ['/calculators/', 'Formula calculators'], repo: ['/ledger/', 'Repo activity ledger'], emoji: ['/emojis/', 'Emoji counts'], 'emoji-combos': ['/emoji-combos/', 'Emoji combos'], 'gh-file': ['/g/', 'Snippet / Note in a link'] });
+// a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
+// stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")
+export const PAGE_PATHS = Object.freeze(Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])));
+// a data-page may carry what the card shows in a plain query ('/random/?min=-5&max=5'), so the page opens on it, not on its default
+const PAGE_QUERY = /^\?[A-Za-z0-9_.=&%-]{1,200}$/;
+/** the [href, label] of a card's full page: its own data-page when it is a known page (with a plain query or none), else its skill's; null when it has none. Pure. */
+export const pageOfCard = (name, page) => {
+  const i = page ? page.indexOf('?') : -1, base = i < 0 ? page : page.slice(0, i);
+  return page && PAGE_PATHS[base] && (i < 0 || PAGE_QUERY.test(page.slice(i))) ? [page, PAGE_PATHS[base]] : PAGE_OF[name] || null;
+};
+/** the link to a skill's full page, or '' when it has none. Pure. */
+export const pageLinkHtml = (name, esc, page = '') => { const p = pageOfCard(name, page); return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
+
 /** put the card's frame on a page, or refresh it: idempotent, and safe to call from a MutationObserver (it only writes when it changes). */
 export function keep(el, esc, stats) {
   if (!el || !el.classList) return;
   if (el.dataset && el.dataset.cardPlain !== undefined) { plain(el); return; } // a utility card asks for no collectible frame (data-card-plain)
   if (!el.classList.contains('vcard')) el.classList.add('vcard');
   // a minted collectible (skills/collectible.js) stays the card of its subject, not of the skill that minted it
-  const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
+  const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll(SOURCE_LINKS).length, src = el.querySelector(SOURCE_BOX);
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
-  const h2t = el.querySelector('h2'); c.key = name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
+  // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
+  const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
+  if (pageOfCard(name, el.dataset.page) && !el.querySelector(':scope > .vc-page')) { const t0 = document.createElement('template'); t0.innerHTML = pageLinkHtml(name, esc, el.dataset.page); /* void-review: ok: fixed table, escaped */ const a = t0.content.firstChild; let tail = el.lastElementChild; while (tail && (tail.classList.contains('vtail') || tail.classList.contains('vtell') || tail.classList.contains('vtell-box') || tail.classList.contains('vc-arrows') || tail.classList.contains('vc-foot') || tail.classList.contains('vc-adds'))) tail = tail.previousElementSibling; if (tail) tail.after(a); else el.appendChild(a); }
+  // the frame follows the subject's kind, read from the fetched description (lib/subject-kinds.js): a theme, badges from the answer's own facts, and a
+  // "not affiliated" line on a card about someone else's work
+  const kindTitle = c.kindName ? c.kindName.charAt(0).toUpperCase() + c.kindName.slice(1) : '';
+  if (!own && !name && !notFound && kindTitle) { const kw = (c.typeLine.split(/\s*[\u00b7\u2014]\s*/)[0] || kindTitle).trim(); c.badges = badgesOf(kw, bodyText || answerText(el)); c.notice = noticeOf(kw, el.dataset.cardSeries || ''); c.theme = themeOf(kw); }
+  if (c.theme) el.dataset.theme = c.theme; else delete el.dataset.theme;
+  const h2t = el.querySelector('h2'); c.key = notFound ? 'not found' : name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
   // the art is of the subject (owner, 2026-10-17: the art should be of the subject of each card): when the answer carries a picture of the thing
   // (its source's thumbnail), the art box shows that picture in its true colour (owner, 2026-10-17: the ink filter stripped a poster's colour), under a light ink texture; with none, the plate of its kind
   const photoImg = [...el.querySelectorAll('img[src]')].find((i) => !i.closest('.vc-art') && /^https:\/\//.test(i.getAttribute('src') || '')), photo = photoImg ? photoImg.getAttribute('src') : '';
   // the card's subject is what its ANSWER is about (lib/card-subject.js), not the ask's words: the plate draws it, the Art Forge paints it
-  const subj = c.isSkill || own ? { nouns: [], phrase: '' } : subjectOf(c.key, answerText(el)); c.nouns = subj.nouns; el._vcSubject = subj.phrase;
-  const key = JSON.stringify([c.key, c.nouns, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.artKind, c.artHue, c.artInk, c.rarity && c.rarity.name, c.hue, photo]);
+  const subj = c.isSkill || own || notFound ? { nouns: [], phrase: '' } : subjectOf(c.key, answerText(el)); c.nouns = subj.nouns; el._vcSubject = subj.phrase;
+  const key = JSON.stringify([c.key, c.nouns, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.artKind, c.artHue, c.artInk, c.rarity && c.rarity.name, c.hue, photo, c.badges, c.notice, c.theme]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
+  // the title row spreads its children (flex, space-between): a title made of loose text and inline pieces (the films title's glitching I)
+  // was pulled apart into "VERSE F   I   LMS" (owner, 2026-10-22), so a mixed title is kept as one word box
+  if (h2 && h2.childNodes.length > 1 && [...h2.childNodes].some((n) => n.nodeType === 3 && n.data.trim())) { const w = document.createElement('span'); w.className = 'vc-tw'; while (h2.firstChild) w.appendChild(h2.firstChild); h2.appendChild(w); }
   // the page keeps its own lines last (a product line, the Tell Verse link): the arrows sit before them, never after, or the two keep moving past each other forever
   const trailing = (n) => n.classList.contains('vtail') || n.classList.contains('vtell') || n.classList.contains('vtell-box');
   let last = el.lastElementChild; while (last && trailing(last)) last = last.previousElementSibling;
@@ -254,6 +309,8 @@ export function keep(el, esc, stats) {
   if (h2 && !c.isSkill && !own) { const first = [...el.children].find((n) => /^H[1-4]$/.test(n.tagName) && n !== h2); if (first && repeatsTitle(h2.textContent, first.textContent)) first.hidden = true; }
   const thin = el.querySelector(':scope > p.thin'), foot0 = el.querySelector(':scope > .vc-foot'); if (thin && foot0) { thin.classList.add('vc-route'); thin.removeAttribute('style'); foot0.before(thin); }
   if (source === 'seal') sealArt(el.querySelector(':scope > .vc-art'), { key: c.key || c.name || c.typeLine, kind: c.artKind || kindWord(c.typeLine), hue: c.artHue != null ? c.artHue : c.hue, rarity: c.rarity, nouns: c.nouns }); // the void seal (lib/void-seal.js): Verse's procedural art under any painted picture
+  // the picture says what it shows (a11y, and the page tests read it): the subject's own motif, drawn from the answer, never from one word of the ask
+  { const box = el.querySelector(':scope > .vc-art'); if (box && !c.isSkill && !own) { const m = notFound ? '' : kindTitle === 'Person' ? 'a neutral portrait' : (motifsFor(c.nouns)[0] || ''), label = (notFound ? 'Neutral picture' : 'Picture of ' + (m ? m + ' for ' : '') + (h2t ? h2t.textContent.trim() : c.key)); box.setAttribute('role', 'img'); box.setAttribute('aria-label', label); box.dataset.subject = m || (c.nouns || []).slice(0, 3).join(' '); } }
   forge(el, c, !!photo); // the Art Forge (lib/card-forge.js): painted art for an answer or merged card, or a "paint this card" button
   accordion(el); // a very long body: sections behind one-line summaries
   shareBar(el); // copy card / save card (lib/card-share.js)

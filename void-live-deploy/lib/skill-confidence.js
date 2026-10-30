@@ -6,6 +6,7 @@
 // gets a dashed edge; a skill never tested counts as fully faded. The two day counts are this strip's own display rule, not a measurement.
 // Pure: data in, escaped HTML out. The page fetches families.json and calls confidenceHtml().
 import { RARITY_LOOK, rarityKey } from './card-art.js';
+import { byWeakness } from './weakest.js';
 export const WEATHER_DAYS = 14; // untested this long and the square is marked weathered
 export const FADE_DAYS = 90; // untested this long and the square is at its faintest (half density)
 export const TIER_ORDER = ['proven', 'checked', 'tested', 'experiment'];
@@ -68,7 +69,7 @@ export function familyBars(fam) {
     const sk = f.skills.filter((s) => s && s.name), proven = sk.filter((s) => s.tier === 'proven').length, checked = sk.filter((s) => s.tier === 'checked').length;
     return { id: String(f.id || f.name || ''), name: String(f.name || f.id || ''), proven, checked, total: sk.length, share: proven / sk.length, weak: false };
   });
-  const weakest = rows.slice().sort((a, b) => a.share - b.share || (a.proven + a.checked) / a.total - (b.proven + b.checked) / b.total || b.total - a.total)[0];
+  const weakest = rows.slice().sort(byWeakness)[0];
   if (weakest) weakest.weak = true;
   return rows;
 }
@@ -78,7 +79,7 @@ export function sureHtml(fam, today, esc = escHtml) {
   const row = (b) => '<div class="fb-row' + (b.weak ? ' fb-weak' : '') + '" data-fam-bar="' + esc(b.id) + '" data-name="' + esc(b.name) + '" data-share="' + (Math.round(b.share * 1000) / 1000) + '" data-label="' + esc(b.proven + ' of ' + b.total + ' proven') + '"' + (b.weak ? ' data-weak="1"' : '') + '>'
     + '<span class="fb-name">' + esc(b.name) + (b.weak ? ' <em>weakest</em>' : '') + '</span><span class="fb-track" role="img" aria-label="' + esc(b.name + ': ' + b.proven + ' of ' + b.total + ' skills proven') + '"><i style="width:' + Math.round(b.share * 100) + '%"></i></span>'
     + '<span class="fb-num">' + esc(b.proven + '/' + b.total) + '</span></div>';
-  const css = '<style>.fb-row{display:grid;grid-template-columns:minmax(0,38%) 1fr auto;gap:10px;align-items:center;margin:5px 0;font-size:var(--fs-s,13px)}.fb-name{color:var(--ink-2,#c3c8d8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+  const css = '<style>.fb-row{display:grid;grid-template-columns:minmax(0,38%) 1fr auto;gap:10px;align-items:center;margin:5px 0;font-size:var(--fs-s,13px)}.fb-name{color:var(--ink-2,#c3c8d8);overflow-wrap:anywhere}'
     + '.fb-name em{font-style:normal;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#ffb000;margin-left:4px}.fb-track{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}'
     + '.fb-track i{display:block;height:100%;border-radius:inherit;background:rgb(var(--d-key,158 178 255)/.9)}.fb-num{font-variant-numeric:tabular-nums;color:var(--ink-3,#8e94a8);font-size:12px}'
     + '.fb-weak .fb-track{box-shadow:0 0 0 1px #ffb000}.fb-weak .fb-track i{background:#ffb000}.fb-weak .fb-name{color:#ffd45e}.sc-more>summary{cursor:pointer;color:var(--ink-3,#8e94a8);font-size:12px;margin-top:6px}</style>';

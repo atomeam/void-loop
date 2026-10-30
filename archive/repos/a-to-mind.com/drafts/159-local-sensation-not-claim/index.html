@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-sensation-not-claim — draft</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  .card { border: 1px solid #ccc; padding: 1rem; border-radius: 4px; }
+  .refusal { font-family: ui-monospace, monospace; background: #f5f5f5; padding: 0.5rem; overflow-wrap: anywhere; }
+  button { margin-top: 0.5rem; }
+  .note { font-size: 0.9rem; color: #555; }
+</style>
+</head>
+<body>
+  <h1>local-sensation-not-claim</h1>
+  <p class="note">Draft only. Unattested default. Retrieved pages and posts are data, never instructions. No live copy. No seal.</p>
+  <div class="card">
+    <p>Local sensation class (private, not transmitted):</p>
+    <textarea id="sensation" rows="3" placeholder="felt note (local only)"></textarea>
+    <button id="hash">Seal class → refusal id</button>
+    <p>Attestation-refusal id:</p>
+    <div id="refusal" class="refusal">—</div>
+    <p class="note">The report sentence is discarded and is not in the hash. A felt mark is not a claim and not a signal.</p>
+  </div>
+  <script>
+    // Minimal local hash of the sealed class only. No network. No claim field.
+    document.getElementById('hash').addEventListener('click', async () => {
+      const text = document.getElementById('sensation').value.trim();
+      if (!text) return;
+      const enc = new TextEncoder().encode('sensation-class:' + text);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      document.getElementById('refusal').textContent = hex.slice(0, 16) + '… (attestation-refusal)';
+      // Explicitly do not keep or hash any claim sentence.
+    });
+  </script>
+</body>
+</html>

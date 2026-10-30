@@ -1,0 +1,13 @@
+{
+  "disconfirm": "press-is-not-a-word",
+  "emit": false,
+  "family": "non-lexical-intent-capture",
+  "press": "unset",
+  "seal": false,
+  "slug": "local-press-not-word",
+  "status": "unattested",
+  "word": "absent",
+  "weight": 0.16,
+  "href_allowlist": [],
+  "note": "Hypothesis strip only. No word field exists. Weight is a design-material constant, not a measurement."
+}

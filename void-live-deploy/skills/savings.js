@@ -137,6 +137,8 @@ function render(q, api) {
     if (cols.length > 1) {
       const slot = document.createElement('div'); slot.className = 'savings-mini'; slot.style.cssText = 'height:190px;margin:10px 0 4px;border-radius:10px;overflow:hidden';
       const at = page.querySelector('table'); if (at) at.before(slot); else page.appendChild(slot);
+      // the 3D piece is this card's picture (as coin.js's coins are): the art plate steps aside, or its 330 px push the piece below the card's fold, where it never draws; if WebGL fails the slot goes and the plate comes back
+      slot.insertAdjacentHTML('beforebegin', '<style>.vpage:has(.savings-mini) .vc-art{display:none}</style>'); /* void-review: ok: a fixed style, nothing from the ask */
       api.stage.miniature(slot, 'savings', { cols }, { key: 'savings-page', place: 'inside', label: '3D coin stacks: what you put in and what growth added' }).catch(() => slot.remove());
     }
   }

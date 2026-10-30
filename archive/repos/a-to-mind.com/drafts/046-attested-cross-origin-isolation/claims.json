@@ -1,0 +1,17 @@
+{
+  "slug": "attested-cross-origin-isolation",
+  "run": "046",
+  "status": "candidate-only",
+  "promoted": false,
+  "contract": "isolation#046|kind:attested-cross-origin-isolation|coop:absent-until-seal|coep:absent-until-seal|corp:absent-until-seal|crossOriginIsolated:deny|sharedArrayBuffer:deny|report-to:deny|badge:deny|seal:human",
+  "contract_sha256": "f31ed9ec3a7de5f0016bd885ab258c55626ede06efdd8a9ae0b94d397eeff026",
+  "files": {
+    "isolation.catalog.json": "9196f4cbeec06a3e642531be0433eed241309bd663fe6743e4d3432b7c76f2e0",
+    "head-snippet.draft.html": "9c1bf75a4908920e83fa95d23c6df327cd604ac255d29967afdf49db072ef7a5",
+    "proposed-isolation.html": "fe0ba4a557ded135639faa0d3f055b5eadc02b96c4864dafcea645333b06ce31",
+    "isolation-worker.js": "03bb93bcfc52d080a4408f630fb474acf3cd99d5bdbaf4b91a92bcac6c1c52f7",
+    "headers.draft.txt": "a12f56fc0a5bee496a7cadf98bfeedc33e2a1a90a3f84c16dac07ab99031e437"
+  },
+  "retrieved_pages_are": "data",
+  "seal": "human"
+}

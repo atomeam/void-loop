@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>F205 · WebRTC/Broadcast Orientation-Causal DOM Agent Competition</title>
+<style>
+:root { --bg: #0a0a12; --fg: #e0e0ff; --accent: #6cf; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; height: 100dvh; }
+#field { position: relative; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, #111 0%, #000 70%); overflow: hidden; }
+.agent { position: absolute; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #000; pointer-events: none; will-change: transform; transition: none; box-shadow: 0 0 12px currentColor; }
+.resource { position: absolute; width: 18px; height: 18px; background: #fc6; border-radius: 4px; box-shadow: 0 0 8px #fc6; pointer-events: none; }
+#hud { position: fixed; top: 8px; left: 8px; right: 8px; background: rgba(0,0,0,.7); padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 10; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+button, input { background: #222; color: var(--fg); border: 1px solid #444; border-radius: 4px; padding: 4px 8px; font-size: 12px; }
+button:hover { background: #333; }
+#status { color: #8f8; }
+.portal { position: absolute; padding: 6px 10px; background: rgba(40,40,80,.8); border: 1px solid #6cf; border-radius: 8px; font-size: 11px; pointer-events: none; opacity: 0.9; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <span id="status">Loading…</span>
+  <button id="startBtn">Start / Restart</button>
+  <button id="seedBtn">Place Resource</button>
+  <button id="sealBtn">Seal Winner Genome</button>
+  <button id="injectBtn">Inject Sealed</button>
+  <button id="orientBtn">Enable Orientation</button>
+  <span id="peers">Peers: 1 (local)</span>
+  <span id="score">Score: 0</span>
+</div>
+<div id="field"></div>
+<script>
+const FIELD = document.getElementById('field');
+const STATUS = document.getElementById('status');
+const PEERS = document.getElementById('peers');
+const SCORE = document.getElementById('score');
+
+let agents = [];
+let resources = [];
+let sealedGenomes = [];
+let orientation = { beta: 0, gamma: 0 };
+let running = false;
+let peerId = Math.random().toString(36).slice(2, 8);
+let channel = null;
+let peerCount = 1;
+let totalScore = 0;
+
+function localController(agent, gx, gy) {
+  const g = agent.genome;
+  const dx = agent.tx - agent.x;
+  const dy = agent.ty - agent.y;
+  const dist = Math.hypot(dx, dy) || 1;
+  let fx = (dx / dist) * g[4] * 0.8;
+  let fy = (dy / dist) * g[4] * 0.8;
+  fx += gx * (1.2 / g[0]);
+  fy += gy * (1.2 / g[0]);
+  fx += (Math.random() - 0.5) * g[2];
+  fy += (Math.random() - 0.5) * g[2];
+  return [fx, fy];
+}
+
+function makeGenome() {
+  return [
+    0.6 + Math.random() * 1.4,
+    0.05 + Math.random() * 0.15,
+    0.2 + Math.random() * 0.8,
+    Math.random() * 360,
+    0.5 + Math.random() * 1.5,
+    1.5 + Math.random() * 2.5
+  ];
+}
+
+function createAgent(x, y, genome = null, id = null) {
+  const el = document.createElement('div');
+  el.className = 'agent';
+  const g = genome || makeGenome();
+  el.style.background = `hsl(${g[3]}, 80%, 55%)`;
+  el.style.color = `hsl(${g[3]}, 80%, 55%)`;
+  el.textContent = (id || agents.length).toString().slice(-2);
+  FIELD.appendChild(el);
+  const a = {
+    id: id || peerId + '-' + agents.length,
+    el, x, y, vx: 0, vy: 0,
+    genome: g,
+    score: 0,
+    tx: x, ty: y,
+    owner: peerId
+  };
+  agents.push(a);
+  return a;
+}
+
+function createResource(x, y) {
+  const el = document.createElement('div');
+  el.className = 'resource';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  FIELD.appendChild(el);
+  resources.push({ el, x, y, value: 10 });
+}
+
+function updateAgents() {
+  const w = FIELD.clientWidth;
+  const h = FIELD.clientHeight;
+  const gx = (orientation.gamma / 45) * 0.4;
+  const gy = (orientation.beta / 45) * 0.4;
+
+  agents.forEach(a => {
+    let best = null, bd = Infinity;
+    resources.forEach(r => {
+      const d = Math.hypot(r.x - a.x, r.y - a.y);
+      if (d < bd) { bd = d; best = r; }
+    });
+    if (best) { a.tx = best.x; a.ty = best.y; }
+    else { a.tx = w * 0.5 + Math.sin(Date.now()/1000 + a.genome[3]) * 100; a.ty = h * 0.5; }
+
+    const [fx, fy] = localController(a, gx, gy);
+    a.vx = (a.vx + fx) * 0.92;
+    a.vy = (a.vy + fy) * 0.92;
+    const sp = Math.hypot(a.vx, a.vy);
+    if (sp > a.genome[5]) { a.vx *= a.genome[5]/sp; a.vy *= a.genome[5]/sp; }
+    a.x += a.vx; a.y += a.vy;
+    if (a.x < 20) { a.x = 20; a.vx *= -0.5; }
+    if (a.x > w-20) { a.x = w-20; a.vx *= -0.5; }
+    if (a.y < 20) { a.y = 20; a.vy *= -0.5; }
+    if (a.y > h-20) { a.y = h-20; a.vy *= -0.5; }
+
+    resources.forEach((r, i) => {
+      if (Math.hypot(r.x - a.x, r.y - a.y) < 24) {
+        a.score += r.value;
+        totalScore += r.value;
+        r.el.remove();
+        resources.splice(i, 1);
+        if (channel) channel.postMessage({ type: 'collect', id: a.id, score: a.score });
+      }
+    });
+
+    a.el.style.transform = `translate(${a.x - 18}px, ${a.y - 18}px)`;
+    a.el.style.opacity = 0.7 + Math.min(0.3, a.score / 50);
+  });
+
+  for (let i = 0; i < agents.length; i++) {
+    for (let j = i+1; j < agents.length; j++) {
+      const a = agents[i], b = agents[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d = Math.hypot(dx, dy) || 1;
+      if (d < 40) {
+        const f = (40 - d) * 0.05 * (a.score > b.score ? 1 : -1);
+        a.vx -= (dx/d) * f; a.vy -= (dy/d) * f;
+        b.vx += (dx/d) * f; b.vy += (dy/d) * f;
+      }
+    }
+  }
+
+  SCORE.textContent = `Score: ${totalScore} | Agents: ${agents.length}`;
+}
+
+function loop() {
+  if (!running) return;
+  updateAgents();
+  requestAnimationFrame(loop);
+}
+
+function sealWinner() {
+  if (!agents.length) return;
+  const winner = agents.reduce((best, a) => a.score > best.score ? a : best, agents[0]);
+  const hash = simpleHash(winner.genome.join(','));
+  const sealed = { genome: [...winner.genome], hash, score: winner.score, owner: peerId, ts: Date.now() };
+  sealedGenomes.push(sealed);
+  saveToIDB('sealed', sealedGenomes);
+  STATUS.textContent = `Sealed winner (hash ${hash.slice(0,6)}) score ${winner.score}`;
+  if (channel) channel.postMessage({ type: 'seal', sealed });
+  const portal = document.createElement('div');
+  portal.className = 'portal';
+  portal.style.left = (winner.x + 20) + 'px';
+  portal.style.top = (winner.y - 30) + 'px';
+  portal.textContent = `SEALED ${hash.slice(0,4)}`;
+  FIELD.appendChild(portal);
+  setTimeout(() => portal.remove(), 4000);
+}
+
+function simpleHash(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0).toString(16);
+}
+
+function injectSealed() {
+  if (!sealedGenomes.length) { STATUS.textContent = 'No sealed genomes'; return; }
+  const g = sealedGenomes[Math.floor(Math.random() * sealedGenomes.length)].genome;
+  const a = createAgent(Math.random()*FIELD.clientWidth, Math.random()*FIELD.clientHeight, g);
+  STATUS.textContent = `Injected sealed genome into new agent`;
+  if (channel) channel.postMessage({ type: 'inject', genome: g, id: a.id });
+}
+
+function saveToIDB(key, data) {
+  try {
+    const req = indexedDB.open('F205-void', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('store');
+    req.onsuccess = e => {
+      const tx = e.target.result.transaction('store', 'readwrite');
+      tx.objectStore('store').put(data, key);
+    };
+  } catch (e) {}
+}
+
+function loadFromIDB(key, cb) {
+  try {
+    const req = indexedDB.open('F205-void', 1);
+    req.onsuccess = e => {
+      const tx = e.target.result.transaction('store', 'readonly');
+      const g = tx.objectStore('store').get(key);
+      g.onsuccess = () => cb(g.result);
+    };
+  } catch (e) { cb(null); }
+}
+
+function initBroadcast() {
+  try {
+    channel = new BroadcastChannel('f205-void-field');
+    channel.onmessage = e => {
+      const m = e.data;
+      if (m.from === peerId) return;
+      peerCount = Math.max(peerCount, 2);
+      PEERS.textContent = `Peers: ~${peerCount} (broadcast)`;
+      if (m.type === 'state') {
+        m.agents.forEach(ra => {
+          if (!agents.find(a => a.id === ra.id)) {
+            createAgent(ra.x, ra.y, ra.genome, ra.id);
+          }
+        });
+      } else if (m.type === 'seal') {
+        if (!sealedGenomes.find(s => s.hash === m.sealed.hash)) {
+          sealedGenomes.push(m.sealed);
+          saveToIDB('sealed', sealedGenomes);
+          STATUS.textContent = `Received sealed genome from peer`;
+        }
+      } else if (m.type === 'inject') {
+        createAgent(Math.random()*300+50, Math.random()*200+50, m.genome, m.id);
+      } else if (m.type === 'resource') {
+        createResource(m.x, m.y);
+      }
+    };
+    setInterval(() => {
+      if (channel && running) {
+        channel.postMessage({
+          type: 'state', from: peerId,
+          agents: agents.map(a => ({ id: a.id, x: a.x, y: a.y, genome: a.genome, score: a.score }))
+        });
+      }
+    }, 1200);
+  } catch (e) {
+    STATUS.textContent = 'BroadcastChannel unavailable (single mode)';
+  }
+}
+
+document.getElementById('startBtn').onclick = () => {
+  running = false;
+  agents.forEach(a => a.el.remove());
+  resources.forEach(r => r.el.remove());
+  agents = []; resources = [];
+  totalScore = 0;
+  for (let i = 0; i < 6; i++) {
+    createAgent(100 + Math.random()* (FIELD.clientWidth-200), 80 + Math.random()*(FIELD.clientHeight-160));
+  }
+  for (let i = 0; i < 4; i++) createResource(Math.random()*FIELD.clientWidth, Math.random()*FIELD.clientHeight);
+  running = true;
+  STATUS.textContent = 'Running · orientation causal gravity active if permitted';
+  loop();
+};
+
+document.getElementById('seedBtn').onclick = () => {
+  const x = Math.random() * FIELD.clientWidth;
+  const y = Math.random() * FIELD.clientHeight;
+  createResource(x, y);
+  if (channel) channel.postMessage({ type: 'resource', x, y, from: peerId });
+};
+
+document.getElementById('sealBtn').onclick = sealWinner;
+document.getElementById('injectBtn').onclick = injectSealed;
+
+document.getElementById('orientBtn').onclick = async () => {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try {
+      const p = await DeviceOrientationEvent.requestPermission();
+      if (p === 'granted') STATUS.textContent = 'Orientation granted';
+    } catch (e) { STATUS.textContent = 'Orientation permission denied'; }
+  } else {
+    STATUS.textContent = 'Orientation listening (may need gesture)';
+  }
+  window.addEventListener('deviceorientation', e => {
+    orientation.beta = e.beta || 0;
+    orientation.gamma = e.gamma || 0;
+  });
+};
+
+FIELD.onclick = e => {
+  if (!running) return;
+  createResource(e.clientX, e.clientY);
+  if (channel) channel.postMessage({ type: 'resource', x: e.clientX, y: e.clientY, from: peerId });
+};
+
+loadFromIDB('sealed', data => {
+  if (data) sealedGenomes = data;
+  STATUS.textContent = `Ready · ${sealedGenomes.length} sealed genomes in IDB · peer ${peerId}`;
+});
+initBroadcast();
+setTimeout(() => document.getElementById('startBtn').click(), 400);
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --energy: 0.3;
+  --residual: 0.1;
+  --hue: 200;
+  --blur: 0px;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #0a0a12;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  filter: hue-rotate(calc(var(--hue) * 1deg)) blur(var(--blur));
+  transition: filter 0.4s;
+}
+canvas { display: block; width: 100vw; height: 100vh; }
+#ui {
+  position: fixed; top: 12px; left: 12px; z-index: 10;
+  background: rgba(0,0,0,0.55); padding: 10px 14px; border-radius: 8px;
+  font-size: 13px; max-width: 320px; backdrop-filter: blur(6px);
+}
+#nodes { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+.node {
+  position: absolute; width: 180px; padding: 8px 10px;
+  background: rgba(20,30,50,0.75); border: 1px solid rgba(100,180,255,0.4);
+  border-radius: 6px; font-size: 12px; transform: translate(-50%,-50%);
+  transition: left 0.3s, top 0.3s, opacity 0.3s;
+  pointer-events: auto; cursor: grab;
+}
+.status { color: #8cf; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Acoustic Swarm Mind · Verse lab</title>
+<meta name="description" content="WebGPU compute particle swarm whose per-agent forces are biased in real time by microphone spectral energy and device orientation.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Acoustic Swarm Mind · Verse lab">
+<meta property="og:description" content="WebGPU compute particle swarm whose per-agent forces are biased in real time by microphone spectral energy and device orientation.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f425-webgpu-acoustic-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f425-webgpu-acoustic-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <strong>F197 Acoustic Swarm Mind</strong><br>
+  <span id="status" class="status">init…</span><br>
+  <button id="micBtn">Enable Mic</button>
+  <button id="oriBtn">Enable Orientation</button>
+  <button id="xrBtn" style="display:none">Enter XR</button>
+  <div id="stats" style="margin-top:6px;font-size:11px;opacity:0.8"></div>
+</div>
+<div id="nodes"></div>
+<canvas id="c"></canvas>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Acoustic Swarm Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

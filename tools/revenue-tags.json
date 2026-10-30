@@ -1,0 +1,5 @@
+{
+  "about": "Expected-value weights for the want picker (docs/STRATEGY.md). A skill whose name matches a pattern gets its weight added to 1 before lack x chance is multiplied by it. Edit freely; no prices or dollar figures here.",
+  "money": { "weight": 0.5, "patterns": ["store", "shop", "pay", "paid", "price", "sponsor", "tip", "member", "fix", "appraise", "invoice", "loan", "market", "sell", "checkout", "promo"] },
+  "parity": { "weight": 0.25, "patterns": ["calendar", "map", "translate", "weather", "notes?", "notepad", "list", "calc", "timer", "remind", "search", "convert", "pdf", "image", "video", "music"] }
+}

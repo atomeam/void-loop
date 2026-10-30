@@ -1,0 +1,16 @@
+{
+  "slug": "local-attend-not-pulse",
+  "run": 101,
+  "family": "attention-interoception",
+  "emit": false,
+  "seal": false,
+  "status": "unattested",
+  "attend": "unset",
+  "pulse": "absent",
+  "appraisal": "absent",
+  "disconfirm": "attend-is-not-a-pulse",
+  "weight": 0.18,
+  "href_allowlist": [],
+  "fixture_sha256": "3de46e4cb2261ee96f7cbe120f4f3ac374ddcd2a381596aeb819ae8514f091b4",
+  "object_sha256": "c0982f376432746d0b55370d628e34f4478c829f267ecac40f04306407dafa64"
+}

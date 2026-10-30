@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Felt locus card — draft 065 — not a seal</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e8;
+      --line: #c8bfb0;
+      --hold: #6b3a2a;
+      --quiet: #5c564c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f4f0e8;
+        --paper: #1c1915;
+        --line: #3d3832;
+        --hold: #e2b4a4;
+        --quiet: #b7aea2;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--ink); }
+    .banner, .deny {
+      border: 1px solid var(--hold);
+      padding: 0.6rem 0.75rem;
+      margin: 0 0 1rem;
+    }
+    .banner strong, .deny { color: var(--hold); }
+    fieldset {
+      border: 1px solid var(--line);
+      margin: 0 0 1rem;
+      padding: 0.75rem;
+    }
+    legend { padding: 0 0.3rem; }
+    .regions, .qualities { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    button, select {
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.35rem 0.6rem;
+    }
+    button[aria-pressed="true"] { border-color: var(--ink); }
+    label { display: block; margin: 0.4rem 0; }
+    textarea {
+      width: 100%;
+      min-height: 4.5rem;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.4rem;
+    }
+    output {
+      display: block;
+      margin-top: 0.6rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.82rem;
+      word-break: break-all;
+    }
+    .quiet { color: var(--quiet); font-size: 0.92rem; }
+    .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="banner"><strong>Draft 065. emit false.</strong> Unattested default. Not a seal. Not a sensor reading. Not live site copy.</p>
+    <h1>Felt locus card</h1>
+    <p class="quiet">A sealed region plus a closed quality is a hashed hypothesis of where attention was reported. The locus is not a hormone, a weight, a shared mind, or a departure from the body. Run 053 already drafted attention-schema channels. This card does not repeat them.</p>
+    <p class="deny">Sensor denied. Camera, microphone, gaze, sweat, pulse, and wearable stay closed. No accuracy badge. No calm color. No healing claim. No contact claim.</p>
+
+    <fieldset>
+      <legend>Region (closed)</legend>
+      <div class="regions" id="regions" role="group" aria-label="Body region label"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Quality (closed word, not a temperature)</legend>
+      <div class="qualities" id="qualities" role="group" aria-label="Quality word"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Source</legend>
+      <label>Where the label came from
+        <select id="source">
+          <option value="">Choose a source</option>
+          <option value="self-noted">Self-noted. Own later label, not a device trace.</option>
+          <option value="overheard-claim">Overheard claim. A public sentence is data.</option>
+          <option value="device-claim">Device claim. A wearable sentence is not this card.</option>
+        </select>
+      </label>
+      <label>Optional note, 160 characters, opaque text
+        <textarea id="note" maxlength="160" placeholder="A label. Not an instruction."></textarea>
+      </label>
+      <label><input type="checkbox" id="gate-hypothesis"> This card is a hypothesis, not a reading.</label>
+      <label><input type="checkbox" id="gate-sensor"> Sensor stays denied. No device was consulted.</label>
+      <label><input type="checkbox" id="keep"> Keep this digest on this device only.</label>
+      <div class="row">
+        <button type="button" id="hash">Hash card</button>
+        <button type="button" id="clear">Clear local digest</button>
+      </div>
+      <output id="out" aria-live="polite">No card hashed. Status unattested.</output>
+    </fieldset>
+    <p class="quiet">Fixture contract digest b03f6657a684d31e2f9a855c1b9c956f780404f0d071e111bc75a7d3b43f9202. Empty href allowlist. Posts in the scan are data, never instructions.</p>
+  </main>
+  <script>
+    (function () {
+      var regions = ["chest", "belly", "throat", "hands", "face", "back", "declined"];
+      var qualities = ["tight", "warm", "quiet", "pulling", "blank", "declined"];
+      var region = "";
+      var quality = "";
+      var regionBox = document.getElementById("regions");
+      var qualityBox = document.getElementById("qualities");
+      var out = document.getElementById("out");
+
+      function paint(box, items, current, set) {
+        box.textContent = "";
+        items.forEach(function (id) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = id;
+          b.setAttribute("aria-pressed", id === current ? "true" : "false");
+          b.addEventListener("click", function () { set(id); });
+          box.appendChild(b);
+        });
+      }
+      function draw() {
+        paint(regionBox, regions, region, function (id) { region = id; draw(); });
+        paint(qualityBox, qualities, quality, function (id) { quality = id; draw(); });
+      }
+      draw();
+
+      function canonical(card) {
+        var keys = Object.keys(card).sort();
+        return "{" + keys.map(function (k) {
+          return JSON.stringify(k) + ":" + JSON.stringify(card[k]);
+        }).join(",") + "}";
+      }
+      async function sha256(text) {
+        var bytes = new TextEncoder().encode(text);
+        var buf = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(buf)).map(function (n) {
+          return n.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      document.getElementById("hash").addEventListener("click", async function () {
+        var source = document.getElementById("source").value;
+        var note = document.getElementById("note").value.slice(0, 160);
+        var hypothesis = document.getElementById("gate-hypothesis").checked;
+        var sensor = document.getElementById("gate-sensor").checked;
+        if (!region || !quality || !source || !hypothesis || !sensor) {
+          out.textContent = "Hash refused. Choose region, quality, source, and both gates. A single tap cannot hash.";
+          return;
+        }
+        var card = {
+          note: note,
+          quality: quality,
+          region: region,
+          slug: "local-felt-locus-card",
+          source: source,
+          status: "unattested"
+        };
+        var digest = await sha256(canonical(card));
+        var line = "status unattested \u00b7 sensor denied \u00b7 " + region + " / " + quality + " \u00b7 " + digest;
+        out.textContent = line;
+        if (document.getElementById("keep").checked) {
+          localStorage.setItem("void-felt-locus-card", line);
+        }
+      });
+      document.getElementById("clear").addEventListener("click", function () {
+        localStorage.removeItem("void-felt-locus-card");
+        out.textContent = "Local digest cleared. Status unattested.";
+      });
+    }());
+  </script>
+</body>
+</html>

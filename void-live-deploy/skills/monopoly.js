@@ -7,6 +7,7 @@
  */
 import * as M from './monopoly-rules.js';
 import { lift3d } from './lift3d.js';
+import { rollDice } from '../lib/table-tools.js'; // the Game Box's dice (2026-10-22): your rolls use the box's fair dice; Verse's seats roll inside the rules as before
 
 // VoidQuest (domains/void.canon.md): Verse's own space version of the property game, after Solar Quest, Verse as the rival.
 // "play voidquest" and "play solar quest" open it; it plays on the same rules (monopoly-rules.js) with its own board.
@@ -81,10 +82,10 @@ const makeMount = (theme) => function mount(th, stageApi) {
   wrap.appendChild(board);
   // the card: whose turn, money, what you can do now, your property, an offer to Verse, the log with Verse's reasons
   const status = document.createElement('div'); status.className = 'g-status mono-status'; status.setAttribute('aria-live', 'polite'); status.style.display = 'block';
-  const money = document.createElement('div'); money.className = 'mono-money'; money.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums;margin:4px 0';
+  const money = document.createElement('div'); money.className = 'mono-money mono-players'; money.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px;font-variant-numeric:tabular-nums;margin:6px 0';
   const acts = document.createElement('div'); acts.className = 'mono-acts'; acts.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin:6px 0';
   const btn = (label, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn ' + cls; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };
-  const rollB = btn('Roll', 'mono-roll g-primary', () => act(M.roll(th.state)));
+  const rollB = btn('Roll', 'mono-roll g-primary', () => act(M.roll(th.state, rollDice(2, 6).rolls)));
   const buyB = btn('Buy', 'mono-buy', () => act(M.buy(th.state, true)));
   const skipB = btn('Don’t buy', 'mono-skip', () => act(M.buy(th.state, false)));
   const jailB = btn('Pay 50 to leave Jail', 'mono-jail', () => act(M.payJail(th.state)));
@@ -99,7 +100,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
   prop.append(propText, propBtns);
   const detail = document.createElement('div'); detail.className = 'mono-detail'; detail.style.cssText = 'font-size:12px;min-height:16px;margin:4px 0';
   const offerRow = document.createElement('div'); offerRow.className = 'mono-offer'; offerRow.style.cssText = 'display:none;gap:6px;align-items:center;font-size:12px;margin:4px 0';
-  const cashIn = document.createElement('input'); cashIn.type = 'number'; cashIn.min = '1'; cashIn.step = '10'; cashIn.style.cssText = 'width:80px;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:3px 6px';
+  const cashIn = document.createElement('input'); cashIn.type = 'number'; cashIn.setAttribute('aria-label', 'cash to offer'); cashIn.min = '1'; cashIn.step = '10'; cashIn.style.cssText = 'width:80px;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:3px 6px';
   cashIn.addEventListener('pointerdown', (e) => e.stopPropagation());
   const offerB = btn('Offer', 'mono-offer-btn', () => { const r = M.offer(th.state, { space: picked, cash: cashIn.value }); th.state = r.s; offerOut.textContent = T(r.why); save(); paint(); });
   const buildB = btn('Build a house', 'mono-build', () => act(M.build(th.state, picked)));
@@ -107,8 +108,15 @@ const makeMount = (theme) => function mount(th, stageApi) {
   const offerOut = document.createElement('div'); offerOut.className = 'mono-offer-out'; offerOut.style.cssText = 'font-size:12px;color:var(--muted,#8a8a8a);min-height:15px';
   const log = document.createElement('div'); log.className = 'mono-log'; log.style.cssText = 'font-size:11.5px;color:var(--muted,#8a8a8a);max-height:132px;overflow:auto;margin-top:6px;border-top:1px solid rgba(255,255,255,.08);padding-top:4px';
   const foot = document.createElement('div'); foot.className = 'g-rules';
-  foot.textContent = 'Buying is always your choice. Rent, tax, cards and Jail are forced. Tap a space to see it; tap one of Verse’s to make an offer, or one of your full sets to build.';
+  foot.textContent = 'Buying is always your choice. Rent, tax, cards and Jail are forced. Tap a space or a deed in a panel to read its card; tap one of Verse’s to make an offer, one of yours to mortgage it, or one of your full sets to build.';
   let picked = -1;
+  // a deed goes to the shared card store (the card binder reads verse.cards; a verse:card-save event tells it at once)
+  // the one card record (lib/card-deck.js): deeds and drawn chance cards are noted there so the 'My cards' binder files them by game
+  const GAME = theme.kind === 'voidquest' ? 'VoidQuest' : "The Landlord's Game";
+  const deck = (f) => import('../lib/card-deck.js').then(f).catch((e) => console.warn('card deck unavailable', e && e.message));
+  const deckRec = (card) => ({ kind: 'board', game: GAME, t: card.title, k: card.kind || 'Deed', b: (card.fields || []).map(([a, b]) => a + ': ' + b).join(' · ') || card.text || '' });
+  const notedDraws = new Set();
+  function saveCard(card) { try { const all = JSON.parse(localStorage.getItem('verse.cards') || '[]'); if (!all.some((c) => c.id === card.id && c.game === card.game)) all.push({ ...card, savedAt: Date.now() }); localStorage.setItem('verse.cards', JSON.stringify(all)); } catch (e) { console.warn('card store unavailable', e && e.message); } dispatchEvent(new CustomEvent('verse:card-save', { detail: card })); deck((D) => D.setSaved(deckRec(card), true)); offerOut.textContent = card.title + ' is saved to your cards.'; }
   const save = () => stageApi.save && stageApi.save();
   function act(next) { if (next !== th.state) { th.state = next; save(); } paint(); voidPlays(); }
   function pick(i) { picked = picked === i ? -1 : i; offerOut.textContent = ''; paint(); }
@@ -132,7 +140,27 @@ const makeMount = (theme) => function mount(th, stageApi) {
       b.style.outline = i === picked ? '2px solid #ffd76a' : '';
     });
     money.textContent = '';
-    s.players.forEach((p, k) => { const m = document.createElement('span'); const dot = document.createElement('b'); dot.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;background:' + SEAT_COLORS[k]; m.append(dot, document.createTextNode(p.name + ' ' + p.money + (p.out ? ' (out)' : p.jail ? ' (in Jail)' : ''))); if (k === s.turn) m.style.fontWeight = '700'; money.appendChild(m); });
+    s.players.forEach((p, k) => { // one panel per player: balance, whose turn, and every deed grouped by its set with houses and mortgages
+      const card = document.createElement('div'); card.className = 'mono-player' + (k === s.turn ? ' mono-turn' : ''); card.dataset.seat = k;
+      card.style.cssText = 'padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid ' + (k === s.turn && s.phase !== 'over' ? '#ffd76a' : 'rgba(255,255,255,.1)') + ';font-size:12px;overflow-wrap:anywhere';
+      const head = document.createElement('div'); head.style.cssText = 'display:flex;align-items:center;gap:6px;font-weight:700';
+      const dot = document.createElement('b'); dot.style.cssText = 'display:inline-block;width:9px;height:9px;border-radius:50%;flex:none;background:' + SEAT_COLORS[k];
+      const nm = document.createElement('span'); nm.textContent = p.name + (k === s.turn && s.phase !== 'over' ? ' · to play' : '') + (p.out ? ' · out' : p.jail ? ' · in Jail' : '') + (p.free ? ' · ' + p.free + ' free-from-Jail card' + (p.free > 1 ? 's' : '') : '');
+      const bal = document.createElement('span'); bal.className = 'mono-balance'; bal.style.cssText = 'margin-left:auto;font-size:14px'; bal.textContent = (theme.kind === 'voidquest' ? '' : '$') + p.money + (theme.kind === 'voidquest' ? ' fuel' : '');
+      head.append(dot, nm, bal); card.appendChild(head);
+      const worthL = document.createElement('div'); worthL.style.cssText = 'color:var(--muted,#8a8a8a)'; worthL.textContent = 'Net worth ' + M.worth(s, k); card.appendChild(worthL);
+      const groups = M.holdings(s, k);
+      if (!groups.length) { const none = document.createElement('div'); none.style.color = 'var(--muted,#8a8a8a)'; none.textContent = 'No property yet'; card.appendChild(none); }
+      for (const g of groups) {
+        const row = document.createElement('div'); row.className = 'mono-set'; row.dataset.set = g.key; row.style.cssText = 'display:flex;flex-wrap:wrap;gap:3px;align-items:center;margin-top:3px';
+        const sw = document.createElement('i'); sw.style.cssText = 'display:inline-block;width:10px;height:10px;border-radius:2px;flex:none;background:' + (COLORS[g.key] || '#777');
+        const lab = document.createElement('span'); lab.textContent = g.label + ' ' + g.items.length + '/' + g.of + (g.full ? ' · full set' : '');
+        row.append(sw, lab);
+        for (const it of g.items) { const d = btn(N(it.i) + (it.houses ? ' ' + (it.houses === 5 ? '· hotel' : '· ' + it.houses + ' house' + (it.houses > 1 ? 's' : '')) : '') + (it.mortgaged ? ' · mortgaged' : ''), 'mono-deed-chip', () => pick(it.i)); d.style.cssText = 'font-size:11px;padding:1px 6px;white-space:normal;text-align:left' + (it.mortgaged ? ';opacity:.6;text-decoration:line-through' : ''); row.appendChild(d); }
+        card.appendChild(row);
+      }
+      money.appendChild(card);
+    });
     const pl = s.players[s.turn];
     rollB.hidden = !(me && s.phase === 'roll');
     buyB.hidden = skipB.hidden = !(me && s.phase === 'buy');
@@ -141,7 +169,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
     jailB.hidden = !(me && s.phase === 'roll' && pl.jail);
     if (pl.free) jailB.textContent = 'Use your Get out of Jail card';
     endB.hidden = !(me && s.phase === 'end');
-    status.textContent = s.phase === 'over' ? (s.winner === 0 ? 'You win!' : s.players[s.winner].name + ' wins.')
+    status.textContent = s.phase === 'over' ? (s.winner === 0 ? 'You win! Net worth ' + M.worth(s, 0) + '. Tap New game to play again.' : s.players[s.winner].name + ' wins with net worth ' + M.worth(s, s.winner) + '. Tap New game to play again.')
       : !me ? pl.name + ' is playing…' : s.phase === 'buy' ? 'You landed on ' + N(s.pending.buy) + '. Buy it? It is your choice.'
         : s.phase === 'end' ? 'Your turn is done unless you build or make an offer.' : pl.jail ? 'You are in Jail: roll doubles, or pay to leave.' : 'Your roll' + (s.doubles ? ' again (doubles)' : '');
     const o = s.proposal;
@@ -153,10 +181,22 @@ const makeMount = (theme) => function mount(th, stageApi) {
       const sp = M.SPACES[picked], o = s.owner[picked];
       detail.textContent = N(picked) + (sp.p ? ' · price ' + sp.p : '') + (o != null ? ' · owned by ' + s.players[o].name + ' · rent ' + M.rentFor(s, picked) : sp.p ? ' · unowned' : '');
       if (me && o != null && s.players[o].seat === 'void' && !s.players[o].out) { offerRow.style.display = 'flex'; if (!cashIn.value) cashIn.value = String(Math.ceil(sp.p * 1.5)); }
+      if (sp.p) { // the deed itself, readable in full, savable to your cards
+        const deed = M.deedCard(s, picked, theme.names), dc = document.createElement('div'); dc.className = 'mono-deed'; dc.dataset.deckKind = 'board'; dc.dataset.deckGame = GAME; deck((D) => D.note(deckRec(deed)));
+        dc.style.cssText = 'margin-top:6px;padding:8px;border-radius:10px;background:#f4efe2;color:#1a1a1a;max-width:260px;overflow-wrap:anywhere';
+        const band = document.createElement('div'); band.style.cssText = 'padding:4px;border-radius:6px;text-align:center;font-weight:700;background:' + (COLORS[sp.g] || '#cfc8b4'); band.textContent = deed.title; dc.appendChild(band);
+        for (const [k2, v] of deed.fields) { const r = document.createElement('div'); r.style.cssText = 'display:flex;justify-content:space-between;gap:8px'; const a = document.createElement('span'); a.textContent = k2; const b2 = document.createElement('span'); b2.textContent = String(v); b2.style.textAlign = 'right'; r.append(a, b2); dc.appendChild(r); }
+        dc.appendChild(btn('Save to my cards', 'mono-save-deed', () => saveCard(deed)));
+        detail.appendChild(dc);
+      }
+      if (me && M.canMortgage(s, 0, picked)) detail.appendChild(btn('Mortgage for ' + M.mortgageValue(picked), 'mono-mortgage', () => act(M.mortgage(th.state, picked))));
+      if (me && s.owner[picked] === 0 && s.mortgaged && s.mortgaged[picked]) { const u = btn('Pay off mortgage for ' + M.unmortgageCost(picked), 'mono-unmortgage', () => act(M.unmortgage(th.state, picked))); u.disabled = !M.canUnmortgage(s, 0, picked); detail.appendChild(u); }
       if (me && M.canBuild(s, 0, picked)) { buildB.textContent = 'Build ' + ((s.houses[picked] || 0) === 4 ? 'a hotel' : 'a house') + ' for ' + sp.h; detail.appendChild(document.createTextNode(' ')); detail.appendChild(buildB); }
     }
     log.textContent = '';
     for (const l of s.log.slice(-14).reverse()) {
+      const dm = /^drew (.+?): (.+)$/.exec(l.text || ''); // a drawn chance card goes into the card record once per draw
+      if (dm) { const key = s.log.indexOf(l) + '|' + l.text; if (!notedDraws.has(key)) { notedDraws.add(key); const t = T(dm[1]); deck((D) => D.note({ kind: 'board', game: GAME, t: t + ' card', k: t, b: T(dm[2]) })); } }
       const line = document.createElement('div');
       line.textContent = (l.who ? l.who + ' ' : '') + T(l.text) + (l.forced ? ' (forced)' : '');
       if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + T(l.why); line.appendChild(w); }

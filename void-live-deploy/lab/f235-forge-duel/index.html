@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{--bg:#05060a;--ink:#e9ecf5;--dim:#8b91a6;--line:#23263a;--Fact:#5fb4ff;--Idea:#ffd166;--Feeling:#ff6fa3;--Action:#ff8a3d;--Wonder:#a98bff}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% -20%,#151a33 0,#05060a 60%);color:var(--ink);font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:17px;margin:0 10px 0 0;letter-spacing:.06em}
+nav button,.btn{background:#141729;color:var(--ink);border:1px solid #2e3352;border-radius:10px;padding:7px 12px;font:inherit;cursor:pointer}
+nav button[aria-pressed=true]{background:#2a2f55;border-color:#6c74c9}
+.btn:disabled{opacity:.4;cursor:default}.btn.primary{background:#3b3fd0;border-color:#6d70ff}
+#score{margin-left:auto;color:var(--dim);font-size:13px}
+main{padding:12px;max-width:1100px;margin:0 auto}
+section[hidden]{display:none}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.pill{padding:4px 10px;border-radius:999px;background:#11142a;border:1px solid var(--line);font-size:13px}
+#lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;perspective:900px;margin:8px 0}
+.lane{border:1px solid var(--line);border-radius:14px;background:#0b0d1a;padding:8px;min-height:300px;display:flex;flex-direction:column;gap:6px;transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .3s;cursor:pointer}
+.lane.target{box-shadow:0 0 0 2px #6d70ff inset}
+.lane h3{margin:0;font-size:12px;color:var(--dim);display:flex;justify-content:space-between;font-weight:500}
+.side{display:flex;flex-wrap:wrap;gap:4px;min-height:96px;align-content:flex-start}
+.tot{font-weight:700;font-size:20px;text-align:center}
+.read{height:6px;border-radius:3px;background:#2a1f2f;overflow:hidden}.read i{display:block;height:100%;background:linear-gradient(90deg,#ff5f8a,#a98bff);transition:width .5s}
+.readtxt{font-size:11px;color:var(--dim);text-align:center}
+#hand{display:flex;gap:8px;flex-wrap:wrap;min-height:170px;padding:6px 0}
+.card{--c:var(--Wonder);position:relative;width:132px;min-height:176px;border-radius:12px;padding:8px;background:linear-gradient(160deg,#1a1d33,#0d0f1c);border:2px solid var(--c);transform-style:preserve-3d;transition:transform .15s;cursor:pointer;font-size:11px;overflow:hidden;flex:none}
+.card.sel{outline:3px solid #fff;transform:translateY(-6px)}
+.card.cant{opacity:.45}
+.card .cost{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;background:#2c3aa8;display:grid;place-items:center;font-weight:700;font-size:12px}
+.card .pow{position:absolute;top:6px;right:6px;min-width:24px;height:24px;border-radius:7px;background:var(--c);color:#000;display:grid;place-items:center;font-weight:800;font-size:13px;padding:0 4px}
+.card .t{margin:28px 0 4px;font-weight:700;font-size:12px;line-height:1.2}
+.card .ty{color:var(--c);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.card .ab{margin-top:4px;color:#cfd3e6}
+.card .tx{margin-top:4px;color:var(--dim);font-size:10px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.card.Rare::after,.card.Legendary::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:color-dodge;opacity:.35;background:conic-gradient(from var(--a,0deg),#f0f,#0ff,#ff0,#f0f);}
+.card.Legendary::after{opacity:.55}
+.mini{width:auto;min-height:0;padding:3px 6px 3px 3px;display:flex;align-items:center;gap:5px;border-width:1.5px;font-size:11px;border-radius:8px}
+.mini b{background:var(--c);color:#000;border-radius:5px;padding:0 5px;font-size:12px}
+.mini span{max-width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.full{width:100%;max-width:340px;min-height:0}.full .tx{-webkit-line-clamp:unset;display:block;font-size:12px}
+#log{font-size:12px;color:var(--dim);max-height:140px;overflow:auto;border-top:1px solid var(--line);padding-top:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+textarea,input{width:100%;background:#0d0f1c;color:var(--ink);border:1px solid #2e3352;border-radius:10px;padding:8px;font:inherit}
+.overlay{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:9}
+.overlay[hidden]{display:none}
+.box{background:#0e1124;border:1px solid #333a66;border-radius:16px;padding:18px;max-width:520px;width:92%}
+.note{color:var(--dim);font-size:13px}
+@media (max-width:700px){#lanes{gap:5px}.lane{padding:5px;min-height:230px}.mini span{max-width:52px}.card{width:112px;min-height:160px}.card.mini{width:auto;min-height:0}.tot{font-size:15px}.tot small{display:none}}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Forge Duel · Verse lab</title>
+<meta name="description" content="Forging is deterministic; sample texts land in the expected types (&quot;What if the moon could sing?&quot; is an Idea, &quot;I love you and miss you&quot; is a Feeling, &quot;Build a tiny">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Forge Duel · Verse lab">
+<meta property="og:description" content="Forging is deterministic; sample texts land in the expected types (&quot;What if the moon could sing?&quot; is an Idea, &quot;I love you and miss you&quot; is a Feeling, &quot;Build a tiny">
+<meta property="og:url" content="https://a-to-mind.com/lab/f235-forge-duel/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f235-forge-duel/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>FORGE DUEL</h1>
+  <nav>
+    <button data-tab="duel" aria-pressed="true">Duel</button>
+    <button data-tab="binder">Binder</button>
+    <button data-tab="forge">Forge a card</button>
+    <button data-tab="help">How to play</button>
+  </nav>
+  <span id="score"></span>
+</header>
+<main>
+<section id="tab-duel">
+  <div class="bar">
+    <span class="pill" id="turnp"></span><span class="pill" id="energyp"></span><span class="pill" id="vhand"></span>
+    <button class="btn" id="undo">Undo</button>
+    <button class="btn primary" id="end">End turn</button>
+    <button class="btn" id="newg">New game</button>
+  </div>
+  <div id="lanes"></div>
+  <div class="note" id="hint">Tap a card in your hand, then tap a lane.</div>
+  <div id="hand"></div>
+  <div id="log"></div>
+</section>
+<section id="tab-binder" hidden>
+  <div class="bar"><b>Your binder</b><span class="note" id="bcount"></span></div>
+  <p class="note">Every card keeps its full text. Your first 12 binder cards go into your duel deck; the rest of the deck is filled with starters.</p>
+  <div class="grid" id="binder"></div>
+</section>
+<section id="tab-forge" hidden>
+  <p class="note">Paste any answer, note, quote or idea. Its stats come only from what it says: numbers make Facts, questions make Ideas, feelings make Feelings, verbs make Actions, the sky makes Wonders. Longer text costs more and hits harder (about one energy per three or four words); varied words raise rarity.</p>
+  <input id="ftitle" placeholder="Title (optional)">
+  <textarea id="ftext" rows="5" placeholder="Paste text here…"></textarea>
+  <div class="bar"><button class="btn primary" id="fsave">Save to binder</button><button class="btn" id="fshare">Copy share link</button><span class="note" id="fmsg"></span></div>
+  <div id="fprev"></div>
+</section>
+<section id="tab-help" hidden>
+  <div class="box" style="max-width:none">
+  <h2>How to play</h2>
+  <p>Six turns. Three lanes. Win two lanes and you win the duel.</p>
+  <ul>
+    <li>Each turn you get energy equal to the turn number plus one (2 on turn 1, up to 7 on turn 6). Unspent energy does not carry over. Card cost is the blue circle.</li>
+    <li>Tap a card, then tap a lane to play it. Up to 4 cards per side in a lane. Undo takes back plays from this turn.</li>
+    <li>Turns alternate who leads. On odd turns you lead: Verse picks its plays without seeing yours, and they land after yours when you end the turn. On even turns Verse leads: its plays land first, and you answer.</li>
+    <li>After turn 6, whoever has more power in a lane wins it. Ties in a lane go to nobody; if the lanes split evenly, total power decides.</li>
+  </ul>
+  <h3>Five types, five abilities</h3>
+  <ul>
+    <li><b style="color:var(--Fact)">Fact · Steady</b>: can't be weakened.</li>
+    <li><b style="color:var(--Idea)">Idea · Spark</b>: when played, your other cards in that lane get +1.</li>
+    <li><b style="color:var(--Feeling)">Feeling · Rally</b>: +2 if you already have a card in that lane.</li>
+    <li><b style="color:var(--Action)">Action · Strike</b>: when played, the strongest enemy card in that lane loses 2 (Facts are immune).</li>
+    <li><b style="color:var(--Wonder)">Wonder · Surge</b>: +3 if played on the last turn.</li>
+  </ul>
+  <p>The bars under each lane are Verse's read: how often its private simulations end with it winning that lane. Lanes lean toward whoever Verse thinks is ahead.</p>
+  <p>Win a duel and you can keep one of Verse's cards for your binder.</p>
+  </div>
+</section>
+</main>
+<div class="overlay" id="endov" hidden><div class="box" id="endbox"></div></div>
+<div class="overlay" id="shareov" hidden><div class="box" id="sharebox"></div></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

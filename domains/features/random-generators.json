@@ -1,0 +1,832 @@
+{
+  "floor": "random-generators",
+  "verse_page": "void-live-deploy/generators/index.html",
+  "researched": "2026-10-25",
+  "method": "perchance.org and most lane hosts were unreachable by the fetch tool from this container (DNS), so features come from web search results, community docs (perchance fandom wiki, lemmy guides, reimplementations on GitHub) and prior knowledge of the sites; a builder should confirm details flagged 'reported' on the live site.",
+  "sites": {
+    "perchance.org": {
+      "sources": [
+        "https://perchance.org/tutorial",
+        "https://perchance.org/plugin-list",
+        "https://perchance.org/ai-text-to-image-generator",
+        "https://perchance.org/ai-character-chat",
+        "https://perchance.org/ai-chat",
+        "https://perchance.fandom.com/wiki/Perchance_Methods",
+        "https://perchance.fandom.com/wiki/The_Editor",
+        "https://perchance.fandom.com/wiki/Plugins",
+        "https://github.com/ZeadenBeake/perchance-lib",
+        "https://github.com/script-wizards/perhaps",
+        "https://www.anygen.io/showcase/perchance-ai-image-generator/index.html",
+        "https://arcanumrpgs.com/blog/perchance-ai-chat-guide/"
+      ],
+      "leader": true,
+      "features": [
+        {
+          "name": "Plain lists",
+          "detail": "A generator is named lists, one item per line; [listName] pulls a random item from a list.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "lib/listgen.js: many named lists, [list] references (/generators/make/) (2026-10-25)",
+          "shows": "plain lists"
+        },
+        {
+          "name": "Odds / weights ^",
+          "detail": "item ^3, fractional ^1/10, and dynamic odds ^[condition] change how often an item is picked.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "item ^2, ^0.5, ^1/10 and conditional ^[gender == \"female\"] (lib/listgen.js) (2026-10-25)",
+          "shows": "odds and weights like \\^2|\\^\\d"
+        },
+        {
+          "name": "Inline choices {a|b|c}",
+          "detail": "Inline random choice inside an item, weighted options allowed.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "{a|b|c} with odds {a^3|b} (lib/listgen.js) (2026-10-25)",
+          "shows": "\\{a\\|b\\|c\\}|inline choices"
+        },
+        {
+          "name": "Ranges {1-10} {a-z}",
+          "detail": "Random number or letter range inline.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "{1-6}, {a-z}, and dice {2d6+1} (lib/listgen.js) (2026-10-25)",
+          "shows": "\\{1-10\\}|ranges"
+        },
+        {
+          "name": "Smart article {a} and plural {s}",
+          "detail": "{a} becomes a/an from the next word; {s} pluralises by the preceding number.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "{a}/{A} and {s} by the number before it (lib/listgen.js) (2026-10-25)",
+          "shows": "\\{a\\}[\\s\\S]{0,40}\\{s\\}|smart articles"
+        },
+        {
+          "name": "Hierarchical / nested lists",
+          "detail": "Indented sublists, dot navigation [animal.mammal], dynamic navigation [names[gender]].",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "indented sublists, [animal.bird], and by value [names[gender]] (2026-10-25)",
+          "shows": "nested lists"
+        },
+        {
+          "name": "Methods: selectOne/selectMany/selectUnique/selectAll/joinItems",
+          "detail": "[list.selectUnique(3).joinItems(', ')] etc.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "all five (lib/listgen.js) (2026-10-25)"
+        },
+        {
+          "name": "consumableList",
+          "detail": "A copy of a list that removes each pick so nothing repeats until exhausted (deck-of-cards draws).",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "[d = list.consumableList, \"\"] then [d]; starts over when used up (2026-10-25)"
+        },
+        {
+          "name": "Text transforms",
+          "detail": "titleCase, sentenceCase, upperCase, lowerCase, pluralForm, singularForm, pastTense/presentTense/futureTense, possessiveForm, negativeForm.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "titleCase, sentenceCase, upperCase, lowerCase, pluralForm, singularForm, possessiveForm, pastTense, presentTense, futureTense, negativeForm (2026-10-25)"
+        },
+        {
+          "name": "Variables, assignment and logic",
+          "detail": "[x = animal] stores a pick; if/else, ternaries, &&/||, arithmetic, repeat(n), evaluateItem.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "[x = list], if / else if / else, a ? b : c, == != < > && || !, + - * / % (parsed, never run as JavaScript) (2026-10-25)"
+        },
+        {
+          "name": "$output and $meta",
+          "detail": "$output names the root list; $meta sets title, description, image for the page/social card.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "$output, $title and $meta (title, description, a gallery picture) as the share card of /gen/<id> (2026-10-25)"
+        },
+        {
+          "name": "Imports {import:other-generator}",
+          "detail": "Use any other public generator's lists in yours; the basis of the plugin system.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "name = {import:<hub id>}: [name] and [name.list] from a published generator (2026-10-25)"
+        },
+        {
+          "name": "Comments // and escapes",
+          "detail": "// comments in lists; \\[ \\{ \\^ escapes.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "// comments, \\[ \\{ \\| \\\\ \\s, <br> (2026-10-25)"
+        },
+        {
+          "name": "HTML panel",
+          "detail": "Each generator has an HTML panel (with templates) laying out output, buttons, inputs, dropdowns, images; full JS allowed.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "not arbitrary HTML/JS (it would run on our origin): $inputs controls and plain-text results instead (2026-10-25)"
+        },
+        {
+          "name": "Inputs bound to lists",
+          "detail": "Text inputs/dropdowns in HTML feed variables used by lists (e.g. choose gender, then generate).",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "$inputs: select, text and number controls above the results, used as [name] (2026-10-25)"
+        },
+        {
+          "name": "update() / per-element randomise",
+          "detail": "update() re-rolls the whole output or just one element; tap-plugin re-rolls one phrase by clicking it.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Regenerate all and \"Re-roll this one\" per result (2026-10-25)"
+        },
+        {
+          "name": "Seeded randomness",
+          "detail": "seeder-style plugin makes results repeat for a seed (not default on Perchance).",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "?g=<id>&seed=<n>&n= reproduces exactly (prng mulberry32)."
+        },
+        {
+          "name": "In-browser editor with live preview",
+          "detail": "Lists panel, HTML panel, auto-reload preview; Ctrl+S saves.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/generators/make/: lists left, results right (stacked on a phone), errors with line numbers, Ctrl+S saves (2026-10-25)"
+        },
+        {
+          "name": "Publish a generator at its own URL",
+          "detail": "perchance.org/<chosen-name>; anyone can view; account needed to save.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Publish to the hub: /generators/make/?id=<8 letters>, no account (2026-10-25)"
+        },
+        {
+          "name": "Free accounts",
+          "detail": "Username + password login; list of your generators.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Revisions / backups",
+          "detail": "Restore earlier saved versions of a generator.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "each generator on the device keeps its last 10 versions (2026-10-25)"
+        },
+        {
+          "name": "Private / unlisted generators and NSFW flag",
+          "detail": "Generator settings to hide from search/indexing; flag adult content.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "a share link (#g=) is unlisted by nature: nothing stored; no NSFW flag (2026-10-25)"
+        },
+        {
+          "name": "Remix / fork",
+          "detail": "Save someone's public generator under a new name and edit it.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Remix on any shared or published generator (2026-10-25)"
+        },
+        {
+          "name": "Embed",
+          "detail": "Copy an iframe embed of a generator for another site.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Embed copies an iframe of ?embed=1 (2026-10-25)"
+        },
+        {
+          "name": "Download as HTML",
+          "detail": "Download a generator as a single offline HTML file.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Download .html: one offline file with the engine and every imported generator inside; {ai: ...} needs the site (2026-10-25)"
+        },
+        {
+          "name": "Hub / discovery",
+          "detail": "Welcome page and community-curated lists of popular generators, search via site/forum, plugin-list page.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "People's generators on /generators/: newest and most played (2026-10-25)"
+        },
+        {
+          "name": "Community forum",
+          "detail": "Lemmy community (lemmy.world/c/perchance) and Discord for help and showcases.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/generators/forum/: topics and replies on the comments engine, the signed sum, rate limits, reports hide, owner delete (2026-10-25)"
+        },
+        {
+          "name": "Report generator",
+          "detail": "Report link on generators for abuse.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Report on the hub and on a published generator; 3 connections hide it; owner key deletes (2026-10-25)"
+        },
+        {
+          "name": "Free with ads, no paywall",
+          "detail": "Everything free; ads on AI pages; no account needed to use.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Free, no account, no ads."
+        },
+        {
+          "name": "comments-plugin",
+          "detail": "Drop-in comment/chat box on any generator: channels, display names, avatars, owner moderation (delete/ban), rate limits.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "comments under every published generator (/gen/<id>) and under /image/: a signed sum as bot check, rates, reports hide, owner delete (2026-10-25)"
+        },
+        {
+          "name": "text-to-image-plugin",
+          "detail": "Any generator can render AI images from a prompt: prompt, negativePrompt, resolution, seed, guidanceScale.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "an image list in a generator: \"Picture it\" sends it to /image/ (2026-10-25)"
+        },
+        {
+          "name": "ai-text-plugin",
+          "detail": "LLM text from an instruction with startWith, stopSequences, streaming onChunk; powers AI story/chat generators.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "{ai: prompt} in the list language, filled by /api/answer mode aitext under its caps, cached per prompt and seed (2026-10-25)"
+        },
+        {
+          "name": "dice-plugin",
+          "detail": "Standard dice notation 2d6+1 inline.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "{2d6+1} inline dice in the list language (2026-10-25)"
+        },
+        {
+          "name": "tap-plugin / wheel-plugin",
+          "detail": "Tap a phrase to re-roll it; a spinning prize wheel.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "tap a dotted part to reroll it; {wheel: list} spins a wheel to the picked entry (lib/wheel.js) (2026-10-25)"
+        },
+        {
+          "name": "remember-plugin",
+          "detail": "Remembers a visitor's inputs/outputs in their browser between visits.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "generators and image gallery kept on the device (2026-10-25)"
+        },
+        {
+          "name": "upload-plugin / key-value storage",
+          "detail": "Let visitors upload files and store small shared data.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "shared data per published generator ([shared.key], {add:}, {set:}; 20 keys, 4 KB, rate-limited, owner clears); no file uploads (pictures come only from the painter) (2026-10-25)"
+        },
+        {
+          "name": "layout-maker / select-range / image-layer-combiner plugins",
+          "detail": "Templates for layouts, sliders, and stacking images into composite pictures (e.g. character makers).",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "$layout = lines|cards|grid|table, $inputs number ranges, and the layer maker on /image/ (stack pictures already on the page, no uploads) (2026-10-25)"
+        },
+        {
+          "name": "text-to-speech plugin",
+          "detail": "Read output aloud.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Read aloud on each result (speechSynthesis) (2026-10-25)"
+        },
+        {
+          "name": "AI text-to-image generator page",
+          "detail": "Free, unlimited, no sign-up image generator (perchance.org/ai-text-to-image-generator).",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/image/, free, no sign-up, inside a daily share of the Art Forge cap plus free Pollinations (2026-10-25)"
+        },
+        {
+          "name": "Description + anti-description (negative prompt)",
+          "detail": "Two text boxes: what to draw and what to avoid.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Describe + Leave out (written into the prompt as \"no ...\") (2026-10-25)"
+        },
+        {
+          "name": "Art style menu",
+          "detail": "Dozens of presets (e.g. Casual Photo, Cinematic, Painted/Drawn Anime, Digital Painting, Concept Art, Oil Painting, Watercolor, Pixel Art, 3D/2D Disney-like, Studio Ghibli-like, Vintage Comic, Fantasy, Furry, Cute Cartoon, 3D Emoji, No style).",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "15 styles (2026-10-25)"
+        },
+        {
+          "name": "Shape: portrait / square / landscape",
+          "detail": "Aspect selector.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "square, portrait, landscape, wide (2026-10-25)"
+        },
+        {
+          "name": "Number of images per click",
+          "detail": "Generate several at once, keep generating.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "1 to 4 a go (2026-10-25)"
+        },
+        {
+          "name": "Seed / image details",
+          "detail": "Each image shows its prompt and seed to reproduce or tweak.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "seed, style, shape and painter under each picture; Same seed again (2026-10-25)"
+        },
+        {
+          "name": "Image actions",
+          "detail": "Download, hide, re-do, copy prompt, save to local gallery.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Download, Same seed again, Copy prompt, Keep, Hide (2026-10-25)"
+        },
+        {
+          "name": "Public gallery with votes",
+          "detail": "Opt-in public gallery per generator, upvotes, filtering; separate local gallery.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/image/ public gallery: share a picture made today, Newest / Most votes, report, owner delete, safe-for-work prompts only (2026-10-25)"
+        },
+        {
+          "name": "Comments under the image generator",
+          "detail": "comments-plugin chat under the generator.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/image/ comments (functions/api/comments.js) (2026-10-25)"
+        },
+        {
+          "name": "Content filtering",
+          "detail": "Blocks/hides adult or unsafe prompts on public galleries.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/api/card-art refuses brand/person/unsuitable; page says 'I won't draw that one.'"
+        },
+        {
+          "name": "AI chat / roleplay",
+          "detail": "perchance.org/ai-chat: free unlimited no-sign-up chat with a described character and scenario.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/generators/chat/: chat with a made-up character, free answer model, same limits as answers (2026-10-25)"
+        },
+        {
+          "name": "AI character chat app",
+          "detail": "Create unlimited characters (name, avatar, personality/role instruction, reminder, initial messages), threads list, edit/regenerate/delete messages, reply as user or narrator, slash commands (/ai, /user, /sys, /image), lore box/lorebooks, summaries for long-term memory, import/export characters (JSON and character cards), share character via link, characters can send images.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/generators/chat/: starters or your own characters, memory note, chats kept on the device, try another reply, delete messages, share a character by link (2026-10-25)"
+        },
+        {
+          "name": "Other AI generators",
+          "detail": "AI story writer, AI RPG/adventure, AI negative-prompt generator, AI name generators built on ai-text-plugin.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "/generators/story/, /generators/chat/, and five AI name generators (lib/ai-generators.js) on {ai: ...} (2026-10-25)"
+        },
+        {
+          "name": "Copy / share results",
+          "detail": "Copy result text; share generator URL.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Copy, Copy all, Share link (navigator.share)."
+        },
+        {
+          "name": "No sign-up, runs in browser",
+          "detail": "Generators run client-side.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Everything runs on device; offline after one visit."
+        }
+      ]
+    },
+    "fantasynamegenerators.com": {
+      "sources": [
+        "https://www.fantasynamegenerators.com/",
+        "https://bookriot.com/fantasy-name-generators/",
+        "https://www.writerswrite.com/fiction/name-generators/fantasy/"
+      ],
+      "features": [
+        {
+          "name": "~1,400+ generators by category",
+          "detail": "Names (fantasy races, real cultures, pop-culture), places, descriptions, other; each with sub-categories.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "27 generators."
+        },
+        {
+          "name": "Gender / variant toggles",
+          "detail": "Male / Female / Neutral (or variant) buttons per generator.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "No options per generator."
+        },
+        {
+          "name": "10 results per click",
+          "detail": "Each click shows 10 names.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "1..20 results (n)."
+        },
+        {
+          "name": "Lore paragraph per generator",
+          "detail": "Each generator has explanatory text about the culture/race and naming conventions.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Description generators",
+          "detail": "Long multi-sentence descriptions (people, creatures, places, items).",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "backstories, villain plots, dnd-npcs are one-sentence."
+        },
+        {
+          "name": "Save favourite names",
+          "detail": "Click a name to save it to a saved list shown on the page.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Keep -> 'Kept' list in localStorage."
+        },
+        {
+          "name": "Dark mode",
+          "detail": "Site toggle for dark theme.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "prefers-color-scheme dark tokens."
+        },
+        {
+          "name": "Ad-free via Patreon / Ko-fi support",
+          "detail": "Supporters remove ads / fund new generators.",
+          "paid": true,
+          "verse": "missing",
+          "verse_evidence": "Verse has no ads to remove."
+        },
+        {
+          "name": "Random generator / search box",
+          "detail": "Jump to a random generator; search generators by name.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "Select + chips only."
+        }
+      ]
+    },
+    "behindthename.com": {
+      "sources": [
+        "https://www.behindthename.com/random/",
+        "https://www.writerswrite.com/fiction/name-generators/"
+      ],
+      "features": [
+        {
+          "name": "Random name generator with usage filter",
+          "detail": "Pick cultures/usages (English, Japanese, Mythology, Fictional...) and gender.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "Names are invented fantasy only."
+        },
+        {
+          "name": "Number of middle names and surname toggle",
+          "detail": "0-2 middle names, with/without surname.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Rarity / include rare names",
+          "detail": "Option to include rare names.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Name meanings and etymology",
+          "detail": "Every name links to its meaning, origin, related names, popularity charts.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Ratings, comments, namesakes, forums",
+          "detail": "Community ratings and comments per name; forums.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Name lists / saved lists",
+          "detail": "Logged-in users keep personal name lists.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "Kept list is device-local, no account."
+        },
+        {
+          "name": "Premium / ad-free supporter",
+          "detail": "Site supporter option.",
+          "paid": true,
+          "verse": "missing",
+          "verse_evidence": "n/a"
+        }
+      ]
+    },
+    "seventhsanctum.com": {
+      "sources": [
+        "https://seventhsanctum.com/",
+        "https://www.blackgate.com/?p=2435"
+      ],
+      "features": [
+        {
+          "name": "Hundreds of generators in themed categories",
+          "detail": "Character, Writing (What-if-inator, Writing Challenges), Anime, Fantasy, Sci-fi, Superhero, Magic, Names.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "27 generators across names/ideas."
+        },
+        {
+          "name": "Results count chooser",
+          "detail": "Pick how many results per run.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "n 1..20."
+        },
+        {
+          "name": "Per-generator option dropdowns",
+          "detail": "Many generators take a type/theme option (e.g. power type).",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Free, ad-supported",
+          "detail": "No account.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "free, no ads."
+        }
+      ]
+    },
+    "rangen.co.uk": {
+      "sources": [
+        "https://rangen.co.uk/"
+      ],
+      "features": [
+        {
+          "name": "Large themed generator set",
+          "detail": "Names, fantasy, sci-fi, writing, RPG items, places.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "27 generators."
+        },
+        {
+          "name": "Options per generator",
+          "detail": "Gender / type / count options.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "Only count."
+        },
+        {
+          "name": "Copy results",
+          "detail": "Copy output.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Copy and Copy all."
+        }
+      ]
+    },
+    "tools.dungeonmastersvault.com": {
+      "sources": [
+        "https://tools.dungeonmastersvault.com/"
+      ],
+      "features": [
+        {
+          "name": "D&D generators",
+          "detail": "NPCs, taverns, shops, loot/treasure, dungeons, encounters, plot hooks.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "dnd-npcs and side-quests generators only."
+        },
+        {
+          "name": "Dice roller",
+          "detail": "Dice notation roller.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Structured multi-field output",
+          "detail": "NPC cards with name, race, class, trait, quirk; tavern with menu and patrons.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "dnd-npcs is one line of name, job, trait."
+        }
+      ]
+    },
+    "chaoticshiny.com": {
+      "sources": [
+        "https://www.chaoticshiny.com/",
+        "https://www.randroll.com/interview-with-hannah-lipsky-of-chaotic-shiny/"
+      ],
+      "features": [
+        {
+          "name": "World-building generators",
+          "detail": "Pantheons, cultures, magic systems, spare parts, D&D 4e encounters, fantasy names.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "A few name and idea generators."
+        },
+        {
+          "name": "Options per generator",
+          "detail": "Type/genre selection and counts.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "count only."
+        },
+        {
+          "name": "Downloadable/offline versions",
+          "detail": "Some tools offered as apps.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "Offline via service worker."
+        }
+      ]
+    },
+    "springhole.net": {
+      "sources": [
+        "https://www.springhole.net/",
+        "https://alternativeto.net/software/springhole-net/"
+      ],
+      "features": [
+        {
+          "name": "1,200+ generators",
+          "detail": "Names, descriptions, characters, prompts, plot, art challenges.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "27."
+        },
+        {
+          "name": "Writing guides and tips beside generators",
+          "detail": "Articles for writers and roleplayers.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Art prompt generators",
+          "detail": "Drawing prompts and challenges.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "palette-names only."
+        }
+      ]
+    },
+    "reedsy.com": {
+      "sources": [
+        "https://reedsy.com/studio/generators/",
+        "https://blog.reedsy.com/creative-writing-prompts/contests/14"
+      ],
+      "features": [
+        {
+          "name": "Plot generator with genre",
+          "detail": "Genre (fantasy, drama, mystery, romance, sci-fi, random) -> characters, setting, theme, plot twist.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "story-prompts/villain-plots without genre choice."
+        },
+        {
+          "name": "Character name generator with filters",
+          "detail": "Filter by archetype, personality, genre, setting, language (database of millions).",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Book title, location, fantasy-language name generators",
+          "detail": "Multiple specialised generators.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "book-titles, town-names."
+        },
+        {
+          "name": "Weekly writing prompts + short story contest",
+          "detail": "Prompts each week, submissions, comments, prize.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "writing-prompts generator only; no contest."
+        },
+        {
+          "name": "AI-assisted Reedsy Studio",
+          "detail": "Generators sit inside a free writing app (Reedsy Studio) with account.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        }
+      ]
+    },
+    "writingexercises.com": {
+      "sources": [
+        "https://www.writingexercises.co.uk/",
+        "https://kindlepreneur.com/first-line-generator/"
+      ],
+      "features": [
+        {
+          "name": "Plot generator (full and quick)",
+          "detail": "Main character, secondary character, setting, situation, theme, character action.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "story-prompts."
+        },
+        {
+          "name": "Random first line with genre choice",
+          "detail": "Generate an opening line, choose genre.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Random subject / what-if scenario / character generator",
+          "detail": "Several small prompt tools.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "writing-prompts, story-prompts."
+        },
+        {
+          "name": "Random exercises for writers",
+          "detail": "A random exercise from a set, for practice sessions.",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "writing-prompts."
+        }
+      ]
+    },
+    "namegenerator.com": {
+      "sources": [
+        "https://namegenerator.com/"
+      ],
+      "features": [
+        {
+          "name": "Name generator with gender and origin filters",
+          "detail": "Full names by gender and culture/origin.",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Many niche name generators",
+          "detail": "Usernames, business, team, pet, baby names.",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "usernames, business-names, pet-names, band-names generators."
+        }
+      ]
+    }
+  },
+  "union_gaps": [
+    "A real list language for 'make your own': named lists, [references], ^weights, {a|b}, {1-10}, {a}/{s}, nested lists, methods (selectUnique, joinItems), consumableList (perchance.org; perchance-lib/perhaps reimplement it)",
+    "Publish and share a user-made generator at its own link, with remix/fork and embed (perchance.org)",
+    "A full text-to-image page: description + negative prompt, art-style menu, shape, image count, seed, download, local and public gallery (perchance.org ai-text-to-image-generator)",
+    "Comments/chat under each generator with owner moderation (perchance.org comments-plugin)",
+    "Per-generator options: gender/variant toggles, culture/usage, genre, archetype (fantasynamegenerators, behindthename, reedsy, namegenerator, seventhsanctum)",
+    "AI character chat and AI story tools: character editor, threads, regenerate/edit, lore/memory, import/export, share link (perchance.org ai-character-chat, ai-chat)",
+    "Scale and discovery: hundreds of generators by category with search and a random-generator button (fantasynamegenerators 1,400+, springhole 1,200+, seventhsanctum, perchance hub)",
+    "Structured multi-field outputs: NPC cards, taverns, loot, dungeons, plus a dice roller (dungeonmastersvault, chaoticshiny, perchance dice-plugin)",
+    "Lore/meaning text per generator and name meanings/etymology (fantasynamegenerators, behindthename)",
+    "Tap one result to re-roll just that piece (perchance tap-plugin / update())",
+    "Long description generators (multi-sentence people/places/creatures) (fantasynamegenerators, springhole)",
+    "Random first line with genre; plot generator with genre/twist (writingexercises, reedsy)",
+    "Download a generator as one offline HTML file (perchance.org)",
+    "Remember inputs between visits (perchance remember-plugin)"
+  ],
+  "verse_extra": [
+    "Every result is reproducible from a link (?g=&seed=&n=) by default; Perchance needs a plugin and others have none",
+    "Works offline after one visit (service worker)",
+    "Haiku with exact 5-7-5 syllables and rhyming limericks",
+    "German interface from the browser language",
+    "Kept list and per-result cartoon picture on the same page",
+    "No ads, no account"
+  ],
+  "auto": {
+    "queued": [
+      {
+        "target": "feature:seventhsanctum-com-4059e6a8",
+        "feature": "Per-generator option dropdowns",
+        "host": "seventhsanctum.com",
+        "at": "2026-10-25",
+        "id": "mvo2ae7i"
+      },
+      {
+        "target": "feature:rangen-co-uk-0af3da6b",
+        "feature": "Options per generator",
+        "host": "rangen.co.uk",
+        "at": "2026-10-25",
+        "id": "mvo2aeng"
+      },
+      {
+        "target": "feature:tools-dungeonmasters-9427c1d8",
+        "feature": "Dice roller",
+        "host": "tools.dungeonmastersvault.com",
+        "at": "2026-10-25",
+        "id": "mvo2af8e"
+      }
+    ]
+  }
+}

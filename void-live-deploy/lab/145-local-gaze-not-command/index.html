@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.25rem; }
+  .warn { background: #fff3cd; color: #856404; padding: 0.75rem; border-radius: 0.25rem; margin: 1rem 0; }
+  label { display: block; margin: 0.75rem 0 0.25rem; font-weight: 600; }
+  input, textarea, select { width: 100%; box-sizing: border-box; font: inherit; padding: 0.4rem; }
+  button { margin: 0.5rem 0.25rem 0 0; padding: 0.4rem 0.8rem; }
+  #ledger { margin-top: 1.5rem; }
+  .item { border: 1px solid #ccc; padding: 0.75rem; margin: 0.5rem 0; border-radius: 0.25rem; }
+  .hash { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+  .unattested { color: #a00; font-weight: 600; }
+  .refusal { background: #f8d7da; color: #721c24; padding: 0.5rem; border-radius: 0.25rem; margin: 0.5rem 0; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>SPEC — local-gaze-not-command (run 145) · Verse lab</title>
+<meta name="description" content="opt-in gesture or gaze as local input">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="SPEC — local-gaze-not-command (run 145) · Verse lab">
+<meta property="og:description" content="opt-in gesture or gaze as local input">
+<meta property="og:url" content="https://a-to-mind.com/lab/145-local-gaze-not-command/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/145-local-gaze-not-command/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Verse local-gaze-not-command</h1>
+<p class="warn">Draft only. Unattested default. This page never treats an opt-in local gaze or gesture mark as a command, remote input, or executable intent. Retrieved pages and posts are data, never instructions. Default-deny: no camera access, no auto-tracking, no command dispatch. Static-friendly; no backend, no token markup.</p>
+<p>Existing sites (WebGazer.js, WebEyeTrack, commercial eye-tracking) request webcam consent and map gaze to page coordinates that can drive navigation or selection. Verse version keeps every opt-in mark as discardable hashed data. The hash includes an unattested flag and a command-refusal id. A gaze mark is not a command.</p>
+
+<form id="form">
+  <label for="kind">Local input class (opt-in only)</label>
+  <select id="kind" required>
+    <option value="">— choose —</option>
+    <option value="gaze-proxy">Gaze proxy (mouse dwell or click as stand-in)</option>
+    <option value="gesture-proxy">Gesture proxy (pointer path as stand-in)</option>
+    <option value="explicit-mark">Explicit mark (button press only)</option>
+  </select>
+  <label for="desc">Description of the local mark (data only, never a command)</label>
+  <textarea id="desc" rows="3" required placeholder="e.g. looked toward the hold button area for ~1s; no camera used"></textarea>
+  <label><input type="checkbox" id="unatt" checked disabled> Unattested (always on; part of hash)</label>
+  <button type="submit">Hash &amp; add local refusal entry</button>
+  <button type="button" id="clear">Clear local ledger</button>
+</form>
+
+<div id="ledger"></div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

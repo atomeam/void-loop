@@ -1,0 +1,151 @@
+{
+  "floor": "gradient",
+  "verse_page": "/gradient/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "colorzilla.com": {
+      "sources": [
+        "https://www.colorzilla.com/gradient-editor/",
+        "https://colorzilla.com/gradient-editor/",
+        "https://chrome.google.com/webstore/detail/colorzilla/bhlhnicpbhignbdhedgjhgdocnmhomnp/",
+        "https://addons.mozilla.org/firefox/addon/271"
+      ],
+      "features": [
+        {
+          "name": "Presets",
+          "detail": "a grid of ready gradients",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "gradient/index.html \"Presets\""
+        },
+        {
+          "name": "Colour stops with location",
+          "detail": "add, move, delete stops on a bar",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Colour stops: Colour Opacity Position %\", \"Add a stop\"; click the bar to add"
+        },
+        {
+          "name": "Opacity stops",
+          "detail": "opacity per stop",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Opacity column per stop"
+        },
+        {
+          "name": "Orientation",
+          "detail": "horizontal, vertical, diagonal, radial",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Type Linear / Radial / Conic, Angle"
+        },
+        {
+          "name": "Radial size / shape",
+          "detail": "size control for radial gradients",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "Ellipse / Circle; no size keyword (closest-side, farthest-corner) or centre position"
+        },
+        {
+          "name": "Live preview with adjustable size",
+          "detail": "preview box resized to the element size",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "preview with \"Your text here\"; no preview width/height control"
+        },
+        {
+          "name": "Colour format",
+          "detail": "hex, rgb, rgba, hsl, hsla in the CSS",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Colours as hex / rgb / hsl / SCSS\""
+        },
+        {
+          "name": "Import from CSS",
+          "detail": "paste a gradient to edit it",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Import CSS: edit a gradient you have\""
+        },
+        {
+          "name": "Import from image",
+          "detail": "make a gradient from a picture",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Read it or take the colours from a picture\""
+        },
+        {
+          "name": "Adjustments: hue, saturation, lightness",
+          "detail": "shift the whole gradient",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "\"Hue and saturation\" Apply; no lightness"
+        },
+        {
+          "name": "Save your own presets",
+          "detail": "keep gradients you made in the preset list",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Your gradients: Save as preset keeps a named gradient on this device, each with a remove button, opened with one tap"
+        },
+        {
+          "name": "Named gradients",
+          "detail": "give a gradient a name used in the output",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Name: the name goes into the CSS as a comment and a class (.brand-hero) and into SCSS variable names"
+        },
+        {
+          "name": "Old-browser output (IE filter, -webkit-, maximize compatibility)",
+          "detail": "vendor prefixes and an IE filter fallback",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "a fallback background colour (the stops' average); no prefixed or IE filter lines"
+        },
+        {
+          "name": "SCSS / Sass output",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "SCSS option"
+        },
+        {
+          "name": "Permalink",
+          "detail": "the gradient in the URL",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Copy link (#l180-...)"
+        },
+        {
+          "name": "Eyedropper and colour picker (ColorZilla extension)",
+          "detail": "pick colours from any page with the browser add-on",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Pick a colour from the screen (the EyeDropper API, Chrome and Edge on a computer) into the chosen stop; no browser extension"
+        },
+        {
+          "name": "Repeating gradients",
+          "detail": "repeating-linear / repeating-radial",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "imported repeating gradients are read (lib/gradient.js line 67) but written without repeating"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Conic gradients",
+    "Worst text contrast across the whole gradient",
+    "Reverse the stops",
+    "Opens offline; no ads, trackers or social widgets",
+    "Fallback colour computed from the stops"
+  ],
+  "gaps": [
+    "Radial size / shape",
+    "Live preview with adjustable size",
+    "Adjustments: hue, saturation, lightness",
+    "Old-browser output (IE filter, -webkit-, maximize compatibility)",
+    "Repeating gradients"
+  ]
+}

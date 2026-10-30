@@ -1,0 +1,15 @@
+# Verse's redirects (Cloudflare Pages): a floor's own name never 404s - Versus's shopping floor is the store
+/shopping /store/ 301
+/shopping/ /store/ 301
+# plain names for the photos lane pages (owner, 2026-10-28: plain titles, old URLs kept)
+/photos/batch /photos/iloveimg/ 301
+/photos/batch/ /photos/iloveimg/ 301
+/photos/editor /photos/photopea/ 301
+/photos/editor/ /photos/photopea/ 301
+/photos/compress /photos/tinypng/ 301
+/photos/compress/ /photos/tinypng/ 301
+/photos/metadata /photos/exifeditor/ 301
+/photos/metadata/ /photos/exifeditor/ 301
+# the photo details checker by its short name
+/exif /photos/exif/ 301
+/exif/ /photos/exif/ 301

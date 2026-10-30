@@ -1,0 +1,35 @@
+# The edge cache for answers (lib/answer-edge.js), checked on live a-to-mind.com from outside (tools/edge-cache-live.mjs): a stable
+# reference ask twice (the repeat must be x-verse-cache: HIT), and a personal ask, a signed request and a fresh request that must never
+# be served from the cache. By hand only (owner, 2026-10-15: cloudflare is not unlimited); about one model call a run. Read-only.
+name: Edge cache live
+
+on:
+  workflow_dispatch:
+    inputs:
+      origin:
+        description: The site to check
+        default: 'https://a-to-mind.com'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: edge-cache-live
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Repeat is a HIT, personal and signed asks are never cached
+        env:
+          ORIGIN_IN: ${{ inputs.origin }}
+        run: node tools/edge-cache-live.mjs "${ORIGIN_IN:-https://a-to-mind.com}" | tee -a "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,36 @@
+{
+  "slug": "local-tally-not-prior",
+  "run": 117,
+  "family": "weak-signal hypothesis ledger",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "hypothesis": "A mention tally is not a prior and not a detection.",
+  "confidence": 0.21,
+  "confidence_note": "design-material weight, not a measurement",
+  "hash_preimage": "void-tally-not-prior|v1|class=<id>|status=unattested",
+  "excluded_from_hash": [
+    "claim_sentence",
+    "mention_count",
+    "source_gloss",
+    "bayes_weight",
+    "detection"
+  ],
+  "classes": [
+    {
+      "id": "withheld",
+      "label": "Withheld",
+      "note": "No tally is recorded."
+    },
+    {
+      "id": "single",
+      "label": "Single",
+      "note": "One mention class. Count is not a prior."
+    },
+    {
+      "id": "repeated",
+      "label": "Repeated",
+      "note": "Repeat class only. Count still refused as a prior."
+    }
+  ]
+}

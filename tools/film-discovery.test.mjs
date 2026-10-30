@@ -34,31 +34,6 @@ test('asks parse to structured queries; picks and chatter do not', () => {
   assert.deepEqual([span('80s'), span('1980s'), span("the 90's"), span('eighties'), span('1994'), span('1999x')], [{ from: 1980, to: 1989 }, { from: 1980, to: 1989 }, { from: 1990, to: 1999 }, { from: 1980, to: 1989 }, { from: 1994, to: 1994 }, null]);
 });
 
-// issue #1152: the site tester found "yo film metadata for ikiru" refused with "don't know this yet". The "yo" prefix is a
-// casual lead-in, not a different ask; the skill must claim it (its match) and the parser must read it as a title lookup.
-test('the issue #1152 wording is a discovery ask: the "yo" prefix is not a refusal', () => {
-  assert.deepEqual(parseDiscoveryAsk('yo film metadata for ikiru'), { kind: 'title', title: 'ikiru' });
-  assert.deepEqual(parseDiscoveryAsk('yo film metadata for Ikiru'), { kind: 'title', title: 'Ikiru' });
-  assert.ok(skill.match('yo film metadata for ikiru', 'yo film metadata for ikiru'), 'the skill claims the wording');
-  assert.ok(skill.suite().ok);
-});
-
-test('when the movie search is degraded (media=movie answers nothing), the wide search is tried and only a matching film is kept', async () => {
-  const log = [];
-  const res = await discover('yo film metadata for Ikiru', async (u) => {
-    log.push(u);
-    if (/media=movie/.test(u)) return FX.empty;
-    if (/term=Ikiru/.test(u)) return FX.title_ikiru;
-    return FX.empty;
-  });
-  assert.equal(res.count, 1);
-  assert.equal(res.films[0].title, 'Ikiru');
-  assert.ok(log.some((u) => /media=movie/.test(u)), 'the movie search is tried first');
-  assert.ok(log.some((u) => !/media=movie/.test(u) && /term=Ikiru/.test(u)), 'the wide search is the fallback');
-  const wrong = await discover('yo film metadata for Ikiru', async (u) => (/media=movie/.test(u) ? FX.empty : { resultCount: 1, results: [{ kind: 'feature-movie', trackName: 'The Pact', artistName: 'David Victori', releaseDate: '2012' }] }));
-  assert.equal(wrong.count, 0, 'a wide result that does not match the ask is not listed');
-});
-
 test('the skill claims discovery asks and leaves the movie pick alone', () => {
   const t = (s) => skill.match(s.toLowerCase(), s);
   for (const e of skill.examples) assert.ok(t(e), e);
@@ -102,7 +77,7 @@ test('nothing found says so and lists no film; a source that is down is not "no 
 
 test('hostile input: markup and a long ask are cleaned, and the url goes to one fixed host', async () => {
   const urls = [], res = await discover('film metadata for <script>alert(1)</script> & ' + 'x'.repeat(500), async (u) => { urls.push(u); return FX.empty; });
-  assert.equal(res.count, 0); assert.ok(urls.length >= 1 && urls.every((u) => u.startsWith('https://itunes.apple.com/search?')) && urls.every((u) => !/%3C|%3E|[<>]/.test(u)) && urls.every((u) => decodeURIComponent(u.split('term=')[1] || '').length <= 80), 'every url (the movie search and its wide fallback) is cleaned and goes to one host');
+  assert.equal(res.count, 0); assert.ok(urls.length === 1 && urls.every((u) => u.startsWith('https://itunes.apple.com/search?')) && !/%3C|%3E|[<>]/.test(urls[0]) && decodeURIComponent(urls[0].split('term=')[1]).length <= 80);
   assert.equal(toFilm({ trackName: 'X', trackViewUrl: 'https://evil.example/x', releaseDate: 'nonsense' }).source.url, null, 'a link off apple.com is dropped');
   assert.deepEqual(selectFilms([{ kind: 'feature-movie', trackName: 'A', artistName: 'B' }], { kind: 'discover', director: 'Zed' }), []);
 });

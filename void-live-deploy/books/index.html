@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verse Bookshelf · Verse</title>
+<meta name="description" content="A sovereign book studio: compile chapters from Verse's own growth ledger and capability families into a readable volume. No subscriptions, no credits, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Verse Bookshelf · Verse">
+<meta property="og:description" content="Compile a book from Verse's own ledger and capability families. No subscriptions, no credits, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/books/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/books/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#8b7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  h2 { font-size:16px; margin:0 0 8px; }
+  .sub { color:var(--quiet); margin:0 0 14px; font-size:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  .note { color:var(--quiet); font-size:13px; margin:8px 0 0; }
+  .chapter { border-left:3px solid var(--accent); padding-left:12px; margin:12px 0; }
+  .chapter h3 { margin:0 0 4px; font-size:15px; }
+  .chapter p { margin:6px 0; color:var(--soft); font-size:14px; }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:8px 4px; min-height:24px; min-width:24px; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  footer a, .siblings a { color:#cfc6ff; }
+  [hidden] { display:none !important; }
+</style><script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Verse Bookshelf</h1>
+  <p class="sub">A sovereign book studio: compile chapters from Verse's own growth ledger and capability families into a readable volume. No subscriptions, no credits, no API keys, works offline.</p>
+
+  <section class="card" aria-labelledby="h-chapters">
+    <h2 id="h-chapters">Chapters</h2>
+    <p class="note">Each chapter maps to a capability family. Compiled from the live Tower evidence and growth ledger.</p>
+    <div id="chapters">Reading the ledger…</div>
+  </section>
+
+  <section class="card" aria-labelledby="h-export">
+    <h2 id="h-export">Export</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button type="button" id="exportmd" aria-label="Export book as Markdown">Export Markdown</button>
+      <button type="button" id="exporttxt" aria-label="Export book as text">Export text</button>
+    </div>
+    <pre id="bookbox" aria-label="Compiled book" style="min-height:120px;"></pre>
+  </section>
+
+  <p class="note">No credits, no subscriptions, no bring-your-own API keys. Everything compiled on this device from the ledger.</p>
+
+  <nav class="siblings" aria-label="Use together with">
+    <a href="/g/">Gist creator</a>
+    <a href="/word-count/">Word counter</a>
+    <a href="/notes/">Notes</a>
+    <a href="/translate/">Translate a chapter</a>
+    <a href="/?ask=verse%20bookshelf">See it as a card on the stage</a>
+    <a href="/">Back to Verse</a>
+  </nav>
+</main>
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s);
+  const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  async function draw() {
+    const [inv, ev, growth] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/void.growth.json')]);
+    const chapters = [
+      { title: 'Chapter 1: Making Things', body: 'The evolution of 3D printing specs, Motelet, and physical-feeling cards.' },
+      { title: 'Chapter 2: Games & Rack', body: 'The logic of local minimax engines: Tic-Tac-Toe, Go, and Monopoly.' },
+      { title: 'Chapter 3: The Versus Ladder', body: 'The chronicle of surpassing real-world sites, aspect by aspect.' },
+      { title: 'Chapter 4: Verse Itself', body: 'The philosophy of self-hosting, neuron quotas, and sovereign AI infrastructure.' },
+    ];
+    const beaten = (ev && ev.floors) ? Object.keys(ev.floors).filter((k) => ev.floors[k] && Object.values(ev.floors[k]).some((v) => v && v.verdict === 'better' || v && v.verdict === 'equal-and-better')).length : 0;
+    chapters[2].body += ' Surpassed ' + beaten + ' sites so far.';
+    const box = $('chapters');
+    box.textContent = '';
+    for (const c of chapters) {
+      const div = document.createElement('div'); div.className = 'chapter';
+      const h = document.createElement('h3'); h.textContent = c.title; div.appendChild(h);
+      const p = document.createElement('p'); p.textContent = c.body; div.appendChild(p);
+      box.appendChild(div);
+    }
+    const md = chapters.map((c) => '## ' + c.title + '\n\n' + c.body + '\n').join('\n');
+    $('bookbox').textContent = md;
+    $('exportmd').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md], { type: 'text/markdown' })); a.download = 'verse-book.md'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
+    $('exporttxt').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md], { type: 'text/plain' })); a.download = 'verse-book.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
+  }
+  draw();
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

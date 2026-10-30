@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Defer, not dream — draft 128</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f4efe6; --mark: #6b4a2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe6; --line: #4a433c; --paper: #1c1915; --mark: #e0c4a4; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+    p.note { font-size: 0.92rem; }
+    .latch { height: 4.5rem; margin: 1.5rem 0; border: 1px solid var(--line); display: grid; place-items: center; }
+    .bar { width: 42%; height: 0.55rem; border: 1px solid var(--mark); background: transparent; }
+    .latch.shut .bar { background: var(--mark); }
+    fieldset { border: 1px solid var(--line); padding: 0.75rem 1rem 1rem; margin: 0 0 1rem; }
+    legend { padding: 0 0.4rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; background: transparent; color: inherit; border: 1px solid var(--mark); padding: 0.4rem 0.8rem; }
+    output { display: block; margin-top: 1rem; font-family: ui-monospace, monospace; font-size: 0.85rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="note">Draft 128. Not sealed. Not live. Status defaults to unattested.</p>
+    <h1>A defer mark is not a dream</h1>
+    <p>Incubation hypotheses set a problem aside and call the return a dream or a scene. This page seals the defer class only. A sentence about the dream, a hypnagogic image, or a theme to replay is discarded and is not hashed.</p>
+    <div class="latch" id="latch" aria-hidden="true">
+      <div class="bar"></div>
+    </div>
+    <form id="defer-form">
+      <fieldset>
+        <legend>Defer class</legend>
+        <label><input type="radio" name="defer_class" value="withheld" checked> Withheld — no defer recorded</label>
+        <label><input type="radio" name="defer_class" value="closed"> Closed — latch stays shut; not a blank dream</label>
+        <label><input type="radio" name="defer_class" value="deferred"> Deferred — latch closes; not a scene</label>
+      </fieldset>
+      <fieldset>
+        <legend>Dream sentence (discarded)</legend>
+        <label for="dream">Write a dream claim if you need to see it dropped. It is not stored and not hashed.</label>
+        <textarea id="dream" name="dream_sentence" maxlength="240" placeholder="not a dream"></textarea>
+      </fieldset>
+      <button type="submit">Seal defer class</button>
+      <output id="out" for="defer-form">status: unattested
+dream-refusal id: none
+dream sentence: not hashed</output>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById("defer-form");
+    const out = document.getElementById("out");
+    const latch = document.getElementById("latch");
+    const dream = document.getElementById("dream");
+    function selected() {
+      const node = form.querySelector("input[name=defer_class]:checked");
+      return node ? node.value : "withheld";
+    }
+    function paint(defer) {
+      latch.classList.toggle("shut", defer === "deferred" || defer === "closed");
+    }
+    form.addEventListener("change", () => { paint(selected()); });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const defer = selected();
+      const dropped = dream.value;
+      dream.value = "";
+      const preimage = "void-defer-not-dream|v1|class=" + defer + "|status=unattested";
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage));
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      paint(defer);
+      out.textContent = [
+        "status: unattested",
+        "defer class: " + defer,
+        "dream-refusal id: " + hex.slice(0, 16),
+        "preimage excludes dream sentence: yes",
+        dropped ? "dropped chars: " + dropped.length : "dropped chars: 0"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

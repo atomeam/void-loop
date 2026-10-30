@@ -1,0 +1,27 @@
+{
+  "slug": "local-gloss-withheld",
+  "run": 88,
+  "date": "2026-10-07",
+  "family": "non-lexical intent capture",
+  "emit": false,
+  "status": "unattested",
+  "seal": null,
+  "href_allowlist": [],
+  "hypothesis": {
+    "id": "void.gloss-withheld.v1",
+    "gloss": "withheld",
+    "channel": "nonlexical",
+    "sentence": "discarded",
+    "intent": "not-claimed",
+    "received": "not-claimed",
+    "mind_read": "denied",
+    "disconfirm_ids": [
+      "sentence-later-supplied",
+      "source-corrected",
+      "helper-not-separated",
+      "decoder-password-failed"
+    ]
+  },
+  "canonical": "void.gloss-withheld.v1|gloss=withheld|channel=nonlexical|sentence=discarded|disconfirm=<id>|weight=<0.000>|status=unattested",
+  "note": "Candidate draft. Not a seal. The candidate sentence is not stored in this file."
+}

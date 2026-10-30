@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --border-w: 4px;
+    --hue: 200;
+    --seal: 0.3;
+  }
+  body {
+    margin: 0;
+    background: #0a0a0f;
+    color: #e0e0e0;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+  }
+  #frame {
+    position: absolute;
+    inset: 12px;
+    border: var(--border-w) solid hsl(var(--hue), 70%, 55%);
+    border-radius: 12px;
+    box-shadow: 0 0 40px hsla(var(--hue), 80%, 50%, var(--seal));
+    pointer-events: none;
+    transition: border-width 0.2s, box-shadow 0.3s;
+    z-index: 2;
+  }
+  #canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    background: #050508;
+  }
+  #status {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: hsla(var(--hue), 40%, 20%, 0.85);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    border: 1px solid hsla(var(--hue), 70%, 60%, 0.6);
+    z-index: 3;
+    transition: background 0.3s;
+  }
+  #hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    opacity: 0.6;
+    z-index: 3;
+  }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>predictive-force-injection-mind · Verse lab</title>
+<meta name="description" content="Novel combination: A WebGPU (Canvas2D fallback) particle field whose forces are continuously steered by a local online linear predictor (LMS in a Web Worker) of the">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="predictive-force-injection-mind · Verse lab">
+<meta property="og:description" content="Novel combination: A WebGPU (Canvas2D fallback) particle field whose forces are continuously steered by a local online linear predictor (LMS in a Web Worker) of the">
+<meta property="og:url" content="https://a-to-mind.com/lab/f277-predictive-force-injection-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f277-predictive-force-injection-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="frame"></div>
+<canvas id="canvas"></canvas>
+<div id="status">echoing…</div>
+<div id="hint">move to draw · click to seal a prediction</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">predictive-force-injection-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

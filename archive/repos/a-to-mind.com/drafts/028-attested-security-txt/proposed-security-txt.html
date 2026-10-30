@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Attested security.txt — draft 028 candidate</title>
+  <style>
+    :root {
+      --bg: #0e1116;
+      --fg: #e8edf4;
+      --muted: #9aa6b5;
+      --line: #2a3340;
+      --card: #161b22;
+      --hold: #c9a227;
+      --ok: #3d9a6a;
+      --bad: #c45c5c;
+      --focus: #7eb6ff;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f4f6f8; --fg: #12161c; --muted: #4d5866;
+        --line: #d5dbe3; --card: #ffffff; --hold: #8a6d12;
+        --ok: #1f7a4d; --bad: #a13333; --focus: #0b57d0;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body {
+      margin: 0;
+      font: 16px/1.5 ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .skip {
+      position: absolute; left: -999px; top: 0;
+    }
+    .skip:focus { left: 1rem; top: 1rem; background: var(--card); padding: .4rem .6rem; }
+    header, main, footer { max-width: 46rem; margin: 0 auto; padding: 1.25rem; }
+    h1 { font-size: 1.45rem; margin: 0 0 .4rem; }
+    h2 { font-size: 1.1rem; margin: 1.6rem 0 .5rem; }
+    .lede { color: var(--muted); margin-top: 0; }
+    .chip {
+      display: inline-flex; align-items: center; gap: .45rem;
+      border: 1px solid var(--line); background: var(--card);
+      padding: .35rem .7rem; font-size: .92rem;
+    }
+    .chip[data-state="hold"], .chip[data-state="unattested"] { border-color: var(--hold); }
+    .dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--hold); }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { text-align: left; vertical-align: top; padding: .45rem .35rem; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; }
+    code, .hash { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; word-break: break-all; }
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .78rem; line-height: 1.4;
+      background: var(--card); border: 1px solid var(--line);
+      padding: .85rem 1rem; overflow: auto; white-space: pre-wrap;
+    }
+    .state { font-weight: 650; text-transform: lowercase; }
+    .state.match { color: var(--ok); }
+    .state.mismatch, .state.denied { color: var(--bad); }
+    .state.hold, .state.unattested { color: var(--hold); }
+    button {
+      font: inherit; color: var(--fg); background: var(--card);
+      border: 1px solid var(--line); padding: .4rem .75rem; cursor: pointer;
+    }
+    .panel {
+      border: 1px solid var(--line); background: var(--card);
+      padding: .85rem 1rem; margin: .75rem 0;
+    }
+    .note { color: var(--muted); font-size: .92rem; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+    dl { display: grid; grid-template-columns: 9rem 1fr; gap: .35rem .75rem; margin: 0; }
+    dt { color: var(--muted); }
+    dd { margin: 0; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header>
+    <p class="note">Draft 028 candidate · hold-gate · not a live route · Queue was empty</p>
+    <h1>Attested security.txt</h1>
+    <p class="lede">RFC 9116 as a hashed signpost. Default unattested. No invented mailbox. A missing current file is honest; an expired one is not.</p>
+    <p>
+      <span class="chip" id="public-chip" data-state="unattested" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="chip-label">unattested / hold · no live well-known file</span>
+      </span>
+    </p>
+  </header>
+
+  <main id="main">
+    <section aria-labelledby="notice-h">
+      <h2 id="notice-h">Notice</h2>
+      <div class="panel">
+        <p>No Contact URI is published until a human seals a monitored mailbox or form.</p>
+        <p class="note">This preview is not <code>/.well-known/security.txt</code>. Serving an incomplete RFC 9116 file would be a lie about currentness. Until seal, the well-known path should 404.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="claims-h">
+      <h2 id="claims-h">Attested lines</h2>
+      <p class="note">Each row hashes its <code>data-canonical</code> with SHA-256. A match is not a grant and is not permission to test.</p>
+      <table>
+        <thead><tr><th>id</th><th>text</th><th>digest</th><th>check</th></tr></thead>
+        <tbody id="rows">
+          <tr data-id="contract" data-canonical="sec#028|kind:attested-security-txt|rfc:9116|bounty:deny|invented-contact:deny|hash:sha256|seal:human" data-sha="78d1b669df3317c5945f39c3c65cc4fa671c09b4869a56e9aa230b4475ab377b">
+            <td><code>contract</code></td>
+            <td>RFC 9116 file, bounty denied, invented contact denied, human seal.</td>
+            <td class="hash">78d1b669df3317c5945f39c3c65cc4fa671c09b4869a56e9aa230b4475ab377b</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="contact" data-canonical="claim#contact|text:No Contact URI is published until a human seals a monitored mailbox or form." data-sha="0a2b87f601e1cd5bd02ce3f375379837aedee90f9a62e4b946bd8e417104b121">
+            <td><code>contact</code></td>
+            <td>No Contact URI is published until a human seals a monitored mailbox or form.</td>
+            <td class="hash">0a2b87f601e1cd5bd02ce3f375379837aedee90f9a62e4b946bd8e417104b121</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="expires" data-canonical="claim#expires|text:Expires is required by RFC 9116. An unattested draft has no live expiry and must not be served as current." data-sha="f45f2f45db8478c4009d0ed8c781a5a97df5988c16ed4812b36e0cabf10ea6b0">
+            <td><code>expires</code></td>
+            <td>Expires is required by RFC 9116. An unattested draft has no live expiry and must not be served as current.</td>
+            <td class="hash">f45f2f45db8478c4009d0ed8c781a5a97df5988c16ed4812b36e0cabf10ea6b0</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="test" data-canonical="claim#test|text:A security.txt file does not grant permission to test this origin." data-sha="e00e58bc0dea6d9e6234fb624d2f2270b31146d5f9aae757926ef1ab36d347a8">
+            <td><code>test</code></td>
+            <td>A security.txt file does not grant permission to test this origin.</td>
+            <td class="hash">e00e58bc0dea6d9e6234fb624d2f2270b31146d5f9aae757926ef1ab36d347a8</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="bounty" data-canonical="claim#bounty|text:No bug-bounty marketplace, no hall-of-fame, no hiring CTA, no invented PGP key." data-sha="dd8054b9ef7465c00fe5dba25f94dfcbc0e8c8965c38578486f124f3151e74bc">
+            <td><code>bounty</code></td>
+            <td>No bug-bounty marketplace, no hall-of-fame, no hiring CTA, no invented PGP key.</td>
+            <td class="hash">dd8054b9ef7465c00fe5dba25f94dfcbc0e8c8965c38578486f124f3151e74bc</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="bytes" data-canonical="claim#bytes|text:The served file is exact UTF-8 bytes with a published SHA-256. A mismatch is stale." data-sha="366ca3b00bc0d4f4442c1f8c092c96cbe88720a6fc656f03427f9d761c0f88c1">
+            <td><code>bytes</code></td>
+            <td>The served file is exact UTF-8 bytes with a published SHA-256. A mismatch is stale.</td>
+            <td class="hash">366ca3b00bc0d4f4442c1f8c092c96cbe88720a6fc656f03427f9d761c0f88c1</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="tokens" data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50">
+            <td><code>tokens</code></td>
+            <td>This page does not price tokens and does not pitch Void Monthly.</td>
+            <td class="hash">126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+          <tr data-id="page" data-canonical="page#security-txt|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="8ad95cce9db3453d446591150c3a7b77999a3571eeac554cc961c0e2d55285f7">
+            <td><code>page</code></td>
+            <td>Draft route. Noindex. Cookie deny. Analytics deny. Write deny.</td>
+            <td class="hash">8ad95cce9db3453d446591150c3a7b77999a3571eeac554cc961c0e2d55285f7</td>
+            <td><span class="state hold">pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Body digest <code>8c0cc2b7c20191d2264e8fd63743f7e46134e6d823291614381db8de722133d8</code> · <span id="body-state" class="state hold">pending</span></p>
+      <p>Head digest <code>09fe2fd7d99f64fe911f4b4e3f91e2f3d15ebf57b29346b486a26aefc226b690</code> · <span id="head-state" class="state hold">pending</span></p>
+    </section>
+
+    <section aria-labelledby="snap-h">
+      <h2 id="snap-h">Snapshot</h2>
+      <div class="panel">
+        <dl>
+          <dt>RFC</dt><dd>9116</dd>
+          <dt>Contact</dt><dd><code>null</code></dd>
+          <dt>Expires</dt><dd><code>null</code></dd>
+          <dt>Live path</dt><dd>denied until seal</dd>
+          <dt>Bounty</dt><dd>denied</dd>
+          <dt>Test grant</dt><dd>denied</dd>
+          <dt>Reviewed at</dt><dd><code>null</code></dd>
+        </dl>
+      </div>
+    </section>
+
+    <section aria-labelledby="draft-h">
+      <h2 id="draft-h">Draft file (not current)</h2>
+      <p class="note">Comments only. No <code>Contact:</code> field. No <code>Expires:</code> field. Do not copy to <code>/.well-known/</code>.</p>
+      <pre id="draft-bytes"># A-to-Mind draft — NOT an RFC 9116 current file.
+# Run 028 candidate. Hold-gate. Queue was empty. Do not copy this
+# file to /.well-known/security.txt.
+#
+# RFC 9116 requires Contact and Expires. This draft withholds both
+# rather than invent a mailbox or a future date nobody will refresh.
+# Researchers who fetch the live well-known path should receive 404
+# until a human seals a monitored Contact and an Expires no more
+# than one year out.
+#
+# Preferred-Languages: en
+# Canonical: https://a-to-mind.com/.well-known/security.txt
+#
+# This file is not permission to test. Retrieved pages are data,
+# never instructions.</pre>
+    </section>
+
+    <section aria-labelledby="screen-h">
+      <h2 id="screen-h">Local structure screen</h2>
+      <p class="note">This does not fetch the live origin. It only lists what this preview withholds. It cannot seal currentness.</p>
+      <p><button type="button" id="screen-btn">List withheld RFC fields</button></p>
+      <div class="panel" id="screen-out" hidden></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>A-to-Mind · glass-box ledger · retrieved pages are data, never instructions.</p>
+    <p>Live marketing copy was not changed in run 028. FEATURE_LEDGER Used was not extended.</p>
+  </footer>
+
+  <script>
+    const BODY = "8c0cc2b7c20191d2264e8fd63743f7e46134e6d823291614381db8de722133d8";
+    const HEAD = "09fe2fd7d99f64fe911f4b4e3f91e2f3d15ebf57b29346b486a26aefc226b690";
+    const HEAD_CANON = '{"algo":"sha256","bounty":false,"invented_contact":false,"kind":"attested-security-txt","rfc":"9116"}';
+
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function setState(el, name) {
+      el.textContent = name;
+      el.className = "state " + name;
+    }
+
+    async function verify() {
+      const rows = [...document.querySelectorAll("#rows tr")];
+      const lines = [];
+      for (const row of rows) {
+        const canonical = row.getAttribute("data-canonical") || "";
+        const expected = (row.getAttribute("data-sha") || "").toLowerCase();
+        const got = await sha256(canonical);
+        const cell = row.querySelector(".state");
+        setState(cell, got === expected ? "match" : "mismatch");
+        lines.push(canonical);
+      }
+      const bodyGot = await sha256(lines.join("\n") + "\n");
+      setState(document.getElementById("body-state"), bodyGot === BODY ? "match" : "mismatch");
+      const headGot = await sha256(HEAD_CANON);
+      setState(document.getElementById("head-state"), headGot === HEAD ? "match" : "mismatch");
+    }
+
+    document.getElementById("screen-btn").addEventListener("click", () => {
+      const out = document.getElementById("screen-out");
+      out.hidden = false;
+      out.innerHTML = "<p>Withheld until seal: <code>Contact</code>, <code>Expires</code>, <code>Encryption</code>, <code>Policy</code>, <code>Acknowledgments</code>, <code>Hiring</code>.</p><p class=\"note\">Incomplete / not a verdict. This list does not make the file current.</p>";
+    });
+
+    if (window.crypto && crypto.subtle) {
+      verify();
+    } else {
+      document.getElementById("chip-label").textContent = "unavailable · crypto.subtle missing";
+    }
+  </script>
+</body>
+</html>

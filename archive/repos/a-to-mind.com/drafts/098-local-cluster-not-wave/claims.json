@@ -1,0 +1,20 @@
+{
+  "slug": "local-cluster-not-wave",
+  "run": 98,
+  "family": "anomalous-event-timeline",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "cluster": "unset",
+  "wave": "discarded",
+  "pins": "display-only",
+  "disconfirm": "cluster-is-not-a-wave",
+  "sequence": "not-claimed",
+  "disclosure": "not-sealed",
+  "weight": 0.22,
+  "weight_note": "design-material constant, not a measurement",
+  "href_allowlist": [],
+  "page_fixture_sha256": "cca7117ba49054b6ef95535bb18cfe8ec3e949e7b09d6149ea29210b27fc3161",
+  "object_receipt_sha256": "bea803d696f65e7b7647e9c9bcdbb017797783f51ae880792aa2bb5fa49fd391",
+  "not_a_seal": true
+}

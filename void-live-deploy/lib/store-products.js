@@ -2,19 +2,19 @@
 export default [
  {
   "id": "void-monthly",
-  "name": "Void Monthly",
+  "name": "Verse Monthly",
   "cents": 4900,
   "every": "month",
   "kind": "membership",
   "gumroad": "yinmj",
-  "blurb": "Paid Void: every pro skill, films, code review, priority.",
+  "blurb": "MultiVerse: every pro skill, films, code review, priority.",
   "status": "live",
   "origin": "v01d",
   "published": "2026-10-15"
  },
  {
   "id": "code-review-pro",
-  "name": "Void Code Review Pro",
+  "name": "Verse Code Review Pro",
   "cents": 1000,
   "every": "month",
   "kind": "license",
@@ -160,8 +160,7 @@ export default [
    "v01d-tree.stl",
    "v01d-lighthouse.stl",
    "README.txt"
-  ],
-  "preview": "/models/store/v01d-forge-printables-preview.glb"
+  ]
  },
  {
   "id": "v01d-clips-pack",
@@ -198,25 +197,21 @@ export default [
  },
  {
   "id": "site-tester",
-  "special": [
-   "cashapp",
-   "usdc-base"
-  ],
   "name": "Verse Site Tester",
-  "cents": 2400,
+  "cents": 0,
   "kind": "download",
   "pack": "sdk",
-  "pwyw": false,
+  "pwyw": true,
   "files": [
    {
     "key": "store/site-tester-v1.zip"
    }
   ],
-  "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything.",
+  "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything. Free while its checkout is set up; tip if it saves you a bug hunt.",
   "license": "Personal and commercial use on sites you own or may test",
   "tier": "commercial",
   "origin": "v01d",
-  "status": "needs-gumroad",
+  "status": "live",
   "published": "2026-10-15",
   "bytes": 26836,
   "contents": [
@@ -225,6 +220,35 @@ export default [
    "README.txt",
    "steps.json"
   ],
-  "wouldBe": "$24.00"
+  "wouldBe": "$24.00",
+  "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)"
+ },
+ {
+  "id": "remix-kit",
+  "name": "Verse Remix Kit",
+  "cents": 0,
+  "kind": "download",
+  "pack": "templates",
+  "pwyw": true,
+  "files": [
+   {
+    "key": "store/remix-kit-v1.zip"
+   }
+  ],
+  "blurb": "Free sample: three 90 BPM stems synthesized by Verse (drums, bass, chord pad in A minor), 16 chord progressions and a 52-card lyric prompt deck. Loop, remix, make it yours.",
+  "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
+  "tier": "personal",
+  "origin": "v01d",
+  "status": "live",
+  "published": "2026-10-21",
+  "bytes": 5650231,
+  "contents": [
+   "README.txt",
+   "chord-progressions.txt",
+   "lyric-prompt-deck.txt",
+   "verse-bass-90bpm-am.wav",
+   "verse-chords-pad-90bpm-am.wav",
+   "verse-drums-90bpm.wav"
+  ]
  }
 ];

@@ -1,0 +1,123 @@
+{
+  "slug": "agentic-personalization-with-hold-gate",
+  "run": "023",
+  "date": "2026-09-30",
+  "status": "specified",
+  "algo": "sha256",
+  "seal": "human",
+  "head": {
+    "json": "{\"algo\":\"sha256\",\"kind\":\"agentic-personalization\",\"source\":\"zero-party\",\"infer\":false,\"persist\":\"hold\",\"apply\":\"hold\",\"cookie\":false}",
+    "sha256": "ac87133a85b8884a623cfa4c5bd08fd12a693f398d8e7c358fa67454c666715c"
+  },
+  "body": {
+    "sha256": "a949d04d08519064e42cdb9dd2358e9ba1a740294d7623f7a04863ead2513d0c",
+    "note": "Eight canonical lines joined by LF, trailing LF."
+  },
+  "facet_body": {
+    "sha256": "5a23154c90f1189957805d93196bba71f18f81bbb53d4c213dc62a2133f8bba8",
+    "note": "Three facet lines joined by LF, trailing LF."
+  },
+  "receipts_allowed": [
+    "idle",
+    "session-saved",
+    "hold",
+    "cleared",
+    "copied",
+    "mismatch",
+    "denied",
+    "unsupported",
+    "failed"
+  ],
+  "lines": [
+    {
+      "id": "personalize#023",
+      "canonical": "personalize#023|kind:agentic-personalization|source:zero-party|infer:deny|persist:hold|apply:hold|cookie:deny|hash:sha256|seal:human",
+      "sha256": "7212f665ba657506213b64c6ce28df9faee9e555a300aa245e94f2453cc1441b"
+    },
+    {
+      "id": "claim#default",
+      "canonical": "claim#default|text:No profile exists until a human checks an allowlisted facet. The page does not infer a persona from clicks, scroll, referrer, or device.",
+      "sha256": "364cf5e2b6a3fd9970a786ffb627c06415846d870c7e1d49abf1dba90f2feb95"
+    },
+    {
+      "id": "claim#source",
+      "canonical": "claim#source|text:Only zero-party checks on this page may enter the profile. Inferred, purchased, and third-party traits are denied.",
+      "sha256": "a4e61fe6c1dbb6cceb027bca30dac58ba18a95db03cfeb12427136299a81766b"
+    },
+    {
+      "id": "claim#store",
+      "canonical": "claim#store|text:The working profile lives in sessionStorage key a2m-profile-023. localStorage persist waits for a hold-gate. Cookies are denied.",
+      "sha256": "285bb0946267e4f4b3f8b90ba8babf53de985c3c841634693380bd3a62ccf83c"
+    },
+    {
+      "id": "claim#apply",
+      "canonical": "claim#apply|text:Apply to run holds. A checked facet is data, not a grant to start, steer, or rewrite a live executor.",
+      "sha256": "a4bd23521c65afeac0ec8bd9b892c24cb7b2f92f2231b47daac530ef29f61afa"
+    },
+    {
+      "id": "claim#export",
+      "canonical": "claim#export|text:Export copies the attested profile JSON. It does not POST. It does not open an account.",
+      "sha256": "221aec01dd968d6eb60a553b8e0227a4dd3c8bc66e9b262d85d762d0e4a62d55"
+    },
+    {
+      "id": "claim#tokens",
+      "canonical": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page#personalize",
+      "canonical": "page#personalize|route:draft|index:noindex|cookie:deny|analytics:deny|fingerprint:deny|write:deny",
+      "sha256": "63bfe8cb67c90650b9e10f908169ae565c76ffa82c4e7b25869d53a249751828"
+    },
+    {
+      "id": "invoker#save-session",
+      "canonical": "invoker#save-session|id:save-session|store:sessionStorage|key:a2m-profile-023|network:deny",
+      "sha256": "67e6287481bea51774494861787e41dc54a82785d0905edcde559e682b96b919"
+    },
+    {
+      "id": "invoker#persist",
+      "canonical": "invoker#persist|id:persist-profile|store:localStorage|write:hold|network:deny",
+      "sha256": "fc942c1b9303aae82c3dbade9173e906d292bc070b0ae6742f4c277ff3778b85"
+    },
+    {
+      "id": "invoker#apply-run",
+      "canonical": "invoker#apply-run|id:apply-to-run|write:hold|network:deny",
+      "sha256": "02b9807703bfe67a509501968f013c9096d608c0762ae51eaab0a89705baff8c"
+    },
+    {
+      "id": "invoker#clear",
+      "canonical": "invoker#clear|id:clear-profile|store:session,local|network:deny",
+      "sha256": "682c8fd891e6270f34d8f26ce9092de050dec0514643ea00b423b2799a9a4464"
+    },
+    {
+      "id": "invoker#export",
+      "canonical": "invoker#export|id:export-profile|mode:copy|network:deny",
+      "sha256": "7d0c5ee67d53dc6e0b321812c7e6d5001732578587d59829f4fad808670e78b4"
+    },
+    {
+      "id": "facet#focus",
+      "canonical": "facet#focus|id:focus|values:ledger,pricing,notes|default:none",
+      "sha256": "d6f4e15240db5d799d4026c3bb7bf2b55bfa05cef20abeabbd71ad81b6f4a84e"
+    },
+    {
+      "id": "facet#output",
+      "canonical": "facet#output|id:output|values:file,preview,quote|default:none",
+      "sha256": "8a7f03a1f6a1cd34c87f0918de4baf75cef2297c8356ff23875ddede773aa4eb"
+    },
+    {
+      "id": "facet#risk",
+      "canonical": "facet#risk|id:risk|values:hold-first,read-only,attest-only|default:none",
+      "sha256": "185cc37fb72afe90b0b2041a3a9f9cd78cdb8e9c95702231a4e5762edf26b7e2"
+    },
+    {
+      "id": "profile#empty",
+      "canonical": "profile#working|focus:none|output:none|risk:none|persist:session|apply:hold",
+      "sha256": "f7bda4a1de791d09ca4adc30cb8ca1971f5f69b08703737049a228b97f81d037"
+    },
+    {
+      "id": "profile#example",
+      "canonical": "profile#working|focus:ledger|output:file|risk:hold-first|persist:session|apply:hold",
+      "sha256": "58872531ca6776f4bf045c69d1bfb6ffe09b223c267e10a42af5c513c8a5a8bc"
+    }
+  ]
+}

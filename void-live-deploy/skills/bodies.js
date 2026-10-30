@@ -108,7 +108,7 @@ export function lineFromCard(card = {}) {
   if (s.length > 72) {
     const cut = s.slice(0, 69);
     const sp = cut.lastIndexOf(' ');
-    s = (sp > 40 ? cut.slice(0, sp) : cut).trim() + '…';
+    s = (sp > 40 ? cut.slice(0, sp) : cut).trim() + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
   }
   return s || String(card.title || '…');
 }

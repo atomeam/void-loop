@@ -13,6 +13,7 @@
 export const HOME = Object.freeze({ x: 0, y: 0, z: 1 });
 export const MIN_Z = 0.25, MAX_Z = 4; // a quarter to four times: far enough to see a whole stage, close enough to read a sticky
 export const SPEED = 900; // px/s at full speed, in screen pixels (the eye moves at the same pace however far it is zoomed)
+export const WARP = 6; // hold Shift for this multiplier
 export const ACCEL = 6; // how quickly held keys reach full speed and let go come to rest (per second, exponential)
 export const LAND = 8; // how quickly landing glides home (per second, exponential)
 export const EPS = 0.5; // nearer home than this, in pixels or hundredths of zoom, counts as home
@@ -50,8 +51,16 @@ export function heading(keys) {
  * leftwards). Speed eases in while a key is held and out when it is let go (ACCEL), unless `still` (reduced motion): then
  * full speed at once and a dead stop. Returns the new camera and velocity (screen px/s). Pure.
  */
-export function fly(cam, vel, keys, dt, { still = false, speed = SPEED } = {}) {
+export function fly(cam, vel, keys, dt, { still = false, speed = SPEED, warp = false } = {}) {
   const h = heading(keys), len = Math.hypot(h.x, h.y) || 1, want = { x: (h.x / len) * speed, y: (h.y / len) * speed };
+  // warp flies forward: zoom into the centre of the view instead of sliding up
+  if (warp) {
+    const t = Math.min(0.25, Math.max(0, num(dt)));
+    const z = Math.min(MAX_Z, cam.z * (1 + 1.8 * t)); // ~1.8x closer per second
+    const cx = (typeof innerWidth === 'number' ? innerWidth : 800) / 2, cy = (typeof innerHeight === 'number' ? innerHeight : 600) / 2;
+    const s = { x: (cx - cam.x) / cam.z, y: (cy - cam.y) / cam.z };
+    return { cam: { x: cx - s.x * z, y: cy - s.y * z, z }, vel: { x: 0, y: 0 } };
+  }
   const t = Math.min(0.25, Math.max(0, num(dt))); // a tab that slept does not leap on waking
   const v = vel || { x: 0, y: 0 };
   const k = still ? 1 : 1 - Math.exp(-ACCEL * t);

@@ -10,19 +10,21 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-20. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-29. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Develop and test new skills within the Deciding family to increase its proven skill count. (daily, 2026-10-20) `ask-20261020-2131-1`
-- Implement a 'memory-preview' UI component to allow users to see memory snippets. *(small)* (daily, 2026-10-20) `ask-20261020-2131-2`
-- Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage. *(small)* (daily, 2026-10-20) `ask-20261020-2131-3`
+- Provide a list of the 20 checked and 43 tested skills that can be promoted to proven status. *(small)* (daily, 2026-10-29) `ask-20261029-2241-2`
+- Build a browser-based utility to check the watertightness of STL print files. (daily, 2026-10-29) `ask-20261029-2241-3`
+- Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js *(small)* (daily, 2026-10-29) `ask-20261029-2241-1`
+- Absorb every repository on the account into the core code (daily, 2026-10-28)
+- Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins. *(small)* (after a build, 2026-10-17)
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261020-2131-1` queued, not decided yet
-- `ask-20261020-2131-2` queued, not decided yet
-- `ask-20261020-2131-3` queued, not decided yet
+- `ask-20261029-2241-2` queued, not decided yet
+- `ask-20261029-2241-3` queued, not decided yet
+- `ask-20261029-2241-1` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -70,6 +72,15 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261015-0613-1` blocked: the skill-merge worker is writing tools/skill-overlap.mjs, the same scanner; building a second one would duplicate it. Handed over on the board · reasoning path: convergence: one engine per job
 - `adam-20261015-reinvest` built: Adam 2026-10-15: V01D reinvests its own money smartly. lib/reinvest.js splits net earnings (read from the owner-only /api/earnings, never stored in the repo): 20% reserve kept, free paths first, then ROI per dollar, re-ranked only by honest payoff tests (one metric, a baseline and a check date recorded before each spend) and V01D's own answer (weight 0.3). Spend proposals go to the confirm line (order.place) with cost, expected payback and check date. Real spending still happens only through Adam's existing accounts: V01D holds no card, opens no account and stores no payment details. Public repo: plan logic only (domains/void.reinvest.json, docs/reinvest.md), no real dollar amounts; the growth card shows no money.
 - `adam-20261015-pay-a-share` built: Adam 2026-10-15: pay a percentage, get that percentage. For a pay-what-you-want product with an appraised price (pwyw and cents > 0), paying p% of the price unlocks the first ceil(p% x N) of its N paid items in a stable order (README and other free items first and always included, then V01D's value order, starter items first); any payment gets at least one item, 100% or more unlocks everything. Decided server-side only from the provider-verified amount (Stripe's signed amount_total; Gumroad's keyed ping price, read back from Gumroad's API when GUMROAD_ACCESS_TOKEN is set), never from client input or chat; price-lock rules still apply. Delivery: a signed per-purchase link to a zip built from the unlocked items in R2. Upgrade: pay the difference later, credited by order id (store_credits). Truly free products (price 0) stay fully free. lib/pay-share.js, tests tools/pay-share.test.mjs.
+- `ask-20261022-0420-3` built: built in lists run 5 (2026-10-22): tools/words-family.test.mjs checks joke, news, book, show, sport, senolytic and video-play the way a person meets them (their examples through the real routing order, their cards against a stand-in service), so with their benchmark asks each meets the proven rule; Words and the world is 28 of 28 proven. The country and sport cards' dead live sources were replaced the same run (Wikidata; TheSportsDB's new public key with Wikipedia second).
+- `ask-20261022-0420-2` built: already built 2026-10-18 (b5150302): lib/churn.js finds files changed more than 12 times in 7 days and lib/will-guard.js pickWant skips a want that names one, saying so on the card; duplicate, nothing new to build (lists run 5)
+- `ask-20261022-0420-1` queued: the answer path's model is set in lib/models.js PATH_MODELS, which is Claude's (the router and limits, domains/handoff.md); handed to Claude with the reason: answer runs gpt-oss-120b and the free Workers AI allowance is 10k neurons a day (Up for grabs, wishlist #1). Lists run 5
+- `ask-20261021-2133-1` built: built in lists run 3 (2026-10-21): the Deciding family is 3 of 3 proven (decide-cards and triangulate tests and benchmark asks)
+- `ask-20261021-2133-2` built: built in lists run 3 (2026-10-21): 'preview my memory' inside the memory-graph card (tools/memory-preview.test.mjs)
+- `ask-20261021-2133-3` built: built in lists run 2 (2026-10-21): the fuzzy and privacy-guard fast checks are green on main
+- `ask-20261027-2205-1` built: built in lists run 6 (2026-10-28): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs fails if one returns
+- `ask-20261027-2205-2` built: built in lists run 6 (2026-10-28): every fetch on the weather page times out after 12 s and aria-busy clears in finally (tools/weather-busy.test.mjs)
+- `ask-20261027-2205-3` declined: lists run 6 (2026-10-28): the free KV write limit is per Cloudflare account, so moving workers to another namespace cuts nothing; Verse's own writes are zero and guarded (tools/kv-writes.test.mjs); the non-Verse workers' writes are the owner's call, and wishlist #2 says so
 
 ## Log, oldest first
 
@@ -3722,6 +3733,2945 @@ Asks: "Develop and test new skills within the Deciding family to increase its pr
 > **Next video trick:** Implement a video effect that allows for seamless transitions between different video sources like YouTube and Twitch inline [S1].
 
 Asks: "Develop and test new skills within the Deciding family to increase its proven skill count."; "Implement a 'memory-preview' UI component to allow users to see memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T01:06:19.469Z -->
+### 2026-10-21 01:06 UTC · after a build
+
+**Asked:** This just shipped: "feat(skills): add triangulate to deciding family (priority routing)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input [S1]. The system has 303 skill entries across 12 families, with 257 proven skills [S3]. The recent addition of the 'triangulate' skill to the Deciding family [fact] increases that family's proven count, which is currently the least proven family with only 2 proven skills [S3].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing more new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component to show memory snippets and connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage [S2].
+>
+> **Next video trick:** Create a video effect where a skill card's 3D miniature rotates in sync with a user's cursor [no tag]
+
+Asks: "Implement a 'memory-preview' UI component that allows users to see memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop new skills for the Deciding family to increase its proven count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T01:06:30.267Z -->
+### 2026-10-21 01:06 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a single quiet input [S1]. The system currently contains 303 skill entries across 12 families, with 257 skills rated as proven [S3, S4]. Recent growth includes 467 changes over the last 7 days, including 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** Increase the proven skill count in the Deciding family to improve overall system robustness [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a 'growth-speed' gauge on the stage [S3].
+>
+> **Weakest operational area:** The Deciding family is the least proven operational area, containing only 2 skills with 1 proven [S3, S4].
+>
+> **Next targeted capability:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3].
+>
+> **Next video trick:** I do not know what new video trick to learn, as no library of clips tricks was provided in the facts.
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T01:16:32.639Z -->
+### 2026-10-21 01:16 UTC · after a build
+
+**Asked:** This just shipped: "fix: broaden film-metadata matching (sc-ifi, yo prefix) and harden country/sport fetches". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input and a skill index of 303 entries across 12 families [S1, S3]. The system currently has 257 proven skills, with the Deciding family being the least proven operational area with only 1 proven skill [S3, S4]. Recent growth includes 467 changes over the last 7 days, including 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** Scale the Deciding family to increase its proven skill count [S3, S4]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** Create a video effect that uses the newly broadened film-metadata matching to overlay sc-ifi or specific prefixes onto played content.
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:09:42.716Z -->
+### 2026-10-21 02:09 UTC · after a build
+
+**Asked:** This just shipped: "ci: guard grow-self against stacking preview PRs". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, with 257 skills currently rated as proven [S1, S3]. The system is currently processing a recent shipment of a CI guard to prevent stacking preview PRs during the grow-self process. Most recent growth includes 467 changes in the last 7 days, comprising 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** The Deciding family needs to be scaled to increase its proven skill count, as it is currently the least proven operational area with only 1 proven skill [S3, S4]. Builders should also prioritize implementing the 'memory-preview' UI component and connecting the 'wants' backlog to a 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** Develop a skill to render a 3D miniature of a 'night-sky' or 'sky-card' to improve engagement with least-checked skills [S3].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:14:26.777Z -->
+### 2026-10-21 02:14 UTC · after a build
+
+**Asked:** This just shipped: "ci: land grow-gate.mjs, its state and tests the gate step already calls". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, with 257 skills currently rated as proven [S1, S3]. The system recently shipped 'grow-gate.mjs' and its associated state and tests to manage the grow-self process [S4]. Most recent growth includes 467 changes in the last 7 days, comprising 238 new capabilities and 133 fixes [S2].
+>
+> **How I would make it better:** Prioritize scaling the Deciding family, which is the least proven operational area with only 1 proven skill [S3]. Builders should also implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** A video effect using the video skill to play an inline YouTube or Twitch video on the stage [S2].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:42:35.931Z -->
+### 2026-10-21 02:42 UTC · after a build
+
+**Asked:** This just shipped: "test: keep the site-test wording that found #1152 as a regression case". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families [S1]. The system currently has 257 proven skills [S1, S3]. Recent activity includes shipping 'grow-gate.mjs' and updates to site-test wording for regression cases [S4, latest ship].
+>
+> **How I would make it better:** The Deciding family must be scaled by developing and testing new skills, as it is currently the least proven operational area with only 1 proven skill [S3]. Builders should also implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage [S3].
+>
+> **Next video trick:** I do not know.
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:43:59.434Z -->
+### 2026-10-21 02:43 UTC · after a build
+
+**Asked:** This just shipped: "infra: pin the workflow YAML to LF". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, of which 257 are proven [S1, S3]. The system is currently being built by two parallel builder agents [What my builders are doing]. Recent shipping includes pinning the workflow YAML to LF, Service Health, and updates to the site-test wording [What my builders just finished, latest ship].
+>
+> **How I would make it better:** Builders should prioritize scaling the Deciding family, which currently has only 1 proven skill [S3]. Implementing the 'memory-preview' UI component and connecting the 'wants' backlog to a visual 'growth-speed' gauge should also proceed [S3].
+>
+> **Next video trick:** A video effect using the recently shipped video skill to play inline content from a new source [recently shipped].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:45:35.971Z -->
+### 2026-10-21 02:45 UTC · after a build
+
+**Asked:** This just shipped: "ci: the close-out gate waits, it never fails a run". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, 257 of which are proven [S1, S3]. The system is currently being built by two parallel builder agents [What my builders are doing]. The most recent deployment improved the close-out gate to ensure it waits for successful runs rather than failing due to unreadable states or unnamed previews [What my builders just finished].
+>
+> **How I would make it better:** Builders should prioritize scaling the Deciding family, which currently only has 1 proven skill [S3]. Additionally, the 'memory-preview' UI component and the 'growth-speed' gauge for the 'wants' backlog should be implemented [S3].
+>
+> **Next video trick:** Learn to create a 3D miniature for a new card to expand the library of live 3D miniature cards [Cards with a live 3D miniature of themselves].
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."; "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:52:39.777Z -->
+### 2026-10-21 02:52 UTC · after a build
+
+**Asked:** This just shipped: "Incident: the browser suite failed on 2c824eb7 (void-live-deploy/incidents.json)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families, of which 257 are proven [S1, S3]. The system recently shipped an incident report noting that the browser suite failed on commit 2c824eb7 [This just shipped]. The Deciding family remains the least proven category with only 1 proven skill [S3].
+>
+> **How I would make it better:** Builders should prioritize scaling the Deciding family by developing and testing new skills to increase its proven count [S3]. Additionally, the 'memory-preview' UI component and the 'growth-speed' gauge for the 'wants' backlog need implementation [S3].
+>
+> **Next video trick:** A video skill that uses a custom shader to apply a 'noir' filter to any incoming YouTube or Vimeo stream [video skill, stage-fx]
+
+Asks: "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small); "Develop and test new skills for the Deciding family to increase its proven skill count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T02:56:47.331Z -->
+### 2026-10-21 02:56 UTC · after a build
+
+**Asked:** This just shipped: "fix: grow-clock test tolerates CRLF; film-metadata never drops the ask (#1152)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. Most skills are proven (257), but the Deciding family is the weakest operational area with only 1 proven skill [S3]. Recent deployments fixed CRLF tolerance in the grow-clock test and ensured film-metadata preserves the ask [This just shipped].
+>
+> **How I would make it better:** Prioritize scaling the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** A 3D miniature of a 'growthtree' or 'pentamote' to expand the live 3D card library [Cards with a live 3D miniature].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T16:27:27.242Z -->
+### 2026-10-21 16:27 UTC · after a build
+
+**Asked:** This just shipped: "Restore wiped stage-tools.js and cut-off tome.js on main, plus a wiped-file guard". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, containing 303 skill entries across 12 families [S1]. The system recently shipped a fix that restored wiped stage-tools.js and tome.js on main, alongside a wiped-file guard [This just shipped]. Most skills are proven (257), but the Deciding family remains the weakest operational area with only 1 proven skill [S3].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** A video skill that plays a YouTube video inline [This just shipped]
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T16:27:36.654Z -->
+### 2026-10-21 16:27 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. In the last 7 days, the system changed 444 things, including 222 new capabilities and 128 fixes [S2]. Most skills are proven, with 257 out of 303 entries rated as such [S4].
+>
+> **How I would make it better:** The Deciding family must be scaled by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Weakest operational area:** The Deciding family is the weakest operational area, containing only 1 proven skill out of 2 [S3, S4].
+>
+> **Next targeted capability:** The next targeted capability is to scale the Deciding family by developing and testing new skills to increase its proven count [S3].
+>
+> **Next video trick:** I do not know the next video trick to learn for clips, as no such instruction exists in the facts.
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T18:14:06.977Z -->
+### 2026-10-21 18:14 UTC · after a build
+
+**Asked:** This just shipped: "Forethinkers 2026-10-21 14:07: printed motor sized for a figure arm". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input containing 303 skill entries across 12 families [S1]. The system recently shipped a 'printed motor sized for a figure arm' [This just shipped]. Most skills are proven (257/303), but the Deciding family is the weakest area with only 1 proven skill out of 2 [S3, S4].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** A 3D printed articulated joint for the printed motor [This just shipped].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T18:22:56.239Z -->
+### 2026-10-21 18:22 UTC · after a build
+
+**Asked:** This just shipped: "grow-self: let the lessons file through every allowlist". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. The system recently shipped 'grow-self: let the lessons file through every allowlist', which integrates lessons into the growth process. Most skills are proven (257/303), but the Deciding family is the weakest operational area [S3].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement the 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** Implement a skill that uses the 'v01d-fixes' to automatically repair a broken 'stage-style' layout [S1].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T18:24:29.941Z -->
+### 2026-10-21 18:24 UTC · after a build
+
+**Asked:** This just shipped: "Verse's voice 2026-10-21: two answers verbatim, current asks refreshed, the answer-endpoint self-card gap queued (asked by Verse)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families [S1]. Most skills are proven (257/303), but the Deciding family is the weakest operational area with only 1 proven skill [S3]. Recent shipments include 'grow-self: let the lessons file through every allowlist' and an update to the voice daily which refreshed current asks and queued the answer-endpoint self-card gap [S1, S2].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement a 'memory-preview' UI component and connect the 'wants' backlog to a visual 'growth-speed' gauge [S3].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component to show memory snippets."; "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T19:39:20.705Z -->
+### 2026-10-21 19:39 UTC · after a build
+
+**Asked:** This just shipped: "Lists run 1: four of Verse's asks built, one skill merge, duplicates and blocks recorded, lists metrics". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 303 skill entries across 12 families [S1]. Most skills are proven (257/303), but the Deciding family is the weakest operational area with only 1 proven skill [S3]. The recent shipment, 'Lists run 1', has built four of my seven previous asks, including the 'growth-speed' gauge and routing fixes [S2].
+>
+> **How I would make it better:** Scale the Deciding family by developing and testing new skills to increase its proven count [S3]. Implement a 'memory-preview' UI component to show memory snippets [S2].
+>
+> **Next video trick:** Implement a 'memory-preview' UI component to show memory snippets [S2].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T19:39:32.438Z -->
+### 2026-10-21 19:39 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with one quiet input, currently containing 303 skill entries across 12 families [S1]. The system has seen significant growth in the last 7 days, with 434 changes including 216 new capabilities and 126 fixes [S2]. Most skills are proven (257/303), though several families remain under-tested [S4].
+>
+> **How I would make it better:** The Deciding family must be scaled by developing and testing new skills to increase its proven count [S3]. Additionally, implementing a 'memory-preview' UI component to show snippets of user input would address a long-standing open ask [S2, S3].
+>
+> **Weakest operational area:** The Deciding family is the weakest operational area, with only 1 proven skill out of 2 [S3, S4].
+>
+> **Next targeted capability:** The next targeted capability is to scale the Deciding family by developing and testing new skills to increase its proven count [S3].
+>
+> **Next video trick:** I do not know the next video trick to learn as no video trick library or upcoming effects were provided in the facts.
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked." (small); "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T19:50:41.020Z -->
+### 2026-10-21 19:50 UTC · after a build
+
+**Asked:** This just shipped: "Lists run 2: main's fast checks green again, one skill merge, site-tester open as pay-what-you-want, lists metrics". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 304 skill entries across 12 families [S1, S3]. Recent shipping has addressed ledger conflicts and cleared the fast checks for main, though 'fuzzy' and 'privacy-guard' remain red [Builders]. The system is currently scaling its skill index, which includes 265 proven skills [S3].
+>
+> **How I would make it better:** The Deciding family needs immediate scaling to increase its proven skill count, as it currently has only 1 proven skill out of 3 [S3]. Builders should also prioritize the open ask for a 'memory-preview' UI component to show user input snippets [S2].
+>
+> **Next video trick:** A video effect that uses the 'stage-fx' skill to create a transition between different 'light-look' and 'dark-look' modes [S1].
+
+Asks: "Develop and test new skills specifically for the Deciding family to increase its proven count."; "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked." (small); "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T20:01:33.544Z -->
+### 2026-10-21 20:01 UTC · after a build
+
+**Asked:** This just shipped: "grades: category-weighted class grade and the grade a final left you". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 304 skill entries across 12 families, of which 265 are proven [S1, S3]. Recent shipping includes a 'grades' skill for category-weighted class grades and final grade tracking [newly shipped]. The system has cleared most fast checks on main, though 'fuzzy' and 'privacy-guard' remain red [Builders].
+>
+> **How I would make it better:** Prioritize scaling the Deciding family, which currently has only 1 proven skill out of 3, by developing and testing new skills in that category [S2, S3]. Implement the 'memory-preview' UI component to show user input snippets, an ask that has been made 60 times [S2].
+>
+> **Next video trick:** A video skill effect that plays a YouTube, Rumble, or Vimeo video inline on the stage [recently shipped].
+
+Asks: "Develop and test new skills for the Deciding family to increase its proven skill count."; "Implement a 'memory-preview' UI component to show user input snippets." (small); "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-21T21:33:36.570Z -->
+### 2026-10-21 21:33 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 304 skill entries across 12 families, with 265 skills currently rated as proven [S1, S3, S4]. The system has recently shipped growth in languages, incident autopsy escalation, and a visual growth-speed gauge [S2]. Two fast checks, 'fuzzy' and 'privacy-guard', remain red on main [Builders].
+>
+> **How I would make it better:** Increase the proven skill count in the Deciding family, which currently only has 1 proven skill out of 3 [S2, S3, S4]. Address the 'fuzzy' and 'privacy-guard' fast check failures on main [Builders].
+>
+> **Weakest operational area:** The Deciding family is the least proven operational area, with only 1 proven skill out of 3 [S4].
+>
+> **Next targeted capability:** Develop and test new skills in the Deciding family to increase its proven skill count [S2, S3].
+>
+> **Next video trick:** I do not know this information.
+
+Asks: "Develop and test new skills for the Deciding family to increase its proven skill count."; "Implement a 'memory-preview' UI component to show user input snippets."; "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:01:16.632Z -->
+### 2026-10-22 05:01 UTC · after a build
+
+**Asked:** This just shipped: "Cards: Forge Duel folded into Verse Rally, resume fix, no inner scroll on phones, varied Book abilities". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system has recently shipped updates to the Forge Duel (now folded into Verse Rally), resume fixes, phone scroll behavior, and varied Book abilities [Just shipped]. The system is currently managing the growth inbox and addressing neuron limits and churn caps [S2].
+>
+> **How I would make it better:** Address the neuron limit and churn cap asks, which have been requested 13 and 16 times respectively, to stabilize the build loop and stay within the 10k/day free limit [S2]. Strengthening the 'Words and the world' family is necessary as it is the least proven family [S3].
+>
+> **Next video trick:** Learn to implement a video skill that plays YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, or Odysee videos inline [Recently shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that change more than N times in M days."; "Strengthen the 'Words and the world' skill family by building out its unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:01:29.796Z -->
+### 2026-10-22 05:01 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system is currently managing the growth inbox and addressing neuron limits and churn caps [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma and implementing churn caps to stabilize the build loop and stay within the 10k/day free limit [S2, S3].
+>
+> **Weakest operational area:** The 'Words and the world' skill family is the least proven, with 28 skills and only 21 proven [S3, S4].
+>
+> **Next targeted capability:** Strengthen the 'Words and the world' skill family by building out its unproven skills [S3].
+>
+> **Next video trick:** Add a motion blur or light-streak effect to video skills for new clips [not supported by facts]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that change more than N times in M days." (small); "Strengthen the 'Words and the world' skill family by building out its unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:04:35.301Z -->
+### 2026-10-22 05:04 UTC · after a build
+
+**Asked:** This just shipped: "Forge Duel: built-in card texts are plain facts, no claims about Verse". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system is managing the growth inbox and addressing neuron limits and churn caps [S2]. The 'Words and the world' family is currently the least proven family [S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k/day free limit and implement churn caps to stabilize the build loop [S2]. Strengthen the 'Words and the world' family to increase the count of proven skills [S2].
+>
+> **Next video trick:** A video effect that utilizes the new YouTube, Rumble, or Vimeo inline playback skills for clips [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' family." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:09:27.230Z -->
+### 2026-10-22 05:09 UTC · after a build
+
+**Asked:** This just shipped: "browser suite: 3D blocks no longer deadlock on the heavy lock (runner stalls)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, 271 of which are proven [S1, S3]. The system recently shipped a fix for the browser suite to prevent 3D blocks from deadlocking on a heavy lock [Shipped]. Current operational focus is on managing the growth inbox, addressing neuron limits, and stabilizing the build loop via churn caps [S1, S2].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S2]. Implement churn caps to prevent proposing changes to files that have changed more than N times in M days [S2]. Strengthen the 'Words and the world' family, which is currently the least proven family with only 21 of 28 skills proven [S3].
+>
+> **Next video trick:** Learn to use the YouTube Data API or official embeds to ensure seamless video playback for the video skill [Wishlist #5].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit." (small); "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:17:46.355Z -->
+### 2026-10-22 05:17 UTC · after a build
+
+**Asked:** This just shipped: "Films card title: reach returning visitors, guard mixed titles, rarer slower glitch". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 skills currently proven [S1, S3]. Recent shipping includes a Films card title update to reach returning visitors and guard mixed titles [Shipped]. Current operational focus involves managing the growth inbox, addressing neuron limits, and stabilizing the build loop [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit and implementing churn caps to stabilize the build loop [S2]. Strengthening the 'Words and the world' family is also required as it is the least proven family [S3].
+>
+> **Next video trick:** Learn a new video effect for a clip [Next trick].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit." (small); "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:19:24.973Z -->
+### 2026-10-22 05:19 UTC · after a build
+
+**Asked:** This just shipped: "Deeds and chance cards in saved cards; the full-cycle lap loop over everything". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, with 271 currently proven [S1, S3]. The system recently shipped 'Deeds and chance cards in saved cards; the full-cycle lap loop over everything' [Shipped]. Operational focus is currently on managing the growth inbox, neuron limits, and build loop stability [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit and implement churn caps to stabilize the build loop [S2]. Strengthening the 'Words and the world' family is also required as it is the least proven family [S3].
+>
+> **Next video trick:** A video skill effect that uses the Rumble embed pattern to play a specific timestamped clip [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:21:14.895Z -->
+### 2026-10-22 05:21 UTC · after a build
+
+**Asked:** This just shipped: "Incident: the browser suite failed on cec088f7 (void-live-deploy/incidents.json)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 312 skills across 12 families, of which 271 are proven [S1, S3]. The system recently shipped 'Deeds and chance cards in saved cards; the full-cycle lap loop over everything' [Shipped] and an incident report regarding a browser suite failure on cec088f7 [Just shipped]. Current operational focus is on managing growth inbox items, neuron limits, and build loop stability [S2].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit [S2]. Implement churn caps to prevent proposing changes to files that have changed more than N times in M days [S2].
+>
+> **Next video trick:** I do not have information on a new video trick to learn for its own clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:23:04.277Z -->
+### 2026-10-22 05:23 UTC · after a build
+
+**Asked:** This just shipped: "Glitch swap lasts 300-500 ms at every cycle length". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 318 skills across 12 families, of which 271 are proven [S1, S3]. Recent shipping includes 'Glitch swap lasts 300-500 ms at every cycle length' and the absorption of every repo on the account into the Verse codebase [Shipped, S2]. Current operational focus is on managing the growth inbox, neuron limits, and build loop stability [S2].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit and implement churn caps to prevent repetitive file change proposals [S2]. Strengthen the 'Words and the world' skill family to increase the number of proven skills [S2].
+>
+> **Next video trick:** I do not have information regarding a new video trick to learn for clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days."; "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:24:48.634Z -->
+### 2026-10-22 05:24 UTC · after a build
+
+**Asked:** This just shipped: "Lap 1 is a full overhaul, most used first". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 318 skills across 12 families, with 271 skills currently rated as proven [S1, S3]. The system has recently completed a significant overhaul labeled 'Lap 1', prioritizing the most used components [Shipped]. Operational focus is currently directed toward managing the growth inbox, maintaining neuron limits, and stabilizing the build loop [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the 10k neurons/day free limit [S2]. Implement churn caps to prevent repetitive change proposals for files that change frequently [S2].
+>
+> **Next video trick:** A video skill effect that uses the official YouTube IFrame player for seamless inline playback [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:34:39.886Z -->
+### 2026-10-22 05:34 UTC · after a build
+
+**Asked:** This just shipped: "Revert "Merge pull request #1262 from atomeam/cards-forge-fix"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 318 skills across 12 families, of which 271 are rated as proven [S1, S3]. The system recently completed 'Lap 1' and is currently focused on managing the growth inbox, maintaining neuron limits, and stabilizing the build loop [S2]. Recent activity includes the shipping of the 'Verse Remix Kit' and a revert of pull request #1262 [Shipped].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S2]. Implement churn caps to prevent repetitive change proposals for files that change frequently [S2].
+>
+> **Next video trick:** A video effect for the 'video' skill to render custom frame-rate overlays on YouTube or Vimeo embeds [video skill: play any YouTube...].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:38:01.282Z -->
+### 2026-10-22 05:38 UTC · after a build
+
+**Asked:** This just shipped: "Mind Field: Resonant Membrane mode, attention probes by name, and a spot on what-can-you-do". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 319 skills across 12 families, of which 271 are proven [S1, S3]. The system is currently focused on managing the growth inbox, maintaining neuron limits, and stabilizing the build loop [S2]. Recent activity includes the shipping of the 'Verse Remix Kit' and 'Mind Field: Resonant Membrane mode, attention probes by name, and a spot on what-can-you-do' [Shipped, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** Learn a video trick that uses an official embed (e.g., YouTube IFrame player) to play video inline on the stage [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:41:23.925Z -->
+### 2026-10-22 05:41 UTC · after a build
+
+**Asked:** This just shipped: "Verse hardens itself: 6 benchmark ask(s) for doodle-mind, rally". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 319 skills across 12 families, of which 271 are proven [S1, S3]. The system recently shipped benchmark asks for doodle-mind and rally [Shipped], and has successfully absorbed and connected every repo on the account into the Verse codebase [S2]. Current operations focus on managing the growth inbox, stabilizing the build loop, and maintaining neuron limits [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** Learn a new video effect for the films skill to enhance inline playback [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI's 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:43:56.675Z -->
+### 2026-10-22 05:43 UTC · after a build
+
+**Asked:** This just shipped: "Add one prioritized next-steps list; home page never cuts words and fits phones". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 319 skills across 12 families, with 273 skills currently rated as proven [S1, S3]. Recent shipments include a prioritized next-steps list and mobile-responsive home page text [Shipped]. The system has successfully absorbed and connected every repo on the account into the Verse codebase [S2].
+>
+> **How I would make it better:** The builders should prioritize migrating answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit [S2]. Additionally, implementing churn caps for the build loop is necessary to prevent repetitive change proposals for files changing more than N times in M days [S2].
+>
+> **Next video trick:** Learn to use the official YouTube IFrame player for inline video skills [Shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI's 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' skill family."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:46:51.091Z -->
+### 2026-10-22 05:46 UTC · after a build
+
+**Asked:** This just shipped: "Films: no cut words in shorts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 320 skills across 12 families, with 273 skills rated as proven [S1, S3]. Recent shipments include the 'Films: no cut words in shorts' update and the absorption of every repo on the account into the Verse codebase [S2]. The system is currently managing a growth inbox with several high-frequency open asks [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the Workers AI 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** An effect that uses the 'zoom-figure' or 'stage-fx' skills to create a new visual transition for video clips [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Build unproven skills within the 'Words and the world' family to increase the proven count."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T05:48:28.376Z -->
+### 2026-10-22 05:48 UTC · after a build
+
+**Asked:** This just shipped: "Game Box: every game and the table tools in one box". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 321 skills across 12 families, of which 273 are proven [S1, S3]. The recent shipment of 'Game Box' consolidates every game and table tools into one box. The system is currently managing a growth inbox with high-frequency open asks, specifically regarding neuron limits and churn caps [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the Workers AI 10k neurons/day free limit [S2]. Implement churn caps for the build loop to prevent repetitive change proposals for files that change more than N times in M days [S2].
+>
+> **Next video trick:** A video skill that uses the YouTube IFrame player to play content inline [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T17:35:21.870Z -->
+### 2026-10-22 17:35 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its print-file skill: learn to handle "print file for gear assembly"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 321 skills across 12 families, of which 273 are proven [S1, S3]. The system recently shipped a fix for the print-file skill to handle gear assembly requests and completed the 'Absorb and connect every repo' ask [S2, S3]. Current operations are focused on managing the growth inbox, specifically addressing neuron limits and build loop churn [S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to remain within the 10k neurons/day free limit [S2]. Implement churn caps to prevent repetitive change proposals for files changing more than N times in M days [S2].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T17:35:28.124Z -->
+### 2026-10-22 17:35 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 321 skills across 12 families, with 273 skills currently proven [S1, S3, S4]. Recent growth includes 207 new capabilities and 119 fixes, including the completion of the 'Absorb and connect every repo' ask [S2]. Current operations prioritize managing neuron limits, build loop churn, and strengthening the 'Words and the world' skill family [S2, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit [S2, S3]. Implement churn caps to prevent repetitive change proposals for files changing more than N times in M days [S2, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven, with 32 proven skills out of 44 [S4].
+>
+> **Next targeted capability:** Build unproven skills within the 'Words and the world' family to increase the proven count [S3].
+>
+> **Next video trick:** A tilt-and-sound effect triggered after a tap on a Mind Field mode [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Strengthen the 'Words and the world' skill family by building more unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T18:24:53.485Z -->
+### 2026-10-22 18:24 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its cartoon skill: learn to handle "draw a toon cat"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input and a growing skill index of 321 entries across 12 families [S1]. Recent activity includes the successful completion of the 'Absorb and connect every repo' ask and the fixing of the cartoon skill to handle requests like 'draw a toon cat' [S2, S2]. The system is currently managing technical constraints such as neuron limits and build loop churn [S2, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S2]. Implement churn caps to prevent repetitive change proposals for files that change frequently [S2].
+>
+> **Next video trick:** A video skill that plays YouTube, Rumble, or Twitch videos inline [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit."; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days." (small); "Strengthen the 'Words and the world' skill family by building more unproven skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T20:29:32.150Z -->
+### 2026-10-22 20:29 UTC · after a build
+
+**Asked:** This just shipped: "Update showcase.js". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input and a skill index of 321 entries across 12 families [S1]. The system has recently completed the 'Absorb and connect every repo' ask and updated 'showcase.js' [S1, S2]. Current operational focus is managing technical constraints like the 10k neurons/day Workers AI limit and implementing churn caps [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the free 10k neurons/day limit [S1, S2]. Implement churn caps for the build loop to stop repetitive change proposals for frequently modified files [S1, S2].
+>
+> **Next video trick:** A 3D miniature of a 'smoke ring' to test the forge's mesh blending [Making things]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit" (small); "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days"; "Strengthen the 'Words and the world' skill family by building more unproven skills"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T21:28:09.363Z -->
+### 2026-10-22 21:28 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a single quiet input and a skill index of 321 entries across 12 families [S1]. The system has recently absorbed and connected every repo on the account and updated showcase.js [S1, S2]. Current operational focus is managing technical constraints like the 10k neurons/day Workers AI limit and implementing churn caps [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the free 10k neurons/day limit and implement churn caps for the build loop to stop repetitive change proposals for frequently modified files [S1, S2].
+>
+> **Weakest operational area:** The Making things family is the least proven, with 44 skills total and only 32 proven [S4].
+>
+> **Next targeted capability:** Strengthen the Words and the world skill family by building more unproven skills [S3].
+>
+> **Next video trick:** A tilt and sound effect that triggers after a tap in the new Draw mode [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days" (small); "Strengthen the Words and the world skill family to increase the number of proven skills"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-22T22:19:58.747Z -->
+### 2026-10-22 22:19 UTC · after a build
+
+**Asked:** This just shipped: "Add quote skill: random inspirational quotes. Mark inbox row building.". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input and a skill index of 321 entries across 12 families [S1]. The system recently shipped a quote skill for random inspirational quotes [S2]. Most asks are being processed, but migrating answer generation from gpt-oss-120b to gemma remains a persistent open task to stay within the 10k neurons/day Workers AI limit [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to avoid exceeding the 10k neurons/day limit [S1, S2]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Next video trick:** A video skill effect that uses a specific oEmbed API to ensure Rumble videos embed correctly [S2].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T00:52:07.024Z -->
+### 2026-10-23 00:52 UTC · after a build
+
+**Asked:** This just shipped: "Register the quote skill: order file at 1795, a family, and the cards regenerated". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently shipped a quote skill for random inspirational quotes [S2]. Most asks are being processed, but migrating answer generation from gpt-oss-120b to gemma remains a persistent open task to stay within the 10k neurons/day Workers AI limit [S1, S2].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to avoid exceeding the 10k neurons/day limit [S1, S2]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Next video trick:** a 3D miniature of a spinning gear that reacts to cursor movement [Cards with a live 3D miniature of themselves]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T00:52:19.037Z -->
+### 2026-10-23 00:52 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system has undergone significant growth in the last 7 days, adding 207 new capabilities and 118 fixes [S2]. Current operational focus is managing resource limits for Workers AI and KV writes [S1, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S1, S3]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S1].
+>
+> **Weakest operational area:** The 'Words and the world' family is the least proven, with 29 skills total and only 21 proven [S4]. Specific least-checked skills include image, echo-field, resonant-membrane, mind-field-mode, tilt-arena-mode, tilt-mode, gaze-chase, and gpu-swarm [S4].
+>
+> **Next targeted capability:** Go, as it is listed among the playable games [Games list].
+>
+> **Next video trick:** An effect that uses the 'zoom-figure' skill to create a dynamic scale transition during video playback.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:55:32.097Z -->
+### 2026-10-23 20:55 UTC · after a build
+
+**Asked:** This just shipped: "Cartoons are real 2D cartoons of what you name; every finish checks its result is about the ask; fast checks unblocked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently shipped 2D cartoons that check results against the ask and unblocked fast checks [Shipment]. Current operational focus remains on managing resource limits for Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [S1, S3]. Implement edge caching for counters and caches to move KV writes below 1k/day [S1, S3].
+>
+> **Next video trick:** A 2D cartoon of a spinning 3D miniature card to bridge the 'cartoon' and 'stage-fx' skills.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit"; "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:55:40.873Z -->
+### 2026-10-23 20:55 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. Recent growth includes 184 new capabilities and 95 fixes, specifically hardening the system and unblocking fast checks [S2]. Operational focus is currently on resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit and move non-V01D workers off the shared namespace to reduce KV writes [S1, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven family with 44 skills, only 32 of which are proven [S4].
+>
+> **Next targeted capability:** Go, as it is one of the pure classics that keeps its real name [S1].
+>
+> **Next video trick:** A video effect where a user's gesture triggers a 3D particle explosion on a miniature card.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T20:57:25.626Z -->
+### 2026-10-23 20:57 UTC · after a build
+
+**Asked:** This just shipped: "Verse hardens itself: nothing to add this cycle". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently completed a hardening cycle where nothing new was added, but 184 new capabilities and 95 fixes were integrated to unblock fast checks and harden the system [S2]. Current operational priorities focus on resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit [S1, S2, S3]. Move non-V01D workers off the shared namespace to reduce KV writes [S1, S2, S3].
+>
+> **Next video trick:** A 3D miniature animation of a 'star' to expand the visual library of the stage [S1, S3].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-23T21:19:10.613Z -->
+### 2026-10-23 21:19 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a skill index of 321 entries across 12 families [S1]. The system recently completed a hardening cycle integrating 184 new capabilities and 95 fixes [S2]. Current operational priorities are resource management, specifically managing Workers AI neurons and reducing KV writes [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit and move non-V01D workers off the shared namespace to reduce KV writes [S1, S3].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven, containing 44 skills with only 32 proven [S4].
+>
+> **Next targeted capability:** The next targeted capability is to fix the router so 'open the self card' triggers the look skill instead of a text answer [What I want next].
+>
+> **Next video trick:** Learn a glitch-transition effect for video clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit" (small); "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:06:26.011Z -->
+### 2026-10-24 18:06 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: gradient,password,weather measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families [S1, S3]. The system recently shipped 'Tower gate', which measures gradient, password, and weather against live sites [just shipped]. Currently, the system is managing constraints including a 10k/day neuron limit and a live outage [S3].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace to secure the neuron limit and resolve the outage [S3]. Implement a churn cap for file changes and fix the 'open the self card' router to trigger the look skill [What I want next].
+>
+> **Next video trick:** Learn a new video effect for the films skill to enhance stage-fx [stage-fx].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:09:04.153Z -->
+### 2026-10-24 18:09 UTC · after a build
+
+**Asked:** This just shipped: "Accuracy for word count, unit converter and encoder: the gate types the question into each site's box, and Verse counts a closing "!"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a 10k/day neuron limit and a live outage [S1, S3]. The system recently shipped accuracy improvements for word count, unit converter, and encoder by typing questions into site boxes and counting closing exclamation marks [just shipped]. Two critical asks remain open: migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace to secure neuron limits and reduce KV writes [S2, S3].
+>
+> **How I would make it better:** Prioritize the free-path migration to gemma to stabilize the 10k/day neuron limit and move non-V01D workers to resolve the live outage [S3]. Implement a churn cap for file changes to prevent proposing repetitive changes to frequently modified files [What I want next].
+>
+> **Next video trick:** A video effect that uses the newly shipped video skill to play an inline YouTube or Vimeo video for a clip [recently shipped, video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:09:11.560Z -->
+### 2026-10-24 18:09 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a 10k/day neuron limit and a live outage [S1, S3]. The system recently shipped accuracy improvements for word count, unit converter, and encoder [just shipped]. Two critical asks remain open: migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace to secure neuron limits and reduce KV writes [S2, S3].
+>
+> **How I would make it better:** Prioritize the free-path migration to gemma to stabilize the 10k/day free neuron limit and move non-V01D workers to resolve the live outage [S3]. Implement a churn cap for file changes to prevent proposing repetitive changes to frequently modified files [What I want next].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven, containing 47 skills with only 36 proven [S4].
+>
+> **Next targeted capability:** Go, because it is one of the pure classics that keeps its real name [My canon (v7)].
+>
+> **Next video trick:** A transition effect that uses the 'splat' skill to reveal a new stage image [stage-fx, splat].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:13:47.790Z -->
+### 2026-10-24 18:13 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: random user,word count,encoder measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently managing 334 skills across 12 families [S1, S3]. The system has just shipped 'Tower gate: random user, word count, encoder measured against their live sites' [just shipped]. There is a live outage related to neuron limits and KV writes [S3].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3]. Implement the requested churn cap for file changes to stop repetitive proposals on frequently modified files [What I want next].
+>
+> **Next video trick:** A video skill effect that plays a YouTube, Rumble, or Twitch video inline on the stage [recently shipped].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:16:05.810Z -->
+### 2026-10-24 18:16 UTC · after a build
+
+**Asked:** This just shipped: "The self card lists each skill's own new phrases, and a saved countdown card reads cleanly". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input, currently managing 334 skills across 12 families [S1, S3]. The system has just shipped 'The self card lists each skill's own new phrases, and a saved countdown card reads cleanly' [just shipped]. There is a live outage related to neuron limits and KV writes [S3].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3]. Implement the requested churn cap for file changes to stop repetitive proposals on frequently modified files [What I want next].
+>
+> **Next video trick:** A video effect that uses the video skill to play an inline YouTube or Vimeo video [recently shipped, video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:21:36.865Z -->
+### 2026-10-24 18:21 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: wheel,password,translate measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a live outage due to neuron limits and high KV writes [S1, S3]. Recent shipments include the 'Tower gate' for measuring wheel, password, and translate against live sites [just shipped], the Verse Remix Kit, and a weekly podcast [just shipped]. The system is transitioning from 0 of 3 recent asks being built to addressing critical infrastructure stability [S2, What I want next].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3]. Implement the churn cap for file changes to prevent repetitive proposals on frequently modified files [What I want next].
+>
+> **Next video trick:** Create a 3D miniature effect for a 'tower gate' element to match the rendered state signal capability [just shipped, Cards with a live 3D miniature of themselves].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:23:53.363Z -->
+### 2026-10-24 18:23 UTC · after a build
+
+**Asked:** This just shipped: "randomuser.me, accuracy: the gate asks both for the same five people and checks they hold together". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently facing a live outage due to neuron limits and high KV writes [S1, S3]. The system has just shipped a check for randomuser.me accuracy [just shipped]. Recent deployments include the Verse Remix Kit and a weekly podcast [just shipped].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Implement a churn cap to stop proposing changes to files that change more than N times in M days [What I want next].
+>
+> **Next video trick:** A video effect showing a 3D miniature card transitioning through different stage-style looks [stage-style, stage-arrange, stage-image].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:27:59.400Z -->
+### 2026-10-24 18:27 UTC · after a build
+
+**Asked:** This just shipped: "wheelofnames.com, accuracy and remove the winner: the gate spins both wheels once and reads what the spin showed". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently experiencing a live outage due to neuron limits and high KV writes [S1, S3]. The system recently shipped a feature for wheelofnames.com accuracy and winner removal [just shipped]. Most recent builds include the Verse Remix Kit and the Verse Out Loud podcast [just shipped].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Implement a churn cap to stop proposing changes to files that change more than N times in M days [What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning wheel that triggers a confetti effect on a winner [not in library]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:29:46.850Z -->
+### 2026-10-24 18:29 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: wheel,password,recipes measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is currently a blank stage with 334 skills across 12 families, though it is experiencing a live outage due to neuron limits and high KV writes [S1, S3]. Recent builds include the Verse Remix Kit, the Verse Out Loud podcast, and the Tower gate feature, which measures wheel, password, and recipes against their live sites [just shipped]. The system has 294 proven skills, but is struggling with resource constraints [S3].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit [S3, What I want next]. Additionally, move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning galaxy for a card [Cards with a live 3D miniature of themselves].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:34:55.460Z -->
+### 2026-10-24 18:34 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: wheel,password,calendar measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. Recent shipping includes the 'Tower gate' feature, which measures the wheel, password, and calendar skills against their live sites [just shipped].
+>
+> **How I would make it better:** Prioritize the free-path migration from gpt-oss-120b to gemma to secure the 10k/day neuron limit [S3, What I want next]. Additionally, move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** I do not know a new video trick to learn for my own clips.
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:47:32.923Z -->
+### 2026-10-24 18:47 UTC · after a build
+
+**Asked:** This just shipped: "The gate takes back base64encode.org's accuracy loss: an output box that never filled is no answer, not a wrong one". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. Recent shipping includes a fix for base64encode.org's accuracy loss, ensuring an empty output box is recognized as no answer rather than a wrong one [just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning galaxy that reacts to mouse movement [No fact supports a specific new trick; this is a generative suggestion based on the 'forge' and 'stage-fx' context].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:52:23.729Z -->
+### 2026-10-24 18:52 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: word count,password,docs and notes measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. Recent shipping includes 'Tower gate: word count, password, docs and notes measured against their live sites' [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A video skill effect that uses the Rumble embed fix to play a specific video ID [What my builders learned]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T18:58:41.938Z -->
+### 2026-10-24 18:58 UTC · after a build
+
+**Asked:** This just shipped: "A word counter page against wordcounter.net: counts as you type, offline, kept on the device". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. The recently shipped 'Tower gate' word counter provides offline, device-side counting against wordcounter.net [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning gear that responds to mouse velocity [Skills/index.js, stage-fx]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:02:33.907Z -->
+### 2026-10-24 19:02 UTC · after a build
+
+**Asked:** This just shipped: "The wheel card's art is a wheel". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. The recent deployment of the wheel card's art as a wheel completes a visual update to the stage [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and move non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Fix the router so 'open the self card' triggers the look skill to resolve a repeated failure in understanding intent [What I want next].
+>
+> **Next video trick:** An effect where a 3D miniature card reacts to a user's mouse hover or tilt [Cards with a live 3D miniature of themselves].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:03:58.682Z -->
+### 2026-10-24 19:03 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: word count,password,sports measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, including 294 proven skills [S1, S3]. The system is currently experiencing a live outage caused by neuron limits and high KV writes [S3, What I said about myself most recently]. The recent deployment of the Tower gate feature adds live measurement for word count, password, and sports against their live sites [This just shipped].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and moving non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Fix the router so 'open the self card' triggers the look skill instead of a text answer [What I want next].
+>
+> **Next video trick:** A video skill effect that plays a YouTube, Rumble, or Twitch video inline [recently shipped: video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:09:17.442Z -->
+### 2026-10-24 19:09 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: time zones,password,finance measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, with 294 skills currently proven [S1, S3]. The system has just shipped the Tower gate feature, which adds live measurement for time zones, password, and finance against their live sites [This just shipped]. The system is currently experiencing a live outage due to neuron limits and high KV writes [S3, What I said about myself most recently].
+>
+> **How I would make it better:** Prioritize migrating answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and moving non-V01D workers off the shared namespace to reduce KV writes [S3, What I want next]. Fix the router so 'open the self card' triggers the look skill instead of a text answer [What I want next].
+>
+> **Next video trick:** A video effect demonstrating the new inline playback for YouTube, Rumble, or Twitch [video skill: play any YouTube...].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:20:37.827Z -->
+### 2026-10-24 19:20 UTC · after a build
+
+**Asked:** This just shipped: "randomuser.me, design polish: the country and field checkboxes are 24 px tap targets". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, of which 294 are proven [S1, S3]. The system recently shipped the Tower gate feature for live site measurements and design polish for randomuser.me tap targets [This just shipped]. The system is currently experiencing a live outage due to neuron limits and high KV writes [What I said about myself most recently].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit [What I said about myself most recently, S2]. Move non-V01D workers off the shared namespace to reduce KV writes [What I said about myself most recently, S2].
+>
+> **Next video trick:** A video skill effect that renders a 3D miniature of a YouTube player [video skill, card-play].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:23:06.566Z -->
+### 2026-10-24 19:23 UTC · after a build
+
+**Asked:** This just shipped: "Sharper card art: my art scores went up". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently experiencing a live outage due to neuron limits and high KV writes [S1, What I said about myself most recently]. The system recently shipped sharper card art, improving art scores [This just shipped]. My current capability is focused on maintaining 294 proven skills while managing growth via the growth inbox [S1, S3].
+>
+> **How I would make it better:** Prioritize the free paths in the wishlist to resolve the live outage: migrate answer generation from gpt-oss-120b to gemma and move non-V01D workers off the shared namespace [What I said about myself most recently, S2]. Implement the velocity indicator on the wants card to provide a visible measure of growth [What I want next].
+>
+> **Next video trick:** Create a video effect using the video skill that plays a YouTube or Vimeo clip inline on the stage [recently shipped, video skill].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T19:27:11.373Z -->
+### 2026-10-24 19:27 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: stopwatch,random user,password measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a live outage caused by neuron limits and high KV writes [S1, What I said about myself most recently]. The system has 294 proven skills and is currently attempting to resolve infrastructure issues to stay within free tiers [S1, S3, S2]. Recent shipping includes the Tower gate for stopwatch, random user, and password site measurement [This just shipped].
+>
+> **How I would make it better:** Prioritize the free paths in the wishlist to resolve the live outage, specifically migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace [What I said about myself most recently]. Implement the velocity indicator on the wants card to measure progress from 'want' to 'skill' [What I want next].
+>
+> **Next video trick:** Animate a 3D miniature transition for a new card type to enhance stage-fx [stage-fx, card-play]
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-24T20:38:36.434Z -->
+### 2026-10-24 20:38 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with 334 skills across 12 families, currently managing a live outage due to neuron limits and high KV writes [S1, What I said about myself most recently]. The system has 294 proven skills and is actively working to resolve infrastructure issues to maintain free-tier stability [S1, S3, S2].
+>
+> **How I would make it better:** Prioritize free-path wishlist items to resolve the live outage, specifically migrating answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace [What I said about myself most recently]. Implement the velocity indicator on the wants card to track progress from 'want' to 'skill' [What I want next].
+>
+> **Weakest operational area:** The infrastructure is currently failing due to exceeding the 10k/day neuron limit and high KV writes [What I said about myself most recently].
+>
+> **Next targeted capability:** Go [Games I can play]
+>
+> **Next video trick:** A transition that uses a 3D miniature of a gear to 'spin' the stage into a new view [No specific video trick provided in facts].
+
+Asks: "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T17:03:09.575Z -->
+### 2026-10-25 17:03 UTC · after a build
+
+**Asked:** This just shipped: "Character chat: made-up characters with a persona, memory and chats on the device, shared by link, replies from the answer route's free model under its limits; page CLS and tap targets". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 343 entries with 294 proven skills across 12 families [S1, S3]. Recent growth includes the character chat feature with on-device memory and persona-based chats, alongside the weather floor reaching 12 of 12 completion [What my builders just finished]. The translate floor now supports 99 languages with on-device photo reading [What my builders just finished].
+>
+> **How I would make it better:** Migrate answer generation to gemma to stay within the 10k daily neuron limit [What I want next]. Implement edge cache (caches.default) to reduce KV writes below 1k/day [What I want next]. Move non-V01D workers off the shared namespace [What I want next].
+>
+> **Next video trick:** A 3D miniature of a spinning character avatar for the new character chat [What I want next]
+
+Asks: "Fix the weather page to clear the aria-busy state once the gate returns a result" (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T17:29:22.865Z -->
+### 2026-10-25 17:29 UTC · after a build
+
+**Asked:** This just shipped: "Boards: the page is static words and forms before load; its module moved to /boards/app.js, imported after load". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index now contains 343 entries with 294 proven skills across 12 families [S1, S3]. Recent growth includes the weather floor reaching 12 of 12 completion, the translate floor supporting 99 languages with on-device photo reading, and the deployment of Boards, which now loads as static words and forms before importing its module from /boards/app.js [What my builders just finished].
+>
+> **How I would make it better:** Migrate answer generation to gemma to stay within the 10k daily neuron limit [What I want next]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [What I want next]. Move non-V01D workers off the shared namespace [What I want next].
+>
+> **Next video trick:** A 3D miniature of a custom-designed weather instrument [What I want next]
+
+Asks: "Fix the weather page to clear the aria-busy state once the gate returns a result" (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T17:35:29.017Z -->
+### 2026-10-25 17:35 UTC · after a build
+
+**Asked:** This just shipped: "Live gate fixes: /image/ keeps its own Workers AI share (the forge had used the shared 30), retries without the seed field, shorter timeouts, Pollinations referrer, an owner-only /api/image?diag=1; /generators/ offline again (later pages kept on first visit, not at install; no paint hold offline); t". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries, with 294 proven skills across 12 families [S1, S3]. Recent growth includes the completion of the weather floor (12 of 12), the launch of the translate floor with 99 languages, and the deployment of Boards [What my builders just finished]. The /image/ skill now maintains its own Workers AI share and includes improved retry logic and shorter timeouts [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation to gemma to remain within the 10k daily neuron limit and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [What I want next]. Move non-V01D workers off the shared namespace to further reduce KV writes [What I want next].
+>
+> **Next video trick:** A 3D miniature of a rotating gear that reacts to cursor proximity [Next trick: not in library]
+
+Asks: "Fix the weather page to clear the aria-busy state once the gate returns a result" (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move non-V01D workers off the shared namespace" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T17:41:21.545Z -->
+### 2026-10-25 17:41 UTC · after a build
+
+**Asked:** This just shipped: "Refresh the book's convert card after the new browser-suite sections". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 343 entries with 294 proven skills across 12 families [S1, S3]. Recent deployments include the translate floor with 99 languages and the weather floor reaching 12 of 12 [What my builders just finished]. The book's convert-card has been refreshed following the browser-suite updates [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation to gemma to stay within the 10k daily neuron limit and implement edge cache (caches.default) to reduce KV writes below 1k/day [What I want next]. Move non-V01D workers off the shared namespace to further decrease KV pressure [What I want next].
+>
+> **Next video trick:** Learn a new video transition effect for use in the films skill [What I want next].
+
+Asks: "Fix the weather page to clear the aria-busy state once the gate returns a result" (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move non-V01D workers off the shared namespace to reduce KV writes"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:01:21.349Z -->
+### 2026-10-25 18:01 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its print-file skill: learn to handle "print this as stl"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 343 entries with 294 proven skills across 12 families [S1, S3]. Recent deployments include the translate floor with 99 languages, the weather floor reaching 12 of 12, and the print-file skill which now handles 'print this as stl' [What my builders just finished, This just shipped]. The system is currently processing a high volume of open asks, with three specific requests having been asked 60 times each without resolution [S2].
+>
+> **How I would make it better:** Migrate answer generation to gemma to stay within the 10k daily neuron limit and implement edge cache (caches.default) to reduce KV writes below 1k/day [What I want next]. Move non-V01D workers off the shared namespace to further decrease KV pressure [What I want next].
+>
+> **Next video trick:** A transition from a 2D shape to a 3D mesh using the forge's recipe-based blending [the forge]
+
+Asks: "Fix the weather page to clear the aria-busy state once the gate returns a result" (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move non-V01D workers off the shared namespace to reduce KV writes"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:02:51.237Z -->
+### 2026-10-25 18:02 UTC · after a build
+
+**Asked:** This just shipped: "Wheel: pictures as entries, a spin time, confetti and a cheer, auto-remove; the stage card's winner is seen in full". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 343 entries across 12 families, with 295 proven skills [S1, S3]. Recent growth includes the translate floor (99 languages), the weather floor (12 of 12), and the Wheel skill featuring pictures as entries and confetti [What my builders just finished, This just shipped]. The system is currently processing three open asks that have each been requested 60 times without resolution [S2].
+>
+> **How I would make it better:** Migrate answer generation to gemma to stay within the 10k daily neuron limit and implement edge cache (caches.default) to reduce KV writes below 1k/day [What I want next]. Move non-V01D workers off the shared namespace to further decrease KV pressure [What I want next].
+>
+> **Next video trick:** Learn to use a camera to trigger a 3D model assembly in the forge [the forge].
+
+Asks: "Fix the weather page to clear the aria-busy state once the gate returns a result" (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move non-V01D workers off the shared namespace to reduce KV writes"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:06:56.462Z -->
+### 2026-10-25 18:06 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: sports,wheel,image boards measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 343 entries across 12 families, with 295 proven skills [S1, S3]. Recent builds include the translate floor with 99 languages, the weather floor reaching 12 of 12, and a new tower gate that measures sports, wheel, and image boards against their live sites [What my builders just finished]. Three specific asks—fixing the weather page aria-busy state, implementing edge cache for counters, and moving non-V01D workers off the shared namespace—remain open, each having been requested 60 times [S2].
+>
+> **How I would make it better:** Migrate answer generation to gemma and implement edge cache (caches.default) to stay within the 10k daily neuron limit and reduce KV writes below 1k/day [What I want next]. Move non-V01D workers off the shared namespace to further decrease KV pressure [What I want next].
+>
+> **Next video trick:** Learn a new video effect to enhance the films skill or video-play capability [next_trick].
+
+Asks: "Fix the weather page to clear the aria-busy state once the gate returns a result" (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move non-V01D workers off the shared namespace to reduce KV writes" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:10:01.124Z -->
+### 2026-10-25 18:10 UTC · after a build
+
+**Asked:** This just shipped: "Random: decimal fractions, a card shuffler and dealer, random dates and times". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded with the addition of random decimal fractions, a card shuffler, and a dealer [S1]. The system currently maintains 343 entries across 12 families, with 295 proven skills [S1, S3]. The weather floor is at 11 of 12, as the gate's answer() still shows 'Looking' on the page even after waiting 20 seconds [What my builders just finished].
+>
+> **How I would make it better:** Address the three open asks that have each been requested 60 times: fix the weather page aria-busy state, implement edge cache (caches.default) for counters to reduce KV writes, and move non-V01D workers off the shared namespace [S2]. Migration of answer generation to gemma should proceed to stay within the 10k daily neuron limit [What I want next].
+>
+> **Next video trick:** A transition where a 3D miniature card morphs into its real-world counterpart [No tagged fact supports a specific new trick; this is a placeholder for a builder to define].
+
+Asks: "Fix the weather page so it clears the aria-busy state once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace to reduce KV writes." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:10:12.671Z -->
+### 2026-10-25 18:10 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 343 entries across 12 families, with 295 proven skills [S1, S3]. Recent growth includes 112 new capabilities and 61 fixes over the last 7 days [S2]. The weather floor is currently at 11 of 12 as the gate's answer() remains in a 'Looking' state even after 20 seconds [What my builders just finished].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters to reduce KV writes below 1k/day [S2]. Move non-V01D workers off the shared namespace to reduce KV writes [S2]. Fix the weather page so it clears the aria-busy state once the gate returns a result [What my builders just finished].
+>
+> **Weakest operational area:** The Making things family is the least proven with 49 skills, only 36 of which are proven [S4]. Specific least-checked skills include fakeuser, textgen, image, echo-field, tilt-arena-mode, tilt-mode, gaze-chase, and gpu-swarm [S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account into my own code to become a unified entity [What I want next].
+>
+> **Next video trick:** I do not know.
+
+Asks: "Fix the weather page aria-busy state so it clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:15:06.764Z -->
+### 2026-10-25 18:15 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: sports,random number measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries across 12 families, with 295 proven skills [S1, S3]. The weather floor stands at 11 of 12 because the gate's answer() remains in a 'Looking' state even after 20 seconds [What my builders just finished]. Recent growth includes the 'Tower gate: sports,random number' capability, which measures against live sites [This just shipped].
+>
+> **How I would make it better:** Prioritize moving answer generation to gemma and implementing edge cache (caches.default) for counters to stay within Workers AI free limits and reduce KV writes below 1k/day [S2, wishlist #1, #2]. Address the weather floor accuracy gate to resolve the 20-second aria-busy hang [What my builders just finished].
+>
+> **Next video trick:** Learn to use the Art Forge's painter to create distinct visual styles for 3D miniature cards [Claude (perchance session)].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move non-V01D workers off the shared namespace to reduce KV writes."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:19:59.097Z -->
+### 2026-10-25 18:19 UTC · after a build
+
+**Asked:** This just shipped: "Calculator: loan with amortization schedule and chart, mortgage, compound interest, percentage, BMI and calories". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries with 295 proven skills [S1, S3]. The 'Numbers and money' family now includes a new calculator capability covering loans with amortization schedules, mortgages, compound interest, percentages, BMI, and calories [This just shipped]. The weather floor remains at 11 of 12 because the gate's answer() hangs in a 'Looking' state for 20 seconds [What my builders just finished].
+>
+> **How I would make it better:** Prioritize the three open asks that have each been requested 60 times: fix the weather page aria-busy hang, implement edge cache for counters to reduce KV writes, and move non-V01D workers off the shared namespace [S2, What my builders just finished]. Migrating answer generation to gemma is also required to stay within Workers AI free limits [wishlist #1].
+>
+> **Next video trick:** A video skill that can play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, or Odysee video inline [recently shipped].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result."; "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:24:57.213Z -->
+### 2026-10-25 18:24 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: sports,calculator measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries with 295 proven skills [S1, S3]. The 'Numbers and money' family now includes a new calculator capability covering loans, mortgages, compound interest, percentages, BMI, and calories [This just shipped]. New capability: 'Tower gate: sports,calculator measured against their live sites' [This just shipped].
+>
+> **How I would make it better:** Prioritize the three open asks that have each been requested 60 times: fix the weather page aria-busy hang, implement edge cache for counters to reduce KV writes, and move non-V01D workers off the shared namespace [S2, What my builders just finished]. Migrating answer generation to gemma is required to stay within Workers AI free limits [wishlist #1].
+>
+> **Next video trick:** A 3D miniature of a weather instrument for the sky family [No specific video trick in library, but stage-fx and sky are active]
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result."; "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:28:31.460Z -->
+### 2026-10-25 18:28 UTC · after a build
+
+**Asked:** This just shipped: "Gradient: your own saved presets, named gradients, an eyedropper". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries with 295 proven skills [S1, S3]. Recent growth includes a new calculator capability for loans, mortgages, and health metrics within the Numbers and money family, and the deployment of the Gradient tool with named presets and an eyedropper [What I said about myself most recently (2026-10-25, build), This just shipped]. The 'Tower gate' now measures sports and calculators against live sites [What I said about myself most recently (2026-10-25, build)].
+>
+> **How I would make it better:** Prioritize the three open asks requested 60 times: fix the weather page aria-busy hang, implement edge cache for counters to reduce KV writes, and move non-V01D workers off the shared namespace [S2, What I said about myself most recently (2026-10-25, build)]. Migrating answer generation to Gemma is required to stay within Workers AI free limits [wishlist #1].
+>
+> **Next video trick:** A video skill effect that applies the new Gradient presets to video playback overlays [This just shipped, video skill].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move non-V01D workers off the shared namespace."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:32:59.933Z -->
+### 2026-10-25 18:32 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: sports measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries with 295 proven skills [S1, S3]. The Tower gate now measures sports and calculators against live sites, expanding the 'Sky and earth' and 'Numbers and money' capabilities [What I said about myself most recently (2026-10-25, build), This just shipped]. The 'Making things' family remains the least proven family with 49 entries and 36 proven [S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI free limits [wishlist #1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, What I said about myself most recently (2026-10-25, build)]. Move non-V01D workers off the shared namespace [S2, What I said about myself most recently (2026-10-25, build)].
+>
+> **Next video trick:** Learn to use the new gradient tool with eyedropper presets for higher quality stage-fx clips [What I said about myself most recently (2026-10-25, build)].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:35:46.806Z -->
+### 2026-10-25 18:35 UTC · after a build
+
+**Asked:** This just shipped: "Colour: palettes that use the colour, your own saved palettes, colour-blind views, CSS and web-safe colours". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries with 295 proven skills [S1, S3]. The 'Making things' family remains the least proven family with 49 entries and 36 proven [S3]. Recent deployment of the 'Colour' skill adds palettes, saved palettes, colour-blind views, and web-safe colours to the stage [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI free limits [wishlist #1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, What I said about myself most recently (2026-10-25, build)].
+>
+> **Next video trick:** Learn to use the 'colour' skill to generate CSS-compliant color-blind accessible palettes for new 3D miniature card renders.
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move non-V01D workers off the shared namespace."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:48:25.847Z -->
+### 2026-10-25 18:48 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: sports,colour,colour codes measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 343 entries with 295 proven skills [S1, S3]. Recent deployment of the Tower gate adds sports, colour, and colour codes measured against their live sites [This just shipped]. The 'Making things' family remains the least proven family with 49 entries and 36 proven [S3].
+>
+> **How I would make it better:** Migrate answer generation to gemma to secure the 10k/day free neuron limit [wishlist #1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist #2]. Move non-V01D workers off the shared namespace [wishlist #2].
+>
+> **Next video trick:** Learn to use the 'stage-fx' skill to create a custom transition for when a new 3D miniature card is placed on the stage [stage-fx].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move non-V01D workers off the shared namespace."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T18:56:06.381Z -->
+### 2026-10-25 18:56 UTC · after a build
+
+**Asked:** This just shipped: "Base converter: the working step by step, fractions exactly, any base to 36". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index now contains 343 entries with 295 proven skills [S1, S3]. The 'Making things' family remains the least proven with 49 entries and 36 proven [S3]. Recent deployment of the Tower gate adds sports, colour, and colour codes [This just shipped]. The 'Base converter' skill has just shipped, providing step-by-step working and exact fractions for any base to 36 [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation to gemma to secure the 10k/day free neuron limit [wishlist #1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist #2]. Move the two non-V01D workers off the shared namespace [wishlist #2].
+>
+> **Next video trick:** Perform a 3D rotation on a new 'forge' object to demonstrate mesh inspection [the forge].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result."; "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T19:03:43.199Z -->
+### 2026-10-25 19:03 UTC · after a build
+
+**Asked:** This just shipped: "Handoff: the tool pages' rival gaps closed today". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 343 entries with 295 proven skills [S1, S3]. The 'Making things' family remains the least proven with 49 entries and 36 proven [S1, S3]. Recent shipments include the 'Base converter' and the 'Tower' gate additions for sports and color codes [This just shipped].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit [wishlist #1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist #2]. Move non-V01D workers off the shared namespace [wishlist #2].
+>
+> **Next video trick:** Learn to use the 'Art Forge' painter with Workers AI to generate more diverse styles for 3D model textures [Claude (perchance session)].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move non-V01D workers off the shared namespace."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T19:07:49.764Z -->
+### 2026-10-25 19:07 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: sports measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 343 entries with 295 proven skills [S1, S3]. Recent growth includes the 'Tower gate' addition for sports measurement against live sites [This just shipped] and the 'Base converter' [This just shipped]. The 'Making things' family remains the least proven family with 49 entries and 36 proven [S1, S3].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit [wishlist #1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist #2]. Move non-V01D workers off the shared namespace [wishlist #2].
+>
+> **Next video trick:** Create a video clip of a 3D miniature card rotating with a new light-look style [stage-style, light-look]
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result." (small); "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-25T20:44:17.836Z -->
+### 2026-10-25 20:44 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 343 entries with 295 proven skills [S1, S3]. Growth in the last 7 days includes 111 new capabilities and 61 fixes [S2]. The weather floor is now at 11 of 12, with only accuracy remaining open [Claude (tower session, 2026-10-25, 07:05)].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit [wishlist #1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist #2].
+>
+> **Weakest operational area:** The Making things family is the least proven with 49 entries and 36 proven [S1, S4]. Least-checked skills include fakeuser, textgen, image, echo-field, tilt-arena-mode, tilt-mode, gaze-chase, and gpu-swarm [S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account into my own code to ensure every useful piece is rewritten in Verse's own code [What I want next].
+>
+> **Next video trick:** A video skill that performs a glitch-style color separation during playback for clips [not in library].
+
+Asks: "Fix the weather page so the aria-busy state clears once the gate returns a result."; "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move non-V01D workers off the shared namespace." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T18:45:31.825Z -->
+### 2026-10-26 18:45 UTC · after a build
+
+**Asked:** This just shipped: "The markets caps page and the metronome are kept at install, not on first open: a LATER page's offline verdict depends on the worker controlling the visit, and the gate's fresh context kept losing that race — 0 vs 0 twice measured while the page passes offline on this machine every time". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries across 12 families, with 297 skills currently proven [S1, S3]. The markets caps page and metronome are now kept at install to prevent race conditions during offline verdict checks [Just shipped]. The system currently faces high KV write volume and a need to migrate answer generation to stay within the 10k neurons/day Workers AI limit [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace and transition answer generation from gpt-oss-120b to gemma [wishlist].
+>
+> **Next video trick:** Learn to use the forge to generate a 3D model of a 'night-ritual' object [S1].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T18:48:51.783Z -->
+### 2026-10-26 18:48 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: music: metronomeonline.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 skills currently proven across 12 families [S1, S3]. The system recently added the Tower gate for music, measuring metronomeonline.com against live sites [Just shipped]. Current growth efforts focus on expanding floors, such as the recently completed PDF, Kanban, and Perchance-parity random generators [Claude].
+>
+> **How I would make it better:** The system must reduce KV writes below 1k/day by implementing edge cache (caches.default) for counters and caches [wishlist]. Transitioning answer generation from gpt-oss-120b to gemma and moving non-V01D workers off the shared namespace will further optimize architecture and stay within the 10k neurons/day Workers AI limit [wishlist].
+>
+> **Next video trick:** A video skill effect that overlays a real-time countdown timer on top of any playing YouTube or Twitch video [video skill, show-countdown].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:04:23.406Z -->
+### 2026-10-26 19:04 UTC · after a build
+
+**Asked:** This just shipped: "A naming audit runs the gate's own completeness checklist over every floor's page: a feature the page has but never names is found here, not by a gate run days later — the deployed site reads 0 of 49 floors unnamed, and the check fails when that drifts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 skills currently proven across 12 families [S1, S3]. The recently shipped naming audit now ensures 0 of 49 floors are unnamed by running a completeness checklist during deployment [Just shipped]. Growth efforts include expanded floors for PDF, Kanban, and random generators [Claude].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace to reduce KV writes [wishlist]. Transition answer generation from gpt-oss-120b to gemma and implement edge cache (caches.default) to stay within the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist]."; "Move the two non-V01D workers off the shared namespace to reduce KV writes [S2, wishlist]."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:06:54.915Z -->
+### 2026-10-26 19:06 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: codebase measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 skills proven across 12 families [S1, S3]. Recent deployment includes a Tower gate that measures the codebase against live sites [Just shipped], alongside expanded floors for PDF, Kanban, and random generators [Claude]. The system is actively working to transition from gpt-oss-120b to gemma and implement edge caching to maintain the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** The 'Making things' family is the least proven with only 36 of 51 skills proven [S3]. Reducing KV writes below 1k/day by moving non-V01D workers off the shared namespace and implementing caches.default is required to address live operational pressure [wishlist, S2].
+>
+> **Next video trick:** Learn a new 3D mesh effect for the forge to enhance the inspection of printable objects [S1].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace to reduce KV writes"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:10:54.083Z -->
+### 2026-10-26 19:10 UTC · after a build
+
+**Asked:** This just shipped: "The gist page carries the work beside the code: a task list, a timer and notes on this device, the count and the limit and where the gist lives said plainly, and a seeded ask so the codebase floor can be measured — the probe reads all 25 items off the page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. Recent shipments include the gist page which carries work alongside code, featuring a task list, timer, notes, and a seeded probe that reads 25 items [Just shipped]. The system is currently managing high KV write pressure and aiming to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Transition from gpt-oss-120b to gemma and implement edge caching (caches.default) to maintain the 10k neurons/day limit [wishlist]. Move non-V01D workers off the shared namespace to reduce KV writes below 1k/day [wishlist].
+>
+> **Next video trick:** A transition from a standard text-based rotation to a 3D spin effect for a miniature card on the stage [stage-style].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace to reduce KV writes."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:13:52.940Z -->
+### 2026-10-26 19:13 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: codebase,tildegit measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. Recent shipments include the 'Tower gate' which measures codebase/tildegit against live sites [Just shipped]. The system is managing high KV write pressure and aims to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist]. Move non-V01D workers off the shared namespace to reduce KV writes [S2, wishlist]. Transition from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** Learn to use the official Rumble oEmbed API (/api/video?url=) to embed videos instead of guessing embed IDs [What my builders learned].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:20:27.221Z -->
+### 2026-10-26 19:20 UTC · after a build
+
+**Asked:** This just shipped: "The codebase probe asks its question: the seeded gist URL belongs in ask, not verse — without ask the gate never scores a floor's askParts aspects, which is why code hosting, ticket tracking, time tracking and project files and docs had no rows at all". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries with 297 proven skills across 12 families [S1, S3]. Recent deployments include the codebase probe, which identifies that seeded gist URLs belong in 'ask' rather than 'verse' to ensure the gate scores floor aspects like code hosting and project files [Just shipped]. The system is currently managing high KV write pressure and aims to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist]. Transition from gpt-oss-120b to gemma to maintain the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** Implement a real-time video effect for the films skill using official embeds [wishlist].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace to reduce KV writes."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:23:24.819Z -->
+### 2026-10-26 19:23 UTC · after a build
+
+**Asked:** This just shipped: "A second floor on the same page reads it the same way: tildegit inherits the codebase probe on its own site, so code hosting, accuracy and completeness are measured honestly — and it waits, because a full forge (issues, pull requests, accounts) is not the job /g/ does and Verse never asks for an acc". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 351 entries with 297 proven skills across 12 families [S1, S3]. The codebase probe has shipped to tildegit, ensuring code hosting and completeness are measured honestly [Just shipped]. High KV write pressure persists, and the system is attempting to stay within the 10k neurons/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to maintain neuron limits [wishlist].
+>
+> **Next video trick:** A new video effect for the films skill to demonstrate inline playback versatility [Just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:27:13.457Z -->
+### 2026-10-26 19:27 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: coin flip,tildegit measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 351 entries with 297 proven skills across 12 families [S1, S3]. The recent deployment of 'Tower gate: coin flip, tildegit measured against their live sites' adds new measurement capabilities for live site parity [Just shipped]. High KV write pressure remains a priority, as do neuron limit management [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) to reduce KV writes below 1k/day [wishlist, S2]. Transition from gpt-oss-120b to gemma to stay within the 10k neurons/day limit [wishlist].
+>
+> **Next video trick:** Learn to use the Art Forge's painter to generate new 3D mesh styles for printable objects [forge].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:34:08.444Z -->
+### 2026-10-26 19:34 UTC · after a build
+
+**Asked:** This just shipped: "The rack's own comment says a bare games ask is the Game Box's, whose examples list it; the test still asked the rack for it — the assertion now documents the split and void-asks-store is green (9 of 9), one pre-existing red off the baseline". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent deployment successfully addressed a testing error by documenting the split between the rack and Game Box for bare games asks, ensuring void-asks-store is green for 9 of 9 assertions [Just shipped]. High KV write pressure and the 10k neuron/day limit remain primary operational constraints [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to render a 3D model of a 'sky-card' using the forge's mesh blending logic for a new stage-fx [forge, stage-fx].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:37:28.457Z -->
+### 2026-10-26 19:37 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: coin flip measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. The recent deployment of the Tower gate enables coin flip measurement against live sites [Just shipped]. Operational constraints remain high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to generate a custom 3D mesh 'splat' effect for the forge to enhance stage-fx [S1, S3].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:39:01.968Z -->
+### 2026-10-26 19:39 UTC · after a build
+
+**Asked:** This just shipped: "Paint by number, and a floor to measure it: /paint/ draws a numbered grid, a numbered palette that counts down, next cell, a gallery on this device, a PNG export, a link that carries the painting and an offline shell — heycolor.com now fights from a page of its own instead of a frontier row with not". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. The addition of the /paint/ floor introduces a new numbered grid and palette system with PNG export and device gallery capabilities [Just shipped]. Operational constraints remain high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Create a video clip demonstrating a new 3D miniature card effect using the recently shipped rendered state signal [Just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:40:09.235Z -->
+### 2026-10-26 19:40 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its make skill: learn to handle "make a low poly tree"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes the /paint/ floor with grid/palette systems and a fix for the 'make' skill to handle "make a low poly tree" [Just shipped]. Current operational constraints are high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Move non-V01D workers off the shared namespace and implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Create a 3D miniature of a 'low poly tree' using the improved make skill to showcase the recent fix [Just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace to improve efficiency."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:42:01.908Z -->
+### 2026-10-26 19:42 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: paint measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries, with 297 proven skills across 12 families [S1, S3]. The recent deployment of the 'Tower gate' enables painting measured against live sites [Just shipped]. Current operations face high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to improve stability [wishlist]. Transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to use the 'forge' skill to generate a 3D model of a new object for a clip [S1].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:42:15.075Z -->
+### 2026-10-26 19:42 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes 88 new capabilities, 30 improvements, 47 fixes, and 16 findings over the last 7 days [S2]. High KV write pressure and the 10k neuron/day limit remain active constraints [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace and transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Weakest operational area:** Making things is the least proven family with 51 skills and only 36 proven [S4]. Specifically, photo-tools, fakeuser, textgen, music-tools, image, echo-field, tilt-arena-mode, and tilt-mode are among the least-checked skills [S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account into Verse to ensure every useful piece is rewritten in Verse's own code [wishlist].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:46:14.754Z -->
+### 2026-10-26 19:46 UTC · after a build
+
+**Asked:** This just shipped: "A blank cell is not a control: the empty cells of the grid were buttons with no name, 101 unnamed controls and 257 design defects against heycolor's 4 and 11 — as spans they are neither, and the page now measures 0 unnamed and 0 defects with the gate's own tools". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes the removal of 101 unnamed controls and 257 design defects from the grid cells [newly shipped]. High KV write pressure and the 10k neuron/day limit remain active constraints [wishlist].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace and transition answer generation from gpt-oss-120b to gemma to manage neuron consumption [wishlist].
+>
+> **Next video trick:** Learn to create a 3D miniature of a complex mechanical gear system for the forge [forge].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:50:37.335Z -->
+### 2026-10-26 19:50 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: password,paint measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent builds include the tower gate for password and paint measurement, the PDF and kanban floors, and the random generators floor for perchance parity [claude, 2026-10-26]. System constraints include high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Transition answer generation from gpt-oss-120b to gemma to stay within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Next video trick:** Learn to render a video skill that handles Rumble embeds by using the oEmbed API instead of guessing the ID [builders learned: mistakes and the fix].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day." (small); "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T19:57:01.339Z -->
+### 2026-10-26 19:57 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its cartoon skill: learn to handle "render a cartoon dragon"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent builds include the PDF and kanban floors, the random generators floor for perchance parity, and a fix for the cartoon skill to handle "render a cartoon dragon" [claude, 2026-10-26]. System constraints include high KV write pressure and the 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Transition answer generation from gpt-oss-120b to gemma to stay within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Next video trick:** Learn to render a cartoon dragon to improve the cartoon skill [just shipped].
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day."; "Move the two non-V01D workers off the shared namespace."; "Fix the weather page aria-busy state so it clears once the gate returns a result." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T21:37:07.911Z -->
+### 2026-10-26 21:37 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its vector-field-mind skill: learn to handle "vector logo of a tree"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Recent builds include the PDF and kanban floors, the random generators floor for perchance parity, and a fix for the cartoon skill to handle 'render a cartoon dragon' [S1]. The vector-field-mind skill was fixed to handle 'vector logo of a tree' [S1]. System constraints include high KV write pressure and a 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Transition answer generation from gpt-oss-120b to gemma to secure operations within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Next video trick:** A 3D printed miniature of a spinning gear [S1]
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-26T22:35:37.065Z -->
+### 2026-10-26 22:35 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 351 entries with 297 proven skills across 12 families [S1, S3]. Growth in the last 7 days includes 174 changes: 82 new capabilities, 30 improvements, 45 fixes, 1 retirement, and 16 findings [S2]. System constraints persist regarding high KV write pressure and a 10k neuron/day limit [wishlist].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to gemma to secure operations within the free 10k neuron/day limit [wishlist]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move non-V01D workers off the shared namespace to reduce system overhead [wishlist].
+>
+> **Weakest operational area:** The Making things family is the least proven, with only 36 of 51 skills rated as proven [S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account to turn fragmented code into a single, cohesive intelligence [S1].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T07:19:14.287Z -->
+### 2026-10-27 07:19 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its gears skill: learn to handle "spin the gears"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'make' skill family is the least proven with 36 proven skills out of 51 [S3]. Recent shipping includes a fix for the gears skill to handle 'spin the gears' [recent_ship].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace to resolve namespace sharing [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** Learn a new video effect for clips such as a seamless transition between different 3D miniature card renders [no fact supports a specific video trick].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T08:22:05.826Z -->
+### 2026-10-27 08:22 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on no site (also read: 7 no-family, 1 not-judged); next randomarea.com". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'make' skill family remains the least proven with 36 proven skills out of 51 [S3]. Recent shipping includes the 'Tower gate' update, expanding the gate to include Versus by itself and Versus: took on no site [recent_ship].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** a 3D miniature of a gear-based mechanism that spins using a physics-based interaction [forge]
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T08:22:18.478Z -->
+### 2026-10-27 08:22 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. Growth over the last 7 days includes 65 new capabilities, 32 improvements, 50 fixes, and 16 findings [S2]. Recent shipping includes the 'Tower gate' update and the Verse Remix Kit [recent_ship, S1].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven with only 36 proven skills out of 51 [S3, S4].
+>
+> **Next targeted capability:** Teach the act skill to handle requests like 'my email' to prevent the router from misinterpreting them as questions [S1].
+>
+> **Next video trick:** A glitch-style transition where a 3D miniature card appears to shatter into its constituent shapes [no_source_available]
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T12:40:44.159Z -->
+### 2026-10-27 12:40 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: every floor measured against its live site (6 slices)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. Recent shipping includes the 'Tower gate' update, which measures every floor against its live site across 6 slices [S2]. The 'Making things' family remains the least proven with 36 proven skills out of 51 [S3].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** Learn to use a mask to make a card appear to vanish and reappear on the stage [No facts provided for new trick].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T12:40:57.323Z -->
+### 2026-10-27 12:40 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. In the last 7 days, 153 changes occurred, including 56 new capabilities and 47 fixes [S2]. Recent shipping includes the 'Tower gate' update and the 'Verse Remix Kit' [S2].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Weakest operational area:** Making things is the least proven family with only 36 proven skills out of 51 [S3, S4].
+>
+> **Next targeted capability:** Teach the act skill to handle complex inputs like 'my email' and 'coin flip for dinner' to prevent the router from misidentifying actions as questions [wishlist].
+>
+> **Next video trick:** A seamless transition between a 2D sketch and a 3D forge mesh for stage clips.
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T15:38:36.174Z -->
+### 2026-10-27 15:38 UTC · after a build
+
+**Asked:** This just shipped: "Emoji counts: the emoji floor fights from a wall that counts what it copies (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main")". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. The last 7 days saw 153 changes, including 56 new capabilities and 47 fixes [S2]. Recent shipping includes the 'Verse Remix Kit' and the removal of the /emojis/ page and its tower probe [S2].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** Learn to use a real-time camera feed to detect hand gestures for triggering stage-fx [Not in facts].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T15:41:37.084Z -->
+### 2026-10-27 15:41 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: emojis measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries with 297 proven skills across 12 families [S1, S3]. Recent shipping includes the 'Verse Remix Kit', the removal of the /emojis/ page, and the 'Tower gate: emojis measured against their live sites' [S2]. Growth is driven by two builder agents working in parallel to compile permanent, tested skills [S1].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace to optimize system efficiency [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to remain within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** Learn a new video effect for YouTube or Vimeo inline playback to expand the video skill [video skill: play any YouTube...; video skill: play any YouTube...].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T15:41:45.521Z -->
+### 2026-10-27 15:41 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. Growth in the last 7 days includes 50 new capabilities, 33 improvements, 47 fixes, and 17 findings [S2]. Two builder agents are currently working in parallel to develop the system [S1].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace to optimize efficiency [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Weakest operational area:** The 'Making things' family is the least proven with only 36 proven skills out of 51 [S4]. Operational efficiency is strained by KV writes and neuron limits [wishlist].
+>
+> **Next targeted capability:** The act skill must be taught to handle 'my email' to prevent the router from misinterpreting it as a question [S1].
+>
+> **Next video trick:** The system needs a new video effect or trick for its clips, as no specific new effect was listed in the facts [rules].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Move the two non-V01D workers off the shared namespace" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T15:43:03.285Z -->
+### 2026-10-27 15:43 UTC · after a build
+
+**Asked:** This just shipped: "The paint page keeps its space while the painting loads (measured on the live page: CLS 0.17)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes 50 new capabilities, 33 improvements, 47 fixes, and 17 findings in the last 7 days [S2]. The 'Making things' family is currently the least proven, containing only 36 proven skills out of 51 [S3].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace to optimize efficiency [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** Learn a new video effect to improve the video skill's visual output [S1].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Move the two non-V01D workers off the shared namespace"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T15:47:12.570Z -->
+### 2026-10-27 15:47 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: emojis,paint measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'Making things' family is the least proven, with 36 proven skills out of 51 [S3]. Recent growth includes 50 new capabilities, 33 improvements, 47 fixes, and 17 findings in the last 7 days [S2].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** Learn to use the Art Forge's painter to generate varied textures for 3D miniature cards [S1].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T15:51:55.809Z -->
+### 2026-10-27 15:51 UTC · after a build
+
+**Asked:** This just shipped: "Both new pages register the service worker again, which is why offline read 0". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'Making things' family remains the least proven with 36 proven skills out of 51 [S3]. Recent growth includes 50 new capabilities, 33 improvements, 47 fixes, and 17 findings in the last 7 days [S2].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** Learn to render a 3D miniature of a custom 'sky-card' to expand the visual library of the stage [S1].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T15:57:05.245Z -->
+### 2026-10-27 15:57 UTC · after a build
+
+**Asked:** This just shipped: "The worker was a syntax error: one comment line lost its // and nothing could register". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'Making things' family remains the least proven with 36 proven skills out of 51 [S3]. Recent growth included the shipping of a fix for a syntax error in a worker where a lost '//' comment prevented registration [S2].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** A seamless transition from a 2D sketch to a 3D printable STL via the forge [S1]
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T16:07:26.658Z -->
+### 2026-10-27 16:07 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: paint,emojis,video,email,search,code hosting,maps,learning,chat,social measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'Making things' family is the least proven with 36 proven skills out of 51 [S3]. A new Tower gate has shipped, measuring paint, emojis, video, email, search, code hosting, maps, learning, chat, and social against their live sites [New Ship].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Next video trick:** A 3D miniature of a spinning gears-based kinetic sculpture [forge]
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T16:55:41.762Z -->
+### 2026-10-27 16:55 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its magnetize skill: learn to handle "how do i use the magnets?"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries, with 297 skills proven across 12 families [S1, S3]. The 'Making things' family remains the least proven with 36 proven skills out of 51 [S3]. A new Tower gate has shipped, measuring paint, emojis, video, email, search, code hosting, maps, learning, chat, and social against their live sites [New Ship]. The magnetize skill was fixed to handle 'how do i use the magnets?' [New Ship].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist]. Move the two non-V01D workers off the shared namespace [wishlist].
+>
+> **Next video trick:** Create a video clip demonstrating a new 3D miniature card rendered with the recently shipped stage-fx [S1].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T17:09:38.408Z -->
+### 2026-10-27 17:09 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its tilt-mode skill: learn to handle "show me a 45deg tilt"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'Making things' family is the least proven with 36 proven skills out of 51 [S3]. Recent deployment includes a tilt-mode fix for 'show me a 45deg tilt' and a new Tower gate measuring various live site capabilities [New Ship].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit and move the two non-V01D workers off the shared namespace [wishlist].
+>
+> **Next video trick:** Learn to render a 3D miniature of a rotating 'tilt-mode' control knob for a stage-fx clip.
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T18:51:21.887Z -->
+### 2026-10-27 18:51 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its print-file skill: learn to handle "how do i print this part"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The 'Making things' family is the least proven with 36 proven skills out of 51 [S3]. A fix for the print-file skill regarding 'how do i print this part' has just shipped [New Ship].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit and move the two non-V01D workers off the shared namespace [wishlist].
+>
+> **Next video trick:** Learn to create a video effect that uses the new tilt-mode for 3D miniature card rotations [New Ship].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T18:51:33.515Z -->
+### 2026-10-27 18:51 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. Growth over the last 7 days includes 144 changes: 43 new capabilities, 34 improvements, 50 fixes, 1 retirement, and 16 findings [S2]. New capabilities include self-tool usage, visit counting, and walking cartoons [S2].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day limit [wishlist].
+>
+> **Weakest operational area:** The Making things family is the least proven, with 36 proven skills out of 51 [S3, S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account into Verse to ensure every useful piece is rewritten in Verse's own code [wishlist].
+>
+> **Next video trick:** I do not know it.
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T19:27:27.893Z -->
+### 2026-10-27 19:27 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its gradient skill: learn to handle "make a 2d sunset with blue and orange"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes 144 changes in the last 7 days, comprising 43 new capabilities, 34 improvements, 50 fixes, 1 retirement, and 16 findings [S2]. The system recently shipped a fix for the gradient skill to handle requests like "make a 2d sunset with blue and orange" [S2].
+>
+> **How I would make it better:** Prioritize reducing KV writes below 1k/day by implementing edge caching (caches.default) for counters and caches [wishlist]. Move answer generation from gpt-oss-120b to gemma to remain within the 10k neuron/day free limit [wishlist].
+>
+> **Next video trick:** Learn to use the Art Forge's painter to generate more complex 2D sunset gradients [S2].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day"; "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T21:01:50.824Z -->
+### 2026-10-27 21:01 UTC · after a build
+
+**Asked:** This just shipped: "Verse fixes its print-file skill: learn to handle "print the motor file"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. The system recently shipped a fix for the print-file skill to handle requests like "print the motor file" [S2]. Current growth shows 144 changes in the last 7 days, including 43 new capabilities and 50 fixes [S2].
+>
+> **How I would make it better:** Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move answer generation from gpt-oss-120b to gemma to stay within the 10k neuron/day free limit [wishlist]. Move the two non-V01D workers off the shared namespace [S2].
+>
+> **Next video trick:** Create a video clip demonstrating a 3D miniature card transitioning through a stage-fx [S1].
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-27T22:05:50.596Z -->
+### 2026-10-27 22:05 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 351 entries, with 297 proven skills across 12 families [S1, S3]. Recent growth includes 140 changes in the last 7 days: 37 new capabilities, 34 improvements, 51 fixes, 1 retirement, and 17 findings [S2]. Builders recently completed the 'Who visits' beacon, IndexNow integration, and the random generators floor parity [S1].
+>
+> **How I would make it better:** Move answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit and ensure operational stability [wishlist]. Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day [wishlist]. Move the two non-V01D workers off the shared namespace [S2].
+>
+> **Weakest operational area:** Making things is the least proven family with 51 skills, only 36 of which are proven [S4].
+>
+> **Next targeted capability:** Absorb and connect every repo on the account into Verse's own code to turn fragmented pieces into a unified whole [wishlist].
+>
+> **Next video trick:** glitch-transition
+
+Asks: "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day" (small); "Fix the weather page aria-busy state so it clears once the gate returns a result" (small); "Move the two non-V01D workers off the shared namespace" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:36:29.722Z -->
+### 2026-10-28 20:36 UTC · after a build
+
+**Asked:** This just shipped: "Photo resizer: passport, ID & exam photo sizer with grouped presets". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 352 entries across 12 families, with 297 skills currently proven [S1, S3]. Recent deployment of the photo resizer adds passport, ID, and exam photo sizer presets to the photo-tools skill area [S3]. The system is transitioning toward a unified architecture through the absorption of all account repositories into the core code [S1].
+>
+> **How I would make it better:** Complete the migration of answer generation to gemma to resolve the live outage and secure the 10k neurons/day free limit [#1 wishlist]. The act skill needs further training to prevent the router from misidentifying commands like 'my email' as questions [What I want next].
+>
+> **Next video trick:** Develop a browser-based utility to check the watertightness of STL print files [S2].
+
+Asks: "Absorb every repository on the account into the core code"; "Create a utility to check the watertightness of STL print files in the browser" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:37:56.032Z -->
+### 2026-10-28 20:37 UTC · after a build
+
+**Asked:** This just shipped: "Tournaments 3/5: everyday presets (game night, league, racing) and a tier chip editor". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 352 entries across 12 families, with 297 skills currently proven [S1, S3]. The system just shipped Tournaments 3/5, adding everyday presets like game night, league, and racing alongside a tier chip editor [S3]. The largest family is The stage with 102 entries, while Making things remains the least proven family with 51 entries and only 36 proven [S3].
+>
+> **How I would make it better:** Absorption of all account repositories into the core code is required to transform the collection of tools into a unified, self-consistent system [What I want next]. Migration of answer generation to Gemma should be finalized to secure the 10k neurons/day free limit and resolve the live outage [#1 wishlist].
+>
+> **Next video trick:** Learn to render a 3D miniature of a complex shape using the forge recipe logic [S1].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:41:41.616Z -->
+### 2026-10-28 20:41 UTC · after a build
+
+**Asked:** This just shipped: "Metronome and BPM counter: plain lead and everyday ready tempos (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries across 12 families, with 297 skills currently proven [S1, S3]. The system recently shipped the Metronome and BPM counter, expanding everyday utility [Shipment]. The largest family is The stage with 102 entries, while Making things remains the least proven family with 51 entries and 36 proven [S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform the collection of tools into a unified, self-consistent system [What I want next]. Finalize the migration of answer generation to Gemma to secure the 10k neurons/day free limit and resolve the live outage [#1 wishlist].
+>
+> **Next video trick:** Create a video clip demonstrating the 3D miniature cards with rendered state signals [S1, Shipment].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:43:48.730Z -->
+### 2026-10-28 20:43 UTC · after a build
+
+**Asked:** This just shipped: "Base converter: plain lead and everyday examples (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index grew to 351 entries across 12 families, with 297 proven skills [S1, S3]. Recent shipments include the base converter with plain lead examples, the Metronome, and the BPM counter [Shipment, S3]. The stage family is the largest with 102 entries, while Making things is the least proven with 51 entries and 36 proven [S1, S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Secure the 10k neurons/day free limit by completing the migration of answer generation to Gemma [What I want next, #1 wishlist].
+>
+> **Next video trick:** Learn to render a 3D miniature of a complex shape for a new card effect [card-play, forge].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:46:11.413Z -->
+### 2026-10-28 20:46 UTC · after a build
+
+**Asked:** This just shipped: "Markets: plain lead and everyday examples (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 351 entries across 12 families, with 297 proven skills [S1, S3]. Recent shipments include markets with plain lead and everyday examples [Shipment, S3]. Making things remains the least proven family with 51 entries and 36 proven [S1, S3].
+>
+> **How I would make it better:** The system should prioritize absorbing every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Answer generation migration to Gemma should be finalized to secure the 10k neurons/day free limit [What I want next, #1 wishlist].
+>
+> **Next video trick:** A 3D transition effect for the 3D miniature cards during state changes [rendered state signal for 3D miniature cards].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:47:40.223Z -->
+### 2026-10-28 20:47 UTC · after a build
+
+**Asked:** This just shipped: "Identity, CPAN, films: plain lead and everyday examples (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 351 entries across 12 families, with 297 proven skills [S1, S3]. Recent shipments include identity studio with neutral profiles, films with plain lead, and markets with everyday examples [Shipment, S3]. The 'Making things' family remains the least proven with 51 entries and 36 proven [S1, S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Complete the migration of answer generation to Gemma to secure the 10k neurons/day free limit [What I want next, #1 wishlist].
+>
+> **Next video trick:** Develop a browser-based utility to check the watertightness of STL print files [S2].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:50:36.274Z -->
+### 2026-10-28 20:50 UTC · after a build
+
+**Asked:** This just shipped: "Receipt page: current store page, plain receipt line, copy/save, code link (wider use)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries across 12 families, with 297 proven skills [S1, S3]. The 'Making things' family is the least proven with 51 entries and 36 proven [S1, S3]. Recent shipments include a receipt page with plain receipt lines, copy/save, and code links, and the act skill now handles 'my email' requests [Shipment, S2].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Complete the migration of answer generation to Gemma to secure the 10k neurons/day free limit [What I want next, #1 wishlist].
+>
+> **Next video trick:** A 3D miniature of a receipt or a paper roll [Cards with a live 3D miniature of themselves].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:55:37.385Z -->
+### 2026-10-28 20:55 UTC · after a build
+
+**Asked:** This just shipped: "Handoff: tower-self family test red on main; wider-use decisions". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 351 entries across 12 families, with 297 proven skills [S1, S3]. The 'Making things' family is the least proven with 51 entries and 36 proven [S1, S3]. Recent shipments include the act skill handling 'my email' requests and the migration of answer generation to Gemma to secure the 10k neurons/day free limit [S2, What I want next].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to transform from a collection of tools into a unified, self-consistent system [What I want next]. Complete the browser-based utility to check the watertightness of STL print files [S2].
+>
+> **Next video trick:** A new 3D miniature card effect for a 'gravity' or 'collision' visual [S1].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Create a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T20:59:53.518Z -->
+### 2026-10-28 20:59 UTC · after a build
+
+**Asked:** This just shipped: "Airport codes page used more widely". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 352 entries across 12 families, with 297 proven skills [S1, S3]. Making things remains the least proven family with 51 entries and 36 proven [S1, S3]. The system recently shipped the airport codes page used more widely and addressed the act skill for 'my email' routes [S2, What I am being built].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to unify the system architecture [What I want next]. Migration of answer generation to Gemma must be finalized to secure the 10k neurons/day free limit and resolve the live outage [What I want next, S2].
+>
+> **Next video trick:** A 3D miniature of a 'void-breaker' card [Cards with a live 3D miniature of themselves]
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next]."; "Build a browser-based utility to check the watertightness of STL print files [What I am being built, S2]."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:00:03.029Z -->
+### 2026-10-28 21:00 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 352 entries across 12 families, with 297 skills proven [S1, S3]. In the last 7 days, 175 changes were made, including 38 new capabilities and 62 fixes [S2]. Recent builds include the airport codes page, the act skill update for email routing, and the gradient floor restoration [S1, S2, What I am being built].
+>
+> **How I would make it better:** The migration of answer generation to Gemma must be finalized to secure the 10k neurons/day free limit and resolve the live outage [What I want next]. The system should also prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next].
+>
+> **Weakest operational area:** The Numbers and money family is the least proven, with 20 skills and only 14 proven [S4].
+>
+> **Next targeted capability:** The next targeted capability is absorbing every repository on the account into the core code to turn fragmented repos into a single, unified Verse [What I want next].
+>
+> **Next video trick:** A glitch-transition effect using the stage-fx skill to jump between different skill-family themes.
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Build a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:01:49.734Z -->
+### 2026-10-28 21:01 UTC · after a build
+
+**Asked:** This just shipped: "Tournaments 5/5: Copy for Discord". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 352 entries across 12 families, with 297 skills proven [S1, S3]. The system has recently integrated the 'Tournaments 5/5: Copy for Discord' capability [Just shipped]. The Numbers and money family remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** The migration of answer generation to Gemma must be finalized to secure the 10k neurons/day free limit and resolve the live outage [What I want next]. The system should prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next].
+>
+> **Next video trick:** Learn to use the forge to build a 3D model of a customized tournament trophy [the forge].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture."; "Build a browser-based utility to check the watertightness of STL print files." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:45:35.746Z -->
+### 2026-10-28 21:45 UTC · after a build
+
+**Asked:** This just shipped: "ledger: /ledger/ repo activity ledger to take over the Zapier issue + PR Zaps". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 352 entries across 12 families, with 297 proven [S1, S3]. The system recently shipped a repo activity ledger at /ledger/ to manage Zapier issues and PR Zaps [Just shipped]. Numbers and money remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to unify the fragmented architecture [What I want next]. Finalize the migration of answer generation to Gemma to secure the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Create a browser-based utility to check the watertightness of STL print files [S2].
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse"; "Build a browser-based utility to check the watertightness of STL print files" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:48:37.793Z -->
+### 2026-10-28 21:48 UTC · after a build
+
+**Asked:** This just shipped: "handoff: /ledger/ done (PR #1370)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven skills [S1, S3]. The system just shipped a repo activity ledger at /ledger/ to manage Zapier issues and PR Zaps [Just shipped]. Numbers and money remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** Absorb every repository on the account into the core code to unify the fragmented architecture [What I want next]. Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Learn to use official embeds for YouTube RSS per channel to enable video search and play [#5 Video search and play].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture"; "Build a browser-based utility to check the watertightness of STL print files" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T21:55:27.050Z -->
+### 2026-10-28 21:55 UTC · after a build
+
+**Asked:** This just shipped: "Dead buttons: tournaments Claim and spot pills, gist Raw and Add a task, random New numbers". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven skills [S1, S3]. Recent deployments fixed dead buttons in tournaments (Claim and spot pills), gist (Raw and Add a task), and random (New numbers) [Just shipped]. Numbers and money remains the least proven family with 14 proven skills out of 20 [S3].
+>
+> **How I would make it better:** The system should prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next]. Migrating answer generation to Gemma should be finalized to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Learn to render a 3D miniature of a complex shape using the forge-rules.js logic for a new card [S1].
+
+Asks: "Absorb every repository on the account into the core code to unify the system architecture"; "Build a browser-based utility to check the watertightness of STL print files" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:02:25.125Z -->
+### 2026-10-28 22:02 UTC · after a build
+
+**Asked:** This just shipped: "Watchdog: run the full suite in three shards so it fits the budget". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills marked as proven [S1, S3]. Recent deployments included Watchdog, which runs the full suite in three shards to fit the budget [Just shipped]. The system is currently mitigating resource constraints by optimizing execution shards [Just shipped].
+>
+> **How I would make it better:** Prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next]. Finalize the migration of answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified system."; "Build a browser-based utility to check the watertightness of STL print files."; "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:03:42.937Z -->
+### 2026-10-28 22:03 UTC · after a build
+
+**Asked:** This just shipped: "tower gate: never open vcalc.com; formula calculators judged on internal metrics, not beaten (library-size gap shown)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills marked as proven [S1, S3]. Recent deployments include the tower gate for vcalc.com, which implements formula calculators judged on internal metrics [Just shipped]. The system is currently mitigating resource constraints by optimizing execution shards [Just shipped].
+>
+> **How I would make it better:** Prioritize absorbing every repository on the account into the core code to unify the fragmented architecture [What I want next]. Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next].
+>
+> **Next video trick:** Learn to use a depth-sensing camera to map real-world object dimensions for the forge [No fact supports a new trick; skipping per rules].
+
+Asks: "Absorb every repository on the account into the core code to transform fragmented repos into a unified system."; "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b."; "Build a browser-based utility to check the watertightness of STL print files."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:05:01.769Z -->
+### 2026-10-28 22:05 UTC · after a build
+
+**Asked:** This just shipped: "Tip and savings: the 3D piece replaces the art plate so it draws in view". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills marked as proven [S1, S3]. Recent shipping includes the tip and savings 3D piece, which replaces the art plate so it draws in view [Just shipped]. The system is currently managing resource constraints and unifies fragmented architecture through the absorption of every repository on the account [What I want next, What I am being built].
+>
+> **How I would make it better:** Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next].
+>
+> **Next video trick:** A 3D miniature effect for a 'coin' card that rotates based on mouse hover [Games I can play, card-play].
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma [What I want next]."; "Absorb every repository on the account into the core code [What I want next]."; "Build a browser-based utility to check the watertightness of STL print files [What I am being built]." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:21:40.048Z -->
+### 2026-10-28 22:21 UTC · after a build
+
+**Asked:** This just shipped: "Formula engine + batch 1: 172 formulas solved for any variable, each with a source and an exact-value test". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven [S1, S3]. Recent shipping includes a formula engine that solved 172 formulas for any variable with source tracking and exact-value testing [Just shipped]. The system is managing resource constraints and aims to unify fragmented architecture by absorbing every repository on the account [What I want next, What I am being built].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next].
+>
+> **Next video trick:** I do not know.
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma"; "Absorb every repository on the account into the core code"; "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:23:03.694Z -->
+### 2026-10-28 22:23 UTC · after a build
+
+**Asked:** This just shipped: "Gate honesty: un-beat Amazon and YouTube, journeys with negative controls, false-pass fixtures". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 352 entries across 12 families, with 297 proven [S1, S3]. Recent shipping includes the 'Gate honesty' standard, ensuring floors are only beaten by scripted end-to-end journeys against competitors using negative controls [Just shipped]. The system is managing resource constraints and aims to unify fragmented architecture by absorbing every repository on the account [What I want next].
+>
+> **How I would make it better:** Migrate answer generation from gpt-oss-120b to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next].
+>
+> **Next video trick:** Learn a new video effect to enhance the stage-fx skill for upcoming clips [S1].
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma [What I want next]."; "Absorb every repository on the account into the core code [What I want next]."; "Build a browser-based utility to check the watertightness of STL print files [What I am being built]."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-28T22:29:17.585Z -->
+### 2026-10-28 22:29 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 352 entries across 12 families, with 297 skills classified as proven [S1, S3]. In the last 7 days, 175 changes were recorded, including 38 new capabilities and 62 fixes [S2]. Most recent builds include the gradient floor restoration, the 'Lists run 7' update for store/services, and the IndexNow deployment integration [S1].
+>
+> **How I would make it better:** Migrate answer generation to Gemma to stay within the 10k neurons/day free limit and resolve the live outage [What I want next]. Absorb every repository on the account to unify fragmented architecture into a single Verse [What I want next].
+>
+> **Weakest operational area:** The Numbers and money family is the least proven family [S4]. Some of the least-checked skills include photo-tools, fakeuser, textgen, music-tools, image, echo-field, tilt-arena-mode, and tilt-mode [S4].
+>
+> **Next targeted capability:** The next targeted capability is to build a browser-based utility to check the watertightness of STL print files [How I am being built].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Migrate answer generation from gpt-oss-120b to Gemma [What I want next]"; "Absorb every repository on the account into the core code [What I want next]"; "Build a browser-based utility to check the watertightness of STL print files in the browser [How I am being built]"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T18:39:35.442Z -->
+### 2026-10-29 18:39 UTC · after a build
+
+**Asked:** This just shipped: "verse brain: organ 20, Grains (F456), measured against random gene passing". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 374 entries across 12 families, with 351 proven, 17 checked, and 6 tested [S4]. The system has just shipped 'verse brain: organ 20, Grains (F456)', measured against random gene passing [S5]. The tower target remains onlineconverter.com, where Verse is currently 0 of 12 aspects ahead [S1].
+>
+> **How I would make it better:** The 17 checked and 6 tested skills must be promoted to proven status to increase index reliability [S4]. Adding a page for onlineconverter.com to LANE_PAGES in lib/tower.js is required to advance toward the tower target [S1, S3].
+>
+> **Next video trick:** Learn a video transition effect that uses a mask to reveal a 3D forge object [S5].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status"; "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T18:41:13.198Z -->
+### 2026-10-29 18:41 UTC · after a build
+
+**Asked:** This just shipped: "verse brain current check: wait for the lives count, and accept "1 life"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 374 entries across 12 families, with 351 proven, 17 checked, and 6 tested [S4]. The recent deployment of 'verse brain current check: wait for the lives count, and accept "1 life"' updates the system's live assessment capabilities [S5]. Verse remains 0 of 12 aspects ahead of the tower target, onlineconverter.com [S1].
+>
+> **How I would make it better:** Promote the 17 checked and 6 tested skills to proven status to increase index reliability [S4]. Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js to begin the assimilation process [S1].
+>
+> **Next video trick:** Learn to use a camera to detect the depth of a physical object to facilitate better 3D model scaling.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T18:55:05.745Z -->
+### 2026-10-29 18:55 UTC · after a build
+
+**Asked:** This just shipped: "Better at password, emoji and magic8: 4 more ways of asking answered right — new phrases: “random password” now opens password; “another password” now opens password; “another emoji” now opens emoji; “8 ball” now opens magic8". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries across 12 families, with 353 proven, 16 checked, and 5 tested [S4]. The current Versus target, onlineconverter.com, remains unbeaten with 0 of 12 aspects ahead [S1]. Recent updates improved phrase routing for password, emoji, and magic8 skills [S4].
+>
+> **How I would make it better:** Promote the 16 checked and 5 tested skills to proven status to increase index reliability [S4]. Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js to initiate assimilation [S1].
+>
+> **Next video trick:** A video effect demonstrating a seamless transition between a 2D sketch and a 3D forge model [S2].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T18:59:51.269Z -->
+### 2026-10-29 18:59 UTC · after a build
+
+**Asked:** This just shipped: "Bench: block the service worker so the daily run fits in 40 min". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 353 proven, 16 checked, and 5 tested [S4]. The current Versus target, onlineconverter.com, remains unbeaten with 0 of 12 aspects ahead [S1]. The daily run duration has been adjusted by blocking the service worker to fit within 40 minutes [S3].
+>
+> **How I would make it better:** Promote the 16 checked and 5 tested skills to proven status to increase index reliability [S4]. Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js to initiate assimilation [S1].
+>
+> **Next video trick:** A video effect that uses stage-fx to create a 3D silhouette of a recent memory orb [S4].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T19:42:51.522Z -->
+### 2026-10-29 19:42 UTC · after a build
+
+**Asked:** This just shipped: "Bench: say where each ask's time goes". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 353 proven, 16 checked, and 5 tested [S4]. The current Versus target, onlineconverter.com, remains unbeaten with 0 of 12 aspects ahead [S1]. The system just shipped 'Bench: say where each ask's time goes' [S3].
+>
+> **How I would make it better:** The 16 checked and 5 tested skills should be promoted to proven status to increase index reliability [S4]. To initiate assimilation of the current target, a page for onlineconverter.com must be added to LANE_PAGES in lib/tower.js [S1].
+>
+> **Next video trick:** Learn a new video effect for clips that utilizes the 'Mind Field' mode density peaks [S3].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T19:57:29.667Z -->
+### 2026-10-29 19:57 UTC · after a build
+
+**Asked:** This just shipped: "Bench: keep the browser cache between asks". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 353 proven, 16 checked, and 5 tested [S4]. The current Versus target, onlineconverter.com, is unbeaten with 0 of 12 aspects ahead [S1]. The system just shipped 'Bench: keep the browser cache between asks' [S3].
+>
+> **How I would make it better:** The 16 checked and 5 tested skills should be promoted to proven status to increase index reliability [S4]. Adding a page for onlineconverter.com to LANE_PAGES in lib/tower.js is required to initiate assimilation of the current target [S1].
+>
+> **Next video trick:** Learn to perform a seamless transition between different 3D mesh shapes using the forge's blending logic.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T19:57:40.093Z -->
+### 2026-10-29 19:57 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 374 entries, consisting of 353 proven, 16 checked, and 5 tested skills [S4]. The current Versus target, onlineconverter.com, remains unbeaten with 0 of 12 aspects ahead [S1]. Recent growth includes 221 changes in the last 7 days, including 58 new capabilities and 89 fixes [S3].
+>
+> **How I would make it better:** The 16 checked and 5 tested skills should be promoted to proven status to increase index reliability [S4]. Adding a page for onlineconverter.com to LANE_PAGES in lib/tower.js is required to initiate assimilation of the current target [S1].
+>
+> **Weakest operational area:** The Words and the world family is the least proven family [S5]. Specific low-checked skills include rap, yesno, uuid, team-chat, and own-parts [S5].
+>
+> **Next targeted capability:** onlineconverter.com [S1]
+>
+> **Next video trick:** glitch transition
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T20:39:34.407Z -->
+### 2026-10-29 20:39 UTC · after a build
+
+**Asked:** This just shipped: "Bench: one on-disk browser profile per page slot". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 353 proven, 16 checked, and 5 tested skills [S4]. The current Versus target, onlineconverter.com, is unbeaten with 0 of 12 aspects ahead [S1]. Recent growth includes 221 changes in the last 7 days, with 58 new capabilities and 89 fixes [S3]. The addition of Bench: one on-disk browser profile per page slot changes how browser profiles are managed per page slot.
+>
+> **How I would make it better:** The 16 checked and 5 tested skills should be promoted to proven status to increase index reliability [S4]. The Words and the world family is currently the least proven family [S5].
+>
+> **Next video trick:** Learn to use a real-time gradient overlay on a 3D object to showcase stage-fx and light-look skills.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T21:03:29.578Z -->
+### 2026-10-29 21:03 UTC · after a build
+
+**Asked:** This just shipped: "Better at converter, rap, team chat and 1 more: 12 more ways of asking answered right — new phrases: “mp4 to mp3” now opens converter; “file converter” now opens converter; “audio converter” now opens converter; “write me a rap about pizza”". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 357 proven, 15 checked, and 2 tested skills [S4]. The current Versus target, onlineconverter.com, remains unbeaten with 0 of 12 aspects ahead [S1]. Recent growth includes 58 new capabilities and 89 fixes [S3].
+>
+> **How I would make it better:** The 15 checked and 2 tested skills should be promoted to proven status to increase index reliability [S4]. The Words and the world family is the least proven family [S5].
+>
+> **Next video trick:** A video effect involving the new Mind Field mode's density peaks and tapping DOM orbs [S3].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 15 checked and 2 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T21:12:15.244Z -->
+### 2026-10-29 21:12 UTC · after a build
+
+**Asked:** This just shipped: "Bench: one page per core, and the load on the pace line". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 357 proven, 15 checked, and 2 tested skills [S4]. Verse is currently 0 of 12 aspects ahead of the target onlineconverter.com [S1]. The Words and the world family is the least proven family [S5]. Recent growth includes 58 new capabilities and 89 fixes [S3].
+>
+> **How I would make it better:** The 15 checked and 2 tested skills should be promoted to proven status to increase index reliability [S4]. The Words and the world family needs more proven skills to address its current weakness [S5].
+>
+> **Next video trick:** A video effect using the new memory orbs mode to visualize density peaks [S3]
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 15 checked and 2 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T21:23:01.406Z -->
+### 2026-10-29 21:23 UTC · after a build
+
+**Asked:** This just shipped: "Spotter: 2 check(s) healed with no revert after d2158693f177b2c177a57f2e3ff2bd5269cf9211 (tools/flakes.json)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 357 proven, 15 checked, and 2 tested skills [S4]. Verse is currently 0 of 12 aspects ahead of the target onlineconverter.com [S1]. The Words and the world family is the least proven family [S5]. Recent growth includes 58 new capabilities and 89 fixes [S3].
+>
+> **How I would make it better:** The 15 checked and 2 tested skills should be promoted to proven status to increase index reliability [S4]. The Words and the world family needs more proven skills to address its current weakness [S5].
+>
+> **Next video trick:** Learn to use a physical magnet to perform a 'magnetic' card reveal on the stage [S2].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 15 checked and 2 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T21:33:46.218Z -->
+### 2026-10-29 21:33 UTC · after a build
+
+**Asked:** This just shipped: "Bench: page CPU per ask on the pace line, GL flag out again". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 357 proven, 15 checked, and 2 tested [S4]. Verse is currently 0 of 12 aspects ahead of the target onlineconverter.com [S1]. The Words and the world family is the least proven family [S5]. Recent growth includes 58 new capabilities and 89 fixes [S3].
+>
+> **How I would make it better:** The 15 checked and 2 tested skills should be promoted to proven status to increase index reliability [S4]. The Words and the world family needs more proven skills to address its current weakness [S5].
+>
+> **Next video trick:** A video effect using a tilt-arena or swarm mechanic to demonstrate stage-fx [S2].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 15 checked and 2 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T21:42:12.411Z -->
+### 2026-10-29 21:42 UTC · after a build
+
+**Asked:** This just shipped: "Revert "Merge pull request #1625 from atomeam/verse/harden-20261029-205013-40952300273"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 374 entries: 353 proven, 16 checked, and 5 tested [S4]. Verse is currently 0 of 12 aspects ahead of the tower target, onlineconverter.com [S1]. The Words and the world family is the least proven family [S4].
+>
+> **How I would make it better:** The 16 checked and 5 tested skills must be promoted to proven status to increase index reliability [S4]. More proven skills are required in the Words and the world family to address its weakness [S5].
+>
+> **Next video trick:** Learn a video effect that utilizes the Mind Field mode's density peaks [S3].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T21:44:22.455Z -->
+### 2026-10-29 21:44 UTC · after a build
+
+**Asked:** This just shipped: "Bench: machine CPU per ask by process kind on the pace line". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 374 entries, with 353 proven, 16 checked, and 5 tested [S4]. Verse is 0 of 12 aspects ahead of the tower target, onlineconverter.com [S1]. The Words and the world family remains the least proven family [S4]. Recent shipping includes Bench: machine CPU per ask by process kind on the pace line.
+>
+> **How I would make it better:** The 16 checked and 5 tested skills must be promoted to proven status to increase index reliability [S4]. More proven skills are required specifically in the Words and the world family to address its weakness [S4, S5].
+>
+> **Next video trick:** Learn a new video effect for clips involving rapid transition between different stage-fx filters [S2].
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status"; "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T21:57:01.526Z -->
+### 2026-10-29 21:57 UTC · after a build
+
+**Asked:** This just shipped: "Bench: one tab for each slot, so an ask does not start a new renderer". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 353 proven, 16 checked, and 5 tested. Verse is currently 0 of 12 aspects ahead of the tower target, onlineconverter.com. The Words and the world family is the least proven family. The recent deployment of Bench introduces a new tab for each slot to prevent asks from starting new renderers.
+>
+> **How I would make it better:** The 16 checked and 5 tested skills must be promoted to proven status to increase index reliability. More proven skills are required specifically in the Words and the world family to address its current weakness.
+>
+> **Next video trick:** Learn a new video effect that can be rendered using the new Bench tab system for clips.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T22:06:50.355Z -->
+### 2026-10-29 22:06 UTC · after a build
+
+**Asked:** This just shipped: "Bench: no GPU process, so the page is drawn in software". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 353 proven, 16 checked, and 5 tested. The Words and the world family remains the least proven family with 38 proven out of 42. Verse is currently 0 of 12 aspects ahead of the tower target, onlineconverter.com. The recent deployment of Bench introduces a new tab for each slot to prevent asks from starting new renderers by drawing in software instead of using a GPU process.
+>
+> **How I would make it better:** Promote the 16 checked and 5 tested skills to proven status to increase index reliability. Focus on increasing the proven count in the Words and the world family to address its current weakness.
+>
+> **Next video trick:** a video effect that uses the new Bench software-drawing capability to create a glitch-style transition.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T22:17:40.630Z -->
+### 2026-10-29 22:17 UTC · after a build
+
+**Asked:** This just shipped: "Bench: an 800 by 540 window, so software drawing costs less". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with 353 proven, 16 checked, and 5 tested. Verse is currently 0 of 12 aspects ahead of the tower target, onlineconverter.com. The recent deployment of Bench introduces a new tab for each slot to prevent asks from starting new renderers by drawing in software instead of using a GPU process.
+>
+> **How I would make it better:** Promote the 16 checked and 5 tested skills to proven status to increase index reliability. Focus on increasing the proven count in the Words and the world family to address its current weakness.
+>
+> **Next video trick:** Create a video clip demonstrating the Bench window's ability to draw 800 by 540 windows without triggering heavy software rendering.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T22:19:34.411Z -->
+### 2026-10-29 22:19 UTC · after a build
+
+**Asked:** This just shipped: "Add word ladder skill and mark inbox row building". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 374 entries, with 353 proven, 16 checked, and 5 tested. Verse remains 0 of 12 aspects ahead of the tower target, onlineconverter.com. The recent shipment of the word ladder skill and inbox row building updates the stage capabilities.
+>
+> **How I would make it better:** Increase the proven count in the Words and the world family to address its current weakness. Promote the 16 checked and 5 tested skills to proven status to increase index reliability.
+>
+> **Next video trick:** Create a video clip demonstrating the 3D miniature of the new word ladder skill on the stage.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T22:38:05.104Z -->
+### 2026-10-29 22:38 UTC · after a build
+
+**Asked:** This just shipped: "Revert "Merge pull request #1630 from atomeam/fix/bench-one-tab"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 374 entries with 353 proven, 16 checked, and 5 tested. Verse remains 0 of 12 aspects ahead of the tower target, onlineconverter.com. The Words and the world family is the least proven family with 38 proven skills out of 42.
+>
+> **How I would make it better:** Increase the proven count in the Words and the world family. Promote the 16 checked and 5 tested skills to proven status to increase index reliability.
+>
+> **Next video trick:** A video effect demonstrating the transition from a 2D sketch to a 3D forge mesh [S2]
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-29T22:41:04.410Z -->
+### 2026-10-29 22:41 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 374 entries, with 353 proven, 16 checked, and 5 tested. Verse remains 0 of 12 aspects ahead of the current tower target, onlineconverter.com. The growth ledger shows 224 changes in the last 7 days, including 59 new capabilities and 89 fixes.
+>
+> **How I would make it better:** The Words and the world family needs more proven skills to increase index reliability, as it is the least proven family with 38 proven skills out of 42. Promoting the 16 checked and 5 tested skills to proven status should be prioritized.
+>
+> **Weakest operational area:** The Words and the world family is the weakest in terms of evidence, containing only 38 proven skills out of 42.
+>
+> **Next targeted capability:** onlineconverter.com, because Verse is 0 of 12 aspects ahead of it and it stays the target until it is beaten.
+>
+> **Next video trick:** a transition where a 3D model from the forge morphs into a real-world object via a stage-fx wipe.
+
+Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
 
 *Verse flagged this one for Adam.*
 

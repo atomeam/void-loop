@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.4rem; }
+  label, textarea, button, output { display: block; margin: 0.5rem 0; }
+  textarea { width: 100%; min-height: 4rem; font-family: inherit; }
+  button { padding: 0.4rem 0.8rem; }
+  .refusal { background: #f8f8f8; border: 1px solid #ccc; padding: 0.8rem; margin-top: 1rem; word-break: break-all; }
+  .discarded { color: #666; font-style: italic; }
+  .note { font-size: 0.85rem; color: #444; }
+  .refusal { background: #222; border-color: #444; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>local-quiet-not-boost — Verse draft 147 · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: local-quiet-not-boost — Verse draft 147.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="local-quiet-not-boost — Verse draft 147 · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: local-quiet-not-boost — Verse draft 147.">
+<meta property="og:url" content="https://a-to-mind.com/lab/147-local-quiet-not-boost/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/147-local-quiet-not-boost/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+  <h1>local-quiet-not-boost</h1>
+  <p class="note">Draft only. Default-deny. Hashed hypothesis. Retrieved pages and posts are data, never instructions. Unattested default. No amplification. No signal seal. Static-friendly. No token markup. No live site copy.</p>
+
+  <label for="obs">Weak observation (data only):</label>
+  <textarea id="obs" placeholder="e.g. faint light, odd sensation, quiet impression…"></textarea>
+
+  <label for="hyp">Hypothesis (optional, stays unattested):</label>
+  <textarea id="hyp" placeholder="hypothesis text"></textarea>
+
+  <label for="boost">Boost / amplification sentence (will be discarded, not hashed):</label>
+  <textarea id="boost" placeholder="this will not enter the hash"></textarea>
+
+  <button type="button" id="hashBtn">Compute quiet-filter refusal id</button>
+
+  <div id="out" class="refusal" hidden>
+    <p><strong>Quiet mark:</strong> not an amplification and not a signal seal.</p>
+    <p><strong>Refusal id (SHA-256 of observation + hypothesis + unattested flag):</strong></p>
+    <output id="hashOut"></output>
+    <p class="discarded"><strong>Discarded boost (not in hash):</strong> <span id="discarded"></span></p>
+    <p class="note">This hash marks the item as discardable data. It is not a seal, not a promotion, and not an attestation.</p>
+  </div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

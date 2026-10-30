@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flight itinerary and layovers · Verse</title>
+<meta name="description" content="Turn a booking confirmation into a trip on your device: flights read from the pasted text, a time-zone-aware timeline, warnings for tight, long and overnight layovers and airport changes, a calendar file (.ics) and a share link. No account, nothing uploaded, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Flight itinerary and layovers · Verse">
+<meta property="og:description" content="Turn a booking confirmation into a trip on your device: flights read from the pasted text, a time-zone-aware timeline, warnings for tight, long and overnight layovers and airport changes, a calendar file (.ics) and a share link. No account, nothing uploaded, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/flights/trip/">
+<meta property="og:image" content="https://a-to-mind.com/og/flights-trip.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Flight itinerary and layovers on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Flight itinerary and layovers · Verse">
+<meta name="twitter:description" content="Turn a booking confirmation into a trip on your device: flights read from the pasted text, a time-zone-aware timeline, warnings for tight, long and overnight layovers and airport changes, a calendar file (.ics) and a share link. No account, nothing uploaded, works offline.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/flights-trip.png">
+<style>
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 2px; } h3 { margin: 0; font-size: 14px; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 2px 0; }
+  button, select, input, textarea { font: inherit; color: inherit; } button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; } button:focus-visible, .card:focus-visible, .thumb:focus-visible, .drop:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
+  textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } .go { color: #0b0a10; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 80vh; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
+  .sr { position: absolute; left: -9999px; }
+  main #app { min-height: 80vh; } .notice { background: color-mix(in srgb, var(--accent) 12%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; margin: 8px 0 12px; }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); margin: 12px 0; } h3 { margin: 12px 0 4px; font-size: 15px; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 8px 0; font-size: 14px; position: relative; min-width: 0; } .field input, .field select { width: 100%; } .field label { color: var(--soft); font-size: 13px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; } .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; } .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .chk { display: flex; gap: 8px; align-items: center; min-height: 40px; } .chk input { min-height: 0; width: 24px; height: 24px; margin: 0; flex: 0 0 auto; }
+  .sug { position: absolute; top: 100%; left: 0; width: max(100%, min(300px, 90vw)); z-index: 6; list-style: none; margin: 2px 0 0; padding: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 6px 20px #0003; max-height: 320px; overflow: auto; } .grid2 > .apk:nth-child(2) .sug { left: auto; right: 0; } .sug li { margin: 0; } .sug button { width: 100%; text-align: left; border: 0; border-radius: 8px; padding: 6px 10px; min-height: 44px; } .sug button:hover, .sug button:focus-visible { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .soft { color: var(--soft); font-size: 13px; } .swap { align-self: flex-start; min-width: 44px; } [hidden] { display: none !important; } .btn { display: inline-block; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: inherit; min-height: 24px; line-height: 24px; background: var(--card); cursor: pointer; } a.btn:hover { border-color: var(--accent); }
+  .plist, .plain, .alist { list-style: none; padding: 0; margin: 6px 0; } .plist li { margin: 6px 0; } .alist li { margin: 2px 0; } .alist a, .dl a, .plist a { display: inline-block; padding: 5px 0; min-height: 24px; } .alist button { width: 100%; text-align: left; border-radius: 10px; min-height: 44px; } .plain li { padding: 4px 0; border-bottom: 1px solid var(--line); }
+  .dl { margin: 8px 0; } .dl > div { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 5px 0; border-bottom: 1px solid var(--line); } .dl dt { color: var(--soft); flex: 0 0 11em; font-size: 14px; } .dl dd { margin: 0; flex: 1 1 14em; min-width: 0; overflow-wrap: anywhere; }
+  .big { font-size: 40px; font-weight: 700; margin: 8px 0 2px; font-variant-numeric: tabular-nums; } .big small { font-size: 16px; font-weight: 500; color: var(--soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; } .chip { min-height: 36px; padding: 2px 12px; font-size: 14px; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 14px; } .tbl th, .tbl td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; } .tablewrap { overflow-x: auto; }
+  .chart svg, .map svg { width: 100%; height: auto; display: block; color: var(--accent); } .map { margin: 10px 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .seg { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; margin: 8px 0; } .warn { color: #b45309; font-size: 13px; margin: 2px 0; } .warn { color: #fbbf24; } .gap { list-style: none; color: var(--soft); font-size: 14px; } .leg { margin: 8px 0; } .stay { color: var(--soft); margin: 4px 0; } .ok { color: var(--ok); } .card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0; }
+  .pick { position: absolute; left: -9999px; } input[type=range] { width: 100%; min-height: 40px; accent-color: var(--accent); } output { font-weight: 600; }
+  @media print { button, .sug, footer, .tk-row, .tk-ask, #related, .notice, #controls, #fl-err, .field:has(#i-paste), #i-help, #a-help, .grid3:has(#w-h), input[type=range], .chk, .pick, label.btn { display: none !important; } body { background: #fff; color: #000; } #app { min-height: 0 !important; } main { max-width: none; padding: 0; } .panel { border: 0; padding: 0; margin: 0 0 12px; break-inside: auto; } .seg { break-inside: avoid; } .seg input { border: 0; padding: 0; min-height: 0; } .alist li, .plain li, .dl > div { break-inside: avoid; } a { color: #000; text-decoration: none; } .soft { color: #333; } }
+</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/flights/trip/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Flight itinerary and layovers","url":"https://a-to-mind.com/flights/trip/","description":"Turn a booking confirmation into a trip on your device: flights read from the pasted text, a time-zone-aware timeline, warnings for tight, long and overnight layovers and airport changes, a calendar file (.ics) and a share link. No account, nothing uploaded, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"flight itinerary, trip itinerary from confirmation email, layover calculator, itinerary to calendar, flight itinerary maker, share my trip, is my layover long enough","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Flight itinerary and layovers","item":"https://a-to-mind.com/flights/trip/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Flight itinerary and layovers</h1>
+  <p class="intro">Paste a booking confirmation and the flights are read out of it: flight numbers, airports, dates and times, and the booking reference. Or type each flight in. The page checks the wait between flights across time zones and warns about tight connections, overnight waits and changes of airport, makes a calendar file and a link you can share. It stays on this device: nothing is uploaded and there is no account.</p>
+  <div id="app"></div>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/flights/">Flights</a> <a href="/calendar/">Calendar</a> <a href="/flights/time/">Flight time calculator</a> <a href="/time/">Time zones</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Everything is worked out on this device from an airport list of about 4,000 airports (OurAirports, public domain); the fares and trips you keep stay in this browser, and the page works offline after one visit. Verse has no live fares: the prices are on the providers, whose links this page builds from your choices. Flight times and CO2 are estimates from averages, not a timetable. There is no account and there are no ads.</footer>
+</main>
+<script type="module" src="/flights/trip/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

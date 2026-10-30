@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a0a; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 8px; font-size: 14px; pointer-events: none; }
+  #status { position: absolute; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Resonance Field Agent · Verse lab</title>
+<meta name="description" content="Novel combination: a local (browser-only) agent that classifies spatial gestures and modulates a particle field simulation. The field is the canvas UI;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Resonance Field Agent · Verse lab">
+<meta property="og:description" content="Novel combination: a local (browser-only) agent that classifies spatial gestures and modulates a particle field simulation. The field is the canvas UI;">
+<meta property="og:url" content="https://a-to-mind.com/lab/171-webgpu-resonance-agent/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/171-webgpu-resonance-agent/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <strong>Resonance Field Agent</strong><br>
+  Gesture: <span id="gesture">idle</span><br>
+  Agent state: <span id="state">observe</span><br>
+  Particles: <span id="count">0</span>
+</div>
+<div id="status">WebGPU local agent · draw to modulate the field · no network</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Resonance Field Agent</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

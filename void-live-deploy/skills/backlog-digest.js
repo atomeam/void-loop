@@ -12,9 +12,9 @@ const get = async (u) => { try { const r = await fetch(u, { cache: 'no-cache' })
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const [reflect, fam] = await Promise.all([get('/api/reflect'), get('/skills/families.json')]);
+  const [reflect, fam, ledger] = await Promise.all([get('/api/reflect'), get('/skills/families.json'), get('/void.growth.json')]);
   showPage((el) => {
-    el.innerHTML = reflect && Array.isArray(reflect.asks) ? digestHtml(digestOf(reflect.asks, fam), esc)
+    el.innerHTML = reflect && Array.isArray(reflect.asks) ? digestHtml(digestOf(reflect.asks, fam, Date.now(), ledger), esc)
       : '<h2>Backlog digest</h2><p>I could not read my asks just now, so I will not guess at them.</p>';
   });
   return 'backlog-digest';

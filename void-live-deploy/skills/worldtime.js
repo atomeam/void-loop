@@ -82,37 +82,30 @@ export function parseWorldTime(text) {
     const tomorrow = /tomorrow/i.test(t);
     return place && !NOT_PLACE.test(place) ? { kind: 'sun', which, place, tomorrow } : null;
   }
-  // "what time is sunset", "when is sunrise tomorrow": no place named, so the city your device's time zone names
-  // (the page title says which city, so it is never a hidden guess)
-  m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what'?s\s+)?(?:the\s+)?(?:(today'?s|tomorrow'?s)\s+)?(sunrise|sunset|dawn|dusk)(?:\s+(today|tonight|tomorrow))?$/i)
-    || t.match(/^(?:(?:when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)(?:\s+(today|tonight|tomorrow))?$/i);
-  if (m) {
-    let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
-    const place = tz.includes('/') ? tz.split('/').pop().replace(/_/g, ' ') : '';
-    if (!place) return null;
-    return { kind: 'sun', which: /rise|dawn/i.test(m[2] || m[1]) ? 'sunrise' : 'sunset', place, tomorrow: /tomorrow/i.test(t) };
-  }
+  // "what time is sunset", "when is sunrise tomorrow" with no place named belong to suntimes (skills/suntimes.js), which reads where
+  // you are and adds the day length and twilight; the world clock keeps the asks that name a place (lists run 2, 2026-10-21:
+  // the two skills both answered the bare ask and the overlap check failed; docs/convergence.md)
   return null;
 }
 
 // The UTC offset (minutes) of a time zone at a given instant, from Intl alone.
-function offsetMin(tz, at) {
+export function offsetMin(tz, at) {
   const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(at);
   const g = (k) => +parts.find((p) => p.type === k).value;
   return Math.round((Date.UTC(g('year'), g('month') - 1, g('day'), g('hour') % 24, g('minute'), g('second')) - at.getTime()) / 60000);
 }
 // Wall-clock y-m-d h:m in tz -> the real instant (checked twice, so a DST change in between still lands right).
-function instantIn(tz, y, mo, d, h, mi) {
+export function instantIn(tz, y, mo, d, h, mi) {
   const guess = Date.UTC(y, mo, d, h, mi);
   let at = new Date(guess - offsetMin(tz, new Date(guess)) * 60000);
   at = new Date(guess - offsetMin(tz, at) * 60000);
   return at;
 }
-function ymdIn(tz, at) {
+export function ymdIn(tz, at) {
   const p = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(at).split('-');
   return [+p[0], +p[1] - 1, +p[2]];
 }
-function parseClock(s) {
+export function parseClock(s) {
   if (s === 'noon') return [12, 0];
   if (s === 'midnight') return [0, 0];
   const m = s.match(/^(\d{1,2})(?::(\d{2}))?(am|pm)?$/);
@@ -124,7 +117,7 @@ function parseClock(s) {
 }
 const fmtTime = (tz, at) => new Intl.DateTimeFormat([], { timeZone: tz, hour: 'numeric', minute: '2-digit' }).format(at);
 const fmtDay = (tz, at) => new Intl.DateTimeFormat([], { timeZone: tz, weekday: 'long', month: 'long', day: 'numeric' }).format(at);
-const gmt = (min) => 'UTC' + (min >= 0 ? '+' : '−') + Math.floor(Math.abs(min) / 60) + (Math.abs(min) % 60 ? ':' + String(Math.abs(min) % 60).padStart(2, '0') : '');
+export const gmt = (min) => 'UTC' + (min >= 0 ? '+' : '−') + Math.floor(Math.abs(min) / 60) + (Math.abs(min) % 60 ? ':' + String(Math.abs(min) % 60).padStart(2, '0') : '');
 function diffWords(min) {
   if (!min) return 'same time as you';
   const h = Math.abs(min) / 60, n = Number.isInteger(h) ? String(h) : h.toFixed(1).replace(/\.0$/, '');

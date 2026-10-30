@@ -207,7 +207,7 @@ export function publicWhat(what) {
 export function plainly(what, n = 90) {
   const t = publicWhat(String(what || '')).replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
   const cut = t.search(/: |\. |; | \(| — /), head = cut >= 12 ? t.slice(0, cut) : t;
-  return head.length > n ? head.slice(0, n).replace(/\s+\S*$/, '') + '…' : head;
+  return head; // whole, never cut (owner, 2026-10-21)
 }
 export function weekSummary(list, now = Date.now(), days = 7, per = 4) {
   const from = now - days * 86400000, since = new Date(from).toISOString().slice(0, 10);

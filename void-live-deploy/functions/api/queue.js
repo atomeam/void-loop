@@ -26,7 +26,17 @@ const guard = (fn) => async (ctx) => {
   try { return await fn(ctx); } catch (e) { return new Response('queue error', { status: 500 }); }
 };
 
-export const onRequestGet = guard(async ({ env }) => Response.json(await view(env)));
+// ?state=queued,building&limit=N: every job in those states, oldest first, for the conductor (tools/conductor.mjs), which has to see
+// the whole backlog, not the newest 20; the plain GET stays the owner's view
+const STATES = new Set(['queued', 'building', 'failed', 'done', 'live', 'set aside']);
+export const onRequestGet = guard(async ({ request, env }) => {
+  const u = new URL(request.url), want = (u.searchParams.get('state') || '').split(',').map((s) => s.trim()).filter((s) => STATES.has(s));
+  if (!want.length) return Response.json(await view(env));
+  const limit = Math.max(1, Math.min(500, parseInt(u.searchParams.get('limit'), 10) || 200));
+  const { results } = await env.DB.prepare(`SELECT id, ask, target, state, note, at, updated FROM void_queue WHERE state IN (${want.map(() => '?').join(',')}) ORDER BY at ASC LIMIT ?`)
+    .bind(...want, limit).all();
+  return Response.json({ items: results.map((r) => ({ ...r, note: r.note || '' })) });
+});
 
 // Wake the on-request builder the moment a job is queued (secrets set in the Pages project:
 // BUILDER_WEBHOOK_URL, BUILDER_WEBHOOK_KEY). Without them, scheduled builder runs pick the job up.

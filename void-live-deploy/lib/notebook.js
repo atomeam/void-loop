@@ -7,6 +7,8 @@
 //   ensureDaily(notes, date) the notes with today's note added when it is not there yet (never a second one)
 //   missingOf(notes)         what the notebook is missing: links to notes that do not exist, plain mentions of a note that are not links, notes nothing links to or from
 //   linkMention(text, t)     the text with the first plain mention of note t wrapped as a link
+//   outlinksOf(notes, note)  the notes a note links to, in order, each with its id ('' when that note is not made yet)
+//   padText(note)            a note as notepad text: the title, then the text with each [[link]] as its plain title
 export const MAX_NOTES = 200, MAX_TITLE = 60, MAX_TEXT = 8000;
 const LINK = /\[\[([^\[\]\n]{1,60})\]\]/g;
 
@@ -24,6 +26,22 @@ export function linksOf(text) {
 
 /** the notes whose text links to `title` (not the note itself), in the order they are kept. Pure. */
 export const backlinksOf = (notes, title) => (notes || []).filter((n) => keyOf(n.title) !== keyOf(title) && linksOf(n.text).some((l) => keyOf(l) === keyOf(title)));
+
+/** the notes `note` links to, in the order its text links them: { title, id }, id '' when no note has that title yet; never the note itself. Pure. */
+export function outlinksOf(notes, note) {
+  if (!note) return [];
+  return linksOf(note.text).filter((t) => keyOf(t) !== keyOf(note.title)).map((t) => {
+    const n = (notes || []).find((x) => x && keyOf(x.title) === keyOf(t));
+    return { title: n ? n.title : t, id: n ? n.id : '' };
+  });
+}
+
+/** a note as notepad text: its title on the first line, then its text with each [[link]] written as the plain title, at most MAX_TEXT characters. Pure. */
+export function padText(note) {
+  if (!note) return '';
+  const head = cleanTitle(note.title), body = String(note.text || '').replace(LINK, (_, t) => cleanTitle(t)).replace(/\s+$/, '');
+  return (head && body ? head + '\n' + body : head || body).slice(0, MAX_TEXT);
+}
 
 const pad = (n) => String(n).padStart(2, '0');
 /** today's note title: the date as YYYY-MM-DD, in the person's own local day. Pure. */

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; background:#050510; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,20,0.7); padding:10px 14px; border-radius:8px; font-size:13px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#adf; border:1px solid #45a; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#status { margin-top:6px; font-size:12px; opacity:0.8; }
+.pin-card { position:absolute; background:rgba(20,30,60,0.85); border:1px solid #6af; border-radius:6px; padding:4px 6px; font-size:11px; color:#cef; cursor:grab; user-select:none; z-index:5; min-width:60px; text-align:center; }
+.pin-card:active { cursor:grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Compute Softbody Genome Transfer Arena · Verse lab</title>
+<meta name="description" content="Multiple deformable softbody agents (mass-spring grids or chains) simulated via WebGPU compute shaders (Verlet + spring constraints) or Canvas2D JS fallback.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Compute Softbody Genome Transfer Arena · Verse lab">
+<meta property="og:description" content="Multiple deformable softbody agents (mass-spring grids or chains) simulated via WebGPU compute shaders (Verlet + spring constraints) or Canvas2D JS fallback.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f285-webgpu-softbody-genome-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f285-webgpu-softbody-genome-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div><strong>F285 Softbody Genome Arena</strong></div>
+  <button id="seal">Seal Population</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+  <div id="status">Move pointer to guide resource. Softbodies compete & transfer genomes on contact. Drag pin cards to constrain.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Compute Softbody Genome Transfer Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

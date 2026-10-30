@@ -1,0 +1,205 @@
+{
+ "site": "www.photopea.com",
+ "url": "https://www.photopea.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  }
+ ],
+ "assetCount": 1,
+ "bytes": 31853,
+ "html": {
+  "mobile": {
+   "title": "Photopea | Online Photo Editor",
+   "lang": "",
+   "manifest": "https://www.photopea.com/manifest.json",
+   "hreflang": [
+    "en",
+    "x-default",
+    "af",
+    "ar",
+    "az",
+    "bg",
+    "bn",
+    "ca",
+    "cs",
+    "da",
+    "de",
+    "el",
+    "es",
+    "et",
+    "eu",
+    "fa",
+    "fi",
+    "fr",
+    "gl",
+    "gu",
+    "he",
+    "hi",
+    "hr",
+    "hu",
+    "id",
+    "it",
+    "ja",
+    "ka",
+    "km",
+    "kn",
+    "ko",
+    "ky",
+    "lt",
+    "lv",
+    "mk",
+    "ml",
+    "mr",
+    "ms",
+    "my",
+    "nb",
+    "ne",
+    "nl",
+    "pa-PK",
+    "pa",
+    "pl",
+    "pt-BR",
+    "pt",
+    "ro",
+    "ru",
+    "sk",
+    "sl",
+    "sq",
+    "sv",
+    "sw",
+    "ta",
+    "te",
+    "th",
+    "tl",
+    "tr",
+    "uk",
+    "ur",
+    "uz",
+    "vi",
+    "zh-Hans",
+    "zh-HK",
+    "zh-TW",
+    "zu"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": true,
+    "appleCapable": false
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "Start using Photopea",
+   "w": "md"
+  }
+ ],
+ "manifest": {
+  "name": "Photopea",
+  "display": "standalone",
+  "displayOverride": [
+   "window-controls-over"
+  ],
+  "orientation": "",
+  "scope": "",
+  "icons": 2,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": {
+   "method": "POST",
+   "enctype": "multipart/form-data",
+   "params": [
+    "files"
+   ],
+   "files": [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif"
+   ]
+  },
+  "fileHandlers": [
+   ".psd",
+   ".jpeg",
+   ".jpg",
+   ".png",
+   ".webp",
+   ".bmp",
+   ".gif",
+   ".svg",
+   ".pdf",
+   ".tif",
+   ".tiff",
+   ".ai",
+   ".psb",
+   ".xcf",
+   ".sketch",
+   ".xd",
+   ".pxd",
+   ".cdr",
+   ".eps",
+   ".ps"
+  ],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "thirdParty": [
+  "static.cloudflareinsights.com"
+ ],
+ "services": [
+  "Cloudflare"
+ ],
+ "requests": [
+  "https://www.photopea.com/cdn-cgi/rum"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Opens as an app for .psd, .jpeg, .jpg, .png, .webp, .bmp",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "manifest.file_handlers"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Receives shared files (share target)",
+   "kind": "share",
+   "tag": "observed",
+   "evidence": "manifest.share_target"
+  },
+  {
+   "name": "Language versions: 67 (en, x-default, af, ar, az, bg)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  }
+ ]
+}

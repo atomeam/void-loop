@@ -31,7 +31,7 @@ export function describe(s, max = 500) {
   const head = s.note ? s.note + ' ' : '', count = '[' + s.changes.length + ': ';
   let list = s.changes.map((c) => c.kind + ' ' + c.what + (c.with ? ' ' + c.with : '')).join('; ');
   const room = Math.max(10, max - head.length - count.length - 1);
-  if (list.length > room) list = list.slice(0, room - 1) + '…';
+  if (list.length > room) list = list.slice(0, room - 1) + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
   return head + count + list + ']';
 }
 

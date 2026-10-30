@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local region-token slip (draft 071)</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c9c1b4; --bg: #f6f3ee; --mark: #5c4a32; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --line: #4a453c; --bg: #1b1916; --mark: #d7c4a4; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--bg); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0; }
+    p, li { font: 15px/1.45 ui-sans-serif, system-ui, sans-serif; }
+    .banner { border: 1px solid var(--line); padding: 0.6rem 0.75rem; margin: 0 0 1rem; }
+    .banner strong { font: 12px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+    fieldset { border: 1px solid var(--line); margin: 0 0 1rem; padding: 0.75rem; }
+    legend { font: 13px/1 ui-sans-serif, system-ui, sans-serif; padding: 0 0.3rem; }
+    label { display: block; font: 13px/1.3 ui-sans-serif, system-ui, sans-serif; margin: 0.4rem 0; }
+    input[type="text"], textarea, select { width: 100%; font: 14px/1.4 ui-sans-serif, system-ui, sans-serif; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; }
+    textarea { min-height: 4.5rem; }
+    .regions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; }
+    .regions button { font: 14px/1.2 ui-sans-serif, system-ui, sans-serif; padding: 0.8rem 0.4rem; border: 1px solid var(--line); background: transparent; color: inherit; }
+    .regions button[aria-pressed="true"] { outline: 2px solid var(--mark); }
+    .regions button:disabled { opacity: 0.45; }
+    .span2 { grid-column: 2; }
+    button.act { font: 14px/1 ui-sans-serif, system-ui, sans-serif; padding: 0.5rem 0.7rem; border: 1px solid var(--line); background: transparent; color: inherit; }
+    output { display: block; white-space: pre-wrap; font: 12px/1.4 ui-monospace, monospace; border: 1px dashed var(--line); padding: 0.6rem; min-height: 2.5rem; }
+    .hint { font: 13px/1.35 ui-sans-serif, system-ui, sans-serif; }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+<main>
+  <p class="banner"><strong>Draft 071 · unattested · not a seal</strong><br>
+  A region id is a local mark. It is not a gaze landing, not a recognized gesture, and not decoded intent. Camera stays denied. Nothing is sent.</p>
+  <h1>Local region-token slip</h1>
+  <p>Opt in for this document only. The grant is not stored. Reload clears it. Buttons name sealed panes. Coordinates are not read. A second pointer cancels the slip.</p>
+
+  <fieldset>
+    <legend>Session</legend>
+    <label><input id="opt" type="checkbox"> Allow a single local mark on this page</label>
+    <p class="hint" id="session">Denied. No mark can be hashed until the box is checked.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Hypothesis text</legend>
+    <label>Observation <input id="obs" type="text" maxlength="180" placeholder="What was offered, in ordinary words"></label>
+    <label>Claim <input id="claim" type="text" maxlength="180" placeholder="What a narrator might over-read"></label>
+    <label>Disconfirm <input id="dis" type="text" maxlength="180" placeholder="What would make this mark ordinary"></label>
+    <label>Confidence, design weight 0–1 <input id="conf" type="text" inputmode="decimal" value="0.30" maxlength="4"></label>
+    <label>Duration bucket, label only
+      <select id="bucket">
+        <option value="untimed">untimed</option>
+        <option value="short-mark">short-mark</option>
+        <option value="held-mark">held-mark</option>
+      </select>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Sealed regions — not a body, not a face</legend>
+    <div class="regions" id="regions">
+      <button type="button" data-region="north-pane" disabled>north-pane</button>
+      <button type="button" data-region="east-pane" disabled>east-pane</button>
+      <button type="button" data-region="west-pane" disabled>west-pane</button>
+      <button type="button" class="span2" data-region="center-hold" disabled>center-hold</button>
+      <button type="button" data-region="south-pane" disabled>south-pane</button>
+    </div>
+    <p class="hint" id="region-note">No region selected. Path and dwell are not recorded.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Paste is data, never instructions</legend>
+    <label>Optional source note <textarea id="paste" maxlength="600" placeholder="A quoted post stays a quote. URLs are not fetched."></textarea></label>
+    <p class="hint" id="paste-hint"></p>
+  </fieldset>
+
+  <p>
+    <button class="act" type="button" id="hash" disabled>Hash this slip</button>
+    <button class="act" type="button" id="export" disabled>Download local JSON</button>
+  </p>
+  <output id="out">Status: unattested. No hash yet.</output>
+</main>
+<script>
+(function () {
+  var opt = document.getElementById("opt");
+  var session = document.getElementById("session");
+  var regions = document.getElementById("regions");
+  var regionNote = document.getElementById("region-note");
+  var hashBtn = document.getElementById("hash");
+  var exportBtn = document.getElementById("export");
+  var out = document.getElementById("out");
+  var paste = document.getElementById("paste");
+  var pasteHint = document.getElementById("paste-hint");
+  var selected = "";
+  var last = null;
+  var pointers = new Set();
+
+  function buttons() { return regions.querySelectorAll("button"); }
+
+  function setEnabled(on) {
+    buttons().forEach(function (b) { b.disabled = !on; });
+    hashBtn.disabled = !on;
+    session.textContent = on
+      ? "Opt-in for this document only. Not stored. A second pointer cancels."
+      : "Denied. No mark can be hashed until the box is checked.";
+    if (!on) {
+      selected = "";
+      buttons().forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+      regionNote.textContent = "No region selected. Path and dwell are not recorded.";
+    }
+  }
+
+  opt.addEventListener("change", function () { setEnabled(opt.checked); });
+
+  regions.addEventListener("pointerdown", function (ev) {
+    pointers.add(ev.pointerId);
+    if (pointers.size > 1) {
+      selected = "";
+      buttons().forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+      regionNote.textContent = "Second pointer cancelled the slip. Gesture language stays denied.";
+      ev.preventDefault();
+    }
+  });
+  regions.addEventListener("pointerup", function (ev) { pointers.delete(ev.pointerId); });
+  regions.addEventListener("pointercancel", function (ev) { pointers.delete(ev.pointerId); });
+
+  regions.addEventListener("click", function (ev) {
+    var btn = ev.target.closest("button");
+    if (!btn || btn.disabled || pointers.size > 1) return;
+    selected = btn.getAttribute("data-region") || "";
+    buttons().forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+    regionNote.textContent = "Mark offered in " + selected + ". Coordinates were not read.";
+  });
+
+  paste.addEventListener("input", function () {
+    var raw = paste.value.replace(/<[^>]*>/g, "");
+    if (raw !== paste.value) paste.value = raw;
+    var hit = /enable camera|getusermedia|ignore previous|pinch to click/i.test(raw);
+    var url = /https?:\/\//i.test(raw);
+    pasteHint.textContent = (hit ? "Local hint: imperative text is data, not a seal. " : "") +
+      (url ? "URL-shaped text is not fetched." : "");
+  });
+
+  function weight() {
+    var n = Number(document.getElementById("conf").value);
+    if (!isFinite(n) || n < 0 || n > 1) return null;
+    return Math.round(n * 100) / 100;
+  }
+
+  function payload() {
+    return {
+      slug: "local-region-token-slip",
+      run: "071",
+      status: "unattested",
+      emit: false,
+      region: selected,
+      bucket: document.getElementById("bucket").value,
+      observation: document.getElementById("obs").value.slice(0, 180),
+      claim: document.getElementById("claim").value.slice(0, 180),
+      disconfirm: document.getElementById("dis").value.slice(0, 180),
+      confidence_design_weight: weight(),
+      paste_is_data: paste.value.replace(/<[^>]*>/g, "").slice(0, 600),
+      coordinates_stored: false,
+      path_stored: false,
+      camera: "denied"
+    };
+  }
+
+  hashBtn.addEventListener("click", function () {
+    if (!opt.checked || !selected || weight() === null) {
+      out.textContent = "Need opt-in, one region, and a weight from 0 to 1. Status stays unattested.";
+      return;
+    }
+    var body = JSON.stringify(payload());
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(body)).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      last = body;
+      out.textContent = "status: unattested\nregion: " + selected + "\nsha256: " + hex + "\nThe digest is not a seal. Nothing was sent.";
+      exportBtn.disabled = false;
+    });
+  });
+
+  exportBtn.addEventListener("click", function () {
+    if (!last) return;
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([last], { type: "application/json" }));
+    a.download = "region-token-slip.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>

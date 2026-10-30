@@ -1,0 +1,39 @@
+{
+  "slug": "local-count-withheld",
+  "run": "089",
+  "date": "2026-10-07",
+  "family": "attention/interoception",
+  "emit": false,
+  "status": "unattested",
+  "seal": false,
+  "hypothesis": "An attended interval can be sealed as unscored without storing a beat tally or an interpretation, and that seal is not a body-read.",
+  "canonical_template": "void.count-withheld.v1|attend=unscored|pulse=not-read|tally=discarded|interpretation=discarded|disconfirm=<id>|weight=<0.000>|status=unattested",
+  "example_canonical": "void.count-withheld.v1|attend=unscored|pulse=not-read|tally=discarded|interpretation=discarded|disconfirm=count-later-supplied|weight=0.000|status=unattested",
+  "href_allowlist": [],
+  "attend_allowlist": [
+    "unscored"
+  ],
+  "denied_classes": [
+    "counted",
+    "interpreted",
+    "unset"
+  ],
+  "locked": {
+    "pulse": "not-read",
+    "score": "denied",
+    "accuracy": "not-claimed",
+    "healing": "denied",
+    "status": "unattested"
+  },
+  "disconfirm_ids": [
+    "count-later-supplied",
+    "sensor-log-matched",
+    "interpretation-supplied",
+    "source-corrected"
+  ],
+  "sources_as_data": [
+    "NeuroImage 2025 heartbeat-evoked response distinction between cardiac awareness and interoceptive attention",
+    "Psychophysiology 2026 beta-suppression candidate marker during heartbeat attention",
+    "x-scan.md posts in the 2026-10-06/07 window"
+  ]
+}

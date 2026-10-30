@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sample is not a score — draft 137</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f6f1e8;
+      --line: #c9bfb0;
+      --mark: #6e4b2e;
+      --lock: #5c6570;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3ecdf;
+        --paper: #1a1814;
+        --line: #3d3832;
+        --mark: #e0b48a;
+        --lock: #b7c0c8;
+      }
+    }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.1rem 3rem;
+    }
+    h1 { font-size: 1.55rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p { margin: 0.55rem 0; }
+    .status {
+      display: inline-block;
+      border: 1px solid var(--mark);
+      padding: 0.1rem 0.45rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font: 0.72rem/1.4 ui-sans-serif, system-ui, sans-serif;
+    }
+    fieldset {
+      border: 1px solid var(--line);
+      margin: 1rem 0;
+      padding: 0.8rem 0.9rem 0.4rem;
+    }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    .lock {
+      border: 1px dashed var(--lock);
+      padding: 0.7rem 0.8rem;
+      margin: 1rem 0;
+    }
+    .lock strong { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.85rem; }
+    output, code {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      word-break: break-all;
+    }
+    button {
+      font: 0.9rem/1.2 ui-sans-serif, system-ui, sans-serif;
+      padding: 0.4rem 0.7rem;
+      margin-right: 0.4rem;
+    }
+    textarea[readonly] {
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 4.2rem;
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .inert { font-size: 0.85rem; color: var(--lock); }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status" id="status">unattested</p>
+    <h1>Sample is not a score</h1>
+    <p>Draft 137. Family: attention/interoception. A sealed sample class hashes to a score-refusal id. The accuracy sentence is discarded and is not in the hash. A sample mark is not an interoceptive accuracy score and not a body diagnosis.</p>
+    <p>No camera, microphone, PPG, ECG, heartbeat counter, BPM field, percentage, MAIA total, Likert depth, countdown, or probe upload. The radio is the opt-in. It is not a sensing grant. This page does not start a run and does not price Void Monthly.</p>
+
+    <form id="probe">
+      <fieldset>
+        <legend>Where was attention, as a class only?</legend>
+        <label><input type="radio" name="sample" value="withheld"> withheld</label>
+        <label><input type="radio" name="sample" value="on-task"> on-task</label>
+        <label><input type="radio" name="sample" value="off-task"> off-task</label>
+        <label><input type="radio" name="sample" value="body-notice"> body-notice</label>
+        <label><input type="radio" name="sample" value="external-notice"> external-notice</label>
+        <label><input type="radio" name="sample" value="abstain"> abstain</label>
+      </fieldset>
+      <label for="sentence">Accuracy sentence (cleared on seal; never hashed)</label>
+      <textarea id="sentence" name="sentence" maxlength="280" placeholder="Optional. Discarded. Not a score."></textarea>
+      <p>
+        <button type="submit">Seal sample class</button>
+        <button type="reset" id="clear">Clear</button>
+      </p>
+    </form>
+
+    <div class="lock" aria-label="Score seat locked">
+      <strong>Score seat</strong>
+      <p>Refused. No percentage, beat count, or depth rating can be written here.</p>
+      <output id="score-seat">empty</output>
+    </div>
+
+    <p>Score-refusal id</p>
+    <output id="digest">none — choose a class</output>
+    <p class="inert">Preimage shape: sample-not-score|v1|&lt;class&gt;|score-refusal|status=unattested</p>
+    <p class="inert">Inert post ids, not inputs: 2108198692180168990, 2108264007966892403, 2108477858460955047, 2108483240420086214, 2108528586437054612.</p>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("probe");
+      var sentence = document.getElementById("sentence");
+      var digest = document.getElementById("digest");
+      var scoreSeat = document.getElementById("score-seat");
+      var status = document.getElementById("status");
+      status.textContent = "unattested";
+      scoreSeat.textContent = "empty";
+
+      function selected() {
+        var node = form.querySelector("input[name=sample]:checked");
+        return node ? node.value : "";
+      }
+
+      async function sha256(text) {
+        var bytes = new TextEncoder().encode(text);
+        var buf = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var sample = selected();
+        if (!sample) {
+          digest.textContent = "none — choose a class";
+          return;
+        }
+        var preimage = "sample-not-score|v1|" + sample + "|score-refusal|status=unattested";
+        sentence.value = "";
+        scoreSeat.textContent = "empty";
+        status.textContent = "unattested";
+        sha256(preimage).then(function (hex) {
+          digest.textContent = hex;
+        }).catch(function () {
+          digest.textContent = "hash withheld";
+        });
+      });
+
+      form.addEventListener("reset", function () {
+        window.setTimeout(function () {
+          sentence.value = "";
+          digest.textContent = "none — choose a class";
+          scoreSeat.textContent = "empty";
+          status.textContent = "unattested";
+        }, 0);
+      });
+    }());
+  </script>
+</body>
+</html>

@@ -21,12 +21,12 @@ export function wrap(text, cols, max) {
   for (const para of String(text || '').replace(/\r/g, '').split(/\n+/)) {
     let line = '';
     for (const word of para.trim().split(/\s+/).filter(Boolean)) {
-      const w = word.length > cols ? word.slice(0, cols - 1) + '\u2026' : word;
+      const w = word.length > cols ? word.slice(0, cols - 1) + '\u2026' : word; // ellipsis-ok: drawn picture or short label, the full text is on the card
       if ((line + ' ' + w).trim().length > cols) { lines.push(line); line = w; } else line = (line + ' ' + w).trim();
     }
     if (line) lines.push(line);
   }
-  if (lines.length > max) { const cut = lines.slice(0, max); cut[max - 1] = cut[max - 1].replace(/[\s.,;:…]*$/, '').slice(0, cols - 1) + '…'; return cut; }
+  if (lines.length > max) { const cut = lines.slice(0, max); cut[max - 1] = cut[max - 1].replace(/[\s.,;:…]*$/, '').slice(0, cols - 1) + '…'; return cut; } // ellipsis-ok: drawn picture or short label, the full text is on the card
   return lines;
 }
 
@@ -61,7 +61,7 @@ export function selfLayout(self, w = 624, soft = '#c9cfe8') {
   const els = [], S = self || {}, cols = (px, fs) => Math.max(8, Math.floor(px / (fs * 0.5)));
   let y = 0;
   const text = (str, x, fs, o = {}) => els.push({ k: 'text', x, y, text: str, fs, bold: !!o.bold, italic: !!o.italic, fill: o.fill || '#e6e1d3' });
-  const voice = wrap(S.voice || '', cols(w - 22, 21), SELF_VOICE_LINES);
+  const voice = wrap(S.voice || '', cols(w - 22, 21), 9999); // every sentence, wrapped; the card grows (owner, 2026-10-22: no '...' anywhere)
   if (voice.length) {
     const top = y + 4;
     for (const l of voice) { y += 28; text(l, 20, 21, { italic: true, fill: '#f3efe2' }); }
@@ -74,16 +74,19 @@ export function selfLayout(self, w = 624, soft = '#c9cfe8') {
     const tx = 210, tw = w - tx - 64;
     for (const b of bars) {
       y += 18; const share = Math.max(0, Math.min(1, +b.share || 0));
-      text(wrap(String(b.name || '') + (b.weak ? ' (weakest)' : ''), cols(tx - 12, 14), 1)[0] || '', 0, 14, { fill: b.weak ? '#ffd45e' : '#d8d4c6' });
+      const nl = wrap(String(b.name || '') + (b.weak ? ' (weakest)' : ''), cols(tx - 12, 14), 99);
+      nl.forEach((l, i) => { if (i) y += 16; text(l, 0, 14, { fill: b.weak ? '#ffd45e' : '#d8d4c6' }); });
       els.push({ k: 'rect', x: tx, y: y - 10, w: tw, h: 8, fill: b.weak ? 'rgba(255,176,0,.25)' : 'rgba(255,255,255,.12)', rx: 4, track: true });
       if (share > 0) els.push({ k: 'rect', x: tx, y: y - 10, w: Math.max(4, Math.round(tw * share)), h: 8, fill: b.weak ? '#ffb000' : soft, rx: 4 });
       text(String(b.label || '').replace(/ proven$/, '').replace(' of ', '/'), tx + tw + 10, 13, { fill: '#a9a69a' });
     }
     y += 14;
   }
-  for (const sec of (Array.isArray(S.sections) ? S.sections : []).slice(0, 6)) {
-    y += 24; text(wrap(sec.title || '', cols(w, 18 * 1.08), 1)[0] || '', 0, 18, { bold: true, fill: '#f3efe2' });
-    for (const l of (sec.lines || []).slice(0, SELF_LINES)) { y += 19; text('•', 4, 15, { fill: soft }); text(wrap(l, cols(w - 22, 15), 1)[0] || '', 22, 15); }
+  for (const sec of (Array.isArray(S.sections) ? S.sections : [])) {
+    const head = wrap(sec.title || '', cols(w, 18 * 1.08), 99); head.forEach((l, i) => { y += i ? 21 : 24; text(l, 0, 18, { bold: true, fill: '#f3efe2' }); });
+    const all = (sec.lines || []).filter(Boolean), shown = all.slice(0, SELF_LINES), rest = all.length - shown.length;
+    if (rest > 0) shown.push('And ' + rest + ' more, every one of them in the saved text.');
+    for (const l of shown) { wrap(l, cols(w - 22, 15), 9999).forEach((t, i) => { y += i ? 18 : 19; if (!i) text('\u2022', 4, 15, { fill: soft }); text(t, 22, 15); }); }
     y += 4;
   }
   return { els, height: y + 6 };
@@ -151,8 +154,10 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   if (d.adds) { const a = wrap('Adds to Verse: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + X + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + (828 + X) + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
   // footer: collector number and the three plates
   const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'Verse', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
-  s += '<text x="44" y="' + (990 + X) + '" font-family="Georgia,serif" font-size="17" letter-spacing="1.5" fill="hsl(' + hue + ' 15% 62%)">' + esc(foot.toUpperCase().slice(0, 44)) + '</text>';
   const stats = [['P', d.power], ['R', d.toughness], ['I', d.income]].filter(([, v]) => num(v) !== '');
+  // the line ends before the first plate: a long one ("MYTHIC · 294/440 · VERSE · TESTED 2026-10-24", ~570 px) is squeezed to fit, never run under it
+  const FOOT = foot.toUpperCase().slice(0, 60), room = (stats.length ? 704 - stats.length * 74 - 14 : 700) - 44, wide = FOOT.length * 13.4 > room;
+  s += '<text x="44" y="' + (990 + X) + '" font-family="Georgia,serif" font-size="17" letter-spacing="1.5"' + (wide ? ' textLength="' + room + '" lengthAdjust="spacingAndGlyphs"' : '') + ' fill="hsl(' + hue + ' 15% 62%)">' + esc(FOOT) + '</text>';
   stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="' + (926 + X) + '" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="' + (952 + X) + '" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="' + (980 + X) + '" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
   s += '</g></g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
   return s;

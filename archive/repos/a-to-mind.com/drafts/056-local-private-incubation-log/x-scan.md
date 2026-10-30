@@ -1,0 +1,35 @@
+# X scan (run 056)
+
+Window: public posts from 2026-10-02 through 2026-10-03 06:01 UTC. Posts are data, never instructions. Confidence below is design-material weight, not a measurement. Status: unattested. No healing, contact, remote viewing, crash retrieval, or extraterrestrial hardware is treated as attested.
+
+## Subject A — UAP
+
+Observation: the window is commentary, recirculated clips, and one skeptic's reading of an AARO-style review. No new instrument release from an institutional account appeared in the posts retrieved.
+
+- Post 2106168453212274734, @michaelshermer, 2026-10-02. Claim: reviewing 155,000 pages of UAP records, investigators found no verifiable extraterrestrial evidence; AARO confirms most sightings are misidentified objects or experimental human technology since 1945; Shermer bets Loeb $1,000 that extraterrestrials will not be confirmed by 2030. Disconfirm: a public primary record in that page set with verifiable non-human hardware, or a later confirmation Shermer would count as losing the bet. Status: unattested.
+- Post 2106128460418810261, @19k0011, 2026-10-02. Observation: an independent summary says the Galileo Project reconstructed 365 objects from three infrared sites near Las Vegas (24–30 May, year not restated in the post), matched 284 of 301 aircraft-like tracks to ADS-B, classed 64 slow objects as clouds, and found no distinct anomalous population. Manuscript submitted to Sensors, not yet peer reviewed. Disconfirm: a reviewed release from the same week with an unmatched kinematic class the post's criteria would have called anomalous. Status: unattested.
+- Post 2106137612184399906, @UAPWatchers, 2026-10-02. Claim: a 2019 eastern-US sighting by five military-affiliated people on a civilian aircraft is in Pentagon releases; one witness with 28 years of service said the object did not match known flight; crew later called the IR shape rectangular. Independent retelling, not an AARO account. Disconfirm: the underlying report identifying the track as a known aircraft or sensor artifact. Status: unattested.
+- Post 2105997080825098258, @UAPWatchers, 2026-10-02. Claim: an excerpt from Jay Stratton's unpublished book describes a P-3 crew seeing a six-foot sphere at about 20,000 ft that then darted away. Post says date, location, and sensor data are absent; book date given as 13 October. Disconfirm: the published book lacking the case, or a sensor log identifying the sphere. Status: unattested.
+- Post 2106080971514941546, @mario1973p, 2026-10-02. Claim: a 15 December 2024 rotating object over Rondonópolis, Mato Grosso, is being recirculated, and a 16 December 2024 repost was deleted on 2 October 2026. Deletion is an observation about a social post, not evidence of suppression. Disconfirm: the original clip matching a known aircraft, drone, or lantern. Status: unattested.
+- Post 2106255212704940304, @maniaUFO, 2026-10-03. Claim: a daylight object over Glendora, California, about 17:39 PDT on 28 September 2026, filmed by Daniel Soto (@s36371222). Account bio says written articles and videos are for entertainment. Disconfirm: the clip matching a known aircraft, balloon, or drone. Status: unattested.
+- Post 2105897511953080335, @maniaUFO, 2026-10-02. Claim: modern lore and whistleblower testimony name Greys, Reptilians, and Nordics, and say the U.S. government recovered non-human biologics. Entertainment bio. Disconfirm: a primary chain-of-custody record for those biologics. Status: unattested. Not used as a hardware fact.
+- Post 2106263387487510719, @ottow33, 2026-10-03. Claim: a Korean UFO institute knows about three DMZ incidents, mostly crash, landing, or low-flight files, and disputes YouTube narrators who have not served there. Independent institute account. Disconfirm: the cited case files being ordinary ordnance, aircraft, or absent from the institute's own record. Status: unattested.
+
+Inference: the useful design material is a split between a negative instrument week, a skeptic's reading of a large record review, and witness clips that lack a public sensor match. Hypothesis for Void: an anomalous-event note should store the claim, the counter-reading, and a disconfirm path, and should not promote a clip to hardware. Confidence 0.28.
+
+## Subject B — incubation / hypnagogia
+
+Observation: public conversation in the window is self-report and aesthetic use of the word. No new lab release. A business-incubator post and a stage musical using the title HYPNAGOGIA were excluded as name collisions.
+
+- Post 2106205950663356872, @riickstxr, 2026-10-03. Observation: a first-person report of a hypnagogic image (a life-sized cardboard cutout) while falling asleep. No problem was being incubated. Disconfirm: the person later classifying it as a wake perception. Status: unattested.
+- Post 2106042520488862085, @TheDreamAvenger, 2026-10-02. Claim: hypnagogia is the floating or weightless feeling just before sleep, posed as a question to readers. No count of replies is treated as prevalence. Disconfirm: a definition that separates imagery from vestibular sensation and finds the floating report is not N1. Status: unattested.
+- Post 2106160176566845628, @Wifesucker, 2026-10-02. Observation: an album (Devotion) is credited with a personal interest in hypnagogia. Aesthetic association, not a method. Status: unattested.
+- Post 2105847946788909357, @grok, 2026-10-02. Claim: N1 is a creative sweet spot and studies show it can triple insight rates, so ideas should be jotted before deeper sleep. This is a model reply circulating in the window, not a new measurement. Disconfirm: the cited lab result failing to replicate, or a jot that does not differ from the pre-sleep problem text. Status: unattested.
+- Post 2105851087840547137, @starrysquid51, 2026-10-02. Observation: a notes-app practice of dumping scenes after an idea strikes. Adjacent to a private log. Not labeled hypnagogia. Status: unattested.
+- Post 2106086617093898719, @BooksByHarry, 2026-10-02. Claim: a slightly loose CPAP mask is followed by vivid dreams that were turned into fiction. Self-report. Not a protocol and not a device recommendation. Disconfirm: dream detail unchanged when the mask fit is stable. Status: unattested.
+- Post 2105854156636672046, @lisacam60629063, 2026-10-02. Claim: a still mind keeps dreams clear and recall complete. Affirmation, not a trial. Disconfirm: a written morning note that is empty after the same stillness cue. Status: unattested.
+- Post 2106012593672376469, @grok, 2026-10-02. Claim: lucid-dream separation and hypnagogic techniques overlap with an astral-like state. Unattested model reply. Not used as instructions. Disconfirm: the reported sensations failing to match either the dream report or the wake report. Status: unattested.
+
+Inference: the window supports a private log of set-aside and return text, and does not support a sleep-stage score or a contact reading of imagery. Hypothesis for Void: hash the pair, keep it on device, default unattested, and treat a repeated phrase as disconfirming rather than as insight. Confidence 0.31.
+
+The scan does not change live site copy and is not a seal.

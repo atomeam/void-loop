@@ -1,0 +1,353 @@
+{
+ "site": "stockanalysis.com",
+ "url": "https://stockanalysis.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "blocked": {
+  "kind": "anti-bot",
+  "why": "a bot challenge stood in front of the page"
+ },
+ "assets": [
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "challenges.cloudflare.com/api.js",
+   "t": "js",
+   "b": 86732,
+   "ext": true
+  },
+  {
+   "f": "v1",
+   "t": "js",
+   "b": 257319
+  }
+ ],
+ "assetCount": 5,
+ "bytes": 344924,
+ "html": {
+  "mobile": {
+   "title": "StockAnalysis.com - Free Online Stock In",
+   "lang": "en",
+   "manifest": "https://stockanalysis.com/manifest.webmanifest",
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 6,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "www.googletagmanager.com"
+   ],
+   "inputTypes": {
+    "email": 1,
+    "text": 2
+   },
+   "forms": 3,
+   "ariaLabels": [
+    "Close Menu",
+    "Expand ETFs menu",
+    "Expand IPOs menu",
+    "Expand Market Movers menu",
+    "Expand Stocks menu",
+    "Follow on Facebook",
+    "Follow on LinkedIn",
+    "Follow on Threads",
+    "Follow on X",
+    "Home page",
+    "Main navigation",
+    "National deficit balloons to $2T, up 12%",
+    "Open Menu",
+    "Scroll right",
+    "Search for stocks, funds, and more"
+   ],
+   "roles": {
+    "combobox": 2,
+    "search": 2
+   },
+   "live": true,
+   "skipLink": true,
+   "noscript": true
+  },
+  "desktop": {
+   "title": "Just a moment...",
+   "lang": "en-us",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "ariaLabels": [
+    "Cloudflare, opens in a new tab",
+    "Privacy, opens in a new tab"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "4.9 7.3K",
+   "w": "m"
+  },
+  {
+   "l": "4.9 8.1K",
+   "w": "m"
+  },
+  {
+   "l": "About",
+   "w": "m"
+  },
+  {
+   "l": "Advertise",
+   "w": "m"
+  },
+  {
+   "l": "Affiliate Program",
+   "w": "m"
+  },
+  {
+   "l": "Changelog",
+   "w": "m"
+  },
+  {
+   "l": "Contact Us",
+   "w": "m"
+  },
+  {
+   "l": "Create Account",
+   "w": "m"
+  },
+  {
+   "l": "Dark",
+   "w": "m"
+  },
+  {
+   "l": "Data Sources",
+   "w": "m"
+  },
+  {
+   "l": "ETFs",
+   "w": "m"
+  },
+  {
+   "l": "Follow on Facebook",
+   "w": "m"
+  },
+  {
+   "l": "Follow on LinkedIn",
+   "w": "m"
+  },
+  {
+   "l": "Follow on Threads",
+   "w": "m"
+  },
+  {
+   "l": "Follow on X",
+   "w": "m"
+  },
+  {
+   "l": "Free Newsletter",
+   "w": "m"
+  },
+  {
+   "l": "Get Support",
+   "w": "m"
+  },
+  {
+   "l": "Help Center",
+   "w": "m"
+  },
+  {
+   "l": "Home page",
+   "w": "m"
+  },
+  {
+   "l": "IPOs",
+   "w": "m"
+  },
+  {
+   "l": "Install The App",
+   "w": "m"
+  },
+  {
+   "l": "Light",
+   "w": "m"
+  },
+  {
+   "l": "Login",
+   "w": "m"
+  },
+  {
+   "l": "Open Menu",
+   "w": "m"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "m"
+  },
+  {
+   "l": "Private Companies",
+   "w": "m"
+  },
+  {
+   "l": "Skip to main content",
+   "w": "m"
+  },
+  {
+   "l": "Stock Analysis Pro",
+   "w": "m"
+  },
+  {
+   "l": "Stocks",
+   "w": "m"
+  },
+  {
+   "l": "Subscribe",
+   "w": "m"
+  },
+  {
+   "l": "Terms of Use",
+   "w": "m"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/e/",
+   "/p/"
+  ],
+  "sitemaps": [
+   "https://stockanalysis.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 37,
+  "index": true,
+  "sections": [
+   {
+    "s": "sitemaps",
+    "n": 37
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "v1",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "dark",
+    "reduced"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "www.cloudflare.com",
+   "file": "v1",
+   "at": 176692
+  }
+ ],
+ "thirdParty": [
+  "brunhild.challenges.cloudflare.com",
+  "challenges.cloudflare.com",
+  "www.cloudflare.com"
+ ],
+ "services": [
+  "Cloudflare"
+ ],
+ "requests": [
+  "https://brunhild.challenges.cloudflare.[token].2.1.[token].KxrYv",
+  "https://challenges.cloudflare.[token].3.1.[token].[token].[token].[token].[token].p7FZOq0fYUr5SAL7I.f4xUyHCzovHXroPaM.[t",
+  "https://stockanalysis.com/_api/t",
+  "https://stockanalysis.com/p/flags/?v"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Embeds www.googletagmanager.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Widget combobox",
+   "kind": "setting",
+   "tag": "observed",
+   "evidence": "[role=combobox] x2"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "v1"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "v1@152657"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Skip to content link",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "a[href^=\"#main\"]"
+  },
+  {
+   "name": "Path kept from crawlers /e/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /p/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /sitemaps/ (37 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

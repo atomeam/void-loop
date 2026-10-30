@@ -1,0 +1,15 @@
+{
+  "slug": "attested-redirect-catalog",
+  "run": "051",
+  "status": "candidate",
+  "emit": false,
+  "live_site_changed": false,
+  "contract": "redirect-catalog#051|kind:attested-redirect-catalog|emit:deny|method:exact-path-only|splat:deny|placeholder:deny|query-forward:deny|external:deny|open-redirect:deny|meta-refresh:deny|js-location:deny|proxy-200:deny|omitted-code:deny|geo:deny|ua:deny|retired-fold:deny|q-ask:deny|seal:human",
+  "contract_sha256": "e81d29e3956edc1b3615c08fa2ad3e133d8fce2f29f549652bf762b53894c989",
+  "embedded_catalog_sha256": "2d370a434f30f5938ec42a7d7e68f9e7564d4b3ecd45196aa9f90997ce7630bc",
+  "files": {
+    "redirects.catalog.json": "4d1e0bfeda514757b1b01c830d81a37fd703a293710f31ee1e981bb042a7869b",
+    "proposed-redirects.html": "6643012b46b01d9c61defc0d2382dfe32d1f05d3056329855b70025b7afe47f4",
+    "redirect-worker.js": "a59bdf37cbdaf3e8e6de851dae109127b6d0ec1b6c4001e7425626329f7abeb3"
+  }
+}

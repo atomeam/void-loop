@@ -83,15 +83,16 @@ export const checkSummary = (check) => titleOf(check).slice(0, 120);
 export function plantIncidents(plants, incidentsJson, seen = [], now = Date.now()) {
   const inc = parseIncidents(incidentsJson), had = new Set((seen || []).map(String));
   const fresh = inc.filter((i) => !had.has(i.sha));
-  const take = (had.size ? fresh : fresh.slice(0, 1)).slice().reverse(); // oldest first; incidents.json is newest first
+  const first = fresh.find((i) => i.checks.some((c) => !SUITE_END.test(String(c).trim()))); // an incident that only says the suite did not finish has no check to plant
+  const take = (had.size ? fresh : first ? [first] : []).slice().reverse(); // oldest first; incidents.json is newest first
   let list = (plants || []).map((p) => ({ ...p })), planted = 0, weeds = 0, budget = INCIDENT_BATCH;
   for (const i of take) {
+    const once = new Set(); // one incident counts a check once: two checks whose titles summarise alike are one plant, not a weed
     const at = Number.isFinite(Date.parse(i.at)) ? Date.parse(i.at) : now;
     for (const check of i.checks) {
       if (SUITE_END.test(check.trim()) || budget <= 0) continue;
-      budget--;
       // the same check is known by its exact title (not by shared words: "chess rules" and "checkers rules" are two checks); a plant "plant my test failures" made is the same plant
-      const key = checkSummary(check), ref = String(check).slice(0, 160), sha = i.sha.slice(0, 7), k = list.findIndex((p) => (p.from === 'incident' && p.key === key) || p.text === key);
+      const key = checkSummary(check); if (once.has(key)) continue; once.add(key); budget--; const ref = String(check).slice(0, 160), sha = i.sha.slice(0, 7), k = list.findIndex((p) => (p.from === 'incident' && p.key === key) || p.text === key);
       if (k >= 0) { const p = list[k]; p.count = (p.count || 1) + 1; p.last = at; p.sha = sha; p.ref = ref; p.from = 'incident'; p.key = key; weeds++; continue; }
       list.push({ text: key, key, count: 1, first: at, last: at, rule: '', from: 'incident', ref, sha }); list = list.slice(-MAX_PLANTS); planted++;
     }

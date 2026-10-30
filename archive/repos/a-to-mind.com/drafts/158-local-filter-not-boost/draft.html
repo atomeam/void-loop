@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-filter-not-boost — draft</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; line-height: 1.5; }
+  fieldset { border: 1px solid #ccc; margin: 1rem 0; padding: 1rem; }
+  .discarded { background: #f8f8f8; padding: 0.5rem; font-style: italic; }
+  #hash { font-family: monospace; word-break: break-all; }
+  button { margin-top: 1rem; }
+  .status { color: #666; }
+</style>
+</head>
+<body>
+<h1>local-filter-not-boost</h1>
+<p>Candidate draft. Not sealed. emit false. Status starts unattested.</p>
+<p class="status">Default deny. A filter mark is not a boost and not a detection.</p>
+
+<fieldset>
+  <legend>Sealed quiet class</legend>
+  <label><input type="radio" name="cls" value="quiet"> quiet</label><br>
+  <label><input type="radio" name="cls" value="noise"> noise</label><br>
+  <label><input type="radio" name="cls" value="withheld"> withheld</label><br>
+  <label><input type="radio" name="cls" value="declined"> declined</label>
+</fieldset>
+
+<fieldset>
+  <legend>Amplify sentence (discarded)</legend>
+  <textarea id="amplify" rows="3" placeholder="Type the boost or detection sentence here. It will be discarded."></textarea>
+  <div id="discard-view" class="discarded" hidden>Discarded. Not in the hash.</div>
+</fieldset>
+
+<button id="seal" type="button">Hash refusal</button>
+<p>Refusal id: <span id="hash">—</span></p>
+<p>Status: <span id="status">unattested</span></p>
+
+<script>
+const amplify = document.getElementById('amplify');
+const discardView = document.getElementById('discard-view');
+const sealBtn = document.getElementById('seal');
+const hashEl = document.getElementById('hash');
+const statusEl = document.getElementById('status');
+
+sealBtn.addEventListener('click', async () => {
+  const selected = document.querySelector('input[name="cls"]:checked');
+  if (!selected) {
+    hashEl.textContent = 'no class';
+    return;
+  }
+  const text = amplify.value.trim();
+  discardView.hidden = false;
+  amplify.value = '';
+  amplify.disabled = true;
+
+  const payload = `void.filter-not-boost.v1|class=${selected.value}|refusal=boost|status=unattested|run=158`;
+  const buf = new TextEncoder().encode(payload);
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  const hex = Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+  hashEl.textContent = hex;
+  statusEl.textContent = 'unattested';
+});
+</script>
+</body>
+</html>

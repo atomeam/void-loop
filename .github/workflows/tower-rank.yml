@@ -1,0 +1,38 @@
+# Versus by size (owner, 2026-10-26: "rank every tower site by real traffic so the order is easiest first, giants last"): fetches the Tranco
+# top-million list (tranco-list.eu) on a runner (the builders' sandboxes cannot reach it), ranks every Versus site, and commits
+# void-live-deploy/tower.rank.json when it changed. One GET of one public file, no secret. Monthly, or by hand.
+name: Tower rank
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 5 3 * *'
+concurrency:
+  group: void-tower-rank
+  cancel-in-progress: false
+permissions:
+  contents: write # commits void-live-deploy/tower.rank.json
+  actions: write # and starts the deploy (a GITHUB_TOKEN push starts no workflow)
+jobs:
+  rank:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tests
+        run: node --test tools/tower-rank.test.mjs
+      - name: Rank the sites
+        run: node tools/tower-rank.mjs
+      - name: Commit the ranks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.rank.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower rank: every Versus site ranked by the Tranco top million"
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true
