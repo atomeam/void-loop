@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1017,
+ "counted": 1018,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1123,6 +1123,13 @@
    "tests": 2
   },
   {
+   "file": "lib/markets.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 4
+  },
+  {
    "file": "lib/actions.js",
    "skills": 1,
    "direct": 0,
@@ -2047,13 +2054,6 @@
    "tests": 6
   },
   {
-   "file": "lib/markets.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 22,
-   "tests": 3
-  },
-  {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
@@ -2797,6 +2797,13 @@
   },
   {
    "file": "lib/ledger.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/markets-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -7287,6 +7294,13 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/markets-card.js": {
+   "imports": [
+    "lib/markets.js",
+    "skills/crypto.js"
+   ],
+   "importedBy": []
+  },
   "lib/markets-record.js": {
    "imports": [],
    "importedBy": [
@@ -7318,8 +7332,10 @@
    "imports": [],
    "importedBy": [
     "functions/api/markets.js",
+    "lib/markets-card.js",
     "lib/report-run.js",
-    "lib/report.js"
+    "lib/report.js",
+    "skills/crypto.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -11636,8 +11652,12 @@
    "importedBy": []
   },
   "skills/crypto.js": {
-   "imports": [],
-   "importedBy": []
+   "imports": [
+    "lib/markets.js"
+   ],
+   "importedBy": [
+    "lib/markets-card.js"
+   ]
   },
   "skills/csv-table.js": {
    "imports": [
