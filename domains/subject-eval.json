@@ -1,5 +1,5 @@
 {
- "at": "2026-10-29T11:50:06.018Z",
+ "at": "2026-10-30T11:44:27.339Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -634,14 +634,14 @@
    "kind": "Creature",
    "title": "African forest elephant",
    "theme": "specimen",
-   "photo": false,
+   "photo": true,
    "api": {
     "name": "African forest elephant",
     "desc": "African elephant species",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": false,
+    "pic": true,
     "sources": [],
     "answer": "The African forest elephant is an elephant species native to humid tropical forests in Wes"
    },
