@@ -1812,6 +1812,7 @@ Object.values(things).forEach((th) => {
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
+      ready: () => skillsReady, // every skill is in, so every saved card has its kind (skills/quiz.js settled: an ask right after a reload)
       closePage: () => closePage(),
       // the extension bridge the tab card draws with (skills/tab.js): the state the panel's messages fill, and the page's own senders
       ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY },
@@ -2734,11 +2735,13 @@ say('nothing selected to remove');
       if (vpageEl !== el) return;
       const why = (x) => (honest ? honest.honestBecause(x.because, x.evidence) : x.because);
       el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
-        // one block per want (owner, 2026-10-21: the wants ran together): the want, then its reason on its own line, then the recorded fact
-        + (w.wants.length ? '<ul class="will-list" style="list-style:none;padding:0;margin:10px 0">' + w.wants.map((x) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + esc(x.i_want) + '</b><div style="color:#8a8a8a;margin-top:4px">' + esc(why(x)) + '</div>'
-          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px">' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
-        // what I wanted and got: asks the ledger names as built, shown apart, never as a current want (functions/api/will.js splitBuilt)
-        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Got it</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li style="margin:0 0 10px;color:#9aa"><b style="display:block">' + esc(x.i_want) + '</b><div style="font-size:12px">built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
+        // one block per want (owner, 2026-10-21: the wants ran together; 2026-10-30: asks and reasons still read as one run of plain
+        // lines when copied): a numbered want, then "Why:" on its own line, then "Evidence:", so the copied text keeps the structure too
+        + (w.wants.length ? '<div class="vh">What I want next</div><ol class="will-list" style="list-style:none;padding:0;margin:6px 0 10px">' + w.wants.map((x, i) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + (i + 1) + '. ' + esc(x.i_want) + '</b><div class="will-why" style="color:#8a8a8a;margin-top:4px"><span style="color:#aab">Why:</span> ' + esc(why(x)) + '</div>'
+          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px"><span style="color:#aab">Evidence:</span> ' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ol>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
+        // what I wanted and got: asks the ledger names as built, shown apart and marked done, never as a current want (functions/api/will.js
+        // splitBuilt; owner, 2026-10-30: a "Got it" line between the asks made the built repo ask read as one more want)
+        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Already built</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li class="will-done" style="margin:0 0 10px;color:#9aa"><b style="display:block"><span style="color:#7d9">Done:</span> ' + esc(x.i_want) + '</b><div style="font-size:12px">Built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
         + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
     }
     // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
@@ -5951,7 +5954,7 @@ say('nothing selected to remove');
       { const r = l.match(/^(?:coin\s+(?:flip|toss)|flip\s+(?:a\s+)?coin)\s+for\s+(.{1,60})$/); if (r && !coinSkill()) return { title: 'Coin for ' + r[1], big: rnd(2) ? 'Heads' : 'Tails', note: 'a fair coin' }; }
       if (/^what\s+(?:does|would)\s+the\s+(?:magic\s+)?8[\s-]?ball\s+say(?:\s.*)?$/.test(l)) l = 'magic 8 ball';
       // a coin is the coin skill's (skills/coin.js: the coin on the card, the tally); these answer only if that skill did not load
-      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l) && !coinSkill()) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
+      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip', owner: 'coin' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
         const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
@@ -5971,7 +5974,7 @@ say('nothing selected to remove');
       if (/^(?:draw|pick|deal(?:\s+me)?|give\s+me)\s+a\s+(?:random\s+)?(?:playing\s+)?card$/.test(l)) { const R = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'], S = [['♠', 'Spades'], ['♥', 'Hearts'], ['♦', 'Diamonds'], ['♣', 'Clubs']], r = R[rnd(13)], su = S[rnd(4)]; return { title: 'Your card', big: r + ' ' + su[0], note: r + ' of ' + su[1] + ' · from a full 52-card deck' }; }
       // "flip 3 coins"
       m = l.match(/^(?:flip|toss)\s+(two|three|four|five|\d{1,2})\s+coins$/);
-      if (m && !coinSkill()) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails' }; }
+      if (m) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails', owner: 'coin' }; }
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+letter$/.test(l)) { const c = String.fromCharCode(65 + rnd(26)); return { title: 'Random letter', big: c, note: 'A to Z, each equally likely' }; }
       // a bare "random color" is the color skill's (skills/color.js shows the swatch, issue #1695): owner marks it, and the caller hands it over once the skills load
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it', owner: /^random\s+colou?r$/.test(l) ? 'color' : null }; }
@@ -6106,6 +6109,12 @@ say('nothing selected to remove');
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
+      // a typed question about a secret, token or key name is answered from the names Verse's code reads (lib/note-ask.js secretAsk), never looked up:
+      // "what is the Modal secret called?" went to Wikipedia, which suggested "model secret called" and showed a fashion model (live, 2026-10-30)
+      if (/\b(?:secrets?|tokens?|keys?|credentials?|variables?)\b/i.test(typed) && typed.length <= 160) {
+        const N = await import('/lib/note-ask.js').catch(() => null), facts = N ? N.secretAsk(typed) : [];
+        if (facts.length) { currentAsk = typed; showPage((p) => { p.innerHTML = '<h2>' + esc(typed.replace(/[?.!\s]+$/, '')) + '</h2>' + facts.map((f) => '<p>' + esc(f) + '</p>').join('') + '<div class="src">from Verse\u2019s own code (lib/verse-secrets.js), names only, never a value</div>'; }); say(''); loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'secret names' }); return; }
+      }
       // a paste is a report, a card, a note, an ask or unclear (owner rule, 2026-10-30, docs/RULES.md; lib/paste-kind.js)
       const pk = await pasteReady, paste = pk ? pk.pasteKind(typed) : null;
       { const lp = lastPaste; lastPaste = null; // the answer to "That reads as pasted text with no ask in it": the paste is summed up from its own words

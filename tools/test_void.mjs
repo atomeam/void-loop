@@ -6153,7 +6153,11 @@ try {
     // D is held at least half a second and until the eye has gone the given way (a slow headless frame never fails it); the streak is sampled while held
     const holdD = async (page, far) => { let streak = 0; const t0 = Date.now(); await page.keyboard.down('d');
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
-      const v = await stars(page); await page.keyboard.up('d'); return { ok, v, streak }; };
+      // a slow frame draws the streak one frame after the move it shows (void.html's drawStars runs skyTick), so D stays held
+      // for two more frames and the streak drawn for the last move is sampled too (main's verify, 2026-10-30: x jumped to -181
+      // in one capped step and the hold ended before the next draw)
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {});
+      const v = await stars(page); streak = Math.max(streak, v.streak.dx); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
     await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
     const rest0 = await stars(P.p);
@@ -6600,7 +6604,9 @@ try {
     await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
     const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
     const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
-    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    // every skill in before the reload is read (data-skills="ready", not a guessed 900 ms): the quiz skill is loaded and still draws no
+    // card, and the saved gears are up for the next "quiz me on this" (main's verify, 2026-10-30: at 900 ms the gears were not in yet)
+    await Z.p.reload(); await skillsUp(Z.p, 300);
     const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
     await Z.p.reload(); await skillsUp(Z.p, 300); await until(() => Z.p.$$eval('.quiz-card', (d) => d.length), 6000); // the kept quiz draws once skills/quiz.js is in

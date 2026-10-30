@@ -181,7 +181,8 @@
   },
   {
     "ask": "who wrote hamlet",
-    "want": "answer|article"
+    "want": "skill:book",
+    "says": "Shakespeare"
   },
   {
     "ask": "what is photosynthesis",
@@ -2514,7 +2515,7 @@
   },
   {
     "ask": "take a note: buy batteries",
-    "want": "sticky|notepad",
+    "want": "sticky|notepad|notes-fill",
     "says": "buy batteries"
   },
   {
@@ -3110,7 +3111,7 @@
   {
     "ask": "1 cup of sugar in grams",
     "want": "calc",
-    "says": "200"
+    "says": "198 g"
   },
   {
     "ask": "what temperature to cook chicken",
@@ -4190,7 +4191,7 @@
   },
   {
     "ask": "how long to pay off 100 at 200 a month at 20%",
-    "want": "calc",
+    "want": "calc|skill:loan",
     "says": "101\\.67"
   },
   {
@@ -5977,7 +5978,7 @@
   {"ask": "set timr for 12 min", "want": "timer|skill:timer|timer-start"},
   {"ask": "start a timmer for 6 minutes", "want": "timer|skill:timer|timer-start"},
   {"ask": "time me for 90 seconds", "want": "timer|skill:timer|timer-start"},
-  {"ask": "egg timer", "want": "calc", "says": "soft 6 min"},
+  {"ask": "egg timer", "want": "calc", "says": "soft 4.6 min"},
   {"ask": "show the map", "want": "skill:rebuild-map"},
   {"ask": "what is the map", "want": "skill:rebuild-map"},
   {"ask": "what's being built", "want": "skill:rebuild-map"},

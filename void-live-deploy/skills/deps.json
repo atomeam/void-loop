@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1089,
+ "counted": 1090,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -41,7 +41,7 @@
    "file": "lib/load-later.js",
    "skills": 27,
    "direct": 23,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 1
   },
   {
@@ -174,14 +174,14 @@
    "file": "lib/qr.js",
    "skills": 13,
    "direct": 3,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 3
   },
   {
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
@@ -202,7 +202,7 @@
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 2
   },
   {
@@ -241,6 +241,13 @@
    "tests": 1
   },
   {
+   "file": "lib/hardened-line.js",
+   "skills": 9,
+   "direct": 2,
+   "dependants": 42,
+   "tests": 0
+  },
+  {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
@@ -272,21 +279,21 @@
    "file": "lib/card-mini.js",
    "skills": 9,
    "direct": 5,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 0
   },
   {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/where.js",
    "skills": 9,
    "direct": 8,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
@@ -335,14 +342,14 @@
    "file": "lib/note-tools.js",
    "skills": 8,
    "direct": 4,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 1
   },
   {
    "file": "lib/skyask.js",
    "skills": 8,
    "direct": 7,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 1
   },
   {
@@ -454,14 +461,14 @@
    "file": "lib/colour.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/pwcheck.js",
    "skills": 5,
    "direct": 2,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 1
   },
   {
@@ -559,7 +566,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 86,
+   "dependants": 87,
    "tests": 2
   },
   {
@@ -587,42 +594,42 @@
    "file": "lib/hash.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 1
   },
   {
    "file": "lib/cssmin.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 12,
+   "dependants": 13,
    "tests": 1
   },
   {
    "file": "lib/csvjson.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 12,
+   "dependants": 13,
    "tests": 1
   },
   {
    "file": "lib/markdown.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 12,
+   "dependants": 13,
    "tests": 1
   },
   {
    "file": "lib/textdiff.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 12,
+   "dependants": 13,
    "tests": 1
   },
   {
    "file": "lib/yamljson.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 12,
+   "dependants": 13,
    "tests": 1
   },
   {
@@ -636,7 +643,7 @@
    "file": "lib/stars.js",
    "skills": 4,
    "direct": 2,
-   "dependants": 10,
+   "dependants": 11,
    "tests": 2
   },
   {
@@ -748,35 +755,35 @@
    "file": "lib/verse-secrets.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 86,
+   "dependants": 87,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 85,
+   "dependants": 86,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 83,
+   "dependants": 84,
    "tests": 9
   },
   {
    "file": "lib/share.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 3
   },
   {
    "file": "lib/share-client.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 10,
+   "dependants": 11,
    "tests": 1
   },
   {
@@ -1046,6 +1053,20 @@
    "tests": 2
   },
   {
+   "file": "lib/cook-flow.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
+   "file": "lib/eclipses.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/rap-kit.js",
    "skills": 2,
    "direct": 0,
@@ -1060,31 +1081,17 @@
    "tests": 2
   },
   {
-   "file": "lib/cook-flow.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/eclipses.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
    "file": "lib/translate-card.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 8,
+   "dependants": 9,
    "tests": 1
   },
   {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 1
   },
   {
@@ -1420,7 +1427,7 @@
    "file": "lib/writing-aids.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 2
   },
   {
@@ -2253,7 +2260,7 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 59,
+   "dependants": 60,
    "tests": 12
   },
   {
@@ -2281,14 +2288,14 @@
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 40,
+   "dependants": 41,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 6
   },
   {
@@ -2495,6 +2502,34 @@
    "tests": 0
   },
   {
+   "file": "lib/drive.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp-run.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp-skills.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/seo-audit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
    "file": "lib/studio.js",
    "skills": 0,
    "direct": 0,
@@ -2509,32 +2544,11 @@
    "tests": 4
   },
   {
-   "file": "lib/drive.js",
+   "file": "lib/mcp.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/mcp-run.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/mcp-skills.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/seo-audit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
+   "tests": 3
   },
   {
    "file": "lib/watch-along.js",
@@ -2563,13 +2577,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/mcp.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 3
   },
   {
    "file": "lib/translate-langs.js",
@@ -3893,6 +3900,12 @@
    ],
    "importedBy": []
   },
+  "functions/api/mcp/server-card.js": {
+   "imports": [
+    "lib/mcp.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/media.js": {
    "imports": [
     "lib/media.js",
@@ -4860,6 +4873,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -4933,6 +4947,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/news.js",
@@ -5999,6 +6014,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -6289,6 +6305,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -6334,6 +6351,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/seo-audit.js",
@@ -6454,6 +6472,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -6553,6 +6572,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -6574,6 +6594,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -6744,6 +6765,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/team-mcp.js"
@@ -6813,6 +6835,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -7639,6 +7662,55 @@
     "skills/mind-field.js"
    ]
   },
+  "lib/hardened-line.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/growth.js",
+    "skills/showcase.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "lib/about-skill.js",
+    "lib/bench-asks.js",
+    "lib/built-detail.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/about-skill.js",
+    "skills/cartoon.js",
+    "skills/growth-tree.js",
+    "skills/guide.js",
+    "skills/merges.js",
+    "skills/mini/growthtree.js",
+    "skills/own-parts.js",
+    "skills/walker.js"
+   ]
+  },
   "lib/hash.js": {
    "imports": [],
    "importedBy": [
@@ -7647,6 +7719,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -8304,6 +8377,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/arena.js",
@@ -8347,6 +8421,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -8464,6 +8539,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/team-mcp.js"
@@ -8487,6 +8563,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/team-mcp.js"
@@ -8506,6 +8583,7 @@
    ],
    "importedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/tools.json.js",
     "lib/team-mcp.js"
    ],
@@ -8862,6 +8940,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/memory.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -9166,6 +9245,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -9251,6 +9331,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -10180,6 +10261,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -10202,6 +10284,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/card-frame.js",
@@ -10741,6 +10824,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -11106,6 +11190,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/team-mcp.js"
@@ -11132,6 +11217,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/is-it/[what].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -11151,6 +11237,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/is-it/[what].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -11249,6 +11336,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/team-mcp.js",
@@ -11350,6 +11438,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -11382,6 +11471,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -11406,6 +11496,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -11705,6 +11796,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -12146,6 +12238,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -12245,6 +12338,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -12469,6 +12563,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -12573,6 +12668,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -12987,6 +13083,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -13083,6 +13180,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/team-mcp.js"
@@ -13095,6 +13193,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -13601,6 +13700,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -13670,6 +13770,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -13763,6 +13864,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -13831,6 +13933,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -13919,6 +14022,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -14444,6 +14548,7 @@
   "skills/growth.js": {
    "imports": [
     "lib/probe-log.js",
+    "lib/hardened-line.js",
     "lib/joins.js",
     "lib/will-last.js",
     "lib/ledger-today.js",
@@ -14716,6 +14821,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp-skills.js",
@@ -14731,6 +14837,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -15880,6 +15987,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -16246,6 +16354,7 @@
   },
   "skills/showcase.js": {
    "imports": [
+    "lib/hardened-line.js",
     "skills/growth-tree.js",
     "lib/reaction-bar.js",
     "lib/reactions.js",
@@ -16654,6 +16763,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -16923,6 +17033,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -16971,6 +17082,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -17148,6 +17260,7 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
