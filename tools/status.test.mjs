@@ -166,7 +166,8 @@ test('the build card: each commit at exactly one stage, on evidence; a running r
   assert.deepEqual(rows.map((r) => r.last && [r.last.state, r.last.sha, r.last.stage]), [['passed', '1111111', 'deployed'], ['passed', '1111111', 'deployed']], 'no live check read: deployed, never verified live');
   for (const r of rows) { assert.ok(STAGES.includes(r.stage), r.name); assert.ok(r.stage !== 'verified live' && r.stage !== 'deployed', 'a running run alone is never deployed or verified'); }
   const h = html(esc, { ok: 1, total: 1, missing: [] }, [], null, '', rows);
-  assert.match(h, /running now on ac07cc0 · 2026-10-29 14:57 UTC · <b class="status-stage">merged<\/b>/);
+  assert.match(h, /running now on ac07cc0 · 2026-10-29 14:57 UTC · <a /, 'a running row says running and nothing more (owner, 2026-10-30: "show running or passed, not both")');
+  assert.doesNotMatch(h, /running now on ac07cc0[^<]*<b class="status-stage">/);
   assert.match(h, /last finished: passed on 1111111 · 2026-10-29 14:20 UTC · <b class="status-stage">deployed<\/b>/);
   assert.ok(!/verified live/.test(h), 'no live check, so the card never says verified live');
   for (const n of ['Checks on main', 'Deploy']) assert.match(h, new RegExp('background:#8a8a92"></span>' + n + '<'), n + ' running: a grey dot, never the green of passed');

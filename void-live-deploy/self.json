@@ -550,6 +550,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T06:56:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T06:56:02Z",
    "subject": "skills: deps after the merge"
   },
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-30T06:42:06Z",
    "subject": "Verse's own coder gets the full Versus spec too"
-  },
-  {
-   "at": "2026-10-30T06:39:47Z",
-   "subject": "Members: the MultiVerse mark on a member's published page"
   }
  ],
  "builders": {

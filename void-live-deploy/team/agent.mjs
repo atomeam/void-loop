@@ -66,7 +66,9 @@ export function jobPrompt(job) {
     '2. Do what the job asks, in full. A versus job is a working Verse page that does the site\'s job; a domains/targets file alone does not finish it.',
     '3. Run the checks the brief names and read what the page shows. Fix what fails; never skip, weaken or delete a test.',
     '4. Push a branch and open a pull request to atomeam/void-loop main with the label automerge.',
-    '5. Print the pull request address as your last line and exit 0. If you cannot do the job, print why as your last line and exit with'
+    '5. Print the pull request address as your last line and exit 0. Verse checks it after the merge: the job is done only when the pull'
+      + ' request changes the page itself, takes nothing away from main, and the live page answers; otherwise the job comes back.',
+    '6. If you cannot do the job, print why as your last line and exit with'
       + ' a code other than 0: the job goes back. Do not run agent.mjs done or back yourself; the loop closes the job from your exit.',
   ].filter((l, i, a) => l !== '' || a[i - 1] !== '').join('\n');
 }
@@ -110,10 +112,12 @@ export async function workOnce(o, { run, log = console.log, shown = new Set(), m
   log('Working on ' + job.job + ' (' + job.kind + '): ' + job.ask);
   const beat = setInterval(() => { call(o, 'POST', '', { do: 'here' }).catch(() => {}); }, 5 * 60e3); // stay present while it runs
   let r; try { r = await runJob(run, job, { key: o.key, log, minutes }); } finally { clearInterval(beat); }
-  const closed = r.code === 0
+  // a job hands in with its pull request; a run that ended well with no pull request goes back (an owner's #work ask may answer in words)
+  const handIn = r.code === 0 && (r.link || /^team-\d+$/.test(job.job));
+  const closed = handIn
     ? await call(o, 'POST', '', { do: 'done', ok: true, link: r.link || undefined, note: r.link ? '' : r.last })
-    : await call(o, 'POST', '', { do: 'done', ok: false, note: 'exit ' + r.code + ': ' + r.last });
-  return { state: r.code === 0 ? 'done' : 'given back', job, link: r.link, next: closed.next || null, say: closed.say };
+    : await call(o, 'POST', '', { do: 'done', ok: false, note: (r.code === 0 ? 'no pull request: ' : 'exit ' + r.code + ': ') + r.last });
+  return { state: handIn ? 'done' : 'given back', job, link: r.link, next: closed.next || null, say: closed.say };
 }
 
 function flag(args, name, fallback) { const i = args.indexOf(name); if (i < 0) return fallback; const v = args[i + 1]; args.splice(i, 2); return v; }

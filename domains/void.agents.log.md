@@ -1170,3 +1170,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T06:33:43Z | claude | fix | Stage calendar card settles still after its first sway (days hold under a pointer, frame loop stops on phones); the tools page card follows the tool opened last on the bench
 2026-10-30T06:42:03Z | claude | fix | Memory orbs: what Verse newly remembers stirs the fluid where its word sits, so an orb rises there and its chip pulses; each orb is named by the word it sits near; the card rests while scrolled away, and only writes styles that changed, so it stays fast on phones
 2026-10-30T06:51:10Z | claude | fix | Reduced motion: the hard switch now also holds the stage still: cards stop tilting toward the pointer, and the 3D calendar stops its sway and page turn
+2026-10-30T07:03:02Z | claude | fix | Calendar card: with Reduced motion on it opens at rest and stands still after a drag, so a day can be tapped at once
