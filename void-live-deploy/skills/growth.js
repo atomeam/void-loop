@@ -250,7 +250,7 @@ async function run(text, api) {
   catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How Verse has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
-  el.innerHTML = growthHead(esc, list) + '<div data-join></div>' + '<div data-today></div>' + '<div data-will-last></div>' + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Verse: the arcade ladder)
+  el.innerHTML = growthHead(esc, list) + '<div data-today></div>' + '<div data-will-last></div>' + '<div data-join></div>' + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Verse: the arcade ladder)
   // the verifiable ledger's "today" view (lib/ledger-today.js; the frontier's growth ledger): today's lines (UTC) with their line hashes, and the
   // whole chain recomputed in this browser against the proof the deploy wrote; with no proof served, no block
   fetch(PROOF_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((proof) => (proof ? todayCheck(list, proof) : null)).then((res) => {
