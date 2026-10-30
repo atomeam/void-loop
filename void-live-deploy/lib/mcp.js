@@ -5,19 +5,21 @@
 // web and the model, on that endpoint's terms and limits). One, review_code_closer, is /api/review itself (the route hands it over, ctx.review): the
 // closer read by a model comes only with the key that endpoint takes, on its terms, and the only thing written is that key's daily
 // count. /tools.json is the same list, public. The skill tools (asked by Verse, 2026-10-15) are Verse's most proven read-only (up to ten)
-// skills, generated from the ratings (tools/mcp-skills.mjs -> lib/mcp-skills.js): each is ask_void's own path with the skill's
-// name on it and the link where the skill itself runs. skill_health reads skills/families.json (the route lends it, ctx.families).
+// skills, generated from the ratings (tools/mcp-skills.mjs -> lib/mcp-skills.js): each runs the skill's own code on the server
+// (lib/mcp-run.js, the same run() the page calls; no model in its place) and hands back the link where the skill runs on its card.
+// skill_health reads skills/families.json (the route lends it, ctx.families).
 import { quick } from './review-api.js';
 import { jde, moonPhase } from './sky-math.js';
 import { activeShowers, nextShower } from './showers.js';
-import { SKILL_TOOLS } from './mcp-skills.js';
+import { SKILL_TOOLS, SKILL_MODULES } from './mcp-skills.js';
+import { runSkill } from './mcp-run.js';
 import { drive } from './drive.js';
 import { auditPage } from './seo-audit.js';
 import { readingLevel, proofread } from './writing-aids.js';
 import { parse as parseColour, contrast as contrastOf, passes, toHex } from './colour.js';
 
 export const PROTOCOL = '2025-06-18';
-export const SERVER = { name: 'void', title: 'Verse (a-to-mind.com)', version: '1.2.0' };
+export const SERVER = { name: 'void', title: 'Verse (a-to-mind.com)', version: '1.3.0' };
 const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 // what shape an agent wants back (asked by Verse, ask-20261014-1722-1): 'text' (default: the words, sources listed) or 'raw_data'
 // (the structured result as JSON text). 'image' is named so an agent learns it is not offered yet, rather than guessing.
@@ -29,11 +31,11 @@ export function shaped(result, type) {
 }
 const DATE = { type: 'string', description: 'An ISO date or date-time (UTC). Leave it out for now.' };
 const SITE = 'https://a-to-mind.com';
-const ASKS = { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true }; // a model and the open web answer
+const SKILL_RUN = { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true }; // the skill's code, and the public services its card uses
 // one of Verse's most proven skills as its own tool: the definition is built from lib/mcp-skills.js, never written by hand
-const skillTool = (s) => ({ name: s.tool, title: "Verse's " + s.skill + ' skill', annotations: ASKS,
+const skillTool = (s) => ({ name: s.tool, title: "Verse's " + s.skill + ' skill', annotations: SKILL_RUN,
   description: "Ask Verse's \"" + s.skill + "\" skill (" + s.familyName + "), one of the proven skills with the most evidence that Verse offers over MCP (read-only): rated proven on a-to-mind.com from evidence (real asks in Verse's benchmark, its tests), never from how it describes itself. Asks like "
-    + s.examples.map((e) => '"' + e + '"').join(', ') + ". Over MCP it is answered the way ask_void is: Verse's answer engine (a model, citing Wikipedia when it matches; up to 12 a minute per caller). The skill itself works it out on its own card at the \"open\" link in the result.",
+    + s.examples.map((e) => '"' + e + '"').join(', ') + ". The skill's own code answers it on the server, the same code that draws its card on a-to-mind.com (no model), with the sources its card cites; an ask the skill does not take is refused, not guessed. Times are worked out on the server's clock (UTC). The card itself is at the \"open\" link in the result.",
   inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The ask in plain words (3 to 600 characters)' + (s.examples[0] ? ', e.g. "' + s.examples[0] + '"' : '') + '.' }, response_type: RESPONSE_TYPE } } });
 
 export const TOOLS = [
@@ -117,12 +119,22 @@ async function askVoid(a, ctx) {
   return toolResult(text, { answer: body.answer, sources, at: body.at || null, cached: !!body.cached });
 }
 
-// a skill tool: ask_void's path exactly (same checks, same limit), then the skill's name and the link where the skill itself runs
+// a skill tool: the skill's own code runs on the server (lib/mcp-run.js), never a model in its place, then the link to its card
+const WHY_NOT = {
+  short: () => 'Give the ask as "ask", in plain words.',
+  'not-this-skill': (s) => 'That is not an ask the ' + s.skill + ' skill takes. Asks like ' + s.examples.map((e) => '"' + e + '"').join(', ') + '. For anything else, use ask_void.',
+  timeout: (s) => 'The ' + s.skill + ' skill took too long just now. Try again in a moment.',
+  error: (s) => 'The ' + s.skill + ' skill failed on that ask.',
+};
 async function askSkill(s, a, ctx) {
-  const r = await askVoid(a, ctx);
-  if (r.isError) return r;
-  const open = SITE + '/?q=' + encodeURIComponent(a.ask.trim().slice(0, 600));
-  return { ...r, content: [{ type: 'text', text: r.content[0].text + '\n\nThe ' + s.skill + ' skill itself: ' + open }], structuredContent: { ...r.structuredContent, skill: s.skill, path: 'answer_engine', open } };
+  const ask = typeof a.ask === 'string' ? a.ask.trim().slice(0, 600) : '';
+  const mod = SKILL_MODULES[s.skill];
+  if (!mod) return toolError('The ' + s.skill + ' skill is not here.');
+  const r = await runSkill(mod, ask, { fetchImpl: (ctx && ctx.fetch) || fetch });
+  const open = SITE + '/?q=' + encodeURIComponent(ask);
+  if (!r.ok) return toolError(r.why === 'none' ? (r.text || 'The ' + s.skill + ' skill had no answer for that.') : WHY_NOT[r.why](s));
+  const text = r.text + (r.links.length ? '\n\nSources:\n' + r.links.map((x) => '- ' + x.title + ': ' + x.url).join('\n') : '') + '\n\nThe ' + s.skill + ' skill on its card: ' + open;
+  return toolResult(text, { skill: s.skill, path: 'skill_code', answer: r.text, sources: r.links, open });
 }
 
 const TIERS = ['experiment', 'tested', 'checked', 'proven'];
@@ -231,7 +243,7 @@ export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Verse's read-only tools: ask Verse anything (ask_void, its answer engine), the instant code review, its SEO audit of a page (seo_audit), readability, colour contrast, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Verse's read-only tools: ask Verse anything (ask_void, its answer engine), the instant code review, its SEO audit of a page (seo_audit), readability, colour contrast, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, the skill's own code run on the server, no model), and skill_health (how far each skill is checked). ask_void and the closer read call a model; the skill tools do not." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {
