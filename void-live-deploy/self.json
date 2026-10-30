@@ -536,12 +536,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T18:51:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:50:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T18:43:36Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
    "at": "2026-10-30T18:39:59Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T18:39:15Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T18:37:18Z",
@@ -602,18 +614,6 @@
   {
    "at": "2026-10-30T18:12:03Z",
    "subject": "Fly stars check: sample the streak drawn for the last move"
-  },
-  {
-   "at": "2026-10-30T18:11:41Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:11:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:10:00Z",
-   "subject": "Music: mark the sequential archive.org downloads as intended"
   }
  ],
  "builders": {
