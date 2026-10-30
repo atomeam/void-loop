@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1067,
+ "counted": 1069,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -651,7 +651,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 15
+   "tests": 16
   },
   {
    "file": "lib/field-cards.js",
@@ -725,6 +725,13 @@
   },
   {
    "file": "lib/date-words.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/fincalc.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6,
@@ -1004,13 +1011,6 @@
    "tests": 2
   },
   {
-   "file": "lib/fincalc.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
    "file": "lib/generators.js",
    "skills": 2,
    "direct": 1,
@@ -1044,6 +1044,13 @@
    "direct": 0,
    "dependants": 3,
    "tests": 2
+  },
+  {
+   "file": "lib/rentbuy.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/video.js",
@@ -1736,7 +1743,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/chat-generators.js",
@@ -2786,7 +2793,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/ai-generators.js",
@@ -5567,6 +5574,7 @@
    "imports": [
     "lib/calc-units.js",
     "lib/fincalc.js",
+    "lib/rentbuy.js",
     "lib/date-math.js",
     "lib/formula-engine.js",
     "lib/formulas.js"
@@ -6919,10 +6927,12 @@
    "importedBy": [
     "lib/calc-panels.js",
     "lib/calculators.js",
+    "lib/rentbuy.js",
     "skills/loan.js"
    ],
    "reachedBy": [
-    "skills/formulas.js"
+    "skills/formulas.js",
+    "skills/rentbuy.js"
    ]
   },
   "lib/fix-audit.js": {
@@ -9985,6 +9995,18 @@
   "lib/reinvest.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/rentbuy.js": {
+   "imports": [
+    "lib/fincalc.js"
+   ],
+   "importedBy": [
+    "lib/calculators.js",
+    "skills/rentbuy.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
   },
   "lib/repo-look.js": {
    "imports": [
@@ -14999,6 +15021,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/rentbuy.js": {
+   "imports": [
+    "lib/rentbuy.js"
+   ],
+   "importedBy": []
   },
   "skills/repo.js": {
    "imports": [
