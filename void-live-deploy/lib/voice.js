@@ -150,11 +150,14 @@ export function followThrough(entries, ledger, links = []) {
   // and again). Still a link a builder wrote naming the entry, never a guess; reworded asks match it as they match each other.
   // A ledger `asked` that is free text (not ask-…) is the same kind of evidence: the builder named the ask's words (2026-10-14:
   // friction kept coming back because its id aged out of the live reflect window and only the id was on the ledger).
-  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: L.find((e) => e.at === k.ledgerAt) })).filter((k) => k.x);
-  for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e });
+  // A ledger `asked` is the builder naming the ask, so its words count as evidence; a link's words are only the ask copied back
+  // (tools/asks-link.mjs links by shared words), so a site the ask names must be in the ledger line itself (2026-10-30: the
+  // onlineconverter.com ask showed a sycophanthex.com line as what was built).
+  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: L.find((e) => e.at === k.ledgerAt), proof: '' })).filter((k) => k.x);
+  for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e, proof: String(e.asked) });
   const built = [], open = [];
   for (const g of groups) {
-    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => (k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) && sitesIn(g.ask, k.words + ' ' + k.x.what)) || {}).x;
+    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => (k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) && sitesIn(g.ask, k.proof + ' ' + k.x.what + ' ' + (k.x.show || ''))) || {}).x;
     (hit ? built : open).push(hit ? { ...g, what: String(hit.what), builtAt: hit.at, ref: hit.ref || null, depth: depthOf(hit.kind) } : g);
   }
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently

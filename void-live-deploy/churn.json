@@ -1,12 +1,12 @@
 {
- "at": "2026-10-30T02:32:03.264Z",
+ "at": "2026-10-30T02:41:59.006Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/lib/tower.js",
-   "changes": 108
+   "changes": 109
   },
   {
    "file": "tools/tower-probes.mjs",
@@ -14,15 +14,15 @@
   },
   {
    "file": "void-live-deploy/sw.js",
-   "changes": 73
+   "changes": 74
   },
   {
    "file": "domains/handoff.md",
-   "changes": 68
+   "changes": 70
   },
   {
    "file": "tools/families.mjs",
-   "changes": 50
+   "changes": 51
   },
   {
    "file": "tools/tower-gate.mjs",
@@ -34,23 +34,23 @@
   },
   {
    "file": "void-live-deploy/lib/seo.js",
-   "changes": 45
+   "changes": 46
+  },
+  {
+   "file": "void-live-deploy/lib/toolkit.js",
+   "changes": 44
   },
   {
    "file": "tools/tower-gate.test.mjs",
    "changes": 43
   },
   {
-   "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 43
-  },
-  {
    "file": "tools/bench.json",
-   "changes": 36
+   "changes": 38
   },
   {
    "file": "domains/tower-self.json",
-   "changes": 31
+   "changes": 32
   },
   {
    "file": "tools/card-cycle.json",
@@ -69,15 +69,15 @@
    "changes": 27
   },
   {
+   "file": "void-live-deploy/lib/card-frame.js",
+   "changes": 27
+  },
+  {
    "file": "void-live-deploy/lib/guard.js",
    "changes": 27
   },
   {
    "file": "tools/openapi-check.mjs",
-   "changes": 26
-  },
-  {
-   "file": "void-live-deploy/lib/card-frame.js",
    "changes": 26
   },
   {
@@ -121,12 +121,12 @@
    "changes": 19
   },
   {
-   "file": "void-live-deploy/calendar/index.html",
+   "file": "tools/bench.mjs",
    "changes": 19
   },
   {
-   "file": "tools/bench.mjs",
-   "changes": 18
+   "file": "void-live-deploy/calendar/index.html",
+   "changes": 19
   },
   {
    "file": "void-live-deploy/tower.size.json",
@@ -142,6 +142,14 @@
   },
   {
    "file": "void-live-deploy/lib/similar-index.js",
+   "changes": 17
+  },
+  {
+   "file": "void-live-deploy/tools/index.html",
+   "changes": 17
+  },
+  {
+   "file": "void-live-deploy/void.asks.json",
    "changes": 17
   },
   {
@@ -173,15 +181,15 @@
    "changes": 16
   },
   {
-   "file": "void-live-deploy/tools/index.html",
-   "changes": 16
-  },
-  {
    "file": "docs/PARITY/github.md",
    "changes": 15
   },
   {
    "file": "docs/PARITY/hugging-face.md",
+   "changes": 15
+  },
+  {
+   "file": "tools/real-pages.mjs",
    "changes": 15
   },
   {
@@ -237,12 +245,12 @@
    "changes": 14
   },
   {
-   "file": "void-live-deploy/void.asks.json",
+   "file": "void-live-deploy/wheel/index.html",
    "changes": 14
   },
   {
-   "file": "void-live-deploy/wheel/index.html",
-   "changes": 14
+   "file": "docs/HANDOFF-GAPS.md",
+   "changes": 13
   },
   {
    "file": "tools/brain.test.mjs",
@@ -250,10 +258,6 @@
   },
   {
    "file": "tools/card-art-route.test.mjs",
-   "changes": 13
-  },
-  {
-   "file": "tools/real-pages.mjs",
    "changes": 13
   },
   {

@@ -15,6 +15,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sitesIn } from '../void-live-deploy/lib/voice.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ASKS = resolve(root, 'void-live-deploy/void.asks.json'), LEDGER = resolve(root, 'void-live-deploy/void.growth.json'), VOICE = resolve(root, 'domains/void.voice.md');
@@ -54,6 +55,7 @@ export function matchOf(ask, ledger, idf) {
   const aw = words(ask.ask); let best = null;
   for (const e of ledger) {
     if (!e || !e.what) continue;
+    if (!sitesIn(ask.ask, e.what + ' ' + (e.show || '') + ' ' + (e.asked || ''))) continue; // an ask naming a site needs a line naming it
     const ew = new Set(e.words || (e.words = words(e.what + ' ' + (e.show || '') + ' ' + (e.asked || ''))));
     const shared = aw.filter((w) => ew.has(w));
     if (shared.length < 2) continue;
