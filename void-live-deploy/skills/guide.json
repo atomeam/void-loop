@@ -15,8 +15,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 0,
+    "tested": 0,
+    "checked": 1,
     "proven": 59
    },
    "from": 6,
@@ -72,8 +72,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 24
+    "checked": 0,
+    "proven": 25
    },
    "from": 150,
    "to": 175
@@ -668,8 +668,9 @@
     "animate a cat chasing yarn",
     "animate waves on a beach at sunset"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 25
   },
   {
@@ -2255,7 +2256,7 @@
     "how heavy can my suitcase be"
    ],
    "tier": "tested",
-   "why": "2 real asks in the benchmark",
+   "why": "3 real asks in the benchmark",
    "n": 110
   },
   {
@@ -3076,8 +3077,9 @@
     "is it better to rent or buy a house",
     "rent vs buy"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 4 real asks in the benchmark",
+   "flavor": "Asked 4 times in earnest, and never once left unanswered. Let the stage be the proof.",
    "glow": 100,
    "n": 157
   },
@@ -3348,7 +3350,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
-   "flavor": "Asked 4 times in earnest, and never once left unanswered. Let the stage be the proof.",
+   "flavor": "Written by the hands that use it; 4 real askings stand behind this page. Let the stage be the proof.",
    "glow": 100,
    "n": 173
   },

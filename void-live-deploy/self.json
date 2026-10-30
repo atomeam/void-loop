@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T13:48:24Z",
+   "subject": "Pictures into a PDF: paint and image hand a picture to /pdf/'s images-to-PDF tool"
+  },
+  {
+   "at": "2026-10-30T13:46:52Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T13:46:49Z",
+   "subject": "Stock and index asks get a quote card that opens Markets"
+  },
+  {
    "at": "2026-10-30T13:44:48Z",
    "subject": "Verse fixes its constellation skill: learn to handle \"can u see cassiopeia tonight\""
   },
@@ -576,6 +588,10 @@
   {
    "at": "2026-10-30T13:41:11Z",
    "subject": "Arena: Verse played itself again; the records and the self-play champion"
+  },
+  {
+   "at": "2026-10-30T13:38:46Z",
+   "subject": "Weather card: keep the place on the full page and show the asked days"
   },
   {
    "at": "2026-10-30T13:37:55Z",
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T13:23:38Z",
    "subject": "Work card: a thin search offers the same remote search on the boards"
-  },
-  {
-   "at": "2026-10-30T13:23:09Z",
-   "subject": "Carry one picture between the picture pages: image, paint, photos, resize"
-  },
-  {
-   "at": "2026-10-30T13:19:22Z",
-   "subject": "Holiday cards open their day on the Calendar"
-  },
-  {
-   "at": "2026-10-30T13:17:48Z",
-   "subject": "Flights card: the full page link keeps the places"
-  },
-  {
-   "at": "2026-10-30T13:15:56Z",
-   "subject": "Local Inference card says how to make Ollama answer"
   }
  ],
  "builders": {
