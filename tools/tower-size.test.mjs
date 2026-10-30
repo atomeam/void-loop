@@ -2,9 +2,9 @@
 import { test } from 'node:test';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import { measure, weightOf, weightBand, bytesLabel, controlsOf, trustedControls } from '../void-live-deploy/lib/tower-weight.js';
+import { measure, weightOf, weightBand, bytesLabel, controlsOf, trustedControls, rankableControls } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
-import { planSizes, usable, isTool, renderedControls, openBrowser, within } from './tower-size.mjs';
+import { planSizes, usable, isTool, renderedControls, openBrowser, within, shellOf } from './tower-size.mjs';
 
 test('a page is weighed by its bytes, scripts, elements and routes', () => {
   const html = '<html><head><script src="/a.js"></script><link rel="stylesheet" href="/s.css"></head><body><a href="/one">1</a><a href="/two">2</a><a href="https://x.com/o">o</a><p>hi</p></body></html>';
@@ -91,7 +91,7 @@ test('a community, archive or news page is not a tool even with a search box; a 
 
 test('with a browser, a row counted only from raw html is read again, after the unmeasured and before the stale; without one it is not', () => {
   const now = Date.parse('2026-10-29'), sites = ['a.com', 'b.com', 'c.com', 'd.com', 'e.com'].map((host) => ({ host }));
-  const file = { sites: { 'a.com': { at: '2026-10-28', bytes: 1, controls: 3 }, 'b.com': { at: '2026-10-28', bytes: 1, controls: 9, counted: 'rendered' }, 'c.com': { at: '2026-08-01', bytes: 1, controls: 4, counted: 'rendered' }, 'e.com': { at: '2026-10-28', bytes: 1, controls: 5, counted: 'unrendered' } } };
+  const file = { sites: { 'a.com': { at: '2026-10-28', bytes: 1, controls: 3 }, 'b.com': { at: '2026-10-28', bytes: 1, controls: 9, counted: 'rendered', shell: 'none' }, 'c.com': { at: '2026-08-01', bytes: 1, controls: 4, counted: 'rendered' }, 'e.com': { at: '2026-10-28', bytes: 1, controls: 5, counted: 'unrendered' } } };
   assert.deepEqual(planSizes({ sites, file, now, rendered: true }).map((s) => s.host), ['d.com', 'a.com', 'c.com'], 'a page that would not render waits its 30 days');
   assert.deepEqual(planSizes({ sites, file, now }).map((s) => s.host), ['d.com', 'c.com']);
 });
@@ -127,4 +127,46 @@ test('the target stands first and the card says it is the target, not the easies
 test('a site that takes too long gives null and frees its worker; a quick one gives its row', async () => {
   assert.equal(await within(new Promise(() => {}), 20), null);
   assert.deepEqual(await within(Promise.resolve({ controls: 4 }), 1000), { controls: 4 });
+});
+
+test('a row not rendered never ranks on its raw count: it stands behind every rendered row (owner review, 2026-10-30: howsecureismypassword.net read 3 raw, 9 rendered)', () => {
+  assert.equal(rankableControls({ controls: 3, counted: 'unrendered' }), null); assert.equal(rankableControls({ controls: 3, counted: 'html' }), null);
+  assert.equal(rankableControls({ controls: 9, counted: 'rendered', shell: 'none' }), 9); assert.equal(rankableControls(null), null);
+  const rank = { ranks: {}, order: {}, list: {} };
+  const size = { sites: {
+    'random.org': { bytes: 90000, controls: 3, htmlControls: 3, counted: 'unrendered', scripts: 3, nodes: 300, routes: 10 },
+    'isitchristmas.com': { bytes: 700, controls: 9, htmlControls: 3, counted: 'rendered', shell: 'none', scripts: 0, nodes: 20, routes: 0 } } };
+  const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
+  assert.ok(at('is it') < at('random number'), 'the rendered 9 stands before the unrendered 3');
+  assert.doesNotMatch(easeLine(t.floors[at('random number')]), /control/, 'the card does not state a count it did not render');
+});
+
+test('a bot wall or a country picker is a door, not the site: it never ranks as a small site (serverdiscounter.com read 3, wheeloutlet.com 6)', () => {
+  const anubis = '<html><head><title>Making sure you&#39;re not a bot!</title></head><body><main><h1>Making sure you\'re not a bot!</h1><p>Loading...</p>'
+    + '<p>Protected by <a href="https://github.com/TecharoHQ/anubis">Anubis</a> From <a href="https://techaro.lol">Techaro</a>.</p><p>Mascot design by <a href="https://bsky.app/x">CELPHASE</a>.</p></main></body></html>';
+  assert.equal(controlsOf(anubis).total, 3, 'the three links serverdiscounter.com was counted at');
+  assert.equal(shellOf({ html: anubis, url: 'https://serverdiscounter.com/', controls: 3 }), 'wall');
+  assert.equal(shellOf({ html: '<p>x</p>', url: 'https://serverdiscounter.com/.within.website/?redir=/', controls: 3 }), 'wall', 'the Anubis address alone says wall');
+  const picker = '<html><head><title>wheeloutlet.com - Select your country &amp; onlineshop</title></head><body><nav><button>DE</button><button>EN</button><button>FR</button></nav>'
+    + '<h1>Welcome to wheeloutlet.com</h1><p>Please select your country to reach the right onlineshop.</p><button>Germany</button><button>Go to the onlineshop</button><a href="tel:+1">call</a></body></html>';
+  assert.equal(controlsOf(picker).total, 6, 'the six controls wheeloutlet.com was counted at');
+  assert.equal(shellOf({ html: picker, url: 'https://wheeloutlet.com/', controls: 6 }), 'gateway');
+  const tool = '<html><head><title>VAT calculator online</title></head><body><h1>VAT calculator</h1><input type="number"><input type="radio" checked><input type="radio"><input type="number" value="22"><button>Calculate</button><a href="http://vatcalconline.com">vat calculator</a></body></html>';
+  assert.equal(shellOf({ html: tool, url: 'https://ndscalc.ru/', controls: 7 }), 'none', 'a calculator is the site itself');
+  const shop = '<html><head><title>Big shop</title></head><body><p>Select your country</p>' + '<a href="/p">p</a>'.repeat(40) + '</body></html>';
+  assert.equal(shellOf({ html: shop, url: 'https://shop.test/', controls: 40 }), 'none', 'a whole shop with a country menu is not a splash page');
+  const rank = { ranks: {}, order: {}, list: {} };
+  const size = { sites: {
+    'random.org': { bytes: 90000, controls: 3, counted: 'rendered', shell: 'wall', scripts: 3, nodes: 300, routes: 10 },
+    'calculator.net': { bytes: 2.4e6, controls: 6, counted: 'rendered', shell: 'gateway', scripts: 40, nodes: 9000, routes: 600 },
+    'isitchristmas.com': { bytes: 700, controls: 9, counted: 'rendered', shell: 'none', scripts: 0, nodes: 20, routes: 0 } } };
+  const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
+  assert.ok(at('is it') < at('random number') && at('is it') < at('calculator'), 'the real 9-control site stands before the wall and the picker');
+});
+
+test('planSizes reads again a rendered row not yet checked for a bot wall or a country picker', () => {
+  const now = Date.parse('2026-10-30'), sites = [{ host: 'a.com' }, { host: 'b.com' }];
+  const file = { sites: { 'a.com': { controls: 9, counted: 'rendered', shell: 'none', at: '2026-10-29' }, 'b.com': { controls: 3, counted: 'rendered', at: '2026-10-29' } } };
+  assert.deepEqual(planSizes({ sites, file, now, rendered: true }).map((s) => s.host), ['b.com']);
+  assert.deepEqual(planSizes({ sites, file, now, rendered: false }).map((s) => s.host), [], 'without a browser it waits for a run that renders');
 });
