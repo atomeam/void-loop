@@ -13,7 +13,7 @@
 export const KINDS = ['fix', 'job', 'idea'];
 export const MAX = 12, ORGAN_GENS = 500;
 const s = (x, n = 160) => String(x == null ? '' : x).replace(/\s+/g, ' ').trim().slice(0, n);
-const clip = (x, n = 90) => { const t = s(x, 400); if (t.length <= n) return t; const c = t.slice(0, n - 3), at = c.lastIndexOf(' '); return (at > n / 2 ? c.slice(0, at) : c).replace(/[\s,;:.]+$/, '') + '...'; };
+const clip = (x, n = 90) => { const t = s(x, 800); if (t.length <= n) return t; const c = t.slice(0, n - 3), at = c.lastIndexOf(' '); return (at > n / 2 ? c.slice(0, at) : c).replace(/[\s,;:.]+$/, '') + '...'; };
 const gh = (u) => (/^https:\/\/github\.com\/atomeam\/void-loop\/(pull|issues|actions\/runs)\/\d+/.test(u || '') ? s(u, 200) : '');
 /** a short stable key from text (FNV-1a, base 36): the same memory gives the same key. */
 export const hash = (t) => { let h = 0x811c9dc5; for (const c of String(t)) { h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(36); };
@@ -30,7 +30,7 @@ export const trusted = (x) => !!x && (['OWNER', 'MEMBER', 'COLLABORATOR'].includ
 const PRODUCT = /its own product|a different job|a 3D tool rather than a mind part/;
 
 function dream(kind, key, title, why, done, sources, rank) {
-  return { kind, key, title: clip(title, 110), why: s(why, 300), done: s(done, 240), sources: sources.filter((x) => x && x.what).map((x) => ({ what: s(x.what, 160), url: x.url || '' })), rank };
+  return { kind, key, title: clip(title, 110), why: clip(why, 300), done: clip(done, 240), sources: sources.filter((x) => x && x.what).map((x) => ({ what: s(x.what, 160), url: x.url || '' })), rank };
 }
 
 /** the dreams in what the brain remembers, most urgent first. memory: { breaks, prs, issues, decision, drafts, self, at }:
