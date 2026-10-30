@@ -320,7 +320,7 @@ for (const [name, file] of [
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
   ['orb-memories', 'orb-memories.test.mjs'], // the memory orbs show Verse's memories: a brain's told words where it holds them, other cards' slots, the fluid pulled to them
-  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty-one organs, attention, imagination, the mind layers, kept knowledge
+  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty-two organs, attention, imagination, the mind layers, kept knowledge
   ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
   ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load
   ['brain-creature', 'brain-creature.test.mjs'], // F304's Lenia creature: it follows a moving target, it learns by online evolution, it runs in the brain, its genome is kept
@@ -332,6 +332,7 @@ for (const [name, file] of [
   ['brain-current', 'brain-current.test.mjs'], // F447's lattice-Boltzmann flow and evolved swimmers: mass and momentum kept, evolution beats random search and drifters, your drag stirs it, it is kept
   ['brain-grains', 'brain-grains.test.mjs'], // F456's granular grains: genes passed on touch from the nearer lander beat random passing and none, it runs in the brain, it is kept
   ['brain-pool', 'brain-pool.test.mjs'], // F459's SPH pool: a tiny network that sets viscosity, stiffness and kernel size beats the best constant setting and random search, follows the slosh, runs in the brain, is kept
+  ['brain-trace', 'brain-trace.test.mjs'], // the NCA drafts' cellular automaton: its tuned rule holds where the focus was and lets it go, beats the drafts' rule and random search, runs in the brain, is kept
   ['brain-host', 'brain-host.test.mjs'], // Verse uses its brain on every page: it hears every ask, learns what you ask next, ranks the ask box by it (measured against newest-first) and answers "what are you thinking?"
   ['brain-glow', 'brain-glow.test.mjs'], // a reload keeps what Verse Brain was just told: its lit ideas come back as bright as they were, dimmed by the time away
   ['shared-field', 'shared-field.test.mjs'], // the shared field (skills/field.js): its API, and Verse Brain feeling other skills' slots and publishing numbers only

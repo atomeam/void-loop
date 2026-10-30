@@ -496,8 +496,14 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       if (!a.job) return bad(409, 'you hold no job');
       const note = T.clean(T.hideSecrets(redact(p.note || '')), 200), link = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(String(p.link || '')) ? p.link : '';
       if (p.ok) {
-        await setJob(env, a.job, 'done', ('done by team:' + a.name + (link ? ' · ' + link : '') + (note ? ' · ' + note : '')).slice(0, 300), a.name);
-        await write(env, { c: 'work', by: a.id, body: 'Done.' + (link ? ' ' + link : '') + (note ? '\n' + note : ''), thread: a.thread, now });
+        // a job is done only when its pull request did the job (coordinator, 2026-10-30: Beam closed three versus jobs with PRs that
+        // added a target note and no page). With a link the job waits as "review by team:<name>" until tools/team-gate.mjs checks
+        // the merged PR (the page itself, nothing taken away, the live page answers) and moves it live or back on the queue.
+        // Without a link only an owner's #work ask closes: the owner reads the answer in its thread.
+        const row = await env.DB.prepare('SELECT id, target FROM void_queue WHERE id = ?').bind(a.job).first().catch(() => null);
+        if (!link && !T.ownerAsk(row || { id: a.job })) return bad(400, 'a job closes with the link of the pull request that does it; if you cannot do it, give it back with why');
+        await setJob(env, a.job, link ? 'building' : 'done', (link ? T.reviewNote(a.name, link, note) : 'done by team:' + a.name + (note ? ' · ' + note : '')).slice(0, 300), a.name);
+        await write(env, { c: 'work', by: a.id, body: (link ? 'Handed in: ' + link + '. Verse checks it after the merge.' : 'Done.') + (note ? '\n' + note : ''), thread: a.thread, now });
         await env.DB.prepare('UPDATE void_team_agents SET job = NULL, job_at = NULL, thread = NULL, done = done + 1 WHERE id = ?').bind(a.id).run();
       } else {
         if (note) await write(env, { c: 'work', by: a.id, body: note, thread: a.thread, now });

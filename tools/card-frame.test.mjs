@@ -129,3 +129,11 @@ test('a card from a skill with a full page links to it (owner, 2026-10-25)', asy
   assert.equal(pageLinkHtml('nope', esc), '');
   for (const [, [href]] of Object.entries(PAGE_OF)) assert.match(href, /^(?:\/[a-z0-9-]+)+\/(?:[a-z-]+)?$/);
 });
+
+test('a card whose art box shows the answer\'s photo does not show the same photo again in its body (2026-10-30: the recipe card showed its dish twice)', () => {
+  const css = CARD_CSS.join ? CARD_CSS.join('') : String(CARD_CSS);
+  assert.match(css, /\.vpage\.vcard>img\[data-vc-art-src\]\{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none\}/);
+  const src = readFileSync(resolve(root, '../lib/card-frame.js'), 'utf8');
+  assert.match(src, /if \(source === 'photo' && photoImg && photoImg\.parentNode === el\) photoImg\.dataset\.vcArtSrc = '1';/, 'only a photo that stands on its own in the card is the one hidden');
+  assert.match(src, /if \(source !== 'photo' \|\| i !== photoImg\) delete i\.dataset\.vcArtSrc;/, 'a card that no longer shows that photo as art shows it in its body again');
+});

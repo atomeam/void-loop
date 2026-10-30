@@ -60,16 +60,19 @@ async function sha(s) {
   return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 32);
 }
 const UA = { 'user-agent': 'Verse/1.0 (https://a-to-mind.com; atom@a-to-mind.com)' };
+// Wikipedia at the edge (owner's status card, 2026-10-30: Wikipedia was the slow source): the same search is kept an hour and a page summary six hours,
+// a good answer only, so a repeat ask or a popular page costs no round trip to Wikipedia
+const WIKI_SEARCH_CACHE = { cacheTtlByStatus: { '200-299': 3600, '300-599': 0 } }, WIKI_PAGE_CACHE = { cacheTtlByStatus: { '200-299': 21600, '300-599': 0 } };
 async function sources(ask) {
   const q = String(ask).slice(0, QUERY_MAX).replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
   // a name's section lookups (below) need only the ask, so they go out with the search, not after the summaries: two round trips to
   // Wikipedia before the answer, not four (the router runs beside them and must not be waited on, tools/test_void.mjs "router: it runs while")
   const name = isNameAsk(q), looks = name ? sectionLookups(q) : null;
-  const s = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&srsearch=' + encodeURIComponent(q), { headers: UA }).then((r) => r.json()).catch(() => null);
+  const s = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&srsearch=' + encodeURIComponent(q), { headers: UA, cf: WIKI_SEARCH_CACHE }).then((r) => r.json()).catch(() => null);
   const hits = (s && s.query && s.query.search) || [];
   // the three summaries are fetched together, not one after another (perf pass 2026-10-16: two round trips to Wikipedia saved
   // on every uncached answer); the sources keep the search's order
-  const pages = await Promise.all(hits.slice(0, 3).map((h) => fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(h.title.replace(/ /g, '_')), { headers: UA }).then((r) => r.json()).catch(() => null)));
+  const pages = await Promise.all(hits.slice(0, 3).map((h) => fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(h.title.replace(/ /g, '_')), { headers: UA, cf: WIKI_PAGE_CACHE }).then((r) => r.json()).catch(() => null)));
   const out = [];
   hits.slice(0, 3).forEach((h, i) => {
     const j = pages[i], page = j && j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
