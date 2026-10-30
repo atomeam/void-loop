@@ -74,14 +74,15 @@ function trak(id, kind, info, samples, offsets, movieMs) {
   return box('trak', tkhd, box('mdia', mdhd, hdlr, box('minf', head, dinf, stbl)));
 }
 /** an MP4 file from coded video samples (and sound samples, if any). video: { codec, width, height, description, samples };
- *  audio: { codec: 'mp4a.40.2' | 'opus', rate, channels, description, bitrate, samples } or null. Pure. */
-export function mp4(video, audio = null) {
+ *  audio: { codec: 'mp4a.40.2' | 'opus', rate, channels, description, bitrate, samples } or null. opts.qt: a QuickTime MOV (the same boxes, the
+ *  QuickTime brand). Pure. */
+export function mp4(video, audio = null, opts = {}) {
   const tracks = [video && video.samples.length && { kind: 'vide', info: video, samples: video.samples }, audio && audio.samples.length && { kind: 'soun', info: audio, samples: audio.samples }].filter(Boolean);
   if (!tracks.length) throw new Error('nothing to write: no video and no sound.');
   // the order of the data: by time, so a player reads sound and pictures together
   const order = tracks.flatMap((tr, k) => tr.samples.map((s, i) => ({ k, i, t: s.t }))).sort((a, b) => a.t - b.t || a.k - b.k);
   const endMs = Math.max(...tracks.map((tr) => { const l = tr.samples[tr.samples.length - 1]; return Math.ceil((l.t + (l.d || 0)) / 1000); }));
-  const ftyp = box('ftyp', str('isom'), u32(0x200), str('isom'), str('iso2'), str(tracks.some((t) => /^avc/.test(t.info.codec)) ? 'avc1' : 'iso6'), str('mp41'));
+  const ftyp = opts.qt ? box('ftyp', str('qt  '), u32(0x200), str('qt  ')) : box('ftyp', str('isom'), u32(0x200), str('isom'), str('iso2'), str(tracks.some((t) => /^avc/.test(t.info.codec)) ? 'avc1' : 'iso6'), str('mp41'));
   const moovOf = (offs) => box('moov', full('mvhd', 0, 0, u32(0), u32(0), u32(1000), u32(endMs), u32(0x00010000), u16(0x0100), zeros(10), MATRIX, zeros(24), u32(tracks.length + 1)),
     ...tracks.map((tr, k) => trak(k + 1, tr.kind, tr.info, tr.samples, offs[k], endMs)));
   const blank = tracks.map((tr) => tr.samples.map(() => 0)), size = moovOf(blank).length; // co64: the index is the same size whatever the offsets
@@ -101,15 +102,16 @@ const flt = (id, v) => { const b = new Uint8Array(8); new DataView(b.buffer).set
 const txt = (id, s) => el(id, str(s));
 const ID = { EBML: 0x1a45dfa3, Segment: 0x18538067, SeekHead: 0x114d9b74, Seek: 0x4dbb, SeekID: 0x53ab, SeekPosition: 0x53ac, Info: 0x1549a966, Tracks: 0x1654ae6b, Cues: 0x1c53bb6b, Cluster: 0x1f43b675 };
 
-/** a WebM file from coded video samples (VP8, VP9 or AV1) and sound samples (Opus), either of which may be missing. Pure. */
-export function webm(video, audio = null) {
+/** a WebM file from coded video samples (VP8, VP9 or AV1) and sound samples (Opus), either of which may be missing. opts.mkv: a Matroska
+ *  MKV (WebM is a part of Matroska: the same elements, the matroska doctype). Pure. */
+export function webm(video, audio = null, opts = {}) {
   const hasV = !!(video && video.samples.length), hasA = !!(audio && audio.samples.length);
   if (!hasV && !hasA) throw new Error('nothing to write: no video and no sound.');
   const vId = { vp8: 'V_VP8', av01: 'V_AV1' }[hasV ? String(video.codec).slice(0, 4) : ''] || (hasV && /^vp09/.test(video.codec) ? 'V_VP9' : '');
   if (hasV && !vId) throw new Error('Verse cannot put ' + video.codec + ' video in a WebM.');
   if (hasA && audio.codec !== 'opus') throw new Error('Verse cannot put ' + audio.codec + ' sound in a WebM.');
   const vn = 1, an = hasV ? 2 : 1, head = hasA ? opusHeadOf(audio.description, audio.channels, audio.rate) : null;
-  const ebml = el(ID.EBML, uint(0x4286, 1), uint(0x42f7, 1), uint(0x42f2, 4), uint(0x42f3, 8), txt(0x4282, 'webm'), uint(0x4287, 4), uint(0x4285, 2));
+  const ebml = el(ID.EBML, uint(0x4286, 1), uint(0x42f7, 1), uint(0x42f2, 4), uint(0x42f3, 8), txt(0x4282, opts.mkv ? 'matroska' : 'webm'), uint(0x4287, 4), uint(0x4285, 2));
   const all = [...(hasV ? video.samples.map((s) => ({ ...s, n: vn, v: true })) : []), ...(hasA ? audio.samples.map((s) => ({ ...s, n: an, v: false })) : [])].sort((a, b) => a.t - b.t || (a.v ? -1 : 1));
   const endMs = Math.max(...all.map((s) => (s.t + (s.d || 0)) / 1000));
   const info = el(ID.Info, uint(0x2ad7b1, 1000000), txt(0x4d80, 'Verse'), txt(0x5741, 'Verse (a-to-mind.com/converter/)'), flt(0x4489, endMs));

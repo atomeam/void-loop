@@ -2243,6 +2243,13 @@
    "tests": 1
   },
   {
+   "file": "lib/pdf-tools.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -2313,11 +2320,11 @@
    "tests": 1
   },
   {
-   "file": "lib/pdf-tools.js",
+   "file": "lib/translate-docs.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/used.js",
@@ -2349,6 +2356,13 @@
   },
   {
    "file": "lib/book-face.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/converter.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2516,13 +2530,6 @@
    "tests": 1
   },
   {
-   "file": "lib/translate-docs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 2
-  },
-  {
    "file": "lib/translate-web.js",
    "skills": 0,
    "direct": 0,
@@ -2643,13 +2650,6 @@
   },
   {
    "file": "lib/comments-ui.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/converter.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5579,7 +5579,9 @@
     "lib/translate-docs.js",
     "lib/pdf-tools.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/video-write.js"
+   ]
   },
   "lib/cook-flow.js": {
    "imports": [],
@@ -8098,6 +8100,9 @@
    "importedBy": [
     "lib/converter.js",
     "lib/pdf-ui.js"
+   ],
+   "reachedBy": [
+    "lib/video-write.js"
    ]
   },
   "lib/pdf-ui.js": {
@@ -10363,6 +10368,9 @@
    "imports": [],
    "importedBy": [
     "lib/converter.js"
+   ],
+   "reachedBy": [
+    "lib/video-write.js"
    ]
   },
   "lib/translate-extras.js": {
@@ -10419,7 +10427,8 @@
   },
   "lib/video-write.js": {
    "imports": [
-    "lib/video-mux.js"
+    "lib/video-mux.js",
+    "lib/converter.js"
    ],
    "importedBy": []
   },
