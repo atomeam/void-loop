@@ -651,7 +651,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 18
+   "tests": 19
   },
   {
    "file": "lib/field-cards.js",
