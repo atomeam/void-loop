@@ -193,6 +193,32 @@ export async function opusFile(s, encodeSound, bitrate = 128000) {
   if (s.channels.length > 2) notes.push('the first 2 of ' + s.channels.length + ' channels');
   return { bytes: oggOpus(audio, { inputRate: Math.round(s.rate), samples: s48.channels[0].length }), notes };
 }
+/** can this browser code AAC (mp4a.40.2) at 48 kHz? */
+export async function canAac(channels = 2) {
+  if (typeof AudioEncoder !== 'function') return false;
+  try { return !!(await AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: 48000, numberOfChannels: Math.min(2, channels), bitrate: 192000 })).supported; } catch (_) { return false; }
+}
+export const RINGTONE_SECONDS = 40; // Apple's limit for a ringtone (30 for an alert tone)
+/** a sound -> an .m4a (or, with ringtone, an .m4r): AAC at 192 kbps where the browser codes it. Without AAC, an .m4a holds Apple Lossless
+ *  (ALAC, Verse's own encoder) and says so; a ringtone has to be AAC, so it stops. A ringtone keeps the first 40 seconds. { bytes, notes } */
+export async function m4aFile(s, encodeSound, { ringtone = false, bitrate = 192000 } = {}) {
+  const notes = []; let src = s;
+  if (ringtone && s.channels[0].length > RINGTONE_SECONDS * s.rate) {
+    const n = Math.round(RINGTONE_SECONDS * s.rate); src = { ...s, channels: s.channels.map((c) => c.subarray(0, n)) };
+    notes.push('an iPhone ringtone can be ' + RINGTONE_SECONDS + ' seconds at most, so Verse kept 0 to ' + RINGTONE_SECONDS + ' s of ' + (s.channels[0].length / s.rate).toFixed(1) + ' s; to take another part, cut the sound first (Cut MP3)');
+  }
+  const ch = Math.min(2, src.channels.length);
+  if (src.channels.length > 2) notes.push('the first 2 of ' + src.channels.length + ' channels');
+  if (!(await canAac(ch))) {
+    if (ringtone) throw new Error('a ringtone has to be AAC, and this browser has no AAC encoder, so Verse cannot make an .m4r here. M4A works: it holds Apple Lossless.');
+    notes.push('this browser has no AAC encoder, so the .m4a holds Apple Lossless (ALAC): the same sound as a WAV, larger than AAC');
+    return { bytes: alacFile(src.channels.slice(0, ch), src.rate), notes, codec: 'alac' };
+  }
+  const cfg = { codec: 'mp4a.40.2', sampleRate: 48000, numberOfChannels: ch, bitrate };
+  const s48 = await to48(src), audio = await encodeSound(s48, cfg);
+  notes.push('AAC at ' + bitrate / 1000 + ' kbps, coded by this browser');
+  return { bytes: mp4(null, { ...audio, bitrate }, { m4a: true }), notes, codec: 'aac' };
+}
 
 // ---- ALAC (Apple Lossless) ----------------------------------------------------------------------------------------------------------------
 // Verse's own encoder, pure: the frames Apple's ALAC decoder reads (adaptive Golomb residuals, the sign-LMS predictor, mid/side for stereo),
