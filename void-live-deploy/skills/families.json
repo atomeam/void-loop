@@ -14,7 +14,7 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 1,
+  "tested": 2,
   "checked": 5,
   "proven": 372
  },
@@ -3324,7 +3324,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 1,
     "proven": 46
    },
@@ -3346,6 +3346,13 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "streak": 7
+    },
+    {
+     "name": "studios",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests"
     },
     {
      "name": "dependency-health",
