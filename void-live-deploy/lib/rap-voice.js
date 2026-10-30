@@ -8,6 +8,8 @@
 //      each placed where it best continues the last), never past 0.6 to 1.3 times, so the voice stays a voice
 //   4. given weight: syllables on the snare and on the beat are louder, the rhyme loudest, and the rhyme is doubled (the ad-lib track a rapper
 //      records on the end word), for lib/rap-song.js to pan left and right
+//   5. ad-libs on their own track: words in brackets or parentheses ("[skrrt]", "(yeah)") are not rapped in the main line. Each is said on its
+//      own and put on a quieter, panned ad-lib track: one in the middle of a bar lands with the word after it, one at the end answers the rhyme
 // Everything here is pure arithmetic on Float32Arrays (tested in tools/rap-sound.test.mjs) but fetchVoice(), which asks the route for the bars.
 import { voiceText, barSyllables, syllablesOf } from './rap.js';
 import { SWING } from './rap-beat.js';
@@ -82,16 +84,34 @@ export function stretch(x, ratio, rate) {
 const rms = (x) => { let s = 0; for (let i = 0; i < x.length; i++) s += x[i] * x[i]; return Math.sqrt(s / Math.max(1, x.length)); };
 const swingOf = (slot, slotSec, swing) => (Number.isInteger(slot) && slot % 2 === 1 ? (swing - 0.5) * 2 * slotSec : 0);
 
-/** the rap's vocal: every spoken bar (clips[i], mono at `rate`, or null) cut, placed and stretched onto the beat at timing[i] (lib/rap.js timingOf).
- *  Returns { main, dub (the doubled rhyme words), words: [{ bar, i, at }], bars: [{ bar, at: [syllable starts] }], voiced }. Pure. */
-export function buildVocal(clips, timing, beat, flow, rate, seconds) {
-  const len = Math.ceil(seconds * rate), main = new Float32Array(len), dub = new Float32Array(len), words = [], bars = [];
+/** a bar split into what is rapped and its ad-libs: { main, adlibs: [{ text, at (index of the bar's main word it lands with; the main word
+ *  count when it ends the bar) }], tokens: [{ w, adlib (index into adlibs, or -1) }] }. The ad-libs are the words in brackets or parentheses.
+ *  A bar that is all ad-lib is rapped as it is, with no ad-libs. Pure. */
+export function splitBar(bar) {
+  const t = String(bar || ''), tokens = [], adlibs = []; let main = 0, open = -1;
+  for (const w of t.split(/\s+/).filter(Boolean)) {
+    const starts = /^[[(]/.test(w);
+    if (open < 0 && starts) { adlibs.push({ text: '', at: main }); open = adlibs.length - 1; }
+    if (open >= 0) { tokens.push({ w, adlib: open }); adlibs[open].text += (adlibs[open].text ? ' ' : '') + w.replace(/[[\]()]/g, ''); if (/[\])][^A-Za-z0-9]*$/.test(w)) open = -1; continue; }
+    tokens.push({ w, adlib: -1 }); if (voiceText(w)) main++;
+  }
+  const said = adlibs.filter((a) => voiceText(a.text));
+  if (!main || !said.length) return { main: t, adlibs: [], tokens: tokens.map((k) => ({ w: k.w, adlib: -1 })) };
+  const keep = adlibs.map((a) => (voiceText(a.text) ? said.indexOf(a) : -1));
+  return { main: tokens.filter((k) => k.adlib < 0).map((k) => k.w).join(' '), adlibs: said, tokens: tokens.map((k) => ({ w: k.w, adlib: k.adlib < 0 ? -1 : keep[k.adlib] })) };
+}
+
+/** the rap's vocal: every spoken bar (clips[i], mono at `rate`, or null) cut, placed and stretched onto the beat at timing[i] (lib/rap.js timingOf),
+ *  and its ad-libs (adlibClips[i][j], said on their own, splitBar order) on their own track. Returns { main, dub (the doubled rhyme words),
+ *  adlib (the ad-lib track), words: [{ bar, i (the word's place in the bar as written), at }], bars: [{ bar, at: [syllable starts] }], voiced }. Pure. */
+export function buildVocal(clips, timing, beat, flow, rate, seconds, adlibClips = []) {
+  const len = Math.ceil(seconds * rate), main = new Float32Array(len), dub = new Float32Array(len), adlib = new Float32Array(len), words = [], bars = [];
   const slotSec = 60 / beat.bpm / 4, swing = SWING[beat.rapStyle] || 0.5, dbl = flow === 'double', end = dbl ? 4 : 12, speed = SPEED[flow] || SPEED.steady;
   const snares = new Set((beat.drums.snare || []).map((s) => s % 16));
   let voiced = 0;
   timing.forEach((b, bi) => {
     const clip = clips[bi]; if (!clip || !clip.length) return;
-    const text = voiceText(b.text), want = Math.max(1, Math.min(32, barSyllables(text))), cut = chunksOf(clip, rate, want); if (!cut) return;
+    const sp = splitBar(b.text), text = voiceText(sp.main), want = Math.max(1, Math.min(32, barSyllables(text))), cut = chunksOf(clip, rate, want); if (!cut) return;
     const level = rms(clip.subarray(cut[0], cut[cut.length - 1])), lift = level > 1e-4 ? Math.min(8, 0.12 / level) : 1;
     const k = cut.length - 1, nat = cut.slice(0, k).map((c) => (c - cut[0]) / rate), slots = placeBar(nat, { end, slotSec, speed });
     const at = slots.map((s) => b.at + s * slotSec + swingOf(s, slotSec, swing)), offset = dbl ? (b.bar % 2) * 8 : 0;
@@ -111,24 +131,47 @@ export function buildVocal(clips, timing, beat, flow, rate, seconds) {
     }
     // each word lights when its first syllable starts: the word's place among the bar's syllables, spread over the syllables found
     const ws = text.split(' ').filter(Boolean), syl = ws.map((w) => Math.max(1, syllablesOf(w))), total = syl.reduce((p, q) => p + q, 0); let before = 0;
-    ws.forEach((w, wi) => { words.push({ bar: b.bar, i: wi, at: at[Math.min(k - 1, Math.floor(before / total * k))] }); before += syl[wi]; });
+    const wordAt = ws.map((w, wi) => { const t = at[Math.min(k - 1, Math.floor(before / total * k))]; before += syl[wi]; return t; });
+    // the ad-libs: one inside the bar comes in with the main word after it, one at the end answers the rhyme two 16ths after it lands
+    const tail = Math.min(at[k - 1] + 2 * slotSec, b.at + b.len - 0.12), libAt = sp.adlibs.map((a) => (a.at < wordAt.length ? wordAt[a.at] : tail));
+    sp.adlibs.forEach((a, j) => {
+      const clip2 = (adlibClips[bi] || [])[j]; if (!clip2 || !clip2.length) return;
+      const lv = rms(clip2), g = (lv > 1e-4 ? Math.min(8, 0.12 / lv) : 1) * 0.9, o = Math.round(libAt[j] * rate), room = Math.max(0.15, b.at + b.len + 0.3 - libAt[j]);
+      let y = clip2.length / rate > room ? stretch(clip2, Math.max(0.6, room / (clip2.length / rate)), rate) : clip2; if (y.length > room * rate) y = y.subarray(0, Math.round(room * rate));
+      const fin = Math.min(y.length, Math.round(rate * 0.005)), fout = Math.min(y.length, Math.round(rate * 0.03));
+      for (let q = 0; q < y.length && o + q < len; q++) { if (o + q < 0) continue; adlib[o + q] += y[q] * g * (q < fin ? q / fin : 1) * (q >= y.length - fout ? (y.length - q) / fout : 1); }
+    });
+    // the words as written (main words and ad-libs) in their order, each with its time
+    let m = 0; sp.tokens.forEach((tk, wi) => {
+      const t = tk.adlib >= 0 ? libAt[tk.adlib] : voiceText(tk.w) ? wordAt[Math.min(wordAt.length - 1, m++)] : wordAt[Math.min(wordAt.length - 1, m)];
+      words.push({ bar: b.bar, i: wi, at: t });
+    });
     bars.push({ bar: b.bar, at }); voiced++;
   });
-  return { main, dub, words, bars, voiced };
+  return { main, dub, adlib, words, bars, voiced };
 }
 
-/** ask the route for every bar's voice and decode it: { clips (mono Float32Arrays at the decoder's rate, null where a bar has none), note }.
- *  decode(bytes) -> Float32Array. Stops at the first answer that says the voice is off or resting, so a rap never asks 30 times for nothing. */
+/** ask the route for every bar's voice and decode it: { clips (mono Float32Arrays at the decoder's rate, null where a bar has none), adlibClips
+ *  (per bar, its ad-libs in splitBar order, each asked once per song however often it comes), note }. decode(bytes) -> Float32Array. Stops at
+ *  the first answer that says the voice is off or resting, so a rap never asks 30 times for nothing. */
 export async function fetchVoice(texts, { fetchFn = fetch, decode, onProgress = () => {}, concurrency = 4 } = {}) {
-  const clips = texts.map(() => null); let next = 0, done = 0, stop = null;
-  const one = async (i) => {
-    const t = voiceText(texts[i]); if (!t) return;
+  const clips = texts.map(() => null), adlibClips = texts.map(() => []), libs = new Map(); let next = 0, done = 0, stop = null;
+  const ask = async (t) => {
     const r = await fetchFn(VOICE_URL + '?t=' + encodeURIComponent(t));
-    if (!r.ok) { const j = await r.json().catch(() => ({})); if (r.status === 503 || r.status === 429) stop = (j && j.note) || 'voice busy'; return; }
-    clips[i] = await decode(await r.arrayBuffer());
+    if (!r.ok) { const j = await r.json().catch(() => ({})); if (r.status === 503 || r.status === 429) stop = (j && j.note) || 'voice busy'; return null; }
+    return decode(await r.arrayBuffer());
+  };
+  const one = async (i) => {
+    const sp = splitBar(texts[i]), t = voiceText(sp.main); if (!t) return;
+    clips[i] = await ask(t);
+    for (const [j, a] of sp.adlibs.entries()) {
+      if (stop || !clips[i]) break; const at = voiceText(a.text);
+      if (!libs.has(at)) libs.set(at, ask(at).catch(() => null));
+      adlibClips[i][j] = await libs.get(at);
+    }
   };
   const worker = async () => { while (!stop && next < texts.length) { const i = next++; try { await one(i); } catch (_) { /* that bar stays silent */ } done++; onProgress(done, texts.length); } };
   await Promise.all(Array.from({ length: Math.min(concurrency, texts.length) }, worker));
   const got = clips.filter(Boolean).length;
-  return { clips, note: stop && !got ? stop : got < texts.length ? (got ? got + ' of ' + texts.length + ' bars came back' : 'no bars came back') : '' };
+  return { clips, adlibClips, note: stop && !got ? stop : got < texts.length ? (got ? got + ' of ' + texts.length + ' bars came back' : 'no bars came back') : '' };
 }
