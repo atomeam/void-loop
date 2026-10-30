@@ -89,7 +89,7 @@ wire($('song'), 'change', () => { const v = $('song').value, s = SHEETS.find((x)
 // a sheet another page sends in the link (/chords/ sends a chord or a scale): ?sheet= in the plain letters, ?bpm= its tempo
 { const q = new URLSearchParams(location.search), sh = (q.get('sheet') || '').slice(0, 4000).trim(), p = sh ? parseSheet(sh) : null;
   if (p && p.events.length && !p.bad.length) { $('song').value = 'own'; $('sheet').value = sh; const b = +q.get('bpm'); if (b >= 30 && b <= 300) $('songBpm').value = Math.round(b);
-    $('sheetNote').textContent = t('This sheet came in the link:') + ' ' + p.events.length + ' ' + t('notes') + '. ' + t('Press Play the sheet to hear it.'); $('sheet').scrollIntoView({ block: 'center' }); } }
+    $('sheetNote').textContent = t('This sheet came in the link:') + ' ' + p.events.reduce((n, ev) => n + ev.notes.length, 0) + ' ' + t('notes') + '. ' + t('Press Play the sheet to hear it.'); $('sheet').scrollIntoView({ block: 'center' }); } }
 function stopSheet() { for (const x of sheetTimers) clearTimeout(x); sheetTimers = []; for (const n of sheetNotes) n.release(); sheetNotes = []; for (const el of keyEls.values()) el.classList.remove('on'); }
 function playSheet() {
   stopSheet(); const p = parseSheet($('sheet').value), c = audio(); if (!c) { say_(t('This browser cannot make sound.')); return; }
