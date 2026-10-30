@@ -1,4 +1,4 @@
-// EPUB edits on the device (/converter/): the change of a book's cover, and the merge of 2 or more books into one. Pure: no DOM; the page passes in the picture, already in the format
+// EPUB edits on the device (/converter/): the change of a book's cover, the merge of 2 or more books into one, and the compression of a book. Pure: no DOM; the page passes in the picture, already in the format
 // the book needs, so the same code runs in node tests. A book is read with its own zip directory and written again with the mimetype first and
 // stored, as the EPUB container standard (OCF) asks. Every file the edit does not touch keeps its bytes exactly.
 import { unzip, crc32, xml } from './translate-docs.js';
@@ -205,4 +205,32 @@ export async function mergeBooks(list, title = '', now = new Date()) {
   if (fonts) notes.push(fonts + ' obfuscated font' + (fonts > 1 ? 's' : '') + ' obfuscated again for the new book, as the font licence asks');
   if (cover) notes.push('the cover is the cover of the first book');
   return { bytes: await writeBook(out), notes, title: bookTitle };
+}
+
+const pct = (x) => (x < 1 ? x.toFixed(1) : String(Math.round(x))), kb = (n) => (n < 1024 * 1024 ? Math.max(1, Math.round(n / 1024)) + ' KB' : (n / 1024 / 1024).toFixed(1) + ' MB');
+/** the book made smaller: every file packed again with deflate, and each JPEG, PNG or WebP picture given to `shrink(data, mediaType, maxSide)`, which
+ * gives back the picture in the same type (made again, and no larger than maxSide pixels on its long side when maxSide > 0), or null. A picture is
+ * changed only when the new one is smaller, and keeps its name and type, so no page or link changes. A fixed layout book places its pictures by
+ * pixel, so its pictures keep their size (maxSide 0). Encrypted files (fonts with obfuscation, DRM) keep their bytes. -> { bytes, notes } */
+export async function compressBook(bytes, shrink, { maxSide = 0 } = {}) {
+  const book = await readBook(bytes), enc = new Set(encryptedOf(book.files).map((e) => e.path));
+  const fixed = /<meta\b[^>]*property\s*=\s*["']rendition:layout["'][^>]*>\s*pre-paginated\s*</.test(book.opf);
+  const typeOf = new Map(book.items.map((i) => [i.path, i.type])), files = []; let pics = 0, smaller = 0, before = 0, after = 0;
+  for (const f of book.files) {
+    const type = typeOf.get(f.name) || ({ jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' })[(f.name.split('.').pop() || '').toLowerCase()];
+    if (!enc.has(f.name) && (type === 'image/jpeg' || type === 'image/png' || type === 'image/webp')) {
+      pics++; let out = null; try { out = await shrink(f.data, type, fixed ? 0 : maxSide); } catch (_) { out = null; }
+      if (out && out.length && out.length < f.data.length) { smaller++; before += f.data.length; after += out.length; files.push({ name: f.name, data: out }); continue; }
+    }
+    files.push(f);
+  }
+  let out = await writeBook(files); const same = out.length >= bytes.length; if (same) out = bytes;
+  const notes = [same ? 'the book was already as small as Verse can make it, so it is the same file (' + kb(bytes.length) + ')' : kb(bytes.length) + ' became ' + kb(out.length) + ' (' + pct(100 - (100 * out.length) / bytes.length) + '% smaller)'];
+  if (!same) {
+    notes.push(pics ? (pics === 1 ? (smaller ? 'the picture was' : 'the picture was not') : (smaller || 'none') + ' of the ' + pics + ' pictures were') + ' made smaller' + (smaller ? ' (' + kb(before) + ' to ' + kb(after) + ')' : '') : 'the book has no JPEG, PNG or WebP pictures to make smaller');
+    notes.push('the words, pages, styles and fonts are byte for byte as they were; every file is packed again');
+    if (fixed && pics) notes.push('a fixed layout book: its pictures keep their size in pixels, so each page looks as it did');
+  }
+  if (enc.size) notes.push(enc.size + ' encrypted file' + (enc.size > 1 ? 's keep their' : ' keeps its') + ' bytes');
+  return { bytes: out, notes };
 }

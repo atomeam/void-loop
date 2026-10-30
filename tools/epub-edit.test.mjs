@@ -1,7 +1,7 @@
-// tests for lib/epub-edit.js: an EPUB read and written again (mimetype first and stored), and the change of its cover
+// tests for lib/epub-edit.js: an EPUB read and written again (mimetype first and stored), the change of its cover, the merge of books and the compression of a book
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readBook, writeBook, changeCover, coverOf, resolve, mergeBooks, obfuscate, identifierOf, encryptedOf } from '../void-live-deploy/lib/epub-edit.js';
+import { readBook, writeBook, changeCover, coverOf, resolve, mergeBooks, obfuscate, identifierOf, encryptedOf, compressBook } from '../void-live-deploy/lib/epub-edit.js';
 import { epubOf, epubParas } from '../void-live-deploy/lib/converter.js';
 
 const te = new TextEncoder(), td = new TextDecoder();
@@ -134,4 +134,38 @@ test('a book with DRM, or fewer than 2 books, is refused with the reason', async
   await assert.rejects(mergeBooks([{ name: 'a.epub', bytes: await book2() }]), /pick 2 or more EPUB files/);
   const drm = await writeBook([{ name: 'META-INF/container.xml', data: te.encode(container) }, { name: 'META-INF/encryption.xml', data: te.encode('<encryption><EncryptedData><EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/><CipherData><CipherReference URI="OPS/text/one.xhtml"/></CipherData></EncryptedData></encryption>') }, { name: 'OPS/book.opf', data: te.encode('<package version="2.0"><metadata></metadata><manifest></manifest><spine></spine></package>') }]);
   await assert.rejects(mergeBooks([{ name: 'a.epub', bytes: await book2() }, { name: 'locked.epub', bytes: drm }]), /locked\.epub: parts of this book are encrypted \(DRM\)/);
+});
+
+// a book with one large JPEG (noise does not deflate) and, when fixed, the fixed layout mark; `enc` names the picture in encryption.xml
+const BIG = Uint8Array.from({ length: 20000 }, (_, i) => (i * 2654435761) >>> 24);
+const picBook = ({ fixed = false, enc = false } = {}) => writeBook([
+  { name: 'META-INF/container.xml', data: te.encode(container) },
+  ...(enc ? [{ name: 'META-INF/encryption.xml', data: te.encode('<encryption><EncryptedData><EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/><CipherData><CipherReference URI="OPS/images/big.jpg"/></CipherData></EncryptedData></encryption>') }] : []),
+  { name: 'OPS/book.opf', data: te.encode('<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="id"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="id">x</dc:identifier><dc:title>Pics</dc:title>' + (fixed ? '<meta property="rendition:layout">pre-paginated</meta>' : '') + '</metadata><manifest><item id="p" href="images/big.jpg" media-type="image/jpeg"/><item id="t" href="text/one.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="t"/></spine></package>') },
+  { name: 'OPS/images/big.jpg', data: BIG },
+  { name: 'OPS/text/one.xhtml', data: te.encode('<html xmlns="http://www.w3.org/1999/xhtml"><body><img src="../images/big.jpg"/><p>Words with a picture.</p></body></html>') },
+]);
+
+test('a book is made smaller: a picture made again replaces the old one under its own name, and the words stay', async () => {
+  const src = await picBook(), seen = [], r = await compressBook(src, async (d, t, side) => { seen.push([d.length, t, side]); return JPG; }, { maxSide: 1600 });
+  assert.deepEqual(seen, [[20000, 'image/jpeg', 1600]]);
+  assert.ok(r.bytes.length < src.length);
+  const a = await readBook(src), b = await readBook(r.bytes);
+  assert.ok(same(b.files.find((f) => f.name === 'OPS/images/big.jpg').data, JPG));
+  for (const f of a.files.filter((x) => x.name !== 'OPS/images/big.jpg')) assert.ok(same(b.files.find((g) => g.name === f.name).data, f.data), f.name);
+  assert.match(r.notes.join(' '), /% smaller/); assert.match(r.notes.join(' '), /the picture was made smaller/);
+});
+
+test('a picture that does not get smaller keeps its bytes, and a book that does not get smaller is the same file', async () => {
+  const src = await picBook(), r = await compressBook(src, async () => new Uint8Array(30000));
+  assert.ok(same(r.bytes, src)); assert.match(r.notes[0], /already as small as Verse can make it/);
+  const r2 = await compressBook(src, async () => { throw new Error('cannot open'); });
+  assert.ok(same(r2.bytes, src));
+});
+
+test('a fixed layout book keeps the size of its pictures, and an encrypted picture is not touched', async () => {
+  const sides = []; await compressBook(await picBook({ fixed: true }), async (d, t, side) => { sides.push(side); return JPG; }, { maxSide: 1600 });
+  assert.deepEqual(sides, [0]);
+  let called = 0; const r = await compressBook(await picBook({ enc: true }), async () => { called++; return JPG; }, { maxSide: 1600 });
+  assert.equal(called, 0); assert.match(r.notes.join(' '), /1 encrypted file keeps its bytes/);
 });

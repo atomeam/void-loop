@@ -7,7 +7,7 @@ import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write
 import { flac, opusFile } from '/lib/audio-write.js';
 import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 import { denoise } from '/lib/denoise.js';
-import { changeCover, mergeBooks } from '/lib/epub-edit.js';
+import { changeCover, mergeBooks, compressBook } from '/lib/epub-edit.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
@@ -85,6 +85,7 @@ function opts() {
   if (run === 'crossfade') o.append(field('Crossfade (seconds)', num('xfade', 2, 'any', 0, 30)), SOUND_AS());
   if (run === 'merge' || run === 'mix' || run === 'extract-audio') o.append(SOUND_AS());
   if (run === 'epub-merge') o.append(field('Title of the new book (empty: the first book\'s title and how many more)', make('input', { id: 'btitle', type: 'text', maxLength: 300 })));
+  if (run === 'epub-compress') o.append(field('Picture quality (10-100)', num('equal', 75, '1', 10, 100)), field('Largest picture side (pixels, 0: keep the size)', num('emax', 1600, '1', 0)));
   if (run === 'gif-speed') o.append(field('Times as fast', num('factor', 2, 'any', 0.1, 10)));
   if (run === 'frame') o.append(field('At second', num('at', 1, 'any', 0)));
   if (run === 'merge-images') o.append(field('Put them', pick('dir', [['row', 'side by side'], ['column', 'one above the other']], 'row')));
@@ -301,6 +302,18 @@ async function go() {
       say('Merging ' + list.length + ' books');
       const r = await mergeBooks(await Promise.all(list.map(async (x) => ({ name: x.f.name, bytes: await bytesOf(x.f) }))), $('btitle').value);
       add({ name: outName(r.title.slice(0, 80) + '.epub', 'epub', taken), ext: 'epub', bytes: r.bytes, notes: r.notes });
+    } else if (t.run === 'epub-compress') {
+      const books = list.filter((x) => x.fmt === 'epub'); if (!books.length || books.length < list.length) throw new Error('pick only EPUB books to compress.');
+      const q = Math.max(10, Math.min(100, val('equal', 75))) / 100, max = Math.max(0, Math.round(val('emax', 1600)));
+      // a picture made again in its own type, scaled down to max pixels on its long side when it is larger
+      const shrink = async (data, type, side) => {
+        const bm = await createImageBitmap(new Blob([data], { type })), k = side && Math.max(bm.width, bm.height) > side ? side / Math.max(bm.width, bm.height) : 1;
+        const c = make('canvas', { width: Math.max(1, Math.round(bm.width * k)), height: Math.max(1, Math.round(bm.height * k)) }), x = c.getContext('2d');
+        if (type === 'image/jpeg') { x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); }
+        x.drawImage(bm, 0, 0, c.width, c.height); if (bm.close) bm.close();
+        const b = await blobOf(c, type, type === 'image/png' ? undefined : q); return b && b.type === type ? new Uint8Array(await b.arrayBuffer()) : null;
+      };
+      for (const e of books) { say('Compressing ' + e.f.name); const r = await compressBook(await bytesOf(e.f), shrink, { maxSide: max }); add({ name: outName(e.f.name, 'epub', taken), ext: 'epub', bytes: r.bytes, notes: r.notes }); }
     } else if (t.run === 'epub-cover') {
       const e = list.find((x) => x.fmt === 'epub'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
       if (!e || !pic) throw new Error('pick one EPUB and one picture.');
