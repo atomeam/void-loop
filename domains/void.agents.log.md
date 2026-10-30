@@ -1174,3 +1174,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T07:03:02Z | claude | fix | Calendar card: with Reduced motion on it opens at rest and stands still after a drag, so a day can be tapped at once
 2026-10-30T07:39:21Z | claude | build | The studio: Verse paints eight reference prompts with every hosted image model and judges each picture with its own eyes (what is there, flaws, look), keeping a scoreboard and the best painter; the owner can make test clips with partner video models inside a daily dollar cap
 2026-10-30T08:56:00Z | verse | build | Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com
+2026-10-30T08:58:34Z | verse | build | Versus: took on no site; next randomarea.com
