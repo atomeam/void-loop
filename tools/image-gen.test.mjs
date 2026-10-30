@@ -117,3 +117,54 @@ test('the route: the studio bench picks the painter inside klein-4b\'s cost; a s
   assert.equal(back.state, 'art'); assert.ok(calls.at(-1).input.multipart, 'klein paints when the pick fails');
   studio.resetPainter();
 });
+
+// "Change it": a picture painted here, changed by one typed line with the page's shrunk copy as klein's reference picture
+const pngOf = (w, h) => { const b = new Uint8Array(400); b.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52]); b.set([w >>> 24, (w >> 16) & 255, (w >> 8) & 255, w & 255, h >>> 24, (h >> 16) & 255, (h >> 8) & 255, h & 255], 16); return b; };
+const jpegOf = (w, h) => Uint8Array.from([0xff, 0xd8, 0xff, 0xe0, 0, 16, ...Array(14).fill(0), 0xff, 0xc0, 0, 17, 8, h >> 8, h & 255, w >> 8, w & 255, 3, ...Array(30).fill(0)]);
+const b64 = (u) => btoa(String.fromCharCode(...u));
+test('a change\'s reference copy: its size read from a PNG or a JPEG header, smaller than 512x512 and in the picture\'s proportions', () => {
+  assert.deepEqual(I.imageSizeOf(pngOf(504, 336)), { type: 'image/png', w: 504, h: 336 });
+  assert.deepEqual(I.imageSizeOf(jpegOf(336, 504)), { type: 'image/jpeg', w: 336, h: 504 });
+  assert.equal(I.imageSizeOf(Uint8Array.from('GIF89a' + 'x'.repeat(40), (c) => c.charCodeAt(0))), null); assert.equal(I.imageSizeOf(null), null);
+  assert.deepEqual(I.editSizeOf(I.SHAPES.landscape), [504, 336]); assert.deepEqual(I.editSizeOf(I.SHAPES.square), [504, 504]); assert.deepEqual(I.editSizeOf(I.SHAPES.wide), [504, 288]);
+  assert.equal(I.fitsEdit({ w: 504, h: 336 }, I.SHAPES.landscape), true);
+  assert.equal(I.fitsEdit({ w: 1152, h: 768 }, I.SHAPES.landscape), false, 'the model takes smaller than 512x512 only');
+  assert.equal(I.fitsEdit({ w: 504, h: 504 }, I.SHAPES.landscape), false, 'another picture\'s proportions');
+  assert.equal(I.fitsEdit({ w: 120, h: 80 }, I.SHAPES.landscape), false, 'too small to stand for the picture');
+  assert.match(I.changePromptOf('make the sky purple <b>'), /^make the sky purple b, keep everything else in image 0 the same.*safe for work/);
+});
+test('the route: "Change it" changes a picture painted here at its own size and seed, and counts one Workers AI picture', async () => {
+  const { env, calls } = world();
+  const first = await (await post(env, { prompt: 'a lighthouse at dawn', style: 'painting', shape: 'landscape', seed: 99 })).json();
+  assert.match(first.ref, /^[0-9a-f]{64}$/, 'a picture carries its reference');
+  const ch = await (await post(env, { act: 'change', ref: first.ref, change: 'make the sky purple', src: 'data:image/png;base64,' + b64(pngOf(504, 336)) })).json();
+  assert.equal(ch.state, 'art'); assert.equal(ch.change, 'make the sky purple'); assert.equal(ch.seed, 99); assert.deepEqual([ch.w, ch.h], [1152, 768]); assert.notEqual(ch.ref, first.ref);
+  assert.equal(calls.length, 2);
+  const form = await new Response(calls[1].input.multipart.body, { headers: { 'content-type': calls[1].input.multipart.contentType } }).formData();
+  assert.match(form.get('prompt'), /^make the sky purple, keep everything else in image 0 the same/); assert.equal(form.get('width'), '1152'); assert.equal(form.get('seed'), '99');
+  const ref0 = form.get('input_image_0'); assert.ok(ref0 && typeof ref0 === 'object', 'the copy goes in as a file'); assert.equal(ref0.type, 'image/png'); assert.equal(ref0.size, 400);
+  assert.equal(env.DB.raw.prepare("SELECT n FROM void_image_days WHERE k = 'ai'").get().n, 2, 'a change is one Workers AI picture');
+  const again = await (await post(env, { act: 'change', ref: first.ref, change: 'make the sky purple', src: 'data:image/png;base64,' + b64(pngOf(504, 336)) })).json();
+  assert.equal(again.cached, true); assert.equal(calls.length, 2);
+  const twice = await (await post(env, { act: 'change', ref: ch.ref, change: 'add a boat', src: b64(jpegOf(504, 336)) })).json();
+  assert.equal(twice.state, 'art', 'a change can be changed again'); assert.equal(calls.length, 3);
+});
+test('the route: a change needs a picture still kept here, a readable small copy, an allowed line and a Workers AI picture left', async () => {
+  const { env, calls } = world();
+  const first = await (await post(env, { prompt: 'a red fox in snow', shape: 'square', seed: 5 })).json();
+  const sq = 'data:image/png;base64,' + b64(pngOf(504, 504));
+  const gone = await (await post(env, { act: 'change', ref: 'a'.repeat(64), change: 'add a hat', src: sq })).json();
+  assert.equal(gone.why, 'gone'); assert.match(gone.say, /no longer kept/);
+  assert.equal((await post(env, { act: 'change', ref: 'not-a-ref', change: 'add a hat', src: sq })).status, 400);
+  const big = await post(env, { act: 'change', ref: first.ref, change: 'add a hat', src: b64(pngOf(1024, 1024)) });
+  assert.equal(big.status, 400); assert.equal((await big.json()).why, 'badpic');
+  assert.equal((await (await post(env, { act: 'change', ref: first.ref, change: 'add a hat', src: b64(pngOf(504, 336)) })).json()).why, 'badpic', 'another shape');
+  assert.equal((await (await post(env, { act: 'change', ref: first.ref, change: 'add a hat', src: 'not base64 !!' })).json()).why, 'badpic');
+  assert.equal((await (await post(env, { act: 'change', ref: first.ref, change: 'make her topless', src: sq })).json()).why, 'unsuitable');
+  assert.equal((await (await post(env, { act: 'change', ref: first.ref, change: '  ', src: sq })).json()).why, 'empty');
+  assert.equal(calls.length, 1, 'no painter call for any of those');
+  env.IMAGE_AI_SHARE = '1';
+  const cap = await (await post(env, { act: 'change', ref: first.ref, change: 'add a hat', src: sq })).json();
+  assert.equal(cap.why, 'cap', 'no free-painter fallback for a change'); assert.equal(calls.length, 1);
+  assert.equal((await post(env, { prompt: 'a fox ' + ' '.repeat(2100) })).status, 400, 'only a change carries a big body');
+});
