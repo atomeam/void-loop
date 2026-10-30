@@ -76,14 +76,14 @@ function trak(id, kind, info, samples, offsets, movieMs) {
 }
 /** an MP4 file from coded video samples (and sound samples, if any). video: { codec, width, height, description, samples };
  *  audio: { codec: 'mp4a.40.2' | 'opus' | 'alac', rate, channels, description, bitrate, samples } or null. opts.qt: a QuickTime MOV (the same
- *  boxes, the QuickTime brand). opts.m4a: the M4A brand, for a sound-only file. Pure. */
+ *  boxes, the QuickTime brand). opts.m4a: the M4A brand, for a sound-only file. opts.gp: a 3GP (the same boxes, the 3GPP brand). Pure. */
 export function mp4(video, audio = null, opts = {}) {
   const tracks = [video && video.samples.length && { kind: 'vide', info: video, samples: video.samples }, audio && audio.samples.length && { kind: 'soun', info: audio, samples: audio.samples }].filter(Boolean);
   if (!tracks.length) throw new Error('nothing to write: no video and no sound.');
   // the order of the data: by time, so a player reads sound and pictures together
   const order = tracks.flatMap((tr, k) => tr.samples.map((s, i) => ({ k, i, t: s.t }))).sort((a, b) => a.t - b.t || a.k - b.k);
   const endMs = Math.max(...tracks.map((tr) => { const l = tr.samples[tr.samples.length - 1]; return Math.ceil((l.t + (l.d || 0)) / 1000); }));
-  const ftyp = opts.qt ? box('ftyp', str('qt  '), u32(0x200), str('qt  ')) : opts.m4a ? box('ftyp', str('M4A '), u32(0), str('M4A '), str('mp42'), str('isom')) : box('ftyp', str('isom'), u32(0x200), str('isom'), str('iso2'), str(tracks.some((t) => /^avc/.test(t.info.codec)) ? 'avc1' : 'iso6'), str('mp41'));
+  const ftyp = opts.qt ? box('ftyp', str('qt  '), u32(0x200), str('qt  ')) : opts.gp ? box('ftyp', str('3gp6'), u32(0x100), str('3gp6'), str('isom'), str('iso2'), str('avc1')) : opts.m4a ? box('ftyp', str('M4A '), u32(0), str('M4A '), str('mp42'), str('isom')) : box('ftyp', str('isom'), u32(0x200), str('isom'), str('iso2'), str(tracks.some((t) => /^avc/.test(t.info.codec)) ? 'avc1' : 'iso6'), str('mp41'));
   const moovOf = (offs) => box('moov', full('mvhd', 0, 0, u32(0), u32(0), u32(1000), u32(endMs), u32(0x00010000), u16(0x0100), zeros(10), MATRIX, zeros(24), u32(tracks.length + 1)),
     ...tracks.map((tr, k) => trak(k + 1, tr.kind, tr.info, tr.samples, offs[k], endMs)));
   const blank = tracks.map((tr) => tr.samples.map(() => 0)), size = moovOf(blank).length; // co64: the index is the same size whatever the offsets
