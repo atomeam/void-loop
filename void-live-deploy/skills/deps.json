@@ -2656,6 +2656,13 @@
    "tests": 1
   },
   {
+   "file": "lib/image-handoff.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/job-draft.js",
    "skills": 0,
    "direct": 0,
@@ -2986,13 +2993,6 @@
   },
   {
    "file": "lib/ground.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/image-handoff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -7462,7 +7462,9 @@
   },
   "lib/image-handoff.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/pdf-ui.js"
+   ]
   },
   "lib/imgfit.js": {
    "imports": [],
@@ -9215,7 +9217,8 @@
   },
   "lib/pdf-ui.js": {
    "imports": [
-    "lib/pdf-tools.js"
+    "lib/pdf-tools.js",
+    "lib/image-handoff.js"
    ],
    "importedBy": []
   },
