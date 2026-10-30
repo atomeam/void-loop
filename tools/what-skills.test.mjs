@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { tidy, whatOf, MAX } from './what-skills.mjs';
 
-test('a line is one plain sentence: whitespace folded, the book\'s ellipsis dropped, long ones cut at a word', () => {
+test('a line is one plain sentence: whitespace folded, the book\'s ellipsis dropped, long ones end at a whole clause or word, never with an ellipsis', () => {
   assert.equal(tidy('  A   countdown\n on the stage… '), 'A countdown on the stage');
   assert.equal(tidy(null), '');
   const long = tidy('word '.repeat(60));
-  assert.ok(long.length <= MAX + 1 && long.endsWith('…') && !/ …$/.test(long));
-  assert.equal(tidy('x'.repeat(200)).length, MAX + 1);
+  assert.ok(long.length <= MAX && !/…$|\.\.\.$/.test(long) && /word$/.test(long), long);
+  assert.equal(tidy('A timer on the stage, with a bell when it ends, ' + 'and a list of laps you can copy '.repeat(6)), 'A timer on the stage, with a bell when it ends');
 });
 
 test('every skill with something to say gets its line; one that only repeats its name, a game and a chapter do not', () => {
