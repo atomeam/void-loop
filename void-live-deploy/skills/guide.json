@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 2,
-    "proven": 33
+    "tested": 0,
+    "checked": 3,
+    "proven": 34
    },
    "from": 65,
    "to": 103
@@ -392,8 +392,8 @@
    "line": "A card that opens the file converter on the tool the ask names",
    "examples": [
     "mp4 to mp3",
-    "file converter",
-    "audio converter"
+    "mp3 to mp4",
+    "file converter"
    ],
    "tier": "proven",
    "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
@@ -1418,8 +1418,9 @@
     "should I go",
     "yesno"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 68
   },
   {
@@ -2095,8 +2096,10 @@
     "play hangman",
     "start hangman"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the games, tested each day before the sun is up. So it is written.",
+   "glow": 100,
    "n": 102
   },
   {
@@ -2525,8 +2528,8 @@
     "is it friday"
    ],
    "tier": "proven",
-   "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Of the time; set down here after it answered true 3 times. Let the stage be the proof.",
+   "why": "a self-test, 10 browser-suite mentions, 5 real asks in the benchmark",
+   "flavor": "Of the time; set down here after it answered true 5 times. Let the stage be the proof.",
    "glow": 100,
    "n": 126
   },
@@ -2831,7 +2834,7 @@
     "what date is next friday"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
+   "why": "a self-test, 14 real asks in the benchmark",
    "flavor": "Of all the time, this one is trusted enough to be taught. Ask, and see.",
    "glow": 100,
    "n": 144
