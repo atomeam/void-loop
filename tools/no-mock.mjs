@@ -9,7 +9,7 @@ import { negativesOf } from '../void-live-deploy/lib/tower-controls.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), site = path.join(root, 'void-live-deploy');
 /** the pages that claim live data: each fetches /api/ for what it shows */
-export const LIVE = ['/markets/', '/weather/', '/news/', '/scores/', '/podcasts/', '/recipes/', '/translate/', '/calendar/'];
+export const LIVE = ['/markets/', '/weather/', '/news/', '/scores/', '/podcasts/', '/recipes/', '/translate/', '/calendar/', '/local/'];
 /** words that tell a person the live data did not come */
 export const NOTICE_RE = /\b(?:offline|could(?: not|n[’']t) (?:reach|load|get|fetch|connect)|can(?:not|[’']t) (?:reach|load|get|connect)|unavailable|no connection|not reachable|saved copy|cached|last (?:saved|known|fetched)|try again|failed to load|showing (?:an? )?(?:older|saved|offline))\b/i;
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };

@@ -52,7 +52,7 @@ const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); 
 // the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
 // converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too,
 // and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
-const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask)\.js)(\?|$)/;
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;
@@ -347,6 +347,7 @@ const willFn = await import(new URL('../void-live-deploy/functions/api/will.js',
 const figurescriptFn = await import(new URL('../void-live-deploy/functions/api/figurescript.js', import.meta.url).href);
 const earnFn = await import(new URL('../void-live-deploy/functions/api/earnings.js', import.meta.url).href);
 const publishFn = await import(new URL('../void-live-deploy/functions/api/publish.js', import.meta.url).href);
+const localFn = await import(new URL('../void-live-deploy/functions/api/local.js', import.meta.url).href); // /local/: the real route, with Radio Browser and the geocoder answered offline
 const pageFn = await import(new URL('../void-live-deploy/functions/[handle].js', import.meta.url).href);
 const voidMe = await import(new URL('../void-live-deploy/lib/void-me.js', import.meta.url).href);
 const { DatabaseSync } = await import('node:sqlite');
@@ -4603,6 +4604,37 @@ try {
     await P.p.keyboard.press('Escape');
     for (const a of ['latest episode', 'verse podcast']) { await P.ask(a, 1100); const ok = await until(() => P.p.evaluate(() => !!document.querySelector('.vpage.on .vpod')), 4000); check('podcast: "' + a + '" opens the same player card', !!ok, a); await P.p.keyboard.press('Escape'); }
     await P.ctx.close(); }
+  // Local TV and radio (owner, 2026-10-30: "Verse should pick up local tv and radio"): /local/ finds the place from the connection, lists the
+  // radio near it through the real /api/local (Radio Browser answered offline here), plays a station's own stream in the page, links a station
+  // whose stream cannot play in a secure page to its own site, and lists the TV broadcast to that city from the committed iptv-org table.
+  if (want("local tv radio: the page finds the stations near you, plays a radio stream and lists the local tv")) { const L = await fresh();
+    const mp3 = fs.readFileSync(path.join(root, 'podcast', 'verse-out-loud-001.mp3'));
+    const rb = [{ stationuuid: 'aaa-1', name: 'WXPN Test', url_resolved: 'https://radio.test/wxpn.mp3', homepage: 'https://xpn.test/', tags: 'aaa,indie', geo_distance: 4200, votes: 90, state: 'Pennsylvania' },
+      { stationuuid: 'bbb-2', name: 'WRTI Test', url_resolved: 'http://203.0.113.9:8000/wrti', homepage: 'https://wrti.test/', tags: 'classical', geo_distance: 9100, votes: 40, state: 'Pennsylvania' }];
+    const fakeFetch = async (u) => new Response(JSON.stringify(/geocoding/.test(u) ? { results: [{ name: 'Philadelphia', admin1: 'Pennsylvania', country_code: 'US', latitude: 39.95, longitude: -75.16 }] } : rb), { headers: { 'content-type': 'application/json' } });
+    const asked = [];
+    await L.ctx.route(/\/api\/local(?:\?|$)/, async (r) => { const u = r.request().url().replace(/^https?:\/\/[^/]+/, 'https://a-to-mind.com'); asked.push(u.replace('https://a-to-mind.com', ''));
+      const req = new Request(u); Object.defineProperty(req, 'cf', { value: { city: 'Philadelphia', region: 'Pennsylvania', regionCode: 'PA', country: 'US', latitude: '39.95', longitude: '-75.16' } });
+      const res = await localFn.onRequestGet({ request: req, env: {}, fetchFn: fakeFetch }); r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
+    await L.ctx.route(/^https:\/\/radio\.test\//, (r) => r.fulfill({ status: 200, contentType: 'audio/mpeg', body: mp3 }));
+    await L.p.goto(base + 'local/'); await L.p.waitForSelector('#radio-list li', { timeout: 15000 });
+    const page = await L.p.evaluate(() => ({ where: document.getElementById('where').textContent, rows: [...document.querySelectorAll('#radio-list li')].map((li) => li.innerText),
+      play: document.querySelectorAll('#radio-list li button.go').length, site: !!document.querySelector('#radio-list a[href="https://wrti.test/"]'), related: !!document.querySelector('nav#related a[href^="/weather/"]') }));
+    await L.p.click('#radio-list li:first-child button.go');
+    const played = await until(() => L.p.evaluate(() => document.querySelector('#radio-list li:first-child').dataset.state === 'playing' && !document.getElementById('audio').paused), 8000);
+    const bar = await L.p.evaluate(() => ({ name: document.getElementById('now-name').textContent, shown: !document.getElementById('bar').hidden }));
+    await L.p.click('#tab-tv'); const tv = await until(() => L.p.evaluate(() => { const li = [...document.querySelectorAll('#tv-list li')]; return li.length ? { n: li.length, t: li.slice(0, 40).map((x) => x.innerText).join(' | ') } : null; }), 8000);
+    check('local tv radio: /local/ says where you are from the connection, lists the radio near it (one stream plays here, one links its own site), plays the station in the page, and lists the TV broadcast to Philadelphia',
+      /Philadelphia/.test(page.where) && page.rows.length === 2 && page.play === 1 && page.site && page.related && !!played && bar.shown && /WXPN Test/.test(bar.name)
+        && !!tv && tv.n >= 5 && /WTXF|Fox|PhillyCAM|WPVI|KYW/.test(tv.t) && asked[0] === '/api/local' && asked.some((a) => /lat=39\.95&lon=-75\.16&cc=US/.test(a)) && !L.errors.length,
+      JSON.stringify({ page, played, bar, tv: tv && { n: tv.n, t: tv.t.slice(0, 200) }, asked, e: L.errors }));
+    await L.p.goto(base + 'local/?place=Philadelphia&tab=tv'); const typed = await until(() => L.p.evaluate(() => !document.getElementById('tv').hidden && document.querySelectorAll('#tv-list li').length > 0 && /Philadelphia/.test(document.getElementById('where').textContent)), 8000);
+    check('local tv radio: a link to /local/?place=Philadelphia&tab=tv opens on that place with the TV tab open', !!typed && asked.some((a) => /place=Philadelphia/.test(a)), JSON.stringify({ asked, e: L.errors }));
+    await L.p.goto(base); await L.ask('radio stations in philadelphia', 1400);
+    const card = await until(() => L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const b = pg && pg.querySelectorAll('button[data-i]'); return b && b.length ? { n: b.length, t: pg.innerText, full: !!pg.querySelector('a[href^="/local/?place="]') } : null; }), 8000);
+    check('local tv radio: "radio stations in philadelphia" on the stage opens the local stations card with the stations that play and a link to the full page',
+      !!card && card.n === 1 && /WXPN Test/.test(card.t) && card.full && !L.errors.length, JSON.stringify({ card, e: L.errors }));
+    await L.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);

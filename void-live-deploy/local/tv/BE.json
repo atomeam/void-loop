@@ -1,0 +1,1 @@
+{"cc":"BE","regions":{"BE-VAN":"Antwerpen"},"cities":{},"stations":[{"id":"ATV.be@SD","t":"ATV","a":["s/BE-VAN"],"w":"https://atv.be/","s":["https://live.zendzend.com/mpegts/29375_107244/media_mpegts_0.m3u8"]},{"id":"ATV.be@HD","t":"ATV","a":["s/BE-VAN"],"w":"https://atv.be/"}]}

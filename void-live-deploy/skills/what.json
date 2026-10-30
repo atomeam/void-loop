@@ -171,6 +171,7 @@
  "living-cards-mind": "F-038 Living Spatial Cards Mind, Grok's frontier idea: a Gray-Scott field whose feed, kill and diffusion a…",
  "loan": "Monthly payment for mortgages, car loans, and personal loans",
  "local-inference": "Offline Ollama/DeepSeek gate for D1 ledger commits",
+ "local-stations": "\"local radio\", \"radio stations near me\", \"local tv stations\", \"tv stations in denver\", \"radio in boston\"",
  "lock": "Explainer.pin-lock, frontier #17: a cutaway pin-tumbler lock",
  "lorem": "Generate lorem ipsum placeholder text",
  "magic8": "A magic 8-ball answer, pure client-side",

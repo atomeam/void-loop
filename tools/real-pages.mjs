@@ -304,6 +304,12 @@ export const SPECS = {
   '/pdf/': pdfMake, '/pdf/editor/': pdfMake, '/pdf/merge/': pdfMake, '/pdf/organize/': pdfMake, '/pdf/studio/': pdfMake, '/pdf/suite/': pdfMake, '/pdf/toolbox/': pdfMake,
   '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); }, '/photos/exifeditor/': async (t) => { await t.share('#share'); }, '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
   '/piano/': async (t) => { await t.p.keyboard.press('q'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'a key plays a note'); },
+  '/local/': async (t) => {
+    await t.fill('#q', 'Boston'); await t.clickText('Find stations'); await t.waitText('#radio-note', /stations within|No radio/, 20000);
+    t.ok((await t.p.locator('#radio-list li').count()) > 0, 'Boston has real radio stations listed: ' + (await t.text('#radio-note')).slice(0, 90));
+    await t.click('#tab-tv'); await t.waitText('#tv-note', /stations broadcasting|No local TV/, 20000);
+    t.ok((await t.p.locator('#tv-list li').count()) > 0, 'Boston has local TV stations listed: ' + (await t.text('#tv-note')).slice(0, 90));
+  },
   '/podcasts/': async (t) => { await t.fill('#q', 'history'); await t.click('#go'); await t.p.waitForTimeout(5000); t.ok(/history/i.test(await t.p.locator('main').innerText()) && (await t.p.locator('main img').count()) > 2, 'a podcast search lists real shows'); },
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },
   '/random-user/': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },

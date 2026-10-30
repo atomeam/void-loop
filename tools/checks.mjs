@@ -108,6 +108,7 @@ for (const [name, file] of [
   ['fanfic', 'fanfic.test.mjs'],
   ['rap', 'rap.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
+  ['local-media', 'local-media.test.mjs'],
   ['fanfic-hits', 'fanfic-hits.test.mjs'],
   ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
   ['team', 'team.test.mjs'],
