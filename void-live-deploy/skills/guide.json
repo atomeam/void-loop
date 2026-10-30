@@ -4420,7 +4420,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 15 live findings, 2026-10-29",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 16 live findings, 2026-10-30",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 234

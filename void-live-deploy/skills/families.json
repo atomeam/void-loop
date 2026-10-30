@@ -2424,7 +2424,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 15 live findings, 2026-10-29",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 16 live findings, 2026-10-30",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
