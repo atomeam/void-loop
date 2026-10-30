@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cardGaps, THIN_LINE, benchedCount, tiersOf, incidentHits, rank, usable, plan, missedIn, settle, report, load, UNBENCHED, PER_SKILL } from './lacks.mjs';
+import { cardGaps, THIN_LINE, benchedCount, tiersOf, incidentHits, rank, usable, plan, missedIn, settle, report, load, answered, UNBENCHED, PER_SKILL } from './lacks.mjs';
 
 const guide = { pages: [
   { kind: 'skill', name: 'timer', examples: ['set a timer for 5 minutes', 'timer'] },
@@ -121,4 +121,15 @@ test('a finished study with strong evidence moves its skill up the plan, never o
   const base = plan({ guide, families, bench: [] }, { n: 5 }).picks.map((x) => x.name);
   const boosted = plan({ guide, families, bench: [], studyBoost: { [base[base.length - 1]]: 1000 } }, { n: 5 }).picks.map((x) => x.name);
   assert.equal(boosted[0], base[base.length - 1]); assert.deepEqual([...boosted].sort(), [...base].sort());
+});
+
+test('a row that routed must also answer before it joins the benchmark (PR #1987: routed is not answered)', async () => {
+  const rows = [{ ask: 'how far is nyc to london', want: 'skill:distance' }, { ask: 'flip a coin', want: 'skill:coin' }, { ask: 'weather in paris', want: 'skill:weather' }];
+  const said = { distance: { outcome: 'no answer', why: 'I couldn\'t find "is nyc"' }, coin: { outcome: 'answered' }, weather: { outcome: 'not run' } };
+  const r = await answered(rows, async (name) => said[name]);
+  assert.deepEqual(r.passing.map((c) => c.ask), ['flip a coin', 'weather in paris']);
+  assert.deepEqual(r.silent, [{ ask: 'how far is nyc to london', want: 'skill:distance', why: 'I couldn\'t find "is nyc"' }]);
+  const t = report({ picks: [], passing: r.passing, failed: [], silent: r.silent });
+  assert.match(t, /routed but the card did not answer[\s\S]*how far is nyc to london/);
+  assert.deepEqual((await answered(rows, async () => { throw new Error('x'); })).passing.length, 3, 'a check that cannot run keeps the row (routing only)');
 });
