@@ -6,9 +6,9 @@
 // Pure: no fetch, no DOM. Tests: tools/selfcheck.test.mjs.
 
 // pages that are not tools, so a missing "Use with" row (lib/toolkit.js mountRelated, .tk-row, or a studio's nav.siblings) is not a gap on
-// them: the stage, Verse's own pages (the store, its films and its podcast among them), articles, the Versus page, and the services pages (/code-review/ and its family, every /fix/ page), which
+// them: the stage, Verse's own pages (the store, its films and its podcast, the privacy policy and the boards' rules among them), articles, the Versus page, and the services pages (/code-review/ and its family, every /fix/ page), which
 // link to each other instead. A file the sitemap lists (/llms.txt) is not a page and has no row either.
-export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/members/', '/store/', '/store/receipt/', '/calendar/embed/', '/conquered/', '/history/', '/handoff.html',
+export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/boards/rules/', '/members/', '/store/', '/store/receipt/', '/calendar/embed/', '/conquered/', '/history/', '/handoff.html',
   '/compare/', '/cheat-codes/', '/code-review/', '/first-automation-setup/', '/full-stack-audit/', '/keep-it-running/', '/one-time-fix/', '/films/', '/podcast/']);
 export const KINDS = Object.freeze({
   status: 'does not open', script: 'script error', request: 'a file or API it needs fails', empty: 'shows nothing', light: 'light page (off design)',

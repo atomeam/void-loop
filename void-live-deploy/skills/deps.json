@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1050,
+ "counted": 1049,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 79,
+   "dependants": 78,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 22,
    "direct": 1,
-   "dependants": 79,
+   "dependants": 78,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 78,
+   "dependants": 77,
    "tests": 5
   },
   {
@@ -118,7 +118,7 @@
    "file": "lib/reactions.js",
    "skills": 16,
    "direct": 1,
-   "dependants": 62,
+   "dependants": 61,
    "tests": 1
   },
   {
@@ -545,7 +545,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 81,
+   "dependants": 80,
    "tests": 1
   },
   {
@@ -699,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 79,
+   "dependants": 78,
    "tests": 9
   },
   {
@@ -1431,6 +1431,13 @@
    "tests": 2
   },
   {
+   "file": "lib/transition.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-everywhere.js",
    "skills": 1,
    "direct": 0,
@@ -2092,22 +2099,22 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 83,
+   "dependants": 82,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 82,
+   "dependants": 81,
    "tests": 29
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 55,
-   "tests": 11
+   "dependants": 53,
+   "tests": 10
   },
   {
    "file": "lib/pages.js",
@@ -2348,13 +2355,6 @@
    "tests": 0
   },
   {
-   "file": "lib/image-gen.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 2
-  },
-  {
    "file": "lib/automations-run.js",
    "skills": 0,
    "direct": 0,
@@ -2367,6 +2367,13 @@
    "direct": 0,
    "dependants": 5,
    "tests": 1
+  },
+  {
+   "file": "lib/image-gen.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 2
   },
   {
    "file": "lib/mcp-skills.js",
@@ -2668,13 +2675,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
-  },
-  {
-   "file": "lib/studio.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
   },
   {
    "file": "lib/team-mcp.js",
@@ -3953,17 +3953,6 @@
    ],
    "importedBy": []
   },
-  "functions/api/studio.js": {
-   "imports": [
-    "lib/guard.js",
-    "lib/reactions.js",
-    "lib/automation-fix.js",
-    "lib/models.js",
-    "lib/studio.js",
-    "lib/image-gen.js"
-   ],
-   "importedBy": []
-  },
   "functions/api/support.js": {
    "imports": [
     "lib/void-me.js",
@@ -4440,7 +4429,6 @@
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
-    "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
@@ -4604,7 +4592,6 @@
     "functions/api/merge.js",
     "functions/api/miss.js",
     "functions/api/rehearsal.js",
-    "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/will.js",
@@ -7035,7 +7022,6 @@
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
-    "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/tally.js",
     "functions/api/team.js",
@@ -7249,7 +7235,6 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
-    "functions/api/studio.js",
     "lib/daily-photo.js"
    ],
    "reachedBy": [
@@ -7482,7 +7467,6 @@
     "functions/api/repo.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
-    "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
@@ -8043,7 +8027,6 @@
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
-    "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
@@ -8182,7 +8165,6 @@
     "functions/api/recipeimport.js",
     "functions/api/reflect.js",
     "functions/api/report.js",
-    "functions/api/studio.js",
     "functions/api/tower-self.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
@@ -8191,8 +8173,7 @@
     "lib/clef.js",
     "lib/review-api.js",
     "lib/router.js",
-    "lib/self-context.js",
-    "lib/studio.js"
+    "lib/self-context.js"
    ],
    "reachedBy": [
     "functions/api/actions.js",
@@ -8639,7 +8620,6 @@
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
-    "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/tally.js",
     "functions/api/team.js",
@@ -9574,7 +9554,6 @@
     "functions/api/react.js",
     "functions/api/recipeimport.js",
     "functions/api/rsvp.js",
-    "functions/api/studio.js",
     "functions/api/visit.js",
     "lib/autopsy.js",
     "lib/reaction-bar.js",
@@ -10936,14 +10915,6 @@
     "skills/null-sweep.js"
    ]
   },
-  "lib/studio.js": {
-   "imports": [
-    "lib/models.js"
-   ],
-   "importedBy": [
-    "functions/api/studio.js"
-   ]
-  },
   "lib/study-cards.js": {
    "imports": [],
    "importedBy": [
@@ -11123,7 +11094,6 @@
     "functions/api/routines.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
-    "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/translate.js",
@@ -11383,6 +11353,17 @@
     "skills/cartoon.js"
    ]
   },
+  "lib/transition.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
+   ]
+  },
   "lib/translate-card.js": {
    "imports": [],
    "importedBy": [
@@ -11468,7 +11449,8 @@
     "lib/avi.js",
     "lib/flv.js",
     "lib/video-mux.js",
-    "lib/converter.js"
+    "lib/converter.js",
+    "lib/transition.js"
    ],
    "importedBy": [
     "lib/rap-video.js"
@@ -14421,7 +14403,9 @@
    "importedBy": []
   },
   "skills/proverb.js": {
-   "imports": [],
+   "imports": [
+    "skills/quote.js"
+   ],
    "importedBy": []
   },
   "skills/providers.js": {
@@ -14485,7 +14469,9 @@
   },
   "skills/quote.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/proverb.js"
+   ]
   },
   "skills/rack.js": {
    "imports": [

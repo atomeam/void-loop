@@ -35,7 +35,7 @@ export const CATALOG = Object.freeze([
   vid('Video', 'Add Background to Video', 'background', 'Puts the video on a square, tall (9:16) or wide (16:9) background: a colour, the video itself blurred, or a picture you add.', { from: 'video+picture?' }),
   vid('Video', 'Add Image to Video', 'image', 'Puts a picture on the video, at the place, size and see-through level you pick, for all of it or from one second to another. Pick one video and one picture.', { from: 'video+picture' }),
   vid('Video', 'Add Text to Video', 'text', 'Puts your words on the video, at the place, size and colour you pick, for all of it or from one second to another.'),
-  tool('Video', 'Add Transition to Video', 'no', { note: 'Not on Verse yet: Verse joins videos one after another (Merge Video), but does not fade one into the next yet.' }),
+  vid('Video', 'Add Transition to Video', 'transition', 'Joins 2 or more videos with one of 58 transitions (fades, wipes, slides, slices, circles, pixelize, zoom and more), or brings 1 video in from black, out to black, or both, over 1 to 10 seconds. The sound crossfades, or fades in and out, with the picture. Verse draws each transition itself, picture by picture; the 4 winds and Dissolve use Verse\'s own random pattern, so their grain is not the same as in other tools.'),
   vid('Video', 'Blur Video', 'blur', 'Blurs every picture of the video by the amount you set.'),
   vid('Video', 'Brighten Video', 'bright', 'Makes every picture of the video brighter or darker by the percent you set.'),
   vid('Video', 'Change Video Speed', 'speed', 'Faster or slower (0.25 to 4 times). The sound changes speed too, so its pitch moves, as a tape does.'),
