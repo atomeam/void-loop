@@ -102,7 +102,7 @@ export const TOME_CSS = [
   // one page at a time on a phone: the book is a single sheet, the cover the same width
   '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut,.tome.shut.back{transform:scale(.96)}.tome-backcover{width:calc(100% + 2.8%);left:-1.4%;border-radius:1.4%/2%}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
     + '.tome-page.left,.tome-page.right{border-radius:.6%/.9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26)}.tome-stack.left{display:none}.tome-list{columns:1}.tome-prompt .desk{display:none}.tome-prompt .phone{display:inline}}',
-  '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition-duration:.01s}}',
+  '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition:none}}', // none, not .01s: a transform transition still waits on the compositor to start, and headless Chrome left the shut tilt standing (the tester saw the open book 312px left at 1920x1080)
 ].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Verse)
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};

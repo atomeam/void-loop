@@ -64,10 +64,6 @@ jobs:
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tools/claims-verify.mjs --live || echo "::warning title=Claims::some built claims fall through to the fallback; they show as in progress"
-      - name: Nothing clipped at three window sizes (tools/no-clip.mjs)
-        env:
-          CHROME_PATH: /usr/bin/google-chrome
-        run: node tools/no-clip.mjs || { echo "::error title=Clipped::the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700"; exit 1; }
       - name: Keep the suite, seen-set and run log
         run: |
           node tools/tester-log.mjs # the stage's tester-log card reads this public view (asked by Verse)
@@ -92,3 +88,8 @@ jobs:
           out=$(node tools/site-teach.mjs --from-title "$TITLE" --issue "$ISSUE" --pr) || exit 0
           echo "$out"; pr=$(echo "$out" | grep -o 'pull/[0-9]*' | cut -d/ -f2)
           [ -n "$pr" ] && gh workflow run void-review.yml -f pr="$pr" || true
+      - name: Nothing clipped at three window sizes (tools/no-clip.mjs)
+        # last on purpose: a clip fails the run, but the claims list above is already kept, so the stage's play links do not freeze behind it
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/no-clip.mjs || { echo "::error title=Clipped::the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700"; exit 1; }

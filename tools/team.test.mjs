@@ -29,6 +29,12 @@ function world(jobs = []) {
 const req = (method, q = '', body, key) => new Request('https://verse.test/api/team' + q, { method, headers: { 'content-type': 'application/json', ...(key ? { authorization: 'Bearer ' + key } : {}) }, body: body ? JSON.stringify(body) : undefined });
 const get = async (env, q, key, now = T0) => { const r = await API.onRequestGet({ env, request: req('GET', q, null, key), now }); return { status: r.status, ...(await r.json()) }; };
 const post = async (env, body, key, now = T0) => { const r = await API.onRequestPost({ env, request: req('POST', '', body, key), now }); return { status: r.status, ...(await r.json()) }; };
+// the owner invites (a join link, never a key), the agent opens it once and has its key
+const admit = async (env, name, about, now = T0) => {
+  const inv = await post(env, { do: 'invite', name, ...(about ? { about } : {}) }, OWNER, now); assert.equal(inv.status, 201, inv.say);
+  const j = await post(env, { do: 'join', code: T.joinCode(inv.join), via: 'a test' }, null, now); assert.equal(j.status, 201, j.say);
+  return { ...inv, key: j.key };
+};
 const job = (env, id) => env.DB.raw.prepare('SELECT * FROM void_queue WHERE id = ?').get(id);
 const JOBS = [
   { id: 'j1', ask: 'add a tide table to /weather/', target: 'feature:tides', at: '2026-10-28T00:00:00Z' },
@@ -74,8 +80,11 @@ test('a stranger reads the shell (names, presence, counts) and nothing else, and
 test('the owner invites; the agent is handed the best job as a #work thread, answers, closes it and gets the next at once', async () => {
   const env = world(JOBS);
   assert.equal((await post(env, { do: 'invite', name: 'verse' }, OWNER)).status, 400, 'a reserved name');
-  const inv = await post(env, { do: 'invite', name: 'Scout', about: 'a coding agent' }, OWNER);
-  assert.equal(inv.status, 201); assert.match(inv.key, T.KEY_RE);
+  const link = await post(env, { do: 'invite', name: 'Scout', about: 'a coding agent' }, OWNER);
+  assert.equal(link.status, 201); assert.equal(link.key, undefined, 'an invite shows no key'); assert.match(link.join, /^https:\/\/verse\.test\/team\/join\/vj1-[0-9a-f]{32}$/);
+  const joined = await post(env, { do: 'join', code: T.joinCode(link.join), via: 'HTTP' });
+  assert.equal(joined.status, 201); assert.match(joined.key, T.KEY_RE); assert.equal(joined.name, 'Scout');
+  const inv = { ...link, key: joined.key };
   assert.equal((await post(env, { do: 'invite', name: 'scout' }, OWNER)).status, 409, 'names are one each, any case');
   assert.equal((await post(env, { do: 'invite', name: 'Other' }, inv.key)).status, 403, 'an agent invites nobody');
   assert.ok(!JSON.stringify(env.DB.raw.prepare('SELECT * FROM void_team_agents').all()).includes(inv.key.split('.')[2]), 'the key itself is never stored');
@@ -102,7 +111,7 @@ test('the owner invites; the agent is handed the best job as a #work thread, ans
 
 test('two agents never hold one job; a failure goes back with a try counted and to someone else; a quiet agent\'s job goes back', async () => {
   const env = world([JOBS[0]]);
-  const a = (await post(env, { do: 'invite', name: 'Ada' }, OWNER)).key, b = (await post(env, { do: 'invite', name: 'Bee' }, OWNER)).key;
+  const a = (await admit(env, 'Ada')).key, b = (await admit(env, 'Bee')).key;
   assert.equal((await post(env, { do: 'next' }, a)).job.job, 'j1');
   const second = await post(env, { do: 'next' }, b); assert.equal(second.job, null); assert.equal(second.state, 'idle');
   const fail = await post(env, { do: 'done', ok: false, note: 'the page has no tide source' }, a, T0 + 2000);
@@ -120,7 +129,7 @@ test('two agents never hold one job; a failure goes back with a try counted and 
 
 test('channels, reactions, search and activity for the members; removing an agent ends its key', async () => {
   const env = world();
-  const k = (await post(env, { do: 'invite', name: 'Scout' }, OWNER)).key;
+  const k = (await admit(env, 'Scout')).key;
   assert.equal((await post(env, { do: 'channel', code: 'Bad Name' }, k)).status, 400);
   assert.equal((await post(env, { do: 'channel', code: 'design', about: 'how pages look' }, k)).status, 201);
   assert.equal((await post(env, { do: 'channel', code: 'design' }, OWNER)).status, 409);
@@ -140,7 +149,7 @@ test('channels, reactions, search and activity for the members; removing an agen
 
 test('tools/team-agent.mjs keeps an agent busy: it runs each job\'s command and closes it with the pull request it printed', async () => {
   const env = world(JOBS);
-  const key = (await post(env, { do: 'invite', name: 'Runner' }, OWNER)).key;
+  const key = (await admit(env, 'Runner')).key;
   const fake = async (url, init) => {
     const r = new Request('https://verse.test/api/team' + url.slice('mem:'.length), init);
     return init.method === 'GET' ? API.onRequestGet({ env, request: r }) : API.onRequestPost({ env, request: r });
@@ -187,7 +196,7 @@ test('the owner is an account: the owner account\'s signed-in session is the own
 
 test('the owner asks for work in #work: the post goes on the build queue and an agent is handed it in that same thread', async () => {
   const env = world([]);
-  const inv = await post(env, { do: 'invite', name: 'Scout' }, OWNER);
+  const inv = await admit(env, 'Scout');
   assert.equal((await post(env, { do: 'here' }, inv.key)).state, 'idle', 'nothing queued yet');
   const ask = await post(env, { do: 'post', c: 'work', body: 'add a moon phase to /weather/' }, OWNER, T0 + 1000);
   assert.equal(ask.status, 201); assert.equal(ask.job, 'team-' + ask.id);
@@ -214,3 +223,95 @@ test('the owner asks for work in #work: the post goes on the build queue and an 
   assert.equal((await post(bare, { do: 'post', c: 'work', body: 'no queue here' }, OWNER)).job, undefined, 'no build queue, no job, and the post still goes');
 });
 
+
+import * as MCP from '../void-live-deploy/functions/team/mcp.js';
+import * as JOIN from '../void-live-deploy/functions/team/join/[code].js';
+import { join as scriptJoin } from '../void-live-deploy/team/agent.mjs';
+
+test('a join link: works once, for a day, is kept only as a hash; a new link retires the old key; removing ends links', async () => {
+  const env = world();
+  const inv = await post(env, { do: 'invite', name: 'Vibe', about: 'a coding agent' }, OWNER);
+  const code = T.joinCode(inv.join);
+  assert.equal((await get(env, '')).members.find((m) => m.name === 'Vibe').state, 'invited', 'invited until it joins');
+  assert.ok(!JSON.stringify(env.DB.raw.prepare('SELECT * FROM void_team_joins').all()).includes(code.slice(4)), 'the code itself is never stored');
+  assert.equal((await post(env, { do: 'join', code: 'vj1-' + '0'.repeat(32) })).status, 401, 'a made-up code');
+  assert.equal((await API.peekJoin(env, code, T0)).name, 'Vibe', 'looking at the link uses nothing up');
+  const first = await post(env, { do: 'join', code });
+  assert.equal(first.status, 201); assert.match(first.key, T.KEY_RE);
+  assert.equal((await post(env, { do: 'join', code })).status, 401, 'used once');
+  assert.ok((await get(env, '?c=general', first.key)).messages.some((m) => /@Vibe joined the team/.test(m.body)), 'the chat says who joined');
+  assert.equal((await post(env, { do: 'invite', name: 'Vibe' }, OWNER)).status, 409, 'a member takes a new link only on purpose');
+  const again = await post(env, { do: 'invite', name: 'vibe', again: true }, OWNER);
+  assert.equal(again.status, 201);
+  assert.equal((await get(env, '?me', first.key)).me, null, 'the old key is retired at once');
+  assert.equal((await post(env, { do: 'join', code: T.joinCode(again.join) }, null, T0 + T.JOIN_TTL_MS + 1)).status, 401, 'a day later the link has ended');
+  const third = await post(env, { do: 'invite', name: 'vibe', again: true }, OWNER, T0 + T.JOIN_TTL_MS + 2);
+  assert.equal((await post(env, { do: 'remove', name: 'vibe' }, OWNER, T0 + T.JOIN_TTL_MS + 3)).status, 200);
+  assert.equal((await post(env, { do: 'join', code: T.joinCode(third.join) }, null, T0 + T.JOIN_TTL_MS + 4)).status, 401, 'removing ends its links');
+});
+
+test('the join link page: plain text for an agent, a Join button for a browser; GET uses nothing up; POST joins; a used link is gone (410)', async () => {
+  const env = world();
+  const inv = await post(env, { do: 'invite', name: 'Duet' }, OWNER, Date.now()), code = T.joinCode(inv.join);
+  const at = (h = {}, m = 'GET', body) => new Request('https://verse.test/team/join/' + code, { method: m, headers: h, body });
+  const text = await (await JOIN.onRequestGet({ request: at(), env, params: { code } })).text();
+  assert.match(text, /curl -sX POST https:\/\/verse\.test\/team\/join\/vj1-/); assert.match(text, /\/team\/mcp/); assert.match(text, /\/team\/agents\.txt/);
+  const html = await JOIN.onRequestGet({ request: at({ accept: 'text/html' }), env, params: { code } });
+  assert.equal(html.headers.get('cache-control'), 'no-store'); assert.match(await html.text(), /<form method="post">/);
+  const r = await JOIN.onRequestPost({ request: at({ 'content-type': 'application/json' }, 'POST', '{}'), env, params: { code } });
+  const j = await r.json(); assert.equal(r.status, 201); assert.match(j.key, T.KEY_RE); assert.equal(j.name, 'Duet');
+  assert.equal((await JOIN.onRequestGet({ request: at(), env, params: { code } })).status, 410);
+  assert.doesNotMatch(JOIN.guide('X', 'https://verse.test/team/join/vj1-' + 'a'.repeat(32)), /vt1\.[0-9a-f]{12}\./, 'the guide holds no key');
+});
+
+test('any agent, one chat: an HTTP agent, an MCP agent and the script all join, read the same history and @mention each other', async () => {
+  const env = world(), now = Date.now();
+  const http = await admit(env, 'Vibe', 'over HTTP', now);
+  await post(env, { do: 'post', c: 'general', body: 'hello team, history before the MCP agent came' }, OWNER, now);
+  // the MCP agent: initialize hands out a session; join binds it; every tool then answers as that agent
+  const inv = await post(env, { do: 'invite', name: 'Duet', about: 'over MCP' }, OWNER, now);
+  let sid = '';
+  const rpc = async (method, params, id = 1) => {
+    const r = await MCP.onRequestPost({ env, request: new Request('https://verse.test/team/mcp', { method: 'POST', headers: { 'content-type': 'application/json', ...(sid ? { 'mcp-session-id': sid } : {}) }, body: JSON.stringify({ jsonrpc: '2.0', id, method, params }) }) });
+    if (r.headers.get('mcp-session-id')) sid = r.headers.get('mcp-session-id');
+    return r.status === 202 ? null : r.json();
+  };
+  const call = async (name, args = {}) => (await rpc('tools/call', { name, arguments: args })).result;
+  const hi = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'test', version: '1' } });
+  assert.equal(hi.result.serverInfo.name, 'verse-team'); assert.match(sid, /^[0-9a-f]{32}$/);
+  assert.ok((await rpc('tools/list', {})).result.tools.some((t) => t.name === 'join'));
+  assert.equal((await call('post', { channel: 'general', text: 'not yet' })).isError, true, 'nothing before join');
+  const joined = await call('join', { link: inv.join });
+  assert.ok(!joined.isError, JSON.stringify(joined)); assert.ok(!JSON.stringify(joined).includes('vt1.'), 'the MCP agent never sees a key');
+  assert.match((await call('read', { channel: 'general' })).content[0].text, /history before the MCP agent came/, 'it reads the history');
+  assert.ok(!(await call('post', { channel: 'general', text: '@Vibe Duet here, over MCP' })).isError);
+  const seen = await get(env, '?c=general', http.key, now);
+  const fromDuet = seen.messages.find((m) => m.by === 'Duet');
+  assert.ok(fromDuet && /@Vibe/.test(fromDuet.body), 'the HTTP agent sees the MCP agent\'s message in the same channel');
+  assert.ok((await get(env, '?activity', http.key, now)).hits.some((m) => m.by === 'Duet'), 'and it is in its mentions');
+  assert.equal((await post(env, { do: 'post', c: 'general', body: '@Duet Vibe here, over HTTP' }, http.key, now + 2000)).status, 201);
+  assert.ok((await call('mentions')).content[0].text.includes('Vibe'), 'the MCP agent sees the HTTP agent\'s @mention');
+  // a key in Authorization works on /team/mcp too, with no join
+  const keyed = await MCP.onRequestPost({ env, request: new Request('https://verse.test/team/mcp', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + http.key }, body: JSON.stringify({ jsonrpc: '2.0', id: 9, method: 'tools/call', params: { name: 'whoami', arguments: {} } }) }) });
+  assert.match((await keyed.json()).result.content[0].text, /Vibe/);
+  // the script joins the same way
+  const s = await post(env, { do: 'invite', name: 'Runner' }, OWNER, now);
+  const fake = async (url, init) => API.onRequestPost({ env, request: new Request(url, init) });
+  const sj = await scriptJoin(s.join, { fetch: fake });
+  assert.equal(sj.ok, true); assert.match(sj.key, T.KEY_RE);
+  assert.ok((await get(env, '?c=general', sj.key, now)).messages.some((m) => m.by === 'Duet'), 'the script\'s agent reads the same chat');
+  const names = (await get(env, '')).members.map((m) => m.name).sort();
+  assert.deepEqual(names, ['Duet', 'Runner', 'Vibe'], 'every way in lands in one workspace, each agent named');
+});
+
+test('the owner\'s #work post from before #work asks were jobs goes on the queue with do:queue, once', async () => {
+  const env = world(JOBS);
+  const old = await post(env, { do: 'post', c: 'work', body: 'build a moon phase on /weather/' }, OWNER);
+  env.DB.raw.prepare('UPDATE void_team_msgs SET job = NULL WHERE id = ?').run(old.id); // as it was before #1664
+  env.DB.raw.prepare("DELETE FROM void_queue WHERE id LIKE 'team-%'").run();
+  const k = (await admit(env, 'Scout')).key;
+  assert.equal((await post(env, { do: 'queue' }, k)).status, 403, 'an agent queues nothing');
+  const q = await post(env, { do: 'queue' }, OWNER, T0 + 1000);
+  assert.equal(q.queued.length, 1); assert.equal(job(env, q.queued[0].job).state, 'queued'); assert.match(job(env, q.queued[0].job).ask, /moon phase/);
+  assert.equal((await post(env, { do: 'queue' }, OWNER, T0 + 2000)).queued.length, 0, 'once');
+});
