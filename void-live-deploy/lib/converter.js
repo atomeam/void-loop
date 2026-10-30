@@ -1,6 +1,6 @@
 // The file and unit converter (/converter/, 2026-10-29, assimilates onlineconverter.com). Pure parts, the same in the browser and in node tests:
 // the 106 tools that onlineconverter.com lists (read from its home page), each with Verse's honest status; the search ("mp4 to mp3"); the file
-// format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF); the sound edits (cut,
+// format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF; FLAC and Ogg in audio-write.js); the sound edits (cut,
 // speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; MP4, MOV, WEBM and MKV video and the video edits (run by /lib/video-write.js, written by /lib/video-mux.js); the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
 // and written. Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
 // pdf-lib (vendored). Statuses: 'here' this page does it, 'verse' another Verse page does it, 'part' part of it (the note says which part),
@@ -19,7 +19,9 @@ const VIDEO_WHY = { '3GP': 'Not on Verse yet: Verse writes MP4, MOV, WEBM and MK
 const VIDEO_OUT_NOTE = { MP4: 'Any video your browser can play becomes an MP4 (H.264 video; AAC sound, or Opus where the browser has no AAC encoder), on this device. It takes as long as the video plays.', MOV: 'Any video your browser can play becomes a MOV (H.264 video; AAC sound, or Opus where the browser has no AAC encoder, which QuickTime Player does not play), on this device. It takes as long as the video plays.', WEBM: 'Any video your browser can play becomes a WEBM (VP9 video, Opus sound), on this device. It takes as long as the video plays.', MKV: 'Any video your browser can play becomes an MKV (VP9 video, Opus sound), on this device. It takes as long as the video plays.' };
 // a video tool: run 'video' with the edit (vop); each plays the video once, so it takes as long as the video plays
 const vid = (cat, name, vop, note, extra = {}) => tool(cat, name, 'here', { run: 'video', vop, from: 'video', note, ...extra });
-const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV or AIFF, but cannot write ' + f + '.';
+// the sounds Verse writes: WAV and AIFF and FLAC with its own encoders; OGG and OPUS with the browser's Opus encoder in Verse's own Ogg pages
+const SOUND_OUT_NOTE = { WAV: 'WAV (16-bit PCM)', AIFF: 'AIFF (16-bit PCM)', FLAC: 'FLAC (16-bit and lossless: the same sound as a WAV, in less space)', OGG: 'an OGG with Opus sound at 128 kbps (no browser can code Vorbis, the older OGG sound)', OPUS: 'OPUS (Ogg Opus at 128 kbps)' };
+const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV, AIFF, FLAC, OGG or OPUS, but cannot write ' + f + '.';
 const WORDS = 'The words and paragraphs only: pictures, tables and the page layout are left out.';
 const conv = (cat, f, status, extra = {}) => ({ id: slug(cat === 'Document' ? 'doc' : cat) + '-' + slug(f), cat, kind: 'converter', name: f, status, ...extra });
 const tool = (cat, name, status, extra = {}) => ({ id: slug(name), cat, kind: 'tool', name, status, ...extra });
@@ -48,8 +50,8 @@ export const CATALOG = Object.freeze([
   tool('Video', 'Stabilize Video', 'no', { note: 'Not on Verse yet: stabilizing needs motion tracking across the pictures, which Verse does not do.' }),
   vid('Video', 'Sync Audio and Video', 'shift', 'Moves the sound earlier or later against the pictures, by the seconds you set.'),
   vid('Video', 'Watermark Video', 'watermark', 'Puts your words or a picture you add in a corner of the video, see-through by the amount you set.', { from: 'video+picture?' }),
-  ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (f === 'WAV' || f === 'AIFF'
-    ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + f + ' (16-bit PCM), on this device.' })
+  ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (SOUND_OUT_NOTE[f]
+    ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + SOUND_OUT_NOTE[f] + ', on this device.' })
     : conv('Audio', f, 'no', { note: ['ALAC', 'AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
   tool('Audio', 'Add Image to MP3', 'no', { note: NO }),
   tool('Audio', 'Add Transition to Audio', 'here', { run: 'crossfade', from: 'sound', many: true, note: 'Joins 2 or more sounds with a crossfade between each, as one WAV.' }),
@@ -148,8 +150,8 @@ export function formatOf(bytes, name = '') {
 export function targetsOf(f) {
   const k = kindOf(f), x = normFormat(f);
   if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'].filter((t) => t !== x);
-  if (k === 'sound') return ['wav', 'aiff'].filter((t) => t !== x);
-  if (k === 'video') return ['mp4', 'mov', 'webm', 'mkv', 'wav', 'aiff'].filter((t) => t !== x);
+  if (k === 'sound') return ['wav', 'aiff', 'flac', 'ogg', 'opus'].filter((t) => t !== x);
+  if (k === 'video') return ['mp4', 'mov', 'webm', 'mkv', 'wav', 'aiff', 'flac', 'ogg', 'opus'].filter((t) => t !== x);
   if (['pdf', 'docx', 'rtf', 'html', 'txt', 'epub'].includes(x)) return ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'].filter((t) => t !== x);
   return [];
 }
@@ -515,4 +517,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', ogg: 'audio/ogg', opus: 'audio/ogg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });

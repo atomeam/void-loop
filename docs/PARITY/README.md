@@ -60,6 +60,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |
 | 1 | /flights/trip/ | A price calendar and graph | missing | tripwaffle.com |
 | 1 | /flights/time/ | A price calendar and graph | missing | clock7.com |
+| 1 | /hosting/ | A public API | missing | thunit.com |
 | 1 | /kanban/quick/ | A public API | missing | abacktools.com |
 | 1 | /kanban/teams/ | A public API | missing | wekan.fi |
 | 1 | /kanban/flow/ | A public API | missing | kanbanflow.com |
@@ -69,7 +70,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /flights/trip/ | A public API | missing | tripwaffle.com |
 | 1 | /flights/airports/ | A public API | missing | aruljohn.com |
 | 1 | /bpm/ | A public API | missing | anotherproducer.com |
-| 1 | /hosting/ | A public API | missing | thunit.com |
 | 1 | /g/ | A public API | missing | codebasehq.com |
 | 1 | /tournaments/ | A public API | missing | yunite.xyz |
 | 1 | /pdf/editor/ | A public API | missing | sejda.com |
@@ -111,7 +111,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
-| 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA | partial | onlineconverter.com |
+| 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA (no MP3, ALAC, AMR, M4A, M4R or WMA yet) | partial | onlineconverter.com |
 | 1 | /converter/ | Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair | partial | onlineconverter.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
 | 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
