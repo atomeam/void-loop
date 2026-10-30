@@ -550,8 +550,24 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T07:34:18Z",
-   "subject": "brain: a live map anyone can read, organs light when they really fire"
+   "at": "2026-10-30T07:25:43Z",
+   "subject": "rap: fit the master by ear (separate sub and low bands, peaking EQ), share renders across master-only retunes, hide the action row until a…"
+  },
+  {
+   "at": "2026-10-30T07:24:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T07:21:54Z",
+   "subject": "cards: show the answer's photo once, in the art box"
+  },
+  {
+   "at": "2026-10-30T07:21:32Z",
+   "subject": "Members perk: a shared /@name link shows that page, not the Verse home card"
+  },
+  {
+   "at": "2026-10-30T07:21:06Z",
+   "subject": "Team gate: replay merged PRs as if handed in, and read every changed file"
   },
   {
    "at": "2026-10-30T07:18:41Z",
@@ -590,6 +606,10 @@
    "subject": "members-paid tests the merged PR; two ideas in one millisecond no longer clash"
   },
   {
+   "at": "2026-10-30T07:12:03Z",
+   "subject": "Keep main's /converter/, /rap/ and parity docs; this PR changes only the brain"
+  },
+  {
    "at": "2026-10-30T07:11:33Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -608,26 +628,6 @@
   {
    "at": "2026-10-30T07:07:12Z",
    "subject": "Better at emoji, flights and scores: 4 more ways of asking answered right — new phrases: “random emoji” now opens emoji; “give me an…"
-  },
-  {
-   "at": "2026-10-30T07:06:38Z",
-   "subject": "Lab pages: end blurbs that stopped on a comma or semicolon"
-  },
-  {
-   "at": "2026-10-30T07:05:13Z",
-   "subject": "deps.json: the gate's test reads lib/team.js"
-  },
-  {
-   "at": "2026-10-30T07:03:24Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T07:03:04Z",
-   "subject": "Reduced motion: the 3D calendar opens at rest and holds still"
-  },
-  {
-   "at": "2026-10-30T07:01:28Z",
-   "subject": "Coin table keeps answering, Wikipedia cached at the edge, plain status card words"
   }
  ],
  "builders": {
