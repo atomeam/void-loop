@@ -10,6 +10,7 @@ import { avi } from './avi.js';
 import { flv, PCM_RATE } from './flv.js';
 import { mp4, webm, webmWithDuration, avcCodecs, bitrateOf, evenSize } from './video-mux.js';
 import { cut, speed as speedOf, gain as gainOf, merge, mix, resample } from './converter.js';
+import { blend, KINDS as TRANSITION_KINDS, TRANSITIONS } from './transition.js';
 
 const wait = (el, ev, ms = 30000) => new Promise((res, rej) => { const tm = setTimeout(() => rej(new Error('the video did not open in time.')), ms); el.addEventListener(ev, () => { clearTimeout(tm); res(); }, { once: true }); el.addEventListener('error', () => { clearTimeout(tm); rej(new Error('this browser cannot play this video, so Verse cannot read it.')); }, { once: true }); });
 const supported = async (C, cfg) => { try { return !!(await C.isConfigSupported(cfg)).supported; } catch (_) { return false; } };
@@ -163,25 +164,72 @@ async function frameStep(v, at) {
   return { step: 1 / 30 };
 }
 
+// shows the picture of a paused video at t seconds (at most its last picture): done when the seek is over and the browser drew the picture,
+// or a moment after the seek when the picture there is the one already drawn
+function showAt(v, t) {
+  const at = Math.max(0, Math.min(t, (isFinite(v.duration) ? v.duration : t) - 1e-3));
+  return new Promise((res) => {
+    let seeked = false, drawn = typeof v.requestVideoFrameCallback !== 'function', late = 0; const tm = setTimeout(res, 3000);
+    const go = () => { if (seeked && drawn) { clearTimeout(tm); clearTimeout(late); res(); } };
+    if (!drawn) v.requestVideoFrameCallback(() => { drawn = true; go(); });
+    v.addEventListener('seeked', () => { seeked = true; go(); late = setTimeout(() => { drawn = true; go(); }, 150); }, { once: true });
+    v.currentTime = Math.abs(v.currentTime - at) < 1e-6 ? at + 1e-4 : at;
+  });
+}
+// the sound comes in over its first inS seconds and goes out over its last outS seconds
+function fadeEdges(s, inS, outS) {
+  const n = s.channels[0].length, a = Math.min(n, Math.round(inS * s.rate)), b = Math.min(n, Math.round(outS * s.rate));
+  return { rate: s.rate, notes: s.notes || [], channels: s.channels.map((c) => { const o = Float32Array.from(c); for (let j = 0; j < a; j++) o[j] *= (j + 0.5) / a; for (let j = 0; j < b; j++) o[n - 1 - j] *= (j + 0.5) / b; return o; }) };
+}
+
 /** play one or more videos once, one after another, and code every picture shown, edited by opts. files: a File or a list of them (a merge).
  *  opts: { container: 'mp4' | 'mov' | '3gp' | 'webm' | 'mkv' | 'avi' | 'flv', quality, maxSide, width, rotate (0, 90, 180, 270), speed (0.25-4), from, to (seconds),
  *  blur, bright, shape ([w, h]), backdrop ('color' | 'blur' | 'picture'), backdropPic, color, over (texts and pictures), sound ('keep' |
- *  'none'), addSound ({ rate, channels }), addMode ('replace' | 'mix'), gainDb, shift (seconds the sound moves, minus: earlier), onProgress }.
+ *  'none'), addSound ({ rate, channels }), addMode ('replace' | 'mix'), gainDb, shift (seconds the sound moves, minus: earlier),
+ *  transition ({ kind (lib/transition.js), seconds (1-10), mode: 'join' (between the videos) | 'start' | 'end' | 'both' (from or to a plain
+ *  colour) }), onProgress }.
  *  Returns { bytes, notes, width, height, seconds, frames }. */
 export async function writeVideo(files, opts = {}) {
   const list = Array.isArray(files) ? files : [files], container = CONTAINERS.includes(opts.container) ? opts.container : 'mp4', say = opts.onProgress || (() => {});
   const rate = Math.max(0.25, Math.min(4, +opts.speed || 1)), vids = [], notes = [];
+  const tr = opts.transition && TRANSITION_KINDS.includes(opts.transition.kind) ? { kind: opts.transition.kind, mode: ['start', 'end', 'both'].includes(opts.transition.mode) ? opts.transition.mode : 'join', seconds: Math.max(1, Math.min(10, +opts.transition.seconds || 3)) } : null;
+  const trName = tr ? TRANSITIONS.find((t) => t[0] === tr.kind)[1] : '';
+  if (opts.transition && !tr) throw new Error('no transition called ' + opts.transition.kind + '.');
+  if (tr && tr.mode === 'join' && list.length < 2) throw new Error('a transition between videos needs 2 or more videos. For one video, pick a start or end transition.');
   try {
     for (const f of list) { const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = URL.createObjectURL(f); vids.push(v); await wait(v, 'loadeddata'); if (!v.videoWidth) throw new Error((list.length > 1 ? f.name + ': ' : '') + 'this file has no picture: it is a sound. Pick a video.'); }
-    const plain = rate === 1 && !opts.from && opts.to == null && !opts.rotate && !opts.width && !opts.shape && !opts.blur && !(opts.bright && opts.bright !== 100) && !(opts.over || []).length && list.length === 1 && opts.sound !== 'none' && !opts.addSound && !opts.gainDb && !opts.shift;
+    const plain = rate === 1 && !opts.from && opts.to == null && !opts.rotate && !opts.width && !opts.shape && !opts.blur && !(opts.bright && opts.bright !== 100) && !(opts.over || []).length && list.length === 1 && opts.sound !== 'none' && !opts.addSound && !opts.gainDb && !opts.shift && !tr;
     if (!canEncode()) { if (plain && ISO[container] === 'webm') return await record(vids[0], container, say); throw new Error('this browser has no video encoder (WebCodecs), so Verse cannot ' + (plain ? 'write ' + container.toUpperCase() : 'edit video') + ' here. Chrome, Edge and Safari 17 or later have one.'); }
     const { width: W, height: H } = sizeOf(vids[0].videoWidth, vids[0].videoHeight, opts), E = await encoder(container, W, H, opts.quality, 30);
     const durs = vids.map((v) => (isFinite(v.duration) ? v.duration : 0)), from = Math.max(0, +opts.from || 0);
-    const ends = durs.map((d) => (opts.to != null && opts.to !== '' && isFinite(+opts.to) ? Math.min(d || Infinity, +opts.to) : d)), total = ends.reduce((a, e, i) => a + Math.max(0, (e || 0) - (i ? 0 : from)), 0) / rate || 1;
+    const ends = durs.map((d) => (opts.to != null && opts.to !== '' && isFinite(+opts.to) ? Math.min(d || Infinity, +opts.to) : d));
     if (from && ends[0] && from >= ends[0]) throw new Error('the start (' + from + ' s) is after the end of the video (' + ends[0].toFixed(2) + ' s).');
+    const starts = vids.map((_, i) => (i ? 0 : from)), lens = ends.map((e, i) => Math.max(0, (e || 0) - starts[i]));
+    // the transitions, in seconds of the source: x[i] joins video i to video i + 1. Each is kept shorter than the videos it joins, so that a
+    // video in the middle still has its own picture between its two transitions; a video of no known length gets none, and that is said
+    const x = vids.map(() => 0), want = tr ? tr.seconds * rate : 0;
+    if (tr && tr.mode === 'join') for (let i = 0; i < vids.length - 1; i++) {
+      if (!durs[i] || !durs[i + 1]) { notes.push('no transition after ' + list[i].name + ': this browser gives no length for ' + (durs[i] ? list[i + 1].name : list[i].name)); continue; }
+      x[i] = Math.min(want, Math.max(0, lens[i] - (i ? x[i - 1] : 0) - 1 / 30), i + 1 < vids.length - 1 ? lens[i + 1] / 2 : lens[i + 1]);
+      if (x[i] < want - 1e-6) notes.push('the transition after ' + list[i].name + ' is ' + (x[i] / rate).toFixed(2) + ' s, as long as the shorter video allows');
+    }
+    const total = (lens.reduce((a, l) => a + l, 0) - x.reduce((a, v) => a + v, 0)) / rate || 1;
+    // a transition from or to a plain colour (one video): its length in seconds of the output, and the colour picture
+    let edge = 0, flat = null;
+    if (tr && tr.mode !== 'join') {
+      if (!lens.reduce((a, l) => a + l, 0)) throw new Error('this browser gives no length for this video, so Verse cannot tell where its end is for the transition.');
+      edge = Math.min(tr.seconds, tr.mode === 'both' ? total / 2 : total);
+      if (edge < tr.seconds - 1e-6) notes.push('the transition is ' + edge.toFixed(2) + ' s, as long as this ' + total.toFixed(2) + ' s video allows');
+      const c = new OffscreenCanvas(W, H).getContext('2d'); c.fillStyle = opts.color || '#000'; c.fillRect(0, 0, W, H); flat = c.getImageData(0, 0, W, H).data;
+    }
+    const mixed = tr ? new ImageData(W, H) : null;
+    // puts on the canvas the transition picture between a and b (RGBA) at progress p (1: all a, 0: all b)
+    const blendOnto = (a, b, p) => { blend(tr.kind, a, b, mixed.data, W, H, p); E.x.putImageData(mixed, 0, 0); };
+    const sides = tr && tr.mode === 'join' ? [0, 1].map(() => new OffscreenCanvas(W, H).getContext('2d', { willReadFrequently: true })) : null;
     let offset = 0, skipped = 0; const kept = [];
     for (let i = 0; i < vids.length; i++) {
-      const v = vids[i], a = i ? 0 : from, z = ends[i] || Infinity, { step } = await frameStep(v, a);
+      // this video plays from after the transition into it to the start of the transition out of it
+      const v = vids[i], a = starts[i] + (i ? x[i - 1] : 0), z = (ends[i] || Infinity) - x[i], { step } = await frameStep(v, a), start = offset;
       v.playbackRate = rate;
       let last = -1, lastTs = offset;
       await new Promise((resolve, reject) => {
@@ -202,7 +250,14 @@ export async function writeVideo(files, opts = {}) {
               v.pause(); v.playbackRate = Math.max(SLOWEST, v.playbackRate / 4); seekThenPlay(last >= 0 ? last + step / 2 : a); return;
             }
             if (gap) skipped += Math.max(0, Math.round((mt - ref) / step) - 1); // already at the slowest speed: the loss is counted and said
-            if (mt > last) { last = mt; lastTs = offset + Math.max(0, (mt - a) / rate) * 1e6; drawFrame(E.x, v, v.videoWidth, v.videoHeight, W, H, opts, lastTs / 1e6); E.push(Math.round(lastTs)); say(Math.min(0.99, lastTs / 1e6 / total)); }
+            if (mt > last) {
+              last = mt; lastTs = offset + Math.max(0, (mt - a) / rate) * 1e6; const t = lastTs / 1e6;
+              drawFrame(E.x, v, v.videoWidth, v.videoHeight, W, H, opts, t);
+              // the start comes in from the colour; the end goes out to it
+              if (edge && tr.mode !== 'end' && t < edge) blendOnto(flat, E.x.getImageData(0, 0, W, H).data, 1 - t / edge);
+              else if (edge && tr.mode !== 'start' && t > total - edge) blendOnto(E.x.getImageData(0, 0, W, H).data, flat, 1 - (t - (total - edge)) / edge);
+              E.push(Math.round(lastTs)); say(Math.min(0.99, t / total));
+            }
             if (!v.ended) v.requestVideoFrameCallback(onFrame);
             if (held) play();
             // the encoder is behind: hold the video until it catches up, so no picture is dropped
@@ -213,16 +268,37 @@ export async function writeVideo(files, opts = {}) {
         // from the start: the seek shows the first picture to the callback, then the video plays
         if (Math.abs(v.currentTime - a) > 1e-6) seekThenPlay(a); else { v.requestVideoFrameCallback(onFrame); play(); }
       });
-      const end = Math.min(z, durs[i] || z), len = isFinite(end) ? Math.max(0, (end - a) / rate) : 0, shown = Math.max(len, (lastTs - offset) / 1e6 + 1 / 30); kept.push({ a, z: end, len: shown }); offset += shown * 1e6;
+      const end = Math.min(z, durs[i] || z), len = isFinite(end) ? Math.max(0, (end - a) / rate) : 0, shown = Math.max(len, (lastTs - offset) / 1e6 + 1 / 30); offset += shown * 1e6;
+      // the transition into the next video: both are stepped to each picture's time and drawn, then the two pictures are blended
+      if (x[i]) {
+        const b = vids[i + 1], secs = x[i] / rate, n = Math.max(1, Math.round(secs * 30));
+        v.pause(); b.pause();
+        for (let k = 0; k < n; k++) {
+          // each side is shown 1 ms after the picture's time: a time on a picture's edge, such as 2 + 3/30, can come out just before it
+          const t = offset / 1e6 + k / 30, pics = [];
+          for (const [s, side, at] of [[v, sides[0], end + k / 30 * rate], [b, sides[1], starts[i + 1] + k / 30 * rate]]) {
+            await showAt(s, at + 1e-3); drawFrame(side, s, s.videoWidth, s.videoHeight, W, H, opts, t); pics.push(side.getImageData(0, 0, W, H).data);
+          }
+          blendOnto(pics[0], pics[1], 1 - k / n); E.push(Math.round(t * 1e6)); say(Math.min(0.99, t / total));
+          if (E.enc.encodeQueueSize > 4) while (E.enc.encodeQueueSize > 1) await new Promise((r) => E.enc.addEventListener('dequeue', r, { once: true }));
+        }
+        offset += secs * 1e6;
+      }
+      // the sound of this video is all of it: the parts in the transitions overlap the next video's, so they are crossfaded
+      kept.push({ a: starts[i], z: Math.min(ends[i] || Infinity, durs[i] || Infinity), len: lens[i] ? lens[i] / rate : (offset - start) / 1e6 });
     }
+    if (tr && tr.mode === 'join' && x.some(Boolean)) notes.push('the ' + trName + ' transition between the videos' + (x.every((v, i) => i === x.length - 1 || v >= want - 1e-6) ? ', ' + tr.seconds + ' s' : ''));
+    if (edge) notes.push('the ' + trName + ' transition ' + { start: 'into the video', end: 'out of the video', both: 'into and out of the video' }[tr.mode] + ' from ' + (opts.color || 'black') + ', ' + edge.toFixed(2).replace(/\.?0+$/, '') + ' s');
     // the sound: each file's, cut and sped up as the pictures were, one after another (a file with none is silent for its part); then the edits
     let sound = null;
     if (opts.sound !== 'none') {
       const own = []; for (const f of list) own.push(await soundOf48(f));
       if (own.some(Boolean)) {
         const parts = own.map((s, i) => { const { a, z, len } = kept[i]; let p = s ? cut(s, a, z) : silence(len * rate); if (rate !== 1) p = speedOf(p, rate); return p; });
-        sound = parts.length > 1 ? merge(parts) : parts[0];
+        if (x.some(Boolean)) { sound = parts[0]; for (let i = 1; i < parts.length; i++) sound = merge([sound, parts[i]], x[i - 1] / rate); }
+        else sound = parts.length > 1 ? merge(parts) : parts[0];
         if (rate !== 1) notes.push('the sound is ' + rate + ' times as fast too, so its pitch moves, as a tape does');
+        if (edge) { sound = fadeEdges(sound, tr.mode !== 'end' ? edge : 0, tr.mode !== 'start' ? edge : 0); notes.push('the sound fades ' + { start: 'in', end: 'out', both: 'in and out' }[tr.mode] + ' with the picture'); }
       }
     }
     if (opts.addSound) {
