@@ -1,6 +1,6 @@
 // Tests for lib/photo-edit.js (the /photos/ page's maths and bytes).
 import test from 'node:test'; import assert from 'node:assert/strict'; import zlib from 'node:zlib';
-import { fitWithin, historyCap, History, cropRect, clampRect, resizeRect, outSize, sizeLabel, savedPct, outName, sniff, adjustPixels, blurPixels, quantize, encodeIndexedPng, readMeta, privacySentence, zipStore, crc32, isPlain } from '../void-live-deploy/lib/photo-edit.js';
+import { fitWithin, historyCap, History, cropRect, clampRect, resizeRect, outSize, sizeLabel, savedPct, outName, sniff, adjustPixels, blurPixels, quantize, mainColour, encodeIndexedPng, readMeta, privacySentence, zipStore, crc32, isPlain } from '../void-live-deploy/lib/photo-edit.js';
 import { stripMeta } from '../void-live-deploy/lib/safety.js';
 
 // a tiny JPEG with an EXIF block: camera, a date and a GPS position (made up for the test)
@@ -68,4 +68,14 @@ test('palette PNG: fewer colours, a real PNG that inflates to the indices, alpha
 test('zip made on the device: a standard store zip', () => {
   const z = zipStore([{ name: 'a.txt', data: new TextEncoder().encode('hello') }, { name: 'b.txt', data: new TextEncoder().encode('world') }]);
   assert.equal(z[0], 0x50); assert.equal(crc32(new TextEncoder().encode('hello')), 0x3610a686); assert.ok(Buffer.from(z).includes('world'));
+});
+
+test('main colour: the colour covering most of the picture, transparent pixels left out', () => {
+  const px = (list) => { const d = new Uint8ClampedArray(list.length * 4); list.forEach((c, i) => d.set(c, i * 4)); return d; };
+  const red = [200, 30, 40, 255], blue = [20, 60, 220, 255], clear = [0, 255, 0, 0];
+  // 60 red pixels and 40 blue: red covers most
+  assert.equal(mainColour(px([...Array(60).fill(red), ...Array(40).fill(blue)]), 10, 10), '#c81e28');
+  // 70 green pixels that cannot be seen and 30 blue: the blue is what shows
+  assert.equal(mainColour(px([...Array(70).fill(clear), ...Array(30).fill(blue)]), 10, 10), '#143cdc');
+  assert.equal(mainColour(px(Array(4).fill(clear)), 2, 2), null);
 });

@@ -156,6 +156,13 @@ export function quantize(d, w, h, n = 256) {
   for (let p = 0, i = 0; p < indices.length; p++, i += 4) indices[p] = lookup.get(((d[i] >> 3) << 14) | ((d[i + 1] >> 3) << 9) | ((d[i + 2] >> 3) << 4) | (d[i + 3] >> 4));
   return { palette, indices };
 }
+/** the colour that covers most of a picture, as '#rrggbb': its RGBA pixels cut to 6 colours (quantize) and the one with the most opaque pixels taken; null when no pixel is opaque. Pure. */
+export function mainColour(d, w, h) {
+  const q = quantize(d, w, h, 6), n = new Array(q.palette.length / 4).fill(0);
+  for (let p = 0; p < q.indices.length; p++) if (d[p * 4 + 3] >= 128) n[q.indices[p]]++;
+  let best = -1; n.forEach((c, i) => { if (c > 0 && (best < 0 || c > n[best])) best = i; });
+  return best < 0 ? null : '#' + [0, 1, 2].map((j) => q.palette[best * 4 + j].toString(16).padStart(2, '0')).join('');
+}
 const pngChunk = (type, data) => { const out = new Uint8Array(12 + data.length), v = new DataView(out.buffer); v.setUint32(0, data.length); for (let i = 0; i < 4; i++) out[4 + i] = type.charCodeAt(i); out.set(data, 8); v.setUint32(8 + data.length, crc32(out.subarray(4, 8 + data.length))); return out; };
 /** an indexed PNG from palette indices (zlib by CompressionStream, which every current browser has). Pure over its inputs; async. */
 export async function encodeIndexedPng(indices, palette, w, h) {
