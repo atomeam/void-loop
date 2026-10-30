@@ -43,9 +43,9 @@
   #live[hidden] { display: none; }
   #live .more { display: contents; }
   #live h2 { font: 600 10.5px/1.2 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); margin: 0; padding-top: 6px; max-width: 7.5em; }
-  #live dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 5px; margin: 0; }
+  #live dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 5px; margin: 0; }
   #live dl > div { min-width: 0; padding: 4px 8px 5px; border-radius: 8px; background: rgba(255,255,255,.045); border-left: 2px solid var(--cool); }
-  #liveGains > div { border-left-color: var(--warm); }
+  #live #liveGains > div { border-left-color: var(--warm); } /* gains wear warm, the now row cool */
   #live dt { color: var(--soft); font: 600 10px/1.3 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
   #live dd { margin: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
   /* the side panel: everything the card has, plus all it says about itself */
@@ -136,9 +136,9 @@
   <a class="tb" id="exit" href="/">Leave</a>
 </header>
 <section id="live" aria-label="Live numbers from the brain" aria-live="off">
-  <h2>Live, from the brain itself</h2>
+  <h2>Live<span class="vh">, from the brain itself</span></h2>
   <dl id="liveNow"><div><dt>Starting</dt><dd>the brain wakes up</dd></div></dl>
-  <div class="more"><h2>Measured gains</h2><dl id="liveGains"><div><dt>None yet</dt><dd>each organ is shown once it has a score</dd></div></dl></div>
+  <div class="more"><h2>Gains<span class="vh">: what each organ has measurably gained</span></h2><dl id="liveGains"><div><dt>None yet</dt><dd>each organ is shown once it has a score</dd></div></dl></div>
 </section>
 <main id="panel" aria-label="Verse Brain controls, organs and what it says">
   <div id="panelHead"><h1>Verse Brain, full screen</h1></div>
