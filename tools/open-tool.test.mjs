@@ -10,6 +10,11 @@ test('a tool name of two words, an alias, or open + any tool name', () => {
   assert.equal(toolAsk('open the piano').href, '/piano/'); assert.equal(toolAsk('go to the metronome').href, '/metronome/'); assert.equal(toolAsk('open my calendar').href, '/calendar/');
   assert.equal(toolAsk('kanban board tool').href, '/kanban/');
 });
+test('the names people type for a tool page Verse has (these fell to an article)', () => {
+  for (const [a, href] of [['time zone converter', '/time/'], ['Timezone converter', '/time/'], ['online stopwatch', '/stopwatch/'], ['character count', '/word-count/'],
+    ['random number generator', '/random/'], ['binary to decimal', '/base-converter/'], ['decimal to hex', '/base-converter/'], ['hex to rgb', '/color/'], ['open the time zone converter', '/time/']]) assert.equal((toolAsk(a) || {}).href, href, a);
+  for (const a of ['binary to decimal 1010', 'hex to rgb #ff0000', 'time zone converter for tokyo and paris']) assert.equal(toolAsk(a), null, 'an ask with a value stays with the skill that answers it: ' + a);
+});
 test('not a tool: one word alone, the stage keeps, other asks', () => {
   for (const s of ['gradient', 'piano', 'calculator', 'timer', 'open a bank account', 'show me the news', 'word counter for my essay hello world', 'open a calculator', 'wheel of names', 'open the team chat', '']) assert.equal(toolAsk(s), null, s);
 });

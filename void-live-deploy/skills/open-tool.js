@@ -9,7 +9,14 @@
 import { allTools, toolNamed } from '../lib/toolkit.js';
 
 // other names people type for a tool's page
-const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-count/', 'word count': '/word-count/', 'online timer': '/stopwatch/', 'countdown timer': '/stopwatch/' };
+// (2026-10-30: "time zone converter", "random number generator", "binary to decimal", "hex to rgb" and "online stopwatch" fell to an article)
+const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-count/', 'word count': '/word-count/', 'character count': '/word-count/', 'letter count': '/word-count/',
+  'online timer': '/stopwatch/', 'countdown timer': '/stopwatch/', 'online stopwatch': '/stopwatch/', 'stopwatch online': '/stopwatch/',
+  'time zone converter': '/time/', 'timezone converter': '/time/', 'time zone calculator': '/time/',
+  'random number generator': '/random/', 'random number picker': '/random/', 'number generator': '/random/',
+  'binary to decimal': '/base-converter/', 'decimal to binary': '/base-converter/', 'hex to decimal': '/base-converter/', 'decimal to hex': '/base-converter/',
+  'binary to hex': '/base-converter/', 'hex to binary': '/base-converter/', 'binary converter': '/base-converter/', 'number base converter': '/base-converter/',
+  'hex to rgb': '/color/', 'rgb to hex': '/color/', 'hex color converter': '/color/', 'color code converter': '/color/', 'colour code converter': '/color/' };
 const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
 // pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there
 const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/wheel/']);
@@ -43,7 +50,7 @@ function run(text, api) {
 
 export default {
   name: 'open-tool',
-  examples: ['word counter', 'open the piano', 'base converter', 'go to the metronome', 'character counter'],
+  examples: ['word counter', 'open the piano', 'base converter', 'go to the metronome', 'character counter', 'time zone converter', 'random number generator', 'binary to decimal'],
   nearMisses: ['gradient', 'piano', 'calculator', 'word counter for my essay hello world', 'open a bank account'],
   match(lower, text) { return !!toolAsk(text); },
   run
