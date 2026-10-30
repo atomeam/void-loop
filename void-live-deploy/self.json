@@ -335,7 +335,7 @@
    "state": "open",
    "date": "",
    "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
   },
   {
    "state": "open",
@@ -347,19 +347,19 @@
   {
    "state": "open",
    "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the…",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
    "from": "claude 2026-10-18"
   },
   {
@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T18:06:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:01:44Z",
+   "subject": "Show whole lines on the wants card and the inventory card"
+  },
+  {
+   "at": "2026-10-30T17:59:25Z",
+   "subject": "Gradient hands its picture to a board"
+  },
+  {
    "at": "2026-10-30T17:51:38Z",
    "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
   },
@@ -562,12 +574,48 @@
    "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
   },
   {
+   "at": "2026-10-30T17:46:38Z",
+   "subject": "Regenerate deps.json and families.json"
+  },
+  {
+   "at": "2026-10-30T17:44:53Z",
+   "subject": "A pasted progress list is no failure on the report card"
+  },
+  {
+   "at": "2026-10-30T17:44:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T17:39:22Z",
+   "subject": "Hints while typing: a one-word hint the typed letters begin comes first"
+  },
+  {
    "at": "2026-10-30T17:38:34Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
+   "at": "2026-10-30T17:33:31Z",
+   "subject": "helper-pr: check the branch merged with main before opening a PR"
+  },
+  {
+   "at": "2026-10-30T17:31:42Z",
+   "subject": "Watch with Verse: keep a learn's notes in one batch; mark the two reviewed lines"
+  },
+  {
    "at": "2026-10-30T17:31:32Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T17:27:49Z",
+   "subject": "Rename the book to The Book of Verse everywhere it is named"
+  },
+  {
+   "at": "2026-10-30T17:25:01Z",
+   "subject": "converter: phone weight class, offline conversions, installable; Versus card title"
+  },
+  {
+   "at": "2026-10-30T17:23:02Z",
+   "subject": "Versus by itself: let the model route take a full read, and name the target as next"
   },
   {
    "at": "2026-10-30T17:23:00Z",
@@ -578,56 +626,8 @@
    "subject": "reinvest: today's plan for Verse's money"
   },
   {
-   "at": "2026-10-30T17:15:58Z",
-   "subject": "Refuse a recipe card about another dish instead of showing it"
-  },
-  {
-   "at": "2026-10-30T17:15:21Z",
-   "subject": "Card notes are no near miss of the self skill"
-  },
-  {
-   "at": "2026-10-30T17:13:03Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
-  },
-  {
-   "at": "2026-10-30T17:12:29Z",
-   "subject": "Read a paste as a report, an ask or unclear, never a guess"
-  },
-  {
-   "at": "2026-10-30T17:09:40Z",
-   "subject": "Show the Adds line whole and end the stuck GitHub check"
-  },
-  {
-   "at": "2026-10-30T17:09:40Z",
-   "subject": "Regenerate preload lists in the 3 page copies"
-  },
-  {
-   "at": "2026-10-30T17:09:39Z",
-   "subject": "Fix card headings: end at a whole sentence, not mid-word"
-  },
-  {
-   "at": "2026-10-30T17:01:25Z",
-   "subject": "Real bass guitar and electric guitar for Verse's band songs"
-  },
-  {
-   "at": "2026-10-30T16:52:53Z",
-   "subject": "YAML to JSON and JSON to YAML: a converter card in the util skill"
-  },
-  {
-   "at": "2026-10-30T16:51:10Z",
-   "subject": "Mark the helper names the review takes for undeclared"
-  },
-  {
-   "at": "2026-10-30T16:51:08Z",
-   "subject": "Main green: a guard limit for /api/sing and the MAP line for verse-secrets.mjs"
-  },
-  {
-   "at": "2026-10-30T16:50:06Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T16:49:26Z",
-   "subject": "Load game and sky helpers on first use, not with the routing order"
+   "at": "2026-10-30T17:16:07Z",
+   "subject": "Incident autopsy: map every check to its family and owning files"
   }
  ],
  "builders": {
