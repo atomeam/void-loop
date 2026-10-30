@@ -85,27 +85,27 @@ export function judgePrompt(prompt, checks) {
   const list = checks.map((c, i) => (i + 1) + '. ' + c).join('\n');
   return 'You are a strict art director checking a picture an AI made. It was asked for: "' + String(prompt).slice(0, 400) + '".\n'
     + 'Answer each check yes or no, judging only what is clearly visible in this picture:\n' + list + '\n'
-    + 'Then rate FLAWS from 0 to 10, where 10 means no visible flaws and each of these takes points off: extra, missing or melted fingers or limbs, '
+    + 'Then rate CLEAN from 0 to 10: 10 means the picture has no visible flaw at all, 0 means it is badly broken. Each of these takes points off: extra, missing or melted fingers or limbs, '
     + 'warped faces or eyes, garbled or misspelled text, smeared or noisy patches, duplicated or merged objects, broken perspective. '
     + 'Then rate LOOK from 0 to 10: composition, lighting, detail and whether a professional would publish it. Most AI pictures are 4 to 7; give 9 or 10 only to excellent work.\n'
-    + 'Reply with JSON only, no other words: {"checks":["yes","no",...],"flaws":0-10,"look":0-10,"worst":"the single worst problem, a few words"}';
+    + 'Reply with JSON only, no other words: {"checks":["yes","no",...],"clean":0-10,"look":0-10,"worst":"the single worst problem, a few words"}';
 }
 const num = (v) => { const n = Number(v); return Number.isFinite(n) ? Math.max(0, Math.min(10, n)) : null; };
-/** the judge's answer as { match (0 to 1), flaws (0 to 10), look (0 to 10), worst, checks: [true|false] }, or null when it is not one. Pure. */
+/** the judge's answer as { match (0 to 1), clean (0 to 10, 10 = no visible flaw), look (0 to 10), worst, checks: [true|false] }, or null when it is not one. Pure. */
 export function judgeOf(text, nChecks) {
   const s = String(text || ''), m = s.match(/\{[\s\S]*\}/); if (!m) return null;
   let j; try { j = JSON.parse(m[0]); } catch (_) { try { j = JSON.parse(m[0].replace(/,\s*([}\]])/g, '$1').replace(/'/g, '"')); } catch (__) { return null; } }
   const raw = Array.isArray(j.checks) ? j.checks : [], checks = [];
   for (let i = 0; i < nChecks; i++) { const v = raw[i]; checks.push(v === true || /^\s*(?:yes|y|true|1)\b/i.test(String(v == null ? '' : v))); }
-  const flaws = num(j.flaws), look = num(j.look);
-  if (raw.length === 0 || flaws === null || look === null) return null;
-  return { match: checks.filter(Boolean).length / Math.max(1, nChecks), flaws, look, worst: String(j.worst || '').replace(/\s+/g, ' ').trim().slice(0, 80), checks };
+  const clean = num(j.clean), look = num(j.look); // 'clean', not 'flaws': asked for 'flaws', the judge gave a flaw count (0 for its best picture, live 2026-10-30)
+  if (raw.length === 0 || clean === null || look === null) return null;
+  return { match: checks.filter(Boolean).length / Math.max(1, nChecks), clean, look, worst: String(j.worst || '').replace(/\s+/g, ' ').trim().slice(0, 80), checks };
 }
 /** one picture's score from 0 to 100: what was asked is there (55), it is not broken (25), it looks good (20), times how much of the asked
  *  size it really has (a picture smaller than asked is worth less). Pure. */
 export function scoreOf(j, got = null, want = null) {
   if (!j) return 0;
-  let s = 100 * (0.55 * j.match + 0.25 * (j.flaws / 10) + 0.2 * (j.look / 10));
+  let s = 100 * (0.55 * j.match + 0.25 * (j.clean / 10) + 0.2 * (j.look / 10));
   if (got && want && got[0] > 0 && got[1] > 0) s *= Math.min(1, (got[0] * got[1]) / (want[0] * want[1]));
   return Math.round(s * 10) / 10;
 }
@@ -148,7 +148,7 @@ export function pictureOf(b64) {
 export function paintAskOf(slug, prompt, [w, h], seed) {
   const m = IMAGE_MODELS[slug]; if (!m) return null;
   if (m.ask === 'multipart') { const form = { prompt, width: String(w), height: String(h), seed: String(seed) }; if (m.steps) form.steps = String(m.steps); return { form }; }
-  const json = { prompt, seed };
+  const json = { prompt }; if (slug !== 'schnell') json.seed = seed; // schnell refuses a seed field (live 2026-10-30: 5006 '/seed' not allowed)
   if (!m.square) { json.width = w; json.height = h; }
   if (m.steps) { json.num_steps = m.steps; if (slug === 'schnell') { delete json.num_steps; json.steps = Math.min(8, m.steps); } }
   if (m.guidance) json.guidance = m.guidance;
@@ -193,7 +193,7 @@ export function videoScoreOf(frames, motion, steady) {
   const js = (frames || []).filter(Boolean); if (!js.length) return 0;
   const avg = (k) => js.reduce((a, j) => a + j[k], 0) / js.length;
   const moves = Math.max(0, Math.min(1, Number(motion) || 0)), moving = moves < 0.01 ? 0 : moves > 0.6 ? 0.6 : 1; // too still or so much change it is a cut
-  const s = 100 * (0.4 * avg('match') + 0.2 * (avg('flaws') / 10) + 0.15 * (avg('look') / 10) + 0.15 * moving + 0.1 * (steady ? 1 : 0));
+  const s = 100 * (0.4 * avg('match') + 0.2 * (avg('clean') / 10) + 0.15 * (avg('look') / 10) + 0.15 * moving + 0.1 * (steady ? 1 : 0));
   return Math.round(s * 10) / 10;
 }
 /** the judge's instructions for "is this the same scene" across frames shown in order. Pure. */

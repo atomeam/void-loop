@@ -8,7 +8,7 @@
 // rap's own bars are sent, to the voice route; the beat, the mix and the video are made in this browser.
 import { schemeOf, endWordOf, statsOf, beatFor, timingOf, lengthOf, rapText, STYLES, MOODS } from './rap.js';
 import { produce } from './rap-beat.js';
-import { songOf, RATE, drumsFor } from './rap-song.js';
+import { songOf, RATE, drumsFor, pianoFor } from './rap-song.js';
 import { makeVideo, canMakeVideo } from './rap-video.js';
 
 const el = (doc, tag, cls, text) => { const n = doc.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
@@ -77,16 +77,18 @@ export function performer(r, s, { win = window, onBar = () => {}, onSay = () => 
           if (v.stem) vox = v.stem; note = v.note;
         }
         if (my !== token || !ac) return;
-        // the recorded drums: decoded once per page, so a second play starts at once
-        const kit = whole ? null : await drumsFor(beat, ac, { win });
+        // the recorded drums and grand piano: decoded once per page, so a second play starts at once
+        const keyed = beat.rapStyle === 'boom bap' || beat.rapStyle === 'conscious' || !beat.rapStyle;
+        const [kit, piano] = whole ? [null, null] : await Promise.all([drumsFor(beat, ac, { win }), keyed ? pianoFor(beat, ac, { win }) : null]);
         if (my !== token || !ac) return;
-        // say which drums play, so a kit that did not load is never passed off as the real one
-        const drums = whole ? '' : kit ? (kit.name === '808' ? ' Real TR-808 drums.' : ' A real recorded drum kit.') : ' The recorded drums did not load, so my synth drums play.';
+        // say which drums and keys play, so a kit or a piano that did not load is never passed off as the real one
+        const drums = whole ? '' : (kit ? (kit.name === '808' ? ' Real TR-808 drums.' : ' A real recorded drum kit.') : ' The recorded drums did not load, so my synth drums play.')
+          + (keyed ? (piano ? ' A real grand piano on the keys.' : ' The piano did not load, so an electric piano plays the keys.') : '');
         const out = ac.createGain(); out.gain.value = 1; out.connect(ac.destination);
         beatGain = ac.createGain(); beatGain.gain.value = volume(); beatGain.connect(out);
         const t0 = ac.currentTime + 0.2;
         if (whole) { const b = ac.createBuffer(2, whole[0].length, RATE); b.getChannelData(0).set(whole[0]); b.getChannelData(1).set(whole[1]); const src = ac.createBufferSource(); src.buffer = b; src.connect(beatGain); beatGain.gain.value = 1; src.start(t0); vox = whole; }
-        else produce(ac, beat, { measures: the.plan.measures, t0, dest: beatGain, kit });
+        else produce(ac, beat, { measures: the.plan.measures, t0, dest: beatGain, kit, piano });
         if (vox && !whole) { const b = ac.createBuffer(2, vox[0].length, RATE); b.getChannelData(0).set(vox[0]); b.getChannelData(1).set(vox[1]); const src = ac.createBufferSource(); src.buffer = b; src.connect(out); src.start(t0); }
         const speak = !vox && mode === 'voice' && synth && typeof win.SpeechSynthesisUtterance === 'function';
         if (mode === 'voice' && !vox && !speak) onSay('This browser has no voice to rap with, so the beat plays and the bars light up: rap it yourself.');

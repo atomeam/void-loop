@@ -108,12 +108,15 @@ export const citesUnbacked = (answer) => String(answer || '').split(/(?<=[.!?\n]
 
 // A guess (the sources do not hold the ask's words) is answered as readings, one a line: "5 m/s (Mach): ... [2]". A reading is named by
 // the page it cites, never by a label the page does not hold: a label with a word or a number-and-unit that the cited page lacks is
-// replaced by that page's title, so "5 m/s (Mach)" reads "Mach number". Pure.
+// replaced by that page's title, so "5 m/s (Mach)" reads "Mach number". Only a list of readings (two lines or more) is relabelled: one
+// "X: y [1]" line is a plain sentence with a colon ("In short: ..."), not a reading, and keeps its words. Pure.
 const labelBits = (l) => (String(l).toLowerCase().match(/\d[\d.,]*\s*[a-z/]+|[a-z][a-z0-9-]*[a-z0-9]|[a-z]|\d[\d.,]*/g) || []).map((x) => x.replace(/\s+/g, ' '));
 export function titledReadings(answer, sources) {
   const src = Array.isArray(sources) ? sources : [];
-  return String(answer || '').split('\n').map((line) => {
-    const m = line.match(/^(\s*(?:[-*•]|\d+[.)])?\s*)(\*\*|__)?([^:\n*_]{1,70}?)(\*\*|__)?\s*:\s+(.*\[(\d+)\].*)$/);
+  const lines = String(answer || '').split('\n'), reading = (line) => line.match(/^(\s*(?:[-*•]|\d+[.)])?\s*)(\*\*|__)?([^:\n*_]{1,70}?)(\*\*|__)?\s*:\s+(.*\[(\d+)\].*)$/);
+  if (lines.filter((l) => reading(l)).length < 2) return String(answer || '');
+  return lines.map((line) => {
+    const m = reading(line);
     if (!m) return line;
     const s = src[+m[6] - 1]; if (!s || !s.title) return line;
     const have = ((s.title || '') + ' ' + (s.text || '')).toLowerCase().replace(/\s+/g, ' ');

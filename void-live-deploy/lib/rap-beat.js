@@ -15,6 +15,7 @@
 // BaseAudioContext (an OfflineAudioContext renders it to a buffer, lib/rap-song.js).
 import { hz, SCALES } from './compose.js';
 import { hitsOf } from './rap-kit.js';
+import { chordOf, takeOf as pianoTake } from './rap-piano.js';
 
 /** how late the off 16th of each pair is played: 0.5 is straight, 0.58 is the swing of a 90s boom bap groove */
 export const SWING = Object.freeze({ 'boom bap': 0.58, conscious: 0.56, melodic: 0.54, trap: 0.5, drill: 0.5 });
@@ -108,8 +109,9 @@ export function clipCurve(drive = 1.5, n = 2048) { const c = new Float32Array(n)
 const env = (g, t, peak, atk, dec, floor = 0.0001) => { g.gain.setValueAtTime(floor, t); g.gain.linearRampToValueAtTime(peak, t + atk); g.gain.exponentialRampToValueAtTime(floor, t + atk + dec); };
 
 /** build the beat on `ctx` from t0 into `dest`: the whole song's beat, `measures` long (intro and outro included). `kit` is a loaded kit
- *  (lib/rap-kit.js loadKit): its recordings play the drums and the 808; without it they are synthesised. Returns { seconds, kicks, sampled }. */
-export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destination, kit = null } = {}) {
+ *  (lib/rap-kit.js loadKit): its recordings play the drums and the 808; without it they are synthesised. `piano` is the loaded grand piano
+ *  (lib/rap-piano.js loadPiano): it plays the keys; without it they are an electric piano. Returns { seconds, kicks, sampled, pianoed }. */
+export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destination, kit = null, piano = null } = {}) {
   const style = beat.rapStyle || 'boom bap', plan = beatEvents(beat, { measures }), nz = noise(ctx, 2, beat.seed), lofi = style === 'boom bap' || style === 'conscious';
   const node = (type, props = {}) => { const n = type === 'gain' ? ctx.createGain() : type === 'filter' ? ctx.createBiquadFilter() : type === 'shaper' ? ctx.createWaveShaper() : type === 'comp' ? ctx.createDynamicsCompressor() : type === 'pan' ? (ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain()) : ctx.createConvolver(); for (const [k, v] of Object.entries(props)) { if (n[k] && typeof n[k] === 'object' && 'value' in n[k]) n[k].value = v; else n[k] = v; } return n; };
   // the master: bus compressor, soft clip, limiter
@@ -142,6 +144,13 @@ export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destinati
   // the recorded drums and 808: each take through its own path, so a real kick is not driven as hard as a synthesised one
   const SAMPLED = new Set(['kick', 'snare', 'clap', 'hat', 'ohat', 'crash', '808']), hits = kit ? hitsOf(plan.events, kit.name).filter((h) => kit.buffers.has(h.path)) : [];
   const sampled = hits.length > 0;
+  // the grand piano: its own bus, no tremolo (a real piano has none), a little room, and the tape's wobble on the lo-fi styles
+  const pianoed = !!(piano && piano.buffers && piano.buffers.size) && plan.events.some((e) => e.kind === 'keys');
+  let pianoBus = null;
+  if (pianoed) {
+    const lowCut = node('filter', { type: 'highpass', frequency: 110, Q: 0.6 }), body = node('filter', { type: 'peaking', frequency: 250, Q: 0.9, gain: -2 }), top = node('filter', { type: 'highshelf', frequency: 5000, gain: lofi ? -6 : -1 });
+    pianoBus = node('gain', { gain: lofi ? 1.1 : 1 }); pianoBus.connect(lowCut); lowCut.connect(body); body.connect(top); top.connect(music); send(top, lofi ? 0.22 : 0.3);
+  }
   if (sampled) {
     const kickEq = node('filter', { type: 'lowshelf', frequency: 90, gain: kit.name === 'kit' ? 4 : 1 }), kickClick = node('filter', { type: 'peaking', frequency: 3800, Q: 0.9, gain: kit.name === 'kit' ? 3 : 0 }), kickSat = node('shaper', { curve: clipCurve(1.2) });
     kickEq.connect(kickClick); kickClick.connect(kickSat); kickSat.connect(drums);
@@ -190,6 +199,15 @@ export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destinati
       const o = osc('sine', hz(e.midi), t, t + e.dur + 0.1), o2 = osc('triangle', hz(e.midi), t, t + e.dur + 0.1), g = node('gain'), g2 = node('gain', { gain: 0.25 });
       g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(e.vel * 0.8, t + 0.012); g.gain.setValueAtTime(e.vel * 0.7, t + Math.max(0.02, e.dur - 0.06)); g.gain.exponentialRampToValueAtTime(0.0001, t + e.dur + 0.06);
       o.connect(g); o2.connect(g2); g2.connect(g); g.connect(bassLp);
+    } else if (e.kind === 'keys' && pianoed) {
+      // the grand piano: each note the nearest real recording at its pitch, rolled a little by hand, the damper falling at the chord's end
+      for (const n of chordOf(e)) {
+        const k = pianoTake(n.midi, n.vel), buf = piano.buffers.get(k.path); if (!buf) continue;
+        const at = t0 + n.t, s = ctx.createBufferSource(), g = node('gain'), off = at + Math.min(n.dur, 2.6), end = off + 0.3;
+        s.buffer = buf; s.playbackRate.setValueAtTime(k.rate, at); if (s.detune && lofi) wobDepth.connect(s.detune);
+        g.gain.setValueAtTime(0.32 * k.gain, at); g.gain.setValueAtTime(0.32 * k.gain, off); g.gain.exponentialRampToValueAtTime(0.0001, end);
+        s.connect(g); g.connect(pianoBus); s.start(at); s.stop(end + 0.02);
+      }
     } else if (e.kind === 'keys') {
       // an electric piano: a sine with a short bright tine on top, a little detuned body, a tremolo and the tape's wobble
       for (const n of e.notes) {
@@ -215,5 +233,5 @@ export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destinati
       env(g, t, 0.06 * e.vel, 0.002, 0.4); o.connect(lp); lp.connect(g); g.connect(keysBus);
     }
   }
-  return { seconds: total, kicks: plan.kicks, plan, sampled };
+  return { seconds: total, kicks: plan.kicks, plan, sampled, pianoed };
 }

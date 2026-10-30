@@ -36,21 +36,22 @@ test('the painter is asked in its own form', () => {
   const lucid = S.paintAskOf('lucid-origin', 'a cat', [1024, 768], 5).json;
   assert.deepEqual([lucid.width, lucid.height, lucid.num_steps, lucid.guidance], [1024, 768, 20, 4.5]);
   const schnell = S.paintAskOf('schnell', 'a cat', [1024, 768], 5).json;
-  assert.equal(schnell.width, undefined); assert.ok(schnell.steps <= 8);
+  assert.equal(schnell.width, undefined); assert.ok(schnell.steps <= 8); assert.equal(schnell.seed, undefined, 'schnell refuses a seed');
   assert.equal(S.paintAskOf('nope', 'x', [1, 1], 1), null);
 });
 
 test('the judge is read strictly, and the score weighs what is there over how it looks', () => {
-  const j = S.judgeOf('Sure! ```json\n{"checks":["yes","yes","no","Yes, clearly","no"],"flaws":8,"look":6,"worst":"the snow looks flat"}\n```', 5);
+  const j = S.judgeOf('Sure! ```json\n{"checks":["yes","yes","no","Yes, clearly","no"],"clean":8,"look":6,"worst":"the snow looks flat"}\n```', 5);
   assert.deepEqual(j.checks, [true, true, false, true, false]);
-  assert.equal(j.match, 0.6); assert.equal(j.flaws, 8); assert.equal(j.worst, 'the snow looks flat');
-  assert.equal(S.judgeOf('{"checks":[],"flaws":5,"look":5}', 3), null);
+  assert.equal(j.match, 0.6); assert.equal(j.clean, 8); assert.equal(j.worst, 'the snow looks flat');
+  assert.equal(S.judgeOf('{"checks":[],"clean":5,"look":5}', 3), null);
   assert.equal(S.judgeOf('no json here', 3), null);
-  assert.equal(S.judgeOf('{"checks":["yes"],"flaws":"x","look":5}', 1), null);
-  assert.equal(S.scoreOf({ match: 1, flaws: 10, look: 10 }), 100);
-  assert.equal(S.scoreOf({ match: 0.6, flaws: 8, look: 6 }), 65);
-  assert.ok(S.scoreOf({ match: 1, flaws: 5, look: 5 }) > S.scoreOf({ match: 0.4, flaws: 10, look: 10 }), 'what was asked counts most');
-  assert.equal(S.scoreOf({ match: 1, flaws: 10, look: 10 }, [512, 512], [1024, 1024]), 25, 'a quarter of the asked pixels');
+  assert.equal(S.judgeOf('{"checks":["yes"],"clean":"x","look":5}', 1), null);
+  assert.equal(S.judgeOf('{"checks":["yes"],"flaws":0,"look":9}', 1), null, 'a flaw count is not a clean score (the judge read flaws as a count, live 2026-10-30)');
+  assert.equal(S.scoreOf({ match: 1, clean: 10, look: 10 }), 100);
+  assert.equal(S.scoreOf({ match: 0.6, clean: 8, look: 6 }), 65);
+  assert.ok(S.scoreOf({ match: 1, clean: 5, look: 5 }) > S.scoreOf({ match: 0.4, clean: 10, look: 10 }), 'what was asked counts most');
+  assert.equal(S.scoreOf({ match: 1, clean: 10, look: 10 }, [512, 512], [1024, 1024]), 25, 'a quarter of the asked pixels');
   assert.match(S.judgePrompt('a fox', ['a fox', 'snow']), /1\. a fox\n2\. snow/);
 });
 
@@ -91,7 +92,7 @@ test('a clip is asked for inside what its model takes, and scored on its frames,
   assert.equal(lin.resolution, '720x1280'); assert.equal(lin.image_uri, undefined, 'ltx takes only an https first frame');
   assert.equal(S.videoUrlOf({ state: 'Completed', result: { video: 'https://x.example/a.mp4' } }), 'https://x.example/a.mp4');
   assert.equal(S.videoUrlOf({ result: { video: 'javascript:alert(1)' } }), '');
-  const f = { match: 1, flaws: 8, look: 7 };
+  const f = { match: 1, clean: 8, look: 7 };
   assert.ok(S.videoScoreOf([f, f], 0.1, true) > S.videoScoreOf([f, f], 0, true), 'a clip that does not move is a still');
   assert.ok(S.videoScoreOf([f, f], 0.1, true) > S.videoScoreOf([f, f], 0.1, false));
   assert.equal(S.videoScoreOf([], 0.1, true), 0);
@@ -103,7 +104,7 @@ function world(over = {}) {
   studio.resetReady(); const calls = [];
   const AI = { run: async (model, input) => {
     calls.push({ model, input });
-    if (/gemma/.test(model)) return { response: '{"checks":["yes","yes","yes","no","yes"],"flaws":7,"look":6,"worst":"soft focus"}' };
+    if (/gemma/.test(model)) return { response: '{"checks":["yes","yes","yes","no","yes"],"clean":7,"look":6,"worst":"soft focus"}' };
     if (model === VIDEO_MODELS['p-video']) return over.video ? over.video(input) : { state: 'Completed', result: { video: 'https://videos.example/clip.mp4' } };
     if (model === IMAGE_MODELS['phoenix-1'].id) return new Response(Buffer.from(jpeg(1024, 1024), 'base64')).body; // a stream
     if (model === IMAGE_MODELS['sdxl-lightning'].id) return new Uint8Array(Buffer.from(png(1024, 1024), 'base64')); // bytes
