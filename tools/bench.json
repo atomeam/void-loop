@@ -7020,5 +7020,11 @@
   {"ask": "a joke about cats", "want": "skill:joke"},
   {"ask": "tell me a dad joke about pizza", "want": "skill:joke"},
   {"ask": "an old saying", "want": "skill:proverb"},
-  {"ask": "book recommendations like the hobbit", "want": "skill:book"}
+  {"ask": "book recommendations like the hobbit", "want": "skill:book"},
+  {"ask": "local radio", "want": "skill:local-stations"},
+  {"ask": "radio stations near me", "want": "skill:local-stations"},
+  {"ask": "local tv stations", "want": "skill:local-stations"},
+  {"ask": "word counter", "want": "skill:open-tool"},
+  {"ask": "open the piano", "want": "skill:open-tool"},
+  {"ask": "base converter", "want": "skill:open-tool"}
 ]
