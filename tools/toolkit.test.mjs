@@ -450,3 +450,16 @@ test('the Base64 page\'s card holds the text in the box, exactly as typed, and i
   const src = fs.readFileSync(new URL('../void-live-deploy/base64/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*\(text\.classList\.contains\('stale'\)\s*\?\s*''\s*:\s*cardAsk\(text\.value\)\)/, 'the page gives its card the text box, unless the box is not the text of this Base64');
 });
+
+// emoji counts and the snippet in a link (2026-10-30): reached only from the tower before; now in the kit, and each page's stage ask is
+// answered by the skill whose card links back to that page
+test('the emoji and snippet pages: the stage ask goes to the skill whose card opens the page, and the snippet card opens the GitHub file open there', async () => {
+  const { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js'), { PAGE_OF, pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  for (const [page, skill] of [['/emojis/', 'emoji'], ['/g/', 'gh-file']]) {
+    assert.equal(await firstSkill(CARD_ASK[page]), skill, page + ': ' + CARD_ASK[page]); assert.equal(PAGE_OF[skill][0], page, skill + ' links back to ' + page);
+  }
+  const { ghFileOf, ghFilePage } = await import('../void-live-deploy/lib/gist.js'), f = ghFileOf('https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/gist.js#L5-L12');
+  assert.deepEqual(pageOfCard('gh-file', ghFilePage(f)), [ghFilePage(f), 'Snippet / Note in a link'], 'the card\'s page link opens that same file');
+  assert.match(fs.readFileSync(new URL('../void-live-deploy/skills/gh-file.js', import.meta.url), 'utf8'), /card\.dataset\.page = ghFilePage\(f\)/);
+  assert.match(fs.readFileSync(new URL('../void-live-deploy/g/index.html', import.meta.url), 'utf8'), /card: \(\) => \(gh \? gh\.page/, 'the page gives the stage the GitHub file open on it');
+});
