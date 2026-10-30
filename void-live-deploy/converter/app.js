@@ -7,15 +7,16 @@ import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write
 import { flac, opusFile } from '/lib/audio-write.js';
 import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 import { denoise } from '/lib/denoise.js';
+import { changeCover } from '/lib/epub-edit.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
 const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'video/*,.mp4,.mov,.webm,.mkv';
-const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*' };
+const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*' };
 // how many files a tool needs, and what to say about them
-const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'] };
+const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'] };
 const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', 'webm', 'mkv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
@@ -294,6 +295,14 @@ async function go() {
       const raw = await bytesOf(pic.f), jpgOrPng = pic.fmt === 'jpg' || pic.fmt === 'png', cover = jpgOrPng ? raw : await pictureFile(await canvasOf(pic.f), 'jpg', 0.92);
       const r = addCover(await bytesOf(m.f), cover, pic.fmt === 'png' ? 'image/png' : 'image/jpeg');
       add({ name: outName(m.f.name, 'mp3', taken), ext: 'mp3', bytes: r.bytes, notes: (jpgOrPng ? [] : [pic.fmt.toUpperCase() + ' picture made a JPEG, the format players read']).concat(r.notes) });
+    } else if (t.run === 'epub-cover') {
+      const e = list.find((x) => x.fmt === 'epub'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
+      if (!e || !pic) throw new Error('pick one EPUB and one picture.');
+      say('Putting ' + pic.f.name + ' on ' + e.f.name); const raw = await bytesOf(pic.f); let made = '', size = '';
+      const encode = async (type) => { const want = type === 'image/png' ? 'png' : 'jpg'; if (pic.fmt === want) return raw; made = pic.fmt.toUpperCase() + ' picture made a ' + (want === 'png' ? 'PNG' : 'JPEG') + ' for the cover'; return pictureFile(await canvasOf(pic.f), want, 0.92); };
+      try { const bm = await createImageBitmap(pic.f); size = 'the picture is ' + bm.width + ' x ' + bm.height + ' pixels'; if (bm.close) bm.close(); } catch (_) {}
+      const r = await changeCover(await bytesOf(e.f), encode);
+      add({ name: outName(e.f.name, 'epub', taken), ext: 'epub', bytes: r.bytes, notes: [...r.notes, made, size].filter(Boolean) });
     } else if (t.run === 'pdf-image') {
       const p = list.find((x) => x.fmt === 'pdf'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
       if (!p || !pic) throw new Error('pick one PDF and one picture.');

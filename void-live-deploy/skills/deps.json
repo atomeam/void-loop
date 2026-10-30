@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1033,
+ "counted": 1032,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -637,7 +637,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 6,
-   "tests": 29
+   "tests": 28
   },
   {
    "file": "lib/void-seal.js",
@@ -966,7 +966,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/generators.js",
@@ -1669,13 +1669,6 @@
    "tests": 1
   },
   {
-   "file": "lib/emoji-combos.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/event-date.js",
    "skills": 1,
    "direct": 1,
@@ -2334,6 +2327,13 @@
    "tests": 1
   },
   {
+   "file": "lib/translate-docs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 2
+  },
+  {
    "file": "lib/translate-langs.js",
    "skills": 0,
    "direct": 0,
@@ -2383,13 +2383,6 @@
    "tests": 1
   },
   {
-   "file": "lib/translate-docs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 2
-  },
-  {
    "file": "lib/used.js",
    "skills": 0,
    "direct": 0,
@@ -2436,7 +2429,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/daily-photo.js",
@@ -2748,6 +2741,13 @@
   },
   {
    "file": "lib/empty-state.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/epub-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -6142,12 +6142,6 @@
     "functions/api/approval.js"
    ]
   },
-  "lib/emoji-combos.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/emoji-combos.js"
-   ]
-  },
   "lib/emoji.js": {
    "imports": [],
    "importedBy": [
@@ -6162,6 +6156,12 @@
   },
   "lib/empty-state.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "lib/epub-edit.js": {
+   "imports": [
+    "lib/translate-docs.js"
+   ],
    "importedBy": []
   },
   "lib/event-date.js": {
@@ -10917,7 +10917,8 @@
   "lib/translate-docs.js": {
    "imports": [],
    "importedBy": [
-    "lib/converter.js"
+    "lib/converter.js",
+    "lib/epub-edit.js"
    ],
    "reachedBy": [
     "lib/video-write.js"
@@ -12126,12 +12127,6 @@
    "importedBy": [
     "skills/games.js"
    ]
-  },
-  "skills/emoji-combos.js": {
-   "imports": [
-    "lib/emoji-combos.js"
-   ],
-   "importedBy": []
   },
   "skills/emoji.js": {
    "imports": [

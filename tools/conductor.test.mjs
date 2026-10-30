@@ -2,7 +2,7 @@
 // are broken, and when Verse writes new probe asks. Run: node --test tools/conductor.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, willDue, lapDue, AGENT, LAP, ALSO_BUSY, MAX_TRIES } from './conductor-core.mjs';
+import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, willDue, lapDue, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
 
 const H = 3600000, NOW = Date.parse('2026-10-26T08:00:00Z');
 const iso = (hAgo) => new Date(NOW - hAgo * H).toISOString();
@@ -136,4 +136,14 @@ test('a lap of the Verse loop starts hourly when the coder is idle, took no job 
   assert.equal(lapDue({ ...base, lastRunMs: NOW - 30 * 60000 }), false, 'a lap ran 30 minutes ago');
   assert.equal(lapDue({ ...base, busy: true }), false); assert.equal(lapDue({ ...base, started: true }), false, 'a job took the coder this tick');
   assert.equal(lapDue({ ...base, paused: true }), false); assert.equal(lapDue({ ...base, exists: false }), false);
+});
+
+test('a paid member\'s idea goes before every free job however old, a repair before it, and 30 coder runs today do not hold it', () => {
+  const free = [job('v1', 'versus:x', { at: iso(24 * 15) }), job('w1', 'will:paint', { at: iso(24 * 3) }), job('f1', 'feature:y', { at: iso(24 * 20) })];
+  const member = job('m1', 'member:abc', { at: iso(0) });
+  assert.ok(score(free[0], NOW) > score(member, NOW), 'by score alone the old versus job would win');
+  assert.deepEqual(plan({ jobs: [...free, member], wf: all(), now: NOW }).start.filter((s) => s.wf === AGENT).map((s) => s.id), ['m1']);
+  assert.deepEqual(plan({ jobs: [...free, member, job('h1', 'heal:will.yml', { at: iso(0) })], wf: all(), now: NOW }).start.filter((s) => s.wf === AGENT).map((s) => s.id), ['h1'], 'a repair still goes first');
+  assert.deepEqual(plan({ jobs: [member], wf: all({ [AGENT]: { today: 60 } }), now: NOW }).start.map((s) => s.id), ['m1'], 'one run a tick all day');
+  assert.equal(FIRST.versus, undefined, 'free jobs keep their score order');
 });
