@@ -296,7 +296,7 @@ const STAGE_KEEPS = new Set(['verse brain', 'brain', 'news', 'time', 'random', '
 const STAGE_KEEPS_JOINED = new Set([...STAGE_KEEPS].map((k) => k.replace(/ /g, '')));
 const plainName = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 let toolNames = null;
-function toolNamed(t) {
+export function toolNamed(t) {
   if (!toolNames) {
     toolNames = new Map();
     // a name run together ('wordcount', as typed into an address) counts too, from five letters up
