@@ -1,0 +1,44 @@
+# Verse Brain dreams (owner, 2026-10-30: "Verse can use its brain to come up with ideas and jobs and fixes ... it can dream and think
+# coherently"; "dont fake it"). Every 3 hours tools/brain-dream.mjs reads what the brain's watch reads (the newest runs on main, the open
+# pull requests and issues opened by the repository's own people and bots, Verse's will) and the frontier drafts the brain left out, turns
+# them into dreams (lib/brain-dream.js), and posts the first one not posted before to /team/ #work as Verse, with its full brief. There it is
+# a feature job on the build queue for the next idle agent. One a run at most; the server keeps 4 a day and 5 open at most, and posts a key
+# once (functions/api/team.js 'dream').
+# Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it the run says so and stops green.
+name: Verse Brain dreams
+
+on:
+  schedule:
+    - cron: '23 */3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "print the dreams and the one it would post, post nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brain-dream
+  cancel-in-progress: false
+
+jobs:
+  dream:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Dream, and post the newest dream to #work
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          DRY: ${{ inputs.dry }}
+        run: |
+          if [ "$DRY" = "true" ]; then node tools/brain-dream.mjs --dry | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          if [ -z "$VOID_OWNER_TOKEN" ]; then echo "no VOID_OWNER_TOKEN: nothing to do" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          set -o pipefail; node tools/brain-dream.mjs 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"

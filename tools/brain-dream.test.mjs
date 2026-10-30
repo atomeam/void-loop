@@ -90,6 +90,7 @@ test('the loop reads only what the server side can read, sends its GitHub token 
 
 test('/brain/ shows the brain\'s own dreams in the visitor\'s browser and sends nothing', () => {
   const app = read('void-live-deploy/brain/dreams.js');
-  assert.match(app, /dreamsOf\(/); assert.ok(!/fetch\(|sendBeacon|XMLHttpRequest/.test(app), 'the page panel sends nothing');
+  assert.match(app, /dreamsOf\(/); assert.ok(!/sendBeacon|XMLHttpRequest|method:|WebSocket/.test(app), 'the page panel sends nothing');
+  assert.deepEqual([...app.matchAll(/fetch\(([^)]*)\)/g)].map((m) => m[1]), ["'/lib/brain-drafts.json'"], 'it reads one file of this site, and nothing else');
   assert.match(read('void-live-deploy/brain/index.html'), /id="dreams"/);
 });
