@@ -1,0 +1,24 @@
+{
+ "attempt": "live",
+ "occasion": 16,
+ "at": "2026-10-30T19:20:49.269Z",
+ "family": "life",
+ "skill": "rides",
+ "service": "OSRM public demo router (router.project-osrm.org)",
+ "ask": "how long is the drive from SFO to Union Square, San Francisco right now",
+ "request": "https://router.project-osrm.org/route/v1/driving/-122.379,37.6213;-122.4075,37.788?overview=false&alternatives=false&steps=false",
+ "status": 200,
+ "ms": 1301,
+ "ok": true,
+ "answer": {
+  "minutes": 21,
+  "km": 23.2
+ },
+ "excerpt": {
+  "code": "Ok",
+  "routes": 1,
+  "duration_s": 1277,
+  "distance_m": 23173
+ },
+ "error": ""
+}
