@@ -3051,7 +3051,7 @@
    "chapter": "numbers",
    "name": "loan",
    "title": "Loan",
-   "line": "Monthly payment for mortgages, car loans, and personal loans",
+   "line": "Monthly payment, and how long a balance takes to pay off, for mortgages, car loans, cards and personal loans",
    "examples": [
     "monthly payment on a $250000 mortgage at 6.5% for 30 years",
     "car loan $20000 at 7% for 5 years",
