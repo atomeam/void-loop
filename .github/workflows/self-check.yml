@@ -17,9 +17,11 @@ on:
         required: false
         default: ''
 
+# one run at a time, never cancelled: main deploys every few minutes, and a deploy's run (skipped when the last full check is fresh) must
+# not cancel a full check halfway; a newer waiting run replaces an older waiting one
 concurrency:
   group: self-check
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
