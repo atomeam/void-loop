@@ -1697,6 +1697,13 @@ try {
     check('404 page: typing in its ask box goes to /?q=<words> and Verse answers it there',
       new URL(sent).pathname === '/' && new URL(sent).searchParams.get('q') === 'what time is it in Tokyo' && ran,
       sent + ' | ' + String(await N.page()).slice(0, 80));
+    // an address that names a tool (2026-10-30): '/wordcount' offers the Word counter above the box; '/search/?q=' puts the words in the box
+    await N.p.goto(base + 'wordcount'); await until(async () => N.p.evaluate(() => !document.getElementById('near').hidden), 4000);
+    const nearA = await N.p.evaluate(() => { const a = document.getElementById('near-a'); return { shown: !document.getElementById('near').hidden, href: a.getAttribute('href'), text: a.textContent }; });
+    await N.p.goto(base + 'search/?q=pizza%20dough'); await N.p.waitForTimeout(400);
+    const nearB = await N.p.evaluate(() => ({ shown: !document.getElementById('near').hidden, box: document.getElementById('q').value }));
+    check('404 page: an address that names a tool offers that tool as one link, and words asked there wait in the ask box',
+      nearA.shown && nearA.href === '/word-count/' && nearA.text === 'Word counter' && !nearB.shown && nearB.box === 'pizza dough', JSON.stringify({ nearA, nearB }));
     await N.ctx.close(); }
   // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
   if (want("Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss ")) { const M = await fresh(); const out = [];

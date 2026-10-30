@@ -1,7 +1,7 @@
 // lib/toolkit.js: the tools that go together, one accent colour for all of them, and text that reads on it
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TOOLS, RELATED, relatedOf, hexOf, inkOn, accent, setAccent, ACCENT_KEY, routeAsk } from '../void-live-deploy/lib/toolkit.js';
+import { TOOLS, RELATED, relatedOf, hexOf, inkOn, accent, setAccent, ACCENT_KEY, routeAsk, toolNear } from '../void-live-deploy/lib/toolkit.js';
 import fs from 'node:fs';
 
 test('every tool page is linked to at least one other, only to tools that exist, never to itself, and the page carries the row', () => {
@@ -41,6 +41,15 @@ test('the ask bar routes an ask to the tool that does it, with the ask in the li
   for (const [ask, page] of [['word count', '/word-count/'], ['Word counter', '/word-count/'], ['pdf', '/pdf/'], ['photo tools', '/photos/'], ['open the code review', '/code-review/'],
     ['colour codes', '/color/'], ['the calculator page', '/calculator/'], ['password generator', '/password/'], ['time zones', '/time/']]) assert.equal(to(ask), page, ask);
   assert.equal(to('g'), '/?q=g', 'a name of two letters or fewer is not taken as a tool'); for (const w of ['time', 'flip', 'rap', 'news']) assert.equal(to(w), '/?q=' + w, w + ' stays with the stage card'); assert.equal(to('word count tool'), '/word-count/?t=tool', 'a route of its own still wins');
+  assert.equal(to('wordcount'), '/word-count/', 'a name run together counts'); assert.equal(to('versebrain'), '/?q=versebrain', 'a stage word run together stays with the stage');
+});
+
+// the 404 page offers the tool a missing address names (2026-10-30: '/wordcount' and '/search/?q=word+count' led to an empty 404)
+test('toolNear: the tool a missing address or the words asked there name, or null', () => {
+  for (const [path, q, href] of [['/wordcount', '', '/word-count/'], ['/password-generator/', '', '/password/'], ['/search/', 'word count', '/word-count/'],
+    ['/tools/calculator', '', '/calculator/'], ['/calculator/tip-for-40', '', '/calculator/'], ['/Word%20Counter.html', '', '/word-count/']]) assert.equal((toolNear(path, q) || {}).href, href, path + ' ' + q);
+  assert.equal(toolNear('/word-count/', '').label, TOOLS['/word-count/'], 'the label is the name /tools/ lists');
+  for (const [path, q] of [['/no-such-page/at-all', ''], ['/search/', 'pizza dough'], ['/news/x', ''], ['/versebrain', ''], ['/%E0%A4%A', ''], ['', '']]) assert.equal(toolNear(path, q), null, path + ' ' + q);
 });
 
 test('every tool page links to its own card on the stage, and every page has a card that links back (owner, 2026-10-25: "and vice versa")', async () => {
