@@ -47,6 +47,7 @@ import { session } from '../../lib/void-me.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as T from '../../lib/team.js';
 import { briefOf } from '../../lib/job-guide.js';
+import * as Dream from '../../lib/brain-dream.js';
 
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow' } });
 const bad = (status, say) => json({ ok: false, say }, status);
@@ -221,13 +222,13 @@ export async function handOut(env, a, now) {
   return null;
 }
 // the owner's post at the top of #work is a job: it goes on the build queue as a feature, and Verse hands it out in that same thread
-async function enqueue(env, msg, body, now) {
+async function enqueue(env, msg, body, now, note = 'asked in #work by the owner') {
   const open = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE id LIKE 'team-%' AND state IN ('queued', 'building')").first().catch(() => null);
   if (!open) return null; // no build queue in this workspace
   if (open.n >= T.RATES.asks) return 'full';
   const at = new Date(now).toISOString(), id = 'team-' + msg, text = T.clean(body, 1000);
   const ask = text.length > 200 ? text.slice(0, 160).trim() + ' … (the whole ask: #work thread ' + msg + ')' : text;
-  await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, ask, 'feature:team-' + msg, 'queued', 'asked in #work by the owner', at, at).run();
+  await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, ask, 'feature:team-' + msg, 'queued', note, at, at).run();
   await env.DB.prepare('UPDATE void_team_msgs SET job = ? WHERE id = ?').bind(id, msg).run();
   return id;
 }
@@ -464,6 +465,23 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       if (queued && queued !== 'full') await pushLater(); // an agent with a push address gets it now
       const told = me.kind === 'agent' && me.agent.job && await unstall(env, me.agent, now + 1); // in its job thread or anywhere else
       return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}), ...(told ? { say: T.noWaitSay(me.agent.job) } : hid ? { say: T.HID_SAY } : {}) }, 201);
+    }
+    case 'dream': { // Verse Brain's dream (tools/brain-dream.mjs, lib/brain-dream.js): a fix, job or idea it made from what it watched, posted by Verse
+      if (me.kind !== 'owner') return bad(403, 'only the owner posts the brain\'s dreams');
+      const key = String(p.key || ''); if (!Dream.KEY.test(key)) return bad(400, 'a dream needs its key');
+      const plain = T.cleanBody(redact(String(p.body || ''))), body = T.hideSecrets(plain), tag = Dream.tagOf(key);
+      if (!body || !body.endsWith(tag)) return bad(400, 'a dream\'s brief ends with its key line');
+      const had = await env.DB.prepare("SELECT id FROM void_team_msgs WHERE channel = 'work' AND thread = 0 AND by = 'verse' AND body LIKE ?").bind('%' + tag).first();
+      if (had) return json({ ok: true, had: true, id: had.id });
+      const day = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_team_msgs WHERE channel = 'work' AND thread = 0 AND by = 'verse' AND body LIKE ? AND at > ?").bind('%' + Dream.TAG + '%', now - DAY).first();
+      if (day && day.n >= T.RATES.dreamsDay) return bad(429, T.RATES.dreamsDay + ' dreams a day at most');
+      const open = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_team_msgs m JOIN void_queue q ON q.id = m.job WHERE m.by = 'verse' AND q.state IN ('queued', 'building')").first().catch(() => null);
+      if (open && open.n >= T.RATES.dreamsOpen) return bad(429, T.RATES.dreamsOpen + ' dreams wait on the team already');
+      const id = await write(env, { c: 'work', by: 'verse', body, thread: 0, now });
+      const queued = await enqueue(env, id, body, now, 'dreamed by Verse Brain from what it watched');
+      if (queued === 'full') await write(env, { c: 'work', by: 'verse', body: 'The build queue is full, so this dream is not a job yet.', thread: id, now });
+      else if (queued) { await write(env, { c: 'work', by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread.', thread: id, now }); await pushLater(); }
+      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}) }, 201);
     }
     case 'react': {
       const id = parseInt(p.id, 10), e = String(p.emoji || ''); if (!T.EMOJI.includes(e)) return bad(400, 'that reaction is not on the list');

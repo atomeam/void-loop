@@ -53,9 +53,9 @@ export const JOURNEYS = {
     await check('the piano opened with the Am7 chord as a sheet at 90 BPM');
     await p.locator('h1').click(); for (const k of ['KeyT', 'KeyU', 'KeyO']) await p.keyboard.down(k); for (const k of ['KeyT', 'KeyU', 'KeyO']) await p.keyboard.up(k);
     if (!(await p.locator('#toChords').isVisible())) throw new Error('no link to the chord finder after C4 E4 G4 were held together');
-    await Promise.all([p.waitForURL(/\/chords\/\?notes=/), p.locator('#toChords').click()]); await p.waitForFunction(() => /\(major\)/.test(document.getElementById('idOut').textContent));
+    await Promise.all([p.waitForURL(/\/chords\/\?notes=/), p.locator('#toChords').click()]); await p.waitForFunction(() => /\(C major\)/.test(document.getElementById('idOut').textContent));
     const said = await p.locator('#idOut').textContent(), on = await p.locator('#pickNotes [aria-pressed="true"]').allTextContents();
-    if (!/This is C \(major\)/.test(said)) throw new Error('the chord finder named the notes as "' + said + '"');
+    if (!/^This is C \(C major\)/.test(said)) throw new Error('the chord finder named the notes as "' + said + '"');
     if (on.join(' ') !== 'C E G') throw new Error('the chord finder picked ' + on.join(' ') + ', not C E G');
     await check('the chord finder named C E G as C major');
   },

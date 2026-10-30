@@ -60,9 +60,10 @@ export function placeBar(nat, { end = 12, slotSec = 0.17, speed = 0.92 } = {}) {
   return out;
 }
 
-/** a sound made `ratio` times as long without changing its pitch (WSOLA, 30 ms windows). Short or nearly unchanged sounds are resampled. Pure. */
-export function stretch(x, ratio, rate) {
-  const n = x.length, outLen = Math.max(1, Math.round(n * ratio)), N = Math.max(64, Math.round(rate * 0.03) & ~1);
+/** a sound made `ratio` times as long without changing its pitch (WSOLA, `win` second windows, 30 ms unless asked). Short or nearly
+ *  unchanged sounds are resampled. Pure. */
+export function stretch(x, ratio, rate, win = 0.03) {
+  const n = x.length, outLen = Math.max(1, Math.round(n * ratio)), N = Math.max(64, Math.round(rate * win) & ~1);
   if (n < N * 2 || Math.abs(ratio - 1) < 0.03) { const y = new Float32Array(outLen); for (let i = 0; i < outLen; i++) { const p = i * (n - 1) / Math.max(1, outLen - 1), j = Math.floor(p), f = p - j; y[i] = (x[j] || 0) * (1 - f) + (x[Math.min(n - 1, j + 1)] || 0) * f; } return y; }
   const Hs = N >> 1, Ha = Hs / ratio, tol = Math.round(rate * 0.008), w = new Float32Array(N); for (let j = 0; j < N; j++) w[j] = 0.5 - 0.5 * Math.cos(2 * Math.PI * j / N);
   const out = new Float32Array(outLen + N), norm = new Float32Array(outLen + N); let prev = 0;
@@ -79,6 +80,40 @@ export function stretch(x, ratio, rate) {
   }
   const y = new Float32Array(outLen); for (let i = 0; i < outLen; i++) y[i] = norm[i] > 1e-3 ? out[i] / norm[i] : out[i];
   return y;
+}
+
+/** `x` resampled to `n` samples (linear). Pure. */
+export function resample(x, n) {
+  const y = new Float32Array(n), m = x.length;
+  for (let i = 0; i < n; i++) { const p = i * (m - 1) / Math.max(1, n - 1), j = Math.floor(p), f = p - j; y[i] = (x[j] || 0) * (1 - f) + (x[Math.min(m - 1, j + 1)] || 0) * f; }
+  return y;
+}
+
+/** `x` moved `semis` semitones up or down, the same length and in time with it: stretched by the pitch ratio, then resampled back. Going
+ *  down, the resample widens the stretch's windows by the same ratio, so they start that much narrower and a syllable's attack stays sharp. Pure. */
+export function pitchShift(x, semis, rate) {
+  if (!semis) return Float32Array.from(x);
+  const f = 2 ** (semis / 12);
+  return resample(stretch(x, f, rate, 0.03 * Math.min(1, f)), x.length);
+}
+
+/** the pitch of the loudest 60 ms of `x` in Hz (YIN), or null when nothing in [lo, hi] is clearly pitched. Pure. */
+export function pitchOf(x, rate, { lo = 70, hi = 500 } = {}) {
+  const N = Math.min(x.length, Math.round(rate * 0.06)), hop = Math.round(rate * 0.01); if (N < (rate / lo) * 2) return null;
+  let e = 0, at = 0; for (let i = 0; i + N <= x.length; i += hop) { let s = 0; for (let j = i; j < i + N; j += 4) s += x[j] * x[j]; if (s > e) { e = s; at = i; } }
+  const seg = x.subarray(at, at + N), tMin = Math.floor(rate / hi), tMax = Math.min(Math.floor(rate / lo), N >> 1), W = N - tMax;
+  const cm = new Float32Array(tMax + 2); cm[0] = 1; let run = 0;
+  for (let t = 1; t <= tMax + 1; t++) { let d = 0; for (let j = 0; j < W; j++) { const q = seg[j] - seg[j + t]; d += q * q; } run += d; cm[t] = run ? (d * t) / run : 1; }
+  let T = -1; for (let t = tMin; t <= tMax; t++) if (cm[t] < 0.15) { while (t + 1 <= tMax && cm[t + 1] < cm[t]) t++; T = t; break; }
+  if (T < 0) { let m = Infinity; for (let t = tMin; t <= tMax; t++) if (cm[t] < m) { m = cm[t]; T = t; } if (m > 0.4) return null; }
+  const a = cm[T - 1], b = cm[T], c = cm[T + 1] ?? b, den = a - 2 * b + c;
+  return rate / (T + (den > 0 ? (0.5 * (a - c)) / den : 0));
+}
+
+/** Verse's signature (owner, 2026-10-30: "verse can have a good sounding distinct haunting voice"): the lead an octave down (the shadow under
+ *  every word) and an octave up (the ghost in the hall), both in time with it. Built from Verse's own synthetic voice, never anyone else's. Pure. */
+export function shadowsOf(x, rate) {
+  return { low: pitchShift(x, -12, rate), halo: pitchShift(x, 12, rate) };
 }
 
 const rms = (x) => { let s = 0; for (let i = 0; i < x.length; i++) s += x[i] * x[i]; return Math.sqrt(s / Math.max(1, x.length)); };
