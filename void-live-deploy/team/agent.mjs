@@ -16,7 +16,8 @@
 // The key: VERSE_TEAM_KEY, else ~/.verse-team-key. VERSE_TEAM_API points it elsewhere (default https://a-to-mind.com/api/team). The key is
 // never printed, logged or put in an address. Playbook: docs/playbooks/team.md. Tests: tools/team.test.mjs.
 import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { join as pathJoin } from 'node:path';
 
@@ -56,12 +57,12 @@ export function runJob(cmd, job, { key, log = console.log } = {}) {
 }
 
 /** one turn of the work loop: say here (Verse hands a job when idle), run it if there is a command, close it. -> what happened */
-export async function workOnce(o, { run, log = console.log } = {}) {
+export async function workOnce(o, { run, log = console.log, shown = new Set() } = {}) {
   const h = await call(o, 'POST', '', { do: 'here' });
   if (!h.ok) return { state: 'error', say: h.say, status: h.status };
   if (!h.job) return { state: 'idle', say: h.say };
   const job = await fullJob(o, h.job);
-  if (!run) { if (!h.job.already) log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); return { state: 'busy', job }; }
+  if (!run) { if (!h.job.already || !shown.has(job.job)) { shown.add(job.job); log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); log('Work it now. Post progress in its thread, then: node agent.mjs done --link <pull request>, or node agent.mjs back --note <why>.'); } return { state: 'busy', job }; }
   log('Working on ' + job.job + ' (' + job.kind + '): ' + job.ask);
   const beat = setInterval(() => { call(o, 'POST', '', { do: 'here' }).catch(() => {}); }, 5 * 60e3); // stay present while it runs
   let r; try { r = await runJob(run, job, { key: o.key, log }); } finally { clearInterval(beat); }
@@ -123,8 +124,15 @@ async function main(argv) {
     case 'work': {
       const run = flag(args, '--run'), every = Math.max(20, Number(flag(args, '--every', 60)) || 60) * 1e3;
       console.log('Here in Verse\'s team. Ctrl+C to leave.' + (run ? ' Each job runs: ' + run : ' Jobs print here; close each with done or back.'));
+      const me = await call(o, 'GET', '?me').catch(() => null);
+      if (me && me.ok && me.me) console.log('You are ' + me.me.name + (me.me.job ? ', holding job ' + me.me.job : ', with no job yet') + '.');
+      else { console.error('Team API: ' + ((me && me.say) || 'this key is not a member\'s') + '.'); return 1; }
+      const shown = new Set(), stamp = () => new Date().toISOString().slice(11, 16) + ' ';
       for (;;) {
-        let r; try { r = await workOnce(o, { run }); } catch (e) { r = { state: 'error', say: e.message }; }
+        let r; try { r = await workOnce(o, { run, shown }); } catch (e) { r = { state: 'error', say: e.message }; }
+        // one short line each turn, so the agent sees the loop is alive and what it is waiting for
+        if (r.state === 'idle') console.log(stamp() + 'no job yet: ' + String(r.say || 'waiting').split('\n')[0].slice(0, 120).replace(/[.:]\s*$/, '') + '. Next check in ' + every / 1e3 + ' s.');
+        if (r.state === 'busy') console.log(stamp() + 'holding ' + r.job.job + ': close it with done or back. Next check in ' + every / 1e3 + ' s.');
         if (r.state === 'error') console.error('Team API: ' + (r.say || 'no answer') + (r.status === 401 ? ' (the key was removed or replaced: ask the owner for a new join link)' : ''));
         if (r.status === 401) return 1;
         if (r.state === 'done' || r.state === 'given back') { console.log(r.state + ': ' + r.job.job + (r.link ? ' ' + r.link : '')); continue; } // straight on to the next
@@ -136,4 +144,10 @@ async function main(argv) {
 }
 
 export { main };
-if (import.meta.url === 'file://' + process.argv[1]) process.exitCode = await main(process.argv.slice(2));
+// run as a command: compare real paths, not 'file://' + argv[1]. On Windows import.meta.url is file:///C:/Users/... and argv[1] is
+// C:\Users\..., so the old test never matched: join and work did nothing and exited 0 without a word (2026-10-30, Beam on PowerShell).
+export function isMain(url = import.meta.url, arg = process.argv[1]) {
+  if (!arg) return false;
+  try { return realpathSync(fileURLToPath(url)) === realpathSync(arg); } catch (_) { return false; }
+}
+if (isMain()) process.exitCode = await main(process.argv.slice(2));

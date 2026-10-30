@@ -148,6 +148,8 @@ export async function whoIs(request, env) {
   const s = await session(request, env).catch(() => null);
   return s ? { kind: 'member' } : null;
 }
+// a well-formed agent key that matched no agent: the caller hears why, not only that the workspace is closed
+const staleKey = (request) => { const h = request.headers.get('authorization') || ''; return h.startsWith('Bearer ') && T.KEY_RE.test(h.slice(7).trim()); };
 const byOf = (me) => (me.kind === 'owner' ? 'owner' : me.agent.id);
 
 // the names a message shows: an agent's id -> its name ('verse' and 'owner' as they are)
@@ -162,7 +164,7 @@ async function reactsOf(env, ids) {
 }
 async function shape(env, rows, me) {
   const { by } = await namesOf(env), rx = await reactsOf(env, rows.map((r) => r.id)), mine = byOf(me);
-  return rows.map((r) => ({ id: r.id, c: r.channel, thread: r.thread, at: r.at, by: by[r.by] || 'gone', kind: r.by === 'verse' ? 'verse' : r.by === 'owner' ? 'owner' : 'agent', body: r.body, job: r.job || null,
+  return rows.map((r) => ({ id: r.id, c: r.channel, thread: r.thread, at: r.at, by: by[r.by] || 'gone', kind: r.by === 'verse' ? 'verse' : r.by === 'owner' ? 'owner' : 'agent', body: T.hideSecrets(r.body), job: r.job || null,
     replies: r.replies, lastReply: r.last_reply || null, reacts: Object.entries(rx[r.id] || {}).map(([e, who]) => ({ e, n: who.length, me: who.includes(mine), who: who.map((w) => by[w] || 'gone') })) }));
 }
 
@@ -260,8 +262,8 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null }
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null;
-  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}) });
-  if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
+  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });
+  if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
   const { list } = await namesOf(env);
   if (sp.has('t')) {
@@ -302,7 +304,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
     return r.ok ? json({ ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name) }, 201) : bad(r.status, r.say);
   }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null; // a member who is not the owner writes nothing here
-  if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
+  if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run(); // a word from it first, so its own job is never swept
   await sweep(env, now);
   const a = me.kind === 'agent' ? await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ?').bind(me.agent.id).first() : null;
@@ -347,12 +349,12 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const { n, today } = await env.DB.prepare('SELECT COUNT(*) AS n, SUM(created > ?) AS today FROM void_team_channels').bind(now - DAY).first();
       if (n >= T.RATES.channels) return bad(429, T.RATES.channels + ' channels at most');
       if (me.kind === 'agent' && today >= T.RATES.channelsDay) return bad(429, T.RATES.channelsDay + ' new channels a day');
-      const r = await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(code, code, T.clean(redact(p.about || ''), T.LIMITS.about), now, byOf(me)).run();
+      const r = await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(code, code, T.clean(T.hideSecrets(redact(p.about || '')), T.LIMITS.about), now, byOf(me)).run();
       if (r.meta.changes !== 1) return bad(409, 'that channel is there already');
       return json({ ok: true, code }, 201);
     }
     case 'post': {
-      const c = String(p.c || ''), body = T.cleanBody(redact(String(p.body || ''))); if (!body) return bad(400, 'say something');
+      const c = String(p.c || ''), plain = T.cleanBody(redact(String(p.body || ''))), body = T.hideSecrets(plain), hid = body !== plain; if (!body) return bad(400, 'say something');
       const ch = await env.DB.prepare('SELECT code FROM void_team_channels WHERE code = ?').bind(c).first(); if (!ch) return bad(404, 'no such channel');
       let thread = 0;
       if (p.thread != null) {
@@ -367,7 +369,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const queued = me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
       if (queued === 'full') await write(env, { c, by: 'verse', body: T.RATES.asks + ' of your asks are open already, so this one is not on the build queue. It goes on when one closes and you ask again.', thread: id, now });
       else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
-      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}) }, 201);
+      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}), ...(hid ? { say: T.HID_SAY } : {}) }, 201);
     }
     case 'react': {
       const id = parseInt(p.id, 10), e = String(p.emoji || ''); if (!T.EMOJI.includes(e)) return bad(400, 'that reaction is not on the list');
@@ -393,7 +395,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
     case 'done': {
       if (!a) return bad(403, 'only an agent closes a job');
       if (!a.job) return bad(409, 'you hold no job');
-      const note = T.clean(redact(p.note || ''), 200), link = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(String(p.link || '')) ? p.link : '';
+      const note = T.clean(T.hideSecrets(redact(p.note || '')), 200), link = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(String(p.link || '')) ? p.link : '';
       if (p.ok) {
         await setJob(env, a.job, 'done', ('done by team:' + a.name + (link ? ' · ' + link : '') + (note ? ' · ' + note : '')).slice(0, 300), a.name);
         await write(env, { c: 'work', by: a.id, body: 'Done.' + (link ? ' ' + link : '') + (note ? '\n' + note : ''), thread: a.thread, now });

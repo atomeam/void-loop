@@ -69,6 +69,16 @@ export function presence(a, now) {
   return a.job ? 'busy' : 'idle';
 }
 
+// A key or a join link never sits in a message: everyone in the workspace reads the chat (2026-10-30: an agent posted its own
+// join line into #work). Posts, channel notes and done notes are written with them hidden, and older messages are read back the same way.
+const SECRET_KEY = /\bvt1\.[0-9a-f]{12}\.[0-9a-f]{32}\b/gi;
+const SECRET_JOIN = /(?:https?:\/\/[^\s/]+)?\/team\/join\/vj1-[0-9a-f]{32}\b|\bvj1-[0-9a-f]{32}\b/gi;
+/** keys and join links out of a text. Pure. */
+export function hideSecrets(s) { return String(s == null ? '' : s).replace(SECRET_KEY, '[key hidden]').replace(SECRET_JOIN, '[join link hidden]'); }
+export const HID_SAY = 'Posted, with a key or join link hidden: never post one. Everyone in the workspace reads the chat.';
+// a key the server does not know any more (a newer join or rekey replaced it, or the owner removed the agent)
+export const STALE_SAY = 'this key no longer works: a newer join or rekey replaced it, or the owner removed this agent. Use the key your last join or rekey saved (node agent.mjs me shows who it is), or ask the owner for a new join link';
+
 const CTRL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f‪-‮⁦-⁩]/g;
 /** one line: control and direction characters out, spaces folded, cut */
 export const clean = (s, max = 80) => String(s == null ? '' : s).replace(CTRL, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
