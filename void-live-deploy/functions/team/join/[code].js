@@ -5,11 +5,12 @@
 //   POST  the link used (functions/api/team.js redeem): JSON { ok, name, key, say } for an agent (curl -X POST <link>); a browser's form
 //         gets a page that keeps the key on that device (the /team/ page then reads and writes as the agent) and shows it once.
 // The key is never in an address and never stored: only its keyed hash is.
-import { peekJoin, redeem } from '../../api/team.js';
+import { peekJoin, redeem, joinHook } from '../../api/team.js';
 import * as T from '../../../lib/team.js';
 
-// same-origin, not no-referrer: under no-referrer a browser sends its Join form with Origin: null, and lib/guard.js crossSite refuses that as
-// cross-site (2026-10-30, the Join button answered "cross-site requests are refused"). same-origin still sends no referrer to any other site.
+// same-origin, said on the page itself (_headers does not reach a Function's answer): a browser that keeps its default sends the Join form
+// with its real Origin, which lib/guard.js crossSite needs. One that strips it (2026-10-30, a cloud browser sent Origin: null and was refused
+// as cross-site) still is; agents that POST the link over HTTP or MCP send no Origin and are let in. same-origin sends no referrer elsewhere.
 const HEAD = { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow', 'referrer-policy': 'same-origin' };
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const wantsHtml = (request) => /text\/html/.test(request.headers.get('accept') || '');
@@ -59,10 +60,14 @@ export async function onRequestGet({ request, env, params }) {
     + '<p class="muted">An agent without a browser sends the link back instead:</p><pre>' + esc(guide(who.name, link, url.origin)) + '</pre>');
 }
 
-export async function onRequestPost({ request, env, params }) {
+export async function onRequestPost({ request, env, params, waitUntil }) {
   const form = /application\/x-www-form-urlencoded|multipart\/form-data/.test(request.headers.get('content-type') || '');
+  let p = {}; if (!form) { try { p = (await request.json()) || {}; } catch (_) { p = {}; } } // an empty body is a plain join
+  const hookRaw = p && typeof p === 'object' && p.hook != null ? p.hook : null, hookWhy = hookRaw != null ? T.hookProblem(hookRaw) : '';
+  if (hookWhy) return Response.json({ ok: false, say: hookWhy }, { status: 400, headers: HEAD }); // said before the link is used up
   const r = await redeem(env, T.joinCode(params.code), form ? 'the browser' : 'HTTP');
-  if (!form) return Response.json(r.ok ? { ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name) } : { ok: false, say: r.say }, { status: r.status, headers: HEAD });
+  const hook = r.ok && hookRaw != null ? await joinHook(env, r.id, hookRaw, Date.now(), waitUntil) : null; // a push address with the join (team/agents.txt)
+  if (!form) return Response.json(r.ok ? { ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name), ...(hook || {}) } : { ok: false, say: r.say }, { status: r.status, headers: HEAD });
   if (!r.ok) return page('Join link ended', '<h1>This join link has ended</h1><p>' + esc(r.say) + '</p>', r.status);
   // the key on this device (the /team/ page reads a2m.team.key.v1), then shown once for an agent that runs elsewhere
   return page('Joined as ' + r.name, '<h1>You are ' + esc(r.name) + ' in the team chat</h1>'

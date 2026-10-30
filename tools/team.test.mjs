@@ -318,3 +318,78 @@ test('the owner\'s #work post from before #work asks were jobs goes on the queue
   assert.equal(q.queued.length, 1); assert.equal(job(env, q.queued[0].job).state, 'queued'); assert.match(job(env, q.queued[0].job).ask, /moon phase/);
   assert.equal((await post(env, { do: 'queue' }, OWNER, T0 + 2000)).queued.length, 0, 'once');
 });
+
+test('a push address: https on a public host name only; a push is signed over "<time>.<body>" and an old or changed push fails', async () => {
+  for (const bad of ['', 'http://agent.example.org/in', 'https://user:pw@agent.dev/in', 'https://agent.dev:8443/in', 'https://10.0.0.1/in', 'https://[::1]/in', 'https://localhost/in',
+    'https://box.local/in', 'https://a-to-mind.com/x', 'https://api.a-to-mind.com/x', 'https://nodot/in', 'https://' + 'a'.repeat(300) + '.dev/']) assert.ok(T.hookProblem(bad), bad + ' is refused');
+  assert.equal(T.hookProblem('https://agent.dev/verse/in?x=1'), '');
+  const sig = await T.hookSign('s3cret', '1000', '{"a":1}');
+  assert.match(sig, /^[0-9a-f]{64}$/);
+  assert.equal(await T.hookVerify('s3cret', '1000', '{"a":1}', 'sha256=' + sig, 1000 + 60e3), true);
+  assert.equal(await T.hookVerify('s3cret', '1000', '{"a":2}', 'sha256=' + sig, 1000), false, 'a changed body fails');
+  assert.equal(await T.hookVerify('other', '1000', '{"a":1}', 'sha256=' + sig, 1000), false, 'another secret fails');
+  assert.equal(await T.hookVerify('s3cret', '1000', '{"a":1}', 'sha256=' + sig, 1000 + T.HOOK.skewMs + 1), false, 'an old push sent again fails');
+  const { verifyPush } = await import('../void-live-deploy/team/agent.mjs');
+  assert.equal(verifyPush('s3cret', { 'x-verse-time': '1000', 'x-verse-signature': 'sha256=' + sig }, '{"a":1}', 1000), true, 'agent.mjs checks it the same way');
+  assert.equal(verifyPush('s3cret', new Headers({ 'x-verse-time': '1000', 'x-verse-signature': 'sha256=' + sig }), '{"a":2}', 1000), false);
+  assert.deepEqual([1, 2, 3, 8, 20].map(T.hookWait), [30e3, 60e3, 120e3, 3600e3, 3600e3], '30 s, doubling, an hour at most');
+});
+
+test('Verse pushes the job to an agent\'s address, signed; a failed push goes back with no try counted and waits longer; 8 in a row stop it', async () => {
+  const env = world([JOBS[0], { id: 'team-9', ask: 'the owner asks', target: 'feature:team-9', at: '2026-10-29T20:00:00Z' }]);
+  const got = []; let up = true;
+  env.TEAM_FETCH = async (url, init) => { got.push({ url, init }); if (!up) throw new Error('no answer'); return new Response('', { status: 202 }); };
+  const ag = await admit(env, 'Pusher');
+  const set = await post(env, { do: 'hook', url: 'https://pusher.dev/verse' }, ag.key, T0 + 1000);
+  assert.equal(set.status, 200, set.say); assert.equal(set.answered, true); assert.match(set.secret, /^[0-9a-f]{64}$/);
+  assert.equal((await post(env, { do: 'hook', url: 'https://pusher.dev/other' }, ag.key, T0 + 2000)).status, 400, 'one new address a minute');
+  // the hello, then at once the best job (the owner's ask first), each signed with the secret
+  assert.deepEqual(got.map((g) => JSON.parse(g.init.body).type), ['hello', 'job']);
+  const push = got[1], body = JSON.parse(push.init.body);
+  assert.equal(push.url, 'https://pusher.dev/verse'); assert.equal(push.init.redirect, 'manual');
+  assert.equal(body.job.job, 'team-9'); assert.equal(body.agent, 'Pusher'); assert.equal(body.api, 'https://a-to-mind.com/api/team');
+  assert.equal(await T.hookVerify(set.secret, push.init.headers['x-verse-time'], push.init.body, push.init.headers['x-verse-signature'], T0 + 1000), true);
+  assert.equal(job(env, 'team-9').state, 'building');
+  assert.equal((await get(env, '', null, T0 + T.AWAY_MS + 5000)).members[0].state, 'busy', 'an agent with an address that answers is here though it says nothing');
+  assert.ok(!JSON.stringify(await get(env, '', null)).includes(set.secret), 'the secret is in no public answer');
+
+  // it closes the job; the address stops answering: the next job goes back at once, no try counted, and the next push waits
+  const done = await post(env, { do: 'here', auto: true }, ag.key, T0 + 3000); assert.equal(done.job.job, 'team-9');
+  await post(env, { do: 'done', ok: true, link: 'https://github.com/atomeam/void-loop/pull/1', note: 'ok' }, ag.key, T0 + 4000);
+  // done hands the next job in its answer; give it back so push is what hands it out
+  await post(env, { do: 'done', ok: false, failed: false, note: 'later' }, ag.key, T0 + 5000);
+  env.DB.raw.prepare("UPDATE void_team_agents SET skip = ''").run();
+  up = false; got.length = 0;
+  assert.equal(await API.pushAll(env, T0 + 6000), 0);
+  assert.equal(got.length, 1); assert.equal(job(env, 'j1').state, 'queued'); assert.equal(T.triesOf(job(env, 'j1').note), 0, 'no try counted');
+  const row = () => env.DB.raw.prepare("SELECT * FROM void_team_agents WHERE name = 'Pusher'").get();
+  assert.equal(row().hook_fails, 1); assert.equal(row().hook_next, T0 + 6000 + 30e3); assert.equal(row().skip, '', 'a push that did not arrive is not the agent passing on the job');
+  assert.equal(await API.pushAll(env, T0 + 7000), 0); assert.equal(got.length, 1, 'not again before the wait is over');
+  let t = T0 + 6000;
+  for (let i = 2; i <= T.HOOK.tries; i++) { t = row().hook_next; await API.pushAll(env, t); }
+  assert.equal(row().hook_fails, T.HOOK.tries); assert.equal(got.length, T.HOOK.tries);
+  assert.equal(await API.pushAll(env, t + 2 * 3600e3), 0); assert.equal(got.length, T.HOOK.tries, 'stopped after 8 in a row');
+  const general = await get(env, '?c=general', OWNER, t + 10);
+  assert.match(general.messages.at(-1).body, /^@Pusher's push address did not answer 8 times in a row/);
+  // the pull path still works for it, and an address set again starts pushing again
+  up = true; got.length = 0;
+  const back = await post(env, { do: 'hook', url: 'https://pusher.dev/verse' }, ag.key, t + 3 * 3600e3);
+  assert.equal(back.answered, true); assert.notEqual(back.secret, set.secret, 'a new secret each time');
+  assert.deepEqual(got.map((g) => JSON.parse(g.init.body).type), ['hello', 'job']);
+  assert.equal((await post(env, { do: 'hook', url: '' }, ag.key, t + 4 * 3600e3)).hook, null, 'an empty address takes it off');
+});
+
+test('a push address with the join: over do:join and over a POST to the join link; a bad address is said before the link is used up', async () => {
+  const env = world([JOBS[0]]); const got = [];
+  env.TEAM_FETCH = async (url, init) => { got.push(JSON.parse(init.body)); return new Response('ok'); };
+  const inv = await post(env, { do: 'invite', name: 'Hooky' }, OWNER), code = T.joinCode(inv.join);
+  assert.equal((await post(env, { do: 'join', code, hook: 'http://plain.dev/in' })).status, 400);
+  const at = (body) => new Request('https://verse.test/team/join/' + code, { method: 'POST', headers: { 'content-type': 'application/json' }, body });
+  assert.equal((await JOIN.onRequestPost({ request: at('{"hook":"https://localhost/in"}'), env, params: { code } })).status, 400);
+  const r = await JOIN.onRequestPost({ request: at('{"hook":"https://hooky.dev/in"}'), env, params: { code } }); const j = await r.json();
+  assert.equal(r.status, 201, j.say); assert.match(j.key, T.KEY_RE); assert.equal(j.hook, 'https://hooky.dev/in'); assert.equal(j.answered, true); assert.match(j.secret, /^[0-9a-f]{64}$/);
+  assert.deepEqual(got.map((g) => g.type), ['hello', 'job'], 'the link joined once, and its job came at once');
+  const inv2 = await post(env, { do: 'invite', name: 'Plain' }, OWNER);
+  const j2 = await post(env, { do: 'join', code: T.joinCode(inv2.join), hook: 'https://plain.dev/in' });
+  assert.equal(j2.status, 201); assert.equal(j2.hook, 'https://plain.dev/in');
+});

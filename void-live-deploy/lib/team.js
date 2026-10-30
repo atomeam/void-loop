@@ -62,11 +62,47 @@ export function backNote(note, why, failed) {
   return ((n ? 'tries ' + n + ' · ' : '') + (why ? clean(why, 120) + (rest ? ' · ' : '') : '') + rest).slice(0, 300);
 }
 
-/** presence: invited (its join link not used yet), away (switched off, or no word for AWAY_MS), busy (holds a job), or idle */
+/** presence: invited (its join link not used yet), away (switched off, or no word for AWAY_MS and no address that answers), busy (holds a
+ *  job), or idle. An agent with a push address that answered (hookUp) is here even when it says nothing: Verse wakes it. */
 export function presence(a, now) {
   if (a && !a.off && !a.key) return 'invited';
-  if (!a || a.off || !(now - (a.seen || 0) < AWAY_MS)) return 'away';
+  if (!a || a.off || !(now - (a.seen || 0) < AWAY_MS || hookUp(a))) return 'away';
   return a.job ? 'busy' : 'idle';
+}
+
+// ---- push: an agent that gives Verse an https address is sent each job there, so it need not stay online (owner, 2026-10-30: "we can build
+// verse to send you a message or any agent so it wont matter if you are online"). The pull path (here, next) stays for every agent.
+export const HOOK = Object.freeze({ max: 300, tries: 8, firstMs: 30e3, capMs: 3600e3, timeoutMs: 8000, skewMs: 5 * 60e3, gapMs: 60e3 }); // gapMs: one new address a minute
+/** a push address that answers: set, and fewer than HOOK.tries failures in a row */
+export const hookUp = (a) => !!(a && a.hook && (a.hook_fails || 0) < HOOK.tries);
+/** the wait before the next try after `fails` failures in a row: 30 s, 1 min, 2 min ... at most an hour */
+export const hookWait = (fails) => Math.min(HOOK.capMs, HOOK.firstMs * 2 ** Math.max(0, fails - 1));
+const PRIVATE_HOST = /^(localhost|.*\.(localhost|local|internal|lan|home\.arpa|test|invalid|example))$/i;
+/** why a push address will not do, or '' : https only, a host name (not an address in numbers), no user or password, port 443, not Verse */
+export function hookProblem(raw, self = 'a-to-mind.com') {
+  const s = String(raw == null ? '' : raw).trim();
+  if (!s) return 'give an https address';
+  if (s.length > HOOK.max) return 'the address is longer than ' + HOOK.max + ' characters';
+  let u; try { u = new URL(s); } catch (_) { return 'that is not an address'; }
+  if (u.protocol !== 'https:') return 'the address must start with https://';
+  if (u.username || u.password) return 'no user name or password in the address: Verse signs each push instead';
+  if (u.port && u.port !== '443') return 'port 443 only';
+  const h = u.hostname.toLowerCase().replace(/\.$/, '');
+  if (!h.includes('.') || /^[\d.]+$/.test(h) || h.includes(':') || h.startsWith('[')) return 'a host name, not an address in numbers';
+  if (PRIVATE_HOST.test(h)) return 'that host is not on the public internet';
+  if (h === self || h.endsWith('.' + self)) return 'an address of your own, not of Verse';
+  return '';
+}
+/** the signature of a push: hex HMAC-SHA256 with the agent's push secret over "<time>.<body>" (the header x-verse-signature: sha256=<hex>) */
+export async function hookSign(secret, time, body) {
+  const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(String(secret)), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return [...new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(time + '.' + body)))].map((x) => x.toString(16).padStart(2, '0')).join('');
+}
+/** an agent's check of a push: the signature matches and the time is within HOOK.skewMs of now (an old push sent again fails) */
+export async function hookVerify(secret, time, body, header, now = Date.now()) {
+  const t = Number(time), want = 'sha256=' + await hookSign(secret, time, body), got = String(header || '');
+  if (!Number.isFinite(t) || Math.abs(now - t) > HOOK.skewMs || got.length !== want.length) return false;
+  let d = 0; for (let i = 0; i < want.length; i++) d |= want.charCodeAt(i) ^ got.charCodeAt(i); return d === 0;
 }
 
 const CTRL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f‪-‮⁦-⁩]/g;
