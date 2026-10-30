@@ -28,6 +28,7 @@ test('units swapped both ways: cups, spoons, ounces, pounds, °F and inches to m
   assert.equal(swapUnits('2 chicken breasts (about 1 lb, 450 g)'), '2 chicken breasts (450 g)'); assert.equal(swapUnits('Heat the oven to 375°F and butter a 9x5-inch loaf pan.'), 'Heat the oven to 190°C and butter a 9x5-inch loaf pan.');
   assert.equal(swapUnits('Pour ¼ cup of batter for each pancake.'), 'Pour 60 ml of batter for each pancake.'); assert.equal(swapUnits('3 eggs'), '3 eggs');
   assert.equal(swapUnits('360 ml milk', 'us'), '1 ½ cups milk'); assert.equal(swapUnits('190 g flour', 'us'), '6.7 oz flour'); assert.equal(swapUnits('Bake at 190°C for 10 minutes', 'us'), 'Bake at 375°F for 10 minutes'); assert.equal(swapUnits('15 ml oil', 'us'), '1 tbsp oil'); assert.equal(swapUnits('2 kg potatoes', 'us'), '4.4 lb potatoes');
+  assert.equal(swapUnits('250 ml water', 'us'), '1 cup water'); assert.equal(swapUnits('0.24 l milk', 'us'), '1 cup milk'); assert.equal(swapUnits('1 l stock', 'us'), '4 cups stock'); assert.equal(swapUnits('100 ml cream', 'us'), '⅜ cup cream'); assert.equal(swapUnits('200 ml milk', 'us'), '⅞ cup milk'); assert.equal(swapUnits('0.5 l cream', 'us'), '2 cups cream');
   assert.equal(swapUnits('1 ½ cups milk', 'us'), '1 ½ cups milk', 'already US'); assert.equal(swapUnits('1 ¼ cups milk (300 ml)', 'us'), '1 ¼ cups milk (300 ml)', 'led by cups: the bracketed ml stays a hint');
 });
 test('the times a step names become countdowns: the lower end of a range, each once, hours and seconds too', () => {
