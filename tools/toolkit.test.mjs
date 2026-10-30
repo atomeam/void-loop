@@ -355,7 +355,8 @@ test('the weather page\'s card opens on the place looked up there, not Boston; w
   }
   assert.equal(L.weatherAsk(''), 'weather here'); assert.equal(S.weatherPlace('weather here'), '', 'here: the device, as on the page');
   const src = fs.readFileSync(new URL('../void-live-deploy/weather/index.html', import.meta.url), 'utf8');
-  assert.match(src, /cardAsk = weatherAsk\(coords \? '' : place\); document\.dispatchEvent\(new Event\('tk:card'\)\)/, 'set when a forecast is drawn for the place looked up, and the link aimed again then: the forecast comes back after the page loads');
+  assert.match(src, /cardAsk = weatherAsk\(place\); document\.dispatchEvent\(new Event\('tk:card'\)\)/, 'set when a forecast is drawn for the place looked up (a flight\'s ?place=&ll= too), and the link aimed again then: the forecast comes back after the page loads');
+  assert.match(src, /look\('', \{ name: 'Where you are'/, 'where you are looks with no place name, so its card is the weather here');
   assert.match(src, /\{ card: \(\) => cardAsk \}/, 'the weather page gives its card the place open on it');
 });
 

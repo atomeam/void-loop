@@ -160,3 +160,17 @@ test('the stage card: takes flight asks, leaves distance asks to the distance sk
   let html = ''; const el = { dataset: {}, set innerHTML(v) { html = v; } }; assert.equal(skill.run('flights to lisbon', { showPage: (f) => f(el), esc: (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;') }), 'flights');
   assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/');
 });
+
+test('the leg links: the landing moment in both cities with their zones, the weather at the arrival airport, and the flight as a calendar event', async () => {
+  const a = { iata: 'JFK', city: 'New York', tz: 'America/New_York', country: 'United States', lat: 40.6413, lon: -73.7781 }, b = { iata: 'OGG', city: 'Kahului, Maui', tz: 'Pacific/Honolulu', country: 'United States', lat: 20.8986, lon: -156.4305 };
+  const f = C.legFacts(a, b, '2026-11-20T09:00'), l = C.legLinks(a, b, f), u = (s) => new URL(s, 'https://verse.test');
+  const tm = u(l.time); assert.equal(tm.pathname, '/time/'); assert.equal(Date.parse(tm.searchParams.get('at')), f.arrUtc);
+  assert.deepEqual(tm.searchParams.get('cities').split(','), ['New York@America/New_York', 'Kahului Maui@Pacific/Honolulu'], 'a comma in a city name never splits the list');
+  const { placeAt } = await import('../void-live-deploy/lib/zones.js');
+  assert.deepEqual(tm.searchParams.get('cities').split(',').map(placeAt), [{ name: 'New York', tz: 'America/New_York' }, { name: 'Kahului Maui', tz: 'Pacific/Honolulu' }]);
+  const w = u(l.weather); assert.equal(w.searchParams.get('place'), 'Kahului Maui, United States'); assert.equal(w.searchParams.get('ll'), '20.8986,-156.4305');
+  const { eventFromLink } = await import('../void-live-deploy/lib/calendar.js'), ev = eventFromLink(u(l.calendar).searchParams.get('e'));
+  assert.equal(ev.title, 'Flight JFK → OGG'); assert.equal(ev.start, '2026-11-20T09:00'); assert.equal(ev.tz, 'America/New_York'); assert.equal(ev.location, 'New York');
+  assert.equal(C.localToUtc('America/New_York', ev.end), f.arrUtc, 'the event ends when the flight lands'); assert.ok(ev.notes.includes(f.arrDate + ' ' + f.arrTime));
+  for (const s of ['Landing time in both cities', 'Weather where it lands', 'Add the flight to my calendar']) assert.ok(DE[s], 'German for ' + s);
+});

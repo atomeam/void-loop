@@ -87,6 +87,23 @@ export const JOURNEYS = {
     if (!/^\/stopwatch\/\?t=\d+%20minutes$/.test(cd)) throw new Error('"Countdown to the next event" goes to "' + cd + '"');
     await check('"Weather that day" on ' + soon + ' carries Lisbon and the countdown counts to the event');
   },
+  'work out a flight, see its landing in both cities on the time page, the weather where it lands, and add it to the calendar': async (p, check) => {
+    const open = () => p.goto(ORIGIN + '/flights/?from=JFK&to=LHR&d=2026-11-20&t=19:00', { waitUntil: 'load' }).then(() => p.waitForSelector('#fa-time'));
+    await open(); await check('the flights page worked out JFK to LHR');
+    const at = new URL(await p.locator('#fa-time').getAttribute('href'), ORIGIN).searchParams.get('at'), want = await p.evaluate(() => import('/lib/flights-core.js').then((C) => new Date(C.legFacts({ lat: 40.6413, lon: -73.7781, tz: 'America/New_York' }, { lat: 51.47, lon: -0.4543, tz: 'Europe/London' }, '2026-11-20T19:00').arrUtc).toISOString().replace(/\.000Z$/, 'Z')));
+    if (Math.abs(Date.parse(at) - Date.parse(want)) > 5 * 60000) throw new Error('the time link carries the landing at ' + at + ', not about ' + want);
+    await Promise.all([p.waitForURL(/\/time\/\?at=/), p.locator('#fa-time').click()]); await p.waitForSelector('#event:not([hidden])');
+    const cities = await p.locator('#evlist li b').allTextContents();
+    if (!cities.includes('New York') || !cities.includes('London')) throw new Error('the time page lists ' + cities.join(', ') + ' for the landing, not New York and London');
+    await check('the time page opened on the landing moment in New York and London');
+    await open(); await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#fa-weather').click()]); await p.waitForSelector('#q');
+    if (!/^London\b/.test(await p.locator('#q').inputValue())) throw new Error('the weather page opened on "' + (await p.locator('#q').inputValue()) + '", not London');
+    await check('the weather page opened on London');
+    await open(); await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('#fa-cal').click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
+    await p.locator('#invAdd').click(); await p.waitForSelector('#detTime');
+    if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
+    await check('the calendar added "Flight JFK → LHR"');
+  },
 };
 
 async function run() {

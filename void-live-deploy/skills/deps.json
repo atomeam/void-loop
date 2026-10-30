@@ -455,7 +455,7 @@
    "skills": 5,
    "direct": 1,
    "dependants": 11,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/success-pulse.js",
@@ -2786,7 +2786,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/ai-generators.js",

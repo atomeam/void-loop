@@ -50,6 +50,14 @@ export function findPlace(text, zones = allZones()) {
   const starts = zones.find((z) => key(cityOf(z)).startsWith(k) && k.length >= 3); if (starts) return { name: cityOf(starts), tz: starts };
   return null;
 }
+/** a place a link names with its zone, "City@Area/Zone" (as the flights page writes for an airport's city): { name, tz }, or null when the text has no
+ *  "@" or the zone is not one this device's clock knows (an alias like Asia/Kolkata counts). The name keeps its own spelling, at most 60 characters. Pure. */
+export function placeAt(text) {
+  const raw = String(text || ''), i = raw.lastIndexOf('@'); if (i < 1) return null;
+  const tz = raw.slice(i + 1).trim(), name = raw.slice(0, i).replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+  if (!name || !/^[A-Za-z][\w+-]*(?:\/[\w+-]+){0,2}$/.test(tz)) return null;
+  try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return { name, tz }; } catch (_) { return null; }
+}
 const title = (k) => k.replace(/\b\p{L}/gu, (c) => c.toUpperCase()).replace(/\bDc\b/, 'DC').replace(/\bNyc\b/, 'NYC').replace(/\bUk\b/, 'UK');
 
 /** the wall clock in a zone at an instant: { h, m, s, ymd: [y, mo0, d], day: 'Sunday' }. Pure. */
