@@ -584,7 +584,7 @@
     "a chair"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the making things, this one is trusted enough to be taught. It has not failed a reader yet.",
    "glow": 100,
    "n": 20
@@ -669,7 +669,7 @@
     "walk around"
    ],
    "tier": "proven",
-   "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the making things it is the one a traveller is told to ask for first. Let the stage be the proof.",
    "glow": 100,
    "n": 25

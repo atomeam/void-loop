@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,12 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:41:25Z",
-   "subject": "News: fix the page script so the headlines load again"
+   "at": "2026-10-30T05:40:36Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T05:39:51Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:39:49Z",
+   "subject": "Walker: copy the clear event into void.html, the source of index.html"
   },
   {
    "at": "2026-10-30T05:36:28Z",
@@ -570,6 +574,10 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-30T05:35:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:35:37Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -580,6 +588,10 @@
   {
    "at": "2026-10-30T05:35:26Z",
    "subject": "Stage links from /emojis/ and /g/ open real cards; /g/ footer link opens the README"
+  },
+  {
+   "at": "2026-10-30T05:35:22Z",
+   "subject": "Walker: the walking cartoon can be thrown and clear clears it"
   },
   {
    "at": "2026-10-30T05:35:21Z",
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T05:27:17Z",
    "subject": "Rap at phone width: long words wrap, and the browser checks it at 375 px"
-  },
-  {
-   "at": "2026-10-30T05:26:52Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:26:38Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T05:26:26Z",
-   "subject": "video-write: keep every picture on slow devices"
   }
  ],
  "builders": {
