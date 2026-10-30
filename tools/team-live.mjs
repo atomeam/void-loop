@@ -12,7 +12,12 @@ const SITE = arg('--site', 'https://a-to-mind.com').replace(/\/$/, ''), OWNER = 
 const API = SITE + '/api/team';
 if (!OWNER) { console.log('VERSE_OWNER is not set: nothing checked'); process.exit(0); }
 
-import { hookVerify } from '../void-live-deploy/lib/team.js';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+// the push check, as an agent does it (team/agent.mjs verifyPush): kept here because the workflow runs this file alone, from /tmp/probe
+const hookVerify = async (secret, time, body, header, now) => {
+  const want = Buffer.from('sha256=' + createHmac('sha256', secret).update(time + '.' + body).digest('hex')), got = Buffer.from(String(header || ''));
+  return Math.abs(now - Number(time)) <= 5 * 60e3 && got.length === want.length && timingSafeEqual(got, want);
+};
 const fail = (why) => { console.error('FAIL ' + why); process.exitCode = 1; };
 const ok = (what) => console.log('ok   ' + what);
 const call = async (method, q, body, key = OWNER) => {

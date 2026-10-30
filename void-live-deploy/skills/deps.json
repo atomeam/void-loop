@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1020,
+ "counted": 1022,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -118,7 +118,7 @@
    "file": "lib/reactions.js",
    "skills": 16,
    "direct": 1,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 1
   },
   {
@@ -616,7 +616,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 10
+   "tests": 12
   },
   {
    "file": "lib/field-cards.js",
@@ -962,6 +962,13 @@
    "tests": 3
   },
   {
+   "file": "lib/generators.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/brain-ask.js",
    "skills": 2,
    "direct": 1,
@@ -981,13 +988,6 @@
    "direct": 1,
    "dependants": 3,
    "tests": 3
-  },
-  {
-   "file": "lib/generators.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/list-goal.js",
@@ -1319,6 +1319,13 @@
    "tests": 2
   },
   {
+   "file": "lib/emoji.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/keep-going.js",
    "skills": 1,
    "direct": 1,
@@ -1331,13 +1338,6 @@
    "direct": 1,
    "dependants": 3,
    "tests": 17
-  },
-  {
-   "file": "lib/emoji.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/fanfic.js",
@@ -1396,6 +1396,13 @@
    "tests": 1
   },
   {
+   "file": "lib/tally.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-glow.js",
    "skills": 1,
    "direct": 0,
@@ -1404,6 +1411,13 @@
   },
   {
    "file": "lib/brain-store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/coins.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
@@ -1441,13 +1455,6 @@
    "file": "lib/note-extras.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/tally.js",
-   "skills": 1,
-   "direct": 1,
    "dependants": 2,
    "tests": 1
   },
@@ -1558,13 +1565,6 @@
   },
   {
    "file": "lib/chess-replay.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/coins.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2754,7 +2754,21 @@
    "tests": 0
   },
   {
+   "file": "lib/flip-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/fuzzy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/generators-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5610,6 +5624,9 @@
    "imports": [],
    "importedBy": [
     "skills/coin.js"
+   ],
+   "reachedBy": [
+    "lib/flip-card.js"
    ]
   },
   "lib/colour.js": {
@@ -6029,6 +6046,7 @@
    ],
    "reachedBy": [
     "functions/api/tally.js",
+    "lib/flip-card.js",
     "skills/coin.js"
    ]
   },
@@ -6416,6 +6434,12 @@
    ],
    "importedBy": []
   },
+  "lib/flip-card.js": {
+   "imports": [
+    "skills/coin.js"
+   ],
+   "importedBy": []
+  },
   "lib/forge-duel.js": {
    "imports": [],
    "importedBy": [
@@ -6541,10 +6565,18 @@
     "skills/walker.js"
    ]
   },
+  "lib/generators-card.js": {
+   "imports": [
+    "lib/generators.js",
+    "skills/textgen.js"
+   ],
+   "importedBy": []
+  },
   "lib/generators.js": {
    "imports": [],
    "importedBy": [
     "lib/chat-generators.js",
+    "lib/generators-card.js",
     "skills/textgen.js"
    ],
    "reachedBy": [
@@ -8965,6 +8997,7 @@
     "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/fix-audit.js",
+    "lib/flip-card.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -10342,6 +10375,9 @@
    "importedBy": [
     "functions/api/tally.js",
     "skills/coin.js"
+   ],
+   "reachedBy": [
+    "lib/flip-card.js"
    ]
   },
   "lib/tasks.js": {
@@ -11552,7 +11588,9 @@
     "lib/tally.js",
     "lib/coins.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/flip-card.js"
+   ]
   },
   "skills/collectible.js": {
    "imports": [
@@ -14598,7 +14636,9 @@
    "imports": [
     "lib/generators.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/generators-card.js"
+   ]
   },
   "skills/throw-off.js": {
    "imports": [],
