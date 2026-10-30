@@ -79,7 +79,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { placeOf, weatherAsk, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words } from '/lib/weather.js';
+  import { placeOf, weatherAsk, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words, amount } from '/lib/weather.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.weather.v1', esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   let shown = null; // the view on the page, for the share text and the hand-off
   let cardAsk = ''; // the stage card for the place looked up last ('' until one is drawn: the example)
@@ -90,8 +90,8 @@
     shown = v; $('out').hidden = false; $('place').textContent = v.place; $('temp').textContent = both(v.now.temp);
     $('now').textContent = 'Now: ' + words(v.now.code) + ', feels like ' + both(v.now.feels) + (Number.isFinite(v.now.humidity) ? ', humidity ' + Math.round(v.now.humidity) + '%' : '') + (Number.isFinite(v.now.windKmh) ? ', wind ' + v.now.windMph + ' mph / ' + Math.round(v.now.windKmh) + ' km/h' : '');
     $('sun').textContent = v.sunrise || v.sunset ? 'Sunrise ' + v.sunrise + ' · Sunset ' + v.sunset : '';
-    $('hours').innerHTML = v.hours.map((h) => '<div><span>' + esc(h.at) + '</span><b>' + esc(both(h.temp)) + '</b><span>' + (Number.isFinite(h.rain) ? h.rain + '% chance of rain' : '') + '</span><br><span>' + esc(words(h.code)) + '</span></div>').join('');
-    $('days').innerHTML = v.days.map((d) => '<div' + (d.today ? ' class="today"' : '') + '><b>' + esc(d.name) + (d.today ? ' (today)' : '') + '</b><span>' + esc(both(d.hi)) + ' high</span><span>' + esc(words(d.code)) + (Number.isFinite(d.rain) ? ', ' + d.rain + '% chance of rain' : '') + '</span><span>' + esc(both(d.lo)) + ' low</span></div>').join('');
+    $('hours').innerHTML = v.hours.map((h) => '<div><span>' + esc(h.at) + '</span><b>' + esc(both(h.temp)) + '</b><span>' + (Number.isFinite(h.rain) ? h.rain + '% chance of rain' : '') + (amount(h.mm) ? ' · ' + esc(amount(h.mm)) : '') + '</span><br><span>' + esc(words(h.code)) + '</span></div>').join('');
+    $('days').innerHTML = v.days.map((d) => '<div' + (d.today ? ' class="today"' : '') + '><b>' + esc(d.name) + (d.today ? ' (today)' : '') + '</b><span>' + esc(both(d.hi)) + ' high</span><span>' + esc(words(d.code)) + (Number.isFinite(d.rain) ? ', ' + d.rain + '% chance of rain' : '') + (amount(d.mm) ? ', ' + esc(amount(d.mm)) : '') + '</span><span>' + esc(both(d.lo)) + ' low</span></div>').join('');
     $('status').textContent = kept ? 'Kept from ' + kept + ': the network did not answer, so this is the last forecast seen here.' : 'Forecast at ' + v.at.replace('T', ' ') + ', the place\'s own time.';
     document.title = 'Weather in ' + v.place.split(',')[0] + ' · Verse';
   }
