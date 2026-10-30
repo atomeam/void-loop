@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1024,
+ "counted": 1025,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2839,6 +2839,13 @@
   },
   {
    "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/mp3-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -7825,6 +7832,10 @@
     "skills/film-metadata.js",
     "skills/media-pick.js"
    ]
+  },
+  "lib/mp3-edit.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/music-audio.js": {
    "imports": [
