@@ -10,7 +10,9 @@ const WHEN = /^(?:(?:what|which) tools (?:do you have|are there|can i use|)?|(?:
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const list = allTools();
+  // one chip per name, as /tools/ lists them (tools/seo-pages.mjs moreTools): a tool built twice for two sites (/convert/unit-converter/ and -2/) is one tool to a reader
+  const seen = new Set();
+  const list = allTools().filter(([, label]) => { const k = String(label).toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
   showPage((el) => {
     el.dataset.page = '/tools/';
     el.innerHTML = '<h2>' + list.length + ' tools</h2>' // void-review: ok: a fixed table, escaped

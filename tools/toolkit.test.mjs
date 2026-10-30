@@ -37,6 +37,10 @@ test('the ask bar routes an ask to the tool that does it, with the ask in the li
   assert.equal(to('255 in hex'), '/base-converter/?v=255&b=16'); assert.equal(to('#ff5733'), '/color/?c=ff5733'); assert.equal(to('17% of 240'), '/calculator/?q=17%25%20of%20240');
   assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random-user/?n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
   assert.equal(to('who is the mayor of boston'), '/?q=who%20is%20the%20mayor%20of%20boston'); assert.equal(to('  '), '');
+  // a tool's own name opens the tool, not a stage answer about the words (2026-10-30: 'word count' opened Wikipedia's article on the stage)
+  for (const [ask, page] of [['word count', '/word-count/'], ['Word counter', '/word-count/'], ['pdf', '/pdf/'], ['photo tools', '/photos/'], ['open the code review', '/code-review/'],
+    ['colour codes', '/color/'], ['the calculator page', '/calculator/'], ['password generator', '/password/'], ['time zones', '/time/']]) assert.equal(to(ask), page, ask);
+  assert.equal(to('g'), '/?q=g', 'a name of two letters or fewer is not taken as a tool'); for (const w of ['time', 'flip', 'rap', 'news']) assert.equal(to(w), '/?q=' + w, w + ' stays with the stage card'); assert.equal(to('word count tool'), '/word-count/?t=tool', 'a route of its own still wins');
 });
 
 test('every tool page links to its own card on the stage, and every page has a card that links back (owner, 2026-10-25: "and vice versa")', async () => {

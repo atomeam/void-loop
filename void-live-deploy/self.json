@@ -550,16 +550,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T07:47:46Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T07:49:25Z",
+   "subject": "The studio's route limit and its openapi note"
   },
   {
    "at": "2026-10-30T07:47:19Z",
    "subject": "Brain map: never freeze after a resize"
-  },
-  {
-   "at": "2026-10-30T07:46:52Z",
-   "subject": "Local TV and radio: refresh the generated files after merging main"
   },
   {
    "at": "2026-10-30T07:44:44Z",
@@ -568,6 +564,14 @@
   {
    "at": "2026-10-30T07:43:29Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T07:39:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T07:39:21Z",
+   "subject": "The studio: a bench that paints the reference prompts with every image model and judges each picture"
   },
   {
    "at": "2026-10-30T07:39:09Z",
@@ -588,10 +592,6 @@
   {
    "at": "2026-10-30T07:36:05Z",
    "subject": "Keep both brain-map and brain-trace checks after the merge"
-  },
-  {
-   "at": "2026-10-30T07:35:51Z",
-   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T07:35:00Z",
@@ -622,12 +622,12 @@
    "subject": "Tower gate: onlineconverter.com,emoji combos,calendar: calendar.online measured against their live sites"
   },
   {
-   "at": "2026-10-30T07:28:02Z",
-   "subject": "Local TV and radio: drop signed-token streams, list /api/local as Verse's own, refresh the fanfic module list and hand-off gaps"
-  },
-  {
    "at": "2026-10-30T07:27:45Z",
    "subject": "Verse fixes its meteors skill: learn to handle \"is there a meteor shower soon\""
+  },
+  {
+   "at": "2026-10-30T07:26:48Z",
+   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
