@@ -1,6 +1,6 @@
 /**
- * dev-tools skill — one card with seven small developer tools, each its own mode (tools pack 7, owner 2026-10-18: items 161, 162,
- * 164, 168, 167, 169, 170): "format json {...}", "base64 encode hello", "regex tester /\d+/g on abc 123", "explain cron 0 9 * * 1-5",
+ * dev-tools skill — one card with ten developer tools, each its own mode. Tools pack 7 (owner 2026-10-18: items 161, 162, 164, 168,
+ * 167, 169, 170), and JWT, HTML entities and XML (2026-10-30): "format json {...}", "base64 encode hello", "regex tester /\d+/g on abc 123", "explain cron 0 9 * * 1-5",
  * "http status 404", "generate 5 rows of dummy data with name email age", "polish my commit message: fixed the login bug".
  * The text you type stays on this device in the stage's own storage and is never sent anywhere. (The hex/rgb converter is the colour
  * card in skills/util.js; UUID and lorem ipsum were already there.) All the logic is lib/dev-tools.js (tests: tools/tools-pack-7.test.mjs).
@@ -13,8 +13,9 @@ export const { devOf } = D;
 
 const BTN = 'font:inherit;padding:3px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.3);background:transparent;color:inherit;cursor:pointer;min-height:28px';
 const FIELD = 'font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(255,255,255,.07);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;color-scheme:dark;box-sizing:border-box;min-width:0';
-const TITLES = { json: 'JSON formatter', base64: 'Base64', regex: 'Regex test box', cron: 'Cron explainer', http: 'HTTP status cheat card', dummy: 'Dummy data rows', commit: 'Commit message polish' };
-const HINTS = { json: 'paste JSON here', base64: 'text to encode, or Base64 to decode', cron: 'e.g. 0 9 * * 1-5', http: 'a code like 404, or leave empty for the whole card', dummy: 'columns: name, email, city, age ...', commit: 'your commit message, e.g. fixed the login bug.' };
+const TITLES = { json: 'JSON formatter', base64: 'Base64', regex: 'Regex test box', cron: 'Cron explainer', http: 'HTTP status cheat card', dummy: 'Dummy data rows', commit: 'Commit message polish',
+  jwt: 'JWT decoder', html: 'HTML entities', xml: 'XML formatter' };
+const HINTS = { jwt: 'paste a JWT (header.payload.signature)', html: 'text to escape, or HTML entities to decode', xml: 'paste XML here', json: 'paste JSON here', base64: 'text to encode, or Base64 to decode', cron: 'e.g. 0 9 * * 1-5', http: 'a code like 404, or leave empty for the whole card', dummy: 'columns: name, email, city, age ...', commit: 'your commit message, e.g. fixed the login bug.' };
 
 function h(tag, css, text, attrs) {
   const e = document.createElement(tag);
@@ -141,6 +142,33 @@ function mount(th, stageApi) {
       const ul = out.querySelector('.dt-notes'); if (ul) for (const x of r.notes) ul.appendChild(h('li', '', x));
     };
     el.append(area(th, stageApi, HINTS.commit, 3, paint), out); paint();
+  } else if (mode === 'jwt') {
+    const paint = () => {
+      const r = D.jwtDecode(th.input);
+      if (!r.ok) return set(err(r.err));
+      if (!r.header) return set();
+      const part = (label, value, cls) => { const d = h('div', 'margin-bottom:6px'); d.appendChild(h('div', 'font-size:11px;opacity:.65;text-transform:uppercase;letter-spacing:.05em', label)); const text = JSON.stringify(value, null, 2); d.appendChild(pre(text, cls)); return d; };
+      const times = r.times.map((x) => h('div', 'font-size:12px', x.label + ' (' + x.claim + '): ' + x.iso + (x.state ? ', ' + x.state : ''), { class: 'dt-time', 'data-state': x.state }));
+      const note = h('div', 'font-size:11px;opacity:.65;margin-top:4px', r.signed ? 'Decoded only: the signature is not checked, because that needs the issuer’s key. Anyone can make a token that decodes like this.' : 'This token has no signature (alg none or an empty third part): anyone can write one.', { class: 'dt-note' });
+      set(part('Header', r.header, 'dt-head'), part('Payload', r.payload, 'dt-payload'), ...times, note);
+    };
+    el.append(area(th, stageApi, HINTS.jwt, 4, paint), out); paint();
+  } else if (mode === 'html') {
+    const opt = h('div', 'display:flex;gap:6px;margin-bottom:6px');
+    button('Escape', () => { th.opts.dir = 'encode'; save(); render(); }, 'dt-encode', opt, th.opts.dir !== 'decode');
+    button('Unescape', () => { th.opts.dir = 'decode'; save(); render(); }, 'dt-decode', opt, th.opts.dir === 'decode');
+    const paint = () => {
+      if (!th.input) return set();
+      const text = th.opts.dir === 'decode' ? D.htmlUnescape(th.input) : D.htmlEscape(th.input);
+      set(pre(text), copyBar(text));
+    };
+    el.append(opt, area(th, stageApi, HINTS.html, 4, paint), out); paint();
+  } else if (mode === 'xml') {
+    const opt = h('div', 'display:flex;gap:6px;margin-bottom:6px');
+    button('Format', () => { th.opts.minify = false; save(); render(); }, 'dt-format', opt, !th.opts.minify);
+    button('Minify', () => { th.opts.minify = true; save(); render(); }, 'dt-minify', opt, !!th.opts.minify);
+    const paint = () => { const r = D.formatXml(th.input, { minify: !!th.opts.minify }); set(...(r.ok ? (r.out ? [pre(r.out), copyBar(r.out)] : []) : [err(r.err)])); };
+    el.append(opt, area(th, stageApi, HINTS.xml, 6, paint), out); paint();
   }
   if (th.mode === 'base64') { // the full Base64 page (files, URL-safe, every charset) is one tap away (owner, 2026-10-25: "why are you not linking the cards to the pages?")
     const full = h('a', 'display:inline-block;margin:8px 0 2px;font-size:13px;font-weight:600', 'Open the full Base64 page →', { class: 'vc-page', href: '/base64/' });
@@ -164,8 +192,9 @@ export function ask(lower, text, stageApi) {
 export default {
   name: 'dev-tools',
   examples: ['format json {"a":1,"b":[1,2]}', 'base64 encode hello world', 'regex tester /\\d+/g on call 555 or 911', 'explain cron 0 9 * * 1-5', 'http status 404',
-    'generate 5 rows of dummy data with name email city', 'polish my commit message: fixed the login bug'],
-  nearMisses: ['what is json', 'json vs xml', 'what is base64', 'what is a regex', 'regex for an email address', 'what is a cron job', 'http status of google.com', 'what is dummy data', 'how to write a good commit message', 'write a commit'],
+    'generate 5 rows of dummy data with name email city', 'polish my commit message: fixed the login bug', 'jwt decoder', 'html escape <b>bold</b>', 'xml formatter'],
+  nearMisses: ['what is json', 'json vs xml', 'what is base64', 'what is a regex', 'regex for an email address', 'what is a cron job', 'http status of google.com', 'what is dummy data', 'how to write a good commit message', 'write a commit',
+    'what is a jwt', 'jwt vs session cookie', 'what is html', 'html tutorial', 'what is xml', 'xml vs json'],
   devOf: D.devOf,
   match(lower, text) { return !!D.devOf(text || lower); },
   async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'dev-tools' : 'none'; },

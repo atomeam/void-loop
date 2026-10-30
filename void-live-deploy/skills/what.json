@@ -74,7 +74,7 @@
  "define": "What a word means, from Wiktionary",
  "dependency-health": "\"dependency health\", \"how healthy are your dependencies\", \"are the shared files stable\": the dependency map…",
  "deps": "\"dependency map\", \"what depends on lib/where.js\", \"who imports skills/scene3d.js\": who imports whom under the…",
- "dev-tools": "One card with seven small developer tools, each its own mode: \"format json {...}\", \"base64 encode hello\"…",
+ "dev-tools": "One card with ten developer tools, each its own mode",
  "different": "\"what makes you different\", \"how are you different from chatgpt\", \"is there anything else like you\", \"why…",
  "digest": "Verse reads a video's words",
  "dim-void": "Dim the Verse, Verse's lights-out puzzle: \"dim the void\", \"lights out\", \"play lights out\", \"switch the lamps…",

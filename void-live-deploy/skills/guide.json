@@ -3343,7 +3343,7 @@
    "chapter": "numbers",
    "name": "dev-tools",
    "title": "Dev tools",
-   "line": "One card with seven small developer tools, each its own mode: \"format json {...}\", \"base64 encode hello\", \"regex tester /\\d+/g on abc 123\", \"explain cron 0 9 * * 1-5\", \"http status 404\", \"generate 5 rows of dummy data with name email age\", \"polish my commit message: fixed the login bug\"",
+   "line": "One card with ten developer tools, each its own mode",
    "examples": [
     "a",
     "b"
