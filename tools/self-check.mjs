@@ -4,14 +4,14 @@
 //   ... --json out.json                           also write the report;  --post   hand it to /api/selfcheck (VOID_OWNER_TOKEN), for the status card
 // Each page is opened once, the way a person would: what it answered, its script errors, the files and APIs of its own that failed, whether it
 // showed any text, its background (the design is deep space, never a white page), the "Use with" row that ties a tool to the others
-// (lib/toolkit.js, or a studio's own nav.siblings), and wording Verse retired. Then every link of its own that the pages point at is asked for once. The judging is
+// (lib/toolkit.js, or a studio's own nav.siblings), wording Verse retired, and what looks unfinished (a loader that never finishes, filler text). Then every link of its own that the pages point at is asked for once. The judging is
 // lib/selfcheck.js (pure, tested). It only reads: every request that is not a GET is answered here with an empty 204 and never leaves the
 // browser, and the visit counter is never called, so nothing is posted, bought, counted or kept. Its traffic says who it is.
 import { writeFileSync, existsSync, appendFileSync } from 'node:fs';
-import { pageProblems, reportOf, KINDS } from '../void-live-deploy/lib/selfcheck.js';
+import { pageProblems, reportOf, KINDS, LOADER } from '../void-live-deploy/lib/selfcheck.js';
 
 export const UA = 'VerseSelfCheck/1 (+https://a-to-mind.com/; reads only, sends nothing)';
-export const PAGE_MS = 25000, SETTLE_MS = 1500, AT_ONCE = 6, LINKS_MAX = 800;
+export const PAGE_MS = 25000, SETTLE_MS = 1500, LOADER_MS = 8000, AT_ONCE = 6, LINKS_MAX = 800;
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
 
 /** the site's own pages in a sitemap's text, as paths, each once. Pure. */
@@ -46,6 +46,8 @@ async function openPage(browser, site, path) {
     const res = await page.goto(origin + path, { waitUntil: 'load', timeout: PAGE_MS });
     seen.status = res ? res.status() : 0;
     await page.waitForTimeout(SETTLE_MS);
+    // a page still saying it is loading gets more time before that counts against it: a slow source is not an unfinished page
+    if (LOADER.test(await page.evaluate(() => (document.body ? document.body.innerText : '')))) await page.waitForTimeout(LOADER_MS);
     Object.assign(seen, await page.evaluate(() => {
       const b = document.body, bg = (el) => el ? getComputedStyle(el).backgroundColor : '';
       const solid = (c) => c && !/rgba\([^)]*,\s*0\)|transparent/.test(c);

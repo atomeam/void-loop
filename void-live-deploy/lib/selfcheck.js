@@ -12,7 +12,7 @@ export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/members/', '/store/'
   '/compare/', '/cheat-codes/', '/code-review/', '/first-automation-setup/', '/full-stack-audit/', '/keep-it-running/', '/one-time-fix/', '/films/', '/podcast/']);
 export const KINDS = Object.freeze({
   status: 'does not open', script: 'script error', request: 'a file or API it needs fails', empty: 'shows nothing', light: 'light page (off design)',
-  link: 'dead link', wording: 'wording', unwired: 'not wired into the tools',
+  link: 'dead link', wording: 'wording', unwired: 'not wired into the tools', unfinished: 'looks unfinished',
 });
 export const SERIOUS = Object.freeze(['status', 'script', 'request', 'empty', 'link']);
 export const REPORT_MAX = 80, WHY_MAX = 160;
@@ -27,6 +27,11 @@ export function luminance(css) {
 
 // "fight" went (owner, 2026-10-29: "verse doesnt fight any sight ... its assimilate"); the old name V01D never shows to a person (AGENTS.md)
 const WORDING = [[/\bfight(?:s|ing)?\b/i, 'says "fight": Verse assimilates'], [/\bV01D\b/, 'says the old name V01D']];
+// what reads as unfinished to a person (owner, 2026-10-30: "find anything that looks incomplete or broken"): a loader still alone on its line after the
+// page settled and was given more time (tools/self-check.mjs waits again when it sees one), or filler words left in the visible text. "Coming soon" is not here:
+// the store says it honestly of a product that is not on sale yet.
+export const LOADER = /^[ \t]*(?:loading|fetching|please wait)(?:\u2026|\.{3})?[ \t]*$/im;
+const UNFINISHED = [[LOADER, 'still says it is loading after the page settled'], [/\blorem ipsum\b/i, 'shows filler text (lorem ipsum)'], [/\bunder construction\b/i, 'says it is under construction'], [/(?:^|[\s(\[])(?:TODO|TBD|FIXME)(?=[\s:.)\]]|$)/m, 'shows a note left for a builder (TODO)']];
 const clip = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, WHY_MAX);
 const tool = (path) => !NOT_TOOLS.includes(path) && !/^\/(?:lab|fix)\//.test(path) && !/\.[a-z0-9]+$/i.test(path);
 
@@ -42,6 +47,7 @@ export function pageProblems(seen) {
   const l = luminance(s.bg); if (l !== null && l > 0.5) add('light', 'background ' + s.bg);
   for (const u of (s.deadLinks || []).slice(0, 3)) add('link', u.status + ' ' + u.url);
   for (const [re, why] of WORDING) { const m = String(s.text || '').match(new RegExp('.{0,40}' + re.source + '.{0,40}', re.flags)); if (m) add('wording', why + ': "' + m[0].trim() + '"'); }
+  for (const [re, why] of UNFINISHED) { const m = String(s.text || '').match(new RegExp('.{0,40}' + re.source + '.{0,40}', re.flags.replace('m', ''))) || String(s.text || '').match(re); if (m) add('unfinished', why + ': "' + m[0].trim() + '"'); }
   if (s.toolRow === false && tool(s.path)) add('unwired', 'no "Use with" row: the page is not tied to the other tools');
   return out;
 }
