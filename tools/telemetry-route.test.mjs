@@ -167,3 +167,26 @@ test('the 2026-10-30 report: closing checks and time stamps are not changes, and
   assert.ok(read.changed.some((c) => /#1748\) merged/.test(c)), said);
   assert.match(summaryOf(telemetryOf(report)).pop(), /^It names 1 thing as failing$/);
 });
+
+// The report the owner pasted on 2026-10-30 at 16:19Z, cut at "The Versus jo" (lines joined by ⏎). Before #1978 Verse answered it with "I keep my keys
+// and settings locked away"; then the page read it as a broken automation ("Not found", "fix", "jobs"), because "is on automerge" and "gave back"
+// were not read as open, so it was no status report.
+export const REPORT_1030 = 'The "5 m c" fix is live. The card no longer labels 5 m/s as Mach and makes no notation claim. ⏎ "The 3 mile run" showed a new fault live: the card said Not found, because the model\'s refusal hid the exact conversion. The fix (#1775) is on automerge, and I will check the live card after it deploys. ⏎ Beam\'s log shows the rekey ran and the old key stopped. Beam also gave back 2 Versus jobs because it found no spec for them. ⏎ Today 2:35 AM ⏎ "the 3 mile run" is fixed and verified live. It now answers "3 miles is 4.83 km (4,828 m)." and no longer shows Not found (#1775, deployed). ⏎ The Versus jo';
+test('the 2026-10-30 16:19Z report is read as a report: what is live and verified, and what is still open', async () => {
+  const { statusReadOf, isStatusReport } = await import('../void-live-deploy/lib/telemetry.js');
+  const { intentOf, isFixAsk, hasDetails } = await import('../void-live-deploy/lib/automation-fix.js');
+  assert.equal(isStatusReport(REPORT_1030), true);
+  assert.equal(intentOf(REPORT_1030).intent, 'report'); assert.equal(isFixAsk(REPORT_1030), false); assert.equal(hasDetails(REPORT_1030), false);
+  assert.deepEqual(statusReadOf(REPORT_1030), {
+    changed: ['The "5 m c" fix is live.', '"the 3 mile run" is fixed and verified live.', 'It now answers "3 miles is 4.83 km (4,828 m)." and no longer shows Not found (#1775, deployed).'],
+    // "#1775 is on automerge, and I will check the live card after it deploys" is closed by the later "(#1775, deployed)"
+    waits: ['Beam also gave back 2 Versus jobs because it found no spec for them.'],
+    next: null,
+  });
+  // a wait no later line closes stays open
+  const open = REPORT_1030.replace(/ ⏎ Today 2:35 AM[\s\S]*$/, '');
+  assert.ok(statusReadOf(open).waits.includes('The fix (#1775) is on automerge.'), JSON.stringify(statusReadOf(open)));
+  const t = telemetryOf(REPORT_1030);
+  assert.equal(t.kind, 'status'); assert.deepEqual(t.failures, []);
+  assert.equal(skill.match(REPORT_1030.toLowerCase(), REPORT_1030), true);
+});

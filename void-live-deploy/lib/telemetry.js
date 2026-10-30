@@ -98,7 +98,7 @@ export function isBuildersReport(text) {
 // A pasted status report (owner, 2026-10-29): plain sentences on what shipped, what is held and what to do next, with no error quoted. Verse
 // answered one with the broken-automation fix card ("That thread didn't start" read as trouble, "job loop" as the thing). It is a report to
 // read back: what changed, what waits, and the one next step. A text that says something of its own is broken is never one.
-const WAITS = /\b(?:did(?:n't| not)\s+(?:start|run|ship|land|go\s+out)|block(?:ed|s)\b|waiting|waits?\s+(?:on|for)|on hold|held\b|pending|not\s+(?:yet|started|shipped|merged|live|finished|done)|no result yet|set to (?:ship|run|start)|after\s+(?:the\s+)?[\w\s-]{0,40}\bresets?\b|queued|worth a look|needs?\s+(?:a look|your|you)\b)/i;
+const WAITS = /\b(?:did(?:n't| not)\s+(?:start|run|ship|land|go\s+out)|block(?:ed|s)\b|waiting|waits?\s+(?:on|for)|on hold|held\b|pending|not\s+(?:yet|started|shipped|merged|live|finished|done)|no result yet|set to (?:ship|run|start)|after\s+(?:the\s+)?[\w\s-]{0,40}\bresets?\b|queued|worth a look|needs?\s+(?:a look|your|you)\b|on\s+auto-?merge\b|will\s+check\b|after\s+it\s+(?:deploys|merges|ships|lands|goes\s+live)\b|(?:gave|handed)\s+(?:\w+\s+){0,3}back\b|no\s+spec(?:ification)?s?\b)/i;
 const NEXT = /^(?:if you want(?: it)?|say so\b|next(?: step)?\s*:|reply\b|tell me\b|please\b|to (?:go on|continue|ship it)\b)/i;
 const CHANGED = /\b(?:merged|is (?:now )?live|went live|shipped|deployed|released|landed|adds|added|fixed|finished|done|turned on|switched on|published)\b/i;
 const BROKEN = /\b(?:stopped\s+(?:working|firing|running)|is(?:n't| not)\s+working|does(?:n't| not)\s+work|not working|keeps?\s+failing|won't\s+(?:run|start|fire|load)|broke\b|crash(?:es|ed)?)\b/i;
@@ -118,18 +118,27 @@ export function statusReadOf(raw) {
   if (/\?\s*$/.test(lines[0]) || /^(?:why|how|what|who|can|could|please|fix|help|explain)\b/i.test(lines[0])) return null;
   const sentences = lines.flatMap((l) => l.split(/(?<=[.!?])\s+(?=[A-Z"'(])/)).map((x) => x.trim()).filter((x) => x.length > 3);
   if (sentences.length < 3) return null;
-  const read = { changed: [], waits: [], next: null };
+  const read = { changed: [], waits: [], next: null }, open = [];
   for (const s of sentences) {
     // "the cleaner is live, and the fix is set to ship after the reset" is two items; split only when both halves read as one
     const halves = s.split(/,\s+and\s+/);
     const parts = halves.length === 2 && kindOf(halves[0]) && kindOf(halves[1]) ? halves : [s];
+    const nums = s.match(/#\d+/g) || [];
     for (const p of parts) {
       const k = kindOf(p);
       if (k === 'next') read.next = read.next || tidy(p);
-      else if (k) read[k].push(tidy(p));
+      else if (k === 'waits') { read.waits.push(tidy(p)); open.push({ text: tidy(p), nums }); }
+      else if (k) {
+        read.changed.push(tidy(p));
+        // a later line that says the same #PR is done closes what an earlier line left open ("#1775 is on automerge" then "#1775, deployed")
+        const done = p.match(/#\d+/g) || [];
+        for (const o of open) if (o.nums.some((n) => done.includes(n))) read.waits = read.waits.filter((w) => w !== o.text);
+      }
     }
   }
-  return read.changed.length && read.waits.length ? read : null;
+  // a wait that a later line closed still made it a report (owner, 2026-10-30: a report with two verified fixes, a fix "on automerge" and 2 jobs
+  // "given back" was answered as a broken automation, because neither was read as open)
+  return read.changed.length && open.length ? read : null;
 }
 /** true for a pasted status report (see statusReadOf). lib/automation-fix.js intentOf asks this, so a report is never a fix ask. Pure. */
 export function isStatusReport(text) { return !!statusReadOf(text); }
