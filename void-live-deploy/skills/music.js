@@ -11,6 +11,7 @@
  */
 import { compose, describe, notesText, renderWav, schedule, noteName, instrumentsFor, playedLine } from '../lib/compose.js';
 import { arrange, scheduleArranged, arrangedWav, sectionsLine, sectionsSvg, arrangedLine } from '../lib/arrange.js'; // a heavy ask (lib/arrange.js): a song with a shape
+import { refKey, scoreOf, scoreLine, loadRefs, measureSong } from '../lib/genre-score.js'; // held against real songs of its kind
 
 const KINDS = '(?:song|songs|tune|beat|beats|lullaby|melody|jingle|music|soundtrack|ditty|loop)';
 const WHEN = new RegExp('^(?!.*\\b(?:list|lyrics|playlist|chords|sheet)\\b)(?:please\\s+|can you\\s+|could you\\s+|will you\\s+)?(?:(?:make|compose|write|create|generate|give|play|cook up)(?:\\s+(?:me|us))?\\s+(?:a\\s+|an\\s+|some\\s+|my\\s+|another\\s+|new\\s+)?(?:[a-z]+\\s+){0,3}?' + KINDS + '(?:\\s+(?:for|about|to|in|with)\\s+.{1,60})?|music\\s+for\\s+.{2,60}|(?:a|an)\\s+(?:[a-z]+\\s+){0,2}' + KINDS + '\\s+(?:for|about)\\s+.{2,60})\\s*[?.!]*$', 'i');
@@ -65,8 +66,9 @@ function run(text, api) {
   showPage((el) => {
     el.dataset.cardKind = 'Song';
     el.innerHTML = '<h2>' + esc(p.title) + '</h2><p>' + esc(describe(p)) + '</p>' + (p.sections ? '<p class="mu-form">Built in sections: ' + esc(sectionsLine(p)) + '. Quiet intro and bridge, hard drop, breakdown and climax; the pad and lead duck on every kick.</p>' : '') + rollSvg(p)
-      + '<p class="mu-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" class="mu-play">Play</button><button type="button" class="mu-wav">Save as WAV</button><button type="button" class="mu-copy">Copy the notes</button><button type="button" class="mu-sing" hidden>Sing it</button><span class="mu-msg" role="status" style="align-self:center;color:var(--ink-3)"></span></p>'
+      + '<p class="mu-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" class="mu-play">Play</button><button type="button" class="mu-wav">Save as WAV</button><button type="button" class="mu-copy">Copy the notes</button><button type="button" class="mu-cmp">Compare with real songs</button><button type="button" class="mu-sing" hidden>Sing it</button><span class="mu-msg" role="status" style="align-self:center;color:var(--ink-3)"></span></p>'
       + '<p class="mu-played" style="color:var(--ink-3);margin:0 0 8px"></p>'
+      + '<p class="mu-score" style="margin:0 0 8px"></p>'
       + '<div class="mu-sung"></div>'
       + '<div class="src">Made by Verse from the words of your ask, played in this browser (Web Audio)' + (p.sections ? ' on real drum, piano, bass and guitar recordings (the guitar amp is simulated)' : ' on real piano and drum recordings') + '. Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
     const q = (s) => el.querySelector(s), msg = (t) => { const m = q('.mu-msg'); if (m) m.textContent = t; };
@@ -95,6 +97,17 @@ function run(text, api) {
         const u = URL.createObjectURL(new Blob([bytes], { type: 'audio/wav' })), a = document.createElement('a');
         a.href = u; a.download = (p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'song') + '.v01d.wav'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); msg('saved');
       } catch (_) { msg('could not render'); }
+    });
+    // Verse renders its own song and holds it against real songs of its kind (lib/genre-score.js); no reference measured means no score
+    q('.mu-cmp').addEventListener('click', async () => {
+      const out = q('.mu-score'); msg('listening…');
+      try {
+        const refs = await loadRefs(), key = refKey(p), has = refs && refs.genres && refs.genres[key];
+        const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        const own = has && OAC ? await measureSong(p, OAC, p.sections ? scheduleArranged : schedule, await instruments(new OAC(2, 1, 44100)).catch(() => ({}))) : null;
+        if (has && !own) { msg(OAC ? 'could not measure the song' : 'This browser cannot render audio offline.'); return; }
+        if (out) out.textContent = scoreLine(scoreOf(own, refs, key)); msg('');
+      } catch (_) { msg('could not compare'); }
     });
     singButton(el, text, q, msg);
     q('.mu-copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(notesText(p)); msg('copied'); } catch (_) { msg('select and copy'); const t = document.createElement('pre'); t.textContent = notesText(p); t.style.cssText = 'white-space:pre-wrap;font-size:12px'; el.appendChild(t); } });

@@ -112,6 +112,7 @@ for (const [name, file] of [
   ['rap', 'rap.test.mjs'],
   ['rap-sound', 'rap-sound.test.mjs'],
   ['rap-ears', 'rap-ears.test.mjs'],
+  ['genre-score', 'genre-score.test.mjs'],
   ['rap-kit', 'rap-kit.test.mjs'],
   ['rap-piano', 'rap-piano.test.mjs'],
   ['rap-strings', 'rap-strings.test.mjs'],
