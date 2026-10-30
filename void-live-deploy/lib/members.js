@@ -78,7 +78,8 @@ export const jobAsk = (text) => 'A paid member asked Verse to add this (their wo
  * and the queue row is written only when the idea row was, in one batch (one transaction), so two sends at the same moment
  * cannot both pass a count read before either was written. */
 export async function queueIdea(env, userId, text, now = Date.now()) {
-  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm';
+  // the job id carries the idea's own random tail: two ideas in the same millisecond (two members, or one quick sender) are two jobs, not a clash that loses the second
+  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm' + id.slice(-4);
   const r = await env.DB.batch([
     env.DB.prepare('INSERT INTO void_member_ideas (id, user_id, text, at, job) SELECT ?, ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 10) = ?) < ? AND (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 7) = ?) < ?')
       .bind(id, userId, text, at, job, userId, at.slice(0, 10), DAILY, userId, at.slice(0, 7), MONTHLY),

@@ -1477,8 +1477,28 @@ Object.values(things).forEach((th) => {
       }
       if (grownIds.size) requestAnimationFrame(() => layoutStage());
     }) : null;
+    // A published page lays its cards out to fit the screen (members perk, 2026-10-30: on a phone every card after the first sat
+    // off the right edge, out of reach): as many columns as fit the width, each card in the shortest column, in the page's order;
+    // the stage scrolls when the cards run past the bottom. Nothing is saved: the visitor's own stage stays untouched.
+    function flowPage() {
+      const order = Object.keys(things), els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth)
+        .sort((a, b) => order.indexOf(a.dataset.id) - order.indexOf(b.dataset.id));
+      if (!els.length) return;
+      const gap = 20, w = Math.max(...els.map((el) => el.offsetWidth)), sw = stage.clientWidth;
+      const cols = Math.max(1, Math.floor((sw - 40 + gap) / (w + gap))), x0 = cols > 1 ? 40 : Math.max(8, Math.round((sw - w) / 2)), tops = Array(cols).fill(40);
+      for (const el of els) {
+        const c = tops.indexOf(Math.min(...tops)), th = things[el.dataset.id];
+        th.x = x0 + c * (w + gap); th.y = tops[c]; placeThing(th); tops[c] += el.offsetHeight + gap;
+      }
+      // the last card scrolls clear of the ask bar, which sits over the bottom of the stage
+      const end = Math.max(...tops) + Math.max(0, Math.ceil(stage.getBoundingClientRect().bottom - dockSpace())) + gap;
+      let pad = stage.querySelector(':scope > .page-end'); if (!pad) { pad = document.createElement('div'); pad.className = 'page-end'; pad.setAttribute('aria-hidden', 'true'); pad.style.cssText = 'position:absolute;left:0;width:1px;height:1px;pointer-events:none'; stage.appendChild(pad); }
+      pad.style.top = end + 'px'; stage.style.overflowY = end > stage.clientHeight ? 'auto' : '';
+    }
+    if (PAGE) addEventListener('resize', () => requestAnimationFrame(() => layoutStage()));
     function layoutStage() {
-      if (!placement || PAGE || document.documentElement.classList.contains('dragging')) return;
+      if (PAGE) { if (!document.documentElement.classList.contains('dragging')) flowPage(); return; }
+      if (!placement || document.documentElement.classList.contains('dragging')) return;
       const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
       if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
       if (!laidOut && !els.length) return; // the stage hasn't drawn yet: the first real look is the saved layout, never fresh cards
@@ -1818,6 +1838,7 @@ Object.values(things).forEach((th) => {
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
         if (e.button > 0) return;
+        if (PAGE && e.pointerType === 'touch') return; // a finger on a published page scrolls it (flowPage), never drags a card off it
         if (th.locked) { selectedId = th.id; return; } // a locked card (skills/label.js, skills/stage-arrange.js) stays where it is: picked, never dragged or thrown
         const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;

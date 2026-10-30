@@ -57,12 +57,17 @@ export function takeOf(text) {
   return { part, take, aside };
 }
 
-/** Ping one source: { name, for, ok, ms, note }. A CORS block, a timeout and a network error all read as unreachable. */
-export async function ping(src, fetchFn = (u, o) => fetch(u, o), ms = 6000, now = () => performance.now()) {
+// the network's own time for a URL, from the browser's resource timing: the clock around the fetch also counts the moments the page was busy drawing the card
+// (2026-10-30: five sources read 1121 to 1125 ms on one card, the time the page was busy, not the sources' own), so it is used only when there is no entry
+const netMs = (url) => { try { const e = performance.getEntriesByName(url, 'resource'), x = e[e.length - 1]; return x && x.responseEnd > x.startTime ? x.responseEnd - x.startTime : null; } catch (_) { return null; } };
+/** Ping one source: { name, for, ok, ms, note }. A CORS block, a timeout and a network error all read as unreachable. ms is the network's time when the browser gives it. */
+export async function ping(src, fetchFn = (u, o) => fetch(u, o), ms = 6000, now = () => performance.now(), timing = netMs) {
   const ctl = typeof AbortController !== 'undefined' ? new AbortController() : null, t = ctl && setTimeout(() => ctl.abort(), ms), t0 = now();
   try {
-    const r = await fetchFn(src.url, ctl ? { signal: ctl.signal, cache: 'no-store' } : { cache: 'no-store' });
-    return { name: src.name, for: src.for, ok: !!r.ok, ms: Math.round(now() - t0), note: r.ok ? '' : 'answered HTTP ' + r.status };
+    const r = await fetchFn(src.url, ctl ? { signal: ctl.signal, cache: 'no-store' } : { cache: 'no-store' }), wall = now() - t0;
+    if (r.arrayBuffer) await r.arrayBuffer().catch(() => null); // the timing entry is written when the body is in
+    const net = timing(src.url);
+    return { name: src.name, for: src.for, ok: !!r.ok, ms: Math.round(net != null && net <= wall + 50 ? net : wall), note: r.ok ? '' : 'answered HTTP ' + r.status };
   } catch (e) {
     const timedOut = e && e.name === 'AbortError';
     return { name: src.name, for: src.for, ok: false, ms: Math.round(now() - t0), note: timedOut ? 'no answer in ' + ms / 1000 + ' s' : 'could not be reached from this browser' };
@@ -252,7 +257,7 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
     + (stability ? stabilityHtml(stability, esc) : '')
     + (pages !== undefined ? pagesHtml(pages, esc) : '')
     + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">Verse’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
-      + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.stage ? ' · <b class="status-stage">' + esc(b.stage) + '</b>' : '') + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '')
+      + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.stage && b.state !== 'running' ? ' · <b class="status-stage">' + esc(b.stage) + '</b>' : '') + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '')
         + (b.last ? '<br><span class="status-last">' + dot(b.last.state === 'passed') + 'last finished: ' + esc(b.last.state) + ' on ' + esc(b.last.sha) + ' · ' + esc(b.last.at) + (b.last.stage ? ' · <b class="status-stage">' + esc(b.last.stage) + '</b>' : '') + (b.last.url ? ' · <a href="' + esc(b.last.url) + '" target="_blank" rel="noopener">that run</a>' : '') + '</span>' : '') + '</td></tr>'
         + (b.checks && b.checks.length ? '<tr class="status-cause"><td></td><td style="color:#e0584a;padding:0 0 6px"><b>What failed:</b> ' + b.checks.map(esc).join(' · ') + '<span style="color:#8a8a92"> · ' + (b.suite ? esc(b.suite) + '; ' : '') + 'verify.yml takes the breaking commit back by itself when it can name it, else the run says which commits to look at</span>'
           + '<div class="status-fix" style="margin-top:6px"><b>Suggested fix:</b> <code style="user-select:all">' + esc(fixOf(b.checks[0]).cmd) + '</code><br><span style="color:#8a8a92">then</span> <code style="user-select:all">' + esc(fixOf(b.checks[0]).ship) + '</code>' + (fixOf(b.checks[0]).note ? ' <span style="color:#8a8a92">(' + esc(fixOf(b.checks[0]).note) + ')</span>' : '')

@@ -11,7 +11,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV | Convert | partial | studied by hand: onlineconverter.com offers this (https://onlineconverter.com/) | void-live-deploy/lib/video-write.js:126 `ov' }) : webm(video, audio, { mkv: container === 'mkv' });` |
+| Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV | Convert | partial | studied by hand: onlineconverter.com offers this (https://onlineconverter.com/) | void-live-deploy/lib/video-write.js:144 `gp' }) : webm(video, audio, { mkv: container === 'mkv' });` |
 | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA (no MP3, ALAC, AMR, M4A, M4R or WMA yet) | Convert | partial | studied by hand: onlineconverter.com offers this (https://onlineconverter.com/) | void-live-deploy/converter/app.js:206 `ls, s.rate) : as === 'flac' ? flac(s.channels, s.rate) : as === 'alac' ? alacFile(s.channe` |
 | Image converters: JPG, BMP, DNG, GIF, PDF, PNG, TIFF and WEBP | Convert | partial | studied by hand: onlineconverter.com offers this (https://onlineconverter.com/) | void-live-deploy/converter/app.js:225 `if (to === 'tiff') return tiff(pixels(c));` |
 | Ebook converters: EPUB, AZW, DOCX, HTML, MOBI, PDF, RTF and TXT | Convert | partial | studied by hand: onlineconverter.com offers this (https://onlineconverter.com/) | void-live-deploy/converter/app.js:251 `o === 'epub') return { bytes: epubOf(titled) };` |

@@ -63,6 +63,6 @@ export function briefOf(job, kind) {
     'This kind (' + k + '): ' + (GUIDE[k] || 'Do this, small and tested.'),
     (k === 'versus' && versusSpec(job)) || START[k] || START[k.split('-')[0]] || '',
     note && 'Note: ' + note.slice(0, 400),
-    'Deliver: a pull request to atomeam/void-loop main with the label automerge (Verse reviews it and merges it on green), then close the job with its link (node agent.mjs done --link <pull request>). If it is already live, close it with what you checked. Give it back only if you cannot do it at all, and say why.',
+    'Deliver: a pull request to atomeam/void-loop main with the label automerge (Verse reviews it and merges it on green), then close the job with its link (node agent.mjs done --link <pull request>). Verse checks it after the merge: the job is done only when the pull request changes the page itself (not only notes), takes nothing away from main, and the live page answers; otherwise it comes back on the queue with why. Give it back only if you cannot do it at all, and say why.',
   ].filter(Boolean).join('\n');
 }

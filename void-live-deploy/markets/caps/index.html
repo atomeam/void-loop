@@ -87,7 +87,10 @@
     const snap = await fetch('/data/coins.json').then((r) => (r.ok ? r.json() : null)).catch(() => null), have = snap && snap.ok && Array.isArray(snap.caps) && snap.caps.length >= 10;
     if (have) { rows = snap.caps; label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices are loading.'); draw(); }
     let j; try { j = await (await fetch('/api/markets?caps=1')).json(); if (!j.ok) { await new Promise((r) => setTimeout(r, 2000)); j = await (await fetch('/api/markets?caps=1')).json(); } } catch (_) { j = { ok: false }; }
-    if (j.ok) { rows = j.coins; label('Live, as of ' + new Date(j.at).toISOString().slice(0, 16).replace('T', ' ') + ' UTC.'); draw(); return; }
+    const when = (t) => new Date(t).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+    // when CoinGecko does not answer, the API lays Yahoo's prices over the snapshot (j.live of them), or sends the snapshot itself (j.live 0): said so either way
+    if (j.ok && j.snapshot) { rows = j.coins; label(j.live ? 'Live prices for ' + j.live + ' of ' + rows.length + ' coins, as of ' + when(j.at) + '; the list, volume and the rest from the snapshot of ' + j.snapshot + ' UTC, market cap scaled to the price.' : 'Snapshot of ' + j.snapshot + ' UTC, not live.', j.live ? '' : 'Live prices did not answer just now.'); draw(); return; }
+    if (j.ok) { rows = j.coins; label('Live, as of ' + when(j.at) + '.'); draw(); return; }
     if (have) { label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices did not answer just now.'); return; }
     $('note').textContent = 'The coin list could not be loaded right now, and there is no snapshot yet. Try again in a minute.';
   });

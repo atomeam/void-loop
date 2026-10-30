@@ -27,6 +27,13 @@ test('what counts: a page that does not open stops there; errors, failed files, 
   assert.equal(pageProblems({ ...fine, bg: 'rgba(0, 0, 0, 0)' }).length, 0, 'transparent is not light');
   assert.equal(pageProblems({ ...fine, path: '/', text: '↵', controls: 4 }).length, 0, 'the front page is one box to type in: not empty');
 });
+test('what looks unfinished: a loader alone on its line, filler text, a note left for a builder; a word inside a sentence or an honest coming soon is not', () => {
+  const k = (text) => pageProblems({ ...fine, text }).filter((p) => p.kind === 'unfinished').map((p) => p.why);
+  assert.equal(k('Verse Out Loud\nLoading\u2026\nRSS feed').length, 1); assert.equal(k('Prices\nLoading...').length, 1); assert.equal(k('Fetching').length, 1);
+  assert.match(k('Lorem ipsum dolor sit amet')[0], /filler/); assert.match(k('Under construction')[0], /construction/); assert.match(k('Totals: TODO')[0], /TODO/);
+  assert.deepEqual(k('Loading a file is fast here'), [], 'loading inside a sentence'); assert.deepEqual(k('Coming soon: the next pack'), [], 'the store says it honestly');
+  assert.deepEqual(k('Make a todo list'), [], 'a todo list is a feature'); assert.deepEqual(k(fine.text), []);
+});
 test('luminance: white is bright, the void is dark, an unreadable colour is null', () => {
   assert.ok(luminance('rgb(255, 255, 255)') > 0.9); assert.ok(luminance('rgb(5, 5, 5)') < 0.01); assert.equal(luminance('nonsense'), null);
 });
@@ -54,7 +61,10 @@ test('the route: anyone reads the newest report; only the owner writes one', asy
 test('the card section: says when and how it was checked, links each page, escapes, and says so before the first run', () => {
   const r = reportOf([{ path: '/a/', problems: [{ kind: 'script', why: '<b>boom</b>' }] }, { path: '/b/', problems: [] }], { at: '2026-10-30T04:00:00Z', sha: 'abc1234def', how: 'opened in headless Chrome after the deploy' });
   const h = pagesHtml(r, esc, Date.parse('2026-10-30T04:10:00Z'));
-  assert.match(h, /1 of 2 pages need a fix/); assert.match(h, /10 min ago on abc1234/); assert.match(h, /opened in headless Chrome/);
+  assert.match(h, /1 of 2 pages broken/); assert.doesNotMatch(h, /need a fix/, 'all the pages that need a fix are broken: the count is said once');
+  const mixed = reportOf([{ path: '/a/', problems: [{ kind: 'status', why: 'x' }] }, { path: '/b/', problems: [{ kind: 'unwired', why: 'y' }] }, { path: '/c/', problems: [] }], { at: '2026-10-30T04:00:00Z' });
+  assert.match(pagesHtml(mixed, esc), /2 of 3 pages need a fix \(1 broken\)/);
+  assert.match(pagesHtml(reportOf([{ path: '/b/', problems: [{ kind: 'unwired', why: 'y' }] }], { at: '2026-10-30T04:00:00Z' }), esc), /1 of 1 pages need a fix</); assert.match(h, /10 min ago on abc1234/); assert.match(h, /opened in headless Chrome/);
   assert.match(h, /<a href="\/a\/">/); assert.ok(h.includes('&lt;b&gt;boom')); assert.ok(!h.includes('<b>boom'));
   assert.match(pagesHtml(null, esc), /Not checked yet/);
   assert.match(pagesHtml(reportOf([{ path: '/b/', problems: [] }], { at: '2026-10-30T04:00:00Z' }), esc), /all 1 pages fine/);

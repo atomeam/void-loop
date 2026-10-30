@@ -542,13 +542,37 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T07:15:15Z",
+   "subject": "Verse Brain on every page: window.verseBrain reads and writes the one brain"
+  },
+  {
+   "at": "2026-10-30T06:55:05Z",
+   "subject": "Copy the stage change to void.html"
+  },
+  {
+   "at": "2026-10-30T06:54:20Z",
+   "subject": "Rap: Verse listens to a track, scores its own take against it and retunes the take"
+  },
+  {
+   "at": "2026-10-30T06:53:39Z",
+   "subject": "Members: \"Built by @name\" on a member's published page"
+  },
+  {
+   "at": "2026-10-30T06:51:31Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T06:51:28Z",
+   "subject": "converter: M4A and M4R writer (AAC where the browser codes it, ALAC in the .m4a where it does not)"
+  },
   {
    "at": "2026-10-30T06:51:12Z",
    "subject": "Reduced motion switch holds the stage still"
@@ -604,18 +628,6 @@
   {
    "at": "2026-10-30T06:34:27Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:34:09Z",
-   "subject": "Calendar card settles still; tools page card follows the bench"
-  },
-  {
-   "at": "2026-10-30T06:33:37Z",
-   "subject": "MultiVerse perk: the member mark on a paid Verse's stage"
-  },
-  {
-   "at": "2026-10-30T06:28:51Z",
-   "subject": "versus: add drawspace target (online drawing school)"
   }
  ],
  "builders": {
