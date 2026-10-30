@@ -550,8 +550,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:23:14Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:22:22Z",
+   "subject": "Versus queue: rank only rendered rows that are the site itself"
+  },
+  {
    "at": "2026-10-30T04:22:18Z",
    "subject": "Verse fixes its meteors skill: learn to handle \"meteor shower dates\""
+  },
+  {
+   "at": "2026-10-30T04:22:12Z",
+   "subject": "openapi-check names /api/selfcheck as Verse's own"
   },
   {
    "at": "2026-10-30T04:21:45Z",
@@ -570,8 +582,20 @@
    "subject": "Holidays: the page asks Verse's own address, Verse asks Nager.Date"
   },
   {
+   "at": "2026-10-30T04:17:56Z",
+   "subject": "Preload brain-route.js on the brain page, as the preload check asks"
+  },
+  {
    "at": "2026-10-30T04:15:25Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:14:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:14:32Z",
+   "subject": "Brain keeps what it was just told after a reload"
   },
   {
    "at": "2026-10-30T04:13:52Z",
@@ -599,35 +623,11 @@
   },
   {
    "at": "2026-10-30T04:09:53Z",
+   "subject": "Every page stays deep space in a light-mode browser"
+  },
+  {
+   "at": "2026-10-30T04:09:53Z",
    "subject": "One owner across Verse: the owner's signed-in account is the owner on every page"
-  },
-  {
-   "at": "2026-10-30T04:08:21Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:07:55Z",
-   "subject": "Confirm line: pin what #1444 changed in the approval gate, and what it did not"
-  },
-  {
-   "at": "2026-10-30T04:06:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:06:00Z",
-   "subject": "Incidents closed: shard(s) 2 passed on f85055a7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T04:05:57Z",
-   "subject": "deps.json after main came in"
-  },
-  {
-   "at": "2026-10-30T04:05:29Z",
-   "subject": "Verse checks its own pages after each deploy and shows them on the status card"
-  },
-  {
-   "at": "2026-10-30T04:05:14Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
