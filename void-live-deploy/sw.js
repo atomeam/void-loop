@@ -80,16 +80,17 @@ self.addEventListener('fetch', (e) => {
   // to whatever copy the browser's own cache holds. /visit.js keeps its day in the cache (_headers), and /vendor/ files never change.
   // The answer goes back marked no-cache: with the server's 4 hours on it, the tab's memory cache ran the old file on the next reload without
   // asking the worker at all (tools/fresh-scripts.test.mjs).
+  const asked = (res) => { if (!res || !res.ok) return res; const h = new Headers(res.headers); h.set('cache-control', 'no-cache'); return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h }); };
   if (!nav && !code && /\.m?js$/.test(url.pathname) && url.pathname !== '/visit.js') {
-    const asked = (res) => { if (!res || !res.ok) return res; const h = new Headers(res.headers); h.set('cache-control', 'no-cache'); return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h }); };
     e.respondWith(fetch(new Request(req, { cache: 'no-cache' })).catch(() => fetch(new Request(req, { cache: 'force-cache' }))).then(asked).catch(() => Response.error()));
     return;
   }
   if (!nav && !code && !SHELL.includes(url.pathname)) return;
   // skill and card code is re-checked with the server on every load (owner, 2026-10-22: the films card still read "VERSE F   I   LMS"
   // hours after the fix): Cloudflare stretches .js browser caching to 4 hours whatever _headers says, so a plain fetch kept the old file.
-  // An unchanged file costs a 304; a deploy reaches a returning visitor on the next load.
-  e.respondWith(fetch(code ? new Request(req, { cache: 'no-cache' }) : req).then((res) => {
+  // An unchanged file costs a 304; a deploy reaches a returning visitor on the next load. Its answer goes back marked no-cache too, as above
+  // (2026-10-30: a returning tab ran an old /metronome/app.js after a deploy, from its memory cache, until the tab was new).
+  e.respondWith(fetch(code ? new Request(req, { cache: 'no-cache' }) : req).then((r) => (code ? asked(r) : r)).then((res) => {
     // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
     const tool = nav && isTool(url.pathname);
     if (res.ok && (!nav || tool || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(tool ? url.pathname : nav ? '/' : req, copy)); }
