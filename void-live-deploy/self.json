@@ -328,24 +328,24 @@
    "state": "open",
    "date": "",
    "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the…",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
    "from": "claude 2026-10-18"
   },
   {
@@ -536,8 +536,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T18:19:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:17:57Z",
+   "subject": "guide.json after the benchmark rows this PR moved (loan, book, notes-fill counts)"
+  },
+  {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-10-30T18:15:33Z",
+   "subject": "Answer a typed secret-name question from Verse's own names"
+  },
+  {
+   "at": "2026-10-30T18:15:21Z",
+   "subject": "The forge's ledger line says when a fix came from Verse's own probe, so the growth card counts it"
   },
   {
    "at": "2026-10-30T18:14:34Z",
@@ -560,6 +576,10 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-30T18:11:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T18:07:29Z",
    "subject": "Owner calls: GPC and the MCP Server Card go live, the crew chief closes"
   },
@@ -568,52 +588,32 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-30T18:06:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:05:57Z",
+   "subject": "Three checks red on main go green: the team join test, the map and the parity inventories"
+  },
+  {
+   "at": "2026-10-30T18:01:44Z",
+   "subject": "Show whole lines on the wants card and the inventory card"
+  },
+  {
+   "at": "2026-10-30T18:00:55Z",
+   "subject": "The benchmark takes the echo card's 4 s pause out, so its ask is logged in time"
+  },
+  {
    "at": "2026-10-30T17:59:25Z",
    "subject": "Gradient hands its picture to a board"
   },
   {
+   "at": "2026-10-30T17:58:38Z",
+   "subject": "Five benchmark rows match the answers other laps sourced today, and a title search answers with that book"
+  },
+  {
    "at": "2026-10-30T17:56:28Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T17:51:38Z",
-   "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
-  },
-  {
-   "at": "2026-10-30T17:51:38Z",
-   "subject": "MCP skill tools run each skill's own code on the server"
-  },
-  {
-   "at": "2026-10-30T17:49:25Z",
-   "subject": "Money near misses: formulas leaves the page's own compound interest ask"
-  },
-  {
-   "at": "2026-10-30T17:48:01Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-10-30T17:46:38Z",
-   "subject": "Regenerate deps.json and families.json"
-  },
-  {
-   "at": "2026-10-30T17:44:53Z",
-   "subject": "A pasted progress list is no failure on the report card"
-  },
-  {
-   "at": "2026-10-30T17:44:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T17:39:22Z",
-   "subject": "Hints while typing: a one-word hint the typed letters begin comes first"
-  },
-  {
-   "at": "2026-10-30T17:38:34Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T17:33:31Z",
-   "subject": "helper-pr: check the branch merged with main before opening a PR"
   }
  ],
  "builders": {

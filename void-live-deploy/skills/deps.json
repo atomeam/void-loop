@@ -196,7 +196,7 @@
    "skills": 10,
    "direct": 2,
    "dependants": 44,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/astro.js",
