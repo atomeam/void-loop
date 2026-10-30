@@ -1,0 +1,402 @@
+{
+ "attempt": "live",
+ "occasion": 1,
+ "at": "2026-10-30T18:17:02.494Z",
+ "family": "mcp",
+ "url": "https://a-to-mind.com/api/mcp",
+ "client": "void-mcp-probe 1.0.0 (@modelcontextprotocol/sdk)",
+ "server": {
+  "name": "void",
+  "version": "1.3.0"
+ },
+ "tools": [
+  "ask_void",
+  "review_code",
+  "review_code_closer",
+  "moon_phase",
+  "meteor_showers",
+  "drive_time",
+  "skill_constellation",
+  "skill_country",
+  "skill_define",
+  "skill_distance",
+  "skill_eclipse",
+  "skill_joke",
+  "skill_quote",
+  "skill_swaps",
+  "skill_translate",
+  "skill_words",
+  "seo_audit",
+  "readability",
+  "colour_contrast",
+  "skill_health",
+  "skill_discovery"
+ ],
+ "calls": [
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "review_code",
+     "arguments": {
+      "code": "function f(a) { eval(a) }\ntry { f() } catch (e) {}",
+      "lang": "javascript"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "line 1 · risk · eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).\nline 2 · risk · an empty catch hides every error, including real bugs, so failures happen silently. At least log it, or catch only the error you expect.\n\nBasis: pattern checks only, no model. A finding can be a false positive, and finding nothing is not proof the code is right."
+     }
+    ],
+    "structuredContent": {
+     "lang": "javascript",
+     "lines": 2,
+     "findings": [
+      {
+       "line": 1,
+       "kind": "risk",
+       "rule": "eval",
+       "message": "eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python)."
+      },
+      {
+       "line": 2,
+       "kind": "risk",
+       "rule": "empty-catch",
+       "message": "an empty catch hides every error, including real bugs, so failures happen silently. At least log it, or catch only the error you expect."
+      }
+     ],
+     "basis": "patterns",
+     "confidence": "low"
+    }
+   },
+   "ms": 74,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "review_code_closer",
+     "arguments": {
+      "code": "function f(a) { eval(a) }\ntry { f() } catch (e) {}",
+      "lang": "javascript"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "line 1 · risk · eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).\nline 2 · risk · an empty catch hides every error, including real bugs, so failures happen silently. At least log it, or catch only the error you expect.\n\nVerse Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/#pro\n\nBasis: pattern checks only, no model. A finding can be a false positive, and finding nothing is not proof the code is right."
+     }
+    ],
+    "structuredContent": {
+     "findings": [
+      {
+       "line": 1,
+       "kind": "risk",
+       "rule": "eval",
+       "message": "eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python)."
+      },
+      {
+       "line": 2,
+       "kind": "risk",
+       "rule": "empty-catch",
+       "message": "an empty catch hides every error, including real bugs, so failures happen silently. At least log it, or catch only the error you expect."
+      }
+     ],
+     "lang": "javascript",
+     "lines": 2,
+     "ms": 0,
+     "tier": "free",
+     "review": "rules",
+     "upgrade": "Verse Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/#pro",
+     "basis": "patterns",
+     "confidence": "low"
+    }
+   },
+   "ms": 87,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "moon_phase",
+     "arguments": {
+      "date": "2026-10-11T00:00:00Z"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "0% lit, new moon (2026-10-11T00:00:00.000Z)."
+     }
+    ],
+    "structuredContent": {
+     "date": "2026-10-11T00:00:00.000Z",
+     "illuminated": 0.003,
+     "waxing": true,
+     "phase": "new moon"
+    }
+   },
+   "ms": 62,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "meteor_showers",
+     "arguments": {
+      "date": "2026-10-11"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "Active: Orionids (up to 20 an hour, peak in 10 days), Taurids (up to 5 an hour, peak in 25 days). Next peak: Orionids on 2026-10-21."
+     }
+    ],
+    "structuredContent": {
+     "date": "2026-10-11",
+     "active": [
+      {
+       "name": "Orionids",
+       "zhr": 20,
+       "daysToPeak": 10,
+       "note": "fast, from Halley's comet"
+      },
+      {
+       "name": "Taurids",
+       "zhr": 5,
+       "daysToPeak": 25,
+       "note": "few, but slow bright fireballs"
+      }
+     ],
+     "next": {
+      "name": "Orionids",
+      "peak": "2026-10-21",
+      "zhr": 20,
+      "note": "fast, from Halley's comet"
+     }
+    }
+   },
+   "ms": 75,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "ask_void",
+     "arguments": {
+      "ask": "what is the moon"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "The Moon is the only natural satellite of Earth, orbiting the planet in an elliptical path with an average distance of approximately 378,000 kilometers (235,000 mi) [1]. Because of gravitational attraction and tidal forces, the Moon is tidally locked, meaning it always shows the same near side to Earth [1]. It completes a synodic orbit relative to the Earth and Sun every 29.5 days [1].\n\nThe term also refers to *The Moon Is Down*, a 1942 propaganda novel by John Steinbeck regarding military occupation [2], or Moon Moon Sen, an Indian actress and politician [3].\n\nSources:\n- Moon: https://en.wikipedia.org/wiki/Moon\n- The Moon Is Down: https://en.wikipedia.org/wiki/The_Moon_Is_Down\n- Moon Moon Sen: https://en.wikipedia.org/wiki/Moon_Moon_Sen"
+     }
+    ],
+    "structuredContent": {
+     "answer": "The Moon is the only natural satellite of Earth, orbiting the planet in an elliptical path with an average distance of approximately 378,000 kilometers (235,000 mi) [1]. Because of gravitational attraction and tidal forces, the Moon is tidally locked, meaning it always shows the same near side to Earth [1]. It completes a synodic orbit relative to the Earth and Sun every 29.5 days [1].\n\nThe term also refers to *The Moon Is Down*, a 1942 propaganda novel by John Steinbeck regarding military occupation [2], or Moon Moon Sen, an Indian actress and politician [3].",
+     "sources": [
+      {
+       "title": "Moon",
+       "url": "https://en.wikipedia.org/wiki/Moon"
+      },
+      {
+       "title": "The Moon Is Down",
+       "url": "https://en.wikipedia.org/wiki/The_Moon_Is_Down"
+      },
+      {
+       "title": "Moon Moon Sen",
+       "url": "https://en.wikipedia.org/wiki/Moon_Moon_Sen"
+      }
+     ],
+     "at": "2026-10-28T18:24:14.072Z",
+     "cached": true
+    }
+   },
+   "ms": 150,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "skill_swaps",
+     "arguments": {
+      "ask": "substitute for buttermilk"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "Instead of buttermilk\nfor 1 cup\n- 1 tbsp lemon juice or white vinegar, plus milk to make 1 cup; stand 5–10 minutes\nthen: Keep the baking soda the recipe calls for: the acid in the swap is what it reacts with\n- ¾ cup plain yogurt + ¼ cup milk\nthen: Thicker than buttermilk, so add 1–2 tbsp milk if the batter looks stiff\n- 1 cup kefir\nThe usual kitchen equivalents. Any swap changes the taste or texture a little; the first one listed is the closest.\n⏱ set a 10 minute timer or 5 min · 20 min · it starts at once, on the stage\n\nThe swaps skill on its card: https://a-to-mind.com/?q=substitute%20for%20buttermilk"
+     }
+    ],
+    "structuredContent": {
+     "skill": "swaps",
+     "path": "skill_code",
+     "answer": "Instead of buttermilk\nfor 1 cup\n- 1 tbsp lemon juice or white vinegar, plus milk to make 1 cup; stand 5–10 minutes\nthen: Keep the baking soda the recipe calls for: the acid in the swap is what it reacts with\n- ¾ cup plain yogurt + ¼ cup milk\nthen: Thicker than buttermilk, so add 1–2 tbsp milk if the batter looks stiff\n- 1 cup kefir\nThe usual kitchen equivalents. Any swap changes the taste or texture a little; the first one listed is the closest.\n⏱ set a 10 minute timer or 5 min · 20 min · it starts at once, on the stage",
+     "sources": [],
+     "open": "https://a-to-mind.com/?q=substitute%20for%20buttermilk"
+    }
+   },
+   "ms": 78,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "skill_eclipse",
+     "arguments": {
+      "ask": "next eclipse"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "Next eclipses\nworldwide\nAnnular solar eclipse: Saturday, February 6, 2027 (in 99 days).\nPenumbral lunar eclipse: Saturday, February 20, 2027 (in 113 days).\nPenumbral lunar eclipse: Sunday, July 18, 2027 (in 261 days).\nTotal solar eclipse: Monday, August 2, 2027 (in 276 days).\nDates and kinds from a precise almanac, computed ahead of time (instants of greatest eclipse, UTC); whether you can see the moon is computed for your place. For the path of a solar eclipse, check an eclipse map. Tonight's moon\nOpen the sky to see it overhead.\n\nThe eclipse skill on its card: https://a-to-mind.com/?q=next%20eclipse"
+     }
+    ],
+    "structuredContent": {
+     "skill": "eclipse",
+     "path": "skill_code",
+     "answer": "Next eclipses\nworldwide\nAnnular solar eclipse: Saturday, February 6, 2027 (in 99 days).\nPenumbral lunar eclipse: Saturday, February 20, 2027 (in 113 days).\nPenumbral lunar eclipse: Sunday, July 18, 2027 (in 261 days).\nTotal solar eclipse: Monday, August 2, 2027 (in 276 days).\nDates and kinds from a precise almanac, computed ahead of time (instants of greatest eclipse, UTC); whether you can see the moon is computed for your place. For the path of a solar eclipse, check an eclipse map. Tonight's moon\nOpen the sky to see it overhead.",
+     "sources": [],
+     "open": "https://a-to-mind.com/?q=next%20eclipse"
+    }
+   },
+   "ms": 68,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "skill_country",
+     "arguments": {
+      "ask": "capital of australia"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "🇦🇺 Australia\nCapital\nCanberra\n- Population — 27,614,411\n- Currency — Australian dollar\n- Languages — English\n- Area — 7,692,024 km²\n- Continent — Oceania\n- Calling code — +61\n- Drives — on the left\n- Time — 5:17 AM Sat in Canberra, UTC+11:00 (11 h ahead of UTC)\nOceania\nSource: Wikidata\n\nSources:\n- Wikidata: https://www.wikidata.org/wiki/Q408\n\nThe country skill on its card: https://a-to-mind.com/?q=capital%20of%20australia"
+     }
+    ],
+    "structuredContent": {
+     "skill": "country",
+     "path": "skill_code",
+     "answer": "🇦🇺 Australia\nCapital\nCanberra\n- Population — 27,614,411\n- Currency — Australian dollar\n- Languages — English\n- Area — 7,692,024 km²\n- Continent — Oceania\n- Calling code — +61\n- Drives — on the left\n- Time — 5:17 AM Sat in Canberra, UTC+11:00 (11 h ahead of UTC)\nOceania\nSource: Wikidata",
+     "sources": [
+      {
+       "title": "Wikidata",
+       "url": "https://www.wikidata.org/wiki/Q408"
+      }
+     ],
+     "open": "https://a-to-mind.com/?q=capital%20of%20australia"
+    }
+   },
+   "ms": 4787,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "skill_define",
+     "arguments": {
+      "ask": "define serendipity"
+     }
+    }
+   },
+   "response": {
+    "isError": false,
+    "content": [
+     {
+      "type": "text",
+      "text": "serendipity\nNoun\n- The phenomenon of making an unplanned, fortunate discovery through a combination of unexpected circumstances and insightful recognition.\n- An unsought, unintended or unexpected, but fortunate, discovery or learning experience that occurs by accident.\n- The occurrence and development of events by chance in a happy or beneficial way.\nSource: Wiktionary\n\nSources:\n- Wiktionary: https://en.wiktionary.org/wiki/serendipity\n\nThe define skill on its card: https://a-to-mind.com/?q=define%20serendipity"
+     }
+    ],
+    "structuredContent": {
+     "skill": "define",
+     "path": "skill_code",
+     "answer": "serendipity\nNoun\n- The phenomenon of making an unplanned, fortunate discovery through a combination of unexpected circumstances and insightful recognition.\n- An unsought, unintended or unexpected, but fortunate, discovery or learning experience that occurs by accident.\n- The occurrence and development of events by chance in a happy or beneficial way.\nSource: Wiktionary",
+     "sources": [
+      {
+       "title": "Wiktionary",
+       "url": "https://en.wiktionary.org/wiki/serendipity"
+      }
+     ],
+     "open": "https://a-to-mind.com/?q=define%20serendipity"
+    }
+   },
+   "ms": 159,
+   "ok": true
+  },
+  {
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "name": "skill_swaps",
+     "arguments": {
+      "ask": "define serendipity"
+     }
+    }
+   },
+   "response": {
+    "isError": true,
+    "content": [
+     {
+      "type": "text",
+      "text": "That is not an ask the swaps skill takes. Asks like \"what can i swap for buttermilk\", \"substitute for eggs in baking\", \"baking powder substitute\". For anything else, use ask_void."
+     }
+    ]
+   },
+   "ms": 64,
+   "ok": true,
+   "expect": "refused"
+  }
+ ],
+ "ok": true,
+ "error": ""
+}
