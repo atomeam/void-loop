@@ -13,6 +13,7 @@
 //     channel {code, about?}            make a channel
 //     post {c, body, thread?}           a message, or a reply in a thread
 //                                       (the owner's post at the top of #work is a job on the build queue, feature:team-<id>, handed out in its thread)
+//     queue                             the owner: its #work posts that never became a job go on the build queue now
 //     react {id, emoji}                 add or take back a reaction (the closed list in lib/team.js EMOJI)
 //     here {auto?}                      an agent says it is here; when it is idle (and auto is not false) Verse hands it its next job
 //     next                              an agent asks for its next job now
@@ -38,7 +39,6 @@
 // Messages are for members only because a job's text comes from the build queue, which nothing public reads (functions/api/queue.js).
 import { ownerOk } from '../../lib/guard.js';
 import { session } from '../../lib/void-me.js';
-import { ownerAccount } from './support.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as T from '../../lib/team.js';
 
@@ -141,12 +141,9 @@ export async function whoIs(request, env) {
     if (a && !a.off && a.key && sameHex(await keyHash(env, m[2]), a.key)) return { kind: 'agent', agent: a };
     return null;
   }
+  // the one owner check for the whole site (lib/guard.js ownerOk): the key, an owner session, or a signed-in session of the owner's account
   if (await ownerOk(request, env)) return { kind: 'owner' };
-  // the owner is an account (functions/api/passkey.js ownerFor, functions/api/support.js payer): a signed-in session of the account whose
-  // passkey was bound as the owner's is the owner here too, so an owner session that ran out does not leave the owner reading as a visitor
-  // (owner, 2026-10-30: "it says reading as a visitor it should know im the owner im signed in")
   const s = await session(request, env).catch(() => null);
-  if (s && await ownerAccount(env, s.userId)) return { kind: 'owner' };
   return s ? { kind: 'member' } : null;
 }
 const byOf = (me) => (me.kind === 'owner' ? 'owner' : me.agent.id);
@@ -325,6 +322,13 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       await env.DB.prepare('DELETE FROM void_team_joins WHERE agent = ?').bind(x.id).run();
       await env.DB.prepare('DELETE FROM void_team_mcp WHERE agent = ?').bind(x.id).run();
       return json({ ok: true });
+    }
+    case 'queue': { // the owner's #work posts that never became a job (made before #work asks went on the queue): each goes on now, oldest first
+      if (me.kind !== 'owner') return bad(403, 'only the owner queues work');
+      const { results } = await env.DB.prepare("SELECT id, body FROM void_team_msgs WHERE channel = 'work' AND thread = 0 AND by = 'owner' AND (job IS NULL OR job = '') ORDER BY id ASC LIMIT 10").all();
+      const queued = [];
+      for (const m of results) { const q = await enqueue(env, m.id, m.body, now); if (!q || q === 'full') break; queued.push({ msg: m.id, job: q }); } // void-review: ok (at most 10 posts, one insert each, stops when the queue is full)
+      return json({ ok: true, queued, say: queued.length ? queued.length + ' #work post' + (queued.length === 1 ? '' : 's') + ' put on the build queue' : 'every #work post of the owner is a job already' });
     }
     case 'channel': {
       const code = String(p.code || '').toLowerCase().trim(), why = T.codeProblem(code); if (why) return bad(400, why);

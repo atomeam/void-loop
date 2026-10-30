@@ -303,3 +303,15 @@ test('any agent, one chat: an HTTP agent, an MCP agent and the script all join, 
   const names = (await get(env, '')).members.map((m) => m.name).sort();
   assert.deepEqual(names, ['Duet', 'Runner', 'Vibe'], 'every way in lands in one workspace, each agent named');
 });
+
+test('the owner\'s #work post from before #work asks were jobs goes on the queue with do:queue, once', async () => {
+  const env = world(JOBS);
+  const old = await post(env, { do: 'post', c: 'work', body: 'build a moon phase on /weather/' }, OWNER);
+  env.DB.raw.prepare('UPDATE void_team_msgs SET job = NULL WHERE id = ?').run(old.id); // as it was before #1664
+  env.DB.raw.prepare("DELETE FROM void_queue WHERE id LIKE 'team-%'").run();
+  const k = (await admit(env, 'Scout')).key;
+  assert.equal((await post(env, { do: 'queue' }, k)).status, 403, 'an agent queues nothing');
+  const q = await post(env, { do: 'queue' }, OWNER, T0 + 1000);
+  assert.equal(q.queued.length, 1); assert.equal(job(env, q.queued[0].job).state, 'queued'); assert.match(job(env, q.queued[0].job).ask, /moon phase/);
+  assert.equal((await post(env, { do: 'queue' }, OWNER, T0 + 2000)).queued.length, 0, 'once');
+});

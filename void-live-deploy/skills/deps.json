@@ -906,13 +906,6 @@
    "tests": 0
   },
   {
-   "file": "lib/gumroad.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 24,
-   "tests": 4
-  },
-  {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
@@ -920,17 +913,24 @@
    "tests": 6
   },
   {
+   "file": "lib/gumroad.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 21,
+   "tests": 4
+  },
+  {
    "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 18,
    "tests": 2
   },
   {
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 17,
+   "dependants": 14,
    "tests": 3
   },
   {
@@ -1945,7 +1945,7 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 54,
+   "dependants": 52,
    "tests": 10
   },
   {
@@ -1973,14 +1973,14 @@
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 35,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 34,
    "tests": 6
   },
   {
@@ -2183,7 +2183,7 @@
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 10,
+   "dependants": 7,
    "tests": 0
   },
   {
@@ -3707,14 +3707,11 @@
    ],
    "importedBy": [
     "functions/api/film-review.js",
-    "functions/api/films.js",
-    "functions/api/team.js"
+    "functions/api/films.js"
    ],
    "reachedBy": [
     "functions/api/film-views.js",
-    "functions/films/rss.js",
-    "functions/team/join/[code].js",
-    "functions/team/mcp.js"
+    "functions/films/rss.js"
    ]
   },
   "functions/api/tally.js": {
@@ -3728,7 +3725,6 @@
    "imports": [
     "lib/guard.js",
     "lib/void-me.js",
-    "functions/api/support.js",
     "lib/automation-fix.js",
     "lib/team.js"
    ],
@@ -5500,11 +5496,9 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
-    "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
@@ -6650,10 +6644,7 @@
     "functions/api/miss.js",
     "functions/api/review.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/films/rss.js",
-    "functions/team/join/[code].js",
-    "functions/team/mcp.js",
     "lib/paid-access.js",
     "lib/products.js",
     "skills/shop.js"
@@ -7569,10 +7560,8 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
-    "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/approval-gate.js",
@@ -7999,10 +7988,7 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/mcp.js",
-    "functions/api/team.js",
-    "functions/films/rss.js",
-    "functions/team/join/[code].js",
-    "functions/team/mcp.js"
+    "functions/films/rss.js"
    ]
   },
   "lib/palettes.js": {
@@ -8482,10 +8468,7 @@
     "functions/api/mcp.js",
     "functions/api/members.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/films/rss.js",
-    "functions/team/join/[code].js",
-    "functions/team/mcp.js",
     "skills/shop.js"
    ]
   },
@@ -8909,11 +8892,9 @@
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
-    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
-    "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/team-mcp.js"
@@ -9897,10 +9878,7 @@
     "functions/api/members.js",
     "functions/api/review.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/films/rss.js",
-    "functions/team/join/[code].js",
-    "functions/team/mcp.js",
     "lib/paid-access.js",
     "lib/sale-jobs.js",
     "skills/services.js",
