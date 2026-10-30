@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40994770533",
-  "at": "2026-10-30T03:00:00Z",
-  "what": "Verse hardened itself: 5 benchmark ask(s) for backdrop, stl-check.  Why these: backdrop (only 1 benchmark ask); tab (no benchmark ask, evidence tier: checked, 11 failed runs name it); eightball (no benchmark ask, evidence tier: checked); stl-check (no benchmark ask, evidence tier: tested); color (only 2 benchmark asks, evidence tier: checked); echo-disagrees (only 2 benchmark asks, evidence tier: checked). New phrases: “set the stage to a retro server room” now opens backdrop; “stage: an atmospheric study” now opens backdrop; “check my stl file” now opens stl-check; “is my stl watertight” now opens stl-check; “stl checker” now opens stl-check. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; random color.",
-  "try": "set the stage to a retro server room",
+  "run": "41006145158",
+  "at": "2026-10-30T05:03:21Z",
+  "what": "Verse hardened itself: 3 benchmark ask(s) for password, random, boards.  Why these: tab (no benchmark ask, evidence tier: checked, 11 failed runs name it); eightball (no benchmark ask, evidence tier: checked); coin (only 1 benchmark ask, 3 failed runs name it); password (only 2 benchmark asks, 1 failed run name it); random (only 2 benchmark asks, 1 failed run name it); boards (only 2 benchmark asks). New phrases: “password of 20 characters” now opens password; “d20” now opens random; “image boards” now opens boards. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; heads or tails.",
+  "try": "password of 20 characters",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-30T00:56:41Z",
-    "try": "hangman",
-    "closedAt": "2026-10-30T02:59:42Z"
+    "at": "2026-10-30T03:00:00Z",
+    "try": "set the stage to a retro server room",
+    "closedAt": "2026-10-30T05:03:03Z"
   }
 }
