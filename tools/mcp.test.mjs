@@ -184,44 +184,45 @@ test('mcp skills: lib/mcp-skills.js and the names on /code-review/ are in step w
   assert.equal(r.status, 0, r.stderr || r.stdout);
 });
 
-test('mcp skills: each skill tool has a clear description and an ask schema, and calls ask_void\'s own path with the link to the skill', async () => {
+test('mcp skills: each skill tool has a clear description and an ask schema, and runs the skill\'s own code (no model), with the link to its card', async () => {
   const list = (await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/list' })).result.tools;
   for (const s of SKILL_TOOLS) {
     const t = list.find((x) => x.name === s.tool);
     assert.ok(t, s.tool + ' is listed'); assert.deepEqual(t.inputSchema.required, ['ask']); assert.equal(t.inputSchema.properties.ask.type, 'string');
     assert.equal(t.annotations.readOnlyHint, true); assert.equal(t.annotations.destructiveHint, false);
-    assert.match(t.description, new RegExp('"' + s.skill + '" skill[\\s\\S]*answered the way ask_void is'));
+    assert.match(t.description, new RegExp('"' + s.skill + '" skill[\\s\\S]*The skill\'s own code answers it on the server'));
   }
-  const seen = [];
-  const ctx = { answer: async (a) => { seen.push(a); return { status: 200, body: { answer: 'Serendipity: finding something good without looking for it.', sources: [], at: '2026-10-15T00:00:00Z' } }; } };
-  const r = (await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: ' define serendipity ' } } }, ctx)).result;
-  assert.deepEqual(seen, [{ ask: 'define serendipity' }], 'the same call ask_void makes, nothing more');
-  assert.equal(r.isError, false); assert.match(r.content[0].text, /^Serendipity: finding[\s\S]*The define skill itself: https:\/\/a-to-mind\.com\/\?q=define%20serendipity$/);
-  assert.deepEqual([r.structuredContent.skill, r.structuredContent.path], ['define', 'answer_engine']);
-  const viaAsk = (await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'ask_void', arguments: { ask: 'define serendipity' } } }, ctx)).result;
-  assert.equal(viaAsk.structuredContent.answer, r.structuredContent.answer, 'the same answer ask_void gives');
-  assert.equal((await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'x' } } }, ctx)).result.isError, true, 'too short: ask_void\'s own check');
-  assert.equal((await rpc({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'define serendipity' } } })).result.isError, true, 'only the route lends /api/answer');
-  const raw = (await rpc({ jsonrpc: '2.0', id: 6, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'define serendipity', response_type: 'raw_data' } } }, ctx)).result;
-  assert.equal(JSON.parse(raw.content[0].text).skill, 'define');
+  // no ctx.answer at all: a skill tool never calls the answer engine or a model
+  const ctx = { answer: async () => { throw new Error('a skill tool must not call the answer engine'); }, fetch: async () => { throw new Error('swaps needs no network'); } };
+  const r = (await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'skill_swaps', arguments: { ask: ' substitute for buttermilk ' } } }, ctx)).result;
+  assert.equal(r.isError, false, JSON.stringify(r));
+  assert.match(r.content[0].text, /buttermilk[\s\S]*lemon juice or white vinegar[\s\S]*The swaps skill on its card: https:\/\/a-to-mind\.com\/\?q=substitute%20for%20buttermilk$/);
+  assert.deepEqual([r.structuredContent.skill, r.structuredContent.path], ['swaps', 'skill_code']);
+  assert.doesNotMatch(r.content[0].text, /<[a-z]/i, 'plain text, no HTML');
+  const wrong = (await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'skill_swaps', arguments: { ask: 'define serendipity' } } }, ctx)).result;
+  assert.equal(wrong.isError, true); assert.match(wrong.content[0].text, /not an ask the swaps skill takes[\s\S]*use ask_void/, 'refused, not guessed');
+  assert.equal((await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'skill_swaps', arguments: { ask: 'x' } } }, ctx)).result.isError, true, 'too short');
+  const raw = (await rpc({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'skill_swaps', arguments: { ask: 'substitute for buttermilk', response_type: 'raw_data' } } }, ctx)).result;
+  assert.equal(JSON.parse(raw.content[0].text).skill, 'swaps');
 });
 
-test('mcp skills: through the real route, a skill tool reaches /api/answer and comes back with a real answer (no model bound: the open web)', async () => {
-  // only the network is stubbed: the MCP route, lib/mcp.js and /api/answer's own handler run for real
-  const real = globalThis.fetch;
-  globalThis.fetch = async (u) => {
-    const url = String(u);
-    if (url.includes('list=search')) return Response.json({ query: { search: [{ title: 'Canberra' }] } });
-    if (url.includes('/page/summary/')) return Response.json({ title: 'Canberra', extract: 'Canberra is the capital city of Australia.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Canberra' } }, timestamp: '2026-10-01T00:00:00Z' });
+test('mcp skills: through the real route, skill_define runs the define skill\'s own code against Wiktionary, naming Verse in the user-agent', async () => {
+  // only the network is stubbed: the MCP route, lib/mcp.js, lib/mcp-run.js and skills/define.js run for real
+  const real = globalThis.fetch, seen = [];
+  globalThis.fetch = async (u, o = {}) => {
+    const url = String(u); seen.push({ url, ua: new Headers(o.headers || {}).get('user-agent') });
+    if (url.startsWith('https://en.wiktionary.org/api/rest_v1/page/definition/serendipity')) return Response.json({ en: [{ partOfSpeech: 'Noun', definitions: [{ definition: 'An unsought, unintended, and/or unexpected, but fortunate, discovery.' }] }] });
     return new Response('', { status: 404 });
   };
   try {
     const res = await onRequestPost({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'skill_country', arguments: { ask: 'capital of australia' } } }) }), env: {} });
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'define serendipity' } } }) }), env: {} });
     const j = await res.json();
     assert.equal(j.result.isError, false, JSON.stringify(j));
-    assert.match(j.result.content[0].text, /Canberra is the capital city of Australia\.[\s\S]*Sources:\n- Canberra: https:\/\/en\.wikipedia\.org\/wiki\/Canberra[\s\S]*The country skill itself: https:\/\/a-to-mind\.com\/\?q=capital%20of%20australia/);
-    assert.equal(j.result.structuredContent.skill, 'country');
+    assert.match(j.result.content[0].text, /^serendipity\nNoun\n- An unsought, unintended, and\/or unexpected, but fortunate, discovery\.[\s\S]*Sources:\n- Wiktionary: https:\/\/en\.wiktionary\.org\/wiki\/serendipity[\s\S]*The define skill on its card: https:\/\/a-to-mind\.com\/\?q=define%20serendipity$/);
+    assert.deepEqual([j.result.structuredContent.skill, j.result.structuredContent.path], ['define', 'skill_code']);
+    const wikt = seen.filter((x) => x.url.includes('wiktionary.org'));
+    assert.ok(wikt.length, 'the skill reached Wiktionary'); for (const x of wikt) assert.match(x.ua, /^Verse\/1 \(https:\/\/a-to-mind\.com/);
   } finally { globalThis.fetch = real; }
 });
 
