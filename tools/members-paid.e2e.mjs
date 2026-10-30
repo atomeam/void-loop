@@ -7,6 +7,7 @@
 //   3. The idea box: on /members/?pilot (or once LIVE) a member sends an idea; it is queued for the coder and listed under their ideas
 //   4. The MultiVerse mark: the member's stage (/) shows the mark that opens /members/; a free account's stage does not
 //   5. A member's published page (/@name) shows the mark to every visitor; a free account's page does not
+//   6. Built by @name: once Verse builds a member's idea, their published page lists it with a link to the change
 // Run: node --test tools/members-paid.e2e.mjs   (Chromium from VOID_TEST_BROWSER, else Playwright's own)
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -183,5 +184,18 @@ test('the mark on a published page: a member\'s /@name shows it to every visitor
   assert.deepEqual(m, { href: '/members/', text: 'MultiVerse', label: 'Made with MultiVerse: see what members get', shown: true, page: true });
   await p.goto(ORIGIN + '/@e2e_free'); await p.waitForFunction(() => window.__VOID_PAGE__ && window.__VOID_PAGE__.handle === 'e2e_free'); await p.waitForTimeout(800);
   assert.deepEqual(await p.evaluate(() => [!!document.getElementById('void-member'), 'member' in window.__VOID_PAGE__]), [false, false], 'no mark on a free account\'s page');
+  await free.close();
+});
+
+test('Built by @name: the member\'s page lists their idea once Verse built it, with a link to the change; a page with none has no such card', async () => {
+  const job = DB.raw.prepare('SELECT job FROM void_member_ideas WHERE user_id = ?').get(USER).job; // the idea test 3 sent
+  DB.raw.prepare("UPDATE void_queue SET state = 'done', note = ?, updated = ? WHERE id = ?").run('built in https://github.com/atomeam/void-loop/pull/4242', new Date().toISOString(), job);
+  const free = await context(FREE_TOKEN, FREE_USER), p = await free.newPage();
+  const card = () => p.evaluate(() => { const h = [...document.querySelectorAll('h2')].find((e) => /^Built by @/.test(e.textContent)); if (!h) return null; const box = h.parentElement;
+    return { name: h.textContent, items: [...box.querySelectorAll('li')].map((li) => li.textContent), links: [...box.querySelectorAll('a')].map((a) => a.getAttribute('href')), shown: h.getClientRects().length > 0 }; });
+  await p.goto(ORIGIN + '/@e2e_member'); await p.waitForFunction(() => [...document.querySelectorAll('h2')].some((e) => /^Built by @/.test(e.textContent)), null, { timeout: 15000 });
+  assert.deepEqual(await card(), { name: 'Built by @e2e_member', items: [IDEA + ' see the change'], links: ['https://github.com/atomeam/void-loop/pull/4242'], shown: true });
+  await p.goto(ORIGIN + '/@e2e_free'); await p.waitForFunction(() => window.__VOID_PAGE__ && window.__VOID_PAGE__.handle === 'e2e_free'); await p.waitForTimeout(800);
+  assert.equal(await card(), null, 'no Built by card on a page whose owner has no built ideas');
   await free.close();
 });
