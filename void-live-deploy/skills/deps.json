@@ -385,14 +385,14 @@
    "skills": 7,
    "direct": 1,
    "dependants": 10,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/card-share.js",
    "skills": 7,
    "direct": 3,
    "dependants": 9,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/stage-find.js",
@@ -1869,7 +1869,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/duel-rules.js",
