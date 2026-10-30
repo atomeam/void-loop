@@ -23,6 +23,7 @@ test('what counts: a page that does not open stops there; errors, failed files, 
   assert.equal(pageProblems({ ...fine, path: '/llms.txt', toolRow: false }).length, 0, 'a file the sitemap lists is not a page');
   assert.equal(pageProblems({ ...fine, path: '/store/', toolRow: false }).length, 0, 'the store is Verse\'s own page');
   assert.equal(pageProblems({ ...fine, path: '/emojis/', toolRow: false })[0].kind, 'unwired', 'a tool page still needs its row');
+  assert.equal(pageProblems({ ...fine, path: '/films/', toolRow: false }).length, 0, 'Verse\'s own films and podcast are not tools');
   assert.equal(pageProblems({ ...fine, bg: 'rgba(0, 0, 0, 0)' }).length, 0, 'transparent is not light');
   assert.equal(pageProblems({ ...fine, path: '/', text: '↵', controls: 4 }).length, 0, 'the front page is one box to type in: not empty');
 });

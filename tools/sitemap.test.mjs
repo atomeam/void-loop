@@ -5,14 +5,16 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SITE, OUT, pages, xml, locsOf, isItSlugs, lastmod } from './sitemap.mjs';
+import { SITE, OUT, pages, xml, locsOf, isItSlugs, lastmod, floorPages } from './sitemap.mjs';
+import { existsSync } from 'node:fs';
 import { TOOLS } from '../void-live-deploy/lib/toolkit.js';
 import { isIt } from '../void-live-deploy/skills/is-it.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const fixPages = JSON.parse(readFileSync(resolve(root, 'tools/fix-pages.json'), 'utf8'));
 const lab = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/lab/catalog.json'), 'utf8')).filter((e) => e.status !== 'broken').map((e) => e.slug).sort();
-const entries = pages({ fixPages, lab }).map((p) => ({ ...p, lastmod: '2026-10-25' }));
+const floors = floorPages(undefined, (p) => existsSync(resolve(root, 'void-live-deploy' + p + 'index.html')));
+const entries = pages({ fixPages, lab, floors }).map((p) => ({ ...p, lastmod: '2026-10-25' }));
 const locs = entries.map((e) => e.loc);
 
 test('every tool page, the home page, the tower and every fix page, each exactly once', () => {
@@ -21,6 +23,14 @@ test('every tool page, the home page, the tower and every fix page, each exactly
   for (const p of fixPages) assert.ok(locs.includes('/fix/' + p.slug + '/'), p.slug);
   assert.equal(new Set(locs).size, locs.length, 'no page listed twice');
   for (const l of locs) assert.match(l, /^\/(?:[a-z0-9-]+\/?|[a-z0-9-]+\/[a-z0-9-]+\/?|llms\.txt)?$/, l);
+});
+
+test('the tower floors\' pages: each once, only ones whose file exists, never a tool page twice', () => {
+  assert.ok(floors.length > 0 && floors.includes('/cpan/') && floors.includes('/paint/'));
+  for (const p of floors) assert.equal(locs.filter((l) => l === p).length, 1, p);
+  assert.deepEqual(floorPages([{ page: '/a/' }, { page: '/a/' }, { page: '/b/c/' }, { page: 'https://x.com/' }, { page: '/gone/' }, {}], (p) => p !== '/gone/'), ['/a/', '/b/c/']);
+  const dup = pages({ fixPages, floors: ['/color/'] }).map((e) => e.loc);
+  assert.equal(dup.filter((l) => l === '/color/').length, 1, 'a floor page that is a tool is listed once');
 });
 
 test('the lab: the gallery and every experiment the catalog publishes, none that is broken', () => {
