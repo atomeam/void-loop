@@ -30,8 +30,8 @@ const START = Object.freeze({
 /** the target of a versus job: { host, aspect }. "versus:a.com" is a site no floor covers yet; "versus:a.com:speed" is one aspect of a
  * floor Verse lost or did not measure (tools/tower-self.mjs build and judge write both). Pure. */
 export function versusOf(target) {
-  const [, host = '', aspect = ''] = String(target || '').toLowerCase().split(':');
-  return { host: host.replace(/[^a-z0-9.-]/g, ''), aspect: aspect.replace(/[^a-z0-9-]/g, '') };
+  const [, raw = '', aspect = ''] = String(target || '').toLowerCase().split(':'), host = raw.replace(/[^a-z0-9.-]/g, '');
+  return { host: /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(host) ? host : '', aspect: aspect.replace(/[^a-z0-9-]/g, '') }; // a name with no dot ("versus:tower-x") is no site
 }
 
 /** the full spec of a versus job (coordinator, 2026-10-30: Beam gave back two versus jobs, "No spec/template for 'versus' page creation in

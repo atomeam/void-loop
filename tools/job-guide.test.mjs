@@ -12,6 +12,8 @@ const AGENT_ROOT = /your next job \(([a-z-]+), ([^)]*)\): ([\s\S]*?)\nAnswer in 
 test('a versus target names its host and, for a judged row, its aspect', () => {
   assert.deepEqual(versusOf('versus:wheelockweb.net'), { host: 'wheelockweb.net', aspect: '' });
   assert.deepEqual(versusOf('versus:diffuse.tools:speed'), { host: 'diffuse.tools', aspect: 'speed' });
+  assert.deepEqual(versusOf('versus:tower-x'), { host: '', aspect: '' }, 'a name with no dot is no site, so no spec points at https://tower-x/');
+  assert.equal(versusSpec({ target: 'versus:tower-x' }), '');
   assert.deepEqual(versusOf('versus:'), { host: '', aspect: '' });
   assert.equal(versusSpec({ target: 'versus:' }), '', 'no host, no spec');
 });
