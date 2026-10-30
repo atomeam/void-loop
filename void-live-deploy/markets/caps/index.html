@@ -56,7 +56,7 @@
   <p class="note" id="note" role="status">Coins only. Company market caps, the ranking of shares by size, need share counts that no free source gives without a key, so Verse does not list them: for one company’s price use <a href="/markets/">quotes</a>.</p>
   <div class="row"><button type="button" id="share">Share link</button></div>
   <nav class="tk-row" aria-label="More markets"><span class="tk-label">Markets</span><a href="/markets/">Quotes and charts</a><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
-  <p class="srcs">Prices and market caps are CoinGecko’s free public data, kept two to five minutes and shown as they came; they may be delayed. Not financial advice.</p>
+  <p class="srcs">Prices and market caps are CoinGecko’s free public data, kept two to five minutes and shown as they came; when CoinGecko does not answer, prices come from Yahoo Finance’s public feed over CoinGecko’s daily snapshot, as the line above the table says. They may be delayed. Not financial advice.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
@@ -69,7 +69,7 @@
     const spark = (td, vals, up) => { td.replaceChildren(); const d = M.sparkD(vals); if (!d) return; const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), p = document.createElementNS(NS, 'path'); svg.setAttribute('viewBox', '0 0 80 24'); svg.setAttribute('width', '80'); svg.setAttribute('height', '24'); svg.setAttribute('aria-hidden', 'true'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke-width', '1.6'); p.style.stroke = up ? 'var(--up)' : 'var(--down)'; svg.append(p); td.append(svg); };
     const cell = (td, t, cls) => { td.textContent = t; td.className = (td.className.replace(/\b(up|down)\b/g, '') + ' ' + (cls || '')).trim(); };
     const pct = (v) => (v == null ? '–' : (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2) + '%');
-    const short = (v) => { for (const [n, u] of [[1e12, 'T'], [1e9, 'B'], [1e6, 'M']]) if (v >= n) return +(v / n).toPrecision(3) + u; return String(Math.round(v)); };
+    const short = (v) => { for (const [n, u] of [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']]) if (v >= n) return +(v / n).toPrecision(3) + u; return String(Math.round(v)); };
     const usd = (v) => (v == null ? '–' : v >= 1000 ? '$' + Math.round(v).toLocaleString('en-US') : '$' + M.fmtPrice(v));
     function draw() {
       const f = $('q').value.trim().toLowerCase(), shown = rows.filter((r) => !f || r.name.toLowerCase().includes(f) || r.sym.toLowerCase() === f).sort((a, b) => (key === 'name' ? a.name.localeCompare(b.name) : (a[key] ?? -Infinity) - (b[key] ?? -Infinity)) * (key === 'rank' || key === 'name' ? dir : -dir));

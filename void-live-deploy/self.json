@@ -550,8 +550,76 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:16:13Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
    "at": "2026-10-30T07:15:15Z",
    "subject": "Verse Brain on every page: window.verseBrain reads and writes the one brain"
+  },
+  {
+   "at": "2026-10-30T07:13:51Z",
+   "subject": "A published page fits a phone: every card in reach, one under the other"
+  },
+  {
+   "at": "2026-10-30T07:13:27Z",
+   "subject": "members-paid tests the merged PR; two ideas in one millisecond no longer clash"
+  },
+  {
+   "at": "2026-10-30T07:11:33Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T07:10:59Z",
+   "subject": "Jobs: Himalayas categories read as words, not slugs"
+  },
+  {
+   "at": "2026-10-30T07:10:15Z",
+   "subject": "converter: 3GP writer (H.264 pictures, AAC sound where the browser codes it)"
+  },
+  {
+   "at": "2026-10-30T07:07:33Z",
+   "subject": "converter: FLV writer (H.264 pictures, AAC or 16-bit PCM sound)"
+  },
+  {
+   "at": "2026-10-30T07:07:12Z",
+   "subject": "Better at emoji, flights and scores: 4 more ways of asking answered right — new phrases: “random emoji” now opens emoji; “give me an…"
+  },
+  {
+   "at": "2026-10-30T07:06:38Z",
+   "subject": "Lab pages: end blurbs that stopped on a comma or semicolon"
+  },
+  {
+   "at": "2026-10-30T07:05:13Z",
+   "subject": "deps.json: the gate's test reads lib/team.js"
+  },
+  {
+   "at": "2026-10-30T07:03:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T07:03:04Z",
+   "subject": "Reduced motion: the 3D calendar opens at rest and holds still"
+  },
+  {
+   "at": "2026-10-30T07:01:28Z",
+   "subject": "Coin table keeps answering, Wikipedia cached at the edge, plain status card words"
+  },
+  {
+   "at": "2026-10-30T06:59:00Z",
+   "subject": "converter: AVI writer (H.264 pictures, 16-bit PCM sound)"
+  },
+  {
+   "at": "2026-10-30T06:56:27Z",
+   "subject": "Unit converter page: end its cut-off sentence; /tools/ lists a tool built twice once"
+  },
+  {
+   "at": "2026-10-30T06:56:01Z",
+   "subject": "Team gate: read the live pages at once, and time out gh"
+  },
+  {
+   "at": "2026-10-30T06:55:24Z",
+   "subject": "Team jobs are done only when the merged PR did the job"
   },
   {
    "at": "2026-10-30T06:55:05Z",
@@ -560,74 +628,6 @@
   {
    "at": "2026-10-30T06:54:20Z",
    "subject": "Rap: Verse listens to a track, scores its own take against it and retunes the take"
-  },
-  {
-   "at": "2026-10-30T06:53:39Z",
-   "subject": "Members: \"Built by @name\" on a member's published page"
-  },
-  {
-   "at": "2026-10-30T06:51:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:51:28Z",
-   "subject": "converter: M4A and M4R writer (AAC where the browser codes it, ALAC in the .m4a where it does not)"
-  },
-  {
-   "at": "2026-10-30T06:51:12Z",
-   "subject": "Reduced motion switch holds the stage still"
-  },
-  {
-   "at": "2026-10-30T06:50:33Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T06:44:28Z",
-   "subject": "Markets: a coin's price comes from Yahoo when CoinGecko does not answer"
-  },
-  {
-   "at": "2026-10-30T06:43:58Z",
-   "subject": "converter: ALAC (Apple Lossless) writer, its own encoder, in an .m4a"
-  },
-  {
-   "at": "2026-10-30T06:43:47Z",
-   "subject": "team-live: send the reopen calls together"
-  },
-  {
-   "at": "2026-10-30T06:43:04Z",
-   "subject": "Team: work --run hands the whole job to a one-shot agent, so agents keep going with nobody pressing Continue"
-  },
-  {
-   "at": "2026-10-30T06:42:53Z",
-   "subject": "Use the paid tier's name, MultiVerse, where pages still said Verse Pro"
-  },
-  {
-   "at": "2026-10-30T06:42:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:42:28Z",
-   "subject": "Memory orbs stir where Verse remembers, and rest off screen"
-  },
-  {
-   "at": "2026-10-30T06:42:06Z",
-   "subject": "Verse's own coder gets the full Versus spec too"
-  },
-  {
-   "at": "2026-10-30T06:39:47Z",
-   "subject": "Members: the MultiVerse mark on a member's published page"
-  },
-  {
-   "at": "2026-10-30T06:37:42Z",
-   "subject": "Studios take their natural names, and own-parts gets a browser check"
-  },
-  {
-   "at": "2026-10-30T06:35:08Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T06:34:27Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

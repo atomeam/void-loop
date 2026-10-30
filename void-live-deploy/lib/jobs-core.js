@@ -238,6 +238,11 @@ export function cleanApp(a) {
   let url = ''; try { const u = new URL(String(a.url || '')); if (u.protocol === 'https:' || u.protocol === 'http:') url = u.href.slice(0, 500); } catch (_) { /* no link */ }
   return { id: s(a.id, 40) || hid(title + a.company + Date.now() + Math.random()), title, company: s(a.company, 80), url, src: SOURCES[a.src] ? a.src : '', stage: STAGES[a.stage] ? a.stage : 'saved', applied: d(a.applied), next: d(a.next), notes: s(a.notes, 2000), updated: s(a.updated, 30) };
 }
+// The tracker holds a job when a row has its title, company and link, the same test addApp uses to skip a second copy.
+export function isTracked(apps, j) {
+  const r = cleanApp({ title: j && j.title, company: j && j.company, url: j && j.url }); if (!r) return false;
+  return (Array.isArray(apps) ? apps : []).map(cleanApp).some((x) => x && x.title === r.title && x.company === r.company && x.url === r.url);
+}
 const csvCell = (v) => { let s = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
 export const APP_HEAD = ['title', 'company', 'stage', 'applied', 'next_step', 'link', 'source', 'notes', 'updated'];
 /** the tracker as CSV (formula-safe cells). Pure. */

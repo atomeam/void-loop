@@ -2463,11 +2463,7 @@ say('nothing selected to remove');
       const old = el.querySelector('.vtail'); if (old) old.remove();
       const d = document.createElement('div'); d.className = 'src vtail'; d.innerHTML = el._tail; el.appendChild(d);
     }
-    // Small talk lines (no network, nothing on the miss board). Facts are well-established ones; the encouragements are Verse's own.
-    const FUN_FACTS = ['Octopuses have three hearts and blue blood.', 'Honey found in ancient Egyptian tombs was still edible.', 'A day on Venus is longer than its year.',
-      'Bananas are berries; strawberries are not.', 'Wombat droppings are cube-shaped.', 'There are more trees on Earth than stars in the Milky Way, by most estimates.',
-      'The Eiffel Tower grows about 15 cm taller in summer heat.', 'Sharks existed before trees did.', 'A group of flamingos is called a flamboyance.',
-      'Your stomach gets a new lining every few days.', 'Hot water can freeze faster than cold under some conditions (the Mpemba effect).', 'Sea otters hold hands while they sleep so they don’t drift apart.'];
+    // Small talk lines (no network, nothing on the miss board). The encouragements are Verse's own; a fun fact is the fact skill's (skills/fact.js, sourced).
     const CHEERS = ['Start small: one thing, the next ten minutes.', 'You’ve done hard things before. This is one more.', 'Progress counts even when it’s quiet.',
       'Done beats perfect. Ship the first version.', 'Rest is part of the work.', 'The best time was earlier. The second best is now.'];
     const DINNERS = ['tacos', 'a stir-fry', 'pasta with garlic and olive oil', 'a big salad', 'curry', 'homemade pizza', 'soup and bread', 'fried rice', 'burrito bowls', 'grilled cheese and tomato soup'];
@@ -2482,7 +2478,6 @@ say('nothing selected to remove');
       if (/^(?:good\s*night|night\s+night|nighty\s+night|sleep\s+well|bye|goodbye|see\s+you|see\s+ya|later)(?:\s+(?:verse|void))?$/.test(l)) return /night/.test(l) ? 'good night' : 'see you';
       if (/^(?:you'?re|you\s+are)\s+(?:awesome|great|amazing|cool|the\s+best|smart|helpful)$|^(?:i\s+love\s+you|love\s+you|nice|cool|awesome|great\s+job|good\s+job|well\s+done)(?:\s+(?:verse|void))?$/.test(l)) return 'thank you';
       if (/^(?:i'?m|i\s+am)\s+bored$|^(?:entertain\s+me|i'?m\s+so\s+bored)$/.test(l)) return 'try: play othello · play mancala · magic 8 ball · knock knock · tell me a fun fact';
-      if (/^(?:tell\s+me\s+)?(?:a\s+)?(?:fun|random|cool|interesting)\s+fact$|^tell\s+me\s+something\s+(?:interesting|i\s+don'?t\s+know)$/.test(l)) return pick(FUN_FACTS);
       if (/^(?:motivate\s+me|inspire\s+me|i\s+need\s+motivation|give\s+me\s+(?:some\s+)?motivation|encourage\s+me)$/.test(l)) return pick(CHEERS);
       // "games", "play a game", "what games do you have": the 3D game rack (skills/rack.js) answers these now, with the same hint
       { const AS = { cow: 'moo', dog: 'woof', cat: 'meow', pig: 'oink', sheep: 'baa', duck: 'quack', horse: 'neigh', chicken: 'cluck', rooster: 'cock-a-doodle-doo', owl: 'hoot', lion: 'roar', frog: 'ribbit', goat: 'maa', bee: 'buzz', snake: 'hiss', mouse: 'squeak', donkey: 'hee-haw', wolf: 'howl', bird: 'tweet', turkey: 'gobble' };
@@ -5875,7 +5870,7 @@ say('nothing selected to remove');
       // a bare "random color" is the color skill's (skills/color.js shows the swatch, issue #1695): owner marks it, and the caller hands it over once the skills load
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it', owner: /^random\s+colou?r$/.test(l) ? 'color' : null }; }
       if (/^(?:yes\s+or\s+no|should\s+i\s+do\s+it|decide\s+for\s+me)$/.test(l)) return { title: 'Yes or no', big: rnd(2) ? 'Yes' : 'No', note: 'a fair coin decided' };
-      if (/^(?:(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers', eight: true }; }
+      if (/^(?:(?:ask|shake)\s+the\s+(?:magic\s+)?8[\s-]?ball|magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers', eight: true }; }
       if (/^(?:play\s+)?rock[\s,]+paper[\s,]+(?:and\s+)?scissors$/.test(l)) { const R = ['Rock', 'Paper', 'Scissors']; return { title: 'Rock, paper, scissors', big: R[rnd(3)], note: 'Verse’s throw: what was yours?' }; }
       m = l.match(/^(?:pick|give\s+me|choose|generate|think\s+of)\s+(?:me\s+)?a\s+(?:random\s+)?number(?:\s+(?:between|from)\s+(-?\d{1,9})\s+(?:and|to)\s+(-?\d{1,9}))?$|^random\s+number(?:\s+(?:between|from)?\s*(-?\d{1,9})\s+(?:and|to|-)\s+(-?\d{1,9}))?$/);
       if (m) { let a = +(m[1] || m[3] || 1), b = +(m[2] || m[4] || 100); if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely', lo: a, hi: b }; }
@@ -5963,7 +5958,7 @@ say('nothing selected to remove');
         // the Magic 8 Ball is a ball in the void (skills/eightball.js): asking again shakes the same ball for a new answer
         // each ask is an event: the question, a shake, the answer chosen from the 20, shown on the ball, kept in its history
         if (c && c.eight) { await skillsReady; if (stageKinds.eightball) { const ball = Object.values(things).find((t) => t.kind === 'eightball');
-          const q = text.replace(/^\s*(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball\s*[,:?-]*\s*/i, '').trim().slice(0, 140) || null;
+          const q = text.replace(/^\s*(?:(?:ask|shake)\s+the\s+(?:magic\s+)?8[\s-]?ball|magic\s+8[\s-]?ball)\s*[,:?-]*\s*/i, '').trim().slice(0, 140) || null;
           const ev = { q, a: c.big, at: new Date().toISOString(), how: 'asked' };
           if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
           else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });

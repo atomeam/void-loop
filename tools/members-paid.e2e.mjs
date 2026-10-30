@@ -216,3 +216,18 @@ test('a published page on a phone: every card fits the screen width, one under t
   if (process.env.VOID_SHOT) await p.screenshot({ path: process.env.VOID_SHOT });
   await free.close();
 });
+
+test('a published page shares as its own: the served /@name head names the page and its cards, not the Verse home card', async () => {
+  const data = JSON.stringify({ look: { bg: '#050505', glow: '#0b0b10', stars: 'off', fx: 'off' }, cards: [{ name: 'Hello', ask: '', text: 'A test page.' }, { name: 'Notes "to self"', ask: '', text: 'x' }] });
+  DB.raw.prepare('UPDATE void_pages SET data = ? WHERE handle = ?').run(data, 'e2e_member');
+  const free = await context(FREE_TOKEN, FREE_USER), p = await free.newPage();
+  await p.goto(ORIGIN + '/@e2e_member'); await p.waitForFunction(() => window.__VOID_PAGE__ && window.__VOID_PAGE__.handle === 'e2e_member');
+  const head = await p.evaluate(() => { const m = (s, a = 'content') => { const e = document.querySelector(s); return e && e.getAttribute(a); };
+    return { title: document.title, canonical: m('link[rel=canonical]', 'href'), url: m('meta[property="og:url"]'), og: m('meta[property="og:title"]'), tw: m('meta[name="twitter:title"]'),
+      desc: m('meta[property="og:description"]'), twd: m('meta[name="twitter:description"]'), d: m('meta[name="description"]'), image: m('meta[property="og:image"]') }; });
+  const desc = '2 cards: Hello, Notes "to self". A published Verse on A-to-Mind.';
+  assert.deepEqual(head, { title: '@e2e_member · Verse', canonical: 'https://a-to-mind.com/@e2e_member', url: 'https://a-to-mind.com/@e2e_member', og: '@e2e_member’s Verse', tw: '@e2e_member’s Verse',
+    desc, twd: desc, d: desc, image: 'https://a-to-mind.com/og.png' });
+  await p.goto(ORIGIN + '/'); assert.equal(await p.title(), 'Verse · A-to-Mind', 'the home page keeps its own title');
+  await free.close();
+});

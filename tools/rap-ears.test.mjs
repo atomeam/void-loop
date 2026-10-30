@@ -4,9 +4,9 @@
 // are known exactly and the ears can be checked against them.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { listen, loudnessOf, tempoOf, spectraOf, compare, tuneFor, master, averageOf, windowOf, widthOf, isPlain, TUNE0 } from '../void-live-deploy/lib/rap-ears.js';
+import { listen, loudnessOf, tempoOf, spectraOf, compare, tuneFor, master, averageOf, windowOf, widthOf, isPlain, TUNE0, fitMix, mixOf, mixWhy, biquad, filtered, bandsOf } from '../void-live-deploy/lib/rap-ears.js';
 import { learn, shown, baseOf } from '../void-live-deploy/lib/rap-listen.js';
-import { planOf } from '../void-live-deploy/lib/rap-song.js';
+import { planOf, songOf } from '../void-live-deploy/lib/rap-song.js';
 import { settingsOf } from '../void-live-deploy/lib/rap.js';
 
 const RATE = 48000;
@@ -131,4 +131,42 @@ test('the table reads plainly', () => {
   assert.equal(shown(null, 'BPM'), 'not heard');
   assert.equal(shown(-14.234, 'LUFS'), '-14.2 LUFS');
   assert.equal(shown(0.583, ''), '0.58');
+});
+
+test('a bell boosts its own frequency and leaves a far one alone', () => {
+  const sine = (f) => Float32Array.from({ length: RATE }, (_, i) => Math.sin(2 * Math.PI * f * i / RATE)), rms = (x) => { let e = 0; for (let i = RATE / 2; i < x.length; i++) e += x[i] * x[i]; return Math.sqrt(e / (x.length - RATE / 2)); };
+  const c = biquad('peaking', 1000, RATE, { gain: 6, q: 0.7 });
+  assert.ok(Math.abs(20 * Math.log10(rms(filtered(sine(1000), c)) / rms(sine(1000))) - 6) < 0.3);
+  assert.ok(Math.abs(20 * Math.log10(rms(filtered(sine(60), c)) / rms(sine(60)))) < 0.5);
+});
+
+test('the quick band read agrees with the full one', () => {
+  const [L] = drums({}), a = spectraOf(L, RATE).bands, b = bandsOf(L, RATE);
+  for (const k of Object.keys(a)) assert.ok(Math.abs(a[k] - b[k]) < 1.5, k + ': ' + a[k] + ' against ' + b[k]);
+});
+
+test('sub and low end move apart when the gaps pull apart (a thin sub under a heavy low end)', () => {
+  const rows = [{ key: 'bands.sub', diff: -4, own: -10, ref: -6 }, { key: 'bands.low', diff: 6, own: -1, ref: -7 }];
+  const { tune, why } = tuneFor(rows, TUNE0, {});
+  assert.ok(tune.sub > 2 && tune.low < -4, JSON.stringify(tune));
+  assert.ok(why.some((w) => w.startsWith('More sub bass')) && why.some((w) => w.startsWith('Less low end')));
+  assert.deepEqual(mixWhy(TUNE0), []);
+});
+
+test('fitMix masters a mix by ear until it reads like the reference, and leaves the tempo and swing alone', () => {
+  const [L, R] = drums({ level: 0.3, width: 0.1 }), [a, b] = drums({ level: 0.5, width: 0.5 });
+  const ref = mixOf(...master(a, b, RATE, { ...TUNE0, sub: 6, low: -6, mid: 4, air: -5, gain: -3 }), RATE);
+  const out = fitMix(L, R, RATE, ref, { ...TUNE0, bpm: 80, swing: 0.6 });
+  assert.ok(out.score >= 90 && out.score > out.before + 15, out.before + ' to ' + out.score);
+  assert.equal(out.tune.bpm, 80); assert.equal(out.tune.swing, 0.6);
+  const got = compare(mixOf(...master(L, R, RATE, out.tune), RATE), ref).rows;
+  for (const k of ['lufs', 'bands.mid', 'bands.air']) assert.ok(Math.abs(got.find((r) => r.key === k).diff) < 1.5, k);
+});
+
+test('a retune of the master alone shares the rendered mix; a new tempo renders again', () => {
+  const s = settingsOf({ topic: 'the moon', style: 'boom bap' }), r = { title: 'Moon', sections: [{ name: 'Verse 1', bars: ['one two three four', 'five six seven eight'] }] };
+  const song = songOf(r, s, { win: {} }), louder = song.retune({ ...TUNE0, gain: 3 }), faster = song.retune({ ...TUNE0, bpm: 100 });
+  assert.equal(louder.raw(true), song.raw(true));
+  assert.equal(louder.retune({ ...TUNE0, gain: 3, air: 2 }).raw(true), song.raw(true));
+  assert.notEqual(faster.raw(true), song.raw(true));
 });
