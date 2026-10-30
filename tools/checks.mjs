@@ -338,6 +338,7 @@ for (const [name, file] of [
   ['brain-pool', 'brain-pool.test.mjs'], // F459's SPH pool: a tiny network that sets viscosity, stiffness and kernel size beats the best constant setting and random search, follows the slosh, runs in the brain, is kept
   ['brain-map', 'brain-map.test.mjs'], // /brain/'s live map: every light, spark and line of its feed is a real turn, write or change in the brain's state
   ['brain-trace', 'brain-trace.test.mjs'], // the NCA drafts' cellular automaton: its tuned rule holds where the focus was and lets it go, beats the drafts' rule and random search, runs in the brain, is kept
+  ['brain-dream', 'brain-dream.test.mjs'], // the brain's dreams: each fix, job and idea comes from something it read or holds, names it, is posted once by Verse, owner only, inside its limits
   ['brain-everywhere', 'brain-everywhere.test.mjs'], // the brain on every page: /visit.js loads lib/brain-everywhere.js, so a page reads and writes the one brain of the browser, keeps writes when none runs, and starts one only with the lock
   ['brain-host', 'brain-host.test.mjs'], // Verse uses its brain on every page: it hears every ask, learns what you ask next, ranks the ask box by it (measured against newest-first) and answers "what are you thinking?"
   ['brain-glow', 'brain-glow.test.mjs'], // a reload keeps what Verse Brain was just told: its lit ideas come back as bright as they were, dimmed by the time away

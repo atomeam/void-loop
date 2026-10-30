@@ -65,7 +65,9 @@
   #card summary, #saysBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
   #saysBox ul, #didBox ul, #watchBox ul { margin: 4px 0; padding-left: 18px; font-size: 13px; } #saysBox li, #didBox li, #watchBox li { margin: 3px 0; }
   #didBox summary, #watchBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
-  #didBox .undo, #watchBox .undo { font: inherit; font-size: 12px; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; min-height: 30px; margin-left: 6px; cursor: pointer; }
+  #dreamsBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
+  #dreamsBox ul { margin: 4px 0; padding-left: 18px; font-size: 13px; } #dreamsBox li { margin: 6px 0; } #dreamsBox .why, #dreamsBox .src { color: var(--soft); } #dreamsBox .src { display: block; font-size: 12px; }
+  #didBox .undo, #watchBox .undo, #dreamsBox .undo { font: inherit; font-size: 12px; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; min-height: 30px; margin-left: 6px; cursor: pointer; }
   #didBox .ok { color: var(--cool); } #didBox .no { color: var(--hot); }
   #related, #asks { margin-top: 14px; font-size: 13px; }
   .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; color: var(--soft); } .tk-row a { color: var(--soft); }
@@ -170,6 +172,8 @@
 <link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/brain/map.js">
 <link rel="modulepreload" href="/lib/brain-map.js">
+<link rel="modulepreload" href="/brain/dreams.js">
+<link rel="modulepreload" href="/lib/brain-dream.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -203,6 +207,7 @@
   <div id="card"></div>
   <details id="watchBox" open><summary>What it watches: Verse's own health</summary><p class="note">Every 15 minutes while this page or the stage is open, the brain reads the newest runs on main, the open pull requests and the open issues of Verse's public repository, what Verse's will decided to do next, whether its team is taking the jobs, and what Verse changed in the last day, which it writes in plain lines. A break pulls its attention to the skills that answer for it. <button type="button" id="lookBtn" class="undo">Look now</button></p><p class="note" id="next" hidden></p><p class="note" id="wrote" hidden></p><ul id="breaks"><li>It has not looked yet.</li></ul></details>
   <details id="didBox" open><summary>What it did on Verse, and why</summary><p class="note" id="didSum">When more than one skill can answer an ask on the Verse stage, the brain picks which one does, and learns from whether you kept the card. Asks typed on tool pages are heard here too, and so is each break it sees in Verse's health. Each lesson can be undone, and each break marked seen.</p><ul id="did"><li>Nothing yet: ask Verse something on the stage.</li></ul></details>
+  <details id="dreamsBox" open><summary>What it dreams up: fixes, jobs and ideas</summary><p class="note">When you leave it alone, the brain turns what it holds into dreams: a break its watch saw becomes a fix, what Verse's will decided becomes a job, an organ that never gains becomes a fix, and a draft it left out becomes an idea. Each one says what it came from. Every few hours Verse posts the newest one, with its brief, to its team's #work channel, where an agent takes it as a job. Nothing is sent from this page.</p><p class="note" id="dreamsNote">It dreams a few seconds after the page opens.</p><ul id="dreams"><li>Waiting for its first dream.</li></ul></details>
   <details id="saysBox" open><summary>What it says about itself</summary><ul id="says"><li>Waking up.</li></ul></details>
   <noscript><p>Verse Brain runs in your browser with JavaScript; with it off there is no brain to show.</p></noscript>
   <!-- asks -->
@@ -216,6 +221,7 @@
   // the page is whole before this runs: the brain itself is a module its head preloads
   import '/brain/app.js';
   import '/brain/map.js';
+  import '/brain/dreams.js';
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
