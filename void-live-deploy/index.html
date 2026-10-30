@@ -2100,6 +2100,7 @@ function wantsClearStage(lower) {
         things = {};
         selectedId = null;
         save(); render();
+        try { document.dispatchEvent(new CustomEvent('void:stage-cleared')); } catch (_) {} // what lives on the stage outside its record goes too (skills/walker.js: the walking cartoon)
         return { ok: true, detail: 'cleared' };
       }
 
