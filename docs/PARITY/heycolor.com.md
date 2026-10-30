@@ -11,7 +11,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Colour palettes | Colour | have | every site of this kind offers it | void-live-deploy/paint/index.html:128 `<h2>Colour palette</h2>` |
+| Colour palettes | Colour | have | every site of this kind offers it | void-live-deploy/paint/index.html:125 `<h2>Colour palette</h2>` |
 | Generate palettes | Colour | missing | every site of this kind offers it | no sign of it in the source of /paint/ |
 | Hex, RGB and HSL codes | Colour | have | every site of this kind offers it | void-live-deploy/paint/app.js:15 `const rgb = (hex) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseI` |
 | Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "Free Available on you favorite platform Google Play App Store 10000+ amazing pics are waiting for you Follow a" | void-live-deploy/visit.js:16 `var w = navigator.serviceWorker; if (w && w.controller) return;` |
