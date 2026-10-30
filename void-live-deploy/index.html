@@ -3999,9 +3999,10 @@ say('nothing selected to remove');
       // "8 percent tax on 49.99", "sales tax of 7% on $120": the tax and the total
       m = t.match(/^(?:(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:sales\s+)?tax\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$|^(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$/);
       if (m) { const r = +(m[1] || m[3]), amt = +(m[2] || m[4]), tax = Math.round(amt * r) / 100; return { value: '$' + (amt + tax).toFixed(2), note: r + '% tax on $' + amt.toFixed(2) + ' is $' + tax.toFixed(2) + ' · total $' + (amt + tax).toFixed(2) }; }
-      // "0.75 as a fraction": the simplest fraction within a tiny tolerance (continued fractions)
-      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$/);
-      if (m) { const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
+      // "0.75 as a fraction", "decimal to fraction 0.75" (2026-10-30: this one fell to an article), "convert decimal 0.75 to fraction",
+      // "0.75 decimal to fraction": the simplest fraction within a tiny tolerance (continued fractions)
+      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$|^(?:convert\s+)?(?:a\s+|the\s+)?decimal\s+(-?\d*\.\d+|-?\d+)\s+(?:to|into)\s+(?:a\s+)?fraction$|^(?:convert\s+)?(?:a\s+)?decimal\s+(?:to|into)\s+(?:a\s+)?fraction:?\s+(-?\d*\.\d+|-?\d+)$|^(-?\d*\.\d+|-?\d+)\s+decimal\s+(?:to|into)\s+(?:a\s+)?fraction$/);
+      if (m) { m[1] = m[1] ?? m[2] ?? m[3] ?? m[4]; const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
         for (let i = 0; i < 32; i++) { const a = Math.floor(b); [h1, h0] = [a * h1 + h0, h1]; [k1, k0] = [a * k1 + k0, k1]; if (Math.abs(x - h1 / k1) < 1e-9 || b === a) break; b = 1 / (b - a); }
         return { value: h1 + '/' + k1, note: m[1] + ' = ' + h1 + '/' + k1 }; }
       // "average of 4 8 15 16", "mean of 2, 4, 9", "median of 3 9 4 7": a list of numbers
@@ -5775,6 +5776,10 @@ say('nothing selected to remove');
         .replace(/^(?:what(?:'s|\s+is)\s+)?my\s+age\s+in\s+(days|weeks|months)\s+(?:if\s+i\s+was\s+)?born\s+(?:on\s+|in\s+)?(.+?)\s*[?.!]*$/i, 'how many $1 old am i if i was born on $2')
         // "what day was i born if my birthday is july 4 1990", "what day of the week was i born on 3/14/2001": the weekday of that date
         .replace(/^(?:what|which)\s+day\s+(?:of\s+the\s+week\s+)?was\s+i\s+born(?:\s+on|\s+if\s+(?:my\s+birthday\s+is|i\s+was\s+born\s+on)|\s*,?\s*(?:my\s+)?birthday\s+(?:is\s+)?)\s+(.*\d{4})\s*[?.!]*$/i, 'what day of the week was $1')
+        // "what day is 2026-10-30", "2026-10-30 day of week", a bare "2026-10-30" (2026-10-30: read as the sum 2026 − 10 − 30 = 1986): the weekday of that date
+        .replace(/^(?:((?:what|which)\s+day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{4})-(\d{1,2})-(\d{1,2})|(\d{4})-(\d{1,2})-(\d{1,2})(?:\s+(?:day\s+of\s+(?:the\s+)?week|weekday))?)\s*[?.!]*$/i, (all, a, y1, m1, d1, y2, m2, d2) => {
+          const mo = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'][+(m1 || m2) - 1];
+          return mo ? (a || 'what day of the week is ') + mo + ' ' + +(d1 || d2) + ' ' + (y1 || y2) : all; })
         // "what day of the week was 12 october 1999": the day first, read as "october 12 1999"
         .replace(/^((?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([a-z]{3,}),?(\s+\d{4})?\s*[?.!]*$/i, (_, a, d, mo, y) => a + mo + ' ' + d + (y || ''))
         .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')
