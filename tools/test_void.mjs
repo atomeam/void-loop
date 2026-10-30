@@ -7814,6 +7814,13 @@ try {
     check('Site Test card (asked by Verse): a heat map ranks the families least stable first, the failing family hottest with the longest bar, its name escaped',
       !!heat && heat.map((h) => h.fam).join('|') === 'Time|Words <b>' && heat[0].heat === 1 && /1 failing · 1 of 2 unsure/.test(heat[0].text) && /1 of 1 unsure/.test(heat[1].text) && parseFloat(heat[0].bar) > 0,
       JSON.stringify(heat));
+    // Verse's own parts by name (skills/own-parts.js; owner, 2026-10-18: "Show me the Site Test card" fetched a Visa test card)
+    let answered = 0; await S.ctx.route(/\/api\/answer/, (rt) => { answered++; return rt.fulfill(json({ answer: 'a web answer', sources: [] })); });
+    await S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-candidates'); if (l) l.remove(); }).catch(() => null);
+    await S.ask('show me the site test card', 1500);
+    const own = await until(async () => S.p.$eval('.vpage.on', (p) => (p.querySelector('.st-candidates') ? { text: p.textContent.slice(0, 80) } : null)).catch(() => null), 6000);
+    check('own parts: "show me the site test card" opens Verse\'s own Site Test card ("What to test next"), not a web answer about a test card',
+      !!own && !answered && !S.errors.length, JSON.stringify({ own, answered, errors: S.errors }));
     await S.ctx.close(); }
   // Verse's incident asks (asked by Verse): a stability sparkline links to its family's incident logs; the autopsy card wears the Art Forge's warning style lock, lists the
   // Go-against-V01D log with a replay ask; a numbers card takes the blueprint frame from its family

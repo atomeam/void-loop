@@ -6991,5 +6991,11 @@
   {"ask": "any good podcasts about space", "want": "skill:podcast-search"},
   {"ask": "What got built", "want": "skill:growth"},
   {"ask": "what got built today", "want": "skill:growth"},
-  {"ask": "what got shipped recently", "want": "skill:growth"}
+  {"ask": "what got shipped recently", "want": "skill:growth"},
+  {"ask": "cpan testers results", "want": "skill:studios"},
+  {"ask": "paint by numbers studio", "want": "skill:studios"},
+  {"ask": "score my tournament", "want": "skill:studios"},
+  {"ask": "dog emoji combos", "want": "skill:emoji-combos"},
+  {"ask": "emoji combos for christmas", "want": "skill:emoji-combos"},
+  {"ask": "sad kaomoji", "want": "skill:emoji-combos"}
 ]
