@@ -114,6 +114,7 @@ for (const [name, file] of [
   ['rap-piano', 'rap-piano.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
+  ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
   ['fanfic-hits', 'fanfic-hits.test.mjs'],
   ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
   ['team', 'team.test.mjs'],
