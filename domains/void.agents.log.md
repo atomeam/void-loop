@@ -1163,4 +1163,5 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T05:35:19Z | claude | grow | Resize image page card: See it as a card on the stage shows the resizer at the size on the form (never the picture), and the stage card opens the page at that size
 2026-10-30T05:47:12Z | claude | fix | Tools card: the stage card now lists every page /tools/ lists, from one shared list, so the 11 pages it missed (code review, books, films, lab and more) are on it
 2026-10-30T05:51:37Z | claude | fix | Checks: the files check now parses the scripts written inside each page, so a broken inline script like the one that took News down fails CI before it ships
+2026-10-30T06:05:40Z | claude | build | /emoji-combos/ assimilates emojicombos.com: tag search over 185 combos, copy, collect, your own, fancy text, dot art from a picture, a stage card, wired into hand-off
 2026-10-30T06:00:59Z | claude | fix | News: CBC refuses every request from a server, so CBS News takes its place and all 10 top-story sources load

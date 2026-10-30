@@ -86,6 +86,7 @@
       <a id="send-translate" href="/translate/?q=fire&amp;to=es">Translate its name</a>
       <a id="send-base64" href="/base64/?t=%F0%9F%94%A5">Encode it in Base64</a>
       <a id="send-gist" href="/g/?text=%F0%9F%94%A5%20fire&amp;name=emoji.txt">Save it in a gist</a>
+      <a id="send-combos" href="/emoji-combos/?q=fire">Find combos with it</a>
       <a id="send-stage" href="/?ask=emoji%20fire">See it on the stage</a>
     </div>
     <p class="note">These follow the emoji you picked: tap another on the wall and every link here changes with it.</p>
@@ -283,7 +284,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/emojis/?q=heart">Every heart</a><a href="/emojis/?q=cat">Cats</a><a href="/emojis/?q=hand">Hands</a><a href="/emojis/?q=star">Stars</a><a href="/emojis/?pick=%F0%9F%94%A5">The fire emoji</a><a href="/emojis/?pick=%E2%9D%A4%EF%B8%8F">The red heart</a></nav>
 <!-- /asks -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/translate/">Translate</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emoji-combos/">Emoji combos</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/translate/">Translate</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 </main>
 <script type="module">
   import { EMOJI } from '/lib/emoji.js';
@@ -311,6 +312,8 @@
     $('send-translate').href = '/translate/?q=' + nm + '&to=es';
     $('send-base64').href = '/base64/?t=' + enc;
     $('send-gist').href = '/g/?text=' + encodeURIComponent(c + ' ' + name) + '&name=emoji.txt';
+    // the combos it goes in (/emoji-combos/): searched by the last word of its name ("grinning cat" -> cat, "red heart" -> heart)
+    $('send-combos').href = '/emoji-combos/?q=' + encodeURIComponent(String(name).split(' ').filter((w) => !/^(?:face|with|and|of|the|button)$/.test(w)).pop() || name);
     $('send-stage').href = '/?ask=emoji%20' + nm;
   }
 

@@ -201,6 +201,11 @@ export const SPECS = {
     t.ok(/Live: Moo [\d.]+.*pass/.test(await t.text('#livestatus')), 'the live feed reads Moo\'s real CPAN Testers totals: ' + (await t.text('#livestatus')).slice(0, 90));
     await t.click('#exportjson'); t.ok(/"fail": 1/.test(await t.p.locator('body').innerText()), 'the export counts 1 fail');
   },
+  '/emoji-combos/': async (t) => {
+    await t.fill('#q', 'cat'); await t.p.waitForTimeout(400); t.ok(/\d+ combos for cat/.test(await t.p.locator('main').innerText()), 'a search for cat lists cat combos');
+    await t.click('#results .combo button[data-act="collect"] >> nth=0'); await t.p.waitForTimeout(200); t.ok((await t.p.inputValue('#build')).length > 0, 'collect puts the combo in the box');
+    await t.share('#share');
+  },
   '/emojis/': async (t) => { await t.fill('#q', 'heart'); await t.p.waitForTimeout(400); t.ok(/heart/i.test(await t.p.locator('main').innerText()), 'a search for heart lists hearts'); },
   '/fantasy/': async (t) => { await t.click('#example'); await t.p.waitForTimeout(500); t.ok((await t.text('#out')).length > 80 && !/Open or paste a sheet/.test(await t.text('#out')), 'the example sheet is read into a board'); await t.share('#share'); },
   '/flights/': async (t) => {
