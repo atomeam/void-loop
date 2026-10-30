@@ -542,13 +542,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T05:01:23Z",
+   "subject": "News: the stage card shows the topic searched or the Technology section"
+  },
+  {
+   "at": "2026-10-30T05:00:03Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T04:58:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T04:53:12Z",
    "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
@@ -568,6 +580,10 @@
   {
    "at": "2026-10-30T04:50:39Z",
    "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
+  },
+  {
+   "at": "2026-10-30T04:49:53Z",
+   "subject": "converter: write FLAC, OGG and OPUS sound on the device"
   },
   {
    "at": "2026-10-30T04:49:43Z",
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T04:38:43Z",
    "subject": "Verse Brain keeps the words just told when it is full"
-  },
-  {
-   "at": "2026-10-30T04:38:17Z",
-   "subject": "One owner: /team/ shows this account's Verse id from the server too, with a Copy button"
-  },
-  {
-   "at": "2026-10-30T04:37:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:36:18Z",
-   "subject": "Book holds still at 1920 and the claims list saves before the clip check"
-  },
-  {
-   "at": "2026-10-30T04:36:04Z",
-   "subject": "families.json after the 5 new benchmark asks"
   }
  ],
  "builders": {
