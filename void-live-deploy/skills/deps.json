@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1083,
+ "counted": 1084,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 72,
+   "dependants": 71,
    "tests": 8
   },
   {
@@ -32,16 +32,16 @@
   },
   {
    "file": "lib/placement.js",
-   "skills": 29,
+   "skills": 28,
    "direct": 1,
-   "dependants": 32,
+   "dependants": 31,
    "tests": 1
   },
   {
-   "file": "lib/panel-fit.js",
-   "skills": 24,
-   "direct": 1,
-   "dependants": 25,
+   "file": "lib/load-later.js",
+   "skills": 27,
+   "direct": 23,
+   "dependants": 28,
    "tests": 1
   },
   {
@@ -64,6 +64,13 @@
    "direct": 0,
    "dependants": 83,
    "tests": 5
+  },
+  {
+   "file": "lib/panel-fit.js",
+   "skills": 23,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 1
   },
   {
    "file": "lib/motion-throttle.js",
@@ -598,13 +605,6 @@
    "tests": 1
   },
   {
-   "file": "lib/field-resonance.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
    "file": "lib/markdown.js",
    "skills": 4,
    "direct": 1,
@@ -623,6 +623,13 @@
    "skills": 4,
    "direct": 1,
    "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/field-resonance.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 11,
    "tests": 1
   },
   {
@@ -1287,7 +1294,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 20,
    "tests": 2
   },
   {
@@ -1298,122 +1305,115 @@
    "tests": 4
   },
   {
-   "file": "lib/brain-creature.js",
+   "file": "lib/image-gen.js",
    "skills": 1,
    "direct": 0,
    "dependants": 9,
+   "tests": 2
+  },
+  {
+   "file": "lib/brain-creature.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-current.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-dialogue.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-formula.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-gardener.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-grains.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-grower.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-hearing.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-mind.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 2
   },
   {
    "file": "lib/brain-organs.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 2
   },
   {
    "file": "lib/brain-painter.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-pool.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-route.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 3
   },
   {
    "file": "lib/brain-synapses.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-trace.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 1
   },
   {
    "file": "lib/brain-watch.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9,
-   "tests": 2
-  },
-  {
-   "file": "lib/image-gen.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9,
+   "dependants": 8,
    "tests": 2
   },
   {
@@ -1512,7 +1512,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 4,
-   "tests": 22
+   "tests": 21
   },
   {
    "file": "lib/converter.js",
@@ -1582,7 +1582,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 3,
-   "tests": 6
+   "tests": 5
   },
   {
    "file": "lib/brain-store.js",
@@ -1725,6 +1725,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-strings.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/rap-video.js",
    "skills": 1,
    "direct": 0,
@@ -1764,7 +1771,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/avatar.js",
@@ -4616,7 +4623,8 @@
    "imports": [
     "lib/compose.js",
     "lib/rap-piano.js",
-    "lib/rap-kit.js"
+    "lib/rap-kit.js",
+    "lib/rap-strings.js"
    ],
    "importedBy": [
     "skills/music.js"
@@ -5193,7 +5201,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5213,30 +5220,10 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js"
-   ]
-  },
-  "lib/brain-dialogue.js": {
-   "imports": [
-    "lib/brain-organs.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-host.js",
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "lib/brain-dialogue.js",
-    "lib/brain-everywhere.js",
-    "lib/brain-glow.js",
-    "lib/brain-route.js",
-    "skills/verse-brain.js"
    ]
   },
   "lib/brain-dream.js": {
@@ -5282,7 +5269,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5301,7 +5287,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5332,7 +5317,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5351,7 +5335,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5371,7 +5354,6 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5387,7 +5369,6 @@
     "lib/brain-route.js",
     "lib/brain-watch.js",
     "lib/brain-everywhere.js",
-    "lib/brain-dialogue.js",
     "skills/status.js"
    ],
    "importedBy": [
@@ -5417,7 +5398,6 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
-    "lib/brain-dialogue.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
    ],
@@ -5426,7 +5406,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5451,11 +5430,9 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
-    "lib/brain-dialogue.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-mind.js",
     "lib/brain-route.js",
     "lib/brain.js"
@@ -5480,7 +5457,6 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5498,7 +5474,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5515,7 +5490,6 @@
     "lib/brain-mind.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-organs.js",
@@ -5544,7 +5518,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5564,7 +5537,6 @@
     "lib/brain.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -5579,7 +5551,6 @@
     "lib/brain-mind.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-organs.js",
@@ -5595,7 +5566,6 @@
    "importedBy": [
     "lib/brain-creature.js",
     "lib/brain-current.js",
-    "lib/brain-dialogue.js",
     "lib/brain-field.js",
     "lib/brain-formula.js",
     "lib/brain-gardener.js",
@@ -5634,8 +5604,7 @@
     "lib/brain-current.js",
     "lib/brain-grains.js",
     "lib/brain-pool.js",
-    "lib/brain-trace.js",
-    "lib/brain-dialogue.js"
+    "lib/brain-trace.js"
    ],
    "importedBy": [
     "lib/brain-glow.js",
@@ -6942,7 +6911,6 @@
     "skills/feud.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-field.js",
     "lib/brain-glow.js",
@@ -7004,7 +6972,6 @@
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
-    "lib/brain-dialogue.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
     "lib/brain-host.js",
@@ -8219,6 +8186,41 @@
     "skills/tilt-mode.js",
     "skills/vector-field-mind.js",
     "skills/verse-brain.js"
+   ]
+  },
+  "lib/load-later.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/aggravation.js",
+    "skills/aurora-tonight.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/constellation.js",
+    "skills/eclipse.js",
+    "skills/fireworks.js",
+    "skills/go.js",
+    "skills/mancala.js",
+    "skills/meteors.js",
+    "skills/monopoly.js",
+    "skills/moontonight.js",
+    "skills/night-sky.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/ringer.js",
+    "skills/sky.js",
+    "skills/sorry.js",
+    "skills/suntimes.js",
+    "skills/tictactoe.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js",
+    "skills/rebuild-map.js",
+    "skills/sky-card.js",
+    "skills/time.js"
    ]
   },
   "lib/local-ask.js": {
@@ -9446,7 +9448,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -9693,7 +9694,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -10210,6 +10210,15 @@
    ],
    "importedBy": [
     "skills/rap.js"
+   ]
+  },
+  "lib/rap-strings.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/arrange.js"
+   ],
+   "reachedBy": [
+    "skills/music.js"
    ]
   },
   "lib/rap-video.js": {
@@ -12924,6 +12933,7 @@
   },
   "skills/aggravation.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/lift3d.js",
     "skills/sfx.js"
    ],
@@ -13022,10 +13032,11 @@
   },
   "skills/aurora-tonight.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -13077,6 +13088,7 @@
   },
   "skills/battleship.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/battleship-rules.js",
     "skills/lift3d.js",
     "skills/game-rules-line.js"
@@ -13235,9 +13247,10 @@
   },
   "skills/checkers.js": {
    "imports": [
+    "lib/load-later.js",
+    "skills/checkers-rules.js",
     "skills/game-level.js",
     "skills/side-card.js",
-    "skills/checkers-rules.js",
     "lib/match-history.js"
    ],
    "importedBy": [
@@ -13262,9 +13275,10 @@
   },
   "skills/chess.js": {
    "imports": [
+    "lib/load-later.js",
+    "skills/chess-rules.js",
     "skills/game-level.js",
     "skills/side-card.js",
-    "skills/chess-rules.js",
     "lib/match-history.js"
    ],
    "importedBy": [
@@ -13322,9 +13336,10 @@
   },
   "skills/connect4.js": {
    "imports": [
-    "skills/game-level.js",
+    "lib/load-later.js",
     "skills/connect4-rules.js",
     "skills/lift3d.js",
+    "skills/game-level.js",
     "lib/arena-say.js",
     "skills/game-rules-line.js"
    ],
@@ -13340,10 +13355,11 @@
   },
   "skills/constellation.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
     "lib/where.js",
-    "lib/skyask.js",
     "lib/stars.js"
    ],
    "importedBy": [
@@ -13623,11 +13639,12 @@
   },
   "skills/eclipse.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/eclipses.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -13641,7 +13658,7 @@
   },
   "skills/eightball.js": {
    "imports": [
-    "skills/side-card.js"
+    "skills/grip.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -13807,6 +13824,7 @@
   },
   "skills/fireworks.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/fireworks-rules.js",
     "skills/lift3d.js"
    ],
@@ -14017,6 +14035,7 @@
   },
   "skills/go.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/side-card.js",
     "lib/go-ai.js"
    ],
@@ -14056,6 +14075,38 @@
     "lib/gradient.js"
    ],
    "importedBy": []
+  },
+  "skills/grip.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/eightball.js",
+    "skills/side-card.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/aggravation.js",
+    "skills/arcade.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/go.js",
+    "skills/lift3d.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/rebuild-map.js",
+    "skills/ringer.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ]
   },
   "skills/group.js": {
    "imports": [
@@ -14289,7 +14340,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -14602,6 +14652,7 @@
   },
   "skills/mancala.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/game-level.js",
     "skills/lift3d.js"
    ],
@@ -14697,11 +14748,12 @@
   },
   "skills/meteors.js": {
    "imports": [
-    "lib/astro.js",
+    "lib/load-later.js",
     "lib/showers.js",
+    "lib/skyask.js",
+    "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -15025,6 +15077,7 @@
   },
   "skills/monopoly.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/monopoly-rules.js",
     "skills/lift3d.js",
     "lib/table-tools.js",
@@ -15050,10 +15103,11 @@
   },
   "skills/moontonight.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -15139,6 +15193,7 @@
   },
   "skills/night-sky.js": {
    "imports": [
+    "lib/load-later.js",
     "lib/sky-math.js"
    ],
    "importedBy": [
@@ -15225,6 +15280,7 @@
   },
   "skills/othello.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/game-level.js",
     "skills/lift3d.js",
     "lib/arena-say.js",
@@ -15383,6 +15439,7 @@
   },
   "skills/poker.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/poker-rules.js",
     "skills/lift3d.js"
    ],
@@ -15531,9 +15588,10 @@
   },
   "skills/rack.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/parody.js",
     "skills/side-card.js",
     "skills/game-level.js",
-    "lib/parody.js",
     "lib/ladder.js"
    ],
    "importedBy": [
@@ -15663,6 +15721,7 @@
   },
   "skills/ringer.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/ringer-rules.js",
     "skills/figures.js",
     "skills/lift3d.js",
@@ -15825,7 +15884,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -15910,13 +15968,13 @@
    "imports": [
     "skills/howto.js",
     "skills/sfx.js",
-    "lib/panel-fit.js"
+    "lib/panel-fit.js",
+    "skills/grip.js"
    ],
    "importedBy": [
     "skills/arcade.js",
     "skills/checkers.js",
     "skills/chess.js",
-    "skills/eightball.js",
     "skills/go.js",
     "skills/lift3d.js",
     "skills/rack.js"
@@ -15987,6 +16045,7 @@
   },
   "skills/sky.js": {
    "imports": [
+    "lib/load-later.js",
     "lib/astro.js",
     "lib/skyfacts.js",
     "lib/where.js",
@@ -16048,9 +16107,10 @@
   },
   "skills/sorry.js": {
    "imports": [
+    "lib/load-later.js",
+    "skills/sorry-rules.js",
     "skills/lift3d.js",
-    "skills/sfx.js",
-    "skills/sorry-rules.js"
+    "skills/sfx.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -16273,10 +16333,11 @@
   },
   "skills/suntimes.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -16416,6 +16477,7 @@
   },
   "skills/tictactoe.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/game-level.js",
     "skills/lift3d.js",
     "skills/game-rules-line.js"

@@ -112,6 +112,7 @@ for (const [name, file] of [
   ['rap-ears', 'rap-ears.test.mjs'],
   ['rap-kit', 'rap-kit.test.mjs'],
   ['rap-piano', 'rap-piano.test.mjs'],
+  ['rap-strings', 'rap-strings.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
   ['fanfic-hits', 'fanfic-hits.test.mjs'],

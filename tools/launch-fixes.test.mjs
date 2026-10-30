@@ -14,6 +14,7 @@ const read = (p) => readFileSync(resolve(root, p), 'utf8');
 
 test('1. play voidquest opens VoidQuest, not "I don\'t know this yet"', async () => {
   const mono = await import('../void-live-deploy/skills/monopoly.js');
+  await mono.ready(); // the property-game rules load with the first board (lib/load-later.js); spaceName and themeText read them
   for (const ask of ['play voidquest', 'Play VoidQuest!', 'play void quest', "let's play voidquest", 'voidquest', 'play solar quest', 'start a game of voidquest', 'play voidquest against void'])
     assert.deepEqual(mono.monopolyOf(ask), { kind: 'game', theme: 'voidquest' }, ask);
   assert.deepEqual(mono.monopolyOf('play monopoly'), { kind: 'game' }, 'the property game keeps its own board');

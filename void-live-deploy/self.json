@@ -550,8 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T16:59:04Z",
+   "at": "2026-10-30T16:51:10Z",
+   "subject": "Mark the helper names the review takes for undeclared"
+  },
+  {
+   "at": "2026-10-30T16:50:06Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T16:49:26Z",
+   "subject": "Load game and sky helpers on first use, not with the routing order"
   },
   {
    "at": "2026-10-30T16:48:19Z",
@@ -566,16 +574,8 @@
    "subject": "Incident: the browser suite failed on 3bf3d447 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-30T16:43:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-30T16:43:01Z",
    "subject": "Scores: a game's flights link opens the flights page on its ground's city and day"
-  },
-  {
-   "at": "2026-10-30T16:36:38Z",
-   "subject": "brain: the conversation orb on the brain map, whole asks and answers in its note (no ellipsis cut)"
   },
   {
    "at": "2026-10-30T16:35:48Z",
@@ -607,10 +607,6 @@
   },
   {
    "at": "2026-10-30T16:29:05Z",
-   "subject": "brain: organ 23, Dialogue, the conversation orb keeps this visitor's asks and Verse's answers on their device"
-  },
-  {
-   "at": "2026-10-30T16:29:05Z",
    "subject": "Open the UUID card for \"uuid generator\" and convert \"timestamp converter 1700000000\""
   },
   {
@@ -628,6 +624,10 @@
   {
    "at": "2026-10-30T16:26:00Z",
    "subject": "Close the video dollar-cap race; The stage reads a copied chat right"
+  },
+  {
+   "at": "2026-10-30T16:24:34Z",
+   "subject": "Read pasted chats and reports, never a keys refusal or a guessed secret name"
   }
  ],
  "builders": {
