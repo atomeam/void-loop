@@ -6946,7 +6946,7 @@
   {"ask": "good movies to watch tonight", "want": "skill:media-pick|skill:movie"},
   {"ask": "what should i watch on netflix", "want": "skill:media-pick|skill:movie|skill:show"},
   {"ask": "convert hello to morse code", "want": "skill:morse"},
-  {"ask": "magic 8 ball will i pass my test", "want": "skill:magic8"},
+  {"ask": "magic 8 ball will i pass my test", "want": "chance", "says": "pass my test"},
   {"ask": "a colour", "want": "skill:color"},
   {"ask": "ask the magic 8 ball", "want": "chance"},
   {"ask": "new guid", "want": "skill:util"},
