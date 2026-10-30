@@ -27,6 +27,7 @@ import * as Field from '../lib/shared-field.js';
 import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
 import { detectPitch } from '../lib/brain-hearing.js';
 import { PX, PY } from '../lib/brain-painter.js';
+import { brainFullAsk } from '../lib/brain-ask.js';
 import { NX as CUR_X, NY as CUR_Y } from '../lib/brain-current.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
@@ -137,6 +138,14 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   row.innerHTML = '<form class="vb-form" style="display:flex;gap:6px;flex:1;min-width:180px"><input class="vb-word" type="text" maxlength="120" autocomplete="off" spellcheck="false" placeholder="tell it something, or ask why" aria-label="Words for Verse Brain to think about, or a question about what it is doing" style="flex:1;min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--line,#444);background:transparent;color:inherit">'
     + '<button type="submit" class="g-btn vb-tell">Tell</button></form><button type="button" class="g-btn vb-good">Good</button><button type="button" class="g-btn vb-listen" aria-pressed="false">Listen</button><button type="button" class="g-btn vb-tune" aria-pressed="false" title="Plays Frere Jacques twice into its ear: a tune the page plays, not your voice, so you can see it hear with no microphone">Play a tune</button><button type="button" class="g-btn vb-forget">Forget</button>';
   q('.ff-btns').insertAdjacentElement('beforebegin', row);
+  // Full screen (owner, 2026-10-30: "verse brain needs a full screen"): the same brain on a page of its own (/brain/), where the field fills the
+  // screen; what it keeps, what it is thinking and your asks go with it (this device's store and the shared field's held part, saved on pagehide)
+  if (typeof location === 'undefined' || !/^\/brain\/?$/.test(location.pathname)) {
+    const full = document.createElement('a'); full.href = '/brain/'; full.className = 'g-btn vb-full'; full.textContent = 'Full screen';
+    full.setAttribute('aria-label', 'Open Verse Brain full screen'); full.style.cssText = 'text-decoration:none;display:inline-flex;align-items:center';
+    full.addEventListener('pointerdown', (e) => e.stopPropagation()); full.addEventListener('click', () => { try { save(); } catch (_) { /* pagehide saves too */ } });
+    row.appendChild(full);
+  }
   const said = document.createElement('div'); said.className = 'vb-said'; said.setAttribute('aria-live', 'polite'); said.style.cssText = 'font-size:12px;min-height:1.3em;margin-top:4px';
   row.insertAdjacentElement('afterend', said);
   // the shared field, said in words on the card: what it feels from the other mind cards, and what it holds there of its own
@@ -345,9 +354,19 @@ const skill = fieldSkill({
 });
 // "what are you thinking (about)?" opens the card and is answered in words by the brain itself, from the state it is in after hearing the
 // visitor's asks (lib/brain-host.js answer): what it attends to, what it chose and its goals. Any other ask opens the card as before.
+// "full screen brain", "show me your brain full screen", "open verse brain": the brain's own page (/brain/), linked from a card, since a skill
+// does not leave the stage; the tool pages' ask box goes there itself (lib/toolkit.js routeAsk)
+const isFull = brainFullAsk;
 export default {
   ...skill,
+  examples: [...skill.examples, 'full screen brain', 'show me your brain full screen', 'open verse brain'],
+  match(lower, text) { return isFull(text || lower) || skill.match(lower, text); },
   async run(text, api) {
+    if (isFull(text)) {
+      api.showPage((p) => { p.dataset.page = '/brain/'; p.innerHTML = '<h2>Verse Brain, full screen</h2><p>The same brain, on a page of its own: the field fills the screen, with every organ, the orbs, its attention and its numbers live. What it keeps and what it is thinking go with it.</p><p><a class="btn" href="/brain/">Open Verse Brain full screen</a></p><div class="src">a-to-mind.com/brain/</div>'; });
+      api.say('My brain, full screen: a-to-mind.com/brain/');
+      return 'verse-brain';
+    }
     let said = null; const quiet = Object.create(api); quiet.say = (t) => { said = t; };
     const r = await skill.run(text, quiet); if (r === 'none') return r;
     const h = hostOf(), a = h && /^what (?:are you|is your brain) (?:thinking|doing)/i.test(String(text || '').trim()) ? h.answer(String(text).trim().replace(/\s+about$/i, '').replace(/[?!.]*$/, '?')) : null;

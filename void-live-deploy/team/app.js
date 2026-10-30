@@ -110,7 +110,7 @@ async function openChannel(c, { keep = false, scroll = null } = {}) {
   S.view = { kind: 'channel', c }; drawSide();
   const ch = S.shell && S.shell.channels.find((x) => x.code === c);
   head('#' + c, ch && ch.msgs ? ch.msgs + (ch.msgs === 1 ? ' message' : ' messages') : '', ch ? ch.about : '');
-  $('text').placeholder = 'Message #' + c;
+  $('text').placeholder = c === 'work' && S.me && S.me.kind === 'owner' ? 'Ask for work: a post here goes on the build queue' : 'Message #' + c;
   if (!S.me) return gate();
   $('gate').hidden = true; $('compose').hidden = false;
   if (!keep) $('msgs').innerHTML = '<p class="empty muted">Reading #' + esc(c) + '…</p>';
