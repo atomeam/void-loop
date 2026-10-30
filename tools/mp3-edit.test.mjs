@@ -86,3 +86,41 @@ test('with a LAME tag the cut is exact to the sample: frames more at the start, 
   assert.equal(o.xing.delay, 45205 - 36 * 1152 - 529); assert.equal(o.xing.padding, 78 * 1152 + 529 - (88200 + 1105));
   assert.match(r.notes.join(' '), /exact to the sample/);
 });
+
+// read and write n bits at bit p of the side information (it starts at byte 4, or 6 with a CRC)
+const bitsAt = (b, s, p, n) => { let v = 0; for (let i = 0; i < n; i++) v = (v << 1) | ((b[s + ((p + i) >> 3)] >> (7 - ((p + i) & 7))) & 1); return v; };
+const putBits = (b, s, p, n, v) => { for (let i = 0; i < n; i++) { const q = p + i, m = 1 << (7 - (q & 7)); if ((v >> (n - 1 - i)) & 1) b[s + (q >> 3)] |= m; else b[s + (q >> 3)] &= ~m; } };
+// MPEG-1 stereo: main_data_begin 9, private 3, scfsi 8, then 59 bits for each granule and channel, global_gain 21 bits in
+const GG = [0, 1, 2, 3].map((k) => 20 + k * 59 + 21);
+
+test('louder MP3: each granule\'s global_gain moves by the same steps of 1.505 dB, and nothing else changes', () => {
+  const mp3 = frames(20); for (let i = 0; i < 20; i++) for (const p of GG) putBits(mp3, i * 417 + 4, p, 8, 100 + i);
+  mp3[5 * 417 + 300] = 77;
+  const r = M.gainMp3(mp3, 6);
+  assert.equal(r.steps, 4); assert.equal(r.factor, 2);
+  for (let i = 0; i < 20; i++) for (const p of GG) assert.equal(bitsAt(r.bytes, i * 417 + 4, p, 8), 104 + i);
+  // put the old values back: every other bit is the same
+  const back = r.bytes.slice(); for (let i = 0; i < 20; i++) for (const p of GG) putBits(back, i * 417 + 4, p, 8, 100 + i);
+  assert.deepEqual(back, mp3);
+  assert.match(r.notes.join(' '), /\+6\.02 dB/); assert.match(r.notes.join(' '), /not coded again/);
+  assert.equal(bitsAt(M.gainMp3(mp3, -3).bytes, 4, GG[0], 8), 98, '-3 dB is 2 steps down');
+});
+
+test('a level at the top of its range stays there and is counted; a frame with a CRC gets a new CRC', () => {
+  const mp3 = frames(4); for (let i = 0; i < 4; i++) { mp3[i * 417 + 1] = 0xfa; for (const p of GG) putBits(mp3, i * 417 + 6, p, 8, 253); }
+  const r = M.gainMp3(mp3, 6), h = M.header(r.bytes, 0);
+  assert.equal(bitsAt(r.bytes, 6, GG[0], 8), 255); assert.match(r.notes.join(' '), /16 granules were already at the top/);
+  for (let i = 0; i < 4; i++) { const c = M.frameCrc(r.bytes, i * 417, h); assert.equal((r.bytes[i * 417 + 4] << 8) | r.bytes[i * 417 + 5], c); }
+});
+
+test('a LAME tag keeps its music CRC and its tag CRC right after a louder MP3 and after a cut', () => {
+  const arcOf = (b) => { let c = 0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = c & 1 ? (c >>> 1) ^ 0xa001 : c >>> 1; } return c; };
+  const info = new Uint8Array(417); info.set([0xff, 0xfb, 0x90, 0x00]); info.set(new TextEncoder().encode('Info'), 36); info.set([0, 0, 0, 15, 0, 0, 0, 100], 40);
+  const lame = 36 + 8 + 4 + 4 + 100 + 4; info.set(new TextEncoder().encode('LAME'), lame); info[lame + 21] = 576 >> 4; info[lame + 22] = (576 & 15) << 4;
+  const body = frames(100); for (let i = 0; i < 100; i++) putBits(body, i * 417 + 4, GG[0], 8, 120);
+  for (const out of [M.gainMp3(cat(info, body), 3).bytes, M.cutMp3(cat(info, body), 1, 2).bytes]) {
+    const m = M.framesOf(out), xf = out.slice(0, 417), music = out.subarray(m.frames[0].at, m.frames.at(-1).at + 417);
+    assert.equal((xf[lame + 32] << 8) | xf[lame + 33], arcOf(music), 'music CRC');
+    const stored = (xf[lame + 34] << 8) | xf[lame + 35]; xf[lame + 34] = xf[lame + 35] = 0; assert.equal(stored, arcOf(xf.subarray(0, 190)), 'tag CRC');
+  }
+});

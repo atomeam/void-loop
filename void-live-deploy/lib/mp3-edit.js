@@ -136,6 +136,14 @@ const mainDataBegin = (b, at) => { const h = header(b, at), s = at + 4 + (crcOn(
 const arc = (b, n) => { let c = 0; for (let i = 0; i < n; i++) { c ^= b[i]; for (let k = 0; k < 8; k++) c = c & 1 ? (c >>> 1) ^ 0xa001 : c >>> 1; } return c; };
 /** an Info or Xing frame for these frames: the frame count, the byte count and a seek table, in a frame like the one the file had.
  * With `lame` ({ delay, padding }) the LAME tag is kept too, with a new start delay and end padding, so a player plays the exact samples asked for. */
+/** the LAME tag's two CRCs made right again: the music CRC (CRC-16/ARC over the frames after the tag frame) and the tag CRC (over the first 190 bytes of the tag frame) */
+function lameCrcs(xf, music) {
+  const h = header(xf, 0), at = 4 + (crcOn(xf, 0) ? 2 : 0) + sideLen(h), flags = be32(xf, at + 4);
+  let t = at + 8 + (flags & 1 ? 4 : 0) + (flags & 2 ? 4 : 0) + (flags & 4 ? 100 : 0) + (flags & 8 ? 4 : 0);
+  if (t + 36 > xf.length) return;
+  const mc = arc(music, music.length); xf[t + 32] = mc >> 8; xf[t + 33] = mc & 255;
+  xf[t + 34] = xf[t + 35] = 0; const w = new Uint8Array(Math.max(190, xf.length)); w.set(xf); const c = arc(w, 190); xf[t + 34] = c >> 8; xf[t + 35] = c & 255;
+}
 function xingFrame(b, m, frames, lame) {
   const xf = m.xingFrame, out = b.slice(xf.at, xf.at + xf.bytes), h = header(out, 0), at = 4 + (crcOn(out, 0) ? 2 : 0) + sideLen(h), la = m.xing.lameAt;
   const tag = lame && la ? out.slice(la, la + 36) : null, quality = tag && m.xing.flags & 8 ? out.slice(la - 4, la) : new Uint8Array(4);
@@ -146,8 +154,6 @@ function xingFrame(b, m, frames, lame) {
   if (tag) {
     const t = at + 120; out.set(quality, t - 4); out.set(tag, t);
     out[t + 21] = (lame.delay >> 4) & 255; out[t + 22] = ((lame.delay & 15) << 4) | ((lame.padding >> 8) & 15); out[t + 23] = lame.padding & 255; put(t + 28, total);
-    // over the first 190 bytes of the frame, with the 2 CRC bytes 0 and 0 past the end of a short (MPEG-2) frame, as ffmpeg and LAME write it
-    out[t + 34] = out[t + 35] = 0; const w = new Uint8Array(Math.max(190, out.length)); w.set(out); const c = arc(w, 190); out[t + 34] = c >> 8; out[t + 35] = c & 255;
   }
   return out;
 }
@@ -177,6 +183,7 @@ export function cutMp3(b, from, to) {
   // a quiet frame sounds wrong, and so do the 576 samples that overlap it and the 512 the synthesis filter holds; the start delay skips them when it reaches past them
   const bad = last < 0 ? 0 : Math.max(0, (last + 1) * S + 576 + 512 - (lame ? delay + 529 : 0));
   const xing = m.xing && m.xing.id !== 'VBRI' ? xingFrame(b, m, kept, lame ? { delay, padding } : null) : new Uint8Array(0);
+  if (lame) lameCrcs(xing, body);
   const s0 = lame ? a : Math.max(0, ka * S), s1 = lame ? z : Math.min(total, kz * S);
   notes.push('kept ' + (s0 / rate).toFixed(3) + ' s to ' + (s1 / rate).toFixed(3) + ' s (' + ((s1 - s0) / rate).toFixed(3) + ' s), ' + kept.length + ' of ' + n + ' MP3 frames');
   notes.push(lame ? 'the sound is not coded again: the cut is exact to the sample in a player that reads the LAME tag, as browsers do; a player that does not can play up to ' + ms(delay + 529) + ' ms more at the start'
@@ -185,4 +192,39 @@ export function cutMp3(b, from, to) {
   if (m.xing && m.xing.id === 'VBRI') notes.push('the VBRI table (from a Fraunhofer encoder) is left out, because it no longer fits; players count the frames');
   if (m.skipped) notes.push(m.skipped + ' bytes that were not MP3 frames were left out');
   return { bytes: cat([m.tag, xing, body, m.tail]), notes, from: s0 / rate, to: s1 / rate };
+}
+
+// side information bits: read and write n bits at bit p of the side information that starts at byte s
+const getBits = (b, s, p, n) => { let v = 0; for (let i = 0; i < n; i++) v = (v << 1) | ((b[s + ((p + i) >> 3)] >> (7 - ((p + i) & 7))) & 1); return v; };
+const setBits = (b, s, p, n, v) => { for (let i = 0; i < n; i++) { const q = p + i, m = 1 << (7 - (q & 7)); if ((v >> (n - 1 - i)) & 1) b[s + (q >> 3)] |= m; else b[s + (q >> 3)] &= ~m; } };
+// where each granule's global_gain is, in bits from the start of the side information: { at, granules }
+function gainBits(h) {
+  const ch = h.channels;
+  if (h.version === 3) { const head = 9 + (ch === 1 ? 5 : 3) + 4 * ch, at = []; for (let g = 0; g < 2; g++) for (let c = 0; c < ch; c++) at.push(head + (g * ch + c) * 59 + 21); return at; }
+  const head = 8 + (ch === 1 ? 1 : 2), at = []; for (let c = 0; c < ch; c++) at.push(head + c * 63 + 21); return at;
+}
+/** the MP3 louder or quieter with no new coding: each granule's global_gain (8 bits, a step is 2^(1/4), 1.505 dB) moves by the same number of steps.
+ * This is what MP3Gain does. The sound loses nothing; dB is rounded to whole steps. { bytes, notes, steps, factor } */
+export function gainMp3(b, db) {
+  const m = framesOf(b), steps = Math.round((+db || 0) / (6.020599913 / 4)), out = b.slice(); let clamped = 0, granules = 0;
+  for (const f of m.frames) {
+    const h = header(out, f.at), crc = crcOn(out, f.at), s = f.at + 4 + (crc ? 2 : 0);
+    for (const p of gainBits(h)) { const g = getBits(out, s, p, 8), n = g + steps; granules++; if (n < 0 || n > 255) clamped++; setBits(out, s, p, 8, Math.max(0, Math.min(255, n))); }
+    if (crc) { const c = frameCrc(out, f.at, h); out[f.at + 4] = c >> 8; out[f.at + 5] = c & 255; }
+  }
+  const factor = 2 ** (steps / 4), dB = 20 * Math.log10(factor), notes = [];
+  if (m.xing && m.xing.lameAt) {
+    const xf = out.subarray(m.xingFrame.at, m.xingFrame.at + m.xingFrame.bytes), t = m.xing.lameAt, v = new DataView(xf.buffer, xf.byteOffset);
+    const peak = v.getFloat32(t + 11); if (peak > 0) v.setFloat32(t + 11, peak * factor);
+    for (const r of [t + 15, t + 17]) { const w = v.getUint16(r); if (w >> 13) { const val = (w & 0x200 ? -1 : 1) * (w & 0x1ff) - Math.round(dB * 10), a = Math.min(511, Math.abs(val)); v.setUint16(r, (w & 0xfc00) | (val < 0 ? 0x200 : 0) | a); } }
+    const a = m.frames.length ? m.frames[0].at : 0, z = m.frames.length ? m.frames.at(-1).at + m.frames.at(-1).bytes : 0;
+    lameCrcs(xf, out.subarray(a, z));
+  }
+  notes.push((steps >= 0 ? '+' : '') + dB.toFixed(2) + ' dB (' + factor.toFixed(3) + ' times the level): ' + Math.abs(steps) + ' steps of 1.505 dB in each of ' + granules + ' granules');
+  notes.push('the sound is not coded again, so it loses nothing: only the level number of each piece changes, as MP3Gain does');
+  if (clamped) notes.push(clamped + ' granules were already at the ' + (steps > 0 ? 'top' : 'bottom') + ' of the level range and moved less');
+  if (m.skipped) notes.push(m.skipped + ' bytes that were not MP3 frames were kept as they were');
+  const tag = readTag(b), rg = tag && tag.frames.some((f) => f.id === 'TXXX' && /REPLAYGAIN/i.test(new TextDecoder().decode(f.data).replace(/\0/g, '')));
+  if (rg) notes.push('the tag has ReplayGain values from before: a player that uses them can make it quieter again');
+  return { bytes: out, notes, steps, factor };
 }
