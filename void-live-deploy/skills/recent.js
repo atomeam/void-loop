@@ -5,6 +5,9 @@
  */
 export const ASKS_KEY = 'a2m.void.asks.v1';
 
+// an ask is kept whole up to what the answer engine reads (ASK_MAX, lib/answer-honesty.js): at 240 a pasted note was cut mid-sentence
+// ("Until then the music") and a tap on it asked the cut version (owner, 2026-10-30)
+export const KEPT_ASK_MAX = 4000;
 export const KEPT_ASKS = 12; // stored; the empty box still shows the newest 5 (the ask clipboard card, skills/ask-clipboard.js, reads all)
 export function recentAsks(store, n = 5) {
   const bag = store || (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -17,7 +20,7 @@ export function recentAsks(store, n = 5) {
 
 export function rememberAsk(text, store) {
   const bag = store || (typeof localStorage !== 'undefined' ? localStorage : null);
-  const t = String(text || '').trim().slice(0, 240);
+  const t = String(text || '').trim().slice(0, KEPT_ASK_MAX); // kept whole: a tap on it asks it again, and a cut ask was answered from the cut
   if (!bag || !t || /^(?:unlock\s*)+\S{16,}\s*$/i.test(t)) return recentAsks(bag);
   const prev = recentAsks(bag, KEPT_ASKS).filter((s) => s.toLowerCase() !== t.toLowerCase());
   const next = [t].concat(prev).slice(0, KEPT_ASKS);
