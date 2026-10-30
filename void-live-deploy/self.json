@@ -550,6 +550,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:09:41Z",
+   "subject": "quote: mark the retry loop as right for the review"
+  },
+  {
+   "at": "2026-10-30T05:09:37Z",
+   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
+  },
+  {
+   "at": "2026-10-30T05:09:21Z",
+   "subject": "tower queue: rendered rows that lost most raw controls are block pages, not rankable"
+  },
+  {
+   "at": "2026-10-30T05:07:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:07:13Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -594,6 +610,10 @@
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
+   "at": "2026-10-30T04:58:44Z",
+   "subject": "quote: show a Wikiquote quote of the day, with its source, instead of one fixed line"
+  },
+  {
    "at": "2026-10-30T04:58:43Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -608,26 +628,6 @@
   {
    "at": "2026-10-30T04:56:02Z",
    "subject": "team-live: write the check's lines as one annotation too, so they can be read without the log"
-  },
-  {
-   "at": "2026-10-30T04:53:12Z",
-   "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
-  },
-  {
-   "at": "2026-10-30T04:51:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:51:04Z",
-   "subject": "Markets: its stage card shows the coin open on the page"
-  },
-  {
-   "at": "2026-10-30T04:51:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:50:39Z",
-   "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
   }
  ],
  "builders": {
@@ -867,8 +867,8 @@
   "since": "2026-10-29",
   "next": [
    "howsecureismypassword.net",
-   "generatorguru.com",
-   "coinflip.tech"
+   "ndscalc.ru",
+   "emojicombos.com"
   ],
   "beaten": 0,
   "total": 1269
