@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1043,
+ "counted": 1044,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 69,
+   "dependants": 70,
    "tests": 8
   },
   {
@@ -545,7 +545,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 79,
+   "dependants": 80,
    "tests": 1
   },
   {
@@ -699,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 77,
+   "dependants": 78,
    "tests": 9
   },
   {
@@ -1189,7 +1189,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 1
   },
   {
@@ -1285,6 +1285,13 @@
   },
   {
    "file": "lib/brain-synapses.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-trace.js",
    "skills": 1,
    "direct": 0,
    "dependants": 7,
@@ -1407,7 +1414,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 3,
-   "tests": 18
+   "tests": 19
   },
   {
    "file": "lib/fanfic.js",
@@ -2453,6 +2460,13 @@
    "tests": 1
   },
   {
+   "file": "lib/members.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
@@ -2566,13 +2580,6 @@
   },
   {
    "file": "lib/lap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/members.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3185,7 +3192,8 @@
   "functions/[handle].js": {
    "imports": [
     "lib/pages.js",
-    "lib/void-me.js"
+    "lib/void-me.js",
+    "lib/members.js"
    ],
    "importedBy": []
   },
@@ -4565,6 +4573,7 @@
     "lib/voice.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
@@ -5018,6 +5027,7 @@
     "lib/brain-current.js",
     "lib/brain-grains.js",
     "lib/brain-pool.js",
+    "lib/brain-trace.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
    ],
@@ -5048,6 +5058,7 @@
     "lib/brain-current.js",
     "lib/brain-grains.js",
     "lib/brain-pool.js",
+    "lib/brain-trace.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -5136,6 +5147,23 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-trace.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-watch.js": {
    "imports": [],
    "importedBy": [
@@ -5168,6 +5196,7 @@
     "lib/brain-painter.js",
     "lib/brain-pool.js",
     "lib/brain-synapses.js",
+    "lib/brain-trace.js",
     "lib/brain.js",
     "skills/verse-brain.js"
    ],
@@ -5192,7 +5221,8 @@
     "lib/brain-formula.js",
     "lib/brain-current.js",
     "lib/brain-grains.js",
-    "lib/brain-pool.js"
+    "lib/brain-pool.js",
+    "lib/brain-trace.js"
    ],
    "importedBy": [
     "lib/brain-glow.js",
@@ -6391,6 +6421,7 @@
     "lib/brain-painter.js",
     "lib/brain-pool.js",
     "lib/brain-synapses.js",
+    "lib/brain-trace.js",
     "lib/brain-workspace.js",
     "lib/brain.js",
     "lib/council-law.js",
@@ -7782,6 +7813,7 @@
     "lib/automation-fix.js"
    ],
    "importedBy": [
+    "functions/[handle].js",
     "functions/api/members.js"
    ]
   },
@@ -10907,6 +10939,7 @@
     "skills/telemetry-route.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
