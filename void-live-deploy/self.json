@@ -550,16 +550,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:13:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:12:55Z",
+   "subject": "PR guard: the shared tool-page chain must match the browser suite's list before merge"
+  },
+  {
    "at": "2026-10-30T04:12:51Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T04:12:08Z",
    "subject": "Verse Brain watches Verse's own health and raises breaks on /brain/"
-  },
-  {
-   "at": "2026-10-30T04:10:49Z",
-   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T04:10:49Z",
@@ -576,10 +580,6 @@
   {
    "at": "2026-10-30T04:07:55Z",
    "subject": "Confirm line: pin what #1444 changed in the approval gate, and what it did not"
-  },
-  {
-   "at": "2026-10-30T04:06:51Z",
-   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T04:06:07Z",
@@ -606,10 +606,6 @@
    "subject": "Browser suite: count brain-ask.js as shared, and match the family card's live marks to the family line"
   },
   {
-   "at": "2026-10-30T04:03:20Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-30T04:03:04Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -628,6 +624,10 @@
   {
    "at": "2026-10-30T03:57:27Z",
    "subject": "MultiVerse: the owner is always a member"
+  },
+  {
+   "at": "2026-10-30T03:57:26Z",
+   "subject": "converter: refresh parity and the dependency map for video"
   }
  ],
  "builders": {
