@@ -71,6 +71,37 @@
   .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; color: var(--soft); } .tk-row a { color: var(--soft); }
   .note { font-size: 12.5px; color: var(--soft); }
   footer { font-size: 12.5px; color: var(--soft); margin-top: 10px; } footer a { color: var(--soft); }
+  /* the brain map (brain/map.js): the organs by what they do, lit when they really take a turn, beside the tissue; it takes the left of the
+     screen (a phone: the top), and the field moves over by its size, so neither covers the other. --mapw and --maph are set by map.js */
+  #mapView { position: fixed; z-index: 1; top: var(--top, 60px); bottom: var(--hud, 0px); left: 0; width: var(--mapw, 0px); display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; background: radial-gradient(90% 70% at 40% 35%, #0e0a26 0%, #05040c 75%); border-right: 1px solid var(--line); overflow: hidden; }
+  #mapView[hidden] { display: none; }
+  body.map-on #field { left: var(--mapw, 0px); }
+  #map { flex: 1 1 auto; min-height: 0; width: 100%; display: block; }
+  #map .outline { fill: rgba(165,139,255,.035); stroke: rgba(165,139,255,.22); stroke-width: 1.2; }
+  #map .lobe { fill: hsla(var(--h), 70%, 60%, .07); stroke: hsla(var(--h), 70%, 65%, .28); stroke-dasharray: 3 4; }
+  #map .lobe-name, #map .grid-name { fill: var(--soft); font-weight: 600; letter-spacing: .04em; }
+  #map .wires line { stroke: rgba(255,255,255,.07); stroke-width: 1; }
+  #map .organ circle { fill: hsl(var(--h) 75% calc(30% + 40% * var(--lit, 0))); stroke: hsl(var(--h) 85% 72%); stroke-width: 1.2; filter: drop-shadow(0 0 calc(14px * var(--lit, 0)) hsl(var(--h) 90% 65%)); transition: r .25s ease; }
+  #map .organ text, #map .hub text { fill: var(--ink); paint-order: stroke; stroke: rgba(5,4,12,.85); stroke-width: 3px; }
+  #map .hub > circle { fill: hsl(52 90% calc(25% + 35% * var(--lit, 0))); stroke: var(--warm); stroke-width: 1.5; filter: drop-shadow(0 0 10px rgba(255,190,90,.45)); }
+  #map .sub { fill: var(--soft); }
+  #map .cell rect { fill: hsla(var(--h, 260), 80%, 60%, var(--a, .06)); stroke: rgba(255,255,255,.14); transition: fill .3s ease; }
+  #map .cell:not(.lit) rect { fill: rgba(255,255,255,.04); }
+  #map .cell.focus rect { stroke: var(--warm); stroke-width: 2.4; }
+  #map .cell text { fill: var(--ink); paint-order: stroke; stroke: rgba(5,4,12,.8); stroke-width: 2.5px; }
+  #map .sparks circle { fill: hsl(var(--h, 52) 95% 72%); filter: drop-shadow(0 0 4px hsl(var(--h, 52) 95% 65%)); }
+  #map .path { fill: none; stroke: var(--cool); stroke-width: 2.5; stroke-linejoin: round; stroke-dasharray: 6 5; opacity: 0; }
+  #map .path.show { opacity: .9; animation: pathfade 9s ease forwards; }
+  @keyframes pathfade { 0%, 70% { opacity: .9; } 100% { opacity: 0; } }
+  #mapSide { flex: 0 0 auto; display: flex; flex-direction: column; gap: 6px; }
+  #feed { list-style: none; margin: 0; padding: 0; font-size: 12.5px; max-height: 9.6em; overflow: hidden; }
+  #feed > li { padding: 2px 0 2px 8px; border-left: 2px solid hsl(var(--h, 196) 80% 62%); margin: 0 0 3px; overflow-wrap: anywhere; }
+  #feed > li b { color: hsl(var(--h, 196) 85% 75%); font-weight: 600; }
+  #feed > li.thought { border-left-color: var(--cool); } #feed > li.thought b { color: var(--cool); }
+  #feed ol { margin: 2px 0 0; padding-left: 18px; }
+  #mapAsk { display: flex; gap: 6px; } #mapAsk input { flex: 1; min-width: 0; font: inherit; font-size: 16px; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px; min-height: 40px; }
+  #mapAsk button { font: inherit; font-size: 14px; color: var(--on-accent); background: var(--accent); border: 0; border-radius: 999px; padding: 7px 14px; min-height: 40px; cursor: pointer; }
+  #mapCounts { margin: 0; font: 11px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace; }
   /* a phone: the panel is a sheet from the bottom, the numbers a strip */
   @media (max-width: 720px) {
     #panel { top: auto; left: 0; width: auto; max-height: 58dvh; border-left: 0; border-top: 1px solid var(--line); border-radius: 18px 18px 0 0; padding-bottom: max(18px, env(safe-area-inset-bottom)); }
@@ -81,6 +112,10 @@
     #liveNow > div:nth-child(n+4) { display: none; } /* a phone keeps focus, will and surprise in view; the rest is in the panel's lines */
     .lede { display: none; }
     #bar .hint { display: none; }
+    #mapView { bottom: auto; right: 0; width: auto; height: var(--maph, 0px); border-right: 0; border-bottom: 1px solid var(--line); padding: 6px 8px; }
+    body.map-on #field { left: 0; top: calc(var(--top, 60px) + var(--maph, 0px)); }
+    #feed { font-size: 12px; max-height: 6.4em; }
+    #mapCounts { display: none; }
   }
   @media (min-width: 721px) { body.panel-open #bar, body.panel-open #field, body.panel-open #live { right: var(--pw); } } /* nothing of the field hides under the panel: it fills what is left, and all of the screen once the panel is hidden */
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
@@ -132,13 +167,25 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/brain/map.js">
+<link rel="modulepreload" href="/lib/brain-map.js">
 <!-- /modulepreload -->
 </head>
 <body>
 <div id="field" aria-label="Verse Brain, live"><div id="you" aria-hidden="true"></div></div>
+<section id="mapView" aria-label="Verse Brain map, live: its organs, its attention and its working memory">
+  <svg id="map" role="img" aria-label="The organs of Verse Brain, grouped by what they do around its attention. An organ lights when the attention gives it a turn, and a spark flies to the part of the working memory it writes into."></svg>
+  <div id="mapSide">
+    <p class="note" style="margin:0">Each dot is an organ. It lights when Attention gives it a turn; a spark shows each real write into its working memory. Nothing here is acted: every light is a change in its state.</p>
+    <ol id="feed" aria-live="off" aria-label="What changed in the brain, newest first"></ol>
+    <form id="mapAsk"><label class="vh" for="mapWord">Tell it words or ask it why</label><input id="mapWord" maxlength="120" autocomplete="off" placeholder="Tell it a word, or ask what it is doing"><button type="submit">Think</button></form>
+    <p class="note" id="mapCounts"></p>
+  </div>
+</section>
 <header id="bar">
   <span id="brand"><span id="pulse" aria-hidden="true"></span>Verse Brain</span>
   <span class="note hint">Move over it · arrows move you · Esc leaves</span>
+  <button type="button" class="tb" id="viewBtn" aria-controls="mapView" aria-pressed="false">Tissue only</button>
   <button type="button" class="tb" id="numBtn" aria-controls="live" aria-expanded="true">Hide numbers</button>
   <button type="button" class="tb" id="fs" aria-pressed="false">Fill the screen</button>
   <button type="button" class="tb" id="panelBtn" aria-controls="panel" aria-expanded="true">Hide panel</button>
@@ -167,6 +214,7 @@
 <script type="module">
   // the page is whole before this runs: the brain itself is a module its head preloads
   import '/brain/app.js';
+  import '/brain/map.js';
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
