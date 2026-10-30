@@ -23,6 +23,7 @@ import { envName, latencyOf, assess, againOf } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
+import { wikiquote, markets } from './bench-standins.mjs';
 // how long one ask may take before it counts as unanswered (4 s, as a person waits); a test that checks counting, not speed, raises it
 // (tools/bench-load.test.mjs: on a loaded machine the page logged the ask after 4 s and the miss read as "said")
 const ASK_WAIT_MS = Number(process.env.VOID_BENCH_ASK_WAIT_MS) || 4000;
@@ -141,6 +142,7 @@ async function one(ctx, { ask: a, want, says, before }) {
   const tOpen = Date.now(); const miss = [];
   // the stand-ins: outside services, then Verse's own /api (served through the page's DevTools session, see standIn)
   const external = (r) => { const u = r.request().url();
+    const wq = wikiquote(u); if (wq) return r.fulfill(json(wq)); // before the Wikipedia search below, which shares its /w/api.php path
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Topic', extract: 'An extract.' }));
     // the place found is the place asked for (the coordinates and the rest stay the fixed stand-in), so a card names what was asked
@@ -182,6 +184,7 @@ async function one(ctx, { ask: a, want, says, before }) {
     // an open plan ("plan my garden") asks the engine for its steps (skills/intent.js engineSteps); with none the skill reports a miss (intent:no-steps), so the stub gives it three
     if (/\/api\/answer$/.test(u) && /"mode":"plan"/.test(r.request().postData() || '')) return r.fulfill(json({ steps: ['Pick a first small step', 'Do it for a week', 'Review and adjust'] }));
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
+    const mk = markets(u); if (mk) return r.fulfill(json(mk)); // a stock or index card reads its price here (skills/stocks.js)
     return r.fulfill({ status: 204, body: '' }); };
   ctx.handlers = { api, external }; const tab = await tabOf(ctx), { p, cdp } = tab;
   for (const q of ctx.pages()) if (q !== p) await q.close().catch(() => {}); // a window an earlier ask opened
