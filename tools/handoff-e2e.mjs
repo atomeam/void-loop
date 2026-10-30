@@ -405,6 +405,24 @@ export const JOURNEYS = {
     if (!doc.includes('GOOD MORNING') || !doc.includes('THE SHOP OPENS AT NINE')) throw new Error('the translated document does not hold the translated words: ' + doc.slice(0, 200));
     await check('one press translated it (' + asked + ' request) into ' + dl.suggestedFilename() + ', which holds GOOD MORNING and THE SHOP OPENS AT NINE');
   },
+  'resize a picture, then translate the words in it: the translate page waits for the language and one press': async (p, check) => {
+    await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
+    await check('the resize page made a copy of the painting');
+    // nothing may reach the translator before the press: count every call from here on
+    let asked = 0, sent = {}; await p.route('**/api/translate', async (r) => { asked++; sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ json: { text: 'GOOD MORNING', read: 'Good morning' } }); });
+    await Promise.all([p.waitForURL(/\/translate\//), p.locator('#related a', { hasText: 'Translate the words in it' }).click()]);
+    await p.waitForSelector('#handed', { timeout: 15000 });
+    if (/img=handoff/.test(p.url())) throw new Error('the address still asks for the picture: ' + p.url());
+    if (asked) throw new Error('the picture went to the translator before any press');
+    await check('the translate page holds ' + (await p.locator('#handed').textContent()) + ' and waits for a press');
+    await p.locator('#handed').click();
+    await p.waitForFunction(() => document.getElementById('out').textContent.includes('GOOD MORNING'), null, { timeout: 15000 });
+    if (asked !== 1 || !/^data:image\/jpeg;base64,/.test(String(sent.image))) throw new Error('the press sent ' + asked + ' request(s), the picture ' + (sent.image ? 'as ' + String(sent.image).slice(0, 30) : 'missing'));
+    if ((await p.locator('#in').inputValue()) !== 'Good morning') throw new Error('the words read from the picture are not in the box: ' + (await p.locator('#in').inputValue()));
+    await check('one press read the picture (1 request) and showed GOOD MORNING, with the words it read, Good morning, in the box');
+  },
   'pick a palette for a colour, then paint a picture by number in it, and go back to the picture’s own colours': async (p, check) => {
     await p.goto(ORIGIN + '/color/?c=e4572e', { waitUntil: 'load' }); await p.waitForSelector('#pals a');
     const href = await p.locator('#pals a').first().getAttribute('href'), given = href.split('colours=')[1].split(',');
