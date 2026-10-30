@@ -202,9 +202,10 @@
    "title": "Quality web design in, Paphos, Cyprus with SEO and social media plans"
   },
   "randomarea.com": {
-   "at": "2026-10-30T08:55:00Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:36:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a collection of translated AI research papers and technical guides. Verse does not have a page for research paper translation, a scientific)",
+   "title": "AI 研究报告中文翻译合集"
   },
   "urdufonts.net": {
    "at": "2026-10-27T08:19:42Z",
@@ -307,9 +308,10 @@
    "title": "Unit | Asset tokenization layer on Hyperliquid"
   },
   "email-checker.net": {
-   "at": "2026-10-30T08:55:07Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:36:48Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides an email verification service and email-related educational content, but Verse does not have a page for verifying email addresses or an)",
+   "title": "Email Checker - Verify Email Address Online"
   },
   "besslerwheel.com": {
    "at": "2026-10-28T22:47:19Z",
@@ -318,9 +320,12 @@
    "title": "Johann Bessler - Orffyreus"
   },
   "getconverter.org": {
-   "at": "2026-10-30T08:55:12Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:08Z",
+   "outcome": "built",
+   "family": "finance",
+   "id": "finance: getconverter.org",
+   "page": "/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31",
+   "words": "the family page's own (the model's were refused: says what the page does not do (between, global, accurate, custom, built))"
   },
   "freefonts.co": {
    "at": "2026-10-28T22:47:31Z",
@@ -329,14 +334,16 @@
    "title": "FreeFonts : Download Thousands of Fonts for Free : Free Fonts"
   },
   "copyemojio.com": {
-   "at": "2026-10-30T08:55:20Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:18Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a financial news and educational blog providing articles on investing, loans, and wealth management. Verse has a 'finance' tool for looking up)",
+   "title": "ShortFinance"
   },
   "syncsketch.com": {
-   "at": "2026-10-30T08:55:23Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:24Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional visual collaboration and media review platform for animation and VFX teams, offering synchronous presentation and annotation)",
+   "title": "SyncSketch"
   },
   "nnamdicenter.org": {
    "at": "2026-10-28T22:47:47Z",
@@ -350,20 +357,28 @@
    "title": "Jigsaw Color Game Technology - Expert in Software and Game Development"
   },
   "qunitjs.com": {
-   "at": "2026-10-30T08:55:29Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:33Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a documentation and landing page for a JavaScript testing framework. While Verse has a tool for Perl test reports (cpan), it does not have a tool)",
+   "title": "QUnit"
   },
   "top-password.com": {
-   "at": "2026-10-30T08:55:36Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides software services and guides for recovering lost passwords and product keys. Verse has no page that offers password recovery services or)",
+   "title": "Password Recovery Software - Recover Lost Password, Reset Windows Password"
   },
   "kingdraw.com": {
    "at": "2026-10-30T08:55:53Z",
    "outcome": "no-family",
    "why": "no floor does its job (none)",
    "title": "KingDraw官网_化学结构式编辑器"
+  },
+  "diffen.com": {
+   "at": "2026-10-30T22:37:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Diffen - Compare Anything. Diffen. Discern. Decide."
   }
  },
  "runs": [

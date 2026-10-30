@@ -1,0 +1,376 @@
+<!doctype html>
+<!-- written by tools/tower-self.mjs from lib/self-sites.js and its family page; edit the row, not this file -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Markets: stock, ETF, index, currency and crypto quotes with  · Verse</title>
+<meta name="twitter:description" content="Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.">
+<meta name="twitter:title" content="Markets: stock, ETF, index, currency and crypto quotes with  · Verse">
+<meta name="description" content="Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Markets: stock, ETF, index, currency and crypto quotes with  · Verse">
+<meta property="og:description" content="Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.">
+<meta property="og:url" content="https://a-to-mind.com/markets/currency-converter/">
+<meta property="og:image" content="https://a-to-mind.com/og/markets.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Verse Markets: a price chart and the words Stocks, ETFs, indices, currencies and crypto">
+<meta name="twitter:image" content="https://a-to-mind.com/og/markets.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/markets/ (Versus' Yahoo Finance floor): one file and lib/markets.js; the only thing kept on the device is the watchlist and the last quote */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  #tries a { display: inline-block; padding: 8px 2px; }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 20px 0 6px; }
+  input[type=search], input[type=date], input.box { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; box-sizing: border-box; }
+  input[type=search] { width: 100%; font-size: 17px; }
+  input:focus-visible, button:focus-visible, a:focus-visible, svg:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go, button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  [hidden] { display: none !important; }
+  /* the strip: six links whose room is kept before their numbers arrive (nothing below moves) */
+  #strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0 0; min-height: 124px; }
+  #strip a { display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--line); border-radius: 12px; background: var(--box); color: inherit; text-decoration: none; padding: 6px 10px; min-height: 58px; box-sizing: border-box; }
+  #strip b { font-size: 12px; font-weight: 600; color: var(--soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } #strip span { font-size: 15px; font-variant-numeric: tabular-nums; } #strip small { font-size: 12px; min-height: 1.3em; }
+  .up { color: var(--up); } .down { color: var(--down); }
+  #card { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 14px; margin-top: 14px; }
+  #qn { font-size: 22px; line-height: 1.2; margin: 0; color: var(--ink); } #qs { font-size: 13px; color: var(--soft); min-height: 1.4em; }
+  #qp { font-size: 38px; font-weight: 600; line-height: 1.15; margin-top: 6px; font-variant-numeric: tabular-nums; min-height: 1.15em; }
+  #qm { font-size: 17px; font-variant-numeric: tabular-nums; min-height: 1.5em; } #qa { font-size: 12px; color: var(--soft); min-height: 1.5em; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0 0; } .seg button { padding: 4px 10px; min-width: 44px; }
+  #readout { font-size: 14px; font-variant-numeric: tabular-nums; min-height: 1.6em; margin-top: 8px; color: var(--soft); }
+  .chartbox { position: relative; height: 220px; margin-top: 2px; touch-action: pan-y; }
+  #ch { display: block; width: 100%; height: 220px; border-radius: 8px; background: color-mix(in srgb, var(--line) 25%, transparent); }
+  #ch path { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; } #ch .area { stroke: none; opacity: .12; }
+  #dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--accent); border: 2px solid var(--box); pointer-events: none; }
+  #vline { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--soft); opacity: .5; pointer-events: none; }
+  .axis { display: flex; justify-content: space-between; font-size: 12px; color: var(--soft); min-height: 1.5em; margin-top: 2px; }
+  .none { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 20px; font-size: 14px; color: var(--soft); }
+  dl.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; margin: 12px 0 0; }
+  dl.stats div { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); padding: 7px 0; font-size: 14px; min-height: 22px; }
+  @media (max-width: 480px) { dl.stats { grid-template-columns: 1fr; } }
+  dl.stats dt { color: var(--soft); } dl.stats dd { margin: 0; font-variant-numeric: tabular-nums; text-align: right; }
+  .note { font-size: 13px; color: var(--soft); margin: 8px 0 0; min-height: 1.5em; } .note.bad { color: var(--down); }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--line); min-height: 48px; }
+  .list li:first-child { border-top: 0; }
+  .list li a.open { flex: 1 1 auto; min-width: 0; display: flex; justify-content: space-between; gap: 10px; align-items: center; color: inherit; text-decoration: none; padding: 6px 0; min-height: 44px; }
+  .list li a.open b { font-weight: 600; } .list li a.open small { display: block; color: var(--soft); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
+  .list li a.open .n { text-align: right; font-variant-numeric: tabular-nums; }
+  .empty { font-size: 13px; color: var(--soft); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; } @media (max-width: 560px) { .two { grid-template-columns: 1fr; } }
+  #movers { min-height: 150px; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 14px; } .srcs a { color: inherit; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 18px; text-align: center; } footer a { color: inherit; }
+  a.lnk { color: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 0 6px; }
+</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/markets/currency-converter/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Markets: stock, ETF, index, currency and crypto quotes with ","url":"https://a-to-mind.com/markets/currency-converter/","description":"Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"stock price, stock quote, stock chart, aapl stock price, bitcoin price chart, eur usd exchange rate chart","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Markets: stock, ETF, index, currency and crypto quotes with ","item":"https://a-to-mind.com/markets/currency-converter/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1 id="title">Markets: stock, ETF, index, currency and crypto quotes with charts</h1>
+  <p class="intro">Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.</p>
+  <p class="sub" id="sub">See how shares, funds and prices moved today, in plain numbers: for savers, students and traders. Shares, funds (ETFs), indices, currencies and crypto. Prices may be delayed. No ads, no account.</p>
+  <nav class="sub" id="tries" aria-label="Ready examples">Try: <a class="open" href="/markets/?s=VT">a world fund, like many pensions</a> · <a class="open" href="/markets/?s=AAPL">a big company (Apple)</a> · <a class="open" href="/markets/?s=GLD">gold</a> · <a class="open" href="/markets/?s=EURUSD">euro to dollar</a></nav>
+
+  <form id="f" autocomplete="off" role="search">
+    <label class="vh" for="q">A symbol or a name: AAPL, Tesla, S&amp;P 500, BTC, EURUSD</label>
+    <input type="search" id="q" placeholder="Symbol or name: AAPL, Tesla, S&amp;P 500, BTC, EURUSD" maxlength="40" enterkeyhint="search" autocapitalize="off" spellcheck="false">
+    <div class="row"><button type="submit" class="go" id="go">Get quote</button><span class="note" id="fnote" role="status" style="margin:0"></span></div>
+  </form>
+
+  <!-- the indices strip: the links are there at once; the numbers land after load into boxes that are already their size -->
+  <div id="strip" aria-label="Indices, crypto and currencies">
+    <a href="/markets/?s=SPX"><b>S&amp;P 500</b><span>–</span><small></small></a>
+    <a href="/markets/?s=DJI"><b>Dow Jones</b><span>–</span><small></small></a>
+    <a href="/markets/?s=NDX"><b>Nasdaq 100</b><span>–</span><small></small></a>
+    <a href="/markets/?s=BTC"><b>Bitcoin</b><span>–</span><small></small></a>
+    <a href="/markets/?s=ETH"><b>Ethereum</b><span>–</span><small></small></a>
+    <a href="/markets/?s=EURUSD"><b>EUR/USD</b><span>–</span><small></small></a>
+  </div>
+
+  <nav class="tk-row" aria-label="More markets" style="margin:8px 0 0"><span class="tk-label">More</span><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
+
+  <section id="card" aria-labelledby="qn">
+    <h2 id="qn">Quote</h2>
+    <div id="qs">Type a symbol above, or open one below</div>
+    <div id="qp" aria-live="polite">–</div>
+    <div id="qm"></div>
+    <div id="qa"></div>
+    <div class="seg" id="ranges" role="group" aria-label="Chart range">
+      <button type="button" data-r="1d" aria-pressed="false">1D</button><button type="button" data-r="5d" aria-pressed="false">5D</button><button type="button" data-r="1m" aria-pressed="false">1M</button><button type="button" data-r="6m" aria-pressed="false">6M</button><button type="button" data-r="ytd" aria-pressed="false">YTD</button><button type="button" data-r="1y" aria-pressed="true">1Y</button><button type="button" data-r="5y" aria-pressed="false">5Y</button><button type="button" data-r="max" aria-pressed="false">Max</button>
+    </div>
+    <div id="readout" role="status"></div>
+    <div class="chartbox" id="cbox">
+      <svg id="ch" viewBox="0 0 600 220" preserveAspectRatio="none" tabindex="0" role="img" aria-label="Price chart. Move across it, or use the arrow keys, to read a price."><path class="area" id="area" d=""></path><path id="line" d=""></path><path id="line2" d="" style="stroke:var(--soft)"></path></svg>
+      <div id="vline" hidden></div><div id="dot" hidden></div>
+      <div class="none" id="chNone">Loading the chart</div>
+    </div>
+    <div class="axis"><span id="ax0"></span><span id="axm"></span><span id="ax1"></span></div>
+    <dl class="stats">
+      <div><dt>Previous close</dt><dd id="sPrev">–</dd></div><div><dt>Open</dt><dd id="sOpen">–</dd></div>
+      <div><dt>Day range</dt><dd id="sDay">–</dd></div><div><dt>52-week range</dt><dd id="s52">–</dd></div>
+      <div><dt>Volume</dt><dd id="sVol">–</dd></div><div><dt>Market cap</dt><dd id="sCap">–</dd></div>
+    </dl>
+    <p class="note" id="note" role="status"></p>
+    <div class="row">
+      <button type="button" id="watch" aria-pressed="false">Add to watchlist</button>
+      <button type="button" id="share">Share link</button>
+      <a class="lnk" id="cvt" href="/convert/">Convert currency</a>
+    </div>
+    <div class="row">
+      <label class="vh" for="cmp">Compare with another symbol</label>
+      <input type="search" class="box" id="cmp" placeholder="Compare with: MSFT, BTC, SPX" maxlength="40" autocapitalize="off" spellcheck="false" style="flex:1 1 180px;min-width:0">
+      <button type="button" id="cmpGo">Compare</button><button type="button" id="cmpOff" hidden>Stop comparing</button>
+    </div>
+    <div class="row">
+      <label for="on" style="font-size:14px;color:var(--soft)">Close on a day</label>
+      <input type="date" class="box" id="on" min="1990-01-01">
+      <span id="onOut" style="font-size:14px;font-variant-numeric:tabular-nums" role="status"></span>
+    </div>
+  </section>
+
+  <div class="row" style="margin-top:14px"><button type="button" id="repBtn" aria-expanded="false" aria-controls="rep">Verse reports</button><span class="note" style="margin:0">A daily wrap and a “why is it moving” line, written from the data.</span></div>
+  <section id="rep" hidden aria-label="Verse reports" style="border:1px solid var(--line);border-radius:14px;background:var(--box);padding:14px;margin-top:8px">
+    <div class="seg" role="group" aria-label="Which report" style="margin-top:0"><button type="button" id="repWrap" aria-pressed="true">Market wrap</button><button type="button" id="repWhy" aria-pressed="false">Why is <span id="repSym">AAPL</span> moving</button></div>
+    <figure id="repArt" hidden style="margin:10px 0 0"><div id="repBox" style="width:100%;aspect-ratio:16 / 9;border-radius:12px;background:rgba(127,127,127,.12);overflow:hidden"></div><figcaption class="note" id="repCredit" style="margin:4px 0 0"></figcaption></figure>
+    <p id="repText" role="status" style="font-size:16px;line-height:1.55;min-height:9em;margin:10px 0 0">Loading the report</p>
+    <p class="note" id="repLabel" style="margin:6px 0 0"></p>
+  </section>
+
+  <h2 id="wlH">Watchlist</h2>
+  <ul class="list" id="wl"><li class="empty" id="wlEmpty">Press “Add to watchlist” on a quote. The list stays on this device, refreshes while this page is open, and works with the last prices offline.</li></ul>
+  <div class="row"><button type="button" id="wlRefresh">Refresh</button><button type="button" id="wlShare">Copy watchlist link</button><button type="button" id="wlKeep" hidden>Keep this shared list</button><span class="note" id="wlNote" style="margin:0" role="status"></span></div>
+
+  <h2 id="mvH">Top movers</h2>
+  <div class="two" id="movers"><div><div class="empty" style="margin-bottom:4px">Up</div><ul class="list" id="mvUp"></ul></div><div><div class="empty" style="margin-bottom:4px">Down</div><ul class="list" id="mvDown"></ul></div></div>
+  <p class="note" id="mvNote">Among twelve large US stocks, over the last session.</p>
+
+    <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/markets/">Markets</a> <a href="/convert/">Unit converter</a> <a href="/calculator/">Calculator</a> <a href="/time/">Time zones</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+
+  <p class="srcs" id="srcs">Prices come from free public sources and may be delayed: Stooq (shares, ETFs, indices), CoinGecko (crypto), the ECB’s daily reference rates through <a href="https://frankfurter.dev/" rel="noopener">frankfurter.dev</a> (currencies); Yahoo Finance’s public chart feed fills in only when another source is down. There are no company financials, news, options or portfolios here, and nothing here trades. Not financial advice.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<script>
+  // the first paint of a quote link that the bundled record can answer (lib/markets-record.js, mirrored here; tools/markets.test.mjs checks they agree): the symbol, its kind and the
+  // close on the day are in the text at once, before the module and the price sources have been asked. Anything else waits for the module.
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search), s = (q.get('s') || '').toUpperCase().trim(), on = q.get('on') || '', $ = function (i) { return document.getElementById(i); };
+      var R = { SPX: ['S&P 500', { '2023-12-29': 4769.83, '2024-12-31': 5881.63 }], DJI: ['Dow Jones Industrial Average', { '2023-12-29': 37689.54, '2024-12-31': 42544.22 }] };
+      if (!/^[A-Z][A-Z0-9.\-]{0,5}$/.test(s)) return;
+      $('qn').textContent = R[s] ? R[s][0] : s; if (R[s]) $('qs').textContent = s + ' · Index';
+      if (R[s] && /^\d{4}-\d{2}-\d{2}$/.test(on) && R[s][1][on] != null) {
+        var m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], d = on.split('-');
+        $('on').value = on; $('onOut').textContent = 'Close on ' + (+d[2]) + ' ' + m[+d[1] - 1] + ' ' + d[0] + ': ' + R[s][1][on].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="module">
+  // everything after the first paint: the page shows its boxes and its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const [{ mountRelated }, M, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/markets.js'), import('/lib/markets-card.js')]);
+    const $ = (id) => document.getElementById(id), KEY = 'a2m.void.markets.v1', qs = new URLSearchParams(location.search);
+    let store = { list: [], q: {}, last: 'AAPL' };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    if (!Array.isArray(store.list)) store.list = []; if (!store.q || typeof store.q !== 'object') store.q = {};
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    const first = (M.resolve(qs.get('s') || '') || M.resolve(store.last) || M.resolve('AAPL')).sym;
+    const state = { sym: first, range: M.RANGES.includes(qs.get('r')) ? qs.get('r') : '1y', q: null, cmp: '', cq: null, idx: -1, on: /^\d{4}-\d{2}-\d{2}$/.test(qs.get('on') || '') ? qs.get('on') : '' };
+    const shared = qs.has('w') ? M.cleanList(qs.get('w')) : null;
+    const sign = (v) => (v == null ? '' : v >= 0 ? 'up' : 'down');
+    const arrow = (v) => (v == null ? '' : v >= 0 ? '▲ ' : '▼ ');
+    const say = (id, msg, bad) => { $(id).textContent = msg || ''; $(id).className = 'note' + (bad ? ' bad' : ''); if (id === 'fnote') $(id).style.margin = '0'; };
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const clock = (ms) => { const d = new Date(ms); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
+    const api = async (query, signal) => { try { const r = await fetch('/api/markets?' + query, { signal }); return await r.json(); } catch (e) { if (e && e.name === 'AbortError') throw e; return { ok: false, kind: 'offline' }; } };
+    const cur = (q) => (q.currency && q.currency !== 'pts' ? q.currency : '');
+
+    // ---- the quote card
+    let ctl = null;
+    async function load() {
+      if (ctl) ctl.abort(); ctl = new AbortController(); const mine = ctl, sym = state.sym, range = state.range;
+      for (const b of $('ranges').children) b.setAttribute('aria-pressed', String(b.dataset.r === range));
+      say('note', ''); $('chNone').hidden = false; $('chNone').textContent = 'Loading the chart';
+      const ask = () => api('s=' + encodeURIComponent(sym) + '&r=' + range + (state.on ? '&on=' + state.on : ''), mine.signal).catch(() => null);
+      let j = await ask(); if (j && !j.ok && (j.kind === 'limited' || j.kind === 'away')) { await new Promise((r) => setTimeout(r, 2000)); if (mine === ctl) j = await ask(); } // a busy moment: once more
+      if (!j || mine !== ctl) return;
+      if (j.ok && j.partial) { state.q = j; draw(); return; } // the sources did not answer: only the close on the day asked, from Verse's record
+      if (j.ok) { state.q = j; store.last = j.sym; store.q[j.sym] = { price: j.price, pct: j.pct, change: j.change, name: j.name, currency: j.currency, t: Date.now(), full: j }; for (const k of Object.keys(store.q)) if (k !== j.sym) delete store.q[k].full; keep(); draw(); if (state.cmp) loadCmp(); return; }
+      const saved = store.q[sym] && store.q[sym].full;
+      if (saved && j.kind === 'offline') { state.q = { ...saved, offline: true, saved: store.q[sym].t }; state.range = saved.range; for (const b of $('ranges').children) b.setAttribute('aria-pressed', String(b.dataset.r === saved.range)); draw(); return; }
+      state.q = null; { const r0 = M.resolve(sym); $('qn').textContent = (r0 && r0.name) || sym; $('qs').textContent = sym + (r0 ? ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[r0.kind] || '') : ''); } $('qp').textContent = '–'; $('qm').textContent = ''; $('qm').className = ''; $('qa').textContent = '';
+      for (const id of ['sPrev', 'sOpen', 'sDay', 's52', 'sVol', 'sCap']) $(id).textContent = '–';
+      $('line').setAttribute('d', ''); $('area').setAttribute('d', ''); $('line2').setAttribute('d', ''); $('chNone').hidden = false;
+      const gone = 'Could not load ' + sym + ' right now, try again in a minute.', msg = j.kind === 'offline' ? 'You are offline, and no price for ' + sym + ' is saved on this device yet.' : j.kind === 'none' || j.kind === 'bad' ? j.say || gone : gone;
+      $('chNone').textContent = msg; say('note', msg, true); setWatch();
+    }
+    function draw() {
+      if (!$('rep').hidden && rep.kind === 'why') report();
+      const q = state.q, c = cur(q), money = (v) => (v == null ? '–' : M.fmtPrice(v) + (c ? ' ' : ''));
+      $('qn').textContent = q.name || q.sym; $('qs').textContent = q.sym + ' · ' + ({ stock: 'Stock or ETF', index: 'Index', crypto: 'Crypto', fx: 'Currency' }[q.kind] || 'Symbol') + (c ? ' · ' + c : '');
+      $('qp').textContent = M.fmtPrice(q.price); $('qm').textContent = arrow(q.change) + M.fmtMove(q.change, q.pct) + ' today'; $('qm').className = sign(q.change); if (q.partial) $('qm').textContent = '';
+      $('qa').textContent = (q.offline ? 'Offline: the last price saved on this device, ' + new Date(q.saved).toLocaleString() + '. ' : 'Source: ' + q.source + '. ') + 'Data may be delayed' + (q.offline || !q.asOf ? '.' : '; as of ' + M.fmtDay(q.asOf) + '.');
+      $('sPrev').textContent = money(q.prev); $('sOpen').textContent = money(q.open);
+      $('sDay').textContent = q.dayLow != null && q.dayHigh != null ? M.fmtPrice(q.dayLow) + ' – ' + M.fmtPrice(q.dayHigh) : '–';
+      $('s52').textContent = q.lo52 != null && q.hi52 != null ? M.fmtPrice(q.lo52) + ' – ' + M.fmtPrice(q.hi52) : '–';
+      $('sVol').textContent = M.fmtBig(q.volume); $('sCap').textContent = M.fmtBig(q.cap);
+      say('note', q.note || '', false); setWatch(); drawChart();
+      $('onOut').textContent = ''; if (state.on) showOn();
+      document.title = q.sym + ' ' + M.fmtPrice(q.price) + ' · Markets · Verse';
+    }
+    function showOn() {
+      const q = state.q; if (!q || !state.on) return; $('on').value = state.on;
+      $('onOut').textContent = q.on === state.on ? (q.closeOn ? 'Close on ' + M.fmtDay(Date.parse(q.closeOn.date + 'T00:00:00Z')) + ': ' + M.fmtPrice(q.closeOn.close) + (cur(q) ? ' ' + cur(q) : '') : 'No close found on or before that day.') : '';
+    }
+    function drawChart() {
+      const q = state.q, pts = q.points || [], p = M.chartPath(pts), cmp = state.cmp && state.cq && state.cq.points ? M.comparePaths(pts, state.cq.points) : null;
+      $('cmpOff').hidden = !state.cmp; state.idx = -1; hideHover();
+      if (!p.d) { $('chNone').hidden = false; $('chNone').textContent = 'No chart for this range.'; for (const a of ['ax0', 'axm', 'ax1']) $(a).textContent = ''; $('line').setAttribute('d', ''); $('area').setAttribute('d', ''); $('line2').setAttribute('d', ''); return; }
+      $('chNone').hidden = true;
+      const up = (q.rangeChange == null ? q.change : q.rangeChange) >= 0, col = up ? 'var(--up)' : 'var(--down)';
+      if (cmp) { $('line').setAttribute('d', cmp.a); $('line').style.stroke = 'var(--accent)'; $('line2').setAttribute('d', cmp.b); $('area').setAttribute('d', ''); }
+      else { $('line').setAttribute('d', p.d); $('line').style.stroke = col; $('line2').setAttribute('d', ''); $('area').setAttribute('d', p.d + ' L600 220 L0 220 Z'); $('area').style.fill = col; }
+      $('ax0').textContent = M.fmtDay(pts[0][0]); $('ax1').textContent = M.fmtDay(pts[pts.length - 1][0]);
+      $('axm').textContent = cmp ? q.sym + ' ' + (cmp.endA >= 0 ? '+' : '−') + Math.abs(cmp.endA).toFixed(1) + '% · ' + state.cq.sym + ' ' + (cmp.endB >= 0 ? '+' : '−') + Math.abs(cmp.endB).toFixed(1) + '%' : (q.rangePct == null ? '' : M.fmtMove(q.rangeChange, q.rangePct).replace(/^.*?\(/, '').replace(')', '') + ' over ' + M.RANGE_LABEL[q.range]);
+      $('readout').textContent = cmp ? 'Blue is ' + q.sym + ', grey is ' + state.cq.sym + ', both as the percent change from the start. Move across the chart to read them.' : 'Move across the chart to read a price.';
+      geo = { xy: p.xy, pts, lo: p.lo, hi: p.hi };
+    }
+    let geo = null;
+    function hideHover() { $('dot').hidden = true; $('vline').hidden = true; }
+    function hover(i) {
+      if (!geo || !geo.pts.length) return; i = Math.max(0, Math.min(geo.pts.length - 1, i)); state.idx = i;
+      const [t, v] = geo.pts[i], x = geo.xy[i][0] / 600 * 100;
+      $('vline').hidden = false; $('vline').style.left = x + '%';
+      let msg = M.fmtDay(t) + (state.q.range === '1d' ? ' ' + clock(t) : '') + ' · ' + M.fmtPrice(v) + (cur(state.q) ? ' ' + cur(state.q) : '');
+      if (state.cmp && state.cq && state.cq.points) {
+        const cp = state.cq.points; let best = cp[0]; for (const p of cp) if (Math.abs(p[0] - t) < Math.abs(best[0] - t)) best = p;
+        msg = M.fmtDay(t) + ' · ' + state.q.sym + ' ' + ((v / geo.pts[0][1] - 1) * 100).toFixed(1) + '% · ' + state.cq.sym + ' ' + ((best[1] / cp[0][1] - 1) * 100).toFixed(1) + '%'; $('dot').hidden = true;
+      } else { $('dot').hidden = false; $('dot').style.left = x + '%'; $('dot').style.top = (geo.xy[i][1] / 220 * 100) + '%'; }
+      $('readout').textContent = msg;
+    }
+    const at = (ev) => { const r = $('ch').getBoundingClientRect(); if (!geo || !r.width) return -1; const f = (ev.clientX - r.left) / r.width * 600; let b = 0; for (let i = 0; i < geo.xy.length; i++) if (Math.abs(geo.xy[i][0] - f) < Math.abs(geo.xy[b][0] - f)) b = i; return b; };
+    $('cbox').addEventListener('pointermove', (ev) => { const i = at(ev); if (i >= 0) hover(i); });
+    $('cbox').addEventListener('pointerleave', () => { hideHover(); });
+    $('ch').addEventListener('keydown', (ev) => { if (!geo) return; if (ev.key === 'ArrowLeft') { hover(state.idx < 0 ? geo.pts.length - 1 : state.idx - 1); ev.preventDefault(); } else if (ev.key === 'ArrowRight') { hover(state.idx < 0 ? 0 : state.idx + 1); ev.preventDefault(); } else if (ev.key === 'Home') { hover(0); ev.preventDefault(); } else if (ev.key === 'End') { hover(geo.pts.length - 1); ev.preventDefault(); } });
+
+    async function loadCmp() {
+      const r = M.resolve(state.cmp); if (!r) { state.cmp = ''; state.cq = null; say('note', 'Type a symbol to compare with.', true); drawChart(); return; }
+      const j = await api('s=' + encodeURIComponent(r.sym) + '&r=' + state.range);
+      if (j.ok) { state.cmp = r.sym; state.cq = j; say('note', j.note || state.q.note || '', false); } else { state.cmp = ''; state.cq = null; say('note', j.say || 'No price for ' + r.sym + '.', true); }
+      if (state.q) drawChart();
+    }
+
+    // ---- the watchlist (on this device)
+    const list = () => (shared || store.list);
+    function setWatch() { const w = $('watch'), on = store.list.includes(state.sym); w.setAttribute('aria-pressed', String(on)); w.textContent = on ? 'Remove from watchlist' : 'Add to watchlist'; }
+    function row(sym, q) {
+      const li = document.createElement('li'), a = document.createElement('a'), l = document.createElement('div'), r = document.createElement('div'), b = document.createElement('b'), s = document.createElement('small'), p = document.createElement('div'), m = document.createElement('div');
+      a.className = 'open'; a.href = '/markets/?s=' + encodeURIComponent(sym); b.textContent = sym; s.textContent = (q && q.name) || ''; l.append(b, s);
+      p.textContent = q && q.price != null ? M.fmtPrice(q.price) : '–'; m.textContent = q && q.pct != null ? arrow(q.pct) + (q.pct >= 0 ? '+' : '−') + Math.abs(q.pct).toFixed(2) + '%' : ''; m.className = q ? sign(q.pct) : ''; m.style.fontSize = '13px'; r.className = 'n'; r.append(p, m);
+      a.append(l, r); li.append(a);
+      if (!shared) { const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + sym + ' from the watchlist'); x.addEventListener('click', () => { store.list = store.list.filter((y) => y !== sym); keep(); paintList(); setWatch(); }); li.append(x); }
+      return li;
+    }
+    function paintList(fresh) {
+      const L = list(), ul = $('wl'); $('wlKeep').hidden = !shared; $('wlShare').hidden = !L.length;
+      if (!L.length) { ul.replaceChildren($('wlEmpty')); return; }
+      ul.replaceChildren(...L.map((s) => row(s, (fresh && fresh[s]) || store.q[s])));
+    }
+    let wlBusy = false;
+    async function refresh() {
+      const L = list(); if (!L.length || wlBusy) return; wlBusy = true; $('wlRefresh').disabled = true;
+      const got = {}; let failed = 0;
+      for (let i = 0; i < L.length; i += 12) { const j = await api('w=' + encodeURIComponent(L.slice(i, i + 12).join(','))); if (j.ok) for (const q of j.quotes) { if (q.ok) { got[q.sym] = q; if (!shared) store.q[q.sym] = { ...(store.q[q.sym] || {}), price: q.price, pct: q.pct, change: q.change, name: q.name, currency: q.currency, t: Date.now() }; } else failed++; } else failed += 12; }
+      if (!shared) keep(); paintList(got); wlBusy = false; $('wlRefresh').disabled = false;
+      say('wlNote', failed ? (Object.keys(got).length ? failed + ' not answered; ' : 'Offline or no answer; ') + 'showing the last saved prices.' : 'Updated ' + clock(Date.now()) + '. Prices may be delayed.', false); $('wlNote').style.margin = '0';
+    }
+    $('wlRefresh').addEventListener('click', refresh);
+    $('watch').addEventListener('click', () => { const s = state.sym; store.list = store.list.includes(s) ? store.list.filter((y) => y !== s) : store.list.concat(s).slice(0, 20); keep(); setWatch(); if (!shared) { paintList(); refresh(); } });
+    $('wlKeep').addEventListener('click', () => { store.list = M.cleanList(store.list.concat(shared)); keep(); location.href = '/markets/?s=' + encodeURIComponent(state.sym); });
+    const copy = async (b, text) => { const w = b.textContent; try { await navigator.clipboard.writeText(text); b.textContent = 'Copied'; } catch (_) { b.textContent = 'Select the address bar'; } setTimeout(() => { b.textContent = w; }, 1200); };
+    $('wlShare').addEventListener('click', () => copy($('wlShare'), location.origin + '/markets/?w=' + encodeURIComponent(list().join(','))));
+    $('share').addEventListener('click', async () => { const url = location.origin + '/markets/?s=' + encodeURIComponent(state.sym) + '&r=' + state.range + (state.on ? '&on=' + state.on : ''); if (navigator.share) { try { await navigator.share({ title: (state.q && state.q.name || state.sym) + ' · Markets · Verse', url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } } copy($('share'), url); });
+    if (shared) { $('wlH').textContent = 'Shared watchlist'; }
+
+    // ---- the strip and the movers
+    async function loadStrip() {
+      const j = await api('strip=1'); if (!j.ok) return; const by = {}; for (const q of j.quotes) by[q.sym] = q;
+      for (const a of $('strip').children) { const q = by[M.resolve(new URL(a.href).searchParams.get('s')).sym]; if (!q) continue; a.children[1].textContent = M.fmtPrice(q.price); const s = a.children[2]; s.textContent = q.pct == null ? '' : arrow(q.pct) + (q.pct >= 0 ? '+' : '−') + Math.abs(q.pct).toFixed(2) + '%'; s.className = sign(q.pct); }
+    }
+    async function loadMovers() {
+      const j = await api('movers=1'); if (!j.ok) { $('mvNote').textContent = 'Top movers are not available just now.'; return; }
+      const fill = (ul, rows) => ul.replaceChildren(...rows.map((q) => row(q.sym, q)).map((li) => { const b = li.querySelector('button'); if (b) b.remove(); return li; }));
+      fill($('mvUp'), j.up); fill($('mvDown'), j.down); $('mvNote').textContent = 'Among ' + j.of + ' large US stocks, over the last session. Prices may be delayed.';
+    }
+
+
+    // ---- Verse reports: fetched only when opened (after the load event, never before); one per window for everyone on the server (lib/report-run.js)
+    const rep = { kind: 'wrap', got: {} };
+    async function report() {
+      const kind = rep.kind, sym = state.sym, id = kind === 'wrap' ? 'wrap' : sym; $('repSym').textContent = sym;
+      for (const [b, k] of [['repWrap', 'wrap'], ['repWhy', 'why']]) $(b).setAttribute('aria-pressed', String(k === kind));
+      if (rep.got[id]) { paintRep(rep.got[id]); return; }
+      $('repText').textContent = 'Loading the report'; $('repLabel').textContent = '';
+      let j; try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'market-report', kind, s: sym }) }); j = await r.json(); } catch (_) { j = { ok: false, say: 'You are offline: reports need the network.' }; }
+      if (rep.kind !== kind || (kind === 'why' && state.sym !== sym)) return;
+      if (j.ok) rep.got[id] = j; paintRep(j);
+    }
+    // the day's illustration for the wrap (lib/daily-art.js, owner 2026-10-26): its box is kept before the picture arrives; loaded only when the wrap is opened
+    let art = null;
+    async function paintArt(j) {
+      $('repArt').hidden = rep.kind !== 'wrap'; if (rep.kind !== 'wrap' || !j || !j.ok) return;
+      const mood = ['hopeful', 'calm', 'tense'].includes(j.mood) ? j.mood : '', key = mood + '|' + (j.window || '');
+      if (art === key) return; art = key;
+      try {
+        const D = await import('/lib/daily-art.js'), d = D.dailyArtImg('finance', 'wrap', { day: (j.window || '').slice(0, 10), mood }); if (!d.src) return;
+        const img = new Image(); img.width = d.width; img.height = d.height; img.alt = d.alt; img.decoding = 'async'; img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+        img.addEventListener('load', () => $('repBox').replaceChildren(img)); img.addEventListener('error', () => { $('repArt').hidden = true; }); img.src = d.src;
+        D.dailyArtInfo('finance', 'wrap', { day: (j.window || '').slice(0, 10), mood }).then((i) => D.mountCredit($('repCredit'), i));
+      } catch (_) {}
+    }
+    function paintRep(j) { paintArt(j); $('repText').textContent = j.ok ? j.text : j.say || 'No report just now.'; $('repLabel').textContent = j.ok ? j.label + (j.polished ? '' : ' Plain template text.') : ''; }
+    $('repBtn').addEventListener('click', () => { const open = $('rep').hidden; $('rep').hidden = !open; $('repBtn').setAttribute('aria-expanded', String(open)); if (open) report(); });
+    $('repWrap').addEventListener('click', () => { rep.kind = 'wrap'; report(); });
+    $('repWhy').addEventListener('click', () => { rep.kind = 'why'; report(); });
+
+    // ---- controls
+    $('f').addEventListener('submit', (ev) => {
+      ev.preventDefault(); const r = M.resolve($('q').value); if (!r) { say('fnote', 'Try a ticker (AAPL), a company (Tesla), an index (S&P 500), a coin (BTC) or a pair (EURUSD).', true); return; }
+      say('fnote', ''); state.sym = r.sym; state.on = ''; $('on').value = ''; $('cmp').value = ''; state.cmp = ''; state.cq = null; $('q').value = ''; history.replaceState(null, '', '/markets/?s=' + encodeURIComponent(r.sym) + '&r=' + state.range); load();
+    });
+    $('ranges').addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (!b) return; state.range = b.dataset.r; history.replaceState(null, '', '/markets/?s=' + encodeURIComponent(state.sym) + '&r=' + state.range + (state.on ? '&on=' + state.on : '')); load(); });
+    $('cmpGo').addEventListener('click', () => { state.cmp = $('cmp').value; loadCmp(); });
+    $('cmp').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); state.cmp = $('cmp').value; loadCmp(); } });
+    $('cmpOff').addEventListener('click', () => { state.cmp = ''; state.cq = null; $('cmp').value = ''; if (state.q) drawChart(); });
+    $('on').addEventListener('change', () => { state.on = $('on').value; load(); });
+    $('strip').addEventListener('click', (ev) => { const a = ev.target.closest('a'); if (!a) return; ev.preventDefault(); const r = M.resolve(new URL(a.href).searchParams.get('s')); state.sym = r.sym; state.cmp = ''; state.cq = null; state.on = ''; history.replaceState(null, '', a.getAttribute('href') + '&r=' + state.range); load(); scrollTo({ top: 0 }); });
+    document.addEventListener('click', (ev) => { const a = ev.target.closest('a.open'); if (!a || !new URL(a.href).searchParams.has('s')) return; ev.preventDefault(); const r = M.resolve(new URL(a.href).searchParams.get('s')); if (!r) return; state.sym = r.sym; state.cmp = ''; state.cq = null; state.on = ''; history.replaceState(null, '', '/markets/?s=' + encodeURIComponent(r.sym) + '&r=' + state.range); load(); $('card').scrollIntoView({ block: 'start' }); });
+    setInterval(() => { if (document.visibilityState === 'visible' && list().length) refresh(); }, 60000);
+
+    if (qs.get('c')) { state.cmp = qs.get('c'); $('cmp').value = state.cmp; }
+    setWatch(); paintList(); load(); if (list().length) refresh(); loadStrip(); loadMovers();
+    mountRelated($('related'), '/markets/', [{ label: 'Convert currency', href: () => '/convert/' }], { card: () => cardAsk(state.sym) }); // a coin open here: its own price card, not the board
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>
