@@ -47,6 +47,7 @@
 <link rel="modulepreload" href="/lib/converter-ask.js">
 <link rel="modulepreload" href="/lib/brain-ask.js">
 <link rel="modulepreload" href="/lib/local-ask.js">
+<link rel="modulepreload" href="/lib/image-handoff.js">
 <link rel="modulepreload" href="/lib/imgfit.js">
 <!-- /modulepreload -->
 </head>
@@ -75,6 +76,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
+  import { receiveImage } from '/lib/image-handoff.js';
   import { toPx, fitBox, fitSize, pdfOfJpeg, cropBox } from '/lib/imgfit.js';
   const $ = (id) => document.getElementById(id); let bmp = null, src = null, rot = 0, view = { zoom: 1, cx: 0.5, cy: 0.5 }, token = 0, urls = [], later = 0;
   // the picture turned a quarter at a time: drawn once onto a canvas that is the source from then on
@@ -104,7 +106,10 @@
     $('note').textContent = !limit ? 'JPEG at a good quality.' : r.fits ? 'JPEG quality ' + Math.round(r.quality * 100) + '%, the highest that fits the limit.' : 'Even at the lowest quality it is ' + kbText(r.smallest) + ': ask for a smaller size, or a larger limit.';
     $('result').dataset.bytes = String(r.bytes.length); $('result').dataset.fits = String(r.fits);
   }
-  $('file').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { bmp = await createImageBitmap(f); rot = 0; src = null; view = { zoom: 1, cx: 0.5, cy: 0.5 }; $('zoom').value = '1'; const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } });
+  // a photo chosen here, or handed over by another page (lib/image-handoff.js, ?img=handoff)
+  const loadFile = async (f) => { try { bmp = await createImageBitmap(f); rot = 0; src = null; view = { zoom: 1, cx: 0.5, cy: 0.5 }; $('zoom').value = '1'; const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } };
+  $('file').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) loadFile(f); });
+  receiveImage(loadFile);
   for (const id of ['w', 'h', 'u', 'dpi', 'kb', 'fit']) $(id).addEventListener('input', () => render());
   // the presets fill the form; a picture already chosen is made again at once
   for (const b of $('presets').querySelectorAll('button[data-p]')) b.addEventListener('click', () => { const [w, h, u, dpi, kb] = b.dataset.p.split(','); $('w').value = w; $('h').value = h; $('u').value = u; $('dpi').value = dpi; $('kb').value = +kb ? kb : '';
