@@ -33,6 +33,12 @@ test('5 m c: the invented notation clause is cut, and the reading is named by it
   assert.match(out, /^5-Methylcytosine: /m, 'a label with a word the page lacks takes the page title');
 });
 
+test('one line with a colon is a sentence, not a list of readings: its words stay (main red on the router checks, 2026-10-30)', () => {
+  assert.equal(titledReadings('In short: a dimensionless quantity in fluid dynamics [1].', [MACH]), 'In short: a dimensionless quantity in fluid dynamics [1].');
+  assert.equal(titledReadings('Gemma: a short answer [1].', [{ title: 'Topic', text: 'A sourced extract: a short answer.' }]), 'Gemma: a short answer [1].');
+  assert.match(titledReadings('5 m/s (Mach): speed [1].\nIn short: speed [1].', [MACH]), /^Mach number: speed \[1\]\.\nMach number: speed \[1\]\.$/, 'two readings are relabelled');
+});
+
 test('a caveat or a notation the cited page makes stays', () => {
   const tide = { title: 'Tide', text: 'The height of the tide varies with the phase of the Moon and depends on the shape of the coastline.' };
   assert.equal(dropUnbackedClaims('The height of a tide can vary depending on the Moon [1].', [tide]), 'The height of a tide can vary depending on the Moon [1].');
