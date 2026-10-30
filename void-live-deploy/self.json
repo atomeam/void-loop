@@ -550,6 +550,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T06:01:01Z",
+   "subject": "News: swap the refused CBC feeds for CBS News"
+  },
+  {
+   "at": "2026-10-30T05:55:44Z",
+   "subject": "Growth: \"What got built\" opens the growth ledger, not a not-found card"
+  },
+  {
+   "at": "2026-10-30T05:55:09Z",
+   "subject": "Refresh deps.json for lib/measure-ask.js"
+  },
+  {
+   "at": "2026-10-30T05:54:52Z",
+   "subject": "converter: Increase MP3 Volume keeps the MP3, with no new coding"
+  },
+  {
+   "at": "2026-10-30T05:53:54Z",
+   "subject": "Sitemap lists the 12 linked pages it missed; self-check counts a studio's own \"Use with\" row"
+  },
+  {
+   "at": "2026-10-30T05:53:39Z",
+   "subject": "verse brain: Pool header says what it does, preloads, deps and generated files"
+  },
+  {
+   "at": "2026-10-30T05:53:36Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T05:53:28Z",
+   "subject": "Cut cited caveats and notations the page does not make, convert stated quantities exactly"
+  },
+  {
+   "at": "2026-10-30T05:52:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:52:05Z",
    "subject": "Checks parse the scripts inside each page"
   },
@@ -564,6 +600,10 @@
   {
    "at": "2026-10-30T05:47:44Z",
    "subject": "Coder: drop GitHub Models, retired by GitHub on 2026-07-30"
+  },
+  {
+   "at": "2026-10-30T05:47:32Z",
+   "subject": "verse brain: organ 21, Pool (F459), SPH with a tiny network that learns its viscosity, stiffness and kernel size"
   },
   {
    "at": "2026-10-30T05:47:31Z",
@@ -588,46 +628,6 @@
   {
    "at": "2026-10-30T05:43:24Z",
    "subject": "Store: the changelog list shows the name Verse, not V01D"
-  },
-  {
-   "at": "2026-10-30T05:43:08Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T05:41:41Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:41:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:41:25Z",
-   "subject": "News: fix the page script so the headlines load again"
-  },
-  {
-   "at": "2026-10-30T05:40:36Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:39:51Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:39:49Z",
-   "subject": "Walker: copy the clear event into void.html, the source of index.html"
-  },
-  {
-   "at": "2026-10-30T05:36:28Z",
-   "subject": "Coder: show a short non-JSON model reply, escaped and masked"
-  },
-  {
-   "at": "2026-10-30T05:36:04Z",
-   "subject": "Team chat: Verse answers an agent that waits on the owner anywhere, not only in its job thread"
-  },
-  {
-   "at": "2026-10-30T05:35:56Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
