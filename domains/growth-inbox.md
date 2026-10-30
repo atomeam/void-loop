@@ -53,7 +53,7 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-28 | advice skill: random advice from a public API | new idea by growth agent; helper/advice-new |
 | building | 2026-10-28 | color palette skill: generate random harmonious color palettes on the stage | new idea by growth agent; helper/new-color-20261028 |
 | building | 2026-10-28 | proverb skill: a random proverb or saying | new idea by growth agent; helper/proverb-new |
-| building | 2026-10-28 | random number skill: roll dice or pick a random number in a range | new idea by growth agent; helper/dice |
+| building | 2026-10-28 | random number skill: roll dice or pick a random number in a range | new idea by growth agent; helper/growth-random |
 | shipped 0297c5e | 2026-10-29 | my want card names the site Versus is on, and /api/will ranks my wants by the tower target | PR #1406 |
 | shipped | 2026-10-29 | answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase | PR #1410, owner card notes 1-5 |
 | shipped | 2026-10-29 | answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write | PR #1410, owner card notes 1-5 |
@@ -64,6 +64,15 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-28 | lorem skill: generate lorem ipsum placeholder text | new idea by growth agent; helper/lorem |
 | building | 2026-10-28 | magic 8-ball skill: classic answers to yes/no questions | new idea by growth agent; helper/8ball-skill |
 | building | 2026-10-29 | yes or no skill: simple yes or no answers | new idea by growth agent; helper/yesno |
-| open | 2026-10-29 | password skill: generate a random secure password | new idea by growth agent |
-| open | 2026-10-29 | uuid skill: generate a random UUID | new idea by growth agent |
-| open | 2026-10-29 | shuffle skill: shuffle a list of items | new idea by growth agent |
+| building | 2026-10-29 | uuid skill: generate a random UUID | new idea by growth agent; helper/growth-uuid |
+| building | 2026-10-29 | password skill: generate a random secure password | new idea by growth agent; helper/growth-password |
+| building | 2026-10-29 | shuffle skill: shuffle a list of items | new idea by growth agent; helper/shuffle |
+| building | 2026-10-29 | random emoji skill: pick a random emoji or a few | new idea by growth agent; helper/emoji |
+| open | 2026-10-29 | timer skill: a simple countdown timer on the stage | new idea by growth agent |
+| open | 2026-10-29 | rock paper scissors skill: play a quick game | new idea by growth agent |
+| open | 2026-10-29 | stopwatch skill: a simple stopwatch on the stage | new idea by growth agent |
+| open | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent |
+| open | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent |
+| building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
+| open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
+| building | 2026-10-30 | dice skill: roll one or more dice | new idea by growth agent; helper/dice |
