@@ -6931,5 +6931,10 @@
   {"ask": "play hangman", "want": "skill:hangman"},
   {"ask": "start hangman", "want": "skill:hangman"},
   {"ask": "should I go", "want": "skill:yesno"},
-  {"ask": "yesno", "want": "skill:yesno"}
+  {"ask": "yesno", "want": "skill:yesno"},
+  {"ask": "set the stage to a retro server room", "want": "skill:backdrop"},
+  {"ask": "stage: an atmospheric study", "want": "skill:backdrop"},
+  {"ask": "check my stl file", "want": "skill:stl-check"},
+  {"ask": "is my stl watertight", "want": "skill:stl-check"},
+  {"ask": "stl checker", "want": "skill:stl-check"}
 ]
