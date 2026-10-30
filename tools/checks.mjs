@@ -572,6 +572,7 @@ for (const [name, file] of [
   ['zones', 'zones.test.mjs'],
   ['base64', 'base64.test.mjs'],
   ['toolkit', 'toolkit.test.mjs'],
+  ['studios', 'studios.test.mjs'], // the tower studios answer their own stage asks (skills/studios.js)
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
