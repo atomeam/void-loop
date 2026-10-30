@@ -3277,7 +3277,8 @@ say('nothing selected to remove');
       let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
       if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
       // "roman numerals for 2026", "2026 in roman" is handled further down
-      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:for|of)\s+(\d{1,4})$/);
+      // also "roman numeral 2024" and "2024 roman numerals", with no "for" (2026-10-30: live, they went to the web and came back as a guess)
+      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:(?:for|of)\s+)?(\d{1,4})$/) || t.match(/^(\d{1,4})\s+roman\s+numerals?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
       // "0.2 as a percent", "0.875 to a percentage"
       m = t.match(/^(\d*\.\d+|\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?(?:percent|percentage|%)$/);
@@ -3731,7 +3732,8 @@ say('nothing selected to remove');
       // roman numerals both ways: "2024 in roman numerals", "what is XLII in numbers"
       m = t.match(/^(?:convert\s+)?(\d{1,4})\s+(?:in|to|into|as)\s+roman(?:\s+numerals?)?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
-      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/);
+      // also "roman numeral mmxxiv": the letters after the words, with nothing to say what to turn them into
+      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/) || t.match(/^(?:the\s+)?roman\s+numerals?\s+([mdclxvi]{1,15})$/);
       if (m) { const V = { i: 1, v: 5, x: 10, l: 50, c: 100, d: 500, m: 1000 }; let n = 0; const r = m[1];
         for (let k = 0; k < r.length; k++) { const a = V[r[k]], b = V[r[k + 1]] || 0; n += a < b ? -a : a; }
         return { value: String(n), note: m[1].toUpperCase() + ' = ' + n }; }
