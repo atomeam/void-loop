@@ -37,8 +37,7 @@ export function providersFrom(env = process.env) {
   if (env.CLOUDFLARE_API_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: env.CLOUDFLARE_API_TOKEN,
     url: 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + (env.VERSE_CODER_CF_MODEL || FREE_MODEL), shape: 'workers' });
   // GitHub Models (a free pool that needs no key to fetch: the workflow's own token with `models: read`); unverified against GitHub's docs from the sandbox, a refusal shows in the run log
-  if (env.GH_MODELS_TOKEN) out.push({ name: 'github-models', model: env.VERSE_CODER_GHMODELS_MODEL || 'openai/gpt-4.1', key: env.GH_MODELS_TOKEN, url: 'https://models.github.ai/inference/chat/completions', shape: 'openai',
-    headers: { accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28' } });
+  // GitHub Models is gone: GitHub retired it on 2026-07-30 (docs.github.com/en/rest/models/inference), and its old endpoint answers 200 "OK" to every call
   const oa = (name, key, url, model) => { if (env[key]) out.push({ name, model, key: env[key], url, shape: 'openai' }); };
   oa('openrouter', 'OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions', env.VERSE_CODER_OPENROUTER_MODEL || 'qwen/qwen3-coder:free');
   oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'llama-3.3-70b-versatile');
@@ -46,7 +45,7 @@ export function providersFrom(env = process.env) {
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
 }
-export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'GH_MODELS_TOKEN (the workflow token, permissions: models: read)', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
+export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
 
 /** a reply body as JSON. It reads the body once as text, then tries JSON, then a server-sent-event stream (data: lines).
  * A 2xx that is neither says what came back first (status, type, size), never its body, so a 90-character note still holds the cause. */
