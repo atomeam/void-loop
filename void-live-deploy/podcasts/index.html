@@ -401,6 +401,7 @@
     $('pin').querySelector('a').addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); go({ show: 'verse' }); });
     async function route() {
       const q = here(); say('');
+      if (!q.get('show') && /^\d{1,12}$/.test(q.get('id') || '')) { q.set('show', q.get('id')); q.delete('id'); history.replaceState({}, '', '/podcasts/?' + q); } // a show link made before ?show= (?id=) still opens the show
       if (q.get('show') === 'verse') await showView({ verse: true }, q.get('ep'), +q.get('t') || 0);
       else if (q.get('show')) { if (/^\d{1,12}$/.test(q.get('show'))) await showView({ id: q.get('show') }, q.get('ep'), +q.get('t') || 0); else say('That link has no show.', true); }
       else if (q.get('feed')) { const w = P.whyNot(q.get('feed')); if (w) { say('That feed address cannot be read (' + w + ').', true); homeView(); } else await showView({ feed: q.get('feed') }, q.get('ep'), +q.get('t') || 0); }
