@@ -1,7 +1,7 @@
 // lib/zones.js: the time in any city, a converter and a meeting planner, all from the browser's own zone data (Intl), daylight saving included
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findPlace, placeAt, cityName, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
+import { findPlace, placeAt, cityName, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, countryOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
 import { sunDay, moonOfDay } from '../void-live-deploy/lib/sun-day.js';
 
 test('a city, a zone id, an alias, an abbreviation or an offset finds its zone; nonsense finds none', () => {
@@ -85,6 +85,11 @@ test('a link place "City@Area/Zone" keeps its name and zone; no "@", an empty na
 });
 
 test('a clock as a city another page can look up: its own name, the zone city for a short form or your own clock, none for an offset', () => {
+  // the country of a zone, for the pages that open what is open in a country (/time/ -> /jobs/?cc=): every zone this engine knows has one, or is no one country's
+  assert.equal(countryOf('Asia/Tokyo'), 'JP'); assert.equal(countryOf('Europe/London'), 'GB'); assert.equal(countryOf('America/Chicago'), 'US');
+  assert.equal(countryOf('Asia/Calcutta'), 'IN', 'the older name a browser may still give'); assert.equal(countryOf('Europe/Kiev'), 'UA'); assert.equal(countryOf('America/Argentina/Buenos_Aires'), 'AR');
+  for (const no of ['UTC', 'Etc/GMT+3', '', null, 'constructor', '__proto__', 'Mars/Olympus']) assert.equal(countryOf(no), '', String(no) + ' is no country');
+  for (const z of Intl.supportedValuesOf('timeZone')) if (!/^(UTC|Etc\/|GMT)/.test(z)) assert.match(countryOf(z), /^[A-Z]{2}$/, z + ' has a country');
   assert.equal(cityName({ name: 'Kyoto', tz: 'Asia/Tokyo' }), 'Kyoto');
   assert.equal(cityName({ name: 'NYC', tz: 'America/New_York' }), 'New York');
   assert.equal(cityName({ name: 'Your time (Los Angeles)', tz: 'America/Los_Angeles', you: true }), 'Los Angeles');

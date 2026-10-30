@@ -194,7 +194,7 @@ export const JOURNEYS = {
     if ((await p.evaluate(() => location.search)) !== '?d=' + soon + '&view=day') throw new Error('the calendar opened on ' + (await p.evaluate(() => location.search)) + ', not ' + soon);
     await check('the event is on the calendar on ' + soon);
   },
-  'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto': async (p, check) => {
+  'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto and the remote jobs open in Japan (none offered for UTC)': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/time/?c=Kyoto@Asia/Tokyo', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await check('the time page opened on Kyoto');
     await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#related a', { hasText: 'The weather in this city' }).click()]); await p.waitForSelector('#q');
@@ -203,6 +203,15 @@ export const JOURNEYS = {
     await open(); await Promise.all([p.waitForURL(/\/local\/\?place=/), p.locator('#related a', { hasText: 'Radio and TV in this city' }).click()]); await p.waitForSelector('#q');
     if ((await p.locator('#q').inputValue()) !== 'Kyoto') throw new Error('the local page opened on "' + (await p.locator('#q').inputValue()) + '", not Kyoto');
     await check('the local radio and TV page opened on Kyoto');
+    // the remote jobs open to people in Japan: the zone Asia/Tokyo is in JP, and /jobs/ reads JP as its Asia and Pacific region
+    await open(); if ((await p.locator('#related a', { hasText: 'Remote jobs open in this country' }).getAttribute('href')) !== '/jobs/?cc=JP') throw new Error('the jobs link is "' + (await p.locator('#related a', { hasText: 'Remote jobs open in this country' }).getAttribute('href')) + '", not /jobs/?cc=JP');
+    await Promise.all([p.waitForURL(/\/jobs\//), p.locator('#related a', { hasText: 'Remote jobs open in this country' }).click()]); await p.waitForSelector('#jb-region');
+    await p.waitForFunction(() => document.getElementById('jb-region').value === 'asia', null, { timeout: 10000 }).catch(() => {});
+    if ((await p.locator('#jb-region').inputValue()) !== 'asia') throw new Error('the jobs page opened with the region "' + (await p.locator('#jb-region').inputValue()) + '", not asia');
+    await check('the jobs page opened on the remote jobs open in Asia and Pacific (' + new URL(p.url()).search + ')');
+    await p.goto(ORIGIN + '/time/?c=UTC@UTC', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    if ((await p.locator('#related a', { hasText: 'Remote jobs open in this country' }).getAttribute('aria-disabled')) !== 'true') throw new Error('UTC, which is no country, still offers remote jobs');
+    await check('UTC is no country, so the jobs link reads as off');
   },
   'make random people, then pick one of their names at random and see the prize odds for them': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/random-user/?n=5&seed=handoff', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));

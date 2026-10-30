@@ -61,6 +61,7 @@
 <link rel="modulepreload" href="/lib/zones.js">
 <link rel="modulepreload" href="/skills/worldtime.js">
 <link rel="modulepreload" href="/lib/date-math.js">
+<link rel="modulepreload" href="/lib/job-regions.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -125,7 +126,8 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk, placeAt, cityName } from '/lib/zones.js';
+  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk, placeAt, cityName, countryOf } from '/lib/zones.js';
+  import { regionOfCountry } from '/lib/job-regions.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.time.v1', ZONES = allZones();
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
   const saved = load(), you = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -279,6 +281,7 @@
   mountRelated(document.getElementById('related'), '/time/', [
     { label: 'The weather in this city', href: () => (topCity() ? '/weather/?place=' + encodeURIComponent(topCity()) : null) },
     { label: 'Radio and TV in this city', href: () => (topCity() ? '/local/?place=' + encodeURIComponent(topCity()) : null) },
+    { label: 'Remote jobs open in this country', href: () => { const cc = countryOf((main || youPlace).tz); return regionOfCountry(cc) ? '/jobs/?cc=' + cc : null; } }, // /jobs/ reads the country as the region its listings are open in; a country no region covers gets no link
     { label: 'Put the event on my calendar', href: eventCal },
     // the matches of the event's day, else of today where the top city is (the scores page reads ?date=)
     { label: 'Matches that day', href: () => '/scores/?date=' + (evShown !== null ? isoDay(you, evShown) : isoDay((main || youPlace).tz, Date.now())) },
