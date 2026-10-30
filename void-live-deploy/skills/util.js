@@ -1,11 +1,12 @@
 /**
- * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text
+ * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes
  * Asked by the tool's name with no text yet ("qr code generator", "case converter"), the card is the tool: type and it answers as you type.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes); nothing is sent anywhere.
+ * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes, lib/hash.js for hashes); nothing is sent anywhere.
  */
 import { askColour, parse, toHex, describe } from '../lib/colour.js';
 import { qrMatrix, qrSvg } from '../lib/qr.js';
+import { ALGOS, algoOf, digestHex } from '../lib/hash.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
@@ -30,6 +31,14 @@ export function utilOf(text) {
   // the tool asked for by its name, with no text yet (2026-10-30: "qr code generator" and "case converter" fell to an article): a card that does it as you type
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?qr(?:\s*code)?\s+(?:generator|maker|creator)$|^(?:make|create|generate)\s+(?:me\s+)?(?:an?\s+)?qr(?:\s*code)?$/.test(l)) return { kind: 'qrmaker' };
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text\s+)?case\s+(?:converter|changer)$|^(?:convert|change)\s+(?:text\s+)?case$|^(?:upper|lower|title)\s*case\s+(?:converter|generator)$|^(?:upper\s*case\s+to\s+lower\s*case|lower\s*case\s+to\s+upper\s*case)$/.test(l)) return { kind: 'casemaker' };
+  // hashes (2026-10-30: "md5 of hello" and "sha256 generator" fell to an article). The tool by its name, with no text yet, is a card that hashes as you type
+  const ALGO = '(md5|sha-?1|sha-?256|sha-?384|sha-?512)';
+  if (new RegExp('^(?:(?:an?|the)\\s+)?(?:free\\s+|online\\s+)?(?:' + ALGO + '\\s+)?(?:hash|checksum|digest)?\\s*(?:generator|maker|calculator|creator)$|^' + ALGO + '\\s+(?:hash\\s+)?online$|^hash\\s+(?:a\\s+|some\\s+)?text$').test(l) && /md5|sha|hash|checksum|digest/.test(l)) {
+    const a = l.match(new RegExp(ALGO)); return { kind: 'hashmaker', algo: a ? algoOf(a[1]) : 'sha256' }; }
+  // "md5 of hello", "sha256 hash of hello world", "sha1 hello", "hash of hello", 'hash "hello"' (SHA-256 first, the others under it); the text keeps its case.
+  // A bare "hash" takes text only after of/for or in quotes: "hash browns" is food and "hash table" is a data structure
+  m = t.match(new RegExp('^(?:(?:what(?:\\s+is|\'s)\\s+)?the\\s+)?' + ALGO + '(?:\\s+(?:hash|checksum|digest|sum))?\\s+(?:of|for)\\s+(.{1,2000})$|^(?:hash|checksum)\\s+(?:(?:of|for)\\s+(.{1,2000})|(["“\'‘].{1,2000}["”\'’]))$|^' + ALGO + '(?:\\s+hash)?\\s+(?!(?:vs|versus|or|and|is|meaning|decrypt|decoder|decode|reverse|algorithm|collision|length|example)\\b)(.{1,2000})$', 'i'));
+  if (m) { const s = (m[2] ?? m[3] ?? m[4] ?? m[6]).replace(/^["“'‘](.*)["”'’]$/s, '$1'); if (s) return { kind: 'hash', algo: m[1] ? algoOf(m[1]) : m[5] ? algoOf(m[5]) : 'sha256', s }; }
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/);
   if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
   m = l.match(/^(#[0-9a-f]{6}|#[0-9a-f]{3})$/); // a bare hex code, the way people paste one into a colour site
@@ -153,6 +162,24 @@ async function run(text, api) {
     const paint = () => { if (out && box) out.textContent = CASES[how](box.value); };
     if (box) box.addEventListener('input', paint);
     for (const b of (el && el.querySelectorAll ? el.querySelectorAll('.util-case') : [])) b.addEventListener('click', () => { how = b.dataset.how; paint(); });
+  } else if (q.kind === 'hash') {
+    // the asked-for hash first and big, the others under it; every one is the UTF-8 bytes of the text, as `echo -n text | md5sum` gives
+    const order = [q.algo, ...ALGOS.map((a) => a.id).filter((x) => x !== q.algo)], name = (id) => ALGOS.find((a) => a.id === id).name;
+    const sums = await Promise.all(order.map((id) => digestHex(id, q.s).catch(() => '')));
+    el = showPage((p) => { p.innerHTML = '<h2>' + esc(name(q.algo)) + '</h2><div class="sub">of “' + esc(q.s.length > 120 ? q.s.slice(0, 120) + '…' : q.s) + '”</div>' + big(sums[0], 18) + copyBtn // ellipsis-ok: only the shown label is cut, the hash is of the whole text
+      + '<ul style="margin:10px 0 0;padding-left:18px;word-break:break-all;font-size:13px">' + order.slice(1).map((id, i) => '<li><b>' + esc(name(id)) + '</b> <code>' + esc(sums[i + 1]) + '</code></li>').join('') + '</ul>'
+      + '<p style="color:#8a8a8a">The text as UTF-8 bytes, hashed in your browser and never sent anywhere. MD5 and SHA-1 are broken for security: use SHA-256 or longer for anything that must not be forged.</p>'; });
+  } else if (q.kind === 'hashmaker') {
+    const order = [q.algo, ...ALGOS.map((a) => a.id).filter((x) => x !== q.algo)];
+    el = showPage((p) => { p.innerHTML = '<h2>Hash generator</h2><textarea class="util-in" rows="3" placeholder="your text" aria-label="Text to hash" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px"></textarea>'
+      + '<ul class="util-hashes" style="margin:10px 0 0;padding-left:18px;word-break:break-all;font-size:13px">' + order.map((id) => '<li><b>' + esc(ALGOS.find((a) => a.id === id).name) + '</b> <code data-algo="' + esc(id) + '"></code></li>').join('') + '</ul>'
+      + '<p style="color:#8a8a8a">Type and every hash updates. The text as UTF-8 bytes, hashed in your browser and never sent anywhere. MD5 and SHA-1 are broken for security: use SHA-256 or longer for anything that must not be forged.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), codes = el && el.querySelectorAll ? [...el.querySelectorAll('code[data-algo]')] : [];
+    let turn = 0;
+    const paint = async () => { const mine = ++turn, v = box ? box.value : ''; const sums = await Promise.all(codes.map((c) => digestHex(c.dataset.algo, v).catch(() => '')));
+      if (mine === turn) codes.forEach((c, i) => { c.textContent = sums[i]; }); }; // a slower answer for older text never overwrites a newer one
+    if (box) box.addEventListener('input', paint);
+    paint();
   } else if (q.kind === 'color') {
     const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
@@ -208,8 +235,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator'],
-  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter'],
+  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world'],
+  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

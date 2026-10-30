@@ -3207,7 +3207,7 @@
    "chapter": "numbers",
    "name": "util",
    "title": "Util",
-   "line": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text",
+   "line": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes",
    "examples": [
     "generate a password",
     "qr code for a-to-mind.com",
