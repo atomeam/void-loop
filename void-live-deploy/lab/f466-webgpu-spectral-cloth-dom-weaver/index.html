@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root { --energy: 0.3; --hue: 200; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family: system-ui, sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+canvas { position:absolute; inset:0; width:100%; height:100%; display:block; background:radial-gradient(ellipse at 50% 40%, #1a1a2e 0%, #0a0a12 70%); }
+#tiles { position:absolute; inset:0; pointer-events:none; }
+.tile { position:absolute; width:140px; height:90px; background:rgba(20,30,50,0.75); border:1px solid rgba(100,180,255,0.4); border-radius:8px; padding:8px; font-size:12px; box-shadow:0 4px 12px rgba(0,0,0,0.4); transform-origin:center; transition:filter 0.2s, border-color 0.3s; pointer-events:auto; cursor:grab; overflow:hidden; }
+.tile:active { cursor:grabbing; }
+.tile.pinned { border-color:#ffaa00; box-shadow:0 0 12px #ffaa00; }
+.tile .content { outline:none; min-height:60px; }
+#hud { position:absolute; top:12px; left:12px; background:rgba(0,0,0,0.6); padding:10px 14px; border-radius:8px; font-size:13px; z-index:10; max-width:280px; }
+button { margin:4px 4px 0 0; padding:6px 10px; background:#223; color:#adf; border:1px solid #446; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#status { font-size:11px; opacity:0.8; margin-top:6px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-spectral-cloth-dom-weaver · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: a real-time mass-spring cloth simulation whose spring stiffness and damping are driven by live microphone spectral energy">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-spectral-cloth-dom-weaver · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: a real-time mass-spring cloth simulation whose spring stiffness and damping are driven by live microphone spectral energy">
+<meta property="og:url" content="https://a-to-mind.com/lab/f466-webgpu-spectral-cloth-dom-weaver/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f466-webgpu-spectral-cloth-dom-weaver/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="tiles"></div>
+  <div id="hud">
+    <strong>Spectral Cloth Weaver</strong><br>
+    Mic drives spring stiffness. Residual turbulence. Drag tiles to pull cloth. Click to pin.
+    <div>
+      <button id="micBtn">Enable Mic</button>
+      <button id="sealBtn">Seal Memory</button>
+      <button id="loadBtn">Replay Seal</button>
+      <button id="addTile">Add Tile</button>
+    </div>
+    <div id="status">Canvas2D mass-spring · WebGPU path noted · offline after load</div>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-spectral-cloth-dom-weaver</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
