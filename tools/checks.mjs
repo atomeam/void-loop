@@ -49,7 +49,7 @@ const ONLY_WHEN = {
   // every page doing its own job in a real browser (tools/real-pages.mjs): only the pages this branch changed, so a page edit is tested there
   'real-pages.mjs': /(?:^|\/)index\.html$|real-pages/,
   // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
-  'handoff-e2e.mjs': /void-live-deploy\/(?:bpm|metronome|chords|piano|calendar|time|weather)\/|handoff/,
+  'handoff-e2e.mjs': /void-live-deploy\/(?:(?:bpm|metronome|chords|piano|calendar|time|weather|flights|local|fantasy)\/|lib\/(?:flights-|local-media|fantasy))|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
 const readText = (f) => { try { return readFileSync(resolve(here, '..', f), 'utf8'); } catch (_) { return ''; } }; // a deleted file is no title

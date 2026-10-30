@@ -164,13 +164,6 @@
    "tests": 6
   },
   {
-   "file": "lib/qr.js",
-   "skills": 13,
-   "direct": 3,
-   "dependants": 25,
-   "tests": 3
-  },
-  {
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
@@ -283,6 +276,20 @@
    "tests": 1
   },
   {
+   "file": "lib/job-sites.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 14,
+   "tests": 2
+  },
+  {
+   "file": "lib/qr.js",
+   "skills": 9,
+   "direct": 2,
+   "dependants": 13,
+   "tests": 2
+  },
+  {
    "file": "lib/rally-rules.js",
    "skills": 9,
    "direct": 1,
@@ -315,13 +322,6 @@
    "skills": 9,
    "direct": 8,
    "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/job-sites.js",
-   "skills": 8,
-   "direct": 0,
-   "dependants": 13,
    "tests": 1
   },
   {
@@ -1638,7 +1638,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/news-week.js",
@@ -7532,7 +7532,8 @@
    "imports": [],
    "importedBy": [
     "lib/tool-sites.js",
-    "lib/toolkit.js"
+    "lib/toolkit.js",
+    "skills/work.js"
    ],
    "reachedBy": [
     "lib/card-frame.js",
@@ -9639,31 +9640,19 @@
    "importedBy": [
     "lib/card-image.js",
     "skills/spectators.js",
-    "skills/stage-image.js",
-    "skills/util.js"
+    "skills/stage-image.js"
    ],
    "reachedBy": [
-    "functions/api/mcp.js",
-    "functions/team/mcp.js",
-    "functions/tools.json.js",
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
-    "lib/mcp.js",
-    "lib/seo-audit.js",
-    "lib/team-mcp.js",
-    "lib/wordcount.js",
-    "lib/writing-aids.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
-    "skills/lorem.js",
     "skills/merge.js",
     "skills/oracle.js",
-    "skills/password.js",
-    "skills/rally.js",
-    "skills/writing-aids.js"
+    "skills/rally.js"
    ]
   },
   "lib/rally-rules.js": {
@@ -15987,7 +15976,6 @@
   "skills/util.js": {
    "imports": [
     "lib/colour.js",
-    "lib/qr.js",
     "lib/card-mini.js",
     "lib/pwcheck.js"
    ],
@@ -16175,6 +16163,7 @@
   },
   "skills/work.js": {
    "imports": [
+    "lib/job-sites.js",
     "lib/jobs-core.js"
    ],
    "importedBy": []

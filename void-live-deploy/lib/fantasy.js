@@ -61,6 +61,13 @@ export function tradeValue(sheet, give, get, col) {
 export function board(sheet, col) {
   const low = lowerIsBetter(col); return sheet.rows.map((r) => ({ name: r[sheet.nameCol], v: numOf(r[col]), row: r })).filter((x) => x.v != null).sort((a, b) => (low ? a.v - b.v : b.v - a.v));
 }
+/** the players another page gets (the wheel, the random pick, prize odds, a tournament roster): the ones picked on this tab when there are two
+ *  or more, each once and in the order picked; otherwise the top `max` of the draft board on `col`. Pure. */
+export function namesToSend(sheet, picked, col, max = 20) {
+  if (!sheet || !sheet.rows) return [];
+  const seen = new Set(), mine = (picked || []).map((n) => String(n == null ? '' : n).trim()).filter((n) => n && !seen.has(n) && seen.add(n));
+  return mine.length >= 2 ? mine : board(sheet, col).slice(0, max).map((x) => x.name);
+}
 /** one player-game per row from a game's box score (lib/scores.js readSummary players): { name, team, date, home, group, stats: { label: number }, fpts } for each player. Pure. */
 export function entriesFrom(sum, grp, date, mode = 'ppr') {
   const g = sum && sum.game; if (!g) return [];

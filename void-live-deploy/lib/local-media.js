@@ -111,6 +111,14 @@ export function placeFromGeocoder(g) {
   return { city: cleanText(g.name, 80), region: cleanText(g.admin1, 80), regionCode: '', country: String(g.country_code).toUpperCase(),
     lat: Math.round(g.latitude * 100) / 100, lon: Math.round(g.longitude * 100) / 100 };
 }
+/** a place another page hands over in the link, in the same shape: ?place=<name>&ll=<lat>,<lon>&cc=<country code>, as a flight's arrival
+ *  airport sends it, so the stations are found at that exact point with no name to look up. null when any part is missing or wrong. Pure. */
+export function placeFromLink(search) {
+  const q = new URLSearchParams(search || ''), city = cleanText(q.get('place'), 80), cc = String(q.get('cc') || '').toUpperCase();
+  const ll = String(q.get('ll') || '').split(','), lat = Number(ll[0]), lon = Number(ll[1]);
+  if (!city || ll.length !== 2 || ll.some((x) => x.trim() === '') || !Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180 || !/^[A-Z]{2}$/.test(cc)) return null;
+  return { city, region: '', regionCode: '', country: cc, lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 };
+}
 /** the place in words: "Philadelphia, Pennsylvania" (the country code after it when it is not the US). Pure. */
 export const placeName = (p) => !p ? '' : [p.city, p.region].filter(Boolean).filter((x, i, a) => a.indexOf(x) === i).join(', ') + (p.country && p.country !== 'US' ? ' (' + p.country + ')' : '');
 /** TV rows of one station folded together: a call sign carries each network it airs (KYW-DT: CBS, Dabl, Start TV), each with its own stream

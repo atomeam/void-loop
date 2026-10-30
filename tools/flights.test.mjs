@@ -162,7 +162,7 @@ test('the stage card: takes flight asks, leaves distance asks to the distance sk
 });
 
 test('the leg links: the landing moment in both cities with their zones, the weather at the arrival airport, and the flight as a calendar event', async () => {
-  const a = { iata: 'JFK', city: 'New York', tz: 'America/New_York', country: 'United States', lat: 40.6413, lon: -73.7781 }, b = { iata: 'OGG', city: 'Kahului, Maui', tz: 'Pacific/Honolulu', country: 'United States', lat: 20.8986, lon: -156.4305 };
+  const a = { iata: 'JFK', city: 'New York', tz: 'America/New_York', country: 'United States', lat: 40.6413, lon: -73.7781 }, b = { iata: 'OGG', city: 'Kahului, Maui', cc: 'US', tz: 'Pacific/Honolulu', country: 'United States', lat: 20.8986, lon: -156.4305 };
   const f = C.legFacts(a, b, '2026-11-20T09:00'), l = C.legLinks(a, b, f), u = (s) => new URL(s, 'https://verse.test');
   const tm = u(l.time); assert.equal(tm.pathname, '/time/'); assert.equal(Date.parse(tm.searchParams.get('at')), f.arrUtc);
   assert.deepEqual(tm.searchParams.get('cities').split(','), ['New York@America/New_York', 'Kahului Maui@Pacific/Honolulu'], 'a comma in a city name never splits the list');
@@ -172,5 +172,8 @@ test('the leg links: the landing moment in both cities with their zones, the wea
   const { eventFromLink } = await import('../void-live-deploy/lib/calendar.js'), ev = eventFromLink(u(l.calendar).searchParams.get('e'));
   assert.equal(ev.title, 'Flight JFK → OGG'); assert.equal(ev.start, '2026-11-20T09:00'); assert.equal(ev.tz, 'America/New_York'); assert.equal(ev.location, 'New York');
   assert.equal(C.localToUtc('America/New_York', ev.end), f.arrUtc, 'the event ends when the flight lands'); assert.ok(ev.notes.includes(f.arrDate + ' ' + f.arrTime));
-  for (const s of ['Landing time in both cities', 'Weather where it lands', 'Add the flight to my calendar']) assert.ok(DE[s], 'German for ' + s);
+  const { placeFromLink } = await import('../void-live-deploy/lib/local-media.js'), lo = u(l.local);
+  assert.equal(lo.pathname, '/local/'); assert.deepEqual(placeFromLink(lo.search), { city: 'Kahului Maui', region: '', regionCode: '', country: 'US', lat: 20.9, lon: -156.43 }, 'the stations are found at the arrival airport, with no name to look up');
+  assert.equal(C.legLinks(a, { ...b, cc: '' }, f).local, '', 'no country, no local link');
+  for (const s of ['Landing time in both cities', 'Weather where it lands', 'Add the flight to my calendar', 'Radio and TV where it lands']) assert.ok(DE[s], 'German for ' + s);
 });

@@ -17,7 +17,7 @@ const img = (w, h, f) => { const data = new Uint8ClampedArray(w * h * 4); for (l
 test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the counts the page shows', () => {
   assert.equal(C.CATALOG.length, 106);
   assert.equal(new Set(C.CATALOG.map((t) => t.id)).size, 106);
-  assert.deepEqual(C.counts(), { here: 63, verse: 18, part: 13, no: 12, all: 106 });
+  assert.deepEqual(C.counts(), { here: 64, verse: 18, part: 13, no: 11, all: 106 });
   for (const t of C.CATALOG) {
     assert.ok(C.CATS.includes(t.cat), t.id + ' category'); assert.ok(['here', 'verse', 'part', 'no'].includes(t.status), t.id + ' status');
     assert.ok(t.note && t.note.length > 10, t.id + ' says why'); if (t.status === 'verse') assert.match(t.href, /^\/[a-z-]+\//, t.id + ' links the Verse page');
@@ -40,6 +40,7 @@ test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the 
   assert.match(C.toolOf('video-wmv').note, /no browser can code/); assert.equal(C.toolOf('video-mp4').to, 'mp4'); assert.equal(C.toolOf('video-webm').from, 'video');
   assert.equal(C.search('mov to avi')[0].tool.id, 'video-avi'); assert.equal(C.search('mov to flv')[0].tool.id, 'video-flv'); assert.equal(C.MIME.flv, 'video/x-flv'); assert.equal(C.search('mov to wmv')[1].tool.id, 'video-mp4'); assert.equal(C.MIME.avi, 'video/x-msvideo'); assert.equal(C.search('mov to webm')[0].tool.id, 'video-webm'); assert.equal(C.search('webm to mkv')[0].tool.id, 'video-mkv'); assert.equal(C.search('mp4 to mov')[0].tool.id, 'video-mov');
   assert.equal(C.toolOf('audio-wav').status, 'here'); assert.equal(C.toolOf('audio-mp3').status, 'no'); assert.equal(C.toolOf('image-png').status, 'here');
+  assert.equal(C.toolOf('image-dng').status, 'here'); assert.equal(C.toolOf('image-dng').to, 'dng'); assert.match(C.toolOf('image-dng').note, /not the sensor data/); assert.equal(C.MIME.dng, 'image/x-adobe-dng');
   assert.equal(C.toolOf('nope'), null);
 });
 
@@ -69,7 +70,7 @@ test('the format comes from the first bytes, not only from the name', () => {
   assert.equal(C.formatOf(new TextEncoder().encode('<!doctype html><p>x')), 'html');
   assert.equal(C.formatOf(new TextEncoder().encode('plain words')), 'txt');
   assert.equal(C.formatOf(C.epubOf({ title: 'T', paras: ['a'] })), 'epub');
-  assert.deepEqual(C.targetsOf('jpeg'), ['png', 'webp', 'gif', 'bmp', 'tiff', 'pdf']);
+  assert.deepEqual(C.targetsOf('jpeg'), ['png', 'webp', 'gif', 'bmp', 'tiff', 'dng', 'pdf']);
   assert.deepEqual(C.targetsOf('mp4'), ['mov', '3gp', 'webm', 'mkv', 'avi', 'flv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']); assert.deepEqual(C.targetsOf('mov'), ['mp4', '3gp', 'webm', 'mkv', 'avi', 'flv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']);
   assert.deepEqual(C.targetsOf('mp3'), ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']); assert.deepEqual(C.targetsOf('flac'), ['wav', 'aiff', 'alac', 'm4a', 'm4r', 'ogg', 'opus']);
   assert.deepEqual(C.targetsOf('mobi'), []);
@@ -125,6 +126,34 @@ test('TIFF: little-endian, RGB when opaque, RGBA with ExtraSamples when not, the
   assert.deepEqual([...o.subarray(0, 4)], [0x49, 0x49, 42, 0]); assert.equal(t[256], 2); assert.equal(t[257], 1); assert.equal(t[277], 3); assert.equal(t[262], 2); assert.equal(t[338], undefined);
   assert.deepEqual([...o.subarray(t[273], t[273] + t[279])], [0, 50, 25, 100, 50, 25]);
   const a = C.tiff(img(1, 1, () => [9, 8, 7, 6])), ta = read(a); assert.equal(ta[277], 4); assert.equal(ta[338], 2); assert.deepEqual([...a.subarray(ta[273], ta[273] + 4)], [9, 8, 7, 6]);
+});
+
+// an independent TIFF reader for the DNG: every IFD, its tags with their values (SHORT, LONG, RATIONAL, SRATIONAL, BYTE, ASCII) as the TIFF 6.0
+// and DNG specifications lay them out, then the pixel strips
+function readTiff(b) {
+  const v = dv(b), size = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 10: 8 }, one = (type, p) => type === 1 || type === 2 ? b[p] : type === 3 ? v.getUint16(p, true) : type === 4 ? v.getUint32(p, true) : (type === 5 ? v.getUint32(p, true) : v.getInt32(p, true)) / (type === 5 ? v.getUint32(p + 4, true) : v.getInt32(p + 4, true));
+  const ifd = (at) => { const n = v.getUint16(at, true), t = {}; let last = 0; for (let i = 0; i < n; i++) { const p = at + 2 + i * 12, id = v.getUint16(p, true), type = v.getUint16(p + 2, true), count = v.getUint32(p + 4, true), bytes = size[type] * count, from = bytes <= 4 ? p + 8 : v.getUint32(p + 8, true); assert.ok(id > last, 'tags in rising order'); last = id; const vals = Array.from({ length: count }, (_, k) => one(type, from + k * size[type])); t[id] = type === 2 ? String.fromCharCode(...vals).replace(/\0$/, '') : count === 1 ? vals[0] : vals; } return { t, next: v.getUint32(at + 2 + n * 12, true) }; };
+  assert.deepEqual([...b.subarray(0, 4)], [0x49, 0x49, 42, 0]); const i0 = ifd(v.getUint32(4, true)); return { ifd0: i0.t, next: i0.next, raw: ifd(i0.t[330]).t };
+}
+test('DNG: a preview in IFD 0, the picture in its SubIFD as 16-bit linear RGB, the matrix of linear sRGB, see-through on white', () => {
+  const W = 600, H = 300, pic = img(W, H, (x, y) => [x % 256, y % 256, (x + y) % 256, x === 0 && y === 0 ? 0 : 255]), o = C.dng(pic), { ifd0, next, raw } = readTiff(o);
+  assert.equal(C.formatOf(o, 'a.dng'), 'dng'); assert.equal(next, 0, 'one top-level IFD');
+  assert.deepEqual(ifd0[50706], [1, 4, 0, 0]); assert.deepEqual(ifd0[50707], [1, 1, 0, 0]); assert.equal(ifd0[50708], 'Verse picture'); assert.equal(ifd0[50778], 21, 'D65');
+  assert.deepEqual(ifd0[50728], [1, 1, 1], 'white is neutral');
+  // ColorMatrix1 times the sRGB (D65) to XYZ matrix is the identity: the camera's colours are linear sRGB
+  const M = ifd0[50721], X = [0.4124564, 0.3575761, 0.1804375, 0.2126729, 0.7151522, 0.072175, 0.0193339, 0.119192, 0.9503041];
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) assert.ok(Math.abs(M[r * 3] * X[c] + M[r * 3 + 1] * X[3 + c] + M[r * 3 + 2] * X[6 + c] - (r === c)) < 1e-4, 'identity ' + r + c);
+  assert.equal(ifd0[254], 1); assert.equal(ifd0[256], 256); assert.equal(ifd0[257], 128); assert.deepEqual(ifd0[258], [8, 8, 8]); assert.equal(ifd0[262], 2); assert.equal(ifd0[279], 256 * 128 * 3);
+  assert.equal(raw[254], 0); assert.equal(raw[256], W); assert.equal(raw[257], H); assert.deepEqual(raw[258], [16, 16, 16]); assert.equal(raw[262], 34892); assert.equal(raw[259], 1); assert.deepEqual(raw[50717], [65535, 65535, 65535]); assert.equal(raw[279], W * H * 6);
+  const v = dv(o), at = (x, y, k) => v.getUint16(raw[273] + ((y * W + x) * 3 + k) * 2, true) / 65535, lin = (c) => (c /= 255) <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  for (const [x, y] of [[1, 0], [37, 200], [255, 255], [599, 299], [300, 10]]) for (let k = 0; k < 3; k++) assert.ok(Math.abs(at(x, y, k) - lin(pic.data[(y * W + x) * 4 + k])) <= 0.5 / 65535, 'linear ' + x + ',' + y + ',' + k);
+  assert.deepEqual([0, 1, 2].map((k) => at(0, 0, k)), [1, 1, 1], 'see-through is white');
+  // the preview: a plain picture gives a plain preview of the same colour; a picture half black, half white gives black, then white
+  const plain = C.dng(img(700, 500, () => [10, 200, 90, 255])), pl = readTiff(plain).ifd0; assert.equal(pl[256], 256); assert.equal(pl[257], 183);
+  for (let i = 0; i < pl[279]; i += 3) assert.deepEqual([...plain.subarray(pl[273] + i, pl[273] + i + 3)], [10, 200, 90]);
+  const half = C.dng(img(512, 64, (x) => (x < 256 ? [0, 0, 0, 255] : [255, 255, 255, 255]))), hl = readTiff(half).ifd0, row = half.subarray(hl[273], hl[273] + 256 * 3);
+  assert.deepEqual([...row.subarray(0, 3)], [0, 0, 0]); assert.deepEqual([...row.subarray(127 * 3, 128 * 3)], [0, 0, 0]); assert.deepEqual([...row.subarray(128 * 3, 129 * 3)], [255, 255, 255]);
+  const one = readTiff(C.dng(img(1, 1, () => [10, 20, 30, 255]))); assert.equal(one.ifd0[256], 1); assert.equal(one.raw[256], 1);
 });
 
 // an independent GIF reader: the LZW decoder as the GIF89a specification describes it

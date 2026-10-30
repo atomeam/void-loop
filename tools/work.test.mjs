@@ -4,6 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import work, { workOf, workAsk } from '../void-live-deploy/skills/work.js';
+import { JOB_SITES } from '../void-live-deploy/lib/job-sites.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const JOBS = [
@@ -57,7 +58,7 @@ test('run: a place filters to listings open there, links the jobs page with both
 test('run: python finds the two python listings, newest first, with their details and sources; the off-host one is dropped', async () => {
   await withJobs({ jobs: JOBS }, async (urls) => {
     const api = apiOf(); assert.equal(await work.run('remote jobs for python', api), 'work');
-    assert.deepEqual(urls, ['/api/jobs']);
+    assert.deepEqual(urls.sort(), ['/api/jobs', '/jobs/snapshot.json']);
     const h = api.pages[0].innerHTML;
     assert.ok(h.includes('<h2>Remote work · python</h2>') && h.includes('>2 remote jobs<'), h);
     assert.ok(h.indexOf('Data Engineer (Python)') < h.indexOf('Senior Python Developer'), 'newest first');
@@ -87,5 +88,65 @@ test('run: the count says job for one listing, and says how many show when there
     const h = api.pages[0].innerHTML;
     assert.ok(h.includes('>11 remote jobs, the first 8 here<'), h);
     assert.equal((h.match(/<li>/g) || []).length, 8);
+  });
+});
+
+// 2026-10-30: each jobs page's "See it as a card on the stage" link asks its card ask; "jobs" opened a Steve Jobs disambiguation and "remote jobs by salary"
+// searched for the role "by salary". Each ask is now a jobs ask, a page's own view opens that page, and the card reads the page's snapshot too.
+test('every jobs page card ask is a jobs ask; a page view opens that page, not a role', () => {
+  const pages = JOB_SITES.filter((p) => p.path.startsWith('/jobs/') && p.card);
+  assert.ok(pages.length >= 7, String(pages.length));
+  for (const p of pages) { const a = workAsk(p.card); assert.ok(a, p.card); assert.equal(a.q, '', p.card); }
+  assert.deepEqual(workAsk('remote jobs by salary'), { q: '', loc: '', lane: '/jobs/salary/' });
+  assert.deepEqual(workAsk('job alerts'), { q: '', loc: '', lane: '/jobs/alerts/' });
+  assert.deepEqual(workAsk('remote jobs by region'), { q: '', loc: '', lane: '/jobs/regions/' });
+  assert.deepEqual(workAsk('remote companies hiring'), { q: '', loc: '', lane: '/jobs/companies/' });
+  assert.deepEqual(workAsk('remote jobs'), { q: '', loc: '' });
+});
+
+// 2026-10-30: "job alerts in berlin" searched for the role "alerts", and "highest paying jobs in london" for the role "highest paying".
+test('a page view with a place keeps the place; lane words never become the role', () => {
+  assert.deepEqual(workAsk('job alerts in berlin'), { q: '', loc: 'berlin', lane: '/jobs/alerts/' });
+  assert.deepEqual(workAsk('remote jobs by salary in germany'), { q: '', loc: 'germany', lane: '/jobs/salary/' });
+  assert.deepEqual(workAsk('highest paying jobs in london'), { q: '', loc: 'london', lane: '/jobs/salary/' });
+  assert.deepEqual(workAsk('highest paying jobs'), { q: '', loc: '', lane: '/jobs/salary/' });
+  assert.deepEqual(workAsk('remote companies hiring in europe'), { q: '', loc: 'europe', lane: '/jobs/companies/' });
+  assert.deepEqual(workAsk('job categories near me'), { q: '', loc: '', lane: '/jobs/categories/' });
+  assert.deepEqual(workAsk('python jobs in berlin'), { q: 'python', loc: 'berlin' });
+  assert.deepEqual(workAsk('senior python jobs'), { q: 'senior python', loc: '' });
+  assert.equal(workAsk('turn the misses into jobs'), null);
+});
+
+const byUrl = async (map, fn) => { const real = globalThis.fetch; globalThis.fetch = async (u) => { const b = map[String(u)]; if (b === undefined) return { ok: false, json: async () => null }; return { ok: true, json: async () => b }; }; try { return await fn(); } finally { globalThis.fetch = real; } };
+
+test('run: the card counts the snapshot listings as the jobs page does', async () => {
+  const old = { id: 'r9', src: 'remotive', title: 'Python Data Analyst', company: 'Delta', url: 'https://remotive.com/remote-jobs/data/9', loc: 'Worldwide', type: 'full-time', tags: ['python'], date: '2026-10-10T00:00:00Z' };
+  await byUrl({ '/api/jobs': { jobs: JOBS }, '/jobs/snapshot.json': { jobs: [old, JOBS[0]] } }, async () => {
+    const api = apiOf(); assert.equal(await work.run('remote jobs for python', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('>3 remote jobs<') && h.includes('Python Data Analyst'), h);
+  });
+  await byUrl({ '/api/jobs': { jobs: JOBS } }, async () => {
+    const api = apiOf(); assert.equal(await work.run('remote jobs for python', api), 'work');
+    assert.ok(api.pages[0].innerHTML.includes('>2 remote jobs<'), api.pages[0].innerHTML);
+  });
+});
+
+test('run: a page view lists for that page and links it; by salary keeps the paid listings, highest first', async () => {
+  const paid = { id: 'h2', src: 'himalayas', title: 'Staff Engineer', company: 'Omega', url: 'https://himalayas.app/companies/omega/jobs/2', loc: '', type: 'full-time', tags: ['go'], salary: { min: 150000, max: 180000, cur: 'USD', per: 'year' }, date: '2026-10-01T00:00:00Z' };
+  await byUrl({ '/api/jobs': { jobs: [...JOBS, paid] } }, async () => {
+    const api = apiOf(); assert.equal(await work.run('remote jobs by salary', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('<h2>Remote work · every role · with pay, highest first</h2>') && h.includes('>2 remote jobs<'), h);
+    assert.ok(h.indexOf('Staff Engineer') < h.indexOf('Senior Python Developer') && !h.includes('Product Designer'), h);
+    assert.ok(h.includes('href="/jobs/salary/"'), h);
+  });
+  await byUrl({ '/api/jobs': { jobs: [...JOBS, paid] } }, async () => {
+    const api = apiOf(); assert.equal(await work.run('job alerts in berlin', api), 'work');
+    assert.ok(api.pages[0].innerHTML.includes('href="/jobs/alerts/?loc=berlin"'), api.pages[0].innerHTML);
+  });
+  await byUrl({ '/api/jobs': { jobs: JOBS } }, async () => {
+    const api = apiOf(); assert.equal(await work.run('job alerts', api), 'work');
+    assert.ok(api.pages[0].innerHTML.includes('href="/jobs/alerts/"'), api.pages[0].innerHTML);
   });
 });
