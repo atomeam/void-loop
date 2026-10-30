@@ -14,6 +14,7 @@
 import * as B from './brain.js';
 import { loadKept, keep } from './brain-store.js';
 import { hostBrain } from './brain-bridge.js';
+import * as Route from './brain-route.js';
 
 export const TICK_MS = 500, TICK_MS_PHONE = 1000, SAVE_MS = 30000;
 
@@ -44,6 +45,17 @@ export function startHost(opts = {}) {
     host.changed = true; emit('ask', { text: t, hit: h.hit, guess: h.guess, words: r.words || [] });
     return { ...h, answer: r.answer || null, words: r.words || [] };
   };
+  /** more than one skill can answer `text`: the brain picks (lib/brain-route.js). names: the skills that match, in the page's order.
+   *  Returns { pick, first, changed, why, id } or null when there is no choice. The page tells it what happened with judge(id, good). */
+  const routes = () => host.brain.routes || (host.brain.routes = Route.createRoutes());
+  host.route = (text, names) => {
+    const b = host.brain, focus = b.mind.goals.filter((g) => g.strength > 0.1).map((g) => b.concepts.words[g.idx]).filter(Boolean);
+    const r = Route.route(routes(), text, names, focus); if (r) { host.changed = true; emit('route', r); } return r;
+  };
+  host.judge = (id, good) => { const ok = Route.outcome(routes(), id, good); if (ok) { host.changed = true; emit('judged', { id, good }); } return ok; };
+  host.undoRoute = (id) => { const ok = Route.undo(routes(), id); if (ok) { host.changed = true; emit('undone', { id }); } return ok; };
+  host.actions = (top) => Route.actionsOf(routes(), top);
+  host.routeStats = () => { const R = routes(); return { picks: R.picks, changed: R.changed, good: R.good, bad: R.bad }; };
   /** the empty ask box: the asks it expects next, then the recent ones (newest first), at most `top`. */
   host.suggest = (recent, top = 5) => B.suggestAsks(host.brain, recent, top);
   /** typed hints that match equally: the brain's order (habit, then nearness to its goals). Higher first. */
@@ -61,13 +73,17 @@ export function startHost(opts = {}) {
   host.on = (fn) => { host.listeners.add(fn); return () => host.listeners.delete(fn); };
   host.save = async () => { if (!host.changed) return false; host.changed = false; host.kept = JSON.parse(JSON.stringify(B.knowledgeOf(host.brain))); return !!(await store.keep(host.kept)); };
   /** Forget on the card: what it kept is gone, and nothing is kept again until it hears something new. */
-  host.forgot = () => { host.kept = null; host.changed = false; host.brain.mind.asks = { last: null, next: {}, guess: null, guessed: 0, hits: 0, heard: 0 }; };
+  host.forgot = () => { host.kept = null; host.changed = false; host.brain.mind.asks = { last: null, next: {}, guess: null, guessed: 0, hits: 0, heard: 0 }; host.brain.routes = Route.createRoutes(); };
 
   // what it kept on this device comes back before the asks heard meanwhile are learned, so they are added to it
   const early = Array.isArray(opts.early) ? opts.early.slice() : [];
   host.ready = Promise.resolve(store.loadKept()).catch(() => null).then((k) => {
     if (k && k.v === 1) { host.kept = k; host.restored = B.loadKnowledge(host.brain, k); }
     for (const t of early) host.hear(t);
+    // asks typed on tool pages since it last ran (lib/toolkit.js keeps them on this device): it hears each, and logs where the page sent it
+    const ls = win && (() => { try { return win.localStorage; } catch (_) { return null; } })();
+    if (ls) { let q = []; try { q = JSON.parse(ls.getItem(Route.HEARD_KEY) || '[]'); ls.removeItem(Route.HEARD_KEY); } catch (_) { q = []; }
+      for (const a of (Array.isArray(q) ? q : []).slice(-Route.HEARD_MAX)) if (a && typeof a.text === 'string' && a.text.trim() && !/^\s*(?:unlock\s*)+\S{16,}/i.test(a.text)) { host.hear(a.text); Route.heard(routes(), a.text, a.from, a.to, Number(a.at) || Date.now()); } }
   });
   if (opts.self) Promise.resolve(opts.self).then((j) => { if (j) { host.verse = j; B.knowVerse(host.brain, j); } }).catch(() => {});
 

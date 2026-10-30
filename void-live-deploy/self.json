@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T04:04:48Z",
-   "subject": "Browser suite: count brain-ask.js as shared, and match the family card's live marks to the family line"
+   "at": "2026-10-30T04:02:31Z",
+   "subject": "Verse Brain routes every ask that more than one skill can answer"
   },
   {
    "at": "2026-10-30T04:01:16Z",
