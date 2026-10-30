@@ -200,7 +200,9 @@ async function one(ctx, { ask: a, want, says, before }) {
   for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await logged(b0, 2400);
     // Esc only closes an open page: pressed after every setup ask it is a double Esc (two within 450 ms), which undoes the last thing made, so a fast run lost the sticky a group or label ask needed
     if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
-  await p.evaluate(() => { window.__said = ''; });
+  // the echo card waits 4 s after the first answer before it asks for the second view (skills/echo-disagrees.js), as long as this
+  // wait for the log: the ask logged too late and read "said". Its own test knob takes the pause out here, as tools/test_void.mjs does.
+  await p.evaluate(() => { window.__said = ''; window.__a2mEchoDelay = 0; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
   if (!(await p.evaluate(() => document.documentElement.dataset.skills === 'ready').catch(() => false))) pace.early++; // asked before every skill file was in: the answer may wait on them
   const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, ASK_WAIT_MS);
