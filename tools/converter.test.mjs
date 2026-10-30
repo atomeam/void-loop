@@ -17,7 +17,7 @@ const img = (w, h, f) => { const data = new Uint8ClampedArray(w * h * 4); for (l
 test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the counts the page shows', () => {
   assert.equal(C.CATALOG.length, 106);
   assert.equal(new Set(C.CATALOG.map((t) => t.id)).size, 106);
-  assert.deepEqual(C.counts(), { here: 59, verse: 18, part: 10, no: 19, all: 106 });
+  assert.deepEqual(C.counts(), { here: 60, verse: 18, part: 10, no: 18, all: 106 });
   for (const t of C.CATALOG) {
     assert.ok(C.CATS.includes(t.cat), t.id + ' category'); assert.ok(['here', 'verse', 'part', 'no'].includes(t.status), t.id + ' status');
     assert.ok(t.note && t.note.length > 10, t.id + ' says why'); if (t.status === 'verse') assert.match(t.href, /^\/[a-z-]+\//, t.id + ' links the Verse page');
@@ -25,7 +25,7 @@ test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the 
   }
   // video: MP4, MOV, WEBM and MKV are written here and 15 edits run here (WebCodecs, /lib/video-write.js, /lib/video-mux.js); the rest are
   // honestly not on Verse yet, each with why
-  const NOT_YET = ['video-3gp', 'video-flv', 'video-wmv', 'add-transition-to-video', 'make-split-screen-video', 'repair-mp4', 'stabilize-video'];
+  const NOT_YET = ['video-3gp', 'video-wmv', 'add-transition-to-video', 'make-split-screen-video', 'repair-mp4', 'stabilize-video'];
   for (const t of C.CATALOG.filter((x) => x.cat === 'Video')) { assert.equal(t.status, NOT_YET.includes(t.id) ? 'no' : 'here', t.id); if (t.status === 'no') assert.doesNotMatch(t.note, /does not do this yet/, t.id + ' says the real reason'); }
   for (const id of ['audio-to-video', 'remove-audio-from-video', 'gif-to-video', 'image-to-video', 'pdf-to-video']) { assert.equal(C.toolOf(id).status, 'here', id); assert.equal(C.toolOf(id).run, 'video', id); }
   // sound: WAV, AIFF, FLAC and ALAC with Verse's own encoders, OGG and OPUS with the browser's Opus encoder, M4A and M4R with its AAC
@@ -34,9 +34,9 @@ test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the 
   for (const f of ['mp3', 'amr', 'wma']) assert.equal(C.toolOf('audio-' + f).status, 'no', f);
   assert.match(C.toolOf('audio-ogg').note, /Opus/); assert.match(C.toolOf('audio-m4r').note, /has to be AAC/); assert.match(C.toolOf('audio-m4a').note, /Apple Lossless/); assert.equal(C.MIME.m4r, 'audio/mp4'); assert.equal(C.MIME.flac, 'audio/flac'); assert.equal(C.MIME.opus, 'audio/ogg');
   assert.equal(C.toolOf('pptx-to-video').status, 'no'); assert.equal(C.toolOf('merge-video').many, true); assert.equal(C.toolOf('add-audio-to-video').from, 'video+sound');
-  assert.deepEqual(C.targetsOf('webm'), ['mp4', 'mov', 'mkv', 'avi', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']); assert.equal(C.MIME.mkv, 'video/x-matroska'); assert.equal(C.MIME.mov, 'video/quicktime');
+  assert.deepEqual(C.targetsOf('webm'), ['mp4', 'mov', 'mkv', 'avi', 'flv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']); assert.equal(C.MIME.mkv, 'video/x-matroska'); assert.equal(C.MIME.mov, 'video/quicktime');
   assert.match(C.toolOf('video-wmv').note, /no browser can code/); assert.equal(C.toolOf('video-mp4').to, 'mp4'); assert.equal(C.toolOf('video-webm').from, 'video');
-  assert.equal(C.search('mov to avi')[0].tool.id, 'video-avi'); assert.equal(C.search('mov to flv')[1].tool.id, 'video-mp4'); assert.equal(C.MIME.avi, 'video/x-msvideo'); assert.equal(C.search('mov to webm')[0].tool.id, 'video-webm'); assert.equal(C.search('webm to mkv')[0].tool.id, 'video-mkv'); assert.equal(C.search('mp4 to mov')[0].tool.id, 'video-mov');
+  assert.equal(C.search('mov to avi')[0].tool.id, 'video-avi'); assert.equal(C.search('mov to flv')[0].tool.id, 'video-flv'); assert.equal(C.MIME.flv, 'video/x-flv'); assert.equal(C.search('mov to wmv')[1].tool.id, 'video-mp4'); assert.equal(C.MIME.avi, 'video/x-msvideo'); assert.equal(C.search('mov to webm')[0].tool.id, 'video-webm'); assert.equal(C.search('webm to mkv')[0].tool.id, 'video-mkv'); assert.equal(C.search('mp4 to mov')[0].tool.id, 'video-mov');
   assert.equal(C.toolOf('audio-wav').status, 'here'); assert.equal(C.toolOf('audio-mp3').status, 'no'); assert.equal(C.toolOf('image-png').status, 'here');
   assert.equal(C.toolOf('nope'), null);
 });
@@ -68,7 +68,7 @@ test('the format comes from the first bytes, not only from the name', () => {
   assert.equal(C.formatOf(new TextEncoder().encode('plain words')), 'txt');
   assert.equal(C.formatOf(C.epubOf({ title: 'T', paras: ['a'] })), 'epub');
   assert.deepEqual(C.targetsOf('jpeg'), ['png', 'webp', 'gif', 'bmp', 'tiff', 'pdf']);
-  assert.deepEqual(C.targetsOf('mp4'), ['mov', 'webm', 'mkv', 'avi', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']); assert.deepEqual(C.targetsOf('mov'), ['mp4', 'webm', 'mkv', 'avi', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']);
+  assert.deepEqual(C.targetsOf('mp4'), ['mov', 'webm', 'mkv', 'avi', 'flv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']); assert.deepEqual(C.targetsOf('mov'), ['mp4', 'webm', 'mkv', 'avi', 'flv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']);
   assert.deepEqual(C.targetsOf('mp3'), ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus']); assert.deepEqual(C.targetsOf('flac'), ['wav', 'aiff', 'alac', 'm4a', 'm4r', 'ogg', 'opus']);
   assert.deepEqual(C.targetsOf('mobi'), []);
 });
