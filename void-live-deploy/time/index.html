@@ -145,22 +145,23 @@
 
   // sunrise, sunset and the day's length where the shown city stands, worked out once a day per city (lib/zones.js sunDay)
   const SUNMOON = [...$('sunmoon').children].map((n) => n.cloneNode(true)); // the rows as the page first paints them, dashes for every time
-  let sunKey = '', sunDay = null; // lib/sun-day.js, fetched after the page has loaded (the clock shows first)
+  let sunKey = '', sunDay = null, moonOfDay = null; // lib/sun-day.js, fetched after the page has loaded (the clock shows first)
   function drawSun(p, ymd) {
     const k = p.name + '|' + p.tz + '|' + ymd.join('-') + '|' + h24; if (k === sunKey) return; sunKey = k;
     // the sun and moon take a few tens of milliseconds to work out: after the page has loaded, so the clock shows first
-    if (document.readyState !== 'complete' || !sunDay) { const go = () => import('/lib/sun-day.js').then((m) => { sunDay = m.sunDay; sunKey = ''; drawSun(p, ymd); }).catch(() => { $('sun').textContent = 'Sunrise and sunset could not be worked out here: reload with the network on once.'; });
+    if (document.readyState !== 'complete' || !sunDay) { const go = () => import('/lib/sun-day.js').then((m) => { sunDay = m.sunDay; moonOfDay = m.moonOfDay; sunKey = ''; drawSun(p, ymd); }).catch(() => { $('sun').textContent = 'Sunrise and sunset could not be worked out here: reload with the network on once.'; });
       if (document.readyState === 'complete') go(); else addEventListener('load', () => setTimeout(go, 0), { once: true }); return; }
     const s = sunDay(p, ymd), at = (d) => { const x = wall(p.tz, d); return clockText(x.h, x.m, { h24 }); };
     $('sun').textContent = !s ? 'No sunrise and sunset for ' + p.name + ': it is a time zone, not a city whose place on the map is known here. Add a city in it to see them.'
       : s.state === 'always up' ? 'No sunset today: the sun stays up all day (midnight sun). Day length 24 hours.'
       : s.state === 'always down' ? 'No sunrise today: the sun stays below the horizon all day (polar night).'
       : (s.rise ? 'Sunrise ' + at(s.rise) : 'No sunrise today') + ' · ' + (s.set ? 'Sunset ' + at(s.set) : 'no sunset today') + (s.dayMin !== null ? ' · day length ' + lengthText(s.dayMin) : '');
-    $('sh').textContent = s ? 'Sun and moon today in ' + p.name.replace(/^Your time \((.*)\)$/, '$1') : 'Sun and moon: not known for a time zone with no city';
+    $('sh').textContent = s ? 'Sun and moon today in ' + p.name.replace(/^Your time \((.*)\)$/, '$1') : 'Sun and moon today: the moon, and the sun once a city is added';
     const t = (d, none) => (d ? at(d) : none), pair = (a, b, none) => (a || b ? t(a, '(none)') + ' to ' + t(b, '(none)') : none);
+    const phaseText = (m) => m.name[0].toUpperCase() + m.name.slice(1) + ', ' + m.illumination + '% lit';
     // the list's rows are in the page from the first paint (SUNMOON, dashes), so nothing below moves when they are filled; a time zone with no
-    // city keeps the dashes, its heading and the line under the clock saying why
-    if (!s) { $('sunmoon').replaceChildren(...SUNMOON.map((n) => n.cloneNode(true))); return; }
+    // city has no place to work the sun and the moon's rise from, so those rows say so, and the phase (the same everywhere on Earth) is real
+    if (!s) { $('sunmoon').replaceChildren(...SUNMOON.flatMap((n) => n.tagName === 'DD' ? [] : [n.cloneNode(true), Object.assign(document.createElement('dd'), { textContent: n.textContent === 'Moon phase' ? phaseText(moonOfDay(p.tz, ymd)) : 'needs a city in this zone' })])); return; }
     const rows = [
       ['Sunrise', t(s.rise, s.state === 'always up' ? 'up all day' : 'none today')], ['Sunset', t(s.set, s.state === 'always up' ? 'up all day' : 'none today')],
       ['Solar noon', at(s.noon) + ' (the sun ' + s.noonAlt + '° high)'], ['Day length', s.dayMin === null ? 'not a whole day of sun' : lengthText(s.dayMin)],
@@ -168,7 +169,7 @@
       ['Astronomical dawn and dusk', pair(s.astronomical.dawn, s.astronomical.dusk, 'never fully dark today')],
       ['Golden hour', [s.golden.morning, s.golden.evening].filter((g) => g[0] || g[1]).map((g) => pair(g[0], g[1], '')).join(' and ') || 'none today'],
       ['Moonrise', t(s.moon.rise, s.moon.state === 'always up' ? 'up all day' : 'none today')], ['Moonset', t(s.moon.set, s.moon.state === 'always up' ? 'up all day' : 'none today')],
-      ['Moon phase', s.moon.name[0].toUpperCase() + s.moon.name.slice(1) + ', ' + s.moon.illumination + '% lit']];
+      ['Moon phase', phaseText(s.moon)]];
     $('sunmoon').replaceChildren(...rows.flatMap(([k, v]) => [Object.assign(document.createElement('dt'), { textContent: k }), Object.assign(document.createElement('dd'), { textContent: v })]));
   }
   // date to date (lib/date-math.js counts, through lib/zones.js dateSpan), and n business days on

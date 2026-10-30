@@ -1,7 +1,7 @@
 /**
  * baggage skill - made with tools/new-skill.mjs (docs/UPGRADING.md); 2026-10-30: "how much luggage weight allowed" was a benchmark ask that fell to
- * the article answer, which only said "check your carrier". This card gives the usual limits, read on 2026-10-30 from two airlines' own pages, and says
- * plainly that the ticket decides. Nothing is fetched and nothing is kept. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * the article answer, which only said "check your carrier". This card gives the usual bag limits from two airlines' own pages.
+ * They were read on 2026-10-30, and the card says plainly that the ticket decides. Nothing is fetched and nothing is kept. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 const BAG = /\b(?:luggage|baggage|suitcases?|checked bags?|check(?:ed)?[- ]in bags?|carry[- ]?ons?|hand luggage|cabin bags?|personal items?)\b/;
 const ASKS = /\b(?:weigh|weight|heavy|heavier|limits?|allowances?|allowed|allow|max(?:imum)?|size|sizes|big|dimensions?|how much|how many kg|kg|lbs?|pounds)\b/;

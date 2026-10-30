@@ -1,5 +1,5 @@
 /**
- * news skill — today's headlines from Wikipedia's "In the news" (no key)
+ * news skill — world headlines from Wikipedia's "In the news", and tech and topic stories from Hacker News (no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "news today", "what's in the news", "headlines".
  * Every news card stays current on its own (skills/live.js): headlines and topic stories re-fetch every 30 minutes,

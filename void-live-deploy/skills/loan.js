@@ -1,5 +1,5 @@
 /**
- * loan skill - monthly payment for mortgages, car loans, and personal loans (no key; pure math)
+ * loan skill - monthly payment, and how long a balance takes to pay off, for mortgages, car loans, cards and personal loans (no key; pure math)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "monthly payment on a $250000 mortgage at 6.5% for 30 years",
  * "car loan $20000 at 7% for 5 years",

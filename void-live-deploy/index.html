@@ -4155,6 +4155,7 @@ say('nothing selected to remove');
       // unit conversion: "5 miles in km", "70 f in c", "10 lb in kg", "3 cups in ml"
       const um = lower.match(CALC_UNIT_RE);
       if (um && !hit) {
+        el.dataset.page = '/convert/?q=' + encodeURIComponent(um[0].trim()); // the full link opens the unit converter on this ask, all 495 units both ways
         const val = parseFloat(um[1]);
         const fromU = um[2], toU = um[3];
         if (/^(f|fah(?:renheit)?)$/i.test(fromU) && /^(c|celsius|centigrade)$/i.test(toU)) {

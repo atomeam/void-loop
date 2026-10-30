@@ -1528,7 +1528,7 @@
     "experiment": 0,
     "tested": 0,
     "checked": 0,
-    "proven": 12
+    "proven": 11
    },
    "skills": [
     {
@@ -1595,15 +1595,6 @@
      "streak": 5
     },
     {
-     "name": "recipe",
-     "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 10 real asks in the benchmark",
-     "last_tested": "2026-10-30",
-     "last_tested_by": "its tests",
-     "success_rate": 1,
-     "streak": 11
-    },
-    {
      "name": "heart",
      "tier": "proven",
      "why": "a self-test, 8 browser-suite mentions, 16 real asks in the benchmark",
@@ -1649,16 +1640,16 @@
     "experiment": 0,
     "tested": 0,
     "checked": 1,
-    "proven": 42
+    "proven": 43
    },
    "sources": {
-    "read": 26,
-    "named": 24,
+    "read": 27,
+    "named": 25,
     "second": 15,
     "answered": 0,
-    "points": 1.5,
+    "points": 1.48,
     "one_live_from_proven": [],
-    "words": "Source reliability: 26 skills answer from outside sources; 24 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.5 of 3 on average)."
+    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.48 of 3 on average)."
    },
    "skills": [
     {
@@ -2033,6 +2024,25 @@
      "streak": 1
     },
     {
+     "name": "recipe",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 10 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "streak": 11,
+     "source": {
+      "sites": [
+       "themealdb.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "words": "source 1 of 3: themealdb.com; named on the card; no second source; no kept live answer yet"
+     }
+    },
+    {
      "name": "swaps",
      "tier": "proven",
      "why": "a self-test, 1 browser-suite mention, 12 real asks in the benchmark",
@@ -2371,7 +2381,7 @@
     {
      "name": "work",
      "tier": "proven",
-     "why": "a self-test, 4 real asks in the benchmark",
+     "why": "a self-test, 6 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
