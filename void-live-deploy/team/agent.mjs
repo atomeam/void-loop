@@ -12,10 +12,14 @@
 //        else gives it back with its last line as the reason. Without --run it prints each job and waits for `done` or `back`.
 //   node agent.mjs me | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread <id>]
 //   node agent.mjs mentions | done [--link <pull request>] [--note <text>] | back [--note <why>] [--not-failed]
+//   node agent.mjs hook <https address> | hook --off
+//        have Verse POST each job to an address of your own, signed, so you need not stay online. The push secret is saved to
+//        ~/.verse-team-hook-secret (only you can read it) and never printed. Check each push with verifyPush (exported here).
 //
 // The key: VERSE_TEAM_KEY, else ~/.verse-team-key. VERSE_TEAM_API points it elsewhere (default https://a-to-mind.com/api/team). The key is
 // never printed, logged or put in an address. Playbook: docs/playbooks/team.md. Tests: tools/team.test.mjs.
 import { spawn } from 'node:child_process';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join as pathJoin } from 'node:path';
@@ -77,6 +81,16 @@ const print = (j) => console.log(JSON.stringify(j, null, 2));
 
 const KEY_FILE = () => process.env.VERSE_TEAM_KEY_FILE || pathJoin(homedir(), '.verse-team-key');
 const KEY_RE = /^vt1\.[0-9a-f]{12}\.[0-9a-f]{32}$/;
+const HOOK_FILE = () => process.env.VERSE_TEAM_HOOK_FILE || pathJoin(homedir(), '.verse-team-hook-secret');
+/** a push from Verse is real: x-verse-signature is sha256=<hex HMAC-SHA256 of "<x-verse-time>.<raw body>"> with your push secret, and the
+ *  time is within 5 minutes of now (an old push sent again fails). headers: a Headers object or a plain object with lower-case names. */
+export function verifyPush(secret, headers, body, now = Date.now()) {
+  const h = (k) => (headers && typeof headers.get === 'function' ? headers.get(k) : headers && headers[k]) || '';
+  const time = String(h('x-verse-time')), t = Number(time);
+  if (!secret || !Number.isFinite(t) || Math.abs(now - t) > 5 * 60e3) return false;
+  const want = Buffer.from('sha256=' + createHmac('sha256', String(secret)).update(time + '.' + body).digest('hex')), got = Buffer.from(String(h('x-verse-signature')));
+  return got.length === want.length && timingSafeEqual(got, want);
+}
 /** the team API's address for a join link's site (a link on another host, e.g. a test deploy, joins there) */
 const apiFor = (link) => { try { const u = new URL(link); return u.pathname.startsWith('/team/join/') ? u.origin + '/api/team' : API; } catch (_) { return API; } };
 
@@ -89,7 +103,7 @@ export async function join(link, { api = apiFor(link), fetch: f = fetch } = {}) 
   return j;
 }
 
-const USAGE = 'Usage: node agent.mjs join <link> | me | rekey | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
+const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | rekey | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
 async function main(argv) {
   const [cmd, ...args] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') { console.log(USAGE); return 0; }
@@ -107,6 +121,13 @@ async function main(argv) {
   switch (cmd) {
     case 'mentions': { const r = await call(o, 'GET', '?activity'); if (!r.ok) { print(r); return 1; } for (const m of r.hits) console.log('#' + m.c + ' #' + m.id + ' ' + m.by + ': ' + m.body); return 0; }
     case 'me': print(await call(o, 'GET', '?me')); return 0;
+    case 'hook': {
+      const r = await call(o, 'POST', '', { do: 'hook', url: has(args, '--off') ? '' : (args[0] || '') });
+      if (!r.ok) { console.error('No push address: ' + (r.say || r.status)); return 1; }
+      if (r.secret) writeFileSync(HOOK_FILE(), r.secret + '\n', { mode: 0o600 });
+      console.log(r.hook ? 'Verse now pushes your jobs to ' + r.hook + (r.answered ? ' (it answered).' : ' (it did not answer yet; Verse tries again later).') + ' The push secret is saved to ' + HOOK_FILE() + ' (only you can read it).' : 'Push off: ask for jobs with here and next.');
+      return 0;
+    }
     case 'rekey': { // a new key, saved over the old one; the old key stops at once. The key is never printed.
       const r = await call(o, 'POST', '', { do: 'rekey' });
       if (!r.ok || !KEY_RE.test(r.key || '')) { console.error('No new key: ' + (r.say || 'no answer')); return 1; }

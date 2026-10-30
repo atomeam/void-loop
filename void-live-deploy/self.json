@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,12 +550,36 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:15:15Z",
-   "subject": "Generators: the page's card shows its generator, and the card opens the same five"
+   "at": "2026-10-30T05:15:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:13:43Z",
+   "subject": "Put /emojis/ and /g/ back in the sitemap: the merge with main took main's copy"
+  },
+  {
+   "at": "2026-10-30T05:12:30Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T05:12:22Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T05:12:00Z",
+   "subject": "Verse Brain: /brain/ lines read whole, and the Current line says when it is too young to compare"
+  },
+  {
+   "at": "2026-10-30T05:11:56Z",
+   "subject": "The last breaks the full self-check found: a lab crash, a light lab page, the old name on /store/"
+  },
+  {
+   "at": "2026-10-30T05:11:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:10:53Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T05:10:35Z",
@@ -582,6 +606,14 @@
    "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
   },
   {
+   "at": "2026-10-30T05:07:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:07:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:05:23Z",
    "subject": "What's new: \"play all N\" counts the whole day, as the stage plays it"
   },
@@ -594,39 +626,7 @@
    "subject": "Better at password, random and boards: 3 more ways of asking answered right — new phrases: “password of 20 characters” now opens password…"
   },
   {
-   "at": "2026-10-30T05:03:06Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:02:43Z",
-   "subject": "Safety-check: run a lib's own tests before the far ones, and openapi-check for an /api route"
-  },
-  {
-   "at": "2026-10-30T05:02:35Z",
-   "subject": "Team chat: a mangled body is read, ?t= takes the job id, here says to work the job, an agent changes its own key"
-  },
-  {
-   "at": "2026-10-30T05:01:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:01:23Z",
-   "subject": "News: the stage card shows the topic searched or the Technology section"
-  },
-  {
-   "at": "2026-10-30T05:00:57Z",
-   "subject": "Hand off the code-review MultiVerse card to /members/"
-  },
-  {
-   "at": "2026-10-30T05:00:03Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T04:58:44Z",
-   "subject": "quote: show a Wikiquote quote of the day, with its source, instead of one fixed line"
-  },
-  {
-   "at": "2026-10-30T04:58:43Z",
+   "at": "2026-10-30T05:03:38Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],

@@ -26,6 +26,10 @@ export const WILL_TRIES = 2;
 export const createWatch = () => ({ seen: {}, log: [], seq: 0, at: 0, reads: 0, next: null, wrote: null });
 
 const s = (x, n = 120) => String(x == null ? '' : x).slice(0, n);
+/** at most n characters, cut at a word with "...", so a line never ends mid-word ("each with ", "turn c."). */
+export const clip = (x, n = 120) => { const t = String(x == null ? '' : x).replace(/\s+/g, ' ').trim(); if (t.length <= n) return t; const c = t.slice(0, n - 3), at = c.lastIndexOf(' '); return (at > n / 2 ? c.slice(0, at) : c).replace(/[\s,;:.(\u00b7]+$/, '') + '...'; };
+/** a reason that follows "because": no end stop, and a first word that is not a name ("It allows" reads "it allows"; "I" stays). */
+const reason = (x, n) => { const t = clip(x, n).replace(/\.$/, ''); return /^[A-Z][a-z]/.test(t) ? t[0].toLowerCase() + t.slice(1) : t; };
 const gh = (u) => (/^https:\/\/github\.com\/atomeam\/void-loop\//.test(u || '') ? s(u, 200) : '');
 
 /** what was read, as observations: [{ key, kind, ok, what, why, url }]. rows: the status card's build rows (buildState, with causesOf
@@ -56,8 +60,8 @@ export function observe({ rows = null, prs = null, issues = null, will = null, t
   const run = will && will.lastRun && typeof will.lastRun === 'object' ? will.lastRun : null;
   if (run && run.title) {
     const tries = Math.max(0, Math.round(+run.tries || 0)), stuck = !run.shipped && tries >= WILL_TRIES && run.state !== 'done';
-    out.push({ key: 'will', kind: 'will', ok: !stuck, what: stuck ? 'Verse\'s will is stuck on "' + s(run.title, 70) + '"' : 'Verse\'s will ' + (run.shipped ? 'shipped "' : 'is on "') + s(run.title, 70) + '"',
-      why: stuck ? tries + ' tries, nothing shipped' + (run.why ? '; the last said: ' + s(run.why, 140) : '') : run.shipped ? 'its last run shipped' : 'fewer than ' + WILL_TRIES + ' tries so far', url: gh(run.pr) });
+    out.push({ key: 'will', kind: 'will', ok: !stuck, what: stuck ? 'Verse\'s will is stuck on "' + clip(run.title, 70) + '"' : 'Verse\'s will ' + (run.shipped ? 'shipped "' : 'is on "') + clip(run.title, 70) + '"',
+      why: stuck ? tries + ' tries, nothing shipped' + (run.why ? '; the last said: ' + clip(run.why, 140) : '') : run.shipped ? 'its last run shipped' : 'fewer than ' + WILL_TRIES + ' tries so far', url: gh(run.pr) });
   }
   if (team && Number.isFinite(+team.waiting) && Array.isArray(team.members)) {
     const n = Math.max(0, Math.round(+team.waiting)), here = team.members.filter((m) => m && m.state === 'here').length, stuck = n > 0 && !here;
@@ -73,7 +77,7 @@ export function decisionOf(will) {
   const w = Array.isArray(will.wants) ? will.wants.find((x) => x && x.title) : null, t = will.lap && will.lap.tower;
   const site = t && typeof t.line === 'string' ? (t.line.match(/now ([a-z0-9.-]+\.[a-z]{2,})/i) || [])[1] || '' : '';
   if (!w && !site) return null;
-  return { want: w ? s(w.title, 120) : '', because: w ? s(w.because || w.evidence, 160) : '', site: s(site, 60), tower: t ? s(t.line, 160) : '' };
+  return { want: w ? clip(w.title, 95) : '', because: w ? reason(w.because || w.evidence, 160) : '', site: s(site, 60), tower: t ? clip(t.line, 160) : '' };
 }
 
 /** take what Verse decided: a new top want (or a new site) is an action in the log. Returns the action, or null when nothing changed. */
@@ -83,7 +87,7 @@ export function decide(W, d, at = Date.now()) {
   W.next = { ...d, at };
   if (same) return null;
   const what = d.want ? 'Verse decided next: "' + d.want + '"' : 'Verse is assimilating ' + d.site;
-  const why = (d.because ? d.because : 'its will chose it') + (d.tower ? '; ' + d.tower : '');
+  const why = clip((d.because ? d.because : 'its will chose it') + (d.tower ? '; ' + d.tower : ''), 200); // the log keeps 200: cut at a word
   return log(W, { kind: 'decided', what, why, url: '', key: 'will' }, at);
 }
 
