@@ -68,7 +68,7 @@ function run(text, api) {
       + '<p class="mu-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" class="mu-play">Play</button><button type="button" class="mu-wav">Save as WAV</button><button type="button" class="mu-copy">Copy the notes</button><button type="button" class="mu-sing" hidden>Sing it</button><span class="mu-msg" role="status" style="align-self:center;color:var(--ink-3)"></span></p>'
       + '<p class="mu-played" style="color:var(--ink-3);margin:0 0 8px"></p>'
       + '<div class="mu-sung"></div>'
-      + '<div class="src">Made by Verse from the words of your ask, played in this browser (Web Audio)' + (p.sections ? ' on real drum and piano recordings with a synthesised guitar' : ' on real piano and drum recordings') + '. Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
+      + '<div class="src">Made by Verse from the words of your ask, played in this browser (Web Audio)' + (p.sections ? ' on real drum, piano, bass and guitar recordings (the guitar amp is simulated)' : ' on real piano and drum recordings') + '. Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
     const q = (s) => el.querySelector(s), msg = (t) => { const m = q('.mu-msg'); if (m) m.textContent = t; };
     for (const ev of ['pointerdown', 'keydown']) for (const b of el.querySelectorAll('button')) b.addEventListener(ev, (e) => e.stopPropagation());
     let ac = null, timer = 0, raf = 0, t0 = 0, dur = 0, inst = null, busy = false;
@@ -80,7 +80,7 @@ function run(text, api) {
       if (ac) { stop(); return; }
       const AC = window.AudioContext || window.webkitAudioContext; if (!AC) { msg('This browser has no Web Audio.'); return; }
       try { ac = new AC(); ac.resume && ac.resume(); } catch (_) { msg('Could not start sound.'); ac = null; return; }
-      const mine = ac; busy = true; if (!inst) msg(p.sections ? 'loading the drums…' : 'loading the piano…');
+      const mine = ac; busy = true; if (!inst) msg(p.sections ? 'loading the band…' : 'loading the piano…');
       const kit = await instruments(ac).catch(() => ({})); busy = false; if (ac !== mine) return;
       dur = (p.sections ? scheduleArranged : schedule)(ac, p, ac.currentTime + 0.1, kit); t0 = ac.currentTime + 0.1; q('.mu-play').textContent = 'Stop'; msg('');
       const head = q('.mu-head'), tick = () => { if (!ac) return; const f = Math.max(0, Math.min(1, (ac.currentTime - t0) / (p.steps * 60 / p.bpm / 4))); if (head) { head.setAttribute('x1', f * 320); head.setAttribute('x2', f * 320); head.setAttribute('opacity', '.8'); } raf = requestAnimationFrame(tick); };
