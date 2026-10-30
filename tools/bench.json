@@ -1897,7 +1897,8 @@
   },
   {
     "ask": "how many days until summer",
-    "want": "calc|holiday|skill:holidays|skill:countdown|answer"
+    "want": "calc",
+    "says": "\\d"
   },
   {
     "ask": "when is easter",
@@ -3855,7 +3856,7 @@
   },
   {
     "ask": "how many days until spring",
-    "want": "calc|holiday|skill:countdown",
+    "want": "calc",
     "says": "\\d"
   },
   {

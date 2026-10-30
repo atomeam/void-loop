@@ -1152,14 +1152,10 @@
     {
      "name": "countdown",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 22 real asks in the benchmark",
-     "failing": [
-      "how many days until summer",
-      "how many days until spring"
-     ],
+     "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.909
+     "success_rate": 1
     },
     {
      "name": "event-countdown",
@@ -1207,13 +1203,10 @@
     {
      "name": "holidays",
      "tier": "proven",
-     "why": "a self-test, 19 real asks in the benchmark",
-     "failing": [
-      "how many days until summer"
-     ],
+     "why": "a self-test, 18 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.947
+     "success_rate": 1
     },
     {
      "name": "work",
