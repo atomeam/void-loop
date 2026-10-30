@@ -66,6 +66,8 @@ const PATTERNS = [
   [new RegExp('^(?:please\\s+)?(?:convert\\s+)?' + V + '\\s+' + B + '\\s+(?:to|into|in|as)\\s+' + B + '$', 'i'), (m) => [m[1], m[2], m[3]]],
   [new RegExp('^(?:please\\s+)?(?:convert\\s+)?' + B + '\\s+' + V + '\\s+(?:to|into|in|as)\\s+' + B + '$', 'i'), (m) => [m[2], m[1], m[3]]],
   [new RegExp('^(?:please\\s+)?convert\\s+' + V + '\\s+from\\s+' + B + '\\s+(?:to|into)\\s+' + B + '$', 'i'), (m) => [m[1], m[2], m[3]]],
+  // the converter's name, then the number: "binary to decimal 1010", "hex to binary: ff" (2026-10-30: these fell to an article)
+  [new RegExp('^(?:please\\s+)?(?:convert\\s+)?' + B + '\\s+(?:to|into)\\s+' + B + '\\s*:?\\s+' + V + '$', 'i'), (m) => [m[3], m[1], m[2]]],
   [new RegExp('^(?:please\\s+)?(?:convert\\s+|what\\s+is\\s+)?(0[xbo][0-9a-fA-F_]+|[-+]?\\d[\\d,_]*)\\s+(?:to|into|in|as)\\s+' + B + '\\??$', 'i'), (m) => [m[1], '', m[2]]],
 ];
 /** the stage card for a number typed in base 2, 8, 10 or 16: "<digits> <base> to <decimal, or binary from decimal>", only when the ask
