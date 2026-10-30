@@ -1,26 +1,28 @@
 /**
- * word ladder skill — transform one word to another by changing one letter at a time
+ * wordladder skill — transform one word to another by changing one letter at a time
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "word ladder", "ladder from cat to dog".
+ * "word ladder from cat to dog", "ladder from cold to warm".
  */
 export function isWordLadder(text) {
-  return /^(?:please\s+)?(?:(?:play|start)\s+)?word\s+ladder(?:\s+from\s+\w+\s+to\s+\w+)?(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, '')) || /ladder\s+from\s+/i.test(text);
+  return /^(?:please\s+)?(?:word\s+)?ladder(?:\s+from\s+\w+\s+to\s+\w+)?(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
-const DICT = new Set(['cat', 'bat', 'hat', 'hot', 'dot', 'dog', 'cog', 'cot', 'cut', 'cup', 'pup', 'pop', 'top']);
+const DICT = new Set(['cat', 'bat', 'hat', 'hot', 'dot', 'dog', 'cog', 'cot', 'cold', 'cord', 'card', 'ward', 'warm', 'word', 'lord', 'load', 'lead', 'dead', 'deed', 'feed']);
+
 function ladder(start, end) {
   if (start === end) return [start];
+  if (start.length !== end.length) return null;
   const q = [[start]], seen = new Set([start]);
   while (q.length) {
     const path = q.shift();
-    const w = path[path.length - 1];
-    for (let i = 0; i < w.length; i++) {
+    const last = path[path.length - 1];
+    for (let i = 0; i < last.length; i++) {
       for (let c = 97; c <= 122; c++) {
-        const nw = w.slice(0, i) + String.fromCharCode(c) + w.slice(i + 1);
-        if (DICT.has(nw) && !seen.has(nw)) {
-          const np = path.concat(nw);
-          if (nw === end) return np;
-          seen.add(nw); q.push(np);
+        const next = last.slice(0, i) + String.fromCharCode(c) + last.slice(i + 1);
+        if (next === end) return [...path, next];
+        if (DICT.has(next) && !seen.has(next)) {
+          seen.add(next);
+          q.push([...path, next]);
         }
       }
     }
@@ -30,26 +32,22 @@ function ladder(start, end) {
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const m = text.match(/from\s+(\w+)\s+to\s+(\w+)/i);
-  showPage((p) => {
-    if (m) {
-      const path = ladder(m[1].toLowerCase(), m[2].toLowerCase());
-      p.innerHTML = '<h2>Word Ladder</h2><p style="font-size:20px;text-align:center">' + (path ? esc(path.join(' → ')) : 'No path found') + '</p>';
-    } else {
-      p.innerHTML = '<h2>Word Ladder</h2><p>Say “word ladder from cat to dog”</p>';
-    }
-  });
+  const m = /from\s+(\w+)\s+to\s+(\w+)/i.exec(text || '');
+  const a = m ? m[1].toLowerCase() : 'cat', b = m ? m[2].toLowerCase() : 'dog';
+  const path = ladder(a, b);
+  const html = path ? '<p style="font-size:24px;text-align:center">' + path.map(esc).join(' → ') + '</p>' : '<p style="text-align:center">No ladder found from ' + esc(a) + ' to ' + esc(b) + ' (small dictionary).</p>';
+  showPage((p) => { p.innerHTML = '<h2>Word Ladder</h2>' + html + '<div class="sub">say “word ladder from cat to dog”</div>'; });
   return 'wordladder';
 }
 
 export default {
   name: 'wordladder',
-  examples: ['word ladder', 'ladder from cat to dog', 'word ladder from cat to dog'],
-  nearMisses: ['what is a word ladder', 'ladder'],
+  examples: ['word ladder from cat to dog', 'ladder from cold to warm', 'word ladder'],
+  nearMisses: ['what is a word ladder', 'ladder in words'],
   match(lower, text) { return isWordLadder(text); },
   run,
   suite() {
-    const ok = isWordLadder('word ladder') && isWordLadder('ladder from cat to dog') && !isWordLadder('what is a word ladder');
+    const ok = isWordLadder('word ladder from cat to dog') && isWordLadder('ladder') && !isWordLadder('what is a word ladder');
     return { ok, got: 'match works' };
   }
 };
