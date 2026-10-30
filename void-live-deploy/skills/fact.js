@@ -4,8 +4,10 @@
  * "tell me a fact", "fun fact", "random fact".
  */
 export function isFact(text) {
-  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:fun\s+)?fact|(?:another|a|fun|random)\s+fact|fact(?:\s+please)?|give\s+me\s+a\s+fact)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:tell|give)\s+(?:me\s+)?(?:a|an|another|one\s+more)\s+(?:(?:fun|random|cool|interesting)\s+)?fact|(?:(?:another|a|an)\s+)?(?:fun|random|cool|interesting)\s+fact|(?:another|a)\s+fact|fact(?:\s+please)?|tell\s+me\s+something\s+(?:interesting|i\s+don'?t\s+know))$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
+// 2026-10-30: the page's small talk answered "tell me a fun fact" and "random fact" first, from 12 lines with no source, so this skill's own
+// examples never reached it. Those asks come here now (void.html smallTalk no longer has them): a fact from the service, with its source.
 
 async function run(text, api) {
   const { showPage, esc } = api;
@@ -26,8 +28,8 @@ async function run(text, api) {
 
 export default {
   name: 'fact',
-  examples: ['tell me a fact', 'fun fact', 'random fact', 'another fact'],
-  nearMisses: ['what is a fact', 'facts about space', 'true or false'],
+  examples: ['tell me a fact', 'fun fact', 'random fact', 'another fact', 'tell me a fun fact', 'give me a random fact', 'tell me something interesting'],
+  nearMisses: ['what is a fact', 'facts about space', 'true or false', 'fact or opinion', 'tell me something about rome'],
   match(lower, text) { return isFact(text); },
   run,
   suite() {
